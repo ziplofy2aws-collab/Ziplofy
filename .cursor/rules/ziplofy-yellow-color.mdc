@@ -1,0 +1,15 @@
+---
+description: Ziplofy brand yellow color - use for accent and hover states
+globs: Ziplofy/**/*
+alwaysApply: false
+---
+
+# Ziplofy Yellow Color
+
+When the user asks to "use yellow", "yellow color", or "yellow accent", always use the **Ziplofy brand yellow**:
+
+- **Hex**: `#FBBF24`
+- **RGB**: `251, 191, 36`
+- **CSS variables** (in CustomThemeBuilder.css): `var(--ziplofy-yellow)` and `rgba(var(--ziplofy-yellow-rgb), <alpha>)`
+
+This is the same yellow used on the Preview button hover in the theme builder. Use it for secondary accents, hover states, and highlights.

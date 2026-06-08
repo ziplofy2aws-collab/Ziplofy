@@ -1,0 +1,14 @@
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:onDragStart","message":"block:drag:start","data":{"blockLabel":"Navbar"},"timestamp":1773250425098}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:onDragStop","message":"block:drag:stop args","data":{"arg0Type":"object","arg0HasGet":false,"arg1Type":"object","arg1Label":"Navbar","droppedTruthy":false},"timestamp":1773250425660}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:manualAppend","message":"manual append branch","data":{"blockLabel":"Navbar"},"timestamp":1773250425661}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:getDropTarget","message":"drop target","data":{"tgtType":"wrapper","hasCursorEl":false},"timestamp":1773250425744}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:appendBlockToTarget","message":"appendBlockToTarget","data":{"contentType":"string","hasContent":true,"blockLabel":"Navbar"},"timestamp":1773250425744}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:appendBlockToTarget","message":"append result setComponents","data":{"added":false,"blockLabel":"Navbar"},"timestamp":1773250425757}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:onDragStart","message":"block:drag:start","data":{"blockLabel":"Navbar"},"timestamp":1773250686450}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:onDragStop","message":"block:drag:stop args","data":{"arg0Type":"object","arg0HasGet":false,"arg1Type":"object","arg1Label":"Navbar","droppedTruthy":false},"timestamp":1773250686968}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:manualAppend","message":"manual append branch","data":{"blockLabel":"Navbar"},"timestamp":1773250686968}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:getDropTarget","message":"drop target","data":{"tgtType":"","hasCursorEl":false},"timestamp":1773250687052}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:onDragStart","message":"block:drag:start","data":{"blockLabel":"Heading 1"},"timestamp":1773250702783}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:onDragStop","message":"block:drag:stop args","data":{"arg0Type":"object","arg0HasGet":false,"arg1Type":"object","arg1Label":"Heading 1","droppedTruthy":false},"timestamp":1773250703130}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:manualAppend","message":"manual append branch","data":{"blockLabel":"Heading 1"},"timestamp":1773250703130}
+{"sessionId":"5181a9","location":"elementorThemeOperations.ts:getDropTarget","message":"drop target","data":{"tgtType":"","hasCursorEl":false},"timestamp":1773250703212}

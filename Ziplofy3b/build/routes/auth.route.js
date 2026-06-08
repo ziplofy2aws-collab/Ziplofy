@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authRouter = void 0;
+const express_1 = require("express");
+const auth_controller_1 = require("../controllers/auth.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+exports.authRouter = (0, express_1.Router)();
+exports.authRouter.get("/me", auth_middleware_1.protect, auth_controller_1.getMe);
+exports.authRouter.post("/logout", auth_middleware_1.protect, auth_controller_1.adminLogout);
+exports.authRouter.post("/admin/login", auth_controller_1.adminLogin);
+exports.authRouter.post("/admin/login-step1", auth_controller_1.adminLoginStep1);
+exports.authRouter.post("/admin/verify-otp", auth_controller_1.verifyAdminLoginOtp);
+exports.authRouter.post("/admin/resend-otp", auth_controller_1.resendAdminLoginOtp);
+exports.authRouter.get("/verify-admin-invite", auth_controller_1.verifyAdminInvite);
+exports.authRouter.post("/request-edit-otp", auth_middleware_1.protect, auth_controller_1.requestEditVerificationOtp);
+exports.authRouter.put("/change-password", auth_middleware_1.protect, auth_controller_1.changePassword);

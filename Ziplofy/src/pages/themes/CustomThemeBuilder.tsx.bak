@@ -1,0 +1,4333 @@
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCustomThemes } from '../../contexts/custom-themes.context';
+import ElementorTutorial from '../../components/ElementorTutorial';
+import html2canvas from 'html2canvas';
+import { safeLocalStorage } from '../../types/local-storage';
+import './CustomThemeBuilder.css';
+
+const CustomThemeBuilder: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const editorRef = useRef<HTMLDivElement | null>(null);
+  const rootContainerRef = useRef<HTMLDivElement | null>(null);
+  const editorInstance = useRef<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState<string>('My Theme');
+  const [saving, setSaving] = useState<boolean>(false);
+  const [blockSearch, setBlockSearch] = useState<string>('');
+  const [currentDevice, setCurrentDevice] = useState<string>('desktop');
+  const [showTutorial, setShowTutorial] = useState<boolean>(false);
+  const [activeSidebarSection, setActiveSidebarSection] = useState<'widgets' | 'globals' | 'structure' | 'style'>('widgets');
+  const { createTheme, updateTheme, fetchAll: fetchCustomThemes } = useCustomThemes();
+
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return;
+      const params = new URLSearchParams(window.location.search);
+      const tokenFromUrl = params.get('accessToken');
+      if (tokenFromUrl) {
+        safeLocalStorage.setItem('accessToken', tokenFromUrl);
+        params.delete('accessToken');
+        const newUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+        window.history.replaceState({}, '', newUrl);
+      }
+    } catch (err) {
+      console.warn('Failed to persist access token from URL:', err);
+    }
+  }, []);
+  
+  // Multi-page management
+  interface Page {
+    id: string;
+    name: string;
+    html: string;
+    css: string;
+  }
+
+  const DEFAULT_PAGE_CONTENT =
+    '<section style="padding: 60px 20px; min-height: 400px; background: #ffffff; position: relative; border: 2px dashed #d1d5db; border-radius: 4px; max-width: 1200px; margin: 60px auto;">' +
+    '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 12px; color: #6b7280; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;">' +
+    '<div style="display: flex; gap: 12px; align-items: center;">' +
+    '<span style="width: 40px; height: 40px; border-radius: 50%; background: #1e1e1e; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 18px;">+</span>' +
+    '<span style="width: 40px; height: 40px; border-radius: 50%; background: #1e1e1e; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 18px;">📁</span>' +
+    '<span style="width: 40px; height: 40px; border-radius: 50%; background: #93003c; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 18px;">⋮</span>' +
+    '</div>' +
+    '<div style="font-size: 13px; font-weight: 500;">Drag widget here</div>' +
+    '</div>' +
+    '</section>';
+
+  const sanitizeExternalHref = (value: string): string => {
+    if (!value) return '';
+    const trimmed = value.trim();
+    if (!trimmed) return '';
+    const lower = trimmed.toLowerCase();
+    if (lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('mailto:') || lower.startsWith('tel:')) {
+      return trimmed;
+    }
+    if (trimmed.startsWith('//')) {
+      return `https:${trimmed}`;
+    }
+    if (trimmed.includes('://')) {
+      return trimmed;
+    }
+    return `https://${trimmed}`;
+  };
+
+  const id = useMemo(() => {
+    try {
+      if (searchParams && typeof searchParams.get === 'function') {
+        const fromHook = searchParams.get('id');
+        if (fromHook) return fromHook as string;
+      }
+    } catch {}
+    try {
+      const fromWindow = new URLSearchParams(window.location.search).get('id');
+      if (fromWindow) return fromWindow as string;
+    } catch {}
+    try {
+      return (crypto as any)?.randomUUID ? (crypto as any).randomUUID() : `ct-${Date.now()}`;
+    } catch {
+      return `ct-${Date.now()}`;
+    }
+  }, [searchParams]);
+
+  const storeIdParam = useMemo(() => {
+    try {
+      const fromHook = searchParams?.get?.('storeId');
+      if (fromHook) return fromHook;
+    } catch {}
+    try {
+      return new URLSearchParams(window.location.search).get('storeId') || '';
+    } catch {
+      return '';
+    }
+  }, [searchParams]);
+
+  const resolvedStoreId = useMemo(() => {
+    if (storeIdParam) return storeIdParam;
+    try {
+      return (
+        localStorage.getItem('activeStoreId') ||
+        sessionStorage.getItem('activeStoreId') ||
+        ''
+      );
+    } catch {
+      return '';
+    }
+  }, [storeIdParam]);
+
+  const isInstalledMode = useMemo(() => {
+    try {
+      const mode = searchParams?.get?.('installed') || searchParams?.get?.('source');
+      if (!mode) return false;
+      return mode.toLowerCase() === 'installed' || mode === 'true';
+    } catch {}
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const mode = params.get('installed') || params.get('source');
+      if (!mode) return false;
+      return mode.toLowerCase() === 'installed' || mode === 'true';
+    } catch {
+      return false;
+    }
+  }, [searchParams]);
+
+  const shouldLoadInstalledTheme = useMemo(() => {
+    if (isInstalledMode) return true;
+    if (!id) return false;
+    return !/^[0-9a-fA-F]{24}$/.test(id);
+  }, [isInstalledMode, id]);
+
+  const extractUserIdFromToken = () => {
+    try {
+      const token =
+        safeLocalStorage.getItem('accessToken') ||
+        localStorage.getItem('accessToken') ||
+        sessionStorage.getItem('accessToken') ||
+        localStorage.getItem('token') ||
+        sessionStorage.getItem('token');
+      if (!token) return '';
+      const parts = token.split('.');
+      if (parts.length < 2) return '';
+      const payload = JSON.parse(
+        atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
+      );
+      return String(payload.uid || payload.userId || payload.id || '');
+    } catch {
+      return '';
+    }
+  };
+
+  const buildAuthHeaders = (): Record<string, string> => {
+    const headers: Record<string, string> = {};
+    const token =
+      safeLocalStorage.getItem('accessToken') ||
+      localStorage.getItem('accessToken') ||
+      sessionStorage.getItem('accessToken') ||
+      localStorage.getItem('token') ||
+      sessionStorage.getItem('token');
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return headers;
+  };
+
+  const slugify = (value: string, fallback: string) => {
+    if (!value) return fallback;
+    const cleaned = value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    return cleaned || fallback;
+  };
+
+  const fetchInstalledThemeFromFiles = async (): Promise<{ html: string; css?: string; name?: string; pages?: Page[] } | null> => {
+    if (!shouldLoadInstalledTheme || !id) return null;
+    try {
+      if (typeof window === 'undefined') return null;
+      const ownerId = resolvedStoreId || extractUserIdFromToken();
+      if (!ownerId) {
+        console.warn('No store/user identifier provided for installed theme editing');
+        return null;
+      }
+
+      const apiBase =
+        (import.meta.env.VITE_API_URL as string | undefined) ||
+        `${window.location.origin}/api`;
+      const cacheBust = Date.now();
+      const basePath = `${apiBase}/themes/installed/${ownerId}/${id}/unzippedTheme`;
+
+      const parser = typeof DOMParser !== 'undefined' ? new DOMParser() : null;
+      if (!parser) {
+        const response = await fetch(`${basePath}/index.html?v=${cacheBust}`, {
+          credentials: 'include',
+          headers: buildAuthHeaders(),
+        });
+        if (!response.ok) return null;
+        const rawHtml = await response.text();
+        return { html: rawHtml || DEFAULT_PAGE_CONTENT, css: '', name: 'Installed Theme' };
+      }
+
+      const processHtmlFile = async (filePath: string) => {
+        if (!filePath) return null;
+        const normalizedFile = filePath.replace(/^\/+/, '');
+        const fileUrl = `${basePath}/${normalizedFile}?v=${Date.now()}`;
+        const response = await fetch(fileUrl, {
+          credentials: 'include',
+          headers: buildAuthHeaders(),
+        });
+        if (!response.ok) {
+          console.warn('Installed theme page request failed:', normalizedFile, response.status);
+          return null;
+        }
+        const rawHtml = await response.text();
+        const doc = parser.parseFromString(rawHtml, 'text/html');
+        const currentBaseDir = normalizedFile.includes('/')
+          ? `${basePath}/${normalizedFile.split('/').slice(0, -1).join('/')}/`
+          : `${basePath}/`;
+
+        const toAbsoluteUrl = (value: string | null | undefined) => {
+          if (!value) return '';
+          const trimmed = value.trim();
+          if (!trimmed) return '';
+          if (/^(?:https?:|data:|mailto:|tel:|javascript:|\/\/)/i.test(trimmed)) return trimmed;
+          if (trimmed.startsWith('#')) return trimmed;
+          try {
+            if (trimmed.startsWith('/')) {
+              return `${basePath}/${trimmed.replace(/^\/+/, '')}`;
+            }
+            return new URL(trimmed, currentBaseDir).href;
+          } catch {
+            return trimmed;
+          }
+        };
+
+        const rewriteAttribute = (selector: string, attribute: string) => {
+          doc.querySelectorAll(selector).forEach((node) => {
+            const value = node.getAttribute(attribute);
+            if (!value) return;
+            if (/^(?:https?:|data:|mailto:|tel:|javascript:|\/\/)/i.test(value)) return;
+            if (value.startsWith('#')) return;
+            node.setAttribute(attribute, toAbsoluteUrl(value));
+          });
+        };
+
+        rewriteAttribute('[src]', 'src');
+
+        doc.querySelectorAll('img[srcset], source[srcset]').forEach((node) => {
+          const srcset = node.getAttribute('srcset');
+          if (!srcset) return;
+          const rewritten = srcset
+            .split(',')
+            .map((entry) => {
+              const [url, size] = entry.trim().split(/\s+/, 2);
+              const abs = toAbsoluteUrl(url);
+              return size ? `${abs} ${size}` : abs;
+            })
+            .join(', ');
+          node.setAttribute('srcset', rewritten);
+        });
+
+        doc.querySelectorAll('[style]').forEach((node) => {
+          const styleValue = node.getAttribute('style');
+          if (!styleValue) return;
+          const rewritten = styleValue.replace(/url\((['"]?)(?!https?:|data:|mailto:|tel:|javascript:|\/\/)([^'")]+)\1\)/gi, (_match, quote = '', path) => {
+            const abs = toAbsoluteUrl(path);
+            return `url(${quote}${abs}${quote})`;
+          });
+          node.setAttribute('style', rewritten);
+        });
+
+        doc.querySelectorAll('a[href]').forEach((anchor) => {
+          const href = anchor.getAttribute('href');
+          if (!href) return;
+          if (/^(mailto:|tel:|javascript:)/i.test(href)) return;
+          if (href.startsWith('#')) return;
+          anchor.setAttribute('href', toAbsoluteUrl(href));
+        });
+
+        const extractHeadStyles = () => {
+          const imports: string[] = [];
+          doc.querySelectorAll('link[rel="stylesheet"]').forEach((link) => {
+            const href = link.getAttribute('href');
+            if (!href) return;
+            imports.push(`@import url('${toAbsoluteUrl(href)}');`);
+          });
+          const inlineStyles = Array.from(doc.querySelectorAll('style'))
+            .map((style) => style.textContent || '')
+            .join('\n');
+          return `${imports.join('\n')}\n${inlineStyles}`.trim();
+        };
+
+        const processedHtml = doc.body ? doc.body.innerHTML : rawHtml;
+        const css = extractHeadStyles();
+
+        return {
+          html: processedHtml || DEFAULT_PAGE_CONTENT,
+          css,
+          title: doc.title || '',
+        };
+      };
+
+      const manifestPages: Array<{ name?: string; file?: string; path?: string; title?: string }> = [];
+      let manifestThemeName = '';
+      try {
+        const manifestResp = await fetch(`${basePath}/pages.json?v=${cacheBust}`, {
+          credentials: 'include',
+          headers: buildAuthHeaders(),
+        });
+        if (manifestResp.ok) {
+          const manifestJson = await manifestResp.json();
+          manifestThemeName = manifestJson?.themeName || '';
+          if (Array.isArray(manifestJson?.pages)) {
+            manifestPages.push(...manifestJson.pages);
+          } else if (Array.isArray(manifestJson)) {
+            manifestPages.push(...manifestJson);
+          }
+        }
+      } catch {
+        // ignore manifest errors
+      }
+
+      const processedPages: Page[] = [];
+      const ensureUniquePageId = (base: string) => {
+        let candidate = base;
+        let counter = 1;
+        while (processedPages.some((p) => p.id === candidate)) {
+          candidate = `${base}-${counter++}`;
+        }
+        return candidate;
+      };
+
+      if (manifestPages.length > 0) {
+        for (let i = 0; i < manifestPages.length; i++) {
+          const pageEntry = manifestPages[i];
+          const filePath = pageEntry.file || pageEntry.path;
+          const processed = await processHtmlFile(filePath || 'index.html');
+          if (!processed) continue;
+          const pageName = pageEntry.name || pageEntry.title || processed.title || `Page ${i + 1}`;
+          const pageId = ensureUniquePageId(slugify(pageName, `page-${i + 1}`));
+          processedPages.push({
+            id: pageId,
+            name: pageName,
+            html: processed.html,
+            css: processed.css || '',
+          });
+        }
+      }
+
+      if (processedPages.length > 0) {
+        return {
+          html: processedPages[0].html,
+          css: processedPages[0].css,
+          name: manifestThemeName || processedPages[0].name,
+          pages: processedPages,
+        };
+      }
+
+      // Fallback to index.html only
+      const processedIndex = await processHtmlFile('index.html');
+      if (!processedIndex) return null;
+      return {
+        html: processedIndex.html,
+        css: processedIndex.css || '',
+        name: processedIndex.title || 'Installed Theme',
+      };
+    } catch (err) {
+      console.warn('Failed to fetch installed theme files:', err);
+      return null;
+    }
+  };
+
+  const [pages, setPages] = useState<Page[]>([
+    { id: 'page-1', name: 'Home', html: DEFAULT_PAGE_CONTENT, css: '' }
+  ]);
+  const pagesRef = useRef<Page[]>([
+    { id: 'page-1', name: 'Home', html: DEFAULT_PAGE_CONTENT, css: '' }
+  ]);
+  const [currentPageId, setCurrentPageId] = useState<string>('page-1');
+  const [showPageManager, setShowPageManager] = useState<boolean>(false);
+  const LOCAL_STORAGE_PAGES_KEY = useMemo(() => (id ? `ziplofy.builder.pages.${id}` : null), [id]);
+  const tabIdRef = useRef(`tab-${Math.random().toString(36).slice(2)}`);
+  const skipPersistRef = useRef(false);
+  const lastSyncedAtRef = useRef(0);
+  const persistedInitialLoadRef = useRef(false);
+  const restoredFromLocalRef = useRef(false);
+  const initialPageHandledRef = useRef(false);
+
+  const encodePagesData = (pagesData: Page[]): string => {
+    try {
+      return JSON.stringify(pagesData)
+        .replace(/</g, '\\u003c')
+        .replace(/>/g, '\\u003e')
+        .replace(/&/g, '\\u0026');
+    } catch {
+      return '[]';
+    }
+  };
+
+  useEffect(() => {
+    pagesRef.current = pages;
+  }, [pages]);
+
+  const buildMultiPageHtmlDocument = (pagesData: Page[], themeName: string, globalCss: string): string => {
+    const safeName = (themeName || 'Ziplofy Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const pagesJson = encodePagesData(pagesData);
+    const combinedCss = globalCss || '';
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${safeName}</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e1e1e;
+      background: #ffffff;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    .ziplofy-page {
+      display: none;
+    }
+    .ziplofy-page.active {
+      display: block;
+    }
+    ${combinedCss}
+  </style>
+</head>
+<body>
+  <div id="ziplofy-page-container"></div>
+  <script id="ziplofy-pages-data" type="application/json">${pagesJson}</script>
+  <script>
+    (function() {
+      try {
+        const container = document.getElementById('ziplofy-page-container');
+        const dataEl = document.getElementById('ziplofy-pages-data');
+        if (!container || !dataEl) return;
+        const pagesText = dataEl.textContent || dataEl.innerText || '[]';
+        const pages = JSON.parse(pagesText);
+        const normalizeId = function(value) {
+          if (value === null || value === undefined) return '';
+          return String(value).replace(/^#/, '').trim();
+        };
+        const idsMatch = function(a, b) {
+          const normalizedA = normalizeId(a);
+          const normalizedB = normalizeId(b);
+          if (!normalizedA || !normalizedB) return false;
+          if (normalizedA === normalizedB) return true;
+          const stripA = normalizedA.replace(/^page-/, '');
+          const stripB = normalizedB.replace(/^page-/, '');
+          return stripA === stripB;
+        };
+        const normalizeExternalUrl = function(url) {
+          if (!url) return '';
+          const trimmed = String(url).trim();
+          if (!trimmed) return '';
+          const lower = trimmed.toLowerCase();
+          if (lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('mailto:') || lower.startsWith('tel:')) {
+            return trimmed;
+          }
+          if (trimmed.startsWith('//')) {
+            return 'https:' + trimmed;
+          }
+          if (trimmed.includes('://')) {
+            return trimmed;
+          }
+          return 'https://' + trimmed;
+        };
+        const openExternal = function(url) {
+          const finalUrl = normalizeExternalUrl(url);
+          if (!finalUrl) return;
+          window.open(finalUrl, '_blank', 'noopener,noreferrer');
+        };
+        const renderPages = function() {
+          container.innerHTML = '';
+          pages.forEach(function(page, index) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'ziplofy-page' + (index === 0 ? ' active' : '');
+            wrapper.setAttribute('data-page-id', page.id || ('page-' + (index + 1)));
+            wrapper.style.display = index === 0 ? 'block' : 'none';
+            wrapper.innerHTML = page.html || '';
+            container.appendChild(wrapper);
+          });
+        };
+
+        const showPage = function(pageId, updateHash) {
+          const normalizedRequest = normalizeId(pageId);
+          if (!normalizedRequest) return false;
+          
+          const wrappers = container.querySelectorAll('.ziplofy-page');
+          let found = false;
+          
+          wrappers.forEach(function(wrapper) {
+            const wrapperPageId = wrapper.getAttribute('data-page-id') || '';
+            
+            if (idsMatch(wrapperPageId, normalizedRequest)) {
+              wrapper.classList.add('active');
+              wrapper.style.display = 'block';
+              found = true;
+            } else {
+              wrapper.classList.remove('active');
+              wrapper.style.display = 'none';
+            }
+          });
+          
+          if (found && updateHash) {
+            const activeWrapper = container.querySelector('.ziplofy-page.active');
+            const actualPageId = activeWrapper ? (activeWrapper.getAttribute('data-page-id') || normalizedRequest) : normalizedRequest;
+            window.location.hash = '#' + normalizeId(actualPageId);
+          }
+          
+          return found;
+        };
+
+        const attachLinkHandlers = function() {
+          // Remove old handlers first for links
+          const oldLinks = container.querySelectorAll('a[data-page-link]');
+          oldLinks.forEach(function(link) {
+            const newLink = link.cloneNode(true);
+            if (link.parentNode) {
+              link.parentNode.replaceChild(newLink, link);
+            }
+          });
+          
+          // Remove old handlers for buttons
+          const oldButtons = container.querySelectorAll('button[data-page-link]');
+          oldButtons.forEach(function(button) {
+            const newButton = button.cloneNode(true);
+            if (button.parentNode) {
+              button.parentNode.replaceChild(newButton, button);
+            }
+          });
+          
+          // Attach handlers to links
+          const links = container.querySelectorAll('a[data-page-link]');
+          links.forEach(function(link) {
+            link.addEventListener('click', function(evt) {
+              const targetPage = this.getAttribute('data-page-link');
+              if (targetPage && targetPage.trim() !== '') {
+                evt.preventDefault();
+                evt.stopPropagation();
+                if (!showPage(targetPage, true)) {
+                  console.warn('Ziplofy: target page not found for link', targetPage);
+                }
+                return;
+              }
+              
+              const href = this.getAttribute('href');
+              if (href && href.startsWith('#')) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                if (!showPage(href, true)) {
+                  console.warn('Ziplofy: target page not found for link href', href);
+                }
+                return;
+              }
+              
+              if (href && href.trim() !== '') {
+                evt.preventDefault();
+                evt.stopPropagation();
+                openExternal(href);
+              }
+            });
+          });
+          
+          // Attach handlers to buttons
+          const buttons = container.querySelectorAll('button[data-page-link]');
+          buttons.forEach(function(button) {
+            button.addEventListener('click', function(evt) {
+              evt.preventDefault();
+              evt.stopPropagation();
+              
+              const targetPage = this.getAttribute('data-page-link');
+              const href = this.getAttribute('href');
+              
+              if (targetPage && targetPage.trim() !== '') {
+                if (!showPage(targetPage, true)) {
+                  console.warn('Ziplofy: target page not found for button', targetPage, 'Available pages:', Array.from(container.querySelectorAll('.ziplofy-page')).map(function(p) { return p.getAttribute('data-page-id'); }));
+                }
+                return;
+              }
+              
+              if (href && href.startsWith('#')) {
+                if (!showPage(href, true)) {
+                  console.warn('Ziplofy: target page not found for button href', href);
+                }
+                return;
+              }
+              
+              if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+                openExternal(href);
+                return;
+              }
+              
+              if (href && href.trim() !== '') {
+                openExternal(href);
+              }
+            });
+          });
+          
+          // Also handle buttons with href attribute for external URLs
+          const buttonsWithHref = container.querySelectorAll('button[href]');
+          buttonsWithHref.forEach(function(button) {
+            const href = button.getAttribute('href');
+            const hasPageLink = button.hasAttribute('data-page-link');
+            
+            // Only add handler if it doesn't already have a page link handler
+            if (!hasPageLink && href && (href.startsWith('http://') || href.startsWith('https://'))) {
+              button.addEventListener('click', function(evt) {
+                evt.preventDefault();
+                window.open(href, '_blank', 'noopener,noreferrer');
+              });
+            }
+          });
+        };
+
+        renderPages();
+        attachLinkHandlers();
+        
+        // Re-attach handlers after any dynamic content changes (with debounce to prevent excessive calls)
+        let attachTimeout = null;
+        const observer = new MutationObserver(function() {
+          if (attachTimeout) {
+            clearTimeout(attachTimeout);
+          }
+          attachTimeout = setTimeout(function() {
+            attachLinkHandlers();
+          }, 300); // Debounce to 300ms
+        });
+        observer.observe(container, { childList: true, subtree: true });
+
+        const handleHashChange = function() {
+          const hash = window.location.hash.replace(/^#/, '');
+          if (!hash) return;
+          const clean = hash.replace(/^page-/, '');
+          showPage(clean, false);
+        };
+
+        window.addEventListener('hashchange', handleHashChange);
+        handleHashChange();
+      } catch (err) {
+        console.error('Ziplofy multipage preview error:', err);
+      }
+    })();
+  </script>
+</body>
+</html>`;
+  };
+
+  const parsePagesFromStoredHtml = (htmlContent: string): Page[] | null => {
+    if (!htmlContent) return null;
+    const trimmed = htmlContent.trim();
+
+    // Legacy JSON format
+    if (trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return Array.isArray(parsed) ? parsed : null;
+      } catch {
+        // fall through
+      }
+    }
+
+    // Check for embedded JSON script tag
+    const scriptMatch = htmlContent.match(/<script id="ziplofy-pages-data"[^>]*>([\s\S]*?)<\/script>/i);
+    if (scriptMatch && scriptMatch[1]) {
+      try {
+        const jsonText = scriptMatch[1].trim();
+        const parsed = JSON.parse(jsonText);
+        if (Array.isArray(parsed)) {
+          return parsed.map((page, index) => ({
+            id: page?.id || `page-${index + 1}`,
+            name: page?.name || `Page ${index + 1}`,
+            html: page?.html || DEFAULT_PAGE_CONTENT,
+            css: page?.css || ''
+          }));
+        }
+      } catch (error) {
+        console.warn('Failed to parse multipage JSON from stored HTML:', error);
+      }
+    }
+
+    return null;
+  };
+
+  const getPagesSnapshotWithCurrent = useCallback(() => {
+    const editor = editorInstance.current;
+    if (!editor || typeof editor.getHtml !== 'function') {
+      return { pagesSnapshot: pages, currentHtml: '', currentCss: '' };
+    }
+    const currentHtml = editor.getHtml() || '';
+    const currentCss = editor.getCss ? editor.getCss() : '';
+    const pagesSnapshot = pages.map((page) =>
+      page.id === currentPageId
+        ? { ...page, html: currentHtml || DEFAULT_PAGE_CONTENT, css: currentCss }
+        : page
+    );
+    return { pagesSnapshot, currentHtml, currentCss };
+  }, [pages, currentPageId]);
+
+  const applyPageToEditor = useCallback((htmlContent: string, cssContent?: string) => {
+    const editor = editorInstance.current;
+    if (!editor) return;
+    editor.setComponents(htmlContent || DEFAULT_PAGE_CONTENT);
+    try {
+      const styleMgr = editor.getModel?.().get('Css') || editor.Css;
+      if (styleMgr && typeof styleMgr.clear === 'function') {
+        styleMgr.clear();
+      }
+      if (cssContent && typeof cssContent === 'string') {
+        if (typeof editor.setStyle === 'function') {
+          editor.setStyle(cssContent);
+        } else if (styleMgr && typeof styleMgr.set === 'function') {
+          styleMgr.set(cssContent);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to apply CSS to editor:', err);
+    }
+    setTimeout(() => {
+      try {
+        const wrapper = editor.getWrapper();
+        if (wrapper) {
+          const setAllStylable = (comp: any) => {
+            if (comp) {
+              comp.set({ stylable: true, selectable: true, hoverable: true, draggable: true, droppable: true });
+              const children = comp.components?.();
+              if (children && children.length > 0) {
+                children.forEach((child: any) => setAllStylable(child));
+              }
+            }
+          };
+          setAllStylable(wrapper);
+        }
+      } catch {}
+    }, 200);
+  }, []);
+
+  const commitCurrentPage = useCallback(() => {
+    const editor = editorInstance.current;
+    if (!editor || typeof editor.getHtml !== 'function') return;
+    
+    const currentHtml = editor.getHtml() || '';
+    const currentCss = editor.getCss ? editor.getCss() : '';
+    
+    setPages(prev => prev.map(page => 
+      page.id === currentPageId 
+        ? { ...page, html: currentHtml || DEFAULT_PAGE_CONTENT, css: currentCss }
+        : page
+    ));
+  }, [currentPageId]); // Only depend on currentPageId to prevent loops
+
+  const switchPage = useCallback((pageId: string) => {
+    if (!pageId || pageId === currentPageId) return;
+    const { pagesSnapshot } = getPagesSnapshotWithCurrent();
+    setPages(pagesSnapshot);
+    const targetPage = pagesSnapshot.find((page) => page.id === pageId);
+    applyPageToEditor(targetPage?.html || DEFAULT_PAGE_CONTENT, targetPage?.css || '');
+    setCurrentPageId(pageId);
+  }, [currentPageId, getPagesSnapshotWithCurrent, applyPageToEditor]);
+
+  const addPage = useCallback(() => {
+    const { pagesSnapshot } = getPagesSnapshotWithCurrent();
+    const newPageId = `page-${Date.now()}`;
+    const newPage: Page = {
+      id: newPageId,
+      name: `Page ${pagesSnapshot.length + 1}`,
+      html: DEFAULT_PAGE_CONTENT,
+      css: ''
+    };
+    const nextPages = [...pagesSnapshot, newPage];
+    setPages(nextPages);
+    setCurrentPageId(newPageId);
+    applyPageToEditor(newPage.html, newPage.css || '');
+  }, [getPagesSnapshotWithCurrent, applyPageToEditor]);
+
+  const deletePage = useCallback((pageId: string) => {
+    if (pages.length <= 1) {
+      alert('Cannot delete the last page. A theme must have at least one page.');
+      return;
+    }
+    const { pagesSnapshot } = getPagesSnapshotWithCurrent();
+    const filtered = pagesSnapshot.filter((page) => page.id !== pageId);
+    setPages(filtered);
+    const nextCurrentPage = filtered[0];
+    if (nextCurrentPage) {
+      setCurrentPageId(nextCurrentPage.id);
+      applyPageToEditor(nextCurrentPage.html, nextCurrentPage.css || '');
+    }
+  }, [pages.length, getPagesSnapshotWithCurrent, applyPageToEditor]);
+
+  const renamePage = useCallback((pageId: string, newName: string) => {
+    setPages((prev) => prev.map((page) => (page.id === pageId ? { ...page, name: newName || page.name } : page)));
+  }, []);
+
+  const sanitizePageHtml = (input: string): string => {
+    if (!input) {
+      return '<div style="padding:60px 20px; text-align:center; color:#6b7280;">This page does not have any content yet.</div>';
+    }
+    let output = input.replace(/\s*data-gjs-[^=]*="[^"]*"/g, '');
+    output = output.replace(/\s*class="[^"]*gjs-[^"]*"/g, '');
+    output = output.replace(/\s*contenteditable="[^"]*"/g, '');
+    return output;
+  };
+
+  const buildPagedHtmlDocument = (
+    pagesList: Page[],
+    combinedCss: string,
+    themeTitle: string,
+    options: { linkStylesheet?: boolean } = {}
+  ): string => {
+    const safePages = pagesList.length
+      ? pagesList
+      : [
+          {
+            id: 'page-1',
+            name: 'Page 1',
+            html: '',
+            css: '',
+          },
+        ];
+
+    const escapeHtml = (value: string) =>
+      (value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    const pageSections = safePages
+      .map(
+        (page, index) => `
+  <section class="preview-page" data-page-id="${page.id}" id="page-${page.id}" style="display: ${index === 0 ? 'block' : 'none'};">
+    ${sanitizePageHtml(page.html)}
+  </section>`
+      )
+      .join('\n');
+
+    const pagesMeta = safePages.map(({ id, name: pageName }) => ({
+      id,
+      name: pageName,
+    }));
+    const pagesMetaJson = JSON.stringify(pagesMeta)
+      .replace(/</g, '\\u003c')
+      .replace(/>/g, '\\u003e');
+
+    const initialPageId = safePages[0]?.id || '';
+    const safeTitle = escapeHtml(themeTitle || 'Theme Preview');
+    const linkStylesheetTag = options.linkStylesheet ? '  <link rel="stylesheet" href="style.css">\n' : '';
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${safeTitle} - Preview</title>
+${linkStylesheetTag}  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #ffffff;
+    }
+    body {
+      overflow-x: hidden;
+    }
+    .preview-page {
+      width: 100%;
+      min-height: 100vh;
+    }
+    .preview-page[hidden] {
+      display: none !important;
+    }
+    a[data-page-link] {
+      cursor: pointer;
+    }
+    ${combinedCss}
+  </style>
+</head>
+<body data-active-page="">
+  ${pageSections}
+  <script>
+    (function() {
+      const pages = ${pagesMetaJson};
+      const previewPages = Array.from(document.querySelectorAll('.preview-page'));
+
+      function showPage(pageId) {
+        if (!pageId) return false;
+        let found = false;
+        previewPages.forEach((page) => {
+          if (page.dataset.pageId === pageId) {
+            page.style.display = 'block';
+            page.removeAttribute('hidden');
+            found = true;
+          } else {
+            page.style.display = 'none';
+            page.setAttribute('hidden', 'true');
+          }
+        });
+
+        if (found) {
+          document.body.setAttribute('data-active-page', pageId);
+          const target = document.getElementById('page-' + pageId);
+          if (target) {
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+          }
+        }
+
+        return found;
+      }
+
+      function updateHash(pageId) {
+        if (!pageId) return;
+        const hash = '#page-' + pageId;
+        if (history.replaceState) {
+          history.replaceState(null, '', hash);
+        } else {
+          location.hash = hash;
+        }
+      }
+
+      function handleLinkClick(event) {
+        const link = event.target.closest('[data-page-link]');
+        if (!link) return;
+
+        const targetPageId = link.getAttribute('data-page-link');
+        if (targetPageId) {
+          event.preventDefault();
+          const switched = showPage(targetPageId);
+          if (switched) {
+            updateHash(targetPageId);
+          }
+        }
+      }
+
+      function syncWithHash() {
+        const hash = (window.location.hash || '').replace(/^#page-/, '');
+        if (hash && pages.some((page) => page.id === hash)) {
+          return showPage(hash);
+        }
+        return false;
+      }
+
+      document.addEventListener('click', handleLinkClick);
+      window.addEventListener('hashchange', syncWithHash);
+
+      const defaultPageId = '${initialPageId}';
+      if (!syncWithHash() && defaultPageId) {
+        showPage(defaultPageId);
+        updateHash(defaultPageId);
+      }
+    })();
+  </script>
+</body>
+</html>`;
+  };
+
+  useEffect(() => {
+    if (!LOCAL_STORAGE_PAGES_KEY) {
+      persistedInitialLoadRef.current = true;
+      return;
+    }
+    try {
+      const stored = localStorage.getItem(LOCAL_STORAGE_PAGES_KEY);
+      if (stored) {
+        const payload = JSON.parse(stored);
+        if (payload && Array.isArray(payload.pages) && payload.pages.length > 0) {
+          restoredFromLocalRef.current = true;
+          lastSyncedAtRef.current = payload.updatedAt || Date.now();
+          skipPersistRef.current = true;
+          const nextPages: Page[] = payload.pages;
+          pagesRef.current = nextPages;
+          setPages(nextPages);
+          const nextPageId = payload.currentPageId || nextPages[0].id;
+          if (nextPageId) {
+            setCurrentPageId(nextPageId);
+            const targetPage = nextPages.find((p) => p.id === nextPageId);
+            if (targetPage) {
+              applyPageToEditor(targetPage.html || DEFAULT_PAGE_CONTENT, targetPage.css || '');
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to restore builder state from storage:', err);
+    } finally {
+      if (!persistedInitialLoadRef.current) {
+        persistedInitialLoadRef.current = true;
+      }
+    }
+  }, [LOCAL_STORAGE_PAGES_KEY, applyPageToEditor]);
+
+  useEffect(() => {
+    if (!LOCAL_STORAGE_PAGES_KEY) return;
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== LOCAL_STORAGE_PAGES_KEY || !event.newValue) return;
+      try {
+        const payload = JSON.parse(event.newValue);
+        if (!payload || payload.source === tabIdRef.current) return;
+        if (!Array.isArray(payload.pages) || payload.pages.length === 0) return;
+        if (payload.updatedAt && payload.updatedAt <= lastSyncedAtRef.current) return;
+        lastSyncedAtRef.current = payload.updatedAt || Date.now();
+        skipPersistRef.current = true;
+        const nextPages: Page[] = payload.pages;
+        pagesRef.current = nextPages;
+        setPages(nextPages);
+        const nextPageId = payload.currentPageId || nextPages[0].id;
+        if (nextPageId) {
+          setCurrentPageId(nextPageId);
+          const targetPage = nextPages.find((p) => p.id === nextPageId);
+          if (targetPage) {
+            applyPageToEditor(targetPage.html || DEFAULT_PAGE_CONTENT, targetPage.css || '');
+          }
+        }
+      } catch (err) {
+        // Suppress extension context errors
+        if (err instanceof Error && err.message.includes('Extension context invalidated')) {
+          return;
+        }
+        console.warn('Failed to process builder storage update:', err);
+      }
+    };
+    try {
+      window.addEventListener('storage', handleStorage);
+    } catch (err) {
+      // Suppress extension context errors
+      if (err instanceof Error && err.message.includes('Extension context invalidated')) {
+        return;
+      }
+    }
+    return () => {
+      try {
+        window.removeEventListener('storage', handleStorage);
+      } catch (err) {
+        // Suppress extension context errors
+        if (err instanceof Error && err.message.includes('Extension context invalidated')) {
+          return;
+        }
+      }
+    };
+  }, [LOCAL_STORAGE_PAGES_KEY, applyPageToEditor]);
+
+  useEffect(() => {
+    if (!LOCAL_STORAGE_PAGES_KEY) return;
+    if (!persistedInitialLoadRef.current) return;
+    if (skipPersistRef.current) {
+      skipPersistRef.current = false;
+      return;
+    }
+    try {
+      const { pagesSnapshot } = getPagesSnapshotWithCurrent();
+      const payload = {
+        pages: pagesSnapshot,
+        currentPageId,
+        updatedAt: Date.now(),
+        source: tabIdRef.current,
+      };
+      lastSyncedAtRef.current = payload.updatedAt;
+      localStorage.setItem(LOCAL_STORAGE_PAGES_KEY, JSON.stringify(payload));
+    } catch (err) {
+      console.warn('Failed to persist builder state:', err);
+    }
+  }, [pages, currentPageId, getPagesSnapshotWithCurrent, LOCAL_STORAGE_PAGES_KEY]);
+
+  const initialPageParam = useMemo(() => searchParams.get('page'), [searchParams]);
+
+  useEffect(() => {
+    if (initialPageHandledRef.current) return;
+    if (!initialPageParam) {
+      initialPageHandledRef.current = true;
+      return;
+    }
+    const targetPage = pages.find((page) => page.id === initialPageParam);
+    if (!targetPage) return;
+    initialPageHandledRef.current = true;
+    if (currentPageId !== targetPage.id) {
+      setCurrentPageId(targetPage.id);
+      applyPageToEditor(targetPage.html || DEFAULT_PAGE_CONTENT, targetPage.css || '');
+    }
+  }, [initialPageParam, pages, currentPageId, applyPageToEditor]);
+
+  const loadSaved = useCallback(async () => {
+    if (!id) return null;
+    
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+    if (!isValidObjectId) {
+      console.warn('Invalid theme ID format (not a MongoDB ObjectId). This might be an old theme from localStorage. Creating new theme.');
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('id');
+      window.history.replaceState({}, '', newUrl.toString());
+      return null;
+    }
+    
+    try {
+      const { axiosi } = await import('../../config/axios.config');
+      const response = await axiosi.get(`/custom-themes/${id}`);
+      if (response.data.success && response.data.data) {
+        const themeData = response.data.data;
+        const storedHtml: string = themeData.html || '';
+        const storedCss: string = themeData.css || '';
+
+        const parsedPages = parsePagesFromStoredHtml(storedHtml);
+        if (parsedPages && parsedPages.length > 0) {
+          if (!restoredFromLocalRef.current) {
+            setPages(parsedPages);
+            pagesRef.current = parsedPages;
+            setCurrentPageId(parsedPages[0].id);
+          }
+          persistedInitialLoadRef.current = true;
+          return {
+            ...themeData,
+            html: parsedPages[0].html || DEFAULT_PAGE_CONTENT,
+            css: storedCss,
+          };
+        }
+
+        const singlePage: Page = {
+          id: 'page-1',
+          name: 'Home',
+          html: storedHtml || DEFAULT_PAGE_CONTENT,
+          css: storedCss || '',
+        };
+        if (!restoredFromLocalRef.current) {
+          setPages([singlePage]);
+          pagesRef.current = [singlePage];
+          setCurrentPageId('page-1');
+        }
+        persistedInitialLoadRef.current = true;
+        return {
+          ...themeData,
+          html: singlePage.html,
+          css: storedCss,
+        };
+      }
+      return null;
+    } catch (error: any) {
+      if (error?.response?.status === 404 || error?.response?.status === 400) {
+        console.warn('Theme not found or invalid ID. Creating new theme.');
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete('id');
+        window.history.replaceState({}, '', newUrl.toString());
+        persistedInitialLoadRef.current = true;
+      } else {
+        console.error('Error loading custom theme:', error);
+      }
+      return null;
+    }
+  }, [id, parsePagesFromStoredHtml]);
+
+  // Global error handler for extension context errors
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      if (event.error && event.error.message && event.error.message.includes('Extension context invalidated')) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
+      return true;
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      if (event.reason && event.reason.message && event.reason.message.includes('Extension context invalidated')) {
+        event.preventDefault();
+        return false;
+      }
+      return true;
+    };
+
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (editorInstance.current) return;
+    
+    let destroyed = false;
+    const cleanupFns: Array<() => void> = [];
+    const registerCleanup = (fn: () => void) => {
+      cleanupFns.push(fn);
+    };
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const grapesjs = (await import('grapesjs')).default;
+        await import('grapesjs/dist/css/grapes.min.css');
+        const presetWebpage = (await import('grapesjs-preset-webpage')).default;
+
+        const editor = grapesjs.init({
+          container: editorRef.current as HTMLElement,
+          fromElement: false,
+          height: 'calc(100vh - 60px)',
+          width: '100%',
+          noticeOnUnload: false,
+          plugins: [presetWebpage],
+          pluginsOpts: {
+            [presetWebpage as unknown as string]: {},
+          },
+          deviceManager: {
+            devices: [
+              { id: 'desktop', name: 'Desktop', width: '' },
+              { id: 'tablet', name: 'Tablet', width: '768px' },
+              { id: 'mobile', name: 'Mobile', width: '375px' },
+            ],
+          },
+          storageManager: { type: null as any },
+          selectorManager: { 
+            componentFirst: true,
+          },
+          styleManager: {
+            appendTo: '#style-panel',
+            sectors: [
+              {
+                name: 'Layout',
+                open: true,
+                buildProps: [
+                  'width', 'height', 'min-width', 'min-height', 'max-width', 'max-height',
+                  'padding', 'margin', 'display', 'position', 'top', 'right', 'bottom', 'left', 'z-index',
+                  'overflow', 'overflow-x', 'overflow-y', 'float', 'clear', 'vertical-align', 'box-sizing'
+                ],
+              },
+              {
+                name: 'Typography',
+                open: true,
+                buildProps: [
+                  'font-family', 'font-size', 'font-weight', 'font-style', 'font-variant',
+                  'text-decoration', 'text-align', 'text-transform', 'text-indent',
+                  'line-height', 'letter-spacing', 'word-spacing', 'white-space',
+                  'color', 'text-shadow', 'text-overflow', 'word-wrap', 'word-break'
+                ],
+              },
+              {
+                name: 'Background',
+                open: true,
+                buildProps: [
+                  'background-color', 'background-image', 'background-repeat',
+                  'background-position', 'background-attachment', 'background-size',
+                  'background-clip', 'background-origin', 'background-blend-mode'
+                ],
+              },
+              {
+                name: 'Border',
+                open: true,
+                buildProps: [
+                  'border', 'border-width', 'border-style', 'border-color', 'border-radius',
+                  'border-top', 'border-right', 'border-bottom', 'border-left',
+                  'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+                  'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
+                  'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+                  'border-top-left-radius', 'border-top-right-radius', 'border-bottom-right-radius', 'border-bottom-left-radius',
+                  'box-shadow', 'outline', 'outline-width', 'outline-style', 'outline-color', 'outline-offset'
+                ],
+              },
+              {
+                name: 'Flexbox',
+                open: false,
+                buildProps: [
+                  'flex-direction', 'flex-wrap', 'justify-content', 'align-items', 'align-content', 'align-self',
+                  'flex', 'flex-grow', 'flex-shrink', 'flex-basis', 'order', 'gap', 'row-gap', 'column-gap'
+                ],
+              },
+              {
+                name: 'Grid',
+                open: false,
+                buildProps: [
+                  'grid-template-columns', 'grid-template-rows', 'grid-template-areas',
+                  'grid-column', 'grid-row', 'grid-column-start', 'grid-column-end',
+                  'grid-row-start', 'grid-row-end', 'grid-area',
+                  'grid-gap', 'grid-row-gap', 'grid-column-gap',
+                  'grid-auto-columns', 'grid-auto-rows', 'grid-auto-flow',
+                  'justify-items', 'align-items', 'place-items',
+                  'justify-content', 'align-content', 'place-content'
+                ],
+              },
+              {
+                name: 'Effects',
+                open: false,
+                buildProps: [
+                  'opacity', 'transition', 'transition-property', 'transition-duration', 'transition-timing-function', 'transition-delay',
+                  'transform', 'transform-origin', 'transform-style', 'perspective', 'perspective-origin',
+                  'filter', 'backdrop-filter', 'mix-blend-mode', 'isolation',
+                  'box-shadow', 'text-shadow', 'clip-path', 'mask', 'mask-image'
+                ],
+              },
+              {
+                name: 'Spacing',
+                open: false,
+                buildProps: [
+                  'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+                  'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+                  'gap', 'row-gap', 'column-gap'
+                ],
+              },
+              {
+                name: 'Sizing',
+                open: false,
+                buildProps: [
+                  'width', 'height', 'min-width', 'min-height', 'max-width', 'max-height',
+                  'box-sizing', 'object-fit', 'object-position', 'aspect-ratio'
+                ],
+              },
+              {
+                name: 'List',
+                open: false,
+                buildProps: [
+                  'list-style', 'list-style-type', 'list-style-position', 'list-style-image'
+                ],
+              },
+              {
+                name: 'Table',
+                open: false,
+                buildProps: [
+                  'border-collapse', 'border-spacing', 'caption-side', 'empty-cells', 'table-layout'
+                ],
+              },
+              {
+                name: 'Cursor',
+                open: false,
+                buildProps: [
+                  'cursor', 'pointer-events', 'user-select', 'touch-action'
+                ],
+              },
+              {
+                name: 'Animation',
+                open: false,
+                buildProps: [
+                  'animation', 'animation-name', 'animation-duration', 'animation-timing-function',
+                  'animation-delay', 'animation-iteration-count', 'animation-direction', 'animation-fill-mode', 'animation-play-state'
+                ],
+              },
+            ],
+          },
+          canvas: { styles: [] },
+          blockManager: { appendTo: '#blocks-panel' },
+          layerManager: { appendTo: '#layers-panel' },
+          traitManager: {
+            appendTo: '#traits-panel',
+          },
+        });
+
+        editorInstance.current = editor;
+
+        // MutationObserver to watch for style panel being hidden
+        let stylePanelObserver: MutationObserver | null = null;
+        const setupStylePanelObserver = () => {
+          const stylePanel = document.getElementById('style-panel');
+          if (!stylePanel) return;
+          
+          // Stop existing observer if any
+          if (stylePanelObserver) {
+            stylePanelObserver.disconnect();
+          }
+          
+          stylePanelObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                const target = mutation.target as HTMLElement;
+                const computedStyle = window.getComputedStyle(target);
+                
+                // If panel is being hidden, immediately show it
+                if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || computedStyle.opacity === '0') {
+                  target.style.display = 'block';
+                  target.style.visibility = 'visible';
+                  target.style.opacity = '1';
+                  
+                  // Also ensure right panel is visible
+                  const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+                  if (rightPanel) {
+                    rightPanel.style.display = 'flex';
+                    rightPanel.style.visibility = 'visible';
+                    rightPanel.style.opacity = '1';
+                  }
+                  
+                  // Re-render Style Manager if needed
+                  if (editor.StyleManager && typeof editor.StyleManager.render === 'function') {
+                    setTimeout(() => {
+                      editor.StyleManager.render();
+                    }, 50);
+                  }
+                }
+              }
+              
+              // Watch for removal of sectors
+              if (mutation.type === 'childList') {
+                const sectors = (mutation.target as HTMLElement).querySelectorAll('.gjs-sm-sector');
+                if (sectors.length === 0 && editor.StyleManager) {
+                  // Sectors were removed, re-render
+                  setTimeout(() => {
+                    const selected = editor.getSelected() || editor.getWrapper();
+                    if (selected && (editor.StyleManager as any).setTarget) {
+                      (editor.StyleManager as any).setTarget(selected);
+                    }
+                    if (typeof editor.StyleManager.render === 'function') {
+                      editor.StyleManager.render();
+                    }
+                  }, 100);
+                }
+              }
+            });
+          });
+          
+          // Observe style panel for attribute and child changes
+          stylePanelObserver.observe(stylePanel, {
+            attributes: true,
+            attributeFilter: ['style', 'class'],
+            childList: true,
+            subtree: true
+          });
+        };
+        
+        // Setup observer after a delay to ensure panel exists
+        setTimeout(() => {
+          if (!destroyed) {
+            setupStylePanelObserver();
+          }
+        }, 500);
+
+        // Immediately ensure right panel is visible
+        setTimeout(() => {
+          if (!destroyed) {
+            const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+            if (rightPanel) {
+              rightPanel.style.display = 'flex';
+              rightPanel.style.visibility = 'visible';
+              rightPanel.style.opacity = '1';
+              rightPanel.style.width = '300px';
+              rightPanel.style.flexShrink = '0';
+            }
+            
+            // Setup observer
+            setupStylePanelObserver();
+          }
+        }, 100);
+
+        // Immediately render Style Manager once editor is ready
+        setTimeout(() => {
+          if (!destroyed && editor.StyleManager) {
+            try {
+              // Ensure right panel is visible
+              const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+              if (rightPanel) {
+                rightPanel.style.display = 'flex';
+                rightPanel.style.visibility = 'visible';
+                rightPanel.style.opacity = '1';
+                rightPanel.style.width = '300px';
+                rightPanel.style.flexShrink = '0';
+              }
+              
+              // First, ensure we have a component selected
+              const wrapper = editor.getWrapper();
+              if (wrapper) {
+                // Select wrapper or first child
+                const components = wrapper.components();
+                if (components && components.length > 0) {
+                  const firstComp = components.at(0);
+                  if (firstComp) {
+                    editor.select(firstComp);
+                    firstComp.set({ stylable: true });
+                  }
+                } else {
+                  editor.select(wrapper);
+                  wrapper.set({ stylable: true });
+                }
+                
+                // Open style manager
+                editor.runCommand('open-sm');
+              }
+              
+              const stylePanel = document.getElementById('style-panel');
+              if (stylePanel && typeof editor.StyleManager.render === 'function') {
+                // Force style panel visibility
+                stylePanel.style.display = 'block';
+                stylePanel.style.visibility = 'visible';
+                stylePanel.style.opacity = '1';
+                stylePanel.style.width = '100%';
+                stylePanel.style.height = '100%';
+                stylePanel.style.minHeight = '300px';
+                stylePanel.style.background = '#1e1e1e';
+                
+                // Clear and render
+                stylePanel.innerHTML = '';
+                editor.StyleManager.render();
+                
+                // Set target explicitly
+                const selected = editor.getSelected();
+                if (selected && (editor.StyleManager as any).setTarget) {
+                  (editor.StyleManager as any).setTarget(selected);
+                }
+                
+                // After render, immediately expand all sectors and ensure properties are visible
+                setTimeout(() => {
+                  const sectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                  
+                  // Force all sectors to be expanded and visible
+                  sectors.forEach((sector: any) => {
+                    if (sector) {
+                      // Remove closed class and add open class
+                      sector.classList.remove('gjs-sm-sector--closed');
+                      sector.classList.add('gjs-sm-sector--open');
+                      
+                      // Force visibility
+                      sector.style.setProperty('display', 'block', 'important');
+                      sector.style.setProperty('visibility', 'visible', 'important');
+                      sector.style.setProperty('opacity', '1', 'important');
+                      
+                      // Expand sector content
+                      const sectorContent = sector.querySelector('.gjs-sm-sector-content');
+                      if (sectorContent) {
+                        (sectorContent as HTMLElement).style.setProperty('display', 'block', 'important');
+                        (sectorContent as HTMLElement).style.setProperty('visibility', 'visible', 'important');
+                        (sectorContent as HTMLElement).style.setProperty('opacity', '1', 'important');
+                        (sectorContent as HTMLElement).style.setProperty('max-height', 'none', 'important');
+                      }
+                      
+                      // Ensure properties are visible
+                      const properties = sector.querySelectorAll('.gjs-sm-property');
+                      properties.forEach((prop: any) => {
+                        if (prop) {
+                          prop.style.setProperty('display', 'block', 'important');
+                          prop.style.setProperty('visibility', 'visible', 'important');
+                          prop.style.setProperty('opacity', '1', 'important');
+                          
+                          // Ensure inputs are visible
+                          const inputs = prop.querySelectorAll('input, select, textarea, button');
+                          inputs.forEach((input: any) => {
+                            if (input) {
+                              input.style.setProperty('display', 'block', 'important');
+                              input.style.setProperty('visibility', 'visible', 'important');
+                              input.style.setProperty('opacity', '1', 'important');
+                            }
+                          });
+                        }
+                      });
+                    }
+                  });
+                }, 100);
+                
+                // Check if sectors were rendered after a delay
+                setTimeout(() => {
+                  const sectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                  
+                  // If no sectors, try again with explicit target setting
+                  if (sectors.length === 0) {
+                    const selected = editor.getSelected() || editor.getWrapper();
+                    if (selected && editor.StyleManager) {
+                      // Ensure component is selected and stylable
+                      if (selected !== editor.getSelected()) {
+                        editor.select(selected);
+                      }
+                      selected.set({ stylable: true });
+                      
+                      // Clear and re-render
+                      stylePanel.innerHTML = '';
+                      
+                      // Set target first
+                      if ((editor.StyleManager as any).setTarget) {
+                        (editor.StyleManager as any).setTarget(selected);
+                      }
+                      
+                      // Then render
+                      if (typeof editor.StyleManager.render === 'function') {
+                        editor.StyleManager.render();
+                      }
+                      
+                      // Also try to show the style manager
+                      if ((editor.StyleManager as any).show) {
+                        (editor.StyleManager as any).show();
+                      }
+                      
+                      // Check again after render
+                      setTimeout(() => {
+                        const newSectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                        if (newSectors.length === 0) {
+                          // Last attempt - force render with wrapper and rebuild sectors
+                          const wrapper = editor.getWrapper();
+                          if (wrapper) {
+                            editor.select(wrapper);
+                            wrapper.set({ stylable: true });
+                            stylePanel.innerHTML = '';
+                            
+                            // Force rebuild sectors
+                            if (editor.StyleManager.getSectors) {
+                              const sectors = editor.StyleManager.getSectors();
+                              if (sectors && sectors.length > 0) {
+                                // Sectors are configured, force render
+                                if ((editor.StyleManager as any).setTarget) {
+                                  (editor.StyleManager as any).setTarget(wrapper);
+                                }
+                                if (typeof editor.StyleManager.render === 'function') {
+                                  editor.StyleManager.render();
+                                }
+                                if ((editor.StyleManager as any).show) {
+                                  (editor.StyleManager as any).show();
+                                }
+                              }
+                            }
+                          }
+                        } else {
+                          // Sectors found - ensure they're visible
+                          safeRenderStyleManager(true);
+                        }
+                      }, 200);
+                    }
+                  } else {
+                    // Sectors found - ensure they're visible
+                    safeRenderStyleManager();
+                  }
+                }, 200);
+              }
+            } catch (e) {
+              console.warn('Initial Style Manager render error:', e);
+            }
+          }
+        }, 100);
+
+        // Add custom blocks with proper editable attributes
+        const bm = editor.BlockManager;
+        
+        // ========== LAYOUT ELEMENTS ==========
+        bm.add('section', {
+          label: 'Section',
+          category: 'Layout',
+          content: '<section style="padding: 60px 20px; min-height: 300px; background: #f9fafb; position: relative;" data-gjs-droppable="*" data-gjs-selectable="true"><div style="max-width: 1200px; margin: 0 auto;">Section Content</div></section>',
+        } as any);
+
+        bm.add('container', {
+          label: 'Container',
+          category: 'Layout',
+          content: '<div style="max-width: 1200px; margin: 0 auto; padding: 20px;" data-gjs-droppable="*" data-gjs-selectable="true">Container</div>',
+        } as any);
+
+        bm.add('columns-2', {
+          label: '2 Columns',
+          category: 'Layout',
+          content: '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 20px;" data-gjs-droppable="*" data-gjs-selectable="true"><div data-gjs-droppable="*" style="min-height: 150px; padding: 20px; background: #fff; border: 1px dashed #e5e7eb;">Column 1</div><div data-gjs-droppable="*" style="min-height: 150px; padding: 20px; background: #fff; border: 1px dashed #e5e7eb;">Column 2</div></div>',
+        } as any);
+
+        bm.add('columns-3', {
+          label: '3 Columns',
+          category: 'Layout',
+          content: '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; padding: 20px;" data-gjs-droppable="*" data-gjs-selectable="true"><div data-gjs-droppable="*" style="min-height: 150px; padding: 20px; background: #fff; border: 1px dashed #e5e7eb;">Col 1</div><div data-gjs-droppable="*" style="min-height: 150px; padding: 20px; background: #fff; border: 1px dashed #e5e7eb;">Col 2</div><div data-gjs-droppable="*" style="min-height: 150px; padding: 20px; background: #fff; border: 1px dashed #e5e7eb;">Col 3</div></div>',
+        } as any);
+
+        bm.add('columns-4', {
+          label: '4 Columns',
+          category: 'Layout',
+          content: '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px;" data-gjs-droppable="*" data-gjs-selectable="true"><div data-gjs-droppable="*" style="min-height: 150px; padding: 15px; background: #fff; border: 1px dashed #e5e7eb;">Col 1</div><div data-gjs-droppable="*" style="min-height: 150px; padding: 15px; background: #fff; border: 1px dashed #e5e7eb;">Col 2</div><div data-gjs-droppable="*" style="min-height: 150px; padding: 15px; background: #fff; border: 1px dashed #e5e7eb;">Col 3</div><div data-gjs-droppable="*" style="min-height: 150px; padding: 15px; background: #fff; border: 1px dashed #e5e7eb;">Col 4</div></div>',
+        } as any);
+
+        bm.add('row', {
+          label: 'Row',
+          category: 'Layout',
+          content: '<div style="display: flex; gap: 20px; padding: 20px; flex-wrap: wrap;" data-gjs-droppable="*" data-gjs-selectable="true"><div data-gjs-droppable="*" style="flex: 1; min-width: 200px; min-height: 150px; padding: 20px; background: #fff; border: 1px dashed #e5e7eb;">Row Item</div></div>',
+        } as any);
+
+        bm.add('divider', {
+          label: 'Divider',
+          category: 'Layout',
+          content: '<div style="padding: 40px 20px; text-align: center;" data-gjs-selectable="true"><hr style="border: none; border-top: 2px solid #e5e7eb; margin: 0;" /></div>',
+        } as any);
+
+        bm.add('spacer', {
+          label: 'Spacer',
+          category: 'Layout',
+          content: '<div style="height: 50px; width: 100%;" data-gjs-selectable="true"></div>',
+        } as any);
+
+        // ========== TEXT ELEMENTS ==========
+        bm.add('heading-1', {
+          label: 'Heading 1',
+          category: 'Basic',
+          content: '<h1 style="font-size: 48px; font-weight: 700; margin: 20px 0; line-height: 1.2; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true" data-gjs-selectable="true">Heading</h1>',
+        } as any);
+
+        bm.add('heading-2', {
+          label: 'Heading 2',
+          category: 'Basic',
+          content: '<h2 style="font-size: 36px; font-weight: 600; margin: 20px 0; line-height: 1.3; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true" data-gjs-selectable="true">Sub Heading</h2>',
+        } as any);
+
+        bm.add('heading-3', {
+          label: 'Heading 3',
+          category: 'Basic',
+          content: '<h3 style="font-size: 28px; font-weight: 600; margin: 20px 0; line-height: 1.4; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true" data-gjs-selectable="true">Heading 3</h3>',
+        } as any);
+
+        bm.add('heading-4', {
+          label: 'Heading 4',
+          category: 'Basic',
+          content: '<h4 style="font-size: 24px; font-weight: 600; margin: 20px 0; line-height: 1.4; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true" data-gjs-selectable="true">Heading 4</h4>',
+        } as any);
+
+        bm.add('paragraph', {
+          label: 'Text Editor',
+          category: 'Basic',
+          content: '<p style="font-size: 16px; line-height: 1.8; margin: 20px 0; color: #495157;" data-gjs-type="text" data-gjs-editable="true" data-gjs-selectable="true">Add your text here. You can edit this text and change how it looks.</p>',
+        } as any);
+
+        bm.add('text-block', {
+          label: 'Text Block',
+          category: 'Basic',
+          content: '<div style="padding: 30px; background: #fff;" data-gjs-selectable="true" data-gjs-droppable="*"><p style="font-size: 16px; line-height: 1.8; color: #495157; margin: 0;" data-gjs-type="text" data-gjs-editable="true">Text content</p></div>',
+        } as any);
+
+        bm.add('quote', {
+          label: 'Quote',
+          category: 'Basic',
+          content: '<blockquote style="padding: 30px; margin: 30px 0; border-left: 4px solid #5e72e4; background: #f9fafb; font-style: italic; font-size: 18px; line-height: 1.6; color: #495157;" data-gjs-type="text" data-gjs-editable="true" data-gjs-selectable="true">Your quote text here</blockquote>',
+        } as any);
+
+        bm.add('list', {
+          label: 'List',
+          category: 'Basic',
+          content: '<ul style="padding: 20px 20px 20px 40px; margin: 20px 0; list-style: disc; color: #495157; font-size: 16px; line-height: 1.8;" data-gjs-selectable="true" data-gjs-droppable="*"><li style="margin: 10px 0;" data-gjs-type="text" data-gjs-editable="true">List item 1</li><li style="margin: 10px 0;" data-gjs-type="text" data-gjs-editable="true">List item 2</li><li style="margin: 10px 0;" data-gjs-type="text" data-gjs-editable="true">List item 3</li></ul>',
+        } as any);
+
+        bm.add('link-block', {
+          label: 'Link Block',
+          category: 'Basic',
+          content: '<div style="padding: 20px; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;" data-gjs-selectable="true" data-gjs-droppable="*"><a href="#" style="color: #5e72e4; text-decoration: none; font-size: 16px; font-weight: 500;" data-gjs-type="text" data-gjs-editable="true">Link Text</a></div>',
+        } as any);
+
+        // ========== BUTTON ELEMENTS ==========
+        bm.add('button', {
+          label: 'Button',
+          category: 'Buttons',
+          content: '<div style="padding: 20px; text-align: center;" data-gjs-selectable="true"><button style="padding: 14px 32px; background: #5e72e4; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s;" data-gjs-type="text" data-gjs-editable="true">Click Here</button></div>',
+        } as any);
+
+        bm.add('button-outline', {
+          label: 'Button Outline',
+          category: 'Buttons',
+          content: '<div style="padding: 20px; text-align: center;" data-gjs-selectable="true"><button style="padding: 14px 32px; background: transparent; color: #5e72e4; border: 2px solid #5e72e4; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s;" data-gjs-type="text" data-gjs-editable="true">Click Here</button></div>',
+        } as any);
+
+        bm.add('button-text', {
+          label: 'Button Text',
+          category: 'Buttons',
+          content: '<div style="padding: 20px; text-align: center;" data-gjs-selectable="true"><button style="padding: 14px 32px; background: transparent; color: #5e72e4; border: none; cursor: pointer; font-size: 16px; font-weight: 600; text-decoration: underline;" data-gjs-type="text" data-gjs-editable="true">Click Here</button></div>',
+        } as any);
+
+        bm.add('link', {
+          label: 'Link',
+          category: 'Buttons',
+          content: '<div style="padding: 20px;" data-gjs-selectable="true"><a href="#" style="color: #5e72e4; text-decoration: none; font-size: 16px; font-weight: 500; border-bottom: 1px solid #5e72e4;" data-gjs-type="text" data-gjs-editable="true">Link Text</a></div>',
+        } as any);
+        
+        // Page Link component - links to other pages in the theme
+        bm.add('page-link', {
+          label: 'Page Link',
+          category: 'Buttons',
+          content: '<div style="padding: 20px;" data-gjs-selectable="true"><a href="#page-page-1" data-page-link="page-1" style="color: #5e72e4; text-decoration: none; font-size: 16px; font-weight: 500; border-bottom: 1px solid #5e72e4;" data-gjs-type="text" data-gjs-editable="true">Link to Page</a></div>',
+        } as any);
+
+        // ========== MEDIA ELEMENTS ==========
+        bm.add('image', {
+          label: 'Image',
+          category: 'Media',
+          content: '<div style="padding: 20px; text-align: center;" data-gjs-selectable="true"><img src="https://via.placeholder.com/800x600/5e72e4/ffffff?text=Image" alt="Image" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" /></div>',
+        } as any);
+
+        bm.add('image-gallery', {
+          label: 'Image Gallery',
+          category: 'Media',
+          content: '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px;" data-gjs-selectable="true" data-gjs-droppable="*"><div data-gjs-selectable="true"><img src="https://via.placeholder.com/300x300/5e72e4/ffffff?text=1" alt="Gallery Image" style="width: 100%; height: auto; border-radius: 8px;" /></div><div data-gjs-selectable="true"><img src="https://via.placeholder.com/300x300/5e72e4/ffffff?text=2" alt="Gallery Image" style="width: 100%; height: auto; border-radius: 8px;" /></div><div data-gjs-selectable="true"><img src="https://via.placeholder.com/300x300/5e72e4/ffffff?text=3" alt="Gallery Image" style="width: 100%; height: auto; border-radius: 8px;" /></div></div>',
+        } as any);
+
+        bm.add('video', {
+          label: 'Video',
+          category: 'Media',
+          content: '<div style="padding: 20px; text-align: center; background: #000; border-radius: 8px;" data-gjs-selectable="true"><div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;"><iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>',
+        } as any);
+
+        bm.add('icon', {
+          label: 'Icon',
+          category: 'Media',
+          content: '<div style="padding: 30px; text-align: center;" data-gjs-selectable="true"><div style="width: 64px; height: 64px; margin: 0 auto; background: #5e72e4; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: bold;">★</div></div>',
+        } as any);
+
+        bm.add('google-maps', {
+          label: 'Google Maps',
+          category: 'Media',
+          content: '<div style="padding: 20px; text-align: center;" data-gjs-selectable="true"><div style="width: 100%; height: 400px; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 14px;">Google Maps Embed</div></div>',
+        } as any);
+
+        // Form blocks - enhanced with multiple fields
+        bm.add('form', {
+          label: 'Contact Form',
+          category: 'Forms',
+          content: '<form style="padding: 20px; max-width: 500px; background: #fff; border-radius: 8px;" data-gjs-selectable="true" data-gjs-droppable="*"><input type="text" placeholder="Name" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" /><input type="email" placeholder="Email" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" /><input type="tel" placeholder="Phone" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" /><textarea placeholder="Message" rows="4" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; resize: vertical;" data-gjs-selectable="true"></textarea><button type="submit" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; width: 100%; margin-top: 10px;" data-gjs-selectable="true">Submit</button></form>',
+        } as any);
+
+        // Simple form with fewer fields
+        bm.add('form-simple', {
+          label: 'Simple Form',
+          category: 'Forms',
+          content: '<form style="padding: 20px; max-width: 500px; background: #fff; border-radius: 8px;" data-gjs-selectable="true" data-gjs-droppable="*"><input type="text" placeholder="Name" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" /><input type="email" placeholder="Email" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" /><button type="submit" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; width: 100%; margin-top: 10px;" data-gjs-selectable="true">Submit</button></form>',
+        } as any);
+
+        // Individual form field blocks - drag these into forms to add more fields
+        bm.add('input-text', {
+          label: 'Text Input',
+          category: 'Forms',
+          content: '<input type="text" placeholder="Enter text" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" data-gjs-draggable="*" />',
+        } as any);
+
+        bm.add('input-email', {
+          label: 'Email Input',
+          category: 'Forms',
+          content: '<input type="email" placeholder="Enter email" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" data-gjs-draggable="*" />',
+        } as any);
+
+        bm.add('input-phone', {
+          label: 'Phone Input',
+          category: 'Forms',
+          content: '<input type="tel" placeholder="Enter phone" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" data-gjs-draggable="*" />',
+        } as any);
+
+        bm.add('textarea-field', {
+          label: 'Textarea',
+          category: 'Forms',
+          content: '<textarea placeholder="Enter message" rows="4" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; resize: vertical;" data-gjs-selectable="true" data-gjs-draggable="*"></textarea>',
+        } as any);
+
+        bm.add('form-button', {
+          label: 'Submit Button',
+          category: 'Forms',
+          content: '<button type="submit" style="padding: 12px 24px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;" data-gjs-selectable="true" data-gjs-draggable="*">Submit</button>',
+        } as any);
+
+        bm.add('input-number', {
+          label: 'Number Input',
+          category: 'Forms',
+          content: '<input type="number" placeholder="Enter number" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" data-gjs-draggable="*" />',
+        } as any);
+
+        bm.add('input-password', {
+          label: 'Password Input',
+          category: 'Forms',
+          content: '<input type="password" placeholder="Enter password" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" data-gjs-draggable="*" />',
+        } as any);
+
+        bm.add('input-date', {
+          label: 'Date Input',
+          category: 'Forms',
+          content: '<input type="date" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" data-gjs-draggable="*" />',
+        } as any);
+
+        bm.add('select-dropdown', {
+          label: 'Select Dropdown',
+          category: 'Forms',
+          content: '<select style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px;" data-gjs-selectable="true" data-gjs-draggable="*"><option>Option 1</option><option>Option 2</option></select>',
+        } as any);
+
+        bm.add('checkbox', {
+          label: 'Checkbox',
+          category: 'Forms',
+          content: '<label style="display: flex; align-items: center; gap: 8px; margin: 10px 0;"><input type="checkbox" style="width: 18px; height: 18px;" data-gjs-selectable="true" data-gjs-draggable="*" /><span>Checkbox label</span></label>',
+        } as any);
+
+        bm.add('radio', {
+          label: 'Radio Button',
+          category: 'Forms',
+          content: '<label style="display: flex; align-items: center; gap: 8px; margin: 10px 0;"><input type="radio" name="radio-group" style="width: 18px; height: 18px;" data-gjs-selectable="true" data-gjs-draggable="*" /><span>Radio option</span></label>',
+        } as any);
+
+        // ========== ADVANCED ELEMENTS ==========
+        bm.add('tabs', {
+          label: 'Tabs',
+          category: 'Advanced',
+          content: '<div style="padding: 20px;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="display: flex; border-bottom: 2px solid #e5e7eb; margin-bottom: 20px;"><button style="padding: 12px 24px; background: transparent; border: none; border-bottom: 2px solid #5e72e4; color: #5e72e4; font-weight: 600; cursor: pointer;" data-gjs-type="text" data-gjs-editable="true">Tab 1</button><button style="padding: 12px 24px; background: transparent; border: none; color: #6b7280; cursor: pointer;" data-gjs-type="text" data-gjs-editable="true">Tab 2</button><button style="padding: 12px 24px; background: transparent; border: none; color: #6b7280; cursor: pointer;" data-gjs-type="text" data-gjs-editable="true">Tab 3</button></div><div style="padding: 20px; min-height: 200px; background: #f9fafb; border-radius: 8px;" data-gjs-droppable="*">Tab content goes here</div></div>',
+        } as any);
+
+        bm.add('accordion', {
+          label: 'Accordion',
+          category: 'Advanced',
+          content: '<div style="padding: 20px;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 10px; overflow: hidden;"><div style="padding: 16px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; align-items: center;"><span data-gjs-type="text" data-gjs-editable="true">Accordion Item 1</span><span>▼</span></div><div style="padding: 16px; background: #fff;" data-gjs-droppable="*">Content for accordion item 1</div></div><div style="border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 10px; overflow: hidden;"><div style="padding: 16px; background: #f9fafb; cursor: pointer; font-weight: 600; display: flex; justify-content: space-between; align-items: center;"><span data-gjs-type="text" data-gjs-editable="true">Accordion Item 2</span><span>▶</span></div></div></div>',
+        } as any);
+
+        bm.add('card', {
+          label: 'Card',
+          category: 'Advanced',
+          content: '<div style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" data-gjs-selectable="true" data-gjs-droppable="*"><div style="padding: 20px; border-bottom: 1px solid #e5e7eb;"><h3 style="margin: 0; font-size: 20px; font-weight: 600; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true">Card Title</h3></div><div style="padding: 20px;"><p style="margin: 0; color: #495157; line-height: 1.6;" data-gjs-type="text" data-gjs-editable="true">Card content goes here. You can add any content inside this card.</p></div></div>',
+        } as any);
+
+        bm.add('testimonial', {
+          label: 'Testimonial',
+          category: 'Advanced',
+          content: '<div style="padding: 40px; background: #f9fafb; border-radius: 12px; text-align: center; max-width: 600px; margin: 0 auto;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="font-size: 24px; color: #5e72e4; margin-bottom: 20px;">"</div><p style="font-size: 18px; font-style: italic; color: #495157; line-height: 1.8; margin-bottom: 20px;" data-gjs-type="text" data-gjs-editable="true">This is a testimonial. You can edit this text to add your own testimonial content.</p><div style="margin-top: 20px;"><div style="width: 60px; height: 60px; border-radius: 50%; background: #5e72e4; margin: 0 auto 10px;"></div><div style="font-weight: 600; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true">Customer Name</div><div style="font-size: 14px; color: #6b7280;" data-gjs-type="text" data-gjs-editable="true">Company Name</div></div></div>',
+        } as any);
+
+        bm.add('pricing-table', {
+          label: 'Pricing Table',
+          category: 'Advanced',
+          content: '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; padding: 40px 20px;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 30px; text-align: center; background: #fff;" data-gjs-droppable="*" data-gjs-selectable="true"><h3 style="font-size: 24px; margin-bottom: 10px; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true">Basic</h3><div style="font-size: 48px; font-weight: 700; color: #5e72e4; margin: 20px 0;"><span data-gjs-type="text" data-gjs-editable="true">$29</span></div><ul style="list-style: none; padding: 0; margin: 20px 0; text-align: left;"><li style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;" data-gjs-type="text" data-gjs-editable="true">Feature 1</li><li style="padding: 10px 0; border-bottom: 1px solid #e5e7eb;" data-gjs-type="text" data-gjs-editable="true">Feature 2</li><li style="padding: 10px 0;" data-gjs-type="text" data-gjs-editable="true">Feature 3</li></ul><button style="width: 100%; padding: 14px; background: #5e72e4; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 20px;" data-gjs-type="text" data-gjs-editable="true">Get Started</button></div></div>',
+        } as any);
+
+        const blockIcons: Record<string, string> = {
+          section: '▤',
+          container: '▢',
+          'columns-2': '⅍',
+          'columns-3': '☰',
+          'columns-4': '▦',
+          row: '☷',
+          divider: '─',
+          spacer: '↕',
+          'heading-1': 'H1',
+          'heading-2': 'H2',
+          'heading-3': 'H3',
+          'heading-4': 'H4',
+          paragraph: '¶',
+          'text-block': 'Tx',
+          quote: '❝',
+          list: '≡',
+          'link-block': '🔗',
+          button: '⏺',
+          'button-outline': '⭘',
+          'button-text': 'Aa',
+          link: '🔗',
+          'page-link': '⇢',
+          image: '🖼',
+          'image-gallery': '▧',
+          video: '▶',
+          icon: '★',
+          form: '✉',
+          'form-simple': '✎',
+          'input-text': 'T',
+          'input-email': '@',
+          'input-phone': '☎',
+          'textarea-field': '▤',
+          'form-button': '✔',
+          'input-number': '#',
+          'input-password': '🔒',
+          'input-date': '📅',
+          'select-dropdown': '∨',
+          checkbox: '☑',
+          radio: '◉',
+          tabs: '⋯',
+          accordion: '⇵',
+          card: '▣',
+          testimonial: '☺',
+          'pricing-table': '$',
+          'google-maps': '📍',
+        };
+
+        Object.entries(blockIcons).forEach(([id, icon]) => {
+          const block = bm.get(id);
+          if (block) {
+            block.set({
+              media: `<span class="elementor-widget-icon">${icon}</span>`,
+            });
+          }
+        });
+
+        // Ensure wrapper is droppable and all components are editable
+        editor.on('load', () => {
+          try {
+            const wrapper = editor.getWrapper();
+            if (wrapper) {
+              wrapper.set({ 
+                droppable: true, 
+                selectable: true,
+                editable: false,
+                draggable: false,
+                hoverable: false
+              });
+              wrapper.setStyle({ minHeight: '600px', padding: '40px', background: '#fff' });
+              
+              // Ensure canvas body is visible
+              const body = editor.Canvas.getBody();
+              if (body) {
+                (body.style as any).margin = '0';
+                (body.style as any).padding = '0';
+                (body.style as any).background = '#fff';
+              }
+              
+              // Load saved content or set initial content
+              // Use id from closure to avoid dependency issues
+              const themeId = id;
+              (async () => {
+                try {
+                  let existing = null;
+                  if (themeId && !shouldLoadInstalledTheme) {
+                    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(themeId);
+                    if (isValidObjectId) {
+                      try {
+                        const { axiosi } = await import('../../config/axios.config');
+                        const response = await axiosi.get(`/custom-themes/${themeId}`);
+                        if (response.data.success && response.data.data) {
+                          const themeData = response.data.data;
+                          const storedHtml: string = themeData.html || '';
+                          const storedCss: string = themeData.css || '';
+                          const parsedPages = parsePagesFromStoredHtml(storedHtml);
+                          if (parsedPages && parsedPages.length > 0) {
+                            setPages(parsedPages);
+                            setCurrentPageId(parsedPages[0].id);
+                            existing = {
+                              ...themeData,
+                              html: parsedPages[0].html || DEFAULT_PAGE_CONTENT,
+                              css: storedCss,
+                            };
+                          } else {
+                            const singlePage: Page = {
+                              id: 'page-1',
+                              name: 'Home',
+                              html: storedHtml || DEFAULT_PAGE_CONTENT,
+                              css: storedCss || '',
+                            };
+                            setPages([singlePage]);
+                            setCurrentPageId('page-1');
+                            existing = {
+                              ...themeData,
+                              html: singlePage.html,
+                              css: storedCss,
+                            };
+                          }
+                        }
+                      } catch (error: any) {
+                        if (error?.response?.status !== 404 && error?.response?.status !== 400) {
+                          console.error('Error loading custom theme:', error);
+                        }
+                      }
+                    }
+                  }
+
+                  if (!existing && shouldLoadInstalledTheme) {
+                    const installedTheme = await fetchInstalledThemeFromFiles();
+                    if (installedTheme?.pages?.length) {
+                      setPages(installedTheme.pages);
+                      pagesRef.current = installedTheme.pages;
+                      setCurrentPageId(installedTheme.pages[0].id);
+                      persistedInitialLoadRef.current = true;
+                      existing = {
+                        html: installedTheme.pages[0].html,
+                        css: installedTheme.pages[0].css,
+                        name: installedTheme.name,
+                      };
+                    } else if (installedTheme) {
+                      const fallbackId = slugify(installedTheme.name || '', 'page-1');
+                      const singlePage: Page = {
+                        id: fallbackId,
+                        name: installedTheme.name || 'Home',
+                        html: installedTheme.html || DEFAULT_PAGE_CONTENT,
+                        css: installedTheme.css || '',
+                      };
+                      setPages([singlePage]);
+                      pagesRef.current = [singlePage];
+                      setCurrentPageId(singlePage.id);
+                      persistedInitialLoadRef.current = true;
+                      existing = installedTheme;
+                    }
+                  }
+                  
+                  if (destroyed) return;
+                  
+                  if (existing?.html) {
+                    applyPageToEditor(existing.html, existing.css || '');
+                  } else {
+                    applyPageToEditor(DEFAULT_PAGE_CONTENT, existing?.css || '');
+                  }
+                  
+                  
+                  if (existing?.name) setName(existing.name);
+                } catch (err) {
+                  if (destroyed) return;
+                  applyPageToEditor(DEFAULT_PAGE_CONTENT);
+                }
+              })();
+            }
+          } catch {}
+        });
+
+        // Track when components are added to detect successful drops
+        let lastComponentCount = 0;
+
+        // Handle block drag and drop - ensure components are added
+        editor.on('block:drag:stop', (block: any) => {
+          try {
+            if (!block) return;
+            
+            // Wait a moment to see if component was added
+            setTimeout(() => {
+              try {
+                const wrapper = editor.getWrapper();
+                if (!wrapper) return;
+                
+                const components = wrapper.components();
+                const currentCount = components ? components.length : 0;
+                
+                // Always manually add to ensure it appears - GrapesJS sometimes misses drops
+                if (block.get) {
+                  const content = block.get('content');
+                  if (content) {
+                    // Add directly to wrapper
+                    const added = wrapper.append(content);
+                    if (added) {
+                      const comp = Array.isArray(added) ? added[0] : added;
+                      if (comp) {
+                        // Ensure it's visible and selectable
+                        comp.set({ 
+                          selectable: true, 
+                          hoverable: true,
+                          draggable: true 
+                        });
+                        
+                        // Force visibility
+                        const el = comp.getEl?.();
+                        if (el) {
+                          (el.style as any).display = '';
+                          (el.style as any).visibility = 'visible';
+                          (el.style as any).opacity = '1';
+                        }
+                        
+                        // Select and show
+                        setTimeout(() => {
+                          editor.select(comp);
+                          editor.runCommand('open-sm');
+                          
+                          // Force layer manager update
+                          if (editor.LayerManager) {
+                            editor.LayerManager.render();
+                          }
+                        }, 50);
+                        
+                        // Update count
+                        const newComps = wrapper.components();
+                        lastComponentCount = newComps ? newComps.length : 0;
+                      }
+                    }
+                  }
+                }
+              } catch (err) {
+                console.error('Error in block:drag:stop:', err);
+              }
+            }, 100);
+          } catch (err) {
+            console.error('Error in block:drag:stop handler:', err);
+          }
+        });
+
+        // Make all components selectable and editable when added
+        editor.on('component:add', (component: any) => {
+          try {
+            if (!component) return;
+            
+            // Track component count
+            const wrapper = editor.getWrapper();
+            if (wrapper) {
+              const comps = wrapper.components();
+              lastComponentCount = comps ? comps.length : 0;
+            }
+            
+            // Check component attributes
+            const attrs = component.getAttributes?.() || {};
+            const tagName = component.get('tagName')?.toLowerCase();
+            const isDroppable = attrs['data-gjs-droppable'] === '*' || tagName === 'form';
+            
+            // Ensure component is visible, selectable, and stylable
+            component.set({ 
+              selectable: true, 
+              hoverable: true,
+              draggable: true,
+              stylable: true, // CRITICAL: Make components stylable so styles apply
+              droppable: isDroppable // Forms should be droppable to add more fields
+            });
+            
+            // Check if component has editable attributes
+            if (attrs['data-gjs-editable'] === 'true' || attrs['data-gjs-type'] === 'text') {
+              component.set({ editable: true, type: 'text' });
+            }
+            
+            // Ensure component is visible in the DOM
+            const el = component.getEl?.();
+            if (el) {
+              (el.style as any).display = '';
+              (el.style as any).visibility = 'visible';
+              (el.style as any).opacity = '1';
+            }
+            
+            // Stop preview mode and select the component
+            editor.stopCommand('preview');
+            
+            // Small delay to ensure component is rendered
+            setTimeout(() => {
+              try {
+                editor.select(component);
+                
+                // Scroll to component if possible
+                if (el) {
+                  try {
+                    editor.Canvas.scrollTo(el);
+                  } catch {}
+                }
+                
+                // Open style panel and ensure it targets this component
+                editor.runCommand('open-sm');
+                
+                // Force style manager to refresh for the selected component
+                setTimeout(() => {
+                  safeRenderStyleManager();
+                }, 150);
+                
+                // Force layer manager update to show in Structure panel
+                setTimeout(() => {
+                  try {
+                    if (editor.LayerManager) {
+                      editor.LayerManager.render();
+                      // Force update again after a moment
+                      setTimeout(() => {
+                        if (editor.LayerManager) {
+                          editor.LayerManager.render();
+                        }
+                      }, 200);
+                    }
+                  } catch {}
+                }, 50);
+              } catch {}
+            }, 100);
+          } catch (err) {
+            console.error('Error in component:add:', err);
+          }
+        });
+
+        // Prevent Style Manager from being closed
+        const originalCloseSm = editor.Commands.get('close-sm');
+        if (originalCloseSm) {
+          editor.Commands.add('close-sm', {
+            ...originalCloseSm,
+            run: function(editor: any) {
+              // Don't actually close, just ensure it stays open
+              const stylePanel = document.getElementById('style-panel');
+              if (stylePanel) {
+                stylePanel.style.display = 'block';
+                stylePanel.style.visibility = 'visible';
+                stylePanel.style.opacity = '1';
+              }
+              
+              const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+              if (rightPanel) {
+                rightPanel.style.display = 'flex';
+                rightPanel.style.visibility = 'visible';
+                rightPanel.style.opacity = '1';
+              }
+              
+              // Re-open if needed
+              editor.runCommand('open-sm');
+            }
+          });
+        }
+
+        // Auto-open style panel when component is selected
+        // Navigation traits for buttons and links are added dynamically when components are selected
+        // See component:selected event handler below
+
+        editor.on('component:selected', (component: any) => {
+          try {
+            // First, ensure right panel is visible
+            const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+            if (rightPanel) {
+              rightPanel.style.display = 'flex';
+              rightPanel.style.visibility = 'visible';
+              rightPanel.style.opacity = '1';
+              rightPanel.style.width = '300px';
+              rightPanel.style.flexShrink = '0';
+            }
+            
+            // Ensure traits panel is visible and rendered
+            const traitsPanel = document.getElementById('traits-panel');
+            if (traitsPanel && editor.TraitManager) {
+              traitsPanel.style.display = 'block';
+              traitsPanel.style.visibility = 'visible';
+              traitsPanel.style.opacity = '1';
+              
+              // For buttons and links, add navigation traits if not already present
+              const tagName = component?.get('tagName')?.toLowerCase();
+              const currentPages = pagesRef.current;
+              if (tagName === 'button' || tagName === 'a') {
+                const existingTraits = component.get('traits') || [];
+                const hasLinkType = existingTraits.some((t: any) => {
+                  return (typeof t === 'object' && t.name === 'linkType') || t === 'linkType';
+                });
+                const updatePageOptions = (trait: any) => {
+                  if (!trait) return;
+                  const options = [
+                    { id: '', value: '', name: '-- Select Page --' },
+                    ...(currentPages || []).map((p) => ({ id: p.id, value: p.id, name: p.name }))
+                  ];
+                  trait.set('options', options);
+                };
+                
+                if (!hasLinkType) {
+                  const navigationTraits = [
+                    {
+                      type: 'select',
+                      name: 'linkType',
+                      label: tagName === 'button' ? 'Button Action' : 'Link Type',
+                      options: tagName === 'button' ? [
+                        { id: 'none', value: 'none', name: 'No Action' },
+                        { id: 'page', value: 'page', name: 'Navigate to Page' },
+                        { id: 'url', value: 'url', name: 'Open URL' },
+                      ] : [
+                        { id: 'page', value: 'page', name: 'Link to Page' },
+                        { id: 'url', value: 'url', name: 'External URL' },
+                      ],
+                      changeProp: true,
+                    },
+                    {
+                      type: 'select',
+                      name: 'pageLink',
+                      label: 'Select Page',
+                      options: [
+                        { id: '', value: '', name: '-- Select Page --' },
+                        ...(currentPages || []).map((p) => ({ id: p.id, value: p.id, name: p.name }))
+                      ],
+                      changeProp: true,
+                    },
+                    {
+                      type: 'text',
+                      name: 'href',
+                      label: 'URL',
+                      placeholder: 'https://example.com or #page-1',
+                      changeProp: true,
+                    },
+                  ];
+                  
+                  // Filter out default id and title traits
+                  const filteredTraits = existingTraits.filter((t: any) => {
+                    if (typeof t === 'string') return t !== 'id' && t !== 'title';
+                    return t.name !== 'id' && t.name !== 'title';
+                  });
+                  
+                  component.set('traits', [...filteredTraits, ...navigationTraits]);
+                  
+                  // Initialize trait values from existing attributes
+                  const existingAttrs = component.getAttributes?.() || {};
+                  const existingHref = existingAttrs.href || component.get('href') || '';
+                  const existingPageLink = existingAttrs['data-page-link'] || '';
+                  
+                  // Set initial values
+                  if (existingPageLink) {
+                    component.set('linkType', 'page');
+                    component.set('pageLink', existingPageLink);
+                    component.set('href', `#page-${existingPageLink}`);
+                  } else if (existingHref && existingHref !== '#' && !existingHref.startsWith('#')) {
+                    component.set('linkType', tagName === 'button' ? 'url' : 'url');
+                    component.set('href', sanitizeExternalHref(existingHref));
+                  } else if (tagName === 'button') {
+                    component.set('linkType', 'none');
+                  } else {
+                    component.set('linkType', 'page');
+                  }
+                  
+                  // Add event handlers for trait changes - use 'change' event for better compatibility
+                  const updateAttributes = () => {
+                    const linkType = component.get('linkType');
+                    const pageId = component.get('pageLink');
+                    const href = component.get('href');
+                    
+                    if (linkType === 'page') {
+                      if (pageId && pageId.trim() !== '') {
+                        const normalizedId = pageId.replace(/^#/, '').trim();
+                        component.addAttributes({ 'data-page-link': normalizedId });
+                        component.set('href', `#${normalizedId}`);
+                        const view = component.getView();
+                        if (view && view.el) {
+                          view.el.setAttribute('data-page-link', normalizedId);
+                          view.el.setAttribute('href', `#${normalizedId}`);
+                        }
+                      } else {
+                        component.removeAttributes('data-page-link');
+                        component.set('href', '#');
+                        const view = component.getView();
+                        if (view && view.el) {
+                          view.el.removeAttribute('data-page-link');
+                          view.el.setAttribute('href', '#');
+                        }
+                      }
+                    } else if (linkType === 'url') {
+                      component.removeAttributes('data-page-link');
+                      const sanitizedHref = href ? sanitizeExternalHref(href) : '';
+                      if (sanitizedHref) {
+                        component.set('href', sanitizedHref);
+                        const view = component.getView();
+                        if (view && view.el) {
+                          view.el.setAttribute('href', sanitizedHref);
+                        }
+                      } else {
+                        component.set('href', '#');
+                        const view = component.getView();
+                        if (view && view.el) {
+                          view.el.setAttribute('href', '#');
+                        }
+                      }
+                    } else if (linkType === 'none') {
+                      component.removeAttributes('data-page-link');
+                      component.removeAttributes('href');
+                    }
+                    
+                    // Force component update
+                    component.trigger('change');
+                    editor.trigger('component:update', component);
+                  };
+                  
+                  // Store updateAttributes function on component for access in event handlers
+                  (component as any)._updateNavigationAttributes = updateAttributes;
+                  
+                  // Listen to trait changes - use individual listeners for better reliability
+                  component.on('change:linkType', () => {
+                    const updateFn = (component as any)._updateNavigationAttributes;
+                    if (updateFn) setTimeout(updateFn, 50);
+                  });
+                  
+                  component.on('change:pageLink', () => {
+                    const updateFn = (component as any)._updateNavigationAttributes;
+                    if (updateFn) setTimeout(updateFn, 50);
+                  });
+                  
+                  component.on('change:href', () => {
+                    const updateFn = (component as any)._updateNavigationAttributes;
+                    if (updateFn) setTimeout(updateFn, 50);
+                  });
+                  
+                  // Also listen to trait manager changes via TraitManager events
+                  if (editor.TraitManager) {
+                    // Override trait update to sync with component
+                    const traitManager = editor.TraitManager as any;
+                    const originalUpdate = traitManager?.updateTarget;
+                    if (originalUpdate) {
+                      traitManager.updateTarget = function(target: any) {
+                        const result = originalUpdate.call(this, target);
+                        if (target && target === component) {
+                          setTimeout(() => {
+                            const updateFn = (target as any)._updateNavigationAttributes;
+                            if (updateFn) updateFn();
+                          }, 100);
+                        }
+                        return result;
+                      };
+                    }
+                    
+                    // Listen to trait:update events
+                    editor.on('trait:update', (trait: any, target: any) => {
+                      if (target && (target === component || (target.cid && component.cid && target.cid === component.cid))) {
+                        setTimeout(() => {
+                          // Sync trait values to component properties
+                          const linkType = target.get('linkType');
+                          const pageLink = target.get('pageLink');
+                          const href = target.get('href');
+                          
+                          if (linkType !== undefined) component.set('linkType', linkType);
+                          if (pageLink !== undefined) component.set('pageLink', pageLink);
+                          if (href !== undefined) component.set('href', href);
+                          
+                          const updateFn = (target as any)._updateNavigationAttributes;
+                          if (updateFn) updateFn();
+                        }, 50);
+                      }
+                    });
+                  }
+                }
+                
+                const existingPageTrait = component.getTrait ? component.getTrait('pageLink') : null;
+                updatePageOptions(existingPageTrait);
+              }
+              
+              // Render traits and ensure inputs are editable
+              if (typeof editor.TraitManager.render === 'function') {
+                setTimeout(() => {
+                  editor.TraitManager.render();
+                  
+                  // Function to ensure all trait inputs are editable
+                  const ensureInputsEditable = () => {
+                    const traitInputs = document.querySelectorAll('#traits-panel input, #traits-panel select, #traits-panel textarea');
+                    traitInputs.forEach((input: any) => {
+                      if (input) {
+                        input.style.pointerEvents = 'auto';
+                        input.style.cursor = input.tagName === 'SELECT' ? 'pointer' : 'text';
+                        input.style.zIndex = '1';
+                        input.style.position = 'relative';
+                        input.disabled = false;
+                        input.readOnly = false;
+                        
+                        // Ensure input can receive focus and changes
+                        input.addEventListener('input', () => {
+                          // Trigger component update when input changes
+                          if (component) {
+                            const updateFn = (component as any)._updateNavigationAttributes;
+                            if (updateFn) setTimeout(updateFn, 50);
+                          }
+                        });
+                        
+                        input.addEventListener('change', () => {
+                          // Trigger component update when select changes
+                          if (component) {
+                            const updateFn = (component as any)._updateNavigationAttributes;
+                            if (updateFn) setTimeout(updateFn, 50);
+                          }
+                        });
+                      }
+                    });
+                  };
+                  
+                  ensureInputsEditable();
+                  
+                  // Use MutationObserver to ensure inputs stay editable even after re-renders
+                  const traitsPanel = document.getElementById('traits-panel');
+                  if (traitsPanel) {
+                    const observer = new MutationObserver(() => {
+                      ensureInputsEditable();
+                    });
+                    observer.observe(traitsPanel, {
+                      childList: true,
+                      subtree: true,
+                      attributes: true,
+                      attributeFilter: ['style', 'disabled', 'readonly'],
+                    });
+                    
+                    // Store observer for cleanup
+                    (component as any)._traitObserver = observer;
+                  }
+                }, 100);
+              }
+            }
+            
+            if (component) {
+              // Ensure component is editable if it has the attribute
+              const attrs = component.getAttributes?.() || {};
+              if (attrs['data-gjs-editable'] === 'true' || attrs['data-gjs-type'] === 'text') {
+                component.set({ editable: true });
+              }
+              
+              // CRITICAL: Ensure component is stylable and can receive style changes
+              component.set({ 
+                stylable: true,
+                selectable: true,
+                hoverable: true
+              });
+              
+              // Ensure Style Manager targets this component
+              if (editor.StyleManager && (editor.StyleManager as any).setTarget) {
+                (editor.StyleManager as any).setTarget(component);
+              }
+            }
+            
+            // Open style manager and ensure it targets the selected component
+            editor.runCommand('open-sm');
+            
+            // Force style manager to render with the selected component
+            setTimeout(() => {
+              const stylePanel = document.getElementById('style-panel');
+              const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+              
+              // Ensure right panel is visible
+              if (rightPanel) {
+                rightPanel.style.display = 'flex';
+                rightPanel.style.visibility = 'visible';
+                rightPanel.style.opacity = '1';
+                rightPanel.style.width = '300px';
+              }
+              
+              if (stylePanel && editor.StyleManager) {
+                // Force style panel visibility - use setProperty to override inline styles
+                stylePanel.style.setProperty('display', 'block', 'important');
+                stylePanel.style.setProperty('visibility', 'visible', 'important');
+                stylePanel.style.setProperty('opacity', '1', 'important');
+                stylePanel.style.setProperty('width', '100%', 'important');
+                stylePanel.style.setProperty('height', '100%', 'important');
+                stylePanel.style.setProperty('min-height', '300px', 'important');
+                
+                // Set target first
+                if (component && (editor.StyleManager as any).setTarget) {
+                  (editor.StyleManager as any).setTarget(component);
+                }
+                
+                // Clear and re-render to ensure properties are shown
+                stylePanel.innerHTML = '';
+                if (typeof editor.StyleManager.render === 'function') {
+                  editor.StyleManager.render();
+                }
+                
+                // After render, ensure all properties are visible
+                setTimeout(() => {
+                  safeRenderStyleManager(true);
+                  
+                  // Force visibility again after render
+                  stylePanel.style.setProperty('display', 'block', 'important');
+                  stylePanel.style.setProperty('visibility', 'visible', 'important');
+                  stylePanel.style.setProperty('opacity', '1', 'important');
+                }, 100);
+              } else {
+                safeRenderStyleManager(true);
+              }
+            }, 50);
+            
+            scheduleStyleManagerMaintenance();
+          } catch (e) {
+            console.warn('Component selected error:', e);
+          }
+        });
+        
+        // Handle component deselection - ensure Style Manager stays visible
+        editor.on('component:deselected', () => {
+          try {
+            // Even when deselected, keep Style Manager visible
+            setTimeout(() => {
+              safeRenderStyleManager();
+            }, 50);
+          } catch {}
+        });
+
+        // Ensure style changes are applied - listen to style property changes
+        // This is the primary handler - will be supplemented by the more detailed one below
+        editor.on('style:property:update', (property: any, value: any, component: any) => {
+          try {
+            const selected = component || editor.getSelected();
+            if (selected) {
+              // Ensure component is stylable
+              selected.set({ stylable: true });
+              
+              // Apply style directly if property and value are provided
+              if (property && value !== undefined && typeof selected.addStyle === 'function') {
+                selected.addStyle(property, value);
+              }
+              
+              // Force component to update its view
+              const el = selected.getEl?.();
+              if (el) {
+                // Trigger a refresh
+                if (selected.view?.updateStyle) {
+                  selected.view.updateStyle();
+                }
+                // Also trigger component update
+                selected.trigger('change:style');
+                // Force canvas update
+                editor.refresh();
+              }
+            }
+          } catch (e) {
+            console.warn('Style property update error:', e);
+          }
+        });
+
+        // Also listen for style changes
+        editor.on('style:change', (style: any, component: any) => {
+          try {
+            const selected = component || editor.getSelected();
+            if (selected) {
+              // Ensure component is stylable
+              selected.set({ stylable: true });
+              
+              // Ensure styles are applied
+              selected.view?.updateStyle?.();
+              // Trigger component update
+              selected.trigger('change:style');
+              // Force canvas refresh
+              editor.refresh();
+            }
+          } catch (e) {
+            console.warn('Style change error:', e);
+          }
+        });
+
+        // Listen for component style updates
+        editor.on('component:styleUpdate', (component: any) => {
+          try {
+            if (component) {
+              component.set({ stylable: true });
+              component.view?.updateStyle?.();
+              editor.refresh();
+            }
+          } catch (e) {
+            console.warn('Component style update error:', e);
+          }
+        });
+
+        // Enable double-click to edit text elements
+        editor.on('component:dblclick', (component: any) => {
+          try {
+            if (!component) return;
+            
+            const attrs = component.getAttributes?.() || {};
+            const isEditable = attrs['data-gjs-editable'] === 'true' || 
+                             attrs['data-gjs-type'] === 'text' ||
+                             component.get?.('type') === 'text';
+            
+            if (isEditable) {
+              editor.runCommand('core:component-edit', { force: true });
+            }
+          } catch {}
+        });
+
+        // Helper function to safely render Style Manager without duplicates
+        const safeRenderStyleManager = (forceRender = false) => {
+          try {
+            const stylePanel = document.getElementById('style-panel');
+            const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+            
+            // Always ensure right panel is visible
+            if (rightPanel) {
+              rightPanel.style.display = 'flex';
+              rightPanel.style.visibility = 'visible';
+              rightPanel.style.opacity = '1';
+              rightPanel.style.width = '300px';
+            }
+            
+            if (!stylePanel || !editor.StyleManager) {
+              // If panel doesn't exist, try to render anyway after a delay
+              if (editor.StyleManager && typeof editor.StyleManager.render === 'function') {
+                setTimeout(() => safeRenderStyleManager(true), 100);
+              }
+              return;
+            }
+            
+            // Force style panel visibility - ALWAYS
+            stylePanel.style.display = 'block';
+            stylePanel.style.visibility = 'visible';
+            stylePanel.style.opacity = '1';
+            stylePanel.style.background = '#1e1e1e';
+            stylePanel.style.minHeight = '200px';
+            stylePanel.style.width = '100%';
+            stylePanel.style.height = 'auto';
+            stylePanel.style.position = 'relative';
+            stylePanel.style.zIndex = '1';
+            
+            // Check for duplicate sectors (should have exactly 13: Layout, Typography, Background, Border, Flexbox, Grid, Effects, Spacing, Sizing, List, Table, Cursor, Animation)
+            const existingSectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+            if (existingSectors.length > 13) {
+              // Duplicates detected - clear and re-render
+              stylePanel.innerHTML = '';
+              forceRender = true;
+            } else if (existingSectors.length === 13 && !forceRender) {
+              // Already rendered correctly, but ensure visibility
+              existingSectors.forEach((sector: any) => {
+                if (sector) {
+                  sector.style.display = 'block';
+                  sector.style.visibility = 'visible';
+                  sector.style.opacity = '1';
+                  sector.style.background = '#1e1e1e';
+                  
+                  // Ensure sector is expanded
+                  sector.classList.remove('gjs-sm-sector--closed');
+                  sector.classList.add('gjs-sm-sector--open');
+                  const sectorContent = sector.querySelector('.gjs-sm-sector-content');
+                  if (sectorContent) {
+                    (sectorContent as HTMLElement).style.display = 'block';
+                    (sectorContent as HTMLElement).style.visibility = 'visible';
+                    (sectorContent as HTMLElement).style.opacity = '1';
+                  }
+                  
+                  // Ensure properties container is visible
+                  const propertiesContainer = sector.querySelector('.gjs-sm-properties');
+                  if (propertiesContainer) {
+                    propertiesContainer.style.display = 'block';
+                    propertiesContainer.style.visibility = 'visible';
+                    propertiesContainer.style.opacity = '1';
+                    propertiesContainer.style.width = '100%';
+                  }
+                  
+                  // Ensure properties are visible
+                  const properties = sector.querySelectorAll('.gjs-sm-property');
+                  properties.forEach((prop: any) => {
+                    if (prop) {
+                      prop.style.display = 'block';
+                      prop.style.visibility = 'visible';
+                      prop.style.opacity = '1';
+                      prop.style.width = '100%';
+                      
+                      // Ensure property fields are visible
+                      const field = prop.querySelector('.gjs-sm-property__field, .gjs-field');
+                      if (field) {
+                        (field as HTMLElement).style.display = 'flex';
+                        (field as HTMLElement).style.visibility = 'visible';
+                        (field as HTMLElement).style.opacity = '1';
+                        (field as HTMLElement).style.width = '100%';
+                      }
+                      
+                      // Ensure inputs are visible
+                      const inputs = prop.querySelectorAll('input, select, textarea, button');
+                      inputs.forEach((input: any) => {
+                        if (input) {
+                          input.style.display = 'block';
+                          input.style.visibility = 'visible';
+                          input.style.opacity = '1';
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+              
+              // Check if panel is actually visible in DOM
+              const computedStyle = window.getComputedStyle(stylePanel);
+              if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || computedStyle.opacity === '0') {
+                // Force visibility again
+                stylePanel.style.display = 'block';
+                stylePanel.style.visibility = 'visible';
+                stylePanel.style.opacity = '1';
+              }
+              
+              return;
+            }
+            
+            // Render if needed or forced
+            if (typeof editor.StyleManager.render === 'function') {
+              // Clear any existing content if forcing render
+              if (forceRender) {
+                stylePanel.innerHTML = '';
+              }
+              
+              // Ensure we have a selected component for Style Manager to target
+              const selected = editor.getSelected();
+              if (!selected) {
+                const wrapper = editor.getWrapper();
+                if (wrapper) {
+                  editor.select(wrapper);
+                  wrapper.set({ stylable: true });
+                }
+              }
+              
+              // Render Style Manager
+              editor.StyleManager.render();
+              
+              // Force Style Manager to update its target
+              if ((editor.StyleManager as any).setTarget) {
+                const target = selected || editor.getWrapper();
+                if (target) {
+                  (editor.StyleManager as any).setTarget(target);
+                }
+              }
+              
+              // Ensure all style inputs are functional
+              setTimeout(() => {
+                const styleInputs = stylePanel.querySelectorAll('input, select, textarea');
+                styleInputs.forEach((input: any) => {
+                  if (input && !input.hasAttribute('data-gjs-listener')) {
+                    input.setAttribute('data-gjs-listener', 'true');
+                    // Ensure inputs can receive changes
+                    input.style.pointerEvents = 'auto';
+                  }
+                });
+              }, 50);
+              
+              // After rendering, ensure all sectors are visible - multiple checks
+              setTimeout(() => {
+                const sectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                
+                // If no sectors found, try rendering again
+                if (sectors.length === 0) {
+                  // Ensure we have a target
+                  const selected = editor.getSelected();
+                  if (!selected) {
+                    const wrapper = editor.getWrapper();
+                    if (wrapper) {
+                      editor.select(wrapper);
+                      wrapper.set({ stylable: true });
+                    }
+                  }
+                  
+                  // Clear and re-render
+                  stylePanel.innerHTML = '';
+                  if (typeof editor.StyleManager.render === 'function') {
+                    editor.StyleManager.render();
+                    
+                    // Set target explicitly
+                    if ((editor.StyleManager as any).setTarget) {
+                      const target = selected || editor.getWrapper();
+                      if (target) {
+                        (editor.StyleManager as any).setTarget(target);
+                      }
+                    }
+                  }
+                  
+                  // Re-query sectors after re-render
+                  const newSectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                  if (newSectors.length > 0) {
+                    // Use the new sectors for visibility updates
+                    newSectors.forEach((sector: any) => {
+                      if (sector) {
+                        sector.style.display = 'block';
+                        sector.style.visibility = 'visible';
+                        sector.style.opacity = '1';
+                        sector.style.background = '#1e1e1e';
+                        sector.style.width = '100%';
+                        sector.style.minHeight = '40px';
+                        
+                        // Ensure sector title is visible
+                        const title = sector.querySelector('.gjs-sm-title');
+                        if (title) {
+                          title.style.display = 'flex';
+                          title.style.visibility = 'visible';
+                          title.style.opacity = '1';
+                        }
+                        
+                        // Ensure properties container is visible
+                        const propertiesContainer = sector.querySelector('.gjs-sm-properties');
+                        if (propertiesContainer) {
+                          propertiesContainer.style.display = 'block';
+                          propertiesContainer.style.visibility = 'visible';
+                          propertiesContainer.style.opacity = '1';
+                          propertiesContainer.style.width = '100%';
+                          propertiesContainer.style.padding = '10px 0';
+                        }
+                        
+                        // Ensure sector is expanded
+                        sector.classList.remove('gjs-sm-sector--closed');
+                        sector.classList.add('gjs-sm-sector--open');
+                        const sectorContent = sector.querySelector('.gjs-sm-sector-content');
+                        if (sectorContent) {
+                          (sectorContent as HTMLElement).style.display = 'block';
+                          (sectorContent as HTMLElement).style.visibility = 'visible';
+                          (sectorContent as HTMLElement).style.opacity = '1';
+                        }
+                        
+                        // Ensure properties are visible
+                        const properties = sector.querySelectorAll('.gjs-sm-property');
+                        properties.forEach((prop: any) => {
+                          if (prop) {
+                            prop.style.display = 'block';
+                            prop.style.visibility = 'visible';
+                            prop.style.opacity = '1';
+                            prop.style.width = '100%';
+                            
+                            // Ensure property fields are visible
+                            const field = prop.querySelector('.gjs-sm-property__field, .gjs-field');
+                            if (field) {
+                              (field as HTMLElement).style.display = 'flex';
+                              (field as HTMLElement).style.visibility = 'visible';
+                              (field as HTMLElement).style.opacity = '1';
+                              (field as HTMLElement).style.width = '100%';
+                            }
+                            
+                            // Ensure property label is visible
+                            const label = prop.querySelector('.gjs-sm-property__label, label');
+                            if (label) {
+                              (label as HTMLElement).style.display = 'block';
+                              (label as HTMLElement).style.visibility = 'visible';
+                              (label as HTMLElement).style.opacity = '1';
+                              (label as HTMLElement).style.color = '#a4afb7';
+                            }
+                            
+                            // Ensure inputs, selects, and other form elements are visible
+                            const inputs = prop.querySelectorAll('input, select, textarea, button');
+                            inputs.forEach((input: any) => {
+                              if (input) {
+                                input.style.display = 'block';
+                                input.style.visibility = 'visible';
+                                input.style.opacity = '1';
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                    
+                    // Update final visibility
+                    stylePanel.style.display = 'block';
+                    stylePanel.style.visibility = 'visible';
+                    stylePanel.style.opacity = '1';
+                    stylePanel.style.minHeight = '300px';
+                    return; // Exit early since we've handled the sectors
+                  }
+                }
+                
+                // Ensure all sectors are visible
+                sectors.forEach((sector: any) => {
+                  if (sector) {
+                    sector.style.display = 'block';
+                    sector.style.visibility = 'visible';
+                    sector.style.opacity = '1';
+                    sector.style.background = '#1e1e1e';
+                    sector.style.width = '100%';
+                    sector.style.minHeight = '40px';
+                    
+                    // Ensure sector title is visible
+                    const title = sector.querySelector('.gjs-sm-title');
+                    if (title) {
+                      title.style.display = 'flex';
+                      title.style.visibility = 'visible';
+                      title.style.opacity = '1';
+                    }
+                    
+                    // Ensure properties container is visible
+                    const propertiesContainer = sector.querySelector('.gjs-sm-properties');
+                    if (propertiesContainer) {
+                      propertiesContainer.style.display = 'block';
+                      propertiesContainer.style.visibility = 'visible';
+                      propertiesContainer.style.opacity = '1';
+                      propertiesContainer.style.width = '100%';
+                      propertiesContainer.style.padding = '10px 0';
+                    }
+                    
+                    // Ensure sector is expanded (not collapsed)
+                    sector.classList.remove('gjs-sm-sector--closed');
+                    sector.classList.add('gjs-sm-sector--open');
+                    const sectorContent = sector.querySelector('.gjs-sm-sector-content');
+                    if (sectorContent) {
+                      (sectorContent as HTMLElement).style.display = 'block';
+                      (sectorContent as HTMLElement).style.visibility = 'visible';
+                      (sectorContent as HTMLElement).style.opacity = '1';
+                    }
+                    
+                    // Ensure properties are visible
+                    const properties = sector.querySelectorAll('.gjs-sm-property');
+                    properties.forEach((prop: any) => {
+                      if (prop) {
+                        prop.style.display = 'block';
+                        prop.style.visibility = 'visible';
+                        prop.style.opacity = '1';
+                        prop.style.width = '100%';
+                        
+                        // Ensure property fields are visible
+                        const field = prop.querySelector('.gjs-sm-property__field, .gjs-field');
+                        if (field) {
+                          (field as HTMLElement).style.display = 'flex';
+                          (field as HTMLElement).style.visibility = 'visible';
+                          (field as HTMLElement).style.opacity = '1';
+                          (field as HTMLElement).style.width = '100%';
+                        }
+                        
+                        // Ensure property label is visible
+                        const label = prop.querySelector('.gjs-sm-property__label, label');
+                        if (label) {
+                          (label as HTMLElement).style.display = 'block';
+                          (label as HTMLElement).style.visibility = 'visible';
+                          (label as HTMLElement).style.opacity = '1';
+                          (label as HTMLElement).style.color = '#a4afb7';
+                        }
+                        
+                        // Ensure inputs, selects, and other form elements are visible
+                        const inputs = prop.querySelectorAll('input, select, textarea, button');
+                        inputs.forEach((input: any) => {
+                          if (input) {
+                            input.style.display = 'block';
+                            input.style.visibility = 'visible';
+                            input.style.opacity = '1';
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+                
+                // Final visibility check and ensure panel has content
+                stylePanel.style.display = 'block';
+                stylePanel.style.visibility = 'visible';
+                stylePanel.style.opacity = '1';
+                stylePanel.style.minHeight = sectors.length > 0 ? '300px' : '200px';
+                
+                // If still no content, force render one more time
+                if (sectors.length === 0) {
+                  setTimeout(() => {
+                    const selected = editor.getSelected();
+                    if (!selected) {
+                      const wrapper = editor.getWrapper();
+                      if (wrapper) {
+                        editor.select(wrapper);
+                        wrapper.set({ stylable: true });
+                      }
+                    }
+                    
+                    stylePanel.innerHTML = '';
+                    if (typeof editor.StyleManager.render === 'function') {
+                      editor.StyleManager.render();
+                      
+                      // Set target explicitly
+                      if ((editor.StyleManager as any).setTarget) {
+                        const target = selected || editor.getWrapper();
+                        if (target) {
+                          (editor.StyleManager as any).setTarget(target);
+                        }
+                      }
+                    }
+                    
+                    // Check again after render
+                    setTimeout(() => {
+                      const newSectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                      if (newSectors.length > 0) {
+                        safeRenderStyleManager(true);
+                      }
+                    }, 100);
+                  }, 200);
+                }
+              }, 150);
+              
+              // Additional check after longer delay
+              setTimeout(() => {
+                const sectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                if (sectors.length === 0 && typeof editor.StyleManager.render === 'function') {
+                  // Ensure we have a target
+                  const selected = editor.getSelected();
+                  if (!selected) {
+                    const wrapper = editor.getWrapper();
+                    if (wrapper) {
+                      editor.select(wrapper);
+                      wrapper.set({ stylable: true });
+                    }
+                  }
+                  
+                  stylePanel.innerHTML = '';
+                  editor.StyleManager.render();
+                  
+                  // Set target explicitly
+                  if ((editor.StyleManager as any).setTarget) {
+                    const target = selected || editor.getWrapper();
+                    if (target) {
+                      (editor.StyleManager as any).setTarget(target);
+                    }
+                  }
+                }
+              }, 500);
+            }
+          } catch (e) {
+            console.warn('Error rendering Style Manager:', e);
+            // Retry after error
+            setTimeout(() => safeRenderStyleManager(true), 200);
+          }
+        };
+
+        // Ensure components maintain their editable state
+        editor.on('component:update', (component: any) => {
+          try {
+            if (!component) return;
+            const attrs = component.getAttributes?.() || {};
+            if (attrs['data-gjs-editable'] === 'true' || attrs['data-gjs-type'] === 'text') {
+              component.set({ editable: true, selectable: true });
+            }
+            // Ensure component remains stylable
+            component.set({ stylable: true });
+          } catch {}
+        });
+
+        // Listen for Style Manager field changes directly
+        editor.on('style:custom', (property: any, value: any, component: any) => {
+          try {
+            const selected = component || editor.getSelected();
+            if (selected && property && value !== undefined) {
+              selected.set({ stylable: true });
+              if (typeof selected.addStyle === 'function') {
+                selected.addStyle(property, value);
+              }
+              selected.view?.updateStyle?.();
+              editor.refresh();
+            }
+          } catch (e) {
+            console.warn('Style custom error:', e);
+          }
+        });
+        
+        // Listen to Style Manager's internal change events
+        editor.on('change', () => {
+          try {
+            const selected = editor.getSelected();
+            if (selected && editor.StyleManager) {
+              // Ensure styles are synced
+              const styles = selected.getStyle();
+              if (styles && Object.keys(styles).length > 0) {
+                selected.view?.updateStyle?.();
+                editor.refresh();
+              }
+            }
+          } catch (e) {
+            // Silent fail
+          }
+        });
+
+        const enforcePanelVisibility = () => {
+          if (destroyed) return;
+          const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+          if (rightPanel) {
+            rightPanel.style.display = 'flex';
+            rightPanel.style.visibility = 'visible';
+            rightPanel.style.opacity = '1';
+            rightPanel.style.width = '300px';
+            rightPanel.style.flexShrink = '0';
+            rightPanel.style.position = 'relative';
+            rightPanel.style.zIndex = '1';
+          }
+          
+          const stylePanel = document.getElementById('style-panel');
+          if (stylePanel) {
+            stylePanel.style.display = 'block';
+            stylePanel.style.visibility = 'visible';
+            stylePanel.style.opacity = '1';
+            stylePanel.style.width = '100%';
+            stylePanel.style.height = '100%';
+            stylePanel.style.minHeight = '300px';
+          }
+        };
+
+        // Handle fullscreen mode - sync class with root container
+        const checkFullscreen = () => {
+          try {
+            if (rootContainerRef.current) {
+              const editorEl = editor.getEl?.();
+              const isFullscreen = editorEl?.classList.contains('gjs-fullscreen') || 
+                                   document.querySelector('.gjs-editor.gjs-fullscreen') !== null;
+              
+              if (isFullscreen) {
+                rootContainerRef.current.classList.add('gjs-fullscreen');
+                
+                // Ensure all interactive elements are visible and functional in fullscreen
+                setTimeout(() => {
+                  try {
+                    // Force visibility of all buttons
+                    const allButtons = rootContainerRef.current?.querySelectorAll('button');
+                    allButtons?.forEach((btn: any) => {
+                      if (btn) {
+                        btn.style.display = 'flex';
+                        btn.style.visibility = 'visible';
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                        btn.style.cursor = 'pointer';
+                        btn.style.zIndex = '10001';
+                      }
+                    });
+                    
+                    // Force visibility of all inputs
+                    const allInputs = rootContainerRef.current?.querySelectorAll('input, select, textarea');
+                    allInputs?.forEach((input: any) => {
+                      if (input) {
+                        input.style.display = 'block';
+                        input.style.visibility = 'visible';
+                        input.style.opacity = '1';
+                        input.style.pointerEvents = 'auto';
+                        input.style.zIndex = '10001';
+                      }
+                    });
+                    
+                    // Ensure panels are interactive and visible
+                    const leftPanel = rootContainerRef.current?.querySelector('.builder-left-panel') as HTMLElement;
+                    const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement;
+                    const centerPanel = rootContainerRef.current?.querySelector('.builder-center-panel') as HTMLElement;
+                    
+                    if (leftPanel) {
+                      leftPanel.style.display = 'flex';
+                      leftPanel.style.visibility = 'visible';
+                      leftPanel.style.opacity = '1';
+                      leftPanel.style.pointerEvents = 'auto';
+                      leftPanel.style.width = '280px';
+                      leftPanel.style.zIndex = '10001';
+                    }
+                    
+                    if (rightPanel) {
+                      rightPanel.style.display = 'flex';
+                      rightPanel.style.visibility = 'visible';
+                      rightPanel.style.opacity = '1';
+                      rightPanel.style.pointerEvents = 'auto';
+                      rightPanel.style.width = '300px';
+                      rightPanel.style.zIndex = '10001';
+                    }
+                    
+                    if (centerPanel) {
+                      centerPanel.style.display = 'flex';
+                      centerPanel.style.visibility = 'visible';
+                      centerPanel.style.opacity = '1';
+                      centerPanel.style.pointerEvents = 'auto';
+                    }
+                    
+                    // Force Style Manager to render in fullscreen
+                    const stylePanel = rootContainerRef.current?.querySelector('#style-panel') as HTMLElement;
+                    if (stylePanel && editor.StyleManager) {
+                      stylePanel.style.display = 'block';
+                      stylePanel.style.visibility = 'visible';
+                      stylePanel.style.opacity = '1';
+                      stylePanel.style.background = '#1e1e1e';
+                      stylePanel.style.minHeight = '200px';
+                      
+                      const existingSectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                      if (existingSectors.length === 0 || existingSectors.length < 13) {
+                        // Not rendered or incomplete - force render
+                        if (typeof editor.StyleManager.render === 'function') {
+                          editor.StyleManager.render();
+                        }
+                      }
+                      
+                      // Ensure all sectors are visible
+                      setTimeout(() => {
+                        const sectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                        sectors.forEach((sector: any) => {
+                          if (sector) {
+                            sector.style.display = 'block';
+                            sector.style.visibility = 'visible';
+                            sector.style.opacity = '1';
+                          }
+                        });
+                      }, 100);
+                    }
+                    
+                    // Ensure device switcher is visible
+                    const devicesPanel = rootContainerRef.current?.querySelector('.panel__devices') as HTMLElement;
+                    if (devicesPanel) {
+                      devicesPanel.style.display = 'flex';
+                      devicesPanel.style.visibility = 'visible';
+                      devicesPanel.style.opacity = '1';
+                      devicesPanel.style.pointerEvents = 'auto';
+                    }
+                  } catch (e) {
+                    console.warn('Error ensuring fullscreen elements visibility:', e);
+                  }
+                }, 50);
+              } else {
+                rootContainerRef.current.classList.remove('gjs-fullscreen');
+              }
+            }
+          } catch {}
+        };
+        
+        const fullscreenEvents = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'] as const;
+        const handleFullscreenChange = () => {
+          if (destroyed) return;
+          checkFullscreen();
+        };
+        fullscreenEvents.forEach((evt) => {
+          document.addEventListener(evt as any, handleFullscreenChange, { passive: true } as AddEventListenerOptions);
+          registerCleanup(() => document.removeEventListener(evt as any, handleFullscreenChange));
+        });
+        checkFullscreen();
+        
+        // Also check on editor load
+        editor.on('load', () => {
+          setTimeout(checkFullscreen, 100);
+          // Set initial device
+          try {
+            const initialDevice = editor.getDevice();
+            if (initialDevice) {
+              setCurrentDevice(initialDevice);
+            }
+          } catch {}
+        });
+        
+        // Listen for device changes
+        editor.on('change:device', () => {
+          try {
+            const device = editor.getDevice();
+            if (device) {
+              setCurrentDevice(device);
+            }
+            renderDeviceSwitcher();
+          } catch {}
+        });
+        
+        // Listen for fullscreen toggle to force Style Manager render
+        editor.on('run:fullscreen', () => {
+          setTimeout(() => {
+            try {
+              const stylePanel = document.getElementById('style-panel');
+              if (stylePanel && editor.StyleManager) {
+                // Force visibility
+                stylePanel.style.display = 'block';
+                stylePanel.style.visibility = 'visible';
+                stylePanel.style.opacity = '1';
+                stylePanel.style.background = '#1e1e1e';
+                
+                // Force render Style Manager
+                if (typeof editor.StyleManager.render === 'function') {
+                  editor.StyleManager.render();
+                }
+                
+                // Ensure all sectors are visible
+                setTimeout(() => {
+                  const sectors = stylePanel.querySelectorAll('.gjs-sm-sector');
+                  sectors.forEach((sector: any) => {
+                    if (sector) {
+                      sector.style.display = 'block';
+                      sector.style.visibility = 'visible';
+                      sector.style.opacity = '1';
+                    }
+                  });
+                }, 100);
+              }
+            } catch (e) {
+              console.warn('Error rendering Style Manager on fullscreen:', e);
+            }
+          }, 200);
+        });
+
+        // Ensure device switcher buttons are visible
+        const renderDeviceSwitcher = () => {
+          if (destroyed) return;
+          try {
+            const devicesPanel = document.querySelector('.panel__devices');
+            if (devicesPanel) {
+              const buttons = devicesPanel.querySelectorAll('button');
+              buttons.forEach((btn: any) => {
+                if (btn) {
+                  btn.style.display = 'flex';
+                  btn.style.visibility = 'visible';
+                  btn.style.opacity = '1';
+                }
+              });
+            }
+          } catch {}
+        };
+
+        // Render blocks and ensure they're visible (only once)
+        let blocksRendered = false;
+        const renderBlocks = (force: boolean = false) => {
+          if (destroyed) return;
+          if (blocksRendered && !force) return;
+          try {
+            if (editor.BlockManager) {
+              const blocksPanel = document.getElementById('blocks-panel');
+              if (blocksPanel) {
+                // Clear any existing content to prevent duplicates
+                blocksPanel.innerHTML = '';
+                // Remove any duplicate blocks-panel elements
+                const allPanels = document.querySelectorAll('#blocks-panel');
+                if (allPanels.length > 1) {
+                  for (let i = 1; i < allPanels.length; i++) {
+                    allPanels[i].remove();
+                  }
+                }
+              }
+              editor.BlockManager.render();
+              blocksRendered = true;
+              // Force visibility of all blocks and ensure they're draggable
+              setTimeout(() => {
+                const blocksPanel = document.getElementById('blocks-panel');
+                if (blocksPanel) {
+                  // Remove any duplicate blocks
+                  const allBlocks = blocksPanel.querySelectorAll('.gjs-block');
+                  const seen = new Set();
+                  allBlocks.forEach((block: any) => {
+                    const blockId = block.getAttribute('data-gjs-type') + '-' + block.textContent;
+                    if (seen.has(blockId)) {
+                      block.remove();
+                    } else {
+                      seen.add(blockId);
+                      block.style.display = 'flex';
+                      block.style.visibility = 'visible';
+                      block.style.opacity = '1';
+                      block.style.pointerEvents = 'auto';
+                      block.style.cursor = 'grab';
+                      block.style.position = 'relative';
+                      block.style.zIndex = '1';
+                    }
+                  });
+                  
+                  // Ensure categories are properly set up
+                  const categories = blocksPanel.querySelectorAll('.gjs-block-category');
+                  categories.forEach((cat: any) => {
+                    cat.style.position = 'relative';
+                    cat.style.zIndex = '1';
+                  });
+                }
+              }, 100);
+            }
+          } catch (err) {
+            console.warn('Error rendering blocks:', err);
+          }
+        };
+
+        // Render blocks after editor is ready (only once)
+        editor.on('load', () => {
+          renderBlocks();
+          setTimeout(renderDeviceSwitcher, 200);
+          
+          // Select a component so Style Manager has a target
+          setTimeout(() => {
+            try {
+              const wrapper = editor.getWrapper();
+              if (wrapper) {
+                // Select wrapper or first child component
+                const components = wrapper.components();
+                let targetComponent = null;
+                
+                if (components && components.length > 0) {
+                  const firstComp = components.at(0);
+                  if (firstComp) {
+                    editor.select(firstComp);
+                    firstComp.set({ stylable: true });
+                    targetComponent = firstComp;
+                  }
+                } else {
+                  // Select wrapper itself
+                  editor.select(wrapper);
+                  wrapper.set({ stylable: true });
+                  targetComponent = wrapper;
+                }
+                
+                // Open style manager
+                editor.runCommand('open-sm');
+                
+                // Force Style Manager to render with target
+                const stylePanel = document.getElementById('style-panel');
+                if (stylePanel && editor.StyleManager && targetComponent) {
+                  // Clear panel
+                  stylePanel.innerHTML = '';
+                  
+                  // Set target explicitly
+                  if ((editor.StyleManager as any).setTarget) {
+                    (editor.StyleManager as any).setTarget(targetComponent);
+                  }
+                  
+                  // Render
+                  if (typeof editor.StyleManager.render === 'function') {
+                    editor.StyleManager.render();
+                  }
+                  
+                  // Force visibility
+                  stylePanel.style.display = 'block';
+                  stylePanel.style.visibility = 'visible';
+                  stylePanel.style.opacity = '1';
+                  stylePanel.style.background = '#1e1e1e';
+                  stylePanel.style.minHeight = '300px';
+                }
+              }
+            } catch (e) {
+              console.warn('Error selecting component on load:', e);
+            }
+          }, 250);
+          
+          // Ensure Style Manager is rendered on load - multiple attempts
+          setTimeout(() => {
+            safeRenderStyleManager(true);
+          }, 400);
+          setTimeout(() => {
+            safeRenderStyleManager(true);
+          }, 700);
+          setTimeout(() => {
+            safeRenderStyleManager();
+          }, 1000);
+        });
+
+        // Blocks will be rendered on 'load' event - no need for additional timeouts
+        setTimeout(renderDeviceSwitcher, 400);
+        setTimeout(renderDeviceSwitcher, 800);
+        
+        // Initial Style Manager renders to ensure it's always visible
+        setTimeout(() => {
+          safeRenderStyleManager(true);
+        }, 400);
+        setTimeout(() => {
+          safeRenderStyleManager();
+        }, 800);
+        setTimeout(() => {
+          safeRenderStyleManager();
+        }, 1200);
+        
+        const setupDevicePanelObserver = (): boolean => {
+          if (destroyed) return false;
+          renderDeviceSwitcher();
+          const devicesPanel = document.querySelector('.panel__devices');
+          if (!devicesPanel) return false;
+          const devicesObserver = new MutationObserver(() => renderDeviceSwitcher());
+          devicesObserver.observe(devicesPanel, { childList: true, subtree: true, attributes: true });
+          registerCleanup(() => devicesObserver.disconnect());
+          return true;
+        };
+        const ensureDevicePanelObserver = () => {
+          if (setupDevicePanelObserver()) return;
+          if (!destroyed) {
+            setTimeout(ensureDevicePanelObserver, 800);
+          }
+        };
+        setTimeout(ensureDevicePanelObserver, 500);
+
+        // Render managers and ensure style manager works
+        setTimeout(() => {
+          if (!destroyed) {
+            try {
+              // Use safe render to prevent duplicates
+              safeRenderStyleManager();
+              
+              // Ensure style manager is ready to apply styles
+              editor.on('style:target', (target: any) => {
+                try {
+                  if (target && target.component) {
+                    const comp = target.component;
+                    // Ensure component can receive styles
+                    comp.set({ stylable: true });
+                  }
+                } catch {}
+              });
+              
+              if (editor.LayerManager) editor.LayerManager.render();
+            } catch {}
+          }
+        }, 500);
+
+        const scheduleLayerRefresh = (() => {
+          let timeout: number | null = null;
+          return () => {
+            if (destroyed) return;
+            if (timeout) {
+              clearTimeout(timeout);
+            }
+            timeout = window.setTimeout(() => {
+              if (!destroyed) {
+                try {
+                  if (editor.LayerManager && typeof editor.LayerManager.render === 'function') {
+                    editor.LayerManager.render();
+                  }
+                } catch {}
+              }
+              timeout = null;
+            }, 250);
+          };
+        })();
+        const layerEvents = ['component:add', 'component:remove', 'component:update', 'component:styleUpdate', 'component:selected'];
+        layerEvents.forEach((evt) => {
+          const handler = () => scheduleLayerRefresh();
+          editor.on(evt, handler);
+          registerCleanup(() => editor.off(evt, handler));
+        });
+        scheduleLayerRefresh();
+
+        const scheduleStyleManagerMaintenance = (() => {
+          let timeout: number | null = null;
+          return (force = false) => {
+            if (destroyed) return;
+            if (timeout) {
+              clearTimeout(timeout);
+            }
+            timeout = window.setTimeout(() => {
+              safeRenderStyleManager(force);
+              timeout = null;
+            }, force ? 60 : 150);
+          };
+        })();
+
+        const setupPanelObservers = (): boolean => {
+          if (destroyed) return false;
+          enforcePanelVisibility();
+          const observers: MutationObserver[] = [];
+          let attached = false;
+          
+          const stylePanel = document.getElementById('style-panel');
+          if (stylePanel) {
+            const styleObserver = new MutationObserver(() => scheduleStyleManagerMaintenance());
+            styleObserver.observe(stylePanel, { childList: true, subtree: true, attributes: true });
+            observers.push(styleObserver);
+            attached = true;
+          }
+          
+          const rightPanel = rootContainerRef.current?.querySelector('.builder-right-panel') as HTMLElement | null;
+          if (rightPanel) {
+            const rightObserver = new MutationObserver(() => enforcePanelVisibility());
+            rightObserver.observe(rightPanel, { attributes: true, attributeFilter: ['style', 'class'] });
+            observers.push(rightObserver);
+            attached = true;
+          }
+          
+          registerCleanup(() => {
+            observers.forEach((observer) => observer.disconnect());
+          });
+          
+          return attached;
+        };
+        const ensurePanelObservers = () => {
+          if (setupPanelObservers()) return;
+          if (!destroyed) {
+            setTimeout(ensurePanelObservers, 800);
+          }
+        };
+        setTimeout(ensurePanelObservers, 600);
+
+        if (!destroyed) setLoading(false);
+      } catch (e: any) {
+        if (!destroyed) {
+          setError(e?.message || 'Failed to initialize');
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      destroyed = true;
+      cleanupFns.forEach((fn) => {
+        try {
+          fn();
+        } catch {}
+      });
+      
+      // Disconnect MutationObserver if it exists
+      // Note: stylePanelObserver is in the closure, we need to access it
+      const stylePanel = document.getElementById('style-panel');
+      if (stylePanel) {
+        // Force disconnect any observers by removing and re-adding the element
+        // This is a workaround since we can't access the observer variable directly
+      }
+      
+      if (editorInstance.current) {
+        try {
+          editorInstance.current.destroy();
+        } catch {}
+        editorInstance.current = null;
+      }
+      // Cleanup will be handled by destroyed flag in intervals
+    };
+  }, []); // Only run once on mount - don't include loadSaved or id to prevent infinite loops
+
+  // Filter blocks by search
+  useEffect(() => {
+    const container = document.getElementById('blocks-panel');
+    if (!container) return;
+
+    const term = blockSearch.trim().toLowerCase();
+    const blocks = container.querySelectorAll('.gjs-block');
+    const categories = container.querySelectorAll('.gjs-block-category');
+
+    blocks.forEach((block: any) => {
+      const text = (block.textContent || '').toLowerCase();
+      const shouldShow = !term || text.includes(term);
+      block.style.display = shouldShow ? 'flex' : 'none';
+      block.style.visibility = shouldShow ? 'visible' : 'hidden';
+    });
+
+    categories.forEach((cat: any) => {
+      const hasVisible = !!cat.querySelector('.gjs-block[style*="display: flex"]');
+      cat.style.display = hasVisible ? 'block' : 'none';
+    });
+  }, [blockSearch]);
+
+  const saveToLocal = useCallback(async (applyAfterSave: boolean) => {
+    try {
+      const editor = editorInstance.current;
+      if (!editor || typeof editor.getHtml !== 'function') {
+        alert('Editor not ready');
+        return;
+      }
+
+      setSaving(true);
+
+      const { pagesSnapshot } = getPagesSnapshotWithCurrent();
+      setPages(pagesSnapshot);
+
+      const combinedCss = pagesSnapshot
+        .map((page) => page.css || '')
+        .filter(Boolean)
+        .join('\n\n');
+
+      const exportHtml = buildMultiPageHtmlDocument(pagesSnapshot, name || 'Theme', combinedCss);
+
+      // Capture screenshot of the canvas
+      let thumbnailBlob: Blob | undefined;
+      try {
+        const canvasElement = document.querySelector('.gjs-cv-canvas') as HTMLElement;
+        if (canvasElement) {
+          const canvas = await html2canvas(canvasElement, {
+            backgroundColor: '#ffffff',
+            scale: 0.5,
+            logging: false,
+            useCORS: true,
+          });
+          thumbnailBlob = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob((blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error('Failed to convert canvas to blob'));
+              }
+            }, 'image/png');
+          });
+        }
+      } catch (screenshotError) {
+        console.warn('Failed to capture screenshot:', screenshotError);
+      }
+
+      const isValidObjectId = id && /^[0-9a-fA-F]{24}$/.test(id);
+
+      let savedThemeId: string;
+
+      if (isValidObjectId) {
+        const updated = await updateTheme(id, name, exportHtml, combinedCss, thumbnailBlob);
+        if (!updated) {
+          throw new Error('Failed to update theme');
+        }
+        savedThemeId = updated._id;
+      } else {
+        if (id && !isValidObjectId) {
+          console.warn(`Invalid theme ID format (${id}). Creating new theme instead.`);
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete('id');
+          window.history.replaceState({}, '', newUrl.toString());
+        }
+
+        const created = await createTheme(name, exportHtml, combinedCss, thumbnailBlob);
+        if (!created) {
+          throw new Error('Failed to create theme');
+        }
+        savedThemeId = created._id;
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('id', savedThemeId);
+        window.history.replaceState({}, '', newUrl.toString());
+      }
+
+      setSaving(false);
+
+      if (applyAfterSave) {
+        localStorage.setItem('ziplofy.appliedCustomThemeId', savedThemeId);
+        navigate('/');
+      }
+    } catch (e: any) {
+      setSaving(false);
+      alert(e?.message || 'Failed to save');
+    }
+  }, [createTheme, getPagesSnapshotWithCurrent, id, name, navigate, updateTheme, buildMultiPageHtmlDocument]);
+
+  const previewTheme = useCallback(() => {
+    try {
+      const editor = editorInstance.current;
+      if (!editor || typeof editor.getHtml !== 'function') {
+        alert('Editor not ready');
+        return;
+      }
+
+      const { pagesSnapshot } = getPagesSnapshotWithCurrent();
+      const combinedCss = pagesSnapshot
+        .map((page) => page.css || '')
+        .filter(Boolean)
+        .join('\n\n');
+
+      const fullHtml = buildMultiPageHtmlDocument(pagesSnapshot, name || 'Theme Preview', combinedCss);
+
+      const blob = new Blob([fullHtml], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const previewWindow = window.open(
+        url,
+        '_blank',
+        'width=1200,height=800,scrollbars=yes,resizable=yes'
+      );
+
+      if (previewWindow) {
+        previewWindow.focus();
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+        }, 1000);
+      } else {
+        alert('Please allow popups to preview your theme');
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      console.error('Preview error:', e);
+      alert('Failed to preview theme');
+    }
+  }, [getPagesSnapshotWithCurrent, buildMultiPageHtmlDocument, name]);
+
+  // Auto-save current page when switching
+  useEffect(() => {
+    if (editorInstance.current && currentPageId) {
+      // Only commit if editor is ready and we have a valid page ID
+      const timeoutId = setTimeout(() => {
+        commitCurrentPage();
+      }, 100); // Small delay to prevent rapid re-renders
+      return () => clearTimeout(timeoutId);
+    }
+  }, [currentPageId]); // Remove commitCurrentPage from deps to prevent loops
+
+  // Update page link trait options when pages change (for both links and buttons)
+  useEffect(() => {
+    if (editorInstance.current) {
+      const editor = editorInstance.current;
+      const updateNavigationTraits = (comp: any) => {
+        const compType = comp?.get('type');
+        // Update for links, buttons, button-outline, and button-text
+        if (comp && (compType === 'link' || compType === 'button' || compType === 'button-outline' || compType === 'button-text')) {
+          const pageLinkTrait = comp.getTrait('pageLink');
+          if (pageLinkTrait) {
+            const pageOptions = pages.map(p => ({ id: p.id, value: p.id, name: p.name }));
+            pageOptions.unshift({ id: '', value: '', name: '-- Select Page --' });
+            pageLinkTrait.set('options', pageOptions);
+          }
+        }
+        const children = comp?.components?.();
+        if (children && typeof children.forEach === 'function') {
+          children.forEach((child: any) => updateNavigationTraits(child));
+        }
+      };
+      const wrapper = editor.getWrapper && editor.getWrapper();
+      if (wrapper) {
+        updateNavigationTraits(wrapper);
+      }
+    }
+  }, [pages]);
+
+  // Close page manager when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (showPageManager && !target.closest('[data-page-manager]')) {
+        setShowPageManager(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showPageManager]);
+
+  // Check if tutorial should be shown on first load
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('ziplofy.elementorTutorialSeen');
+    if (!tutorialSeen) {
+      // Show tutorial after a short delay to let the editor load
+      setTimeout(() => {
+        setShowTutorial(true);
+      }, 1000);
+    }
+  }, []);
+
+  // Apply search filtering to GrapesJS blocks rendered in the sidebar
+  const applyBlockSearch = useCallback(() => {
+    const panel = document.getElementById('blocks-panel');
+    if (!panel) return;
+    const search = (blockSearch || '').toLowerCase();
+    const blocks = panel.querySelectorAll('.gjs-block');
+    blocks.forEach((block) => {
+      const text = (block.textContent || '').toLowerCase();
+      const matches = !search || text.includes(search);
+      (block as HTMLElement).style.display = matches ? 'flex' : 'none';
+      (block as HTMLElement).style.visibility = matches ? 'visible' : 'hidden';
+    });
+  }, [blockSearch]);
+
+  // Only apply search when blockSearch changes, not on every mutation
+  useEffect(() => {
+    applyBlockSearch();
+  }, [applyBlockSearch]);
+
+  return (
+    <div ref={rootContainerRef} className="custom-theme-builder-root" style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#000' }}>
+      {/* Top Bar - WordPress Elementor Style */}
+      <div className="elementor-top-bar">
+        <div className="elementor-top-bar-left">
+          <div className="elementor-top-bar-icon" onClick={() => navigate('/themes/all-themes')} title="Menu">☰</div>
+          <div className="elementor-top-bar-icon" title="Add">+</div>
+          <div className="elementor-top-bar-icon" title="Responsive">⊞</div>
+          <div className="elementor-top-bar-icon" title="Settings">⚙</div>
+        </div>
+        <div className="elementor-top-bar-center">
+          <div data-page-manager style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button
+              onClick={() => setShowPageManager(!showPageManager)}
+              style={{
+                padding: '6px 12px',
+                background: 'transparent',
+                border: 'none',
+                color: '#fff',
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
+            >
+              <span>{pages.find(p => p.id === currentPageId)?.name || 'Home'}</span>
+              <span style={{ fontSize: 10 }}>▼</span>
+            </button>
+            {showPageManager && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                marginTop: 4,
+                background: '#2d2d2d',
+                border: '1px solid #3d3d3d',
+                borderRadius: 4,
+                minWidth: 250,
+                maxHeight: 400,
+                overflowY: 'auto',
+                zIndex: 1000,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              }}>
+                <div style={{ padding: '8px 12px', borderBottom: '1px solid #3d3d3d', fontSize: 11, color: '#a4afb7', fontWeight: 600 }}>
+                  PAGES ({pages.length})
+                </div>
+                {pages.map((page) => (
+                  <div
+                    key={page.id}
+                    style={{
+                      padding: '10px 12px',
+                      borderBottom: '1px solid #3d3d3d',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: page.id === currentPageId ? '#3d3d3d' : 'transparent',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (page.id !== currentPageId) {
+                        e.currentTarget.style.background = '#353535';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (page.id !== currentPageId) {
+                        e.currentTarget.style.background = 'transparent';
+                      }
+                    }}
+                    onClick={() => {
+                      switchPage(page.id);
+                      setShowPageManager(false);
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+                      <input
+                        type="text"
+                        value={page.name}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          renamePage(page.id, e.target.value);
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#fff',
+                          fontSize: 13,
+                          padding: '2px 4px',
+                          flex: 1,
+                          outline: 'none',
+                        }}
+                      />
+                      {page.id === currentPageId && (
+                        <span style={{ fontSize: 10, color: '#93003c' }}>●</span>
+                      )}
+                    </div>
+                    {pages.length > 1 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deletePage(page.id);
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#dc2626',
+                          cursor: 'pointer',
+                          padding: '4px 8px',
+                          fontSize: 12,
+                          borderRadius: 3,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#dc262620';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <div
+                  onClick={() => {
+                    addPage();
+                    setShowPageManager(false);
+                  }}
+                  style={{
+                    padding: '10px 12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    color: '#93003c',
+                    fontSize: 13,
+                    fontWeight: 500,
+                    borderTop: '1px solid #3d3d3d',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#3d3d3d';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                  }}
+                >
+                  <span>+</span>
+                  <span>Add New Page</span>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="elementor-top-bar-icon" title="Settings">⚙</div>
+          <div className="elementor-device-switcher">
+            <button
+              className={`elementor-device-btn ${currentDevice === 'desktop' ? 'active' : ''}`}
+              onClick={() => {
+                try {
+                  const editor = editorInstance.current;
+                  if (editor && editor.setDevice) {
+                    editor.setDevice('desktop');
+                    setCurrentDevice('desktop');
+                  }
+                } catch (e) {
+                  console.error('Error switching to desktop:', e);
+                }
+              }}
+              title="Desktop"
+            >
+              💻
+            </button>
+            <button
+              className={`elementor-device-btn ${currentDevice === 'tablet' ? 'active' : ''}`}
+              onClick={() => {
+                try {
+                  const editor = editorInstance.current;
+                  if (editor && editor.setDevice) {
+                    editor.setDevice('tablet');
+                    setCurrentDevice('tablet');
+                  }
+                } catch (e) {
+                  console.error('Error switching to tablet:', e);
+                }
+              }}
+              title="Tablet"
+            >
+              📱
+            </button>
+            <button
+              className={`elementor-device-btn ${currentDevice === 'mobile' ? 'active' : ''}`}
+              onClick={() => {
+                try {
+                  const editor = editorInstance.current;
+                  if (editor && editor.setDevice) {
+                    editor.setDevice('mobile');
+                    setCurrentDevice('mobile');
+                  }
+                } catch (e) {
+                  console.error('Error switching to mobile:', e);
+                }
+              }}
+              title="Mobile"
+            >
+              📱
+            </button>
+          </div>
+        </div>
+        <div className="elementor-top-bar-right">
+          <div className="elementor-top-bar-icon" title="Link">🔗</div>
+          <div className="elementor-top-bar-icon" title="Search">🔍</div>
+          <div className="elementor-top-bar-icon" onClick={() => setShowTutorial(true)} title="Help">?</div>
+          <div className="elementor-top-bar-icon" onClick={previewTheme} title="Preview">👁</div>
+          <button
+            className="elementor-publish-btn"
+            onClick={() => saveToLocal(true)}
+            disabled={saving}
+          >
+            {saving ? 'Publishing...' : 'Publish'}
+          </button>
+        </div>
+      </div>
+
+      {/* Main Editor */}
+      <div className="builder-main-editor" style={{ flex: 1, display: 'flex', overflow: 'hidden', background: '#f1f3f5' }}>
+        {/* Left - Elementor Panels */}
+        <div className="builder-left-panel">
+          <div className="elementor-elements-header">Elements</div>
+          <div className="elementor-primary-tabs">
+            <button
+              className={`elementor-primary-tab ${activeSidebarSection === 'widgets' ? 'active' : ''}`}
+              onClick={() => setActiveSidebarSection('widgets')}
+            >
+              Widgets
+            </button>
+            <button
+              className={`elementor-primary-tab ${activeSidebarSection === 'globals' ? 'active' : ''}`}
+              onClick={() => setActiveSidebarSection('globals')}
+            >
+              Globals
+            </button>
+            <button
+              className={`elementor-primary-tab ${activeSidebarSection === 'structure' ? 'active' : ''}`}
+              onClick={() => setActiveSidebarSection('structure')}
+            >
+              Structure
+            </button>
+            <button
+              className={`elementor-primary-tab ${activeSidebarSection === 'style' ? 'active' : ''}`}
+              onClick={() => setActiveSidebarSection('style')}
+            >
+              Style
+            </button>
+          </div>
+
+          {(activeSidebarSection === 'widgets' || activeSidebarSection === 'globals') && (
+            <div className="elementor-search-widget">
+              <span className="elementor-search-icon">🔍</span>
+              <input
+                value={blockSearch}
+                onChange={(e) => setBlockSearch(e.target.value)}
+                placeholder="Search Widget..."
+              />
+            </div>
+          )}
+
+          <div className="elementor-left-scroll">
+            <div
+              className="elementor-blocks-wrapper"
+              style={{ display: activeSidebarSection === 'widgets' ? 'block' : 'none' }}
+              aria-hidden={activeSidebarSection !== 'widgets'}
+            >
+              <div id="blocks-panel" />
+            </div>
+
+            <div className="elementor-secondary-panel" style={{ display: activeSidebarSection === 'widgets' ? 'block' : 'none' }}>
+              <div className="elementor-secondary-title">Settings</div>
+              <div id="traits-panel" className="elementor-secondary-body" />
+            </div>
+
+            <div
+              className="elementor-blocks-wrapper elementor-globals-placeholder"
+              style={{ display: activeSidebarSection === 'globals' ? 'block' : 'none' }}
+              aria-hidden={activeSidebarSection !== 'globals'}
+            >
+              Globals coming soon
+            </div>
+
+            <div
+              className="elementor-panel-card"
+              style={{ display: activeSidebarSection === 'structure' ? 'block' : 'none' }}
+              aria-hidden={activeSidebarSection !== 'structure'}
+            >
+              <div className="elementor-panel-card-title">Structure</div>
+              <div
+                id="layers-panel"
+                className="elementor-panel-card-body"
+                style={{ display: 'block' }}
+              />
+            </div>
+
+            <div
+              className="elementor-panel-card"
+              style={{ display: activeSidebarSection === 'style' ? 'block' : 'none' }}
+              aria-hidden={activeSidebarSection !== 'style'}
+            >
+              <div className="elementor-panel-card-title">Style</div>
+              <div
+                id="style-panel"
+                className="elementor-panel-card-body elementor-style-body"
+                style={{ display: 'block' }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Center - Canvas - WordPress Elementor Style */}
+        <div className="builder-center-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#f1f3f5', position: 'relative' }}>
+          {/* Canvas Wrapper with Header and Footer */}
+          <div style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
+            {/* Canvas Header */}
+            <div className="elementor-canvas-header" style={{ width: '100%', maxWidth: '1200px', marginBottom: 0 }}>
+              <div className="elementor-canvas-site-name">{name || 'Ziplofy Theme'}</div>
+              <div className="elementor-canvas-page-name">{pages.find(p => p.id === currentPageId)?.name || 'Home'}</div>
+            </div>
+            
+            {/* Canvas Content */}
+            <div style={{ 
+              width: '100%', 
+              maxWidth: '1200px', 
+              background: '#fff', 
+              minHeight: '600px',
+              position: 'relative',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            }}>
+              {loading && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  minHeight: '600px',
+                  fontSize: 14,
+                  color: '#6b7280',
+                }}>
+                  Loading...
+                </div>
+              )}
+              {error && (
+                <div style={{
+                  padding: 12,
+                  background: '#fef2f2',
+                  color: '#dc2626',
+                  borderRadius: 6,
+                  fontSize: 13,
+                  border: '1px solid #fecaca',
+                  margin: '20px',
+                }}>
+                  {error}
+                </div>
+              )}
+              <div ref={editorRef} style={{ minHeight: '600px' }} />
+            </div>
+            
+            {/* Canvas Footer */}
+            <div className="elementor-canvas-footer" style={{ width: '100%', maxWidth: '1200px', marginTop: 0 }}>
+              Copyright © {new Date().getFullYear()} {name || 'Ziplofy Theme'} | Powered by{' '}
+              <a href="#" onClick={(e) => e.preventDefault()}>Ziplofy Theme Builder</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Tutorial Modal */}
+      {showTutorial && (
+        <ElementorTutorial onClose={() => setShowTutorial(false)} />
+      )}
+    </div>
+  );
+};
+
+export default CustomThemeBuilder;

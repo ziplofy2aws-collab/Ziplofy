@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const market_controller_1 = require("../controllers/market.controller");
+const router = (0, express_1.Router)();
+router.post('/', market_controller_1.createMarket);
+router.put('/:id', market_controller_1.updateMarket);
+router.delete('/:id', market_controller_1.deleteMarket);
+router.get('/store/:storeId', market_controller_1.getMarketsByStoreId);
+router.get('/store/:storeId/countries', market_controller_1.getMarketCountriesByStoreId);
+exports.default = router;

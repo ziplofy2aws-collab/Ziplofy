@@ -1,0 +1,1081 @@
+{
+  "version": "1.0.0",
+  "themeId": "studio",
+  "themeName": "Bloom",
+  "settings": {
+    "colors": {
+      "primary": "#be185d",
+      "background": "#fff7f3",
+      "text": "#431407",
+      "accent": "#be185d",
+      "surface": "#fff7f3",
+      "muted": "#6b7280",
+      "border": "#e5e7eb"
+    },
+    "typography": {
+      "fontFamily": "'Playfair Display', Georgia, serif",
+      "fontFamilyBody": "system-ui, -apple-system, sans-serif",
+      "baseSize": 16,
+      "lineHeight": 1.5,
+      "headingWeight": 600
+    },
+    "spacing": {
+      "sectionGap": 48,
+      "contentMaxWidth": 1200,
+      "pagePadding": 24
+    }
+  },
+  "sections": {
+    "announcement_bar": {
+      "id": "announcement_bar",
+      "type": "announcement-bar",
+      "enabled": true,
+      "settings": {
+        "enabled": true,
+        "message": "Bloom — Complimentary shipping on orders over ₹799",
+        "linkLabel": "Shop blooms",
+        "linkHref": "/products",
+        "timeToNext": 5,
+        "sectionWidth": "page",
+        "colorScheme": "scheme-4",
+        "dividerThickness": 0,
+        "paddingTop": 15,
+        "paddingBottom": 15,
+        "customCss": "",
+        "dismissible": false,
+        "icon": ""
+      },
+      "blocks": {
+        "announcement": {
+          "type": "announcement",
+          "settings": {
+            "text": "Bloom — Complimentary shipping on orders over ₹799"
+          }
+        }
+      },
+      "block_order": [
+        "announcement"
+      ]
+    },
+    "header": {
+      "id": "header",
+      "type": "header",
+      "enabled": true,
+      "settings": {
+        "sticky": true
+      },
+      "blocks": {
+        "logo": {
+          "type": "logo",
+          "settings": {
+            "text": "Bloom",
+            "tagline": "Soft essentials"
+          }
+        },
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "items": [
+              {
+                "label": "Shop",
+                "href": "/products"
+              },
+              {
+                "label": "Collections",
+                "href": "/collection"
+              },
+              {
+                "label": "About",
+                "href": "/#about"
+              }
+            ]
+          },
+          "nested_block_order": [
+            "link_shop",
+            "link_collections",
+            "link_about"
+          ]
+        }
+      },
+      "block_order": [
+        "logo",
+        "menu"
+      ]
+    },
+    "footer": {
+      "id": "footer",
+      "type": "footer",
+      "enabled": true,
+      "blocks": {
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "title": "Join our exclusive email list",
+            "subtitle": "Be the first to hear about new drops, offers, and styling tips.",
+            "placeholder": "Enter your email",
+            "buttonLabel": "Subscribe"
+          }
+        }
+      },
+      "block_order": [
+        "newsletter"
+      ]
+    },
+    "footer_utilities": {
+      "id": "footer_utilities",
+      "type": "footer-utilities",
+      "enabled": true,
+      "blocks": {
+        "copyright": {
+          "type": "copyright",
+          "settings": {
+            "text": "© 2026 My Store. All rights reserved."
+          }
+        },
+        "policy_links": {
+          "type": "policy_links",
+          "settings": {
+            "privacyLabel": "Privacy policy",
+            "privacyHref": "/pages/privacy",
+            "termsLabel": "Terms of service",
+            "termsHref": "/pages/terms"
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "instagram": "https://instagram.com",
+            "facebook": "https://facebook.com"
+          }
+        }
+      },
+      "block_order": [
+        "copyright",
+        "policy_links",
+        "social"
+      ]
+    }
+  },
+  "templates": {
+    "index": {
+      "name": "Home page",
+      "sections": {
+        "hero_main": {
+          "type": "hero",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Spring edit",
+            "title": "Wear the season",
+            "subtitle": "Light fabrics, warm tones, and pieces made for slow mornings and long evenings.",
+            "textAlign": "center",
+            "minHeight": 520,
+            "backgroundTone": "gradient",
+            "fullWidth": false,
+            "overlayOpacity": 0.35
+          },
+          "settings_field_order": [
+            "templates.index.sections.hero_main.settings.eyebrow",
+            "templates.index.sections.hero_main.settings.title",
+            "templates.index.sections.hero_main.settings.subtitle"
+          ],
+          "blocks": {
+            "primary_button": {
+              "type": "button",
+              "settings": {
+                "label": "Shop now",
+                "href": "/products"
+              },
+              "settings_field_order": [
+                "templates.index.sections.hero_main.blocks.primary_button.settings.label",
+                "templates.index.sections.hero_main.blocks.primary_button.settings.href"
+              ]
+            },
+            "secondary_button": {
+              "type": "button",
+              "settings": {
+                "label": "Learn more",
+                "href": "/#about"
+              },
+              "settings_field_order": [
+                "templates.index.sections.hero_main.blocks.secondary_button.settings.label",
+                "templates.index.sections.hero_main.blocks.secondary_button.settings.href"
+              ]
+            }
+          },
+          "block_order": [
+            "primary_button",
+            "secondary_button"
+          ]
+        },
+        "product_grid": {
+          "type": "featured-collection",
+          "enabled": true,
+          "settings": {
+            "productsToShow": 8,
+            "subtitle": "Hand-picked for you",
+            "columns": 4,
+            "gap": 24,
+            "showRating": true,
+            "emptyMessage": "No products yet."
+          },
+          "settings_field_order": [
+            "templates.index.sections.product_grid.settings.productsToShow"
+          ],
+          "blocks": {
+            "collection_header": {
+              "type": "collection-header",
+              "settings": {
+                "title": "Featured products",
+                "viewAllLabel": "View all",
+                "viewAllHref": "/products",
+                "subtitle": "Curated selection"
+              },
+              "nested_block_order": [
+                "collection_title",
+                "view_all_button"
+              ]
+            },
+            "product_card": {
+              "type": "product-card",
+              "settings": {
+                "showMedia": true,
+                "showTitle": true,
+                "showPrice": true
+              },
+              "nested_block_order": [
+                "media",
+                "product_title",
+                "price",
+                "quick_view",
+                "badge"
+              ],
+              "blocks": {
+                "quick_view": {
+                  "type": "quick-view",
+                  "settings": {
+                    "label": "Quick view",
+                    "show": true
+                  }
+                },
+                "badge": {
+                  "type": "badge",
+                  "settings": {
+                    "saleLabel": "Sale",
+                    "newLabel": "New"
+                  }
+                }
+              },
+              "block_order": [
+                "media",
+                "product_title",
+                "price",
+                "quick_view",
+                "badge"
+              ]
+            }
+          },
+          "block_order": [
+            "collection_header",
+            "product_card"
+          ]
+        }
+      },
+      "section_order": [
+        "hero_main",
+        "product_grid"
+      ]
+    },
+    "product": {
+      "name": "Product",
+      "sections": {
+        "product_main": {
+          "type": "product-main",
+          "enabled": true,
+          "settings": {
+            "layoutMode": "split",
+            "showSku": false,
+            "stickyBuyBox": true
+          },
+          "blocks": {
+            "product_media": {
+              "type": "product-media",
+              "settings": {
+                "showImage": true
+              }
+            },
+            "product_header": {
+              "type": "product-header",
+              "blocks": {
+                "vendor_line": {
+                  "type": "vendor-line",
+                  "settings": {
+                    "showVendor": true,
+                    "vendorPrefix": "Sold by"
+                  }
+                },
+                "product_title": {
+                  "type": "product-title",
+                  "settings": {
+                    "loadingLabel": "Loading…"
+                  }
+                }
+              },
+              "block_order": [
+                "vendor_line",
+                "product_title"
+              ],
+              "nested_block_order": [
+                "vendor_line",
+                "product_title"
+              ]
+            },
+            "product_content": {
+              "type": "product-content",
+              "blocks": {
+                "description": {
+                  "type": "description",
+                  "settings": {
+                    "showDescription": true
+                  }
+                },
+                "price_line": {
+                  "type": "price-line",
+                  "settings": {
+                    "priceFallback": "—"
+                  }
+                }
+              },
+              "block_order": [
+                "description",
+                "price_line"
+              ]
+            },
+            "buy_box": {
+              "type": "buy-box",
+              "blocks": {
+                "add_to_cart_button": {
+                  "type": "add-to-cart",
+                  "settings": {
+                    "label": "Add to cart",
+                    "addingLabel": "Adding…"
+                  }
+                },
+                "quantity_field": {
+                  "type": "qty",
+                  "settings": {
+                    "label": "Quantity",
+                    "min": 1
+                  }
+                },
+                "buy_now_button": {
+                  "type": "buy-now",
+                  "settings": {
+                    "label": "Buy now",
+                    "href": ""
+                  }
+                }
+              },
+              "block_order": [
+                "quantity_field",
+                "add_to_cart_button",
+                "buy_now_button"
+              ]
+            },
+            "trust_badges": {
+              "type": "trust",
+              "blocks": {
+                "shipping_badge": {
+                  "type": "badge",
+                  "settings": {
+                    "text": "Free shipping over ₹799"
+                  }
+                },
+                "returns_badge": {
+                  "type": "badge",
+                  "settings": {
+                    "text": "30-day returns"
+                  }
+                }
+              },
+              "block_order": [
+                "shipping_badge",
+                "returns_badge"
+              ]
+            }
+          },
+          "block_order": [
+            "product_media",
+            "product_header",
+            "product_content",
+            "buy_box",
+            "trust_badges"
+          ]
+        }
+      },
+      "section_order": [
+        "product_main"
+      ]
+    },
+    "cart": {
+      "name": "Cart",
+      "sections": {
+        "cart_main": {
+          "type": "cart-main",
+          "enabled": true,
+          "settings": {
+            "title": "Your cart",
+            "subtitle": "Review items before checkout",
+            "shippingNote": "Shipping calculated at checkout",
+            "taxDisclaimer": "Taxes may apply"
+          },
+          "blocks": {
+            "empty_state": {
+              "type": "empty-state",
+              "blocks": {
+                "empty_message": {
+                  "type": "empty-message",
+                  "settings": {
+                    "emptyTitle": "Your cart is empty"
+                  }
+                },
+                "continue_link": {
+                  "type": "continue-link",
+                  "settings": {
+                    "label": "Continue shopping",
+                    "href": "/"
+                  }
+                }
+              },
+              "block_order": [
+                "empty_message",
+                "continue_link"
+              ]
+            },
+            "line_items": {
+              "type": "line-items",
+              "blocks": {
+                "item_actions": {
+                  "type": "item-actions",
+                  "settings": {
+                    "removeLabel": "Remove",
+                    "loadingLabel": "Loading…"
+                  }
+                }
+              },
+              "block_order": [
+                "item_actions"
+              ]
+            },
+            "cart_summary": {
+              "type": "cart-summary",
+              "blocks": {
+                "subtotal": {
+                  "type": "subtotal",
+                  "settings": {
+                    "label": "Subtotal:"
+                  }
+                },
+                "checkout_button": {
+                  "type": "checkout",
+                  "settings": {
+                    "label": "Checkout",
+                    "helperText": "Secure payment"
+                  }
+                },
+                "shipping_line": {
+                  "type": "shipping",
+                  "settings": {
+                    "label": "Shipping",
+                    "fallback": "Calculated at checkout"
+                  }
+                }
+              },
+              "block_order": [
+                "subtotal",
+                "shipping_line",
+                "checkout_button"
+              ]
+            }
+          },
+          "block_order": [
+            "empty_state",
+            "line_items",
+            "cart_summary"
+          ]
+        }
+      },
+      "section_order": [
+        "cart_main"
+      ]
+    },
+    "login": {
+      "name": "Login",
+      "sections": {
+        "login_main": {
+          "type": "login-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Sign in",
+            "subtitle": "Welcome back — enter your details to continue.",
+            "backgroundStyle": "split",
+            "sidePanelTitle": "Welcome back"
+          },
+          "blocks": {
+            "form_fields": {
+              "type": "form-fields",
+              "blocks": {
+                "email_field": {
+                  "type": "email",
+                  "settings": {
+                    "placeholder": "Email"
+                  }
+                },
+                "password_field": {
+                  "type": "password",
+                  "settings": {
+                    "placeholder": "Password"
+                  }
+                }
+              },
+              "block_order": [
+                "email_field",
+                "password_field"
+              ],
+              "nested_block_order": [
+                "email_field",
+                "password_field"
+              ]
+            },
+            "primary_button": {
+              "type": "primary-button",
+              "settings": {
+                "label": "Continue",
+                "loadingLabel": "Please wait…"
+              }
+            },
+            "footer_link": {
+              "type": "footer-link",
+              "blocks": {
+                "signup_prompt": {
+                  "type": "prompt",
+                  "settings": {
+                    "text": "New here?"
+                  }
+                },
+                "signup_link": {
+                  "type": "link",
+                  "settings": {
+                    "label": "Create an account",
+                    "href": "/auth/signup"
+                  }
+                }
+              },
+              "block_order": [
+                "signup_prompt",
+                "signup_link"
+              ]
+            },
+            "forgot_password_link": {
+              "type": "forgot-link",
+              "settings": {
+                "label": "Forgot password?",
+                "href": "/auth/forgot-password"
+              }
+            },
+            "remember_me": {
+              "type": "checkbox",
+              "settings": {
+                "label": "Remember me"
+              }
+            }
+          },
+          "block_order": [
+            "form_fields",
+            "primary_button",
+            "footer_link",
+            "forgot_password_link",
+            "remember_me"
+          ]
+        }
+      },
+      "section_order": [
+        "login_main"
+      ]
+    },
+    "signup": {
+      "name": "Sign up",
+      "sections": {
+        "signup_main": {
+          "type": "signup-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Join us",
+            "title": "Create account",
+            "subtitle": "Start shopping with a free account.",
+            "termsIntro": "By creating an account you agree to our"
+          },
+          "blocks": {
+            "form_fields": {
+              "type": "form-fields",
+              "blocks": {
+                "first_name_field": {
+                  "type": "first-name",
+                  "settings": {
+                    "placeholder": "First name"
+                  }
+                },
+                "last_name_field": {
+                  "type": "last-name",
+                  "settings": {
+                    "placeholder": "Last name"
+                  }
+                },
+                "email_field": {
+                  "type": "email",
+                  "settings": {
+                    "placeholder": "Email"
+                  }
+                },
+                "password_field": {
+                  "type": "password",
+                  "settings": {
+                    "placeholder": "Password"
+                  }
+                },
+                "confirm_password_field": {
+                  "type": "password",
+                  "settings": {
+                    "placeholder": "Confirm password",
+                    "label": "Confirm password"
+                  }
+                }
+              },
+              "block_order": [
+                "first_name_field",
+                "last_name_field",
+                "email_field",
+                "password_field"
+              ]
+            },
+            "primary_button": {
+              "type": "primary-button",
+              "settings": {
+                "label": "Create account",
+                "loadingLabel": "Please wait…"
+              }
+            },
+            "footer_link": {
+              "type": "footer-link",
+              "blocks": {
+                "login_prompt": {
+                  "type": "prompt",
+                  "settings": {
+                    "text": "Already a member?"
+                  }
+                },
+                "login_link": {
+                  "type": "link",
+                  "settings": {
+                    "label": "Sign in",
+                    "href": "/auth/login"
+                  }
+                }
+              },
+              "block_order": [
+                "login_prompt",
+                "login_link"
+              ]
+            },
+            "terms_checkbox": {
+              "type": "terms",
+              "settings": {
+                "label": "I agree to the Terms of Service",
+                "href": "/terms"
+              }
+            }
+          },
+          "block_order": [
+            "form_fields",
+            "primary_button",
+            "footer_link",
+            "terms_checkbox"
+          ]
+        }
+      },
+      "section_order": [
+        "signup_main"
+      ]
+    },
+    "forgot_password": {
+      "name": "Forgot password",
+      "sections": {
+        "forgot_main": {
+          "type": "forgot-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Reset your password",
+            "subtitle": "Enter your email and we will send you a link to reset your password."
+          },
+          "blocks": {
+            "form_fields": {
+              "type": "form-fields",
+              "blocks": {
+                "email_field": {
+                  "type": "email",
+                  "settings": {
+                    "placeholder": "Email"
+                  }
+                }
+              },
+              "block_order": [
+                "email_field"
+              ]
+            },
+            "primary_button": {
+              "type": "primary-button",
+              "settings": {
+                "label": "Send reset link"
+              }
+            },
+            "success_message": {
+              "type": "success-message",
+              "settings": {
+                "text": "Check your inbox for reset instructions."
+              }
+            },
+            "footer_link": {
+              "type": "footer-link",
+              "blocks": {
+                "back_link": {
+                  "type": "link",
+                  "settings": {
+                    "label": "Back to sign in",
+                    "href": "/auth/login"
+                  }
+                }
+              },
+              "block_order": [
+                "back_link"
+              ]
+            },
+            "resend_hint": {
+              "type": "hint",
+              "settings": {
+                "text": "Did not receive an email? Check spam or try again."
+              }
+            }
+          },
+          "block_order": [
+            "form_fields",
+            "primary_button",
+            "success_message",
+            "footer_link",
+            "resend_hint"
+          ]
+        }
+      },
+      "section_order": [
+        "forgot_main"
+      ]
+    },
+    "profile": {
+      "name": "Profile",
+      "sections": {
+        "profile_main": {
+          "type": "profile-main",
+          "enabled": true,
+          "settings": {
+            "title": "Profile",
+            "subtitle": "Update your personal information.",
+            "avatarSize": 72
+          },
+          "blocks": {
+            "signed_out": {
+              "type": "signed-out",
+              "blocks": {
+                "empty_message": {
+                  "type": "empty-message",
+                  "settings": {
+                    "text": "Please sign in to view your profile."
+                  }
+                },
+                "sign_in_button": {
+                  "type": "sign-in-button",
+                  "settings": {
+                    "label": "Sign in"
+                  }
+                }
+              },
+              "block_order": [
+                "empty_message",
+                "sign_in_button"
+              ]
+            },
+            "profile_form": {
+              "type": "profile-form",
+              "blocks": {
+                "first_name_field": {
+                  "type": "first-name",
+                  "settings": {
+                    "placeholder": "First name"
+                  }
+                },
+                "last_name_field": {
+                  "type": "last-name",
+                  "settings": {
+                    "placeholder": "Last name"
+                  }
+                },
+                "phone_field": {
+                  "type": "phone",
+                  "settings": {
+                    "placeholder": "Phone"
+                  }
+                },
+                "email_field": {
+                  "type": "email",
+                  "settings": {
+                    "label": "Email",
+                    "helperText": "Contact email cannot be changed here."
+                  }
+                },
+                "address_section": {
+                  "type": "address",
+                  "settings": {
+                    "heading": "Shipping address",
+                    "helperText": "Used for order delivery"
+                  }
+                }
+              },
+              "block_order": [
+                "email_field",
+                "first_name_field",
+                "last_name_field",
+                "phone_field"
+              ],
+              "nested_block_order": [
+                "email_field",
+                "first_name_field",
+                "last_name_field",
+                "phone_field"
+              ]
+            },
+            "save_button": {
+              "type": "save-button",
+              "settings": {
+                "label": "Save",
+                "savingLabel": "Saving…"
+              }
+            },
+            "avatar": {
+              "type": "avatar",
+              "settings": {
+                "initialsFallback": "U",
+                "show": true
+              }
+            }
+          },
+          "block_order": [
+            "avatar",
+            "signed_out",
+            "profile_form",
+            "save_button"
+          ]
+        }
+      },
+      "section_order": [
+        "profile_main"
+      ]
+    },
+    "orders": {
+      "name": "Orders",
+      "sections": {
+        "orders_main": {
+          "type": "orders-main",
+          "enabled": true,
+          "settings": {
+            "title": "Your orders",
+            "subtitle": "Track purchases and order status."
+          },
+          "blocks": {
+            "loading_state": {
+              "type": "loading",
+              "settings": {
+                "message": "Loading orders…"
+              }
+            },
+            "empty_state": {
+              "type": "empty",
+              "settings": {
+                "message": "No orders yet.",
+                "ctaLabel": "Start shopping",
+                "ctaHref": "/products"
+              }
+            },
+            "order_card": {
+              "type": "order-card",
+              "blocks": {
+                "status_line": {
+                  "type": "status",
+                  "settings": {
+                    "prefix": "Status:"
+                  }
+                },
+                "order_total_line": {
+                  "type": "total-line",
+                  "settings": {
+                    "label": "Total"
+                  }
+                },
+                "order_date_line": {
+                  "type": "date-line",
+                  "settings": {
+                    "prefix": "Placed"
+                  }
+                },
+                "order_number_line": {
+                  "type": "number",
+                  "settings": {
+                    "prefix": "Order"
+                  }
+                },
+                "view_details": {
+                  "type": "link",
+                  "settings": {
+                    "label": "View details"
+                  }
+                },
+                "items_count_line": {
+                  "type": "items",
+                  "settings": {
+                    "suffix": "items"
+                  }
+                }
+              },
+              "block_order": [
+                "order_number_line",
+                "order_total_line",
+                "status_line",
+                "order_date_line",
+                "items_count_line",
+                "view_details"
+              ],
+              "nested_block_order": [
+                "order_total_line",
+                "status_line",
+                "order_date_line"
+              ]
+            }
+          },
+          "block_order": [
+            "loading_state",
+            "empty_state",
+            "order_card"
+          ]
+        }
+      },
+      "section_order": [
+        "orders_main"
+      ]
+    },
+    "preferences": {
+      "name": "Preferences",
+      "sections": {
+        "preferences_main": {
+          "type": "preferences-main",
+          "enabled": true,
+          "settings": {
+            "title": "Preferences",
+            "subtitle": "Manage notifications and language."
+          },
+          "blocks": {
+            "signed_out": {
+              "type": "signed-out",
+              "settings": {
+                "message": "Sign in to manage preferences."
+              }
+            },
+            "marketing_options": {
+              "type": "marketing",
+              "blocks": {
+                "email_marketing": {
+                  "type": "email",
+                  "settings": {
+                    "label": "Email marketing"
+                  }
+                },
+                "sms_marketing": {
+                  "type": "sms",
+                  "settings": {
+                    "label": "SMS marketing"
+                  }
+                },
+                "language_field": {
+                  "type": "language",
+                  "settings": {
+                    "label": "Language"
+                  }
+                }
+              },
+              "block_order": [
+                "language_field",
+                "email_marketing",
+                "sms_marketing"
+              ]
+            },
+            "save_button": {
+              "type": "save-button",
+              "settings": {
+                "label": "Save preferences",
+                "savingLabel": "Saving…"
+              }
+            },
+            "privacy_options": {
+              "type": "privacy",
+              "blocks": {
+                "cookies_toggle": {
+                  "type": "toggle",
+                  "settings": {
+                    "label": "Functional cookies",
+                    "description": "Required for cart and login"
+                  }
+                },
+                "analytics_toggle": {
+                  "type": "toggle",
+                  "settings": {
+                    "label": "Analytics"
+                  }
+                }
+              },
+              "block_order": [
+                "cookies_toggle",
+                "analytics_toggle"
+              ]
+            }
+          },
+          "block_order": [
+            "signed_out",
+            "marketing_options",
+            "save_button",
+            "privacy_options"
+          ]
+        }
+      },
+      "section_order": [
+        "preferences_main"
+      ]
+    }
+  },
+  "layout_order": {
+    "header": [
+      "announcement_bar",
+      "header"
+    ],
+    "footer": [
+      "footer",
+      "footer_utilities"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const shipping_zone_rate_controller_1 = require("../controllers/shipping-zone-rate.controller");
+const shippingZoneRateRouter = (0, express_1.Router)();
+shippingZoneRateRouter.post('/', shipping_zone_rate_controller_1.createShippingZoneRate);
+shippingZoneRateRouter.get('/zone/:shippingZoneId', shipping_zone_rate_controller_1.getShippingZoneRatesByZoneId);
+shippingZoneRateRouter.put('/:id', shipping_zone_rate_controller_1.updateShippingZoneRate);
+shippingZoneRateRouter.delete('/:id', shipping_zone_rate_controller_1.deleteShippingZoneRate);
+exports.default = shippingZoneRateRouter;

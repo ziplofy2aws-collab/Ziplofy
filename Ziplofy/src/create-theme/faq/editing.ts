@@ -1,0 +1,72 @@
+import type { CreateThemeEditing } from '../types';
+
+export const editing: CreateThemeEditing = {
+  sectionLabel: 'FAQ',
+  sectionSettingsOrder: [
+    { key: 'direction', label: 'Direction', type: 'text' },
+    { key: 'layoutAlignment', label: 'Alignment', type: 'text' },
+    { key: 'position', label: 'Position', type: 'text' },
+    { key: 'layoutGap', label: 'Gap', type: 'number' },
+    { key: 'sectionWidth', label: 'Width', type: 'text' },
+    { key: 'height', label: 'Height', type: 'text' },
+    { key: 'colorScheme', label: 'Color scheme', type: 'text' },
+    { key: 'backgroundMedia', label: 'Background media', type: 'text' },
+    { key: 'backgroundImageUrl', label: 'Background image', type: 'text' },
+    { key: 'borderStyle', label: 'Borders', type: 'text' },
+    { key: 'cornerRadius', label: 'Corner radius', type: 'number' },
+    { key: 'backgroundOverlay', label: 'Background overlay', type: 'boolean' },
+    { key: 'paddingTop', label: 'Top', type: 'number' },
+    { key: 'paddingBottom', label: 'Bottom', type: 'number' },
+    { key: 'customCss', label: 'Custom CSS', type: 'textarea' },
+  ],
+  blocks: [
+    {
+      blockId: 'heading',
+      label: 'Heading',
+      settingsOrder: [{ key: 'heading', label: 'Text', type: 'textarea' }],
+    },
+    {
+      blockId: 'accordion',
+      label: 'Accordion',
+      settingsOrder: [
+        { key: 'icon', label: 'Icon', type: 'text' },
+        { key: 'dividers', label: 'Dividers', type: 'boolean' },
+        { key: 'headingTypographyPreset', label: 'Heading preset', type: 'text' },
+        { key: 'inheritColorScheme', label: 'Inherit color scheme', type: 'boolean' },
+        { key: 'borderStyle', label: 'Style', type: 'text' },
+        { key: 'cornerRadius', label: 'Corner radius', type: 'number' },
+        { key: 'paddingTop', label: 'Top', type: 'number' },
+        { key: 'paddingBottom', label: 'Bottom', type: 'number' },
+        { key: 'paddingLeft', label: 'Left', type: 'number' },
+        { key: 'paddingRight', label: 'Right', type: 'number' },
+      ],
+    },
+    {
+      blockId: 'accordion_row',
+      label: 'Accordion row',
+      settingsOrder: [
+        { key: 'heading', label: 'Heading', type: 'text' },
+        { key: 'openByDefault', label: 'Open row by default', type: 'boolean' },
+        { key: 'rowIcon', label: 'Icon', type: 'text' },
+        { key: 'rowImageIconUrl', label: 'Image icon', type: 'text' },
+        { key: 'rowIconWidth', label: 'Width', type: 'number' },
+      ],
+    },
+    {
+      blockId: 'text',
+      label: 'Text',
+      settingsOrder: [
+        { key: 'text', label: 'Text', type: 'textarea' },
+        { key: 'width', label: 'Width', type: 'text' },
+        { key: 'maxWidth', label: 'Max width', type: 'text' },
+        { key: 'alignment', label: 'Alignment', type: 'text' },
+        { key: 'typographyPreset', label: 'Preset', type: 'text' },
+        { key: 'backgroundEnabled', label: 'Background', type: 'boolean' },
+        { key: 'paddingTop', label: 'Top', type: 'number' },
+        { key: 'paddingBottom', label: 'Bottom', type: 'number' },
+        { key: 'paddingLeft', label: 'Left', type: 'number' },
+        { key: 'paddingRight', label: 'Right', type: 'number' },
+      ],
+    },
+  ],
+};

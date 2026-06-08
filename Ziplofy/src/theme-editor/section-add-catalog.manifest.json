@@ -1,0 +1,1228 @@
+{
+  "version": 1,
+  "description": "Add-section catalog manifest. Source for section-element-catalog.json generation. Keep in sync with add-section-catalog.ts.",
+  "groups": {
+    "header": {
+      "standalone": [
+        "announcement-bar"
+      ],
+      "categoryOrder": [
+        "layout"
+      ],
+      "categories": {
+        "layout": {
+          "label": "Layout",
+          "itemIds": [
+            "header",
+            "divider"
+          ]
+        }
+      }
+    },
+    "template": {
+      "standalone": [],
+      "categoryOrder": [
+        "banners",
+        "collections",
+        "forms",
+        "layout",
+        "products",
+        "storytelling",
+        "text"
+      ],
+      "categories": {
+        "banners": {
+          "label": "Banners",
+          "itemIds": [
+            "hero",
+            "hero-bottom-aligned",
+            "hero-marquee",
+            "large-logo",
+            "layered-slideshow",
+            "slideshow-full-frame",
+            "slideshow-inset",
+            "split-showcase"
+          ]
+        },
+        "collections": {
+          "label": "Collections",
+          "itemIds": [
+            "collection-links-spotlight",
+            "collection-links-text",
+            "collection-list-bento",
+            "collection-list-carousel",
+            "collection-list-editorial",
+            "collection-list-grid"
+          ]
+        },
+        "forms": {
+          "label": "Forms",
+          "itemIds": [
+            "contact-form",
+            "email-signup"
+          ]
+        },
+        "layout": {
+          "label": "Layout",
+          "itemIds": [
+            "custom-liquid",
+            "custom-section",
+            "divider"
+          ]
+        },
+        "products": {
+          "label": "Products",
+          "itemIds": [
+            "featured-collection-carousel",
+            "featured-collection-editorial",
+            "featured-collection-grid",
+            "featured-product",
+            "product-highlight",
+            "product-hotspots",
+            "recommended-products"
+          ]
+        },
+        "storytelling": {
+          "label": "Storytelling",
+          "itemIds": [
+            "blog-posts-carousel",
+            "blog-posts-editorial",
+            "blog-posts-grid",
+            "storytelling-carousel",
+            "editorial",
+            "editorial-jumbo",
+            "image-compare",
+            "image-with-text",
+            "logo",
+            "video"
+          ]
+        },
+        "text": {
+          "label": "Text",
+          "itemIds": [
+            "faq",
+            "icons-with-text",
+            "text-marquee",
+            "multicolumn",
+            "pull-quote",
+            "rich-text"
+          ]
+        }
+      }
+    },
+    "footer": {
+      "standalone": [],
+      "categoryOrder": [
+        "banners",
+        "footer",
+        "forms",
+        "layout",
+        "products",
+        "storytelling",
+        "text"
+      ],
+      "categories": {
+        "banners": {
+          "label": "Banners",
+          "itemIds": [
+            "hero",
+            "hero-bottom-aligned",
+            "hero-marquee",
+            "large-logo",
+            "split-showcase"
+          ]
+        },
+        "forms": {
+          "label": "Forms",
+          "itemIds": [
+            "contact-form",
+            "email-signup"
+          ]
+        },
+        "layout": {
+          "label": "Layout",
+          "itemIds": [
+            "custom-liquid",
+            "custom-section",
+            "divider"
+          ]
+        },
+        "products": {
+          "label": "Products",
+          "itemIds": [
+            "product-highlight"
+          ]
+        },
+        "storytelling": {
+          "label": "Storytelling",
+          "itemIds": [
+            "editorial",
+            "editorial-jumbo",
+            "image-compare",
+            "image-with-text",
+            "logo",
+            "video"
+          ]
+        },
+        "text": {
+          "label": "Text",
+          "itemIds": [
+            "faq",
+            "icons-with-text",
+            "multicolumn",
+            "pull-quote",
+            "rich-text"
+          ]
+        },
+        "footer": {
+          "label": "Footer",
+          "itemIds": [
+            "footer",
+            "policies-links"
+          ]
+        }
+      }
+    }
+  },
+  "items": {
+    "announcement-bar": {
+      "label": "Announcement bar",
+      "icon": "marquee",
+      "keywords": [
+        "banner",
+        "promo",
+        "ticker"
+      ],
+      "previewVariant": "announcement-bar",
+      "previewCaption": "Share promotions and store news at the top of every page"
+    },
+    "hero": {
+      "label": "Hero",
+      "icon": "hero",
+      "previewVariant": "hero",
+      "previewCaption": "Hero"
+    },
+    "hero-bottom-aligned": {
+      "label": "Hero: Bottom aligned",
+      "icon": "hero",
+      "keywords": [
+        "bottom",
+        "aligned"
+      ],
+      "previewVariant": "hero-bottom-aligned",
+      "previewCaption": "Hero: Bottom aligned"
+    },
+    "hero-marquee": {
+      "label": "Hero: Marquee",
+      "icon": "hero",
+      "keywords": [
+        "marquee",
+        "scroll"
+      ],
+      "previewVariant": "hero-marquee",
+      "previewCaption": "Hero: Marquee"
+    },
+    "large-logo": {
+      "label": "Large logo",
+      "icon": "hero",
+      "keywords": [
+        "logo",
+        "brand"
+      ],
+      "previewVariant": "large-logo",
+      "previewCaption": "Large logo"
+    },
+    "layered-slideshow": {
+      "label": "Layered slideshow",
+      "icon": "slideshow",
+      "keywords": [
+        "carousel",
+        "layers"
+      ],
+      "previewVariant": "layered-slideshow",
+      "previewCaption": "Layered slideshow"
+    },
+    "slideshow-full-frame": {
+      "label": "Slideshow: Full frame",
+      "icon": "slideshow",
+      "keywords": [
+        "carousel",
+        "full"
+      ],
+      "previewVariant": "slideshow-full-frame",
+      "previewCaption": "Slideshow: Full frame"
+    },
+    "slideshow-inset": {
+      "label": "Slideshow: Inset",
+      "icon": "slideshow",
+      "keywords": [
+        "carousel",
+        "inset"
+      ],
+      "previewVariant": "slideshow-inset",
+      "previewCaption": "Slideshow: Inset"
+    },
+    "split-showcase": {
+      "label": "Split showcase",
+      "icon": "hero",
+      "keywords": [
+        "split",
+        "showcase"
+      ],
+      "previewVariant": "split-showcase",
+      "previewCaption": "Split showcase"
+    },
+    "collection-links-spotlight": {
+      "label": "Collection links: Spotlight",
+      "icon": "link",
+      "keywords": [
+        "collection",
+        "links",
+        "spotlight"
+      ],
+      "previewVariant": "collection-links-spotlight",
+      "previewCaption": "Collection links: Spotlight"
+    },
+    "collection-links-text": {
+      "label": "Collection links: Text",
+      "icon": "link",
+      "keywords": [
+        "collection",
+        "links",
+        "text"
+      ],
+      "previewVariant": "collection-links-text",
+      "previewCaption": "Collection links: Text"
+    },
+    "collection-list-bento": {
+      "label": "Collection list: Bento",
+      "icon": "hero",
+      "keywords": [
+        "collection",
+        "list",
+        "bento",
+        "grid"
+      ],
+      "previewVariant": "collection-list-bento",
+      "previewCaption": "Collection list: Bento"
+    },
+    "collection-list-carousel": {
+      "label": "Collection list: Carousel",
+      "icon": "hero",
+      "keywords": [
+        "collection",
+        "list",
+        "carousel",
+        "slider"
+      ],
+      "previewVariant": "collection-list-carousel",
+      "previewCaption": "Collection list: Carousel"
+    },
+    "collection-list-editorial": {
+      "label": "Collection list: Editorial",
+      "icon": "hero",
+      "keywords": [
+        "collection",
+        "list",
+        "editorial",
+        "story"
+      ],
+      "previewVariant": "collection-list-editorial",
+      "previewCaption": "Collection list: Editorial"
+    },
+    "collection-list-grid": {
+      "label": "Collection list: Grid",
+      "icon": "hero",
+      "keywords": [
+        "collection",
+        "list",
+        "grid",
+        "categories"
+      ],
+      "previewVariant": "collection-list-grid",
+      "previewCaption": "Collection list: Grid"
+    },
+    "contact-form": {
+      "label": "Contact form",
+      "icon": "form",
+      "keywords": [
+        "email",
+        "message",
+        "inquiry",
+        "contact"
+      ],
+      "previewVariant": "contact-form",
+      "previewCaption": "Let customers send you a message"
+    },
+    "email-signup": {
+      "label": "Email signup",
+      "icon": "form",
+      "keywords": [
+        "newsletter",
+        "subscribe",
+        "mailing"
+      ],
+      "previewVariant": "newsletter",
+      "previewCaption": "Collect emails with a signup form"
+    },
+    "custom-liquid": {
+      "label": "Custom Liquid",
+      "icon": "code",
+      "keywords": [
+        "liquid",
+        "code",
+        "html",
+        "custom"
+      ],
+      "previewVariant": "text-block",
+      "previewCaption": "Add custom Liquid code to your theme"
+    },
+    "custom-section": {
+      "label": "Custom section",
+      "icon": "blocks",
+      "keywords": [
+        "blank",
+        "custom",
+        "blocks"
+      ],
+      "previewVariant": "custom-section",
+      "previewCaption": "Build a section with blocks and settings"
+    },
+    "divider": {
+      "label": "Divider",
+      "icon": "blocks",
+      "keywords": [
+        "line",
+        "separator",
+        "rule"
+      ],
+      "previewVariant": "divider",
+      "previewCaption": "A horizontal line to separate content"
+    },
+    "header": {
+      "label": "Header",
+      "icon": "section",
+      "keywords": [
+        "navigation",
+        "menu",
+        "logo",
+        "search",
+        "cart"
+      ],
+      "previewVariant": "header",
+      "previewCaption": "Store logo, navigation, and utility icons"
+    },
+    "featured-collection-carousel": {
+      "label": "Featured collection: Carousel",
+      "icon": "blocks",
+      "keywords": [
+        "collection",
+        "carousel",
+        "slider"
+      ],
+      "previewVariant": "featured-collection-carousel",
+      "previewCaption": "Featured collection: Carousel"
+    },
+    "featured-collection-editorial": {
+      "label": "Featured collection: Editorial",
+      "icon": "blocks",
+      "keywords": [
+        "collection",
+        "editorial",
+        "story"
+      ],
+      "previewVariant": "featured-collection-editorial",
+      "previewCaption": "Featured collection: Editorial"
+    },
+    "featured-collection-grid": {
+      "label": "Featured collection: Grid",
+      "icon": "blocks",
+      "keywords": [
+        "collection",
+        "grid"
+      ],
+      "previewVariant": "featured-collection-grid",
+      "previewCaption": "Featured collection: Grid"
+    },
+    "featured-product": {
+      "label": "Featured product",
+      "icon": "blocks",
+      "keywords": [
+        "single",
+        "spotlight"
+      ],
+      "previewVariant": "featured-product",
+      "previewCaption": "Featured product"
+    },
+    "product-highlight": {
+      "label": "Product highlight",
+      "icon": "blocks",
+      "keywords": [
+        "highlight",
+        "spotlight"
+      ],
+      "previewVariant": "product-highlight",
+      "previewCaption": "Product highlight"
+    },
+    "product-hotspots": {
+      "label": "Product hotspots",
+      "icon": "blocks",
+      "keywords": [
+        "hotspots",
+        "interactive",
+        "image"
+      ],
+      "previewVariant": "product-hotspots",
+      "previewCaption": "Product hotspots"
+    },
+    "recommended-products": {
+      "label": "Recommended products",
+      "icon": "blocks",
+      "keywords": [
+        "recommendations",
+        "related",
+        "upsell"
+      ],
+      "previewVariant": "recommended-products",
+      "previewCaption": "Recommended products"
+    },
+    "blog-posts-carousel": {
+      "label": "Blog posts: Carousel",
+      "icon": "blog",
+      "keywords": [
+        "blog",
+        "posts",
+        "carousel",
+        "slider"
+      ],
+      "previewVariant": "blog-posts-carousel",
+      "previewCaption": "Blog posts: Carousel"
+    },
+    "blog-posts-editorial": {
+      "label": "Blog posts: Editorial",
+      "icon": "blog",
+      "keywords": [
+        "blog",
+        "posts",
+        "editorial",
+        "article"
+      ],
+      "previewVariant": "blog-posts-editorial",
+      "previewCaption": "Blog posts: Editorial"
+    },
+    "blog-posts-grid": {
+      "label": "Blog posts: Grid",
+      "icon": "blog",
+      "keywords": [
+        "blog",
+        "posts",
+        "grid",
+        "list"
+      ],
+      "previewVariant": "blog-posts-grid",
+      "previewCaption": "Blog posts: Grid"
+    },
+    "storytelling-carousel": {
+      "label": "Carousel",
+      "icon": "blocks",
+      "keywords": [
+        "carousel",
+        "slides"
+      ],
+      "previewVariant": "storytelling-carousel",
+      "previewCaption": "Carousel"
+    },
+    "logo": {
+      "label": "Logo",
+      "icon": "blocks",
+      "keywords": [
+        "brand"
+      ],
+      "previewVariant": "storytelling-logo",
+      "previewCaption": "Logo"
+    },
+    "editorial": {
+      "label": "Editorial",
+      "icon": "text",
+      "keywords": [
+        "story",
+        "article"
+      ],
+      "previewVariant": "storytelling-editorial",
+      "previewCaption": "Editorial"
+    },
+    "editorial-jumbo": {
+      "label": "Editorial: Jumbo text",
+      "icon": "text",
+      "keywords": [
+        "large",
+        "display",
+        "headline"
+      ],
+      "previewVariant": "storytelling-editorial-jumbo",
+      "previewCaption": "Editorial: Jumbo text"
+    },
+    "image-compare": {
+      "label": "Image compare",
+      "icon": "blocks",
+      "keywords": [
+        "before",
+        "after",
+        "slider"
+      ],
+      "previewVariant": "image-compare",
+      "previewCaption": "Image compare"
+    },
+    "image-with-text": {
+      "label": "Image with text",
+      "icon": "blocks",
+      "keywords": [
+        "media",
+        "copy"
+      ],
+      "previewVariant": "image-with-text",
+      "previewCaption": "Image with text"
+    },
+    "video": {
+      "label": "Video",
+      "icon": "blocks",
+      "keywords": [
+        "media",
+        "youtube",
+        "vimeo"
+      ],
+      "previewVariant": "storytelling-video",
+      "previewCaption": "Video"
+    },
+    "faq": {
+      "label": "FAQ",
+      "icon": "text",
+      "keywords": [
+        "questions",
+        "accordion"
+      ],
+      "previewVariant": "faq",
+      "previewCaption": "FAQ"
+    },
+    "icons-with-text": {
+      "label": "Icons with text",
+      "icon": "text",
+      "keywords": [
+        "features",
+        "icons"
+      ],
+      "previewVariant": "icons-with-text",
+      "previewCaption": "Icons with text"
+    },
+    "text-marquee": {
+      "label": "Marquee",
+      "icon": "text",
+      "keywords": [
+        "ticker",
+        "scroll",
+        "announcement"
+      ],
+      "previewVariant": "text-marquee",
+      "previewCaption": "Marquee"
+    },
+    "multicolumn": {
+      "label": "Multicolumn",
+      "icon": "text",
+      "keywords": [
+        "columns",
+        "grid"
+      ],
+      "previewVariant": "multicolumn",
+      "previewCaption": "Multicolumn"
+    },
+    "pull-quote": {
+      "label": "Pull quote",
+      "icon": "text",
+      "keywords": [
+        "quote",
+        "testimonial"
+      ],
+      "previewVariant": "pull-quote",
+      "previewCaption": "Pull quote"
+    },
+    "rich-text": {
+      "label": "Rich text",
+      "icon": "text",
+      "keywords": [
+        "content",
+        "paragraph"
+      ],
+      "previewVariant": "rich-text",
+      "previewCaption": "Rich text"
+    },
+    "footer": {
+      "label": "Footer",
+      "icon": "section",
+      "keywords": [
+        "links",
+        "menu",
+        "copyright"
+      ],
+      "previewVariant": "footer-section",
+      "previewCaption": "Site links, social icons, and copyright"
+    },
+    "policies-links": {
+      "label": "Policies and links",
+      "icon": "section",
+      "keywords": [
+        "privacy",
+        "terms",
+        "legal",
+        "copyright"
+      ],
+      "previewVariant": "policies-links",
+      "previewCaption": "Copyright and policy links"
+    }
+  },
+  "insert": {
+    "template": {
+      "hero": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "hero-bottom-aligned": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "hero-marquee": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "large-logo": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "layered-slideshow": {
+        "blueprintId": "layered_slideshow",
+        "sectionType": "layered-slideshow"
+      },
+      "slideshow-full-frame": {
+        "blueprintId": "slideshow_full_frame",
+        "sectionType": "slideshow-full-frame"
+      },
+      "slideshow-inset": {
+        "blueprintId": "slideshow_inset",
+        "sectionType": "slideshow-inset"
+      },
+      "split-showcase": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "featured-collection-carousel": {
+        "blueprintId": "featured_collection",
+        "sectionType": "featured-collection"
+      },
+      "featured-collection-editorial": {
+        "blueprintId": "featured_collection",
+        "sectionType": "featured-collection"
+      },
+      "featured-collection-grid": {
+        "blueprintId": "featured_collection",
+        "sectionType": "featured-collection"
+      },
+      "product-highlight": {
+        "blueprintId": "product_highlight",
+        "sectionType": "product-highlight"
+      },
+      "featured-product": {
+        "blueprintId": "product_highlight",
+        "sectionType": "product-highlight"
+      },
+      "product-hotspots": {
+        "blueprintId": "product_hotspots",
+        "sectionType": "product-hotspots"
+      },
+      "recommended-products": {
+        "blueprintId": "recommended_products",
+        "sectionType": "recommended-products"
+      },
+      "collection-links-spotlight": {
+        "blueprintId": "collection_links_spotlight",
+        "sectionType": "collection-links-spotlight"
+      },
+      "collection-links-text": {
+        "blueprintId": "collection_links_text",
+        "sectionType": "collection-links-spotlight"
+      },
+      "collection-list-bento": {
+        "blueprintId": "collection_list_bento",
+        "sectionType": "collection-list-bento"
+      },
+      "collection-list-carousel": {
+        "blueprintId": "collection_list_carousel",
+        "sectionType": "collection-list-carousel"
+      },
+      "collection-list-editorial": {
+        "blueprintId": "collection_list_editorial",
+        "sectionType": "collection-list-editorial"
+      },
+      "collection-list-grid": {
+        "blueprintId": "collection_list_grid",
+        "sectionType": "collection-list-grid"
+      },
+      "divider": {
+        "blueprintId": "divider",
+        "sectionType": "divider"
+      },
+      "custom-liquid": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "custom-section": {
+        "blueprintId": "custom_section",
+        "sectionType": "custom-section"
+      },
+      "blog-posts-carousel": {
+        "blueprintId": "blog_posts_carousel",
+        "sectionType": "blog-posts-carousel"
+      },
+      "blog-posts-editorial": {
+        "blueprintId": "blog_posts_editorial",
+        "sectionType": "blog-posts-editorial"
+      },
+      "blog-posts-grid": {
+        "blueprintId": "blog_posts_grid",
+        "sectionType": "blog-posts-grid"
+      },
+      "storytelling-carousel": {
+        "blueprintId": "storytelling_carousel",
+        "sectionType": "storytelling-carousel"
+      },
+      "editorial": {
+        "blueprintId": "editorial",
+        "sectionType": "editorial"
+      },
+      "editorial-jumbo": {
+        "blueprintId": "editorial_jumbo",
+        "sectionType": "editorial-jumbo"
+      },
+      "image-compare": {
+        "blueprintId": "image_compare",
+        "sectionType": "image-compare"
+      },
+      "image-with-text": {
+        "blueprintId": "image_with_text",
+        "sectionType": "image-with-text"
+      },
+      "logo": {
+        "blueprintId": "storytelling_logo",
+        "sectionType": "storytelling-logo"
+      },
+      "video": {
+        "blueprintId": "storytelling_video",
+        "sectionType": "storytelling-video"
+      },
+      "faq": {
+        "blueprintId": "faq_section",
+        "sectionType": "faq"
+      },
+      "icons-with-text": {
+        "blueprintId": "icons_with_text",
+        "sectionType": "icons-with-text"
+      },
+      "text-marquee": {
+        "blueprintId": "text_marquee_section",
+        "sectionType": "text-marquee"
+      },
+      "multicolumn": {
+        "blueprintId": "multicolumn_section",
+        "sectionType": "multicolumn"
+      },
+      "pull-quote": {
+        "blueprintId": "pull_quote_section",
+        "sectionType": "pull-quote"
+      },
+      "rich-text": {
+        "blueprintId": "rich_text_section",
+        "sectionType": "rich-text"
+      },
+      "contact-form": {
+        "blueprintId": "contact_form",
+        "sectionType": "contact-form"
+      },
+      "email-signup": {
+        "blueprintId": "email_signup",
+        "sectionType": "email-signup"
+      }
+    },
+    "layout": {
+      "custom-liquid": {
+        "blueprintId": "divider",
+        "sectionType": "divider"
+      },
+      "custom-section": {
+        "blueprintId": "custom_section",
+        "sectionType": "custom-section"
+      },
+      "divider": {
+        "blueprintId": "divider",
+        "sectionType": "divider"
+      },
+      "header": {
+        "blueprintId": "header",
+        "sectionType": "header"
+      }
+    },
+    "headerFooter": {
+      "header": {
+        "blueprintId": "header",
+        "sectionType": "header"
+      },
+      "announcement-bar": {
+        "blueprintId": "announcement_bar",
+        "sectionType": "announcement-bar"
+      },
+      "footer": {
+        "blueprintId": "footer",
+        "sectionType": "footer"
+      },
+      "policies-links": {
+        "blueprintId": "footer_utilities",
+        "sectionType": "footer-utilities"
+      }
+    },
+    "footer": {
+      "hero": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "contact-form": {
+        "blueprintId": "contact_form",
+        "sectionType": "contact-form"
+      },
+      "email-signup": {
+        "blueprintId": "email_signup",
+        "sectionType": "email-signup"
+      },
+      "product-highlight": {
+        "blueprintId": "product_highlight",
+        "sectionType": "product-highlight"
+      },
+      "editorial": {
+        "blueprintId": "editorial",
+        "sectionType": "editorial"
+      },
+      "editorial-jumbo": {
+        "blueprintId": "editorial_jumbo",
+        "sectionType": "editorial-jumbo"
+      },
+      "image-compare": {
+        "blueprintId": "image_compare",
+        "sectionType": "image-compare"
+      },
+      "image-with-text": {
+        "blueprintId": "image_with_text",
+        "sectionType": "image-with-text"
+      },
+      "logo": {
+        "blueprintId": "storytelling_logo",
+        "sectionType": "storytelling-logo"
+      },
+      "video": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero",
+        "insertNote": "Footer group uses layout divider stub until dedicated sections exist"
+      },
+      "faq": {
+        "blueprintId": "faq_section",
+        "sectionType": "faq"
+      },
+      "icons-with-text": {
+        "blueprintId": "icons_with_text",
+        "sectionType": "icons-with-text"
+      },
+      "multicolumn": {
+        "blueprintId": "multicolumn_section",
+        "sectionType": "multicolumn"
+      },
+      "pull-quote": {
+        "blueprintId": "pull_quote_section",
+        "sectionType": "pull-quote"
+      },
+      "rich-text": {
+        "blueprintId": "rich_text_section",
+        "sectionType": "rich-text"
+      },
+      "hero-bottom-aligned": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "hero-marquee": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "large-logo": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "split-showcase": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero"
+      },
+      "blog-posts-carousel": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero",
+        "insertNote": "Footer group uses layout divider stub until dedicated sections exist"
+      },
+      "blog-posts-editorial": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero",
+        "insertNote": "Footer group uses layout divider stub until dedicated sections exist"
+      },
+      "blog-posts-grid": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero",
+        "insertNote": "Footer group uses layout divider stub until dedicated sections exist"
+      },
+      "storytelling-carousel": {
+        "blueprintId": "hero_main",
+        "sectionType": "hero",
+        "insertNote": "Footer group uses layout divider stub until dedicated sections exist"
+      },
+      "text-marquee": {
+        "blueprintId": "text_marquee_section",
+        "sectionType": "text-marquee"
+      }
+    }
+  },
+  "blocks": [
+    {
+      "id": "button",
+      "label": "Button",
+      "category": "basic",
+      "icon": "button",
+      "keywords": [
+        "cta",
+        "link"
+      ]
+    },
+    {
+      "id": "heading",
+      "label": "Heading",
+      "category": "basic",
+      "icon": "text",
+      "keywords": [
+        "title",
+        "h1"
+      ]
+    },
+    {
+      "id": "logo",
+      "label": "Logo",
+      "category": "basic",
+      "icon": "logo",
+      "keywords": [
+        "brand",
+        "image"
+      ]
+    },
+    {
+      "id": "text",
+      "label": "Text",
+      "category": "basic",
+      "icon": "text",
+      "keywords": [
+        "paragraph",
+        "body"
+      ]
+    },
+    {
+      "id": "jumbo-text",
+      "label": "Jumbo text",
+      "category": "decorative",
+      "icon": "jumbo",
+      "keywords": [
+        "large",
+        "display"
+      ]
+    },
+    {
+      "id": "marquee",
+      "label": "Marquee",
+      "category": "decorative",
+      "icon": "marquee",
+      "keywords": [
+        "scroll",
+        "ticker"
+      ]
+    },
+    {
+      "id": "group",
+      "label": "Group",
+      "category": "layout",
+      "icon": "group",
+      "keywords": [
+        "container",
+        "wrapper"
+      ]
+    },
+    {
+      "id": "spacer",
+      "label": "Spacer",
+      "category": "layout",
+      "icon": "spacer",
+      "keywords": [
+        "gap",
+        "space"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "menu",
+      "label": "Menu",
+      "category": "links",
+      "icon": "link",
+      "keywords": [
+        "navigation"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "popup-link",
+      "label": "Popup link",
+      "category": "links",
+      "icon": "link",
+      "keywords": [
+        "modal",
+        "dialog"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "buy-buttons",
+      "label": "Buy buttons",
+      "category": "product",
+      "icon": "button",
+      "keywords": [
+        "add to cart",
+        "checkout"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "description",
+      "label": "Description",
+      "category": "product",
+      "icon": "text",
+      "keywords": [
+        "body",
+        "details"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "price",
+      "label": "Price",
+      "category": "product",
+      "icon": "price",
+      "keywords": [
+        "money",
+        "cost"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "product-card",
+      "label": "Product card",
+      "category": "product",
+      "icon": "product-card",
+      "keywords": [
+        "card",
+        "tile"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "product-inventory",
+      "label": "Product inventory",
+      "category": "product",
+      "icon": "placeholder",
+      "keywords": [
+        "stock"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "recommended-products",
+      "label": "Recommended products",
+      "category": "product",
+      "icon": "placeholder",
+      "keywords": [
+        "related",
+        "upsell"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "review-stars",
+      "label": "Review stars",
+      "category": "product",
+      "icon": "placeholder",
+      "keywords": [
+        "rating",
+        "reviews"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "sku",
+      "label": "SKU",
+      "category": "product",
+      "icon": "placeholder",
+      "keywords": [
+        "stock keeping unit"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "special-instructions",
+      "label": "Special instructions",
+      "category": "product",
+      "icon": "placeholder",
+      "keywords": [
+        "note",
+        "gift message"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "swatches",
+      "label": "Swatches",
+      "category": "product",
+      "icon": "placeholder",
+      "keywords": [
+        "color",
+        "variant"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "title",
+      "label": "Title",
+      "category": "product",
+      "icon": "title",
+      "keywords": [
+        "product name",
+        "heading"
+      ],
+      "extendedOnly": true
+    },
+    {
+      "id": "variant-picker",
+      "label": "Variant picker",
+      "category": "product",
+      "icon": "variant-picker",
+      "keywords": [
+        "options",
+        "size",
+        "color"
+      ],
+      "extendedOnly": true
+    }
+  ]
+}

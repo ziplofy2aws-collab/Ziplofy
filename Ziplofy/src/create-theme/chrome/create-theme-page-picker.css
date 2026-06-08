@@ -1,0 +1,38 @@
+.create-theme-page-picker-menu {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 4px 6px -2px rgba(0, 0, 0, 0.08),
+    0 12px 24px -6px rgba(0, 0, 0, 0.14);
+}
+
+.create-theme-page-picker-search:focus-within {
+  border-color: #005bd3;
+  box-shadow: 0 0 0 1px #005bd3;
+}
+
+.create-theme-page-picker-list {
+  scrollbar-width: thin;
+  scrollbar-color: #8a8a8a #f1f1f1;
+}
+
+.create-theme-page-picker-list::-webkit-scrollbar {
+  width: 14px;
+}
+
+.create-theme-page-picker-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-left: 1px solid #e3e3e3;
+}
+
+.create-theme-page-picker-list::-webkit-scrollbar-thumb {
+  background: #8a8a8a;
+  border: 3px solid #f1f1f1;
+  border-radius: 8px;
+}
+
+.create-theme-page-picker-list::-webkit-scrollbar-button {
+  display: block;
+  height: 14px;
+  background: #f1f1f1;
+  border-left: 1px solid #e3e3e3;
+}

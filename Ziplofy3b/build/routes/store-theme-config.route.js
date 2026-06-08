@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.storeThemeConfigRouter = void 0;
+const express_1 = require("express");
+const store_theme_config_controller_1 = require("../controllers/store-theme-config.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+exports.storeThemeConfigRouter = (0, express_1.Router)();
+exports.storeThemeConfigRouter.use(auth_middleware_1.protect);
+exports.storeThemeConfigRouter.get("/:storeId/:themeId", store_theme_config_controller_1.getStoreThemeConfigByStore);
+exports.storeThemeConfigRouter.put("/:storeId/:themeId", store_theme_config_controller_1.putStoreThemeConfigByStore);

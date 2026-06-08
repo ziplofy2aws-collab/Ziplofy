@@ -1,0 +1,2013 @@
+{
+  "version": "1.0.0",
+  "themeId": "bloom",
+  "description": "Bloom theme editor tree — every configurable UI element mapped to its config path",
+  "globalSettings": {
+    "label": "Theme settings",
+    "groups": [
+      {
+        "id": "colors",
+        "label": "Colors",
+        "fields": [
+          {
+            "path": "settings.colors.primary",
+            "type": "color",
+            "label": "Primary"
+          },
+          {
+            "path": "settings.colors.background",
+            "type": "color",
+            "label": "Background"
+          },
+          {
+            "path": "settings.colors.text",
+            "type": "color",
+            "label": "Text"
+          },
+          {
+            "path": "settings.colors.accent",
+            "type": "color",
+            "label": "Accent"
+          },
+          {
+            "path": "settings.colors.surface",
+            "type": "color",
+            "label": "Surface"
+          },
+          {
+            "path": "settings.colors.muted",
+            "type": "color",
+            "label": "Muted text"
+          },
+          {
+            "path": "settings.colors.border",
+            "type": "color",
+            "label": "Border"
+          }
+        ]
+      },
+      {
+        "id": "typography",
+        "label": "Typography",
+        "fields": [
+          {
+            "path": "settings.typography.fontFamily",
+            "type": "text",
+            "label": "Heading font"
+          },
+          {
+            "path": "settings.typography.fontFamilyBody",
+            "type": "text",
+            "label": "Body font"
+          },
+          {
+            "path": "settings.typography.baseSize",
+            "type": "number",
+            "label": "Base font size (px)"
+          },
+          {
+            "path": "settings.typography.lineHeight",
+            "type": "number",
+            "label": "Line height"
+          },
+          {
+            "path": "settings.typography.headingWeight",
+            "type": "number",
+            "label": "Heading weight"
+          }
+        ]
+      },
+      {
+        "id": "spacing",
+        "label": "Spacing & layout",
+        "fields": [
+          {
+            "path": "settings.spacing.sectionGap",
+            "type": "number",
+            "label": "Section gap (px)"
+          },
+          {
+            "path": "settings.spacing.contentMaxWidth",
+            "type": "number",
+            "label": "Max content width (px)"
+          },
+          {
+            "path": "settings.spacing.pagePadding",
+            "type": "number",
+            "label": "Page horizontal padding (px)"
+          }
+        ]
+      }
+    ]
+  },
+  "layout": {
+    "announcement_bar": {
+      "label": "Announcement bar",
+      "settingsFields": [
+        {
+          "path": "sections.announcement_bar.settings.timeToNext",
+          "type": "number",
+          "label": "Time to next announcement",
+          "group": "General",
+          "widget": "slider",
+          "min": 2,
+          "max": 30,
+          "step": 1,
+          "unit": "sec",
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.sectionWidth",
+          "type": "select",
+          "label": "Section width",
+          "group": "Appearance",
+          "widget": "segmented",
+          "options": [
+            {
+              "value": "page",
+              "label": "Page"
+            },
+            {
+              "value": "full",
+              "label": "Full"
+            }
+          ],
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.colorScheme",
+          "type": "select",
+          "label": "Color scheme",
+          "group": "Appearance",
+          "widget": "color-scheme",
+          "options": [
+            {
+              "value": "scheme-1",
+              "label": "Scheme 1"
+            },
+            {
+              "value": "scheme-2",
+              "label": "Scheme 2"
+            },
+            {
+              "value": "scheme-3",
+              "label": "Scheme 3"
+            },
+            {
+              "value": "scheme-4",
+              "label": "Scheme 4"
+            }
+          ],
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.dividerThickness",
+          "type": "number",
+          "label": "Divider thickness",
+          "group": "Appearance",
+          "widget": "slider",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.paddingTop",
+          "type": "number",
+          "label": "Top",
+          "group": "Padding",
+          "widget": "slider",
+          "min": 0,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.paddingBottom",
+          "type": "number",
+          "label": "Bottom",
+          "group": "Padding",
+          "widget": "slider",
+          "min": 0,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.customCss",
+          "type": "textarea",
+          "label": "Custom CSS",
+          "group": "Custom CSS",
+          "widget": "accordion",
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.enabled",
+          "type": "boolean",
+          "label": "Show announcement",
+          "sidebar": false
+        }
+      ],
+      "blocks": [
+        {
+          "id": "announcement",
+          "label": "Announcement",
+          "settingsFields": [
+            {
+              "path": "sections.announcement_bar.blocks.announcement.settings.text",
+              "type": "text",
+              "label": "Text"
+            }
+          ]
+        }
+      ]
+    },
+    "header": {
+      "label": "Header",
+      "settingsFields": [
+        {
+          "path": "sections.header.settings.sticky",
+          "type": "boolean",
+          "label": "Sticky header"
+        },
+        {
+          "path": "sections.header.settings.showSearch",
+          "type": "boolean",
+          "label": "Show search"
+        },
+        {
+          "path": "sections.header.settings.searchPlaceholder",
+          "type": "text",
+          "label": "Search placeholder"
+        },
+        {
+          "path": "sections.header.settings.cartLabel",
+          "type": "text",
+          "label": "Cart label"
+        }
+      ],
+      "blocks": [
+        {
+          "id": "logo",
+          "label": "Logo",
+          "settingsFields": [
+            {
+              "path": "sections.header.blocks.logo.settings.text",
+              "type": "text",
+              "label": "Logo text"
+            },
+            {
+              "path": "sections.header.blocks.logo.settings.tagline",
+              "type": "text",
+              "label": "Tagline"
+            }
+          ]
+        },
+        {
+          "id": "menu",
+          "label": "Menu",
+          "blocks": [
+            {
+              "id": "link_shop",
+              "label": "Shop",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.0.label",
+                  "type": "text",
+                  "label": "Label"
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.0.href",
+                  "type": "text",
+                  "label": "Link"
+                }
+              ]
+            },
+            {
+              "id": "link_collections",
+              "label": "Collections",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.1.label",
+                  "type": "text",
+                  "label": "Label"
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.1.href",
+                  "type": "text",
+                  "label": "Link"
+                }
+              ]
+            },
+            {
+              "id": "link_about",
+              "label": "About",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.2.label",
+                  "type": "text",
+                  "label": "Label"
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.2.href",
+                  "type": "text",
+                  "label": "Link"
+                }
+              ]
+            },
+            {
+              "id": "link_account",
+              "label": "Account",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.3.label",
+                  "type": "text",
+                  "label": "Label"
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.3.href",
+                  "type": "text",
+                  "label": "Link"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "label": "Footer",
+      "blocks": [
+        {
+          "id": "newsletter",
+          "label": "Email signup",
+          "settingsFields": [
+            {
+              "path": "sections.footer.blocks.newsletter.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "sections.footer.blocks.newsletter.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext"
+            },
+            {
+              "path": "sections.footer.blocks.newsletter.settings.placeholder",
+              "type": "text",
+              "label": "Email placeholder"
+            },
+            {
+              "path": "sections.footer.blocks.newsletter.settings.buttonLabel",
+              "type": "text",
+              "label": "Button label"
+            },
+            {
+              "path": "sections.footer.blocks.newsletter.settings.privacyNote",
+              "type": "text",
+              "label": "Privacy note"
+            }
+          ]
+        },
+        {
+          "id": "social_links",
+          "label": "Social links",
+          "settingsFields": [
+            {
+              "path": "sections.footer.blocks.social_links.settings.instagramLabel",
+              "type": "text",
+              "label": "Instagram label"
+            },
+            {
+              "path": "sections.footer.blocks.social_links.settings.instagramHref",
+              "type": "text",
+              "label": "Instagram URL"
+            },
+            {
+              "path": "sections.footer.blocks.social_links.settings.twitterLabel",
+              "type": "text",
+              "label": "Twitter label"
+            },
+            {
+              "path": "sections.footer.blocks.social_links.settings.twitterHref",
+              "type": "text",
+              "label": "Twitter URL"
+            }
+          ]
+        }
+      ]
+    },
+    "footer_utilities": {
+      "label": "Utilities",
+      "blocks": [
+        {
+          "id": "copyright",
+          "label": "Copyright",
+          "settingsFields": [
+            {
+              "path": "sections.footer_utilities.blocks.copyright.settings.text",
+              "type": "text",
+              "label": "Copyright"
+            }
+          ]
+        },
+        {
+          "id": "policy_links",
+          "label": "Policy links",
+          "settingsFields": [
+            {
+              "path": "sections.footer_utilities.blocks.policy_links.settings.privacyLabel",
+              "type": "text",
+              "label": "Privacy label"
+            },
+            {
+              "path": "sections.footer_utilities.blocks.policy_links.settings.privacyHref",
+              "type": "text",
+              "label": "Privacy link"
+            },
+            {
+              "path": "sections.footer_utilities.blocks.policy_links.settings.termsLabel",
+              "type": "text",
+              "label": "Terms label"
+            },
+            {
+              "path": "sections.footer_utilities.blocks.policy_links.settings.termsHref",
+              "type": "text",
+              "label": "Terms link"
+            }
+          ]
+        },
+        {
+          "id": "social",
+          "label": "Social media",
+          "settingsFields": [
+            {
+              "path": "sections.footer_utilities.blocks.social.settings.instagram",
+              "type": "text",
+              "label": "Instagram URL"
+            },
+            {
+              "path": "sections.footer_utilities.blocks.social.settings.facebook",
+              "type": "text",
+              "label": "Facebook URL"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "templates": [
+    {
+      "id": "index",
+      "label": "Home page",
+      "sections": [
+        {
+          "id": "hero_main",
+          "type": "hero",
+          "label": "Hero",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.hero_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Text"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.textAlign",
+              "type": "select",
+              "label": "Text alignment",
+              "options": [
+                {
+                  "value": "left",
+                  "label": "Left"
+                },
+                {
+                  "value": "center",
+                  "label": "Center"
+                },
+                {
+                  "value": "right",
+                  "label": "Right"
+                }
+              ]
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.minHeight",
+              "type": "number",
+              "label": "Min height (px)"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.backgroundTone",
+              "type": "select",
+              "label": "Background tone",
+              "options": [
+                {
+                  "value": "light",
+                  "label": "Light"
+                },
+                {
+                  "value": "dark",
+                  "label": "Dark"
+                },
+                {
+                  "value": "gradient",
+                  "label": "Gradient"
+                }
+              ]
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.fullWidth",
+              "type": "boolean",
+              "label": "Full width"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.overlayOpacity",
+              "type": "number",
+              "label": "Overlay opacity (0–1)"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "primary_button",
+              "label": "Primary button",
+              "settingsFields": [
+                {
+                  "path": "templates.index.sections.hero_main.blocks.primary_button.settings.label",
+                  "type": "text",
+                  "label": "Label"
+                },
+                {
+                  "path": "templates.index.sections.hero_main.blocks.primary_button.settings.href",
+                  "type": "text",
+                  "label": "Link"
+                },
+                {
+                  "path": "templates.index.sections.hero_main.blocks.primary_button.settings.openInNewTab",
+                  "type": "boolean",
+                  "label": "Open in new tab"
+                },
+                {
+                  "path": "templates.index.sections.hero_main.blocks.primary_button.settings.ariaLabel",
+                  "type": "text",
+                  "label": "Accessibility label"
+                }
+              ]
+            },
+            {
+              "id": "secondary_button",
+              "label": "Secondary button",
+              "settingsFields": [
+                {
+                  "path": "templates.index.sections.hero_main.blocks.secondary_button.settings.label",
+                  "type": "text",
+                  "label": "Label"
+                },
+                {
+                  "path": "templates.index.sections.hero_main.blocks.secondary_button.settings.href",
+                  "type": "text",
+                  "label": "Link"
+                },
+                {
+                  "path": "templates.index.sections.hero_main.blocks.secondary_button.settings.openInNewTab",
+                  "type": "boolean",
+                  "label": "Open in new tab"
+                },
+                {
+                  "path": "templates.index.sections.hero_main.blocks.secondary_button.settings.ariaLabel",
+                  "type": "text",
+                  "label": "Accessibility label"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "product_showcase",
+          "type": "featured-collection",
+          "label": "Product showcase",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.product_showcase.settings.productsToShow",
+              "type": "number",
+              "label": "Products to show"
+            },
+            {
+              "path": "templates.index.sections.product_showcase.settings.subtitle",
+              "type": "textarea",
+              "label": "Section subtitle"
+            },
+            {
+              "path": "templates.index.sections.product_showcase.settings.columns",
+              "type": "number",
+              "label": "Columns (desktop)"
+            },
+            {
+              "path": "templates.index.sections.product_showcase.settings.gap",
+              "type": "number",
+              "label": "Card gap (px)"
+            },
+            {
+              "path": "templates.index.sections.product_showcase.settings.showRating",
+              "type": "boolean",
+              "label": "Show ratings"
+            },
+            {
+              "path": "templates.index.sections.product_showcase.settings.emptyMessage",
+              "type": "text",
+              "label": "Empty collection message"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "collection_header",
+              "label": "Header",
+              "blocks": [
+                {
+                  "id": "collection_title",
+                  "label": "Collection title",
+                  "settingsFields": [
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.collection_header.settings.title",
+                      "type": "text",
+                      "label": "Text"
+                    }
+                  ]
+                },
+                {
+                  "id": "view_all_button",
+                  "label": "View all button",
+                  "settingsFields": [
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.collection_header.settings.viewAllLabel",
+                      "type": "text",
+                      "label": "Label"
+                    },
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.collection_header.settings.viewAllHref",
+                      "type": "text",
+                      "label": "Link"
+                    }
+                  ]
+                }
+              ],
+              "settingsFields": [
+                {
+                  "path": "templates.index.sections.product_showcase.blocks.collection_header.settings.subtitle",
+                  "type": "text",
+                  "label": "Header subtitle"
+                }
+              ]
+            },
+            {
+              "id": "product_card",
+              "label": "Product card",
+              "blocks": [
+                {
+                  "id": "media",
+                  "label": "Media",
+                  "settingsFields": [
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.product_card.settings.showMedia",
+                      "type": "boolean",
+                      "label": "Visible"
+                    }
+                  ]
+                },
+                {
+                  "id": "product_title",
+                  "label": "Product title",
+                  "settingsFields": [
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.product_card.settings.showTitle",
+                      "type": "boolean",
+                      "label": "Visible"
+                    }
+                  ]
+                },
+                {
+                  "id": "price",
+                  "label": "Price",
+                  "settingsFields": [
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.product_card.settings.showPrice",
+                      "type": "boolean",
+                      "label": "Visible"
+                    }
+                  ]
+                },
+                {
+                  "id": "quick_view",
+                  "label": "Quick view",
+                  "settingsFields": [
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.product_card.blocks.quick_view.settings.label",
+                      "type": "text",
+                      "label": "Button label"
+                    },
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.product_card.blocks.quick_view.settings.show",
+                      "type": "boolean",
+                      "label": "Show quick view"
+                    }
+                  ]
+                },
+                {
+                  "id": "badge",
+                  "label": "Badge",
+                  "settingsFields": [
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.product_card.blocks.badge.settings.saleLabel",
+                      "type": "text",
+                      "label": "Sale badge text"
+                    },
+                    {
+                      "path": "templates.index.sections.product_showcase.blocks.product_card.blocks.badge.settings.newLabel",
+                      "type": "text",
+                      "label": "New badge text"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product",
+      "label": "Product page",
+      "sections": [
+        {
+          "id": "product_main",
+          "type": "product-main",
+          "label": "Product details",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.product.sections.product_main.settings.layoutMode",
+              "type": "select",
+              "label": "Layout",
+              "options": [
+                {
+                  "value": "stacked",
+                  "label": "Stacked"
+                },
+                {
+                  "value": "split",
+                  "label": "Split"
+                }
+              ]
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.showSku",
+              "type": "boolean",
+              "label": "Show SKU"
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.stickyBuyBox",
+              "type": "boolean",
+              "label": "Sticky buy box"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "product_media",
+              "label": "Media",
+              "settingsFields": [
+                {
+                  "path": "templates.product.sections.product_main.blocks.product_media.settings.showImage",
+                  "type": "boolean",
+                  "label": "Show product image"
+                },
+                {
+                  "path": "templates.product.sections.product_main.blocks.product_media.settings.imageAspectRatio",
+                  "type": "text",
+                  "label": "Image aspect ratio"
+                },
+                {
+                  "path": "templates.product.sections.product_main.blocks.product_media.settings.zoomHint",
+                  "type": "text",
+                  "label": "Zoom hint text"
+                }
+              ]
+            },
+            {
+              "id": "product_header",
+              "label": "Header",
+              "blocks": [
+                {
+                  "id": "vendor_line",
+                  "label": "Vendor",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.product_header.blocks.vendor_line.settings.showVendor",
+                      "type": "boolean",
+                      "label": "Show vendor"
+                    },
+                    {
+                      "path": "templates.product.sections.product_main.blocks.product_header.blocks.vendor_line.settings.vendorPrefix",
+                      "type": "text",
+                      "label": "Vendor prefix"
+                    }
+                  ]
+                },
+                {
+                  "id": "product_title",
+                  "label": "Product title",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.product_header.blocks.product_title.settings.loadingLabel",
+                      "type": "text",
+                      "label": "Loading label"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "product_content",
+              "label": "Content",
+              "blocks": [
+                {
+                  "id": "description",
+                  "label": "Description",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.product_content.blocks.description.settings.showDescription",
+                      "type": "boolean",
+                      "label": "Show description"
+                    }
+                  ]
+                },
+                {
+                  "id": "price_line",
+                  "label": "Price",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.product_content.blocks.price_line.settings.priceFallback",
+                      "type": "text",
+                      "label": "Empty price text"
+                    }
+                  ]
+                },
+                {
+                  "id": "size_guide",
+                  "label": "Size guide",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.product_content.blocks.size_guide.settings.label",
+                      "type": "text",
+                      "label": "Link label"
+                    },
+                    {
+                      "path": "templates.product.sections.product_main.blocks.product_content.blocks.size_guide.settings.href",
+                      "type": "text",
+                      "label": "Guide URL"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "buy_box",
+              "label": "Buy box",
+              "blocks": [
+                {
+                  "id": "add_to_cart_button",
+                  "label": "Add to cart button",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.buy_box.blocks.add_to_cart_button.settings.label",
+                      "type": "text",
+                      "label": "Button label"
+                    },
+                    {
+                      "path": "templates.product.sections.product_main.blocks.buy_box.blocks.add_to_cart_button.settings.addingLabel",
+                      "type": "text",
+                      "label": "Adding label"
+                    }
+                  ]
+                },
+                {
+                  "id": "quantity_field",
+                  "label": "Quantity",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.buy_box.blocks.quantity_field.settings.label",
+                      "type": "text",
+                      "label": "Quantity label"
+                    },
+                    {
+                      "path": "templates.product.sections.product_main.blocks.buy_box.blocks.quantity_field.settings.min",
+                      "type": "number",
+                      "label": "Minimum quantity"
+                    }
+                  ]
+                },
+                {
+                  "id": "buy_now_button",
+                  "label": "Buy now",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.buy_box.blocks.buy_now_button.settings.label",
+                      "type": "text",
+                      "label": "Button label"
+                    },
+                    {
+                      "path": "templates.product.sections.product_main.blocks.buy_box.blocks.buy_now_button.settings.href",
+                      "type": "text",
+                      "label": "Checkout URL override"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "trust_badges",
+              "label": "Trust badges",
+              "blocks": [
+                {
+                  "id": "shipping_badge",
+                  "label": "Shipping",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.trust_badges.blocks.shipping_badge.settings.text",
+                      "type": "text",
+                      "label": "Text"
+                    }
+                  ]
+                },
+                {
+                  "id": "returns_badge",
+                  "label": "Returns",
+                  "settingsFields": [
+                    {
+                      "path": "templates.product.sections.product_main.blocks.trust_badges.blocks.returns_badge.settings.text",
+                      "type": "text",
+                      "label": "Text"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cart",
+      "label": "Cart page",
+      "sections": [
+        {
+          "id": "cart_main",
+          "type": "cart-main",
+          "label": "Cart",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.cart.sections.cart_main.settings.title",
+              "type": "text",
+              "label": "Page title"
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtitle"
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.shippingNote",
+              "type": "text",
+              "label": "Shipping note"
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.taxDisclaimer",
+              "type": "text",
+              "label": "Tax disclaimer"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "empty_state",
+              "label": "Empty cart",
+              "blocks": [
+                {
+                  "id": "empty_message",
+                  "label": "Message",
+                  "settingsFields": [
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.empty_state.blocks.empty_message.settings.emptyTitle",
+                      "type": "text",
+                      "label": "Empty cart text"
+                    },
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.empty_state.blocks.empty_message.settings.emptySubtitle",
+                      "type": "text",
+                      "label": "Secondary line"
+                    }
+                  ]
+                },
+                {
+                  "id": "continue_link",
+                  "label": "Continue shopping",
+                  "settingsFields": [
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.empty_state.blocks.continue_link.settings.label",
+                      "type": "text",
+                      "label": "Link label"
+                    },
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.empty_state.blocks.continue_link.settings.href",
+                      "type": "text",
+                      "label": "Link URL"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "line_items",
+              "label": "Line items",
+              "blocks": [
+                {
+                  "id": "item_actions",
+                  "label": "Item actions",
+                  "settingsFields": [
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.line_items.blocks.item_actions.settings.removeLabel",
+                      "type": "text",
+                      "label": "Remove button"
+                    },
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.line_items.blocks.item_actions.settings.loadingLabel",
+                      "type": "text",
+                      "label": "Loading label"
+                    },
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.line_items.blocks.item_actions.settings.quantityLabel",
+                      "type": "text",
+                      "label": "Quantity label"
+                    },
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.line_items.blocks.item_actions.settings.priceLabel",
+                      "type": "text",
+                      "label": "Price label"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "cart_summary",
+              "label": "Summary",
+              "blocks": [
+                {
+                  "id": "subtotal",
+                  "label": "Subtotal",
+                  "settingsFields": [
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.cart_summary.blocks.subtotal.settings.label",
+                      "type": "text",
+                      "label": "Subtotal prefix"
+                    }
+                  ]
+                },
+                {
+                  "id": "checkout_button",
+                  "label": "Checkout button",
+                  "settingsFields": [
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.cart_summary.blocks.checkout_button.settings.label",
+                      "type": "text",
+                      "label": "Button label"
+                    },
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.cart_summary.blocks.checkout_button.settings.helperText",
+                      "type": "text",
+                      "label": "Helper text"
+                    }
+                  ]
+                },
+                {
+                  "id": "shipping_line",
+                  "label": "Shipping estimate",
+                  "settingsFields": [
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.cart_summary.blocks.shipping_line.settings.label",
+                      "type": "text",
+                      "label": "Label"
+                    },
+                    {
+                      "path": "templates.cart.sections.cart_main.blocks.cart_summary.blocks.shipping_line.settings.fallback",
+                      "type": "text",
+                      "label": "Fallback text"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "login",
+      "label": "Login",
+      "sections": [
+        {
+          "id": "login_main",
+          "type": "login-main",
+          "label": "Login form",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.login.sections.login_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow"
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext"
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.backgroundStyle",
+              "type": "select",
+              "label": "Background style",
+              "options": [
+                {
+                  "value": "plain",
+                  "label": "Plain"
+                },
+                {
+                  "value": "split",
+                  "label": "Split panel"
+                },
+                {
+                  "value": "image",
+                  "label": "Image"
+                }
+              ]
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.sidePanelTitle",
+              "type": "text",
+              "label": "Side panel title"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "form_fields",
+              "label": "Form fields",
+              "blocks": [
+                {
+                  "id": "email_field",
+                  "label": "Email",
+                  "settingsFields": [
+                    {
+                      "path": "templates.login.sections.login_main.blocks.form_fields.blocks.email_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Email placeholder"
+                    },
+                    {
+                      "path": "templates.login.sections.login_main.blocks.form_fields.blocks.email_field.settings.label",
+                      "type": "text",
+                      "label": "Email label"
+                    }
+                  ]
+                },
+                {
+                  "id": "password_field",
+                  "label": "Password",
+                  "settingsFields": [
+                    {
+                      "path": "templates.login.sections.login_main.blocks.form_fields.blocks.password_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Password placeholder"
+                    },
+                    {
+                      "path": "templates.login.sections.login_main.blocks.form_fields.blocks.password_field.settings.label",
+                      "type": "text",
+                      "label": "Password label"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "primary_button",
+              "label": "Submit button",
+              "settingsFields": [
+                {
+                  "path": "templates.login.sections.login_main.blocks.primary_button.settings.label",
+                  "type": "text",
+                  "label": "Button label"
+                },
+                {
+                  "path": "templates.login.sections.login_main.blocks.primary_button.settings.loadingLabel",
+                  "type": "text",
+                  "label": "Loading label"
+                }
+              ]
+            },
+            {
+              "id": "footer_link",
+              "label": "Sign up link",
+              "blocks": [
+                {
+                  "id": "signup_prompt",
+                  "label": "Prompt",
+                  "settingsFields": [
+                    {
+                      "path": "templates.login.sections.login_main.blocks.footer_link.blocks.signup_prompt.settings.text",
+                      "type": "text",
+                      "label": "Prompt text"
+                    }
+                  ]
+                },
+                {
+                  "id": "signup_link",
+                  "label": "Link",
+                  "settingsFields": [
+                    {
+                      "path": "templates.login.sections.login_main.blocks.footer_link.blocks.signup_link.settings.label",
+                      "type": "text",
+                      "label": "Link label"
+                    },
+                    {
+                      "path": "templates.login.sections.login_main.blocks.footer_link.blocks.signup_link.settings.href",
+                      "type": "text",
+                      "label": "Link URL"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "forgot_password_link",
+              "label": "Forgot password link",
+              "settingsFields": [
+                {
+                  "path": "templates.login.sections.login_main.blocks.forgot_password_link.settings.label",
+                  "type": "text",
+                  "label": "Link label"
+                },
+                {
+                  "path": "templates.login.sections.login_main.blocks.forgot_password_link.settings.href",
+                  "type": "text",
+                  "label": "Link URL"
+                }
+              ]
+            },
+            {
+              "id": "remember_me",
+              "label": "Remember me",
+              "settingsFields": [
+                {
+                  "path": "templates.login.sections.login_main.blocks.remember_me.settings.label",
+                  "type": "text",
+                  "label": "Checkbox label"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "signup",
+      "label": "Sign up",
+      "sections": [
+        {
+          "id": "signup_main",
+          "type": "signup-main",
+          "label": "Sign up form",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.signup.sections.signup_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow"
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext"
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.termsIntro",
+              "type": "text",
+              "label": "Terms intro"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "form_fields",
+              "label": "Form fields",
+              "blocks": [
+                {
+                  "id": "first_name_field",
+                  "label": "First name",
+                  "settingsFields": [
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.form_fields.blocks.first_name_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    }
+                  ]
+                },
+                {
+                  "id": "last_name_field",
+                  "label": "Last name",
+                  "settingsFields": [
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.form_fields.blocks.last_name_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    }
+                  ]
+                },
+                {
+                  "id": "email_field",
+                  "label": "Email",
+                  "settingsFields": [
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.form_fields.blocks.email_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    }
+                  ]
+                },
+                {
+                  "id": "password_field",
+                  "label": "Password",
+                  "settingsFields": [
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.form_fields.blocks.password_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    }
+                  ]
+                },
+                {
+                  "id": "confirm_password_field",
+                  "label": "Confirm password",
+                  "settingsFields": [
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.form_fields.blocks.confirm_password_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    },
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.form_fields.blocks.confirm_password_field.settings.label",
+                      "type": "text",
+                      "label": "Field label"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "primary_button",
+              "label": "Submit button",
+              "settingsFields": [
+                {
+                  "path": "templates.signup.sections.signup_main.blocks.primary_button.settings.label",
+                  "type": "text",
+                  "label": "Button label"
+                },
+                {
+                  "path": "templates.signup.sections.signup_main.blocks.primary_button.settings.loadingLabel",
+                  "type": "text",
+                  "label": "Loading label"
+                }
+              ]
+            },
+            {
+              "id": "footer_link",
+              "label": "Sign in link",
+              "blocks": [
+                {
+                  "id": "login_prompt",
+                  "label": "Prompt",
+                  "settingsFields": [
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.footer_link.blocks.login_prompt.settings.text",
+                      "type": "text",
+                      "label": "Prompt text"
+                    }
+                  ]
+                },
+                {
+                  "id": "login_link",
+                  "label": "Link",
+                  "settingsFields": [
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.footer_link.blocks.login_link.settings.label",
+                      "type": "text",
+                      "label": "Link label"
+                    },
+                    {
+                      "path": "templates.signup.sections.signup_main.blocks.footer_link.blocks.login_link.settings.href",
+                      "type": "text",
+                      "label": "Link URL"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "terms_checkbox",
+              "label": "Terms acceptance",
+              "settingsFields": [
+                {
+                  "path": "templates.signup.sections.signup_main.blocks.terms_checkbox.settings.label",
+                  "type": "text",
+                  "label": "Checkbox label"
+                },
+                {
+                  "path": "templates.signup.sections.signup_main.blocks.terms_checkbox.settings.href",
+                  "type": "text",
+                  "label": "Terms URL"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "forgot_password",
+      "label": "Forgot password",
+      "sections": [
+        {
+          "id": "forgot_main",
+          "type": "forgot-main",
+          "label": "Reset password",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow"
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Instructions"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "form_fields",
+              "label": "Form fields",
+              "blocks": [
+                {
+                  "id": "email_field",
+                  "label": "Email",
+                  "settingsFields": [
+                    {
+                      "path": "templates.forgot_password.sections.forgot_main.blocks.form_fields.blocks.email_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Email placeholder"
+                    },
+                    {
+                      "path": "templates.forgot_password.sections.forgot_main.blocks.form_fields.blocks.email_field.settings.label",
+                      "type": "text",
+                      "label": "Field label"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "primary_button",
+              "label": "Submit button",
+              "settingsFields": [
+                {
+                  "path": "templates.forgot_password.sections.forgot_main.blocks.primary_button.settings.label",
+                  "type": "text",
+                  "label": "Button label"
+                },
+                {
+                  "path": "templates.forgot_password.sections.forgot_main.blocks.primary_button.settings.loadingLabel",
+                  "type": "text",
+                  "label": "Loading label"
+                }
+              ]
+            },
+            {
+              "id": "success_message",
+              "label": "Success message",
+              "settingsFields": [
+                {
+                  "path": "templates.forgot_password.sections.forgot_main.blocks.success_message.settings.text",
+                  "type": "text",
+                  "label": "Confirmation text"
+                }
+              ]
+            },
+            {
+              "id": "footer_link",
+              "label": "Back to login",
+              "blocks": [
+                {
+                  "id": "back_link",
+                  "label": "Link",
+                  "settingsFields": [
+                    {
+                      "path": "templates.forgot_password.sections.forgot_main.blocks.footer_link.blocks.back_link.settings.label",
+                      "type": "text",
+                      "label": "Link label"
+                    },
+                    {
+                      "path": "templates.forgot_password.sections.forgot_main.blocks.footer_link.blocks.back_link.settings.href",
+                      "type": "text",
+                      "label": "Link URL"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "resend_hint",
+              "label": "Resend hint",
+              "settingsFields": [
+                {
+                  "path": "templates.forgot_password.sections.forgot_main.blocks.resend_hint.settings.text",
+                  "type": "text",
+                  "label": "Hint text"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "profile",
+      "label": "Profile",
+      "sections": [
+        {
+          "id": "profile_main",
+          "type": "profile-main",
+          "label": "Profile",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.profile.sections.profile_main.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext"
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.avatarSize",
+              "type": "number",
+              "label": "Avatar size (px)"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "signed_out",
+              "label": "Signed out",
+              "blocks": [
+                {
+                  "id": "empty_message",
+                  "label": "Message",
+                  "settingsFields": [
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.signed_out.blocks.empty_message.settings.text",
+                      "type": "text",
+                      "label": "Message"
+                    }
+                  ]
+                },
+                {
+                  "id": "sign_in_button",
+                  "label": "Sign in button",
+                  "settingsFields": [
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.signed_out.blocks.sign_in_button.settings.label",
+                      "type": "text",
+                      "label": "Button label"
+                    },
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.signed_out.blocks.sign_in_button.settings.href",
+                      "type": "text",
+                      "label": "Sign-in URL"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "profile_form",
+              "label": "Profile form",
+              "blocks": [
+                {
+                  "id": "email_field",
+                  "label": "Email (read-only)",
+                  "settingsFields": [
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.profile_form.blocks.email_field.settings.label",
+                      "type": "text",
+                      "label": "Field label"
+                    },
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.profile_form.blocks.email_field.settings.helperText",
+                      "type": "text",
+                      "label": "Helper text"
+                    }
+                  ]
+                },
+                {
+                  "id": "first_name_field",
+                  "label": "First name",
+                  "settingsFields": [
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.profile_form.blocks.first_name_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    }
+                  ]
+                },
+                {
+                  "id": "last_name_field",
+                  "label": "Last name",
+                  "settingsFields": [
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.profile_form.blocks.last_name_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    }
+                  ]
+                },
+                {
+                  "id": "phone_field",
+                  "label": "Phone",
+                  "settingsFields": [
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.profile_form.blocks.phone_field.settings.placeholder",
+                      "type": "text",
+                      "label": "Placeholder"
+                    }
+                  ]
+                },
+                {
+                  "id": "address_section",
+                  "label": "Address",
+                  "settingsFields": [
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.profile_form.blocks.address_section.settings.heading",
+                      "type": "text",
+                      "label": "Section heading"
+                    },
+                    {
+                      "path": "templates.profile.sections.profile_main.blocks.profile_form.blocks.address_section.settings.helperText",
+                      "type": "text",
+                      "label": "Helper text"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "save_button",
+              "label": "Save button",
+              "settingsFields": [
+                {
+                  "path": "templates.profile.sections.profile_main.blocks.save_button.settings.label",
+                  "type": "text",
+                  "label": "Button label"
+                },
+                {
+                  "path": "templates.profile.sections.profile_main.blocks.save_button.settings.savingLabel",
+                  "type": "text",
+                  "label": "Saving label"
+                },
+                {
+                  "path": "templates.profile.sections.profile_main.blocks.save_button.settings.successLabel",
+                  "type": "text",
+                  "label": "Success label"
+                }
+              ]
+            },
+            {
+              "id": "avatar",
+              "label": "Avatar",
+              "settingsFields": [
+                {
+                  "path": "templates.profile.sections.profile_main.blocks.avatar.settings.initialsFallback",
+                  "type": "text",
+                  "label": "Initials fallback"
+                },
+                {
+                  "path": "templates.profile.sections.profile_main.blocks.avatar.settings.show",
+                  "type": "boolean",
+                  "label": "Show avatar"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "orders",
+      "label": "Orders",
+      "sections": [
+        {
+          "id": "orders_main",
+          "type": "orders-main",
+          "label": "Order history",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.orders.sections.orders_main.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "loading_state",
+              "label": "Loading",
+              "settingsFields": [
+                {
+                  "path": "templates.orders.sections.orders_main.blocks.loading_state.settings.message",
+                  "type": "text",
+                  "label": "Loading message"
+                }
+              ]
+            },
+            {
+              "id": "empty_state",
+              "label": "Empty orders",
+              "settingsFields": [
+                {
+                  "path": "templates.orders.sections.orders_main.blocks.empty_state.settings.message",
+                  "type": "text",
+                  "label": "Empty message"
+                },
+                {
+                  "path": "templates.orders.sections.orders_main.blocks.empty_state.settings.ctaLabel",
+                  "type": "text",
+                  "label": "CTA label"
+                },
+                {
+                  "path": "templates.orders.sections.orders_main.blocks.empty_state.settings.ctaHref",
+                  "type": "text",
+                  "label": "CTA URL"
+                }
+              ]
+            },
+            {
+              "id": "order_card",
+              "label": "Order card",
+              "blocks": [
+                {
+                  "id": "order_total_line",
+                  "label": "Order total",
+                  "settingsFields": [
+                    {
+                      "path": "templates.orders.sections.orders_main.blocks.order_card.blocks.order_total_line.settings.label",
+                      "type": "text",
+                      "label": "Total label"
+                    }
+                  ]
+                },
+                {
+                  "id": "status_line",
+                  "label": "Status",
+                  "settingsFields": [
+                    {
+                      "path": "templates.orders.sections.orders_main.blocks.order_card.blocks.status_line.settings.prefix",
+                      "type": "text",
+                      "label": "Status prefix"
+                    }
+                  ]
+                },
+                {
+                  "id": "order_date_line",
+                  "label": "Order date",
+                  "settingsFields": [
+                    {
+                      "path": "templates.orders.sections.orders_main.blocks.order_card.blocks.order_date_line.settings.prefix",
+                      "type": "text",
+                      "label": "Date prefix"
+                    }
+                  ]
+                },
+                {
+                  "id": "order_number_line",
+                  "label": "Order number",
+                  "settingsFields": [
+                    {
+                      "path": "templates.orders.sections.orders_main.blocks.order_card.blocks.order_number_line.settings.prefix",
+                      "type": "text",
+                      "label": "Number prefix"
+                    }
+                  ]
+                },
+                {
+                  "id": "view_details",
+                  "label": "View details",
+                  "settingsFields": [
+                    {
+                      "path": "templates.orders.sections.orders_main.blocks.order_card.blocks.view_details.settings.label",
+                      "type": "text",
+                      "label": "Link label"
+                    }
+                  ]
+                },
+                {
+                  "id": "items_count_line",
+                  "label": "Items count",
+                  "settingsFields": [
+                    {
+                      "path": "templates.orders.sections.orders_main.blocks.order_card.blocks.items_count_line.settings.suffix",
+                      "type": "text",
+                      "label": "Items suffix"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "preferences",
+      "label": "Preferences",
+      "sections": [
+        {
+          "id": "preferences_main",
+          "type": "preferences-main",
+          "label": "Preferences",
+          "hasBlocks": true,
+          "settingsFields": [
+            {
+              "path": "templates.preferences.sections.preferences_main.settings.title",
+              "type": "text",
+              "label": "Heading"
+            },
+            {
+              "path": "templates.preferences.sections.preferences_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext"
+            }
+          ],
+          "blocks": [
+            {
+              "id": "signed_out",
+              "label": "Signed out",
+              "settingsFields": [
+                {
+                  "path": "templates.preferences.sections.preferences_main.blocks.signed_out.settings.message",
+                  "type": "text",
+                  "label": "Message"
+                }
+              ]
+            },
+            {
+              "id": "marketing_options",
+              "label": "Marketing",
+              "blocks": [
+                {
+                  "id": "email_marketing",
+                  "label": "Email marketing",
+                  "settingsFields": [
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.marketing_options.blocks.email_marketing.settings.label",
+                      "type": "text",
+                      "label": "Checkbox label"
+                    },
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.marketing_options.blocks.email_marketing.settings.description",
+                      "type": "text",
+                      "label": "Description"
+                    }
+                  ]
+                },
+                {
+                  "id": "sms_marketing",
+                  "label": "SMS marketing",
+                  "settingsFields": [
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.marketing_options.blocks.sms_marketing.settings.label",
+                      "type": "text",
+                      "label": "Checkbox label"
+                    },
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.marketing_options.blocks.sms_marketing.settings.description",
+                      "type": "text",
+                      "label": "Description"
+                    }
+                  ]
+                },
+                {
+                  "id": "language_field",
+                  "label": "Language",
+                  "settingsFields": [
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.marketing_options.blocks.language_field.settings.label",
+                      "type": "text",
+                      "label": "Field label"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "save_button",
+              "label": "Save button",
+              "settingsFields": [
+                {
+                  "path": "templates.preferences.sections.preferences_main.blocks.save_button.settings.label",
+                  "type": "text",
+                  "label": "Button label"
+                },
+                {
+                  "path": "templates.preferences.sections.preferences_main.blocks.save_button.settings.savingLabel",
+                  "type": "text",
+                  "label": "Saving label"
+                }
+              ]
+            },
+            {
+              "id": "privacy_options",
+              "label": "Privacy",
+              "blocks": [
+                {
+                  "id": "cookies_toggle",
+                  "label": "Cookies",
+                  "settingsFields": [
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.privacy_options.blocks.cookies_toggle.settings.label",
+                      "type": "text",
+                      "label": "Label"
+                    },
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.privacy_options.blocks.cookies_toggle.settings.description",
+                      "type": "text",
+                      "label": "Description"
+                    }
+                  ]
+                },
+                {
+                  "id": "analytics_toggle",
+                  "label": "Analytics",
+                  "settingsFields": [
+                    {
+                      "path": "templates.preferences.sections.preferences_main.blocks.privacy_options.blocks.analytics_toggle.settings.label",
+                      "type": "text",
+                      "label": "Label"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

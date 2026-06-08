@@ -1,0 +1,353 @@
+import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
+import { useThemeConfig } from '@render-store/sdk';
+import { cfgBool, cfgString } from '../../runtime/shared/config';
+import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
+import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import {
+  footerColorScheme,
+  footerPadding,
+  footerSectionWidth,
+  scopedFooterCss,
+} from './footerStyles';
+import { readNewsletterBlockStyle } from './newsletterStyles';
+
+type Props = { sectionId?: string };
+
+function NewsletterSubmit({
+  label,
+  display,
+  style,
+  colors,
+  fontFamily,
+  borderRadius,
+}: {
+  label: string;
+  display: 'text' | 'arrow';
+  style: 'link' | 'button';
+  colors: { color: string; background: string; border: string };
+  fontFamily: string;
+  borderRadius: number;
+}) {
+  const content = display === 'arrow' ? '→' : label;
+
+  if (style === 'link') {
+    return (
+      <button
+        type="submit"
+        aria-label={display === 'arrow' ? label : undefined}
+        style={{
+          flexShrink: 0,
+          border: 'none',
+          background: 'transparent',
+          color: colors.color,
+          fontFamily,
+          fontSize: display === 'arrow' ? 20 : 15,
+          fontWeight: 600,
+          cursor: 'pointer',
+          padding: '8px 14px',
+          textDecoration: display === 'text' ? 'underline' : 'none',
+          lineHeight: 1,
+        }}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="submit"
+      aria-label={display === 'arrow' ? label : undefined}
+      style={{
+        flexShrink: 0,
+        border: 'none',
+        borderRadius,
+        background: colors.color,
+        color: colors.background,
+        fontFamily,
+        fontSize: 15,
+        fontWeight: 600,
+        cursor: 'pointer',
+        padding: '12px 24px',
+        lineHeight: 1,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {content}
+    </button>
+  );
+}
+
+export function Footer({ sectionId = 'footer' }: Props) {
+  const config = useThemeConfig();
+  const { fontHeading, fontBody, text, background, primary } = useThemeColors();
+  const [email, setEmail] = useState('');
+
+  const settingsBase = `sections.${sectionId}.settings`;
+  const enabled = cfgBool(config, `${settingsBase}.enabled`, true);
+  const newsletterBlockId = layoutBlockOrder(config, sectionId, ['newsletter'])[0] ?? 'newsletter';
+  const newsletterBase = `sections.${sectionId}.blocks.${newsletterBlockId}.settings`;
+
+  const sectionStyle = useMemo(() => {
+    const scheme = footerColorScheme(config, settingsBase, {
+      background: '#f6f6f7',
+      color: '#111827',
+      border: '#e5e7eb',
+    });
+    const widthMode = footerSectionWidth(config, settingsBase);
+    const { paddingTop, paddingBottom } = footerPadding(config, settingsBase);
+    const customCss = cfgString(config, `${settingsBase}.customCss`, '');
+
+    return {
+      scheme,
+      widthMode,
+      paddingTop,
+      paddingBottom,
+      customCss,
+    };
+  }, [config, settingsBase]);
+
+  const newsletterStyle = useMemo(
+    () =>
+      readNewsletterBlockStyle(
+        config,
+        newsletterBase,
+        sectionStyle.scheme,
+        { fontHeading, fontBody },
+        { text, background, primary }
+      ),
+    [config, newsletterBase, sectionStyle.scheme, fontHeading, fontBody, text, background, primary]
+  );
+
+  const title = cfgString(config, `${newsletterBase}.title`, 'Join our email list');
+  const subtitle = cfgString(
+    config,
+    `${newsletterBase}.subtitle`,
+    'Get exclusive deals and early access to new products.'
+  );
+  const placeholder = cfgString(config, `${newsletterBase}.placeholder`, 'Email address');
+  const buttonLabel = cfgString(config, `${newsletterBase}.buttonLabel`, 'Sign up');
+
+  if (!enabled) return null;
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    setEmail('');
+  };
+
+  const innerMaxWidth = sectionStyle.widthMode === 'full' ? '100%' : layout.maxWidth;
+  const horizontalPad = sectionStyle.widthMode === 'full' ? 24 : layout.padX;
+  const pillRadius = newsletterStyle.input.borderRadius;
+  const mutedText = 'rgba(55, 65, 81, 0.9)';
+
+  const row: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 32,
+    width: '100%',
+    flexWrap: 'wrap',
+  };
+
+  const copyColumn: CSSProperties = {
+    flex: '1 1 260px',
+    minWidth: 0,
+  };
+
+  const formRow: CSSProperties = {
+    flex: '0 1 440px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    minWidth: 280,
+    width: '100%',
+    maxWidth: 440,
+  };
+
+  const inputFieldStyle: CSSProperties = {
+    flex: 1,
+    minWidth: 0,
+    fontFamily: newsletterStyle.input.fontFamily,
+    fontSize: newsletterStyle.input.fontSize,
+    fontWeight: newsletterStyle.input.fontWeight,
+    lineHeight: newsletterStyle.input.lineHeight,
+    color: newsletterStyle.input.color,
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    padding: '12px 20px',
+    width: '100%',
+    boxSizing: 'border-box',
+  };
+
+  const inputPill: CSSProperties = {
+    flex: 1,
+    minWidth: 0,
+    display: 'flex',
+    alignItems: 'center',
+    overflow: 'hidden',
+    border:
+      newsletterStyle.input.borderStyle === 'none'
+        ? 'none'
+        : `${newsletterStyle.input.borderWidth}px solid ${newsletterStyle.input.borderColor}`,
+    borderRadius: pillRadius,
+    background: '#ffffff',
+  };
+
+  const integratedPill: CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    overflow: 'hidden',
+    border:
+      newsletterStyle.input.borderStyle === 'none'
+        ? 'none'
+        : `${newsletterStyle.input.borderWidth}px solid ${newsletterStyle.input.borderColor}`,
+    borderRadius: pillRadius,
+    background: '#ffffff',
+  };
+
+  const showCopy = Boolean(title.trim() || subtitle.trim());
+  const submitButtonColors = {
+    color: '#111827',
+    background: '#ffffff',
+    border: sectionStyle.scheme.border,
+  };
+
+  return (
+    <EditorSection
+      sectionId={sectionId}
+      label="Footer"
+      style={{
+        width: '100%',
+        boxSizing: 'border-box',
+        background: sectionStyle.scheme.background || '#f6f6f7',
+        color: sectionStyle.scheme.color,
+        borderTop: `1px solid ${sectionStyle.scheme.border}`,
+        fontFamily: fontBody,
+        paddingTop: sectionStyle.paddingTop,
+        paddingBottom: sectionStyle.paddingBottom,
+        paddingLeft: horizontalPad,
+        paddingRight: horizontalPad,
+      }}
+    >
+      {sectionStyle.customCss ? (
+        <style dangerouslySetInnerHTML={{ __html: scopedFooterCss(sectionId, sectionStyle.customCss) }} />
+      ) : null}
+      <div
+        style={{
+          maxWidth: innerMaxWidth,
+          margin: '0 auto',
+          width: '100%',
+        }}
+      >
+        <EditorBlock
+          nodeId={`layout:${sectionId}:block:${newsletterBlockId}`}
+          label="Email signup"
+        >
+          <div style={row}>
+            {showCopy ? (
+              <div style={copyColumn}>
+                {title.trim() ? (
+                  <EditorField
+                    fieldPath={`${newsletterBase}.title`}
+                    label="Heading"
+                    as="h2"
+                    style={{
+                      margin: 0,
+                      fontFamily: newsletterStyle.heading.fontFamily,
+                      fontSize: newsletterStyle.heading.fontSize,
+                      fontWeight: newsletterStyle.heading.fontWeight,
+                      lineHeight: newsletterStyle.heading.lineHeight,
+                      color: newsletterStyle.heading.color,
+                    }}
+                  >
+                    {title}
+                  </EditorField>
+                ) : null}
+                {subtitle.trim() ? (
+                  <EditorField
+                    fieldPath={`${newsletterBase}.subtitle`}
+                    label="Subtext"
+                    as="p"
+                    style={{
+                      margin: title.trim() ? '8px 0 0' : 0,
+                      fontFamily: fontBody,
+                      fontSize: 15,
+                      fontWeight: 400,
+                      lineHeight: 1.5,
+                      color: mutedText,
+                      maxWidth: 360,
+                    }}
+                  >
+                    {subtitle}
+                  </EditorField>
+                ) : null}
+              </div>
+            ) : null}
+
+            <form
+              onSubmit={onSubmit}
+              style={{
+                ...formRow,
+                ...(showCopy ? {} : { flex: '1 1 100%', maxWidth: '100%' }),
+              }}
+            >
+              {newsletterStyle.submit.integrated ? (
+                <EditorField fieldPath={`${newsletterBase}.placeholder`} label="Email placeholder" as="span">
+                  <div style={integratedPill}>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder={placeholder}
+                      style={inputFieldStyle}
+                      aria-label={placeholder}
+                    />
+                    <EditorField fieldPath={`${newsletterBase}.buttonLabel`} label="Button label">
+                      <NewsletterSubmit
+                        label={buttonLabel}
+                        display={newsletterStyle.submit.display}
+                        style={newsletterStyle.submit.style}
+                        colors={newsletterStyle.colors}
+                        fontFamily={fontBody}
+                        borderRadius={pillRadius}
+                      />
+                    </EditorField>
+                  </div>
+                </EditorField>
+              ) : (
+                <>
+                  <EditorField fieldPath={`${newsletterBase}.placeholder`} label="Email placeholder" as="span">
+                    <div style={inputPill}>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder={placeholder}
+                        style={inputFieldStyle}
+                        aria-label={placeholder}
+                      />
+                    </div>
+                  </EditorField>
+                  <EditorField fieldPath={`${newsletterBase}.buttonLabel`} label="Button label">
+                    <NewsletterSubmit
+                      label={buttonLabel}
+                      display={newsletterStyle.submit.display}
+                      style={newsletterStyle.submit.style}
+                      colors={submitButtonColors}
+                      fontFamily={fontBody}
+                      borderRadius={pillRadius}
+                    />
+                  </EditorField>
+                </>
+              )}
+            </form>
+          </div>
+        </EditorBlock>
+      </div>
+    </EditorSection>
+  );
+}

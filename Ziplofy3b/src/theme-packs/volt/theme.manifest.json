@@ -1,0 +1,102 @@
+{
+  "id": "volt",
+  "name": "Volt",
+  "version": "1.0.0",
+  "type": "react-remote",
+  "configMode": "sections",
+  "assets": {
+    "themeJs": "theme.js",
+    "themeCss": "theme.css",
+    "defaultConfig": "theme.default-config.json",
+    "schema": "theme.schema.json"
+  },
+  "templates": [
+    "index",
+    "product",
+    "cart",
+    "login",
+    "signup",
+    "forgot_password",
+    "profile",
+    "orders",
+    "preferences"
+  ],
+  "capabilities": {
+    "sections": true,
+    "blocks": true,
+    "globalSettings": true,
+    "livePreview": true
+  },
+  "blockTypes": {
+    "basic": [
+      {
+        "id": "button",
+        "label": "Button"
+      },
+      {
+        "id": "heading",
+        "label": "Heading"
+      },
+      {
+        "id": "text",
+        "label": "Text"
+      },
+      {
+        "id": "badge",
+        "label": "Badge"
+      },
+      {
+        "id": "stat",
+        "label": "Stat"
+      }
+    ],
+    "product": [
+      {
+        "id": "product-card",
+        "label": "Product card"
+      },
+      {
+        "id": "price",
+        "label": "Price"
+      },
+      {
+        "id": "title",
+        "label": "Title"
+      }
+    ],
+    "volt": [
+      {
+        "id": "marquee-track",
+        "label": "Marquee track"
+      },
+      {
+        "id": "bento-tile",
+        "label": "Bento tile"
+      },
+      {
+        "id": "timeline-card",
+        "label": "Timeline card"
+      }
+    ]
+  },
+  "sectionBlocks": {
+    "hero": [
+      "button",
+      "heading",
+      "text",
+      "badge"
+    ],
+    "split-hero": [
+      "button",
+      "badge"
+    ],
+    "bento": [
+      "bento-tile",
+      "product-card"
+    ],
+    "featured-collection": [
+      "product-card",
+      "title"
+    ]
+  }
+}

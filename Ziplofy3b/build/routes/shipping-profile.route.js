@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const shipping_profile_controller_1 = require("../controllers/shipping-profile.controller");
+const shippingProfileRouter = (0, express_1.Router)();
+shippingProfileRouter.post('/', shipping_profile_controller_1.createShippingProfile);
+shippingProfileRouter.get('/store/:storeId', shipping_profile_controller_1.getShippingProfilesByStoreId);
+shippingProfileRouter.put('/:id', shipping_profile_controller_1.updateShippingProfile);
+shippingProfileRouter.delete('/:id', shipping_profile_controller_1.deleteShippingProfile);
+exports.default = shippingProfileRouter;

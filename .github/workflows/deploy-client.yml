@@ -1,0 +1,75 @@
+# Required GitHub Secrets:
+#   CLIENT_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
+#   CLIENT_EC2_HOST        - EC2 hostname or IP
+#   CLIENT_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
+#   CLIENT_EC2_DEPLOY_PATH - Remote path (e.g. /var/www/client or /home/ubuntu/auth)
+
+name: Deploy Client to EC2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client/**'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    # defaults → Applies shared options for all steps.
+    defaults:
+      run:
+      # working-directory: client → All run steps execute inside the client folder.
+        working-directory: client
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Pin to match EC2 (Vite 7 / Tailwind 4 need Node 20.19+; you use 24 on the server).
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build client
+        run: npm run build
+
+      - name: Deploy to EC2
+        uses: easingthemes/ssh-deploy@v4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.CLIENT_EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.CLIENT_EC2_HOST }}
+          REMOTE_USER: ${{ secrets.CLIENT_EC2_USER }}
+          TARGET: ${{ secrets.CLIENT_EC2_DEPLOY_PATH }}
+        with:
+          source: 'client/'
+          exclude: 'node_modules'
+
+      - name: Install deps and restart PM2 on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.CLIENT_EC2_HOST }}
+          username: ${{ secrets.CLIENT_EC2_USER }}
+          key: ${{ secrets.CLIENT_EC2_SSH_KEY }}
+          # Non-interactive SSH does not load .bashrc — nvm/fnm Node 24 is missing unless sourced.
+          script: |
+            set -e
+            if [ -f "$HOME/.nvm/nvm.sh" ]; then
+              export NVM_DIR="$HOME/.nvm"
+              . "$NVM_DIR/nvm.sh"
+            fi
+            if command -v fnm >/dev/null 2>&1; then
+              eval "$(fnm env)"
+            fi
+            [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
+            echo "Using node: $(command -v node) ($(node -v))"
+            cd ${{ secrets.CLIENT_EC2_DEPLOY_PATH }}
+            npm ci
+            pm2 delete all || true
+            pm2 start npm -- run preview

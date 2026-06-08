@@ -1,0 +1,17 @@
+export {
+  FEATURED_PRODUCT_DETAILS_DEFAULTS,
+  FEATURED_PRODUCT_DETAILS_PANEL_GROUP_ORDER,
+  extendFeaturedProductDetailsBlockValues,
+  featuredProductDetailsCustomWidthFieldDefs,
+  featuredProductDetailsDefaultSettings,
+  featuredProductDetailsFieldDefs,
+  featuredProductDetailsFieldDefsFromNodeId,
+  featuredProductDetailsFieldDefsFromSchema,
+  groupFeaturedProductDetailsPanelFields,
+  isFeaturedProductDetailsBlockNodeId,
+  isFeaturedProductDetailsPanelField,
+  isFeaturedProductDetailsPanelFields,
+  pickFeaturedProductDetailsField,
+  prepareFeaturedProductDetailsSettingsNode,
+  resolveFeaturedProductDetailsCustomWidthField,
+} from '../../../create-theme/sidebar/theme-editor-featured-product-details-block-panel.utils';

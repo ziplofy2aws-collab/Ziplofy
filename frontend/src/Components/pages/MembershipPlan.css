@@ -1,0 +1,310 @@
+.membership-plans-page {
+  min-height: 100%;
+  padding: 24px 32px;
+  font-family: var(--z-font);
+  font-weight: 400;
+  background: var(--z-surface);
+}
+
+/* Page card - Discounts style */
+.mp-page-card {
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  box-shadow: var(--z-shadow-card);
+  overflow: hidden;
+  padding: 28px;
+}
+
+.mp-page-header {
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--z-border);
+}
+
+.mp-title-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.mp-title-accent {
+  width: 4px;
+  min-height: 36px;
+  background: var(--z-primary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.mp-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--z-text);
+  margin: 0 0 4px 0;
+}
+
+.mp-subtitle {
+  font-size: 14px;
+  color: var(--z-text-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Section */
+.mp-section {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.mp-section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--z-text);
+  margin: 0 0 20px 0;
+}
+
+.mp-highlight {
+  color: var(--z-primary);
+  font-weight: 700;
+}
+
+/* Toggle */
+.mp-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mp-toggle-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #9ca3af;
+  transition: color 0.2s;
+}
+
+.mp-toggle-label.active {
+  color: var(--z-text);
+}
+
+.mp-toggle-switch {
+  position: relative;
+  width: 56px;
+  height: 28px;
+  background: #e5e7eb;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.mp-toggle-switch.yearly {
+  background: #e5e7eb;
+}
+
+.mp-toggle-switch .mp-toggle-thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  background: #22c55e;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mp-toggle-switch.yearly .mp-toggle-thumb {
+  transform: translateX(28px);
+}
+
+/* Cards container */
+.mp-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .mp-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card */
+.mp-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s;
+}
+
+.mp-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.mp-card-popular {
+  background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+  border-color: #15803d;
+}
+
+/* Most Popular tag */
+.mp-popular-tag {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fef08a;
+  color: #854d0e;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+/* Card header */
+.mp-card-header {
+  margin-bottom: 20px;
+}
+
+.mp-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--z-text);
+  margin: 0 0 8px 0;
+}
+
+.mp-card-popular .mp-card-title {
+  color: #fff;
+}
+
+.mp-card-desc {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.mp-card-popular .mp-card-desc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.mp-card-price {
+  margin-bottom: 0;
+}
+
+.mp-price-amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--z-text);
+}
+
+.mp-card-popular .mp-price-amount {
+  color: #fff;
+}
+
+.mp-price-period {
+  font-size: 14px;
+  color: #6b7280;
+  margin-left: 2px;
+}
+
+.mp-card-popular .mp-price-period {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Active Plan button */
+.mp-active-btn {
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mp-active-btn:hover {
+  background: #bbf7d0;
+}
+
+.mp-active-btn-solid {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: #fff;
+}
+
+.mp-active-btn-solid:hover {
+  background: #16a34a;
+}
+
+.mp-card-popular .mp-active-btn-solid {
+  background: #22c55e;
+  border-color: #22c55e;
+}
+
+/* Features list */
+.mp-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mp-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--z-text);
+}
+
+.mp-card-popular .mp-feature {
+  color: #fff;
+}
+
+.mp-feature-check {
+  flex-shrink: 0;
+  color: #22c55e;
+}
+
+.mp-card-popular .mp-feature-check {
+  color: #86efac;
+}
+
+.mp-feature-x {
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+.mp-card-popular .mp-feature .mp-feature-x {
+  color: #fca5a5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .membership-plans-page {
+    padding: 16px 20px;
+  }
+
+  .mp-section-title {
+    font-size: 18px;
+  }
+
+  .mp-toggle {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .mp-card {
+    padding: 24px;
+  }
+}

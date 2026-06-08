@@ -1,0 +1,53 @@
+.admin-dashboard {
+  padding: 24px 28px;
+  color: var(--z-text);
+  background: var(--z-surface);
+  min-height: calc(100vh - 56px);
+  font-family: var(--z-font);
+  font-weight: 400;
+}
+
+.admin-dashboard header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 24px 28px;
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  box-shadow: var(--z-shadow-card);
+}
+
+.admin-dashboard .meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-dashboard .badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--z-primary-light);
+  color: var(--z-primary);
+  border: 1px solid #93c5fd;
+}
+
+.admin-dashboard button {
+  background: var(--z-primary);
+  border: none;
+  color: #fff;
+  border-radius: var(--z-radius-sm);
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: var(--z-font);
+  transition: all 0.2s;
+}
+
+.admin-dashboard button:hover {
+  background: var(--z-primary-hover);
+  transform: translateY(-1px);
+}

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const aws_controller_1 = require("../controllers/aws.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const awsRouter = (0, express_1.Router)();
+awsRouter.use(auth_middleware_1.protect);
+awsRouter.post('/signed-url/image', aws_controller_1.generateImageUploadSignedUrl);
+awsRouter.post('/signed-url/theme-asset', (0, auth_middleware_1.authorizePermission)('Theme Management', 'upload'), aws_controller_1.generateThemeUploadSignedUrl);
+awsRouter.post('/delete-images', aws_controller_1.deleteImagesFromS3);
+exports.default = awsRouter;

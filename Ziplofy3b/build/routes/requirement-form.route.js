@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.requirementFormRouter = void 0;
+const express_1 = require("express");
+const requirements_form_controller_1 = require("../controllers/requirements-form.controller");
+exports.requirementFormRouter = (0, express_1.Router)();
+exports.requirementFormRouter.post("/", requirements_form_controller_1.createRequirementsForm);
+exports.requirementFormRouter.patch("/:id/requirements", requirements_form_controller_1.updateRequirementsForm);
+exports.requirementFormRouter.patch("/:id/status", requirements_form_controller_1.updateRequirementsFormStatus);
+exports.requirementFormRouter.get("/:id", requirements_form_controller_1.getRequirementsForm);

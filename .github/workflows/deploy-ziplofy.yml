@@ -1,0 +1,77 @@
+# Deploy the Ziplofy (main admin dashboard) app to EC2
+# Required GitHub Secrets:
+#   ZIPLOFY_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
+#   ZIPLOFY_EC2_HOST        - EC2 hostname or IP
+#   ZIPLOFY_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
+#   ZIPLOFY_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-ziplofy-/Ziplofy)
+
+name: Deploy Ziplofy to EC2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Ziplofy/**'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Ziplofy
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Pin to match EC2 runtime and avoid Node engine mismatch warnings
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: Ziplofy/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Ziplofy
+        env:
+          # Theme editor live preview iframe (must allow framing — not merchant *.ziplofy.com store URLs).
+          VITE_RENDER_STORE_ORIGIN: https://preview.ziplofy.com
+        run: npm run build
+
+      - name: Deploy to EC2
+        uses: easingthemes/ssh-deploy@v4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ZIPLOFY_EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.ZIPLOFY_EC2_HOST }}
+          REMOTE_USER: ${{ secrets.ZIPLOFY_EC2_USER }}
+          TARGET: ${{ secrets.ZIPLOFY_EC2_DEPLOY_PATH }}
+        with:
+          source: 'Ziplofy/'
+          exclude: 'node_modules'
+
+      - name: Install deps and restart PM2 on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ZIPLOFY_EC2_HOST }}
+          username: ${{ secrets.ZIPLOFY_EC2_USER }}
+          key: ${{ secrets.ZIPLOFY_EC2_SSH_KEY }}
+          # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
+          script: |
+            set -e
+            if [ -f "$HOME/.nvm/nvm.sh" ]; then
+              export NVM_DIR="$HOME/.nvm"
+              . "$NVM_DIR/nvm.sh"
+            fi
+            if command -v fnm >/dev/null 2>&1; then
+              eval "$(fnm env)"
+            fi
+            [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
+            echo "Using node: $(command -v node) ($(node -v))"
+            cd ${{ secrets.ZIPLOFY_EC2_DEPLOY_PATH }}
+            npm ci
+            pm2 delete all || true
+            pm2 start npm -- run preview

@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.collectionEntryRouter = void 0;
+const express_1 = require("express");
+const collection_entry_controller_1 = require("../controllers/collection-entry.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+exports.collectionEntryRouter = (0, express_1.Router)();
+exports.collectionEntryRouter.use(auth_middleware_1.protect);
+exports.collectionEntryRouter.post('/', collection_entry_controller_1.createCollectionEntry);
+exports.collectionEntryRouter.get('/collection/:id', collection_entry_controller_1.getCollectionEntriesByCollectionId);
+exports.collectionEntryRouter.delete('/:id', collection_entry_controller_1.deleteCollectionEntry);

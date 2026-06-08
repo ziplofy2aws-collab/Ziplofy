@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const catalog_controller_1 = require("../controllers/catalog.controller");
+const catalogRouter = (0, express_1.Router)();
+catalogRouter.post('/', catalog_controller_1.createCatalog);
+catalogRouter.put('/:id', catalog_controller_1.updateCatalog);
+catalogRouter.delete('/:id', catalog_controller_1.deleteCatalog);
+catalogRouter.get('/store/:storeId', catalog_controller_1.getCatalogsByStoreId);
+exports.default = catalogRouter;

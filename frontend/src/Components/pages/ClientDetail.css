@@ -1,0 +1,49 @@
+.client-list-page .btn.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px 24px;
+  padding: 16px;
+  background: var(--z-surface);
+  border: 1px solid var(--z-border);
+  border-radius: 8px;
+}
+
+.client-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.client-detail-field-full {
+  grid-column: 1 / -1;
+}
+
+.client-detail-label {
+  font-size: 12px;
+  color: var(--z-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.client-detail-value {
+  font-size: 14px;
+  color: var(--z-text);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.client-list-page .status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}

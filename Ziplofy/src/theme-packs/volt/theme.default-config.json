@@ -1,0 +1,1074 @@
+{
+  "version": "1.0.0",
+  "themeId": "volt",
+  "themeName": "Volt",
+  "settings": {
+    "colors": {
+      "primary": "#c8ff00",
+      "secondary": "#ff3d81",
+      "background": "#0a0a0b",
+      "surface": "#141416",
+      "text": "#f4f4f5",
+      "muted": "#a1a1aa"
+    },
+    "typography": {
+      "fontDisplay": "'Syne', system-ui, sans-serif",
+      "fontMono": "'IBM Plex Mono', monospace",
+      "fontBody": "'Inter', system-ui, sans-serif",
+      "baseSize": 16
+    },
+    "chrome": {
+      "borderRadius": 4,
+      "borderWidth": 2,
+      "density": "comfortable"
+    }
+  },
+  "sections": {
+    "announcement_bar": {
+      "id": "announcement_bar",
+      "type": "announcement-bar",
+      "enabled": true,
+      "settings": {
+        "enabled": true,
+        "message": "VOLT — Limited signal drop live now",
+        "linkLabel": "Enter",
+        "linkHref": "/products",
+        "speed": 28
+      }
+    },
+    "header": {
+      "id": "header",
+      "type": "header",
+      "enabled": true,
+      "settings": {
+        "sticky": true
+      },
+      "blocks": {
+        "brand_mark": {
+          "type": "brand-mark",
+          "settings": {
+            "monogram": "V",
+            "wordmark": "VOLT",
+            "tagline": "High-voltage commerce"
+          }
+        },
+        "nav_rail": {
+          "type": "nav-rail",
+          "settings": {
+            "items": [
+              {
+                "label": "Catalog",
+                "href": "/products"
+              },
+              {
+                "label": "Lab",
+                "href": "/collection"
+              },
+              {
+                "label": "Support",
+                "href": "/#support"
+              }
+            ]
+          },
+          "nested_block_order": [
+            "link_catalog",
+            "link_lab",
+            "link_support"
+          ]
+        },
+        "action_cluster": {
+          "type": "action-cluster",
+          "settings": {
+            "searchPlaceholder": "Search SKUs…",
+            "cartLabel": "Bag",
+            "accountLabel": "ID"
+          }
+        }
+      },
+      "block_order": [
+        "brand_mark",
+        "nav_rail",
+        "action_cluster"
+      ]
+    },
+    "footer": {
+      "id": "footer",
+      "type": "footer",
+      "enabled": true,
+      "blocks": {
+        "brand_terminal": {
+          "type": "brand-terminal",
+          "settings": {
+            "headline": "VOLT SYSTEMS",
+            "blurb": "Experimental storefront interface for stress-testing theme editors."
+          }
+        },
+        "link_matrix": {
+          "type": "link-matrix",
+          "blocks": {
+            "col_shop": {
+              "type": "column",
+              "settings": {
+                "title": "Shop",
+                "link1Label": "All products",
+                "link1Href": "/products"
+              }
+            },
+            "col_info": {
+              "type": "column",
+              "settings": {
+                "title": "Info",
+                "link1Label": "About",
+                "link1Href": "/#about"
+              }
+            }
+          },
+          "block_order": [
+            "col_shop",
+            "col_info"
+          ]
+        },
+        "signal_capture": {
+          "type": "signal-capture",
+          "settings": {
+            "title": "Join the signal list",
+            "placeholder": "you@domain.io",
+            "buttonLabel": "Transmit"
+          }
+        }
+      },
+      "block_order": [
+        "brand_terminal",
+        "link_matrix",
+        "signal_capture"
+      ]
+    },
+    "footer_utilities": {
+      "id": "footer_utilities",
+      "type": "footer-utilities",
+      "enabled": true,
+      "blocks": {
+        "copyright": {
+          "type": "copyright",
+          "settings": {
+            "text": "© 2026 VOLT"
+          }
+        },
+        "policy_links": {
+          "type": "policy",
+          "settings": {
+            "privacyLabel": "Privacy",
+            "privacyHref": "/pages/privacy",
+            "termsLabel": "Terms",
+            "termsHref": "/pages/terms"
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "instagram": "https://instagram.com",
+            "discord": "https://discord.com"
+          }
+        }
+      },
+      "block_order": [
+        "copyright",
+        "policy_links",
+        "social"
+      ]
+    }
+  },
+  "templates": {
+    "index": {
+      "name": "Home",
+      "sections": {
+        "split_hero": {
+          "type": "split-hero",
+          "enabled": true,
+          "settings": {
+            "kicker": "Signal 01",
+            "headline": "Power your catalog with voltage",
+            "subcopy": "A brutalist test theme — asymmetric grids, mono type, neon chrome.",
+            "panelLabel": "LIVE PREVIEW PANEL",
+            "minHeight": 640,
+            "invert": false
+          },
+          "blocks": {
+            "badge_chip": {
+              "type": "badge",
+              "settings": {
+                "text": "NEW DROP"
+              }
+            },
+            "cta_primary": {
+              "type": "cta",
+              "settings": {
+                "label": "Shop catalog",
+                "href": "/products"
+              }
+            },
+            "cta_secondary": {
+              "type": "cta",
+              "settings": {
+                "label": "Read manifesto",
+                "href": "/#about"
+              }
+            }
+          },
+          "block_order": [
+            "badge_chip",
+            "cta_primary",
+            "cta_secondary"
+          ]
+        },
+        "marquee_strip": {
+          "type": "marquee",
+          "enabled": true,
+          "settings": {
+            "enabled": true,
+            "repeat": 4
+          },
+          "blocks": {
+            "track_a": {
+              "type": "track",
+              "settings": {
+                "phrase": "FREE RETURNS"
+              }
+            },
+            "track_b": {
+              "type": "track",
+              "settings": {
+                "phrase": "SAME-DAY DISPATCH"
+              }
+            }
+          },
+          "block_order": [
+            "track_a",
+            "track_b"
+          ]
+        },
+        "bento_grid": {
+          "type": "bento",
+          "enabled": true,
+          "settings": {
+            "sectionTitle": "Featured grid",
+            "productsToShow": 6
+          },
+          "blocks": {
+            "tile_hero": {
+              "type": "tile",
+              "settings": {
+                "title": "Core collection",
+                "href": "/products"
+              }
+            },
+            "tile_signal": {
+              "type": "tile",
+              "settings": {
+                "label": "Ship time",
+                "stat": "24h"
+              }
+            },
+            "tile_drop": {
+              "type": "tile",
+              "settings": {
+                "title": "Lab drop",
+                "caption": "Weekly release"
+              }
+            },
+            "product_tile": {
+              "type": "product-tile",
+              "settings": {
+                "showMedia": true,
+                "showTitle": true,
+                "showPrice": true
+              },
+              "nested_block_order": [
+                "tile_media",
+                "tile_title",
+                "tile_price"
+              ]
+            }
+          },
+          "block_order": [
+            "tile_hero",
+            "tile_signal",
+            "tile_drop",
+            "product_tile"
+          ]
+        },
+        "proof_strip": {
+          "type": "proof",
+          "enabled": true,
+          "settings": {
+            "title": "Proof metrics"
+          },
+          "blocks": {
+            "stat_one": {
+              "type": "stat",
+              "settings": {
+                "value": "12k+",
+                "label": "Orders"
+              }
+            },
+            "stat_two": {
+              "type": "stat",
+              "settings": {
+                "value": "4.9",
+                "label": "Rating"
+              }
+            },
+            "stat_three": {
+              "type": "stat",
+              "settings": {
+                "value": "48",
+                "label": "Countries"
+              }
+            }
+          },
+          "block_order": [
+            "stat_one",
+            "stat_two",
+            "stat_three"
+          ]
+        }
+      },
+      "section_order": [
+        "split_hero",
+        "marquee_strip",
+        "bento_grid",
+        "proof_strip"
+      ]
+    },
+    "product": {
+      "name": "Product",
+      "sections": {
+        "product_split": {
+          "type": "product-split",
+          "enabled": true,
+          "settings": {
+            "showShare": true
+          },
+          "blocks": {
+            "gallery_stack": {
+              "type": "gallery",
+              "settings": {
+                "showImage": true
+              }
+            },
+            "info_stack": {
+              "type": "info",
+              "blocks": {
+                "vendor_tag": {
+                  "type": "vendor",
+                  "settings": {
+                    "prefix": "Source",
+                    "showVendor": true
+                  }
+                },
+                "title_block": {
+                  "type": "title",
+                  "settings": {
+                    "loadingLabel": "Loading…"
+                  }
+                },
+                "desc_block": {
+                  "type": "desc",
+                  "settings": {
+                    "showDescription": true
+                  }
+                },
+                "price_block": {
+                  "type": "price",
+                  "settings": {
+                    "fallback": "—"
+                  }
+                }
+              },
+              "block_order": [
+                "vendor_tag",
+                "title_block",
+                "desc_block",
+                "price_block"
+              ]
+            },
+            "purchase_rail": {
+              "type": "purchase",
+              "blocks": {
+                "qty_hint": {
+                  "type": "qty",
+                  "settings": {
+                    "label": "Qty"
+                  }
+                },
+                "add_button": {
+                  "type": "add",
+                  "settings": {
+                    "label": "Add to bag",
+                    "addingLabel": "Adding…"
+                  }
+                },
+                "stock_hint": {
+                  "type": "stock",
+                  "settings": {
+                    "inStock": "In stock",
+                    "outOfStock": "Sold out"
+                  }
+                }
+              },
+              "block_order": [
+                "qty_hint",
+                "add_button"
+              ]
+            },
+            "share_strip": {
+              "type": "share",
+              "settings": {
+                "label": "Share",
+                "copyLabel": "Copy link"
+              }
+            }
+          },
+          "block_order": [
+            "gallery_stack",
+            "info_stack",
+            "purchase_rail",
+            "share_strip"
+          ]
+        }
+      },
+      "section_order": [
+        "product_split"
+      ]
+    },
+    "cart": {
+      "name": "Cart",
+      "sections": {
+        "cart_drawer": {
+          "type": "cart-drawer",
+          "enabled": true,
+          "settings": {
+            "title": "Your bag",
+            "subtitle": "Review before checkout",
+            "promoHint": "Have a code?"
+          },
+          "blocks": {
+            "empty_state": {
+              "type": "empty",
+              "blocks": {
+                "empty_copy": {
+                  "type": "copy",
+                  "settings": {
+                    "title": "Bag is empty"
+                  }
+                },
+                "empty_cta": {
+                  "type": "cta",
+                  "settings": {
+                    "label": "Browse catalog",
+                    "href": "/"
+                  }
+                }
+              },
+              "block_order": [
+                "empty_copy",
+                "empty_cta"
+              ]
+            },
+            "line_list": {
+              "type": "lines",
+              "blocks": {
+                "line_actions": {
+                  "type": "actions",
+                  "settings": {
+                    "removeLabel": "Remove",
+                    "qtyLabel": "Qty"
+                  }
+                }
+              },
+              "block_order": [
+                "line_actions"
+              ]
+            },
+            "totals_panel": {
+              "type": "totals",
+              "blocks": {
+                "subtotal_row": {
+                  "type": "subtotal",
+                  "settings": {
+                    "label": "Subtotal"
+                  }
+                },
+                "checkout_cta": {
+                  "type": "checkout",
+                  "settings": {
+                    "label": "Checkout"
+                  }
+                },
+                "tax_row": {
+                  "type": "tax",
+                  "settings": {
+                    "label": "Tax"
+                  }
+                },
+                "shipping_row": {
+                  "type": "shipping",
+                  "settings": {
+                    "label": "Shipping"
+                  }
+                }
+              },
+              "block_order": [
+                "subtotal_row",
+                "shipping_row",
+                "tax_row",
+                "checkout_cta"
+              ]
+            },
+            "promo_field": {
+              "type": "promo",
+              "settings": {
+                "placeholder": "Promo code",
+                "applyLabel": "Apply"
+              }
+            }
+          },
+          "block_order": [
+            "empty_state",
+            "line_list",
+            "totals_panel",
+            "promo_field"
+          ]
+        }
+      },
+      "section_order": [
+        "cart_drawer"
+      ]
+    },
+    "login": {
+      "name": "Login",
+      "sections": {
+        "auth_gate": {
+          "type": "auth-gate",
+          "enabled": true,
+          "settings": {
+            "panelTitle": "Authenticate",
+            "panelSubtitle": "Enter credentials to access your signal profile.",
+            "sideCaption": "VOLT ID GATE",
+            "oauthDivider": "or continue with"
+          },
+          "blocks": {
+            "credential_fields": {
+              "type": "fields",
+              "blocks": {
+                "email_field": {
+                  "type": "email",
+                  "settings": {
+                    "placeholder": "Email"
+                  }
+                },
+                "password_field": {
+                  "type": "password",
+                  "settings": {
+                    "placeholder": "Password"
+                  }
+                }
+              },
+              "block_order": [
+                "email_field",
+                "password_field"
+              ]
+            },
+            "submit_pulse": {
+              "type": "submit",
+              "settings": {
+                "label": "Enter",
+                "loadingLabel": "Verifying…"
+              }
+            },
+            "forgot_link": {
+              "type": "link",
+              "settings": {
+                "label": "Lost key?",
+                "href": "/auth/forgot-password"
+              }
+            },
+            "alt_route": {
+              "type": "alt",
+              "blocks": {
+                "alt_prompt": {
+                  "type": "prompt",
+                  "settings": {
+                    "text": "No ID yet?"
+                  }
+                },
+                "alt_anchor": {
+                  "type": "anchor",
+                  "settings": {
+                    "label": "Register",
+                    "href": "/auth/signup"
+                  }
+                }
+              },
+              "block_order": [
+                "alt_prompt",
+                "alt_anchor"
+              ]
+            },
+            "remember_toggle": {
+              "type": "checkbox",
+              "settings": {
+                "label": "Stay signed in"
+              }
+            }
+          },
+          "block_order": [
+            "credential_fields",
+            "forgot_link",
+            "submit_pulse",
+            "alt_route",
+            "remember_toggle"
+          ]
+        }
+      },
+      "section_order": [
+        "auth_gate"
+      ]
+    },
+    "signup": {
+      "name": "Sign up",
+      "sections": {
+        "auth_register": {
+          "type": "auth-register",
+          "enabled": true,
+          "settings": {
+            "panelTitle": "Register ID",
+            "panelSubtitle": "Create a new signal identity."
+          },
+          "blocks": {
+            "identity_fields": {
+              "type": "fields",
+              "blocks": {
+                "first_field": {
+                  "type": "first",
+                  "settings": {
+                    "placeholder": "First"
+                  }
+                },
+                "last_field": {
+                  "type": "last",
+                  "settings": {
+                    "placeholder": "Last"
+                  }
+                },
+                "email_field": {
+                  "type": "email",
+                  "settings": {
+                    "placeholder": "Email"
+                  }
+                },
+                "password_field": {
+                  "type": "password",
+                  "settings": {
+                    "placeholder": "Password"
+                  }
+                }
+              },
+              "block_order": [
+                "first_field",
+                "last_field",
+                "email_field",
+                "password_field"
+              ]
+            },
+            "submit_pulse": {
+              "type": "submit",
+              "settings": {
+                "label": "Create ID",
+                "loadingLabel": "Creating…"
+              }
+            },
+            "alt_route": {
+              "type": "alt",
+              "blocks": {
+                "alt_prompt": {
+                  "type": "prompt",
+                  "settings": {
+                    "text": "Have an ID?"
+                  }
+                },
+                "alt_anchor": {
+                  "type": "anchor",
+                  "settings": {
+                    "label": "Sign in",
+                    "href": "/auth/login"
+                  }
+                }
+              },
+              "block_order": [
+                "alt_prompt",
+                "alt_anchor"
+              ]
+            }
+          },
+          "block_order": [
+            "identity_fields",
+            "submit_pulse",
+            "alt_route"
+          ]
+        }
+      },
+      "section_order": [
+        "auth_register"
+      ]
+    },
+    "forgot_password": {
+      "name": "Forgot password",
+      "sections": {
+        "auth_recover": {
+          "type": "auth-recover",
+          "enabled": true,
+          "settings": {
+            "panelTitle": "Recover key",
+            "panelSubtitle": "We will send a reset pulse to your inbox."
+          },
+          "blocks": {
+            "recover_field": {
+              "type": "field",
+              "blocks": {
+                "email_field": {
+                  "type": "email",
+                  "settings": {
+                    "placeholder": "Email"
+                  }
+                }
+              },
+              "block_order": [
+                "email_field"
+              ]
+            },
+            "submit_pulse": {
+              "type": "submit",
+              "settings": {
+                "label": "Send pulse"
+              }
+            },
+            "success_flash": {
+              "type": "success",
+              "settings": {
+                "text": "Check your inbox."
+              }
+            },
+            "back_route": {
+              "type": "back",
+              "blocks": {
+                "back_anchor": {
+                  "type": "anchor",
+                  "settings": {
+                    "label": "Back",
+                    "href": "/auth/login"
+                  }
+                }
+              },
+              "block_order": [
+                "back_anchor"
+              ]
+            },
+            "spam_hint": {
+              "type": "hint",
+              "settings": {
+                "text": "Check spam if the email does not arrive."
+              }
+            }
+          },
+          "block_order": [
+            "recover_field",
+            "submit_pulse",
+            "success_flash",
+            "back_route",
+            "spam_hint"
+          ]
+        }
+      },
+      "section_order": [
+        "auth_recover"
+      ]
+    },
+    "profile": {
+      "name": "Profile",
+      "sections": {
+        "account_hub": {
+          "type": "account-hub",
+          "enabled": true,
+          "settings": {
+            "title": "Identity hub",
+            "subtitle": "Manage your signal profile.",
+            "panelNote": "Identity synced across devices"
+          },
+          "blocks": {
+            "signed_out_gate": {
+              "type": "signed-out",
+              "blocks": {
+                "gate_message": {
+                  "type": "message",
+                  "settings": {
+                    "text": "Authenticate to open hub."
+                  }
+                },
+                "gate_button": {
+                  "type": "button",
+                  "settings": {
+                    "label": "Sign in"
+                  }
+                }
+              },
+              "block_order": [
+                "gate_message",
+                "gate_button"
+              ]
+            },
+            "identity_form": {
+              "type": "form",
+              "blocks": {
+                "email_readout": {
+                  "type": "email",
+                  "settings": {
+                    "label": "Email",
+                    "hint": "Read-only"
+                  }
+                },
+                "first_field": {
+                  "type": "first",
+                  "settings": {
+                    "placeholder": "First"
+                  }
+                },
+                "last_field": {
+                  "type": "last",
+                  "settings": {
+                    "placeholder": "Last"
+                  }
+                },
+                "phone_field": {
+                  "type": "phone",
+                  "settings": {
+                    "placeholder": "Phone"
+                  }
+                },
+                "address_block": {
+                  "type": "address",
+                  "settings": {
+                    "heading": "Delivery address",
+                    "helper": "Used for fulfillment"
+                  }
+                }
+              },
+              "block_order": [
+                "email_readout",
+                "first_field",
+                "last_field",
+                "phone_field"
+              ]
+            },
+            "persist_action": {
+              "type": "save",
+              "settings": {
+                "label": "Save",
+                "savingLabel": "Saving…"
+              }
+            },
+            "avatar_chip": {
+              "type": "avatar",
+              "settings": {
+                "show": true,
+                "fallback": "V"
+              }
+            }
+          },
+          "block_order": [
+            "avatar_chip",
+            "signed_out_gate",
+            "identity_form",
+            "persist_action"
+          ]
+        }
+      },
+      "section_order": [
+        "account_hub"
+      ]
+    },
+    "orders": {
+      "name": "Orders",
+      "sections": {
+        "order_timeline": {
+          "type": "order-timeline",
+          "enabled": true,
+          "settings": {
+            "title": "Order timeline",
+            "subtitle": "Transmission history"
+          },
+          "blocks": {
+            "loading_pulse": {
+              "type": "loading",
+              "settings": {
+                "message": "Syncing…"
+              }
+            },
+            "empty_pulse": {
+              "type": "empty",
+              "settings": {
+                "message": "No transmissions yet.",
+                "ctaLabel": "Browse catalog",
+                "ctaHref": "/products"
+              }
+            },
+            "timeline_card": {
+              "type": "card",
+              "blocks": {
+                "total_row": {
+                  "type": "total",
+                  "settings": {
+                    "label": "Total"
+                  }
+                },
+                "date_row": {
+                  "type": "date",
+                  "settings": {
+                    "prefix": "Sent"
+                  }
+                },
+                "status_row": {
+                  "type": "status",
+                  "settings": {
+                    "prefix": "State"
+                  }
+                },
+                "number_row": {
+                  "type": "number",
+                  "settings": {
+                    "prefix": "#"
+                  }
+                },
+                "cta_row": {
+                  "type": "link",
+                  "settings": {
+                    "label": "Open order"
+                  }
+                },
+                "items_row": {
+                  "type": "items",
+                  "settings": {
+                    "suffix": "units"
+                  }
+                }
+              },
+              "block_order": [
+                "number_row",
+                "total_row",
+                "status_row",
+                "date_row",
+                "items_row",
+                "cta_row"
+              ]
+            }
+          },
+          "block_order": [
+            "loading_pulse",
+            "empty_pulse",
+            "timeline_card"
+          ]
+        }
+      },
+      "section_order": [
+        "order_timeline"
+      ]
+    },
+    "preferences": {
+      "name": "Preferences",
+      "sections": {
+        "signal_prefs": {
+          "type": "signal-prefs",
+          "enabled": true,
+          "settings": {
+            "title": "Signal preferences",
+            "subtitle": "Tune marketing channels."
+          },
+          "blocks": {
+            "signed_out_gate": {
+              "type": "signed-out",
+              "settings": {
+                "message": "Sign in to tune signals."
+              }
+            },
+            "channel_toggles": {
+              "type": "channels",
+              "blocks": {
+                "email_toggle": {
+                  "type": "email",
+                  "settings": {
+                    "label": "Email bursts"
+                  }
+                },
+                "sms_toggle": {
+                  "type": "sms",
+                  "settings": {
+                    "label": "SMS pings"
+                  }
+                },
+                "locale_select": {
+                  "type": "locale",
+                  "settings": {
+                    "label": "Locale"
+                  }
+                }
+              },
+              "block_order": [
+                "locale_select",
+                "email_toggle",
+                "sms_toggle"
+              ]
+            },
+            "persist_action": {
+              "type": "save",
+              "settings": {
+                "label": "Save",
+                "savingLabel": "Saving…"
+              }
+            },
+            "privacy_row": {
+              "type": "privacy",
+              "blocks": {
+                "cookie_cell": {
+                  "type": "toggle",
+                  "settings": {
+                    "label": "Cookies",
+                    "description": "Required for session"
+                  }
+                },
+                "analytics_cell": {
+                  "type": "toggle",
+                  "settings": {
+                    "label": "Analytics"
+                  }
+                }
+              },
+              "block_order": [
+                "cookie_cell",
+                "analytics_cell"
+              ]
+            }
+          },
+          "block_order": [
+            "signed_out_gate",
+            "channel_toggles",
+            "persist_action",
+            "privacy_row"
+          ]
+        }
+      },
+      "section_order": [
+        "signal_prefs"
+      ]
+    }
+  }
+}

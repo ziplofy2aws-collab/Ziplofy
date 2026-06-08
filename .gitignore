@@ -1,0 +1,4 @@
+.env.development
+.env.production
+Ziplofy-zip.zip
+node_modules

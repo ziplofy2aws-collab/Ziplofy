@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const pixel_controller_1 = require("../controllers/pixel.controller");
+const router = (0, express_1.Router)();
+router.get('/store/:storeId', pixel_controller_1.getPixelsByStoreId);
+router.post('/', pixel_controller_1.createPixel);
+router.put('/:id', pixel_controller_1.updatePixel);
+router.delete('/:id', pixel_controller_1.deletePixel);
+exports.default = router;

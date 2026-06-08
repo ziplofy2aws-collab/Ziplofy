@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const shipping_zone_controller_1 = require("../controllers/shipping-zone.controller");
+const shippingZoneRouter = (0, express_1.Router)();
+shippingZoneRouter.post('/', shipping_zone_controller_1.createShippingZone);
+shippingZoneRouter.get('/profile/:shippingProfileId', shipping_zone_controller_1.getShippingZonesByShippingProfileId);
+shippingZoneRouter.put('/:id', shipping_zone_controller_1.updateShippingZone);
+shippingZoneRouter.delete('/:id', shipping_zone_controller_1.deleteShippingZone);
+exports.default = shippingZoneRouter;
