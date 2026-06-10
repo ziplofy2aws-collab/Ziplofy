@@ -8,6 +8,14 @@ import {
   iconsWithTextLayoutStructureOrder,
   iconsWithTextStructureOrder,
 } from '../../utils/icons-with-text-sidebar.util';
+import {
+  multicolumnLayoutStructureOrder,
+  multicolumnStructureOrder,
+} from '../../utils/multicolumn-sidebar.util';
+import {
+  richTextLayoutStructureOrder,
+  richTextStructureOrder,
+} from '../../utils/rich-text-sidebar.util';
 import { bottomAlignedHeroStructureOrder } from '../../utils/hero-bottom-aligned.util';
 
 function collectionLinksSpotlightStructureOrder(
@@ -299,6 +307,22 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    const isMulticolumn =
+      (sec as { type?: string }).type === 'multicolumn' || catalogVariant === 'multicolumn';
+    if (isMulticolumn) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, multicolumnStructureOrder(sectionPrefix, listKey, config, tplId, secId));
+      continue;
+    }
+
+    const isRichText =
+      (sec as { type?: string }).type === 'rich-text' || catalogVariant === 'rich-text';
+    if (isRichText) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, richTextStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
     const ids: string[] = [];
     if (isHero) {
       ids.push(`template:${tplId}:${secId}:add-block`);
@@ -363,6 +387,24 @@ export function readStructureOrderFromConfig(
       Object.assign(
         out,
         iconsWithTextLayoutStructureOrder(`layout:${layoutKey}`, secListKey, config, layoutKey)
+      );
+      continue;
+    }
+
+    const isMulticolumn = secType === 'multicolumn' || catalogVariant === 'multicolumn';
+    if (isMulticolumn) {
+      Object.assign(
+        out,
+        multicolumnLayoutStructureOrder(`layout:${layoutKey}`, secListKey, config, layoutKey)
+      );
+      continue;
+    }
+
+    const isRichText = secType === 'rich-text' || catalogVariant === 'rich-text';
+    if (isRichText) {
+      Object.assign(
+        out,
+        richTextLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
       );
       continue;
     }

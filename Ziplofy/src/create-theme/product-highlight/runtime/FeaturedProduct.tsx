@@ -15,6 +15,12 @@ import { readFeaturedProductVariantPickerStyle } from './featuredProductVariantP
 import { readFeaturedProductHeaderBlockStyle } from './featuredProductHeaderBlockStyles';
 import { readFeaturedProductHeaderPriceStyle } from './featuredProductHeaderPriceStyles';
 import { readFeaturedProductHeaderTitleStyle } from './featuredProductHeaderTitleStyles';
+import {
+  combineResponsiveCss,
+  scopedMobileHorizontalPadCss,
+  scopedProductSplitMobileCss,
+  sectionScopeClass,
+} from '../../runtime/shared/responsive';
 import { readProductHighlightLayout, scopedProductHighlightCss } from './productHighlightStyles';
 
 function clampPercent(value: number, fallback = 100): number {
@@ -250,6 +256,12 @@ export function FeaturedProduct({
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const gridCols = style.equalColumns ? '1fr 1fr' : '1.05fr 0.95fr';
+  const shellClass = sectionScopeClass('ziplofy-featured-product', sectionId);
+  const splitClass = `${shellClass}-split`;
+  const featuredResponsiveCss = combineResponsiveCss(
+    scopedMobileHorizontalPadCss(shellClass),
+    scopedProductSplitMobileCss(splitClass)
+  );
 
   const shell: CSSProperties = {
     background: scheme.background,
@@ -626,13 +638,15 @@ export function FeaturedProduct({
       sectionId={sectionId}
       label="Featured product"
       editorNodeId={editorNodeId}
+      className={shellClass}
       style={shell}
     >
       {style.customCss ? <style>{scopedProductHighlightCss(sectionId, style.customCss)}</style> : null}
+      {featuredResponsiveCss ? <style>{featuredResponsiveCss}</style> : null}
       {detailsMobileWidthCss ? <style>{detailsMobileWidthCss}</style> : null}
       {headerBlockStyle.mobileWidthCss ? <style>{headerBlockStyle.mobileWidthCss}</style> : null}
       <div style={stage}>
-        <div style={split}>
+        <div className={splitClass} style={split}>
           <div style={mediaPanel}>
             {productImageUrl ? (
               <EditorField fieldPath={`${settingsBase}.productImageUrl`} label="Product image">

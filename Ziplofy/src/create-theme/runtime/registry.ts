@@ -8,6 +8,9 @@ import { CollectionLinksSpotlight } from '../collection-links-spotlight/runtime/
 import { Faq } from '../faq/runtime/Faq';
 import { IconsWithText } from '../icons-with-text/runtime/IconsWithText';
 import { TextMarquee } from '../text-marquee/runtime/TextMarquee';
+import { Multicolumn } from '../multicolumn/runtime/Multicolumn';
+import { PullQuote } from '../pull-quote/runtime/PullQuote';
+import { RichText } from '../rich-text/runtime/RichText';
 import { ProductMain } from '../product-main/runtime/ProductMain';
 import { ProductHighlight } from '../product-highlight/runtime/ProductHighlight';
 /** Live UI components keyed by schema `section.type`. */
@@ -23,6 +26,9 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
   faq: Faq,
   'icons-with-text': IconsWithText,
   'text-marquee': TextMarquee,
+  multicolumn: Multicolumn,
+  'pull-quote': PullQuote,
+  'rich-text': RichText,
 };
 
 export function resolveRuntimeForSectionType(sectionType: string): SectionRuntimeComponent | null {

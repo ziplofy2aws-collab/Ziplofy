@@ -5,6 +5,8 @@ import {
   templateBlueprintKey,
 } from '../../../utils/theme-editor-insert-section';
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './theme-editor-sidebar.types';
+import { prepareLargeLogoSettingsNode } from './theme-editor-large-logo-panel.utils';
+import { prepareSplitShowcaseSettingsNode } from './theme-editor-split-showcase-panel.utils';
 
 const PANEL_GROUPS = new Set([
   'Media 1',
@@ -248,10 +250,10 @@ export function prepareHeroSectionSettingsForNode(
     return prepareHeroMarqueeSettingsNode(base);
   }
   if (isHeroLargeLogoSidebarSection(heroSection)) {
-    return prepareHeroLargeLogoSettingsNode(base);
+    return prepareLargeLogoSettingsNode(base);
   }
   if (isHeroSplitShowcaseSidebarSection(heroSection)) {
-    return prepareHeroSplitShowcaseSettingsNode(base);
+    return prepareSplitShowcaseSettingsNode(base);
   }
   return prepareHeroSettingsNode(base);
 }

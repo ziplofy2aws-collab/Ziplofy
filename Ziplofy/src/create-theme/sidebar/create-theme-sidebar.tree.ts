@@ -248,18 +248,25 @@ import {
   isMulticolumnSettingsPanelFields,
   isMulticolumnBlockField,
   isMulticolumnBlockFieldsOnly,
+  isMulticolumnBlockNodeId,
+  multicolumnBlockFieldDefsFromNodeId,
   prepareMulticolumnSettingsNode,
   prepareMulticolumnBlockSettingsNode,
 } from './theme-editor-multicolumn-panel.utils';
+import { mapMulticolumnBlockNodes } from '../../utils/multicolumn-sidebar.util';
+import { mapRichTextBlockNodes } from '../../utils/rich-text-sidebar.util';
 import {
   isPullQuoteSectionType,
   isPullQuoteSettingsPanelFields,
   preparePullQuoteSettingsNode,
 } from './theme-editor-pull-quote-panel.utils';
 import {
+  isRichTextBlockNodeId,
   isRichTextSectionType,
   isRichTextSettingsPanelFields,
+  prepareRichTextBlockSettingsNode,
   prepareRichTextSettingsNode,
+  richTextBlockFieldDefsFromNodeId,
 } from './theme-editor-rich-text-panel.utils';
 import {
   isTextMarqueeSectionType,
@@ -413,6 +420,17 @@ import {
   isHeroLargeLogoSidebarSection,
   isHeroSplitShowcaseSidebarSection,
 } from './theme-editor-hero-panel.utils';
+import {
+  largeLogoBlockFieldDefs,
+  largeLogoBlockFieldDefsFromNodeId,
+  prepareLargeLogoBlockSettingsNode,
+} from './theme-editor-large-logo-block-panel.utils';
+import {
+  heroTextBlockFieldDefsFromNode,
+  isHeroTextBlockNodeId,
+  prepareHeroTextBlockSettingsNode,
+} from './theme-editor-hero-text-block-panel.utils';
+import { textBlockFieldDefs } from './theme-editor-text-block-panel.utils';
 import {
   headingBlockFieldDefsFromSchema,
   isHeadingBlockNodeId,
@@ -604,6 +622,7 @@ function mapBottomAlignedHeroSidebarNodes(
 
 function heroBlockSidebarLabel(blockId: string, blockLabel: string): string {
   if (blockId === 'heading') return 'Heading';
+  if (blockId === 'logo') return 'Logo';
   if (blockId.startsWith('text')) return 'Text';
   if (blockId === 'primary_button' || blockId === 'secondary_button' || blockLabel.toLowerCase().includes('button')) {
     return 'Button';
@@ -748,6 +767,9 @@ function resolveHeroBlockDef(blocks: BlockDef[], blockInstanceId: string): Block
   if (blockInstanceId.startsWith('text_')) {
     return byId.get('text_2') ?? byId.get('text');
   }
+  if (blockInstanceId === 'logo') {
+    return byId.get('logo');
+  }
   if (blockInstanceId.includes('button')) {
     return byId.get('primary_button') ?? byId.get('secondary_button');
   }
@@ -818,6 +840,55 @@ function withSplitShowcaseBlock(
     ],
   });
   return list;
+}
+
+/** Large logo uses a dedicated Logo block for the centered store name / image. */
+function withLargeLogoBlock(
+  blocks: BlockDef[] | undefined,
+  catalogVariant: string,
+  blocksBase: string
+): BlockDef[] {
+  const list = [...(blocks ?? [])];
+  if (catalogVariant !== 'large-logo' || list.some((b) => b.id === 'logo')) {
+    return list;
+  }
+  list.push({
+    id: 'logo',
+    label: 'Logo',
+    settingsFields: largeLogoBlockFieldDefs(blocksBase),
+  });
+  return list;
+}
+
+function enrichLargeLogoTextBlocks(
+  blocks: BlockDef[],
+  catalogVariant: string,
+  blocksBase: string
+): BlockDef[] {
+  if (catalogVariant !== 'large-logo') return blocks;
+  return blocks.map((block) => {
+    const blockId = block.id ?? '';
+    if (blockId === 'text_2' || blockId.startsWith('text_')) {
+      return {
+        ...block,
+        settingsFields: textBlockFieldDefs(`${blocksBase}.${blockId}`),
+      };
+    }
+    return block;
+  });
+}
+
+function withHeroCatalogBlocks(
+  blocks: BlockDef[] | undefined,
+  catalogVariant: string,
+  blocksBase: string
+): BlockDef[] {
+  const list = withLargeLogoBlock(
+    withSplitShowcaseBlock(blocks, catalogVariant, blocksBase),
+    catalogVariant,
+    blocksBase
+  );
+  return enrichLargeLogoTextBlocks(list, catalogVariant, blocksBase);
 }
 
 function announcementBlockPreview(
@@ -942,6 +1013,7 @@ function mapHeroBlockNodes(
       : (block.settingsFields ?? []);
 
     const isHeadingBlock = blockId === 'heading' || blockId.startsWith('heading_');
+    const isLogoBlock = blockId === 'logo';
     const isButtonBlock =
       blockId === 'primary_button' ||
       blockId === 'secondary_button' ||
@@ -952,7 +1024,7 @@ function mapHeroBlockNodes(
       kind: 'block' as const,
       icon: iconForBlockLabel(heroBlockSidebarLabel(blockId, block.label ?? blockId)),
       fields:
-        !isHeadingBlock && !isButtonBlock && blockSettingsFields.length
+        !isHeadingBlock && !isButtonBlock && !isLogoBlock && blockSettingsFields.length
           ? blockSettingsFields
           : undefined,
       preview: heroBlockPreview(blockId, block, prefix, values),
@@ -1298,15 +1370,24 @@ function layoutSectionNode(
       null,
       instanceId
     );
-  } else if (isMulticolumnLayout && remappedBlocks?.length) {
-    blockNodes = mapBlockNodes(
-      remappedBlocks,
+  } else if (isMulticolumnLayout) {
+    blockNodes = mapMulticolumnBlockNodes(
       id,
-      `${id}:add-block`,
+      `sections.${instanceId}`,
       values,
       itemOrder,
-      listKeyLayoutBlocks(instanceId),
-      isFeaturedCollectionLayout ? { innerAddBlockPlacement: 'top' } : undefined
+      layoutChildrenKey,
+      config,
+      null,
+      instanceId
+    );
+  } else if (isRichTextLayout) {
+    blockNodes = mapRichTextBlockNodes(
+      id,
+      `sections.${instanceId}`,
+      values,
+      itemOrder,
+      layoutChildrenKey
     );
   }
   if (isAnnouncement && remappedBlocks?.length) {
@@ -1354,7 +1435,12 @@ function layoutSectionNode(
     }
   }
   const children = reorderSidebarChildren(
-    isAnnouncement || isHeader || isFaqLayout || isIconsWithTextLayout || isMulticolumnLayout
+    isAnnouncement ||
+      isHeader ||
+      isFaqLayout ||
+      isIconsWithTextLayout ||
+      isMulticolumnLayout ||
+      isRichTextLayout
       ? blockNodes
       : [...sectionFields, ...blockNodes],
     layoutChildrenKey,
@@ -1456,7 +1542,7 @@ function layoutHeroSectionNode(
   }
 
   const remappedSectionFields = remapTemplateHeroToLayoutFields(sec.settingsFields, instanceId);
-  const remappedBlocks = withSplitShowcaseBlock(
+  const remappedBlocks = withHeroCatalogBlocks(
     sec.blocks?.map((b) => remapTemplateHeroBlockToLayout(b, instanceId)),
     readCatalogVariant(config, settingsBase),
     blocksBase
@@ -1607,7 +1693,7 @@ function sectionToNode(
       ? catalogVariantEarly
       : '';
   const remappedBlocks = isHero
-    ? withSplitShowcaseBlock(
+    ? withHeroCatalogBlocks(
         sec.blocks?.map((b) => remapTemplateBlockDef(b, tplId, secId)),
         catalogVariant,
         blocksBase
@@ -1712,6 +1798,25 @@ function sectionToNode(
             );
             return reorderSidebarChildren([addBlock, ...nodes], childrenListKey, itemOrder);
           })()
+      : isMulticolumn
+        ? mapMulticolumnBlockNodes(
+            prefix,
+            blocksBase,
+            values,
+            itemOrder,
+            childrenListKey,
+            config,
+            tplId,
+            secId
+          )
+      : isRichText
+        ? mapRichTextBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}`,
+            values,
+            itemOrder,
+            childrenListKey
+          )
       : heroVisibleBlocks.length
       ? isHero
         ? mapHeroBlockNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
@@ -1731,6 +1836,7 @@ function sectionToNode(
       isFaq ||
       isIconsWithText ||
       isMulticolumn ||
+      isRichText ||
       isCollectionLinksSpotlight ||
       isFeaturedProduct
       ? blockNodes
@@ -2277,6 +2383,13 @@ export function settingsNodeForSelection(
     return prepareHeaderSettingsNode(headerSection);
   }
 
+  if (isRichTextBlockNodeId(node.id)) {
+    const fields = richTextBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareRichTextBlockSettingsNode({ ...node, fields });
+    }
+  }
+
   if (isHeadingBlockNodeId(node.id)) {
     let fields = editorSchema ? headingBlockFieldDefsFromSchema(editorSchema, node.id) : [];
     if (!fields.length) {
@@ -2293,11 +2406,41 @@ export function settingsNodeForSelection(
     return prepareHeroButtonSettingsNode({ ...node, fields });
   }
 
+  if (isHeroTextBlockNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    const heroTextMatch = node.id.match(
+      /^(template:[^:]+:hero_main(?:_\d+)?|layout:hero_main(?:_\d+)?):block:(text(?:_\d+)?)$/
+    );
+    if (heroTextMatch) {
+      const fields = heroTextBlockFieldDefsFromNode(
+        node.id,
+        heroTextMatch[1]!,
+        heroTextMatch[2]!
+      );
+      if (fields.length) {
+        return prepareHeroTextBlockSettingsNode({ ...blockNode, fields });
+      }
+    }
+  }
+
+  const heroLogoBlock = node.id.match(
+    /^(template:[^:]+:hero_main(?:_\d+)?|layout:hero_main(?:_\d+)?):block:logo$/
+  );
+  if (heroLogoBlock) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    const fields = largeLogoBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareLargeLogoBlockSettingsNode({ ...blockNode, fields });
+    }
+  }
+
   const heroSectionForPanel =
     node.kind === 'section' && isHeroSectionNodeId(node.id)
       ? node
-      : findHeroSectionInTree(node.id, tree);
-  if (heroSectionForPanel && editorSchema) {
+      : node.kind === 'section'
+        ? findHeroSectionInTree(node.id, tree)
+        : null;
+  if (node.kind === 'section' && heroSectionForPanel && editorSchema) {
     const heroFields = heroSectionFieldDefsFromSchema(editorSchema, heroSectionForPanel.id);
     if (heroFields.length) {
       return prepareHeroSectionSettingsForNode(heroSectionForPanel, heroFields);
@@ -2378,6 +2521,10 @@ export function settingsNodeForSelection(
       : findFooterUtilitiesSectionInTree(node.id, tree);
   if (footerUtilitiesSection?.fields?.length) {
     return prepareFooterUtilitiesSettingsNode(footerUtilitiesSection);
+  }
+
+  if (node.fields?.length && isFaqSettingsPanelFields(node.fields)) {
+    return prepareFaqSettingsNode(node);
   }
 
   if (
@@ -2532,10 +2679,6 @@ export function settingsNodeForSelection(
   if (node.fields?.length && isStorytellingVideoSettingsPanelFields(node.fields)) {
     return prepareStorytellingVideoSettingsNode(node);
   }
-  if (node.fields?.length && isFaqSettingsPanelFields(node.fields)) {
-    return prepareFaqSettingsNode(node);
-  }
-
   if (isFaqAccordionBlockNodeId(node.id)) {
     const fields = editorSchema
       ? faqAccordionFieldDefsFromSchema(editorSchema, node.id)
@@ -2567,6 +2710,20 @@ export function settingsNodeForSelection(
     const fields = iconWithTextBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareIconsWithTextBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isMulticolumnBlockNodeId(node.id)) {
+    const fields = multicolumnBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareMulticolumnBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isRichTextBlockNodeId(node.id)) {
+    const fields = richTextBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareRichTextBlockSettingsNode({ ...node, fields });
     }
   }
 
@@ -2671,36 +2828,6 @@ export function settingsNodeForSelection(
     node.kind === 'section' && isHeroSectionNodeId(node.id)
       ? node
       : findHeroSectionInTree(node.id, tree);
-  const heroTextBlock = node.id.match(
-    /^(template:[^:]+:hero_main(?:_\d+)?|layout:hero_main(?:_\d+)?):block:(text(?:_\d+)?)$/
-  );
-  if (heroTextBlock) {
-    const [, sectionPrefix, blockId] = heroTextBlock;
-    let fields = node.fields ?? [];
-    if (!fields.length && editorSchema) {
-      const tpl = editorSchema.templates?.find((t) => t.id === 'index');
-      const sec = tpl?.sections?.find((s) => s.id === 'hero_main');
-      const textSource =
-        sec?.blocks?.find((b) => (b.id ?? '') === blockId) ??
-        sec?.blocks?.find((b) => (b.id ?? '') === 'text_2') ??
-        sec?.blocks?.find((b) => (b.id ?? '').startsWith('text'));
-      const sourceId = textSource?.id ?? 'text_2';
-      const sourceFields = textSource?.settingsFields ?? [];
-      fields = sourceFields.map((f) => {
-        const remappedPath = sourceId !== blockId
-          ? f.path.replace(`.blocks.${sourceId}.`, `.blocks.${blockId}.`)
-          : f.path;
-        if (sectionPrefix.startsWith('layout:')) {
-          const layoutInstanceId = sectionPrefix.slice('layout:'.length);
-          return { ...f, path: remapTemplateHeroSchemaPath(remappedPath, layoutInstanceId) };
-        }
-        return { ...f, path: remappedPath };
-      });
-    }
-    if (fields.length) {
-      return { ...node, label: 'Text', kind: 'block', fields };
-    }
-  }
 
   if (node.kind === 'section' && node.fields?.length) return node;
   if (node.fields?.length) return node;

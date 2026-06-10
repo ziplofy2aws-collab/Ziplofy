@@ -19,7 +19,7 @@ export function faqAccordionRowDefaultSettings(
     openByDefault: false,
     rowIcon: 'none',
     rowImageIconUrl: '',
-    rowIconWidth: 20,
+    rowIconWidth: 8,
   };
 }
 
@@ -129,4 +129,58 @@ export function isFaqAccordionRowPanelFields(fields: EditorFieldDef[]): boolean 
 export function prepareFaqAccordionRowSettingsNode(node: SidebarNode): SidebarNode {
   const fields = (node.fields ?? []).filter(isFaqAccordionRowField);
   return { ...node, label: 'Accordion row', kind: 'block', fields };
+}
+
+function parseFaqAccordionRowNodeId(
+  nodeId: string
+): { scope: 'template' | 'layout'; tplId?: string; sectionId: string; rowId: string } | null {
+  const template = nodeId.match(/^template:([^:]+):([^:]+):block:accordion:nested:([^:]+)$/);
+  if (template) {
+    return { scope: 'template', tplId: template[1], sectionId: template[2], rowId: template[3] };
+  }
+  const layout = nodeId.match(/^layout:([^:]+):block:accordion:nested:([^:]+)$/);
+  if (layout) {
+    return { scope: 'layout', sectionId: layout[1], rowId: layout[2] };
+  }
+  return null;
+}
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+/** Seed sidebar `values` for accordion row panel fields from merged config. */
+export function extendValuesForFaqAccordionRow(
+  values: Record<string, string | boolean>,
+  editorSchema: EditorSchemaDoc,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const parsed = parseFaqAccordionRowNodeId(nodeId);
+  if (!parsed) return values;
+  const defs = faqAccordionRowFieldDefsFromSchema(editorSchema, nodeId);
+  if (!defs.length) return values;
+  const defaults = faqAccordionRowDefaultSettings();
+  const next = { ...values };
+  let changed = false;
+  for (const field of defs) {
+    if (next[field.path] !== undefined) continue;
+    const key = field.path.split('.').pop() ?? '';
+    const raw = getNested(config, field.path.split('.'));
+    if (raw !== undefined) {
+      next[field.path] = field.type === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);
+      changed = true;
+      continue;
+    }
+    const fallback = defaults[key];
+    if (fallback === undefined) continue;
+    next[field.path] = typeof fallback === 'boolean' ? fallback : String(fallback);
+    changed = true;
+  }
+  return changed ? next : values;
 }

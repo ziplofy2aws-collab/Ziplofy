@@ -2181,8 +2181,10 @@ export function settingsNodeForSelection(
   const heroSectionForPanel =
     node.kind === 'section' && isHeroSectionNodeId(node.id)
       ? node
-      : findHeroSectionInTree(node.id, tree);
-  if (heroSectionForPanel && editorSchema) {
+      : node.kind === 'section'
+        ? findHeroSectionInTree(node.id, tree)
+        : null;
+  if (node.kind === 'section' && heroSectionForPanel && editorSchema) {
     const heroFields = heroSectionFieldDefsFromSchema(editorSchema, heroSectionForPanel.id);
     if (heroFields.length) {
       return prepareHeroSectionSettingsForNode(heroSectionForPanel, heroFields);

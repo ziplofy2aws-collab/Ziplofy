@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../lib/config';
 import { readHeroButtonStyle } from '../lib/heroButtonStyles';
-import { readHeroHeadingStyle, readHeroHeadingText } from '../lib/heroHeadingStyles';
+import {
+  heroHeadingTypographyCss,
+  readHeroHeadingStyle,
+  readHeroHeadingText,
+} from '../../../../../create-theme/hero/runtime/heroHeadingStyles';
+import { LargeLogo } from '../../../../../create-theme/large-logo/runtime/LargeLogo';
 import { ThemeEditorRichTextContent } from '../../../../../create-theme/runtime/shared/ThemeEditorRichTextContent';
 import { richTextHasBlockMarkup } from '../../../../../utils/theme-editor-rich-text.util';
 import {
@@ -314,43 +319,26 @@ export function HeroSection({
       const headingText = readHeroHeadingText(config, settingsBase, blocksBase, blockId);
       if (!headingText.trim()) return null;
       const headingTag = richTextHasBlockMarkup(headingText) ? 'div' : 'h1';
-      const headingTypographyStyle = classic
-        ? {
-            margin: 0,
-            width: '100%',
-            maxWidth: 720,
-            fontFamily: fontHeading,
-            fontSize: 'clamp(2.4rem, 5.2vw, 3.5rem)',
-            fontWeight: 700,
-            lineHeight: 1.05,
-            letterSpacing: '-0.02em',
-            color: '#ffffff',
-            textAlign: 'center' as const,
-          }
-        : {
-            margin: 0,
-            width: headingStyle.width,
-            maxWidth: headingStyle.maxWidth,
-            fontFamily: headingStyle.fontFamily,
-            fontSize: headingStyle.fontSize,
-            fontWeight: headingStyle.fontWeight,
-            lineHeight: headingStyle.lineHeight,
-            ...(headingStyle.fontStyle ? { fontStyle: headingStyle.fontStyle } : {}),
-            ...(headingStyle.letterSpacing ? { letterSpacing: headingStyle.letterSpacing } : {}),
-            ...(headingStyle.textTransform ? { textTransform: headingStyle.textTransform } : {}),
-            ...(headingStyle.textWrap
-              ? { textWrap: headingStyle.textWrap as CSSProperties['textWrap'] }
-              : {}),
-            color: headingStyle.color,
-            background: headingStyle.background,
-            paddingTop: headingStyle.paddingTop,
-            paddingBottom: headingStyle.paddingBottom,
-            paddingLeft: headingStyle.paddingLeft,
-            paddingRight: headingStyle.paddingRight,
-            borderRadius: headingStyle.borderRadius,
-            textAlign: headingStyle.textAlign,
-            boxSizing: 'border-box' as const,
-          };
+      const headingFillWidth = headingStyle.width === '100%';
+      const headingTypographyStyle: CSSProperties = {
+        margin: 0,
+        width: headingStyle.width,
+        maxWidth: headingStyle.maxWidth,
+        marginLeft: headingStyle.marginLeft,
+        marginRight: headingStyle.marginRight,
+        alignSelf: headingFillWidth ? 'stretch' : undefined,
+        boxSizing: 'border-box',
+        ...heroHeadingTypographyCss(headingStyle),
+        color: classic ? '#ffffff' : headingStyle.color,
+        textAlign: headingStyle.textAlign ?? hero.textAlign,
+        textShadow: classic ? '0 2px 20px rgba(0, 0, 0, 0.35)' : undefined,
+        background: headingStyle.background,
+        paddingTop: headingStyle.paddingTop,
+        paddingBottom: headingStyle.paddingBottom,
+        paddingLeft: headingStyle.paddingLeft,
+        paddingRight: headingStyle.paddingRight,
+        borderRadius: headingStyle.borderRadius,
+      };
       return (
         <EditorBlock nodeId={heroBlockNodeId(sectionId, placement, templateId, blockId)} label="Heading">
           <EditorField
@@ -361,7 +349,10 @@ export function HeroSection({
               margin: 0,
               width: headingTypographyStyle.width,
               maxWidth: headingTypographyStyle.maxWidth,
+              marginLeft: headingTypographyStyle.marginLeft,
+              marginRight: headingTypographyStyle.marginRight,
               textAlign: headingTypographyStyle.textAlign,
+              boxSizing: 'border-box',
             }}
           >
             <ThemeEditorRichTextContent html={headingText} style={headingTypographyStyle} />
@@ -966,177 +957,7 @@ export function HeroSection({
   }
 
   if (isLargeLogo) {
-    const cornerText =
-      cfgString(config, `${blocksBase}.text_2.settings.text`, '') || subtitle || bodyText;
-    const logoTitle = title.trim() || 'My Store';
-    const padTop = Math.max(hero.paddingTop, 40);
-    const padBottom = Math.max(hero.paddingBottom, 48);
-    const padX = 40;
-    const sectionMinHeight = hero.minHeight;
-    const backgroundMedia = cfgString(config, `${settingsBase}.backgroundMedia`, 'none');
-    const backgroundImageUrl = cfgString(config, `${settingsBase}.backgroundImageUrl`, '');
-    const hasBgImage = backgroundMedia === 'image' && Boolean(backgroundImageUrl.trim());
-    const borderStyle = cfgString(config, `${settingsBase}.borderStyle`, 'none');
-    const cornerRadius = cfgNumber(config, `${settingsBase}.cornerRadius`, 0);
-    const defaultLogoUrl = cfgString(config, `${settingsBase}.defaultLogoUrl`, '');
-    const sectionBorder =
-      borderStyle === 'solid' ? `1px solid ${hero.scheme.muted}55` : undefined;
-    const largeLogoOverlay =
-      hero.mediaOverlay && hasBgImage
-        ? hero.overlayStyle === 'gradient'
-          ? hero.overlayGradientDirection === 'down'
-            ? `linear-gradient(180deg, transparent 0%, ${hero.overlayColor} 100%)`
-            : `linear-gradient(180deg, ${hero.overlayColor} 0%, transparent 100%)`
-          : hero.overlayColor
-        : undefined;
-
-    const largeLogoBody = (
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 2,
-          width: '100%',
-          maxWidth: typeof hero.maxWidth === 'number' ? hero.maxWidth : undefined,
-          margin: '0 auto',
-          minHeight: sectionMinHeight,
-          padding: `${padTop}px ${padX}px ${padBottom}px`,
-          boxSizing: 'border-box',
-          display: 'flex',
-          flexDirection: 'column',
-          borderRadius: cornerRadius > 0 ? cornerRadius : undefined,
-          border: sectionBorder,
-          overflow: cornerRadius > 0 ? 'hidden' : undefined,
-        }}
-      >
-        {cornerText.trim() ? (
-          <EditorBlock nodeId={heroBlockNodeId(sectionId, placement, templateId, 'text_2')} label="Text">
-            <EditorField
-              fieldPath={`${blocksBase}.text_2.settings.text`}
-              label="Text"
-              as="p"
-              style={{
-                margin: 0,
-                maxWidth: 300,
-                fontSize: 15,
-                lineHeight: 1.5,
-                color: '#111827',
-                alignSelf: 'flex-start',
-              }}
-            >
-              {cornerText}
-            </EditorField>
-          </EditorBlock>
-        ) : null}
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingTop: 32,
-            paddingBottom: 24,
-            minHeight: 280,
-            width: '100%',
-          }}
-        >
-          {defaultLogoUrl.trim() ? (
-            <EditorField fieldPath={`${settingsBase}.defaultLogoUrl`} label="Default logo" as="div">
-              <img
-                src={defaultLogoUrl}
-                alt={logoTitle}
-                style={{
-                  display: 'block',
-                  maxWidth: 'min(92%, 1200px)',
-                  maxHeight: 'min(42vh, 520px)',
-                  width: 'auto',
-                  height: 'auto',
-                  margin: '0 auto',
-                  objectFit: 'contain',
-                }}
-              />
-            </EditorField>
-          ) : (
-            <EditorField
-              fieldPath={`${settingsBase}.title`}
-              label="Text"
-              as="h1"
-              style={{
-                margin: 0,
-                fontFamily: fontHeading,
-                fontSize: 'clamp(4rem, 18vw, 11rem)',
-                fontWeight: 800,
-                lineHeight: 0.95,
-                letterSpacing: '-0.04em',
-                color: '#000000',
-                textAlign: 'center',
-              }}
-            >
-              {logoTitle}
-            </EditorField>
-          )}
-        </div>
-      </div>
-    );
-
-    const linkedLargeLogo = hero.sectionLink ? (
-      <Link
-        to={hero.sectionLink}
-        target={hero.sectionLinkNewTab ? '_blank' : undefined}
-        rel={hero.sectionLinkNewTab ? 'noopener noreferrer' : undefined}
-        style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}
-      >
-        {largeLogoBody}
-      </Link>
-    ) : (
-      largeLogoBody
-    );
-
-    return (
-      <>
-        {scopedCss ? <style>{scopedCss}</style> : null}
-        {responsiveCss ? <style>{responsiveCss}</style> : null}
-        <EditorSection
-          sectionId={sectionId}
-          editorNodeId={sectionNodePrefix}
-          label="Large logo"
-          style={{
-            position: 'relative',
-            overflow: 'hidden',
-            width: '100%',
-            minHeight: sectionMinHeight,
-            padding: 0,
-            background: hasBgImage ? hero.scheme.background : hero.scheme.background || '#f0f1ed',
-            fontFamily: fontBody,
-            color: '#111827',
-            boxSizing: 'border-box',
-          }}
-        >
-          {hasBgImage ? (
-            <div
-              aria-hidden
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background: `center/cover url(${backgroundImageUrl}) no-repeat`,
-              }}
-            />
-          ) : null}
-          {largeLogoOverlay ? (
-            <div
-              aria-hidden
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background: largeLogoOverlay,
-                zIndex: 1,
-                pointerEvents: 'none',
-              }}
-            />
-          ) : null}
-          {linkedLargeLogo}
-        </EditorSection>
-      </>
-    );
+    return <LargeLogo sectionId={sectionId} placement={placement} templateId={templateId} />;
   }
 
   if (isSplitShowcase) {

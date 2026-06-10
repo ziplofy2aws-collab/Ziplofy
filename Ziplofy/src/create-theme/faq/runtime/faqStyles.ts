@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { getThemeConfigValue } from '@render-store/sdk';
+import { readHeroHeadingText } from '../../hero/runtime/heroHeadingStyles';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 
 const TEXT_TYPOGRAPHY_PRESETS: Record<
@@ -110,14 +111,42 @@ function readAccordionRowTextBlocks(block: Record<string, unknown>): FaqTextBloc
   return [{ id: 'text', text: '' }];
 }
 
+function isFaqSectionBlockInOrder(
+  config: Record<string, unknown> | null,
+  sectionBase: string,
+  blockId: string
+): boolean {
+  const section = getThemeConfigValue(config, sectionBase) as Record<string, unknown> | null;
+  const order = Array.isArray(section?.block_order) ? (section.block_order as string[]) : [];
+  if (order.length) return order.includes(blockId);
+  const blocks = (section?.blocks ?? {}) as Record<string, unknown>;
+  return blockId in blocks;
+}
+
+export function readFaqSectionBlockOrder(
+  config: Record<string, unknown> | null,
+  sectionBase: string
+): Array<'heading' | 'accordion'> {
+  const section = getThemeConfigValue(config, sectionBase) as Record<string, unknown> | null;
+  const order = Array.isArray(section?.block_order) ? (section.block_order as string[]) : [];
+  const allowed = ['heading', 'accordion'] as const;
+  const fromOrder = order.filter((id): id is 'heading' | 'accordion' =>
+    allowed.includes(id as 'heading' | 'accordion')
+  );
+  if (fromOrder.length) return fromOrder;
+  const blocks = (section?.blocks ?? {}) as Record<string, unknown>;
+  return allowed.filter((id) => id in blocks);
+}
+
 export function isFaqHeadingBlockEnabled(
   config: Record<string, unknown> | null,
   sectionBase: string
 ): boolean {
+  if (!isFaqSectionBlockInOrder(config, sectionBase, 'heading')) return false;
   const heading = getThemeConfigValue(config, `${sectionBase}.blocks.heading`) as
     | Record<string, unknown>
     | null;
-  if (!heading) return true;
+  if (!heading) return false;
   return isFaqBlockEnabled(heading);
 }
 
@@ -125,10 +154,11 @@ export function isFaqAccordionBlockEnabled(
   config: Record<string, unknown> | null,
   sectionBase: string
 ): boolean {
+  if (!isFaqSectionBlockInOrder(config, sectionBase, 'accordion')) return false;
   const accordion = getThemeConfigValue(config, `${sectionBase}.blocks.accordion`) as
     | Record<string, unknown>
     | null;
-  if (!accordion) return true;
+  if (!accordion) return false;
   return isFaqBlockEnabled(accordion);
 }
 
@@ -268,13 +298,9 @@ export function readFaqHeading(
   settingsBase: string
 ): string {
   const blocksBase = `${sectionBase}.blocks`;
-  const title = cfgString(config, `${settingsBase}.title`, '');
-  const blockHeading = cfgString(config, `${blocksBase}.heading.settings.heading`, '');
-  const legacyText = cfgString(config, `${blocksBase}.heading.settings.text`, '');
+  const text = readHeroHeadingText(config, settingsBase, blocksBase, 'heading');
+  if (text.trim()) return text;
   const legacySectionHeading = cfgString(config, `${settingsBase}.heading`, '');
-  if (title.trim()) return title;
-  if (blockHeading.trim()) return blockHeading;
-  if (legacyText.trim()) return legacyText;
   if (legacySectionHeading.trim()) return legacySectionHeading;
   return 'Frequently asked questions';
 }
@@ -315,7 +341,8 @@ export function readFaqItems(
   config: Record<string, unknown> | null,
   templateId: string,
   sectionId: string,
-  placement: 'layout' | 'template'
+  placement: 'layout' | 'template',
+  editorMode = false
 ): FaqItem[] {
   const sectionBase =
     placement === 'template'
@@ -337,8 +364,11 @@ export function readFaqItems(
         const block = accordionBlock.blocks?.[id];
         if (!block || !isFaqBlockEnabled(block)) return null;
         const settings = (block.settings ?? {}) as Record<string, unknown>;
-        const question = String(settings.heading ?? settings.question ?? '').trim();
-        if (!question) return null;
+        let question = String(settings.heading ?? settings.question ?? '').trim();
+        if (!question) {
+          if (!editorMode) return null;
+          question = 'Accordion row';
+        }
         const textBlocks = readAccordionRowTextBlocks(block);
         const primary = textBlocks[0];
         return {

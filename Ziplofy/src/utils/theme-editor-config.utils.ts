@@ -275,7 +275,327 @@ export function collectEditableFieldPaths(
     }
   }
 
+  pushSharedHeadingBlockEditablePaths(schema, config, out, seen);
+  pushFaqAccordionRowInstancePaths(schema, config, out, seen);
+
   return out;
+}
+
+const FAQ_ACCORDION_ROW_SETTING_TYPES: Record<string, string> = {
+  heading: 'text',
+  openByDefault: 'boolean',
+  rowIcon: 'select',
+  rowImageIconUrl: 'text',
+  rowIconWidth: 'number',
+};
+
+function faqAccordionRowSchemaFieldKeys(schema: EditorSchemaDoc): { key: string; type: string; label: string }[] {
+  const fromLayout = schema.layout?.faq_section?.blocks
+    ?.find((b) => (b.id ?? '') === 'accordion')
+    ?.blocks?.find((b) => (b.id ?? '') === 'accordion_row')
+    ?.settingsFields;
+  if (fromLayout?.length) {
+    return fromLayout
+      .map((field) => {
+        const key = settingKeyFromBlueprintFieldPath(field.path ?? '');
+        if (!key) return null;
+        return { key, type: field.type, label: field.label || key };
+      })
+      .filter((x): x is { key: string; type: string; label: string } => Boolean(x));
+  }
+  return Object.entries(FAQ_ACCORDION_ROW_SETTING_TYPES).map(([key, type]) => ({
+    key,
+    type,
+    label: key,
+  }));
+}
+
+/** FAQ accordion rows use instance ids (`row_1`) while schema declares `accordion_row`. */
+function pushFaqAccordionRowInstancePaths(
+  schema: EditorSchemaDoc,
+  config: Record<string, unknown>,
+  out: SchemaFieldPath[],
+  seen: Set<string>
+): void {
+  const rowFields = faqAccordionRowSchemaFieldKeys(schema);
+  if (!rowFields.length) return;
+
+  const pushSectionRows = (sectionPrefix: string, sectionData: Record<string, unknown>) => {
+    const accordion = (sectionData.blocks as Record<string, { type?: string; blocks?: Record<string, unknown> }> | undefined)
+      ?.accordion;
+    const rows = accordion?.blocks;
+    if (!rows || typeof rows !== 'object') return;
+    for (const [rowId, row] of Object.entries(rows)) {
+      if (!row || typeof row !== 'object') continue;
+      const rowType = String((row as { type?: string }).type ?? '');
+      if (rowType && rowType !== 'accordion-row') continue;
+      for (const field of rowFields) {
+        const path = `${sectionPrefix}.blocks.accordion.blocks.${rowId}.settings.${field.key}`;
+        if (seen.has(path)) continue;
+        seen.add(path);
+        out.push({ path, type: field.type, label: field.label });
+      }
+    }
+  };
+
+  const templates = config.templates as
+    | Record<string, { sections?: Record<string, Record<string, unknown>> }>
+    | undefined;
+  for (const [tplId, tpl] of Object.entries(templates ?? {})) {
+    for (const [instanceId, sectionData] of Object.entries(tpl.sections ?? {})) {
+      if (templateBlueprintKey(instanceId) !== 'faq_section') continue;
+      pushSectionRows(`templates.${tplId}.sections.${instanceId}`, sectionData);
+    }
+  }
+
+  const sections = config.sections as Record<string, Record<string, unknown>> | undefined;
+  for (const [instanceId, sectionData] of Object.entries(sections ?? {})) {
+    if (layoutBlueprintKey(instanceId) !== 'faq_section') continue;
+    pushSectionRows(`sections.${instanceId}`, sectionData);
+  }
+}
+
+const HERO_TEXT_BLOCK_SETTING_TYPES: Record<string, string> = {
+  text: 'textarea',
+  width: 'select',
+  maxWidth: 'select',
+  alignment: 'select',
+  typographyPreset: 'select',
+  backgroundEnabled: 'boolean',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  paddingLeft: 'number',
+  paddingRight: 'number',
+};
+
+function resolveHeroTextBlockFieldType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.blocks\.text(?:_\d+)?\.settings\.([^.]+)$/
+  );
+  if (tpl) {
+    return HERO_TEXT_BLOCK_SETTING_TYPES[tpl[1]!];
+  }
+  const layout = path.match(/^sections\.[^.]+\.blocks\.text(?:_\d+)?\.settings\.([^.]+)$/);
+  if (layout) {
+    return HERO_TEXT_BLOCK_SETTING_TYPES[layout[1]!];
+  }
+  return undefined;
+}
+
+const HERO_LOGO_BLOCK_SETTING_TYPES: Record<string, string> = {
+  text: 'text',
+  imageUrl: 'text',
+  logoFont: 'select',
+  sizeUnit: 'select',
+  pixelHeight: 'number',
+  percentWidth: 'number',
+  customMobileSize: 'boolean',
+  mobileSizeUnit: 'select',
+  mobilePixelHeight: 'number',
+  mobilePercentWidth: 'number',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  paddingLeft: 'number',
+  paddingRight: 'number',
+};
+
+function resolveHeroLogoBlockFieldType(path: string): string | undefined {
+  const tpl = path.match(/^templates\.[^.]+\.sections\.[^.]+\.blocks\.logo\.settings\.([^.]+)$/);
+  if (tpl) {
+    return HERO_LOGO_BLOCK_SETTING_TYPES[tpl[1]!];
+  }
+  const layout = path.match(/^sections\.[^.]+\.blocks\.logo\.settings\.([^.]+)$/);
+  if (layout) {
+    return HERO_LOGO_BLOCK_SETTING_TYPES[layout[1]!];
+  }
+  return undefined;
+}
+
+function resolveFaqAccordionRowFieldType(
+  path: string,
+  typeByPath: Map<string, string>
+): string | undefined {
+  const tpl = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.blocks\.accordion\.blocks\.[^.]+\.settings\.([^.]+)$/
+  );
+  if (tpl) {
+    const key = tpl[1]!;
+    return (
+      typeByPath.get(
+        `templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.settings.${key}`
+      ) ??
+      typeByPath.get(
+        `sections.faq_section.blocks.accordion.blocks.accordion_row.settings.${key}`
+      ) ??
+      FAQ_ACCORDION_ROW_SETTING_TYPES[key]
+    );
+  }
+  const layout = path.match(
+    /^sections\.[^.]+\.blocks\.accordion\.blocks\.[^.]+\.settings\.([^.]+)$/
+  );
+  if (layout) {
+    const key = layout[1]!;
+    return (
+      typeByPath.get(
+        `sections.faq_section.blocks.accordion.blocks.accordion_row.settings.${key}`
+      ) ??
+      typeByPath.get(
+        `templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.settings.${key}`
+      ) ??
+      FAQ_ACCORDION_ROW_SETTING_TYPES[key]
+    );
+  }
+  return undefined;
+}
+
+function sectionSchemaHasHeadingBlock(blocks: BlockLike[] | undefined): boolean {
+  return (blocks ?? []).some((b) => {
+    const id = b.id ?? '';
+    return id === 'heading' || id.startsWith('heading_');
+  });
+}
+
+function canonicalHeroHeadingSchemaFields(schema: EditorSchemaDoc): SchemaFieldPath[] {
+  const tpl = schema.templates?.find((t) => t.id === 'index');
+  const hero = tpl?.sections?.find((s) => (s.id ?? '') === 'hero_main');
+  const heading = hero?.blocks?.find((b) => (b.id ?? '') === 'heading');
+  const fields: SchemaFieldPath[] = [];
+  for (const field of heading?.settingsFields ?? []) {
+    if (!field.path) continue;
+    fields.push({
+      path: field.path,
+      type: field.type,
+      label: field.label || field.path,
+    });
+  }
+  return fields;
+}
+
+/** FAQ and other sections reuse hero heading panel fields that are missing from schema. */
+function pushSharedHeadingBlockEditablePaths(
+  schema: EditorSchemaDoc,
+  config: Record<string, unknown>,
+  out: SchemaFieldPath[],
+  seen: Set<string>
+): void {
+  const canon = canonicalHeroHeadingSchemaFields(schema);
+  if (!canon.length) return;
+
+  const pushSectionHeadingPaths = (
+    settingsPrefix: string,
+    blocksPrefix: string,
+    field: SchemaFieldPath
+  ) => {
+    const key = field.path.split('.').pop() ?? '';
+    if (!key || !HEADING_SECTION_SETTING_TYPES[key]) return;
+    const path = `${settingsPrefix}.${key}`;
+    if (seen.has(path)) return;
+    seen.add(path);
+    out.push({ path, type: field.type, label: field.label });
+  };
+
+  const pushBlockHeadingPath = (blocksPrefix: string) => {
+    const path = `${blocksPrefix}.heading.settings.heading`;
+    if (seen.has(path)) return;
+    seen.add(path);
+    out.push({ path, type: 'textarea', label: 'Heading' });
+  };
+
+  for (const tpl of schema.templates ?? []) {
+    for (const sec of tpl.sections ?? []) {
+      if (!sectionSchemaHasHeadingBlock(sec.blocks)) continue;
+      const blueprint = sec.id ?? 'section';
+      const settingsPrefix = `templates.${tpl.id}.sections.${blueprint}.settings`;
+      const blocksPrefix = `templates.${tpl.id}.sections.${blueprint}.blocks`;
+      for (const field of canon) pushSectionHeadingPaths(settingsPrefix, blocksPrefix, field);
+      pushBlockHeadingPath(blocksPrefix);
+    }
+  }
+
+  for (const [blueprint, layout] of Object.entries(schema.layout ?? {})) {
+    if (!sectionSchemaHasHeadingBlock(layout.blocks)) continue;
+    const settingsPrefix = `sections.${blueprint}.settings`;
+    const blocksPrefix = `sections.${blueprint}.blocks`;
+    for (const field of canon) pushSectionHeadingPaths(settingsPrefix, blocksPrefix, field);
+    pushBlockHeadingPath(blocksPrefix);
+  }
+
+  const templates = config.templates as
+    | Record<string, { sections?: Record<string, unknown> }>
+    | undefined;
+  for (const [tplId, tpl] of Object.entries(templates ?? {})) {
+    const template = schema.templates?.find((t) => t.id === tplId);
+    for (const instanceId of Object.keys(tpl.sections ?? {})) {
+      const blueprint = templateBlueprintKey(instanceId);
+      if (blueprint === instanceId) continue;
+      const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
+      if (!sec || !sectionSchemaHasHeadingBlock(sec.blocks)) continue;
+      const settingsPrefix = `templates.${tplId}.sections.${instanceId}.settings`;
+      const blocksPrefix = `templates.${tplId}.sections.${instanceId}.blocks`;
+      for (const field of canon) pushSectionHeadingPaths(settingsPrefix, blocksPrefix, field);
+      pushBlockHeadingPath(blocksPrefix);
+    }
+  }
+
+  const layoutSections = config.sections as Record<string, unknown> | undefined;
+  for (const instanceId of Object.keys(layoutSections ?? {})) {
+    const blueprint = layoutBlueprintKey(instanceId);
+    if (blueprint === instanceId) continue;
+    const layout = schema.layout?.[blueprint];
+    if (!layout || !sectionSchemaHasHeadingBlock(layout.blocks)) continue;
+    const settingsPrefix = `sections.${instanceId}.settings`;
+    const blocksPrefix = `sections.${instanceId}.blocks`;
+    for (const field of canon) pushSectionHeadingPaths(settingsPrefix, blocksPrefix, field);
+    pushBlockHeadingPath(blocksPrefix);
+  }
+}
+
+const HEADING_SECTION_SETTING_TYPES: Record<string, string> = {
+  title: 'textarea',
+  headingWidth: 'select',
+  headingMaxWidth: 'select',
+  headingAlignment: 'select',
+  headingTypographyPreset: 'select',
+  headingFont: 'select',
+  headingFontSize: 'select',
+  headingLineHeight: 'select',
+  headingLetterSpacing: 'select',
+  headingTextCase: 'select',
+  headingWrap: 'select',
+  headingColor: 'select',
+  headingBackgroundEnabled: 'boolean',
+  headingBackgroundColor: 'text',
+  headingCornerRadius: 'number',
+  headingPaddingTop: 'number',
+  headingPaddingBottom: 'number',
+  headingPaddingLeft: 'number',
+  headingPaddingRight: 'number',
+};
+
+function resolveSharedHeadingSectionSettingType(
+  path: string,
+  typeByPath: Map<string, string>
+): string | undefined {
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) {
+    const key = tpl[3]!;
+    if (!HEADING_SECTION_SETTING_TYPES[key]) return undefined;
+    return (
+      typeByPath.get(`templates.index.sections.hero_main.settings.${key}`) ??
+      HEADING_SECTION_SETTING_TYPES[key]
+    );
+  }
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) {
+    const key = layout[2]!;
+    if (!HEADING_SECTION_SETTING_TYPES[key]) return undefined;
+    return (
+      typeByPath.get(`templates.index.sections.hero_main.settings.${key}`) ??
+      typeByPath.get(`sections.${layoutBlueprintKey(layout[1]!)}.settings.${key}`) ??
+      HEADING_SECTION_SETTING_TYPES[key]
+    );
+  }
+  return undefined;
 }
 
 const FEATURED_PRODUCT_DETAILS_SETTING_TYPES: Record<string, string> = {
@@ -428,6 +748,9 @@ function resolveFieldTypeForPath(
   const direct = typeByPath.get(path);
   if (direct) return direct;
 
+  const sharedHeadingSection = resolveSharedHeadingSectionSettingType(path, typeByPath);
+  if (sharedHeadingSection) return sharedHeadingSection;
+
   const menuSetting = path.match(/^sections\.[^.]+\.blocks\.menu\.settings\.([^.]+)$/);
   if (menuSetting) {
     const inferred = HEADER_MENU_BLOCK_SETTING_TYPES[menuSetting[1]];
@@ -559,6 +882,15 @@ function resolveFieldTypeForPath(
 
   const fromBlockInstance = resolveBlockInstanceFieldType(path, typeByPath);
   if (fromBlockInstance) return fromBlockInstance;
+
+  const faqAccordionRow = resolveFaqAccordionRowFieldType(path, typeByPath);
+  if (faqAccordionRow) return faqAccordionRow;
+
+  const heroTextBlock = resolveHeroTextBlockFieldType(path);
+  if (heroTextBlock) return heroTextBlock;
+
+  const heroLogoBlock = resolveHeroLogoBlockFieldType(path);
+  if (heroLogoBlock) return heroLogoBlock;
 
   return undefined;
 }

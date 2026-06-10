@@ -45,6 +45,16 @@ node scripts/fork-create-theme-sidebar.mjs
 - Implemented runtimes: `header/runtime`, `announcement-bar/runtime`, `divider/runtime` (more sections show a placeholder until ported).
 - render-store loads `@ziplofy/create-theme/runtime` when `isStoreCustomTheme` (no `theme.js`).
 
+## Mobile responsiveness (section runtimes)
+
+All live section components under `{element}/runtime/` must work at **≤749px** (Shopify mobile preview breakpoint).
+
+- Shared helpers: `runtime/shared/responsive.ts` (`MOBILE_MAX_WIDTH_PX`, `scopedMobileFlexStackCss`, `scopedMobileGridSingleColumnCss`, `scopedMobileHorizontalPadCss`, etc.).
+- Use **scoped `<style>` media queries** in runtime components only — do not change sidebar panels or editing field order.
+- Horizontal layouts (flex row, multi-column grids, split media/content) should stack to a single column on mobile.
+- Section horizontal padding should tighten to **16px** on mobile (`layout.padXMobile` in `runtime/shared/tokens.ts`).
+- New runtimes: import responsive helpers, add a `*-shell` scope class on the section root, and inject mobile CSS alongside any existing `customCss`.
+
 ## Pack load
 
 - `loadCreatorThemeEditorPack`

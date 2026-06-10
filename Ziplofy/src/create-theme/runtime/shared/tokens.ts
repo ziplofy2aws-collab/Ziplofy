@@ -20,6 +20,8 @@ export function useThemeColors() {
 export const layout = {
   maxWidth: 1200,
   padX: 24,
+  /** Horizontal padding on viewports ≤749px (Shopify mobile preview). */
+  padXMobile: 16,
   line: 'rgba(17, 24, 39, 0.12)',
 } as const;
 

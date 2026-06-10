@@ -18,6 +18,20 @@ export const FAQ_ACCORDION_PANEL_SETTING_KEYS = new Set([
   'paddingRight',
 ]);
 
+export const FAQ_ACCORDION_GENERAL_FIELD_ORDER = [
+  'icon',
+  'dividers',
+  'headingTypographyPreset',
+  'inheritColorScheme',
+] as const;
+
+export const FAQ_ACCORDION_PADDING_FIELD_ORDER = [
+  'paddingTop',
+  'paddingBottom',
+  'paddingLeft',
+  'paddingRight',
+] as const;
+
 const ICON_OPTIONS = [
   { value: 'caret', label: 'Caret' },
   { value: 'plus', label: 'Plus' },
@@ -99,13 +113,6 @@ export function faqAccordionFieldDefs(blocksBase: string): EditorFieldDef[] {
       path: s('dividers'),
       type: 'boolean',
       label: 'Dividers',
-      group: 'General',
-      sidebar: true,
-    },
-    {
-      path: s('openFirstItem'),
-      type: 'boolean',
-      label: 'Open first item',
       group: 'General',
       sidebar: true,
     },
@@ -276,4 +283,38 @@ export function prepareFaqAccordionSettingsNode(node: SidebarNode): SidebarNode 
     return { ...node, label: 'Accordion', kind: 'block', fields: fromNode };
   }
   return { ...node, label: 'Accordion', kind: 'block', fields };
+}
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+/** Seed sidebar `values` for accordion block panel fields from merged config. */
+export function extendValuesForFaqAccordionBlock(
+  values: Record<string, string | boolean>,
+  editorSchema: EditorSchemaDoc,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const defs = faqAccordionFieldDefsFromSchema(editorSchema, nodeId);
+  if (!defs.length) return values;
+  const next = { ...values };
+  let changed = false;
+  for (const field of defs) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw === undefined) continue;
+    if (field.type === 'boolean') {
+      next[field.path] = Boolean(raw);
+    } else {
+      next[field.path] = raw == null ? '' : String(raw);
+    }
+    changed = true;
+  }
+  return changed ? next : values;
 }

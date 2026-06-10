@@ -2818,11 +2818,52 @@ function sectionIsIconsWithText(
   return blueprint === 'icons_with_text';
 }
 
+function sectionIsMulticolumn(
+  sec: Record<string, unknown>,
+  sectionInstanceId: string,
+  scope: AddBlockTarget['scope']
+): boolean {
+  if (sec.type === 'multicolumn') return true;
+  const blueprint =
+    scope === 'layout'
+      ? layoutBlueprintKey(sectionInstanceId)
+      : templateBlueprintKey(sectionInstanceId);
+  return blueprint === 'multicolumn_section';
+}
+
 function nextIconsWithTextBlockId(order: string[], blocks: Record<string, unknown>): string {
   const existing = new Set([...order, ...Object.keys(blocks)]);
   let n = 1;
   while (existing.has(`icon_${n}`)) n += 1;
   return `icon_${n}`;
+}
+
+function nextMulticolumnBlockId(order: string[], blocks: Record<string, unknown>): string {
+  const existing = new Set([...order, ...Object.keys(blocks)]);
+  let n = 1;
+  while (existing.has(`column_${n}`)) n += 1;
+  return `column_${n}`;
+}
+
+function insertMulticolumnBlock(
+  sec: Record<string, unknown>,
+  catalogBlockId: string
+): { blockInstanceId: string } | null {
+  if (normalizeCatalogBlockId(catalogBlockId) !== 'multicolumn-item') return null;
+  const blocks = { ...((sec.blocks ?? {}) as Record<string, Record<string, unknown>>) };
+  const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [];
+  const blockId = nextMulticolumnBlockId(order, blocks);
+  blocks[blockId] = {
+    type: 'multicolumn-item',
+    settings: {
+      heading: 'Heading',
+      text: '',
+    },
+  };
+  order.push(blockId);
+  sec.blocks = blocks;
+  sec.block_order = order;
+  return { blockInstanceId: blockId };
 }
 
 function insertIconsWithTextBlock(
@@ -2967,11 +3008,24 @@ function insertFaqBlock(
 
   if (normalized === 'accordion') {
     if (blocks.accordion) return null;
+    const rowId = 'row_1';
     blocks.accordion = {
       type: 'group',
       settings: faqAccordionDefaultSettings(),
-      block_order: [],
-      blocks: {},
+      block_order: [rowId],
+      blocks: {
+        [rowId]: {
+          type: 'accordion-row',
+          settings: faqAccordionRowDefaultSettings(),
+          block_order: ['text'],
+          blocks: {
+            text: {
+              type: 'text',
+              settings: textBlockDefaultSettings(),
+            },
+          },
+        },
+      },
     };
     if (!order.includes('accordion')) order.push('accordion');
     sec.blocks = blocks;
@@ -3084,6 +3138,19 @@ export function insertBlockFromCatalog(
         nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
       };
     }
+    if (sectionIsMulticolumn(sec, target.sectionInstanceId, 'layout')) {
+      const inserted = insertMulticolumnBlock(sec, catalogBlockId);
+      if (!inserted) return null;
+      sections[target.sectionInstanceId] = sec;
+      next.sections = sections;
+      return {
+        config: next,
+        blockInstanceId: inserted.blockInstanceId,
+        sectionInstanceId: target.sectionInstanceId,
+        scope: 'layout',
+        nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+      };
+    }
     return null;
   }
 
@@ -3146,6 +3213,22 @@ export function insertBlockFromCatalog(
   }
   if (sectionIsIconsWithText(sec, target.sectionInstanceId, 'template')) {
     const inserted = insertIconsWithTextBlock(sec, catalogBlockId);
+    if (!inserted) return null;
+    sections[target.sectionInstanceId] = sec;
+    tpl.sections = sections;
+    templates[tplId] = tpl;
+    next.templates = templates;
+    return {
+      config: next,
+      blockInstanceId: inserted.blockInstanceId,
+      sectionInstanceId: target.sectionInstanceId,
+      scope: 'template',
+      templateId: tplId,
+      nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+    };
+  }
+  if (sectionIsMulticolumn(sec, target.sectionInstanceId, 'template')) {
+    const inserted = insertMulticolumnBlock(sec, catalogBlockId);
     if (!inserted) return null;
     sections[target.sectionInstanceId] = sec;
     tpl.sections = sections;

@@ -44,14 +44,14 @@ export function readRichTextLayout(
 ): RichTextLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   const align = cfgString(config, `${settingsBase}.layoutAlignment`, 'center');
-  const height = cfgString(config, `${settingsBase}.height`, 'auto');
+  const height = cfgString(config, `${settingsBase}.height`, 'small');
   const dir = cfgString(config, `${settingsBase}.direction`, 'vertical');
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
     direction: dir === 'horizontal' ? 'horizontal' : 'vertical',
     layoutAlignment: pullQuoteContentAlign(align),
     position: cfgString(config, `${settingsBase}.position`, 'center'),
-    layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 16),
+    layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 25),
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
     height,
     minHeightPx: HEIGHT_PX[height] ?? 0,

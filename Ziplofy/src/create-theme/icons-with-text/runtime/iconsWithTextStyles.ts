@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { getThemeConfigValue } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { mobileMedia } from '../../runtime/shared/responsive';
 import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/structureOrder';
 
 export type IconsWithTextScheme = {
@@ -139,7 +140,7 @@ export function scopedIconsWithTextCss(sectionId: string, customCss: string): st
 
 export function iconsWithTextMobileStackCss(sectionId: string): string {
   const scope = `.ziplofy-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
-  return `@media (max-width: 749px) { ${scope} { grid-template-columns: 1fr !important; } }`;
+  return mobileMedia(`${scope} { grid-template-columns: 1fr !important; }`);
 }
 
 export function columnTypography(fontBody: string): {

@@ -4,6 +4,10 @@ import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import { IconGlyph } from './IconGlyph';
 import {
+  combineResponsiveCss,
+  scopedMobileHorizontalPadCss,
+} from '../../runtime/shared/responsive';
+import {
   alignContentForPosition,
   columnTypography,
   iconsWithTextMobileStackCss,
@@ -57,10 +61,10 @@ export function IconsWithText({
   const scopeClass = `ziplofy-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const colCount = Math.max(items.length, style.columns);
   const isHorizontal = style.direction === 'horizontal';
-  const mobileStackClass =
-    style.verticalOnMobile && isHorizontal
-      ? `ziplofy-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
-      : '';
+  const shellClass = `${scopeClass}-shell`;
+  const mobileStackClass = isHorizontal
+    ? `ziplofy-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+    : '';
   const typo = columnTypography(fontBody);
 
   const columnAlign =
@@ -111,12 +115,15 @@ export function IconsWithText({
   };
 
   const customCss = scopedIconsWithTextCss(sectionId, style.customCss);
-  const mobileCss = mobileStackClass ? iconsWithTextMobileStackCss(sectionId) : '';
+  const responsiveCss = combineResponsiveCss(
+    scopedMobileHorizontalPadCss(shellClass),
+    mobileStackClass ? iconsWithTextMobileStackCss(sectionId) : ''
+  );
 
   return (
-    <section style={shell} {...editorAttrs(editorNodeId, 'Icons with text', 'section')}>
+    <section className={shellClass} style={shell} {...editorAttrs(editorNodeId, 'Icons with text', 'section')}>
       {customCss ? <style>{customCss}</style> : null}
-      {mobileCss ? <style>{mobileCss}</style> : null}
+      {responsiveCss ? <style>{responsiveCss}</style> : null}
       {bgImage ? (
         <div
           aria-hidden

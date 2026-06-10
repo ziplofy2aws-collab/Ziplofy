@@ -128,7 +128,9 @@ export function isFaqSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   ) {
     return false;
   }
+  const path = fields[0]?.path ?? '';
   return (
+    path.includes('faq_section') &&
     keys.has('direction') &&
     keys.has('layoutGap') &&
     keys.has('layoutAlignment') &&

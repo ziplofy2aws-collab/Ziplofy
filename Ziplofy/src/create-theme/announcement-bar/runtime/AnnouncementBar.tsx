@@ -19,6 +19,11 @@ import {
   typographyToStyle,
 } from './announcementBlockTypography';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
+import {
+  combineResponsiveCss,
+  scopedAnnouncementMobileCss,
+  sectionScopeClass,
+} from '../../runtime/shared/responsive';
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { useThemeColors } from '../../runtime/shared/tokens';
@@ -131,6 +136,8 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
   const dividerPx = announcementDividerPx(config, settingsBase);
   const customCss = cfgString(config, `${settingsBase}.customCss`, '');
   const scopedCss = scopedAnnouncementCss(sectionId, customCss);
+  const shellClass = sectionScopeClass('ziplofy-announcement', sectionId);
+  const responsiveCss = scopedAnnouncementMobileCss(shellClass);
 
   const renderSlide = (s: AnnouncementSlide, visible: boolean): ReactNode => {
     const textStyle = typographyToStyle(s.typography);
@@ -139,7 +146,9 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
 
     const messageEl = (
       <EditorField fieldPath={textPath} label="Text">
-        <span style={textStyle}>{s.text}</span>
+        <span className="ziplofy-announcement-message" style={textStyle}>
+          {s.text}
+        </span>
       </EditorField>
     );
 
@@ -195,6 +204,7 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
     <EditorSection
       sectionId={sectionId}
       label="Announcement bar"
+      className={shellClass}
       style={{
         background: scheme.background,
         color: scheme.color,
@@ -209,6 +219,7 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
       }}
     >
       {scopedCss ? <style>{scopedCss}</style> : null}
+      {responsiveCss ? <style>{responsiveCss}</style> : null}
       <div
         style={
           sectionWidth === 'page'

@@ -95,6 +95,57 @@ export function isMulticolumnSettingsPanelFields(fields: EditorFieldDef[]): bool
   );
 }
 
+export function multicolumnBlocksBaseFromNodeId(nodeId: string): string | null {
+  const m = nodeId.match(/^(template:[^:]+:[^:]+|layout:[^:]+):block:[^:]+$/);
+  if (!m) return null;
+  const prefix = m[1];
+  if (prefix.startsWith('template:')) {
+    const [, tplId, secId] = prefix.split(':');
+    return `templates.${tplId}.sections.${secId}`;
+  }
+  const secId = prefix.replace(/^layout:/, '');
+  return `sections.${secId}`;
+}
+
+export function multicolumnBlockInstanceIdFromNodeId(nodeId: string): string | null {
+  const m = nodeId.match(/:block:([^:]+)$/);
+  return m?.[1] ?? null;
+}
+
+export function isMulticolumnBlockNodeId(nodeId: string): boolean {
+  return /:block:column_/.test(nodeId);
+}
+
+export function multicolumnBlockFieldDefs(
+  blocksBase: string,
+  blockInstanceId: string
+): EditorFieldDef[] {
+  const s = (key: string) => `${blocksBase}.blocks.${blockInstanceId}.settings.${key}`;
+  return [
+    {
+      path: s('heading'),
+      type: 'text',
+      label: 'Heading',
+      group: 'Content',
+      sidebar: true,
+    },
+    {
+      path: s('text'),
+      type: 'textarea',
+      label: 'Description',
+      group: 'Content',
+      sidebar: true,
+    },
+  ];
+}
+
+export function multicolumnBlockFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
+  const base = multicolumnBlocksBaseFromNodeId(nodeId);
+  const blockId = multicolumnBlockInstanceIdFromNodeId(nodeId);
+  if (!base || !blockId) return [];
+  return multicolumnBlockFieldDefs(base, blockId);
+}
+
 export function prepareMulticolumnSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortMulticolumnPanelFields(
     filterSidebarSectionPanelFields(node.fields ?? [], isMulticolumnPanelField)
@@ -103,6 +154,8 @@ export function prepareMulticolumnSettingsNode(node: SidebarNode): SidebarNode {
 }
 
 export function prepareMulticolumnBlockSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = (node.fields ?? []).filter(isMulticolumnBlockField);
+  const fromNode = multicolumnBlockFieldDefsFromNodeId(node.id);
+  const fields =
+    fromNode.length > 0 ? fromNode : (node.fields ?? []).filter(isMulticolumnBlockField);
   return { ...node, label: node.label || 'Column', kind: 'block', fields };
 }

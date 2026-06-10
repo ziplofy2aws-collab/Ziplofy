@@ -168,7 +168,7 @@ export function readHeroHeadingStyle(
     maxWidth,
     marginLeft,
     marginRight,
-    textAlign: isFill ? textAlign : undefined,
+    textAlign,
     fontFamily: customTypo?.fontFamily ?? themeFonts.fontHeading,
     fontSize: customTypo?.fontSize ?? presetTypo.fontSize,
     fontWeight: customTypo?.fontWeight ?? presetTypo.fontWeight,

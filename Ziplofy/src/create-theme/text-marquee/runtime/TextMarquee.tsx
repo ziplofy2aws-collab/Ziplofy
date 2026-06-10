@@ -4,6 +4,7 @@ import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { combineResponsiveCss, scopedTextMarqueeMobileCss } from '../../runtime/shared/responsive';
 import {
   readTextMarqueeLayout,
   scopedTextMarqueeCss,
@@ -101,12 +102,14 @@ export function TextMarquee({
 
   const customCss = scopedTextMarqueeCss(sectionId, style.customCss);
   const keyframes = textMarqueeKeyframes(scopeClass, style.motionDirection);
+  const responsiveCss = scopedTextMarqueeMobileCss(scopeClass);
 
   return (
     <EditorSection sectionId={sectionId} editorNodeId={editorNodeId} label="Marquee">
       <section className={scopeClass} style={shell} data-section-type="text-marquee">
         <style>
           {keyframes}
+          {responsiveCss}
           {customCss ? customCss : ''}
         </style>
         <div className={`${scopeClass}__viewport`} style={viewport}>

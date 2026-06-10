@@ -88,8 +88,71 @@ export function extendValuesForFaqSectionBlock(
         next[path] = typeof value === 'boolean' ? value : String(value);
       }
     }
+    const accordion = getNested(config, `${sectionBase}.blocks.accordion`.split('.')) as
+      | { block_order?: string[] }
+      | undefined;
+    const rowOrder = Array.isArray(accordion?.block_order) ? accordion.block_order : [];
+    for (const rowId of rowOrder) {
+      next = extendValuesForNewFaqAccordionRow(
+        next,
+        scope,
+        tplId,
+        sectionInstanceId,
+        rowId,
+        config
+      );
+    }
   }
 
+  return next;
+}
+
+const FAQ_HEADING_SETTING_KEYS = new Set([
+  'title',
+  'heading',
+  'headingWidth',
+  'headingMaxWidth',
+  'headingAlignment',
+  'headingTypographyPreset',
+  'headingFont',
+  'headingFontSize',
+  'headingLineHeight',
+  'headingLetterSpacing',
+  'headingTextCase',
+  'headingWrap',
+  'headingColor',
+  'headingBackgroundEnabled',
+  'headingBackgroundColor',
+  'headingCornerRadius',
+  'headingPaddingTop',
+  'headingPaddingBottom',
+  'headingPaddingLeft',
+  'headingPaddingRight',
+]);
+
+/** Remove values when FAQ section-level heading or accordion block is deleted. */
+export function pruneValuesForFaqSectionBlock(
+  values: Record<string, string | boolean>,
+  scope: 'template' | 'layout',
+  tplId: string | undefined,
+  sectionInstanceId: string,
+  blockInstanceId: 'heading' | 'accordion'
+): Record<string, string | boolean> {
+  const sectionBase =
+    scope === 'template' && tplId
+      ? `templates.${tplId}.sections.${sectionInstanceId}`
+      : `sections.${sectionInstanceId}`;
+  let next = pruneByPrefix(values, `${sectionBase}.blocks.${blockInstanceId}`);
+  if (blockInstanceId === 'heading') {
+    const settingsPrefix = `${sectionBase}.settings.`;
+    for (const [key, value] of Object.entries(next)) {
+      if (!key.startsWith(settingsPrefix)) continue;
+      const settingKey = key.slice(settingsPrefix.length).split('.')[0] ?? '';
+      if (FAQ_HEADING_SETTING_KEYS.has(settingKey)) {
+        delete next[key];
+      }
+    }
+  }
   return next;
 }
 

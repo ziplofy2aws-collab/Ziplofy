@@ -191,7 +191,9 @@ import {
   isFaqSettingsPanelFields,
 } from './theme-editor-faq-panel.utils';
 import {
+  FAQ_ACCORDION_GENERAL_FIELD_ORDER,
   FAQ_ACCORDION_HEADING_PRESET_OPTIONS,
+  FAQ_ACCORDION_PADDING_FIELD_ORDER,
   FAQ_ACCORDION_PANEL_GROUP_ORDER,
   groupFaqAccordionPanelFields,
   isFaqAccordionBlockNodeId,
@@ -218,6 +220,8 @@ import {
 import {
   groupMulticolumnPanelFields,
   MULTICOLUMN_PANEL_GROUP_ORDER,
+  isMulticolumnBlockField,
+  isMulticolumnBlockNodeId,
   isMulticolumnSettingsPanelFields,
 } from './theme-editor-multicolumn-panel.utils';
 import {
@@ -228,6 +232,8 @@ import {
 import {
   groupRichTextPanelFields,
   RICH_TEXT_PANEL_GROUP_ORDER,
+  isRichTextBlockField,
+  isRichTextBlockNodeId,
   isRichTextSettingsPanelFields,
 } from './theme-editor-rich-text-panel.utils';
 import {
@@ -357,6 +363,12 @@ import {
 } from './theme-editor-header-panel.utils';
 import { HeaderSettingsPanel } from './theme-editor-header-settings-panel';
 import { isHeaderLogoBlockPanelFields } from './theme-editor-header-logo-block-panel.utils';
+import {
+  groupLargeLogoBlockPanelFields,
+  isLargeLogoBlockPanelFields,
+  LARGE_LOGO_BLOCK_PANEL_GROUP_ORDER,
+} from './theme-editor-large-logo-block-panel.utils';
+import { isHeroTextBlockNodeId } from './theme-editor-hero-text-block-panel.utils';
 import { isHeaderMenuBlockPanelFields } from './theme-editor-header-menu-block-panel.utils';
 
 function SectionIcon({ className }: { className?: string }) {
@@ -1278,7 +1290,7 @@ function HeadingLayoutSettingsGroup({
             onFieldChange={onFieldChange}
           />
         ) : null}
-        {isFill && alignmentField ? (
+        {alignmentField ? (
           <HeadingAlignmentFieldRow
             field={alignmentField}
             values={values}
@@ -5626,6 +5638,70 @@ function StorytellingLogoGroupedSettingsPanel({
   );
 }
 
+/** Large logo Logo block: Font → Size → Padding (matches Shopify Horizon). */
+function LargeLogoBlockGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupLargeLogoBlockPanelFields(fields), [fields]);
+  const typographyFields = grouped.get('Typography') ?? [];
+  const fontField = typographyFields.find((f) => f.path.endsWith('logoFont'));
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      {fontField ? (
+        <div className="space-y-2 px-1 py-3">
+          <SelectFieldRow field={fontField} values={values} onFieldChange={onFieldChange} />
+          <p className="text-[12px] text-gray-500">
+            Edit logo in{' '}
+            <button
+              type="button"
+              className="text-[#005bd3] underline underline-offset-2 hover:text-[#004299]"
+              onClick={() => window.open('/settings/theme', '_blank', 'noopener,noreferrer')}
+            >
+              theme settings
+            </button>
+          </p>
+        </div>
+      ) : null}
+
+      {LARGE_LOGO_BLOCK_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length || label === 'Typography') return null;
+
+        if (label === 'Size') {
+          return (
+            <StorytellingLogoSizeSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <TextBlockPaddingSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
 /** Storytelling Video: Layout → Size → Appearance → Padding → Custom CSS. */
 function StorytellingVideoGroupedSettingsPanel({
   fields,
@@ -5709,6 +5785,175 @@ function StorytellingVideoGroupedSettingsPanel({
   );
 }
 
+const MULTICOLUMN_APPEARANCE_FIELD_ORDER = [
+  'colorScheme',
+  'backgroundMedia',
+  'borderStyle',
+  'cornerRadius',
+  'backgroundOverlay',
+] as const;
+
+/** Multicolumn appearance: Color scheme → Background media → Borders → Corner radius → Overlay. */
+function MulticolumnAppearanceSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const bgMediaField = fields.find((f) => f.path.endsWith('backgroundMedia'));
+  const bgImageField = fields.find((f) => f.path.endsWith('backgroundImageUrl'));
+  const bgMedia = bgMediaField ? fieldValueAsString(values, bgMediaField) || 'none' : 'none';
+
+  const rank = (path: string) => {
+    const key = path.split('.').pop() ?? '';
+    const idx = MULTICOLUMN_APPEARANCE_FIELD_ORDER.indexOf(
+      key as (typeof MULTICOLUMN_APPEARANCE_FIELD_ORDER)[number]
+    );
+    return idx >= 0 ? idx : 99;
+  };
+  const ordered = [...fields]
+    .filter((f) => f.path.split('.').pop() !== 'backgroundImageUrl')
+    .sort((a, b) => rank(a.path) - rank(b.path));
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+      <div className="space-y-1">
+        {ordered.map((field) => {
+          const key = field.path.split('.').pop() ?? '';
+          if (key === 'backgroundOverlay') {
+            return (
+              <ToggleSwitchFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'color-scheme') {
+            return (
+              <ColorSchemeFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'segmented') {
+            return (
+              <SegmentedFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'slider') {
+            return (
+              <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+            );
+          }
+          if (field.widget === 'select-inline') {
+            return (
+              <InlineSelectFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          return (
+            <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+          );
+        })}
+        {bgMedia === 'image' && bgImageField ? (
+          <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Column block: Heading → Description. */
+function MulticolumnBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const ordered = ['heading', 'text']
+    .map((key) => fields.find((f) => f.path.endsWith(`.${key}`)))
+    .filter((f): f is EditorFieldDef => Boolean(f));
+
+  return (
+    <div className="px-1 py-3">
+      <div className="space-y-1">
+        {ordered.map((field) => (
+          <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Rich text block: Heading, Text, or Button (section settings-backed). */
+function RichTextBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  return (
+    <div className="px-1 py-3">
+      <div className="space-y-1">
+        {fields.map((field) => {
+          const key = field.path.split('.').pop() ?? '';
+          if (field.widget === 'richtext' || key === 'heading' || key === 'text') {
+            return (
+              <RichTextFieldRow
+                key={field.path}
+                field={{ ...field, widget: 'richtext', type: 'textarea' }}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (key === 'buttonUrl') {
+            return (
+              <ThemeEditorLinkField
+                key={field.path}
+                id={fieldInputId(field.path)}
+                label={field.label}
+                value={fieldValueAsString(values, field)}
+                placeholder={field.placeholder ?? 'Paste a link or search'}
+                onChange={(next) => onFieldChange(field.path, 'text', next)}
+                showOpenLink
+                showDynamicSource
+              />
+            );
+          }
+          return (
+            <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Multicolumn: Layout → Size → Appearance → Padding → Custom CSS. */
 function MulticolumnGroupedSettingsPanel({
   fields,
@@ -5751,7 +5996,7 @@ function MulticolumnGroupedSettingsPanel({
 
         if (label === 'Appearance') {
           return (
-            <ContactFormAppearanceSettingsGroup
+            <MulticolumnAppearanceSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -5792,6 +6037,163 @@ function MulticolumnGroupedSettingsPanel({
   );
 }
 
+const PULL_QUOTE_LAYOUT_FIELD_ORDER = [
+  'direction',
+  'layoutAlignment',
+  'position',
+  'layoutGap',
+] as const;
+
+const PULL_QUOTE_APPEARANCE_FIELD_ORDER = [
+  'colorScheme',
+  'backgroundMedia',
+  'borderStyle',
+  'cornerRadius',
+  'backgroundOverlay',
+] as const;
+
+/** Pull quote layout: Direction → Alignment (segmented) → Position (dropdown) → Gap. */
+function PullQuoteLayoutSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const rank = (path: string) => {
+    const key = path.split('.').pop() ?? '';
+    const idx = PULL_QUOTE_LAYOUT_FIELD_ORDER.indexOf(
+      key as (typeof PULL_QUOTE_LAYOUT_FIELD_ORDER)[number]
+    );
+    return idx >= 0 ? idx : 99;
+  };
+  const ordered = [...fields].sort((a, b) => rank(a.path) - rank(b.path));
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Layout</h3>
+      <div className="space-y-1">
+        {ordered.map((field) => {
+          const key = field.path.split('.').pop() ?? '';
+          if (field.widget === 'segmented' || key === 'direction' || key === 'layoutAlignment') {
+            return (
+              <SegmentedFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'slider' || key === 'layoutGap') {
+            return (
+              <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+            );
+          }
+          return (
+            <InlineSelectFieldRow
+              key={field.path}
+              field={field}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Pull quote appearance: Color scheme → Background media → Borders → Corner radius → Overlay. */
+function PullQuoteAppearanceSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const bgMediaField = fields.find((f) => f.path.endsWith('backgroundMedia'));
+  const bgImageField = fields.find((f) => f.path.endsWith('backgroundImageUrl'));
+  const bgMedia = bgMediaField ? fieldValueAsString(values, bgMediaField) || 'none' : 'none';
+
+  const rank = (path: string) => {
+    const key = path.split('.').pop() ?? '';
+    const idx = PULL_QUOTE_APPEARANCE_FIELD_ORDER.indexOf(
+      key as (typeof PULL_QUOTE_APPEARANCE_FIELD_ORDER)[number]
+    );
+    return idx >= 0 ? idx : 99;
+  };
+  const ordered = [...fields]
+    .filter((f) => f.path.split('.').pop() !== 'backgroundImageUrl')
+    .sort((a, b) => rank(a.path) - rank(b.path));
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+      <div className="space-y-1">
+        {ordered.map((field) => {
+          const key = field.path.split('.').pop() ?? '';
+          if (key === 'backgroundOverlay') {
+            return (
+              <ToggleSwitchFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'color-scheme') {
+            return (
+              <ColorSchemeFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'segmented') {
+            return (
+              <SegmentedFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'slider') {
+            return (
+              <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+            );
+          }
+          if (field.widget === 'select-inline') {
+            return (
+              <InlineSelectFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          return (
+            <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+          );
+        })}
+        {bgMedia === 'image' && bgImageField ? (
+          <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 /** Pull quote: Layout → Size → Appearance → Padding → Custom CSS. */
 function PullQuoteGroupedSettingsPanel({
   fields,
@@ -5812,7 +6214,7 @@ function PullQuoteGroupedSettingsPanel({
 
         if (label === 'Layout') {
           return (
-            <SplitShowcaseLayoutSettingsGroup
+            <PullQuoteLayoutSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -5834,7 +6236,7 @@ function PullQuoteGroupedSettingsPanel({
 
         if (label === 'Appearance') {
           return (
-            <ContactFormAppearanceSettingsGroup
+            <PullQuoteAppearanceSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -6817,7 +7219,7 @@ function RichTextGroupedSettingsPanel({
 
         if (label === 'Layout') {
           return (
-            <SplitShowcaseLayoutSettingsGroup
+            <PullQuoteLayoutSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -6839,7 +7241,7 @@ function RichTextGroupedSettingsPanel({
 
         if (label === 'Appearance') {
           return (
-            <ContactFormAppearanceSettingsGroup
+            <PullQuoteAppearanceSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -7228,55 +7630,58 @@ function FaqAccordionSettingsPanel({
 
         if (label === 'General') {
           const byKey = (key: string) => groupFields.find((f) => f.path.endsWith(key));
-          const icon = byKey('icon');
-          const dividers = byKey('dividers');
-          const preset = byKey('headingTypographyPreset');
-          const inheritColorScheme = byKey('inheritColorScheme');
-          const presetField = preset
-            ? {
-                ...preset,
-                options: [...FAQ_ACCORDION_HEADING_PRESET_OPTIONS],
-                description: preset.description ?? 'Edit presets in theme settings',
-              }
-            : null;
 
           return (
             <div key={label} className="px-1 py-3">
               <div className="space-y-1">
-                {icon ? (
-                  <SegmentedFieldRow field={icon} values={values} onFieldChange={onFieldChange} />
-                ) : null}
-                {dividers ? (
-                  <ToggleSwitchFieldRow
-                    field={dividers}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
-                {presetField ? (
-                  <div>
-                    <InlineSelectFieldRow
-                      field={presetField}
+                {FAQ_ACCORDION_GENERAL_FIELD_ORDER.map((key) => {
+                  if (key === 'headingTypographyPreset') {
+                    const preset = byKey('headingTypographyPreset');
+                    if (!preset) return null;
+                    const presetField = {
+                      ...preset,
+                      options: [...FAQ_ACCORDION_HEADING_PRESET_OPTIONS],
+                      description: preset.description ?? 'Edit presets in theme settings',
+                    };
+                    return (
+                      <div key={key}>
+                        <InlineSelectFieldRow
+                          field={presetField}
+                          values={values}
+                          onFieldChange={onFieldChange}
+                        />
+                        {presetField.description ? (
+                          <p className="pb-1 text-[12px] text-gray-500">
+                            Edit presets in{' '}
+                            <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                              theme settings
+                            </a>
+                          </p>
+                        ) : null}
+                      </div>
+                    );
+                  }
+                  const field = byKey(key);
+                  if (!field) return null;
+                  if (field.widget === 'segmented' || key === 'icon') {
+                    return (
+                      <SegmentedFieldRow
+                        key={field.path}
+                        field={field}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    );
+                  }
+                  return (
+                    <ToggleSwitchFieldRow
+                      key={field.path}
+                      field={field}
                       values={values}
                       onFieldChange={onFieldChange}
                     />
-                    {presetField.description ? (
-                      <p className="pb-1 text-[12px] text-gray-500">
-                        Edit presets in{' '}
-                        <a href="/settings/theme" className="text-[#005bd3] hover:underline">
-                          theme settings
-                        </a>
-                      </p>
-                    ) : null}
-                  </div>
-                ) : null}
-                {inheritColorScheme ? (
-                  <ToggleSwitchFieldRow
-                    field={inheritColorScheme}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
+                  );
+                })}
               </div>
             </div>
           );
@@ -7310,11 +7715,14 @@ function FaqAccordionSettingsPanel({
         }
 
         if (label === 'Padding') {
+          const ordered = FAQ_ACCORDION_PADDING_FIELD_ORDER.map((key) =>
+            groupFields.find((f) => f.path.endsWith(key))
+          ).filter((f): f is EditorFieldDef => Boolean(f));
           return (
             <div key={label} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Padding</h3>
               <div className="space-y-1">
-                {groupFields.map((field) => (
+                {ordered.map((field) => (
                   <SliderFieldRow
                     key={field.path}
                     field={field}
@@ -7460,7 +7868,7 @@ function TextBlockLayoutSettingsGroup({
             onFieldChange={onFieldChange}
           />
         ) : null}
-        {isFill && alignmentField ? (
+        {alignmentField ? (
           <HeadingAlignmentFieldRow
             field={alignmentField}
             values={values}
@@ -8750,8 +9158,10 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.label === 'Policies and links' ||
     node.label === 'Utilities' ||
     isFooterUtilitiesSettingsPanelFields(fields);
+  const isFaqPanel = node.label === 'FAQ' || isFaqSettingsPanelFields(fields);
   const isContactFormPanel =
     !isHeroSectionSettingsNode(node) &&
+    !isFaqPanel &&
     (node.label === 'Contact form' || isContactFormSettingsPanelFields(fields));
   const isEmailSignupPanel =
     !isHeroSectionSettingsNode(node) &&
@@ -8869,16 +9279,19 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           f.path.endsWith('signupsCustomerProfiles') ||
           f.path.endsWith('placeholder')
       ));
+  const isLargeLogoBlockPanel =
+    node.kind === 'block' && fields.length > 0 && isLargeLogoBlockPanelFields(fields);
   const isStorytellingLogoPanel =
     !isHeaderLogoBlockPanel &&
     !isHeaderMenuBlockPanel &&
+    !isLargeLogoBlockPanel &&
     !isCopyrightBlockPanel &&
     !isSocialLinksBlockPanel &&
     !isEmailSignupBlockPanel &&
-    (node.label === 'Logo' || isStorytellingLogoSettingsPanelFields(fields));
+    ((node.kind === 'section' && node.label === 'Logo') ||
+      isStorytellingLogoSettingsPanelFields(fields));
   const isStorytellingVideoPanel =
     node.label === 'Video' || isStorytellingVideoSettingsPanelFields(fields);
-  const isFaqPanel = node.label === 'FAQ' || isFaqSettingsPanelFields(fields);
   const isIconsWithTextPanel =
     node.label === 'Icons with text' || isIconsWithTextSettingsPanelFields(fields);
   const isIconsWithTextBlockPanel =
@@ -8887,10 +9300,18 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       (fields.length > 0 && fields.every(isIconsWithTextBlockField)));
   const isMulticolumnPanel =
     node.label === 'Multicolumn' || isMulticolumnSettingsPanelFields(fields);
+  const isMulticolumnBlockPanel =
+    node.kind === 'block' &&
+    (isMulticolumnBlockNodeId(node.id) ||
+      (fields.length > 0 && fields.every(isMulticolumnBlockField)));
   const isPullQuotePanel =
     node.label === 'Pull quote' || isPullQuoteSettingsPanelFields(fields);
   const isRichTextPanel =
     node.label === 'Rich text' || isRichTextSettingsPanelFields(fields);
+  const isRichTextBlockPanel =
+    node.kind === 'block' &&
+    (isRichTextBlockNodeId(node.id) ||
+      (fields.length > 0 && fields.every(isRichTextBlockField)));
   const isTextMarqueePanel =
     node.label === 'Marquee' || isTextMarqueeSettingsPanelFields(fields);
   const isFeaturedCollectionGridPanel =
@@ -8947,6 +9368,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isDividerPanel =
     node.label === 'Divider' || isDividerSettingsPanelFields(fields);
   const isHeadingBlockPanel =
+    !isRichTextBlockPanel &&
     node.kind === 'block' &&
     (node.label === 'Heading' ||
       isHeadingBlockNodeId(node.id) ||
@@ -8962,9 +9384,16 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       isFaqAccordionRowNestedNodeId(node.id) ||
       isFaqAccordionRowPanelFields(fields));
   const isFaqAccordionRowTextBlockPanel =
+    !isRichTextBlockPanel &&
     node.kind === 'block' &&
-    ((node.label === 'Text' && isFaqAccordionRowTextNestedNodeId(node.id)) ||
-      isTextBlockPanelFields(fields));
+    isFaqAccordionRowTextNestedNodeId(node.id) &&
+    (node.label === 'Text' || isTextBlockPanelFields(fields));
+  const isHeroTextBlockPanel =
+    !isRichTextBlockPanel &&
+    !isFaqAccordionRowTextBlockPanel &&
+    node.kind === 'block' &&
+    isHeroTextBlockNodeId(node.id) &&
+    (node.label === 'Text' || isTextBlockPanelFields(fields));
   const isHeroButtonBlockPanel =
     node.kind === 'block' &&
     (node.label === 'Button' ||
@@ -8977,7 +9406,10 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isFaqAccordionBlockPanel &&
     !isFaqAccordionRowBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
+    !isHeroTextBlockPanel &&
     !isIconsWithTextBlockPanel &&
+    !isMulticolumnBlockPanel &&
+    !isRichTextBlockPanel &&
     !isHeroButtonBlockPanel &&
     (isAnnouncementBlockNodeId(node.id) ||
       node.label === 'Announcement' ||
@@ -9034,7 +9466,10 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isFaqAccordionBlockPanel &&
     !isFaqAccordionRowBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
+    !isHeroTextBlockPanel &&
     !isIconsWithTextBlockPanel &&
+    !isMulticolumnBlockPanel &&
+    !isRichTextBlockPanel &&
     !isAnnouncementBlockPanel &&
     !isAnnouncementBarPanel &&
     !isFooterPanel &&
@@ -9217,16 +9652,20 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : isRichTextBlockPanel ? (
+          <RichTextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isHeadingBlockPanel ? (
           <HeadingBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isFaqAccordionBlockPanel ? (
           <FaqAccordionSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isFaqAccordionRowBlockPanel ? (
           <FaqAccordionRowSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isFaqAccordionRowTextBlockPanel ? (
+        ) : isFaqAccordionRowTextBlockPanel || isHeroTextBlockPanel ? (
           <TextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isIconsWithTextBlockPanel ? (
           <IconsWithTextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isMulticolumnBlockPanel ? (
+          <MulticolumnBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isHeroButtonBlockPanel ? (
           <HeroButtonSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isHeroPanel ? (
@@ -9433,6 +9872,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isImageWithTextPanel ? (
           <ImageWithTextGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isLargeLogoBlockPanel ? (
+          <LargeLogoBlockGroupedSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}

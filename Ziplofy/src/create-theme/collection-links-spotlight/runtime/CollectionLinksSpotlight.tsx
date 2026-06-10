@@ -8,6 +8,13 @@ import type { SectionRuntimeProps } from '../../runtime/types';
 import { CollectionLinksSpotlightArt } from './CollectionLinksSpotlightArt';
 import { CollectionLinksTextHoverPreview } from './CollectionLinksTextHoverPreview';
 import {
+  combineResponsiveCss,
+  scopedCollectionLinksSpotlightMobileCss,
+  scopedCollectionLinksTextMobileCss,
+  scopedMobileHorizontalPadCss,
+  sectionScopeClass,
+} from '../../runtime/shared/responsive';
+import {
   blockSettingsBaseForCollectionLink,
   readCollectionLinks,
   readCollectionLinksSpotlightLayout,
@@ -112,6 +119,13 @@ export function CollectionLinksSpotlight({
   );
 
   const customCss = scopedCollectionLinksCss(sectionId, layoutStyle.customCss);
+  const shellClass = sectionScopeClass('ziplofy-collection-links', sectionId);
+  const responsiveCss = combineResponsiveCss(
+    scopedMobileHorizontalPadCss(shellClass),
+    isTextLayout
+      ? scopedCollectionLinksTextMobileCss(shellClass)
+      : scopedCollectionLinksSpotlightMobileCss(shellClass)
+  );
   const textAlign = textAlignForAlignment(layoutStyle.alignment) as CSSProperties['textAlign'];
 
   const horizontalPad = layoutStyle.sectionWidth === 'full' ? 24 : layout.padX;
@@ -155,6 +169,7 @@ export function CollectionLinksSpotlight({
 
   const linksList = (
     <div
+      className={isTextLayout ? 'ziplofy-cl-links-text' : undefined}
       onMouseLeave={isTextLayout ? clearTextHover : resetSpotlightToFirst}
       style={
         isTextLayout
@@ -253,6 +268,7 @@ export function CollectionLinksSpotlight({
 
   const mediaColumn = (
     <div
+      className="ziplofy-cl-media-col"
       style={{
         flex: '1 1 52%',
         display: 'flex',
@@ -288,6 +304,7 @@ export function CollectionLinksSpotlight({
 
   const linksColumn = (
     <div
+      className="ziplofy-cl-links-col"
       style={{
         flex: '1 1 48%',
         display: 'flex',
@@ -307,9 +324,11 @@ export function CollectionLinksSpotlight({
       sectionId={sectionId}
       label={sectionLabel}
       editorNodeId={editorNodeId}
+      className={shellClass}
       style={outerStyle}
     >
       {customCss ? <style>{customCss}</style> : null}
+      {responsiveCss ? <style>{responsiveCss}</style> : null}
       <div style={innerStyle}>
         {isTextLayout ? (
           <>
@@ -318,6 +337,7 @@ export function CollectionLinksSpotlight({
           </>
         ) : (
           <div
+            className="ziplofy-cl-spotlight-row"
             style={{
               display: 'flex',
               flexDirection: layoutStyle.imagePosition === 'left' ? 'row-reverse' : 'row',

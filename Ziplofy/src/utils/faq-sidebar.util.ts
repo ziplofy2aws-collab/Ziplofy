@@ -210,7 +210,7 @@ function accordionBlockNode(
     icon: 'group',
     fields: faqAccordionFieldDefs(`${blocksBase}.accordion`),
     showVisibilityToggle: true,
-    showDeleteButton: false,
+    showDeleteButton: true,
     children,
     childrenListKey,
   };

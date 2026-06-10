@@ -5,6 +5,12 @@ import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/ed
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import {
+  combineResponsiveCss,
+  scopedFooterMobileCss,
+  scopedMobileHorizontalPadCss,
+  sectionScopeClass,
+} from '../../runtime/shared/responsive';
+import {
   footerColorScheme,
   footerPadding,
   footerSectionWidth,
@@ -210,6 +216,11 @@ export function Footer({ sectionId = 'footer' }: Props) {
   };
 
   const showCopy = Boolean(title.trim() || subtitle.trim());
+  const shellClass = sectionScopeClass('ziplofy-footer', sectionId);
+  const responsiveCss = combineResponsiveCss(
+    scopedMobileHorizontalPadCss(shellClass),
+    scopedFooterMobileCss(shellClass)
+  );
   const submitButtonColors = {
     color: '#111827',
     background: '#ffffff',
@@ -220,6 +231,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
     <EditorSection
       sectionId={sectionId}
       label="Footer"
+      className={shellClass}
       style={{
         width: '100%',
         boxSizing: 'border-box',
@@ -236,6 +248,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
       {sectionStyle.customCss ? (
         <style dangerouslySetInnerHTML={{ __html: scopedFooterCss(sectionId, sectionStyle.customCss) }} />
       ) : null}
+      {responsiveCss ? <style>{responsiveCss}</style> : null}
       <div
         style={{
           maxWidth: innerMaxWidth,
@@ -247,7 +260,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
           nodeId={`layout:${sectionId}:block:${newsletterBlockId}`}
           label="Email signup"
         >
-          <div style={row}>
+          <div className="ziplofy-footer-row" style={row}>
             {showCopy ? (
               <div style={copyColumn}>
                 {title.trim() ? (
@@ -289,6 +302,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
             ) : null}
 
             <form
+              className="ziplofy-footer-form"
               onSubmit={onSubmit}
               style={{
                 ...formRow,

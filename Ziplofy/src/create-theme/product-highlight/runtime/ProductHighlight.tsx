@@ -6,6 +6,12 @@ import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { FeaturedProduct } from './FeaturedProduct';
 import { FeaturedProductShirtIllustration, StackedTealShirtsIllustration } from './FeaturedProductArt';
+import {
+  combineResponsiveCss,
+  scopedMobileHorizontalPadCss,
+  scopedProductSplitMobileCss,
+  sectionScopeClass,
+} from '../../runtime/shared/responsive';
 import { readProductHighlightLayout, scopedProductHighlightCss } from './productHighlightStyles';
 
 function ProductHighlightDefault({
@@ -59,6 +65,8 @@ function ProductHighlightDefault({
 
   const scheme = style.scheme;
   const mediaOnLeft = mediaPosition !== 'right';
+  const shellClass = sectionScopeClass('ziplofy-product-highlight', sectionId);
+  const gridClass = `${shellClass}-grid`;
 
   const shell: CSSProperties = {
     background: scheme.background,
@@ -175,15 +183,22 @@ function ProductHighlightDefault({
     </div>
   );
 
+  const responsiveCss = combineResponsiveCss(
+    scopedMobileHorizontalPadCss(shellClass),
+    scopedProductSplitMobileCss(gridClass)
+  );
+
   return (
     <EditorSection
       sectionId={sectionId}
       label="Product highlight"
       editorNodeId={editorNodeId}
+      className={shellClass}
       style={shell}
     >
       {style.customCss ? <style>{scopedProductHighlightCss(sectionId, style.customCss)}</style> : null}
-      <div style={grid}>
+      {responsiveCss ? <style>{responsiveCss}</style> : null}
+      <div className={gridClass} style={grid}>
         {mediaColumn}
         {productColumn}
       </div>

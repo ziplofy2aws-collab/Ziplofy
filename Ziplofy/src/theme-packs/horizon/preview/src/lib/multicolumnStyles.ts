@@ -59,7 +59,7 @@ export function readMulticolumnLayout(
 ): MulticolumnLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   const dir = cfgString(config, `${settingsBase}.direction`, 'horizontal');
-  const align = cfgString(config, `${settingsBase}.layoutAlignment`, 'left');
+  const align = cfgString(config, `${settingsBase}.layoutAlignment`, 'center');
   const cols = cfgNumber(config, `${settingsBase}.columns`, 3);
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],

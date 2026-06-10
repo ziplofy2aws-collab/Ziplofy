@@ -2142,7 +2142,7 @@
             "catalogVariant": "multicolumn",
             "direction": "horizontal",
             "verticalOnMobile": true,
-            "layoutAlignment": "left",
+            "layoutAlignment": "center",
             "position": "top",
             "layoutGap": 16,
             "columns": 3,

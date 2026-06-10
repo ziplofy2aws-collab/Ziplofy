@@ -38,9 +38,26 @@ import {
 } from './utils/selection-hints';
 import {
   isHeadingBlockNodeId,
+  extendValuesForHeadingBlock,
   mirrorHeadingTextInValues,
   parseHeadingBlockNodeId,
 } from './sidebar/theme-editor-heading-block-panel.utils';
+import {
+  extendValuesForFaqAccordionBlock,
+  isFaqAccordionBlockNodeId,
+} from './sidebar/theme-editor-faq-accordion-block-panel.utils';
+import {
+  extendValuesForFaqAccordionRow,
+  isFaqAccordionRowNestedNodeId,
+} from './sidebar/theme-editor-faq-accordion-row-panel.utils';
+import {
+  extendValuesForLargeLogoBlock,
+  isHeroLargeLogoBlockNodeId,
+} from './sidebar/theme-editor-large-logo-block-panel.utils';
+import {
+  extendValuesForHeroTextBlock,
+  isHeroTextBlockNodeId,
+} from './sidebar/theme-editor-hero-text-block-panel.utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { THEME_EDITOR_STATIC_CONFIG } from '../config/theme-editor-static.config';
 import { useStore } from '../contexts/store.context';
@@ -71,6 +88,7 @@ import {
   pruneValuesForLayoutInstance,
   pruneValuesForTemplateBlock,
   pruneValuesForTemplateInstance,
+  layoutBlueprintKey,
   removeLayoutSection,
   removeTemplateSection,
   templateBlueprintKey,
@@ -90,6 +108,7 @@ import {
   extendValuesForNewFaqAccordionRow,
   pruneValuesForFaqAccordionRow,
   pruneValuesForFaqRowText,
+  pruneValuesForFaqSectionBlock,
 } from '../utils/faq-editor-values.util';
 import { mergedConfigFromFormValues } from '../utils/theme-editor-static-save';
 import { fieldTypeFromSchema, type ThemeEditorFieldType } from './sidebar/create-theme-field.utils';
@@ -392,9 +411,9 @@ const CreateThemePage: React.FC = () => {
     [selectedNode, activeTree, editorSchema]
   );
 
-  /** Sync hero heading text between block `heading` and section `title` value keys. */
+  /** Sync heading block panel values (text mirror + style field seed from config). */
   useEffect(() => {
-    if (!isHeadingBlockNodeId(selectedNodeId)) return;
+    if (!editorSchema || !defaultConfig || !isHeadingBlockNodeId(selectedNodeId)) return;
     const parsed = parseHeadingBlockNodeId(selectedNodeId);
     if (!parsed) return;
     const settingsBase =
@@ -409,18 +428,82 @@ const CreateThemePage: React.FC = () => {
     const blockPath = `${blocksBase}.${parsed.blockInstanceId}.settings.heading`;
 
     setValues((prev) => {
-      const title = prev[titlePath];
-      const block = prev[blockPath];
-      if (title !== undefined && block !== undefined) return prev;
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      let next = extendValuesForHeadingBlock(prev, editorSchema, selectedNodeId, merged);
+      const title = next[titlePath];
+      const block = next[blockPath];
       if (title === undefined && block !== undefined) {
-        return mirrorHeadingTextInValues(prev, blockPath, block);
+        next = mirrorHeadingTextInValues(next, blockPath, block);
+      } else if (block === undefined && title !== undefined) {
+        next = mirrorHeadingTextInValues(next, titlePath, title);
       }
-      if (block === undefined && title !== undefined) {
-        return mirrorHeadingTextInValues(prev, titlePath, title);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
       }
       return prev;
     });
-  }, [selectedNodeId]);
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed large-logo Logo block panel values from merged config. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isHeroLargeLogoBlockNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForLargeLogoBlock(prev, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed large-logo Text block panel values from merged config. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isHeroTextBlockNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForHeroTextBlock(prev, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed accordion block panel values from merged config when opening the panel. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isFaqAccordionBlockNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForFaqAccordionBlock(prev, editorSchema, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed accordion row panel values from merged config when opening the panel. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isFaqAccordionRowNestedNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForFaqAccordionRow(prev, editorSchema, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
 
   /** Seed menu block paths into `values` when opening the panel (avoids blank controls / no-op edits). */
   useEffect(() => {
@@ -1225,7 +1308,12 @@ const CreateThemePage: React.FC = () => {
           sec.block_order = ((sec.block_order as string[]) ?? []).filter((id) => id !== blockId);
         }
         setDefaultConfig(next);
-        setValues((prev) => pruneValuesForLayoutBlock(prev, sectionInstanceId, blockId));
+        const isFaqSection = layoutBlueprintKey(sectionInstanceId) === 'faq_section';
+        setValues((prev) =>
+          isFaqSection && (blockId === 'heading' || blockId === 'accordion')
+            ? pruneValuesForFaqSectionBlock(prev, 'layout', undefined, sectionInstanceId, blockId)
+            : pruneValuesForLayoutBlock(prev, sectionInstanceId, blockId)
+        );
         setStructureSyncKey((k) => k + 1);
         toast.success('Block removed');
         return;
@@ -1244,7 +1332,14 @@ const CreateThemePage: React.FC = () => {
           sec.block_order = ((sec.block_order as string[]) ?? []).filter((id) => id !== blockId);
         }
         setDefaultConfig(next);
-        setValues((prev) => pruneValuesForTemplateBlock(prev, tplId, sectionInstanceId, blockId));
+        const isFaqSection =
+          templateBlueprintKey(sectionInstanceId) === 'faq_section' ||
+          tpl?.sections?.[sectionInstanceId]?.type === 'faq';
+        setValues((prev) =>
+          isFaqSection && (blockId === 'heading' || blockId === 'accordion')
+            ? pruneValuesForFaqSectionBlock(prev, 'template', tplId, sectionInstanceId, blockId)
+            : pruneValuesForTemplateBlock(prev, tplId, sectionInstanceId, blockId)
+        );
         setStructureSyncKey((k) => k + 1);
         toast.success('Block removed');
         return;

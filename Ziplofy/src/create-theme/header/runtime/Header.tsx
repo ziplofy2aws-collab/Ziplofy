@@ -15,6 +15,7 @@ import {
   scopedHeaderCss,
 } from './headerStyles';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { scopedHeaderResponsiveCss } from '../../runtime/shared/responsive';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
 
 type Props = { sectionId?: string };
@@ -158,6 +159,7 @@ export function Header({ sectionId = 'header' }: Props) {
   const menuText = menuScheme.color;
   const iconColor = text;
   const scopedCss = scopedHeaderCss(sectionId, customCss);
+  const headerResponsiveCss = scopedHeaderResponsiveCss(sectionId);
 
   const menuLinkFontFamily =
     menuFont === 'heading' ? fontHeading : menuFont === 'subheading' ? fontBody : fontBody;
@@ -174,6 +176,7 @@ export function Header({ sectionId = 'header' }: Props) {
   };
 
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   useEffect(() => {
     if (stickyMode !== 'on-scroll-up') return;
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -243,9 +246,38 @@ export function Header({ sectionId = 'header' }: Props) {
     </EditorBlock>
   );
 
+  const menuLinks = (
+    <>
+      {menuItems.map((item, index) => {
+        const nestedIds = ['link_shop', 'link_collections', 'link_about', 'link_account'] as const;
+        const nestedId = nestedIds[index] ?? `link_${index}`;
+        const labelPath = `${menuBase}.items.${index}.label`;
+        const hrefPath = `${menuBase}.items.${index}.href`;
+        return (
+          <EditorBlock
+            key={hrefPath}
+            nodeId={`layout:${sectionId}:block:menu:nested:${nestedId}`}
+            label={item.label}
+          >
+            <EditorField fieldPath={labelPath} label="Label">
+              <Link
+                to={item.href}
+                style={menuLinkStyle}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            </EditorField>
+          </EditorBlock>
+        );
+      })}
+    </>
+  );
+
   const menuNode: ReactNode = (
     <EditorBlock nodeId={`layout:${sectionId}:block:menu`} label="Menu">
       <nav
+        className="ziplofy-header-desktop-nav"
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -256,19 +288,42 @@ export function Header({ sectionId = 'header' }: Props) {
         }}
         aria-label="Main"
       >
+        {menuLinks}
+      </nav>
+    </EditorBlock>
+  );
+
+  const mobileMenuNode: ReactNode = mobileMenuOpen ? (
+    <EditorBlock nodeId={`layout:${sectionId}:block:menu`} label="Menu">
+      <nav
+        className="ziplofy-header-mobile-nav"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          gap: 12,
+          margin: 0,
+          padding: '12px 0 4px',
+          borderTop: `1px solid ${border}`,
+        }}
+        aria-label="Main mobile"
+      >
         {menuItems.map((item, index) => {
           const nestedIds = ['link_shop', 'link_collections', 'link_about', 'link_account'] as const;
           const nestedId = nestedIds[index] ?? `link_${index}`;
           const labelPath = `${menuBase}.items.${index}.label`;
-          const hrefPath = `${menuBase}.items.${index}.href`;
           return (
             <EditorBlock
-              key={hrefPath}
+              key={`mobile-${nestedId}`}
               nodeId={`layout:${sectionId}:block:menu:nested:${nestedId}`}
               label={item.label}
             >
               <EditorField fieldPath={labelPath} label="Label">
-                <Link to={item.href} style={menuLinkStyle}>
+                <Link
+                  to={item.href}
+                  style={{ ...menuLinkStyle, whiteSpace: 'normal' }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
                   {item.label}
                 </Link>
               </EditorField>
@@ -277,6 +332,37 @@ export function Header({ sectionId = 'header' }: Props) {
         })}
       </nav>
     </EditorBlock>
+  ) : null;
+
+  const menuToggleButton = (
+    <button
+      type="button"
+      className="ziplofy-header-menu-toggle"
+      aria-expanded={mobileMenuOpen}
+      aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+      onClick={() => setMobileMenuOpen((open) => !open)}
+      style={{
+        display: 'none',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 40,
+        height: 40,
+        border: `1px solid ${border}`,
+        borderRadius: 8,
+        background: background || '#ffffff',
+        color: text,
+        cursor: 'pointer',
+        flexShrink: 0,
+      }}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+        {mobileMenuOpen ? (
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        ) : (
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        )}
+      </svg>
+    </button>
   );
 
   const useIcons = menuStyle !== 'text';
@@ -404,6 +490,7 @@ export function Header({ sectionId = 'header' }: Props) {
 
   const brandCluster = (
     <div
+      className="ziplofy-header-brand-cluster"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -436,6 +523,7 @@ export function Header({ sectionId = 'header' }: Props) {
   return (
     <>
       {scopedCss ? <style>{scopedCss}</style> : null}
+      <style>{headerResponsiveCss}</style>
       <EditorSection
         sectionId={sectionId}
         label="Header"
@@ -451,6 +539,7 @@ export function Header({ sectionId = 'header' }: Props) {
         }}
       >
         <div
+          className="ziplofy-header-inner"
           style={{
             maxWidth: innerMaxWidth,
             margin: '0 auto',
@@ -463,21 +552,30 @@ export function Header({ sectionId = 'header' }: Props) {
           {menuOnOwnRowTop ? (
             <div style={{ ...mainRow, justifyContent: 'flex-start' }}>{menuNode}</div>
           ) : null}
-          <div style={mainRow}>
+          <div className="ziplofy-header-main-row" style={mainRow}>
             {menuOnOwnRowTop || menuOnOwnRowBottom ? (
               <>
                 <div style={{ display: 'flex', flex: 1, minWidth: 0 }}>{logoNode}</div>
-                {utilities}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {menuToggleButton}
+                  {utilities}
+                </div>
               </>
             ) : (
               <>
                 {brandCluster}
-                {utilities}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {menuToggleButton}
+                  {utilities}
+                </div>
               </>
             )}
           </div>
+          {mobileMenuNode}
           {menuOnOwnRowBottom ? (
-            <div style={{ ...mainRow, justifyContent: 'flex-start' }}>{menuNode}</div>
+            <div className="ziplofy-header-desktop-nav-row" style={{ ...mainRow, justifyContent: 'flex-start' }}>
+              {menuNode}
+            </div>
           ) : null}
         </div>
       </EditorSection>

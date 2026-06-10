@@ -13,6 +13,7 @@ const COLOR_SCHEMES: Record<string, HeroScheme> = {
   'scheme-4': { background: '#f5f3ff', color: '#4c1d95', muted: '#6d28d9' },
   'scheme-5': { background: '#ecfdf5', color: '#064e3b', muted: '#047857' },
   'scheme-6': { background: '#1f2937', color: '#f9fafb', muted: '#9ca3af' },
+  'scheme-large-logo': { background: '#f0f1ed', color: '#111827', muted: '#6b7280' },
 };
 
 const HEIGHT_PX: Record<string, number> = {

@@ -409,6 +409,40 @@ export function mirrorHeadingTextInValues(
   return next;
 }
 
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+/** Seed sidebar `values` for all heading block panel fields from merged config. */
+export function extendValuesForHeadingBlock(
+  values: Record<string, string | boolean>,
+  editorSchema: EditorSchemaDoc,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const defs = headingBlockFieldDefsFromSchema(editorSchema, nodeId);
+  if (!defs.length) return values;
+  const next = { ...values };
+  let changed = false;
+  for (const field of defs) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw === undefined) continue;
+    if (field.type === 'boolean') {
+      next[field.path] = Boolean(raw);
+    } else {
+      next[field.path] = raw == null ? '' : String(raw);
+    }
+    changed = true;
+  }
+  return changed ? next : values;
+}
+
 export function headingBlockFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   nodeId: string
