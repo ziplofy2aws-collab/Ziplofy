@@ -15,9 +15,10 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal';
 import ProductDescriptionInput from '../components/products/ProductDescriptionInput';
 import { useAwsUpload } from '../contexts/aws-upload.context';
-import { useCollections } from '../contexts/collection.context';
+import { type Collection, useCollections } from '../contexts/collection.context';
 import { useProducts } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
+import { THEME_EDITOR_STATIC_CONFIG } from '../config/theme-editor-static.config';
 
 const inputClass =
   'w-full rounded-lg border border-gray-200/90 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -31,12 +32,25 @@ interface SelectedCollectionProduct {
   addedSequence: number;
 }
 
-const ProductCollectionCreatePage: React.FC = () => {
+export type CollectionCreateFormProps = {
+  variant?: 'page' | 'sheet';
+  onSuccess?: (collection: Collection) => void;
+  onCancel?: () => void;
+};
+
+export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
+  variant = 'page',
+  onSuccess,
+  onCancel,
+}) => {
   const navigate = useNavigate();
-  const { createCollection } = useCollections();
+  const isSheet = variant === 'sheet';
+  const { createCollection, loading: collectionLoading } = useCollections();
   const { searchProductsWithVariants } = useProducts();
   const { uploadImageWithSignedUrl, loading: awsUploading } = useAwsUpload();
   const { activeStoreId } = useStore();
+  const storeId = activeStoreId || THEME_EDITOR_STATIC_CONFIG.devStoreId;
+  const sheetModalZIndex = 16000;
   const [form, setForm] = useState({
     title: '',
     imageUrl: '',
@@ -77,8 +91,12 @@ const ProductCollectionCreatePage: React.FC = () => {
   }, []);
 
   const handleBack = useCallback(() => {
+    if (isSheet && onCancel) {
+      onCancel();
+      return;
+    }
     navigate('/products/collections');
-  }, [navigate]);
+  }, [isSheet, navigate, onCancel]);
 
   const dataUrlToFile = useCallback((dataUrl: string, fallbackName: string): File | null => {
     const match = dataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
@@ -96,7 +114,7 @@ const ProductCollectionCreatePage: React.FC = () => {
 
   const uploadDescriptionImages = useCallback(
     async (descriptionHtml: string): Promise<string> => {
-      if (!descriptionHtml.trim() || !activeStoreId) return descriptionHtml;
+      if (!descriptionHtml.trim() || !storeId) return descriptionHtml;
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(descriptionHtml, 'text/html');
@@ -130,7 +148,7 @@ const ProductCollectionCreatePage: React.FC = () => {
 
             if (!file) return;
             const uploaded = await uploadImageWithSignedUrl(file, {
-              folder: `${activeStoreId}/collection-description-image`,
+              folder: `${storeId}/collection-description-image`,
             });
             img.setAttribute('src', uploaded.objectUrl);
           })
@@ -143,12 +161,12 @@ const ProductCollectionCreatePage: React.FC = () => {
         throw error;
       }
     },
-    [activeStoreId, dataUrlToFile, uploadImageWithSignedUrl]
+    [storeId, dataUrlToFile, uploadImageWithSignedUrl]
   );
 
   const uploadCollectionImageIfNeeded = useCallback(
     async (imageUrl: string): Promise<string> => {
-      if (!imageUrl || !activeStoreId) return imageUrl;
+      if (!imageUrl || !storeId) return imageUrl;
       const isLocalImage = imageUrl.startsWith('data:image/') || imageUrl.startsWith('blob:');
       if (!isLocalImage) return imageUrl;
 
@@ -179,19 +197,46 @@ const ProductCollectionCreatePage: React.FC = () => {
         throw error;
       }
     },
-    [activeStoreId, dataUrlToFile, uploadImageWithSignedUrl]
+    [storeId, dataUrlToFile, uploadImageWithSignedUrl]
+  );
+
+  const handleQuickAddProduct = useCallback(
+    (product: { _id: string; title: string; imageUrl: string | null; price: number | null }) => {
+      setSelectedProducts((prev) => {
+        if (prev.some((p) => p._id === product._id)) return prev;
+        return [
+          ...prev,
+          {
+            ...product,
+            addedAt: Date.now(),
+            addedSequence: nextAddedSequenceRef.current++,
+          },
+        ];
+      });
+      setProductSearchQuery('');
+      setProductSearchResults([]);
+    },
+    []
   );
 
   const handleSubmit = useCallback(async () => {
-    if (!activeStoreId) {
-      navigate('/products/collections');
+    if (!storeId) {
+      if (isSheet && onCancel) {
+        onCancel();
+      } else {
+        navigate('/products/collections');
+      }
+      return;
+    }
+    if (!form.title.trim()) {
+      toast.error('Collection title is required');
       return;
     }
     try {
       const uploadedCollectionImageUrl = await uploadCollectionImageIfNeeded(form.imageUrl);
       const descriptionWithUploadedImages = await uploadDescriptionImages(form.description);
-      await createCollection({
-        storeId: activeStoreId,
+      const created = await createCollection({
+        storeId,
         title: form.title,
         imageUrl: uploadedCollectionImageUrl || undefined,
         imageAltText: imageAltText.trim() || undefined,
@@ -203,11 +248,29 @@ const ProductCollectionCreatePage: React.FC = () => {
         productIds: selectedProducts.map((product) => product._id),
         status: form.status,
       });
+      toast.success('Collection created successfully');
+      if (isSheet && onSuccess) {
+        onSuccess(created);
+        return;
+      }
       navigate('/products/collections');
     } catch {
       // error is handled in context
     }
-  }, [activeStoreId, form, createCollection, navigate, productSort, selectedProducts, uploadCollectionImageIfNeeded, uploadDescriptionImages]);
+  }, [
+    storeId,
+    form,
+    createCollection,
+    imageAltText,
+    isSheet,
+    navigate,
+    onCancel,
+    onSuccess,
+    productSort,
+    selectedProducts,
+    uploadCollectionImageIfNeeded,
+    uploadDescriptionImages,
+  ]);
 
   const handleImageUpload = useCallback(
     async (file: File) => {
@@ -248,10 +311,8 @@ const ProductCollectionCreatePage: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!isProductsModalOpen) return;
-
     const q = productSearchQuery.trim();
-    if (!q || !activeStoreId) {
+    if (!q || !storeId) {
       setProductSearchResults([]);
       setIsProductsSearching(false);
       return;
@@ -262,7 +323,7 @@ const ProductCollectionCreatePage: React.FC = () => {
     const timeout = setTimeout(async () => {
       try {
         const response = await searchProductsWithVariants({
-          storeId: activeStoreId,
+          storeId,
           q,
           page: 1,
           limit: 50,
@@ -297,7 +358,7 @@ const ProductCollectionCreatePage: React.FC = () => {
       cancelled = true;
       clearTimeout(timeout);
     };
-  }, [isProductsModalOpen, productSearchQuery, activeStoreId, searchProductsWithVariants]);
+  }, [productSearchQuery, storeId, searchProductsWithVariants]);
 
   useEffect(() => {
     if (!isProductsModalOpen) return;
@@ -418,41 +479,58 @@ const ProductCollectionCreatePage: React.FC = () => {
   }, [productSearchResults, productSort]);
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
-        {/* Page header — aligned with Collections list */}
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div className={isSheet ? 'bg-page-background-color' : 'min-h-screen bg-page-background-color'}>
+      <div className={isSheet ? 'px-4 py-4 sm:px-6' : 'mx-auto max-w-[1400px] px-3 py-4 sm:px-4'}>
+        <div className={`${isSheet ? 'mb-4' : 'mb-6'} flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between`}>
           <div className="min-w-0">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="mb-3 inline-flex items-center gap-2 rounded-full border border-gray-200/90 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
-            >
-              <ArrowLeftIcon className="h-3.5 w-3.5" aria-hidden />
-              Back to collections
-            </button>
-            <div className="border-l-4 border-blue-500/60 pl-3">
+            {!isSheet ? (
+              <button
+                type="button"
+                onClick={handleBack}
+                className="mb-3 inline-flex items-center gap-2 rounded-full border border-gray-200/90 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
+              >
+                <ArrowLeftIcon className="h-3.5 w-3.5" aria-hidden />
+                Back to collections
+              </button>
+            ) : null}
+            <div className={isSheet ? '' : 'border-l-4 border-blue-500/60 pl-3'}>
               <div className="flex items-center gap-2">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
                   <RectangleStackIcon className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight text-gray-900">Create collection</h1>
-                  <p className="mt-0.5 text-sm text-gray-500">
-                    Add details and SEO settings. You can add products after saving.
-                  </p>
+                  <h1 className={`${isSheet ? 'text-xl sm:text-2xl' : 'text-2xl'} font-bold tracking-tight text-gray-900`}>
+                    Create collection
+                  </h1>
+                  {!isSheet ? (
+                    <p className="mt-0.5 text-sm text-gray-500">
+                      Add details and SEO settings. You can add products after saving.
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="inline-flex shrink-0 items-center gap-2 self-start rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Save collection
-          </button>
+          <div className="flex shrink-0 items-center gap-2 self-start">
+            {isSheet && onCancel ? (
+              <button
+                type="button"
+                onClick={onCancel}
+                className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => void handleSubmit()}
+              disabled={collectionLoading}
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <PlusIcon className="h-4 w-4" />
+              Save collection
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
@@ -495,11 +573,7 @@ const ProductCollectionCreatePage: React.FC = () => {
                     <input
                       type="text"
                       value={productSearchQuery}
-                      onFocus={() => setIsProductsModalOpen(true)}
-                      onChange={(e) => {
-                        setProductSearchQuery(e.target.value);
-                        setIsProductsModalOpen(true);
-                      }}
+                      onChange={(e) => setProductSearchQuery(e.target.value)}
                       placeholder="Search products"
                       className={`${inputClass} pl-9`}
                     />
@@ -536,12 +610,54 @@ const ProductCollectionCreatePage: React.FC = () => {
                     <option value="manual">Sort: Manually</option>
                   </select>
                 </div>
-                <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/40 px-4 py-10 text-center">
-                  {displayedSelectedProducts.length === 0 ? (
-                    <>
+                <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/40 px-4 py-4">
+                  {productSearchQuery.trim() ? (
+                    <div className="overflow-hidden rounded-lg border border-gray-100 bg-white text-left">
+                      {isProductsSearching ? (
+                        <p className="px-4 py-8 text-center text-sm text-gray-500">Searching products…</p>
+                      ) : sortedProductSearchResults.length > 0 ? (
+                        <ul className="max-h-64 divide-y divide-gray-100 overflow-y-auto">
+                          {sortedProductSearchResults.map((product) => {
+                            const alreadyAdded = selectedProducts.some((p) => p._id === product._id);
+                            return (
+                              <li key={product._id} className="flex items-center gap-3 px-3 py-2.5">
+                                <div className="h-9 w-9 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
+                                  {product.imageUrl ? (
+                                    <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
+                                  ) : (
+                                    <div className="flex h-full w-full items-center justify-center bg-gray-100">
+                                      <RectangleStackIcon className="h-4 w-4 text-gray-400" />
+                                    </div>
+                                  )}
+                                </div>
+                                <p className="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">
+                                  {product.title}
+                                </p>
+                                <button
+                                  type="button"
+                                  disabled={alreadyAdded}
+                                  onClick={() => handleQuickAddProduct(product)}
+                                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
+                                    alreadyAdded
+                                      ? 'cursor-not-allowed bg-gray-100 text-gray-400'
+                                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                                  }`}
+                                >
+                                  {alreadyAdded ? 'Added' : 'Add'}
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : (
+                        <p className="px-4 py-8 text-center text-sm text-gray-500">No products found</p>
+                      )}
+                    </div>
+                  ) : displayedSelectedProducts.length === 0 ? (
+                    <div className="py-6 text-center">
                       <p className="text-sm text-gray-500">There are no products in this collection.</p>
                       <p className="mt-1 text-xs text-gray-400">Search or browse to add products.</p>
-                    </>
+                    </div>
                   ) : (
                     <div className="overflow-hidden rounded-lg border border-gray-100 bg-white text-left">
                       {displayedSelectedProducts.map((product, index) => (
@@ -854,6 +970,7 @@ const ProductCollectionCreatePage: React.FC = () => {
         open={isImageAltModalOpen}
         onClose={() => setIsImageAltModalOpen(false)}
         maxWidth="lg"
+        zIndex={isSheet ? sheetModalZIndex : undefined}
         title={<h2 className="text-xl font-semibold text-gray-900">Edit alt text</h2>}
         actions={
           <>
@@ -908,6 +1025,7 @@ const ProductCollectionCreatePage: React.FC = () => {
         open={isProductsModalOpen}
         onClose={() => setIsProductsModalOpen(false)}
         maxWidth="lg"
+        zIndex={isSheet ? sheetModalZIndex : undefined}
         title={
           <h2 className="text-xl font-semibold text-gray-900">
             Add products
@@ -1024,6 +1142,11 @@ const ProductCollectionCreatePage: React.FC = () => {
       </Modal>
     </div>
   );
+};
+
+const ProductCollectionCreatePage: React.FC = () => {
+  const navigate = useNavigate();
+  return <CollectionCreateForm variant="page" onCancel={() => navigate('/products/collections')} />;
 };
 
 export default ProductCollectionCreatePage;

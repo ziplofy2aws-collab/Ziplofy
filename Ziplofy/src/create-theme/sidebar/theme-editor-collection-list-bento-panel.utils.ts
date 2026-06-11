@@ -1,5 +1,6 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
+import { prepareCollectionListSettingsNode } from './theme-editor-collection-list-panel.utils';
 
 export const COLLECTION_LIST_BENTO_PANEL_GROUP_ORDER = [
   'Collections',
@@ -77,8 +78,5 @@ export function isCollectionListBentoSettingsPanelFields(fields: EditorFieldDef[
 }
 
 export function prepareCollectionListBentoSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortCollectionListBentoPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isCollectionListBentoPanelField)
-  );
-  return { ...node, label: 'Collection list: Bento', kind: 'section', fields };
+  return prepareCollectionListSettingsNode({ ...node, label: node.label ?? 'Collection list: Bento' });
 }

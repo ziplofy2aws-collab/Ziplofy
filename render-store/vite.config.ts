@@ -38,6 +38,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), themePreviewFrameHeadersPlugin()],
   preview: {
     port: 5180,
+    proxy: {
+      '/api': createDevProxy(),
+      '/uploads': createDevProxy(),
+      '/sitemap.xml': createDevProxy(),
+    },
     headers: {
       'Content-Security-Policy':
         "frame-ancestors 'self' http://localhost:5173 https://admin.ziplofy.com https://dashboard.ziplofy.com https://*.ziplofy.com",
@@ -98,6 +103,7 @@ export default defineConfig({
     proxy: {
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),
+      '/sitemap.xml': createDevProxy(),
     },
   },
   test: {

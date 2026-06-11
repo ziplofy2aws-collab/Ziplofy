@@ -359,6 +359,7 @@ import {
   prepareCollectionLinkImageSettingsNode,
 } from './theme-editor-collection-link-image-panel.utils';
 import { mapCollectionLinksSpotlightBlockNodes } from '../../utils/collection-links-spotlight-sidebar.util';
+import { mapCollectionListBlockNodes } from '../utils/collection-list-sidebar.util';
 import { mapFeaturedProductBlockNodes } from '../../utils/featured-product-sidebar.util';
 import { mapFaqBlockNodes } from '../../utils/faq-sidebar.util';
 import { mapIconsWithTextBlockNodes } from '../../utils/icons-with-text-sidebar.util';
@@ -366,6 +367,31 @@ import {
   isCollectionTileBlockFieldsOnly,
   prepareCollectionTileBlockSettingsNode,
 } from './theme-editor-collection-tile-block-panel.utils';
+import {
+  isCollectionListCardImagePanelFields,
+  isCollectionListCardPanelFields,
+  isCollectionListCardTitlePanelFields,
+  isCollectionListHeaderTextPanelFields,
+  prepareCollectionListCardImageSettingsNode,
+  prepareCollectionListCardSettingsNode,
+  prepareCollectionListCardTitleSettingsNode,
+  prepareCollectionListHeaderTextSettingsNode,
+} from './theme-editor-collection-list-block-panel.utils';
+import { collectionListHeaderTextFieldDefsFromNodeId } from './theme-editor-collection-list-header-text-panel.utils';
+import { collectionListCardFieldDefsFromNodeId } from './theme-editor-collection-list-card-panel.utils';
+import { collectionListCardImageFieldDefsFromNodeId } from './theme-editor-collection-list-card-image-panel.utils';
+import { collectionListCardTitleFieldDefsFromNodeId } from './theme-editor-collection-list-card-title-panel.utils';
+import {
+  isCollectionListCardBlockNodeId,
+  isCollectionListCardImageNodeId,
+  isCollectionListCardTitleNodeId,
+  isCollectionListHeaderTextNodeId,
+} from '../utils/collection-list-sidebar.util';
+import {
+  isCollectionListSectionHeaderBlockNodeId,
+  isCollectionListSectionHeaderPanelFields,
+  prepareCollectionListSectionHeaderSettingsNode,
+} from './theme-editor-collection-list-header-panel.utils';
 import {
   isStorytellingCarouselSectionType,
   isStorytellingCarouselSettingsPanelFields,
@@ -1290,6 +1316,11 @@ function layoutSectionNode(
   const isTextMarqueeLayout = layoutBlueprintKey(instanceId) === 'text_marquee_section';
   const isContactFormLayout = layoutBlueprintKey(instanceId) === 'contact_form';
   const isEmailSignupLayout = layoutBlueprintKey(instanceId) === 'email_signup';
+  const layoutCatalogVariant = layoutCatalogVariantFromValues(values, instanceId);
+  const isCollectionListBentoLayout = isCollectionListBentoSectionType(sec.type, layoutCatalogVariant);
+  const isCollectionListCarouselLayout = isCollectionListCarouselSectionType(sec.type, layoutCatalogVariant);
+  const isCollectionListEditorialLayout = isCollectionListEditorialSectionType(sec.type, layoutCatalogVariant);
+  const isCollectionListGridLayout = isCollectionListGridSectionType(sec.type, layoutCatalogVariant);
   const isFooter = layoutBlueprintKey(instanceId) === 'footer';
   const isFooterUtilities = layoutBlueprintKey(instanceId) === 'footer_utilities';
   const utilitiesVariant = isFooterUtilities ? layoutCatalogVariantFromValues(values, instanceId) : '';
@@ -1323,6 +1354,10 @@ function layoutSectionNode(
     isTextMarqueeLayout ||
     isContactFormLayout ||
     isEmailSignupLayout ||
+    isCollectionListBentoLayout ||
+    isCollectionListCarouselLayout ||
+    isCollectionListEditorialLayout ||
+    isCollectionListGridLayout ||
     isFooter ||
     isFooterUtilities
       ? []
@@ -1389,6 +1424,20 @@ function layoutSectionNode(
       itemOrder,
       layoutChildrenKey
     );
+  } else if (
+    isCollectionListBentoLayout ||
+    isCollectionListCarouselLayout ||
+    isCollectionListEditorialLayout ||
+    isCollectionListGridLayout
+  ) {
+    blockNodes = mapCollectionListBlockNodes(
+      id,
+      `sections.${instanceId}.settings`,
+      `sections.${instanceId}.blocks`,
+      values,
+      itemOrder,
+      layoutChildrenKey
+    );
   }
   if (isAnnouncement && remappedBlocks?.length) {
     blockNodes = mapAnnouncementBlockNodes(
@@ -1440,7 +1489,11 @@ function layoutSectionNode(
       isFaqLayout ||
       isIconsWithTextLayout ||
       isMulticolumnLayout ||
-      isRichTextLayout
+      isRichTextLayout ||
+      isCollectionListBentoLayout ||
+      isCollectionListCarouselLayout ||
+      isCollectionListEditorialLayout ||
+      isCollectionListGridLayout
       ? blockNodes
       : [...sectionFields, ...blockNodes],
     layoutChildrenKey,
@@ -1489,6 +1542,14 @@ function layoutSectionNode(
                                       ? 'Contact form'
                                     : isEmailSignupLayout
                                       ? 'Email signup'
+                                    : isCollectionListBentoLayout
+                                      ? 'Collection list: Bento'
+                                    : isCollectionListCarouselLayout
+                                      ? 'Collection list: Carousel'
+                                    : isCollectionListEditorialLayout
+                                      ? 'Collection list: Editorial'
+                                    : isCollectionListGridLayout
+                                      ? 'Collection list: Grid'
                                       : sec.label ?? instanceId,
     kind: 'section',
     icon: 'section',
@@ -1817,6 +1878,18 @@ function sectionToNode(
             itemOrder,
             childrenListKey
           )
+      : isCollectionListBento ||
+          isCollectionListCarousel ||
+          isCollectionListEditorial ||
+          isCollectionListGrid
+        ? mapCollectionListBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.settings`,
+            `templates.${tplId}.sections.${secId}.blocks`,
+            values,
+            itemOrder,
+            childrenListKey
+          )
       : heroVisibleBlocks.length
       ? isHero
         ? mapHeroBlockNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
@@ -1838,6 +1911,10 @@ function sectionToNode(
       isMulticolumn ||
       isRichText ||
       isCollectionLinksSpotlight ||
+      isCollectionListBento ||
+      isCollectionListCarousel ||
+      isCollectionListEditorial ||
+      isCollectionListGrid ||
       isFeaturedProduct
       ? blockNodes
       : [...sectionFields, ...blockNodes],
@@ -1986,6 +2063,14 @@ function sectionToNode(
         isBlogPostsGrid ||
         isProductHotspots ||
         isRecommendedProducts ||
+        isCollectionLinksSpotlight ||
+        isCollectionListBento ||
+        isCollectionListCarousel ||
+        isCollectionListEditorial ||
+        isCollectionListGrid ||
+        isLayeredSlideshow ||
+        isSlideshowFullFrame ||
+        isSlideshowInset ||
         isStorytellingCarousel) &&
       canDeleteTemplateSection(tplId, secId),
   };
@@ -2576,6 +2661,49 @@ export function settingsNodeForSelection(
     }
   }
 
+  if (
+    isCollectionListSectionHeaderBlockNodeId(node.id) ||
+    (node.fields?.length && isCollectionListSectionHeaderPanelFields(node.fields))
+  ) {
+    return prepareCollectionListSectionHeaderSettingsNode(node);
+  }
+  if (isCollectionListHeaderTextNodeId(node.id)) {
+    const fields = collectionListHeaderTextFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareCollectionListHeaderTextSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isCollectionListHeaderTextPanelFields(node.fields)) {
+    return prepareCollectionListHeaderTextSettingsNode(node);
+  }
+  if (isCollectionListCardBlockNodeId(node.id)) {
+    const fields = collectionListCardFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareCollectionListCardSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isCollectionListCardPanelFields(node.fields)) {
+    return prepareCollectionListCardSettingsNode(node);
+  }
+  if (isCollectionListCardImageNodeId(node.id)) {
+    const fields = collectionListCardImageFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareCollectionListCardImageSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isCollectionListCardImagePanelFields(node.fields)) {
+    return prepareCollectionListCardImageSettingsNode(node);
+  }
+  if (isCollectionListCardTitleNodeId(node.id)) {
+    const fields = collectionListCardTitleFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareCollectionListCardTitleSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isCollectionListCardTitlePanelFields(node.fields)) {
+    return prepareCollectionListCardTitleSettingsNode(node);
+  }
+
   if (isFeaturedProductHeaderTitleNestedNodeId(node.id)) {
     const fields = editorSchema
       ? featuredProductHeaderTitleFieldDefsFromSchema(editorSchema, node.id)
@@ -2829,7 +2957,14 @@ export function settingsNodeForSelection(
       ? node
       : findHeroSectionInTree(node.id, tree);
 
-  if (node.kind === 'section' && node.fields?.length) return node;
+  if (node.kind === 'section' && node.fields?.length) {
+    const prepareByLabel = SECTION_PANEL_BY_LABEL[node.label ?? ''];
+    if (prepareByLabel) {
+      const prepared = prepareByLabel(node);
+      if (prepared.fields?.length) return prepared;
+    }
+    return node;
+  }
   if (node.fields?.length) return node;
   if (node.kind === 'block' && node.children?.length) {
     const fieldRows = node.children.filter((c) => c.kind === 'field' && c.fields?.length);

@@ -484,7 +484,9 @@ function fieldSortKey(path: string): number {
 export function isFeaturedProductHeaderPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
   if (!HEADER_FIELD_KEYS.has(key)) return false;
-  if (!/\.blocks\.details\.blocks\.header\.settings\./.test(field.path)) return false;
+  const isFeaturedProductPath = /\.blocks\.details\.blocks\.header\.settings\./.test(field.path);
+  const isCollectionListHeaderPath = /\.settings\.headerGroup\./.test(field.path);
+  if (!isFeaturedProductPath && !isCollectionListHeaderPath) return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;
 }

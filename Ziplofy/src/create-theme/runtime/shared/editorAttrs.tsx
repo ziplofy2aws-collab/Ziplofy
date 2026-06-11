@@ -38,17 +38,19 @@ export function EditorSection({
 type BlockProps = {
   nodeId: string;
   label: string;
+  className?: string;
   style?: CSSProperties;
   children: ReactNode;
 };
 
 /** Block region — matches editor block node ids (e.g. layout:header:block:logo). */
-export function EditorBlock({ nodeId, label, style, children }: BlockProps) {
+export function EditorBlock({ nodeId, label, className, style, children }: BlockProps) {
   return (
     <div
       data-ziplofy-node={nodeId}
       data-ziplofy-label={label}
       data-ziplofy-kind="block"
+      className={className}
       style={style}
     >
       {children}

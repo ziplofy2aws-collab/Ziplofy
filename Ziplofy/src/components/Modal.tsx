@@ -13,6 +13,8 @@ type ModalProps = {
   title?: React.ReactNode; // Optional title for the modal
   maxWidth?: 'sm' | 'md' | 'lg'; // Optional max width preset
   actions?: React.ReactNode; // Optional action buttons
+  /** Stack above nested overlays (e.g. theme editor bottom sheets). Default 5000. */
+  zIndex?: number;
 };
 
 export const Modal = ({
@@ -25,6 +27,7 @@ export const Modal = ({
   title,
   maxWidth = 'sm',
   actions,
+  zIndex = 5000,
 }: ModalProps) => {
   // Local state to track whether the modal is mounted (client-side only)
   const [mounted, setMounted] = useState(false);
@@ -63,7 +66,8 @@ export const Modal = ({
   return createPortal(
     <div
       onClick={isCallModal ? () => {} : onClose} // Clicking outside the modal content triggers the `onClose` function (unless it's a call modal)
-      className="fixed inset-0 z-[5000] flex h-screen w-screen items-center justify-center bg-slate-900/45 p-4 backdrop-blur-[3px]"
+      className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-slate-900/45 p-4 backdrop-blur-[3px]"
+      style={{ zIndex }}
     >
       {/* Modal content container */}
       <div

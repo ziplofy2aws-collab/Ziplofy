@@ -117,6 +117,10 @@ import {
   resolveFeaturedProductHeaderCustomWidthField,
 } from './theme-editor-featured-product-header-block-panel.utils';
 import {
+  isCollectionListSectionHeaderBlockNodeId,
+  isCollectionListSectionHeaderPanelFields,
+} from './theme-editor-collection-list-header-panel.utils';
+import {
   isFeaturedProductAcceleratedCheckoutNestedNodeId,
 } from './theme-editor-featured-product-accelerated-checkout-panel.utils';
 import { isFeaturedProductQuantityNestedNodeId } from './theme-editor-featured-product-quantity-panel.utils';
@@ -279,26 +283,18 @@ import {
 import { CollectionsPickerFieldRow } from './CollectionsPickerFieldRow';
 import type { Collection } from '../../contexts/collection.context';
 import type { StoreMenu, StoreMenuItem } from '../../contexts/store-menu.context';
+import { isCollectionListBentoSettingsPanelFields } from './theme-editor-collection-list-bento-panel.utils';
+import { isCollectionListCarouselSettingsPanelFields } from './theme-editor-collection-list-carousel-panel.utils';
+import { isCollectionListEditorialSettingsPanelFields } from './theme-editor-collection-list-editorial-panel.utils';
+import { isCollectionListGridSettingsPanelFields } from './theme-editor-collection-list-grid-panel.utils';
 import {
-  groupCollectionListBentoPanelFields,
-  COLLECTION_LIST_BENTO_PANEL_GROUP_ORDER,
-  isCollectionListBentoSettingsPanelFields,
-} from './theme-editor-collection-list-bento-panel.utils';
-import {
-  groupCollectionListCarouselPanelFields,
-  COLLECTION_LIST_CAROUSEL_PANEL_GROUP_ORDER,
-  isCollectionListCarouselSettingsPanelFields,
-} from './theme-editor-collection-list-carousel-panel.utils';
-import {
-  groupCollectionListEditorialPanelFields,
-  COLLECTION_LIST_EDITORIAL_PANEL_GROUP_ORDER,
-  isCollectionListEditorialSettingsPanelFields,
-} from './theme-editor-collection-list-editorial-panel.utils';
-import {
-  groupCollectionListGridPanelFields,
-  COLLECTION_LIST_GRID_PANEL_GROUP_ORDER,
-  isCollectionListGridSettingsPanelFields,
-} from './theme-editor-collection-list-grid-panel.utils';
+  augmentCollectionListPanelFields,
+  collectionListCardsLayoutTypeFromValues,
+  COLLECTION_LIST_PANEL_GROUP_ORDER,
+  filterCollectionListPanelFieldsForLayout,
+  groupCollectionListPanelFields,
+  isCollectionListUnifiedSettingsPanelFields,
+} from './theme-editor-collection-list-panel.utils';
 import {
   groupLayeredSlideshowPanelFields,
   LAYERED_SLIDESHOW_PANEL_GROUP_ORDER,
@@ -336,6 +332,24 @@ import {
   isCollectionTileBlockFieldsOnly,
   prepareCollectionTileBlockSettingsNode,
 } from './theme-editor-collection-tile-block-panel.utils';
+import {
+  isCollectionListCardImagePanelNode,
+  isCollectionListCardPanelNode,
+  isCollectionListCardTitlePanelNode,
+  isCollectionListHeaderTextPanelNode,
+} from './theme-editor-collection-list-block-panel.utils';
+import {
+  COLLECTION_LIST_CARD_PANEL_GROUP_ORDER,
+  groupCollectionListCardPanelFields,
+} from './theme-editor-collection-list-card-panel.utils';
+import {
+  COLLECTION_LIST_CARD_IMAGE_PANEL_GROUP_ORDER,
+  groupCollectionListCardImagePanelFields,
+} from './theme-editor-collection-list-card-image-panel.utils';
+import {
+  COLLECTION_LIST_CARD_TITLE_PANEL_GROUP_ORDER,
+  groupCollectionListCardTitlePanelFields,
+} from './theme-editor-collection-list-card-title-panel.utils';
 import {
   FEATURED_COLLECTION_PANEL_GROUP_ORDER,
   groupFeaturedCollectionPanelFields,
@@ -4006,6 +4020,269 @@ function CollectionLinkBlockSettingsPanel({
   );
 }
 
+/** Collection list — Collection card → Image block (aspect ratio, overlay, borders). */
+function CollectionListCardImageSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupCollectionListCardImagePanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays image from parent collection</p>
+      {COLLECTION_LIST_CARD_IMAGE_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        return (
+          <div key={label} className="px-1 py-3">
+            {label === 'Borders' ? (
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+            ) : null}
+            <div className="space-y-1">
+              {groupFields.map((field) => {
+                if (field.widget === 'segmented') {
+                  return (
+                    <SegmentedFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                if (field.widget === 'slider') {
+                  return (
+                    <SliderFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                if (field.type === 'boolean') {
+                  return (
+                    <ToggleSwitchFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                return (
+                  <InlineSelectFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Collection list — Collection card block (text placement + appearance). */
+function CollectionListCardGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupCollectionListCardPanelFields(fields), [fields]);
+  const placementField = fields.find((f) => f.path.endsWith('.placement'));
+  const placement = placementField
+    ? fieldValueAsString(values, placementField) || 'on_image'
+    : 'on_image';
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays collection from parent section</p>
+      {COLLECTION_LIST_CARD_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        return (
+          <div key={label} className="px-1 py-3">
+            <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+            <div className="space-y-1">
+              {groupFields.map((field) => {
+                if (field.path.endsWith('.verticalAlignment') && placement !== 'on_image') {
+                  return null;
+                }
+                if (field.widget === 'segmented') {
+                  return (
+                    <SegmentedFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                if (field.widget === 'slider') {
+                  return (
+                    <SliderFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                if (field.type === 'boolean') {
+                  return (
+                    <ToggleSwitchFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                return (
+                  <InlineSelectFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Collection list — Collection card → Collection title block. */
+function CollectionListCardTitleSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupCollectionListCardTitlePanelFields(fields), [fields]);
+  const appearanceFields = grouped.get('Appearance') ?? [];
+  const background = appearanceFields.find((f) => f.path.endsWith('.backgroundEnabled'));
+  const backgroundColor = appearanceFields.find((f) => f.path.endsWith('.backgroundColor'));
+  const cornerRadius = appearanceFields.find((f) => f.path.endsWith('.cornerRadius'));
+  const backgroundOn =
+    background &&
+    (values[background.path] === true || values[background.path] === 'true');
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays title from parent collection</p>
+      {COLLECTION_LIST_CARD_TITLE_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'Layout') {
+          return (
+            <TextBlockLayoutSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Typography') {
+          const preset = groupFields.find((f) => f.path.endsWith('.typographyPreset'));
+          const presetField = preset
+            ? { ...preset, options: [...TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS] }
+            : null;
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              {presetField ? (
+                <div>
+                  <InlineSelectFieldRow
+                    field={presetField}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                  <p className="pb-1 text-[12px] text-gray-500">
+                    Edit presets in{' '}
+                    <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                      theme settings
+                    </a>
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          );
+        }
+
+        if (label === 'Appearance') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {background ? (
+                  <ToggleSwitchFieldRow
+                    field={background}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {backgroundOn && backgroundColor ? (
+                  <ColorPickerFieldRow
+                    field={backgroundColor}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {backgroundOn && cornerRadius ? (
+                  <SliderFieldRow
+                    field={cornerRadius}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <TextBlockPaddingSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
 /** Collection tile block: title, collection, width. */
 function CollectionTileBlockSettingsPanel({
   fields,
@@ -4054,23 +4331,32 @@ function CollectionTileBlockSettingsPanel({
   );
 }
 
-/** Collection list bento: Collections → Cards layout → Section layout → Padding → Custom CSS. */
-function CollectionListBentoGroupedSettingsPanel({
+/** Collection list: Type drives which cards-layout fields are shown (Bento / Grid / Carousel / Editorial). */
+function CollectionListGroupedSettingsPanel({
   fields,
   values,
   onFieldChange,
+  onCollectionLinksApply,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  onCollectionLinksApply?: (settingsPath: string, collections: Collection[]) => void;
 }) {
-  const grouped = useMemo(() => groupCollectionListBentoPanelFields(fields), [fields]);
+  const panelFields = useMemo(() => augmentCollectionListPanelFields(fields), [fields]);
+  const cardsLayoutType = collectionListCardsLayoutTypeFromValues(panelFields, values);
+  const visibleFields = useMemo(
+    () => filterCollectionListPanelFieldsForLayout(panelFields, cardsLayoutType),
+    [panelFields, cardsLayoutType]
+  );
+  const grouped = useMemo(() => groupCollectionListPanelFields(visibleFields), [visibleFields]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
-      {COLLECTION_LIST_BENTO_PANEL_GROUP_ORDER.map((label) => {
+      {COLLECTION_LIST_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
         if (!groupFields?.length) return null;
+        if (label === 'Carousel navigation' && cardsLayoutType !== 'carousel') return null;
 
         if (label === 'Collections') {
           return (
@@ -4096,7 +4382,11 @@ function CollectionListBentoGroupedSettingsPanel({
           );
         }
 
-        if (label === 'Cards layout' || label === 'Section layout') {
+        if (
+          label === 'Cards layout' ||
+          label === 'Carousel navigation' ||
+          label === 'Section layout'
+        ) {
           return (
             <div key={label} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
@@ -4193,10 +4483,12 @@ function CollectionListCarouselGroupedSettingsPanel({
   fields,
   values,
   onFieldChange,
+  onCollectionLinksApply,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  onCollectionLinksApply?: (settingsPath: string, collections: Collection[]) => void;
 }) {
   const grouped = useMemo(() => groupCollectionListCarouselPanelFields(fields), [fields]);
 
@@ -4357,10 +4649,12 @@ function CollectionListEditorialGroupedSettingsPanel({
   fields,
   values,
   onFieldChange,
+  onCollectionLinksApply,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  onCollectionLinksApply?: (settingsPath: string, collections: Collection[]) => void;
 }) {
   const grouped = useMemo(() => groupCollectionListEditorialPanelFields(fields), [fields]);
 
@@ -4491,10 +4785,12 @@ function CollectionListGridGroupedSettingsPanel({
   fields,
   values,
   onFieldChange,
+  onCollectionLinksApply,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  onCollectionLinksApply?: (settingsPath: string, collections: Collection[]) => void;
 }) {
   const grouped = useMemo(() => groupCollectionListGridPanelFields(fields), [fields]);
 
@@ -9180,6 +9476,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.label === 'Details' ||
     isFeaturedProductDetailsBlockNodeId(node.id) ||
     isFeaturedProductDetailsPanelFields(fields);
+  const isCollectionListSectionHeaderPanel =
+    isCollectionListSectionHeaderBlockNodeId(node.id) ||
+    isCollectionListSectionHeaderPanelFields(fields);
   const isFeaturedProductHeaderBlockPanel =
     isFeaturedProductHeaderBlockNodeId(node.id) || isFeaturedProductHeaderPanelFields(fields);
   const isFeaturedProductHeaderTitleBlockPanel =
@@ -9236,6 +9535,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     isCollectionLinksSpotlightSettingsPanelFields(fields);
   const isImageWithTextPanel =
     !isCollectionLinksSpotlightPanel &&
+    !isCollectionListSectionHeaderPanel &&
+    !isFeaturedProductHeaderBlockPanel &&
     (node.label === 'Image with text' || isImageWithTextSettingsPanelFields(fields));
   const isHeaderLogoBlockPanel =
     isHeaderLogoBlockNodeId(node.id) ||
@@ -9335,14 +9636,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.label === 'Product hotspots' || isProductHotspotsSettingsPanelFields(fields);
   const isRecommendedProductsPanel =
     node.label === 'Recommended products' || isRecommendedProductsSettingsPanelFields(fields);
-  const isCollectionListBentoPanel =
-    node.label === 'Collection list: Bento' || isCollectionListBentoSettingsPanelFields(fields);
-  const isCollectionListCarouselPanel =
-    node.label === 'Collection list: Carousel' || isCollectionListCarouselSettingsPanelFields(fields);
-  const isCollectionListEditorialPanel =
-    node.label === 'Collection list: Editorial' || isCollectionListEditorialSettingsPanelFields(fields);
-  const isCollectionListGridPanel =
-    node.label === 'Collection list: Grid' || isCollectionListGridSettingsPanelFields(fields);
+  const isCollectionListUnifiedPanel =
+    (node.label?.startsWith('Collection list:') ?? false) ||
+    isCollectionListUnifiedSettingsPanelFields(fields) ||
+    isCollectionListBentoSettingsPanelFields(fields) ||
+    isCollectionListCarouselSettingsPanelFields(fields) ||
+    isCollectionListEditorialSettingsPanelFields(fields) ||
+    isCollectionListGridSettingsPanelFields(fields);
   const isLayeredSlideshowPanel =
     node.label === 'Layered slideshow' || isLayeredSlideshowSettingsPanelFields(fields);
   const isSlideshowFullFramePanel =
@@ -9357,12 +9657,20 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isCollectionLinkImagePanel =
     node.label === 'Image' &&
     (isCollectionLinkImageFieldNodeId(node.id) || isCollectionLinkImagePanelFields(fields));
+  const isCollectionListHeaderTextPanel = isCollectionListHeaderTextPanelNode(node, fields);
+  const isCollectionListCardPanel = isCollectionListCardPanelNode(node, fields);
+  const isCollectionListCardImagePanel = isCollectionListCardImagePanelNode(node, fields);
+  const isCollectionListCardTitlePanel = isCollectionListCardTitlePanelNode(node, fields);
+  const isCollectionTileBlockPanel = isCollectionTileBlockFieldsOnly(fields);
   const isCollectionLinkBlockPanel =
     !isCollectionLinkTitlePanel &&
     !isCollectionLinkImagePanel &&
-    (node.label === 'Collection' || node.label === 'Collection link' || isCollectionLinkBlockFieldsOnly(fields));
-  const isCollectionTileBlockPanel =
-    node.label === 'Collection' || isCollectionTileBlockFieldsOnly(fields);
+    !isCollectionListHeaderTextPanel &&
+    !isCollectionListCardPanel &&
+    !isCollectionListCardImagePanel &&
+    !isCollectionListCardTitlePanel &&
+    !isCollectionTileBlockPanel &&
+    (node.label === 'Collection link' || isCollectionLinkBlockFieldsOnly(fields));
   const isStorytellingCarouselPanel =
     node.label === 'Carousel' || isStorytellingCarouselSettingsPanelFields(fields);
   const isDividerPanel =
@@ -9443,10 +9751,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isProductHotspotsPanel &&
     !isRecommendedProductsPanel &&
     !isCollectionLinksSpotlightPanel &&
-    !isCollectionListBentoPanel &&
-    !isCollectionListCarouselPanel &&
-    !isCollectionListEditorialPanel &&
-    !isCollectionListGridPanel &&
+    !isCollectionListUnifiedPanel &&
     !isLayeredSlideshowPanel &&
     !isSlideshowFullFramePanel &&
     !isSlideshowInsetPanel &&
@@ -9499,10 +9804,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isProductHotspotsPanel &&
     !isRecommendedProductsPanel &&
     !isCollectionLinksSpotlightPanel &&
-    !isCollectionListBentoPanel &&
-    !isCollectionListCarouselPanel &&
-    !isCollectionListEditorialPanel &&
-    !isCollectionListGridPanel &&
+    !isCollectionListUnifiedPanel &&
     !isLayeredSlideshowPanel &&
     !isSlideshowFullFramePanel &&
     !isSlideshowInsetPanel &&
@@ -9660,7 +9962,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <FaqAccordionSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isFaqAccordionRowBlockPanel ? (
           <FaqAccordionRowSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isFaqAccordionRowTextBlockPanel || isHeroTextBlockPanel ? (
+        ) : isFaqAccordionRowTextBlockPanel ||
+          isHeroTextBlockPanel ||
+          isCollectionListHeaderTextPanel ? (
           <TextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isIconsWithTextBlockPanel ? (
           <IconsWithTextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
@@ -9713,7 +10017,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
-        ) : isFeaturedProductHeaderBlockPanel ? (
+        ) : isCollectionListSectionHeaderPanel || isFeaturedProductHeaderBlockPanel ? (
           <FeaturedProductHeaderGroupedSettingsPanel
             fields={fields}
             values={values}
@@ -9780,29 +10084,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             onFieldChange={onFieldChange}
             onCollectionLinksApply={onCollectionLinksApply}
           />
-        ) : isCollectionListBentoPanel ? (
-          <CollectionListBentoGroupedSettingsPanel
+        ) : isCollectionListUnifiedPanel ? (
+          <CollectionListGroupedSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}
-          />
-        ) : isCollectionListCarouselPanel ? (
-          <CollectionListCarouselGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : isCollectionListEditorialPanel ? (
-          <CollectionListEditorialGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : isCollectionListGridPanel ? (
-          <CollectionListGridGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            onFieldChange={onFieldChange}
+            onCollectionLinksApply={onCollectionLinksApply}
           />
         ) : isLayeredSlideshowPanel ? (
           <LayeredSlideshowGroupedSettingsPanel
@@ -9834,20 +10121,38 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : isCollectionListCardPanel ? (
+          <CollectionListCardGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isCollectionListCardImagePanel ? (
+          <CollectionListCardImageSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isCollectionListCardTitlePanel ? (
+          <CollectionListCardTitleSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ) : isCollectionLinkImagePanel ? (
           <CollectionLinkImageSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}
           />
-        ) : isCollectionLinkBlockPanel ? (
-          <CollectionLinkBlockSettingsPanel
+        ) : isCollectionTileBlockPanel ? (
+          <CollectionTileBlockSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}
           />
-        ) : isCollectionTileBlockPanel ? (
-          <CollectionTileBlockSettingsPanel
+        ) : isCollectionLinkBlockPanel ? (
+          <CollectionLinkBlockSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}

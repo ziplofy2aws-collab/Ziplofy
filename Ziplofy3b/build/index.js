@@ -121,6 +121,8 @@ const store_subdomian_route_1 = require("./routes/store-subdomian.route");
 const store_terms_policy_route_1 = __importDefault(require("./routes/store-terms-policy.route"));
 const storefront_auth_route_1 = require("./routes/storefront-auth.route");
 const storefront_route_1 = require("./routes/storefront.route");
+const storefront_sitemap_route_1 = require("./routes/storefront/storefront-sitemap.route");
+const storefront_sitemap_controller_1 = require("./controllers/storefront-sitemap.controller");
 const amount_off_order_route_1 = require("./routes/storefront/amount-off-order.route");
 const amount_off_product_route_1 = require("./routes/storefront/amount-off-product.route");
 const buy_x_get_y_route_1 = require("./routes/storefront/buy-x-get-y.route");
@@ -280,7 +282,9 @@ app.use('/api/checkout-settings', checkout_settings_route_1.default);
 app.use('/api/customer-account-settings', customer_account_settings_route_1.default);
 app.use("/api/custom-themes", custom_theme_route_1.customThemeRouter);
 app.use("/api/all-themes", theme_controller_1.getAllThemesPublic);
+app.use("/api/storefront", storefront_sitemap_route_1.storefrontSitemapRouter);
 app.use("/api/storefront", storefront_route_1.storefrontRouter);
+app.get('/sitemap.xml', storefront_sitemap_controller_1.getStorefrontSitemap);
 // Routes
 app.get('/', (req, res) => {
     res.status(200).json({

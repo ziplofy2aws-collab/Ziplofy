@@ -69,6 +69,49 @@ import {
   pruneCollectionLinkBlockValues,
   sectionBaseFromCollectionsPickerPath,
 } from './utils/collection-links-collections.util';
+import {
+  applyCollectionListTilesSelectionToConfig,
+  isCollectionListTileSectionType,
+  pruneCollectionTileBlockValues,
+  sectionTypeFromCollectionsPickerPath,
+} from './utils/collection-list-tiles-collections.util';
+import {
+  collectionListHeaderCustomSizeFieldDefs,
+  collectionListHeaderFieldDefs,
+  extendCollectionListHeaderBlockValues,
+  isCollectionListSectionHeaderBlockNodeId,
+} from './sidebar/theme-editor-collection-list-header-panel.utils';
+import {
+  collectionListHeaderTextFieldDefsFromNodeId,
+  extendCollectionListHeaderTextBlockValues,
+  isCollectionListHeaderTextNestedNodeId,
+  mirrorCollectionListHeadingTextInValues,
+} from './sidebar/theme-editor-collection-list-header-text-panel.utils';
+import {
+  collectionListCardFieldDefsFromNodeId,
+  extendCollectionListCardBlockValues,
+  isCollectionListCardBlockNodeId,
+} from './sidebar/theme-editor-collection-list-card-panel.utils';
+import {
+  collectionListCardImageFieldDefsFromNodeId,
+  extendCollectionListCardImageBlockValues,
+  isCollectionListCardImageNestedNodeId,
+} from './sidebar/theme-editor-collection-list-card-image-panel.utils';
+import {
+  collectionListCardTitleFieldDefsFromNodeId,
+  extendCollectionListCardTitleBlockValues,
+  isCollectionListCardTitleNestedNodeId,
+} from './sidebar/theme-editor-collection-list-card-title-panel.utils';
+import {
+  collectionListSidebarPathsFromNodeId,
+  collectionListSidebarSelectionId,
+  syntheticCollectionListSidebarNode,
+} from './utils/collection-list-sidebar.util';
+import {
+  applyCollectionListLayoutDefaultsToValues,
+  isCollectionListCardsLayoutTypePath,
+} from './utils/collection-list-layout-defaults.util';
+import { parseCollectionListCardsLayoutType } from './sidebar/theme-editor-collection-list-panel.utils';
 import { applyStoreMenuSelectionToConfig } from './utils/store-menu-header.util';
 import { useStoreCustomThemes } from '../contexts/store-custom-themes.context';
 import {
@@ -401,10 +444,11 @@ const CreateThemePage: React.FC = () => {
   const pageLabel =
     findPageMenuItemByPreview(pageMenuItems, previewPage)?.label ?? 'Home page';
 
-  const selectedNode = useMemo(
-    () => findSidebarNode(activeTree, selectedNodeId),
-    [activeTree, selectedNodeId]
-  );
+  const selectedNode = useMemo(() => {
+    const found = findSidebarNode(activeTree, selectedNodeId);
+    if (found) return found;
+    return syntheticCollectionListSidebarNode(selectedNodeId, editorSchema);
+  }, [activeTree, selectedNodeId, editorSchema]);
 
   const settingsNode = useMemo(
     () => settingsNodeForSelection(selectedNode, activeTree, editorSchema),
@@ -607,6 +651,96 @@ const CreateThemePage: React.FC = () => {
       ensureFeaturedProductSectionBlocks(draft);
       const config = applyValuesToThemeConfig(draft, prev, editorSchema);
       return extendFeaturedProductDetailsBlockValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Collection list Header group field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isCollectionListSectionHeaderBlockNodeId(selectedNodeId)) return;
+    const paths = collectionListSidebarPathsFromNodeId(selectedNodeId);
+    if (!paths) return;
+    const defs = [
+      ...collectionListHeaderFieldDefs(paths.settingsBase),
+      ...collectionListHeaderCustomSizeFieldDefs(paths.settingsBase),
+    ];
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendCollectionListHeaderBlockValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Collection list Header → Text block field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isCollectionListHeaderTextNestedNodeId(selectedNodeId)) return;
+    const defs = collectionListHeaderTextFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendCollectionListHeaderTextBlockValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Collection list Collection card block field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isCollectionListCardBlockNodeId(selectedNodeId)) return;
+    const defs = collectionListCardFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendCollectionListCardBlockValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Collection list Collection card → Image block field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isCollectionListCardImageNestedNodeId(selectedNodeId)) return;
+    const defs = collectionListCardImageFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendCollectionListCardImageBlockValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Collection list Collection card → Collection title block field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isCollectionListCardTitleNestedNodeId(selectedNodeId)) return;
+    const defs = collectionListCardTitleFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendCollectionListCardTitleBlockValues(prev, defs, config);
     });
   }, [selectedNodeId, editorSchema, defaultConfig]);
 
@@ -922,7 +1056,16 @@ const CreateThemePage: React.FC = () => {
     (path: string, type: FieldType, raw: string | boolean) => {
       const value = type === 'boolean' ? Boolean(raw) : String(raw);
       startTransition(() => {
-        setValues((prev) => mirrorHeadingTextInValues(prev, path, value));
+        setValues((prev) => {
+          let next = mirrorHeadingTextInValues(prev, path, value);
+          next = mirrorCollectionListHeadingTextInValues(next, path, value);
+          if (isCollectionListCardsLayoutTypePath(path)) {
+            const settingsBase = path.replace(/\.cardsLayoutType$/, '');
+            const layoutType = parseCollectionListCardsLayoutType(String(value));
+            next = applyCollectionListLayoutDefaultsToValues(next, settingsBase, layoutType);
+          }
+          return next;
+        });
       });
     },
     []
@@ -953,16 +1096,16 @@ const CreateThemePage: React.FC = () => {
     (settingsPath: string, collections: Collection[]) => {
       setDefaultConfig((prev) => {
         if (!prev) return prev;
-        const { config, blockValuePaths, pickerValue } = applyCollectionLinksSelectionToConfig(
-          prev,
-          settingsPath,
-          collections
-        );
+        const sectionType = sectionTypeFromCollectionsPickerPath(prev, settingsPath);
+        const useTileBlocks = isCollectionListTileSectionType(sectionType);
+        const { config, blockValuePaths, pickerValue } = useTileBlocks
+          ? applyCollectionListTilesSelectionToConfig(prev, settingsPath, collections)
+          : applyCollectionLinksSelectionToConfig(prev, settingsPath, collections);
         const sectionBase = sectionBaseFromCollectionsPickerPath(settingsPath);
         const keepIds = sectionBase
           ? new Set(
               (collections.length
-                ? collections.map((_, i) => `link_${i + 1}`)
+                ? collections.map((_, i) => (useTileBlocks ? `tile_${i + 1}` : `link_${i + 1}`))
                 : []) as string[]
             )
           : new Set<string>();
@@ -971,7 +1114,9 @@ const CreateThemePage: React.FC = () => {
           setValues((v) => {
             let next = { ...v, [settingsPath]: pickerValue, ...blockValuePaths };
             if (sectionBase) {
-              next = pruneCollectionLinkBlockValues(next, sectionBase, keepIds);
+              next = useTileBlocks
+                ? pruneCollectionTileBlockValues(next, sectionBase, keepIds)
+                : pruneCollectionLinkBlockValues(next, sectionBase, keepIds);
             }
             return next;
           });
@@ -1000,7 +1145,10 @@ const CreateThemePage: React.FC = () => {
 
   const handlePreviewSelect = useCallback(
     (nodeId: string) => {
-      const sidebarNodeId = announcementBlockNodeIdFromSelection(nodeId) ?? nodeId;
+      const sidebarNodeId =
+        announcementBlockNodeIdFromSelection(nodeId) ??
+        collectionListSidebarSelectionId(nodeId) ??
+        nodeId;
       if (selectedNodeId === sidebarNodeId) {
         setSelectedNodeId('');
         return;

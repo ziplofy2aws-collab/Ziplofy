@@ -73,6 +73,7 @@ export function groupImageWithTextPanelFields(fields: EditorFieldDef[]): Map<str
 
 export function isImageWithTextSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
+  if (fields.some((f) => /\.settings\.headerGroup\./.test(f.path))) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   /** Collection links also has imageUrl — do not classify as Image with text. */
   if (keys.has('collectionsPicker') || keys.has('layoutMode')) return false;

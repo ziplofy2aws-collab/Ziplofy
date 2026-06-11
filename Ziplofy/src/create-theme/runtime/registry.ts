@@ -13,6 +13,7 @@ import { PullQuote } from '../pull-quote/runtime/PullQuote';
 import { RichText } from '../rich-text/runtime/RichText';
 import { ProductMain } from '../product-main/runtime/ProductMain';
 import { ProductHighlight } from '../product-highlight/runtime/ProductHighlight';
+import { CollectionListBento } from '../collection-list-bento/runtime/CollectionListBento';
 /** Live UI components keyed by schema `section.type`. */
 export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = {
   header: Header,
@@ -21,6 +22,10 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
   footer: Footer,
   divider: Divider,
   'collection-links-spotlight': CollectionLinksSpotlight,
+  'collection-list-bento': CollectionListBento,
+  'collection-list-grid': CollectionListBento,
+  'collection-list-carousel': CollectionListBento,
+  'collection-list-editorial': CollectionListBento,
   'product-highlight': ProductHighlight,
   'product-main': ProductMain,
   faq: Faq,
@@ -46,6 +51,7 @@ export function blueprintIdFromInstanceId(instanceId: string): string {
     'featured_collection',
     'collection_links_spotlight',
     'collection_links_text',
+    'collection_list_bento',
     'product_highlight',
     'product_main',
   ];
