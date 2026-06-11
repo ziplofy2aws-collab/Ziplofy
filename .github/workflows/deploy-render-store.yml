@@ -44,6 +44,9 @@ jobs:
 
       - name: Build render-store
         working-directory: render-store
+        env:
+          # Optional: remote Ziplofy3b host for vite preview /sitemap.xml + /api proxy on EC2
+          VITE_PROXY_TARGET: ${{ secrets.ZIPLOFY3B_API_UPSTREAM }}
         run: npm run build
 
       - name: Deploy to EC2
@@ -77,5 +80,9 @@ jobs:
             echo "Using node: $(command -v node) ($(node -v))"
             cd ${{ secrets.RENDER_STORE_EC2_DEPLOY_PATH }}
             npm ci
+            if [ -n "${{ secrets.ZIPLOFY3B_API_UPSTREAM }}" ]; then
+              export VITE_PROXY_TARGET="${{ secrets.ZIPLOFY3B_API_UPSTREAM }}"
+              export ZIPLOFY3B_API_UPSTREAM="${{ secrets.ZIPLOFY3B_API_UPSTREAM }}"
+            fi
             pm2 delete all || true
             pm2 start npm -- run preview

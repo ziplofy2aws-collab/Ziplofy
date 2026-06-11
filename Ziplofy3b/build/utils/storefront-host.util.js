@@ -1,11 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.canonicalStorefrontOrigin = canonicalStorefrontOrigin;
 exports.subdomainFromRequest = subdomainFromRequest;
 exports.resolveStoreFromRequest = resolveStoreFromRequest;
+const config_1 = require("../config");
 const subdomain_model_1 = require("../models/subdomain.model");
 const store_model_1 = require("../models/store/store.model");
 const public_origin_util_1 = require("./public-origin.util");
 const RESERVED_SUBDOMAINS = new Set(['admin', 'dashboard', 'preview', 'www', 'api']);
+function isProduction() {
+    return (process.env.NODE_ENV || 'development') === 'production';
+}
+/** Build the merchant-facing origin (not the API host) for sitemap loc URLs. */
+function canonicalStorefrontOrigin(mapping, req) {
+    const customDomain = mapping.customDomain?.trim().toLowerCase();
+    if (customDomain) {
+        const protocol = isProduction() ? 'https' : 'http';
+        return `${protocol}://${customDomain}`;
+    }
+    const fromRequest = (0, public_origin_util_1.publicOriginFromRequest)(req);
+    const requestHost = fromRequest.replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
+    const storefrontHost = `${mapping.subdomain}${config_1.config.storeRenderMicroserviceUrlSuffix}`.toLowerCase();
+    if (requestHost === storefrontHost || requestHost.startsWith(`${mapping.subdomain.toLowerCase()}.`)) {
+        if (isProduction() && requestHost.endsWith('.ziplofy.com')) {
+            return `https://${requestHost}`;
+        }
+        return fromRequest;
+    }
+    const protocol = isProduction() ? 'https' : 'http';
+    return `${protocol}://${mapping.subdomain}${config_1.config.storeRenderMicroserviceUrlSuffix}`;
+}
 function hostnameFromRequest(req) {
     const xfHost = req.get('x-forwarded-host');
     const host = (xfHost || req.get('host') || '').split(',')[0].trim().toLowerCase();
@@ -45,6 +69,6 @@ async function resolveStoreFromRequest(req) {
     return {
         storeId: String(store._id),
         subdomain: mapping.subdomain,
-        publicOrigin: (0, public_origin_util_1.publicOriginFromRequest)(req),
+        publicOrigin: canonicalStorefrontOrigin(mapping, req),
     };
 }

@@ -4,7 +4,8 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import { themePreviewFrameHeadersPlugin } from './src/vite-theme-preview-headers.plugin'
-const proxyTarget = process.env.VITE_PROXY_TARGET || 'http://127.0.0.1:5000'
+/** Dev/preview proxy to Ziplofy3b. In production EC2, prefer nginx → backend (see deploy/nginx-store-vhost.example.conf). */
+const proxyTarget = process.env.VITE_PROXY_TARGET || process.env.ZIPLOFY3B_API_UPSTREAM || 'http://127.0.0.1:5000'
 
 /** Extra Rollup inputs so remote theme blob imports resolve in production (no /src/*.ts on static host). */
 const remoteThemeRuntimeInputs = {
