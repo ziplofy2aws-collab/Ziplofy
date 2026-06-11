@@ -279,7 +279,7 @@ export function CollectionListBentoLayoutView({
     layoutStyle.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: horizontalPad, paddingRight: horizontalPad }
       : {
-          maxWidth: layout.contentMaxWidth,
+          maxWidth: layout.maxWidth,
           margin: '0 auto',
           paddingLeft: horizontalPad,
           paddingRight: horizontalPad,
@@ -365,7 +365,7 @@ export function CollectionListGridLayoutView({
     style.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: 24, paddingRight: 24 }
       : {
-          maxWidth: layout.contentMaxWidth,
+          maxWidth: layout.maxWidth,
           margin: '0 auto',
           paddingLeft: 24,
           paddingRight: 24,
@@ -550,7 +550,7 @@ export function CollectionListCarouselLayoutView({
   };
 
   return (
-    <div className={scopeClass} style={{ maxWidth: layout.contentMaxWidth, margin: '0 auto' }} data-mobile-columns={style.mobileColumns}>
+    <div className={scopeClass} style={{ maxWidth: layout.maxWidth, margin: '0 auto' }} data-mobile-columns={style.mobileColumns}>
       <style>
         {`
           .${scopeClass} [data-carousel-track]::-webkit-scrollbar { display: none; }
@@ -702,7 +702,7 @@ export function CollectionListEditorialLayoutView({
     layoutStyle.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: 24, paddingRight: 24 }
       : {
-          maxWidth: layout.contentMaxWidth,
+          maxWidth: layout.maxWidth,
           margin: '0 auto',
           paddingLeft: 24,
           paddingRight: 24,

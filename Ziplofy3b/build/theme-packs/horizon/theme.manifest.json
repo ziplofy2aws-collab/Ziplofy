@@ -63,6 +63,12 @@
         "id": "title",
         "label": "Title"
       }
+    ],
+    "layout": [
+      {
+        "id": "accordion-row",
+        "label": "Accordion row"
+      }
     ]
   },
   "sectionBlocks": {
@@ -101,7 +107,9 @@
     "storytelling-logo": [],
     "storytelling-video": [],
     "faq": [
-      "faq-item"
+      "heading",
+      "accordion",
+      "accordion-row"
     ],
     "icons-with-text": [
       "icon-with-text-item"

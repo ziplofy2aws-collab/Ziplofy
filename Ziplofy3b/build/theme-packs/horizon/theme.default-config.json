@@ -83,10 +83,10 @@
         "searchPosition": "right",
         "searchRow": "top",
         "searchPlaceholder": "Search products…",
-        "countryRegionEnabled": true,
+        "countryRegionEnabled": false,
         "countryRegionLabel": "IN · USD",
         "showFlag": false,
-        "languageSelectorEnabled": true,
+        "languageSelectorEnabled": false,
         "languageLabel": "English",
         "localizationFont": "heading",
         "localizationSize": "14px",
@@ -95,7 +95,7 @@
         "sectionWidth": "page",
         "headerHeight": "standard",
         "stickyMode": "always",
-        "borderThickness": 0,
+        "borderThickness": 1,
         "menuStyle": "icons",
         "colorScheme": "scheme-1",
         "homeTransparentBackground": false,
@@ -114,8 +114,8 @@
           "type": "logo",
           "settings": {
             "position": "left",
-            "text": "Horizon",
-            "tagline": "Soft essentials",
+            "text": "My Store",
+            "tagline": "",
             "hideLogoOnHomePage": false,
             "paddingTop": 0,
             "paddingBottom": 0
@@ -125,7 +125,7 @@
           "type": "menu",
           "settings": {
             "position": "left",
-            "row": "top",
+            "row": "",
             "menu": "main-menu",
             "colorScheme": "scheme-1",
             "topLevelSize": "14px",
@@ -140,16 +140,16 @@
             "mobileDividers": false,
             "items": [
               {
-                "label": "Shop",
+                "label": "Home",
+                "href": "/"
+              },
+              {
+                "label": "Catalog",
                 "href": "/products"
               },
               {
-                "label": "Collections",
-                "href": "/collection"
-              },
-              {
-                "label": "About",
-                "href": "/#about"
+                "label": "Contact",
+                "href": "/#contact"
               }
             ]
           },
@@ -175,22 +175,22 @@
           "settings": {
             "blockWidth": "fill",
             "inheritColorScheme": true,
-            "title": "",
+            "title": "Join our email list",
             "headingTypographyPreset": "heading-3",
             "inputBorder": "all",
             "inputBorderThickness": 1,
             "inputCornerRadius": 100,
             "inputTypographyPreset": "paragraph",
-            "submitStyle": "link",
-            "submitDisplay": "arrow",
-            "submitIntegratedButton": true,
+            "submitStyle": "button",
+            "submitDisplay": "text",
+            "submitIntegratedButton": false,
             "paddingTop": 0,
             "paddingBottom": 0,
             "paddingLeft": 0,
             "paddingRight": 0,
-            "subtitle": "",
+            "subtitle": "Get exclusive deals and early access to new products.",
             "placeholder": "Email address",
-            "buttonLabel": "Subscribe",
+            "buttonLabel": "Sign up",
             "privacyNote": ""
           }
         }
@@ -201,9 +201,9 @@
       "settings": {
         "sectionWidth": "page",
         "gap": 20,
-        "colorScheme": "scheme-1",
-        "paddingTop": 30,
-        "paddingBottom": 30,
+        "colorScheme": "scheme-2",
+        "paddingTop": 36,
+        "paddingBottom": 36,
         "customCss": ""
       }
     },
@@ -339,7 +339,7 @@
         "colorScheme": "scheme-1",
         "paddingTop": 24,
         "paddingBottom": 24,
-        "layoutGap": 24,
+        "layoutGap": 48,
         "customCss": ""
       }
     },
@@ -839,36 +839,72 @@
           "type": "collection-link",
           "settings": {
             "title": "Collection title",
+            "titleFont": "subheading",
+            "titleWeight": "default",
+            "titleLineHeight": "normal",
+            "titleLetterSpacing": "normal",
+            "titleCase": "default",
             "productCount": 5,
             "collectionHandle": "",
-            "href": "/collections/all"
+            "href": "/collections/all",
+            "imageUrl": "",
+            "imageHeight": "large",
+            "imageRatio": "square",
+            "imageCornerRadius": 0
           }
         },
         "link_2": {
           "type": "collection-link",
           "settings": {
             "title": "Collection title",
+            "titleFont": "subheading",
+            "titleWeight": "default",
+            "titleLineHeight": "normal",
+            "titleLetterSpacing": "normal",
+            "titleCase": "default",
             "productCount": 5,
             "collectionHandle": "",
-            "href": "/collections/all"
+            "href": "/collections/all",
+            "imageUrl": "",
+            "imageHeight": "large",
+            "imageRatio": "square",
+            "imageCornerRadius": 0
           }
         },
         "link_3": {
           "type": "collection-link",
           "settings": {
             "title": "Collection title",
+            "titleFont": "subheading",
+            "titleWeight": "default",
+            "titleLineHeight": "normal",
+            "titleLetterSpacing": "normal",
+            "titleCase": "default",
             "productCount": 5,
             "collectionHandle": "",
-            "href": "/collections/all"
+            "href": "/collections/all",
+            "imageUrl": "",
+            "imageHeight": "large",
+            "imageRatio": "square",
+            "imageCornerRadius": 0
           }
         },
         "link_4": {
           "type": "collection-link",
           "settings": {
             "title": "Collection title",
+            "titleFont": "subheading",
+            "titleWeight": "default",
+            "titleLineHeight": "normal",
+            "titleLetterSpacing": "normal",
+            "titleCase": "default",
             "productCount": 5,
             "collectionHandle": "",
-            "href": "/collections/all"
+            "href": "/collections/all",
+            "imageUrl": "",
+            "imageHeight": "large",
+            "imageRatio": "square",
+            "imageCornerRadius": 0
           }
         }
       },
@@ -1298,21 +1334,27 @@
           "enabled": true,
           "settings": {
             "media1Type": "image",
-            "media1ImageUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=85",
+            "media1ImageUrl": "",
             "media2Type": "image",
             "media2ImageUrl": "",
             "mobileStackMedia": false,
             "mobileDifferentMedia": false,
+            "mobileMedia1Type": "image",
+            "mobileMedia1ImageUrl": "",
+            "mobileMedia2Type": "image",
+            "mobileMedia2ImageUrl": "",
             "mobileImageUrl": "",
             "sectionLink": "",
             "sectionLinkNewTab": false,
             "direction": "vertical",
             "alignTextBaseline": true,
+            "verticalOnMobile": false,
             "layoutAlignment": "center",
             "position": "center",
             "layoutGap": 16,
             "sectionWidth": "full",
             "height": "small",
+            "customHeight": 520,
             "colorScheme": "scheme-6",
             "mediaOverlay": true,
             "overlayColor": "#12121266",
@@ -1324,9 +1366,18 @@
             "title": "Browse our latest products",
             "headingWidth": "fit",
             "headingMaxWidth": "normal",
+            "headingAlignment": "left",
             "headingTypographyPreset": "heading-1",
+            "headingFont": "body",
+            "headingFontSize": "16px",
+            "headingLineHeight": "normal",
+            "headingLetterSpacing": "normal",
+            "headingTextCase": "default",
+            "headingWrap": "pretty",
             "headingColor": "heading",
             "headingBackgroundEnabled": false,
+            "headingBackgroundColor": "#00000026",
+            "headingCornerRadius": 0,
             "headingPaddingTop": 0,
             "headingPaddingBottom": 0,
             "headingPaddingLeft": 0,
@@ -1346,6 +1397,12 @@
             "templates.index.sections.hero_main.settings.subtitle"
           ],
           "blocks": {
+            "heading": {
+              "type": "heading",
+              "settings": {
+                "heading": "Browse our latest products"
+              }
+            },
             "primary_button": {
               "type": "button",
               "settings": {
@@ -1354,7 +1411,9 @@
                 "openInNewTab": false,
                 "buttonStyle": "primary",
                 "desktopWidth": "fit",
+                "desktopCustomWidth": 100,
                 "mobileWidth": "fit",
+                "mobileCustomWidth": 100,
                 "ariaLabel": ""
               },
               "settings_field_order": [
@@ -1370,7 +1429,9 @@
                 "openInNewTab": false,
                 "buttonStyle": "secondary",
                 "desktopWidth": "fit",
+                "desktopCustomWidth": 100,
                 "mobileWidth": "fit",
+                "mobileCustomWidth": 100,
                 "ariaLabel": ""
               },
               "settings_field_order": [
@@ -1796,8 +1857,6 @@
           "enabled": true,
           "settings": {
             "catalogVariant": "faq",
-            "heading": "Frequently asked questions",
-            "openFirstItem": false,
             "direction": "vertical",
             "layoutAlignment": "left",
             "position": "center",
@@ -1812,51 +1871,213 @@
             "backgroundOverlay": false,
             "paddingTop": 48,
             "paddingBottom": 48,
-            "customCss": ""
+            "customCss": "",
+            "title": "Frequently asked questions",
+            "headingWidth": "fit",
+            "headingMaxWidth": "normal",
+            "headingAlignment": "left",
+            "headingTypographyPreset": "heading-2",
+            "headingFont": "body",
+            "headingFontSize": "16px",
+            "headingLineHeight": "normal",
+            "headingLetterSpacing": "normal",
+            "headingTextCase": "default",
+            "headingWrap": "pretty",
+            "headingColor": "heading",
+            "headingBackgroundEnabled": false,
+            "headingBackgroundColor": "#00000026",
+            "headingCornerRadius": 0,
+            "headingPaddingTop": 0,
+            "headingPaddingBottom": 0,
+            "headingPaddingLeft": 0,
+            "headingPaddingRight": 0
           },
           "blocks": {
-            "faq_1": {
-              "type": "faq-item",
+            "heading": {
+              "type": "heading",
               "settings": {
-                "question": "What is the return policy?",
-                "answer": "We offer a 30-day return policy on most items. Products must be unused and in original packaging."
+                "heading": "Frequently asked questions"
               }
             },
-            "faq_2": {
-              "type": "faq-item",
+            "accordion": {
+              "type": "group",
               "settings": {
-                "question": "Are any purchases final sale?",
-                "answer": "Yes, items marked final sale cannot be returned or exchanged."
-              }
-            },
-            "faq_3": {
-              "type": "faq-item",
-              "settings": {
-                "question": "When will I get my order?",
-                "answer": "Most orders ship within 2–3 business days. Delivery times vary by location."
-              }
-            },
-            "faq_4": {
-              "type": "faq-item",
-              "settings": {
-                "question": "Where are your products manufactured?",
-                "answer": "Our products are designed in-house and manufactured with trusted partners worldwide."
-              }
-            },
-            "faq_5": {
-              "type": "faq-item",
-              "settings": {
-                "question": "How much does shipping cost?",
-                "answer": "Shipping is calculated at checkout. Free shipping may apply on qualifying orders."
-              }
+                "icon": "caret",
+                "dividers": true,
+                "headingTypographyPreset": "heading-5",
+                "inheritColorScheme": false,
+                "borderStyle": "none",
+                "cornerRadius": 0,
+                "paddingTop": 0,
+                "paddingBottom": 0,
+                "paddingLeft": 0,
+                "paddingRight": 0,
+                "openFirstItem": false
+              },
+              "blocks": {
+                "row_1": {
+                  "type": "accordion-row",
+                  "settings": {
+                    "heading": "What is the return policy?",
+                    "openByDefault": false,
+                    "rowIcon": "none",
+                    "rowImageIconUrl": "",
+                    "rowIconWidth": 20
+                  },
+                  "block_order": [
+                    "text"
+                  ],
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "We offer a 30-day return policy on most items. Products must be unused and in original packaging.",
+                        "width": "fill",
+                        "maxWidth": "normal",
+                        "alignment": "left",
+                        "typographyPreset": "default",
+                        "backgroundEnabled": false,
+                        "paddingTop": 0,
+                        "paddingBottom": 0,
+                        "paddingLeft": 0,
+                        "paddingRight": 0
+                      }
+                    }
+                  }
+                },
+                "row_2": {
+                  "type": "accordion-row",
+                  "settings": {
+                    "heading": "Are any purchases final sale?",
+                    "openByDefault": false,
+                    "rowIcon": "none",
+                    "rowImageIconUrl": "",
+                    "rowIconWidth": 20
+                  },
+                  "block_order": [
+                    "text"
+                  ],
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "Yes, items marked final sale cannot be returned or exchanged.",
+                        "width": "fill",
+                        "maxWidth": "normal",
+                        "alignment": "left",
+                        "typographyPreset": "default",
+                        "backgroundEnabled": false,
+                        "paddingTop": 0,
+                        "paddingBottom": 0,
+                        "paddingLeft": 0,
+                        "paddingRight": 0
+                      }
+                    }
+                  }
+                },
+                "row_3": {
+                  "type": "accordion-row",
+                  "settings": {
+                    "heading": "When will I get my order?",
+                    "openByDefault": false,
+                    "rowIcon": "none",
+                    "rowImageIconUrl": "",
+                    "rowIconWidth": 20
+                  },
+                  "block_order": [
+                    "text"
+                  ],
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "Most orders ship within 2–3 business days. Delivery times vary by location.",
+                        "width": "fill",
+                        "maxWidth": "normal",
+                        "alignment": "left",
+                        "typographyPreset": "default",
+                        "backgroundEnabled": false,
+                        "paddingTop": 0,
+                        "paddingBottom": 0,
+                        "paddingLeft": 0,
+                        "paddingRight": 0
+                      }
+                    }
+                  }
+                },
+                "row_4": {
+                  "type": "accordion-row",
+                  "settings": {
+                    "heading": "Where are your products manufactured?",
+                    "openByDefault": false,
+                    "rowIcon": "none",
+                    "rowImageIconUrl": "",
+                    "rowIconWidth": 20
+                  },
+                  "block_order": [
+                    "text"
+                  ],
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "Our products are designed in-house and manufactured with trusted partners worldwide.",
+                        "width": "fill",
+                        "maxWidth": "normal",
+                        "alignment": "left",
+                        "typographyPreset": "default",
+                        "backgroundEnabled": false,
+                        "paddingTop": 0,
+                        "paddingBottom": 0,
+                        "paddingLeft": 0,
+                        "paddingRight": 0
+                      }
+                    }
+                  }
+                },
+                "row_5": {
+                  "type": "accordion-row",
+                  "settings": {
+                    "heading": "How much does shipping cost?",
+                    "openByDefault": false,
+                    "rowIcon": "none",
+                    "rowImageIconUrl": "",
+                    "rowIconWidth": 20
+                  },
+                  "block_order": [
+                    "text"
+                  ],
+                  "blocks": {
+                    "text": {
+                      "type": "text",
+                      "settings": {
+                        "text": "Shipping is calculated at checkout. Free shipping may apply on qualifying orders.",
+                        "width": "fill",
+                        "maxWidth": "normal",
+                        "alignment": "left",
+                        "typographyPreset": "default",
+                        "backgroundEnabled": false,
+                        "paddingTop": 0,
+                        "paddingBottom": 0,
+                        "paddingLeft": 0,
+                        "paddingRight": 0
+                      }
+                    }
+                  }
+                }
+              },
+              "block_order": [
+                "row_1",
+                "row_2",
+                "row_3",
+                "row_4",
+                "row_5"
+              ]
             }
           },
           "block_order": [
-            "faq_1",
-            "faq_2",
-            "faq_3",
-            "faq_4",
-            "faq_5"
+            "heading",
+            "accordion"
           ]
         },
         "icons_with_text": {
@@ -1866,9 +2087,9 @@
             "catalogVariant": "icons-with-text",
             "direction": "horizontal",
             "verticalOnMobile": false,
-            "layoutAlignment": "left",
+            "layoutAlignment": "center",
             "position": "center",
-            "layoutGap": 16,
+            "layoutGap": 32,
             "columns": 3,
             "sectionWidth": "page",
             "height": "auto",
@@ -2027,7 +2248,7 @@
             "colorScheme": "scheme-1",
             "paddingTop": 24,
             "paddingBottom": 24,
-            "layoutGap": 24,
+            "layoutGap": 48,
             "customCss": ""
           }
         },
@@ -2519,36 +2740,72 @@
               "type": "collection-link",
               "settings": {
                 "title": "Collection title",
+                "titleFont": "subheading",
+                "titleWeight": "default",
+                "titleLineHeight": "normal",
+                "titleLetterSpacing": "normal",
+                "titleCase": "default",
                 "productCount": 5,
                 "collectionHandle": "",
-                "href": "/collections/all"
+                "href": "/collections/all",
+                "imageUrl": "",
+                "imageHeight": "large",
+                "imageRatio": "square",
+                "imageCornerRadius": 0
               }
             },
             "link_2": {
               "type": "collection-link",
               "settings": {
                 "title": "Collection title",
+                "titleFont": "subheading",
+                "titleWeight": "default",
+                "titleLineHeight": "normal",
+                "titleLetterSpacing": "normal",
+                "titleCase": "default",
                 "productCount": 5,
                 "collectionHandle": "",
-                "href": "/collections/all"
+                "href": "/collections/all",
+                "imageUrl": "",
+                "imageHeight": "large",
+                "imageRatio": "square",
+                "imageCornerRadius": 0
               }
             },
             "link_3": {
               "type": "collection-link",
               "settings": {
                 "title": "Collection title",
+                "titleFont": "subheading",
+                "titleWeight": "default",
+                "titleLineHeight": "normal",
+                "titleLetterSpacing": "normal",
+                "titleCase": "default",
                 "productCount": 5,
                 "collectionHandle": "",
-                "href": "/collections/all"
+                "href": "/collections/all",
+                "imageUrl": "",
+                "imageHeight": "large",
+                "imageRatio": "square",
+                "imageCornerRadius": 0
               }
             },
             "link_4": {
               "type": "collection-link",
               "settings": {
                 "title": "Collection title",
+                "titleFont": "subheading",
+                "titleWeight": "default",
+                "titleLineHeight": "normal",
+                "titleLetterSpacing": "normal",
+                "titleCase": "default",
                 "productCount": 5,
                 "collectionHandle": "",
-                "href": "/collections/all"
+                "href": "/collections/all",
+                "imageUrl": "",
+                "imageHeight": "large",
+                "imageRatio": "square",
+                "imageCornerRadius": 0
               }
             }
           },

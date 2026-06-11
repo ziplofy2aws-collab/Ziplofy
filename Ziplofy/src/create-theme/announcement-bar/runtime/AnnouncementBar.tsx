@@ -19,11 +19,7 @@ import {
   typographyToStyle,
 } from './announcementBlockTypography';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
-import {
-  combineResponsiveCss,
-  scopedAnnouncementMobileCss,
-  sectionScopeClass,
-} from '../../runtime/shared/responsive';
+import { scopedAnnouncementMobileCss, sectionScopeClass } from '../../runtime/shared/responsive';
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { useThemeColors } from '../../runtime/shared/tokens';

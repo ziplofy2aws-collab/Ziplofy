@@ -9,7 +9,7 @@
     "test:coverage": "vitest run --coverage",
     "build": "tsc && node -e \"require('fs').cpSync('src/theme-packs','build/theme-packs',{recursive:true})\"",
     "start": "cross-env DOTENV_CONFIG_PATH=.env.production NODE_ENV=production node build/index.js",
-    "dev:watch": "cross-env DOTENV_CONFIG_PATH=.env.development NODE_ENV=development concurrently \"tsc -w\" \"nodemon build/index.js\"",
+    "dev:watch": "cross-env DOTENV_CONFIG_PATH=.env.development NODE_ENV=development npm run build && concurrently \"tsc -w\" \"nodemon --delay 1500ms build/index.js\"",
     "dev": "cross-env DOTENV_CONFIG_PATH=.env.development NODE_ENV=development node build/index.js",
     "clean": "rimraf build",
     "seed:variants": "node build/seed/variants/seed.variant.js",

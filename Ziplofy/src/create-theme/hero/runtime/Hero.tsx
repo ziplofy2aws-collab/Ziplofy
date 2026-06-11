@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
-import { cfgNumber, cfgString } from '../../runtime/shared/config';
+import { cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/structureOrder';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';

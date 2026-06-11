@@ -4,7 +4,7 @@ import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
-import { combineResponsiveCss, scopedTextMarqueeMobileCss } from '../../runtime/shared/responsive';
+import { scopedTextMarqueeMobileCss } from '../../runtime/shared/responsive';
 import {
   readTextMarqueeLayout,
   scopedTextMarqueeCss,
