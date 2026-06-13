@@ -40,7 +40,6 @@ const NAV: NavItem[] = [
     icon: ShoppingCartIcon,
     path: '/orders',
     children: [
-      { text: 'Orders', path: '/orders' },
       { text: 'Drafts', path: '/orders/drafts' },
       { text: 'Abandoned Carts', path: '/orders/abandoned-carts' },
     ],
