@@ -40,6 +40,7 @@ export function isEmailSignupSectionType(secType: string | undefined, catalogVar
 
 export function isEmailSignupPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  if (field.sidebar === false) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -61,7 +62,7 @@ export function sortEmailSignupPanelFields(fields: EditorFieldDef[]): EditorFiel
 
 export function groupEmailSignupPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isEmailSignupPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -72,6 +73,8 @@ export function groupEmailSignupPanelFields(fields: EditorFieldDef[]): Map<strin
 
 export function isEmailSignupSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
+  const path = fields[0]?.path ?? '';
+  if (!path.includes('email_signup')) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   if (keys.has('media1Type') || keys.has('media1ImageUrl') || keys.has('media2Type')) return false;
   return keys.has('direction') && keys.has('sectionWidth') && keys.has('colorScheme');

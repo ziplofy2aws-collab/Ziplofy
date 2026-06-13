@@ -76,13 +76,21 @@ function remapSplitShowcaseField(field: EditorFieldDef): EditorFieldDef {
     if (key === 'verticalOnMobile') {
       next = { ...next, label: 'Vertical on mobile', widget: 'toggle' };
     }
-    if (key === 'layoutAlignment' || key === 'position') {
+    if (key === 'direction') {
+      next = { ...next, widget: 'segmented' };
+    }
+    if (key === 'layoutAlignment') {
       next = { ...next, widget: 'select-inline' };
+    }
+    if (key === 'position') {
+      next = { ...next, widget: 'segmented' };
     }
   } else if (SIZE_KEYS.has(key)) {
     next = { ...next, group: 'Size' };
+  } else if (key === 'colorScheme') {
+    next = { ...next, group: 'Appearance', widget: 'color-scheme' };
   } else if (key === 'mediaOverlay') {
-    next = { ...next, label: 'Background overlay', group: 'Appearance', widget: 'toggle' };
+    next = { ...next, label: 'Background overlay', group: 'Appearance', widget: 'toggle', sidebar: true };
   } else if (key === 'backgroundMedia') {
     next = { ...next, group: 'Appearance', widget: 'select-inline' };
   } else if (key === 'backgroundImageUrl') {
@@ -93,10 +101,8 @@ function remapSplitShowcaseField(field: EditorFieldDef): EditorFieldDef {
     next = { ...next, group: 'Appearance', widget: 'slider' };
   } else if (key === 'customCss') {
     next = { ...next, group: 'Custom CSS', widget: 'accordion' };
-  } else if (key === 'colorScheme') {
-    next = { ...next, group: 'Appearance' };
   } else if (key === 'paddingTop' || key === 'paddingBottom') {
-    next = { ...next, group: 'Padding' };
+    next = { ...next, group: 'Padding', widget: 'slider' };
   }
 
   return next;
@@ -143,5 +149,7 @@ export function groupSplitShowcasePanelFields(
 
 export function isSplitShowcaseSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
-  return fields.every(isSplitShowcasePanelField);
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  if (keys.has('media1Type') || keys.has('marqueeText') || keys.has('media1ImageUrl')) return false;
+  return keys.has('verticalOnMobile') && keys.has('direction') && keys.has('sectionWidth');
 }

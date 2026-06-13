@@ -95,6 +95,26 @@ import {
   prepareContactFormSettingsNode,
 } from './theme-editor-contact-form-panel.utils';
 import {
+  contactFormBlockFieldDefsFromNodeId,
+  isContactFormBlockNodeId,
+  prepareContactFormBlockSettingsNode,
+} from './theme-editor-contact-form-block-panel.utils';
+import {
+  emailSignupBlockFieldDefsFromNodeId,
+  isEmailSignupSectionBlockNodeId,
+  prepareEmailSignupSectionBlockSettingsNode,
+} from './theme-editor-email-signup-block-panel.utils';
+import {
+  imageCompareBlockFieldDefsFromNodeId,
+  isImageCompareContentGroupNodeId,
+  isImageCompareSectionBlockNodeId,
+  prepareImageCompareSectionBlockSettingsNode,
+} from './theme-editor-image-compare-block-panel.utils';
+import {
+  imageCompareContentGroupFieldDefsFromNodeId,
+  prepareImageCompareContentGroupSettingsNode,
+} from './theme-editor-image-compare-content-group-panel.utils';
+import {
   isCustomSectionSettingsPanelFields,
   isCustomSectionType,
   prepareCustomSectionSettingsNode,
@@ -208,6 +228,11 @@ import {
   isStorytellingVideoSettingsPanelFields,
   prepareStorytellingVideoSettingsNode,
 } from './theme-editor-storytelling-video-panel.utils';
+import {
+  isStorytellingVideoBlockNodeId,
+  prepareStorytellingVideoBlockSettingsNode,
+  storytellingVideoBlockFieldDefsFromNodeId,
+} from './theme-editor-storytelling-video-block-panel.utils';
 import {
   isFaqSectionType,
   isFaqSettingsPanelFields,
@@ -360,6 +385,10 @@ import {
 } from './theme-editor-collection-link-image-panel.utils';
 import { mapCollectionLinksSpotlightBlockNodes } from '../../utils/collection-links-spotlight-sidebar.util';
 import { mapCollectionListBlockNodes } from '../utils/collection-list-sidebar.util';
+import { mapContactFormBlockNodes } from '../utils/contact-form-sidebar.util';
+import { mapEmailSignupBlockNodes } from '../utils/email-signup-sidebar.util';
+import { mapImageCompareBlockNodes } from '../utils/image-compare-sidebar.util';
+import { mapStorytellingVideoBlockNodes } from '../utils/storytelling-video-sidebar.util';
 import { mapFeaturedProductBlockNodes } from '../../utils/featured-product-sidebar.util';
 import { mapFaqBlockNodes } from '../../utils/faq-sidebar.util';
 import { mapIconsWithTextBlockNodes } from '../../utils/icons-with-text-sidebar.util';
@@ -1424,6 +1453,14 @@ function layoutSectionNode(
       itemOrder,
       layoutChildrenKey
     );
+  } else if (isStorytellingVideoLayout) {
+    blockNodes = mapStorytellingVideoBlockNodes(id, values, itemOrder, layoutChildrenKey);
+  } else if (isContactFormLayout) {
+    blockNodes = mapContactFormBlockNodes(id, values, itemOrder, layoutChildrenKey);
+  } else if (isEmailSignupLayout) {
+    blockNodes = mapEmailSignupBlockNodes(id, values, itemOrder, layoutChildrenKey);
+  } else if (isImageCompareLayout) {
+    blockNodes = mapImageCompareBlockNodes(id, values, itemOrder, layoutChildrenKey);
   } else if (
     isCollectionListBentoLayout ||
     isCollectionListCarouselLayout ||
@@ -1490,6 +1527,10 @@ function layoutSectionNode(
       isIconsWithTextLayout ||
       isMulticolumnLayout ||
       isRichTextLayout ||
+      isStorytellingVideoLayout ||
+      isContactFormLayout ||
+      isEmailSignupLayout ||
+      isImageCompareLayout ||
       isCollectionListBentoLayout ||
       isCollectionListCarouselLayout ||
       isCollectionListEditorialLayout ||
@@ -1878,6 +1919,14 @@ function sectionToNode(
             itemOrder,
             childrenListKey
           )
+      : isStorytellingVideo
+        ? mapStorytellingVideoBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isContactForm
+        ? mapContactFormBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isEmailSignup
+        ? mapEmailSignupBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isImageCompare
+        ? mapImageCompareBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isCollectionListBento ||
           isCollectionListCarousel ||
           isCollectionListEditorial ||
@@ -1910,6 +1959,10 @@ function sectionToNode(
       isIconsWithText ||
       isMulticolumn ||
       isRichText ||
+      isStorytellingVideo ||
+      isContactForm ||
+      isEmailSignup ||
+      isImageCompare ||
       isCollectionLinksSpotlight ||
       isCollectionListBento ||
       isCollectionListCarousel ||
@@ -2334,6 +2387,7 @@ const SECTION_PANEL_BY_LABEL: Record<string, (node: SidebarNode) => SidebarNode>
   'Product highlight': prepareProductHighlightSettingsNode,
   Editorial: prepareEditorialSettingsNode,
   'Editorial: Jumbo text': prepareEditorialJumboSettingsNode,
+  Carousel: prepareStorytellingCarouselSettingsNode,
   'Image compare': prepareImageCompareSettingsNode,
   'Image with text': prepareImageWithTextSettingsNode,
   Logo: prepareStorytellingLogoSettingsNode,
@@ -2472,6 +2526,41 @@ export function settingsNodeForSelection(
     const fields = richTextBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareRichTextBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isStorytellingVideoBlockNodeId(node.id)) {
+    const fields = storytellingVideoBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareStorytellingVideoBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isContactFormBlockNodeId(node.id)) {
+    const fields = contactFormBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareContactFormBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isEmailSignupSectionBlockNodeId(node.id)) {
+    const fields = emailSignupBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareEmailSignupSectionBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isImageCompareSectionBlockNodeId(node.id)) {
+    const fields = imageCompareBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareSectionBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isImageCompareContentGroupNodeId(node.id)) {
+    const fields = imageCompareContentGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareContentGroupSettingsNode({ ...node, fields });
     }
   }
 
@@ -2626,6 +2715,10 @@ export function settingsNodeForSelection(
     isEmailSignupSettingsPanelFields(node.fields)
   ) {
     return prepareEmailSignupSettingsNode(node);
+  }
+
+  if (node.fields?.length && isImageCompareSettingsPanelFields(node.fields)) {
+    return prepareImageCompareSettingsNode(node);
   }
 
   if (
@@ -2792,9 +2885,7 @@ export function settingsNodeForSelection(
   if (node.fields?.length && isEditorialJumboSettingsPanelFields(node.fields)) {
     return prepareEditorialJumboSettingsNode(node);
   }
-  if (node.fields?.length && isImageCompareSettingsPanelFields(node.fields)) {
-    return prepareImageCompareSettingsNode(node);
-  }
+
   if (node.fields?.length && isCollectionLinksSpotlightSettingsPanelFields(node.fields)) {
     return prepareCollectionLinksSpotlightSettingsNode(node);
   }
@@ -2852,6 +2943,41 @@ export function settingsNodeForSelection(
     const fields = richTextBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareRichTextBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isStorytellingVideoBlockNodeId(node.id)) {
+    const fields = storytellingVideoBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareStorytellingVideoBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isContactFormBlockNodeId(node.id)) {
+    const fields = contactFormBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareContactFormBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isEmailSignupSectionBlockNodeId(node.id)) {
+    const fields = emailSignupBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareEmailSignupSectionBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isImageCompareSectionBlockNodeId(node.id)) {
+    const fields = imageCompareBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareSectionBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isImageCompareContentGroupNodeId(node.id)) {
+    const fields = imageCompareContentGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareContentGroupSettingsNode({ ...node, fields });
     }
   }
 

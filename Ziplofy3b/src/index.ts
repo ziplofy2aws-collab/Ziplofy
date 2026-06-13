@@ -116,8 +116,9 @@ import { storeSubdomainRouter } from './routes/store-subdomian.route';
 import storeTermsPolicyRouter from './routes/store-terms-policy.route';
 import { storefrontAuthRouter } from './routes/storefront-auth.route';
 import { storefrontRouter } from './routes/storefront.route';
-import { storefrontSitemapRouter } from './routes/storefront/storefront-sitemap.route';
+import { getStorefrontRobots } from './controllers/storefront-robots.controller';
 import { getStorefrontSitemap } from './controllers/storefront-sitemap.controller';
+import { storefrontSeoRouter } from './routes/storefront/storefront-sitemap.route';
 import { storefrontAmountOffOrderRouter } from './routes/storefront/amount-off-order.route';
 import { storefrontAmountOffProductRouter } from './routes/storefront/amount-off-product.route';
 import { storefrontBuyXGetYRouter } from './routes/storefront/buy-x-get-y.route';
@@ -288,9 +289,10 @@ app.use('/api/checkout-settings', checkoutSettingsRoute);
 app.use('/api/customer-account-settings', customerAccountSettingsRouter);
 app.use("/api/custom-themes", customThemeRouter);
 app.use("/api/all-themes", getAllThemesPublic);
-app.use("/api/storefront", storefrontSitemapRouter);
+app.use("/api/storefront", storefrontSeoRouter);
 app.use("/api/storefront", storefrontRouter);
 app.get('/sitemap.xml', getStorefrontSitemap);
+app.get('/robots.txt', getStorefrontRobots);
 // Routes
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ 

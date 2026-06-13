@@ -108,6 +108,22 @@ import {
   syntheticCollectionListSidebarNode,
 } from './utils/collection-list-sidebar.util';
 import {
+  contactFormSidebarSelectionId,
+  syntheticContactFormSidebarNode,
+} from './utils/contact-form-sidebar.util';
+import {
+  emailSignupSidebarSelectionId,
+  syntheticEmailSignupSidebarNode,
+} from './utils/email-signup-sidebar.util';
+import {
+  imageCompareSidebarSelectionId,
+  syntheticImageCompareSidebarNode,
+} from './utils/image-compare-sidebar.util';
+import {
+  storytellingVideoSidebarSelectionId,
+  syntheticStorytellingVideoSidebarNode,
+} from './utils/storytelling-video-sidebar.util';
+import {
   applyCollectionListLayoutDefaultsToValues,
   isCollectionListCardsLayoutTypePath,
 } from './utils/collection-list-layout-defaults.util';
@@ -447,7 +463,13 @@ const CreateThemePage: React.FC = () => {
   const selectedNode = useMemo(() => {
     const found = findSidebarNode(activeTree, selectedNodeId);
     if (found) return found;
-    return syntheticCollectionListSidebarNode(selectedNodeId, editorSchema);
+    return (
+      syntheticCollectionListSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticContactFormSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticEmailSignupSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticImageCompareSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticStorytellingVideoSidebarNode(selectedNodeId, editorSchema)
+    );
   }, [activeTree, selectedNodeId, editorSchema]);
 
   const settingsNode = useMemo(
@@ -1148,6 +1170,10 @@ const CreateThemePage: React.FC = () => {
       const sidebarNodeId =
         announcementBlockNodeIdFromSelection(nodeId) ??
         collectionListSidebarSelectionId(nodeId) ??
+        contactFormSidebarSelectionId(nodeId) ??
+        emailSignupSidebarSelectionId(nodeId) ??
+        imageCompareSidebarSelectionId(nodeId) ??
+        storytellingVideoSidebarSelectionId(nodeId) ??
         nodeId;
       if (selectedNodeId === sidebarNodeId) {
         setSelectedNodeId('');

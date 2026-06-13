@@ -35,6 +35,9 @@ export interface StorefrontProductItem {
   _id: string;
   title: string;
   description: string;
+  pageTitle?: string;
+  metaDescription?: string;
+  urlHandle?: string;
   category: { _id: string; name: string } | null;
   price: number;
   compareAtPrice?: number;

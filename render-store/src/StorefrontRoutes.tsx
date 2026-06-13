@@ -1,5 +1,7 @@
 import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import { StorefrontCollectionByUrlHandleLoader } from './components/StorefrontCollectionByUrlHandleLoader.tsx';
+import { StorefrontProductSeoLoader } from './components/StorefrontProductSeoLoader.tsx';
+import { StorefrontSeoManager } from './seo/StorefrontSeoManager.tsx';
 import { useLoadedThemeContract } from './themes/RemoteThemeProvider.tsx';
 
 const StorefrontHomeRoute = () => {
@@ -53,12 +55,29 @@ const StorefrontCartRoute = () => {
 
 export const StorefrontRoutes = () => (
   <Router>
+    <StorefrontSeoManager />
     <Routes>
       <Route path="/" element={<StorefrontHomeRoute />} />
       <Route path="/products" element={<StorefrontHomeRoute />} />
-      <Route path="/products/:id" element={<StorefrontProductRoute />} />
+      <Route
+        path="/products/:id"
+        element={
+          <>
+            <StorefrontProductSeoLoader />
+            <StorefrontProductRoute />
+          </>
+        }
+      />
       <Route path="/collection" element={<StorefrontHomeRoute />} />
-      <Route path="/collections/all" element={<StorefrontHomeRoute />} />
+      <Route
+        path="/collections/all"
+        element={
+          <>
+            <StorefrontCollectionByUrlHandleLoader urlHandleOverride="all" />
+            <StorefrontHomeRoute />
+          </>
+        }
+      />
       <Route path="/collections" element={<StorefrontHomeRoute />} />
       <Route
         path="/collections/:urlHandle"

@@ -42,6 +42,7 @@ export function isBlogPostsCarouselSectionType(
 
 export function isBlogPostsCarouselPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  if (field.sidebar === false) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -66,7 +67,7 @@ export function groupBlogPostsCarouselPanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isBlogPostsCarouselPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'General';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -78,7 +79,14 @@ export function groupBlogPostsCarouselPanelFields(
 export function isBlogPostsCarouselSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('postCount') && keys.has('columns') && keys.has('navIcon');
+  return (
+    keys.has('postCount') &&
+    keys.has('columns') &&
+    keys.has('navIcon') &&
+    keys.has('mobileCardSize') &&
+    !keys.has('mobileColumns') &&
+    !keys.has('verticalGap')
+  );
 }
 
 export function prepareBlogPostsCarouselSettingsNode(node: SidebarNode): SidebarNode {

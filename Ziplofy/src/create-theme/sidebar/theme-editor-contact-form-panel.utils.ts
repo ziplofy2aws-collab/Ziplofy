@@ -40,6 +40,7 @@ export function isContactFormSectionType(secType: string | undefined, catalogVar
 
 export function isContactFormPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  if (field.sidebar === false) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -61,7 +62,7 @@ export function sortContactFormPanelFields(fields: EditorFieldDef[]): EditorFiel
 
 export function groupContactFormPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isContactFormPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
     list.push(field);

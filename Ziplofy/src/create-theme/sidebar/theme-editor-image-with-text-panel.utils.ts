@@ -62,7 +62,7 @@ export function sortImageWithTextPanelFields(fields: EditorFieldDef[]): EditorFi
 
 export function groupImageWithTextPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isImageWithTextPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -77,8 +77,10 @@ export function isImageWithTextSettingsPanelFields(fields: EditorFieldDef[]): bo
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   /** Collection links also has imageUrl — do not classify as Image with text. */
   if (keys.has('collectionsPicker') || keys.has('layoutMode')) return false;
-  if (keys.has('buttonLabel')) return true;
-  return keys.has('direction') && keys.has('layoutGap') && keys.has('height') && !keys.has('imageBeforeUrl');
+  if (!keys.has('direction') || !keys.has('layoutGap') || !keys.has('height')) return false;
+  if (keys.has('heading') && !keys.has('colorScheme')) return false;
+  if (keys.has('imageUrl') && !keys.has('colorScheme')) return false;
+  return !keys.has('imageBeforeUrl');
 }
 
 export function prepareImageWithTextSettingsNode(node: SidebarNode): SidebarNode {

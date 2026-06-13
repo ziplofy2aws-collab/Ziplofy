@@ -46,7 +46,7 @@ export function sortEditorialJumboPanelFields(fields: EditorFieldDef[]): EditorF
 
 export function groupEditorialJumboPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isEditorialJumboPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'General';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -58,8 +58,9 @@ export function groupEditorialJumboPanelFields(fields: EditorFieldDef[]): Map<st
 export function isEditorialJumboSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  if (keys.has('headline')) return true;
-  return keys.has('mediaPosition') && keys.has('mediaWidth') && !keys.has('heading') && !keys.has('subheading');
+  if (!keys.has('mediaPosition') || !keys.has('mediaWidth')) return false;
+  if (keys.has('headline') && !keys.has('colorScheme')) return false;
+  return !keys.has('heading') && !keys.has('subheading') && !keys.has('linkLabel');
 }
 
 export function prepareEditorialJumboSettingsNode(node: SidebarNode): SidebarNode {

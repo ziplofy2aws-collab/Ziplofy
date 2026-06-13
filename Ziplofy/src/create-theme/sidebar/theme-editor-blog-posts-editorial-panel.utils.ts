@@ -37,6 +37,7 @@ export function isBlogPostsEditorialSectionType(
 
 export function isBlogPostsEditorialPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  if (field.sidebar === false) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -60,7 +61,7 @@ export function groupBlogPostsEditorialPanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isBlogPostsEditorialPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'General';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -72,7 +73,13 @@ export function groupBlogPostsEditorialPanelFields(
 export function isBlogPostsEditorialSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('postCount') && keys.has('carouselOnMobile') && keys.has('layoutType');
+  return (
+    keys.has('postCount') &&
+    keys.has('carouselOnMobile') &&
+    keys.has('layoutType') &&
+    !keys.has('columns') &&
+    !keys.has('verticalGap')
+  );
 }
 
 export function prepareBlogPostsEditorialSettingsNode(node: SidebarNode): SidebarNode {

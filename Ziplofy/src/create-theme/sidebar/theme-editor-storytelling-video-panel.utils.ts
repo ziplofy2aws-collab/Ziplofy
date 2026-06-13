@@ -66,7 +66,7 @@ export function groupStorytellingVideoPanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isStorytellingVideoPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -79,8 +79,11 @@ export function isStorytellingVideoSettingsPanelFields(fields: EditorFieldDef[])
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   if (keys.has('imageBeforeUrl') || keys.has('imageUrl') || keys.has('logoText')) return false;
-  if (keys.has('direction') && keys.has('layoutGap') && keys.has('caption')) return true;
-  return keys.has('caption') && (keys.has('videoUrl') || keys.has('videoSource')) && keys.has('layoutGap');
+  if (!keys.has('direction') || !keys.has('layoutGap')) return false;
+  if (keys.has('videoSource') && !keys.has('colorScheme')) return false;
+  if (keys.has('caption') && keys.size <= 3) return false;
+  if (keys.has('linkLabel') && !keys.has('colorScheme')) return false;
+  return true;
 }
 
 export function prepareStorytellingVideoSettingsNode(node: SidebarNode): SidebarNode {

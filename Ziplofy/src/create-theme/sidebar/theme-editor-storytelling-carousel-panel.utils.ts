@@ -36,6 +36,7 @@ export function isStorytellingCarouselSectionType(
 
 export function isStorytellingCarouselPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  if (field.sidebar === false) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -58,7 +59,7 @@ export function groupStorytellingCarouselPanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isStorytellingCarouselPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
     list.push(field);

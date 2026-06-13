@@ -16,6 +16,22 @@ import {
   richTextLayoutStructureOrder,
   richTextStructureOrder,
 } from '../../utils/rich-text-sidebar.util';
+import {
+  contactFormLayoutStructureOrder,
+  contactFormStructureOrder,
+} from '../utils/contact-form-sidebar.util';
+import {
+  emailSignupLayoutStructureOrder,
+  emailSignupStructureOrder,
+} from '../utils/email-signup-sidebar.util';
+import {
+  imageCompareLayoutStructureOrder,
+  imageCompareStructureOrder,
+} from '../utils/image-compare-sidebar.util';
+import {
+  storytellingVideoLayoutStructureOrder,
+  storytellingVideoStructureOrder,
+} from '../utils/storytelling-video-sidebar.util';
 import { bottomAlignedHeroStructureOrder } from '../../utils/hero-bottom-aligned.util';
 
 function collectionLinksSpotlightStructureOrder(
@@ -323,6 +339,38 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    const isStorytellingVideo =
+      (sec as { type?: string }).type === 'storytelling-video' || catalogVariant === 'video';
+    if (isStorytellingVideo) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, storytellingVideoStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isContactForm =
+      (sec as { type?: string }).type === 'contact-form' || catalogVariant === 'contact-form';
+    if (isContactForm) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, contactFormStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isEmailSignup =
+      (sec as { type?: string }).type === 'email-signup' || catalogVariant === 'email-signup';
+    if (isEmailSignup) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, emailSignupStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isImageCompare =
+      (sec as { type?: string }).type === 'image-compare' || catalogVariant === 'image-compare';
+    if (isImageCompare) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, imageCompareStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
     const ids: string[] = [];
     if (isHero) {
       ids.push(`template:${tplId}:${secId}:add-block`);
@@ -405,6 +453,42 @@ export function readStructureOrderFromConfig(
       Object.assign(
         out,
         richTextLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+      );
+      continue;
+    }
+
+    const isStorytellingVideo = secType === 'storytelling-video' || catalogVariant === 'video';
+    if (isStorytellingVideo) {
+      Object.assign(
+        out,
+        storytellingVideoLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+      );
+      continue;
+    }
+
+    const isContactForm = secType === 'contact-form' || catalogVariant === 'contact-form';
+    if (isContactForm) {
+      Object.assign(
+        out,
+        contactFormLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+      );
+      continue;
+    }
+
+    const isEmailSignup = secType === 'email-signup' || catalogVariant === 'email-signup';
+    if (isEmailSignup) {
+      Object.assign(
+        out,
+        emailSignupLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+      );
+      continue;
+    }
+
+    const isImageCompare = secType === 'image-compare' || catalogVariant === 'image-compare';
+    if (isImageCompare) {
+      Object.assign(
+        out,
+        imageCompareLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
       );
       continue;
     }

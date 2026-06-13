@@ -43,6 +43,7 @@ export default defineConfig({
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),
       '/sitemap.xml': createDevProxy(),
+      '/robots.txt': createDevProxy(),
     },
     headers: {
       'Content-Security-Policy':
@@ -105,6 +106,7 @@ export default defineConfig({
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),
       '/sitemap.xml': createDevProxy(),
+      '/robots.txt': createDevProxy(),
     },
   },
   test: {

@@ -6,6 +6,7 @@ import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/ed
 import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/structureOrder';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import { LargeLogo } from '../../large-logo/runtime/LargeLogo';
+import { SplitShowcase } from '../../split-showcase/runtime/SplitShowcase';
 import { HERO_MARQUEE_TEXT } from '../../../utils/hero-banner-variants.util';
 import {
   HERO_BOTTOM_ALIGNED_BODY,
@@ -150,7 +151,8 @@ export function Hero({
   const isBottomAligned = catalogVariant === 'hero-bottom-aligned';
   const isMarquee = catalogVariant === 'hero-marquee';
   const isLargeLogo = catalogVariant === 'large-logo';
-  const isClassicHero = !isBottomAligned && !isMarquee && !isLargeLogo;
+  const isSplitShowcase = catalogVariant === 'split-showcase';
+  const isClassicHero = !isBottomAligned && !isMarquee && !isLargeLogo && !isSplitShowcase;
 
   const subtitle = cfgString(config, `${settingsBase}.subtitle`, '');
 
@@ -578,6 +580,10 @@ export function Hero({
 
   if (isLargeLogo) {
     return <LargeLogo sectionId={sectionId} placement={placement} templateId={templateId} />;
+  }
+
+  if (isSplitShowcase) {
+    return <SplitShowcase sectionId={sectionId} placement={placement} templateId={templateId} />;
   }
 
   if (isClassicHero) {

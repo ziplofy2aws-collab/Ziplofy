@@ -6,6 +6,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import ziplofyLogo from '../assets/ziplofy-logo.png';
 import StoreDropdown from '../components/StoreDropdown';
 import { useCustomerTags } from '../contexts/customer-tags.context';
@@ -126,11 +127,13 @@ const ZiplofyNavbar: React.FC = () => {
         <div className="h-full px-3 flex items-center justify-between">
         {/* Left Section - Logo */}
           <div className="flex items-center gap-3">
-            <img
-              src={ziplofyLogo}
-              alt="Ziplofy Logo"
-              className="h-8 w-auto object-contain"
-            />
+            <Link to="/" className="inline-flex shrink-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50" aria-label="Go to home">
+              <img
+                src={ziplofyLogo}
+                alt="Ziplofy Logo"
+                className="h-8 w-auto object-contain"
+              />
+            </Link>
           </div>
 
         {/* Center Section - Search */}

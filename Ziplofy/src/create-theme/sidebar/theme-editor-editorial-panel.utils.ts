@@ -47,7 +47,7 @@ export function sortEditorialPanelFields(fields: EditorFieldDef[]): EditorFieldD
 
 export function groupEditorialPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isEditorialPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'General';
     const list = map.get(group) ?? [];
     list.push(field);

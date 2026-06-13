@@ -126,12 +126,6 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [themeConfig, setThemeConfig] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
-    if (storeFrontMeta?.name) {
-      document.title = storeFrontMeta.name;
-    }
-  }, [storeFrontMeta?.name]);
-
-  useEffect(() => {
     const hostname = window.location.hostname;
     let parts = hostname.split(".");
     let possibleSub = parts.length > 1 ? parts[0].toLowerCase() : "";

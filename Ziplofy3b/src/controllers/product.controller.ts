@@ -629,6 +629,9 @@ export const getProductByIdPublic = asyncErrorHandler(async (req: Request, res: 
     .select({
       title: 1,
       description: 1,
+      pageTitle: 1,
+      metaDescription: 1,
+      urlHandle: 1,
       price: 1,
       compareAtPrice: 1,
       imageUrls: 1,

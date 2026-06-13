@@ -38,6 +38,7 @@ export function isBlogPostsGridSectionType(secType: string | undefined, catalogV
 
 export function isBlogPostsGridPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  if (field.sidebar === false) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -59,7 +60,7 @@ export function sortBlogPostsGridPanelFields(fields: EditorFieldDef[]): EditorFi
 
 export function groupBlogPostsGridPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isBlogPostsGridPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'General';
     const list = map.get(group) ?? [];
     list.push(field);

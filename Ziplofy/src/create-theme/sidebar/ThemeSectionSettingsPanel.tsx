@@ -67,6 +67,14 @@ import {
   isContactFormSettingsPanelFields,
 } from './theme-editor-contact-form-panel.utils';
 import {
+  isContactFormBlockFieldsOnly,
+  isContactFormBlockNodeId,
+} from './theme-editor-contact-form-block-panel.utils';
+import {
+  isEmailSignupSectionBlockFieldsOnly,
+  isEmailSignupSectionBlockNodeId,
+} from './theme-editor-email-signup-block-panel.utils';
+import {
   EMAIL_SIGNUP_PANEL_GROUP_ORDER,
   groupEmailSignupPanelFields,
   isEmailSignupSettingsPanelFields,
@@ -167,7 +175,26 @@ import {
 } from './theme-editor-editorial-panel.utils';
 import { isEditorialJumboSettingsPanelFields } from './theme-editor-editorial-jumbo-panel.utils';
 import {
+  groupImageCompareContentGroupPanelFields,
+  IMAGE_COMPARE_CONTENT_GROUP_PANEL_GROUP_ORDER,
+  isImageCompareContentGroupFieldsOnly,
+  pickImageCompareContentGroupField,
+  prepareImageCompareContentGroupSettingsNode,
+} from './theme-editor-image-compare-content-group-panel.utils';
+import {
+  isImageCompareContentBlockFieldsOnly,
+  isImageCompareContentGroupNodeId,
+  isImageCompareSectionBlockNodeId,
+} from './theme-editor-image-compare-block-panel.utils';
+import {
+  isImageCompareSliderBlockFieldsOnly,
+  isImageCompareSliderBlockNodeId,
+  pickComparisonSliderField,
+  prepareComparisonSliderBlockSettingsNode,
+} from './theme-editor-image-compare-slider-block-panel.utils';
+import {
   groupImageComparePanelFields,
+  IMAGE_COMPARE_LAYOUT_FIELD_ORDER,
   IMAGE_COMPARE_PANEL_GROUP_ORDER,
   isImageCompareSettingsPanelFields,
 } from './theme-editor-image-compare-panel.utils';
@@ -186,6 +213,11 @@ import {
   STORYTELLING_VIDEO_PANEL_GROUP_ORDER,
   isStorytellingVideoSettingsPanelFields,
 } from './theme-editor-storytelling-video-panel.utils';
+import {
+  isStorytellingVideoBlockFieldsOnly,
+  isStorytellingVideoBlockNodeId,
+  isStorytellingVideoMediaBlockNodeId,
+} from './theme-editor-storytelling-video-block-panel.utils';
 import {
   groupFaqPanelFields,
   FAQ_PANEL_GROUP_ORDER,
@@ -1829,7 +1861,7 @@ function LargeLogoAppearanceSettingsGroup({
               />
             );
           }
-          if (field.widget === 'color-scheme') {
+          if (field.widget === 'color-scheme' || key === 'colorScheme') {
             return (
               <ColorSchemeFieldRow
                 key={field.path}
@@ -2156,6 +2188,368 @@ function ContactFormAppearanceSettingsGroup({
         {bgMedia === 'image' && bgImageField ? (
           <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
         ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Comparison slider block: Image 1/2 → Direction → Size → Appearance → Padding. */
+function ComparisonSliderBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const prepared = useMemo(
+    () => prepareComparisonSliderBlockSettingsNode({ id: '', label: 'Comparison slider', kind: 'block', fields }),
+    [fields]
+  );
+  const panelFields = prepared.fields ?? [];
+  const image1 = pickComparisonSliderField(panelFields, 'imageBeforeUrl');
+  const image2 = pickComparisonSliderField(panelFields, 'imageAfterUrl');
+  const direction = pickComparisonSliderField(panelFields, 'sliderDirection');
+  const textOnImages = pickComparisonSliderField(panelFields, 'sliderTextOnImages');
+  const aspectRatio = pickComparisonSliderField(panelFields, 'sliderAspectRatio');
+  const desktopWidth = pickComparisonSliderField(panelFields, 'sliderDesktopWidth');
+  const desktopCustom = pickComparisonSliderField(panelFields, 'sliderDesktopCustomWidth');
+  const mobileWidth = pickComparisonSliderField(panelFields, 'sliderMobileWidth');
+  const mobileCustom = pickComparisonSliderField(panelFields, 'sliderMobileCustomWidth');
+  const inheritScheme = pickComparisonSliderField(panelFields, 'sliderInheritColorScheme');
+  const border = pickComparisonSliderField(panelFields, 'sliderBorderStyle');
+  const cornerRadius = pickComparisonSliderField(panelFields, 'sliderCornerRadius');
+  const paddingTop = pickComparisonSliderField(panelFields, 'sliderPaddingTop');
+  const paddingBottom = pickComparisonSliderField(panelFields, 'sliderPaddingBottom');
+  const paddingLeft = pickComparisonSliderField(panelFields, 'sliderPaddingLeft');
+  const paddingRight = pickComparisonSliderField(panelFields, 'sliderPaddingRight');
+
+  const desktopMode = desktopWidth ? fieldValueAsString(values, desktopWidth) || 'fit' : 'fit';
+  const mobileMode = mobileWidth ? fieldValueAsString(values, mobileWidth) || 'fit' : 'fit';
+
+  const renderCustomWidth = (field: EditorFieldDef) => {
+    const min = field.min ?? 20;
+    const max = field.max ?? 100;
+    const step = field.step ?? 1;
+    const current = numValue(values, field, min);
+    const id = fieldInputId(field.path);
+    return (
+      <div key={field.path} className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
+        <label htmlFor={id} className="text-[13px] text-gray-800">
+          {field.label}
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            id={id}
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            value={current}
+            onChange={(e) => onFieldChange(field.path, 'number', e.target.value)}
+            className="h-1.5 w-[120px] cursor-pointer accent-gray-900"
+          />
+          <div className="flex items-center rounded-lg border border-[#c9cccf] bg-white shadow-sm">
+            <input
+              type="number"
+              min={min}
+              max={max}
+              step={step}
+              value={current}
+              onChange={(e) => onFieldChange(field.path, 'number', e.target.value)}
+              className="w-10 border-0 bg-transparent px-2 py-1.5 text-center text-[13px] text-gray-900 focus:outline-none"
+              aria-label={field.label}
+            />
+            <span className="border-l border-[#e1e1e1] px-2 text-[12px] text-gray-500">%</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <div className="space-y-1 px-1 py-3">
+        {image1 ? <ImagePickerFieldRow field={image1} values={values} onFieldChange={onFieldChange} /> : null}
+        {image2 ? <ImagePickerFieldRow field={image2} values={values} onFieldChange={onFieldChange} /> : null}
+        {direction ? (
+          <SegmentedFieldRow field={direction} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {textOnImages ? (
+          <ToggleSwitchFieldRow field={textOnImages} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+
+      <div className="px-1 py-3">
+        <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Size</h3>
+        <div className="space-y-1">
+          {aspectRatio ? (
+            <InlineSelectFieldRow field={aspectRatio} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {desktopWidth ? (
+            <SegmentedFieldRow field={desktopWidth} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {desktopMode === 'custom' && desktopCustom ? renderCustomWidth(desktopCustom) : null}
+          {mobileWidth ? (
+            <SegmentedFieldRow field={mobileWidth} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {mobileMode === 'custom' && mobileCustom ? renderCustomWidth(mobileCustom) : null}
+        </div>
+      </div>
+
+      <div className="px-1 py-3">
+        <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+        <div className="space-y-1">
+          {inheritScheme ? (
+            <ToggleSwitchFieldRow field={inheritScheme} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {border ? <SegmentedFieldRow field={border} values={values} onFieldChange={onFieldChange} /> : null}
+          {cornerRadius ? (
+            <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+        </div>
+      </div>
+
+      <div className="px-1 py-3">
+        <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Padding</h3>
+        <div className="space-y-1">
+          {paddingTop ? <SliderFieldRow field={paddingTop} values={values} onFieldChange={onFieldChange} /> : null}
+          {paddingBottom ? (
+            <SliderFieldRow field={paddingBottom} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {paddingLeft ? <SliderFieldRow field={paddingLeft} values={values} onFieldChange={onFieldChange} /> : null}
+          {paddingRight ? (
+            <SliderFieldRow field={paddingRight} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Image compare — Content group: Layout → Size → Appearance → Block link → Padding. */
+function ImageCompareContentGroupSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const prepared = useMemo(
+    () => prepareImageCompareContentGroupSettingsNode({ id: '', label: 'Content', kind: 'block', fields }),
+    [fields]
+  );
+  const panelFields = prepared.fields ?? [];
+  const grouped = useMemo(() => groupImageCompareContentGroupPanelFields(panelFields), [panelFields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      {IMAGE_COMPARE_CONTENT_GROUP_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'Layout') {
+          const direction = pickImageCompareContentGroupField(panelFields, 'contentDirection');
+          const alignment = pickImageCompareContentGroupField(panelFields, 'contentAlignment');
+          const position = pickImageCompareContentGroupField(panelFields, 'contentPosition');
+          const layoutGap = pickImageCompareContentGroupField(panelFields, 'contentGap');
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {direction ? (
+                  <SegmentedFieldRow field={direction} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {alignment ? (
+                  <HeadingAlignmentFieldRow field={alignment} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {position ? (
+                  <InlineSelectFieldRow field={position} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {layoutGap ? (
+                  <SliderFieldRow field={layoutGap} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Size') {
+          const width = pickImageCompareContentGroupField(panelFields, 'contentWidth');
+          const widthCustom = pickImageCompareContentGroupField(panelFields, 'contentCustomWidth');
+          const mobileWidth = pickImageCompareContentGroupField(panelFields, 'contentMobileWidth');
+          const mobileWidthCustom = pickImageCompareContentGroupField(panelFields, 'contentMobileCustomWidth');
+          const height = pickImageCompareContentGroupField(panelFields, 'contentHeight');
+          const heightCustom = pickImageCompareContentGroupField(panelFields, 'contentCustomHeight');
+          const widthMode = width ? fieldValueAsString(values, width) || 'fit' : 'fit';
+          const mobileWidthMode = mobileWidth ? fieldValueAsString(values, mobileWidth) || 'fit' : 'fit';
+          const heightMode = height ? fieldValueAsString(values, height) || 'fit' : 'fit';
+
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {width ? (
+                  <>
+                    <SegmentedFieldRow field={width} values={values} onFieldChange={onFieldChange} />
+                    {widthMode === 'custom' && widthCustom ? (
+                      <SliderFieldRow field={widthCustom} values={values} onFieldChange={onFieldChange} />
+                    ) : null}
+                  </>
+                ) : null}
+                {mobileWidth ? (
+                  <>
+                    <SegmentedFieldRow field={mobileWidth} values={values} onFieldChange={onFieldChange} />
+                    {mobileWidthMode === 'custom' && mobileWidthCustom ? (
+                      <SliderFieldRow field={mobileWidthCustom} values={values} onFieldChange={onFieldChange} />
+                    ) : null}
+                  </>
+                ) : null}
+                {height ? (
+                  <>
+                    <SegmentedFieldRow field={height} values={values} onFieldChange={onFieldChange} />
+                    {heightMode === 'custom' && heightCustom ? (
+                      <SliderFieldRow field={heightCustom} values={values} onFieldChange={onFieldChange} />
+                    ) : null}
+                  </>
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Appearance') {
+          const inheritColorScheme = pickImageCompareContentGroupField(panelFields, 'contentInheritColorScheme');
+          const bgMediaField = pickImageCompareContentGroupField(panelFields, 'contentBackgroundMedia');
+          const bgImageField = pickImageCompareContentGroupField(panelFields, 'contentBackgroundImageUrl');
+          const borderStyleField = pickImageCompareContentGroupField(panelFields, 'contentBorderStyle');
+          const cornerRadius = pickImageCompareContentGroupField(panelFields, 'contentCornerRadius');
+          const backgroundOverlay = pickImageCompareContentGroupField(panelFields, 'contentBackgroundOverlay');
+          const bgMedia = bgMediaField ? fieldValueAsString(values, bgMediaField) || 'none' : 'none';
+
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {inheritColorScheme ? (
+                  <ToggleSwitchFieldRow field={inheritColorScheme} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {bgMediaField ? (
+                  <InlineSelectFieldRow field={bgMediaField} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {bgMedia === 'image' && bgImageField ? (
+                  <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {borderStyleField ? (
+                  <SegmentedFieldRow field={borderStyleField} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {cornerRadius ? (
+                  <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {backgroundOverlay ? (
+                  <ToggleSwitchFieldRow field={backgroundOverlay} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Block link') {
+          const linkUrl = pickImageCompareContentGroupField(panelFields, 'contentLinkUrl');
+          const openInNewTab = pickImageCompareContentGroupField(panelFields, 'contentOpenInNewTab');
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {linkUrl ? <LinkFieldRow field={linkUrl} values={values} onFieldChange={onFieldChange} /> : null}
+                {openInNewTab ? (
+                  <ToggleSwitchFieldRow field={openInNewTab} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
+/** Heading / text / button blocks (section settings-backed). */
+function ImageCompareSectionBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  return (
+    <div className="px-1 py-3">
+      <div className="space-y-1">
+        {fields.map((field) => (
+          <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Heading / text / email field blocks (section settings-backed). */
+function EmailSignupSectionBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  return (
+    <div className="px-1 py-3">
+      <div className="space-y-1">
+        {fields.map((field) => (
+          <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Text / submit button blocks (section settings-backed). */
+function ContactFormBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  return (
+    <div className="px-1 py-3">
+      <div className="space-y-1">
+        {fields.map((field) => (
+          <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
       </div>
     </div>
   );
@@ -5998,6 +6392,93 @@ function LargeLogoBlockGroupedSettingsPanel({
   );
 }
 
+/** Video block: Source → URL / cover image. */
+function StorytellingVideoMediaBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const sourceField = fields.find((f) => f.path.endsWith('videoSource'));
+  const urlField = fields.find((f) => f.path.endsWith('videoUrl'));
+  const coverField = fields.find((f) => f.path.endsWith('coverImageUrl'));
+  const source = sourceField ? fieldValueAsString(values, sourceField) || 'url' : 'url';
+
+  return (
+    <div className="px-1 py-3">
+      <div className="space-y-1">
+        {sourceField ? (
+          <SegmentedFieldRow field={sourceField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {source === 'url' && urlField ? (
+          <ThemeEditorLinkField
+            id={fieldInputId(urlField.path)}
+            label={urlField.label}
+            value={fieldValueAsString(values, urlField)}
+            placeholder={urlField.placeholder ?? 'YouTube or Vimeo URL'}
+            onChange={(next) => onFieldChange(urlField.path, 'text', next)}
+            showOpenLink
+          />
+        ) : null}
+        {coverField ? (
+          <ImagePickerFieldRow field={coverField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Caption text / button blocks (section settings-backed). */
+function StorytellingVideoContentBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  return (
+    <div className="px-1 py-3">
+      <div className="space-y-1">
+        {fields.map((field) => {
+          const key = field.path.split('.').pop() ?? '';
+          if (key === 'caption') {
+            return (
+              <DefaultFieldRow
+                key={field.path}
+                field={{ ...field, type: 'textarea' }}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (key === 'linkUrl') {
+            return (
+              <ThemeEditorLinkField
+                key={field.path}
+                id={fieldInputId(field.path)}
+                label={field.label}
+                value={fieldValueAsString(values, field)}
+                placeholder={field.placeholder ?? 'Paste a link or search'}
+                onChange={(next) => onFieldChange(field.path, 'text', next)}
+                showOpenLink
+                showDynamicSource
+              />
+            );
+          }
+          return (
+            <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Storytelling Video: Layout → Size → Appearance → Padding → Custom CSS. */
 function StorytellingVideoGroupedSettingsPanel({
   fields,
@@ -8394,6 +8875,69 @@ function ImageWithTextGroupedSettingsPanel({
   );
 }
 
+function ImageCompareLayoutSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const layoutRank = (path: string) => {
+    const key = path.split('.').pop() ?? '';
+    const idx = IMAGE_COMPARE_LAYOUT_FIELD_ORDER.indexOf(
+      key as (typeof IMAGE_COMPARE_LAYOUT_FIELD_ORDER)[number]
+    );
+    return idx >= 0 ? idx : 99;
+  };
+  const ordered = [...fields].sort((a, b) => layoutRank(a.path) - layoutRank(b.path));
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Layout</h3>
+      <div className="space-y-1">
+        {ordered.map((field) => {
+          const key = field.path.split('.').pop() ?? '';
+          if (field.widget === 'segmented') {
+            return (
+              <SegmentedFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'toggle' || key === 'verticalOnMobile') {
+            return (
+              <ToggleSwitchFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'slider') {
+            return (
+              <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+            );
+          }
+          return (
+            <InlineSelectFieldRow
+              key={field.path}
+              field={field}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Image compare: Layout → Size → Appearance → Padding → Custom CSS. */
 function ImageCompareGroupedSettingsPanel({
   fields,
@@ -8414,7 +8958,7 @@ function ImageCompareGroupedSettingsPanel({
 
         if (label === 'Layout') {
           return (
-            <SplitShowcaseLayoutSettingsGroup
+            <ImageCompareLayoutSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -8436,7 +8980,7 @@ function ImageCompareGroupedSettingsPanel({
 
         if (label === 'Appearance') {
           return (
-            <ContactFormAppearanceSettingsGroup
+            <LargeLogoAppearanceSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -9449,22 +9993,52 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isLargeLogoPanel =
     node.label === 'Large logo' || isLargeLogoSettingsPanelFields(fields);
   const isSplitShowcasePanel =
-    node.label === 'Split showcase' || isSplitShowcaseSettingsPanelFields(fields);
+    node.kind !== 'block' &&
+    (node.label === 'Split showcase' || isSplitShowcaseSettingsPanelFields(fields));
   const isFooterUtilitiesPanel =
     node.label === 'Policies and links' ||
     node.label === 'Utilities' ||
     isFooterUtilitiesSettingsPanelFields(fields);
   const isFaqPanel = node.label === 'FAQ' || isFaqSettingsPanelFields(fields);
+  const isContactFormBlockPanel =
+    node.kind === 'block' &&
+    (isContactFormBlockNodeId(node.id) ||
+      (fields.length > 0 && isContactFormBlockFieldsOnly(fields)));
   const isContactFormPanel =
     !isHeroSectionSettingsNode(node) &&
     !isFaqPanel &&
+    !isContactFormBlockPanel &&
+    node.kind !== 'block' &&
     (node.label === 'Contact form' || isContactFormSettingsPanelFields(fields));
+  const isEmailSignupSectionBlockPanel =
+    node.kind === 'block' &&
+    (isEmailSignupSectionBlockNodeId(node.id) ||
+      (fields.length > 0 && isEmailSignupSectionBlockFieldsOnly(fields)));
+  const isImageCompareSliderBlockPanel =
+    node.kind === 'block' &&
+    (isImageCompareSliderBlockNodeId(node.id) ||
+      (fields.length > 0 && isImageCompareSliderBlockFieldsOnly(fields)));
+  const isImageCompareContentGroupPanel =
+    isImageCompareContentGroupNodeId(node.id) ||
+    (fields.length > 0 && isImageCompareContentGroupFieldsOnly(fields));
+  const isImageCompareContentBlockPanel =
+    node.kind === 'block' &&
+    !isImageCompareSliderBlockPanel &&
+    !isImageCompareContentGroupPanel &&
+    (isImageCompareSectionBlockNodeId(node.id) ||
+      (fields.length > 0 && isImageCompareContentBlockFieldsOnly(fields)));
   const isEmailSignupPanel =
     !isHeroSectionSettingsNode(node) &&
+    !isEmailSignupSectionBlockPanel &&
+    !isImageCompareSliderBlockPanel &&
+    !isImageCompareContentGroupPanel &&
+    !isImageCompareContentBlockPanel &&
     node.kind !== 'block' &&
     (node.label === 'Email signup' || isEmailSignupSettingsPanelFields(fields));
   const isCustomSectionPanel =
     !isHeroSectionSettingsNode(node) &&
+    !isImageCompareSettingsPanelFields(fields) &&
+    node.kind !== 'block' &&
     (node.label === 'Custom section' || isCustomSectionSettingsPanelFields(fields));
   const isFeaturedProductPanel =
     node.label === 'Featured product' || isFeaturedProductSettingsPanelFields(fields);
@@ -9528,7 +10102,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isEditorialJumboPanel =
     node.label === 'Editorial: Jumbo text' || isEditorialJumboSettingsPanelFields(fields);
   const isImageComparePanel =
-    node.label === 'Image compare' || isImageCompareSettingsPanelFields(fields);
+    !isImageCompareSliderBlockPanel &&
+    !isImageCompareContentGroupPanel &&
+    !isImageCompareContentBlockPanel &&
+    node.kind !== 'block' &&
+    (node.label === 'Image compare' || isImageCompareSettingsPanelFields(fields));
   const isCollectionLinksSpotlightPanel =
     node.label === 'Collection links: Spotlight' ||
     node.label === 'Collection links: Text' ||
@@ -9572,14 +10150,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           f.path.endsWith('vimeoUrl') ||
           f.path.endsWith('customUrl')
       ));
-  const isEmailSignupBlockPanel =
+  const isEmailSignupFooterBlockPanel =
     node.kind === 'block' &&
-    (node.label === 'Email signup' ||
-      fields.some(
-        (f) =>
-          f.path.endsWith('signupsCustomerProfiles') ||
-          f.path.endsWith('placeholder')
-      ));
+    !isEmailSignupSectionBlockPanel &&
+    (fields.some((f) => f.path.endsWith('signupsCustomerProfiles')) ||
+      fields.some((f) => f.path.endsWith('placeholder') && f.path.includes('.blocks.')));
   const isLargeLogoBlockPanel =
     node.kind === 'block' && fields.length > 0 && isLargeLogoBlockPanelFields(fields);
   const isStorytellingLogoPanel =
@@ -9588,11 +10163,18 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isLargeLogoBlockPanel &&
     !isCopyrightBlockPanel &&
     !isSocialLinksBlockPanel &&
-    !isEmailSignupBlockPanel &&
+    !isEmailSignupFooterBlockPanel &&
     ((node.kind === 'section' && node.label === 'Logo') ||
       isStorytellingLogoSettingsPanelFields(fields));
   const isStorytellingVideoPanel =
     node.label === 'Video' || isStorytellingVideoSettingsPanelFields(fields);
+  const isStorytellingVideoBlockPanel =
+    node.kind === 'block' &&
+    (isStorytellingVideoBlockNodeId(node.id) ||
+      (fields.length > 0 && isStorytellingVideoBlockFieldsOnly(fields)));
+  const isStorytellingVideoMediaBlockPanel =
+    isStorytellingVideoMediaBlockNodeId(node.id) ||
+    (isStorytellingVideoBlockPanel && fields.some((f) => f.path.endsWith('videoSource')));
   const isIconsWithTextPanel =
     node.label === 'Icons with text' || isIconsWithTextSettingsPanelFields(fields);
   const isIconsWithTextBlockPanel =
@@ -9677,6 +10259,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.label === 'Divider' || isDividerSettingsPanelFields(fields);
   const isHeadingBlockPanel =
     !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
     node.kind === 'block' &&
     (node.label === 'Heading' ||
       isHeadingBlockNodeId(node.id) ||
@@ -9693,11 +10276,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       isFaqAccordionRowPanelFields(fields));
   const isFaqAccordionRowTextBlockPanel =
     !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
     node.kind === 'block' &&
     isFaqAccordionRowTextNestedNodeId(node.id) &&
     (node.label === 'Text' || isTextBlockPanelFields(fields));
   const isHeroTextBlockPanel =
     !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
     node.kind === 'block' &&
     isHeroTextBlockNodeId(node.id) &&
@@ -9718,6 +10303,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isIconsWithTextBlockPanel &&
     !isMulticolumnBlockPanel &&
     !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
     !isHeroButtonBlockPanel &&
     (isAnnouncementBlockNodeId(node.id) ||
       node.label === 'Announcement' ||
@@ -9775,6 +10361,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isIconsWithTextBlockPanel &&
     !isMulticolumnBlockPanel &&
     !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
     !isAnnouncementBlockPanel &&
     !isAnnouncementBarPanel &&
     !isFooterPanel &&
@@ -9948,7 +10535,31 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
               </div>
             </div>
           </div>
-        ) : isEmailSignupBlockPanel ? (
+        ) : isEmailSignupSectionBlockPanel ? (
+          <EmailSignupSectionBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isImageCompareContentGroupPanel ? (
+          <ImageCompareContentGroupSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isImageCompareSliderBlockPanel ? (
+          <ComparisonSliderBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isImageCompareContentBlockPanel ? (
+          <ImageCompareSectionBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isEmailSignupFooterBlockPanel ? (
           <EmailSignupBlockSettingsPanel
             fields={fields}
             values={values}
@@ -9984,6 +10595,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <LargeLogoGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isSplitShowcasePanel ? (
           <SplitShowcaseGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isContactFormBlockPanel ? (
+          <ContactFormBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ) : isContactFormPanel ? (
           <ContactFormGroupedSettingsPanel
             fields={fields}
@@ -9992,6 +10609,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isEmailSignupPanel ? (
           <EmailSignupGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isImageComparePanel ? (
+          <ImageCompareGroupedSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}
@@ -10169,12 +10792,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
-        ) : isImageComparePanel ? (
-          <ImageCompareGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
         ) : isImageWithTextPanel ? (
           <ImageWithTextGroupedSettingsPanel
             fields={fields}
@@ -10189,6 +10806,18 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isStorytellingLogoPanel ? (
           <StorytellingLogoGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isStorytellingVideoMediaBlockPanel ? (
+          <StorytellingVideoMediaBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isStorytellingVideoBlockPanel ? (
+          <StorytellingVideoContentBlockSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}
