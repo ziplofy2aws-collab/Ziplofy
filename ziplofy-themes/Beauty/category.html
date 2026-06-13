@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELORIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/category.css" />
+</head>
+
+<body class="sb-page-category">
+
+  <header class="sb-header sb-header--inner" role="banner">
+    <div class="sb-header__announce" role="region" aria-label="Promotional offers">
+      <div class="sb-header__announce-inner">
+        <p class="sb-header__announce-text">
+          Buy Any 3 Products at ₹799 only! Use Code : BUY3 | Get 30% Cashback on every order |
+          <a href="index.html" class="sb-header__announce-link">Click to Shop <i class="fa-solid fa-arrow-right-long"
+              aria-hidden="true"></i></a>
+        </p>
+      </div>
+    </div>
+
+    <div class="sb-header__main">
+      <div class="sb-header__main-inner">
+        <a href="index.html" class="sb-header__logo" aria-label="Eloria Beauty home">
+          <img src="assets/img/logo.png" alt="Eloria Beauty" width="120" height="48" decoding="async" />
+        </a>
+
+        <nav class="sb-header__menu" id="sb-primary-nav" aria-label="Main navigation">
+          <button type="button" class="sb-header__menu-close" data-sb-menu-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+          <a href="category.html" class="sb-header__menu-link">FACE</a>
+          <a href="category.html" class="sb-header__menu-link">EYE</a>
+          <a href="category.html" class="sb-header__menu-link">LIPS</a>
+          <a href="category.html" class="sb-header__menu-link">NAIL</a>
+          <a href="category.html" class="sb-header__menu-link">BRUSHES &amp; TOOLS</a>
+          <a href="category.html" class="sb-header__menu-link">NEW ARRIVALS</a>
+          <a href="category.html" class="sb-header__menu-link">BRIDAL BUNDLE</a>
+          <a href="category.html" class="sb-header__menu-link">SKIN CARE</a>
+        </nav>
+
+        <div class="sb-header__utilities">
+          <form class="sb-header__search" role="search" action="#" method="get">
+            <label class="visually-hidden" for="sb-header-search-cat">Search products</label>
+            <i class="fa-solid fa-magnifying-glass sb-header__search-icon" aria-hidden="true"></i>
+            <input id="sb-header-search-cat" type="search" name="q" placeholder="Search For Eyeshad"
+              autocomplete="off" />
+          </form>
+
+          <div class="sb-header__actions">
+            <a href="#" class="sb-header__action sb-header__action--rewards" aria-label="Rewards account">
+              <span class="sb-header__action-icon" aria-hidden="true">
+                <i class="fa-regular fa-circle-user"></i>
+                <i class="fa-solid fa-bolt sb-header__bolt"></i>
+              </span>
+            </a>
+            <a href="#" class="sb-header__action" aria-label="Track order">
+              <i class="fa-solid fa-truck" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sb-header__action" aria-label="Shopping cart">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <button type="button" class="sb-header__toggle" data-sb-menu-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="sb-primary-nav">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="sb-header__overlay" data-sb-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="sb-shop-hero" aria-label="Shop promotion">
+      <div class="sb-shop-hero__inner">
+        <a href="#" class="sb-shop-hero__link">
+          <img src="assets/img/shop-banner.png" alt="Flat 30% off on orders above ₹999 — Code SAVE30" width="1400"
+            height="360" decoding="async" />
+        </a>
+      </div>
+    </section>
+
+    <section class="sb-shop" aria-label="Shop products">
+      <div class="sb-shop__inner">
+        <nav class="sb-shop__breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="sb-shop__breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Face</span>
+        </nav>
+
+        <div class="sb-shop__layout">
+          <aside class="sb-shop__sidebar" id="sb-shop-filters-drawer" aria-label="Filters" data-sb-shop-filters>
+            <div class="sb-shop__filter-group">
+              <button type="button" class="sb-shop__filter" data-sb-filter-toggle aria-expanded="false"
+                aria-controls="sb-filter-price">
+                <span><i class="fa-solid fa-indian-rupee-sign" aria-hidden="true"></i> PRICE</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="sb-shop__filter-panel" id="sb-filter-price" hidden>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="price" value="under-300" />
+                  Under ₹300</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="price" value="300-400" />
+                  ₹300 – ₹400</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="price" value="400-500" />
+                  ₹400 – ₹500</label>
+              </div>
+            </div>
+
+            <div class="sb-shop__filter-group">
+              <button type="button" class="sb-shop__filter" data-sb-filter-toggle aria-expanded="false"
+                aria-controls="sb-filter-coverage">
+                <span><i class="fa-solid fa-droplet" aria-hidden="true"></i> COVERAGE</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="sb-shop__filter-panel" id="sb-filter-coverage" hidden>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="coverage" value="light" />
+                  Light</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="coverage" value="medium" />
+                  Medium</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="coverage" value="full" />
+                  Full</label>
+              </div>
+            </div>
+
+            <div class="sb-shop__filter-group">
+              <button type="button" class="sb-shop__filter" data-sb-filter-toggle aria-expanded="false"
+                aria-controls="sb-filter-finish">
+                <span><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> FINISH</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="sb-shop__filter-panel" id="sb-filter-finish" hidden>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="finish" value="matte" />
+                  Matte</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="finish" value="dewy" />
+                  Dewy</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="finish" value="natural" />
+                  Natural</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="finish" value="luminous" />
+                  Luminous</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="finish" value="shimmer" />
+                  Shimmer</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="finish" value="cream" />
+                  Cream</label>
+              </div>
+            </div>
+
+            <div class="sb-shop__filter-group">
+              <button type="button" class="sb-shop__filter" data-sb-filter-toggle aria-expanded="false"
+                aria-controls="sb-filter-color">
+                <span><i class="fa-solid fa-palette" aria-hidden="true"></i> COLOR</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="sb-shop__filter-panel" id="sb-filter-color" hidden>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="color" value="neutral" />
+                  Neutral</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="color" value="beige" />
+                  Beige</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="color" value="pink" />
+                  Pink</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="color" value="warm" />
+                  Warm</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="color" value="gold" />
+                  Gold</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="color" value="red" />
+                  Red</label>
+                <label class="sb-shop__filter-option"><input type="checkbox" name="color" value="rose" />
+                  Rose</label>
+              </div>
+            </div>
+
+            <button type="button" class="sb-shop__clear" data-sb-filter-clear hidden>
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i> Clear all filters
+            </button>
+          </aside>
+
+          <div class="sb-shop__main">
+            <div class="sb-shop__mobile-bar" aria-label="Filter and sort">
+              <button type="button" class="sb-shop__mobile-bar-btn" data-sb-mobile-filter aria-expanded="false"
+                aria-controls="sb-shop-filters-drawer">
+                Filter
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sb-shop__mobile-bar-btn" data-sb-mobile-sort>
+                Sort By
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <p class="sb-shop__mobile-count"><span data-sb-shop-count>9</span> items</p>
+
+            <div class="sb-shop__toolbar">
+              <p class="sb-shop__count"><span data-sb-shop-count>9</span> ITEMS</p>
+              <div class="sb-shop__sort">
+                <label class="sb-shop__sort-label" for="sb-shop-sort"><i class="fa-solid fa-arrow-down-wide-short"
+                    aria-hidden="true"></i> Sort By</label>
+                <div class="sb-shop__sort-wrap">
+                  <select id="sb-shop-sort" class="sb-shop__sort-select" aria-label="Sort products">
+                    <option>Featured</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Newest</option>
+                    <option>Best Selling</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
+
+            <p class="sb-shop__empty" data-sb-shop-empty hidden>No products match your filters. Try adjusting your
+              selection.</p>
+
+            <div class="sb-shop__grid" data-sb-shop-grid>
+              <article class="sb-shop-card sb-bs-card" data-product-id="awaken-eyeshadow-palette" data-sb-shop-card
+                data-price-num="349" data-price="300-400" data-coverage="medium" data-finish="shimmer"
+                data-color="warm">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label sb-bs-card__ribbon-label--new">New</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=awaken-eyeshadow-palette" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <span class="sb-bs-card__stock"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Back In
+                      Stock</span>
+                    <img src="assets/img/BS-5.png" alt="Awaken Eyeshadow Palette" width="280" height="280"
+                      loading="lazy" decoding="async" />
+                    <span class="sb-bs-card__shades">2 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">Awaken Your Look</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Awaken Eyeshadow Palette</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.95 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 21 Reviews</p>
+                    <p class="sb-bs-card__price">₹349</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹227 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="chrome-glow-stick" data-sb-shop-card
+                data-price-num="299" data-price="under-300" data-coverage="light" data-finish="dewy" data-color="pink">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=chrome-glow-stick" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <span class="sb-bs-card__stock"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Back In
+                      Stock</span>
+                    <img src="assets/img/BS-2.png" alt="Chrome Glow Stick" width="280" height="280" loading="lazy"
+                      decoding="async" />
+                    <span class="sb-bs-card__shades">5 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">Matte + Chrome</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Chrome Glow Stick</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.88 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 64 Reviews</p>
+                    <p class="sb-bs-card__price">₹299</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹194 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="airbrush-foundation" data-sb-shop-card
+                data-price-num="499" data-price="400-500" data-coverage="full" data-finish="natural" data-color="beige">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=airbrush-foundation" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <img src="assets/img/BS-3.png" alt="Airbrush Foundation" width="280" height="280" loading="lazy"
+                      decoding="async" />
+                    <span class="sb-bs-card__shades">6 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">With Hyaluronic Acid</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Airbrush Foundation</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.9 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 161 Reviews</p>
+                    <p class="sb-bs-card__price">
+                      <span class="sb-bs-card__price-old">₹529</span> ₹499 <span class="sb-bs-card__price-off">6%
+                        Off</span>
+                    </p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹324 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="glow-up-makeup-fixer" data-sb-shop-card
+                data-price-num="369" data-price="300-400" data-coverage="light" data-finish="dewy" data-color="neutral">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=glow-up-makeup-fixer" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <span class="sb-bs-card__stock"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Back In
+                      Stock</span>
+                    <img src="assets/img/BS-1.png" alt="Glow Up Makeup Fixer" width="280" height="280" loading="lazy"
+                      decoding="async" />
+                    <span class="sb-bs-card__shades">1 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">Lock the Look</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Glow Up Makeup Fixer</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.95 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 22 Reviews</p>
+                    <p class="sb-bs-card__price">₹369</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹240 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="highlighting-primer" data-sb-shop-card
+                data-price-num="429" data-price="400-500" data-coverage="light" data-finish="luminous"
+                data-color="gold">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=highlighting-primer" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <img src="assets/img/BS-2.png" alt="Highlighting Primer" width="280" height="280" loading="lazy"
+                      decoding="async" />
+                    <span class="sb-bs-card__shades">3 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">Glass-Skin Finish</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Highlighting Primer</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.78 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 328 Reviews</p>
+                    <p class="sb-bs-card__price">₹429</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹279 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="perfect-liquid-concealer" data-sb-shop-card
+                data-price-num="249" data-price="under-300" data-coverage="medium" data-finish="natural"
+                data-color="beige">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=perfect-liquid-concealer" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <img src="assets/img/BS-4.png" alt="Perfect Liquid Concealer" width="280" height="280"
+                      loading="lazy" decoding="async" />
+                    <span class="sb-bs-card__shades">8 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">With Jojoba Oil</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Perfect Liquid Concealer</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.82 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 274 Reviews</p>
+                    <p class="sb-bs-card__price">₹249</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹162 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="multi-use-cream-stick" data-sb-shop-card
+                data-price-num="319" data-price="300-400" data-coverage="medium" data-finish="cream" data-color="rose">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label sb-bs-card__ribbon-label--new">New</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=multi-use-cream-stick" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <img src="assets/img/BS-6.png" alt="Multi-Use Cream Stick" width="280" height="280" loading="lazy"
+                      decoding="async" />
+                    <span class="sb-bs-card__shades">4 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">Multi-use</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Multi-Use Cream Stick</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.86 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 47 Reviews</p>
+                    <p class="sb-bs-card__price">₹319</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹207 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="luminous-blush-stick" data-sb-shop-card
+                data-price-num="299" data-price="under-300" data-coverage="light" data-finish="dewy" data-color="pink">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=luminous-blush-stick" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <span class="sb-bs-card__stock"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Back In
+                      Stock</span>
+                    <img src="assets/img/BS-6.png" alt="Luminous Blush Stick" width="280" height="280" loading="lazy"
+                      decoding="async" />
+                    <span class="sb-bs-card__shades">8 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">Natural Flush</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Luminous Blush Stick</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.91 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 89 Reviews</p>
+                    <p class="sb-bs-card__price">₹299</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹194 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+
+              <article class="sb-shop-card sb-bs-card" data-product-id="velvet-matte-lipstick" data-sb-shop-card
+                data-price-num="349" data-price="300-400" data-coverage="full" data-finish="matte" data-color="red">
+                <div class="sb-bs-card__ribbon">
+                  <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                  <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+                </div>
+                <a href="product.html?id=velvet-matte-lipstick" class="sb-shop-card__link">
+                  <div class="sb-bs-card__media">
+                    <img src="assets/img/BS-5.png" alt="Velvet Matte Lipstick" width="280" height="280" loading="lazy"
+                      decoding="async" />
+                    <span class="sb-bs-card__shades">12 Shades</span>
+                  </div>
+                  <p class="sb-bs-card__tagline">Rich Matte Finish</p>
+                  <div class="sb-bs-card__body">
+                    <h2 class="sb-bs-card__name">Velvet Matte Lipstick</h2>
+                    <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.88 <span
+                        class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                        aria-hidden="true"></i> 156 Reviews</p>
+                    <p class="sb-bs-card__price">₹349</p>
+                    <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹227 with coupon
+                    </p>
+                  </div>
+                </a>
+                <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping"
+                    aria-hidden="true"></i>
+                  ADD TO CART</button>
+              </article>
+            </div>
+          </div>
+        </div>
+        <div class="sb-shop__filter-backdrop" data-sb-filter-backdrop hidden aria-hidden="true"></div>
+        <p class="sb-shop__shipping-bar" role="status">
+          Add products worth ₹399 for <strong>Free Shipping</strong>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <section class="sb-cta-bar" aria-label="Newsletter, mobile app, and customer support">
+    <div class="sb-cta-bar__inner">
+      <div class="sb-cta-bar__col">
+        <p class="sb-cta-bar__lead">
+          <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+          Get special discount on your inbox
+        </p>
+        <form class="sb-cta-bar__form" action="#" method="post">
+          <label class="visually-hidden" for="sb-cta-email-cat">Your email</label>
+          <input id="sb-cta-email-cat" type="email" name="email" placeholder="Your Email" autocomplete="email" />
+          <button type="submit" class="sb-cta-bar__send"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            SEND</button>
+        </form>
+      </div>
+      <div class="sb-cta-bar__col">
+        <p class="sb-cta-bar__lead sb-cta-bar__lead--caps">
+          <i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
+          Experience the Nykaa Mobile App
+        </p>
+        <div class="sb-cta-bar__apps">
+          <a href="#" class="sb-cta-bar__app" aria-label="Get it on Google Play">
+            <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+            <span class="sb-cta-bar__app-text"><small>GET IT ON</small> Google Play</span>
+          </a>
+          <a href="#" class="sb-cta-bar__app" aria-label="Download on the App Store">
+            <i class="fa-brands fa-apple" aria-hidden="true"></i>
+            <span class="sb-cta-bar__app-text"><small>Download on the</small> App Store</span>
+          </a>
+        </div>
+      </div>
+      <div class="sb-cta-bar__col">
+        <p class="sb-cta-bar__lead sb-cta-bar__lead--caps">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+          For any help, you may call us at
+        </p>
+        <p class="sb-cta-bar__phone"><a href="tel:18002674444">1800-267-4444</a></p>
+        <p class="sb-cta-bar__hours">(All days, 8 AM to 10 PM)</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="sb-footer" aria-label="Site footer">
+    <div class="sb-footer__inner">
+      <div class="sb-footer__top">
+        <div class="sb-footer__col sb-footer__col--brand">
+          <a href="index.html" class="sb-footer__logo" aria-label="Eloria Beauty home">
+            <img src="assets/img/logo.png" alt="Eloria Beauty" width="140" height="56" loading="lazy" decoding="async" />
+          </a>
+          <span class="sb-footer__logo-line" aria-hidden="true"></span>
+          <p class="sb-footer__tagline">Make - up Essentials</p>
+          <p class="sb-footer__about">Eloria Beauty is a one-stop cosmetic brand for all your needs, providing a wide
+            range of beauty products for most skin types and skin tones.</p>
+          <h3 class="sb-footer__subhead">Follow us</h3>
+          <div class="sb-footer__social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          </div>
+          <h3 class="sb-footer__subhead">Stores</h3>
+          <ul class="sb-footer__stores">
+            <li><a href="#">Switch to Essential <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a></li>
+            <li><a href="#">Switch to Professional <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </div>
+        <div class="sb-footer__accordions">
+          <div class="sb-footer__accordion sb-footer__col" data-sb-footer-accordion>
+            <button type="button" class="sb-footer__accordion-btn" data-sb-footer-accordion-toggle aria-expanded="true"
+              aria-controls="sb-footer-panel-shop">
+              Shop
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sb-footer__accordion-panel" id="sb-footer-panel-shop" data-sb-footer-accordion-panel>
+              <ul class="sb-footer__links">
+                <li><a href="category.html">Face</a></li>
+                <li><a href="category.html">Eyes</a></li>
+                <li><a href="category.html">Nails</a></li>
+                <li><a href="category.html">Lips</a></li>
+                <li><a href="category.html">Perfumes</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sb-footer__accordion sb-footer__col" data-sb-footer-accordion>
+            <button type="button" class="sb-footer__accordion-btn" data-sb-footer-accordion-toggle aria-expanded="true"
+              aria-controls="sb-footer-panel-brand">
+              Eloria Beauty
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sb-footer__accordion-panel" id="sb-footer-panel-brand" data-sb-footer-accordion-panel>
+              <ul class="sb-footer__links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Store locator</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Track Order</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Returns &amp; Exchange</a></li>
+                <li><a href="#">Beauty blog</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sb-footer__accordion sb-footer__col" data-sb-footer-accordion>
+            <button type="button" class="sb-footer__accordion-btn" data-sb-footer-accordion-toggle aria-expanded="true"
+              aria-controls="sb-footer-panel-policies">
+              Policies
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sb-footer__accordion-panel" id="sb-footer-panel-policies" data-sb-footer-accordion-panel>
+              <ul class="sb-footer__links">
+                <li><a href="#">Terms &amp; Conditions</a></li>
+                <li><a href="#">Shipping &amp; Cancellation</a></li>
+                <li><a href="#">Return &amp; Replace</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="sb-footer__col sb-footer__col--contact">
+          <h3 class="sb-footer__heading">Contact us</h3>
+          <p class="sb-footer__support">Questions? We're here for you<span class="sb-footer__support-hours">Monday -
+              Friday (10AM-6PM) IST.</span></p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <a href="tel:+919167109506">+91-9167109506</a>
+          </p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:care@eloria.in">care@eloria.in</a>
+          </p>
+          <p class="sb-footer__contact-label">For Careers</p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:hr@Eloriabeauty.in">hr@Eloriabeauty.in</a>
+          </p>
+          <p class="sb-footer__contact-label">For Collaboration</p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:sme@Eloriabeauty.in">sme@Eloriabeauty.in</a>
+          </p>
+        </div>
+      </div>
+      <div class="sb-footer__bottom">
+        <p class="sb-footer__copy">Copyright &copy; 2026, EloriaBeauty &mdash; Powered by ELORIA</p>
+        <div class="sb-footer__payments" aria-label="Accepted payment methods">
+          <span class="sb-footer__pay" title="American Express"><i class="fa-brands fa-cc-amex"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Apple Pay"><i class="fa-brands fa-cc-apple-pay"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Diners Club"><i class="fa-brands fa-cc-diners-club"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Discover"><i class="fa-brands fa-cc-discover"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Google Pay"><i class="fa-brands fa-google-pay"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Mastercard"><i class="fa-brands fa-cc-mastercard"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Visa"><i class="fa-brands fa-cc-visa" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="sb-footer__scroll-top" data-sb-scroll-top aria-label="Back to top">
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+    <a href="https://wa.me/" class="sb-footer__wa" aria-label="Chat on WhatsApp" target="_blank"
+      rel="noopener noreferrer">
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+    </a>
+  </footer>
+
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/category.js"></script>
+</body>
+
+</html>
