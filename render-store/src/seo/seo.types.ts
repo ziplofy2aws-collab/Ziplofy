@@ -11,6 +11,9 @@ export type StorefrontSeoStore = {
   name: string;
   description?: string;
   storeId?: string;
+  seoHomePageTitle?: string;
+  seoMetaDescription?: string;
+  seoSocialImageUrl?: string;
 };
 
 export type StorefrontSeoProduct = {

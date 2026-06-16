@@ -18,6 +18,7 @@ import ProductStatusSection from './ProductStatusSection';
 
 export type NewProductFormProps = {
   variant?: 'page' | 'sheet';
+  backLabel?: string;
   onSuccess?: (product: Product) => void;
   onCancel?: () => void;
   onBack?: () => void;
@@ -25,6 +26,7 @@ export type NewProductFormProps = {
 
 export const NewProductForm: React.FC<NewProductFormProps> = ({
   variant = 'page',
+  backLabel = 'Back to Products',
   onSuccess,
   onCancel,
   onBack,
@@ -64,7 +66,7 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               className="mb-4 flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900"
             >
               <ArrowLeftIcon className="h-4 w-4" />
-              Back to Products
+              {backLabel}
             </button>
           ) : null}
           <div className="flex items-center justify-between gap-4">

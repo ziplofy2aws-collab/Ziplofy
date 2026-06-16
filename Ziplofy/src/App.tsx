@@ -19,6 +19,7 @@ import { UserProvider } from "./contexts/user.context";
 import { AwsUploadProvider } from "./contexts/aws-upload.context";
 import { StoreCloudStorageProvider } from "./contexts/store-cloud-storage.context";
 import Navbar from "./pages/Navbar";
+import { AdminSeoManager } from "./seo/AdminSeoManager";
 import { CategoryProvider } from "./contexts/category.context";
 import { NotificationOverridesProvider } from "./contexts/notification-overrides.context";
 import { PermissionsProvider } from "./contexts/permissions.context";
@@ -52,6 +53,7 @@ const MarketingCampaignsPage = lazy(() => import("./pages/MarketingCampaignsPage
 const MarketingPage = lazy(() => import("./pages/MarketingPage"));
 const NewCustomerPage = lazy(() => import("./pages/NewCustomerPage"));
 const NewGiftCardPage = lazy(() => import("./pages/NewGiftCardPage"));
+const NewGiftCardProductPage = lazy(() => import("./pages/NewGiftCardProductPage"));
 const NewProductPage = lazy(() => import("./pages/NewProductPage"));
 const NewTransferPage = lazy(() => import("./pages/NewTransferPage"));
 const OrderDetailsPage = lazy(() => import("./pages/OrderDetailsPage"));
@@ -113,6 +115,7 @@ const NewLocationForm = lazy(() => import("./pages/settings/NewLocationForm"));
 const NewRolePage = lazy(() => import("./pages/settings/NewRolePage"));
 const NotificationOptionDetailPage = lazy(() => import("./pages/settings/NotificationOptionDetailPage"));
 const NotificationsPage = lazy(() => import("./pages/settings/NotificationsPage"));
+const VerifySenderEmailPage = lazy(() => import("./pages/settings/VerifySenderEmailPage"));
 const PaymentsSettingsPage = lazy(() => import("./pages/settings/PaymentsSettingsPage"));
 const PaymentTransactionDetailsPage = lazy(() => import("./pages/settings/PaymentTransactionDetailsPage"));
 const PlanSelectPage = lazy(() => import("./pages/settings/PlanSelectPage"));
@@ -135,7 +138,19 @@ const ProductTagsPage = lazy(() => import("./pages/tag-management/ProductTagsPag
 const ProductTypesPage = lazy(() => import("./pages/tag-management/ProductTypesPage"));
 const PurchaseOrderTagsPage = lazy(() => import("./pages/tag-management/PurchaseOrderTagsPage"));
 const TransferTagsPage = lazy(() => import("./pages/tag-management/TransferTagsPage"));
+const BlogTagsPage = lazy(() => import("./pages/tag-management/BlogTagsPage"));
+const ContentBlogsPage = lazy(() => import("./pages/ContentBlogsPage").then(m => ({ default: m.ContentBlogsPage })));
+const ContentBlogCreatePage = lazy(() =>
+  import("./pages/ContentBlogCreatePage").then(m => ({ default: m.ContentBlogCreatePage }))
+);
+const ContentBlogEditPage = lazy(() =>
+  import("./pages/ContentBlogEditPage").then(m => ({ default: m.ContentBlogEditPage }))
+);
 const BlogPostCreatePage = lazy(() => import("./pages/BlogPostCreatePage").then(m => ({ default: m.BlogPostCreatePage })));
+const BlogPostEditPage = lazy(() => import("./pages/BlogPostEditPage").then(m => ({ default: m.BlogPostEditPage })));
+const BlogPostCommentsPage = lazy(() =>
+  import("./pages/BlogPostCommentsPage").then(m => ({ default: m.BlogPostCommentsPage }))
+);
 const ContentBlogPostsPage = lazy(() => import("./pages/ContentBlogPostsPage").then(m => ({ default: m.ContentBlogPostsPage })));
 const ContentFilesPage = lazy(() => import("./pages/ContentFilesPage").then(m => ({ default: m.ContentFilesPage })));
 const ContentMenusPage = lazy(() => import("./pages/ContentMenusPage").then(m => ({ default: m.ContentMenusPage })));
@@ -185,6 +200,9 @@ import { CatalogProvider } from "./contexts/catalog.context";
 import { CheckoutSettingsProvider } from "./contexts/checkout-settings.context";
 import { CollectionEntriesProvider } from "./contexts/collection-entries.context";
 import { CollectionProvider } from "./contexts/collection.context";
+import { BlogProvider } from "./contexts/blog.context";
+import { BlogPostProvider } from "./contexts/blog-post.context";
+import { BlogTagsProvider } from "./contexts/blog-tags.context";
 import { StoreMenuProvider } from "./contexts/store-menu.context";
 import { CountryTaxOverrideProvider } from "./contexts/country-tax-override.context";
 import { CountryTaxProvider } from "./contexts/country-tax.context";
@@ -199,6 +217,7 @@ import { FreeShippingDiscountProvider } from "./contexts/free-shipping-discount.
 import { GeneralSettingsProvider } from "./contexts/general-settings.context";
 import { GiftCardTimelineProvider } from "./contexts/gift-card-timeline.context";
 import { GiftCardsProvider } from "./contexts/gift-cards.context";
+import { GiftCardProductsProvider } from "./contexts/gift-card-products.context";
 import { InstalledThemesProvider } from "./contexts/installed-themes.context";
 import { InventoryLevelsProvider } from "./contexts/inventory-level.contexts";
 import { LocalDeliveryLocationEntriesProvider } from "./contexts/local-delivery-location-entries.context";
@@ -291,6 +310,7 @@ const AdminApp: React.FC = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <AdminSeoManager />
       {showNavbar && <Navbar />}
 
       <div style={{ display: "flex", flexGrow: 1, overflow: "hidden", position: "relative" }}>
@@ -333,6 +353,7 @@ const AdminApp: React.FC = () => {
             <Route path="/products/collections/:id" element={<ProductCollectionDetailsPage />} />
             <Route path="/products/collections/new" element={<ProductCollectionCreatePage />} />
             <Route path="/products/gift-cards" element={<GiftCardsPage />} />
+            <Route path="/products/gift-cards/products/new" element={<NewGiftCardProductPage />} />
             <Route path="/products/gift-cards/new" element={<NewGiftCardPage />} />
             <Route path="/products/gift-cards/:giftCardId" element={<GiftCardDetailPage />} />
             <Route path="/products/transfers" element={<TransfersPage />} />
@@ -364,8 +385,13 @@ const AdminApp: React.FC = () => {
             <Route path="/discounts/new/amount-off-order" element={<AmountOffOrderPage />} />
             <Route path="/discounts/new/free-shipping" element={<FreeShippingPage />} />
             <Route path="/content" element={<ContentPage />} />
-            <Route path="/content/blog-posts" element={<ContentBlogPostsPage />} />
-            <Route path="/content/blog-posts/new" element={<BlogPostCreatePage />} />
+            <Route path="/content/articles" element={<ContentBlogPostsPage />} />
+            <Route path="/content/articles/new" element={<BlogPostCreatePage />} />
+            <Route path="/content/articles/:articleId" element={<BlogPostEditPage />} />
+            <Route path="/content/comments/article/:articleId" element={<BlogPostCommentsPage />} />
+            <Route path="/content/blogs" element={<ContentBlogsPage />} />
+            <Route path="/content/blogs/new" element={<ContentBlogCreatePage />} />
+            <Route path="/content/blogs/:blogId" element={<ContentBlogEditPage />} />
             <Route path="/content/files" element={<ContentFilesPage />} />
             <Route path="/content/menus" element={<ContentMenusPage />} />
             <Route path="/content/menus/new" element={<ContentMenuCreatePage />} />
@@ -386,6 +412,7 @@ const AdminApp: React.FC = () => {
             <Route path="/tag-management" element={<TagManagement />} />
             <Route path="/tag-management/customer-tags" element={<CustomerTagsPage />} />
             <Route path="/tag-management/product-tags" element={<ProductTagsPage />} />
+            <Route path="/tag-management/blog-tags" element={<BlogTagsPage />} />
             <Route path="/tag-management/product-types" element={<ProductTypesPage />} />
             <Route path="/tag-management/transfer-tags" element={<TransferTagsPage />} />
             <Route path="/tag-management/purchase-order-tags" element={<PurchaseOrderTagsPage />} />
@@ -432,6 +459,7 @@ const AdminApp: React.FC = () => {
               <Route path="customer-events" element={<CustomerEventsPage />} />
               <Route path="customer-events/:pixelId" element={<CustomerEventPixelDetailsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="notifications/verify-sender-email" element={<VerifySenderEmailPage />} />
               <Route path="notifications/:categoryId/:categorySlug" element={<CustomerNotificationsPage />} />
               <Route path="notifications/:categoryId/:categorySlug/:optionId" element={<NotificationOptionDetailPage />} />
               <Route path="notifications/:categoryId/:categorySlug/:optionId/edit" element={<EditNotificationOptionPage />} />
@@ -500,6 +528,9 @@ const App: React.FC = () => {
         <VendorProvider>
         <CollectionProvider>
         <StoreMenuProvider>
+        <BlogProvider>
+        <BlogPostProvider>
+        <BlogTagsProvider>
         <CustomerTagsProvider>
         <ProductTagsProvider>
         <CustomerProvider>
@@ -509,6 +540,7 @@ const App: React.FC = () => {
         <CollectionEntriesProvider>
         <ProductTypeProvider>
         <GiftCardsProvider>
+        <GiftCardProductsProvider>
         <GiftCardTimelineProvider>
         <LocationsProvider>
         <LocalDeliverySettingsProvider>
@@ -665,6 +697,7 @@ const App: React.FC = () => {
         </LocalDeliverySettingsProvider>
         </LocationsProvider>
         </GiftCardTimelineProvider>
+        </GiftCardProductsProvider>
         </GiftCardsProvider>
         </ProductTypeProvider>
         </CollectionEntriesProvider>
@@ -674,6 +707,9 @@ const App: React.FC = () => {
         </CustomerProvider>
         </ProductTagsProvider>
         </CustomerTagsProvider>
+        </BlogTagsProvider>
+        </BlogPostProvider>
+        </BlogProvider>
         </StoreMenuProvider>
         </CollectionProvider>
         </VendorProvider>

@@ -141,7 +141,7 @@ export const getStoresByUserParam = asyncErrorHandler(async (req: Request, res: 
 export const updateStore = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const userId = req.user?.id;
-  const body = req.body as Partial<Pick<IStore, "storeName" | "storeDescription">> & {
+  const body = req.body as Partial<Pick<IStore, "storeName" | "storeDescription" | "seoHomePageTitle" | "seoMetaDescription" | "seoSocialImageUrl">> & {
     defaultLocation?: string | null;
     appliedCustomThemeId?: string | null;
   };
@@ -157,6 +157,15 @@ export const updateStore = asyncErrorHandler(async (req: Request, res: Response)
   }
   if (body.storeDescription !== undefined) {
     $set.storeDescription = body.storeDescription;
+  }
+  if (body.seoHomePageTitle !== undefined) {
+    $set.seoHomePageTitle = body.seoHomePageTitle;
+  }
+  if (body.seoMetaDescription !== undefined) {
+    $set.seoMetaDescription = body.seoMetaDescription;
+  }
+  if (body.seoSocialImageUrl !== undefined) {
+    $set.seoSocialImageUrl = body.seoSocialImageUrl;
   }
   if (body.defaultLocation !== undefined) {
     if (body.defaultLocation === null || body.defaultLocation === "") {

@@ -82,10 +82,11 @@ export const INITIAL_NEW_PRODUCT_FORM_DATA: NewProductFormData = {
 type UseNewProductFormOptions = {
   onSuccess?: (product: Product) => void;
   navigateOnSuccess?: boolean;
+  transformBeforeSubmit?: (data: NewProductFormData) => NewProductFormData;
 };
 
 export function useNewProductForm(options: UseNewProductFormOptions = {}) {
-  const { onSuccess, navigateOnSuccess = true } = options;
+  const { onSuccess, navigateOnSuccess = true, transformBeforeSubmit } = options;
   const { fetchBaseCategories } = useCategories();
   const { createProduct, loading: productLoading } = useProducts();
   const { activeStoreId } = useStore();
@@ -234,7 +235,8 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
 
     setIsSubmitting(true);
     try {
-      const descriptionWithUploadedImages = await uploadDescriptionImages(formData.description);
+      const effectiveFormData = transformBeforeSubmit ? transformBeforeSubmit(formData) : formData;
+      const descriptionWithUploadedImages = await uploadDescriptionImages(effectiveFormData.description);
 
       let uploadedImageUrls: string[] = [];
       if (selectedImages.length > 0) {
@@ -250,60 +252,60 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
         toast.success('Images uploaded', { id: uploadToastId });
       }
 
-      const price = parseFloat(formData.price) || 0;
-      const cost = parseFloat(formData.cost) || 0;
+      const price = parseFloat(effectiveFormData.price) || 0;
+      const cost = parseFloat(effectiveFormData.cost) || 0;
       const profit = price - cost;
       const marginPercent = price > 0 ? (profit / price) * 100 : 0;
 
       const descriptionPlainText = stripHtml(descriptionWithUploadedImages);
-      const safePageTitle = (formData.pageTitle || '').trim() || (formData.title || '').trim();
+      const safePageTitle = (effectiveFormData.pageTitle || '').trim() || (effectiveFormData.title || '').trim();
       const safeMetaDescription =
-        (formData.metaDescription || '').trim() || descriptionPlainText.slice(0, 240);
+        (effectiveFormData.metaDescription || '').trim() || descriptionPlainText.slice(0, 240);
       const safeUrlHandle =
-        (formData.urlHandle || '').trim() ||
-        slugify((formData.title || '').trim()) ||
+        (effectiveFormData.urlHandle || '').trim() ||
+        slugify((effectiveFormData.title || '').trim()) ||
         `product-${Date.now()}`;
 
       const requestBody = {
-        title: formData.title,
+        title: effectiveFormData.title,
         description: descriptionWithUploadedImages,
-        category: formData.category,
+        category: effectiveFormData.category,
         price,
-        compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : undefined,
-        chargeTax: formData.chargeTaxOnProduct,
+        compareAtPrice: effectiveFormData.compareAtPrice ? parseFloat(effectiveFormData.compareAtPrice) : undefined,
+        chargeTax: effectiveFormData.chargeTaxOnProduct,
         cost,
         profit,
         marginPercent,
         storeId: activeStoreId,
-        unitPriceTotalAmount: formData.unitPriceTotalAmount
-          ? parseFloat(formData.unitPriceTotalAmount)
+        unitPriceTotalAmount: effectiveFormData.unitPriceTotalAmount
+          ? parseFloat(effectiveFormData.unitPriceTotalAmount)
           : undefined,
-        unitPriceTotalAmountMetric: formData.selectedUnit || undefined,
-        unitPriceBaseMeasure: formData.unitPriceBaseMeasure
-          ? parseFloat(formData.unitPriceBaseMeasure)
+        unitPriceTotalAmountMetric: effectiveFormData.selectedUnit || undefined,
+        unitPriceBaseMeasure: effectiveFormData.unitPriceBaseMeasure
+          ? parseFloat(effectiveFormData.unitPriceBaseMeasure)
           : undefined,
-        unitPriceBaseMeasureMetric: formData.selectedBaseMeasureUnit || undefined,
-        inventoryTrackingEnabled: formData.inventoryTrackingEnabled,
-        continueSellingWhenOutOfStock: formData.continueSellingWhenOutOfStock,
-        sku: formData.sku,
-        barcode: formData.barcode,
-        isPhysicalProduct: formData.physicalProduct,
-        package: formData.physicalProduct ? formData.selectedPackage : undefined,
-        productWeight: formData.physicalProduct ? parseFloat(formData.productWeight) : undefined,
-        productWeightUnit: formData.physicalProduct ? formData.weightUnit : undefined,
-        countryOfOrigin: formData.physicalProduct ? formData.countryOfOrigin : undefined,
-        harmonizedSystemCode: formData.physicalProduct ? formData.hsCode : undefined,
-        variants: formData.variants,
+        unitPriceBaseMeasureMetric: effectiveFormData.selectedBaseMeasureUnit || undefined,
+        inventoryTrackingEnabled: effectiveFormData.inventoryTrackingEnabled,
+        continueSellingWhenOutOfStock: effectiveFormData.continueSellingWhenOutOfStock,
+        sku: effectiveFormData.sku,
+        barcode: effectiveFormData.barcode,
+        isPhysicalProduct: effectiveFormData.physicalProduct,
+        package: effectiveFormData.physicalProduct ? effectiveFormData.selectedPackage : undefined,
+        productWeight: effectiveFormData.physicalProduct ? parseFloat(effectiveFormData.productWeight) : undefined,
+        productWeightUnit: effectiveFormData.physicalProduct ? effectiveFormData.weightUnit : undefined,
+        countryOfOrigin: effectiveFormData.physicalProduct ? effectiveFormData.countryOfOrigin : undefined,
+        harmonizedSystemCode: effectiveFormData.physicalProduct ? effectiveFormData.hsCode : undefined,
+        variants: effectiveFormData.variants,
         pageTitle: safePageTitle,
         metaDescription: safeMetaDescription,
         urlHandle: safeUrlHandle,
-        status: formData.status,
+        status: effectiveFormData.status,
         onlineStorePublishing: true,
         pointOfSalePublishing: false,
         images: uploadedImageUrls,
-        productType: formData.productType,
-        vendor: formData.vendor,
-        tagIds: formData.tags || [],
+        productType: effectiveFormData.productType,
+        vendor: effectiveFormData.vendor,
+        tagIds: effectiveFormData.tags || [],
       };
 
       const created = await createProduct(requestBody);
@@ -333,6 +335,7 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     selectedImages,
     slugify,
     stripHtml,
+    transformBeforeSubmit,
     uploadDescriptionImages,
     uploadImageWithSignedUrl,
   ]);

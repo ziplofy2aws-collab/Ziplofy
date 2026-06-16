@@ -52,7 +52,14 @@ function clearInstalledThemeRuntimeState(setters: {
 export interface StorefrontContextType {
   isStoreFront: boolean;
   storeFrontChecked: boolean;
-  storeFrontMeta: { name: string; description: string; storeId: string } | null;
+  storeFrontMeta: {
+    name: string;
+    description: string;
+    storeId: string;
+    seoHomePageTitle?: string;
+    seoMetaDescription?: string;
+    seoSocialImageUrl?: string;
+  } | null;
   /** Set when the store has a JSON theme creator theme applied (Store.appliedCustomThemeId). */
   appliedCustomThemeId: string | null;
   appliedCustomThemeName: string | null;
@@ -104,7 +111,7 @@ const StorefrontContext = createContext<StorefrontContextType | undefined>(undef
 export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isStoreFront, setIsStoreFront] = useState<boolean>(false);
   const [storeFrontChecked, setStoreFrontChecked] = useState<boolean>(false);
-  const [storeFrontMeta, setStoreFrontMeta] = useState<{ name: string; description: string; storeId: string } | null>(null);
+  const [storeFrontMeta, setStoreFrontMeta] = useState<StorefrontContextType['storeFrontMeta']>(null);
   const [appliedCustomThemeId, setAppliedCustomThemeId] = useState<string | null>(null);
   const [appliedCustomThemeName, setAppliedCustomThemeName] = useState<string | null>(null);
   const [isStoreCustomTheme, setIsStoreCustomTheme] = useState(false);
@@ -157,7 +164,14 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         );
         if (data.success && data.data) {
           setIsStoreFront(true);
-          setStoreFrontMeta({ name: data.data.name, description: data.data.description, storeId: data.data.storeId });
+          setStoreFrontMeta({
+            name: data.data.name,
+            description: data.data.description,
+            storeId: data.data.storeId,
+            seoHomePageTitle: data.data.seoHomePageTitle,
+            seoMetaDescription: data.data.seoMetaDescription,
+            seoSocialImageUrl: data.data.seoSocialImageUrl,
+          });
           const customId =
             data.data.appliedCustomThemeId && String(data.data.appliedCustomThemeId).length > 0
               ? String(data.data.appliedCustomThemeId)

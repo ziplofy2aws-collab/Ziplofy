@@ -36,7 +36,7 @@ exports.checkSubdomain = (0, error_utils_1.asyncErrorHandler)(async (req, res) =
         return res.status(404).json({ success: false, message: 'Subdomain not found' });
     }
     const store = await store_model_1.Store.findById(mapping.storeId)
-        .select('storeName storeDescription appliedCustomThemeId')
+        .select('storeName storeDescription seoHomePageTitle seoMetaDescription seoSocialImageUrl appliedCustomThemeId')
         .lean();
     if (!store) {
         return res.status(404).json({ success: false, message: 'Store not found for subdomain' });
@@ -57,6 +57,9 @@ exports.checkSubdomain = (0, error_utils_1.asyncErrorHandler)(async (req, res) =
             storeId: store._id,
             name: store.storeName,
             description: store.storeDescription,
+            seoHomePageTitle: store.seoHomePageTitle ?? '',
+            seoMetaDescription: store.seoMetaDescription ?? '',
+            seoSocialImageUrl: store.seoSocialImageUrl ?? '',
             appliedCustomThemeId,
             appliedCustomThemeName,
         }

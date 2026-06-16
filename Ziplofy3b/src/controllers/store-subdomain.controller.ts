@@ -38,7 +38,7 @@ export const checkSubdomain = asyncErrorHandler(async (req: Request, res: Respon
   }
 
   const store = await Store.findById(mapping.storeId)
-    .select('storeName storeDescription appliedCustomThemeId')
+    .select('storeName storeDescription seoHomePageTitle seoMetaDescription seoSocialImageUrl appliedCustomThemeId')
     .lean();
   if (!store) {
     return res.status(404).json({ success: false, message: 'Store not found for subdomain' });
@@ -62,6 +62,9 @@ export const checkSubdomain = asyncErrorHandler(async (req: Request, res: Respon
       storeId: store._id,
       name: store.storeName,
       description: store.storeDescription,
+      seoHomePageTitle: store.seoHomePageTitle ?? '',
+      seoMetaDescription: store.seoMetaDescription ?? '',
+      seoSocialImageUrl: store.seoSocialImageUrl ?? '',
       appliedCustomThemeId,
       appliedCustomThemeName,
     }

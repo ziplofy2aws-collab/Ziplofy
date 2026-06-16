@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.giftCardProductRouter = void 0;
+const express_1 = require("express");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const gift_card_product_controller_1 = require("../controllers/gift-card-product.controller");
+exports.giftCardProductRouter = (0, express_1.Router)();
+exports.giftCardProductRouter.use(auth_middleware_1.protect);
+exports.giftCardProductRouter.post('/', gift_card_product_controller_1.createGiftCardProduct);
+exports.giftCardProductRouter.get('/store/:storeId', gift_card_product_controller_1.getGiftCardProductsByStoreId);
+exports.giftCardProductRouter.get('/:id', gift_card_product_controller_1.getGiftCardProductById);
+exports.giftCardProductRouter.put('/:id', gift_card_product_controller_1.updateGiftCardProduct);
+exports.giftCardProductRouter.delete('/:id', gift_card_product_controller_1.deleteGiftCardProduct);

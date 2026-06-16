@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.blogTagsRouter = void 0;
+const express_1 = require("express");
+const blog_tags_controller_1 = require("../controllers/blog-tags.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+exports.blogTagsRouter = (0, express_1.Router)();
+exports.blogTagsRouter.use(auth_middleware_1.protect);
+exports.blogTagsRouter.get("/search/:storeId", blog_tags_controller_1.searchBlogTags);
+exports.blogTagsRouter.get("/store/:storeId", blog_tags_controller_1.getBlogTagsByStoreId);
+exports.blogTagsRouter.post("/", blog_tags_controller_1.createBlogTag);
+exports.blogTagsRouter.patch("/:id", blog_tags_controller_1.updateBlogTag);
+exports.blogTagsRouter.put("/:id", blog_tags_controller_1.updateBlogTag);
+exports.blogTagsRouter.delete("/:id", blog_tags_controller_1.deleteBlogTag);

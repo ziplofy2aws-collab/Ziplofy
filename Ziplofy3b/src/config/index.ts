@@ -11,9 +11,10 @@ let config: Config;
 if (NODE_ENV === 'development') {
     config = {
         allowedOrigins: [
+            "http://admin.localhost:5173",
             "http://localhost:5173",
             "http://localhost:5174",
-            // Allow any subdomain of localhost:5173 (e.g., foo.localhost:5173)
+            // Allow any subdomain of localhost:5173 (e.g., admin.localhost:5173)
             /^http:\/\/([a-z0-9-]+\.)*localhost:5173$/i,
             // If you also run https locally via proxy/certs
             /^https:\/\/([a-z0-9-]+\.)*localhost:5173$/i,
@@ -21,7 +22,7 @@ if (NODE_ENV === 'development') {
             /^http:\/\/([a-z0-9-]+\.)*localhost:5180$/i,
             /^https:\/\/([a-z0-9-]+\.)*localhost:5180$/i,
         ],
-        clientUrl: "http://localhost:5173",
+        clientUrl: "http://admin.localhost:5173",
         storeRenderMicroserviceUrlSuffix: ".localhost:5180"
     };
 } else {

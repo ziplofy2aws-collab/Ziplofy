@@ -81,7 +81,7 @@ const NAV: NavItem[] = [
       { text: 'Metaobjects', path: '/content/metaobjects' },
       { text: 'Files', path: '/content/files' },
       { text: 'Menus', path: '/content/menus' },
-      { text: 'Blog posts', path: '/content/blog-posts' },
+      { text: 'Blog posts', path: '/content/articles' },
     ],
   },
   {

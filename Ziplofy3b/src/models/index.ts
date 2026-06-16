@@ -46,6 +46,7 @@ export { ReturnRules } from './return-rules/return-rules.model';
 export { FinalSaleItem } from './final-sale-item/final-sale-item.model';
 export { StoreContactInfo } from './store-contact-info/store-contact-info.model';
 export { StoreNotificationEmail } from './store-notification-email/store-notification-email.model';
+export { StoreEmailVerification } from './store-email-verification/store-email-verification.model';
 export { StoreShippingPolicy } from './store-shipping-policy/store-shipping-policy.model';
 export { StoreTermsPolicy } from './store-terms-policy/store-terms-policy.model';
 export { StoreReturnRefundPolicy } from './store-return-refund-policy/store-return-refund-policy.model';

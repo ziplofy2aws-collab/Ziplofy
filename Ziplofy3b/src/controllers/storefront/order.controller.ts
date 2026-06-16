@@ -18,7 +18,8 @@ import { BuyXGetYDiscountUsage } from '../../models/discount/buy-x-get-y-discoun
 import { LocationModel } from '../../models/location/location.model';
 import { InventoryLevelModel } from '../../models/inventory-level/inventory-level.model';
 import { asyncErrorHandler, CustomError } from '../../utils/error.utils';
-import { getOrderConfirmationEmailBody, sendEmail } from '../../utils/email.utils';
+import { buildOrderConfirmationEmail } from '../../email-templates';
+import { sendEmail } from '../../utils/email.utils';
 
 export const createOrder = asyncErrorHandler(async (req: Request, res: Response) => {
   const user = req.storefrontUser;
@@ -323,14 +324,15 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
   if (user.email) {
     try {
       const customerName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || 'Customer';
+      const orderConfirmationEmail = buildOrderConfirmationEmail({
+        customerName,
+        orderId: String(order._id),
+        total: order.total,
+      });
       await sendEmail({
         to: user.email,
-        subject: 'Order Confirmed - Ziplofy',
-        body: getOrderConfirmationEmailBody({
-          customerName,
-          orderId: String(order._id),
-          total: order.total,
-        }),
+        subject: orderConfirmationEmail.subject,
+        body: orderConfirmationEmail.html,
       });
     } catch (emailErr) {
       console.error('Failed to send order confirmation email:', emailErr);

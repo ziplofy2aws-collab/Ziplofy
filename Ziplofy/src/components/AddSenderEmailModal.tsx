@@ -49,8 +49,8 @@ const AddSenderEmailModal: React.FC<AddSenderEmailModalProps> = ({
         </>
       }
     >
-      <p className="text-sm text-gray-600 mb-6">
-        The email your store uses to send emails to your customers
+      <p className="mb-6 text-sm text-gray-600">
+        The email your store uses to send and receive emails from your customers
       </p>
       <input
         type="email"

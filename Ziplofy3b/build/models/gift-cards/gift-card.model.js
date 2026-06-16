@@ -69,6 +69,12 @@ const GiftCardSchema = new mongoose_1.Schema({
         trim: true,
         maxLength: [1000, "Notes cannot exceed 1000 characters"],
     },
+    customerId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Customer',
+        default: null,
+        index: true,
+    },
     isActive: {
         type: Boolean,
         default: true,

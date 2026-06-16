@@ -3,12 +3,14 @@ import {
   CommandLineIcon,
   GlobeAltIcon,
   LockClosedIcon,
-  PhotoIcon,
   ShieldCheckIcon,
 } from '@heroicons/react/24/outline';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from '../components/Modal';
+import { axiosi } from '../config/axios.config';
+import { useStore } from '../contexts/store.context';
+import { StoreSeoSettingsPanel } from '../seo/StoreSeoSettingsPanel';
 
 type Tab = 'All' | 'Active' | 'Expired';
 
@@ -75,10 +77,10 @@ function ToggleRow({
 }
 
 export default function OnlineStorePreferencePage() {
+  const { activeStoreId } = useStore();
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [messageToYourVisitorsInput, setMessageToYourVisitorsInput] = useState<string>('');
-  const [homePageTitleInput, setHomePageTitleInput] = useState<string>('');
-  const [metaDescription, setMetaDescription] = useState<string>('');
+  const [storefrontUrl, setStorefrontUrl] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('All');
 
   const [createNewSignatureModalOpen, setCreateNewSignatureModalOpen] = useState<boolean>(false);
@@ -95,13 +97,27 @@ export default function OnlineStorePreferencePage() {
     setMessageToYourVisitorsInput(e.target.value);
   }, []);
 
-  const handleHomePageTitleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setHomePageTitleInput(e.target.value);
-  }, []);
+  useEffect(() => {
+    if (!activeStoreId) {
+      setStorefrontUrl(null);
+      return;
+    }
 
-  const handleMetaDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMetaDescription(e.target.value);
-  }, []);
+    let cancelled = false;
+    axiosi
+      .get<{ success: boolean; data?: { url?: string } }>(`/store-subdomain/store/${activeStoreId}`)
+      .then((response) => {
+        if (cancelled) return;
+        setStorefrontUrl(response.data.data?.url ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setStorefrontUrl(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeStoreId]);
 
   const handleChangeActiveTab = useCallback((tab: Tab) => {
     setActiveTab(tab);
@@ -200,63 +216,7 @@ export default function OnlineStorePreferencePage() {
         </div>
       </PreferenceSection>
 
-      <PreferenceSection
-        icon={PhotoIcon}
-        iconWrapClass="bg-blue-50"
-        iconClass="text-blue-600"
-        title="Social sharing and SEO"
-        description="Default image for link previews, plus the home page title and meta description for search."
-      >
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div className="flex min-h-[200px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white px-6 py-8 text-center shadow-sm">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-              <PhotoIcon className="h-6 w-6 text-gray-400" aria-hidden />
-            </div>
-            <p className="text-sm font-semibold text-gray-900">Social sharing image</p>
-            <p className="mt-0.5 text-xs text-gray-500">Recommended 1200 × 628 px</p>
-            <button
-              type="button"
-              className="mt-4 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
-            >
-              Upload image
-            </button>
-          </div>
-          <div className="flex flex-col gap-5">
-            <div>
-              <label className={labelClass} htmlFor="store-pref-home-title">
-                Home page title
-              </label>
-              <input
-                id="store-pref-home-title"
-                className={inputClass}
-                value={homePageTitleInput}
-                onChange={handleHomePageTitleInputChange}
-                type="text"
-                placeholder="e.g. My Store — Quality products"
-              />
-              <p className={hintClass}>{homePageTitleInput.length} of 70 characters used</p>
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="store-pref-meta">
-                Meta description
-              </label>
-              <textarea
-                id="store-pref-meta"
-                className={`${inputClass} resize-none`}
-                rows={3}
-                value={metaDescription}
-                onChange={handleMetaDescriptionChange}
-                placeholder="Brief description for search engines"
-              />
-              <p className={hintClass}>{metaDescription.length} of 320 characters used</p>
-            </div>
-          </div>
-        </div>
-        <p className="mt-4 rounded-lg border border-gray-100 bg-gray-50/80 px-3 py-2 font-mono text-xs text-gray-500">
-          Preview URL: <span className="text-gray-600">your-store</span>
-          .myziplofy.com
-        </p>
-      </PreferenceSection>
+      <StoreSeoSettingsPanel storefrontOrigin={storefrontUrl} />
 
       <PreferenceSection
         icon={GlobeAltIcon}

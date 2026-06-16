@@ -57,7 +57,11 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
   const { pathname, origin, store, product, collection, currencyCode = 'USD' } = input;
   const storeName = store.name.trim() || 'Store';
   const canonicalUrl = canonicalFromPath(origin, pathname);
-  const storeDescription = truncateSeoText(plainTextFromHtml(store.description ?? ''));
+  const storeDescription =
+    store.seoMetaDescription?.trim() ||
+    truncateSeoText(plainTextFromHtml(store.description ?? ''));
+  const homePageTitle = store.seoHomePageTitle?.trim() || storeName;
+  const homeOgImage = store.seoSocialImageUrl?.trim() || undefined;
 
   const productMatch = pathname.match(/^\/products\/([^/]+)$/);
   if (productMatch && !product) {
@@ -140,10 +144,11 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
   }
 
   return {
-    title: storeName,
+    title: homePageTitle,
     description: storeDescription || `Shop online at ${storeName}.`,
     canonicalUrl: canonicalFromPath(origin, '/'),
     ogType: 'website',
+    ogImage: homeOgImage,
     jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
   };
 }

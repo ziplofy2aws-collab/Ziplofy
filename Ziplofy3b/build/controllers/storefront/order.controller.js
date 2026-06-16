@@ -41,6 +41,7 @@ const free_shipping_discount_usage_model_1 = require("../../models/discount/free
 const buy_x_get_y_discount_model_1 = require("../../models/discount/buy-x-get-y-discount-model/buy-x-get-y-discount.model");
 const buy_x_get_y_discount_usage_model_1 = require("../../models/discount/buy-x-get-y-discount-model/buy-x-get-y-discount-usage.model");
 const error_utils_1 = require("../../utils/error.utils");
+const email_templates_1 = require("../../email-templates");
 const email_utils_1 = require("../../utils/email.utils");
 exports.createOrder = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     const user = req.storefrontUser;
@@ -280,14 +281,15 @@ exports.createOrder = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     if (user.email) {
         try {
             const customerName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || 'Customer';
+            const orderConfirmationEmail = (0, email_templates_1.buildOrderConfirmationEmail)({
+                customerName,
+                orderId: String(order._id),
+                total: order.total,
+            });
             await (0, email_utils_1.sendEmail)({
                 to: user.email,
-                subject: 'Order Confirmed - Ziplofy',
-                body: (0, email_utils_1.getOrderConfirmationEmailBody)({
-                    customerName,
-                    orderId: String(order._id),
-                    total: order.total,
-                }),
+                subject: orderConfirmationEmail.subject,
+                body: orderConfirmationEmail.html,
             });
         }
         catch (emailErr) {

@@ -63,6 +63,23 @@ const storeSchema = new mongoose_1.Schema({
         maxLength: [500, "Store description cannot exceed 500 characters"],
         minLength: [10, "Store description must be at least 10 characters"],
     },
+    seoHomePageTitle: {
+        type: String,
+        trim: true,
+        maxLength: [70, "SEO home page title cannot exceed 70 characters"],
+        default: "",
+    },
+    seoMetaDescription: {
+        type: String,
+        trim: true,
+        maxLength: [320, "SEO meta description cannot exceed 320 characters"],
+        default: "",
+    },
+    seoSocialImageUrl: {
+        type: String,
+        trim: true,
+        default: "",
+    },
     appliedTheme: {
         type: mongoose_1.Schema.Types.ObjectId,
         default: null,

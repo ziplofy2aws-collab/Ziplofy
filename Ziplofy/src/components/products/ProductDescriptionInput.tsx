@@ -42,6 +42,8 @@ interface ProductDescriptionInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  label?: string;
+  hideLabel?: boolean;
   /** When false, hides image upload controls (used for recovery emails). */
   enableImages?: boolean;
   /** When false, hides the templates (Sparkles) menu. */
@@ -142,6 +144,8 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
   value,
   onChange,
   placeholder = "Describe your product...",
+  label = "Description",
+  hideLabel = false,
   enableImages = true,
   enableTemplates = true,
 }) => {
@@ -518,9 +522,11 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
 
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium text-gray-700">
-        Description
-      </label>
+      {!hideLabel ? (
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+      ) : null}
       <div className="relative overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
         {enableImages && (
           <input

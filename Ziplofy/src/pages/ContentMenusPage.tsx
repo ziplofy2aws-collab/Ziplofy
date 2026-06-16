@@ -32,59 +32,63 @@ export const ContentMenusPage = () => {
   }, [menus, menuSort]);
 
   return (
-    <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
-        <header className="mb-6 flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-gray-200/80 bg-gradient-to-b from-white to-blue-50/20 px-5 py-5 shadow-sm sm:px-6">
-          <div className="min-w-0 pl-3 border-l-4 border-blue-500/70">
-            <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">Menus</h1>
-            <p className="mt-1 text-sm text-gray-500">
+    <div className="min-h-screen w-full bg-page-background-color">
+      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <Bars3BottomLeftIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />
+              <h1 className="text-lg font-medium text-gray-900">Menus</h1>
+            </div>
+            <p className="mt-0.5 pl-7 text-[13px] font-normal text-gray-500">
               Create and edit menus for your online store header, footer, and other locations.
             </p>
           </div>
+
           <div className="flex shrink-0 flex-wrap items-center gap-2">
             <Link
               to="/content/url-redirects"
-              className="inline-flex items-center rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-50"
+              className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-600 transition-colors hover:bg-gray-50"
             >
               URL redirects
             </Link>
             <Link
               to="/content/menus/new"
-              className="inline-flex items-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+              className="inline-flex items-center rounded-lg bg-blue-600 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700"
             >
               Create menu
             </Link>
           </div>
-        </header>
+        </div>
 
-        <div className="overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[480px] text-left text-sm">
+            <table className="w-full min-w-[480px] text-left">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/80 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  <th className="px-5 py-3 sm:px-6">
+                <tr className="border-b border-gray-100 bg-gray-50/50">
+                  <th className="px-3 py-2">
                     <button
                       type="button"
                       onClick={() => setMenuSort((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
-                      className="inline-flex items-center gap-1.5 uppercase tracking-wider hover:text-gray-700"
+                      className="inline-flex items-center gap-1 text-xs font-normal text-gray-500 hover:text-gray-700"
                     >
                       Menu
-                      <ArrowsUpDownIcon className="h-4 w-4" aria-hidden />
+                      <ArrowsUpDownIcon className="h-3.5 w-3.5" aria-hidden />
                     </button>
                   </th>
-                  <th className="px-5 py-3 sm:px-6">Menu items</th>
+                  <th className="px-3 py-2 text-xs font-normal text-gray-500">Menu items</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loading && menus.length === 0 ? (
                   <tr>
-                    <td colSpan={2} className="px-5 py-8 text-center text-sm text-gray-500 sm:px-6">
+                    <td colSpan={2} className="px-3 py-8 text-center text-[13px] font-normal text-gray-500">
                       Loading menus…
                     </td>
                   </tr>
                 ) : sortedMenus.length === 0 ? (
                   <tr>
-                    <td colSpan={2} className="px-5 py-8 text-center text-sm text-gray-500 sm:px-6">
+                    <td colSpan={2} className="px-3 py-8 text-center text-[13px] font-normal text-gray-500">
                       {activeStoreId
                         ? 'No menus yet. Create your first navigation menu.'
                         : 'Select a store to view menus.'}
@@ -92,21 +96,16 @@ export const ContentMenusPage = () => {
                   </tr>
                 ) : (
                   sortedMenus.map((menu) => (
-                    <tr key={menu._id} className="transition-colors hover:bg-gray-50/60">
-                      <td className="px-5 py-4 sm:px-6">
-                        <div className="flex items-center gap-3">
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
-                            <Bars3BottomLeftIcon className="h-4 w-4" />
-                          </span>
-                          <Link
-                            to={`/content/menus/${menu._id}`}
-                            className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
-                          >
-                            {menu.handle || menu.menuName}
-                          </Link>
-                        </div>
+                    <tr key={menu._id} className="transition-colors hover:bg-gray-50/80">
+                      <td className="px-3 py-2.5">
+                        <Link
+                          to={`/content/menus/${menu._id}`}
+                          className="text-[13px] font-normal text-blue-600 hover:text-blue-700 hover:underline"
+                        >
+                          {menu.handle || menu.menuName}
+                        </Link>
                       </td>
-                      <td className="px-5 py-4 text-gray-600 sm:px-6">
+                      <td className="px-3 py-2.5 text-[13px] font-normal text-gray-600">
                         {menu.menuItemsSummary?.trim() ? (
                           <span className="line-clamp-2">{menu.menuItemsSummary}</span>
                         ) : (
@@ -119,6 +118,15 @@ export const ContentMenusPage = () => {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="py-5 text-center">
+          <p className="text-xs text-gray-500">
+            Learn more about{' '}
+            <a href="#" className="text-blue-600 hover:text-blue-700">
+              menus
+            </a>
+          </p>
         </div>
       </div>
     </div>

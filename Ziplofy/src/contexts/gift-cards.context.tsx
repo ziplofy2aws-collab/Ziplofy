@@ -9,6 +9,7 @@ export interface GiftCard {
   initialValue: number;
   expirationDate?: string;
   notes?: string;
+  customerId?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -21,6 +22,7 @@ export interface CreateGiftCardRequest {
   initialValue: number;
   expirationDate?: string;
   notes?: string;
+  customerId?: string;
   isActive?: boolean;
 }
 
@@ -30,6 +32,7 @@ export interface UpdateGiftCardRequest {
   initialValue?: number;
   expirationDate?: string;
   notes?: string;
+  customerId?: string;
   isActive?: boolean;
 }
 
