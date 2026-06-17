@@ -1,7 +1,7 @@
 // src/App.tsx
 import React, { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, Navigate, useLocation } from "react-router-dom";
 
 // Import axios config early to ensure interceptors are set up before any requests
 import "./config/axios.config";
@@ -132,6 +132,11 @@ const SettingsLayout = lazy(() => import("./pages/settings/SettingsLayout"));
 const SettingsPlaceholder = lazy(() => import("./pages/settings/SettingsPlaceholder"));
 const ShippingSettings = lazy(() => import("./pages/settings/ShippingSettings"));
 const ShopMetafieldsPage = lazy(() => import("./pages/settings/ShopMetafieldsPage"));
+const MetaobjectDefinitionCreatePage = lazy(() =>
+  import("./pages/settings/MetaobjectDefinitionCreatePage").then((m) => ({
+    default: m.MetaobjectDefinitionCreatePage,
+  }))
+);
 const StoreActivityLogPage = lazy(() => import("./pages/settings/StoreActivityLogPage"));
 const TaxesAndDutiesPage = lazy(() => import("./pages/settings/TaxesAndDutiesPage"));
 const UsersPage = lazy(() => import("./pages/settings/UsersPage"));
@@ -473,7 +478,15 @@ const AdminApp: React.FC = () => {
               <Route path="notifications/:categoryId/:categorySlug/:optionId" element={<NotificationOptionDetailPage />} />
               <Route path="notifications/:categoryId/:categorySlug/:optionId/edit" element={<EditNotificationOptionPage />} />
               <Route path="notifications/webhooks" element={<WebhooksNotificationsPage />} />
-              <Route path="metafields-and-metaobjects" element={<MetafeildsAndMetaObjectsSettingsPage />} />
+              <Route path="custom_data" element={<MetafeildsAndMetaObjectsSettingsPage />} />
+              <Route
+                path="metafields-and-metaobjects"
+                element={<Navigate to="/settings/custom_data" replace />}
+              />
+              <Route
+                path="custom_data/metaobjects/create"
+                element={<MetaobjectDefinitionCreatePage />}
+              />
               <Route path="languages" element={<LanguageSettingsPage />} />
               <Route path="customer-privacy" element={<CustomerPrivacyPage />} />
               <Route path="customer-privacy/dns" element={<DataSharingOptOutPage />} />

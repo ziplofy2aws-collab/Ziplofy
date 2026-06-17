@@ -6,6 +6,8 @@ export interface SettingsNavItem {
   text: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   path?: string;
+  /** Additional path prefixes that should keep this nav item highlighted. */
+  matchPrefixes?: string[];
   children?: SettingsNavItem[];
 }
 

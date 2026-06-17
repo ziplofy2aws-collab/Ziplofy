@@ -47,7 +47,12 @@ const SETTINGS_NAV: SettingsNavItem[] = [
   { text: 'Domains', icon: LanguageIcon, path: '/settings/domains' },
   { text: 'Customer Events', icon: CalendarIcon, path: '/settings/customer-events' },
   { text: 'Notifications', icon: BellIcon, path: '/settings/notifications' },
-  { text: 'Metafields and metaobjects', icon: CodeBracketIcon, path: '/settings/metafields-and-metaobjects' },
+  {
+    text: 'Metafields and metaobjects',
+    icon: CodeBracketIcon,
+    path: '/settings/custom_data',
+    matchPrefixes: ['/settings/metafields-and-metaobjects'],
+  },
   { text: 'Languages', icon: LanguageIcon, path: '/settings/languages' },
   { text: 'Customer Privacy', icon: ShieldCheckIcon, path: '/settings/customer-privacy' },
   { text: 'Policies', icon: DocumentTextIcon, path: '/settings/policies' },
