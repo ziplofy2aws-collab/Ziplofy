@@ -50,6 +50,9 @@ export function PreviewStorefrontProvider({
       activeReactThemePackId: null,
       reactThemePacks: [],
       themeConfig: null,
+      storeAssetsLoading: false,
+      storeAssetsReady: true,
+      loadStoreAssets: async () => {},
     };
   }, [storeId, storeName, jsUrl, cssUrl]);
 

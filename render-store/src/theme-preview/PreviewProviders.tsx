@@ -7,6 +7,7 @@ import { StorefrontCountryProvider } from '@/contexts/storefront-country.context
 import { StorefrontProductVariantProvider } from '@/contexts/product-variant.context';
 import { StorefrontAuthProvider } from '@/contexts/storefront-auth.context';
 import { StorefrontCartProvider } from '@/contexts/storefront-cart.context';
+import { StorefrontBlogsProvider } from '@/contexts/storefront-blogs.context';
 import { StorefrontCollectionsProvider } from '@/contexts/storefront-collections.context';
 import { StorefrontSearchProvider } from '@/contexts/storefront-search.context';
 import { BuyXGetYProvider } from '@/contexts/buy-x-get-y.context';
@@ -53,6 +54,7 @@ export function PreviewProviders({
                 <CustomerAddressProvider>
                   <StorefrontCountryProvider>
                     <StorefrontCollectionsProvider>
+                      <StorefrontBlogsProvider>
                       <PreviewCollectionsLoader storeId={storeId} />
                       <StorefrontCollectionByUrlHandleLoader />
                       <StorefrontSearchProvider>
@@ -66,6 +68,7 @@ export function PreviewProviders({
                           </AmountOffProductProvider>
                         </AmountOffOrderProvider>
                       </StorefrontSearchProvider>
+                      </StorefrontBlogsProvider>
                     </StorefrontCollectionsProvider>
                   </StorefrontCountryProvider>
                 </CustomerAddressProvider>

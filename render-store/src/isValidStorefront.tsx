@@ -1,3 +1,5 @@
+import { StorePasswordGate } from './components/StorePasswordGate';
+import { useStorefrontAccess } from './contexts/store-access.context';
 import { useStorefront } from './contexts/store.context';
 import { CustomThemeRoutes } from './custom-theme/CustomThemeRoutes.tsx';
 import { RemoteThemeProvider } from './themes/RemoteThemeProvider.tsx';
@@ -5,11 +7,20 @@ import { StorefrontRoutes } from './StorefrontRoutes.tsx';
 
 /**
  * Resolves storefront subdomain / meta from `StorefrontProvider`, then either
- * shows loading, a helpful error, or the main app routes.
+ * shows loading, a helpful error, password gate, or the main app routes.
  */
 export const IsValidStorefront = () => {
-  const { isStoreFront, storeFrontChecked, storeFrontMeta, isStoreCustomTheme, themeConfig } =
-    useStorefront();
+  const {
+    isStoreFront,
+    storeFrontChecked,
+    storeFrontMeta,
+    isStoreCustomTheme,
+    themeConfig,
+    storeAssetsLoading,
+    storeAssetsReady,
+  } = useStorefront();
+  const { checked: accessChecked, loading: accessLoading, passwordProtectionEnabled, unlocked } =
+    useStorefrontAccess();
 
   if (!storeFrontChecked) {
     return (
@@ -30,6 +41,26 @@ export const IsValidStorefront = () => {
           For local development, set <code>VITE_STORE_SUBDOMAIN</code> in your <code>.env</code> file to match a
           store subdomain, then reload.
         </p>
+      </div>
+    );
+  }
+
+  if (!accessChecked || accessLoading) {
+    return (
+      <div style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
+        <p style={{ margin: 0 }}>Checking store access…</p>
+      </div>
+    );
+  }
+
+  if (passwordProtectionEnabled && !unlocked) {
+    return <StorePasswordGate />;
+  }
+
+  if (storeAssetsLoading || !storeAssetsReady) {
+    return (
+      <div style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
+        <p style={{ margin: 0 }}>Loading store…</p>
       </div>
     );
   }

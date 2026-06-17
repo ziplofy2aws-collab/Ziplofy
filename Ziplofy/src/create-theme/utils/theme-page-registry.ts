@@ -29,6 +29,10 @@ export type ThemePageRouteSpec = {
   loadCollectionUrlHandle?: string;
   /** Load product detail for `/products/:id` (preview uses first catalog product when id is `preview`) */
   withProductLoader?: boolean;
+  /** Load blog + visible posts for `/blogs/:blogHandle` */
+  withBlogLoader?: boolean;
+  /** Load visible blog post for `/blogs/:blogHandle/:articleHandle` */
+  withBlogPostLoader?: boolean;
 };
 
 export type ThemePageRegistryEntry = {
@@ -151,16 +155,28 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'blogs',
     label: 'Blogs',
     icon: 'blog',
-    previewPath: '/',
-    routes: [],
+    previewPath: '/blogs/preview',
+    routes: [
+      {
+        path: '/blogs/:blogHandle',
+        templateId: 'blogs',
+        withBlogLoader: true,
+      },
+    ],
   },
   {
     pageId: 'blog-posts',
     templateId: 'blog-posts',
     label: 'Blog posts',
     icon: 'blog',
-    previewPath: '/',
-    routes: [],
+    previewPath: '/blogs/preview/preview',
+    routes: [
+      {
+        path: '/blogs/:blogHandle/:articleHandle',
+        templateId: 'blog-posts',
+        withBlogPostLoader: true,
+      },
+    ],
   },
   {
     pageId: 'search',

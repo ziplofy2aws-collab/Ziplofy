@@ -5,6 +5,8 @@ import {
 } from './json-ld.util';
 import { joinTitle, plainTextFromHtml, truncateSeoText } from './seo-text.util';
 import type {
+  StorefrontSeoBlog,
+  StorefrontSeoBlogPost,
   StorefrontSeoCollection,
   StorefrontSeoPayload,
   StorefrontSeoProduct,
@@ -17,6 +19,8 @@ type ResolveStorefrontSeoInput = {
   store: StorefrontSeoStore;
   product?: StorefrontSeoProduct | null;
   collection?: StorefrontSeoCollection | null;
+  blog?: StorefrontSeoBlog | null;
+  blogPost?: StorefrontSeoBlogPost | null;
   currencyCode?: string;
 };
 
@@ -54,7 +58,7 @@ function routeSuffixTitle(pathname: string, storeName: string): StorefrontSeoPay
 }
 
 export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): StorefrontSeoPayload {
-  const { pathname, origin, store, product, collection, currencyCode = 'USD' } = input;
+  const { pathname, origin, store, product, collection, blog, blogPost, currencyCode = 'USD' } = input;
   const storeName = store.name.trim() || 'Store';
   const canonicalUrl = canonicalFromPath(origin, pathname);
   const storeDescription =
@@ -127,6 +131,56 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
     return {
       title: joinTitle(['All products', storeName]),
       description: storeDescription || `Browse all products at ${storeName}.`,
+      canonicalUrl,
+      ogType: 'website',
+      jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
+    };
+  }
+
+  const blogPostMatch = pathname.match(/^\/blogs\/([^/]+)\/([^/]+)$/);
+  if (blogPostMatch && !blogPost) {
+    return {
+      title: joinTitle(['Article', storeName]),
+      description: storeDescription,
+      canonicalUrl,
+      ogType: 'website',
+      jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
+    };
+  }
+
+  if (blogPostMatch && blogPost) {
+    const title = joinTitle([blogPost.pageTitle?.trim() || blogPost.title, storeName]);
+    const description =
+      blogPost.metaDescription?.trim() ||
+      truncateSeoText(plainTextFromHtml(blogPost.excerpt ?? blogPost.content ?? '')) ||
+      storeDescription;
+    return {
+      title,
+      description,
+      canonicalUrl,
+      ogType: 'website',
+      ogImage: blogPost.featuredImageUrl,
+      jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
+    };
+  }
+
+  const blogMatch = pathname.match(/^\/blogs\/([^/]+)$/);
+  if (blogMatch && !blog) {
+    return {
+      title: joinTitle(['Blog', storeName]),
+      description: storeDescription,
+      canonicalUrl,
+      ogType: 'website',
+      jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
+    };
+  }
+
+  if (blogMatch && blog) {
+    const title = joinTitle([blog.pageTitle?.trim() || blog.title, storeName]);
+    const description = blog.metaDescription?.trim() || storeDescription;
+    return {
+      title,
+      description,
       canonicalUrl,
       ogType: 'website',
       jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),

@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ChevronDownIcon,
   CircleStackIcon,
@@ -17,6 +17,8 @@ import {
   type ThemeEditorFieldType,
 } from './create-theme-field.utils';
 import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
+import { useBlogs } from '../../contexts/blog.context';
+import { useStore } from '../../contexts/store.context';
 import { ThemeEditorRichTextField } from '../../components/theme-editor/ThemeEditorRichTextField';
 import { ThemeEditorImagePickerModal } from './ThemeEditorImagePickerModal';
 import {
@@ -7090,9 +7092,27 @@ function BlogSelectFieldRow({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
+  const { activeStoreId } = useStore();
+  const { blogs, fetchBlogsByStoreId, loading } = useBlogs();
   const current = fieldValueAsString(values, field);
-  const label =
-    field.options?.find((o) => o.value === current)?.label ?? (current ? current : 'Select');
+
+  useEffect(() => {
+    if (!activeStoreId) return;
+    void fetchBlogsByStoreId(activeStoreId);
+  }, [activeStoreId, fetchBlogsByStoreId]);
+
+  const options = useMemo(
+    () => [
+      { value: '', label: 'Select' },
+      ...blogs.map((blog) => ({
+        value: blog.urlHandle,
+        label: blog.title,
+      })),
+    ],
+    [blogs]
+  );
+
+  const label = options.find((o) => o.value === current)?.label ?? (current ? current : 'Select');
 
   return (
     <div className="space-y-2 py-1">
@@ -7102,9 +7122,10 @@ function BlogSelectFieldRow({
           id={fieldInputId(field.path)}
           value={current}
           onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
-          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
+          disabled={loading && blogs.length === 0}
+          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50 disabled:cursor-wait disabled:opacity-60"
         >
-          {(field.options ?? []).map((opt) => (
+          {options.map((opt) => (
             <option key={opt.value || '__empty'} value={opt.value}>
               {opt.label}
             </option>
@@ -7121,6 +7142,10 @@ function BlogSelectFieldRow({
       </div>
       {current ? (
         <p className="truncate text-[12px] text-gray-600">{label}</p>
+      ) : loading ? (
+        <p className="text-[12px] text-gray-500">Loading blogs…</p>
+      ) : blogs.length === 0 ? (
+        <p className="text-[12px] text-gray-500">Create a blog in Content → Blogs.</p>
       ) : null}
     </div>
   );

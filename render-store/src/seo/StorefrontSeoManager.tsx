@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontProducts } from '@/contexts/product.context';
+import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
 import { useStorefrontCollections } from '@/contexts/storefront-collections.context';
 import { applyStorefrontSeoToDocument } from './document-head.util';
 import { resolveStorefrontSeo } from './resolve-storefront-seo';
@@ -14,6 +15,7 @@ export function StorefrontSeoManager() {
   const { storeFrontMeta } = useStorefront();
   const { productDetail } = useStorefrontProducts();
   const { activeCollection } = useStorefrontCollections();
+  const { activeBlog, activePost } = useStorefrontBlogs();
   const seo = useMemo(() => {
     if (!storeFrontMeta) return null;
 
@@ -30,8 +32,10 @@ export function StorefrontSeoManager() {
       },
       product: productDetail,
       collection: activeCollection,
+      blog: activeBlog,
+      blogPost: activePost,
     });
-  }, [pathname, storeFrontMeta, productDetail, activeCollection]);
+  }, [pathname, storeFrontMeta, productDetail, activeCollection, activeBlog, activePost]);
 
   useEffect(() => {
     if (!seo) return;

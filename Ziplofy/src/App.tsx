@@ -44,6 +44,9 @@ const CustomerDetailsPage = lazy(() => import("./pages/CustomerDetailsPage"));
 const CustomerSegmentDetailsPage = lazy(() => import("./pages/CustomerSegmentDetailsPage"));
 const CustomersPage = lazy(() => import("./pages/CustomersPage"));
 const CustomersSegmentsPage = lazy(() => import("./pages/CustomersSegmentsPage"));
+const CustomerCompaniesPage = lazy(() => import("./pages/CustomerCompaniesPage"));
+const CompanyCreatePage = lazy(() => import("./pages/CompanyCreatePage"));
+const CompanyDetailPage = lazy(() => import("./pages/CompanyDetailPage"));
 const DiscountsPage = lazy(() => import("./pages/DiscountsPage"));
 const GiftCardDetailPage = lazy(() => import("./pages/GiftCardDetailPage"));
 const GiftCardsPage = lazy(() => import("./pages/GiftCardsPage"));
@@ -201,6 +204,8 @@ import { CheckoutSettingsProvider } from "./contexts/checkout-settings.context";
 import { CollectionEntriesProvider } from "./contexts/collection-entries.context";
 import { CollectionProvider } from "./contexts/collection.context";
 import { BlogProvider } from "./contexts/blog.context";
+import { CompanyProvider } from "./contexts/company.context";
+import { BlogCommentsProvider } from "./contexts/blog-comment.context";
 import { BlogPostProvider } from "./contexts/blog-post.context";
 import { BlogTagsProvider } from "./contexts/blog-tags.context";
 import { StoreMenuProvider } from "./contexts/store-menu.context";
@@ -215,6 +220,7 @@ import { CustomerSegmentProvider } from "./contexts/customer-segment.context";
 import { FinalSaleItemProvider } from "./contexts/final-sale-item.context";
 import { FreeShippingDiscountProvider } from "./contexts/free-shipping-discount.context";
 import { GeneralSettingsProvider } from "./contexts/general-settings.context";
+import { OnlineStorePreferencesProvider } from "./contexts/online-store-preferences.context";
 import { GiftCardTimelineProvider } from "./contexts/gift-card-timeline.context";
 import { GiftCardsProvider } from "./contexts/gift-cards.context";
 import { GiftCardProductsProvider } from "./contexts/gift-card-products.context";
@@ -361,6 +367,9 @@ const AdminApp: React.FC = () => {
             <Route path="/products/transfers/new" element={<NewTransferPage />} />
             <Route path="/products/transfers/:id/shipment/new" element={<ShipmentNewPage />} />
             <Route path="/products/transfers/:id/shipment/:shipmentId/receive" element={<ShipmentReceivePage />} />
+            <Route path="/companies/new" element={<CompanyCreatePage />} />
+            <Route path="/companies" element={<CustomerCompaniesPage />} />
+            <Route path="/company/:id" element={<CompanyDetailPage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/customers/segments" element={<CustomersSegmentsPage />} />
             <Route path="/customers/segments/:id" element={<CustomerSegmentDetailsPage />} />
@@ -529,7 +538,9 @@ const App: React.FC = () => {
         <CollectionProvider>
         <StoreMenuProvider>
         <BlogProvider>
+        <CompanyProvider>
         <BlogPostProvider>
+        <BlogCommentsProvider>
         <BlogTagsProvider>
         <CustomerTagsProvider>
         <ProductTagsProvider>
@@ -565,6 +576,7 @@ const App: React.FC = () => {
         <StoreBannerProvider>
         <PaymentProvider>
         <GeneralSettingsProvider>
+        <OnlineStorePreferencesProvider>
         <CustomerAccountSettingsProvider>
         <ReturnRulesProvider>
         <FinalSaleItemProvider>
@@ -673,6 +685,7 @@ const App: React.FC = () => {
         </FinalSaleItemProvider>
         </ReturnRulesProvider>
         </CustomerAccountSettingsProvider>
+        </OnlineStorePreferencesProvider>
         </GeneralSettingsProvider>
         </PaymentProvider>
         </StoreBannerProvider>
@@ -708,7 +721,9 @@ const App: React.FC = () => {
         </ProductTagsProvider>
         </CustomerTagsProvider>
         </BlogTagsProvider>
+        </BlogCommentsProvider>
         </BlogPostProvider>
+        </CompanyProvider>
         </BlogProvider>
         </StoreMenuProvider>
         </CollectionProvider>

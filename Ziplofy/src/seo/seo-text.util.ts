@@ -33,7 +33,8 @@ export function slugFromTitle(title: string, fallback = 'page'): string {
 export function sanitizeUrlHandle(value: string): string {
   return value
     .toLowerCase()
-    .replace(/[^a-z0-9-]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
     .replace(/-+/g, '-');
 }
 

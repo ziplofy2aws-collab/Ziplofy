@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { axiosi } from "../config/axios.config";
 import { StorefrontProductProvider } from "./product.context";
@@ -104,6 +104,9 @@ export interface StorefrontContextType {
   }>;
   /** Merchant overrides from theme editor (merged with defaults on API). */
   themeConfig: Record<string, unknown> | null;
+  storeAssetsLoading: boolean;
+  storeAssetsReady: boolean;
+  loadStoreAssets: () => Promise<void>;
 }
 
 const StorefrontContext = createContext<StorefrontContextType | undefined>(undefined);
@@ -131,6 +134,179 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [activeReactThemePackId, setActiveReactThemePackId] = useState<"theme1" | "theme2" | null>(null);
   const [reactThemePacks, setReactThemePacks] = useState<StorefrontContextType["reactThemePacks"]>([]);
   const [themeConfig, setThemeConfig] = useState<Record<string, unknown> | null>(null);
+  const [storeAssetsLoading, setStoreAssetsLoading] = useState(false);
+  const [storeAssetsReady, setStoreAssetsReady] = useState(false);
+  const storeAssetsLoadingRef = useRef(false);
+  const storeAssetsReadyRef = useRef(false);
+  const resolvedStoreRef = useRef<{
+    storeId: string;
+    name: string;
+    description: string;
+    appliedCustomThemeId: string | null;
+    appliedCustomThemeName: string | null;
+  } | null>(null);
+
+  const loadStoreAssets = useCallback(async () => {
+    const resolved = resolvedStoreRef.current;
+    if (!resolved) return;
+    if (storeAssetsReadyRef.current || storeAssetsLoadingRef.current) return;
+
+    storeAssetsLoadingRef.current = true;
+    setStoreAssetsLoading(true);
+
+    const installedRuntimeClear = {
+      setActiveThemeEntryHtmlUrl,
+      setActiveThemeCssUrls,
+      setActiveThemeJsUrls,
+      setActiveThemeHtmlUrls,
+      setThemeRuntimeBaseUrl,
+      setRemoteThemeJsUrl,
+      setRemoteThemeCssUrl,
+      setLiquidThemeEnabled,
+      setLiquidRenderPagePath,
+      setLiquidTemplateNames,
+      setLiquidTemplatesListProvided,
+      setActiveReactThemePackId,
+      setReactThemePacks,
+    };
+
+    const customId = resolved.appliedCustomThemeId;
+
+    try {
+      if (customId) {
+        try {
+          const runtimeRes = await axiosi.get<{
+            success: boolean;
+            data?: ThemeRuntimePayload | null;
+          }>(`/storefront/${resolved.storeId}/theme-runtime`, {
+            params: { _t: Date.now() },
+          });
+          const rt = runtimeRes.data?.data;
+          const tc = rt?.themeConfig;
+          if (rt && tc && typeof tc === "object" && rt.isStoreCustomTheme) {
+            setActiveThemeId(rt.themeId || customId);
+            setActiveThemeName(rt.themeName || resolved.appliedCustomThemeName || "Custom theme");
+            setThemeConfig(tc);
+            setIsStoreCustomTheme(true);
+            clearInstalledThemeRuntimeState(installedRuntimeClear);
+            toast.success("This store is using a custom theme");
+          } else {
+            setActiveThemeId(null);
+            setActiveThemeName(null);
+            setThemeConfig(null);
+            setIsStoreCustomTheme(false);
+            clearInstalledThemeRuntimeState(installedRuntimeClear);
+            toast.error("Custom theme is applied but could not be loaded");
+          }
+        } catch {
+          setActiveThemeId(null);
+          setActiveThemeName(null);
+          setThemeConfig(null);
+          setIsStoreCustomTheme(false);
+          clearInstalledThemeRuntimeState(installedRuntimeClear);
+          toast.error("Failed to load custom theme");
+        }
+      } else {
+        try {
+          const reactPackRes = await axiosi.get<{
+            success: boolean;
+            data?: {
+              activePackId: "theme1" | "theme2";
+              packs: StorefrontContextType["reactThemePacks"];
+            };
+          }>(`/storefront/${resolved.storeId}/react-theme-pack`, {
+            params: { _t: Date.now() },
+          });
+          setActiveReactThemePackId(reactPackRes.data?.data?.activePackId || null);
+          setReactThemePacks(reactPackRes.data?.data?.packs || []);
+        } catch {
+          setActiveReactThemePackId(null);
+          setReactThemePacks([]);
+        }
+
+        try {
+          const runtimeRes = await axiosi.get<{
+            success: boolean;
+            data?: ThemeRuntimePayload | null;
+          }>(`/storefront/${resolved.storeId}/theme-runtime`, {
+            params: { _t: Date.now() },
+          });
+          const rt = runtimeRes.data?.data;
+          if (rt?.isStoreCustomTheme) {
+            setIsStoreCustomTheme(true);
+            setThemeConfig(
+              rt.themeConfig && typeof rt.themeConfig === "object" ? rt.themeConfig : null
+            );
+            clearInstalledThemeRuntimeState(installedRuntimeClear);
+            toast.success("This store is using a custom theme");
+          } else {
+            setActiveThemeId(rt?.themeId || null);
+            setActiveThemeName(rt?.themeName || null);
+            const entryHtml = rt?.entryHtml;
+            const runtimeBaseUrl = rt?.runtimeBaseUrl;
+            setActiveThemeEntryHtmlUrl(
+              entryHtml && runtimeBaseUrl ? `${runtimeBaseUrl}/${entryHtml}` : null
+            );
+            setActiveThemeCssUrls(rt?.cssUrls || []);
+            setActiveThemeJsUrls(rt?.jsUrls || []);
+            setActiveThemeHtmlUrls(rt?.htmlUrls || []);
+            const rb = rt?.runtimeBaseUrl;
+            setThemeRuntimeBaseUrl(typeof rb === "string" && rb.length > 0 ? rb.replace(/\/$/, "") : null);
+            const liq = rt?.liquid;
+            setLiquidThemeEnabled(Boolean(liq?.enabled));
+            setLiquidRenderPagePath(
+              typeof liq?.renderPagePath === "string" && liq.renderPagePath.length > 0
+                ? liq.renderPagePath.startsWith("/")
+                  ? liq.renderPagePath
+                  : `/${liq.renderPagePath}`
+                : null
+            );
+            if (Array.isArray(liq?.templates)) {
+              setLiquidTemplateNames(liq.templates);
+              setLiquidTemplatesListProvided(true);
+            } else {
+              setLiquidTemplateNames([]);
+              setLiquidTemplatesListProvided(false);
+            }
+            setRemoteThemeJsUrl(
+              typeof rt?.remoteThemeJsUrl === "string" && rt.remoteThemeJsUrl.length > 0
+                ? rt.remoteThemeJsUrl
+                : null
+            );
+            setRemoteThemeCssUrl(
+              typeof rt?.remoteThemeCssUrl === "string" && rt.remoteThemeCssUrl.length > 0
+                ? rt.remoteThemeCssUrl
+                : null
+            );
+            const tc = rt?.themeConfig;
+            setThemeConfig(tc && typeof tc === "object" ? tc : null);
+            setIsStoreCustomTheme(false);
+          }
+        } catch {
+          setActiveThemeId(null);
+          setActiveThemeName(null);
+          setActiveThemeEntryHtmlUrl(null);
+          setActiveThemeCssUrls([]);
+          setActiveThemeJsUrls([]);
+          setActiveThemeHtmlUrls([]);
+          setThemeRuntimeBaseUrl(null);
+          setRemoteThemeJsUrl(null);
+          setRemoteThemeCssUrl(null);
+          setThemeConfig(null);
+          setIsStoreCustomTheme(false);
+          setLiquidThemeEnabled(false);
+          setLiquidRenderPagePath(null);
+          setLiquidTemplateNames([]);
+          setLiquidTemplatesListProvided(false);
+        }
+      }
+      setStoreAssetsReady(true);
+      storeAssetsReadyRef.current = true;
+    } finally {
+      storeAssetsLoadingRef.current = false;
+      setStoreAssetsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const hostname = window.location.hostname;
@@ -155,6 +331,9 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             storeId: string;
             name: string;
             description: string;
+            seoHomePageTitle?: string;
+            seoMetaDescription?: string;
+            seoSocialImageUrl?: string;
             appliedCustomThemeId?: string | null;
             appliedCustomThemeName?: string | null;
           };
@@ -183,151 +362,22 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
               : null
           );
 
-          const installedRuntimeClear = {
-            setActiveThemeEntryHtmlUrl,
-            setActiveThemeCssUrls,
-            setActiveThemeJsUrls,
-            setActiveThemeHtmlUrls,
-            setThemeRuntimeBaseUrl,
-            setRemoteThemeJsUrl,
-            setRemoteThemeCssUrl,
-            setLiquidThemeEnabled,
-            setLiquidRenderPagePath,
-            setLiquidTemplateNames,
-            setLiquidTemplatesListProvided,
-            setActiveReactThemePackId,
-            setReactThemePacks,
+          resolvedStoreRef.current = {
+            storeId: String(data.data.storeId),
+            name: data.data.name,
+            description: data.data.description,
+            appliedCustomThemeId: customId,
+            appliedCustomThemeName:
+              customId && data.data.appliedCustomThemeName
+                ? String(data.data.appliedCustomThemeName)
+                : null,
           };
-
-          if (customId) {
-            try {
-              const runtimeRes = await axiosi.get<{
-                success: boolean;
-                data?: ThemeRuntimePayload | null;
-              }>(`/storefront/${data.data.storeId}/theme-runtime`, {
-                params: { _t: Date.now() },
-              });
-              const rt = runtimeRes.data?.data;
-              const tc = rt?.themeConfig;
-              if (rt && tc && typeof tc === "object" && rt.isStoreCustomTheme) {
-                setActiveThemeId(rt.themeId || customId);
-                setActiveThemeName(rt.themeName || data.data.appliedCustomThemeName || "Custom theme");
-                setThemeConfig(tc);
-                setIsStoreCustomTheme(true);
-                clearInstalledThemeRuntimeState(installedRuntimeClear);
-                toast.success("This store is using a custom theme");
-              } else {
-                setActiveThemeId(null);
-                setActiveThemeName(null);
-                setThemeConfig(null);
-                setIsStoreCustomTheme(false);
-                clearInstalledThemeRuntimeState(installedRuntimeClear);
-                toast.error("Custom theme is applied but could not be loaded");
-              }
-            } catch {
-              setActiveThemeId(null);
-              setActiveThemeName(null);
-              setThemeConfig(null);
-              setIsStoreCustomTheme(false);
-              clearInstalledThemeRuntimeState(installedRuntimeClear);
-              toast.error("Failed to load custom theme");
-            }
-          } else {
-            try {
-              const reactPackRes = await axiosi.get<{
-                success: boolean;
-                data?: {
-                  activePackId: "theme1" | "theme2";
-                  packs: StorefrontContextType["reactThemePacks"];
-                };
-              }>(`/storefront/${data.data.storeId}/react-theme-pack`, {
-                params: { _t: Date.now() },
-              });
-              setActiveReactThemePackId(reactPackRes.data?.data?.activePackId || null);
-              setReactThemePacks(reactPackRes.data?.data?.packs || []);
-            } catch {
-              setActiveReactThemePackId(null);
-              setReactThemePacks([]);
-            }
-
-            try {
-              const runtimeRes = await axiosi.get<{
-                success: boolean;
-                data?: ThemeRuntimePayload | null;
-              }>(`/storefront/${data.data.storeId}/theme-runtime`, {
-                params: { _t: Date.now() },
-              });
-              const rt = runtimeRes.data?.data;
-              if (rt?.isStoreCustomTheme) {
-                setIsStoreCustomTheme(true);
-                setThemeConfig(
-                  rt.themeConfig && typeof rt.themeConfig === "object" ? rt.themeConfig : null
-                );
-                clearInstalledThemeRuntimeState(installedRuntimeClear);
-                toast.success("This store is using a custom theme");
-              } else {
-                setActiveThemeId(rt?.themeId || null);
-                setActiveThemeName(rt?.themeName || null);
-                const entryHtml = rt?.entryHtml;
-                const runtimeBaseUrl = rt?.runtimeBaseUrl;
-                setActiveThemeEntryHtmlUrl(
-                  entryHtml && runtimeBaseUrl ? `${runtimeBaseUrl}/${entryHtml}` : null
-                );
-                setActiveThemeCssUrls(rt?.cssUrls || []);
-                setActiveThemeJsUrls(rt?.jsUrls || []);
-                setActiveThemeHtmlUrls(rt?.htmlUrls || []);
-                const rb = rt?.runtimeBaseUrl;
-                setThemeRuntimeBaseUrl(typeof rb === "string" && rb.length > 0 ? rb.replace(/\/$/, "") : null);
-                const liq = rt?.liquid;
-                setLiquidThemeEnabled(Boolean(liq?.enabled));
-                setLiquidRenderPagePath(
-                  typeof liq?.renderPagePath === "string" && liq.renderPagePath.length > 0
-                    ? liq.renderPagePath.startsWith("/")
-                      ? liq.renderPagePath
-                      : `/${liq.renderPagePath}`
-                    : null
-                );
-                if (Array.isArray(liq?.templates)) {
-                  setLiquidTemplateNames(liq.templates);
-                  setLiquidTemplatesListProvided(true);
-                } else {
-                  setLiquidTemplateNames([]);
-                  setLiquidTemplatesListProvided(false);
-                }
-                setRemoteThemeJsUrl(
-                  typeof rt?.remoteThemeJsUrl === "string" && rt.remoteThemeJsUrl.length > 0
-                    ? rt.remoteThemeJsUrl
-                    : null
-                );
-                setRemoteThemeCssUrl(
-                  typeof rt?.remoteThemeCssUrl === "string" && rt.remoteThemeCssUrl.length > 0
-                    ? rt.remoteThemeCssUrl
-                    : null
-                );
-                const tc = rt?.themeConfig;
-                setThemeConfig(tc && typeof tc === "object" ? tc : null);
-                setIsStoreCustomTheme(false);
-              }
-            } catch {
-              setActiveThemeId(null);
-              setActiveThemeName(null);
-              setActiveThemeEntryHtmlUrl(null);
-              setActiveThemeCssUrls([]);
-              setActiveThemeJsUrls([]);
-              setActiveThemeHtmlUrls([]);
-              setThemeRuntimeBaseUrl(null);
-              setRemoteThemeJsUrl(null);
-              setRemoteThemeCssUrl(null);
-              setThemeConfig(null);
-              setIsStoreCustomTheme(false);
-              setLiquidThemeEnabled(false);
-              setLiquidRenderPagePath(null);
-              setLiquidTemplateNames([]);
-              setLiquidTemplatesListProvided(false);
-            }
-          }
         }
       } catch {
+        resolvedStoreRef.current = null;
+        storeAssetsReadyRef.current = false;
+        storeAssetsLoadingRef.current = false;
+        setStoreAssetsReady(false);
         setIsStoreFront(false);
         setStoreFrontMeta(null);
         setAppliedCustomThemeId(null);
@@ -378,6 +428,9 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     activeReactThemePackId,
     reactThemePacks,
     themeConfig,
+    storeAssetsLoading,
+    storeAssetsReady,
+    loadStoreAssets,
   };
 
   return (

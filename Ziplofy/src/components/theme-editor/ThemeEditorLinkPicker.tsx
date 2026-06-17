@@ -10,9 +10,15 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import { useBlogs, type Blog } from '../../contexts/blog.context';
+import { useBlogPosts, type BlogPost } from '../../contexts/blog-post.context';
 import { useCollections, type Collection } from '../../contexts/collection.context';
 import { useProducts, type Product } from '../../contexts/product.context';
 import { useStore } from '../../contexts/store.context';
+import {
+  buildStorefrontBlogPath,
+  buildStorefrontBlogPostPath,
+} from '../../utils/storefront-url.util';
 
 export type LinkPickerOption = {
   id: string;
@@ -58,10 +64,6 @@ const STATIC_PAGE_OPTIONS: LinkPickerOption[] = [
   { id: 'cart', label: 'Cart', value: '/cart', icon: DocumentTextIcon },
 ];
 
-const STATIC_BLOG_OPTIONS: LinkPickerOption[] = [
-  { id: 'blog-news', label: 'News', value: '/blogs/news', icon: PencilSquareIcon },
-];
-
 const STATIC_POLICY_OPTIONS: LinkPickerOption[] = [
   { id: 'privacy', label: 'Privacy policy', value: '/policies/privacy', icon: DocumentTextIcon },
   { id: 'terms', label: 'Terms of service', value: '/policies/terms', icon: DocumentTextIcon },
@@ -77,6 +79,15 @@ export function collectionLinkPath(collection: Collection): string {
 export function productLinkPath(product: Product): string {
   const handle = product.urlHandle?.trim();
   return handle ? `/products/${handle}` : `/products/${product._id}`;
+}
+
+export function blogLinkPath(blog: Blog): string {
+  return buildStorefrontBlogPath(blog.urlHandle || blog.title);
+}
+
+export function blogPostLinkPath(post: BlogPost, blogHandleById: Map<string, string>): string {
+  const blogHandle = blogHandleById.get(post.blogId) ?? '';
+  return buildStorefrontBlogPostPath(blogHandle, post.urlHandle || post.title);
 }
 
 function filterOptions(options: LinkPickerOption[], query: string): LinkPickerOption[] {
@@ -109,6 +120,8 @@ export function ThemeEditorLinkPickerDropdown({
   const panelRef = useRef<HTMLDivElement>(null);
   const { collections, loading: collectionsLoading, fetchCollectionsByStoreId } = useCollections();
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
+  const { blogs, loading: blogsLoading, fetchBlogsByStoreId } = useBlogs();
+  const { blogPosts, loading: blogPostsLoading, fetchBlogPostsByStoreId } = useBlogPosts();
   const [view, setView] = useState<LinkPickerView>('root');
 
   useEffect(() => {
@@ -146,6 +159,30 @@ export function ThemeEditorLinkPickerDropdown({
     );
   }, [products, searchQuery]);
 
+  const filteredBlogs = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return blogs;
+    return blogs.filter(
+      (blog) =>
+        blog.title.toLowerCase().includes(q) || blog.urlHandle.toLowerCase().includes(q)
+    );
+  }, [blogs, searchQuery]);
+
+  const blogHandleById = useMemo(
+    () => new Map(blogs.map((blog) => [blog._id, blog.urlHandle])),
+    [blogs]
+  );
+
+  const filteredBlogPosts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return blogPosts;
+    return blogPosts.filter((post) => {
+      const blogTitle = blogs.find((blog) => blog._id === post.blogId)?.title ?? '';
+      const haystack = [post.title, post.urlHandle, blogTitle].join(' ').toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [blogPosts, blogs, searchQuery]);
+
   const filteredRootOptions = useMemo(
     () => filterOptions(THEME_LINK_ROOT_OPTIONS, searchQuery),
     [searchQuery]
@@ -176,6 +213,32 @@ export function ThemeEditorLinkPickerDropdown({
       toast.error('Failed to load products');
     }
   }, [storeId, fetchProductsByStoreId]);
+
+  const openBlogsPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing blogs');
+      return;
+    }
+    setView('blogs');
+    try {
+      await fetchBlogsByStoreId(storeId);
+    } catch {
+      toast.error('Failed to load blogs');
+    }
+  }, [storeId, fetchBlogsByStoreId]);
+
+  const openBlogPostsPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing blog posts');
+      return;
+    }
+    setView('blog-posts');
+    try {
+      await Promise.all([fetchBlogsByStoreId(storeId), fetchBlogPostsByStoreId(storeId)]);
+    } catch {
+      toast.error('Failed to load blog posts');
+    }
+  }, [storeId, fetchBlogsByStoreId, fetchBlogPostsByStoreId]);
 
   const pickAndClose = (selection: LinkPickerSelection) => {
     onSelect(selection);
@@ -219,16 +282,14 @@ export function ThemeEditorLinkPickerDropdown({
       ? collectionsResultCount
       : view === 'products'
         ? productsResultCount
-        : filterOptions(
-            view === 'pages'
-              ? STATIC_PAGE_OPTIONS
-              : view === 'blogs'
-                ? STATIC_BLOG_OPTIONS
-                : view === 'blog-posts'
-                  ? []
-                  : STATIC_POLICY_OPTIONS,
-            searchQuery
-          ).length;
+        : view === 'blogs'
+          ? filteredBlogs.length
+          : view === 'blog-posts'
+            ? filteredBlogPosts.length
+            : filterOptions(
+                view === 'pages' ? STATIC_PAGE_OPTIONS : STATIC_POLICY_OPTIONS,
+                searchQuery
+              ).length;
 
   const positionClass =
     placement === 'above'
@@ -256,7 +317,11 @@ export function ThemeEditorLinkPickerDropdown({
                 ? 'Loading…'
                 : view === 'products' && productsLoading
                   ? 'Loading…'
-                  : `${drillResultCount} result${drillResultCount === 1 ? '' : 's'}`}
+                  : view === 'blogs' && blogsLoading
+                    ? 'Loading…'
+                    : view === 'blog-posts' && blogPostsLoading
+                      ? 'Loading…'
+                      : `${drillResultCount} result${drillResultCount === 1 ? '' : 's'}`}
             </span>
           </div>
 
@@ -358,11 +423,61 @@ export function ThemeEditorLinkPickerDropdown({
           ) : view === 'pages' ? (
             renderStaticList(STATIC_PAGE_OPTIONS)
           ) : view === 'blogs' ? (
-            renderStaticList(STATIC_BLOG_OPTIONS)
+            blogsLoading ? (
+              <p className="px-3 py-4 text-center text-[13px] text-gray-500">Loading blogs…</p>
+            ) : (
+              <>
+                {filteredBlogs.map((blog) => (
+                  <button
+                    key={blog._id}
+                    type="button"
+                    onClick={() =>
+                      pickAndClose({
+                        link: blogLinkPath(blog),
+                        label: blog.title,
+                      })
+                    }
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
+                  >
+                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                    <span className="min-w-0 flex-1 truncate">{blog.title}</span>
+                  </button>
+                ))}
+                {filteredBlogs.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-[13px] text-gray-500">
+                    No blogs found. Create one in Content → Blogs.
+                  </p>
+                ) : null}
+              </>
+            )
           ) : view === 'blog-posts' ? (
-            <p className="px-3 py-4 text-center text-[13px] text-gray-500">
-              Blog posts will appear here once you create posts in Content → Blog posts.
-            </p>
+            blogPostsLoading ? (
+              <p className="px-3 py-4 text-center text-[13px] text-gray-500">Loading blog posts…</p>
+            ) : (
+              <>
+                {filteredBlogPosts.map((post) => (
+                  <button
+                    key={post._id}
+                    type="button"
+                    onClick={() =>
+                      pickAndClose({
+                        link: blogPostLinkPath(post, blogHandleById),
+                        label: post.title,
+                      })
+                    }
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
+                  >
+                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                    <span className="min-w-0 flex-1 truncate">{post.title}</span>
+                  </button>
+                ))}
+                {filteredBlogPosts.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-[13px] text-gray-500">
+                    No blog posts found. Create one in Content → Blog posts.
+                  </p>
+                ) : null}
+              </>
+            )
           ) : (
             renderStaticList(STATIC_POLICY_OPTIONS)
           )}
@@ -389,11 +504,11 @@ export function ThemeEditorLinkPickerDropdown({
                     return;
                   }
                   if (opt.id === 'blogs') {
-                    setView('blogs');
+                    void openBlogsPicker();
                     return;
                   }
                   if (opt.id === 'blog-posts') {
-                    setView('blog-posts');
+                    void openBlogPostsPicker();
                     return;
                   }
                   if (opt.id === 'policies') {

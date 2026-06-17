@@ -35,3 +35,20 @@ export type StorefrontSeoCollection = {
   urlHandle?: string;
   imageUrl?: string;
 };
+
+export type StorefrontSeoBlog = {
+  title: string;
+  pageTitle?: string;
+  metaDescription?: string;
+  urlHandle?: string;
+};
+
+export type StorefrontSeoBlogPost = {
+  title: string;
+  excerpt?: string;
+  content?: string;
+  pageTitle?: string;
+  metaDescription?: string;
+  urlHandle?: string;
+  featuredImageUrl?: string;
+};

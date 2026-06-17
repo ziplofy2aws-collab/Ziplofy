@@ -22,7 +22,10 @@ exports.getSubdomainByStoreId = (0, error_utils_1.asyncErrorHandler)(async (req,
     // Build preview URL from subdomain (not stored in DB)
     const isProduction = process.env.NODE_ENV === 'production';
     const protocol = isProduction ? 'https' : 'http';
-    const url = `${protocol}://${doc.subdomain}${config_1.config.storeRenderMicroserviceUrlSuffix}`;
+    const customDomain = doc.customDomain?.trim().toLowerCase();
+    const url = customDomain
+        ? `${protocol}://${customDomain}`
+        : `${protocol}://${doc.subdomain}${config_1.config.storeRenderMicroserviceUrlSuffix}`;
     return res.status(200).json({ success: true, data: { ...doc.toObject(), url } });
 });
 // Public: check if a subdomain is valid and return store basic info

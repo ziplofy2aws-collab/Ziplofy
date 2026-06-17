@@ -1,101 +1,154 @@
 import {
-  ArrowLeftIcon,
-  CommandLineIcon,
+  BriefcaseIcon,
+  ChatBubbleLeftRightIcon,
+  ChevronRightIcon,
   GlobeAltIcon,
+  InformationCircleIcon,
+  LanguageIcon,
   LockClosedIcon,
-  ShieldCheckIcon,
+  ShoppingBagIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Modal from '../components/Modal';
+import toast from 'react-hot-toast';
+import ToggleSwitch from '../components/ToggleSwitch';
 import { axiosi } from '../config/axios.config';
+import { useOnlineStorePreferences } from '../contexts/online-store-preferences.context';
 import { useStore } from '../contexts/store.context';
-import { StoreSeoSettingsPanel } from '../seo/StoreSeoSettingsPanel';
+import { StoreSeoSettingsPanel, type StoreSeoValues } from '../seo/StoreSeoSettingsPanel';
 
-type Tab = 'All' | 'Active' | 'Expired';
-
-function PreferenceSection({
-  icon: Icon,
-  iconWrapClass,
-  iconClass,
-  title,
-  description,
-  children,
-}: {
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
-  iconWrapClass: string;
-  iconClass: string;
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
+function InfoTooltip() {
   return (
-    <section className="overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm">
-      <div className="border-b border-gray-100 bg-gradient-to-r from-gray-50/90 to-white px-5 py-4">
-        <div className="flex items-start gap-3">
-          <div
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconWrapClass}`}
-          >
-            <Icon className={`h-5 w-5 ${iconClass}`} aria-hidden />
-          </div>
-          <div className="min-w-0 pt-0.5">
-            <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
-            <p className="mt-0.5 text-xs leading-relaxed text-gray-500">{description}</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-gray-50/20 p-4 sm:p-5">{children}</div>
-    </section>
+    <button
+      type="button"
+      className="inline-flex shrink-0 text-gray-400 transition-colors hover:text-gray-600"
+      aria-label="More information"
+    >
+      <InformationCircleIcon className="h-4 w-4" aria-hidden />
+    </button>
   );
 }
 
-function ToggleRow({
+function SettingToggleRow({
+  icon: Icon,
   label,
   description,
+  checked,
+  onChange,
+  withDivider = false,
 }: {
-  label: string;
-  description?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: React.ReactNode;
+  description?: React.ReactNode;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  withDivider?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-200/80 bg-white px-4 py-3.5 shadow-sm transition-colors hover:border-gray-200 hover:bg-gray-50/40">
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-gray-900">{label}</p>
-        {description ? (
-          <p className="mt-0.5 text-xs leading-relaxed text-gray-500">{description}</p>
-        ) : null}
+    <div
+      className={`flex items-center justify-between gap-4 px-4 py-3.5 sm:px-5 ${
+        withDivider ? 'border-t border-gray-200' : ''
+      }`}
+    >
+      <div className="flex min-w-0 flex-1 items-start gap-3">
+        <Icon className="mt-0.5 h-[18px] w-[18px] shrink-0 text-gray-500" aria-hidden />
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <p className="text-[13px] font-medium text-gray-900">{label}</p>
+            <InfoTooltip />
+          </div>
+          {description ? (
+            <p className="mt-0.5 text-[12px] leading-relaxed text-gray-500">{description}</p>
+          ) : null}
+        </div>
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={false}
-        className="relative h-7 w-12 shrink-0 rounded-full bg-gray-200 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-      >
-        <span className="absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-md ring-1 ring-black/5 transition-transform" />
-      </button>
+      <ToggleSwitch checked={checked} onChange={onChange} />
     </div>
+  );
+}
+
+const defaultSeoValues: StoreSeoValues = {
+  homePageTitle: '',
+  metaDescription: '',
+  socialImageUrl: '',
+};
+
+type PreferencesFormSnapshot = {
+  passwordProtectionEnabled: boolean;
+  b2bCustomersOnly: boolean;
+  countryRedirectionEnabled: boolean;
+  languageRedirectionEnabled: boolean;
+  spamContactFormsEnabled: boolean;
+  spamAuthPagesEnabled: boolean;
+  messageToYourVisitors: string;
+  seoHomePageTitle: string;
+  seoMetaDescription: string;
+  seoSocialImageUrl: string;
+  passwordInput: string;
+};
+
+function buildSnapshot(values: {
+  passwordProtectionEnabled: boolean;
+  b2bAccessEnabled: boolean;
+  countryRedirectionEnabled: boolean;
+  languageRedirectionEnabled: boolean;
+  spamContactFormsEnabled: boolean;
+  spamAuthPagesEnabled: boolean;
+  messageToYourVisitorsInput: string;
+  seoValues: StoreSeoValues;
+  passwordInput: string;
+}): PreferencesFormSnapshot {
+  return {
+    passwordProtectionEnabled: values.passwordProtectionEnabled,
+    b2bCustomersOnly: values.b2bAccessEnabled,
+    countryRedirectionEnabled: values.countryRedirectionEnabled,
+    languageRedirectionEnabled: values.languageRedirectionEnabled,
+    spamContactFormsEnabled: values.spamContactFormsEnabled,
+    spamAuthPagesEnabled: values.spamAuthPagesEnabled,
+    messageToYourVisitors: values.messageToYourVisitorsInput.trim(),
+    seoHomePageTitle: values.seoValues.homePageTitle.trim(),
+    seoMetaDescription: values.seoValues.metaDescription.trim(),
+    seoSocialImageUrl: values.seoValues.socialImageUrl.trim(),
+    passwordInput: values.passwordInput.trim(),
+  };
+}
+
+function snapshotsEqual(a: PreferencesFormSnapshot, b: PreferencesFormSnapshot): boolean {
+  return (
+    a.passwordProtectionEnabled === b.passwordProtectionEnabled &&
+    a.b2bCustomersOnly === b.b2bCustomersOnly &&
+    a.countryRedirectionEnabled === b.countryRedirectionEnabled &&
+    a.languageRedirectionEnabled === b.languageRedirectionEnabled &&
+    a.spamContactFormsEnabled === b.spamContactFormsEnabled &&
+    a.spamAuthPagesEnabled === b.spamAuthPagesEnabled &&
+    a.messageToYourVisitors === b.messageToYourVisitors &&
+    a.seoHomePageTitle === b.seoHomePageTitle &&
+    a.seoMetaDescription === b.seoMetaDescription &&
+    a.seoSocialImageUrl === b.seoSocialImageUrl &&
+    a.passwordInput === b.passwordInput
   );
 }
 
 export default function OnlineStorePreferencePage() {
   const { activeStoreId } = useStore();
-  const [passwordInput, setPasswordInput] = useState<string>('');
-  const [messageToYourVisitorsInput, setMessageToYourVisitorsInput] = useState<string>('');
+  const { preferences, loading, getByStoreId, update } = useOnlineStorePreferences();
   const [storefrontUrl, setStorefrontUrl] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('All');
+  const [saving, setSaving] = useState(false);
+  const [loadingPreferences, setLoadingPreferences] = useState(false);
 
-  const [createNewSignatureModalOpen, setCreateNewSignatureModalOpen] = useState<boolean>(false);
+  const [passwordProtectionEnabled, setPasswordProtectionEnabled] = useState(false);
+  const [b2bAccessEnabled, setB2bAccessEnabled] = useState(false);
+  const [countryRedirectionEnabled, setCountryRedirectionEnabled] = useState(true);
+  const [languageRedirectionEnabled, setLanguageRedirectionEnabled] = useState(false);
+  const [spamContactFormsEnabled, setSpamContactFormsEnabled] = useState(true);
+  const [spamAuthPagesEnabled, setSpamAuthPagesEnabled] = useState(true);
 
-  const [signatureInput, setSignatureInput] = useState<string>('');
-  const [domainInput, setDomainInput] = useState<string>('');
-  const [expiresInInput, setExpiresInInput] = useState<string>('');
-
-  const handleChangePassword = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordInput(e.target.value);
-  }, []);
-
-  const handleMessageToYourVisitorsInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMessageToYourVisitorsInput(e.target.value);
-  }, []);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [messageToYourVisitorsInput, setMessageToYourVisitorsInput] = useState('');
+  const [seoValues, setSeoValues] = useState<StoreSeoValues>(defaultSeoValues);
+  const [savedSnapshot, setSavedSnapshot] = useState<PreferencesFormSnapshot | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!activeStoreId) {
@@ -119,253 +172,350 @@ export default function OnlineStorePreferencePage() {
     };
   }, [activeStoreId]);
 
-  const handleChangeActiveTab = useCallback((tab: Tab) => {
-    setActiveTab(tab);
-  }, []);
+  useEffect(() => {
+    if (!activeStoreId) {
+      setLoaded(false);
+      setSavedSnapshot(null);
+      return;
+    }
 
-  const handleToggleNewSignatureModal = useCallback(() => {
-    setCreateNewSignatureModalOpen((prev) => !prev);
-  }, []);
+    let cancelled = false;
+    setLoadingPreferences(true);
+    setLoaded(false);
+    setSavedSnapshot(null);
 
-  const handleSignatureInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSignatureInput(e.target.value);
-  }, []);
+    getByStoreId(activeStoreId)
+      .then((data) => {
+        if (cancelled || !data) return;
 
-  const handleDomainInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setDomainInput(e.target.value);
-  }, []);
+        const nextPasswordProtectionEnabled = data.passwordProtectionEnabled;
+        const nextB2bAccessEnabled = data.b2bCustomersOnly;
+        const nextCountryRedirectionEnabled = data.countryRedirectionEnabled;
+        const nextLanguageRedirectionEnabled = data.languageRedirectionEnabled;
+        const nextSpamContactFormsEnabled = data.spamContactFormsEnabled;
+        const nextSpamAuthPagesEnabled = data.spamAuthPagesEnabled;
+        const nextMessage = data.messageToYourVisitors ?? '';
+        const nextSeoValues: StoreSeoValues = {
+          homePageTitle: data.seoHomePageTitle ?? '',
+          metaDescription: data.seoMetaDescription ?? '',
+          socialImageUrl: data.seoSocialImageUrl ?? '',
+        };
 
-  const handleExpiresInInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setExpiresInInput(e.target.value);
-  }, []);
+        setPasswordProtectionEnabled(nextPasswordProtectionEnabled);
+        setB2bAccessEnabled(nextB2bAccessEnabled);
+        setCountryRedirectionEnabled(nextCountryRedirectionEnabled);
+        setLanguageRedirectionEnabled(nextLanguageRedirectionEnabled);
+        setSpamContactFormsEnabled(nextSpamContactFormsEnabled);
+        setSpamAuthPagesEnabled(nextSpamAuthPagesEnabled);
+        setPasswordInput('');
+        setMessageToYourVisitorsInput(nextMessage);
+        setSeoValues(nextSeoValues);
+
+        setSavedSnapshot(
+          buildSnapshot({
+            passwordProtectionEnabled: nextPasswordProtectionEnabled,
+            b2bAccessEnabled: nextB2bAccessEnabled,
+            countryRedirectionEnabled: nextCountryRedirectionEnabled,
+            languageRedirectionEnabled: nextLanguageRedirectionEnabled,
+            spamContactFormsEnabled: nextSpamContactFormsEnabled,
+            spamAuthPagesEnabled: nextSpamAuthPagesEnabled,
+            messageToYourVisitorsInput: nextMessage,
+            seoValues: nextSeoValues,
+            passwordInput: '',
+          })
+        );
+        setLoaded(true);
+      })
+      .catch(() => {
+        if (!cancelled) toast.error('Failed to load online store preferences');
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingPreferences(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeStoreId, getByStoreId]);
+
+  const currentSnapshot = useMemo(
+    () =>
+      buildSnapshot({
+        passwordProtectionEnabled,
+        b2bAccessEnabled,
+        countryRedirectionEnabled,
+        languageRedirectionEnabled,
+        spamContactFormsEnabled,
+        spamAuthPagesEnabled,
+        messageToYourVisitorsInput,
+        seoValues,
+        passwordInput,
+      }),
+    [
+      passwordProtectionEnabled,
+      b2bAccessEnabled,
+      countryRedirectionEnabled,
+      languageRedirectionEnabled,
+      spamContactFormsEnabled,
+      spamAuthPagesEnabled,
+      messageToYourVisitorsInput,
+      seoValues,
+      passwordInput,
+    ]
+  );
+
+  const isDirty = useMemo(() => {
+    if (!savedSnapshot || !loaded) return false;
+    return !snapshotsEqual(currentSnapshot, savedSnapshot);
+  }, [currentSnapshot, savedSnapshot, loaded]);
+
+  const handleSave = useCallback(async () => {
+    if (!preferences?._id) {
+      toast.error('Select a store first');
+      return;
+    }
+
+    if (passwordProtectionEnabled && !passwordInput.trim() && !preferences.hasStorefrontPassword) {
+      toast.error('Enter a storefront password');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      await update(preferences._id, {
+        passwordProtectionEnabled,
+        ...(passwordInput.trim() ? { storefrontPassword: passwordInput.trim() } : {}),
+        messageToYourVisitors: messageToYourVisitorsInput.trim(),
+        b2bCustomersOnly: b2bAccessEnabled,
+        seoHomePageTitle: seoValues.homePageTitle.trim(),
+        seoMetaDescription: seoValues.metaDescription.trim(),
+        seoSocialImageUrl: seoValues.socialImageUrl.trim(),
+        countryRedirectionEnabled,
+        languageRedirectionEnabled,
+        spamContactFormsEnabled,
+        spamAuthPagesEnabled,
+      });
+      setPasswordInput('');
+      setSavedSnapshot(
+        buildSnapshot({
+          passwordProtectionEnabled,
+          b2bAccessEnabled,
+          countryRedirectionEnabled,
+          languageRedirectionEnabled,
+          spamContactFormsEnabled,
+          spamAuthPagesEnabled,
+          messageToYourVisitorsInput,
+          seoValues,
+          passwordInput: '',
+        })
+      );
+      toast.success('Preferences saved');
+    } catch {
+      toast.error('Failed to save preferences');
+    } finally {
+      setSaving(false);
+    }
+  }, [
+    preferences,
+    passwordProtectionEnabled,
+    passwordInput,
+    messageToYourVisitorsInput,
+    b2bAccessEnabled,
+    seoValues,
+    countryRedirectionEnabled,
+    languageRedirectionEnabled,
+    spamContactFormsEnabled,
+    spamAuthPagesEnabled,
+    update,
+  ]);
 
   const inputClass =
-    'w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-300 focus:ring-2 focus:ring-blue-500/20';
-  const labelClass = 'mb-1.5 block text-sm font-medium text-gray-700';
-  const hintClass = 'mt-1.5 text-xs text-gray-500';
+    'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm outline-none transition-all placeholder:text-gray-400 focus:border-gray-400 focus:ring-1 focus:ring-gray-400/30';
+  const labelClass = 'mb-1.5 block text-[13px] font-medium text-gray-700';
+  const hintClass = 'mt-1.5 text-[12px] text-gray-500';
+  const saveDisabled =
+    !isDirty || saving || loading || loadingPreferences || !loaded || !preferences?._id;
 
   return (
-    <div className="w-full space-y-6 pb-8">
-      <Link
-        to="/online-store"
-        className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900"
-      >
-        <ArrowLeftIcon className="h-4 w-4 shrink-0" aria-hidden />
-        Back to Online Store
-      </Link>
+    <div className="min-h-screen bg-page-background-color">
+      <div className="mx-auto max-w-[900px] px-3 py-4 sm:px-4">
+        <nav
+          className="mb-5 flex min-w-0 flex-wrap items-center gap-1.5 text-[13px]"
+          aria-label="Breadcrumb"
+        >
+          <Link
+            to="/online-store"
+            className="inline-flex items-center text-gray-500 transition-colors hover:text-gray-700"
+            aria-label="Online Store"
+          >
+            <ShoppingBagIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+          </Link>
+          <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-gray-300" aria-hidden />
+          <span className="truncate font-semibold text-gray-900">Preferences</span>
+        </nav>
 
-      <header className="rounded-2xl border border-gray-200/80 bg-gradient-to-b from-white to-blue-50/20 px-5 py-5 shadow-sm sm:px-6">
-        <div className="min-w-0 pl-3 border-l-4 border-blue-500/70">
-          <h1 className="text-3xl font-semibold tracking-tight text-gray-900">Store preferences</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Control storefront access, SEO metadata, redirects, spam protection, and crawler signing.
-          </p>
-        </div>
-        <div className="mt-4 hidden rounded-xl border border-blue-100/80 bg-blue-50/40 px-4 py-2.5 sm:block">
-          <p className="text-xs leading-relaxed text-blue-950/80">
-            <span className="font-semibold text-blue-950">Tip:</span> set a clear home page title and meta
-            description — they often appear in search results and when your link is shared.
-          </p>
-        </div>
-      </header>
+        <div className="space-y-4 pb-24">
+          {/* Store access */}
+          <section className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+            <div className="border-b border-gray-100 px-4 py-3.5 sm:px-5">
+              <h2 className="text-[13px] font-semibold text-gray-900">Store access</h2>
+            </div>
 
-      <PreferenceSection
-        icon={LockClosedIcon}
-        iconWrapClass="bg-amber-50"
-        iconClass="text-amber-600"
-        title="Store access"
-        description="Password protection and the message visitors see before entering your storefront."
-      >
-        <div className="mb-5 rounded-xl border border-amber-100/80 bg-amber-50/40 px-4 py-3">
-          <p className="text-sm font-semibold text-amber-950">Password protection</p>
-          <p className="mt-0.5 text-xs text-amber-900/80">
-            Restrict browsing to visitors who know the password. To open the store publicly, remove the password
-            after your plan allows it.
-          </p>
-        </div>
-        <div className="flex flex-col gap-5">
-          <div>
-            <label className={labelClass} htmlFor="store-pref-password">
-              Password
-            </label>
-            <input
-              id="store-pref-password"
-              value={passwordInput}
-              onChange={handleChangePassword}
-              className={inputClass}
-              type="password"
-              placeholder="Enter store password"
-              autoComplete="new-password"
-            />
-            <p className={hintClass}>{passwordInput.length} of 100 characters used</p>
-          </div>
-          <div>
-            <label className={labelClass} htmlFor="store-pref-visitor-msg">
-              Message to your visitors
-            </label>
-            <textarea
-              id="store-pref-visitor-msg"
-              value={messageToYourVisitorsInput}
-              onChange={handleMessageToYourVisitorsInputChange}
-              className={`${inputClass} resize-none`}
-              rows={3}
-              placeholder="e.g. We're launching soon! Enter the password to preview."
-            />
-            <p className={hintClass}>{messageToYourVisitorsInput.length} of 5,000 characters used</p>
-          </div>
-        </div>
-      </PreferenceSection>
+            <div className="p-4 sm:p-5">
+              <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50/80">
+                <div className="flex items-center justify-between gap-4 px-4 py-3.5">
+                  <div className="flex min-w-0 flex-1 items-start gap-3">
+                    <LockClosedIcon className="mt-0.5 h-[18px] w-[18px] shrink-0 text-gray-500" aria-hidden />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <p className="text-[13px] font-medium text-gray-900">Password protection</p>
+                        <InfoTooltip />
+                      </div>
+                      <p className="mt-0.5 text-[12px] leading-relaxed text-gray-500">
+                        Restrict access to visitors with the password
+                      </p>
+                    </div>
+                  </div>
+                  <ToggleSwitch
+                    checked={passwordProtectionEnabled}
+                    onChange={setPasswordProtectionEnabled}
+                  />
+                </div>
 
-      <StoreSeoSettingsPanel storefrontOrigin={storefrontUrl} />
+                {passwordProtectionEnabled ? (
+                  <div className="space-y-4 border-t border-gray-200 px-4 py-4">
+                    <div>
+                      <label className={labelClass} htmlFor="store-pref-password">
+                        Password
+                      </label>
+                      <input
+                        id="store-pref-password"
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value.slice(0, 100))}
+                        className={inputClass}
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder={
+                          preferences?.hasStorefrontPassword ? 'Password is set — enter a new one to change' : ''
+                        }
+                      />
+                      <p className={hintClass}>{passwordInput.length} of 100 characters used</p>
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="store-pref-visitor-msg">
+                        Message to your visitors
+                      </label>
+                      <textarea
+                        id="store-pref-visitor-msg"
+                        value={messageToYourVisitorsInput}
+                        onChange={(e) =>
+                          setMessageToYourVisitorsInput(e.target.value.slice(0, 5000))
+                        }
+                        className={`${inputClass} resize-none`}
+                        rows={3}
+                      />
+                      <p className={hintClass}>
+                        {messageToYourVisitorsInput.length} of 5,000 characters used
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
 
-      <PreferenceSection
-        icon={GlobeAltIcon}
-        iconWrapClass="bg-indigo-50"
-        iconClass="text-indigo-600"
-        title="Automatic redirection"
-        description="Optional behavior based on where visitors are or which language their browser prefers."
-      >
-        <div className="space-y-3">
-          <ToggleRow
-            label="Country / region"
-            description="Show a storefront that matches the visitor's location when possible."
+                <SettingToggleRow
+                  icon={BriefcaseIcon}
+                  label="Restrict access to B2B customers only"
+                  description={
+                    <>
+                      B2B customers will need to log in and verify their account to access your store.{' '}
+                      <Link to="/companies" className="font-medium text-blue-600 hover:text-blue-700">
+                        Manage companies
+                      </Link>
+                    </>
+                  }
+                  checked={b2bAccessEnabled}
+                  onChange={setB2bAccessEnabled}
+                  withDivider
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Social sharing image and SEO */}
+          <StoreSeoSettingsPanel
+            storefrontOrigin={storefrontUrl}
+            variant="preferences"
+            showSaveButton={false}
+            seoValues={seoValues}
+            onSeoChange={setSeoValues}
           />
-          <ToggleRow
-            label="Language"
-            description="Use the visitor's browser language when a matching translation is available."
-          />
-        </div>
-      </PreferenceSection>
 
-      <PreferenceSection
-        icon={ShieldCheckIcon}
-        iconWrapClass="bg-emerald-50"
-        iconClass="text-emerald-600"
-        title="Spam protection"
-        description="hCaptcha can reduce spam; some customers may need to complete a challenge on certain forms."
-      >
-        <div className="space-y-3">
-          <ToggleRow label="Enable on contact and comment forms" />
-          <ToggleRow label="Enable on login, account creation, and password recovery" />
-        </div>
-      </PreferenceSection>
+          {/* Automatic redirection */}
+          <section className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+            <div className="border-b border-gray-100 px-4 py-3.5 sm:px-5">
+              <div className="flex items-center gap-1.5">
+                <h2 className="text-[13px] font-semibold text-gray-900">Automatic redirection</h2>
+                <InfoTooltip />
+              </div>
+            </div>
+            <div className="mx-4 mb-4 overflow-hidden rounded-lg border border-gray-200 sm:mx-5">
+              <SettingToggleRow
+                icon={GlobeAltIcon}
+                label="Country/region"
+                description="Displays the storefront that matches a visitor's location"
+                checked={countryRedirectionEnabled}
+                onChange={setCountryRedirectionEnabled}
+              />
+              <SettingToggleRow
+                icon={LanguageIcon}
+                label="Language"
+                description="Displays the language that matches a visitor's browser, when available"
+                checked={languageRedirectionEnabled}
+                onChange={setLanguageRedirectionEnabled}
+                withDivider
+              />
+            </div>
+          </section>
 
-      <PreferenceSection
-        icon={CommandLineIcon}
-        iconWrapClass="bg-slate-100"
-        iconClass="text-slate-700"
-        title="Crawler access"
-        description="Create signatures so trusted tools can crawl your store with the right headers."
-      >
-        <p className="mb-4 text-sm leading-relaxed text-gray-600">
-          Copy Signature, Signature-Input, and Signature-Agent values from an active record and add them to your
-          HTTP crawler requests.
-        </p>
-        <div className="overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-sm">
-          <div className="flex flex-wrap gap-1 border-b border-gray-100 bg-gray-50/90 p-1.5">
-            {(['All', 'Active', 'Expired'] as Tab[]).map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => handleChangeActiveTab(tab)}
-                className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-                  activeTab === tab
-                    ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200/80'
-                    : 'text-gray-500 hover:bg-white/60 hover:text-gray-800'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-          <div className="flex min-h-[240px] flex-col items-center justify-center gap-3 bg-gray-50/30 px-6 py-12 text-center">
-            <p className="text-sm font-semibold text-gray-900">Manage crawler access</p>
-            <p className="max-w-sm text-xs leading-relaxed text-gray-500">
-              Create signatures that authorize external crawlers to access your storefront safely.
-            </p>
+          {/* Spam protection */}
+          <section className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+            <div className="border-b border-gray-100 px-4 py-3.5 sm:px-5">
+              <h2 className="text-[13px] font-semibold text-gray-900">Spam protection</h2>
+              <p className="mt-1 text-[12px] leading-relaxed text-gray-500">
+                Enabling hCaptcha can protect your store from spam. Some customers may need to complete the
+                hCaptcha task.
+              </p>
+            </div>
+            <div className="mx-4 mb-4 overflow-hidden rounded-lg border border-gray-200 sm:mx-5">
+              <SettingToggleRow
+                icon={ChatBubbleLeftRightIcon}
+                label="Enable on contact and comment forms"
+                checked={spamContactFormsEnabled}
+                onChange={setSpamContactFormsEnabled}
+              />
+              <SettingToggleRow
+                icon={UserIcon}
+                label="Enable on login, create account and password recovery pages"
+                checked={spamAuthPagesEnabled}
+                onChange={setSpamAuthPagesEnabled}
+                withDivider
+              />
+            </div>
+          </section>
+        </div>
+
+        <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-200 bg-white/95 px-4 py-3 backdrop-blur sm:px-6">
+          <div className="mx-auto flex max-w-[900px] justify-end">
             <button
               type="button"
-              onClick={handleToggleNewSignatureModal}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+              onClick={handleSave}
+              disabled={saveDisabled}
+              className="rounded-lg bg-gray-900 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-200"
             >
-              Create signature
+              {saving ? 'Saving…' : 'Save'}
             </button>
           </div>
         </div>
-      </PreferenceSection>
-
-      <Modal
-        open={createNewSignatureModalOpen}
-        onClose={handleToggleNewSignatureModal}
-        title="Create new signature"
-        maxWidth="md"
-        actions={
-          <>
-            <button
-              type="button"
-              onClick={handleToggleNewSignatureModal}
-              className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
-            >
-              Create signature
-            </button>
-          </>
-        }
-      >
-        <div className="flex flex-col gap-5">
-          <p className="text-sm text-gray-500">
-            These details can&apos;t be changed after the signature is created.
-          </p>
-          <div className="flex flex-col gap-5">
-            <div>
-              <label className={labelClass} htmlFor="sig-name">
-                Signature name
-              </label>
-              <input
-                id="sig-name"
-                value={signatureInput}
-                onChange={handleSignatureInputChange}
-                type="text"
-                className={inputClass}
-                placeholder="e.g. My crawler"
-              />
-              <p className={hintClass}>{signatureInput.length} of 100 characters used</p>
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="sig-domain">
-                Domain
-              </label>
-              <input
-                id="sig-domain"
-                value={domainInput}
-                onChange={handleDomainInputChange}
-                type="text"
-                className={inputClass}
-                placeholder="e.g. example.com"
-              />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="sig-expires">
-                Expires in
-              </label>
-              <input
-                id="sig-expires"
-                value={expiresInInput}
-                onChange={handleExpiresInInputChange}
-                type="text"
-                className={inputClass}
-                placeholder="e.g. 30 days"
-              />
-              <p className={hintClass}>Example: expires on a fixed date after creation (set in backend).</p>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      </div>
     </div>
   );
 }

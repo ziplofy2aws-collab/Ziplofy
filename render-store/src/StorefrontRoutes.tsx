@@ -1,6 +1,11 @@
 import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import { StorefrontBlogContentShell } from './components/StorefrontBlogContentShell.tsx';
+import { StorefrontBlogByUrlHandleLoader } from './components/StorefrontBlogByUrlHandleLoader.tsx';
+import { StorefrontBlogPostByUrlHandleLoader } from './components/StorefrontBlogPostByUrlHandleLoader.tsx';
 import { StorefrontCollectionByUrlHandleLoader } from './components/StorefrontCollectionByUrlHandleLoader.tsx';
 import { StorefrontProductSeoLoader } from './components/StorefrontProductSeoLoader.tsx';
+import { StorefrontBlogPage } from './pages/StorefrontBlogPage.tsx';
+import { StorefrontBlogPostPage } from './pages/StorefrontBlogPostPage.tsx';
 import { StorefrontSeoManager } from './seo/StorefrontSeoManager.tsx';
 import { useLoadedThemeContract } from './themes/RemoteThemeProvider.tsx';
 
@@ -96,6 +101,24 @@ export const StorefrontRoutes = () => (
       <Route path="/preferences" element={<StorefrontPreferencesRoute />} />
       <Route path="/cart" element={<StorefrontCartRoute />} />
       <Route path="/search" element={<StorefrontHomeRoute />} />
+      <Route
+        path="/blogs/:blogHandle/:articleHandle"
+        element={
+          <StorefrontBlogContentShell>
+            <StorefrontBlogPostByUrlHandleLoader />
+            <StorefrontBlogPostPage />
+          </StorefrontBlogContentShell>
+        }
+      />
+      <Route
+        path="/blogs/:blogHandle"
+        element={
+          <StorefrontBlogContentShell>
+            <StorefrontBlogByUrlHandleLoader />
+            <StorefrontBlogPage />
+          </StorefrontBlogContentShell>
+        }
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </Router>

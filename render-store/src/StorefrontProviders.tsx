@@ -6,8 +6,10 @@ import { CustomerAddressProvider } from './contexts/customer-address-storefront.
 import { StorefrontCountryProvider } from './contexts/storefront-country.context';
 import { StorefrontProductVariantProvider } from './contexts/product-variant.context';
 import { StorefrontProvider } from './contexts/store.context';
+import { StorefrontAccessProvider } from './contexts/store-access.context';
 import { StorefrontAuthProvider } from './contexts/storefront-auth.context';
 import { StorefrontCartProvider } from './contexts/storefront-cart.context';
+import { StorefrontBlogsProvider } from './contexts/storefront-blogs.context';
 import { StorefrontCollectionsProvider } from './contexts/storefront-collections.context';
 import { StorefrontSearchProvider } from './contexts/storefront-search.context';
 import { BuyXGetYProvider } from './contexts/buy-x-get-y.context';
@@ -22,8 +24,9 @@ type StorefrontProvidersProps = {
 
 export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
   <StorefrontProvider>
-    <Toaster position="top-right" />
-    <StorefrontAuthProvider>
+    <StorefrontAccessProvider>
+      <Toaster position="top-right" />
+      <StorefrontAuthProvider>
       <PaymentProvider>
         <StorefrontProductVariantProvider>
           <StorefrontCartProvider>
@@ -31,6 +34,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
               <CustomerAddressProvider>
                 <StorefrontCountryProvider>
                   <StorefrontCollectionsProvider>
+                    <StorefrontBlogsProvider>
                     <StorefrontSearchProvider>
                       <AmountOffOrderProvider>
                         <AmountOffProductProvider>
@@ -44,6 +48,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
                         </AmountOffProductProvider>
                       </AmountOffOrderProvider>
                     </StorefrontSearchProvider>
+                    </StorefrontBlogsProvider>
                   </StorefrontCollectionsProvider>
                 </StorefrontCountryProvider>
               </CustomerAddressProvider>
@@ -52,5 +57,6 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
         </StorefrontProductVariantProvider>
       </PaymentProvider>
     </StorefrontAuthProvider>
+    </StorefrontAccessProvider>
   </StorefrontProvider>
 );

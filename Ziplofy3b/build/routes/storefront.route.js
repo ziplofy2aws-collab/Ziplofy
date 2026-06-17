@@ -2,10 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.storefrontRouter = void 0;
 const express_1 = require("express");
+const storefront_access_controller_1 = require("../controllers/storefront-access.controller");
 const storefront_controller_1 = require("../controllers/storefront.controller");
 const storefront_render_controller_1 = require("../controllers/storefront-render.controller");
 const storefront_theme_pack_controller_1 = require("../controllers/storefront-theme-pack.controller");
+const storefront_access_middleware_1 = require("../middlewares/storefront-access.middleware");
 exports.storefrontRouter = (0, express_1.Router)();
+exports.storefrontRouter.get('/:storeId/access', storefront_access_controller_1.getStorefrontAccess);
+exports.storefrontRouter.post('/:storeId/verify-password', storefront_access_controller_1.verifyStorefrontPassword);
+exports.storefrontRouter.use(storefront_access_middleware_1.requireStorefrontAccessIfEnabled);
 // Storefront routes
 exports.storefrontRouter.route('/:storeId/render/page').get(storefront_render_controller_1.renderStorefrontLiquidPage);
 exports.storefrontRouter.route('/:storeId/theme-runtime').get(storefront_controller_1.getStorefrontThemeRuntime);

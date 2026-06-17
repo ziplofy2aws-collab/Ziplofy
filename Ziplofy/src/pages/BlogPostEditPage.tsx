@@ -18,11 +18,16 @@ import {
 } from '../components/SelectImageModal';
 import BlogTagsInput from '../components/tags/BlogTagsInput';
 import { useBlogPosts, type BlogPost, type BlogPostVisibility } from '../contexts/blog-post.context';
-import { useBlogs } from '../contexts/blog.context';
+import { useBlogs, type Blog } from '../contexts/blog.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
 import { SearchEngineListingEditor } from '../seo/SearchEngineListingEditor';
 import { SNIPPET_MAX } from '../seo/seo-text.util';
+import {
+  buildStorefrontBlogPostUrl,
+  normalizeStorefrontOrigin,
+  resolveBlogPostUrlHandle,
+} from '../utils/storefront-url.util';
 
 type Visibility = BlogPostVisibility;
 
@@ -119,7 +124,7 @@ export const BlogPostEditPage = () => {
   const { articleId } = useParams<{ articleId: string }>();
   const navigate = useNavigate();
   const { activeStoreId } = useStore();
-  const { blogs, fetchBlogsByStoreId } = useBlogs();
+  const { blogs, fetchBlogsByStoreId, fetchBlogById } = useBlogs();
   const {
     blogPosts,
     fetchBlogPostById,
@@ -152,12 +157,13 @@ export const BlogPostEditPage = () => {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [linkedBlog, setLinkedBlog] = useState<Blog | null>(null);
 
   const excerptEmpty = useMemo(() => !excerpt.replace(/<[^>]+>/g, '').trim(), [excerpt]);
 
   const selectedBlog = useMemo(
-    () => blogs.find((row) => row._id === blogId) ?? null,
-    [blogs, blogId]
+    () => blogs.find((row) => row._id === blogId) ?? linkedBlog,
+    [blogs, blogId, linkedBlog]
   );
 
   const currentSnapshot = useMemo<BlogPostFormSnapshot>(
@@ -213,11 +219,12 @@ export const BlogPostEditPage = () => {
       ? sortedPostIds[currentPostIndex + 1]
       : null;
 
-  const storefrontBase = storeSubdomain?.url?.replace(/\/+$/, '') ?? '';
-  const previewHref =
-    storefrontBase && selectedBlog
-      ? `${storefrontBase}/blogs/${selectedBlog.urlHandle}/${urlHandle.trim() || initial?.urlHandle || ''}`
-      : '';
+  const storefrontBase = normalizeStorefrontOrigin(storeSubdomain?.url);
+  const blogHandle = selectedBlog?.urlHandle ?? '';
+  const postHandle = resolveBlogPostUrlHandle(urlHandle, initial?.urlHandle, title);
+  const viewHref = buildStorefrontBlogPostUrl(storefrontBase, blogHandle, postHandle, {
+    preview: true,
+  });
 
   useEffect(() => {
     if (!activeStoreId) return;
@@ -234,7 +241,7 @@ export const BlogPostEditPage = () => {
     setInitial(null);
 
     void fetchBlogPostById(articleId, activeStoreId)
-      .then((post) => {
+      .then(async (post) => {
         if (cancelled) return;
         const snapshot = snapshotFromPost(post);
         setTitle(snapshot.title);
@@ -252,6 +259,13 @@ export const BlogPostEditPage = () => {
         setFeaturedImageUploadId(snapshot.featuredImageUploadId);
         setInitial(snapshot);
         setLoaded(true);
+
+        try {
+          const blog = await fetchBlogById(post.blogId, activeStoreId);
+          if (!cancelled) setLinkedBlog(blog);
+        } catch {
+          if (!cancelled) setLinkedBlog(null);
+        }
       })
       .catch(() => {
         if (!cancelled) toast.error('Failed to load blog post');
@@ -260,7 +274,33 @@ export const BlogPostEditPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [articleId, activeStoreId, fetchBlogPostById]);
+  }, [articleId, activeStoreId, fetchBlogPostById, fetchBlogById]);
+
+  useEffect(() => {
+    if (!blogId || !activeStoreId) {
+      setLinkedBlog(null);
+      return;
+    }
+
+    const blogFromList = blogs.find((row) => row._id === blogId);
+    if (blogFromList) {
+      setLinkedBlog(blogFromList);
+      return;
+    }
+
+    let cancelled = false;
+    void fetchBlogById(blogId, activeStoreId)
+      .then((blog) => {
+        if (!cancelled) setLinkedBlog(blog);
+      })
+      .catch(() => {
+        if (!cancelled) setLinkedBlog(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [blogId, activeStoreId, blogs, fetchBlogById]);
 
   useEffect(() => {
     if (!moreMenuOpen) return;
@@ -374,14 +414,14 @@ export const BlogPostEditPage = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {previewHref ? (
+            {viewHref ? (
               <a
-                href={previewHref}
+                href={viewHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
               >
-                Preview
+                View
               </a>
             ) : (
               <button
@@ -389,26 +429,17 @@ export const BlogPostEditPage = () => {
                 disabled
                 className="inline-flex cursor-not-allowed items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-400"
               >
-                Preview
+                View
               </button>
             )}
 
-            {articleId ? (
-              <Link
-                to={`/content/comments/article/${articleId}`}
-                className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
-              >
-                Manage comments
-              </Link>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex cursor-not-allowed items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-400"
-              >
-                Manage comments
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => navigate(`/content/comments/article/${articleId}`)}
+              className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Manage comments
+            </button>
 
             <div className="relative" ref={moreMenuRef}>
               <button

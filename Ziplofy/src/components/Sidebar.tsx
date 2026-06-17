@@ -31,6 +31,8 @@ interface NavItem {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   path: string;
   children?: SubNavItem[];
+  /** Additional paths that keep this section expanded and highlighted (e.g. /companies under Customers). */
+  relatedPaths?: string[];
 }
 
 const NAV: NavItem[] = [
@@ -60,7 +62,11 @@ const NAV: NavItem[] = [
     text: 'Customers',
     icon: UserGroupIcon,
     path: '/customers',
-    children: [{ text: 'Segments', path: '/customers/segments' }],
+    relatedPaths: ['/companies'],
+    children: [
+      { text: 'Segments', path: '/customers/segments' },
+      { text: 'Companies', path: '/companies' },
+    ],
   },
   {
     text: 'Marketing',
@@ -133,7 +139,14 @@ export default function Sidebar() {
   const defaultOpen = useMemo(() => {
     const map: Record<string, boolean> = {};
     NAV.forEach((n) => {
-      if (n.children) map[n.text] = location.pathname.startsWith(n.path);
+      if (n.children) {
+        map[n.text] =
+          location.pathname.startsWith(n.path) ||
+          (n.relatedPaths?.some(
+            (p) => location.pathname === p || location.pathname.startsWith(`${p}/`)
+          ) ??
+            false);
+      }
     });
     return map;
   }, [location.pathname]);
@@ -165,7 +178,9 @@ export default function Sidebar() {
             const hasKids = !!item.children?.length;
             const openSection = open[item.text] ?? false;
             const Icon = item.icon;
-            const active = isActive(item.path);
+            const active =
+              isActive(item.path) ||
+              (item.relatedPaths?.some((p) => isActive(p)) ?? false);
 
             /** Longest matching child path so /orders/drafts only highlights Drafts, not Orders */
             const activeSubPath =

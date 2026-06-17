@@ -10,6 +10,7 @@ export { AssignedSupportDevelopers } from './assigned-support-developers.model';
 export { RequirementsForm } from './requirements-form.model';
 export { SuperAdminNotification } from './superadmin-notifications.model';
 export { Customer } from './customer/customer.model';
+export { Company } from './company/company.model';
 export { CustomerAddress } from './customer/customer-address.model';
 export { CustomerAccountSettings } from './customer-account-settings/customer-account-settings.model';
 // export { Discount } from './discount/discount.model'; // Model doesn't exist
@@ -69,6 +70,10 @@ export { StoreCustomTheme } from './store-custom-theme/store-custom-theme.model'
 export { StoreCloudStorage } from './store-cloud-storage/store-cloud-storage.model';
 export { Payment } from './payment/payment.model';
 export { GeneralSettings } from './general-settings/general-settings.model';
+export {
+  OnlineStorePreferences,
+  ONLINE_STORE_PREFERENCES_LIMITS,
+} from './online-store-preferences/online-store-preferences.model';
 export { Pixel } from './pixel/pixel.model';
 export { NotificationSettings } from './notification-settings/notification-settings.model';
 export { NotificationCategory } from './notification-category/notification-category.model';
@@ -97,6 +102,7 @@ export type { IUser } from './user.model';
 export type { IStore } from './store/store.model';
 export type { IClient } from './client.model';
 export type { ICustomer } from './customer/customer.model';
+export type { ICompany, ICompanyAddress, ICompanyLocation, ICompanyMainContact } from './company/company.model';
 export type { ICustomerAddress } from './customer/customer-address.model';
 export type { ICustomerAccountSettings, IGoogleAuthProvider, IFacebookAuthProvider, IShopAuthProvider } from './customer-account-settings/customer-account-settings.model';
 // @ts-ignore
@@ -156,6 +162,7 @@ export type { IStoreCustomTheme } from './store-custom-theme/store-custom-theme.
 export type { IStoreCloudStorage } from './store-cloud-storage/store-cloud-storage.model';
 export type { IPayment } from './payment/payment.model';
 export type { IGeneralSettings } from './general-settings/general-settings.model';
+export type { IOnlineStorePreferences } from './online-store-preferences/online-store-preferences.model';
 export type { IPixel } from './pixel/pixel.model';
 export { DataSaleOption } from './pixel/pixel.model';
 export type { INotificationSettings } from './notification-settings/notification-settings.model';

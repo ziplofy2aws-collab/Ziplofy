@@ -1,4 +1,6 @@
 import {
+  ArrowDownIcon,
+  ArrowUpIcon,
   ArrowsUpDownIcon,
   Bars3BottomLeftIcon,
   ChevronDownIcon,
@@ -7,13 +9,38 @@ import {
   PhotoIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import StoreAccessRestrictedBanner from '../components/StoreAccessRestrictedBanner';
 import { useBlogPosts } from '../contexts/blog-post.context';
+import { useBlogTags } from '../contexts/blog-tags.context';
 import { useBlogs } from '../contexts/blog.context';
 import { useStore } from '../contexts/store.context';
 
-type UpdatedSort = 'asc' | 'desc';
+type SortField = 'updated' | 'title' | 'blogTitle' | 'author' | 'published';
+type SortOrder = 'asc' | 'desc';
+
+interface BlogPostRow {
+  id: string;
+  title: string;
+  visibility: 'visible' | 'hidden';
+  author: string;
+  blogId: string;
+  blogTitle: string;
+  tagIds: string[];
+  tagNames: string[];
+  featuredImageUrl: string;
+  updatedAt: string;
+  createdAt: string;
+}
+
+const SORT_FIELD_LABELS: Record<SortField, string> = {
+  updated: 'Updated',
+  title: 'Title',
+  blogTitle: 'Blog title',
+  author: 'Author',
+  published: 'Published',
+};
 
 function formatRelativeUpdatedAt(iso: string): string {
   try {
@@ -39,9 +66,7 @@ function formatRelativeUpdatedAt(iso: string): string {
       hour12: true,
     });
 
-    if (isSameDay) {
-      return `Today at ${time.toLowerCase()}`;
-    }
+    if (isSameDay) return `Today at ${time.toLowerCase()}`;
 
     const dayName = date.toLocaleString(undefined, { weekday: 'long' });
     return `${dayName} at ${time.toLowerCase()}`;
@@ -82,13 +107,11 @@ function BlogPostsEmptyIllustration() {
   return (
     <div className="relative mx-auto mb-6 flex h-36 w-36 items-center justify-center">
       <div className="absolute inset-0 rounded-full bg-gray-100" />
-
       <div className="absolute -top-1 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 shadow-sm">
         <span className="text-[10px] font-medium text-gray-600">B</span>
         <span className="text-[10px] font-normal text-gray-400">I</span>
         <span className="text-[10px] font-normal text-gray-400 underline">U</span>
       </div>
-
       <div className="relative z-1 mt-2 h-[88px] w-[72px] rounded-md border border-gray-200 bg-white shadow-sm">
         <div className="absolute -left-1 top-2 flex h-[72px] w-2 flex-col justify-between py-1">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -108,74 +131,501 @@ function BlogPostsEmptyIllustration() {
   );
 }
 
+function FilterDropdown({
+  label,
+  valueLabel,
+  active,
+  children,
+}: {
+  label: string;
+  valueLabel: string;
+  active?: boolean;
+  children: (close: () => void) => React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open]);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[13px] font-normal transition-colors ${
+          active
+            ? 'border-gray-300 bg-gray-100 text-gray-800'
+            : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+        }`}
+      >
+        {valueLabel || label}
+        <ChevronDownIcon className="h-3.5 w-3.5 text-gray-400" />
+      </button>
+      {open ? (
+        <div className="absolute left-0 top-full z-30 mt-1 max-h-60 min-w-[180px] overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+          {children(() => setOpen(false))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function FilterOption({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`block w-full px-3 py-2 text-left text-[13px] transition-colors ${
+        selected ? 'bg-gray-100 font-medium text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function SortMenu({
+  sortField,
+  sortOrder,
+  onSortFieldChange,
+  onSortOrderChange,
+}: {
+  sortField: SortField;
+  sortOrder: SortOrder;
+  onSortFieldChange: (field: SortField) => void;
+  onSortOrderChange: (order: SortOrder) => void;
+}) {
+  return (
+    <div className="w-56 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
+      <p className="px-3 py-1.5 text-[13px] font-medium text-gray-800">Sort by</p>
+      {(Object.keys(SORT_FIELD_LABELS) as SortField[]).map((field) => (
+        <label
+          key={field}
+          className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-[13px] text-gray-700 hover:bg-gray-50"
+        >
+          <input
+            type="radio"
+            name="blog-post-sort-field"
+            checked={sortField === field}
+            onChange={() => onSortFieldChange(field)}
+            className="h-3.5 w-3.5 border-gray-300 text-gray-900 focus:ring-gray-400"
+          />
+          {SORT_FIELD_LABELS[field]}
+        </label>
+      ))}
+
+      <div className="my-2 border-t border-gray-100" />
+
+      <button
+        type="button"
+        onClick={() => onSortOrderChange('asc')}
+        className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] transition-colors ${
+          sortOrder === 'asc' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+        }`}
+      >
+        <ArrowUpIcon className="h-3.5 w-3.5 text-gray-500" />
+        Oldest first
+      </button>
+      <button
+        type="button"
+        onClick={() => onSortOrderChange('desc')}
+        className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] transition-colors ${
+          sortOrder === 'desc' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+        }`}
+      >
+        <ArrowDownIcon className="h-3.5 w-3.5 text-gray-500" />
+        Newest first
+      </button>
+    </div>
+  );
+}
+
+function defaultSortOrderForPostField(field: SortField): SortOrder {
+  return field === 'updated' || field === 'published' ? 'desc' : 'asc';
+}
+
+function SortableColumnHeader({
+  label,
+  field,
+  sortField,
+  sortOrder,
+  onColumnSort,
+}: {
+  label: string;
+  field: SortField;
+  sortField: SortField;
+  sortOrder: SortOrder;
+  onColumnSort: (field: SortField) => void;
+}) {
+  const isActive = sortField === field;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onColumnSort(field)}
+      className={`inline-flex items-center gap-1 text-xs font-normal transition-colors hover:text-gray-700 ${
+        isActive ? 'text-gray-700' : 'text-gray-500'
+      }`}
+    >
+      {label}
+      {isActive ? (
+        <ChevronDownIcon
+          className={`h-3.5 w-3.5 transition-transform ${sortOrder === 'asc' ? 'rotate-180' : ''}`}
+          aria-hidden
+        />
+      ) : null}
+    </button>
+  );
+}
+
+function comparePosts(a: BlogPostRow, b: BlogPostRow, field: SortField, order: SortOrder): number {
+  const dir = order === 'asc' ? 1 : -1;
+
+  switch (field) {
+    case 'updated':
+      return (new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()) * dir;
+    case 'published': {
+      const aTime = a.visibility === 'visible' ? new Date(a.createdAt).getTime() : 0;
+      const bTime = b.visibility === 'visible' ? new Date(b.createdAt).getTime() : 0;
+      return (aTime - bTime) * dir;
+    }
+    case 'title':
+      return a.title.localeCompare(b.title) * dir;
+    case 'blogTitle':
+      return a.blogTitle.localeCompare(b.blogTitle) * dir;
+    case 'author':
+      return a.author.localeCompare(b.author) * dir;
+    default:
+      return 0;
+  }
+}
+
 function BlogPostsTable({
   posts,
   loading,
   selectedIds,
   selectAllRef,
   allVisibleSelected,
-  updatedSort,
-  onUpdatedSortToggle,
+  sortField,
+  sortOrder,
+  searchOpen,
+  searchQuery,
+  visibilityFilter,
+  tagFilter,
+  blogFilter,
+  authorFilter,
+  blogs,
+  blogTags,
+  authors,
+  sortOpen,
+  onSearchOpenChange,
+  onSearchQueryChange,
+  onVisibilityFilterChange,
+  onTagFilterChange,
+  onBlogFilterChange,
+  onAuthorFilterChange,
+  onSortOpenChange,
+  onSortFieldChange,
+  onSortOrderChange,
+  onColumnSort,
+  onClearSearchAndFilters,
   onSelectAllVisible,
   onSelectRow,
   onPostClick,
 }: {
-  posts: Array<{
-    id: string;
-    title: string;
-    visibility: 'visible' | 'hidden';
-    author: string;
-    blogTitle: string;
-    featuredImageUrl: string;
-    updatedAt: string;
-    createdAt: string;
-  }>;
+  posts: BlogPostRow[];
   loading: boolean;
   selectedIds: Set<string>;
   selectAllRef: React.RefObject<HTMLInputElement | null>;
   allVisibleSelected: boolean;
-  updatedSort: UpdatedSort;
-  onUpdatedSortToggle: () => void;
+  sortField: SortField;
+  sortOrder: SortOrder;
+  searchOpen: boolean;
+  searchQuery: string;
+  visibilityFilter: 'all' | 'visible' | 'hidden';
+  tagFilter: string;
+  blogFilter: string;
+  authorFilter: string;
+  blogs: Array<{ _id: string; title: string }>;
+  blogTags: Array<{ _id: string; name: string }>;
+  authors: string[];
+  sortOpen: boolean;
+  onSearchOpenChange: (open: boolean) => void;
+  onSearchQueryChange: (value: string) => void;
+  onVisibilityFilterChange: (value: 'all' | 'visible' | 'hidden') => void;
+  onTagFilterChange: (value: string) => void;
+  onBlogFilterChange: (value: string) => void;
+  onAuthorFilterChange: (value: string) => void;
+  onSortOpenChange: (open: boolean) => void;
+  onSortFieldChange: (field: SortField) => void;
+  onSortOrderChange: (order: SortOrder) => void;
+  onColumnSort: (field: SortField) => void;
+  onClearSearchAndFilters: () => void;
   onSelectAllVisible: (checked: boolean) => void;
   onSelectRow: (postId: string, checked: boolean) => void;
   onPostClick: (postId: string) => void;
 }) {
+  const sortRef = useRef<HTMLDivElement | null>(null);
+  const toolbarRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!sortOpen) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!sortRef.current?.contains(event.target as Node)) onSortOpenChange(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [sortOpen, onSortOpenChange]);
+
+  const visibilityLabel =
+    visibilityFilter === 'all'
+      ? 'Visibility'
+      : visibilityFilter === 'visible'
+        ? 'Visible'
+        : 'Hidden';
+
+  const tagLabel =
+    tagFilter === 'all'
+      ? 'Tagged with'
+      : (blogTags.find((tag) => tag._id === tagFilter)?.name ?? 'Tagged with');
+
+  const blogLabel =
+    blogFilter === 'all'
+      ? 'Blog'
+      : (blogs.find((blog) => blog._id === blogFilter)?.title ?? 'Blog');
+
+  const authorLabel = authorFilter === 'all' ? 'Author' : authorFilter;
+
+  const renderSortButton = () => (
+    <div className="relative" ref={sortRef}>
+      <button
+        type="button"
+        title="Sort"
+        onClick={() => onSortOpenChange(!sortOpen)}
+        className={`inline-flex h-7 w-7 items-center justify-center rounded-md border bg-white text-gray-500 transition-colors hover:bg-gray-50 ${
+          sortOpen ? 'border-gray-300 bg-gray-50' : 'border-gray-200'
+        }`}
+      >
+        <ArrowsUpDownIcon className="h-3.5 w-3.5" />
+      </button>
+      {sortOpen ? (
+        <div className="absolute right-0 top-full z-30 mt-1">
+          <SortMenu
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSortFieldChange={onSortFieldChange}
+            onSortOrderChange={onSortOrderChange}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+
   return (
     <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-      <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-3 py-2">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 text-[13px] font-normal text-gray-700"
-          >
-            All
-          </button>
-          <button
-            type="button"
-            title="Create view"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50"
-          >
-            <PlusIcon className="h-3.5 w-3.5" />
-          </button>
-        </div>
+      <div className="border-b border-gray-100 px-3 py-2" ref={toolbarRef}>
+        {searchOpen ? (
+          <>
+            <div className="flex items-center gap-2">
+              <div className="relative min-w-0 flex-1">
+                <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => onSearchQueryChange(e.target.value)}
+                  placeholder="Searching all blog posts"
+                  autoFocus
+                  className="w-full rounded-md border border-blue-500 py-1.5 pl-8 pr-3 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={onClearSearchAndFilters}
+                className="shrink-0 text-[13px] font-normal text-gray-800 transition-colors hover:text-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled
+                className="shrink-0 cursor-not-allowed text-[13px] font-normal text-gray-300"
+              >
+                Save as
+              </button>
+              {renderSortButton()}
+            </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            title="Search and filter"
-            className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-200 bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
-          >
-            <MagnifyingGlassIcon className="h-3.5 w-3.5" />
-            <Bars3BottomLeftIcon className="h-3.5 w-3.5" />
-          </button>
-          <button
-            type="button"
-            title="Sort"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50"
-          >
-            <ArrowsUpDownIcon className="h-3.5 w-3.5" />
-          </button>
-        </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <FilterDropdown
+                label="Visibility"
+                valueLabel={visibilityLabel}
+                active={visibilityFilter !== 'all'}
+              >
+                {(close) => (
+                  <>
+                    <FilterOption
+                      selected={visibilityFilter === 'all'}
+                      onClick={() => {
+                        onVisibilityFilterChange('all');
+                        close();
+                      }}
+                    >
+                      All
+                    </FilterOption>
+                    <FilterOption
+                      selected={visibilityFilter === 'visible'}
+                      onClick={() => {
+                        onVisibilityFilterChange('visible');
+                        close();
+                      }}
+                    >
+                      Visible
+                    </FilterOption>
+                    <FilterOption
+                      selected={visibilityFilter === 'hidden'}
+                      onClick={() => {
+                        onVisibilityFilterChange('hidden');
+                        close();
+                      }}
+                    >
+                      Hidden
+                    </FilterOption>
+                  </>
+                )}
+              </FilterDropdown>
+
+              <FilterDropdown label="Tagged with" valueLabel={tagLabel} active={tagFilter !== 'all'}>
+                {(close) => (
+                  <>
+                    <FilterOption
+                      selected={tagFilter === 'all'}
+                      onClick={() => {
+                        onTagFilterChange('all');
+                        close();
+                      }}
+                    >
+                      All
+                    </FilterOption>
+                    {blogTags.map((tag) => (
+                      <FilterOption
+                        key={tag._id}
+                        selected={tagFilter === tag._id}
+                        onClick={() => {
+                          onTagFilterChange(tag._id);
+                          close();
+                        }}
+                      >
+                        {tag.name}
+                      </FilterOption>
+                    ))}
+                  </>
+                )}
+              </FilterDropdown>
+
+              <FilterDropdown label="Blog" valueLabel={blogLabel} active={blogFilter !== 'all'}>
+                {(close) => (
+                  <>
+                    <FilterOption
+                      selected={blogFilter === 'all'}
+                      onClick={() => {
+                        onBlogFilterChange('all');
+                        close();
+                      }}
+                    >
+                      All
+                    </FilterOption>
+                    {blogs.map((blog) => (
+                      <FilterOption
+                        key={blog._id}
+                        selected={blogFilter === blog._id}
+                        onClick={() => {
+                          onBlogFilterChange(blog._id);
+                          close();
+                        }}
+                      >
+                        {blog.title}
+                      </FilterOption>
+                    ))}
+                  </>
+                )}
+              </FilterDropdown>
+
+              <FilterDropdown label="Author" valueLabel={authorLabel} active={authorFilter !== 'all'}>
+                {(close) => (
+                  <>
+                    <FilterOption
+                      selected={authorFilter === 'all'}
+                      onClick={() => {
+                        onAuthorFilterChange('all');
+                        close();
+                      }}
+                    >
+                      All
+                    </FilterOption>
+                    {authors.map((author) => (
+                      <FilterOption
+                        key={author}
+                        selected={authorFilter === author}
+                        onClick={() => {
+                          onAuthorFilterChange(author);
+                          close();
+                        }}
+                      >
+                        {author}
+                      </FilterOption>
+                    ))}
+                  </>
+                )}
+              </FilterDropdown>
+            </div>
+          </>
+        ) : (
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 text-[13px] font-normal text-gray-700"
+              >
+                All
+              </button>
+              <button
+                type="button"
+                title="Create view"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50"
+              >
+                <PlusIcon className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                title="Search and filter"
+                onClick={() => onSearchOpenChange(true)}
+                className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-200 bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
+              >
+                <MagnifyingGlassIcon className="h-3.5 w-3.5" />
+                <Bars3BottomLeftIcon className="h-3.5 w-3.5" />
+              </button>
+              {renderSortButton()}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="overflow-x-auto">
@@ -192,26 +642,52 @@ function BlogPostsTable({
                   className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
                 />
               </th>
-              <th className="px-3 py-2 text-xs font-normal text-gray-500">Title</th>
-              <th className="px-3 py-2 text-xs font-normal text-gray-500">Visibility</th>
-              <th className="px-3 py-2 text-xs font-normal text-gray-500">Author</th>
-              <th className="px-3 py-2 text-xs font-normal text-gray-500">Blog</th>
               <th className="px-3 py-2">
-                <button
-                  type="button"
-                  onClick={onUpdatedSortToggle}
-                  className="inline-flex items-center gap-1 text-xs font-normal text-gray-500 hover:text-gray-700"
-                >
-                  Updated
-                  <ChevronDownIcon
-                    className={`h-3.5 w-3.5 transition-transform ${
-                      updatedSort === 'asc' ? 'rotate-180' : ''
-                    }`}
-                    aria-hidden
-                  />
-                </button>
+                <SortableColumnHeader
+                  label="Title"
+                  field="title"
+                  sortField={sortField}
+                  sortOrder={sortOrder}
+                  onColumnSort={onColumnSort}
+                />
               </th>
-              <th className="px-3 py-2 text-xs font-normal text-gray-500">Published</th>
+              <th className="px-3 py-2 text-xs font-normal text-gray-500">Visibility</th>
+              <th className="px-3 py-2">
+                <SortableColumnHeader
+                  label="Author"
+                  field="author"
+                  sortField={sortField}
+                  sortOrder={sortOrder}
+                  onColumnSort={onColumnSort}
+                />
+              </th>
+              <th className="px-3 py-2">
+                <SortableColumnHeader
+                  label="Blog"
+                  field="blogTitle"
+                  sortField={sortField}
+                  sortOrder={sortOrder}
+                  onColumnSort={onColumnSort}
+                />
+              </th>
+              <th className="px-3 py-2">
+                <SortableColumnHeader
+                  label="Updated"
+                  field="updated"
+                  sortField={sortField}
+                  sortOrder={sortOrder}
+                  onColumnSort={onColumnSort}
+                />
+              </th>
+              <th className="px-3 py-2">
+                <SortableColumnHeader
+                  label="Published"
+                  field="published"
+                  sortField={sortField}
+                  sortOrder={sortOrder}
+                  onColumnSort={onColumnSort}
+                />
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -222,6 +698,15 @@ function BlogPostsTable({
                   className="px-3 py-8 text-center text-[13px] font-normal text-gray-500"
                 >
                   Loading blog posts…
+                </td>
+              </tr>
+            ) : posts.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="px-3 py-8 text-center text-[13px] font-normal text-gray-500"
+                >
+                  No blog posts found
                 </td>
               </tr>
             ) : (
@@ -270,7 +755,17 @@ function BlogPostsTable({
                     {post.author}
                   </td>
                   <td className="px-3 py-2.5 text-[13px] font-normal text-gray-600">
-                    {post.blogTitle}
+                    {post.blogId ? (
+                      <Link
+                        to={`/content/blogs/${post.blogId}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-gray-600 hover:text-blue-600"
+                      >
+                        {post.blogTitle}
+                      </Link>
+                    ) : (
+                      post.blogTitle
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">
                     {formatRelativeUpdatedAt(post.updatedAt)}
@@ -292,8 +787,18 @@ export const ContentBlogPostsPage = () => {
   const navigate = useNavigate();
   const { activeStoreId } = useStore();
   const { blogs, fetchBlogsByStoreId } = useBlogs();
+  const { blogTags, fetchBlogTagsByStoreId } = useBlogTags();
   const { blogPosts, loading, fetchBlogPostsByStoreId } = useBlogPosts();
-  const [updatedSort, setUpdatedSort] = useState<UpdatedSort>('desc');
+
+  const [sortField, setSortField] = useState<SortField>('updated');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [sortOpen, setSortOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'visible' | 'hidden'>('all');
+  const [tagFilter, setTagFilter] = useState('all');
+  const [blogFilter, setBlogFilter] = useState('all');
+  const [authorFilter, setAuthorFilter] = useState('all');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const selectAllRef = useRef<HTMLInputElement | null>(null);
 
@@ -301,31 +806,71 @@ export const ContentBlogPostsPage = () => {
     if (!activeStoreId) return;
     void fetchBlogPostsByStoreId(activeStoreId);
     void fetchBlogsByStoreId(activeStoreId);
-  }, [activeStoreId, fetchBlogPostsByStoreId, fetchBlogsByStoreId]);
+    void fetchBlogTagsByStoreId(activeStoreId);
+  }, [activeStoreId, fetchBlogPostsByStoreId, fetchBlogsByStoreId, fetchBlogTagsByStoreId]);
+
+  const tagNameById = useMemo(() => {
+    return new Map(blogTags.map((tag) => [tag._id, tag.name]));
+  }, [blogTags]);
 
   const blogTitleById = useMemo(() => {
     return new Map(blogs.map((blog) => [blog._id, blog.title]));
   }, [blogs]);
 
-  const sortedPosts = useMemo(() => {
-    const list = blogPosts.map((post) => ({
+  const allRows = useMemo<BlogPostRow[]>(() => {
+    return blogPosts.map((post) => ({
       id: post._id,
       title: post.title,
       visibility: post.visibility,
       author: post.author || '—',
+      blogId: post.blogId,
       blogTitle: blogTitleById.get(post.blogId) ?? '—',
+      tagIds: post.tagIds ?? [],
+      tagNames: (post.tagIds ?? [])
+        .map((id) => tagNameById.get(id))
+        .filter((name): name is string => Boolean(name)),
       featuredImageUrl: post.featuredImageUrl,
       updatedAt: post.updatedAt,
       createdAt: post.createdAt,
     }));
+  }, [blogPosts, blogTitleById, tagNameById]);
 
-    list.sort((a, b) => {
-      const diff = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
-      return updatedSort === 'desc' ? -diff : diff;
+  const authors = useMemo(() => {
+    const unique = new Set<string>();
+    for (const row of allRows) {
+      if (row.author && row.author !== '—') unique.add(row.author);
+    }
+    return Array.from(unique).sort((a, b) => a.localeCompare(b));
+  }, [allRows]);
+
+  const filteredPosts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+
+    return allRows.filter((post) => {
+      if (visibilityFilter !== 'all' && post.visibility !== visibilityFilter) return false;
+      if (blogFilter !== 'all' && post.blogId !== blogFilter) return false;
+      if (authorFilter !== 'all' && post.author !== authorFilter) return false;
+      if (tagFilter !== 'all' && !post.tagIds.includes(tagFilter)) return false;
+
+      if (q) {
+        const haystack = [
+          post.title,
+          post.author,
+          post.blogTitle,
+          ...post.tagNames,
+        ]
+          .join(' ')
+          .toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+
+      return true;
     });
+  }, [allRows, searchQuery, visibilityFilter, blogFilter, authorFilter, tagFilter]);
 
-    return list;
-  }, [blogPosts, blogTitleById, updatedSort]);
+  const sortedPosts = useMemo(() => {
+    return [...filteredPosts].sort((a, b) => comparePosts(a, b, sortField, sortOrder));
+  }, [filteredPosts, sortField, sortOrder]);
 
   const visibleIds = useMemo(() => sortedPosts.map((post) => post.id), [sortedPosts]);
   const selectedVisibleCount = useMemo(
@@ -352,16 +897,41 @@ export const ContentBlogPostsPage = () => {
   const handleSelectAllVisible = (checked: boolean) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      if (checked) {
-        visibleIds.forEach((id) => next.add(id));
-      } else {
-        visibleIds.forEach((id) => next.delete(id));
-      }
+      if (checked) visibleIds.forEach((id) => next.add(id));
+      else visibleIds.forEach((id) => next.delete(id));
       return next;
     });
   };
 
-  const showEmptyState = !loading && sortedPosts.length === 0;
+  const handleClearSearchAndFilters = useCallback(() => {
+    setSearchOpen(false);
+    setSearchQuery('');
+    setVisibilityFilter('all');
+    setTagFilter('all');
+    setBlogFilter('all');
+    setAuthorFilter('all');
+  }, []);
+
+  const handleColumnSort = useCallback(
+    (field: SortField) => {
+      if (sortField === field) {
+        setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+        return;
+      }
+      setSortField(field);
+      setSortOrder(defaultSortOrderForPostField(field));
+    },
+    [sortField]
+  );
+
+  const hasActiveFilters =
+    searchQuery.trim().length > 0 ||
+    visibilityFilter !== 'all' ||
+    tagFilter !== 'all' ||
+    blogFilter !== 'all' ||
+    authorFilter !== 'all';
+
+  const showEmptyState = !loading && allRows.length === 0;
 
   return (
     <div className="min-h-screen bg-page-background-color">
@@ -393,16 +963,16 @@ export const ContentBlogPostsPage = () => {
           </div>
         </div>
 
+        <StoreAccessRestrictedBanner />
+
         {showEmptyState ? (
           <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
             <div className="flex min-h-[420px] flex-col items-center justify-center px-6 py-14 text-center">
               <BlogPostsEmptyIllustration />
-
               <h2 className="text-[15px] font-medium text-gray-800">Write a blog post</h2>
               <p className="mt-1.5 max-w-md text-[13px] font-normal leading-relaxed text-gray-500">
                 Blog posts are a great way to build a community around your products and your brand.
               </p>
-
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
                 <button
                   type="button"
@@ -427,8 +997,29 @@ export const ContentBlogPostsPage = () => {
             selectedIds={selectedIds}
             selectAllRef={selectAllRef}
             allVisibleSelected={allVisibleSelected}
-            updatedSort={updatedSort}
-            onUpdatedSortToggle={() => setUpdatedSort((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
+            sortField={sortField}
+            sortOrder={sortOrder}
+            searchOpen={searchOpen || hasActiveFilters}
+            searchQuery={searchQuery}
+            visibilityFilter={visibilityFilter}
+            tagFilter={tagFilter}
+            blogFilter={blogFilter}
+            authorFilter={authorFilter}
+            blogs={blogs}
+            blogTags={blogTags}
+            authors={authors}
+            sortOpen={sortOpen}
+            onSearchOpenChange={setSearchOpen}
+            onSearchQueryChange={setSearchQuery}
+            onVisibilityFilterChange={setVisibilityFilter}
+            onTagFilterChange={setTagFilter}
+            onBlogFilterChange={setBlogFilter}
+            onAuthorFilterChange={setAuthorFilter}
+            onSortOpenChange={setSortOpen}
+            onSortFieldChange={setSortField}
+            onSortOrderChange={setSortOrder}
+            onColumnSort={handleColumnSort}
+            onClearSearchAndFilters={handleClearSearchAndFilters}
             onSelectAllVisible={handleSelectAllVisible}
             onSelectRow={handleSelectRow}
             onPostClick={(postId) => navigate(`/content/articles/${postId}`)}

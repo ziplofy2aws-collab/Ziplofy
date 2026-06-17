@@ -12,6 +12,11 @@ import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
 import { SearchEngineListingEditor } from '../seo/SearchEngineListingEditor';
 import { SNIPPET_MAX } from '../seo/seo-text.util';
+import {
+  buildStorefrontBlogUrl,
+  normalizeStorefrontOrigin,
+  resolveBlogUrlHandle,
+} from '../utils/storefront-url.util';
 
 const BLOG_TITLE_MAX = 255;
 
@@ -137,10 +142,9 @@ export const ContentBlogEditPage = () => {
   const canSave =
     blogTitle.trim().length > 0 && isDirty && !saving && !loading && loaded;
 
-  const storefrontBase = storeSubdomain?.url?.replace(/\/+$/, '') ?? '';
-  const viewHref = storefrontBase
-    ? `${storefrontBase}/blogs/${urlHandle.trim() || initial?.urlHandle || ''}`
-    : '';
+  const storefrontBase = normalizeStorefrontOrigin(storeSubdomain?.url);
+  const blogHandle = resolveBlogUrlHandle(urlHandle, initial?.urlHandle, blogTitle);
+  const viewHref = buildStorefrontBlogUrl(storefrontBase, blogHandle);
 
   const handleSave = async () => {
     if (!blogTitle.trim()) {

@@ -19,11 +19,17 @@ import {
 } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useBlogs, type Blog } from '../contexts/blog.context';
+import { useBlogPosts, type BlogPost } from '../contexts/blog-post.context';
 import { useCollections, type Collection } from '../contexts/collection.context';
 import { useProducts, type Product } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreMenus } from '../contexts/store-menu.context';
 import { menuItemDraftsToApiInputs, type MenuItemDraft } from '../utils/store-menu-draft.util';
+import {
+  blogLinkPath,
+  blogPostLinkPath,
+} from '../components/theme-editor/ThemeEditorLinkPicker';
 
 type LinkPickerOption = {
   id: string;
@@ -87,7 +93,7 @@ type LinkPickerSelection = {
   productId?: string;
 };
 
-type LinkPickerView = 'root' | 'collections' | 'products';
+type LinkPickerView = 'root' | 'collections' | 'products' | 'blogs' | 'blog-posts';
 
 function collectionLinkPath(collection: Collection): string {
   const handle = collection.urlHandle?.trim();
@@ -115,6 +121,8 @@ function LinkPickerDropdown({
   const panelRef = useRef<HTMLDivElement>(null);
   const { collections, loading: collectionsLoading, fetchCollectionsByStoreId } = useCollections();
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
+  const { blogs, loading: blogsLoading, fetchBlogsByStoreId } = useBlogs();
+  const { blogPosts, loading: blogPostsLoading, fetchBlogPostsByStoreId } = useBlogPosts();
   const [view, setView] = useState<LinkPickerView>('root');
 
   useEffect(() => {
@@ -154,6 +162,30 @@ function LinkPickerDropdown({
     );
   }, [products, searchQuery]);
 
+  const filteredBlogs = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return blogs;
+    return blogs.filter(
+      (blog) =>
+        blog.title.toLowerCase().includes(q) || blog.urlHandle.toLowerCase().includes(q)
+    );
+  }, [blogs, searchQuery]);
+
+  const blogHandleById = useMemo(
+    () => new Map(blogs.map((blog) => [blog._id, blog.urlHandle])),
+    [blogs]
+  );
+
+  const filteredBlogPosts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return blogPosts;
+    return blogPosts.filter((post) => {
+      const blogTitle = blogs.find((blog) => blog._id === post.blogId)?.title ?? '';
+      const haystack = [post.title, post.urlHandle, blogTitle].join(' ').toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [blogPosts, blogs, searchQuery]);
+
   const openCollectionsPicker = useCallback(async () => {
     if (!storeId) {
       toast.error('Select a store before choosing collections');
@@ -180,6 +212,32 @@ function LinkPickerDropdown({
     }
   }, [storeId, fetchProductsByStoreId]);
 
+  const openBlogsPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing blogs');
+      return;
+    }
+    setView('blogs');
+    try {
+      await fetchBlogsByStoreId(storeId);
+    } catch {
+      toast.error('Failed to load blogs');
+    }
+  }, [storeId, fetchBlogsByStoreId]);
+
+  const openBlogPostsPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing blog posts');
+      return;
+    }
+    setView('blog-posts');
+    try {
+      await Promise.all([fetchBlogsByStoreId(storeId), fetchBlogPostsByStoreId(storeId)]);
+    } catch {
+      toast.error('Failed to load blog posts');
+    }
+  }, [storeId, fetchBlogsByStoreId, fetchBlogPostsByStoreId]);
+
   const pickAndClose = (selection: LinkPickerSelection) => {
     onSelect(selection);
     onClose();
@@ -196,7 +254,7 @@ function LinkPickerDropdown({
       ref={panelRef}
       className="absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(300px,50vh)] overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-md"
     >
-      {view === 'collections' || view === 'products' ? (
+      {view === 'collections' || view === 'products' || view === 'blogs' || view === 'blog-posts' ? (
         <>
           <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-2 py-2">
             <button
@@ -212,9 +270,17 @@ function LinkPickerDropdown({
                 ? collectionsLoading
                   ? 'Loading…'
                   : `${collectionsResultCount} result${collectionsResultCount === 1 ? '' : 's'}`
-                : productsLoading
-                  ? 'Loading…'
-                  : `${productsResultCount} result${productsResultCount === 1 ? '' : 's'}`}
+                : view === 'products'
+                  ? productsLoading
+                    ? 'Loading…'
+                    : `${productsResultCount} result${productsResultCount === 1 ? '' : 's'}`
+                  : view === 'blogs'
+                    ? blogsLoading
+                      ? 'Loading…'
+                      : `${filteredBlogs.length} result${filteredBlogs.length === 1 ? '' : 's'}`
+                    : blogPostsLoading
+                      ? 'Loading…'
+                      : `${filteredBlogPosts.length} result${filteredBlogPosts.length === 1 ? '' : 's'}`}
             </span>
           </div>
 
@@ -268,9 +334,10 @@ function LinkPickerDropdown({
                 ) : null}
               </>
             )
-          ) : productsLoading ? (
-            <p className="px-3 py-4 text-center text-sm text-gray-500">Loading products…</p>
-          ) : (
+          ) : view === 'products' ? (
+            productsLoading ? (
+              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading products…</p>
+            ) : (
             <>
               <button
                 type="button"
@@ -319,7 +386,62 @@ function LinkPickerDropdown({
                 <p className="px-3 py-3 text-center text-sm text-gray-500">No products found</p>
               ) : null}
             </>
-          )}
+            )
+          ) : view === 'blogs' ? (
+            blogsLoading ? (
+              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading blogs…</p>
+            ) : (
+              <>
+                {filteredBlogs.map((blog: Blog) => (
+                  <button
+                    key={blog._id}
+                    type="button"
+                    onClick={() =>
+                      pickAndClose({
+                        link: blogLinkPath(blog),
+                        label: blog.title,
+                        linkType: 'custom',
+                      })
+                    }
+                    className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
+                  >
+                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                    <span className="min-w-0 flex-1 truncate">{blog.title}</span>
+                  </button>
+                ))}
+                {filteredBlogs.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-sm text-gray-500">No blogs found</p>
+                ) : null}
+              </>
+            )
+          ) : view === 'blog-posts' ? (
+            blogPostsLoading ? (
+              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading blog posts…</p>
+            ) : (
+              <>
+                {filteredBlogPosts.map((post: BlogPost) => (
+                  <button
+                    key={post._id}
+                    type="button"
+                    onClick={() =>
+                      pickAndClose({
+                        link: blogPostLinkPath(post, blogHandleById),
+                        label: post.title,
+                        linkType: 'custom',
+                      })
+                    }
+                    className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
+                  >
+                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                    <span className="min-w-0 flex-1 truncate">{post.title}</span>
+                  </button>
+                ))}
+                {filteredBlogPosts.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-sm text-gray-500">No blog posts found</p>
+                ) : null}
+              </>
+            )
+          ) : null}
         </>
       ) : (
         LINK_PICKER_SECTIONS.map((section) => (
@@ -338,6 +460,14 @@ function LinkPickerDropdown({
                     }
                     if (opt.id === 'products' && opt.hasChildren) {
                       void openProductsPicker();
+                      return;
+                    }
+                    if (opt.id === 'blogs' && opt.hasChildren) {
+                      void openBlogsPicker();
+                      return;
+                    }
+                    if (opt.id === 'blog-posts' && opt.hasChildren) {
+                      void openBlogPostsPicker();
                       return;
                     }
                     if (opt.hasChildren) return;

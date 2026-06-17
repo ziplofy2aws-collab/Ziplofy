@@ -1,5 +1,6 @@
 import { PencilIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useMemo, useState } from 'react';
+import { normalizeStorefrontPathHandle } from '../utils/storefront-url.util';
 import {
   META_DESCRIPTION_MAX,
   PAGE_TITLE_MAX,
@@ -66,7 +67,7 @@ export function SearchEngineListingEditor({
 
   const handleSlug = useMemo(() => {
     const handle = urlHandle.trim();
-    if (handle) return handle;
+    if (handle) return normalizeStorefrontPathHandle(handle);
     return slugFromTitle(entityTitle, fallbackSlug);
   }, [urlHandle, entityTitle, fallbackSlug]);
 

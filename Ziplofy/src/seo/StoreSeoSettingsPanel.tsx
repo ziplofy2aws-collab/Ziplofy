@@ -1,20 +1,45 @@
-import { PhotoIcon } from '@heroicons/react/24/outline';
+import { InformationCircleIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import { SelectImageModal, type SelectedImageAsset } from '../components/SelectImageModal';
 import { useStore } from '../contexts/store.context';
 import { META_DESCRIPTION_MAX, PAGE_TITLE_MAX } from './seo-text.util';
 import { resolveStorefrontHomeSeoPreview } from './resolve-storefront-home-seo';
+
+export type StoreSeoValues = {
+  homePageTitle: string;
+  metaDescription: string;
+  socialImageUrl: string;
+};
 
 type Props = {
   storefrontOrigin?: string | null;
   showSaveButton?: boolean;
   onSaved?: () => void;
+  variant?: 'default' | 'preferences';
+  seoValues?: StoreSeoValues;
+  onSeoChange?: (values: StoreSeoValues) => void;
 };
+
+function InfoTooltip() {
+  return (
+    <button
+      type="button"
+      className="inline-flex shrink-0 text-gray-400 transition-colors hover:text-gray-600"
+      aria-label="More information"
+    >
+      <InformationCircleIcon className="h-4 w-4" aria-hidden />
+    </button>
+  );
+}
 
 export function StoreSeoSettingsPanel({
   storefrontOrigin,
   showSaveButton = true,
   onSaved,
+  variant = 'default',
+  seoValues,
+  onSeoChange,
 }: Props) {
   const { stores, activeStoreId, updateStore, loading } = useStore();
   const activeStore = useMemo(
@@ -22,29 +47,50 @@ export function StoreSeoSettingsPanel({
     [stores, activeStoreId]
   );
 
+  const isControlled = Boolean(seoValues && onSeoChange);
+
   const [homePageTitle, setHomePageTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
   const [socialImageUrl, setSocialImageUrl] = useState('');
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  const resolvedHomePageTitle = isControlled ? (seoValues?.homePageTitle ?? '') : homePageTitle;
+  const resolvedMetaDescription = isControlled ? (seoValues?.metaDescription ?? '') : metaDescription;
+  const resolvedSocialImageUrl = isControlled ? (seoValues?.socialImageUrl ?? '') : socialImageUrl;
+
+  const updateSeoField = useCallback(
+    (field: keyof StoreSeoValues, value: string) => {
+      if (isControlled && onSeoChange && seoValues) {
+        onSeoChange({ ...seoValues, [field]: value });
+        return;
+      }
+
+      if (field === 'homePageTitle') setHomePageTitle(value);
+      if (field === 'metaDescription') setMetaDescription(value);
+      if (field === 'socialImageUrl') setSocialImageUrl(value);
+    },
+    [isControlled, onSeoChange, seoValues]
+  );
+
   useEffect(() => {
-    if (!activeStore) return;
+    if (!activeStore || isControlled) return;
     setHomePageTitle(activeStore.seoHomePageTitle ?? '');
     setMetaDescription(activeStore.seoMetaDescription ?? '');
     setSocialImageUrl(activeStore.seoSocialImageUrl ?? '');
-  }, [activeStore]);
+  }, [activeStore, isControlled]);
 
   const preview = useMemo(() => {
     if (!activeStore) return null;
     return resolveStorefrontHomeSeoPreview({
       storeName: activeStore.storeName,
       storeDescription: activeStore.storeDescription,
-      seoHomePageTitle: homePageTitle,
-      seoMetaDescription: metaDescription,
-      seoSocialImageUrl: socialImageUrl,
+      seoHomePageTitle: resolvedHomePageTitle,
+      seoMetaDescription: resolvedMetaDescription,
+      seoSocialImageUrl: resolvedSocialImageUrl,
       storefrontOrigin: storefrontOrigin ?? undefined,
     });
-  }, [activeStore, homePageTitle, metaDescription, socialImageUrl, storefrontOrigin]);
+  }, [activeStore, resolvedHomePageTitle, resolvedMetaDescription, resolvedSocialImageUrl, storefrontOrigin]);
 
   const handleSave = useCallback(async () => {
     if (!activeStore) {
@@ -67,11 +113,148 @@ export function StoreSeoSettingsPanel({
     }
   }, [activeStore, homePageTitle, metaDescription, socialImageUrl, updateStore, onSaved]);
 
+  const handleImageSelected = useCallback(
+    (asset: SelectedImageAsset) => {
+      updateSeoField('socialImageUrl', asset.url);
+    },
+    [updateSeoField]
+  );
+
+  const inputClass =
+    'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm outline-none transition-all placeholder:text-gray-400 focus:border-gray-400 focus:ring-1 focus:ring-gray-400/30';
+
   if (!activeStore) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-500">
+      <div className="rounded-lg border border-dashed border-gray-200 bg-white p-8 text-center text-sm text-gray-500">
         Select a store to manage SEO settings.
       </div>
+    );
+  }
+
+  const previewHost = preview?.canonicalUrl
+    ? preview.canonicalUrl.replace(/^https?:\/\//, '').replace(/\/$/, '').toUpperCase()
+    : activeStore.storeName.toUpperCase();
+
+  const previewTitle = resolvedHomePageTitle.trim() || preview?.title || activeStore.storeName;
+  const previewDescription =
+    resolvedMetaDescription.trim() ||
+    preview?.description ||
+    'Enter a description to be shown on search engines like Google';
+
+  if (variant === 'preferences') {
+    return (
+      <section className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className="border-b border-gray-100 px-4 py-3.5 sm:px-5">
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-[13px] font-semibold text-gray-900">Social sharing image and SEO</h2>
+            <InfoTooltip />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6 p-4 sm:p-5 lg:grid-cols-2">
+          <div className="space-y-4">
+            <div className="flex min-h-[160px] flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50/80 px-6 py-8 text-center">
+              {resolvedSocialImageUrl.trim() ? (
+                <div className="w-full space-y-3">
+                  <img
+                    src={resolvedSocialImageUrl.trim()}
+                    alt="Social sharing preview"
+                    className="max-h-36 w-full rounded-md object-cover"
+                  />
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setImagePickerOpen(true)}
+                      className="text-[12px] font-medium text-blue-600 hover:text-blue-700"
+                    >
+                      Change image
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateSeoField('socialImageUrl', '')}
+                      className="text-[12px] font-medium text-gray-500 hover:text-gray-700"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setImagePickerOpen(true)}
+                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-[13px] font-medium text-gray-800 shadow-sm transition-colors hover:bg-gray-50"
+                  >
+                    Add image
+                  </button>
+                  <p className="mt-2 text-[12px] text-gray-500">Recommended: 1200 x 628 px</p>
+                </>
+              )}
+            </div>
+
+            <div className="rounded-lg border border-gray-200 bg-white px-3 py-3">
+              <p className="truncate text-[11px] font-normal uppercase tracking-wide text-gray-500">
+                {previewHost}
+              </p>
+              <p className="mt-1 truncate text-[13px] font-semibold text-gray-900">{previewTitle}</p>
+              <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-gray-500">
+                {previewDescription}
+              </p>
+            </div>
+
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <label className="mb-1.5 block text-[13px] font-medium text-gray-700" htmlFor="seo-home-title">
+                Home page title
+              </label>
+              <input
+                id="seo-home-title"
+                type="text"
+                value={resolvedHomePageTitle}
+                onChange={(e) =>
+                  updateSeoField('homePageTitle', e.target.value.slice(0, PAGE_TITLE_MAX))
+                }
+                placeholder={activeStore.storeName}
+                className={inputClass}
+              />
+              <p className="mt-1.5 text-[12px] text-gray-500">
+                {resolvedHomePageTitle.length} of {PAGE_TITLE_MAX} characters used
+              </p>
+            </div>
+
+            <div>
+              <label
+                className="mb-1.5 block text-[13px] font-medium text-gray-700"
+                htmlFor="seo-meta-description"
+              >
+                Meta description
+              </label>
+              <textarea
+                id="seo-meta-description"
+                rows={4}
+                value={resolvedMetaDescription}
+                onChange={(e) =>
+                  updateSeoField('metaDescription', e.target.value.slice(0, META_DESCRIPTION_MAX))
+                }
+                placeholder="Enter a description to be shown on search engines like Google"
+                className={`${inputClass} resize-none`}
+              />
+              <p className="mt-1.5 text-[12px] text-gray-500">
+                {resolvedMetaDescription.length} of {META_DESCRIPTION_MAX} characters used
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <SelectImageModal
+          open={imagePickerOpen}
+          initialUrl={resolvedSocialImageUrl}
+          onClose={() => setImagePickerOpen(false)}
+          onSelect={handleImageSelected}
+        />
+      </section>
     );
   }
 
@@ -94,13 +277,15 @@ export function StoreSeoSettingsPanel({
               <input
                 id="seo-home-title"
                 type="text"
-                value={homePageTitle}
-                onChange={(e) => setHomePageTitle(e.target.value.slice(0, PAGE_TITLE_MAX))}
+                value={resolvedHomePageTitle}
+                onChange={(e) =>
+                  updateSeoField('homePageTitle', e.target.value.slice(0, PAGE_TITLE_MAX))
+                }
                 placeholder={activeStore.storeName}
                 className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
               <p className="mt-1.5 text-xs text-gray-500">
-                {homePageTitle.length} of {PAGE_TITLE_MAX} characters used
+                {resolvedHomePageTitle.length} of {PAGE_TITLE_MAX} characters used
               </p>
             </div>
 
@@ -111,28 +296,58 @@ export function StoreSeoSettingsPanel({
               <textarea
                 id="seo-meta-description"
                 rows={4}
-                value={metaDescription}
-                onChange={(e) => setMetaDescription(e.target.value.slice(0, META_DESCRIPTION_MAX))}
+                value={resolvedMetaDescription}
+                onChange={(e) =>
+                  updateSeoField('metaDescription', e.target.value.slice(0, META_DESCRIPTION_MAX))
+                }
                 placeholder="Brief description for search engines"
                 className="w-full resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               />
               <p className="mt-1.5 text-xs text-gray-500">
-                {metaDescription.length} of {META_DESCRIPTION_MAX} characters used
+                {resolvedMetaDescription.length} of {META_DESCRIPTION_MAX} characters used
               </p>
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700" htmlFor="seo-social-image">
-                Social sharing image URL
-              </label>
-              <input
-                id="seo-social-image"
-                type="url"
-                value={socialImageUrl}
-                onChange={(e) => setSocialImageUrl(e.target.value)}
-                placeholder="https://..."
-                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-              />
+              <label className="mb-2 block text-sm font-medium text-gray-700">Social sharing image</label>
+              <div className="flex min-h-[140px] flex-col items-center justify-center rounded-lg border border-dashed border-gray-200 bg-gray-50/60 px-4 py-6 text-center">
+                {resolvedSocialImageUrl.trim() ? (
+                  <div className="w-full space-y-3">
+                    <img
+                      src={resolvedSocialImageUrl.trim()}
+                      alt="Social sharing preview"
+                      className="max-h-36 w-full rounded-lg object-cover"
+                    />
+                    <div className="flex items-center justify-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setImagePickerOpen(true)}
+                        className="text-xs font-medium text-blue-600 hover:text-blue-700"
+                      >
+                        Change image
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateSeoField('socialImageUrl', '')}
+                        className="text-xs font-medium text-gray-500 hover:text-gray-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setImagePickerOpen(true)}
+                      className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-800 shadow-sm transition-colors hover:bg-gray-50"
+                    >
+                      Add image
+                    </button>
+                    <p className="mt-2 text-xs text-gray-500">Recommended: 1200 x 628 px</p>
+                  </>
+                )}
+              </div>
             </div>
 
             {showSaveButton ? (
@@ -158,9 +373,9 @@ export function StoreSeoSettingsPanel({
             </div>
 
             <div className="flex min-h-[180px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-white px-6 py-8 text-center">
-              {socialImageUrl.trim() ? (
+              {resolvedSocialImageUrl.trim() ? (
                 <img
-                  src={socialImageUrl.trim()}
+                  src={resolvedSocialImageUrl.trim()}
                   alt="Social sharing preview"
                   className="max-h-40 w-full rounded-lg object-cover"
                 />
@@ -170,13 +385,20 @@ export function StoreSeoSettingsPanel({
                     <PhotoIcon className="h-6 w-6 text-gray-400" aria-hidden />
                   </div>
                   <p className="text-sm font-semibold text-gray-900">Social sharing image</p>
-                  <p className="mt-0.5 text-xs text-gray-500">Recommended 1200 × 628 px</p>
+                  <p className="mt-0.5 text-xs text-gray-500">Choose an image from your store files</p>
                 </>
               )}
             </div>
           </div>
         </div>
       </section>
+
+      <SelectImageModal
+        open={imagePickerOpen}
+        initialUrl={resolvedSocialImageUrl}
+        onClose={() => setImagePickerOpen(false)}
+        onSelect={handleImageSelected}
+      />
 
       <section className="rounded-2xl border border-blue-100 bg-blue-50/50 px-5 py-4 text-sm text-blue-900">
         Product and collection SEO is edited on each product or collection page. The storefront runtime
