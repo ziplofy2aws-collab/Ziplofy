@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revonix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="ca-header" role="banner">
+
+    <div class="ca-announce" role="region" aria-label="Store announcements">
+      <div class="ca-announce__inner">
+        <button type="button" class="ca-announce__arrow ca-announce__arrow--prev" data-ca-announce-prev
+          aria-label="Previous announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="ca-announce__viewport">
+          <div class="ca-announce__track" data-ca-announce-track>
+            <p class="ca-announce__msg" data-ca-announce-slide>Loved by 10L+ Customers!</p>
+            <p class="ca-announce__msg" data-ca-announce-slide>Free shipping on orders above ₹999</p>
+            <p class="ca-announce__msg" data-ca-announce-slide>Extra 10% off on prepaid orders</p>
+          </div>
+        </div>
+        <button type="button" class="ca-announce__arrow ca-announce__arrow--next" data-ca-announce-next
+          aria-label="Next announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="ca-utility">
+      <div class="ca-container ca-utility__inner">
+        <nav class="ca-utility__links" aria-label="Quick links">
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+          <a href="#">Contact</a>
+        </nav>
+        <div class="ca-utility__right">
+          <ul class="ca-social" aria-label="Social media">
+            <li><a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M14 8.5h2.5l-.5 3H14v9h-3.5v-9H9v-3h1.5V7.2c0-2.2 1.3-3.7 3.5-3.7H16v3h-1.8c-.9 0-1.2.5-1.2 1.2V8.5z" />
+                </svg></a></li>
+            <li><a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.5" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+                </svg></a></li>
+            <li><a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M21.6 7.2a2.5 2.5 0 00-1.8-1.8C17.8 5 12 5 12 5s-5.8 0-7.8.4A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.8 1.8C6.2 19 12 19 12 19s5.8 0 7.8-.4a2.5 2.5 0 001.8-1.8A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z" />
+                </svg></a></li>
+            <li><a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M6.5 8.5h3v11h-3v-11zM8 6.2a1.8 1.8 0 110 3.6 1.8 1.8 0 010-3.6zM11 8.5h2.9v1.5h.1c.4-.8 1.5-1.6 3.1-1.6 3.3 0 3.9 2.2 3.9 5v5.1h-3v-4.5c0-1.1 0-2.5-1.5-2.5s-1.7 1.2-1.7 2.4v4.6H11V8.5z" />
+                </svg></a></li>
+          </ul>
+          <button type="button" class="ca-region" aria-haspopup="listbox" aria-label="Select country and currency">
+            <span class="ca-region__flag" aria-hidden="true"><svg viewBox="0 0 24 16" aria-hidden="true">
+                <rect width="24" height="5.33" fill="#FF9933" />
+                <rect y="5.33" width="24" height="5.34" fill="#fff" />
+                <rect y="10.67" width="24" height="5.33" fill="#138808" />
+                <circle cx="12" cy="8" r="2.2" fill="none" stroke="#000080" stroke-width=".45" />
+                <circle cx="12" cy="8" r=".55" fill="#000080" />
+              </svg></span>
+            <span class="ca-region__text">India (INR ₹)</span>
+            <svg class="ca-region__chevron" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ca-mainbar">
+      <div class="ca-container ca-mainbar__inner">
+        <button type="button" class="ca-mobile-toggle" data-ca-menu-toggle aria-expanded="false"
+          aria-controls="caNavMenu" aria-label="Open menu">
+          <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <a href="index.html" class="ca-logo" aria-label="Home">
+          <img src="assets/img/logo.png" alt="Revonix" width="200" height="64" decoding="async" />
+        </a>
+        <form class="ca-search" role="search" action="#" method="get">
+          <label class="ca-search__label" for="caSearch">Search for anything</label>
+          <input type="search" id="caSearch" class="ca-search__input" name="q" placeholder="Search for anything"
+            autocomplete="off" />
+          <button type="submit" class="ca-search__btn" aria-label="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="11" cy="11" r="6" />
+              <path d="M16 16l5 5" stroke-linecap="round" />
+            </svg>
+          </button>
+        </form>
+        <div class="ca-actions">
+          <button type="button" class="ca-actions__link ca-actions__link--search-mobile" data-ca-mobile-search
+            aria-label="Search" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="11" cy="11" r="6" />
+              <path d="M16 16l5 5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <a href="#" class="ca-actions__link ca-actions__link--account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M5 20c0-4 3.5-7 7-7s7 3 7 7" stroke-linecap="round" />
+            </svg></a>
+          <a href="#" class="ca-actions__link ca-actions__link--cart" aria-label="Shopping cart, 0 items">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M6 6h15l-1.5 9H7.5L6 6z" stroke-linejoin="round" />
+              <path d="M6 6L5 3H2" stroke-linecap="round" />
+              <circle cx="9" cy="20" r="1.2" fill="currentColor" />
+              <circle cx="18" cy="20" r="1.2" fill="currentColor" />
+            </svg>
+            <span class="ca-actions__badge">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ca-nav">
+      <div class="ca-container ca-nav__inner">
+        <nav class="ca-nav__menu" id="caNavMenu" aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="#" class="ca-nav__has-dropdown">Browse By Car<svg viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg></a>
+          <a href="category.html" class="ca-nav__has-dropdown is-active">Car Accessories<svg viewBox="0 0 10 6"
+              fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg></a>
+          <a href="category.html?cat=car-body-cover">Car Body Cover<span class="ca-nav__sale">SALE</span></a>
+          <a href="#">Scooty Mats</a>
+          <a href="#">Best Seller</a>
+          <a href="#">New Arrivals</a>
+          <a href="#">Contact</a>
+        </nav>
+        <nav class="ca-nav__secondary" aria-label="Secondary navigation">
+          <a href="#">About</a><a href="#">Blog</a><a href="#">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+  </header>
+
+  <main class="ca-pdp">
+
+    <div class="ca-container ca-pdp__crumb-wrap">
+      <nav class="ca-breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="ca-breadcrumb__sep" aria-hidden="true">&gt;</span>
+        <a href="category.html">All products</a>
+        <span class="ca-breadcrumb__sep" aria-hidden="true">&gt;</span>
+        <span aria-current="page" data-ca-pdp-breadcrumb>Neodrift Car Seat Organizer</span>
+      </nav>
+    </div>
+
+    <section class="ca-pdp-main" aria-label="Product details">
+      <div class="ca-container">
+        <div class="ca-pdp-main__grid">
+
+          <div class="ca-pdp-main__col-left">
+
+            <div class="ca-featured ca-pdp-main__gallery-block" aria-label="Product gallery">
+              <div class="ca-featured__gallery ca-pdp-main__gallery">
+                <div class="ca-featured__thumbs" role="list" aria-label="Product thumbnails" data-ca-pdp-thumbs>
+                  <button type="button" class="ca-featured__thumb is-active" data-ca-featured-thumb
+                    data-ca-featured-src="assets/img/cat-3.webp" aria-label="View image 1" aria-current="true">
+                    <img src="assets/img/cat-3.webp" alt="" width="56" height="56" decoding="async" />
+                  </button>
+                  <button type="button" class="ca-featured__thumb" data-ca-featured-thumb
+                    data-ca-featured-src="assets/img/cat-4.webp" aria-label="View image 2">
+                    <img src="assets/img/cat-4.webp" alt="" width="56" height="56" decoding="async" />
+                  </button>
+                  <button type="button" class="ca-featured__thumb" data-ca-featured-thumb
+                    data-ca-featured-src="assets/img/cat-5.webp" aria-label="View image 3">
+                    <img src="assets/img/cat-5.webp" alt="" width="56" height="56" decoding="async" />
+                  </button>
+                  <button type="button" class="ca-featured__thumb" data-ca-featured-thumb
+                    data-ca-featured-src="assets/img/cat-6.webp" aria-label="View image 4">
+                    <img src="assets/img/cat-6.webp" alt="" width="56" height="56" decoding="async" />
+                  </button>
+                  <button type="button" class="ca-featured__thumb" data-ca-featured-thumb
+                    data-ca-featured-src="assets/img/promo-6.png" aria-label="View image 5">
+                    <img src="assets/img/promo-6.png" alt="" width="56" height="56" decoding="async" />
+                  </button>
+                  <button type="button" class="ca-featured__thumb" data-ca-featured-thumb
+                    data-ca-featured-src="assets/img/promo-7.png" aria-label="View image 6">
+                    <img src="assets/img/promo-7.png" alt="" width="56" height="56" decoding="async" />
+                  </button>
+                </div>
+                <div class="ca-featured__main ca-pdp-main__main-image">
+                  <figure class="ca-featured__figure">
+                    <img src="assets/img/cat-3.webp" alt="Neodrift Car Seat Organizer" width="520" height="520"
+                      data-ca-featured-main decoding="async" />
+                  </figure>
+                  <p class="ca-featured__zoom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <circle cx="11" cy="11" r="6" />
+                      <path d="M16 16l5 5" stroke-linecap="round" />
+                    </svg>
+                    Roll over image to zoom in
+                  </p>
+                </div>
+              </div>
+              <div class="ca-pdp-main__float-bar">
+                <div class="ca-pdp-main__float-prices">
+                  <span class="ca-pdp-main__float-price" data-ca-pdp-float-price>₹ 1,343.00</span>
+                  <span class="ca-pdp-main__float-compare" data-ca-pdp-compare-inline>₹ 2,200.00</span>
+                </div>
+                <button type="button" class="ca-pdp-main__float-cta">Add to cart</button>
+              </div>
+            </div>
+
+            <div class="ca-pdp-main__desc">
+              <h2 class="ca-pdp-main__desc-title">Description</h2>
+              <h3 class="ca-pdp-main__desc-product" data-ca-pdp-desc-product>NEODRIFT® Car Seat Organizer</h3>
+              <p data-ca-pdp-desc-para>Keep your car clutter-free with the Neodrift Car Seat Organizer — a smart storage solution designed for
+                Indian cars. Multiple pockets, spill-resistant material, and adjustable straps make it perfect for daily
+                commutes and long drives.</p>
+              <p>Built with durable fabric and reinforced stitching, it fits most front and rear seats. Ideal for storing
+                bottles, documents, tablets, and everyday essentials within easy reach.</p>
+              <figure class="ca-pdp-main__desc-media">
+                <img src="assets/img/promo-6.png" alt="Neodrift Car Seat Organizer installed in car" width="720"
+                  height="420" loading="lazy" decoding="async" data-ca-pdp-desc-img />
+              </figure>
+            </div>
+
+            <div class="ca-pdp-main__accordion">
+              <button type="button" class="ca-pdp-main__acc-btn is-open" data-ca-pdp-acc aria-expanded="true">
+                <span>FAQs</span>
+                <svg viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                  <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </button>
+              <div class="ca-pdp-main__acc-panel is-open" data-ca-pdp-acc-panel>
+                <p><strong>Is it compatible with all cars?</strong> Yes, adjustable straps fit most sedans, SUVs, and
+                  hatchbacks.</p>
+                <p><strong>Is the material waterproof?</strong> The organizer is spill-resistant and easy to wipe clean.</p>
+              </div>
+            </div>
+
+            <section class="ca-pdp-main__ugc" aria-labelledby="caPdpUgcHeading">
+              <h2 id="caPdpUgcHeading" class="ca-pdp-main__ugc-title">Customer Photos &amp; Videos</h2>
+              <figure class="ca-pdp-main__ugc-media">
+                <img src="assets/img/cat-3.webp" alt="Customer photo of Neodrift Car Seat Organizer" width="420"
+                  height="420" loading="lazy" decoding="async" data-ca-pdp-ugc-img />
+              </figure>
+            </section>
+
+            <section class="ca-pdp-main__reviews-block" aria-labelledby="caPdpReviewsHeading">
+              <div class="ca-pdp-main__reviews-head">
+                <div>
+                  <h2 id="caPdpReviewsHeading" class="ca-pdp-main__reviews-label">Product Reviews</h2>
+                  <button type="button" class="ca-pdp-main__review-write">Write a review</button>
+                </div>
+                <div class="ca-pdp-main__reviews-score">
+                  <span class="ca-pdp-main__reviews-num">4.9</span>
+                  <span class="ca-pdp-main__reviews-stars" aria-hidden="true">★★★★★</span>
+                  <span class="ca-pdp-main__reviews-count">49 REVIEWS</span>
+                </div>
+              </div>
+              <article class="ca-pdp-main__review">
+                <div class="ca-pdp-main__review-top">
+                  <span class="ca-pdp-main__review-avatar">R</span>
+                  <p class="ca-pdp-main__review-name">Rahul Sharma <span class="ca-pdp-main__review-stars"
+                      aria-hidden="true">★★★★★</span></p>
+                  <time class="ca-pdp-main__review-date">6 MONTHS AGO</time>
+                </div>
+                <p class="ca-pdp-main__review-text">Fits perfectly on my Fronx Delta Plus 2026. Thank you :)</p>
+              </article>
+              <article class="ca-pdp-main__review">
+                <div class="ca-pdp-main__review-top">
+                  <span class="ca-pdp-main__review-avatar">A</span>
+                  <p class="ca-pdp-main__review-name">Ananya Patel <span class="ca-pdp-main__review-stars"
+                      aria-hidden="true">★★★★★</span></p>
+                  <time class="ca-pdp-main__review-date">3 MONTHS AGO</time>
+                </div>
+                <p class="ca-pdp-main__review-text">Great quality and very useful for long trips. Highly recommended!</p>
+              </article>
+              <nav class="ca-pdp-main__review-pages" aria-label="Review pagination">
+                <span class="is-active">1</span>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#" aria-label="Next page">&gt;</a>
+              </nav>
+            </section>
+
+            <section class="ca-pdp-main__security" aria-labelledby="caPdpSecurityHeading">
+              <div class="ca-pdp-main__security-head">
+                <h2 id="caPdpSecurityHeading">Payment &amp; Security</h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <rect x="5" y="11" width="14" height="10" rx="1" />
+                  <path d="M8 11V8a4 4 0 118 0v3" stroke-linecap="round" />
+                </svg>
+              </div>
+              <p class="ca-pdp-main__pay-logo">PayPal</p>
+              <p class="ca-pdp-main__security-text">Your payment information is processed securely. We do not store
+                credit card details nor have access to your credit card information.</p>
+            </section>
+
+          </div>
+
+          <aside class="ca-pdp-main__col-right">
+            <div class="ca-pdp-main__summary">
+              <h1 class="ca-pdp-main__title" data-ca-pdp-title>Neodrift Car Seat Organizer - Seat Master Lite without Tray - Full Black
+                Lite - Set of 1</h1>
+              <p class="ca-pdp-main__subtitle" data-ca-pdp-subtitle>(Multi-Pocket, Spill-Resistant, Space Saver, Durable Material) | Premium
+                Car Seat &amp; Backseat Organisers in India</p>
+
+              <div class="ca-pdp-main__rating" aria-label="Rated 4.9 out of 5 from 49 reviews">
+                <span class="ca-featured__stars" aria-hidden="true">
+                  <svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z"/></svg>
+                  <svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z"/></svg>
+                  <svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z"/></svg>
+                  <svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z"/></svg>
+                  <svg viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z"/></svg>
+                </span>
+                <span class="ca-pdp-main__rating-text" data-ca-pdp-rating-text>4.9 (49)</span>
+              </div>
+
+              <button type="button" class="ca-pdp-main__video">
+                <span class="ca-pdp-main__video-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+                </span>
+                Video
+                <svg class="ca-pdp-main__video-chev" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                  <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </button>
+
+              <p class="ca-pdp-main__category" data-ca-pdp-category>CAR SEAT ORGANISERS</p>
+              <p class="ca-pdp-main__cart-note">Discount prices are dynamic &amp; based on cart value. Cart Value: ₹0,
+                Items: 0</p>
+
+              <div class="ca-pdp-main__promo-cards">
+                <div class="ca-pdp-main__promo-card ca-pdp-main__promo-card--coupon">
+                  <span class="ca-pdp-main__promo-label">COUPON PRICE</span>
+                  <span class="ca-pdp-main__promo-value" data-ca-pdp-coupon>₹ 1275.85</span>
+                  <span class="ca-pdp-main__promo-sub">COD +₹50</span>
+                </div>
+                <button type="button" class="ca-pdp-main__promo-card ca-pdp-main__promo-card--better">
+                  <span class="ca-pdp-main__promo-better-text">BETTER PRICES</span>
+                </button>
+              </div>
+
+              <button type="button" class="ca-pdp-main__offers" data-ca-pdp-offers>
+                <span>OFFERS</span>
+                <svg viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+
+              <div class="ca-pdp-main__price-row">
+                <span class="ca-pdp-main__price-label">Price:</span>
+                <span class="ca-pdp-main__price" data-ca-pdp-price>₹ 1,343.00</span>
+                <span class="ca-pdp-main__compare" data-ca-pdp-compare>₹ 2,200.00</span>
+              </div>
+
+              <div class="ca-pdp-main__option">
+                <span class="ca-featured__option-label">Model:</span>
+                <div class="ca-featured__pills" role="group" aria-label="Select model">
+                  <button type="button" class="ca-featured__pill is-active" data-ca-featured-pill>Seat Master Lite without Tray</button>
+                  <button type="button" class="ca-featured__pill" data-ca-featured-pill>Seat Master with Tray</button>
+                </div>
+              </div>
+
+              <div class="ca-pdp-main__option">
+                <span class="ca-featured__option-label">Color:</span>
+                <div class="ca-featured__swatches" role="group" aria-label="Select color">
+                  <button type="button" class="ca-featured__swatch is-active" data-ca-featured-swatch aria-label="Navy blue" aria-pressed="true">
+                    <img src="assets/img/cat-3.webp" alt="" width="48" height="48" decoding="async" />
+                  </button>
+                  <button type="button" class="ca-featured__swatch" data-ca-featured-swatch aria-label="Black" aria-pressed="false">
+                    <img src="assets/img/cat-6.webp" alt="" width="48" height="48" decoding="async" />
+                  </button>
+                  <button type="button" class="ca-featured__swatch" data-ca-featured-swatch aria-label="Brown" aria-pressed="false">
+                    <img src="assets/img/cat-4.webp" alt="" width="48" height="48" decoding="async" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="ca-pdp-main__purchase">
+              <div class="ca-pdp-main__option">
+                <span class="ca-featured__option-label">Quantity:</span>
+                <div class="ca-featured__pills" role="group" aria-label="Select quantity">
+                  <button type="button" class="ca-featured__pill is-active" data-ca-featured-pill>Set of 1</button>
+                  <button type="button" class="ca-featured__pill" data-ca-featured-pill>Set of 2</button>
+                </div>
+              </div>
+              <div class="ca-featured__actions">
+                <button type="button" class="ca-featured__btn ca-featured__btn--cart">Add to cart</button>
+                <button type="button" class="ca-featured__btn ca-featured__btn--buy">Buy it now</button>
+              </div>
+              <div class="ca-featured__links">
+                <h3 class="ca-featured__links-title">Quick Links:</h3>
+                <a href="#" class="ca-featured__links-item">Return/Replacement Policy</a>
+              </div>
+            </div>
+
+            <div class="ca-pdp-main__bundle" data-ca-pdp-bundle>
+              <h3 class="ca-pdp-main__bundle-title">Buy More, Save More!</h3>
+              <div class="ca-pdp-main__timer">
+                <p class="ca-pdp-main__timer-lead"><strong>Hurry up!</strong> Offer ends in:</p>
+                <div class="ca-pdp-main__timer-digits" data-ca-pdp-timer aria-live="polite">
+                  <span><strong data-ca-timer-days>00</strong><small>Days</small></span>
+                  <span><strong data-ca-timer-hrs>00</strong><small>Hrs</small></span>
+                  <span><strong data-ca-timer-mins>09</strong><small>Mins</small></span>
+                  <span><strong data-ca-timer-secs>10</strong><small>Secs</small></span>
+                </div>
+                <p class="ca-pdp-main__timer-stock">Only 7 left in stock</p>
+              </div>
+              <div class="ca-pdp-main__bundle-item">
+                <img src="assets/img/cat-5.webp" alt="" width="56" height="56" decoding="async" />
+                <div class="ca-pdp-main__bundle-info">
+                  <p class="ca-pdp-main__bundle-name">Car Hanging Diffuser - Pack of 2</p>
+                  <p class="ca-pdp-main__bundle-prices"><span>₹ 284.05</span><s>₹ 498.00</s></p>
+                  <select class="ca-pdp-main__bundle-select" aria-label="Select scent"><option>Ocean Serenity</option></select>
+                  <select class="ca-pdp-main__bundle-select" aria-label="Select quantity"><option>Set of 1</option></select>
+                </div>
+              </div>
+              <p class="ca-pdp-main__bundle-plus" aria-hidden="true">+</p>
+              <div class="ca-pdp-main__bundle-item">
+                <img src="assets/img/cat-2.webp" alt="" width="56" height="56" decoding="async" />
+                <div class="ca-pdp-main__bundle-info">
+                  <p class="ca-pdp-main__bundle-name">Microfiber Cloth - Pack of 2</p>
+                  <p class="ca-pdp-main__bundle-prices"><span>₹ 284.05</span><s>₹ 752.10</s></p>
+                  <select class="ca-pdp-main__bundle-select" aria-label="Select size"><option>40x40cm</option></select>
+                  <select class="ca-pdp-main__bundle-select" aria-label="Select color"><option>Yellow</option></select>
+                  <select class="ca-pdp-main__bundle-select" aria-label="Select quantity"><option>Set of 1</option></select>
+                </div>
+              </div>
+              <div class="ca-pdp-main__bundle-total">
+                <span>Total:</span>
+                <span class="ca-pdp-main__bundle-total-prices"><s>₹ 1,250.00</s> <strong>₹ 568.10</strong></span>
+              </div>
+              <button type="button" class="ca-pdp-main__bundle-cta">Grab the Deal</button>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="ca-pdp-sticky" data-ca-pdp-sticky>
+      <div class="ca-container ca-pdp-sticky__inner">
+        <div class="ca-pdp-sticky__prices">
+          <span class="ca-pdp-sticky__price" data-ca-pdp-sticky-price>₹ 1,343.00</span>
+          <span class="ca-pdp-sticky__compare" data-ca-pdp-sticky-compare>₹ 2,200.00</span>
+        </div>
+        <button type="button" class="ca-pdp-sticky__cta">Add to cart</button>
+      </div>
+    </div>
+
+    <section class="ca-bestsellers ca-pdp__related" aria-labelledby="caRelatedHeading">
+      <div class="ca-container ca-bestsellers__inner">
+        <div class="ca-bestsellers__head">
+          <h2 id="caRelatedHeading" class="ca-bestsellers__title">You May Also Like</h2>
+          <a href="category.html" class="ca-bestsellers__view-all">View all</a>
+        </div>
+        <div class="ca-bestsellers__grid" data-ca-pdp-related-grid></div>
+      </div>
+    </section>
+    
+  </main>
+
+
+  <footer class="ca-footer" role="contentinfo">
+    <div class="ca-container ca-footer__inner">
+      <div class="ca-footer__main">
+        <div class="ca-footer__brand">
+          <a href="index.html" class="ca-footer__logo" aria-label="Home">
+            <img src="assets/img/logo.png" alt="Drivestylish" width="180" height="72" decoding="async" />
+          </a>
+          <p class="ca-footer__tagline">Premium Car Accessories</p>
+          <form class="ca-footer__newsletter" action="#" method="post">
+            <label class="ca-footer__newsletter-label" for="caFooterEmail">Your email</label>
+            <input type="email" id="caFooterEmail" class="ca-footer__input" name="email" placeholder="Your email"
+              autocomplete="email" />
+            <button type="submit" class="ca-footer__subscribe">Subscribe</button>
+          </form>
+          <p class="ca-footer__copy">&copy; 2026 Drivestylish</p>
+        </div>
+        <div class="ca-footer__col">
+          <h3 class="ca-footer__heading">HELP</h3>
+          <ul class="ca-footer__links">
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Bulk Order</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="ca-footer__col">
+          <h3 class="ca-footer__heading">ABOUT THE STORE</h3>
+          <ul class="ca-footer__contact">
+            <li><strong>Timing :</strong> 10a.m. to 7p.m.(Mon- Sat)</li>
+            <li><strong>WhatsApp -</strong> +91-9599337724</li>
+            <li><strong>Instagram -</strong> @drive_stylish</li>
+            <li><strong>Make a Call: -</strong> 95993 37724</li>
+            <li><strong>Email Us:-</strong> <a href="mailto:support@drivestylish.com">support@drivestylish.com</a></li>
+            <li><strong>Address:-</strong> 54, D-1, Ground Floor, Rama Road, Najafgarh Industrial Area Road, Delhi
+              110015</li>
+          </ul>
+        </div>
+        <div class="ca-footer__col ca-footer__col--policy">
+          <h3 class="ca-footer__heading">POLICY SERVICES</h3>
+          <ul class="ca-footer__links">
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Return and Refund Policy</a></li>
+          </ul>
+          <div class="ca-footer__social-block">
+            <p class="ca-footer__social-title">Follow Us</p>
+            <ul class="ca-footer__social" aria-label="Social media">
+              <li><a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path
+                      d="M14 8.5h2.5l-.5 3H14v9h-3.5v-9H9v-3h1.5V7.2c0-2.2 1.3-3.7 3.5-3.7H16v3h-1.8c-.9 0-1.2.5-1.2 1.2V8.5z" />
+                  </svg></a></li>
+              <li><a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.5" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+                  </svg></a></li>
+              <li><a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path
+                      d="M12 4a8 8 0 00-2.9 15.5c-.1-.8-.2-2 .4-3 .2-.8 1.4-5.3 1.4-5.3s-.4-.8-.4-1.9c0-1.8 1-3.1 2.3-3.1 1.1 0 1.6.8 1.6 1.8 0 1.1-.7 2.8-1.1 4.3-.3 1.3.7 2.3 1.9 2.3 2.3 0 3.8-2.9 3.8-6.4 0-2.7-2.3-4.7-5.5-4.7-4 0-6.5 3-6.5 6.2 0 1.2.5 2.5 1.1 3.2.1.1.1.2.1.3l-.4 1.6c-.1.4-.3.5-.7.3-1-.9-1.6-2.2-1.6-3.6C4 8.5 7.6 4 12 4z" />
+                  </svg></a></li>
+              <li><a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path
+                      d="M21.6 7.2a2.5 2.5 0 00-1.8-1.8C17.8 5 12 5 12 5s-5.8 0-7.8.4A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.8 1.8C6.2 19 12 19 12 19s5.8 0 7.8-.4a2.5 2.5 0 001.8-1.8A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z" />
+                  </svg></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="ca-footer__payments" aria-label="Accepted payment methods">
+        <span class="ca-footer__pay ca-footer__pay--visa">VISA</span>
+        <span class="ca-footer__pay ca-footer__pay--mc" aria-hidden="true"><span
+            class="ca-footer__pay-mc ca-footer__pay-mc--red"></span><span
+            class="ca-footer__pay-mc ca-footer__pay-mc--orange"></span></span>
+        <span class="ca-footer__pay ca-footer__pay--maestro" aria-hidden="true"><span
+            class="ca-footer__pay-maestro ca-footer__pay-maestro--red"></span><span
+            class="ca-footer__pay-maestro ca-footer__pay-maestro--blue"></span></span>
+        <span class="ca-footer__pay ca-footer__pay--rupay">RuPay</span>
+        <span class="ca-footer__pay ca-footer__pay--upi">UPI</span>
+        <span class="ca-footer__pay ca-footer__pay--paytm">Paytm</span>
+        <span class="ca-footer__pay ca-footer__pay--amazon">amazon pay</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>
