@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Babyneste</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="bm-header" role="banner">
+    <div class="bm-announce" role="region" aria-label="Promotional offers">
+      <div class="bm-announce__inner">
+        <button type="button" class="bm-announce__arrow bm-announce__arrow--prev" data-bm-announce-prev
+          aria-label="Previous announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="bm-announce__viewport">
+          <div class="bm-announce__track" data-bm-announce-track>
+            <p class="bm-announce__msg" data-bm-announce-slide>
+              FREE GIFT on every PREPAID order above Rs 799 | Use code PREPAIDGIFT
+            </p>
+            <p class="bm-announce__msg" data-bm-announce-slide>
+              FREE SHIPPING on orders above Rs 999
+            </p>
+          </div>
+        </div>
+
+        <button type="button" class="bm-announce__arrow bm-announce__arrow--next" data-bm-announce-next
+          aria-label="Next announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="bm-navbar">
+      <div class="bm-navbar__inner">
+        <div class="bm-navbar__left">
+          <button type="button" class="bm-navbar__toggle" data-bm-menu-toggle aria-expanded="false"
+            aria-label="Open menu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
+          <a href="index.html" class="bm-navbar__logo" aria-label="Home">
+            <img src="assets/img/logo.png" alt="Baby Moo" width="160" height="52" decoding="async" />
+          </a>
+        </div>
+
+        <nav class="bm-navbar__menu" aria-label="Primary navigation">
+          <a href="category.html">Shop</a>
+          <a href="#">Gifting</a>
+          <a href="#">Footwear</a>
+          <a href="#">Star Essentials</a>
+          <a href="#">Toys</a>
+          <a href="#">Moms</a>
+          <a href="#">Trending</a>
+          <a href="#">Sale</a>
+          <a href="#">Celebrities</a>
+          <a href="#">Shop by Age</a>
+        </nav>
+
+        <div class="bm-navbar__actions">
+          <button type="button" class="bm-navbar__icon-btn" aria-label="Newsletter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="1" />
+              <path d="M3 7l9 6 9-6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="bm-navbar__icon-btn" aria-label="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+              <circle cx="11" cy="11" r="6" />
+              <path d="M16 16l5 5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <a href="#" class="bm-navbar__icon-btn" aria-label="Account">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M5 20c0-4 3.5-7 7-7s7 3 7 7" stroke-linecap="round" />
+            </svg>
+          </a>
+          <a href="#" class="bm-navbar__icon-btn" aria-label="Shopping bag, 0 items">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+              <path d="M8 8V6a4 4 0 118 0v2" stroke-linecap="round" />
+              <path d="M6 8h12l-1 12H7L6 8z" stroke-linejoin="round" />
+            </svg>
+            <span class="bm-navbar__cart-badge" aria-hidden="true">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="bm-pdp">
+    <nav class="bm-breadcrumb bm-breadcrumb--pdp" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span class="bm-breadcrumb__sep">&gt;</span>
+      <span data-bm-pdp-breadcrumb-name>Organic Cotton Newborn Baby Clothing Set</span>
+    </nav>
+
+    <div class="bm-pdp__shell">
+      <div class="bm-pdp__gallery-col">
+        <div class="bm-pdp__thumbs-col">
+          <button type="button" class="bm-pdp__thumb-nav bm-pdp__thumb-nav--up" data-bm-pdp-thumb-up
+            aria-label="Previous thumbnails">
+            <svg viewBox="0 0 12 8" fill="none" aria-hidden="true">
+              <path d="M6 1L1 7h10L6 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="bm-pdp__thumbs-viewport">
+            <div class="bm-pdp__thumbs" data-bm-pdp-thumbs></div>
+          </div>
+          <button type="button" class="bm-pdp__thumb-nav bm-pdp__thumb-nav--down" data-bm-pdp-thumb-down
+            aria-label="Next thumbnails">
+            <svg viewBox="0 0 12 8" fill="none" aria-hidden="true">
+              <path d="M6 7L1 1h10l5 6z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="bm-pdp__main-wrap">
+          <span class="bm-pdp__badge" data-bm-pdp-badge>Sale</span>
+          <img class="bm-pdp__main-img" src="assets/img/category-1.webp" alt="" data-bm-pdp-main-img width="700"
+            height="700" decoding="async" />
+        </div>
+      </div>
+
+      <div class="bm-pdp__info-col">
+        <h1 class="bm-pdp__title" data-bm-pdp-title>Organic Cotton Newborn Baby Clothing Set | Baby Shower Gift Hamper |
+          0-3
+          Months | Pack Of 6</h1>
+
+        <p class="bm-pdp__sold">
+          <span class="bm-pdp__sold-icon" aria-hidden="true">🔥</span>
+          <span data-bm-pdp-sold>10 sold in last 35 hours</span>
+        </p>
+
+        <div class="bm-pdp__pricing">
+          <s class="bm-pdp__mrp" data-bm-pdp-mrp>Rs. 1,999.00</s>
+          <span class="bm-pdp__price" data-bm-pdp-price>Rs. 1,199.00</span>
+        </div>
+
+        <dl class="bm-pdp__meta">
+          <div class="bm-pdp__meta-row">
+            <dt>SKU:</dt>
+            <dd data-bm-pdp-sku>MHHRTGIFTOTO3P6</dd>
+          </div>
+          <div class="bm-pdp__meta-row">
+            <dt>Availability:</dt>
+            <dd>In Stock</dd>
+          </div>
+          <div class="bm-pdp__meta-row">
+            <dt>Product Type:</dt>
+            <dd data-bm-pdp-type>Baby Shower Gift</dd>
+          </div>
+        </dl>
+
+        <p class="bm-pdp__urgency">Please hurry! Only <span data-bm-pdp-stock>17</span> left in stock</p>
+        <div class="bm-pdp__stock-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+          <span class="bm-pdp__stock-fill" style="width: 30%"></span>
+        </div>
+
+        <div class="bm-pdp__size">
+          <p class="bm-pdp__size-label">Size: <span data-bm-pdp-size-label>0-3 Months</span></p>
+          <div class="bm-pdp__size-options">
+            <button type="button" class="bm-pdp__size-btn is-active" data-bm-pdp-size>0-3 Months</button>
+          </div>
+        </div>
+
+        <div class="bm-pdp__offers">
+          <p class="bm-pdp__offers-title">*Limited Time Offers</p>
+          <p class="bm-pdp__offers-sub"><strong>Special Discounts</strong></p>
+          <ul class="bm-pdp__offers-list">
+            <li>Flat ₹200 OFF on Prepaid Orders Above ₹999 | Code: <strong>PREPAID200</strong></li>
+            <li>Get 15% OFF on orders above ₹1999 | Code: <strong>SAVE15</strong></li>
+          </ul>
+          <p class="bm-pdp__offers-sub bm-pdp__offers-sub--gift">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="3" y="9" width="14" height="9" rx="1" stroke="currentColor" stroke-width="1.2" />
+              <path d="M10 9V5M7 5h6" stroke="currentColor" stroke-width="1.2" />
+            </svg>
+            <strong>Free Gifts</strong>
+          </p>
+          <ul class="bm-pdp__offers-list bm-pdp__offers-list--gift">
+            <li>Free Gift on every PREPAID order above Rs 799 | Use code <strong>PREPAIDGIFT</strong></li>
+            <li>Free Gift on every PREPAID order above Rs 1499 | Use code <strong>PREPAIDGIFT</strong></li>
+          </ul>
+          <p class="bm-pdp__offers-note"><strong>Note:</strong> Not applicable on Combos, Buy 2 Get 1, Buy 3 Get 1 &amp;
+            Buy 2 Get 2 Offers.</p>
+        </div>
+
+        <div class="bm-pdp__purchase">
+          <label class="bm-pdp__qty-label" for="bmPdpQty">Quantity:</label>
+          <div class="bm-pdp__qty">
+            <button type="button" data-bm-pdp-qty-minus aria-label="Decrease quantity">−</button>
+            <input type="text" id="bmPdpQty" value="1" readonly data-bm-pdp-qty aria-label="Quantity" />
+            <button type="button" data-bm-pdp-qty-plus aria-label="Increase quantity">+</button>
+          </div>
+          <p class="bm-pdp__subtotal">Subtotal: <span data-bm-pdp-subtotal>Rs. 1,199.00</span></p>
+
+          <button type="button" class="bm-pdp__btn bm-pdp__btn--cart">Add To Cart</button>
+          <button type="button" class="bm-pdp__btn bm-pdp__btn--buy">Buy it Now</button>
+
+          <p class="bm-pdp__viewing">
+            <svg viewBox="0 0 20 14" fill="none" aria-hidden="true">
+              <ellipse cx="10" cy="7" rx="8" ry="5" stroke="currentColor" stroke-width="1.2" />
+              <circle cx="10" cy="7" r="2" fill="currentColor" />
+            </svg>
+            <span data-bm-pdp-viewing>193 customers are viewing this product</span>
+          </p>
+        </div>
+
+        <ul class="bm-pdp__features">
+          <li>
+            <span class="bm-pdp__feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.2" />
+                <path d="M16 10v12M12 14c0-2 1.8-4 4-4s4 2 4 4" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            </span>
+            <span class="bm-pdp__feature-label">Cotton</span>
+          </li>
+          <li>
+            <span class="bm-pdp__feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.2" />
+                <path d="M10 18c2-3 4-4 6-4s4 1 6 4M10 14c2 3 4 4 6 4s4-1 6-4" stroke="currentColor"
+                  stroke-width="1.2" />
+              </svg>
+            </span>
+            <span class="bm-pdp__feature-label">Breathable</span>
+          </li>
+          <li>
+            <span class="bm-pdp__feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.2" />
+                <path d="M12 18c2-4 4-6 8-6s6 2 8 6" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            </span>
+            <span class="bm-pdp__feature-label">Soft</span>
+          </li>
+          <li>
+            <span class="bm-pdp__feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.2" />
+                <circle cx="16" cy="14" r="4" stroke="currentColor" stroke-width="1.2" />
+                <path d="M12 20c1-2 2-3 4-3s3 1 4 3" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            </span>
+            <span class="bm-pdp__feature-label">Baby Friendly</span>
+          </li>
+        </ul>
+
+        <div class="bm-pdp__accordions">
+          <div class="bm-pdp__accordion">
+            <button type="button" class="bm-pdp__accordion-btn" data-bm-pdp-accordion aria-expanded="false">
+              Description
+              <span class="bm-pdp__accordion-icon">+</span>
+            </button>
+            <div class="bm-pdp__accordion-panel">
+              <p>Soft organic cotton newborn clothing set — gentle on delicate skin, perfect as a baby shower gift
+                hamper for
+                0-3 months. Pack includes essential everyday pieces in a coordinated design.</p>
+            </div>
+          </div>
+          <div class="bm-pdp__accordion">
+            <button type="button" class="bm-pdp__accordion-btn" data-bm-pdp-accordion aria-expanded="false">
+              Shipping &amp; Return
+              <span class="bm-pdp__accordion-icon">+</span>
+            </button>
+            <div class="bm-pdp__accordion-panel">
+              <p>Pan-India shipping available. Easy returns within 7 days on unused products in original packaging.</p>
+            </div>
+          </div>
+          <div class="bm-pdp__accordion">
+            <button type="button" class="bm-pdp__accordion-btn" data-bm-pdp-accordion aria-expanded="false">
+              Fabric Type
+              <span class="bm-pdp__accordion-icon">+</span>
+            </button>
+            <div class="bm-pdp__accordion-panel">
+              <p>100% organic cotton — breathable, hypoallergenic and safe for newborn skin.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="bm-related" aria-labelledby="bm-related-heading">
+      <h2 id="bm-related-heading" class="bm-related__title">Related Products</h2>
+
+      <div class="bm-related__carousel" data-bm-related-carousel>
+        <button type="button" class="bm-related__arrow bm-related__arrow--prev" data-bm-related-prev
+          aria-label="Previous related products">
+          <svg viewBox="0 0 10 16" fill="none" aria-hidden="true">
+            <path d="M8 2L2 8l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="bm-related__viewport" data-bm-related-viewport>
+          <div class="bm-related__track" data-bm-related-track></div>
+        </div>
+
+        <button type="button" class="bm-related__arrow bm-related__arrow--next" data-bm-related-next
+          aria-label="Next related products">
+          <svg viewBox="0 0 10 16" fill="none" aria-hidden="true">
+            <path d="M2 2l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="bm-reviews" aria-labelledby="bm-reviews-heading">
+      <h2 id="bm-reviews-heading" class="bm-reviews__title">Customer Reviews</h2>
+
+      <div class="bm-reviews__summary">
+        <div class="bm-reviews__summary-left">
+          <div class="bm-reviews__stars bm-reviews__stars--summary" data-bm-reviews-summary-stars aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <p class="bm-reviews__summary-text" data-bm-reviews-summary-text>Be the first to write a review</p>
+        </div>
+        <button type="button" class="bm-reviews__cancel-top" data-bm-reviews-cancel-top hidden>Cancel review</button>
+      </div>
+
+      <div class="bm-reviews__list" data-bm-reviews-list aria-live="polite"></div>
+
+      <div class="bm-reviews__form-panel" data-bm-reviews-form-panel>
+        <h3 class="bm-reviews__form-title">Write a review</h3>
+
+        <form class="bm-reviews__form" data-bm-reviews-form novalidate>
+          <div class="bm-reviews__field bm-reviews__field--rating">
+            <label class="bm-reviews__label">Rating</label>
+            <div class="bm-reviews__stars bm-reviews__stars--input" data-bm-reviews-rating-input role="radiogroup"
+              aria-label="Rating">
+              <button type="button" class="bm-reviews__star-btn" data-rating="1" aria-label="1 star"></button>
+              <button type="button" class="bm-reviews__star-btn" data-rating="2" aria-label="2 stars"></button>
+              <button type="button" class="bm-reviews__star-btn" data-rating="3" aria-label="3 stars"></button>
+              <button type="button" class="bm-reviews__star-btn" data-rating="4" aria-label="4 stars"></button>
+              <button type="button" class="bm-reviews__star-btn" data-rating="5" aria-label="5 stars"></button>
+            </div>
+            <input type="hidden" name="rating" value="0" data-bm-reviews-rating-value />
+          </div>
+
+          <div class="bm-reviews__field">
+            <label class="bm-reviews__label bm-reviews__label--center" for="bmReviewTitle">Review Title (100)</label>
+            <input type="text" id="bmReviewTitle" name="title" class="bm-reviews__input" maxlength="100"
+              placeholder="Give your review a title" data-bm-reviews-title required />
+          </div>
+
+          <div class="bm-reviews__field">
+            <label class="bm-reviews__label bm-reviews__label--center" for="bmReviewContent">Review Content</label>
+            <textarea id="bmReviewContent" name="content" class="bm-reviews__textarea" rows="5"
+              placeholder="Start writing here..." data-bm-reviews-content required></textarea>
+          </div>
+
+          <div class="bm-reviews__field bm-reviews__field--upload">
+            <label class="bm-reviews__label">Picture/Video (Optional)</label>
+            <label class="bm-reviews__upload" for="bmReviewMedia">
+              <input type="file" id="bmReviewMedia" name="media" accept="image/*,video/*" hidden
+                data-bm-reviews-media />
+              <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+                <path d="M24 32V14M24 14l-8 8M24 14l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M10 36h28" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <span data-bm-reviews-media-name></span>
+            </label>
+          </div>
+
+          <div class="bm-reviews__field">
+            <label class="bm-reviews__label bm-reviews__label--center" for="bmReviewName">
+              Display Name (Displayed Publicly Like <strong>John Smith</strong>)
+            </label>
+            <input type="text" id="bmReviewName" name="name" class="bm-reviews__input" placeholder="Display name"
+              data-bm-reviews-name required />
+          </div>
+
+          <div class="bm-reviews__field">
+            <label class="bm-reviews__label bm-reviews__label--center" for="bmReviewEmail">Email Address</label>
+            <input type="email" id="bmReviewEmail" name="email" class="bm-reviews__input"
+              placeholder="Your email address" data-bm-reviews-email required />
+          </div>
+
+          <p class="bm-reviews__privacy">
+            How we use your data: We'll only contact you about the review you left, and only if necessary. By
+            submitting your review, you agree to Judge.me's terms, privacy and content policies.
+          </p>
+
+          <div class="bm-reviews__actions">
+            <button type="button" class="bm-reviews__btn bm-reviews__btn--outline" data-bm-reviews-cancel>Cancel
+              review</button>
+            <button type="submit" class="bm-reviews__btn bm-reviews__btn--submit">Submit Review</button>
+          </div>
+        </form>
+      </div>
+
+      <button type="button" class="bm-reviews__write-btn" data-bm-reviews-write-btn hidden>Write a review</button>
+    </section>
+
+  </main>
+
+  <footer class="bm-footer" role="contentinfo">
+    <div class="bm-footer__top">
+      <div class="bm-footer__subscribe">
+        <p class="bm-footer__subscribe-text">Subscribe to receive updates, access to exclusive deals, and more.</p>
+        <button type="button" class="bm-footer__subscribe-btn">Subscribe</button>
+      </div>
+
+      <div class="bm-footer__trust">
+        <ul class="bm-footer__trust-list">
+          <li class="bm-footer__trust-item">
+            <span class="bm-footer__trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 24" fill="none">
+                <path d="M2 12h20M22 12l-6-6M22 12l-6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <rect x="2" y="6" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.4" />
+              </svg>
+            </span>
+            <span class="bm-footer__trust-label">Pan-India Shipping<br />COD Available</span>
+          </li>
+          <li class="bm-footer__trust-item">
+            <span class="bm-footer__trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 28 32" fill="none">
+                <path d="M6 4h16v24H6z" stroke="currentColor" stroke-width="1.4" />
+                <path d="M10 10h8M10 14h8M10 18h5" stroke="currentColor" stroke-width="1.2" />
+                <circle cx="20" cy="8" r="4" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            </span>
+            <span class="bm-footer__trust-label">Authentic &amp;<br />Genuine Brands</span>
+          </li>
+          <li class="bm-footer__trust-item">
+            <span class="bm-footer__trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 28" fill="none">
+                <path d="M8 14c0-4 4-8 8-8s8 4 8 8" stroke="currentColor" stroke-width="1.4" />
+                <circle cx="16" cy="12" r="5" stroke="currentColor" stroke-width="1.4" />
+                <path d="M6 22c2-4 6-6 10-6s8 2 10 6" stroke="currentColor" stroke-width="1.4" />
+              </svg>
+            </span>
+            <span class="bm-footer__trust-label">Best<br />for Baby</span>
+          </li>
+        </ul>
+        <a href="#" class="bm-footer__help-btn">Need Help? Talk to Baby Crew</a>
+      </div>
+    </div>
+
+    <div class="bm-footer__mid">
+      <div class="bm-footer__inner">
+        <div class="bm-footer__cols">
+          <div class="bm-footer__col">
+            <h3 class="bm-footer__heading">About Us</h3>
+            <ul class="bm-footer__links">
+              <li><a href="#">Our Story</a></li>
+              <li><a href="#">In The Media</a></li>
+              <li><a href="#">The Baby Book</a></li>
+              <li><a href="#">Boss Baby Rewards</a></li>
+              <li><a href="#">Store Locator</a></li>
+            </ul>
+          </div>
+
+          <div class="bm-footer__col">
+            <h3 class="bm-footer__heading">Helpful Links</h3>
+            <ul class="bm-footer__links">
+              <li><a href="#">Track my Order</a></li>
+              <li><a href="#">Refund &amp; Return Policy</a></li>
+              <li><a href="#">Cancellation Policy</a></li>
+              <li><a href="#">Shipping Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+
+          <div class="bm-footer__col">
+            <h3 class="bm-footer__heading">All Things Baby India Private Ltd</h3>
+            <ul class="bm-footer__links">
+              <li><a href="#">My account</a></li>
+            </ul>
+          </div>
+
+          <div class="bm-footer__col">
+            <h3 class="bm-footer__heading">Get in touch</h3>
+            <ul class="bm-footer__contact">
+              <li>
+                <a href="tel:+918369996510">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path
+                      d="M6.5 4h3l1.5 5-2 1.2a12 12 0 005.3 5.3L15.5 14l5 1.5v3a1.5 1.5 0 01-1.4 1.5 16 16 0 01-12.6-6.1A16 16 0 014 7.9 1.5 1.5 0 015.5 4z"
+                      stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                  </svg>
+                  +91-8369996510
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@Babyneste.com">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="1" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.3" />
+                  </svg>
+                  Email us
+                </a>
+              </li>
+            </ul>
+
+            <h3 class="bm-footer__heading bm-footer__heading--follow">Follow us</h3>
+            <div class="bm-footer__social">
+              <a href="#" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M14 8h3V5h-3c-2.2 0-4 1.8-4 4v2H7v3h3v7h3v-7h3l1-3h-4V9c0-.6.4-1 1-1z" />
+                </svg>
+              </a>
+              <a href="#" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <rect x="4" y="4" width="16" height="16" rx="4" />
+                  <circle cx="12" cy="12" r="3.5" />
+                  <circle cx="17" cy="7" r="1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              <a href="#" aria-label="YouTube">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M10 9l6 3-6 3V9zm11.5 0c0 2.2-.2 4.4-.6 6.5-.3 1.5-1.4 2.6-2.9 2.9-2.1.4-6.5.6-8 .6s-5.9-.2-8-.6c-1.5-.3-2.6-1.4-2.9-2.9C1.7 13.4 1.5 11.2 1.5 9s.2-4.4.6-6.5c.3-1.5 1.4-2.6 2.9-2.9C6.5 1.2 10.9 1 12.4 1s5.9.2 8 .6c1.5.3 2.6 1.4 2.9 2.9.4 2.1.6 4.3.6 6.5z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bm-footer__bottom">
+      <button type="button" class="bm-footer__gift" aria-label="Rewards and gifts">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3" y="10" width="18" height="11" rx="1" stroke="currentColor" stroke-width="1.4" />
+          <path d="M12 10V21M3 10h18M8 10c0-3 1.5-5 4-5s4 2 4 5" stroke="currentColor" stroke-width="1.4" />
+          <path d="M12 5v5" stroke="currentColor" stroke-width="1.4" />
+        </svg>
+      </button>
+      <p class="bm-footer__copy">© 2026 Babyneste.com by All Things Baby India Private Limited. Tower D, Trade
+        World,
+        Kamala Mills Compound, 701, near Bombay Canteen, Lower Parel, Mumbai, Maharashtra 400013</p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/" class="bm-testimonials__wa" target="_blank" rel="noopener noreferrer"
+    aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path
+        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  </a>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/script.js" defer></script>
+  <script src="assets/js/product.js" defer></script>
+</body>
+
+</html>
