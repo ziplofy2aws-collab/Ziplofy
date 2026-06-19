@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELORIA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="sb-header sb-header--inner" role="banner">
+    <div class="sb-header__announce" role="region" aria-label="Promotional offers">
+      <div class="sb-header__announce-inner">
+        <p class="sb-header__announce-text">
+          Buy Any 3 Products at ₹799 only! Use Code : BUY3 | Get 30% Cashback on every order |
+          <a href="index.html" class="sb-header__announce-link">Click to Shop <i class="fa-solid fa-arrow-right-long"
+              aria-hidden="true"></i></a>
+        </p>
+      </div>
+    </div>
+
+    <div class="sb-header__main">
+      <div class="sb-header__main-inner">
+        <a href="index.html" class="sb-header__logo" aria-label="Eloria Beauty home">
+          <img src="assets/img/logo.png" alt="Eloria Beauty" width="120" height="48" decoding="async" />
+        </a>
+
+        <nav class="sb-header__menu" id="sb-primary-nav" aria-label="Main navigation">
+          <button type="button" class="sb-header__menu-close" data-sb-menu-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+          <a href="category.html" class="sb-header__menu-link">FACE</a>
+          <a href="category.html" class="sb-header__menu-link">EYE</a>
+          <a href="category.html" class="sb-header__menu-link">LIPS</a>
+          <a href="category.html" class="sb-header__menu-link">NAIL</a>
+          <a href="category.html" class="sb-header__menu-link">BRUSHES &amp; TOOLS</a>
+          <a href="category.html" class="sb-header__menu-link">NEW ARRIVALS</a>
+          <a href="category.html" class="sb-header__menu-link">BRIDAL BUNDLE</a>
+          <a href="category.html" class="sb-header__menu-link">SKIN CARE</a>
+        </nav>
+
+        <div class="sb-header__utilities">
+          <form class="sb-header__search" role="search" action="#" method="get">
+            <label class="visually-hidden" for="sb-header-search-pdp">Search products</label>
+            <i class="fa-solid fa-magnifying-glass sb-header__search-icon" aria-hidden="true"></i>
+            <input id="sb-header-search-pdp" type="search" name="q" placeholder="Search For Eyeshad"
+              autocomplete="off" />
+          </form>
+
+          <div class="sb-header__actions">
+            <a href="#" class="sb-header__action sb-header__action--rewards" aria-label="Rewards account">
+              <span class="sb-header__action-icon" aria-hidden="true">
+                <i class="fa-regular fa-circle-user"></i>
+                <i class="fa-solid fa-bolt sb-header__bolt"></i>
+              </span>
+            </a>
+            <a href="#" class="sb-header__action" aria-label="Track order">
+              <i class="fa-solid fa-truck" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sb-header__action" aria-label="Shopping cart">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <button type="button" class="sb-header__toggle" data-sb-menu-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="sb-primary-nav">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="sb-header__overlay" data-sb-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="sb-pdp" aria-label="Product details">
+      <div class="sb-pdp__inner">
+        <nav class="sb-pdp__breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          <a href="category.html">Face</a>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          <a href="category.html">Makeup Fixer &amp; Setting Spray</a>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          <span aria-current="page" data-sb-pdp-breadcrumb>Glow Up Makeup Fixer</span>
+        </nav>
+
+        <div class="sb-pdp__main">
+          <div class="sb-pdp__layout">
+            <div class="sb-pdp__media">
+              <div class="sb-pdp__thumbs" data-sb-pdp-thumbs role="tablist" aria-label="Product images"></div>
+
+              <div class="sb-pdp__stage">
+                <img id="sb-pdp-main-img" class="sb-pdp__main-img" src="assets/img/BS-1.png" alt="Glow Up Makeup Fixer"
+                  width="560" height="560" decoding="async" />
+                <button type="button" class="sb-pdp__share" aria-label="Share product">
+                  <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="sb-pdp__info">
+              <p class="sb-pdp__brand" data-sb-pdp-brand>Eloria Beauty</p>
+              <h1 class="sb-pdp__title" data-sb-pdp-title>Glow Up Makeup Fixer (100 ml) | Long-Lasting Setting Spray |
+                Locks Makeup for 12+ Hours | Lightweight, Non-Sticky &amp; Transfer-Proof | For All Skin Types</h1>
+
+              <div class="sb-pdp__price-row">
+                <div class="sb-pdp__price-block">
+                  <p class="sb-pdp__price-line">
+                    <span class="sb-pdp__price-current" data-sb-pdp-price>₹369</span>
+                    <span class="sb-pdp__price-mrp" data-sb-pdp-mrp>₹429</span>
+                  </p>
+                  <p class="sb-pdp__save" data-sb-pdp-save>Save ₹60 (14% off)</p>
+                  <p class="sb-pdp__tax">Inclusive of all taxes</p>
+                </div>
+                <div class="sb-pdp__rating-badge" data-sb-pdp-rating-badge
+                  aria-label="Rating 4.95 out of 5 from 22 reviews">
+                  <span class="sb-pdp__rating-score"><i class="fa-solid fa-star" aria-hidden="true"></i> <span
+                      data-sb-pdp-rating>4.95</span></span>
+                  <span class="sb-pdp__rating-count" data-sb-pdp-ratings-count>22 Ratings</span>
+                </div>
+              </div>
+
+              <div class="sb-pdp__actions">
+                <button type="button" class="sb-pdp__cart">Add to Cart</button>
+                <button type="button" class="sb-pdp__wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i> Wishlist
+                </button>
+              </div>
+              <p class="sb-pdp__saved"><i class="fa-regular fa-bookmark" aria-hidden="true"></i> <span
+                  data-sb-pdp-saved>12,486 people saved</span></p>
+
+              <form class="sb-pdp__pincode" action="#" method="get">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <label class="visually-hidden" for="sb-pdp-pincode">Enter pincode</label>
+                <input id="sb-pdp-pincode" type="text" name="pincode" placeholder="Enter Pincode" maxlength="6"
+                  inputmode="numeric" autocomplete="postal-code" />
+                <button type="submit" class="sb-pdp__pincode-check">Check</button>
+              </form>
+
+              <div class="sb-pdp__bestseller">
+                <span class="sb-pdp__bestseller-badge" data-sb-pdp-bestseller-badge>#3 Best Seller</span>
+                <span class="sb-pdp__bestseller-text" data-sb-pdp-bestseller-text>In Makeup Fixer &amp; Setting
+                  Spray</span>
+                <a href="category.html" class="sb-pdp__bestseller-link">See top 25 <i class="fa-solid fa-chevron-right"
+                    aria-hidden="true"></i></a>
+              </div>
+
+              <div class="sb-pdp__buybar">
+                <img src="assets/img/BS-1.png" alt="" width="48" height="48" decoding="async" data-sb-pdp-buybar-img />
+                <div class="sb-pdp__buybar-text">
+                  <span class="sb-pdp__buybar-brand">Eloria Beauty</span>
+                  <span class="sb-pdp__buybar-name" data-sb-pdp-buybar-name>Glow Up Makeup Fixer (100 ml)…</span>
+                  <span class="sb-pdp__buybar-price" data-sb-pdp-buybar-price>₹369 <s>₹429</s> Save ₹60 (14% off)</span>
+                </div>
+                <div class="sb-pdp__buybar-actions">
+                  <button type="button" class="sb-pdp__buybar-cart">Add to Cart</button>
+                  <button type="button" class="sb-pdp__buybar-wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-pdp__accordions">
+          <div class="sb-pdp__accordion sb-pdp__accordion--desc is-open">
+            <button type="button" class="sb-pdp__accordion-toggle sb-pdp__accordion-toggle--desc"
+              data-sb-accordion-toggle aria-expanded="true" aria-controls="sb-pdp-desc">
+              Product Description
+              <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+            </button>
+            <div class="sb-pdp__accordion-panel sb-pdp__accordion-panel--desc" id="sb-pdp-desc" data-sb-pdp-desc>
+              <div class="sb-pdp-detail">
+                <section class="sb-pdp-detail__section">
+                  <h3 class="sb-pdp-detail__heading">Highlights</h3>
+                  <p class="sb-pdp-detail__highlights">A non-greasy, hydrating sunscreen for sensitive skin</p>
+                </section>
+
+                <section class="sb-pdp-detail__section">
+                  <h3 class="sb-pdp-detail__heading">Ideal For</h3>
+                  <div class="sb-pdp-detail__ideal">
+                    <div class="sb-pdp-detail__ideal-item">
+                      <span class="sb-pdp-detail__ideal-icon sb-pdp-detail__ideal-icon--letter">S</span>
+                      <span class="sb-pdp-detail__ideal-label">Sun Damage</span>
+                    </div>
+                    <div class="sb-pdp-detail__ideal-item">
+                      <span class="sb-pdp-detail__ideal-icon sb-pdp-detail__ideal-icon--fragile" aria-hidden="true">
+                        <span class="sb-pdp-detail__fragile-stamp">FRAGILE</span>
+                      </span>
+                      <span class="sb-pdp-detail__ideal-label">Sensitive Skin</span>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="sb-pdp-detail__section">
+                  <h3 class="sb-pdp-detail__heading">Description</h3>
+                  <p class="sb-pdp-detail__text">Protecting your skin from the harmful UV rays and preventing sun
+                    damageis just one of the many benefits of the humble sunscreen. Did you know that if you are to
+                    religiously use your SPF, it also helps prevent fine lines &amp; wrinkles? Enter Dr. Sheths Ceramide
+                    &amp; Vitamin C Sunscreen, with SPF 50, specially formulated for sensitive Indian skin that comes
+                    with broad-spectrum protection from UV Rays. It not only acts as a shield against pollution but also
+                    protects the skin from the damaging blue light. Indian skin tends to have a weak barrier, but thanks
+                    to the ceramides in the formulation, it works to restore the barrier. Vitamin C in the formulation
+                    helps repair skin damage by preventing micro-pigmentation. Hyaluronic acid moisturizes and gives the
+                    sunscreen a nourishing yet non-sticky texture.</p>
+                </section>
+
+                <section class="sb-pdp-detail__section">
+                  <h3 class="sb-pdp-detail__heading">Specification</h3>
+                  <dl class="sb-pdp-detail__spec">
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>Primary Concerns</dt>
+                      <dd>Sun Damage</dd>
+                    </div>
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>Skin Type</dt>
+                      <dd>Sensitive Skin</dd>
+                    </div>
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>Speciality</dt>
+                      <dd>Non-Greasy, No White Cast</dd>
+                    </div>
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>Active Ingredients</dt>
+                      <dd>Glycerin, Vitamin C</dd>
+                    </div>
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>Product Format</dt>
+                      <dd>Cream</dd>
+                    </div>
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>SPF Rating</dt>
+                      <dd>SPF</dd>
+                    </div>
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>Product Type</dt>
+                      <dd>Sunscreen</dd>
+                    </div>
+                    <div class="sb-pdp-detail__spec-row">
+                      <dt>Country of Origin</dt>
+                      <dd>India</dd>
+                    </div>
+                  </dl>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="sb-pdp__accordion">
+            <button type="button" class="sb-pdp__accordion-toggle sb-pdp__accordion-toggle--brand"
+              data-sb-accordion-toggle aria-expanded="false" aria-controls="sb-pdp-brand-about">
+              About Brand
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </button>
+            <div class="sb-pdp__accordion-panel" id="sb-pdp-brand-about" data-sb-pdp-brand-about hidden>
+              <p class="sb-pdp-detail__brand-text">Dr. Sheth's is an Indian skincare brand that creates
+                dermatologist-developed solutions for sensitive Indian skin, combining clinically proven actives with
+                gentle, effective formulations.</p>
+            </div>
+          </div>
+
+          <div class="sb-pdp__accordion sb-pdp__accordion--reviews">
+            <button type="button" class="sb-pdp__accordion-toggle sb-pdp__accordion-toggle--reviews"
+              data-sb-accordion-toggle aria-expanded="false" aria-controls="sb-pdp-reviews">
+              Reviews &amp; Ratings
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sb-pdp__accordion-panel sb-pdp__accordion-panel--reviews" id="sb-pdp-reviews"
+              data-sb-pdp-reviews-panel hidden>
+              <div class="sb-pdp-reviews">
+                <div class="sb-pdp-reviews__verified">
+                  <span class="sb-pdp-reviews__verified-badge"><i class="fa-solid fa-star" aria-hidden="true"></i>
+                    4.3</span>
+                  <span class="sb-pdp-reviews__verified-text">Rating by 3992 verified users</span>
+                </div>
+
+                <div class="sb-pdp-reviews__summary">
+                  <div class="sb-pdp-reviews__score-col">
+                    <div class="sb-pdp-reviews__stars-row">
+                      <span class="sb-pdp-reviews__stars" aria-label="4.3 out of 5 stars">
+                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                        <i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+                      </span>
+                      <span class="sb-pdp-reviews__score-num">4.3</span>
+                    </div>
+                    <p class="sb-pdp-reviews__based"><strong>Based on 3994 Ratings</strong></p>
+                    <p class="sb-pdp-reviews__disclaimer">Weighted average based on user credibility on purplle</p>
+                  </div>
+
+                  <div class="sb-pdp-reviews__bars-col">
+                    <h3 class="sb-pdp-reviews__bars-title">What customers say</h3>
+                    <p class="sb-pdp-reviews__bars-hint">(Tap on each bar to filter the reviews)</p>
+                    <ul class="sb-pdp-reviews__bars">
+                      <li class="sb-pdp-reviews__bar-item">
+                        <div class="sb-pdp-reviews__bar-label">
+                          <span>Effective</span>
+                          <small>454 reviews</small>
+                        </div>
+                        <div class="sb-pdp-reviews__bar-track" role="presentation">
+                          <span class="sb-pdp-reviews__bar-fill" style="width: 88%"></span>
+                        </div>
+                        <span class="sb-pdp-reviews__bar-pct">88%</span>
+                      </li>
+                      <li class="sb-pdp-reviews__bar-item">
+                        <div class="sb-pdp-reviews__bar-label">
+                          <span>Easily Absorbed</span>
+                          <small>404 reviews</small>
+                        </div>
+                        <div class="sb-pdp-reviews__bar-track" role="presentation">
+                          <span class="sb-pdp-reviews__bar-fill" style="width: 93%"></span>
+                        </div>
+                        <span class="sb-pdp-reviews__bar-pct">93%</span>
+                      </li>
+                      <li class="sb-pdp-reviews__bar-item">
+                        <div class="sb-pdp-reviews__bar-label">
+                          <span>Good For Daily Use</span>
+                          <small>270 reviews</small>
+                        </div>
+                        <div class="sb-pdp-reviews__bar-track" role="presentation">
+                          <span class="sb-pdp-reviews__bar-fill" style="width: 89%"></span>
+                        </div>
+                        <span class="sb-pdp-reviews__bar-pct">89%</span>
+                      </li>
+                      <li class="sb-pdp-reviews__bar-item">
+                        <div class="sb-pdp-reviews__bar-label">
+                          <span>Value For Money</span>
+                          <small>252 reviews</small>
+                        </div>
+                        <div class="sb-pdp-reviews__bar-track" role="presentation">
+                          <span class="sb-pdp-reviews__bar-fill" style="width: 77%"></span>
+                        </div>
+                        <span class="sb-pdp-reviews__bar-pct">77%</span>
+                      </li>
+                      <li class="sb-pdp-reviews__bar-item">
+                        <div class="sb-pdp-reviews__bar-label">
+                          <span>Treats Sun Damage</span>
+                          <small>14 reviews</small>
+                        </div>
+                        <div class="sb-pdp-reviews__bar-track" role="presentation">
+                          <span class="sb-pdp-reviews__bar-fill" style="width: 93%"></span>
+                        </div>
+                        <span class="sb-pdp-reviews__bar-pct">93%</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="sb-pdp-reviews__filters">
+                  <h3 class="sb-pdp-reviews__filters-title">Narrow Reviews By:</h3>
+                  <div class="sb-pdp-reviews__filter-pills">
+                    <button type="button" class="sb-pdp-reviews__pill">Recent</button>
+                    <button type="button" class="sb-pdp-reviews__pill sb-pdp-reviews__pill--active">Most
+                      Helpful</button>
+                    <span class="sb-pdp-reviews__pill-sep" aria-hidden="true"></span>
+                    <button type="button" class="sb-pdp-reviews__pill">By certified Buyer</button>
+                    <button type="button" class="sb-pdp-reviews__pill">By Positive</button>
+                    <button type="button" class="sb-pdp-reviews__pill">By Negative</button>
+                  </div>
+                </div>
+
+                <div class="sb-pdp-reviews__gallery">
+                  <h3 class="sb-pdp-reviews__gallery-title">Customer Images (171)</h3>
+                  <div class="sb-pdp-reviews__gallery-row">
+                    <button type="button" class="sb-pdp-reviews__gallery-thumb">
+                      <img src="assets/img/BS-1.png" alt="Customer photo 1" width="72" height="72" loading="lazy"
+                        decoding="async" />
+                    </button>
+                    <button type="button" class="sb-pdp-reviews__gallery-thumb">
+                      <img src="assets/img/BS-2.png" alt="Customer photo 2" width="72" height="72" loading="lazy"
+                        decoding="async" />
+                    </button>
+                    <button type="button" class="sb-pdp-reviews__gallery-thumb">
+                      <img src="assets/img/BS-3.png" alt="Customer photo 3" width="72" height="72" loading="lazy"
+                        decoding="async" />
+                    </button>
+                    <button type="button" class="sb-pdp-reviews__gallery-thumb">
+                      <img src="assets/img/BS-4.png" alt="Customer photo 4" width="72" height="72" loading="lazy"
+                        decoding="async" />
+                    </button>
+                    <button type="button" class="sb-pdp-reviews__gallery-thumb sb-pdp-reviews__gallery-thumb--more">
+                      <img src="assets/img/BS-5.png" alt="" width="72" height="72" loading="lazy" decoding="async" />
+                      <span>+167</span>
+                    </button>
+                  </div>
+                </div>
+
+                <article class="sb-pdp-reviews__card">
+                  <header class="sb-pdp-reviews__card-head">
+                    <div class="sb-pdp-reviews__card-row">
+                      <strong class="sb-pdp-reviews__author">ziyana</strong>
+                      <span class="sb-pdp-reviews__cert"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        Certified Buyer</span>
+                    </div>
+                    <div class="sb-pdp-reviews__card-row">
+                      <span class="sb-pdp-reviews__variant">50 g</span>
+                      <time class="sb-pdp-reviews__date" datetime="2025-05-26">26/5/2025</time>
+                    </div>
+                  </header>
+
+                  <span class="sb-pdp-reviews__rate-badge"><i class="fa-solid fa-star" aria-hidden="true"></i> 5</span>
+                  <h4 class="sb-pdp-reviews__card-title">excellent</h4>
+                  <p class="sb-pdp-reviews__card-text">good product... i love this amazing cream... for sensitive
+                    skin</p>
+                  <div class="sb-pdp-reviews__tags">
+                    <span>Effective</span>
+                    <span>Easily Absorbed</span>
+                    <span>Convenient Packaging</span>
+                  </div>
+                  <button type="button" class="sb-pdp-reviews__card-photo">
+                    <img src="assets/img/BS-1.png" alt="Review photo" width="64" height="64" loading="lazy"
+                      decoding="async" />
+                  </button>
+                  <footer class="sb-pdp-reviews__helpful">
+                    <span>Is this review helpful for you?</span>
+                    <div class="sb-pdp-reviews__votes">
+                      <button type="button" class="sb-pdp-reviews__vote"><i class="fa-solid fa-thumbs-up"
+                          aria-hidden="true"></i> (38)</button>
+                      <button type="button" class="sb-pdp-reviews__vote"><i class="fa-solid fa-thumbs-down"
+                          aria-hidden="true"></i> (7)</button>
+                    </div>
+                  </footer>
+                </article>
+
+                <a href="#" class="sb-pdp-reviews__read-all">Read all 1111 Reviews <i class="fa-solid fa-chevron-right"
+                    aria-hidden="true"></i></a>
+
+                <div class="sb-pdp-reviews__write">
+                  <h3 class="sb-pdp-reviews__write-title">Review this product</h3>
+                  <button type="button" class="sb-pdp-reviews__write-btn">Write a Review</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sb-pdp-detail__best-before-wrap">
+            <p class="sb-pdp-detail__best-before-box" data-sb-pdp-best-before>Best Before : 01 Feb 2028</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sb-pdp-ymal" aria-labelledby="sb-pdp-ymal-title" data-sb-carousel data-sb-pdp-ymal>
+      <div class="sb-pdp-ymal__inner">
+        <h2 id="sb-pdp-ymal-title" class="sb-pdp-ymal__title">YOU MAY ALSO LIKE</h2>
+        <div class="sb-pdp-ymal__rule" aria-hidden="true"></div>
+        <div class="sb-carousel__viewport" data-sb-carousel-viewport>
+          <div class="sb-carousel__track" data-sb-carousel-track>
+            <article class="sb-bs-card">
+              <div class="sb-bs-card__ribbon">
+                <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+              </div>
+              <a href="product.html?id=pure-matte-lipstick" class="sb-pdp-ymal__card-link">
+                <div class="sb-bs-card__media">
+                  <img src="assets/img/BS-2.png" alt="Pure Matte Lipstick" width="280" height="280" loading="lazy"
+                    decoding="async" />
+                  <span class="sb-bs-card__shades">30 Shades</span>
+                </div>
+                <p class="sb-bs-card__tagline">Non-drying</p>
+                <div class="sb-bs-card__body">
+                  <h3 class="sb-bs-card__name">Pure Matte Lipstick</h3>
+                  <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.91 <span
+                      class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                      aria-hidden="true"></i> 44 Reviews</p>
+                  <p class="sb-bs-card__price">₹229</p>
+                  <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹149 with coupon
+                  </p>
+                </div>
+              </a>
+              <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                ADD TO CART</button>
+            </article>
+
+            <article class="sb-bs-card">
+              <div class="sb-bs-card__ribbon">
+                <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+              </div>
+              <a href="product.html?id=liquid-highlighter" class="sb-pdp-ymal__card-link">
+                <div class="sb-bs-card__media">
+                  <img src="assets/img/BS-3.png" alt="Liquid Highlighter" width="280" height="280" loading="lazy"
+                    decoding="async" />
+                  <span class="sb-bs-card__shades">6 Shades</span>
+                </div>
+                <p class="sb-bs-card__tagline">Long-Lasting</p>
+                <div class="sb-bs-card__body">
+                  <h3 class="sb-bs-card__name">Liquid Highlighter</h3>
+                  <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.88 <span
+                      class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                      aria-hidden="true"></i> 64 Reviews</p>
+                  <p class="sb-bs-card__price">₹299</p>
+                  <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹194 with coupon
+                  </p>
+                </div>
+              </a>
+              <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                ADD TO CART</button>
+            </article>
+
+            <article class="sb-bs-card">
+              <div class="sb-bs-card__ribbon">
+                <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+              </div>
+              <a href="product.html?id=perfect-liquid-concealer" class="sb-pdp-ymal__card-link">
+                <div class="sb-bs-card__media">
+                  <img src="assets/img/BS-4.png" alt="Perfect Liquid Concealer" width="280" height="280" loading="lazy"
+                    decoding="async" />
+                  <span class="sb-bs-card__shades">8 Shades</span>
+                </div>
+                <p class="sb-bs-card__tagline">Full Coverage</p>
+                <div class="sb-bs-card__body">
+                  <h3 class="sb-bs-card__name">Perfect Liquid Concealer</h3>
+                  <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.82 <span
+                      class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                      aria-hidden="true"></i> 274 Reviews</p>
+                  <p class="sb-bs-card__price">₹249</p>
+                  <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹162 with coupon
+                  </p>
+                </div>
+              </a>
+              <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                ADD TO CART</button>
+            </article>
+
+            <article class="sb-bs-card">
+              <div class="sb-bs-card__ribbon">
+                <span class="sb-bs-card__ribbon-label">BestSeller</span>
+                <span class="sb-bs-card__buy3"><i class="fa-solid fa-percent" aria-hidden="true"></i> BUY3</span>
+              </div>
+              <a href="product.html?id=color-icon-eyeliner" class="sb-pdp-ymal__card-link">
+                <div class="sb-bs-card__media">
+                  <img src="assets/img/BS-5.png" alt="Color Icon Eyeliner" width="280" height="280" loading="lazy"
+                    decoding="async" />
+                  <span class="sb-bs-card__shades">12 Shades</span>
+                </div>
+                <p class="sb-bs-card__tagline">Smudge-Proof</p>
+                <div class="sb-bs-card__body">
+                  <h3 class="sb-bs-card__name">Color Icon Eyeliner</h3>
+                  <p class="sb-bs-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.9 <span
+                      class="sb-bs-card__rating-sep">|</span> <i class="fa-solid fa-circle-check sb-bs-card__verified"
+                      aria-hidden="true"></i> 118 Reviews</p>
+                  <p class="sb-bs-card__price">₹199</p>
+                  <p class="sb-bs-card__coupon"><i class="fa-solid fa-ticket" aria-hidden="true"></i> ₹129 with coupon
+                  </p>
+                </div>
+              </a>
+              <button type="button" class="sb-bs-card__cart"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                ADD TO CART</button>
+            </article>
+          </div>
+        </div>
+        <div class="sb-pdp-ymal__nav sb-carousel__nav" aria-label="Related products carousel">
+          <button class="sb-carousel__arrow" type="button" aria-label="Previous product" data-sb-carousel-prev disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button class="sb-carousel__arrow" type="button" aria-label="Next product" data-sb-carousel-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="sb-carousel__progress sb-pdp-ymal__progress" aria-hidden="true">
+          <span class="sb-carousel__progress-fill" data-sb-carousel-progress></span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <section class="sb-cta-bar" aria-label="Newsletter, mobile app, and customer support">
+    <div class="sb-cta-bar__inner">
+      <div class="sb-cta-bar__col">
+        <p class="sb-cta-bar__lead">
+          <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+          Get special discount on your inbox
+        </p>
+        <form class="sb-cta-bar__form" action="#" method="post">
+          <label class="visually-hidden" for="sb-cta-email-pdp">Your email</label>
+          <input id="sb-cta-email-pdp" type="email" name="email" placeholder="Your Email" autocomplete="email" />
+          <button type="submit" class="sb-cta-bar__send"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            SEND</button>
+        </form>
+      </div>
+      <div class="sb-cta-bar__col">
+        <p class="sb-cta-bar__lead sb-cta-bar__lead--caps">
+          <i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
+          Experience the Nykaa Mobile App
+        </p>
+        <div class="sb-cta-bar__apps">
+          <a href="#" class="sb-cta-bar__app" aria-label="Get it on Google Play">
+            <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+            <span class="sb-cta-bar__app-text"><small>GET IT ON</small> Google Play</span>
+          </a>
+          <a href="#" class="sb-cta-bar__app" aria-label="Download on the App Store">
+            <i class="fa-brands fa-apple" aria-hidden="true"></i>
+            <span class="sb-cta-bar__app-text"><small>Download on the</small> App Store</span>
+          </a>
+        </div>
+      </div>
+      <div class="sb-cta-bar__col">
+        <p class="sb-cta-bar__lead sb-cta-bar__lead--caps">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+          For any help, you may call us at
+        </p>
+        <p class="sb-cta-bar__phone"><a href="tel:18002674444">1800-267-4444</a></p>
+        <p class="sb-cta-bar__hours">(All days, 8 AM to 10 PM)</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="sb-footer" aria-label="Site footer">
+    <div class="sb-footer__inner">
+      <div class="sb-footer__top">
+        <div class="sb-footer__col sb-footer__col--brand">
+          <a href="index.html" class="sb-footer__logo" aria-label="Eloria Beauty home">
+            <img src="assets/img/logo.png" alt="Eloria Beauty" width="140" height="56" loading="lazy"
+              decoding="async" />
+          </a>
+          <span class="sb-footer__logo-line" aria-hidden="true"></span>
+          <p class="sb-footer__tagline">Make - up Essentials</p>
+          <p class="sb-footer__about">Eloria Beauty is a one-stop cosmetic brand for all your needs, providing a wide
+            range of beauty products for most skin types and skin tones.</p>
+          <h3 class="sb-footer__subhead">Follow us</h3>
+          <div class="sb-footer__social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          </div>
+          <h3 class="sb-footer__subhead">Stores</h3>
+          <ul class="sb-footer__stores">
+            <li><a href="#">Switch to Essential <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a></li>
+            <li><a href="#">Switch to Professional <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </div>
+        <div class="sb-footer__accordions">
+          <div class="sb-footer__accordion sb-footer__col" data-sb-footer-accordion>
+            <button type="button" class="sb-footer__accordion-btn" data-sb-footer-accordion-toggle aria-expanded="true"
+              aria-controls="sb-footer-panel-shop">
+              Shop
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sb-footer__accordion-panel" id="sb-footer-panel-shop" data-sb-footer-accordion-panel>
+              <ul class="sb-footer__links">
+                <li><a href="category.html">Face</a></li>
+                <li><a href="category.html">Eyes</a></li>
+                <li><a href="category.html">Nails</a></li>
+                <li><a href="category.html">Lips</a></li>
+                <li><a href="category.html">Perfumes</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sb-footer__accordion sb-footer__col" data-sb-footer-accordion>
+            <button type="button" class="sb-footer__accordion-btn" data-sb-footer-accordion-toggle aria-expanded="true"
+              aria-controls="sb-footer-panel-brand">
+              Eloria Beauty
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sb-footer__accordion-panel" id="sb-footer-panel-brand" data-sb-footer-accordion-panel>
+              <ul class="sb-footer__links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Store locator</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Track Order</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Returns &amp; Exchange</a></li>
+                <li><a href="#">Beauty blog</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sb-footer__accordion sb-footer__col" data-sb-footer-accordion>
+            <button type="button" class="sb-footer__accordion-btn" data-sb-footer-accordion-toggle aria-expanded="true"
+              aria-controls="sb-footer-panel-policies">
+              Policies
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sb-footer__accordion-panel" id="sb-footer-panel-policies" data-sb-footer-accordion-panel>
+              <ul class="sb-footer__links">
+                <li><a href="#">Terms &amp; Conditions</a></li>
+                <li><a href="#">Shipping &amp; Cancellation</a></li>
+                <li><a href="#">Return &amp; Replace</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="sb-footer__col sb-footer__col--contact">
+          <h3 class="sb-footer__heading">Contact us</h3>
+          <p class="sb-footer__support">Questions? We're here for you<span class="sb-footer__support-hours">Monday -
+              Friday (10AM-6PM) IST.</span></p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <a href="tel:+919167109506">+91-9167109506</a>
+          </p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:care@eloria.in">care@eloria.in</a>
+          </p>
+          <p class="sb-footer__contact-label">For Careers</p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:hr@Eloriabeauty.in">hr@Eloriabeauty.in</a>
+          </p>
+          <p class="sb-footer__contact-label">For Collaboration</p>
+          <p class="sb-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:sme@Eloriabeauty.in">sme@Eloriabeauty.in</a>
+          </p>
+        </div>
+      </div>
+      <div class="sb-footer__bottom">
+        <p class="sb-footer__copy">Copyright &copy; 2026, EloriaBeauty &mdash; Powered by ELORIA</p>
+        <div class="sb-footer__payments" aria-label="Accepted payment methods">
+          <span class="sb-footer__pay" title="American Express"><i class="fa-brands fa-cc-amex"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Apple Pay"><i class="fa-brands fa-cc-apple-pay"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Diners Club"><i class="fa-brands fa-cc-diners-club"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Discover"><i class="fa-brands fa-cc-discover"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Google Pay"><i class="fa-brands fa-google-pay"
+              aria-hidden="true"></i></span>
+          <span class="sb-footer__pay" title="Mastercard"><i class="fa-brands fa-cc-mastercard"
+              aria-hidden="true"></i></span>
+
+          <span class="sb-footer__pay" title="Visa"><i class="fa-brands fa-cc-visa" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="sb-footer__scroll-top" data-sb-scroll-top aria-label="Back to top">
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+    <a href="https://wa.me/" class="sb-footer__wa" aria-label="Chat on WhatsApp" target="_blank"
+      rel="noopener noreferrer">
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+    </a>
+  </footer>
+
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>
