@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Nuage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Teachers:ital,wght@0,400..800;1,400..800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+</head>
+
+<body>
+
+  <header class="boj-header" role="banner">
+
+    <div class="boj-header__announce-mobile" role="region" aria-label="Promotional offers">
+      <span class="boj-header__announce-mobile-countdown" data-boj-countdown>
+        <span data-boj-days>06</span> Days
+        <span data-boj-hours>01</span> Hours
+        <span data-boj-minutes>39</span> Minutes
+        <span data-boj-seconds>45</span> Seconds
+      </span>
+      <span class="boj-header__announce-mobile-promo">Up to 50% OFF + 4 Stackable Free Gifts</span>
+      <span class="boj-header__announce-mobile-gift" aria-hidden="true"><i class="fa-solid fa-gift"
+          aria-hidden="true"></i></span>
+    </div>
+
+    <div class="boj-header__announce boj-header__announce--desktop" role="region" aria-label="Promotional offers">
+      <div class="boj-header__announce-track" aria-hidden="true">
+        <div class="boj-header__announce-group">
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+        </div>
+        <div class="boj-header__announce-group" aria-hidden="true">
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="boj-header__main">
+      <div class="boj-header__main-inner">
+        <div class="boj-header__tools-left">
+          <button type="button" class="boj-header__toggle" data-boj-menu-toggle aria-label="Open menu"
+            aria-expanded="false" aria-controls="boj-mobile-nav">
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="boj-header__action boj-header__action--search-mobile" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <nav class="boj-header__nav boj-header__nav--left" aria-label="Primary left">
+          <a href="shop.html" class="boj-header__nav-link">Shop</a>
+          <a href="shop.html" class="boj-header__nav-link boj-header__nav-link--sale">Summer Sale</a>
+          <a href="shop.html" class="boj-header__nav-link">Best Sellers</a>
+        </nav>
+
+        <a href="index.html" class="boj-header__logo" aria-label="Beauty of Joseon home">
+          <img src="assets/img/logo.png" alt="Beauty of Joseon" width="220" height="48" decoding="async" />
+        </a>
+
+        <div class="boj-header__right">
+          <nav class="boj-header__nav boj-header__nav--right" aria-label="Primary right">
+            <a href="#" class="boj-header__nav-link">BOJ Rewards</a>
+            <a href="#" class="boj-header__nav-link">About</a>
+            <a href="#" class="boj-header__nav-link">Need Help?</a>
+          </nav>
+
+          <div class="boj-header__actions">
+            <a href="#" class="boj-header__action" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <button type="button" class="boj-header__action boj-header__action--search-desktop" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a href="#" class="boj-header__action boj-header__action--cart" aria-label="Shopping cart, 0 items">
+              <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+              <span class="boj-header__cart-count">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="boj-header__mobile" id="boj-mobile-nav" aria-label="Mobile navigation" aria-hidden="true">
+      <button type="button" class="boj-header__mobile-close" data-boj-menu-close aria-label="Close menu">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <a href="shop.html" class="boj-header__mobile-link">Shop</a>
+      <a href="shop.html" class="boj-header__mobile-link boj-header__mobile-link--sale">Summer Sale</a>
+      <a href="shop.html" class="boj-header__mobile-link">Best Sellers</a>
+      <a href="#" class="boj-header__mobile-link">BOJ Rewards</a>
+      <a href="#" class="boj-header__mobile-link">About</a>
+      <a href="#" class="boj-header__mobile-link">Need Help?</a>
+    </nav>
+
+    <div class="boj-header__overlay" data-boj-menu-overlay hidden></div>
+
+  </header>
+
+  <main id="main-content">
+
+    <section class="boj-shop-hero" aria-label="Shop promotion">
+      <div class="boj-shop-hero__inner">
+        <a href="#" class="boj-shop-hero__link">
+          <img src="assets/img/banner-1.png" alt="Buy Any 3 at ₹1699 — Shop the collection" width="1400" height="360"
+            decoding="async" />
+        </a>
+      </div>
+    </section>
+
+    <section class="boj-shop" aria-label="Shop products">
+      <div class="boj-shop__inner">
+        <nav class="boj-shop__breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="boj-shop__breadcrumb-sep" aria-hidden="true"><i class="fa-solid fa-chevron-right"
+              aria-hidden="true"></i></span>
+          <span>Shop</span>
+        </nav>
+
+        <div class="boj-shop__head">
+          <div>
+            <h1 class="boj-shop__title">Shop All Products</h1>
+            <p class="boj-shop__count">8 products</p>
+          </div>
+          <div class="boj-shop__toolbar boj-shop__toolbar--desktop">
+            <label class="boj-shop__sort-label" for="boj-shop-sort">Sort by</label>
+            <select id="boj-shop-sort" class="boj-shop__sort" name="sort">
+              <option value="featured" selected>Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="boj-shop__mobile-bar">
+          <button type="button" class="boj-shop__mobile-btn" data-boj-shop-filter>Filter</button>
+          <button type="button" class="boj-shop__mobile-btn" data-boj-shop-sort-toggle aria-expanded="false"
+            aria-controls="boj-shop-mobile-sort">Sort By</button>
+        </div>
+
+        <div class="boj-shop__mobile-sort" id="boj-shop-mobile-sort" data-boj-shop-sort-panel hidden>
+          <label class="boj-shop__mobile-sort-label" for="boj-shop-sort-mobile">Sort by</label>
+          <select id="boj-shop-sort-mobile" class="boj-shop__sort boj-shop__sort--mobile" name="sort-mobile">
+            <option value="featured" selected>Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="name">Name</option>
+          </select>
+        </div>
+
+        <div class="boj-shop__grid">
+          <article class="boj-shop__card" data-boj-product-id="damage-repair-routine">
+            <div class="boj-shop__card-media">
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-1.png" alt="3-Step Damage Repair Routine" width="220" height="220"
+                decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Routine</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Repair</span>
+              </div>
+              <h2 class="boj-shop__card-name">3-Step Damage Repair Routine</h2>
+              <p class="boj-shop__card-desc">Treat your damaging routine with a combination of 3 premium hair care to
+                restore damaged hair.</p>
+              <div class="boj-shop__card-rating" aria-label="4.9 out of 5 stars, 56 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="boj-shop__card-reviews">56 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 5,097</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="boj-shop__card" data-boj-product-id="scalp-detox-routine">
+            <div class="boj-shop__card-media boj-shop__card-media--cool">
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-2.png" alt="Scalp Detox Routine" width="220" height="220" loading="lazy"
+                decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Detox</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Volumizing</span>
+              </div>
+              <h2 class="boj-shop__card-name">Scalp Detox Routine</h2>
+              <p class="boj-shop__card-desc">A scalp care routine designed for intensive detoxification and cooling care
+                for a healthier scalp.</p>
+              <div class="boj-shop__card-rating" aria-label="4.7 out of 5 stars, 38 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </span>
+                <span class="boj-shop__card-reviews">38 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 2,499</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="boj-shop__card" data-boj-product-id="damage-therapy-hair-oil">
+            <div class="boj-shop__card-media boj-shop__card-media--warm">
+              <span class="boj-shop__card-badge">New In</span>
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-3.png" alt="Growus Damage Therapy Hair Oil (Serum) 65ml" width="220" height="220"
+                loading="lazy" decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Shine</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Frizz Control</span>
+              </div>
+              <h2 class="boj-shop__card-name">Growus Damage Therapy Hair Oil (Serum) 65ml</h2>
+              <p class="boj-shop__card-desc">Rich nourishing hair oil provides long-lasting moisturization with zero
+                greasiness.</p>
+              <div class="boj-shop__card-rating" aria-label="4.9 out of 5 stars, 118 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="boj-shop__card-reviews">118 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 745</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="boj-shop__card" data-boj-product-id="sea-salt-treatment">
+            <div class="boj-shop__card-media">
+              <span class="boj-shop__card-badge">New In</span>
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-4.png" alt="Growus Sea Salt Therapy Treatment 235ml" width="220" height="220"
+                loading="lazy" decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Scalp Conditioner</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Moisture Balance</span>
+              </div>
+              <h2 class="boj-shop__card-name">Growus Sea Salt Therapy Treatment 235ml</h2>
+              <p class="boj-shop__card-desc">Conditioning treatment that balances scalp moisture while soothing and
+                revitalizing hair.</p>
+              <div class="boj-shop__card-rating" aria-label="4.7 out of 5 stars, 31 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </span>
+                <span class="boj-shop__card-reviews">31 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 1,799</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="boj-shop__card" data-boj-product-id="damage-therapy-hair-milk">
+            <div class="boj-shop__card-media boj-shop__card-media--cool">
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-5.png" alt="Damage Therapy Hair Milk 150ml" width="220" height="220" loading="lazy"
+                decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Leave-In</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Moisture</span>
+              </div>
+              <h2 class="boj-shop__card-name">Damage Therapy Hair Milk 150ml</h2>
+              <p class="boj-shop__card-desc">Lightweight leave-in milk for frizz-free, soft, smooth hair all day long.</p>
+              <div class="boj-shop__card-rating" aria-label="4.6 out of 5 stars, 27 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </span>
+                <span class="boj-shop__card-reviews">27 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 899</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="boj-shop__card" data-boj-product-id="sea-salt-scalp-scaler">
+            <div class="boj-shop__card-media">
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-6.png" alt="Sea Salt Scalp Scaler" width="220" height="220" loading="lazy"
+                decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Exfoliating</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Scalp Care</span>
+              </div>
+              <h2 class="boj-shop__card-name">Sea Salt Scalp Scaler</h2>
+              <p class="boj-shop__card-desc">Gentle exfoliating scaler that resets your scalp for a fresh, clean start.
+              </p>
+              <div class="boj-shop__card-rating" aria-label="4.5 out of 5 stars, 19 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </span>
+                <span class="boj-shop__card-reviews">19 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 1,299</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="boj-shop__card" data-boj-product-id="no-wash-treatment">
+            <div class="boj-shop__card-media boj-shop__card-media--warm">
+              <span class="boj-shop__card-badge">New In</span>
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-7.png" alt="Growus Damage Therapy No-Wash Treatment EX 250ml" width="220"
+                height="220" loading="lazy" decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Leave-In Treatment</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Heat Protection</span>
+              </div>
+              <h2 class="boj-shop__card-name">Growus Damage Therapy No-Wash Treatment EX 250ml</h2>
+              <p class="boj-shop__card-desc">A leave-in treatment that protects hair from heat damage while repairing and
+                styling in one step.</p>
+              <div class="boj-shop__card-rating" aria-label="4.38 out of 5 stars, 8 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </span>
+                <span class="boj-shop__card-reviews">8 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 1,999</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="boj-shop__card" data-boj-product-id="sea-salt-shampoo">
+            <div class="boj-shop__card-media boj-shop__card-media--cool">
+              <button type="button" class="boj-shop__card-wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/BS-8.png" alt="Growus Sea Salt Therapy Shampoo 500g" width="220" height="220"
+                loading="lazy" decoding="async" />
+            </div>
+            <div class="boj-shop__card-body">
+              <div class="boj-shop__card-tags">
+                <span class="boj-shop__card-tag boj-shop__card-tag--blue">Scalp Care Shampoo</span>
+                <span class="boj-shop__card-tag boj-shop__card-tag--purple">Anti-Dandruff</span>
+              </div>
+              <h2 class="boj-shop__card-name">Growus Sea Salt Therapy Shampoo 500g</h2>
+              <p class="boj-shop__card-desc">Deep cleansing shampoo with sea salt therapy for a refreshed scalp and
+                moisturized hair.</p>
+              <div class="boj-shop__card-rating" aria-label="4.9 out of 5 stars, 64 reviews">
+                <span class="boj-shop__card-stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="boj-shop__card-reviews">64 Reviews</span>
+              </div>
+              <p class="boj-shop__card-express">
+                <span class="boj-shop__card-express-icon" aria-hidden="true"><i class="fa-solid fa-plane"></i></span>
+                Express Shipping
+              </p>
+              <div class="boj-shop__card-buy">
+                <p class="boj-shop__card-price">₹ 1,999</p>
+                <button type="button" class="boj-shop__card-add">Add</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="boj-shop-filter" data-boj-shop-filter-root aria-hidden="true">
+    <div class="boj-shop-filter__overlay" data-boj-shop-filter-overlay hidden></div>
+    <aside class="boj-shop-filter__panel" id="boj-shop-filter-panel" role="dialog" aria-modal="true"
+      aria-labelledby="boj-shop-filter-title" tabindex="-1">
+      <header class="boj-shop-filter__head">
+        <h2 class="boj-shop-filter__title" id="boj-shop-filter-title">Filters</h2>
+        <button type="button" class="boj-shop-filter__close" data-boj-shop-filter-close aria-label="Close filters">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div class="boj-shop-filter__body" data-boj-shop-filter-accordion>
+        <div class="boj-shop-filter__acc" data-boj-shop-filter-acc>
+          <button type="button" class="boj-shop-filter__acc-toggle" data-boj-shop-filter-acc-toggle
+            aria-expanded="false" aria-controls="boj-filter-panel-availability">
+            <span>Availability</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="boj-shop-filter__acc-panel" id="boj-filter-panel-availability" hidden>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="availability" value="in-stock" checked data-boj-filter-input />
+              <span>In stock</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="availability" value="out-of-stock" data-boj-filter-input />
+              <span>Out of stock</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="boj-shop-filter__acc" data-boj-shop-filter-acc>
+          <button type="button" class="boj-shop-filter__acc-toggle" data-boj-shop-filter-acc-toggle
+            aria-expanded="false" aria-controls="boj-filter-panel-price">
+            <span>Price</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="boj-shop-filter__acc-panel" id="boj-filter-panel-price" hidden>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="price" value="under-1000" data-boj-filter-input />
+              <span>Under ₹ 1,000</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="price" value="1000-2000" data-boj-filter-input />
+              <span>₹ 1,000 – ₹ 2,000</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="price" value="2000-5000" data-boj-filter-input />
+              <span>₹ 2,000 – ₹ 5,000</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="price" value="above-5000" data-boj-filter-input />
+              <span>Above ₹ 5,000</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="boj-shop-filter__acc" data-boj-shop-filter-acc>
+          <button type="button" class="boj-shop-filter__acc-toggle" data-boj-shop-filter-acc-toggle
+            aria-expanded="false" aria-controls="boj-filter-panel-benefits">
+            <span>By Benefits</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="boj-shop-filter__acc-panel" id="boj-filter-panel-benefits" hidden>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="benefits" value="repair" data-boj-filter-input />
+              <span>Repair</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="benefits" value="shine" data-boj-filter-input />
+              <span>Shine</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="benefits" value="moisture" data-boj-filter-input />
+              <span>Moisture</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="benefits" value="detox" data-boj-filter-input />
+              <span>Detox</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="benefits" value="volumizing" data-boj-filter-input />
+              <span>Volumizing</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="benefits" value="frizz-control" data-boj-filter-input />
+              <span>Frizz Control</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="boj-shop-filter__acc" data-boj-shop-filter-acc>
+          <button type="button" class="boj-shop-filter__acc-toggle" data-boj-shop-filter-acc-toggle
+            aria-expanded="false" aria-controls="boj-filter-panel-type">
+            <span>By Product Type</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="boj-shop-filter__acc-panel" id="boj-filter-panel-type" hidden>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="type" value="routine" data-boj-filter-input />
+              <span>Routine</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="type" value="hair-oil" data-boj-filter-input />
+              <span>Hair Oil</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="type" value="treatment" data-boj-filter-input />
+              <span>Treatment</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="type" value="shampoo" data-boj-filter-input />
+              <span>Shampoo</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="type" value="leave-in" data-boj-filter-input />
+              <span>Leave-In</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="type" value="scalp-care" data-boj-filter-input />
+              <span>Scalp Care</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="boj-shop-filter__acc" data-boj-shop-filter-acc>
+          <button type="button" class="boj-shop-filter__acc-toggle" data-boj-shop-filter-acc-toggle
+            aria-expanded="false" aria-controls="boj-filter-panel-concerns">
+            <span>By Concerns</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="boj-shop-filter__acc-panel" id="boj-filter-panel-concerns" hidden>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="concerns" value="damage" data-boj-filter-input />
+              <span>Damage</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="concerns" value="scalp" data-boj-filter-input />
+              <span>Scalp</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="concerns" value="frizz" data-boj-filter-input />
+              <span>Frizz</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="concerns" value="dandruff" data-boj-filter-input />
+              <span>Dandruff</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="concerns" value="heat-protection" data-boj-filter-input />
+              <span>Heat Protection</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="boj-shop-filter__acc" data-boj-shop-filter-acc>
+          <button type="button" class="boj-shop-filter__acc-toggle" data-boj-shop-filter-acc-toggle
+            aria-expanded="false" aria-controls="boj-filter-panel-brand">
+            <span>By Brand</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="boj-shop-filter__acc-panel" id="boj-filter-panel-brand" hidden>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="brand" value="growus" data-boj-filter-input />
+              <span>Growus</span>
+            </label>
+            <label class="boj-shop-filter__check">
+              <input type="checkbox" name="brand" value="suroskie" data-boj-filter-input />
+              <span>Suroskie</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <footer class="boj-shop-filter__foot">
+        <button type="button" class="boj-shop-filter__apply" data-boj-shop-filter-apply>View Results</button>
+      </footer>
+    </aside>
+  </div>
+
+  <footer class="boj-footer" aria-label="Site footer">
+    <div class="boj-footer__inner">
+      <div class="boj-footer__top">
+        <a href="index.html" class="boj-footer__logo" aria-label="Suroskie home">
+          <img src="assets/img/logo.png" alt="Suroskie" width="220" height="48" decoding="async" />
+        </a>
+
+        <div class="boj-footer__newsletter">
+          <h2 class="boj-footer__newsletter-title">Subscribe to our Newsletter</h2>
+          <p class="boj-footer__newsletter-text">Be the first to know about new products and exclusive offers.</p>
+          <form class="boj-footer__form" action="#" method="post">
+            <label class="boj-footer__form-label" for="boj-footer-email-shop">Email</label>
+            <div class="boj-footer__form-row">
+              <input id="boj-footer-email-shop" class="boj-footer__input" type="email" name="email" placeholder="Email"
+                autocomplete="email" required />
+              <button type="submit" class="boj-footer__submit">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="boj-footer__divider" aria-hidden="true"></div>
+
+      <div class="boj-footer__columns" data-boj-footer-accordion>
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-categories-shop">
+            <span class="boj-footer__acc-title">Top Categories</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-categories-shop">
+            <ul class="boj-footer__links">
+              <li><a href="shop.html">Skin Care</a></li>
+              <li><a href="shop.html">Hair Care</a></li>
+              <li><a href="shop.html">Body Care</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-know-shop">
+            <span class="boj-footer__acc-title">Know us</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-know-shop">
+            <ul class="boj-footer__links">
+              <li><a href="#">Blogs</a></li>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Site Map</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-policy-shop">
+            <span class="boj-footer__acc-title">Our Policy</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-policy-shop">
+            <ul class="boj-footer__links">
+              <li><a href="#">Shipping &amp; Returns</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-social-shop">
+            <span class="boj-footer__acc-title">Follow Us</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-social-shop">
+            <ul class="boj-footer__social">
+              <li>
+                <a href="#">
+                  <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                  <span>Facebook</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                  <span>Instagram</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                  <span>YouTube</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc boj-footer__acc--support" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-support-shop">
+            <span class="boj-footer__acc-title">Support</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-support-shop">
+            <ul class="boj-footer__contact">
+              <li>
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <span>11/27 Block No.11, Site IV, Sahibabad, Suroskie, Ghaziabad, Uttar Pradesh, India - 201010</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                <span>+91 97111 48187 +91 85275 84372 +91 88824 59950</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                <a href="mailto:customercare@suroskie.com">CUSTOMERCARE@SUROSKIE.COM</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="boj-footer__bottom">
+        <p class="boj-footer__copy">&copy;2026 SUROSKIE. All rights reserved.</p>
+        <p class="boj-footer__credit">
+          Design by :- <a href="https://www.thelandingpagecompany.com"
+            target="_blank" rel="noopener noreferrer">https://www.thelandingpagecompany.com</a>
+        </p>
+        <p class="boj-footer__copy boj-footer__copy--muted">&copy; 2026, SUROSKIE ALL RIGHTS RESERVED</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>

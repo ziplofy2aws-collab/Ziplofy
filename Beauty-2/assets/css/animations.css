@@ -1,0 +1,472 @@
+/* ── Luxury animation layer ── */
+
+:root {
+  --lux-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lux-ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --lux-duration: 0.9s;
+  --lux-cursor-size: 12px;
+  --lux-cursor-ring: 40px;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Custom luxury cursor */
+.lux-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 0.4s var(--lux-ease);
+}
+
+.lux-cursor.is-visible {
+  opacity: 1;
+}
+
+.lux-cursor__dot,
+.lux-cursor__ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+}
+
+.lux-cursor__dot {
+  width: var(--lux-cursor-size);
+  height: var(--lux-cursor-size);
+  background: rgba(255, 255, 255, 0.92);
+  filter: blur(0.5px);
+}
+
+.lux-cursor__ring {
+  width: var(--lux-cursor-ring);
+  height: var(--lux-cursor-ring);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.lux-cursor.is-hovering .lux-cursor__ring {
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .lux-cursor {
+    display: none !important;
+  }
+}
+
+body.lux-cursor-active {
+  cursor: none;
+}
+
+body.lux-cursor-active a,
+body.lux-cursor-active button,
+body.lux-cursor-active [role="button"] {
+  cursor: none;
+}
+
+/* Hero decorative layers */
+.lux-hero__deco {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.lux-hero__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.lux-hero__blob--1 {
+  top: 10%;
+  left: -5%;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(244, 213, 220, 0.7) 0%, transparent 70%);
+}
+
+.lux-hero__blob--2 {
+  bottom: 5%;
+  right: -3%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(232, 146, 154, 0.45) 0%, transparent 70%);
+}
+
+.lux-hero__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.18) 0%, transparent 65%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.boj-hero__slide .lux-hero__img-wrap {
+  display: block;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.boj-hero__slide img {
+  will-change: transform, opacity;
+}
+
+/* Reveal masks */
+.lux-mask {
+  overflow: hidden;
+}
+
+.lux-mask__inner {
+  will-change: transform, opacity;
+}
+
+/* Stats strip */
+.lux-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.lux-stats__item {
+  text-align: center;
+}
+
+.lux-stats__value {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--boj-black);
+  line-height: 1.1;
+}
+
+.lux-stats__label {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+/* Premium button micro-interactions */
+.lux-btn {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.45s var(--lux-ease),
+    box-shadow 0.45s var(--lux-ease);
+}
+
+.lux-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    transparent 100%
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
+.lux-btn:hover {
+  transform: translateY(-2px);
+}
+
+.lux-btn:hover::after {
+  animation: lux-shine 0.85s var(--lux-ease) forwards;
+}
+
+@keyframes lux-shine {
+  0% {
+    left: -120%;
+  }
+
+  100% {
+    left: 160%;
+  }
+}
+
+/* Animated link underline */
+.lux-link {
+  position: relative;
+  display: inline-block;
+}
+
+.lux-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.45s var(--lux-ease);
+}
+
+.lux-link:hover::after,
+.lux-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Card hover lift */
+.lux-card-hover {
+  transition:
+    transform 0.55s var(--lux-ease),
+    box-shadow 0.55s var(--lux-ease);
+  will-change: transform;
+}
+
+.lux-card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Image zoom on hover */
+.lux-img-zoom {
+  overflow: hidden;
+}
+
+.lux-img-zoom img {
+  transition: transform 0.8s var(--lux-ease);
+  will-change: transform;
+}
+
+.lux-img-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* Icon micro-scale */
+.lux-icon-hover i,
+.lux-icon-hover .fa-solid,
+.lux-icon-hover .fa-regular,
+.lux-icon-hover .fa-brands {
+  transition: transform 0.35s var(--lux-ease);
+  display: inline-block;
+}
+
+.lux-icon-hover:hover i,
+.lux-icon-hover:hover .fa-solid,
+.lux-icon-hover:hover .fa-regular,
+.lux-icon-hover:hover .fa-brands {
+  transform: scale(1.12);
+}
+
+/* Ingredient section parallax depth */
+.boj-ingredient {
+  position: relative;
+  overflow: hidden;
+}
+
+.lux-ingredient__deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lux-ingredient__deco span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  will-change: transform;
+}
+
+.lux-ingredient__deco span:nth-child(1) {
+  top: 20%;
+  left: 5%;
+  width: 200px;
+  height: 200px;
+  background: rgba(244, 213, 220, 0.5);
+}
+
+.lux-ingredient__deco span:nth-child(2) {
+  bottom: 10%;
+  right: 8%;
+  width: 160px;
+  height: 160px;
+  background: rgba(109, 95, 141, 0.2);
+}
+
+.boj-ingredient__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Footer glow */
+.lux-footer__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  opacity: 0.25;
+  will-change: transform;
+}
+
+.lux-footer__glow--1 {
+  top: -60px;
+  left: 10%;
+  width: 240px;
+  height: 240px;
+  background: rgba(232, 146, 154, 0.3);
+}
+
+.lux-footer__glow--2 {
+  bottom: 20%;
+  right: 5%;
+  width: 180px;
+  height: 180px;
+  background: rgba(109, 95, 141, 0.25);
+}
+
+.boj-footer {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gentle CTA pulse (opacity only — no transform conflict) */
+.lux-pulse-soft {
+  animation: lux-pulse-soft 3.5s var(--lux-ease-soft) infinite;
+}
+
+@keyframes lux-pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+
+  50% {
+    opacity: 0.9;
+    box-shadow: 0 4px 20px rgba(232, 146, 154, 0.25);
+  }
+}
+
+/* Page load state */
+body.lux-loading {
+  overflow: hidden;
+}
+
+body.lux-loading .boj-header__announce--desktop,
+body.lux-loading .boj-header__announce-mobile,
+body.lux-loading .boj-header__main {
+  opacity: 0;
+}
+
+/* Never override positioning transforms on hero arrows */
+.boj-hero__arrow {
+  transform: translateY(-50%);
+}
+
+.boj-hero__arrow.lux-btn:hover {
+  transform: translateY(calc(-50% - 2px));
+}
+
+/* Promo dots stay horizontally centered */
+.boj-promo__dots {
+  transform: translateX(-50%);
+}
+
+/* Desktop: keep off-canvas mobile menu hidden */
+@media (min-width: 901px) {
+  .boj-header__mobile:not(.is-open) {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .lux-cursor,
+  .lux-hero__deco,
+  .lux-ingredient__deco,
+  .lux-footer__glow {
+    display: none !important;
+  }
+
+  .lux-btn::after {
+    display: none;
+  }
+
+  .lux-btn:hover,
+  .lux-card-hover:hover {
+    transform: none;
+  }
+
+  .lux-img-zoom:hover img {
+    transform: none;
+  }
+
+  .lux-pulse-soft {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .lux-stats {
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+
+  .lux-stats__value {
+    font-size: 22px;
+  }
+
+  .lux-card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  }
+}

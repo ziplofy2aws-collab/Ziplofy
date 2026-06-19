@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Teachers:ital,wght@0,400..800;1,400..800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+</head>
+
+<body>
+
+  <div class="lux-cursor" aria-hidden="true">
+    <div class="lux-cursor__ring"></div>
+    <div class="lux-cursor__dot"></div>
+  </div>
+
+  <header class="boj-header" role="banner">
+
+    <div class="boj-header__announce-mobile" role="region" aria-label="Promotional offers">
+      <span class="boj-header__announce-mobile-countdown" data-boj-countdown>
+        <span data-boj-days>06</span> Days
+        <span data-boj-hours>01</span> Hours
+        <span data-boj-minutes>39</span> Minutes
+        <span data-boj-seconds>45</span> Seconds
+      </span>
+      <span class="boj-header__announce-mobile-promo">Up to 50% OFF + 4 Stackable Free Gifts</span>
+      <span class="boj-header__announce-mobile-gift" aria-hidden="true"><i class="fa-solid fa-gift"
+          aria-hidden="true"></i></span>
+    </div>
+
+    <div class="boj-header__announce boj-header__announce--desktop" role="region" aria-label="Promotional offers">
+      <div class="boj-header__announce-track" aria-hidden="true">
+        <div class="boj-header__announce-group">
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+        </div>
+        <div class="boj-header__announce-group" aria-hidden="true">
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item">Summer Skin Kick-Off <i class="fa-solid fa-heart boj-fa-icon boj-fa-icon--blue" aria-hidden="true"></i></span>
+          <span class="boj-header__announce-item boj-header__announce-item--countdown" data-boj-countdown>
+            <span data-boj-days>06</span> Days
+            <span data-boj-hours>01</span> Hours
+            <span data-boj-minutes>39</span> Minutes
+            <span data-boj-seconds>45</span> Seconds
+          </span>
+          <span class="boj-header__announce-item">Up to 50% OFF + 4 Stackable Free Gifts <i class="fa-solid fa-gift boj-fa-icon" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="boj-header__main">
+      <div class="boj-header__main-inner">
+        <div class="boj-header__tools-left">
+          <button type="button" class="boj-header__toggle" data-boj-menu-toggle aria-label="Open menu"
+            aria-expanded="false" aria-controls="boj-mobile-nav">
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="boj-header__action boj-header__action--search-mobile" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <nav class="boj-header__nav boj-header__nav--left" aria-label="Primary left">
+          <a href="shop.html" class="boj-header__nav-link">Shop</a>
+          <a href="shop.html" class="boj-header__nav-link boj-header__nav-link--sale">Summer Sale</a>
+          <a href="shop.html" class="boj-header__nav-link">Best Sellers</a>
+        </nav>
+
+        <a href="index.html" class="boj-header__logo" aria-label="Beauty of Joseon home">
+          <img src="assets/img/logo.png" alt="Beauty of Joseon" width="220" height="48" decoding="async" />
+        </a>
+
+        <div class="boj-header__right">
+          <nav class="boj-header__nav boj-header__nav--right" aria-label="Primary right">
+            <a href="#" class="boj-header__nav-link">BOJ Rewards</a>
+            <a href="#" class="boj-header__nav-link">About</a>
+            <a href="#" class="boj-header__nav-link">Need Help?</a>
+          </nav>
+
+          <div class="boj-header__actions">
+            <a href="#" class="boj-header__action" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <button type="button" class="boj-header__action boj-header__action--search-desktop" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a href="#" class="boj-header__action boj-header__action--cart" aria-label="Shopping cart, 0 items">
+              <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+              <span class="boj-header__cart-count">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <nav class="boj-header__mobile" id="boj-mobile-nav" aria-label="Mobile navigation" aria-hidden="true">
+    <button type="button" class="boj-header__mobile-close" data-boj-menu-close aria-label="Close menu">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+    <a href="shop.html" class="boj-header__mobile-link">Shop</a>
+    <a href="shop.html" class="boj-header__mobile-link boj-header__mobile-link--sale">Summer Sale</a>
+    <a href="shop.html" class="boj-header__mobile-link">Best Sellers</a>
+    <a href="#" class="boj-header__mobile-link">BOJ Rewards</a>
+    <a href="#" class="boj-header__mobile-link">About</a>
+    <a href="#" class="boj-header__mobile-link">Need Help?</a>
+  </nav>
+
+  <div class="boj-header__overlay" data-boj-menu-overlay hidden></div>
+
+  <main id="main-content">
+
+    <section class="boj-hero" aria-label="Hero banner slider" data-boj-hero>
+      <div class="lux-hero__deco" aria-hidden="true">
+        <span class="lux-hero__blob lux-hero__blob--1"></span>
+        <span class="lux-hero__blob lux-hero__blob--2"></span>
+        <span class="lux-hero__glow"></span>
+      </div>
+      <div class="boj-hero__slider" data-boj-hero-slider data-current-slide="0">
+        <button type="button" class="boj-hero__arrow boj-hero__arrow--prev" data-boj-hero-prev
+          aria-label="Previous slide">
+          <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="boj-hero__viewport">
+          <div class="boj-hero__track" data-boj-hero-track>
+            <article class="boj-hero__slide is-active" data-boj-hero-slide>
+              <img src="assets/img/hero-banner-1.png" data-banner="1" alt="AM-PM Routine — Buy 1 Get 1" width="1920"
+                height="640" decoding="async" />
+            </article>
+            <article class="boj-hero__slide" data-boj-hero-slide>
+              <img src="assets/img/hero-banner-2.png" data-banner="2" alt="Hero banner 2" width="1920" height="640"
+                loading="lazy" decoding="async" />
+            </article>
+            <article class="boj-hero__slide" data-boj-hero-slide>
+              <img src="assets/img/hero-banner-3.png" data-banner="3" alt="Hero banner 3" width="1920" height="640"
+                loading="lazy" decoding="async" />
+            </article>
+            <article class="boj-hero__slide" data-boj-hero-slide>
+              <img src="assets/img/hero-banner-4.png" data-banner="4" alt="Hero banner 4" width="1920" height="640"
+                loading="lazy" decoding="async" />
+            </article>
+          </div>
+        </div>
+
+        <button type="button" class="boj-hero__arrow boj-hero__arrow--next" data-boj-hero-next aria-label="Next slide">
+          <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </section>
+
+    <section class="boj-concern" aria-labelledby="boj-concern-heading" data-boj-concern>
+      <div class="boj-concern__inner">
+        <div class="boj-concern__head">
+          <h2 id="boj-concern-heading" class="boj-concern__title">Shop By Concern</h2>
+          <div class="boj-concern__tabs" role="tablist" aria-label="Concern category">
+            <button type="button" class="boj-concern__tab is-active" role="tab" aria-selected="true"
+              data-boj-concern-tab="skin">For Skin</button>
+            <button type="button" class="boj-concern__tab" role="tab" aria-selected="false" data-boj-concern-tab="hair">
+              For Hair</button>
+          </div>
+        </div>
+
+        <div class="boj-concern__carousel" data-boj-concern-panel="skin">
+          <div class="boj-concern__viewport" data-boj-concern-viewport>
+            <div class="boj-concern__track" data-boj-concern-track>
+              <a href="#" class="boj-concern__card">
+                <div class="boj-concern__card-media">
+                  <img src="assets/img/Concern-1.png" alt="Acne concern" width="320" height="420" decoding="async" />
+                </div>
+                <span class="boj-concern__card-label">Acne</span>
+              </a>
+              <a href="#" class="boj-concern__card">
+                <div class="boj-concern__card-media">
+                  <img src="assets/img/Concern-2.png" alt="Hyperpigmentation concern" width="320" height="420"
+                    loading="lazy" decoding="async" />
+                </div>
+                <span class="boj-concern__card-label">Hyperpigmentation</span>
+              </a>
+              <a href="#" class="boj-concern__card">
+                <div class="boj-concern__card-media">
+                  <img src="assets/img/Concern-3.png" alt="Textured skin concern" width="320" height="420"
+                    loading="lazy" decoding="async" />
+                </div>
+                <span class="boj-concern__card-label">Textured Skin</span>
+              </a>
+              <a href="#" class="boj-concern__card">
+                <div class="boj-concern__card-media">
+                  <img src="assets/img/Concern-4.png" alt="Sensitive skin concern" width="320" height="420"
+                    loading="lazy" decoding="async" />
+                </div>
+                <span class="boj-concern__card-label">Sensitive Skin</span>
+              </a>
+              <a href="#" class="boj-concern__card">
+                <div class="boj-concern__card-media">
+                  <img src="assets/img/Concern-5.png" alt="Dark circles concern" width="320" height="420" loading="lazy"
+                    decoding="async" />
+                </div>
+                <span class="boj-concern__card-label">Dark Circles</span>
+              </a>
+              <a href="#" class="boj-concern__card">
+                <div class="boj-concern__card-media">
+                  <img src="assets/img/Concern-6.png" alt="Pore care concern" width="320" height="420" loading="lazy"
+                    decoding="async" />
+                </div>
+                <span class="boj-concern__card-label">Pore Care</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="boj-concern__nav" aria-label="Concern carousel navigation">
+          <button type="button" class="boj-concern__arrow boj-concern__arrow--prev" data-boj-concern-prev
+            aria-label="Previous concern" disabled>
+            <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="boj-concern__arrow boj-concern__arrow--next" data-boj-concern-next
+            aria-label="Next concern">
+            <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="boj-kedit" aria-labelledby="boj-kedit-heading" data-boj-kedit>
+      <div class="boj-kedit__inner">
+        <div class="boj-kedit__head">
+          <h2 id="boj-kedit-heading" class="boj-kedit__title">The K-Edit</h2>
+          <div class="boj-kedit__tabs" role="tablist" aria-label="K-Edit filters">
+            <button type="button" class="boj-kedit__tab is-active" role="tab" aria-selected="true">Latest In
+              Korea</button>
+            <button type="button" class="boj-kedit__tab" role="tab" aria-selected="false">Daily Sun Protection</button>
+            <button type="button" class="boj-kedit__tab" role="tab" aria-selected="false">Barrier Repair &amp; Glass
+              Skin</button>
+          </div>
+        </div>
+
+        <div class="boj-kedit__viewport" data-boj-kedit-viewport>
+          <div class="boj-kedit__track" data-boj-kedit-track>
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-7.png" alt="Growus Damage Therapy No-Wash Treatment EX 250ml" width="280"
+                  height="320" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Leave-In Treatment</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Heat Protection</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Damage Therapy No-Wash Treatment EX 250ml</h3>
+              <p class="boj-kedit__desc">A leave-in treatment that protects hair from heat damage while repairing and
+                styling in one step.</p>
+              <p class="boj-kedit__price">₹ 1,999</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-8.png" alt="Growus Sea Salt Therapy Shampoo 500g" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Scalp Care Shampoo</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Anti-Dandruff</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Sea Salt Therapy Shampoo 500g</h3>
+              <p class="boj-kedit__desc">Deep cleansing shampoo with sea salt therapy for a refreshed scalp and
+                moisturized hair.</p>
+              <p class="boj-kedit__price">₹ 1,999</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-9.png" alt="Growus Damage Therapy Shampoo EX 500ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Repairing Shampoo</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Protein Care</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Damage Therapy Shampoo EX 500ml</h3>
+              <p class="boj-kedit__desc">Protein-rich shampoo that repairs damaged hair while gently cleansing the scalp
+                and strands.</p>
+              <p class="boj-kedit__price">₹ 1,999</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-4.png" alt="Growus Sea Salt Therapy Treatment 235ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Scalp Conditioner</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Moisture Balance</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Sea Salt Therapy Treatment 235ml</h3>
+              <p class="boj-kedit__desc">Conditioning treatment that balances scalp moisture while soothing and
+                revitalizing hair.</p>
+              <p class="boj-kedit__price">₹ 1,799</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-3.png" alt="Growus Damage Therapy Hair Oil 65ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Shine</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Frizz Control</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Damage Therapy Hair Oil (Serum) 65ml</h3>
+              <p class="boj-kedit__desc">Rich nourishing hair oil provides long-lasting moisturization with zero
+                greasiness.</p>
+              <p class="boj-kedit__price">₹ 745</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-5.png" alt="Damage Therapy Hair Milk 150ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Leave-In</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Moisture</span>
+              </div>
+              <h3 class="boj-kedit__name">Damage Therapy Hair Milk 150ml</h3>
+              <p class="boj-kedit__desc">Lightweight leave-in milk for frizz-free, soft, smooth hair all day long.</p>
+              <p class="boj-kedit__price">₹ 899</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-6.png" alt="Sea Salt Scalp Scaler" width="280" height="320" loading="lazy"
+                  decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Exfoliating</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Scalp Care</span>
+              </div>
+              <h3 class="boj-kedit__name">Sea Salt Scalp Scaler</h3>
+              <p class="boj-kedit__desc">Gentle exfoliating scaler that resets your scalp for a fresh, clean start.</p>
+              <p class="boj-kedit__price">₹ 1,299</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-7.png" alt="3-Step Damage Repair Routine" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Routine</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Repair</span>
+              </div>
+              <h3 class="boj-kedit__name">3-Step Damage Repair Routine</h3>
+              <p class="boj-kedit__desc">A combination of 3 premium hair care products to restore damaged hair.</p>
+              <p class="boj-kedit__price">₹ 5,097</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-8.png" alt="Scalp Detox Routine" width="280" height="320" loading="lazy"
+                  decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Detox</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Volumizing</span>
+              </div>
+              <h3 class="boj-kedit__name">Scalp Detox Routine</h3>
+              <p class="boj-kedit__desc">Intensive scalp detoxification with volumizing and cooling care for healthier
+                hair.</p>
+              <p class="boj-kedit__price">₹ 2,499</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-8.png" alt="Nuäge Pore Care Collection" width="280" height="320" loading="lazy"
+                  decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Pore Care</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Cleansing</span>
+              </div>
+              <h3 class="boj-kedit__name">Nuäge Pore Care Collection</h3>
+              <p class="boj-kedit__desc">Complete pore care set with cleansing oil, gel cream, and blackhead solutions.
+              </p>
+              <p class="boj-kedit__price">₹ 1,899</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-10.png" alt="Nuäge Barrier Repair Set" width="280" height="320" loading="lazy"
+                  decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Ceramide</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Barrier</span>
+              </div>
+              <h3 class="boj-kedit__name">Nuäge Barrier Repair Set</h3>
+              <p class="boj-kedit__desc">Toner, ampoule, and cream trio to strengthen the skin moisture barrier.</p>
+              <p class="boj-kedit__price">₹ 2,199</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-3.png" alt="Nuäge Radiance Serum Collection" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Vitamin C</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Retinol</span>
+              </div>
+              <h3 class="boj-kedit__name">Nuäge Radiance Serum Collection</h3>
+              <p class="boj-kedit__desc">Brightening vitamin C and retinol serums for glowing, even-toned skin.</p>
+              <p class="boj-kedit__price">₹ 2,499</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="boj-kedit__footer">
+          <div class="boj-kedit__progress" aria-hidden="true">
+            <span class="boj-kedit__progress-fill" data-boj-kedit-progress></span>
+          </div>
+          <div class="boj-kedit__nav" aria-label="K-Edit carousel navigation">
+            <button type="button" class="boj-kedit__arrow boj-kedit__arrow--prev" data-boj-kedit-prev
+              aria-label="Previous product" disabled>
+              <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="boj-kedit__arrow boj-kedit__arrow--next" data-boj-kedit-next
+              aria-label="Next product">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="boj-trending" aria-labelledby="boj-trending-heading">
+      <div class="boj-trending__inner">
+        <div class="boj-trending__head">
+          <h2 id="boj-trending-heading" class="boj-trending__title">Trending Now</h2>
+          <i class="fa-solid fa-arrow-trend-up boj-trending__icon" aria-hidden="true"></i>
+        </div>
+
+        <div class="boj-trending__grid">
+          <a href="#" class="boj-trending__card boj-trending__card--feature">
+            <img src="assets/img/TN-1.png" alt="Maple Line — New Arrival" width="680" height="680" decoding="async" />
+          </a>
+
+          <div class="boj-trending__side">
+            <a href="#" class="boj-trending__card">
+              <img src="assets/img/TN-2.png" alt="P.CALM trending products" width="340" height="340" loading="lazy"
+                decoding="async" />
+            </a>
+            <a href="#" class="boj-trending__card">
+              <img src="assets/img/TN-3.png" alt="I'm from trending products" width="340" height="340" loading="lazy"
+                decoding="async" />
+            </a>
+            <a href="#" class="boj-trending__card">
+              <img src="assets/img/TN-4.png" alt="One-day's you trending products" width="340" height="340"
+                loading="lazy" decoding="async" />
+            </a>
+            <a href="#" class="boj-trending__card">
+              <img src="assets/img/TN-5.png" alt="numbuz:n trending products" width="340" height="340" loading="lazy"
+                decoding="async" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="boj-promo" aria-label="Promotional banners" data-boj-promo>
+      <div class="boj-promo__slider" data-boj-promo-slider data-current-slide="0">
+        <div class="boj-promo__viewport">
+          <div class="boj-promo__track" data-boj-promo-track>
+            <article class="boj-promo__slide is-active" data-boj-promo-slide>
+              <img src="assets/img/banner-1.png" data-promo-banner="1" alt="Buy Any 3 at ₹1699" width="1920"
+                height="520" decoding="async" />
+            </article>
+            <article class="boj-promo__slide" data-boj-promo-slide>
+              <img src="assets/img/banner-2.png" data-promo-banner="2" alt="Promotional banner 2" width="1920"
+                height="520" loading="lazy" decoding="async" />
+            </article>
+            <article class="boj-promo__slide" data-boj-promo-slide>
+              <img src="assets/img/banner-3.png" data-promo-banner="3" alt="Promotional banner 3" width="1920"
+                height="520" loading="lazy" decoding="async" />
+            </article>
+            <article class="boj-promo__slide" data-boj-promo-slide>
+              <img src="assets/img/banner-4.png" data-promo-banner="4" alt="Promotional banner 4" width="1920"
+                height="520" loading="lazy" decoding="async" />
+            </article>
+          </div>
+        </div>
+
+        <div class="boj-promo__dots" role="tablist" aria-label="Choose banner">
+          <button type="button" class="boj-promo__dot is-active" data-boj-promo-dot role="tab" aria-selected="true"
+            aria-label="Banner 1" tabindex="0"></button>
+          <button type="button" class="boj-promo__dot" data-boj-promo-dot role="tab" aria-selected="false"
+            aria-label="Banner 2" tabindex="-1"></button>
+          <button type="button" class="boj-promo__dot" data-boj-promo-dot role="tab" aria-selected="false"
+            aria-label="Banner 3" tabindex="-1"></button>
+          <button type="button" class="boj-promo__dot" data-boj-promo-dot role="tab" aria-selected="false"
+            aria-label="Banner 4" tabindex="-1"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="boj-ingredient" aria-labelledby="boj-ingredient-heading" data-boj-ingredient>
+      <div class="lux-ingredient__deco" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </div>
+      <div class="boj-ingredient__inner">
+        <h2 id="boj-ingredient-heading" class="boj-ingredient__title">Shop By Ingredient</h2>
+
+        <div class="boj-ingredient__viewport" data-boj-ingredient-viewport>
+          <div class="boj-ingredient__track" data-boj-ingredient-track>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-1.png" alt="Collagen" width="200" height="240" decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Collagen</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-2.png" alt="PDRN" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">PDRN</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-3.png" alt="Rice Extract" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Rice Extract</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-4.png" alt="Centella Asiatica" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Centella Asiatica</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-5.png" alt="Soybean Essence" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Soybean Essence</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-6.png" alt="Niacinamide" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Niacinamide</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-7.png" alt="Retinal" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Retinal</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-8.png" alt="Salicylic Acid" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Salicylic Acid</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-9.png" alt="Propolis" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Propolis</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-10.png" alt="Ceramide" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Ceramide</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-11.png" alt="Noni Extract" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Noni Extract</span>
+            </a>
+            <a href="#" class="boj-ingredient__card">
+              <div class="boj-ingredient__media">
+                <img src="assets/img/ingredients-12.png" alt="Bakuchiol" width="200" height="240" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="boj-ingredient__label">Bakuchiol</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="boj-ingredient__footer">
+          <div class="boj-ingredient__progress" aria-hidden="true">
+            <span class="boj-ingredient__progress-fill" data-boj-ingredient-progress></span>
+          </div>
+          <div class="boj-ingredient__nav" aria-label="Ingredient carousel navigation">
+            <button type="button" class="boj-ingredient__arrow boj-ingredient__arrow--prev" data-boj-ingredient-prev
+              aria-label="Previous ingredient" disabled>
+              <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="boj-ingredient__arrow boj-ingredient__arrow--next" data-boj-ingredient-next
+              aria-label="Next ingredient">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="boj-kedit" aria-labelledby="boj-kedit2-heading" data-boj-kedit>
+      <div class="boj-kedit__inner">
+        <div class="boj-kedit__head">
+          <h2 id="boj-kedit2-heading" class="boj-kedit__title">The K-Edit</h2>
+          <div class="boj-kedit__tabs" role="tablist" aria-label="K-Edit filters">
+            <button type="button" class="boj-kedit__tab is-active" role="tab" aria-selected="true">Latest In
+              Korea</button>
+            <button type="button" class="boj-kedit__tab" role="tab" aria-selected="false">Daily Sun Protection</button>
+            <button type="button" class="boj-kedit__tab" role="tab" aria-selected="false">Barrier Repair &amp; Glass
+              Skin</button>
+          </div>
+        </div>
+
+        <div class="boj-kedit__viewport" data-boj-kedit-viewport>
+          <div class="boj-kedit__track" data-boj-kedit-track>
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-1.png" alt="3-Step Damage Repair Routine" width="280" height="320"
+                  decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Routine</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Repair</span>
+              </div>
+              <h3 class="boj-kedit__name">3-Step Damage Repair Routine</h3>
+              <p class="boj-kedit__desc">Treat your damaging routine with a combination of 3 premium hair care to
+                restore
+                damaged hair.</p>
+              <p class="boj-kedit__price">₹ 5,097</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-2.png" alt="Scalp Detox Routine" width="280" height="320" loading="lazy"
+                  decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Detox</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Volumizing</span>
+              </div>
+              <h3 class="boj-kedit__name">Scalp Detox Routine</h3>
+              <p class="boj-kedit__desc">A scalp care routine designed for men with intensive detoxification and cooling
+                care for a healthier scalp.</p>
+              <p class="boj-kedit__price">₹ 2,499</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-3.png" alt="Growus Damage Therapy Hair Oil 65ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Shine</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Frizz Control</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Damage Therapy Hair Oil (Serum) 65ml</h3>
+              <p class="boj-kedit__desc">Rich nourishing hair oil provides long-lasting moisturization with zero
+                greasiness.</p>
+              <p class="boj-kedit__price">₹ 745</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-4.png" alt="Growus Sea Salt Therapy Treatment 235ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Scalp Conditioner</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Moisture Balance</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Sea Salt Therapy Treatment 235ml</h3>
+              <p class="boj-kedit__desc">Conditioning treatment that balances scalp moisture while soothing and
+                revitalizing hair.</p>
+              <p class="boj-kedit__price">₹ 1,799</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-5.png" alt="Damage Therapy Hair Milk 150ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Leave-In</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Moisture</span>
+              </div>
+              <h3 class="boj-kedit__name">Damage Therapy Hair Milk 150ml</h3>
+              <p class="boj-kedit__desc">Lightweight leave-in milk for frizz-free, soft, smooth hair all day long.</p>
+              <p class="boj-kedit__price">₹ 899</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-6.png" alt="Sea Salt Scalp Scaler" width="280" height="320" loading="lazy"
+                  decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Exfoliating</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Scalp Care</span>
+              </div>
+              <h3 class="boj-kedit__name">Sea Salt Scalp Scaler</h3>
+              <p class="boj-kedit__desc">Gentle exfoliating scaler that resets your scalp for a fresh, clean start.</p>
+              <p class="boj-kedit__price">₹ 1,299</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <span class="boj-kedit__badge">New In</span>
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-7.png" alt="Growus Damage Therapy No-Wash Treatment EX 250ml" width="280"
+                  height="320" loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Leave-In Treatment</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Heat Protection</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Damage Therapy No-Wash Treatment EX 250ml</h3>
+              <p class="boj-kedit__desc">A leave-in treatment that protects hair from heat damage while repairing and
+                styling in one step.</p>
+              <p class="boj-kedit__price">₹ 1,999</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-8.png" alt="Growus Sea Salt Therapy Shampoo 500g" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Scalp Care Shampoo</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Anti-Dandruff</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Sea Salt Therapy Shampoo 500g</h3>
+              <p class="boj-kedit__desc">Deep cleansing shampoo with sea salt therapy for a refreshed scalp and
+                moisturized hair.</p>
+              <p class="boj-kedit__price">₹ 1,999</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-9.png" alt="Growus Damage Therapy Shampoo EX 500ml" width="280" height="320"
+                  loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">Repairing Shampoo</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Protein Care</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Damage Therapy Shampoo EX 500ml</h3>
+              <p class="boj-kedit__desc">Protein-rich shampoo that repairs damaged hair while gently cleansing the scalp
+                and strands.</p>
+              <p class="boj-kedit__price">₹ 1,999</p>
+            </article>
+
+            <article class="boj-kedit__card">
+              <div class="boj-kedit__media">
+                <button type="button" class="boj-kedit__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/BS-10.png" alt="Growus Damage Therapy No-Wash Treatment EX" width="280"
+                  height="320" loading="lazy" decoding="async" />
+                <button type="button" class="boj-kedit__cart">Add To Cart</button>
+              </div>
+              <div class="boj-kedit__tags">
+                <span class="boj-kedit__tag boj-kedit__tag--blue">No-Wash</span>
+                <span class="boj-kedit__tag boj-kedit__tag--purple">Heat Protection</span>
+              </div>
+              <h3 class="boj-kedit__name">Growus Damage Therapy No-Wash Treatment EX</h3>
+              <p class="boj-kedit__desc">Quick no-rinse spray treatment for instant damage repair and heat protection on
+                the go.</p>
+              <p class="boj-kedit__price">₹ 1,249</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="boj-kedit__footer">
+          <div class="boj-kedit__progress" aria-hidden="true">
+            <span class="boj-kedit__progress-fill" data-boj-kedit-progress></span>
+          </div>
+          <div class="boj-kedit__nav" aria-label="K-Edit carousel navigation">
+            <button type="button" class="boj-kedit__arrow boj-kedit__arrow--prev" data-boj-kedit-prev
+              aria-label="Previous product" disabled>
+              <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="boj-kedit__arrow boj-kedit__arrow--next" data-boj-kedit-next
+              aria-label="Next product">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="boj-kbeauty" aria-labelledby="boj-kbeauty-heading">
+      <div class="boj-kbeauty__inner">
+        <h2 id="boj-kbeauty-heading" class="boj-kbeauty__title">Underrated K-Beauty</h2>
+
+        <div class="boj-kbeauty__grid">
+          <a href="#" class="boj-kbeauty__card">
+            <img src="assets/img/k-1.png" alt="One-day's you" width="460" height="460" decoding="async" />
+          </a>
+          <a href="#" class="boj-kbeauty__card">
+            <img src="assets/img/k-2.png" alt="Tage" width="460" height="460" loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="boj-kbeauty__card">
+            <img src="assets/img/k-3.png" alt="#OOTD" width="460" height="460" loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="boj-reviews" aria-labelledby="boj-reviews-heading" data-boj-reviews>
+      <div class="boj-reviews__inner">
+        <h2 id="boj-reviews-heading" class="boj-reviews__title">What customer say about Us</h2>
+
+        <div class="lux-stats" data-lux-stats aria-label="Customer satisfaction statistics">
+          <div class="lux-stats__item">
+            <span class="lux-stats__value" data-lux-count="12500" data-lux-suffix="+">0</span>
+            <span class="lux-stats__label">Happy Customers</span>
+          </div>
+          <div class="lux-stats__item">
+            <span class="lux-stats__value" data-lux-count="4.9" data-lux-decimals="1">0</span>
+            <span class="lux-stats__label">Average Rating</span>
+          </div>
+          <div class="lux-stats__item">
+            <span class="lux-stats__value" data-lux-count="98" data-lux-suffix="%">0</span>
+            <span class="lux-stats__label">Would Recommend</span>
+          </div>
+        </div>
+
+        <div class="boj-reviews__carousel">
+          <div class="boj-reviews__viewport" data-boj-reviews-viewport>
+            <div class="boj-reviews__track" data-boj-reviews-track>
+              <article class="boj-reviews__card">
+                <div class="boj-reviews__user">
+                  <img class="boj-reviews__avatar" src="https://i.pravatar.cc/96?img=47" alt="Ayesha Kapoor" width="48"
+                    height="48" loading="lazy" decoding="async" />
+                  <div class="boj-reviews__meta">
+                    <p class="boj-reviews__name">Ayesha Kapoor</p>
+                    <p class="boj-reviews__verified">Verified Buyer</p>
+                  </div>
+                </div>
+                <div class="boj-reviews__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="boj-reviews__text">"Love how lightweight this feels! My skin looks fresh and glowy
+                  without feeling greasy."</blockquote>
+                <div class="boj-reviews__divider" aria-hidden="true"></div>
+                <a href="#" class="boj-reviews__product">
+                  <img src="assets/img/ingredients-1.png" alt="" width="48" height="48" loading="lazy"
+                    decoding="async" />
+                  <span>My Glow All-In-One Tinted Moisturizer with SPF 30</span>
+                </a>
+              </article>
+
+              <article class="boj-reviews__card">
+                <div class="boj-reviews__user">
+                  <img class="boj-reviews__avatar" src="https://i.pravatar.cc/96?img=5" alt="Ritika Malhotra" width="48"
+                    height="48" loading="lazy" decoding="async" />
+                  <div class="boj-reviews__meta">
+                    <p class="boj-reviews__name">Ritika Malhotra</p>
+                    <p class="boj-reviews__verified">Verified Buyer</p>
+                  </div>
+                </div>
+                <div class="boj-reviews__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="boj-reviews__text">"This is my go-to facewash now. Cleans well, feels gentle, and
+                  smells
+                  amazing!"</blockquote>
+                <div class="boj-reviews__divider" aria-hidden="true"></div>
+                <a href="#" class="boj-reviews__product">
+                  <img src="assets/img/ingredients-2.png" alt="" width="48" height="48" loading="lazy"
+                    decoding="async" />
+                  <span>Gluta Boost Facewash</span>
+                </a>
+              </article>
+
+              <article class="boj-reviews__card">
+                <div class="boj-reviews__user">
+                  <img class="boj-reviews__avatar" src="https://i.pravatar.cc/96?img=9" alt="Neha Bansal" width="48"
+                    height="48" loading="lazy" decoding="async" />
+                  <div class="boj-reviews__meta">
+                    <p class="boj-reviews__name">Neha Bansal</p>
+                    <p class="boj-reviews__verified">Verified Buyer</p>
+                  </div>
+                </div>
+                <div class="boj-reviews__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="boj-reviews__text">"The elixir spray is a game changer. I use it before makeup and it
+                  gives
+                  such a nice finish."</blockquote>
+                <div class="boj-reviews__divider" aria-hidden="true"></div>
+                <a href="#" class="boj-reviews__product">
+                  <img src="assets/img/ingredients-3.png" alt="" width="48" height="48" loading="lazy"
+                    decoding="async" />
+                  <span>Rose Elixir Spray</span>
+                </a>
+              </article>
+
+              <article class="boj-reviews__card">
+                <div class="boj-reviews__user">
+                  <img class="boj-reviews__avatar" src="https://i.pravatar.cc/96?img=10" alt="Simran Dutta" width="48"
+                    height="48" loading="lazy" decoding="async" />
+                  <div class="boj-reviews__meta">
+                    <p class="boj-reviews__name">Simran Dutta</p>
+                    <p class="boj-reviews__verified">Verified Buyer</p>
+                  </div>
+                </div>
+                <div class="boj-reviews__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="boj-reviews__text">"My hair feels softer and shinier just after two uses. Love the
+                  Champi
+                  Oil!"</blockquote>
+                <div class="boj-reviews__divider" aria-hidden="true"></div>
+                <a href="#" class="boj-reviews__product">
+                  <img src="assets/img/BS-3.png" alt="" width="48" height="48" loading="lazy" decoding="async" />
+                  <span>Champi Hair Oil</span>
+                </a>
+              </article>
+            </div>
+          </div>
+
+          <div class="boj-reviews__nav" aria-label="Reviews carousel navigation">
+            <button type="button" class="boj-reviews__arrow boj-reviews__arrow--prev" data-boj-reviews-prev
+              aria-label="Previous review" disabled>
+              <i class="fa-solid fa-angle-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="boj-reviews__arrow boj-reviews__arrow--next" data-boj-reviews-next
+              aria-label="Next review">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="boj-footer" aria-label="Site footer">
+    <span class="lux-footer__glow lux-footer__glow--1" aria-hidden="true"></span>
+    <span class="lux-footer__glow lux-footer__glow--2" aria-hidden="true"></span>
+    <div class="boj-footer__inner">
+      <div class="boj-footer__top">
+        <a href="index.html" class="boj-footer__logo" aria-label="Suroskie home">
+          <img src="assets/img/logo.png" alt="Suroskie" width="220" height="48" decoding="async" />
+        </a>
+
+        <div class="boj-footer__newsletter">
+          <h2 class="boj-footer__newsletter-title">Subscribe to our Newsletter</h2>
+          <p class="boj-footer__newsletter-text">Be the first to know about new products and exclusive offers.</p>
+          <form class="boj-footer__form" action="#" method="post">
+            <label class="boj-footer__form-label" for="boj-footer-email">Email</label>
+            <div class="boj-footer__form-row">
+              <input id="boj-footer-email" class="boj-footer__input" type="email" name="email" placeholder="Email"
+                autocomplete="email" required />
+              <button type="submit" class="boj-footer__submit">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="boj-footer__divider" aria-hidden="true"></div>
+
+      <div class="boj-footer__columns" data-boj-footer-accordion>
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-categories">
+            <span class="boj-footer__acc-title">Top Categories</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-categories">
+            <ul class="boj-footer__links">
+              <li><a href="shop.html">Skin Care</a></li>
+              <li><a href="shop.html">Hair Care</a></li>
+              <li><a href="shop.html">Body Care</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-know">
+            <span class="boj-footer__acc-title">Know us</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-know">
+            <ul class="boj-footer__links">
+              <li><a href="#">Blogs</a></li>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Site Map</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-policy">
+            <span class="boj-footer__acc-title">Our Policy</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-policy">
+            <ul class="boj-footer__links">
+              <li><a href="#">Shipping &amp; Returns</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-social">
+            <span class="boj-footer__acc-title">Follow Us</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-social">
+            <ul class="boj-footer__social">
+              <li>
+                <a href="#">
+                  <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                  <span>Facebook</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                  <span>Instagram</span>
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                  <span>YouTube</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="boj-footer__acc boj-footer__acc--support" data-boj-footer-acc>
+          <button type="button" class="boj-footer__acc-toggle" data-boj-footer-acc-toggle aria-expanded="false"
+            aria-controls="boj-footer-panel-support">
+            <span class="boj-footer__acc-title">Support</span>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="boj-footer__acc-panel" id="boj-footer-panel-support">
+            <ul class="boj-footer__contact">
+              <li>
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <span>11/27 Block No.11, Site IV, Sahibabad, Suroskie, Ghaziabad, Uttar Pradesh, India - 201010</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                <span>+91 97111 48187 +91 85275 84372 +91 88824 59950</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                <a href="mailto:customercare@suroskie.com">CUSTOMERCARE@SUROSKIE.COM</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="boj-footer__bottom">
+        <p class="boj-footer__copy">&copy;2026 SUROSKIE. All rights reserved.</p>
+        <p class="boj-footer__credit">
+          Design by :- <a href="https://www.thelandingpagecompany.com" target="_blank"
+            rel="noopener noreferrer">https://www.thelandingpagecompany.com</a>
+        </p>
+        <p class="boj-footer__copy boj-footer__copy--muted">&copy; 2026, SUROSKIE ALL RIGHTS RESERVED</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.7/gsap.min.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.7/ScrollTrigger.min.js" crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" crossorigin="anonymous"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/products-data.js"></script>
+</body>
+
+</html>
