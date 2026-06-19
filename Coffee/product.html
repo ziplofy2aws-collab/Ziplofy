@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driphaus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body class="cc-page-pdp">
+
+  <header class="cc-header" role="banner">
+    <div class="cc-header__announce" role="region" aria-label="Store announcements">
+      <div class="cc-header__announce-track" aria-hidden="true">
+        <div class="cc-header__announce-group">
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-truck-fast cc-header__announce-ico" aria-hidden="true"></i>
+            Free shipping on orders above ₹999
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-circle cc-header__announce-ico cc-header__announce-ico--dot" aria-hidden="true"></i>
+            Fresh Roasted Daily: Roasted to order at our Assagao Roastery, Goa
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-star cc-header__announce-ico" aria-hidden="true"></i>
+            20+ Years of Expertise: Two decades of café mastery meets specialty roasting
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-fire cc-header__announce-ico" aria-hidden="true"></i>
+            Small Batch Roasting: Every batch crafted for maximum freshness
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-trophy cc-header__announce-ico" aria-hidden="true"></i>
+            India's Finest: Specialty coffee roastery trusted by cafés nationwide
+          </span>
+        </div>
+        <div class="cc-header__announce-group" aria-hidden="true">
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-truck-fast cc-header__announce-ico" aria-hidden="true"></i>
+            Free shipping on orders above ₹999
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-circle cc-header__announce-ico cc-header__announce-ico--dot" aria-hidden="true"></i>
+            Fresh Roasted Daily: Roasted to order at our Assagao Roastery, Goa
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-star cc-header__announce-ico" aria-hidden="true"></i>
+            20+ Years of Expertise: Two decades of café mastery meets specialty roasting
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-fire cc-header__announce-ico" aria-hidden="true"></i>
+            Small Batch Roasting: Every batch crafted for maximum freshness
+          </span>
+          <span class="cc-header__announce-item">
+            <i class="fa-solid fa-trophy cc-header__announce-ico" aria-hidden="true"></i>
+            India's Finest: Specialty coffee roastery trusted by cafés nationwide
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cc-header__main">
+      <div class="cc-header__main-inner">
+        <div class="cc-header__locale">
+          <button type="button" class="cc-header__locale-btn" aria-label="Language and currency">
+            <span class="cc-header__flag" aria-hidden="true">🇬🇧</span>
+            <span>EN</span>
+            <span class="cc-header__locale-sep" aria-hidden="true">|</span>
+            <span class="cc-header__flag" aria-hidden="true">🇮🇳</span>
+            <span>INR</span>
+            <i class="fa-solid fa-chevron-down cc-header__locale-chevron" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <a href="index.html" class="cc-header__logo" aria-label="Driphaus home">
+          <img src="assets/img/logo.png" alt="Driphaus" width="160" height="72" decoding="async" />
+        </a>
+
+        <div class="cc-header__utilities">
+          <form class="cc-header__search" role="search" action="#" method="get">
+            <label class="visually-hidden" for="cc-header-search-pdp">Search</label>
+            <i class="fa-solid fa-magnifying-glass cc-header__search-icon" aria-hidden="true"></i>
+            <input id="cc-header-search-pdp" type="search" name="q" placeholder="search" autocomplete="off" />
+          </form>
+
+          <div class="cc-header__actions">
+            <a href="#" class="cc-header__action" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="cc-header__action" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="cc-header__action cc-header__action--cart" aria-label="Shopping cart, 0 items">
+              <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+              <span class="cc-header__cart-count">0</span>
+            </a>
+          </div>
+
+          <button type="button" class="cc-header__menu-toggle" data-cc-menu-toggle aria-label="Open menu"
+            aria-expanded="false" aria-controls="cc-primary-nav">
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="cc-header__nav" id="cc-primary-nav" aria-label="Main navigation">
+      <div class="cc-header__nav-inner">
+        <button type="button" class="cc-header__nav-close" data-cc-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <a href="index.html" class="cc-header__nav-link">Home</a>
+        <a href="category.html" class="cc-header__nav-link">Shop</a>
+        <a href="#" class="cc-header__nav-link">Roastery</a>
+        <a href="#" class="cc-header__nav-link">About Us</a>
+        <a href="#" class="cc-header__nav-link">Franchise</a>
+        <a href="#" class="cc-header__nav-link">Locations</a>
+        <a href="#" class="cc-header__nav-link">Media Coverage</a>
+        <a href="#" class="cc-header__nav-link">Contact Us</a>
+      </div>
+    </nav>
+
+    <div class="cc-header__overlay" data-cc-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="cc-pdp" aria-label="Product details">
+      <div class="cc-pdp__inner">
+        <nav class="cc-pdp__breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          <a href="category.html">All Products</a>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          <span aria-current="page" data-cc-pdp-breadcrumb>Baarbara Mixed Fruit Fermentation – Medium Light
+            Roast...</span>
+        </nav>
+
+        <div class="cc-pdp__layout" data-cc-pdp-layout>
+          <div class="cc-pdp__gallery-wrap">
+            <div class="cc-pdp__media">
+              <div class="cc-pdp__stage">
+                <img class="cc-pdp__main-img" data-cc-pdp-main-img src="assets/img/BS-1.png"
+                  alt="Baarbara Mixed Fruit Fermentation coffee" width="640" height="640" decoding="async" />
+              </div>
+              <div class="cc-pdp__thumbs" data-cc-pdp-thumbs role="tablist" aria-label="Product images"></div>
+            </div>
+          </div>
+
+          <div class="cc-pdp__info">
+            <h1 class="cc-pdp__title" data-cc-pdp-title>Baarbara Mixed Fruit Fermentation – Medium Light Roast</h1>
+
+            <div class="cc-pdp__rating">
+              <span class="cc-pdp__stars" data-cc-pdp-stars aria-hidden="true"></span>
+              <span class="cc-pdp__reviews" data-cc-pdp-reviews>228 reviews</span>
+            </div>
+
+            <p class="cc-pdp__price" data-cc-pdp-price>Rs. 1,150.00</p>
+            <p class="cc-pdp__compare" data-cc-pdp-compare hidden>Rs. 0.00</p>
+
+            <p class="cc-pdp__variant-tag" data-cc-pdp-weight-label>250g | CC Beans Collection</p>
+
+            <div class="cc-pdp__field cc-pdp__field--grind">
+              <p class="cc-pdp__field-label">Choose Your Grind: <span data-cc-pdp-grind-label>Whole Bean</span></p>
+              <div class="cc-pdp__pills cc-pdp__pills--grind" data-cc-pdp-pills="grind">
+                <button type="button" class="cc-pdp__pill is-active">Whole Bean</button>
+                <button type="button" class="cc-pdp__pill">Turkish Ibrik</button>
+                <button type="button" class="cc-pdp__pill">Home Espresso Machine</button>
+                <button type="button" class="cc-pdp__pill">Commercial Espresso Machine</button>
+                <button type="button" class="cc-pdp__pill">South Indian Filter</button>
+                <button type="button" class="cc-pdp__pill">Aeropress</button>
+                <button type="button" class="cc-pdp__pill">Mokapot</button>
+                <button type="button" class="cc-pdp__pill">Electric Drip Coffee</button>
+                <button type="button" class="cc-pdp__pill">Pourover/V60/Kalita/Origami</button>
+                <button type="button" class="cc-pdp__pill">Chemex</button>
+                <button type="button" class="cc-pdp__pill">French Press</button>
+                <button type="button" class="cc-pdp__pill">Filtro/Strainer/Channi</button>
+                <button type="button" class="cc-pdp__pill">Cold Brew</button>
+              </div>
+            </div>
+
+            <div class="cc-pdp__purchase">
+              <p class="cc-pdp__qty-label">Quantity:</p>
+              <div class="cc-pdp__qty">
+                <button type="button" class="cc-pdp__qty-btn" data-cc-pdp-qty-minus aria-label="Decrease quantity"><i
+                    class="fa-solid fa-minus" aria-hidden="true"></i></button>
+                <input class="cc-pdp__qty-input" type="number" data-cc-pdp-qty value="1" min="1" max="10" readonly
+                  aria-label="Quantity" />
+                <button type="button" class="cc-pdp__qty-btn" data-cc-pdp-qty-plus aria-label="Increase quantity"><i
+                    class="fa-solid fa-plus" aria-hidden="true"></i></button>
+              </div>
+              <p class="cc-pdp__subtotal">Subtotal: <span data-cc-pdp-subtotal>Rs. 1,150.00</span></p>
+            </div>
+
+            <div class="cc-pdp__actions">
+              <button type="button" class="cc-pdp__add"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add to
+                cart</button>
+              <button type="button" class="cc-pdp__wishlist" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <button type="button" class="cc-pdp__buy-now">Buy it now</button>
+
+            <p class="cc-pdp__viewers">
+              <i class="fa-regular fa-eye" aria-hidden="true"></i>
+              <span data-cc-pdp-viewers>100 customers are viewing this product</span>
+            </p>
+
+            <div class="cc-pdp__accordion">
+              <div class="cc-pdp__acc-item is-open">
+                <button type="button" class="cc-pdp__acc-toggle" data-cc-pdp-acc-toggle aria-expanded="true"
+                  aria-controls="cc-pdp-panel-details">
+                  Product Details
+                  <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+                </button>
+                <div class="cc-pdp__acc-panel" id="cc-pdp-panel-details">
+                  <div class="cc-pdp__detail-block">
+                    <h3 class="cc-pdp__detail-heading">About This Coffee</h3>
+                    <p class="cc-pdp__detail-text" data-cc-pdp-about>
+                      A vibrant microlot with layered fruit notes from controlled fermentation. Bright acidity, silky
+                      body, and a clean finish ideal for pour-over and AeroPress.
+                    </p>
+                  </div>
+                  <div class="cc-pdp__detail-block">
+                    <h3 class="cc-pdp__detail-heading">Tasting Notes</h3>
+                    <p class="cc-pdp__detail-notes" data-cc-pdp-tasting-notes>Blueberry | Raw Cacao | Marigold</p>
+                    <p class="cc-pdp__detail-text" data-cc-pdp-tasting-desc>
+                      Berry-forward aromatics with chocolate undertones and a floral, juicy finish.
+                    </p>
+                  </div>
+                  <div class="cc-pdp__detail-block">
+                    <h3 class="cc-pdp__detail-heading">Coffee Specifications</h3>
+                    <ul class="cc-pdp__specs" data-cc-pdp-specs></ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cc-pdp__acc-item">
+                <button type="button" class="cc-pdp__acc-toggle" data-cc-pdp-acc-toggle aria-expanded="false"
+                  aria-controls="cc-pdp-panel-shipping">
+                  Shipping &amp; Return
+                  <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+                </button>
+                <div class="cc-pdp__acc-panel" id="cc-pdp-panel-shipping">
+                  <div class="cc-pdp__policy-block">
+                    <h3 class="cc-pdp__policy-heading">Return &amp; Cancellation Policy</h3>
+                    <ul class="cc-pdp__policy-list">
+                      <li>Coffee products are non-returnable due to their perishable nature.</li>
+                      <li>If you’re unhappy with your coffee, reach out to us within 15 days of delivery, we’re here
+                        to help.</li>
+                      <li>Brew gear &amp; merchandise can be returned within 30 days, provided they are unused and in
+                        original packaging.</li>
+                      <li>Refunds are processed after the returned item is received and inspected.</li>
+                      <li>Coffee orders can be cancelled within 24 hours of placing the order or before roasting begins
+                        (whichever is earlier).</li>
+                    </ul>
+                  </div>
+                  <div class="cc-pdp__policy-block">
+                    <h3 class="cc-pdp__policy-heading">Shipping Policy</h3>
+                    <ul class="cc-pdp__policy-list">
+                      <li>Enjoy free standard shipping on orders above ₹1000.</li>
+                      <li>All coffees are roasted in order to ensure freshness.</li>
+                      <li>Orders are processed and shipped Monday to Friday only.</li>
+                      <li>Standard delivery timelines are 3–6 business days from order date.</li>
+                      <li>Expedited shipping options are available at checkout for faster delivery.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cc-pdp-related" aria-labelledby="cc-pdp-related-heading" data-cc-pdp-related>
+      <div class="cc-pdp-related__inner">
+        <h2 id="cc-pdp-related-heading" class="cc-pdp-related__title">Related Products</h2>
+        <div class="cc-pdp-related__carousel">
+          <div class="cc-pdp-related__viewport" data-cc-pdp-related-viewport>
+            <div class="cc-pdp-related__track" data-cc-pdp-related-track></div>
+          </div>
+          <div class="cc-pdp-related__dots" data-cc-pdp-related-dots role="tablist"
+            aria-label="Related products slides"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cc-reviews" aria-labelledby="cc-reviews-heading">
+      <div class="cc-reviews__inner">
+        <h2 id="cc-reviews-heading" class="cc-reviews__title">Customer Reviews</h2>
+
+        <div class="cc-reviews__summary">
+          <div class="cc-reviews__summary-col cc-reviews__summary-col--score">
+            <div class="cc-reviews__stars-lg" data-cc-reviews-stars aria-hidden="true"></div>
+            <p class="cc-reviews__score" data-cc-reviews-score>4.56 out of 5</p>
+            <p class="cc-reviews__based">Based on <span data-cc-reviews-count>329</span> reviews</p>
+          </div>
+
+          <div class="cc-reviews__summary-col cc-reviews__summary-col--bars" data-cc-reviews-bars
+            aria-label="Rating breakdown"></div>
+
+          <div class="cc-reviews__summary-col cc-reviews__summary-col--cta">
+            <button type="button" class="cc-reviews__write">Write a review</button>
+          </div>
+        </div>
+
+        <div class="cc-reviews__badge-wrap">
+          <div class="cc-reviews__badge" aria-hidden="true">
+            <span class="cc-reviews__badge-ring">
+              <i class="fa-solid fa-star cc-reviews__badge-star" aria-hidden="true"></i>
+              <i class="fa-solid fa-circle-check cc-reviews__badge-check" aria-hidden="true"></i>
+            </span>
+            <span class="cc-reviews__badge-score">100.0</span>
+          </div>
+        </div>
+
+        <div class="cc-reviews__toolbar">
+          <label class="visually-hidden" for="cc-reviews-sort">Sort reviews</label>
+          <select id="cc-reviews-sort" class="cc-reviews__sort" data-cc-reviews-sort>
+            <option value="recent">Most Recent</option>
+            <option value="highest">Highest Rated</option>
+            <option value="lowest">Lowest Rated</option>
+          </select>
+        </div>
+
+        <div class="cc-reviews__list" data-cc-reviews-list></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="cc-footer" role="contentinfo">
+    <div class="cc-footer__inner">
+      <div class="cc-footer__upper">
+        <div class="cc-footer__newsletter">
+          <h3 class="cc-footer__newsletter-title">Never miss a thing</h3>
+          <p class="cc-footer__newsletter-text">Don't miss out on offers, events or workshops!</p>
+          <form class="cc-footer__form" action="#" method="post">
+            <label class="visually-hidden" for="cc-footer-email-pdp">Your email address</label>
+            <div class="cc-footer__field">
+              <i class="fa-regular fa-envelope cc-footer__field-icon" aria-hidden="true"></i>
+              <input id="cc-footer-email-pdp" type="email" name="email" placeholder="Your Email Address"
+                autocomplete="email" />
+            </div>
+          </form>
+          <div class="cc-footer__social">
+            <a href="#" class="cc-footer__social-link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="cc-footer__social-link" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="cc-footer__social-link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="cc-footer__col">
+          <h3 class="cc-footer__heading">Shop</h3>
+          <ul class="cc-footer__links">
+            <li><a href="category.html">Coffee</a></li>
+            <li><a href="#">Equipment</a></li>
+            <li><a href="#">Serveware</a></li>
+            <li><a href="#">Corporate Gifting &amp; Bulk Orders</a></li>
+            <li><a href="#">ARAKU&times;Collabs</a></li>
+          </ul>
+        </div>
+
+        <div class="cc-footer__col">
+          <h3 class="cc-footer__heading">Learn</h3>
+          <ul class="cc-footer__links">
+            <li><a href="#">Brew Guides</a></li>
+            <li><a href="#">AWSCA</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+
+        <div class="cc-footer__col">
+          <h3 class="cc-footer__heading">About</h3>
+          <ul class="cc-footer__links">
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Board of Directors</a></li>
+            <li><a href="#">19/91</a></li>
+            <li><a href="#">Annual Returns</a></li>
+          </ul>
+        </div>
+
+        <div class="cc-footer__col">
+          <h3 class="cc-footer__heading">Quick Links</h3>
+          <ul class="cc-footer__links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Refund Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Loyalty Program</a></li>
+            <li><a href="#">Track Your Order</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cc-footer__divider" role="presentation"></div>
+
+      <div class="cc-footer__lower">
+        <div class="cc-footer__col cc-footer__col--compact">
+          <h3 class="cc-footer__heading">Coffee Beans &amp; Ground Coffee</h3>
+          <ul class="cc-footer__links cc-footer__links--compact">
+            <li><a href="product.html?id=sampler-pack">Taste the Terroir: Coffee Sampler Pack</a></li>
+            <li><a href="product.html?id=signature-espresso">Signature</a></li>
+            <li><a href="product.html?id=attikan-culture">Micro Climate</a></li>
+            <li><a href="product.html?id=grand-reserve">Grand Reserve</a></li>
+            <li><a href="#">Selection</a></li>
+            <li><a href="#">High Altitude</a></li>
+          </ul>
+        </div>
+
+        <div class="cc-footer__col cc-footer__col--compact">
+          <h3 class="cc-footer__heading">Brewing Equipment</h3>
+          <ul class="cc-footer__links cc-footer__links--compact">
+            <li><a href="#">ARAKU Moka Pot</a></li>
+            <li><a href="#">AeroPress Premium</a></li>
+            <li><a href="#">Hario V60 Arm Stand</a></li>
+            <li><a href="#">Comandante C40 MK3</a></li>
+            <li><a href="#">Origami Dripper</a></li>
+          </ul>
+        </div>
+
+        <div class="cc-footer__col cc-footer__col--compact">
+          <h3 class="cc-footer__heading">Pocket Brews</h3>
+          <ul class="cc-footer__links cc-footer__links--compact">
+            <li><a href="#">Pocket Brew - Selection</a></li>
+            <li><a href="#">Pocket Brew - Micro Climate</a></li>
+            <li><a href="#">Pocket Brew - Grand Reserve</a></li>
+            <li><a href="#">Pocket Brew - Collection</a></li>
+          </ul>
+        </div>
+
+        <div class="cc-footer__col cc-footer__col--compact">
+          <h3 class="cc-footer__heading">Limited Releases</h3>
+          <ul class="cc-footer__links cc-footer__links--compact">
+            <li><a href="product.html?id=cold-brew-pack">Limited Edition Coffee</a></li>
+            <li><a href="product.html?id=cold-brew-pack">Cold Brew Summer Edit Set</a></li>
+          </ul>
+        </div>
+
+        <div class="cc-footer__col cc-footer__col--compact">
+          <h3 class="cc-footer__heading">Serveware</h3>
+          <ul class="cc-footer__links cc-footer__links--compact">
+            <li><a href="#">Latte Mugs</a></li>
+            <li><a href="#">ARAKU x Fellow Carter Move Mug</a></li>
+            <li><a href="#">Espresso Cups</a></li>
+            <li><a href="#">Cappuccino Cups</a></li>
+            <li><a href="#">Huskee Cup &amp; Lid Combo</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cc-pdp-sticky" data-cc-pdp-sticky aria-hidden="true">
+    <div class="cc-pdp-sticky__inner">
+      <div class="cc-pdp-sticky__product">
+        <img class="cc-pdp-sticky__thumb" data-cc-pdp-sticky-img src="assets/img/BS-1.png" alt="" width="56" height="56"
+          decoding="async" />
+        <div class="cc-pdp-sticky__info">
+          <p class="cc-pdp-sticky__name" data-cc-pdp-sticky-name>Baarbara Mixed Fruit Fermentation – Medium Light Roast
+          </p>
+          <p class="cc-pdp-sticky__price" data-cc-pdp-sticky-price>Rs. 1,150.00</p>
+        </div>
+      </div>
+      <div class="cc-pdp-sticky__controls">
+        <label class="visually-hidden" for="cc-pdp-sticky-variant">Product variant</label>
+        <select id="cc-pdp-sticky-variant" class="cc-pdp-sticky__variant" data-cc-pdp-sticky-variant>
+          <option value="250g-whole">250g | CC Beans Collection / Whole Bean</option>
+          <option value="250g-filter">250g | CC Beans Collection / Filter</option>
+          <option value="250g-espresso">250g | CC Beans Collection / Espresso</option>
+        </select>
+        <div class="cc-pdp-sticky__qty">
+          <button type="button" class="cc-pdp-sticky__qty-btn" data-cc-pdp-sticky-minus
+            aria-label="Decrease quantity"><i class="fa-solid fa-minus" aria-hidden="true"></i></button>
+          <span class="cc-pdp-sticky__qty-val" data-cc-pdp-sticky-qty>1</span>
+          <button type="button" class="cc-pdp-sticky__qty-btn" data-cc-pdp-sticky-plus aria-label="Increase quantity"><i
+              class="fa-solid fa-plus" aria-hidden="true"></i></button>
+        </div>
+        <button type="button" class="cc-pdp-sticky__cart"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add
+          to
+          cart</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>
