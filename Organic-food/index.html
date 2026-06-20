@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VERDURE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="org-header" role="banner">
+
+    <!-- Top utility bar -->
+    <div class="org-header__utility">
+      <div class="org-header__container org-header__utility-inner">
+        <ul class="org-header__utility-links">
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+              <span>Get App</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Own a Franchise</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Visit Stores</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+              <span>Help</span>
+            </a>
+          </li>
+        </ul>
+        <div class="org-header__utility-contact">
+          <span class="org-header__utility-divider" aria-hidden="true">|</span>
+          <a href="tel:+919606809090" class="org-header__utility-contact-item">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <span>919606809090</span>
+          </a>
+          <a href="mailto:hello@theorganicworld.com" class="org-header__utility-contact-item">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <span>hello@theorganicworld.com</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main header -->
+    <div class="org-header__main">
+      <div class="org-header__container org-header__main-grid">
+
+        <div class="org-header__main-left">
+          <button type="button" class="org-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-org-menu-toggle>
+            <span class="org-header__menu-bars" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+
+          <a href="index.html" class="org-header__logo" aria-label="The Organic World home">
+            <img src="assets/img/logo.png" alt="The Organic World" width="160" height="52" decoding="async" />
+          </a>
+        </div>
+
+        <div class="org-header__main-center">
+          <form class="org-header__search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="org-header-search">Search for products, brands and more</label>
+            <input id="org-header-search" type="search" name="q" placeholder="Search for products, brands and more"
+              autocomplete="off" />
+            <button type="submit" class="org-header__search-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+
+        </div>
+
+        <div class="org-header__main-right">
+          <a href="shop.html" class="org-header__mobile-icon" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+          <button type="button" class="org-header__mobile-icon" aria-label="Change delivery location">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          </button>
+
+          <button type="button" class="org-header__deliver" aria-label="Change delivery location">
+            <i class="fa-solid fa-location-dot org-header__deliver-icon" aria-hidden="true"></i>
+            <span class="org-header__deliver-text">
+              <span class="org-header__deliver-label">Deliver to</span>
+              <span class="org-header__deliver-value">
+                Bengaluru 560001
+                <i class="fa-solid fa-chevron-down org-header__deliver-chevron" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <a href="#" class="org-header__account">
+            <i class="fa-regular fa-user org-header__account-icon" aria-hidden="true"></i>
+            <span class="org-header__account-text">
+              <span class="org-header__account-greeting">Hello, User</span>
+              <span class="org-header__account-label">Account &amp; Lists</span>
+            </span>
+          </a>
+
+          <a href="#" class="org-header__auth-link">
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+            <span>Login</span>
+          </a>
+
+          <a href="#" class="org-header__auth-link">
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+            <span>Sign up</span>
+          </a>
+
+          <a href="#" class="org-header__cart" aria-label="Shopping cart, 0 items">
+            <span class="org-header__cart-badge">0</span>
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <nav class="org-header__pill-nav" aria-label="Shop by lifestyle">
+          <ul class="org-header__pill-nav-list">
+            <li>
+              <a href="#">Eat Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Live Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Look Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Raise Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </nav>
+
+        <a href="#" class="org-header__offers">
+          <i class="fa-solid fa-tags" aria-hidden="true"></i>
+          <span>Offers</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Category carousel -->
+    <div class="org-header__categories">
+      <div class="org-header__container org-header__categories-inner">
+        <div class="org-header__categories-viewport" data-org-categories-viewport>
+          <ul class="org-header__categories-track" data-org-categories-track>
+            <li>
+              <a href="shop.html" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/all_categories.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>All Categories</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/fruit.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Fruits &amp; Vegetables</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Foodgrains, Oils.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Foodgrains, Oils &amp; Masala</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Dairy, Bakery.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Dairy, Bakery, Eggs</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Snacks.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Snacks &amp; Branded Food</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Beverages.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Beverages</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Household.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Cleaning &amp; Household</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Personal Care.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Personal Care</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Wellness.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Wellness</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Beauty.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Beauty</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <button type="button" class="org-header__categories-arrow" aria-label="Scroll categories"
+          data-org-categories-next>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+  </header>
+
+  <main id="main-content">
+
+    <section class="org-hero" aria-label="Featured promotions">
+      <div class="org-header__container org-hero__layout">
+
+        <div class="org-hero__slider" data-org-hero-slider>
+          <div class="org-hero__track">
+            <article class="org-hero__slide is-active">
+              <img src="assets/img/hero-banner-1.png" alt="Pure ingredients, honest nutrition — Verdure Organic Market"
+                width="1920" height="800" decoding="async" />
+            </article>
+            <article class="org-hero__slide">
+              <img src="assets/img/hero-banner-2.png" alt="Organic dals and pulses — Verdure Organic Market"
+                width="1920" height="800" loading="lazy" decoding="async" />
+            </article>
+            <article class="org-hero__slide">
+              <img src="assets/img/hero-banner-3.png" alt="Raw unfiltered honey — Verdure Organic Market" width="1920"
+                height="800" loading="lazy" decoding="async" />
+            </article>
+            <article class="org-hero__slide">
+              <img src="assets/img/hero-banner-4.png" alt="Chia and quinoa seeds — Verdure Organic Market" width="1920"
+                height="800" loading="lazy" decoding="async" />
+            </article>
+          </div>
+
+          <div class="org-hero__dots" role="tablist" aria-label="Choose hero slide">
+            <button type="button" class="org-hero__dot is-active" data-org-hero-dot="0" role="tab" aria-selected="true"
+              aria-label="Slide 1" tabindex="0"></button>
+            <button type="button" class="org-hero__dot" data-org-hero-dot="1" role="tab" aria-selected="false"
+              aria-label="Slide 2" tabindex="-1"></button>
+            <button type="button" class="org-hero__dot" data-org-hero-dot="2" role="tab" aria-selected="false"
+              aria-label="Slide 3" tabindex="-1"></button>
+            <button type="button" class="org-hero__dot" data-org-hero-dot="3" role="tab" aria-selected="false"
+              aria-label="Slide 4" tabindex="-1"></button>
+          </div>
+        </div>
+
+        <aside class="org-hero__side" aria-label="Promotional banners">
+          <a href="#" class="org-hero__side-card">
+            <img src="assets/img/hero-banner-2.png" alt="Organic goodness, nourishes everyday" width="1920" height="800"
+              loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="org-hero__side-card">
+            <img src="assets/img/hero-banner-3.png" alt="This is what real honey tastes like" width="1920" height="800"
+              loading="lazy" decoding="async" />
+          </a>
+        </aside>
+
+      </div>
+    </section>
+
+    <section class="org-shop-cat" aria-labelledby="org-shop-cat-heading">
+      <img class="org-shop-cat__leaf org-shop-cat__leaf--top" src="assets/img/Vector.avif" alt="" width="280"
+        height="280" decoding="async" aria-hidden="true" />
+      <img class="org-shop-cat__leaf org-shop-cat__leaf--bottom" src="assets/img/down_leaf.avif" alt="" width="320"
+        height="320" loading="lazy" decoding="async" aria-hidden="true" />
+
+      <div class="org-header__container org-shop-cat__inner">
+        <h2 id="org-shop-cat-heading" class="org-shop-cat__title">Shop By Category</h2>
+
+        <div class="org-shop-cat__slider" data-org-shop-cat>
+          <div class="org-shop-cat__viewport" data-org-shop-cat-viewport tabindex="0" aria-label="Category carousel">
+            <div class="org-shop-cat__track" data-org-shop-cat-track>
+              <div class="org-shop-cat__slide">
+                <a href="shop.html" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-oil.avif" alt="" width="120" height="120" decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Oil</span>
+                </a>
+                <a href="#" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-ghee.avif" alt="" width="120" height="120" decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Ghee</span>
+                </a>
+                <a href="#" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-flour.avif" alt="" width="120" height="120" decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Flour</span>
+                </a>
+                <a href="#" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-millets.avif" alt="" width="120" height="120" decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Millets</span>
+                </a>
+              </div>
+              <div class="org-shop-cat__slide">
+                <a href="#" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-rice.avif" alt="" width="120" height="120" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Rice</span>
+                </a>
+                <a href="#" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-breakfast.avif" alt="" width="120" height="120" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Breakfast</span>
+                </a>
+                <a href="#" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-pickels.avif" alt="" width="120" height="120" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Pickles</span>
+                </a>
+                <a href="#" class="org-shop-cat__card">
+                  <span class="org-shop-cat__media">
+                    <img src="assets/img/organic-fruit.avif" alt="" width="120" height="120" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-cat__label">Organic Dry Fruits</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-products" aria-label="Featured products" data-org-products>
+      <div class="org-header__container org-products__inner">
+        <div class="org-products__slider">
+          <button type="button" class="org-products__arrow org-products__arrow--prev" aria-label="Previous products"
+            data-org-products-prev disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="org-products__viewport" data-org-products-viewport tabindex="0" aria-label="Product carousel">
+            <div class="org-products__track" data-org-products-track>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">BESTSELLER</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-1.png" alt="Sea Buckthorn Juice With Aloe Vera &amp; Amla" width="320"
+                    height="320" decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Sea Buckthorn Juice With Aloe Vera &amp; Amla</h3>
+                <p class="org-product-card__subtitle">Triple Action Immunity &amp; Glow</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(26)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 399.00</span>
+                  <span class="org-product-card__discount">33% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 599.00</s></p>
+                <div class="org-product-card__size">500 ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">BESTSELLER</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-2.png" alt="Sea Buckthorn Juice" width="320" height="320" decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Sea Buckthorn Juice</h3>
+                <p class="org-product-card__subtitle">Vegan Source of Omegas 3, 6, 7 &amp; 9</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(18)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 349.00</span>
+                  <span class="org-product-card__discount">13% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 399.00</s></p>
+                <div class="org-product-card__size">250ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">IMMUNITY</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-3.png" alt="Immunity Booster Juice" width="320" height="320"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Immunity Booster Juice</h3>
+                <p class="org-product-card__subtitle">Multi-Herb Immunity Shield</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(32)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 176.00</span>
+                  <span class="org-product-card__discount">12% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 199.00</s></p>
+                <div class="org-product-card__size">250ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">ORGANIC</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-4.png" alt="Organic Apple Cider Vinegar" width="320" height="320"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Organic Apple Cider Vinegar</h3>
+                <p class="org-product-card__subtitle">Gut Health &amp; Immunity Support</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(41)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 249.00</span>
+                  <span class="org-product-card__discount">17% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 300.00</s></p>
+                <div class="org-product-card__size">250ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">ORGANIC</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-5.png" alt="Wild Forest Honey" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Wild Forest Honey</h3>
+                <p class="org-product-card__subtitle">Raw, Unfiltered &amp; Pure</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(22)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 299.00</span>
+                  <span class="org-product-card__discount">15% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 349.00</s></p>
+                <div class="org-product-card__size">500 g</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">IMMUNITY</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-6.png" alt="Amla Juice" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Amla Juice</h3>
+                <p class="org-product-card__subtitle">Vitamin C Rich Daily Tonic</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(15)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 189.00</span>
+                  <span class="org-product-card__discount">10% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 210.00</s></p>
+                <div class="org-product-card__size">250ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">BESTSELLER</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-7.png" alt="Cold Pressed Coconut Oil" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Cold Pressed Coconut Oil</h3>
+                <p class="org-product-card__subtitle">Heart Healthy Cooking Oil</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(37)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 449.00</span>
+                  <span class="org-product-card__discount">20% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 560.00</s></p>
+                <div class="org-product-card__size">500 ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">ORGANIC</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-8.png" alt="Organic A2 Cultured Ghee" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Organic A2 Cultured Ghee</h3>
+                <p class="org-product-card__subtitle">Traditional Bilona Method</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(29)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 549.00</span>
+                  <span class="org-product-card__discount">18% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 669.00</s></p>
+                <div class="org-product-card__size">500 ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+            </div>
+          </div>
+
+          <button type="button" class="org-products__arrow org-products__arrow--next" aria-label="Next products"
+            data-org-products-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-promo-strip" aria-label="Featured promotions" data-org-promo-strip>
+      <div class="org-header__container org-promo-strip__inner">
+        <div class="org-promo-strip__viewport" data-org-promo-strip-viewport tabindex="0"
+          aria-label="Promotional banners carousel">
+          <a href="#" class="org-promo-strip__card">
+            <img src="assets/img/cereals_banner.webp" alt="RAW — unprocess your morning" width="640" height="260"
+              decoding="async" />
+          </a>
+          <a href="#" class="org-promo-strip__card">
+            <img src="assets/img/dry_fruites_banner.webp" alt="Your daily power boost — enhance immunity" width="640"
+              height="260" loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="org-promo-strip__card">
+            <img src="assets/img/Oils_banner.webp" alt="The taste of good health — coconut oil" width="640" height="260"
+              loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-promo" aria-label="Promotional offers">
+      <div class="org-header__container org-promo__inner">
+        <div class="org-promo__grid">
+          <a href="#" class="org-promo__card">
+            <img src="assets/img/promo-1.png" alt="RAW — unprocess your morning" width="640" height="260"
+              decoding="async" />
+          </a>
+          <a href="#" class="org-promo__card">
+            <img src="assets/img/promo-2.png" alt="Your daily power boost — enhance immunity" width="640" height="260"
+              loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="org-promo__card">
+            <img src="assets/img/promo-3.png" alt="The taste of good health — coconut oil" width="640" height="260"
+              loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-bs" aria-labelledby="org-bs-heading" data-org-bs>
+      <div class="org-header__container org-bs__inner">
+        <h2 id="org-bs-heading" class="org-bs__title">BEST SELLERS</h2>
+
+        <div class="org-bs__slider">
+          <button type="button" class="org-bs__arrow org-bs__arrow--prev" aria-label="Previous products"
+            data-org-bs-prev disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="org-bs__viewport" data-org-bs-viewport tabindex="0" aria-label="Best sellers carousel">
+            <div class="org-bs__track" data-org-bs-track>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">BESTSELLER</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-1.png" alt="Sea Buckthorn Juice With Aloe Vera &amp; Amla" width="320"
+                    height="320" decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Sea Buckthorn Juice With Aloe Vera &amp; Amla</h3>
+                <p class="org-product-card__subtitle">Triple Action Immunity &amp; Glow</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(26)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 399.00</span>
+                  <span class="org-product-card__discount">33% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 599.00</s></p>
+                <div class="org-product-card__size">500 ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">BESTSELLER</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-2.png" alt="Sea Buckthorn Juice" width="320" height="320" decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Sea Buckthorn Juice</h3>
+                <p class="org-product-card__subtitle">Vegan Source of Omegas 3, 6, 7 &amp; 9</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(18)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 349.00</span>
+                  <span class="org-product-card__discount">13% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 399.00</s></p>
+                <div class="org-product-card__size">250ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card org-product-card--soldout">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">CAPSULE</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-3.png" alt="Immunity Booster Capsules" width="320" height="320"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Immunity Booster Capsules</h3>
+                <p class="org-product-card__subtitle">Multi-Herb Immunity Shield</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(32)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 176.00</span>
+                  <span class="org-product-card__discount">12% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 199.00</s></p>
+                <div class="org-product-card__size org-product-card__size--soldout">500 mg — Sold out</div>
+                <button type="button" class="org-product-card__cart org-product-card__cart--soldout" disabled>Sold
+                  Out</button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">ORGANIC</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-4.png" alt="Organic Apple Cider Vinegar" width="320" height="320"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Organic Apple Cider Vinegar</h3>
+                <p class="org-product-card__subtitle">Gut Health &amp; Immunity Support</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(41)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 249.00</span>
+                  <span class="org-product-card__discount">17% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 300.00</s></p>
+                <div class="org-product-card__size">250ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">ORGANIC</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-5.png" alt="Wild Forest Honey" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Wild Forest Honey</h3>
+                <p class="org-product-card__subtitle">Raw, Unfiltered &amp; Pure</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(22)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 299.00</span>
+                  <span class="org-product-card__discount">15% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 349.00</s></p>
+                <div class="org-product-card__size">500 g</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">IMMUNITY</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-6.png" alt="Amla Juice" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Amla Juice</h3>
+                <p class="org-product-card__subtitle">Vitamin C Rich Daily Tonic</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(15)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 189.00</span>
+                  <span class="org-product-card__discount">10% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 210.00</s></p>
+                <div class="org-product-card__size">250ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">BESTSELLER</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-7.png" alt="Cold Pressed Coconut Oil" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Cold Pressed Coconut Oil</h3>
+                <p class="org-product-card__subtitle">Heart Healthy Cooking Oil</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(37)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 449.00</span>
+                  <span class="org-product-card__discount">20% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 560.00</s></p>
+                <div class="org-product-card__size">500 ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+              <article class="org-product-card">
+                <div class="org-product-card__head">
+                  <span class="org-product-card__badge">ORGANIC</span>
+                  <button type="button" class="org-product-card__wish" aria-label="Add to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div class="org-product-card__media">
+                  <img src="assets/img/DJ-8.png" alt="Organic A2 Cultured Ghee" width="320" height="320" loading="lazy"
+                    decoding="async" />
+                  <div class="org-product-card__dots" aria-hidden="true">
+                    <span class="is-active"></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+                <h3 class="org-product-card__title">Organic A2 Cultured Ghee</h3>
+                <p class="org-product-card__subtitle">Traditional Bilona Method</p>
+                <div class="org-product-card__rating">
+                  <span class="org-product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="org-product-card__reviews">(29)</span>
+                </div>
+                <div class="org-product-card__price-row">
+                  <span class="org-product-card__price">₹ 549.00</span>
+                  <span class="org-product-card__discount">18% OFF</span>
+                </div>
+                <p class="org-product-card__mrp">M.R.P.: <s>₹ 669.00</s></p>
+                <div class="org-product-card__size">500 ml</div>
+                <button type="button" class="org-product-card__cart">
+                  <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+                  <span>Add to Cart</span>
+                </button>
+              </article>
+
+            </div>
+          </div>
+
+          <button type="button" class="org-bs__arrow org-bs__arrow--next" aria-label="Next products" data-org-bs-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-promo-cats" aria-label="Shop by collection">
+      <div class="org-header__container org-promo-cats__inner">
+        <div class="org-promo-cats__grid">
+          <a href="#" class="org-promo-cats__card">
+            <img src="assets/img/promo-4.png" alt="Jaggery — your natural sweetener" width="480" height="600"
+              decoding="async" />
+          </a>
+          <a href="#" class="org-promo-cats__card">
+            <img src="assets/img/promo-5.png" alt="What's new — our latest additions" width="480" height="600"
+              loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="org-promo-cats__card">
+            <img src="assets/img/promo-6.png" alt="Dry fruits — quality you trust" width="480" height="600"
+              loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="org-promo-cats__card">
+            <img src="assets/img/promo-7.png" alt="Snacks — no chemicals, gluten-free" width="480" height="600"
+              loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-catalog" aria-label="Product categories">
+      <div class="org-header__container org-catalog__inner">
+        <div class="org-catalog__grid">
+
+          <div class="org-catalog__col">
+            <h2 class="org-catalog__heading">Millets</h2>
+            <ul class="org-catalog__list">
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Foxtail_Millet.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Foxtail Millet (Navane) - Natural, Gluten-Free Millet
+                      Grain</span>
+                    <span class="org-catalog__price">₹ 110.00</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Little_millet.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Little Millet (Saame)</span>
+                    <span class="org-catalog__price">₹ 108.00</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Ragi.png" alt="" width="88" height="88" loading="lazy" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Finger Millet (Ragi) - Unpolished, Calcium-Rich
+                      Grain</span>
+                    <span class="org-catalog__price">₹ 115.00</span>
+                    <span class="org-catalog__member">₹ 109.25 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="org-catalog__col">
+            <h2 class="org-catalog__heading">Edible Oils</h2>
+            <ul class="org-catalog__list">
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Groundnut_Oil.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Cold Pressed - Groundnut Oil</span>
+                    <span class="org-catalog__price-row">
+                      <span class="org-catalog__price">₹ 494.00</span>
+                      <span class="org-catalog__mrp"><s>₹ 500.00</s></span>
+                    </span>
+                    <span class="org-catalog__member">₹ 469.30 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Sunflower_Oil.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Sunflower Oil - Cold Pressed</span>
+                    <span class="org-catalog__price-row">
+                      <span class="org-catalog__price">₹ 455.00</span>
+                      <span class="org-catalog__mrp"><s>₹ 458.00</s></span>
+                    </span>
+                    <span class="org-catalog__member">₹ 432.25 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Coconut_Oil.png" alt="" width="88" height="88" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Cold Pressed - Coconut Oil</span>
+                    <span class="org-catalog__price-row">
+                      <span class="org-catalog__price">₹ 350.00</span>
+                      <span class="org-catalog__mrp"><s>₹ 400.00</s></span>
+                    </span>
+                    <span class="org-catalog__member">₹ 343.00 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="org-catalog__col">
+            <h2 class="org-catalog__heading">Seeds</h2>
+            <ul class="org-catalog__list">
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/pumpkin_seeds.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Pumpkin Seed</span>
+                    <span class="org-catalog__price">₹ 132.00</span>
+                    <span class="org-catalog__member">₹ 120.12 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/White_Sesame.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya White Sesame</span>
+                    <span class="org-catalog__price">₹ 80.00</span>
+                    <span class="org-catalog__member">₹ 72.80 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Sunflower_Seeds.png" alt="" width="88" height="88" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Sunflower Seeds</span>
+                    <span class="org-catalog__price">₹ 85.00</span>
+                    <span class="org-catalog__member">₹ 77.35 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="org-catalog__col">
+            <h2 class="org-catalog__heading">Pulses</h2>
+            <ul class="org-catalog__list">
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Tur_Dal.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Toor Dal (Tur Dal / Arhar Dal)</span>
+                    <span class="org-catalog__price">₹ 182.00</span>
+                    <span class="org-catalog__member">₹ 178.36 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Moong_Dal.png" alt="" width="88" height="88" decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Moong Dal (Green Gram Dal)</span>
+                    <span class="org-catalog__price">₹ 162.00</span>
+                    <span class="org-catalog__member">₹ 147.42 for Co-Op Members*</span>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="org-catalog__card">
+                  <span class="org-catalog__media">
+                    <img src="assets/img/Groundnut_1.png" alt="" width="88" height="88" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-catalog__body">
+                    <span class="org-catalog__name">Organic Mandya Groundnuts (Natural Peanuts)</span>
+                    <span class="org-catalog__price">₹ 185.00</span>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="org-testimonials" aria-labelledby="org-testimonials-heading" data-org-testimonials>
+      <div class="org-header__container org-testimonials__inner">
+        <h2 id="org-testimonials-heading" class="org-testimonials__title">TESTIMONIALS</h2>
+
+        <div class="org-testimonials__slider">
+          <button type="button" class="org-testimonials__arrow org-testimonials__arrow--prev"
+            aria-label="Previous testimonial" data-org-testimonials-prev>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="org-testimonials__viewport" data-org-testimonials-viewport>
+            <div class="org-testimonials__track" data-org-testimonials-track>
+              <article class="org-testimonials__card" data-org-testimonial-card>
+                <div class="org-testimonials__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="org-testimonials__quote">
+                  I've tried a lot of brands, but Conscious Food's A2 Desi Cow Ghee is something else. Rich, fragrant,
+                  and
+                  just perfect for everyday cooking.
+                </blockquote>
+                <img class="org-testimonials__avatar" src="assets/img/testimonial-1.png" alt="" width="72" height="72"
+                  loading="lazy" decoding="async" />
+                <p class="org-testimonials__name">Amogh Kadam</p>
+                <p class="org-testimonials__role">Consumer</p>
+              </article>
+
+              <article class="org-testimonials__card" data-org-testimonial-card>
+                <div class="org-testimonials__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="org-testimonials__quote">
+                  I'm using the Jaggery powder to replace white sugar in my coffee — it dissolves surprisingly well and
+                  gives a deep caramel flavor, I really like it.
+                </blockquote>
+                <img class="org-testimonials__avatar" src="assets/img/testimonial-2.png" alt="" width="72" height="72"
+                  loading="lazy" decoding="async" />
+                <p class="org-testimonials__name">Gayatri Bajoria</p>
+                <p class="org-testimonials__role">Consumer</p>
+              </article>
+
+              <article class="org-testimonials__card" data-org-testimonial-card>
+                <div class="org-testimonials__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="org-testimonials__quote">
+                  You can always trust Conscious Food to deliver quality. The forest honey was rich, thick, and packed
+                  with natural flavor — nothing artificial here. Will definitely be trying more from their range.
+                </blockquote>
+                <img class="org-testimonials__avatar" src="assets/img/testimonial-3.png" alt="" width="72" height="72"
+                  loading="lazy" decoding="async" />
+                <p class="org-testimonials__name">Sunaina Agarwal</p>
+                <p class="org-testimonials__role">Consumer</p>
+              </article>
+
+              <article class="org-testimonials__card" data-org-testimonial-card>
+                <div class="org-testimonials__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="org-testimonials__quote">
+                  The organic millets are fresh and cook perfectly every time. Switching to unpolished grains has made a
+                  real difference for our family's daily meals.
+                </blockquote>
+                <img class="org-testimonials__avatar" src="assets/img/testimonial-4.png" alt="" width="72" height="72"
+                  loading="lazy" decoding="async" />
+                <p class="org-testimonials__name">Priya Menon</p>
+                <p class="org-testimonials__role">Consumer</p>
+              </article>
+
+              <article class="org-testimonials__card" data-org-testimonial-card>
+                <div class="org-testimonials__stars" aria-label="5 out of 5 stars">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+                <blockquote class="org-testimonials__quote">
+                  Fast delivery and well-packed products. The cold-pressed oils taste authentic and pure — exactly what
+                  you'd expect from a trusted organic brand.
+                </blockquote>
+                <img class="org-testimonials__avatar" src="assets/img/testimonial-5.png" alt="" width="72" height="72"
+                  loading="lazy" decoding="async" />
+                <p class="org-testimonials__name">Rahul Nair</p>
+                <p class="org-testimonials__role">Consumer</p>
+              </article>
+            </div>
+          </div>
+
+          <button type="button" class="org-testimonials__arrow org-testimonials__arrow--next"
+            aria-label="Next testimonial" data-org-testimonials-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="org-testimonials__dots" role="tablist" aria-label="Testimonial slides">
+          <button type="button" class="org-testimonials__dot" data-org-testimonials-dot role="tab"
+            aria-label="Show testimonial 1" aria-selected="false" tabindex="-1"></button>
+          <button type="button" class="org-testimonials__dot is-active" data-org-testimonials-dot role="tab"
+            aria-label="Show testimonial 2" aria-selected="true" tabindex="0"></button>
+          <button type="button" class="org-testimonials__dot" data-org-testimonials-dot role="tab"
+            aria-label="Show testimonial 3" aria-selected="false" tabindex="-1"></button>
+          <button type="button" class="org-testimonials__dot" data-org-testimonials-dot role="tab"
+            aria-label="Show testimonial 4" aria-selected="false" tabindex="-1"></button>
+          <button type="button" class="org-testimonials__dot" data-org-testimonials-dot role="tab"
+            aria-label="Show testimonial 5" aria-selected="false" tabindex="-1"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-newsletter" aria-labelledby="org-newsletter-heading">
+      <div class="org-header__container">
+        <div class="org-newsletter__banner">
+          <div class="org-newsletter__content">
+            <h2 id="org-newsletter-heading" class="org-newsletter__title">
+              Stay home &amp; get your daily needs from our shop
+            </h2>
+            <p class="org-newsletter__subtitle">
+              Start Your Daily Shopping with <strong>Organic Mandya</strong>
+            </p>
+            <form class="org-newsletter__form" action="#" method="post">
+              <div class="org-newsletter__field">
+                <i class="fa-regular fa-paper-plane org-newsletter__icon" aria-hidden="true"></i>
+                <label class="visually-hidden" for="org-newsletter-email">Your email address</label>
+                <input id="org-newsletter-email" class="org-newsletter__input" type="email" name="email"
+                  placeholder="Your email address" autocomplete="email" required />
+                <button class="org-newsletter__btn" type="submit">Subscribe</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="org-footer" role="contentinfo">
+    <div class="org-footer__bg" aria-hidden="true">
+      <img class="org-footer__bg-image" src="assets/img/footer_mobile-8.png" alt="" width="1440" height="400"
+        loading="lazy" decoding="async" />
+    </div>
+
+    <div class="org-header__container org-footer__inner">
+      <div class="org-footer__grid">
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">ABOUT</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+
+          <div class="org-footer__subscribe">
+            <p class="org-footer__subscribe-label">Subscribe to our emails</p>
+            <form class="org-footer__email-form" action="#" method="post">
+              <label class="visually-hidden" for="org-footer-email">Email</label>
+              <input id="org-footer-email" class="org-footer__email-input" type="email" name="email" placeholder="Email"
+                autocomplete="email" required />
+              <button class="org-footer__email-btn" type="submit" aria-label="Subscribe to emails">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">BUSINESS</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">Collaborations</a></li>
+            <li><a href="#">Sourcing</a></li>
+            <li><a href="#">Export</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Media</a></li>
+          </ul>
+        </div>
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">SUPPORT</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Shipping &amp; Returns</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+          <ul class="org-footer__contact">
+            <li>Mobile: <a href="tel:+919967166755">+91 99671 66755</a></li>
+            <li>Landline: <a href="tel:+912246081126">+91 22 4608 1126</a></li>
+          </ul>
+        </div>
+
+        <div class="org-footer__col org-footer__col--brand">
+          <a href="index.html" class="org-footer__logo" aria-label="Conscious Food home">
+            <img src="assets/img/logo.png" alt="Conscious Food" width="88" height="88" loading="lazy"
+              decoding="async" />
+          </a>
+          <p class="org-footer__company">CONSCIOUS FOOD PVT LTD</p>
+          <address class="org-footer__address">
+            PLOT NO 7, UNIT NO 2, MAROL INDUSTRIAL ESTATE, LOK BHARATI ROAD, OFF A K ROAD, Andheri East, Mumbai,
+            Mumbai Suburban, Maharashtra, 400059
+          </address>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,625 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — VERDURE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+</head>
+
+<body>
+
+  <header class="org-header" role="banner">
+
+    <!-- Top utility bar -->
+    <div class="org-header__utility">
+      <div class="org-header__container org-header__utility-inner">
+        <ul class="org-header__utility-links">
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+              <span>Get App</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Own a Franchise</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Visit Stores</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+              <span>Help</span>
+            </a>
+          </li>
+        </ul>
+        <div class="org-header__utility-contact">
+          <span class="org-header__utility-divider" aria-hidden="true">|</span>
+          <a href="tel:+919606809090" class="org-header__utility-contact-item">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <span>919606809090</span>
+          </a>
+          <a href="mailto:hello@theorganicworld.com" class="org-header__utility-contact-item">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <span>hello@theorganicworld.com</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main header -->
+    <div class="org-header__main">
+      <div class="org-header__container org-header__main-grid">
+
+        <div class="org-header__main-left">
+          <button type="button" class="org-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-org-menu-toggle>
+            <span class="org-header__menu-bars" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+
+          <a href="index.html" class="org-header__logo" aria-label="The Organic World home">
+            <img src="assets/img/logo.png" alt="The Organic World" width="160" height="52" decoding="async" />
+          </a>
+        </div>
+
+        <div class="org-header__main-center">
+          <form class="org-header__search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="org-header-search">Search for products, brands and more</label>
+            <input id="org-header-search" type="search" name="q" placeholder="Search for products, brands and more"
+              autocomplete="off" />
+            <button type="submit" class="org-header__search-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+
+        </div>
+
+        <div class="org-header__main-right">
+          <a href="shop.html" class="org-header__mobile-icon" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+          <button type="button" class="org-header__mobile-icon" aria-label="Change delivery location">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          </button>
+
+          <button type="button" class="org-header__deliver" aria-label="Change delivery location">
+            <i class="fa-solid fa-location-dot org-header__deliver-icon" aria-hidden="true"></i>
+            <span class="org-header__deliver-text">
+              <span class="org-header__deliver-label">Deliver to</span>
+              <span class="org-header__deliver-value">
+                Bengaluru 560001
+                <i class="fa-solid fa-chevron-down org-header__deliver-chevron" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <a href="#" class="org-header__account">
+            <i class="fa-regular fa-user org-header__account-icon" aria-hidden="true"></i>
+            <span class="org-header__account-text">
+              <span class="org-header__account-greeting">Hello, User</span>
+              <span class="org-header__account-label">Account &amp; Lists</span>
+            </span>
+          </a>
+
+          <a href="#" class="org-header__auth-link">
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+            <span>Login</span>
+          </a>
+
+          <a href="#" class="org-header__auth-link">
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+            <span>Sign up</span>
+          </a>
+
+          <a href="#" class="org-header__cart" aria-label="Shopping cart, 0 items">
+            <span class="org-header__cart-badge">0</span>
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <nav class="org-header__pill-nav" aria-label="Shop by lifestyle">
+          <ul class="org-header__pill-nav-list">
+            <li>
+              <a href="#">Eat Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Live Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Look Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Raise Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </nav>
+
+        <a href="#" class="org-header__offers">
+          <i class="fa-solid fa-tags" aria-hidden="true"></i>
+          <span>Offers</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Category carousel -->
+    <div class="org-header__categories">
+      <div class="org-header__container org-header__categories-inner">
+        <div class="org-header__categories-viewport" data-org-categories-viewport>
+          <ul class="org-header__categories-track" data-org-categories-track>
+            <li>
+              <a href="shop.html" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/all_categories.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>All Categories</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/fruit.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Fruits &amp; Vegetables</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Foodgrains, Oils.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Foodgrains, Oils &amp; Masala</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Dairy, Bakery.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Dairy, Bakery, Eggs</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Snacks.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Snacks &amp; Branded Food</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Beverages.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Beverages</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Household.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Cleaning &amp; Household</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Personal Care.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Personal Care</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Wellness.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Wellness</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Beauty.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Beauty</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <button type="button" class="org-header__categories-arrow" aria-label="Scroll categories"
+          data-org-categories-next>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+  </header>
+
+
+  <main id="main-content">
+
+    <section class="org-shop-page" aria-label="Product listings">
+      <div class="org-header__container">
+
+        <nav class="org-shop-page__crumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="org-shop-page__crumb-sep" aria-hidden="true">&gt;</span>
+          <span>Shop</span>
+        </nav>
+
+        <div class="org-shop-page__shipping" aria-label="Free shipping progress">
+          <p class="org-shop-page__shipping-text">₹750 to unlock Free Shipping</p>
+          <div class="org-shop-page__shipping-bar" role="progressbar" aria-valuenow="28" aria-valuemin="0"
+            aria-valuemax="100" aria-label="Progress toward free shipping">
+            <span class="org-shop-page__shipping-fill" style="width: 28%"></span>
+          </div>
+          <span class="org-shop-page__shipping-badge">
+            <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+            ₹750 → Free Shipping
+          </span>
+        </div>
+
+        <div class="org-shop-page__toolbar">
+          <form class="org-shop-page__search" role="search" action="shop.html" method="get" data-org-shop-search-form>
+            <i class="fa-solid fa-magnifying-glass org-shop-page__search-icon" aria-hidden="true"></i>
+            <label class="visually-hidden" for="org-shop-search">Search products</label>
+            <input id="org-shop-search" class="org-shop-page__search-input" type="search" name="q"
+              placeholder="Search products..." autocomplete="off" data-org-shop-search />
+          </form>
+
+          <div class="org-shop-page__controls">
+            <div class="org-shop-page__controls-left">
+              <button type="button" class="org-shop-page__pill-btn" data-org-shop-filter-open>
+                <i class="fa-solid fa-sliders org-shop-page__pill-icon" aria-hidden="true"></i>
+                <span>Filter</span>
+                <i class="fa-solid fa-chevron-down org-shop-page__pill-caret" aria-hidden="true"></i>
+              </button>
+
+              <div class="org-shop-page__select-wrap org-shop-page__select-wrap--availability">
+                <label class="visually-hidden" for="org-shop-availability">Availability</label>
+                <select id="org-shop-availability" class="org-shop-page__pill-select" data-org-shop-availability>
+                  <option value="all">Availability</option>
+                  <option value="in-stock">In stock</option>
+                  <option value="out-of-stock">Out of stock</option>
+                </select>
+                <i class="fa-solid fa-chevron-down org-shop-page__select-caret" aria-hidden="true"></i>
+              </div>
+
+              <div class="org-shop-page__select-wrap org-shop-page__select-wrap--sort">
+                <label class="visually-hidden" for="org-shop-sort">Sort products</label>
+                <select id="org-shop-sort" class="org-shop-page__sort-select" data-org-shop-sort>
+                  <option value="name">Alphabetically, A-Z</option>
+                  <option value="name-desc">Alphabetically, Z-A</option>
+                  <option value="price-low">Price, low to high</option>
+                  <option value="price-high">Price, high to low</option>
+                  <option value="popular">Featured</option>
+                </select>
+                <i class="fa-solid fa-chevron-down org-shop-page__select-caret" aria-hidden="true"></i>
+              </div>
+            </div>
+
+            <p class="org-shop-page__count"><span data-org-shop-count>8</span> Products</p>
+          </div>
+        </div>
+
+        <div class="org-shop-page__backdrop" data-org-shop-backdrop aria-hidden="true"></div>
+
+        <aside class="org-shop-page__drawer" data-org-shop-sidebar aria-label="Product filters" aria-hidden="true">
+          <div class="org-shop-page__drawer-handle" aria-hidden="true"></div>
+          <div class="org-shop-page__drawer-head">
+            <h2 class="org-shop-page__drawer-title">Filters</h2>
+            <button type="button" class="org-shop-page__drawer-close" data-org-shop-filter-close
+              aria-label="Close filters">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="org-shop-page__drawer-body">
+            <div class="org-shop-page__filter-card is-open">
+              <button type="button" class="org-shop-page__filter-toggle" data-org-filter-toggle aria-expanded="true">
+                <span>Quantity</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="org-shop-page__filter-panel">
+                <label class="org-shop-page__check"><input type="checkbox" value="100g"
+                    data-org-shop-filter-quantity /> 100g</label>
+                <label class="org-shop-page__check"><input type="checkbox" value="250g"
+                    data-org-shop-filter-quantity /> 250g</label>
+                <label class="org-shop-page__check"><input type="checkbox" value="500g"
+                    data-org-shop-filter-quantity /> 500g</label>
+                <label class="org-shop-page__check"><input type="checkbox" value="1kg"
+                    data-org-shop-filter-quantity /> 1kg</label>
+                <label class="org-shop-page__check"><input type="checkbox" value="2kg"
+                    data-org-shop-filter-quantity /> 2kg</label>
+              </div>
+            </div>
+
+            <div class="org-shop-page__filter-card is-open">
+              <button type="button" class="org-shop-page__filter-toggle" data-org-filter-toggle aria-expanded="true">
+                <span>Best Seller</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="org-shop-page__filter-panel">
+                <label class="org-shop-page__check"><input type="checkbox" value="bestseller"
+                    data-org-shop-filter-bestseller /> Best Seller</label>
+              </div>
+            </div>
+
+            <div class="org-shop-page__filter-card is-open">
+              <button type="button" class="org-shop-page__filter-toggle" data-org-filter-toggle aria-expanded="true">
+                <span>New Launch</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="org-shop-page__filter-panel">
+                <label class="org-shop-page__check"><input type="checkbox" value="new"
+                    data-org-shop-filter-new /> New Launch</label>
+              </div>
+            </div>
+
+            <div class="org-shop-page__filter-card is-open">
+              <button type="button" class="org-shop-page__filter-toggle" data-org-filter-toggle aria-expanded="true">
+                <span>Availability</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="org-shop-page__filter-panel">
+                <label class="org-shop-page__check"><input type="checkbox" value="in-stock"
+                    data-org-shop-filter-availability /> In stock</label>
+                <label class="org-shop-page__check"><input type="checkbox" value="out-of-stock"
+                    data-org-shop-filter-availability /> Out of stock</label>
+              </div>
+            </div>
+
+            <div class="org-shop-page__filter-card org-shop-page__filter-card--price is-open">
+              <button type="button"
+                class="org-shop-page__filter-toggle org-shop-page__filter-toggle--price" data-org-filter-toggle
+                aria-expanded="true">
+                <span>Price</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="org-shop-page__filter-panel">
+                <div class="org-shop-page__price-range">
+                  <input type="number" class="org-shop-page__price-input" placeholder="Min ₹" min="0"
+                    data-org-shop-price-min inputmode="numeric" />
+                  <span class="org-shop-page__price-sep" aria-hidden="true">-</span>
+                  <input type="number" class="org-shop-page__price-input" placeholder="Max ₹" min="0"
+                    data-org-shop-price-max inputmode="numeric" />
+                </div>
+                <button type="button" class="org-shop-page__price-apply" data-org-shop-price-apply>Apply</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="org-shop-page__layout">
+          <aside class="org-shop-page__cat-sidebar" aria-label="Shop categories">
+            <ul class="org-shop-page__cat-list" data-org-shop-categories>
+              <li>
+                <button type="button" class="org-shop-page__cat-item is-active" data-org-shop-category="all"
+                  aria-current="true">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/1-_All_Products.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">All Products</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="sea-buckthorns">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/2-br_SBT.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Sea Buckthorns</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="bestsellers">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/3-_Bestsellers.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Best Sellers</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="detox-juices">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/4-br_Detox_health_juices.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Detox &amp; Health Juices</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="diabetic-care">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/14-br_Diabetic_Care.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Diabetic Care</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="healthy-powders">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/5-_Healthy_Powders.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Healthy Powders</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="nutraceuticals">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/6-_Nutraceuticals.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Nutraceuticals</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="healthy-breakfast">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/7-_Healthy_Breakfast.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Healthy Breakfast</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="oil-ghee">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/8-_Ghee_Cold-Pressed_Oils.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Oil &amp; Ghee</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="salt-sweetener">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/9-_Salt_Sweeteners.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Salt &amp; Sweetener</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="superfoods">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/organic-millets.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Superfoods</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="immunity-booster">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/organic-fruit.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Immunity Booster</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="org-shop-page__cat-item" data-org-shop-category="weight-management">
+                  <span class="org-shop-page__cat-icon">
+                    <img src="assets/img/organic-flour.avif" alt="" width="48" height="48" loading="lazy"
+                      decoding="async" />
+                  </span>
+                  <span class="org-shop-page__cat-label">Weight Management</span>
+                </button>
+              </li>
+            </ul>
+          </aside>
+
+          <div class="org-shop-page__main">
+            <div class="org-shop-page__pairs" data-org-shop-pairs aria-label="Pairs well with"></div>
+            <div class="org-shop-page__grid" data-org-shop-grid></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <footer class="org-footer" role="contentinfo">
+    <div class="org-footer__bg" aria-hidden="true">
+      <img class="org-footer__bg-image" src="assets/img/footer_mobile-8.png" alt="" width="1440" height="400"
+        loading="lazy" decoding="async" />
+    </div>
+
+    <div class="org-header__container org-footer__inner">
+      <div class="org-footer__grid">
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">ABOUT</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+
+          <div class="org-footer__subscribe">
+            <p class="org-footer__subscribe-label">Subscribe to our emails</p>
+            <form class="org-footer__email-form" action="#" method="post">
+              <label class="visually-hidden" for="org-footer-email">Email</label>
+              <input id="org-footer-email" class="org-footer__email-input" type="email" name="email" placeholder="Email"
+                autocomplete="email" required />
+              <button class="org-footer__email-btn" type="submit" aria-label="Subscribe to emails">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">BUSINESS</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">Collaborations</a></li>
+            <li><a href="#">Sourcing</a></li>
+            <li><a href="#">Export</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Media</a></li>
+          </ul>
+        </div>
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">SUPPORT</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Shipping &amp; Returns</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+          <ul class="org-footer__contact">
+            <li>Mobile: <a href="tel:+919967166755">+91 99671 66755</a></li>
+            <li>Landline: <a href="tel:+912246081126">+91 22 4608 1126</a></li>
+          </ul>
+        </div>
+
+        <div class="org-footer__col org-footer__col--brand">
+          <a href="index.html" class="org-footer__logo" aria-label="Conscious Food home">
+            <img src="assets/img/logo.png" alt="Conscious Food" width="88" height="88" loading="lazy"
+              decoding="async" />
+          </a>
+          <p class="org-footer__company">CONSCIOUS FOOD PVT LTD</p>
+          <address class="org-footer__address">
+            PLOT NO 7, UNIT NO 2, MAROL INDUSTRIAL ESTATE, LOK BHARATI ROAD, OFF A K ROAD, Andheri East, Mumbai,
+            Mumbai Suburban, Maharashtra, 400059
+          </address>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>

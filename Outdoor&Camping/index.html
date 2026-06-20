@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EVERTRAIL</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="et-header" role="banner">
+
+    <!-- Top announcement bar -->
+    <div class="et-announce" role="region" aria-label="Store offers">
+      <div class="et-announce__viewport">
+        <div class="et-announce__track" data-et-announce-track>
+          <div class="et-announce__group">
+            <span class="et-announce__item">Use code FIRST5 and get 5% Flat Discount at checkout.</span>
+            <span class="et-announce__dot" aria-hidden="true">•</span>
+            <span class="et-announce__item">Use code GET1000 &amp; get flat Rs. 1000 OFF on orders above Rs.
+              10,000</span>
+            <span class="et-announce__dot" aria-hidden="true">•</span>
+            <span class="et-announce__item">Use code GET500 &amp; get flat Rs. 500 OFF on orders above Rs. 5,000</span>
+          </div>
+          <div class="et-announce__group et-announce__group--clone" aria-hidden="true">
+            <span class="et-announce__item">Use code FIRST5 and get 5% Flat Discount at checkout.</span>
+            <span class="et-announce__dot" aria-hidden="true">•</span>
+            <span class="et-announce__item">Use code GET1000 &amp; get flat Rs. 1000 OFF on orders above Rs.
+              10,000</span>
+            <span class="et-announce__dot" aria-hidden="true">•</span>
+            <span class="et-announce__item">Use code GET500 &amp; get flat Rs. 500 OFF on orders above Rs. 5,000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main navigation -->
+    <div class="et-navbar">
+      <div class="et-container et-navbar__inner">
+
+        <button type="button" class="et-mobile-toggle" data-et-menu-toggle aria-expanded="false"
+          aria-controls="etNavMenu" aria-label="Open menu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <a href="index.html" class="et-logo" aria-label="Home">
+          <img src="assets/img/logo.png" alt="Outdoor &amp; Camping" width="120" height="40" decoding="async" />
+        </a>
+
+        <nav class="et-nav" id="etNavMenu" aria-label="Primary navigation">
+          <div class="et-nav__drawer-head">
+            <button type="button" class="et-nav__close" data-et-menu-close aria-label="Close menu">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+          <a href="#" class="et-nav__account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+            <span>Login / Account</span>
+          </a>
+          <a href="#" class="et-nav__link et-nav__link--dropdown">
+            Men
+            <i class="fa-solid fa-chevron-down et-nav__chevron" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-nav__link et-nav__link--dropdown">
+            Women
+            <i class="fa-solid fa-chevron-down et-nav__chevron" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-nav__link et-nav__link--dropdown">
+            Gear
+            <i class="fa-solid fa-chevron-down et-nav__chevron" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-nav__link et-nav__link--dropdown">
+            Accessories
+            <i class="fa-solid fa-chevron-down et-nav__chevron" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-nav__link et-nav__link--dropdown">
+            Resources
+            <i class="fa-solid fa-chevron-down et-nav__chevron" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-nav__link et-nav__link--dropdown">
+            About Us
+            <i class="fa-solid fa-chevron-down et-nav__chevron" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-nav__link">Stores</a>
+        </nav>
+
+        <div class="et-actions" aria-label="Utility links">
+          <button type="button" class="et-actions__btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+          <a href="#" class="et-actions__btn" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-actions__btn" aria-label="Customer support">
+            <i class="fa-solid fa-headset" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="et-actions__btn et-actions__btn--cart" aria-label="Shopping cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="et-drawer-backdrop" data-et-drawer-backdrop hidden></div>
+  </header>
+
+  <section class="et-hero" data-et-hero-slider aria-label="Featured banners">
+    <div class="et-hero__viewport">
+      <div class="et-hero__track">
+        <div class="et-hero__slide is-active" data-et-hero-slide>
+          <img src="assets/img/hero-banner-1.png" alt="" width="1920" height="720" decoding="async" />
+        </div>
+        <div class="et-hero__slide" data-et-hero-slide>
+          <img src="assets/img/hero-banner-2.png" alt="" width="1920" height="720" decoding="async" />
+        </div>
+        <div class="et-hero__slide" data-et-hero-slide>
+          <img src="assets/img/hero-banner-3.png" alt="" width="1920" height="720" decoding="async" />
+        </div>
+      </div>
+
+      <div class="et-hero__dots" role="tablist" aria-label="Hero slide navigation">
+        <button type="button" class="et-hero__dot is-active" data-et-hero-dot="0" role="tab" aria-selected="true"
+          aria-label="Slide 1">1</button>
+        <button type="button" class="et-hero__dot" data-et-hero-dot="1" role="tab" aria-selected="false"
+          aria-label="Slide 2">2</button>
+        <button type="button" class="et-hero__dot" data-et-hero-dot="2" role="tab" aria-selected="false"
+          aria-label="Slide 3">3</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="et-main" id="main-content">
+
+    <section class="et-categories" aria-labelledby="etCategoriesHeading">
+      <div class="et-container et-categories__inner">
+        <header class="et-categories__head">
+          <span class="et-categories__line" aria-hidden="true"></span>
+          <h2 id="etCategoriesHeading" class="et-categories__title">Shop by category</h2>
+          <span class="et-categories__line" aria-hidden="true"></span>
+        </header>
+
+        <div class="et-categories__grid" role="list">
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-1.webp" alt="Footwear" width="200" height="200" decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Footwear</span>
+          </a>
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-2.webp" alt="Men's Trekking Pants" width="200" height="200" decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Men's Trekking Pants</span>
+          </a>
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-3.webp" alt="Rain and Wind Protection" width="200" height="200"
+                decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Rain and Wind Protection</span>
+          </a>
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-4.webp" alt="Sleeping bags" width="200" height="200" decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Sleeping bags</span>
+          </a>
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-5.webp" alt="Trekking Apparel" width="200" height="200" decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Trekking Apparel</span>
+          </a>
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-6.webp" alt="Ever Trail" width="200" height="200" decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Ever Trail</span>
+          </a>
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-7.webp" alt="Camping Stoves and Kitchenware" width="200" height="200"
+                decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Camping Stoves and Kitchenware</span>
+          </a>
+          <a href="category.html" class="et-cat-card" role="listitem">
+            <div class="et-cat-card__media">
+              <img src="assets/img/cat-8.webp" alt="Cold Protection (Warm Clothing)" width="200" height="200"
+                decoding="async" />
+            </div>
+            <span class="et-cat-card__label">Cold Protection (Warm Clothing)</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="et-collections" data-et-collections aria-labelledby="etCollectionsHeading">
+      <div class="et-container et-collections__inner">
+        <h2 id="etCollectionsHeading" class="et-collections__title">Explore Collections</h2>
+
+        <div class="et-collections__viewport" data-et-collections-viewport>
+          <div class="et-collections__track" data-et-collections-track>
+          <a href="category.html" class="et-coll-card">
+            <img class="et-coll-card__img" src="assets/img/explore-coll-1.png" alt="Softshell Jackets" width="640"
+              height="480" decoding="async" />
+            <div class="et-coll-card__overlay" aria-hidden="true"></div>
+            <h3 class="et-coll-card__heading">Softshell Jackets</h3>
+            <span class="et-coll-card__btn">Shop now</span>
+          </a>
+          <a href="category.html" class="et-coll-card">
+            <img class="et-coll-card__img" src="assets/img/explore-coll-2.png" alt="Pants &amp; Shorts" width="640"
+              height="480" decoding="async" />
+            <div class="et-coll-card__overlay" aria-hidden="true"></div>
+            <h3 class="et-coll-card__heading">Pants &amp; Shorts</h3>
+            <span class="et-coll-card__btn">Shop now</span>
+          </a>
+          <a href="category.html" class="et-coll-card">
+            <img class="et-coll-card__img" src="assets/img/explore-coll-3.png" alt="Footwear" width="640" height="480"
+              decoding="async" />
+            <div class="et-coll-card__overlay" aria-hidden="true"></div>
+            <h3 class="et-coll-card__heading">Footwear</h3>
+            <span class="et-coll-card__btn">Shop now</span>
+          </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="et-products" data-et-products aria-labelledby="etProductsHeading">
+      <div class="et-container et-products__inner">
+        <header class="et-products__head">
+          <span class="et-products__line" aria-hidden="true"></span>
+          <h2 id="etProductsHeading" class="et-products__title">From Ever Trail</h2>
+          <span class="et-products__line" aria-hidden="true"></span>
+        </header>
+
+        <div class="et-products__slider-wrap">
+          <div class="et-products__viewport" data-et-products-viewport>
+            <div class="et-products__track" data-et-products-track>
+
+              <article class="et-pcard">
+                <div class="et-pcard__top">
+                  <a href="product.html" class="et-pcard__media">
+                    <img src="assets/img/product-1.webp" alt="Ever Trail Trexy Unisex Full Sleeves Tshirt"
+                      width="280" height="280" loading="lazy" decoding="async" />
+                  </a>
+                  <span class="et-pcard__badge">Sale</span>
+                </div>
+                <button type="button" class="et-pcard__bag">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to my bag
+                </button>
+                <div class="et-pcard__body">
+                  <p class="et-pcard__compare">Rs. 1,499.00</p>
+                  <p class="et-pcard__price">Rs. 999.00</p>
+                  <div class="et-pcard__swatches" aria-label="Available colors">
+                    <span class="et-pcard__swatch" style="--swatch:#8a8a8a" title="Grey"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#6b7b4e" title="Olive"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#c45c26" title="Orange"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#2a3d5c" title="Navy"></span>
+                  </div>
+                  <h3 class="et-pcard__title">Ever Trail Trexy Unisex Full Sleeves Tshirt</h3>
+                </div>
+              </article>
+
+              <article class="et-pcard">
+                <div class="et-pcard__top">
+                  <a href="product.html" class="et-pcard__media">
+                    <img src="assets/img/product-2.webp" alt="Ever Trail Trexy Unisex Half Sleeves Tshirt"
+                      width="280" height="280" loading="lazy" decoding="async" />
+                  </a>
+                  <span class="et-pcard__badge">Sale</span>
+                </div>
+                <button type="button" class="et-pcard__bag">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to my bag
+                </button>
+                <div class="et-pcard__body">
+                  <p class="et-pcard__compare">Rs. 1,299.00</p>
+                  <p class="et-pcard__price">Rs. 899.00</p>
+                  <div class="et-pcard__swatches" aria-label="Available colors">
+                    <span class="et-pcard__swatch" style="--swatch:#4a4a4a" title="Charcoal"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#3d6b8c" title="Blue"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#1a1a1a" title="Black"></span>
+                  </div>
+                  <h3 class="et-pcard__title">Ever Trail Trexy Unisex Half Sleeves Tshirt</h3>
+                </div>
+              </article>
+
+              <article class="et-pcard">
+                <div class="et-pcard__top">
+                  <a href="product.html" class="et-pcard__media">
+                    <img src="assets/img/product-3.webp" alt="Ever Trail Trexy Unisex Full Sleeves Tshirt"
+                      width="280" height="280" loading="lazy" decoding="async" />
+                  </a>
+                  <span class="et-pcard__badge">Sale</span>
+                </div>
+                <button type="button" class="et-pcard__bag">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to my bag
+                </button>
+                <div class="et-pcard__body">
+                  <p class="et-pcard__compare">Rs. 1,499.00</p>
+                  <p class="et-pcard__price">Rs. 999.00</p>
+                  <div class="et-pcard__rating" aria-label="1 out of 5 stars, 1 review">
+                    <span class="et-pcard__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-regular fa-star"></i>
+                      <i class="fa-regular fa-star"></i>
+                      <i class="fa-regular fa-star"></i>
+                      <i class="fa-regular fa-star"></i>
+                    </span>
+                    <span class="et-pcard__reviews">1 reviews</span>
+                  </div>
+                  <div class="et-pcard__swatches" aria-label="Available colors">
+                    <span class="et-pcard__swatch" style="--swatch:#7a6b5a" title="Brown"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#5c6b4a" title="Green"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#2c3e50" title="Navy"></span>
+                  </div>
+                  <h3 class="et-pcard__title">Ever Trail Trexy Unisex Full Sleeves Tshirt</h3>
+                </div>
+              </article>
+
+              <article class="et-pcard">
+                <div class="et-pcard__top">
+                  <a href="product.html" class="et-pcard__media">
+                    <img src="assets/img/product-4.webp" alt="Ever Trail Trexy Unisex Full Sleeves Tshirt"
+                      width="280" height="280" loading="lazy" decoding="async" />
+                  </a>
+                  <span class="et-pcard__badge">Sale</span>
+                </div>
+                <button type="button" class="et-pcard__bag">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to my bag
+                </button>
+                <div class="et-pcard__body">
+                  <p class="et-pcard__compare">Rs. 1,499.00</p>
+                  <p class="et-pcard__price">Rs. 999.00</p>
+                  <div class="et-pcard__swatches" aria-label="Available colors">
+                    <span class="et-pcard__swatch" style="--swatch:#6d7a8a" title="Slate"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#3a5a40" title="Forest"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#1e3a5f" title="Blue"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#8b4513" title="Brown"></span>
+                  </div>
+                  <h3 class="et-pcard__title">Ever Trail Trexy Unisex Full Sleeves Tshirt</h3>
+                </div>
+              </article>
+
+              <article class="et-pcard">
+                <div class="et-pcard__top">
+                  <a href="product.html" class="et-pcard__media">
+                    <img src="assets/img/product-5.webp" alt="Ever Trail Trexy Unisex Full Sleeves Tshirt"
+                      width="280" height="280" loading="lazy" decoding="async" />
+                  </a>
+                  <span class="et-pcard__badge">Sale</span>
+                </div>
+                <button type="button" class="et-pcard__bag">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to my bag
+                </button>
+                <div class="et-pcard__body">
+                  <p class="et-pcard__compare">Rs. 1,499.00</p>
+                  <p class="et-pcard__price">Rs. 999.00</p>
+                  <div class="et-pcard__swatches" aria-label="Available colors">
+                    <span class="et-pcard__swatch" style="--swatch:#9a9a9a" title="Grey"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#4a6741" title="Olive"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#d35400" title="Orange"></span>
+                  </div>
+                  <h3 class="et-pcard__title">Ever Trail Trexy Unisex Full Sleeves Tshirt</h3>
+                </div>
+              </article>
+
+              <article class="et-pcard">
+                <div class="et-pcard__top">
+                  <a href="product.html" class="et-pcard__media">
+                    <img src="assets/img/product-6.webp" alt="Ever Trail Trexy Unisex Full Sleeves Tshirt"
+                      width="280" height="280" loading="lazy" decoding="async" />
+                  </a>
+                  <span class="et-pcard__badge">Sale</span>
+                </div>
+                <button type="button" class="et-pcard__bag">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to my bag
+                </button>
+                <div class="et-pcard__body">
+                  <p class="et-pcard__compare">Rs. 1,499.00</p>
+                  <p class="et-pcard__price">Rs. 999.00</p>
+                  <div class="et-pcard__swatches" aria-label="Available colors">
+                    <span class="et-pcard__swatch" style="--swatch:#5c4033" title="Brown"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#2f4f4f" title="Teal"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#191970" title="Navy"></span>
+                  </div>
+                  <h3 class="et-pcard__title">Ever Trail Trexy Unisex Full Sleeves Tshirt</h3>
+                </div>
+              </article>
+
+              <article class="et-pcard">
+                <div class="et-pcard__top">
+                  <a href="product.html" class="et-pcard__media">
+                    <img src="assets/img/product-7.webp" alt="Ever Trail Trexy Unisex Full Sleeves Tshirt"
+                      width="280" height="280" loading="lazy" decoding="async" />
+                  </a>
+                  <span class="et-pcard__badge">Sale</span>
+                </div>
+                <button type="button" class="et-pcard__bag">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to my bag
+                </button>
+                <div class="et-pcard__body">
+                  <p class="et-pcard__compare">Rs. 1,499.00</p>
+                  <p class="et-pcard__price">Rs. 999.00</p>
+                  <div class="et-pcard__swatches" aria-label="Available colors">
+                    <span class="et-pcard__swatch" style="--swatch:#708090" title="Slate"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#556b2f" title="Olive"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#b8860b" title="Gold"></span>
+                    <span class="et-pcard__swatch" style="--swatch:#2f2f2f" title="Black"></span>
+                  </div>
+                  <h3 class="et-pcard__title">Ever Trail Trexy Unisex Full Sleeves Tshirt</h3>
+                </div>
+              </article>
+
+            </div>
+          </div>
+
+          <button type="button" class="et-products__prev" data-et-products-prev aria-label="Show previous product"
+            hidden>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="et-products__next" data-et-products-next aria-label="Show next product">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="et-promo" data-et-promo aria-label="Promotional offers">
+      <div class="et-container et-promo__inner">
+        <div class="et-promo__viewport" data-et-promo-viewport>
+          <div class="et-promo__track" data-et-promo-track>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-1.png" alt="Buy now pay later — no cost EMI" width="320" height="400"
+                loading="lazy" decoding="async" />
+            </a>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-2.png" alt="Columbia cool and UV protected" width="320" height="400"
+                loading="lazy" decoding="async" />
+            </a>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-3.png" alt="Deuter taking comfort to extremes" width="320" height="400"
+                loading="lazy" decoding="async" />
+            </a>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-4.png" alt="Buff ways to wear" width="320" height="400" loading="lazy"
+                decoding="async" />
+            </a>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-5.png" alt="REI outdoor gear" width="320" height="400" loading="lazy"
+                decoding="async" />
+            </a>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-6.png" alt="Outdoor promotion" width="320" height="400" loading="lazy"
+                decoding="async" />
+            </a>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-7.png" alt="Outdoor promotion" width="320" height="400" loading="lazy"
+                decoding="async" />
+            </a>
+            <a href="#" class="et-promo-card">
+              <img src="assets/img/promo-8.png" alt="Outdoor promotion" width="320" height="400" loading="lazy"
+                decoding="async" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="et-banner" aria-label="Up to 50% off promotion">
+      <a href="#" class="et-banner__link">
+        <img class="et-banner__img" src="assets/img/banner.png"
+          alt="Don't miss these — up to 50% off. Shop now." width="1920" height="480" decoding="async" />
+      </a>
+    </section>
+
+    <section class="et-top-selling" data-et-top-selling aria-labelledby="etTopSellingHeading">
+      <div class="et-container et-top-selling__inner">
+        <header class="et-top-selling__head">
+          <span class="et-top-selling__line" aria-hidden="true"></span>
+          <h2 id="etTopSellingHeading" class="et-top-selling__title">Top Selling</h2>
+          <span class="et-top-selling__line" aria-hidden="true"></span>
+        </header>
+
+        <div class="et-top-selling__slider">
+          <div class="et-top-selling__viewport" data-et-ts-viewport>
+            <div class="et-top-selling__track" data-et-ts-track>
+          <a href="category.html" class="et-ts-card">
+            <img class="et-ts-card__img" src="assets/img/TS-1.png" alt="Hiking poles" width="720" height="400"
+              loading="lazy" decoding="async" />
+            <div class="et-ts-card__shade">
+              <span class="et-ts-card__label">Hiking<br />Poles</span>
+            </div>
+          </a>
+          <a href="category.html" class="et-ts-card">
+            <img class="et-ts-card__img" src="assets/img/TS-2.png" alt="Hats and caps" width="720" height="400"
+              loading="lazy" decoding="async" />
+            <div class="et-ts-card__shade">
+              <span class="et-ts-card__label">Hats<br />&amp;<br />Caps</span>
+            </div>
+          </a>
+          <a href="category.html" class="et-ts-card">
+            <img class="et-ts-card__img" src="assets/img/TS-3.png" alt="T-shirts" width="720" height="400"
+              loading="lazy" decoding="async" />
+            <div class="et-ts-card__shade">
+              <span class="et-ts-card__label">T-Shirts</span>
+            </div>
+          </a>
+          <a href="category.html" class="et-ts-card">
+            <img class="et-ts-card__img" src="assets/img/TS-4.png" alt="Setks" width="720" height="400"
+              loading="lazy" decoding="async" />
+            <div class="et-ts-card__shade">
+              <span class="et-ts-card__label">Setks</span>
+            </div>
+          </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="et-features" data-et-features aria-label="Store benefits">
+      <div class="et-container et-features__inner">
+        <div class="et-features__slider">
+          <div class="et-features__viewport" data-et-features-viewport>
+            <ul class="et-features__list" data-et-features-track>
+              <li class="et-features__item is-active">
+                <div class="et-features__icon" aria-hidden="true">
+                  <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <h3 class="et-features__title">Cash on Delivery Available</h3>
+                <p class="et-features__text">Pay When Your Order Arrives</p>
+              </li>
+              <li class="et-features__item">
+                <div class="et-features__icon" aria-hidden="true">
+                  <i class="fa-solid fa-box-open"></i>
+                </div>
+                <h3 class="et-features__title">Easy Returns</h3>
+                <p class="et-features__text">7 Days for Exchange &amp; Easy returns</p>
+              </li>
+              <li class="et-features__item">
+                <div class="et-features__icon et-features__icon--secure" aria-hidden="true">
+                  <i class="fa-regular fa-credit-card et-features__icon-card"></i>
+                  <i class="fa-solid fa-shield et-features__icon-shield"></i>
+                </div>
+                <h3 class="et-features__title">Secure Checkout</h3>
+                <p class="et-features__text">Multi-Payment Checkouts</p>
+              </li>
+              <li class="et-features__item">
+                <div class="et-features__icon" aria-hidden="true">
+                  <i class="fa-solid fa-truck"></i>
+                </div>
+                <h3 class="et-features__title">Free Shipping</h3>
+                <p class="et-features__text">Get free shipping over ₹ 1000</p>
+              </li>
+              <li class="et-features__item">
+                <div class="et-features__icon" aria-hidden="true">
+                  <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <h3 class="et-features__title">Express Shipping</h3>
+                <p class="et-features__text">Get Express Shipping at just ₹300 extra.</p>
+              </li>
+            </ul>
+          </div>
+          <div class="et-features__pager" data-et-features-pager role="tablist" aria-label="Choose benefit">
+            <button type="button" class="et-features__dash is-active" data-et-features-go="0"
+              aria-label="Cash on Delivery" aria-selected="true" role="tab"></button>
+            <button type="button" class="et-features__dash" data-et-features-go="1" aria-label="Easy Returns"
+              role="tab" aria-selected="false"></button>
+            <button type="button" class="et-features__dash" data-et-features-go="2" aria-label="Secure Checkout"
+              role="tab" aria-selected="false"></button>
+            <button type="button" class="et-features__dash" data-et-features-go="3" aria-label="Free Shipping"
+              role="tab" aria-selected="false"></button>
+            <button type="button" class="et-features__dash" data-et-features-go="4" aria-label="Express Shipping"
+              role="tab" aria-selected="false"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="et-footer" data-et-footer role="contentinfo">
+    <div class="et-container et-footer__shell">
+      <div class="et-footer__newsletter">
+        <div class="et-footer__newsletter-box">
+          <h3 class="et-footer__block-title">Join Our Journey Today!</h3>
+          <p class="et-footer__block-sub">Sign up and save 5%</p>
+          <form class="et-footer__form" action="#" method="post">
+            <label class="et-footer__form-label" for="etFooterEmail">E-mail</label>
+            <div class="et-footer__form-field">
+              <input type="email" id="etFooterEmail" class="et-footer__input" name="email" placeholder="E-mail"
+                autocomplete="email" />
+              <button type="submit" class="et-footer__submit" aria-label="Subscribe">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <nav class="et-footer__nav" aria-label="Footer navigation">
+        <div class="et-footer__col" data-et-footer-accordion>
+          <button type="button" class="et-footer__accordion-btn" aria-expanded="false"
+            aria-controls="footer-panel-men" id="footer-trigger-men">
+            <span class="et-footer__accordion-label">Men</span>
+            <span class="et-footer__accordion-icon" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+          </button>
+          <div class="et-footer__accordion-panel" id="footer-panel-men" hidden>
+            <ul class="et-footer__links">
+              <li><a href="#">Tops</a></li>
+              <li><a href="#">Bottoms</a></li>
+              <li><a href="#">Jackets &amp; Vest</a></li>
+              <li><a href="#">Base Layer &amp; Thermals</a></li>
+              <li><a href="#">Rainwear</a></li>
+              <li><a href="#">Kids</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="et-footer__col" data-et-footer-accordion>
+          <button type="button" class="et-footer__accordion-btn" aria-expanded="false"
+            aria-controls="footer-panel-women" id="footer-trigger-women">
+            <span class="et-footer__accordion-label">Women</span>
+            <span class="et-footer__accordion-icon" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+          </button>
+          <div class="et-footer__accordion-panel" id="footer-panel-women" hidden>
+            <ul class="et-footer__links">
+              <li><a href="#">Tops</a></li>
+              <li><a href="#">Bottoms</a></li>
+              <li><a href="#">Jackets &amp; Vests</a></li>
+              <li><a href="#">Base Layers &amp; Thermals</a></li>
+              <li><a href="#">Rainwear</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="et-footer__col" data-et-footer-accordion>
+          <button type="button" class="et-footer__accordion-btn" aria-expanded="false"
+            aria-controls="footer-panel-gears" id="footer-trigger-gears">
+            <span class="et-footer__accordion-label">Gears</span>
+            <span class="et-footer__accordion-icon" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+          </button>
+          <div class="et-footer__accordion-panel" id="footer-panel-gears" hidden>
+            <ul class="et-footer__links">
+              <li><a href="#">Backpacks</a></li>
+              <li><a href="#">Sleeping Bags</a></li>
+              <li><a href="#">Footwear</a></li>
+              <li><a href="#">Lights</a></li>
+              <li><a href="#">Poles</a></li>
+              <li><a href="#">Climbing</a></li>
+              <li><a href="#">Camping</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="et-footer__col" data-et-footer-accordion>
+          <button type="button" class="et-footer__accordion-btn" aria-expanded="false"
+            aria-controls="footer-panel-accessories" id="footer-trigger-accessories">
+            <span class="et-footer__accordion-label">Accessories</span>
+            <span class="et-footer__accordion-icon" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+          </button>
+          <div class="et-footer__accordion-panel" id="footer-panel-accessories" hidden>
+            <ul class="et-footer__links">
+              <li><a href="#">Headwear</a></li>
+              <li><a href="#">Gloves</a></li>
+              <li><a href="#">Eyewear</a></li>
+              <li><a href="#">Socks</a></li>
+              <li><a href="#">Sacks &amp; Pouches</a></li>
+              <li><a href="#">Towels</a></li>
+              <li><a href="#">Medical &amp; Thermal Aid</a></li>
+              <li><a href="#">Bottles &amp; Flasks</a></li>
+              <li><a href="#">Sun Protection</a></li>
+              <li><a href="#">Gifts &amp; Maps</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="et-footer__col" data-et-footer-accordion>
+          <button type="button" class="et-footer__accordion-btn" aria-expanded="false"
+            aria-controls="footer-panel-quick" id="footer-trigger-quick">
+            <span class="et-footer__accordion-label">Quick Links</span>
+            <span class="et-footer__accordion-icon" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+          </button>
+          <div class="et-footer__accordion-panel" id="footer-panel-quick" hidden>
+            <ul class="et-footer__links">
+              <li><a href="#">Brand Story</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Blogs</a></li>
+              <li><a href="#">Shipping Policy</a></li>
+              <li><a href="#">Refund Policy</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms of Use</a></li>
+              <li><a href="#">Sitemap</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div class="et-footer__office">
+        <h3 class="et-footer__block-title">Corporate Office</h3>
+        <p class="et-footer__address">1142, Lower Ground Floor, Rustomjee Eaze Zone Mall, Sunder Nagar, Malad West,
+          Mumbai - 400064</p>
+        <a href="#" class="et-footer__store-btn">Visit our store</a>
+      </div>
+
+      <div class="et-footer__follow">
+        <h3 class="et-footer__block-title">Follow us</h3>
+        <p class="et-footer__block-sub">On our unforgettable adventures.</p>
+        <ul class="et-footer__social" aria-label="Social media">
+          <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="Store location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i></a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="et-footer__legal">
+        <div class="et-footer__divider-h et-footer__divider-h--legal" aria-hidden="true"></div>
+        <p class="et-footer__copyright">&copy; 2026, Ever Trail Outdoor Clothing &amp; Gear.</p>
+        <div class="et-footer__payments" aria-label="Accepted payment methods">
+          <span class="et-footer__pay et-footer__pay--upi">UPI</span>
+          <span class="et-footer__pay et-footer__pay--gpay">G Pay</span>
+          <span class="et-footer__pay et-footer__pay--cod">COD</span>
+          <span class="et-footer__pay et-footer__pay--visa">VISA</span>
+          <span class="et-footer__pay et-footer__pay--mc" aria-hidden="true"><span
+              class="et-footer__pay-mc et-footer__pay-mc--red"></span><span
+              class="et-footer__pay-mc et-footer__pay-mc--orange"></span></span>
+          <span class="et-footer__pay et-footer__pay--rupay">RuPay</span>
+        </div>
+        <p class="et-footer__credit">Crafted by Big Bang Commerce</p>
+      </div>
+    </div>
+
+    <a href="#" class="et-footer__support" aria-label="Customer support">
+      <i class="fa-solid fa-headset" aria-hidden="true"></i>
+    </a>
+  </footer>
+
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,524 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — VERDURE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;1,6..12,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="org-header" role="banner">
+
+    <!-- Top utility bar -->
+    <div class="org-header__utility">
+      <div class="org-header__container org-header__utility-inner">
+        <ul class="org-header__utility-links">
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+              <span>Get App</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Own a Franchise</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              <span>Visit Stores</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+              <span>Help</span>
+            </a>
+          </li>
+        </ul>
+        <div class="org-header__utility-contact">
+          <span class="org-header__utility-divider" aria-hidden="true">|</span>
+          <a href="tel:+919606809090" class="org-header__utility-contact-item">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <span>919606809090</span>
+          </a>
+          <a href="mailto:hello@theorganicworld.com" class="org-header__utility-contact-item">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <span>hello@theorganicworld.com</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main header -->
+    <div class="org-header__main">
+      <div class="org-header__container org-header__main-grid">
+
+        <div class="org-header__main-left">
+          <button type="button" class="org-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-org-menu-toggle>
+            <span class="org-header__menu-bars" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+
+          <a href="index.html" class="org-header__logo" aria-label="The Organic World home">
+            <img src="assets/img/logo.png" alt="The Organic World" width="160" height="52" decoding="async" />
+          </a>
+        </div>
+
+        <div class="org-header__main-center">
+          <form class="org-header__search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="org-header-search">Search for products, brands and more</label>
+            <input id="org-header-search" type="search" name="q" placeholder="Search for products, brands and more"
+              autocomplete="off" />
+            <button type="submit" class="org-header__search-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+
+        </div>
+
+        <div class="org-header__main-right">
+          <a href="shop.html" class="org-header__mobile-icon" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+          <button type="button" class="org-header__mobile-icon" aria-label="Change delivery location">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          </button>
+
+          <button type="button" class="org-header__deliver" aria-label="Change delivery location">
+            <i class="fa-solid fa-location-dot org-header__deliver-icon" aria-hidden="true"></i>
+            <span class="org-header__deliver-text">
+              <span class="org-header__deliver-label">Deliver to</span>
+              <span class="org-header__deliver-value">
+                Bengaluru 560001
+                <i class="fa-solid fa-chevron-down org-header__deliver-chevron" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <a href="#" class="org-header__account">
+            <i class="fa-regular fa-user org-header__account-icon" aria-hidden="true"></i>
+            <span class="org-header__account-text">
+              <span class="org-header__account-greeting">Hello, User</span>
+              <span class="org-header__account-label">Account &amp; Lists</span>
+            </span>
+          </a>
+
+          <a href="#" class="org-header__auth-link">
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+            <span>Login</span>
+          </a>
+
+          <a href="#" class="org-header__auth-link">
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+            <span>Sign up</span>
+          </a>
+
+          <a href="#" class="org-header__cart" aria-label="Shopping cart, 0 items">
+            <span class="org-header__cart-badge">0</span>
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <nav class="org-header__pill-nav" aria-label="Shop by lifestyle">
+          <ul class="org-header__pill-nav-list">
+            <li>
+              <a href="#">Eat Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Live Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Look Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+            <li>
+              <a href="#">Raise Better <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+            </li>
+          </ul>
+        </nav>
+
+        <a href="#" class="org-header__offers">
+          <i class="fa-solid fa-tags" aria-hidden="true"></i>
+          <span>Offers</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Category carousel -->
+    <div class="org-header__categories">
+      <div class="org-header__container org-header__categories-inner">
+        <div class="org-header__categories-viewport" data-org-categories-viewport>
+          <ul class="org-header__categories-track" data-org-categories-track>
+            <li>
+              <a href="shop.html" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/all_categories.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>All Categories</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/fruit.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Fruits &amp; Vegetables</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Foodgrains, Oils.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Foodgrains, Oils &amp; Masala</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Dairy, Bakery.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Dairy, Bakery, Eggs</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Snacks.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Snacks &amp; Branded Food</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Beverages.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Beverages</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Household.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Cleaning &amp; Household</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Personal Care.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Personal Care</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Wellness.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Wellness</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="org-header__category-card">
+                <span class="org-header__category-icon">
+                  <img src="assets/img/Beauty.png" alt="" width="28" height="28" decoding="async" />
+                </span>
+                <span>Beauty</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <button type="button" class="org-header__categories-arrow" aria-label="Scroll categories"
+          data-org-categories-next>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+  </header>
+
+
+  <main id="main-content">
+
+    <section class="org-product-page" aria-labelledby="org-product-title">
+      <div class="org-header__container">
+        <div class="org-product-page__layout">
+          <div class="org-product-page__gallery-col">
+            <div class="org-product-page__gallery-main">
+              <img src="assets/img/DJ-1.png" alt="" width="480" height="480" decoding="async" data-org-product-image />
+            </div>
+            <div class="org-product-page__thumbs-bar">
+              <div class="org-product-page__thumbs-viewport" data-org-product-thumbs-viewport>
+                <div class="org-product-page__thumbs-track" data-org-product-thumbs></div>
+              </div>
+              <button type="button" class="org-product-page__thumbs-next" data-org-product-thumbs-next
+                aria-label="Scroll thumbnails">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="org-product-page__info">
+            <nav class="org-product-page__crumb" aria-label="Breadcrumb">
+              <a href="index.html">Home</a>
+              <span class="org-product-page__crumb-sep" aria-hidden="true">/</span>
+              <span data-org-product-crumb-discount>33%</span>
+              <span class="org-product-page__crumb-sep" aria-hidden="true">/</span>
+              <span data-org-product-crumb-current>Product</span>
+            </nav>
+
+            <h1 id="org-product-title" class="org-product-page__title" data-org-product-title>Sea Buckthorn Juice With
+              Aloe Vera &amp; Amla</h1>
+
+            <div class="org-product-page__rating">
+              <span class="org-product-page__stars" data-org-product-stars aria-hidden="true"></span>
+              <span class="org-product-page__reviews" data-org-product-reviews>(26 reviews)</span>
+            </div>
+
+            <div class="org-product-page__price-stock">
+              <span class="org-product-page__price" data-org-product-price>₹ 399.00</span>
+              <span class="org-product-page__stock" data-org-product-stock-wrap>
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                <span><strong data-org-product-stock>9</strong> Items In stock</span>
+              </span>
+            </div>
+
+            <div class="org-product-page__member">
+              <span class="org-product-page__member-badge">
+                <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+                CO-OP MEMBER
+              </span>
+              <span class="org-product-page__member-offer" data-org-product-member-offer>₹ 359.10 · save ₹ 39.90</span>
+              <a href="#" class="org-product-page__member-link">Join now &gt;</a>
+            </div>
+
+            <div class="org-product-page__variants">
+              <p class="org-product-page__variants-label">Size</p>
+              <div class="org-product-page__variants-list" data-org-product-variants role="listbox"
+                aria-label="Select size"></div>
+            </div>
+
+            <div class="org-product-page__purchase">
+              <div class="org-product-page__qty" data-org-product-qty>
+                <button type="button" class="org-product-page__qty-btn" data-org-qty-minus
+                  aria-label="Decrease quantity">−</button>
+                <span class="org-product-page__qty-value" data-org-qty-value>1</span>
+                <button type="button" class="org-product-page__qty-btn" data-org-qty-plus
+                  aria-label="Increase quantity">+</button>
+              </div>
+              <button type="button" class="org-product-page__cart-btn" data-org-product-cart>
+                Add to cart
+              </button>
+              <button type="button" class="org-product-page__buy-btn" data-org-product-buy>
+                Buy Now
+              </button>
+            </div>
+
+            <div class="org-product-page__highlights">
+              <h2 class="org-product-page__highlights-title">Key Highlights</h2>
+              <ul class="org-product-page__highlights-list" data-org-product-highlights></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-product-tabs" aria-label="Product information">
+      <div class="org-header__container">
+        <div class="org-product-tabs__nav" role="tablist" data-org-product-tabs>
+          <button type="button" class="org-product-tabs__tab is-active" role="tab" id="org-tab-description"
+            aria-selected="true" aria-controls="org-panel-description" data-org-tab="description">Description</button>
+          <button type="button" class="org-product-tabs__tab" role="tab" id="org-tab-how-to-use" aria-selected="false"
+            aria-controls="org-panel-how-to-use" data-org-tab="how-to-use" tabindex="-1">How to use</button>
+          <button type="button" class="org-product-tabs__tab" role="tab" id="org-tab-nutrition" aria-selected="false"
+            aria-controls="org-panel-nutrition" data-org-tab="nutrition" tabindex="-1">Nutrition</button>
+          <button type="button" class="org-product-tabs__tab" role="tab" id="org-tab-certifications"
+            aria-selected="false" aria-controls="org-panel-certifications" data-org-tab="certifications"
+            tabindex="-1">Certifications</button>
+          <button type="button" class="org-product-tabs__tab" role="tab" id="org-tab-why-choose" aria-selected="false"
+            aria-controls="org-panel-why-choose" data-org-tab="why-choose" tabindex="-1">Why choose</button>
+          <button type="button" class="org-product-tabs__tab" role="tab" id="org-tab-sourcing" aria-selected="false"
+            aria-controls="org-panel-sourcing" data-org-tab="sourcing" tabindex="-1">Sourcing</button>
+        </div>
+
+        <div class="org-product-tabs__panels" data-org-product-tab-panels>
+          <div class="org-product-tabs__panel is-active" role="tabpanel" id="org-panel-description"
+            aria-labelledby="org-tab-description" data-org-tab-panel="description"></div>
+          <div class="org-product-tabs__panel" role="tabpanel" id="org-panel-how-to-use"
+            aria-labelledby="org-tab-how-to-use" data-org-tab-panel="how-to-use" hidden></div>
+          <div class="org-product-tabs__panel" role="tabpanel" id="org-panel-nutrition"
+            aria-labelledby="org-tab-nutrition" data-org-tab-panel="nutrition" hidden></div>
+          <div class="org-product-tabs__panel" role="tabpanel" id="org-panel-certifications"
+            aria-labelledby="org-tab-certifications" data-org-tab-panel="certifications" hidden></div>
+          <div class="org-product-tabs__panel" role="tabpanel" id="org-panel-why-choose"
+            aria-labelledby="org-tab-why-choose" data-org-tab-panel="why-choose" hidden></div>
+          <div class="org-product-tabs__panel" role="tabpanel" id="org-panel-sourcing"
+            aria-labelledby="org-tab-sourcing" data-org-tab-panel="sourcing" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="org-product-faq" aria-labelledby="org-product-faq-title">
+      <div class="org-header__container">
+        <h2 id="org-product-faq-title" class="org-product-faq__title">FAQ</h2>
+        <div class="org-product-faq__accordion" data-org-product-faq></div>
+      </div>
+    </section>
+
+    <section class="org-product-reviews" aria-labelledby="org-product-reviews-title">
+      <div class="org-header__container">
+        <h2 id="org-product-reviews-title" class="org-product-reviews__title">Reviews &amp; ratings</h2>
+
+        <div class="org-product-reviews__summary">
+          <h3 class="org-product-reviews__summary-heading">Customer Reviews</h3>
+          <div class="org-product-reviews__summary-grid">
+            <div class="org-product-reviews__avg" data-org-reviews-avg></div>
+            <div class="org-product-reviews__bars" data-org-reviews-bars></div>
+            <div class="org-product-reviews__write">
+              <button type="button" class="org-product-reviews__write-btn">Write a review</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="org-product-reviews__trust">
+          <div class="org-product-reviews__badges">
+            <div class="org-product-reviews__badge org-product-reviews__badge--gold">
+              <span class="org-product-reviews__badge-label">AUTHENTICITY</span>
+              <span class="org-product-reviews__badge-score" data-org-reviews-authenticity>97.0</span>
+            </div>
+            <div class="org-product-reviews__badge org-product-reviews__badge--silver">
+              <span class="org-product-reviews__badge-label">TRANSPARENCY</span>
+              <span class="org-product-reviews__badge-score" data-org-reviews-transparency>94.1</span>
+            </div>
+          </div>
+          <p class="org-product-reviews__verified-label">
+            <i class="fa-solid fa-square-check" aria-hidden="true"></i>
+            Verified
+          </p>
+        </div>
+
+        <div class="org-product-reviews__toolbar">
+          <div class="org-product-reviews__sort-wrap">
+            <label class="visually-hidden" for="org-reviews-sort">Sort reviews</label>
+            <select id="org-reviews-sort" class="org-product-reviews__sort" data-org-reviews-sort>
+              <option value="recent">Most Recent</option>
+              <option value="highest">Highest Rated</option>
+              <option value="lowest">Lowest Rated</option>
+            </select>
+            <i class="fa-solid fa-chevron-down org-product-reviews__sort-icon" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="org-product-reviews__list" data-org-product-reviews-list></div>
+      </div>
+    </section>
+
+    <button type="button" class="org-product-page__back-top" data-org-back-top aria-label="Back to top" hidden>
+      <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <section class="org-product-page__related" aria-label="Related products">
+      <div class="org-header__container">
+        <h2 class="org-product-page__related-title">You May Also Like</h2>
+        <div class="org-product-page__related-grid" data-org-product-related></div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <footer class="org-footer" role="contentinfo">
+    <div class="org-footer__bg" aria-hidden="true">
+      <img class="org-footer__bg-image" src="assets/img/footer_mobile-8.png" alt="" width="1440" height="400"
+        loading="lazy" decoding="async" />
+    </div>
+
+    <div class="org-header__container org-footer__inner">
+      <div class="org-footer__grid">
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">ABOUT</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+
+          <div class="org-footer__subscribe">
+            <p class="org-footer__subscribe-label">Subscribe to our emails</p>
+            <form class="org-footer__email-form" action="#" method="post">
+              <label class="visually-hidden" for="org-footer-email">Email</label>
+              <input id="org-footer-email" class="org-footer__email-input" type="email" name="email" placeholder="Email"
+                autocomplete="email" required />
+              <button class="org-footer__email-btn" type="submit" aria-label="Subscribe to emails">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">BUSINESS</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">Collaborations</a></li>
+            <li><a href="#">Sourcing</a></li>
+            <li><a href="#">Export</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Media</a></li>
+          </ul>
+        </div>
+
+        <div class="org-footer__col">
+          <h3 class="org-footer__heading">SUPPORT</h3>
+          <ul class="org-footer__links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Shipping &amp; Returns</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+          <ul class="org-footer__contact">
+            <li>Mobile: <a href="tel:+919967166755">+91 99671 66755</a></li>
+            <li>Landline: <a href="tel:+912246081126">+91 22 4608 1126</a></li>
+          </ul>
+        </div>
+
+        <div class="org-footer__col org-footer__col--brand">
+          <a href="index.html" class="org-footer__logo" aria-label="Conscious Food home">
+            <img src="assets/img/logo.png" alt="Conscious Food" width="88" height="88" loading="lazy"
+              decoding="async" />
+          </a>
+          <p class="org-footer__company">CONSCIOUS FOOD PVT LTD</p>
+          <address class="org-footer__address">
+            PLOT NO 7, UNIT NO 2, MAROL INDUSTRIAL ESTATE, LOK BHARATI ROAD, OFF A K ROAD, Andheri East, Mumbai,
+            Mumbai Suburban, Maharashtra, 400059
+          </address>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>
