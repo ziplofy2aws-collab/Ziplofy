@@ -1,0 +1,204 @@
+/* ==========================================================================
+   VitalRx — Premium motion layer (layout-neutral)
+   ========================================================================== */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+html.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+html.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Scroll progress */
+.phr-motion-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 10001;
+  pointer-events: none;
+  background: transparent;
+}
+
+.phr-motion-progress__fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, #18d1ae 0%, #247c70 100%);
+  will-change: transform;
+}
+
+/* Ambient orbs */
+.phr-motion-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.phr-motion-orbs__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+
+.phr-motion-orbs__orb--1 {
+  top: 8%;
+  left: -6%;
+  width: min(42vw, 420px);
+  height: min(42vw, 420px);
+  background: rgba(24, 209, 174, 0.045);
+  animation: phr-orb-drift-1 28s ease-in-out infinite;
+}
+
+.phr-motion-orbs__orb--2 {
+  top: 42%;
+  right: -8%;
+  width: min(36vw, 360px);
+  height: min(36vw, 360px);
+  background: rgba(36, 124, 112, 0.04);
+  animation: phr-orb-drift-2 32s ease-in-out infinite;
+}
+
+.phr-motion-orbs__orb--3 {
+  bottom: 6%;
+  left: 28%;
+  width: min(30vw, 300px);
+  height: min(30vw, 300px);
+  background: rgba(24, 209, 174, 0.035);
+  animation: phr-orb-drift-3 26s ease-in-out infinite;
+}
+
+@keyframes phr-orb-drift-1 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(4vw, 3vh, 0);
+  }
+}
+
+@keyframes phr-orb-drift-2 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-3vw, -2vh, 0);
+  }
+}
+
+@keyframes phr-orb-drift-3 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(2vw, -3vh, 0);
+  }
+}
+
+/* Desktop cursor glow */
+.phr-motion-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 240px;
+  margin: -120px 0 0 -120px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(24, 209, 174, 0.09) 0%, rgba(24, 209, 174, 0) 68%);
+  transition: opacity 0.45s ease;
+  will-change: transform, opacity;
+}
+
+html.phr-motion-cursor-on .phr-motion-cursor {
+  opacity: 1;
+}
+
+/* Lazy image fade-in */
+html.phr-motion img.phr-motion-img {
+  opacity: 0;
+  transition: opacity 0.65s ease;
+}
+
+html.phr-motion img.phr-motion-img.is-visible {
+  opacity: 1;
+}
+
+/* Sticky header motion states */
+html.phr-motion .phr-header {
+  will-change: transform;
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.38s ease;
+}
+
+html.phr-motion .phr-header.is-scrolled {
+  box-shadow: 0 6px 28px rgba(21, 88, 79, 0.1);
+}
+
+html.phr-motion .phr-header.is-scrolled .phr-header__top,
+html.phr-motion .phr-header.is-scrolled .phr-header__nav {
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+html.phr-motion .phr-header.is-hidden {
+  transform: translate3d(0, -100%, 0);
+}
+
+/* Section reveal prep — GSAP sets initial inline styles */
+html.phr-motion .phr-motion-reveal {
+  will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+  html.phr-motion .phr-header.is-hidden {
+    transform: none;
+  }
+
+  .phr-motion-cursor {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.phr-motion .phr-motion-orbs__orb {
+    animation: none;
+  }
+
+  html.phr-motion .phr-header {
+    transition: none;
+  }
+
+  html.phr-motion img.phr-motion-img {
+    opacity: 1;
+    transition: none;
+  }
+
+  .phr-motion-cursor {
+    display: none;
+  }
+}

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pet Care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css?v=10" />
+</head>
+
+<body>
+
+  <header class="pc-header" role="banner">
+    <!-- Top announcement bar -->
+    <div class="pc-header__announce" role="region" aria-label="Site announcements">
+      <div class="pc-header__announce-inner">
+        <div class="pc-header__announce-left">
+          <a href="#" class="pc-header__announce-link">
+            Adopt Joy
+            <span class="pc-header__badge pc-header__badge--new">New</span>
+          </a>
+          <span class="pc-header__sep" aria-hidden="true"></span>
+          <a href="#" class="pc-header__announce-link">Store Locator</a>
+          <span class="pc-header__sep" aria-hidden="true"></span>
+          <a href="#" class="pc-header__announce-link">Track Order</a>
+        </div>
+        <p class="pc-header__announce-offer">Up to 60% Off – Limited Time!</p>
+      </div>
+    </div>
+
+    <!-- Mobile delivery row -->
+    <div class="pc-header__delivery">
+      <button type="button" class="pc-header__delivery-btn">
+        <i class="fa-solid fa-location-arrow" aria-hidden="true"></i>
+        <span class="pc-header__delivery-text">Delivering to <strong>560034</strong> ... Change</span>
+        <i class="fa-solid fa-chevron-down pc-header__delivery-chevron" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Main header -->
+    <div class="pc-header__main">
+      <div class="pc-header__main-inner">
+        <a href="index.html" class="pc-header__logo" aria-label="Pet Care home">
+          <img src="assets/img/logo.png" alt="Pet Care" width="52" height="52" decoding="async" />
+        </a>
+
+        <form class="pc-header__search" role="search" action="#" method="get">
+          <label class="visually-hidden" for="pc-header-search">Search products</label>
+          <i class="fa-solid fa-magnifying-glass pc-header__search-icon" aria-hidden="true"></i>
+          <input id="pc-header-search" type="search" name="q" placeholder="Search for 'Wet Food'" autocomplete="off" />
+        </form>
+
+        <div class="pc-header__actions">
+          <a href="#" class="pc-header__action pc-header__action--location">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <span>560034</span>
+          </a>
+          <a href="#" class="pc-header__action pc-header__action--wish">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            <span>Wishlist</span>
+          </a>
+          <a href="#" class="pc-header__action pc-header__action--cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            <span>Cart</span>
+          </a>
+          <a href="#" class="pc-header__login pc-header__action--login">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+            <span>Login/Sign Up</span>
+          </a>
+        </div>
+
+        <button type="button" class="pc-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-pc-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Category navigation -->
+    <div class="pc-header__nav-bar">
+      <div class="pc-header__nav-inner">
+        <button type="button" class="pc-header__nav-close" data-pc-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <nav class="pc-header__nav" aria-label="Category navigation">
+          <a href="category.html" class="pc-header__nav-link">
+            Dogs
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="pc-header__nav-link">
+            Cats
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="pc-header__nav-link">
+            Brands
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="pc-header__nav-link">
+            HUFT Hub
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="pc-header__nav-link pc-header__nav-link--tagged">
+            HUFT Spa
+            <span class="pc-header__nav-tag">NEW</span>
+          </a>
+          <a href="#" class="pc-header__nav-link pc-header__nav-link--tagged">
+            Offer Zone
+            <span class="pc-header__nav-tag">60% OFF</span>
+          </a>
+          <a href="#" class="pc-header__nav-link">Become a Franchisee</a>
+          <a href="#" class="pc-header__nav-link pc-header__nav-link--tagged">
+            Summer'26
+            <span class="pc-header__nav-tag">NEW</span>
+          </a>
+        </nav>
+
+        <div class="pc-header__brands" aria-label="Featured brands">
+          <a href="#" class="pc-header__brand" aria-label="Sara's">
+            <img src="assets/img/brand-saras.png" alt="Sara's" width="36" height="36" loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="pc-header__brand" aria-label="Heartly">
+            <img src="assets/img/brand-heartly.png" alt="Heartly" width="36" height="36" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="#" class="pc-header__brand" aria-label="MEOWSI">
+            <img src="assets/img/brand-meowsi.png" alt="MEOWSI" width="36" height="36" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="#" class="pc-header__brand" aria-label="BASH DOG">
+            <img src="assets/img/brand-bashdog.png" alt="BASH DOG" width="36" height="36" loading="lazy"
+              decoding="async" />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile category filters -->
+    <div class="pc-header__mobile-filters" aria-label="Pet category filters">
+      <a href="category.html" class="pc-header__filter-pill is-active">
+        <i class="fa-solid fa-paw" aria-hidden="true"></i>
+        <span>All</span>
+      </a>
+      <a href="category.html" class="pc-header__filter-pill">
+        <i class="fa-solid fa-dog" aria-hidden="true"></i>
+        <span>Dogs</span>
+      </a>
+      <a href="#" class="pc-header__filter-pill">
+        <i class="fa-solid fa-cat" aria-hidden="true"></i>
+        <span>Cats</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="pc-hero" aria-label="Hero banner" data-pc-hero>
+      <div class="pc-hero__inner">
+        <article class="pc-hero__slide is-active">
+          <img src="assets/img/hero-banner-1.png" alt="Pet care hero banner 1" width="2006" height="784"
+            decoding="async" />
+        </article>
+        <article class="pc-hero__slide">
+          <img src="assets/img/hero-banner-2.png" alt="Pet care hero banner 2" width="2004" height="785" loading="lazy"
+            decoding="async" />
+        </article>
+      </div>
+
+      <button class="pc-hero__arrow pc-hero__arrow--prev" type="button" aria-label="Previous slide" data-pc-hero-prev>
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button class="pc-hero__arrow pc-hero__arrow--next" type="button" aria-label="Next slide" data-pc-hero-next>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </section>
+
+    <section class="pc-promo" aria-labelledby="pc-promo-heading">
+      <div class="pc-promo__inner">
+        <header class="pc-promo__head">
+          <h2 id="pc-promo-heading" class="pc-promo__title">For Dogs, All Summer</h2>
+          <p class="pc-promo__subtitle">Styles they'll love</p>
+        </header>
+
+        <div class="pc-promo__grid">
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-1.png" alt="Made To Match — summer dog styles" width="1498" height="1050"
+                loading="lazy" decoding="async" />
+            </div>
+            <span class="pc-promo__label">Made To Match</span>
+          </a>
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-2.png" alt="Walk-Ready — summer dog styles" width="1499" height="1049"
+                loading="lazy" decoding="async" />
+            </div>
+            <span class="pc-promo__label">Walk-Ready</span>
+          </a>
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-3.png" alt="Nap Time — summer dog styles" width="1498" height="1050"
+                loading="lazy" decoding="async" />
+            </div>
+            <span class="pc-promo__label">Nap Time</span>
+          </a>
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-4.png" alt="Cool Fits — summer dog styles" width="1493" height="1053"
+                loading="lazy" decoding="async" />
+            </div>
+            <span class="pc-promo__label">Cool Fits</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pc-rec" aria-labelledby="pc-rec-heading" data-pc-rec>
+      <div class="pc-rec__inner">
+        <header class="pc-rec__head">
+          <h2 id="pc-rec-heading" class="pc-rec__title">Recommended Products</h2>
+          <p class="pc-rec__subtitle">Must-Haves For Your Pets</p>
+        </header>
+
+        <div class="pc-rec__slider" data-pc-rec-slider>
+          <div class="pc-rec__viewport" data-pc-rec-viewport>
+            <div class="pc-rec__grid" data-pc-rec-grid>
+          <article class="pc-rec-card">
+            <a href="product.html?id=supercoat-dog" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">15% OFF</span>
+                <img src="assets/img/RP-1.png" alt="Purina SuperCoat Chicken Adult All Breed Dog Dry Food" width="400"
+                  height="400" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Purina SuperCoat Chicken Adult All Breed Dog Dry Food</h3>
+              <p class="pc-rec-card__price">Rs. 2,252.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>10 kg</span>
+                <span>20 kg</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="pc-rec-card">
+            <a href="product.html?id=royal-canin-cat" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">15% OFF</span>
+                <img src="assets/img/RP-2.png" alt="Royal Canin Fit 32 Adult Cat Dry Food" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Royal Canin Fit 32 Adult Cat Dry Food</h3>
+              <p class="pc-rec-card__price">Rs. 1,793.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>2 kg</span>
+                <span>4 kg</span>
+                <span>10 kg</span>
+                <span>15 kg</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="pc-rec-card">
+            <a href="product.html?id=toptail-treats" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">12% OFF</span>
+                <img src="assets/img/RP-3.png" alt="Toptail Squeezy Chicken and Liver Flavour Creamy Cat Treats 60g"
+                  width="400" height="400" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Toptail Squeezy Chicken &amp; Liver Flavour Creamy Cat Treats 60g</h3>
+              <p class="pc-rec-card__price">Rs. 104.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>Pack of 1</span>
+                <span>Pack of 2</span>
+                <span>Pack of 3</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="pc-rec-card">
+            <a href="product.html?id=felix-salmon" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">15% OFF</span>
+                <img src="assets/img/RP-4.png" alt="Purina Felix Salmon In Jelly Adult Wet Food 85g" width="400"
+                  height="400" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Purina Felix Salmon In Jelly Adult Wet Food 85g</h3>
+              <p class="pc-rec-card__price">Rs. 561.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>Pack of 12</span>
+                <span>Pack of 24</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="pc-rec-card">
+            <a href="product.html?id=felix-tuna" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">17% OFF</span>
+                <img src="assets/img/RP-5.png" alt="Purina Felix Tuna In Jelly Adult Cat Wet Food 85g" width="400"
+                  height="400" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Purina Felix Tuna In Jelly Adult Cat Wet Food 85g</h3>
+              <p class="pc-rec-card__price">Rs. 597.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>Pack of 12</span>
+                <span>Pack of 24</span>
+                <span>Pack of 48</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="pc-rec-card is-hidden" data-pc-rec-hidden>
+            <a href="product.html?id=pedigree-adult" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">10% OFF</span>
+                <img src="assets/img/RP-6.png" alt="Pedigree Adult Chicken and Vegetables Dog Dry Food" width="400"
+                  height="400" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Pedigree Adult Chicken &amp; Vegetables Dog Dry Food</h3>
+              <p class="pc-rec-card__price">Rs. 1,899.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>3 kg</span>
+                <span>10 kg</span>
+                <span>20 kg</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="pc-rec-card is-hidden" data-pc-rec-hidden>
+            <a href="product.html?id=whiskas-tuna" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">14% OFF</span>
+                <img src="assets/img/RP-7.png" alt="Whiskas Tuna Flavour Adult Cat Wet Food 85g" width="400"
+                  height="400" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Whiskas Tuna Flavour Adult Cat Wet Food 85g</h3>
+              <p class="pc-rec-card__price">Rs. 480.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>Pack of 12</span>
+                <span>Pack of 24</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="pc-rec-card is-hidden" data-pc-rec-hidden>
+            <a href="product.html?id=drools-focus" class="pc-rec-card__link">
+              <div class="pc-rec-card__media">
+                <span class="pc-rec-card__badge">16% OFF</span>
+                <img src="assets/img/RP-8.png" alt="Drools Focus Adult Super Premium Dog Food" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pc-rec-card__name">Drools Focus Adult Super Premium Dog Food</h3>
+              <p class="pc-rec-card__price">Rs. 2,499.00</p>
+              <div class="pc-rec-card__rating" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="pc-rec-card__options">
+                <span>4 kg</span>
+                <span>12 kg</span>
+              </div>
+            </a>
+          </article>
+            </div>
+          </div>
+          <button type="button" class="pc-rec__arrow pc-rec__arrow--prev" data-pc-rec-prev aria-label="Previous product">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="pc-rec__arrow pc-rec__arrow--next" data-pc-rec-next aria-label="Next product">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="pc-rec__action">
+          <button type="button" class="pc-rec__view-all" data-pc-rec-view-all">View All</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="pc-banner" aria-label="Promotional banner">
+      <img src="assets/img/banner.png" alt="Limited edition bandanas for pets" width="1844" height="853" loading="lazy"
+        decoding="async" />
+    </section>
+
+    <section class="pc-bs" aria-label="Best selling products" data-pc-bs>
+      <div class="pc-bs__inner">
+        <div class="pc-bs__slider">
+          <div class="pc-bs__viewport" data-pc-bs-viewport>
+            <div class="pc-bs__track" data-pc-bs-track>
+              <article class="pc-bs-card" data-pc-product-id="tuxedo-bandana">
+                <div class="pc-bs-card__media">
+                  <span class="pc-bs-card__badge">Save ₹200</span>
+                  <img class="pc-bs-card__img pc-bs-card__img--default" src="assets/img/BS-1.webp"
+                    alt="PawsIndia Black and White Tuxedo Bandana With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                  <img class="pc-bs-card__img pc-bs-card__img--hover" src="assets/img/BS-1-hover.webp"
+                    alt="PawsIndia Black and White Tuxedo Bandana With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                </div>
+                <div class="pc-bs-card__body">
+                  <p class="pc-bs-card__brand">PAWSINDIA</p>
+                  <h3 class="pc-bs-card__name">PawsIndia Black &amp; White Tuxedo Bandana With Tie For Dogs &amp; Cats
+                  </h3>
+                  <div class="pc-bs-card__rating">
+                    <span class="pc-bs-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pc-bs-card__reviews">11 reviews</span>
+                  </div>
+                  <p class="pc-bs-card__promo">Use Code: <strong>SAVE100</strong> for 100rs off on orders above 1299</p>
+                  <div class="pc-bs-card__price-row">
+                    <span class="pc-bs-card__old-price">Rs. 699.00</span>
+                    <span class="pc-bs-card__price">Rs. 499.00</span>
+                  </div>
+                  <div class="pc-bs-card__actions">
+                    <button type="button" class="pc-bs-card__cart">Add To Cart</button>
+                    <button type="button" class="pc-bs-card__wish" aria-label="Add to wishlist">
+                      <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="pc-bs-card" data-pc-product-id="floral-bandana">
+                <div class="pc-bs-card__media">
+                  <span class="pc-bs-card__badge">Save ₹200</span>
+                  <img class="pc-bs-card__img pc-bs-card__img--default" src="assets/img/BS-2.webp"
+                    alt="PawsIndia Baby Blue Floral Print With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                  <img class="pc-bs-card__img pc-bs-card__img--hover" src="assets/img/BS-2-hover.webp"
+                    alt="PawsIndia Baby Blue Floral Print With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                </div>
+                <div class="pc-bs-card__body">
+                  <p class="pc-bs-card__brand">PAWSINDIA</p>
+                  <h3 class="pc-bs-card__name">PawsIndia Baby Blue Floral Print With Tie For Dogs &amp; Cats</h3>
+                  <div class="pc-bs-card__rating">
+                    <span class="pc-bs-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pc-bs-card__reviews">13 reviews</span>
+                  </div>
+                  <p class="pc-bs-card__promo">Use Code: <strong>SAVE100</strong> for 100rs off on orders above 1299</p>
+                  <div class="pc-bs-card__price-row">
+                    <span class="pc-bs-card__old-price">Rs. 699.00</span>
+                    <span class="pc-bs-card__price">Rs. 499.00</span>
+                  </div>
+                  <div class="pc-bs-card__actions">
+                    <button type="button" class="pc-bs-card__cart">Add To Cart</button>
+                    <button type="button" class="pc-bs-card__wish" aria-label="Add to wishlist">
+                      <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="pc-bs-card" data-pc-product-id="navy-tuxedo">
+                <div class="pc-bs-card__media">
+                  <span class="pc-bs-card__badge">Save ₹400</span>
+                  <img class="pc-bs-card__img pc-bs-card__img--default" src="assets/img/BS-3.webp"
+                    alt="PawsIndia Dark Blue and White Tuxedo Bandana With Tie For Dogs and Cats" width="400"
+                    height="400" loading="lazy" decoding="async" />
+                  <img class="pc-bs-card__img pc-bs-card__img--hover" src="assets/img/BS-3-hover.webp"
+                    alt="PawsIndia Dark Blue and White Tuxedo Bandana With Tie For Dogs and Cats" width="400"
+                    height="400" loading="lazy" decoding="async" />
+                </div>
+                <div class="pc-bs-card__body">
+                  <p class="pc-bs-card__brand">PAWSINDIA</p>
+                  <h3 class="pc-bs-card__name">PawsIndia Dark Blue &amp; White Tuxedo Bandana With Tie For Dogs &amp;
+                    Cats</h3>
+                  <div class="pc-bs-card__rating">
+                    <span class="pc-bs-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pc-bs-card__reviews">21 reviews</span>
+                  </div>
+                  <p class="pc-bs-card__promo">Use Code: <strong>SAVE100</strong> for 100rs off on orders above 1299</p>
+                  <div class="pc-bs-card__price-row">
+                    <span class="pc-bs-card__old-price">Rs. 999.00</span>
+                    <span class="pc-bs-card__price">Rs. 599.00</span>
+                  </div>
+                  <div class="pc-bs-card__actions">
+                    <button type="button" class="pc-bs-card__cart">Add To Cart</button>
+                    <button type="button" class="pc-bs-card__wish" aria-label="Add to wishlist">
+                      <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="pc-bs-card" data-pc-product-id="brown-tuxedo">
+                <div class="pc-bs-card__media">
+                  <span class="pc-bs-card__badge">Save ₹400</span>
+                  <img class="pc-bs-card__img pc-bs-card__img--default" src="assets/img/BS-4.webp"
+                    alt="PawsIndia Brown and White Tuxedo Bandana With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                  <img class="pc-bs-card__img pc-bs-card__img--hover" src="assets/img/BS-4-hover.webp"
+                    alt="PawsIndia Brown and White Tuxedo Bandana With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                </div>
+                <div class="pc-bs-card__body">
+                  <p class="pc-bs-card__brand">PAWSINDIA</p>
+                  <h3 class="pc-bs-card__name">PawsIndia Brown &amp; White Tuxedo Bandana With Tie For Dogs &amp; Cats
+                  </h3>
+                  <div class="pc-bs-card__rating">
+                    <span class="pc-bs-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pc-bs-card__reviews">9 reviews</span>
+                  </div>
+                  <p class="pc-bs-card__promo">Use Code: <strong>SAVE100</strong> for 100rs off on orders above 1299</p>
+                  <div class="pc-bs-card__price-row">
+                    <span class="pc-bs-card__old-price">Rs. 999.00</span>
+                    <span class="pc-bs-card__price">Rs. 599.00</span>
+                  </div>
+                  <div class="pc-bs-card__actions">
+                    <button type="button" class="pc-bs-card__cart">Add To Cart</button>
+                    <button type="button" class="pc-bs-card__wish" aria-label="Add to wishlist">
+                      <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="pc-bs-card" data-pc-product-id="dino-print">
+                <div class="pc-bs-card__media">
+                  <span class="pc-bs-card__badge">Save ₹200</span>
+                  <img class="pc-bs-card__img pc-bs-card__img--default" src="assets/img/BS-5.webp"
+                    alt="PawsIndia Blue and White Dinosaur Print With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                  <img class="pc-bs-card__img pc-bs-card__img--hover" src="assets/img/BS-5-hover.webp"
+                    alt="PawsIndia Blue and White Dinosaur Print With Tie For Dogs and Cats" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                </div>
+                <div class="pc-bs-card__body">
+                  <p class="pc-bs-card__brand">PAWSINDIA</p>
+                  <h3 class="pc-bs-card__name">PawsIndia Blue &amp; White Dinosaur Print With Tie For Dogs &amp; Cats
+                  </h3>
+                  <div class="pc-bs-card__rating">
+                    <span class="pc-bs-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                      <i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pc-bs-card__reviews">48 reviews</span>
+                  </div>
+                  <p class="pc-bs-card__promo">Use Code: <strong>SAVE100</strong> for 100rs off on orders above 1299</p>
+                  <div class="pc-bs-card__price-row">
+                    <span class="pc-bs-card__old-price">Rs. 699.00</span>
+                    <span class="pc-bs-card__price">Rs. 499.00</span>
+                  </div>
+                  <div class="pc-bs-card__actions">
+                    <button type="button" class="pc-bs-card__cart">Add To Cart</button>
+                    <button type="button" class="pc-bs-card__wish" aria-label="Add to wishlist">
+                      <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <button type="button" class="pc-bs__arrow pc-bs__arrow--prev" aria-label="Previous products" data-pc-bs-prev>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="pc-bs__arrow pc-bs__arrow--next" aria-label="Next products" data-pc-bs-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="pc-trust" aria-labelledby="pc-trust-heading">
+      <div class="pc-trust__inner">
+        <header class="pc-trust__head">
+          <h2 id="pc-trust-heading" class="pc-trust__title">Discover What Other Pet Parents Trust !</h2>
+          <p class="pc-trust__subtitle">Top products, Best prices</p>
+        </header>
+
+        <div class="pc-trust__grid">
+          <a href="#" class="pc-trust__card">
+            <img src="assets/img/promo-9.png" alt="Up to 25% off on dog food" width="1254" height="1254" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="#" class="pc-trust__card">
+            <img src="assets/img/promo-10.png" alt="Up to 15% off on cat food" width="1254" height="1254" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="#" class="pc-trust__card">
+            <img src="assets/img/promo-11.png" alt="Up to 50% off on dog toys" width="1254" height="1254" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="#" class="pc-trust__card">
+            <img src="assets/img/promo-12.png" alt="Up to 30% off on leashes and collars" width="1254" height="1254"
+              loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pc-feature" aria-label="Premium pet food feature">
+      <div class="pc-feature__inner">
+        <div class="pc-feature__banner">
+          <img src="assets/img/product-list.png" alt="Protein rich premium dog and cat food" width="1736" height="906"
+            loading="lazy" decoding="async" />
+        </div>
+
+        <div class="pc-feature__list">
+          <article class="pc-feature-card" data-pc-product-id="royal-canin-mini">
+            <div class="pc-feature-card__info">
+              <p class="pc-feature-card__brand">Royal Canin</p>
+              <h3 class="pc-feature-card__name">Royal Canin Mini Adult Dry Dog Food</h3>
+              <div class="pc-feature-card__rating">
+                <span class="pc-feature-card__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </span>
+                <span class="pc-feature-card__reviews">5 reviews</span>
+              </div>
+              <p class="pc-feature-card__price">Rs. 212.00</p>
+              <a href="product.html?id=royal-canin-mini" class="pc-feature-card__btn">View options</a>
+            </div>
+            <div class="pc-feature-card__media">
+              <span class="pc-feature-card__sale">Sale -15%</span>
+              <img src="assets/img/product-list-2.png" alt="Royal Canin Mini Adult Dry Dog Food" width="1254"
+                height="1254" loading="lazy" decoding="async" />
+            </div>
+          </article>
+
+          <article class="pc-feature-card" data-pc-product-id="royal-canin-maxi-puppy">
+            <div class="pc-feature-card__info">
+              <p class="pc-feature-card__brand">Royal Canin</p>
+              <h3 class="pc-feature-card__name">Royal Canin Maxi Puppy Dry Dog Food</h3>
+              <div class="pc-feature-card__rating">
+                <span class="pc-feature-card__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </span>
+                <span class="pc-feature-card__reviews">5 reviews</span>
+              </div>
+              <p class="pc-feature-card__price">Rs. 215.00</p>
+              <a href="product.html?id=royal-canin-maxi-puppy" class="pc-feature-card__btn">View options</a>
+            </div>
+            <div class="pc-feature-card__media">
+              <span class="pc-feature-card__sale">Sale -14%</span>
+              <img src="assets/img/product-list-3.png" alt="Royal Canin Maxi Puppy Dry Dog Food" width="1254"
+                height="1254" loading="lazy" decoding="async" />
+            </div>
+          </article>
+
+          <article class="pc-feature-card" data-pc-product-id="royal-canin-persian">
+            <div class="pc-feature-card__info">
+              <p class="pc-feature-card__brand">Royal Canin</p>
+              <h3 class="pc-feature-card__name">Royal Canin Persian Adult Dry Cat Food</h3>
+              <div class="pc-feature-card__rating">
+                <span class="pc-feature-card__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </span>
+                <span class="pc-feature-card__reviews">5 reviews</span>
+              </div>
+              <p class="pc-feature-card__price">Rs. 544.00</p>
+              <a href="product.html?id=royal-canin-persian" class="pc-feature-card__btn">View options</a>
+            </div>
+            <div class="pc-feature-card__media">
+              <span class="pc-feature-card__sale">Sale -15%</span>
+              <img src="assets/img/product-list-4.png" alt="Royal Canin Persian Adult Dry Cat Food" width="1254"
+                height="1254" loading="lazy" decoding="async" />
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="pc-promo pc-promo--treats" aria-labelledby="pc-treats-heading">
+      <div class="pc-promo__inner">
+        <header class="pc-promo__head">
+          <h2 id="pc-treats-heading" class="pc-promo__title">Guilt-Free Goodness</h2>
+          <p class="pc-promo__subtitle">Treats that do more</p>
+        </header>
+
+        <div class="pc-promo__grid">
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-5.png" alt="Soft and chewy treats" width="1498" height="1050" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pc-promo__label">Soft &amp; Chewy Treats</span>
+          </a>
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-6.png" alt="Long-lasting chews" width="1498" height="1050" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pc-promo__label">Long-Lasting Chews</span>
+          </a>
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-7.png" alt="Our cleanest treats" width="1498" height="1050" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pc-promo__label">Our Cleanest Treats</span>
+          </a>
+          <a href="#" class="pc-promo__card">
+            <div class="pc-promo__media">
+              <img src="assets/img/promo-8.png" alt="All natural biscuits" width="1498" height="1050" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pc-promo__label">All Natural Biscuits</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pc-big-promo" aria-label="Promotional offers">
+      <div class="pc-big-promo__inner">
+        <a href="#" class="pc-big-promo__main">
+          <img src="assets/img/big-promo.png" alt="Kennel shampoo promotion" width="1736" height="906" loading="lazy"
+            decoding="async" />
+        </a>
+        <div class="pc-big-promo__side">
+          <a href="#" class="pc-big-promo__panel">
+            <img src="assets/img/big-promo-2.png" alt="Real meat dog treats promotion" width="1706" height="922"
+              loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="pc-big-promo__panel">
+            <img src="assets/img/big-promo-3.png" alt="Cat treats promotion" width="1693" height="929" loading="lazy"
+              decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pc-footer" role="contentinfo">
+    <div class="pc-footer__main">
+      <div class="pc-footer__inner">
+        <div class="pc-footer__cols">
+          <div class="pc-footer__col">
+            <h3 class="pc-footer__heading">Shop by Pet</h3>
+            <ul class="pc-footer__links">
+              <li><a href="category.html">Dogs</a></li>
+              <li><a href="#">Cats</a></li>
+              <li><a href="#">Puppies</a></li>
+              <li><a href="#">Kittens</a></li>
+              <li><a href="#">Small Animals</a></li>
+            </ul>
+          </div>
+
+          <div class="pc-footer__col">
+            <h3 class="pc-footer__heading">Customer Care</h3>
+            <ul class="pc-footer__links">
+              <li><a href="#">Track Your Order</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Return &amp; Exchange Policy</a></li>
+              <li><a href="#">Shipping &amp; Delivery Policy</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms Of Use</a></li>
+              <li><a href="#">HUFT Franchise</a></li>
+              <li><a href="#">HUFT Singapore</a></li>
+              <li>
+                <a href="#">GST 2.0 Reforms</a>
+                <span class="pc-footer__tag">New</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pc-footer__col">
+            <h3 class="pc-footer__heading">House of HUFT</h3>
+            <ul class="pc-footer__links">
+              <li><a href="#">Sara's</a></li>
+              <li><a href="#">Sara's Treats</a></li>
+              <li>
+                <a href="#">Meowsi</a>
+                <span class="pc-footer__tag">NEW LAUNCH</span>
+              </li>
+              <li><a href="#">Hearty</a></li>
+              <li><a href="#">Dashdog</a></li>
+            </ul>
+          </div>
+
+          <div class="pc-footer__col">
+            <h3 class="pc-footer__heading">The World of HUFT</h3>
+            <ul class="pc-footer__links">
+              <li><a href="#">About Us</a></li>
+              <li>
+                <a href="#">Careers</a>
+                <span class="pc-footer__tag">WE ARE HIRING</span>
+              </li>
+              <li><a href="#">Awards</a></li>
+              <li><a href="#">Store Locator</a></li>
+              <li><a href="#">HUFT App</a></li>
+              <li>
+                <a href="#">HUFT Spa</a>
+                <span class="pc-footer__tag pc-footer__tag--sm">NEW</span>
+              </li>
+              <li><a href="#">Birthday Club 🎁</a></li>
+              <li><a href="#">HUFT Foundation</a></li>
+              <li><a href="#">Customer Love ❤️</a></li>
+              <li><a href="#">Community</a></li>
+              <li><a href="#">HUFT Blog</a></li>
+            </ul>
+          </div>
+
+          <div class="pc-footer__col pc-footer__col--newsletter">
+            <h3 class="pc-footer__heading">Join the HUFT Family</h3>
+            <p class="pc-footer__newsletter-text">Subscribe to our newsletter for pet care tips, new arrivals,
+              exclusive offers, and more!</p>
+            <form class="pc-footer__newsletter" action="#" method="post">
+              <label class="visually-hidden" for="pc-footer-email">Your Email Address</label>
+              <input id="pc-footer-email" type="email" name="email" placeholder="Your Email Address"
+                autocomplete="email" />
+              <button type="submit">Subscribe</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pc-footer__highlights">
+      <div class="pc-footer__highlight">
+        <p class="pc-footer__highlight-title">Free Shipping</p>
+        <p class="pc-footer__highlight-text">On all orders above ₹999</p>
+      </div>
+      <div class="pc-footer__highlight">
+        <p class="pc-footer__highlight-title">Free Returns</p>
+        <p class="pc-footer__highlight-text">Within 7 days (T&amp;Cs Apply)</p>
+      </div>
+      <div class="pc-footer__highlight">
+        <p class="pc-footer__highlight-title">BEST DEALS</p>
+        <p class="pc-footer__highlight-text">On pet care products</p>
+      </div>
+      <div class="pc-footer__highlight">
+        <p class="pc-footer__highlight-title">CUSTOMER CARE</p>
+        <p class="pc-footer__highlight-text">Mon-Sat, 9AM-9PM</p>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="pc-mobile-nav" aria-label="Mobile navigation">
+    <a href="index.html" class="pc-mobile-nav__item is-active" aria-current="page">
+      <i class="fa-solid fa-house" aria-hidden="true"></i>
+      <span>Home</span>
+    </a>
+    <a href="category.html" class="pc-mobile-nav__item">
+      <i class="fa-solid fa-store" aria-hidden="true"></i>
+      <span>Shop</span>
+    </a>
+    <a href="#" class="pc-mobile-nav__item">
+      <span class="pc-mobile-nav__badge" aria-hidden="true">0</span>
+      <i class="fa-regular fa-heart" aria-hidden="true"></i>
+      <span>Wishlist</span>
+    </a>
+    <a href="#" class="pc-mobile-nav__item">
+      <i class="fa-regular fa-circle-user" aria-hidden="true"></i>
+      <span>Log In</span>
+    </a>
+  </nav>
+
+  <script src="assets/js/script.js?v=10"></script>
+</body>
+
+</html>
