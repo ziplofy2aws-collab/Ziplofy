@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product - DERMIFY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="stylesheet" href="./assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="bb-header">
+    <div class="bb-offer-bar" id="offerBar">
+      <p>BUY MORE SAVE MORE</p>
+      <p>DOWNLOAD THE APP</p>
+      <div class="bb-offer-right">
+        <p>SUPER DEALS AT &#8377;99</p>
+        <button class="bb-close-btn" id="closeOfferBar" type="button" aria-label="Close offer bar">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="bb-header-main">
+      <button class="bb-menu-btn" type="button" aria-label="Open menu" aria-controls="bbMobileDrawer"
+        aria-expanded="false" data-menu-toggle>
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+      <a href="index.html" class="bb-logo" aria-label="Beauty Barn home">
+        <img class="bb-logo-img" src="./assets/img/logo-2.png" alt="Beauty Barn" />
+      </a>
+      <label class="bb-search-wrap" aria-label="Search for products">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="search" placeholder="Search" />
+      </label>
+      <div class="bb-actions">
+        <a href="#" class="bb-signin-link" aria-label="Sign in">
+          <i class="fa-regular fa-user" aria-hidden="true"></i>
+          <span>Sign In<br /><small>FOR FREE SHIPPING</small></span>
+        </a>
+        <button class="bb-icon-btn" type="button" aria-label="Wishlist">
+          <i class="fa-regular fa-heart" aria-hidden="true"></i><span class="bb-badge">0</span>
+        </button>
+        <button class="bb-icon-btn" type="button" aria-label="Cart">
+          <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i><span class="bb-badge">0</span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="bb-nav-pill" aria-label="Primary">
+      <a href="#">What's New</a><a href="#">Skin <i class="fa-solid fa-angle-down" aria-hidden="true"></i></a><a
+        href="#">Makeup</a><a href="#">Hair</a><a href="#">Body Care</a><a href="#">Men's Skincare</a><a
+        href="#">Brands</a><a href="#">Bestsellers</a><a href="#">Travel Kits &amp; Minis</a><a href="#">Bundles</a><a
+        href="#">Clearance</a><a href="#">Sale</a>
+    </nav>
+    <div class="bb-mobile-overlay" data-menu-overlay hidden></div>
+    <aside class="bb-mobile-drawer" id="bbMobileDrawer" aria-label="Mobile menu" aria-hidden="true">
+      <div class="bb-mobile-drawer-head">
+        <strong>Menu</strong>
+        <button class="bb-mobile-close" type="button" aria-label="Close menu" data-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="bb-mobile-nav" aria-label="Mobile primary">
+        <a href="#">What's New</a>
+        <a href="category.html">Skin</a>
+        <a href="#">Makeup</a>
+        <a href="#">Hair</a>
+        <a href="category.html">Body Care</a>
+        <a href="#">Men's Skincare</a>
+        <a href="#">Brands</a>
+        <a href="#">Bestsellers</a>
+        <a href="#">Travel Kits &amp; Minis</a>
+        <a href="#">Bundles</a>
+        <a href="#">Clearance</a>
+        <a href="#">Sale</a>
+      </nav>
+    </aside>
+  </header>
+
+  <main class="pd-page">
+    <div class="pd-shell">
+      <section class="pd-gallery">
+        <div class="pd-thumbs">
+          <button class="pd-thumb is-active" type="button" data-pd-thumb="./assets/img/TN-2.png"><img
+              src="./assets/img/TN-2.png" alt="" /></button>
+          <button class="pd-thumb" type="button" data-pd-thumb="./assets/img/TN-1.png"><img src="./assets/img/TN-1.png"
+              alt="" /></button>
+          <button class="pd-thumb" type="button" data-pd-thumb="./assets/img/rev-3.png"><img
+              src="./assets/img/rev-3.png" alt="" /></button>
+          <button class="pd-thumb" type="button" data-pd-thumb="./assets/img/BS-1.png"><img src="./assets/img/BS-1.png"
+              alt="" /></button>
+          <button class="pd-thumb" type="button" data-pd-thumb="./assets/img/BS-2.png"><img src="./assets/img/BS-2.png"
+              alt="" /></button>
+          <button class="pd-thumb" type="button" data-pd-thumb="./assets/img/BS-3.png"><img src="./assets/img/BS-3.png"
+              alt="" /></button>
+          <button class="pd-thumb" type="button" data-pd-thumb="./assets/img/BS-4.png"><img src="./assets/img/BS-4.png"
+              alt="" /></button>
+          <button class="pd-thumb" type="button" data-pd-thumb="./assets/img/TN-3.png"><img src="./assets/img/TN-3.png"
+              alt="" /></button>
+        </div>
+
+        <div class="pd-main-image">
+          <span class="pd-badge">Up To 40% OFF</span>
+          <img id="pd-image" src="./assets/img/TN-2.png" alt="Product image" />
+          <button type="button" class="pd-zoom"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+        </div>
+      </section>
+
+      <section class="pd-info">
+        <p id="pd-tag" class="pd-tag">#2 in skincare</p>
+        <p class="pd-rating"><span>★ 4.6</span> 5097 Verified Reviews</p>
+        <h1 id="pd-title" class="pd-title">10% Niacinamide Face Serum With Kojic Acid &amp; Korean Rice Water</h1>
+        <p id="pd-subtitle" class="pd-subtitle">Discover Clear Glass Skin Glow</p>
+
+        <div class="pd-benefits">
+          <article><i class="fa-regular fa-face-smile"></i><span>Glowing, Brighter Skin</span></article>
+          <article><i class="fa-regular fa-shield"></i><span>Reduces Dark Spots</span></article>
+          <article><i class="fa-regular fa-sun"></i><span>For all skin types</span></article>
+          <article><i class="fa-solid fa-check"></i><span>Beginner-Friendly</span></article>
+          <article><i class="fa-solid fa-ban"></i><span>Fragrance free</span></article>
+          <article><i class="fa-solid fa-feather-pointed"></i><span>Lightweight &amp; Non-sticky</span></article>
+        </div>
+
+        <p id="pd-price" class="pd-price">₹649</p>
+        <p class="pd-tax">MRP inclusive of all taxes</p>
+        <p class="pd-size-meta">30 ml | 1.01 fl. oz.</p>
+
+        <div class="pd-size-block">
+          <h3>Size: <span>30ml</span></h3>
+          <button type="button" class="pd-size-card">
+            <img src="./assets/img/TN-2.png" alt="30ml pack" />
+            <strong>Size:30ml</strong>
+            <span>₹645</span>
+          </button>
+        </div>
+
+        <p class="pd-bought"><i class="fa-solid fa-bolt"></i> 10,000+ people bought this product in last 30 days</p>
+
+        <div class="pd-offers">
+          <h2>Active Offers</h2>
+          <div class="pd-offer-grid">
+            <article class="pd-offer-card">
+              <h3>FLAT 25% OFF</h3>
+              <div class="pd-offer-main">
+                <p>Get flat 25% OFF on orders above ₹699</p>
+                <strong><span>Get at</span>₹487</strong>
+              </div>
+              <div class="pd-offer-code"><span>FLAT25</span><button type="button">Copy</button></div>
+            </article>
+            <article class="pd-offer-card">
+              <h3>FLAT 40% OFF</h3>
+              <div class="pd-offer-main">
+                <p>Get Flat 40% OFF on orders above ₹1199</p>
+                <strong><span>Get at</span>₹389</strong>
+              </div>
+              <div class="pd-offer-code"><span>FLAT40</span><button type="button">Copy</button></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="pd-love">
+          <h2>Why you'll Love it</h2>
+          <details class="pd-acc" open>
+            <summary>Fades Acne Marks &amp; Spots</summary>
+            <p>10% Niacinamide, Kojic Acid &amp; Zinc PCA work together to visibly reduce marks, control oil, and
+              improve overall skin clarity.</p>
+          </details>
+          <details class="pd-acc">
+            <summary>Boosts Glow &amp; Brightens</summary>
+            <p>Regular use helps improve skin tone and leaves skin looking clear and radiant.</p>
+          </details>
+          <details class="pd-acc">
+            <summary>Tested on Sensitive Skin</summary>
+            <p>Gentle beginner-friendly formula designed for daily use.</p>
+          </details>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <section class="pd-desc-section" aria-label="Product description details">
+    <div class="pd-desc-shell">
+      <article class="pd-desc-block">
+        <h2>Product Description</h2>
+        <p>
+          This lightweight, <strong>oil-free moisturizer</strong> is powered with 3% NMF Complex and Panthenol to
+          deliver up to 72-hour hydration without clogging pores. It soothes, calms, and restores the skin barrier,
+          making it ideal for <strong>oily, acne-prone, and sensitive skin</strong>. The non-comedogenic, non-sticky
+          formula gets absorbed quickly and leaves skin feeling fresh and balanced all day long. It contains no added
+          fragrance, parabens, or alcohol, ensuring a gentle experience.
+        </p>
+      </article>
+
+      <article class="pd-desc-block">
+        <h2>Why Is This Different?</h2>
+        <p>
+          The NMF complex is a mixture of amino acids and other derivatives that sustain hydration in the stratum
+          corneum (uppermost layer of skin). Acting as a <strong>non-comedogenic moisturiser</strong> (humectant
+          mixture), it retains moisture while strengthening the skin barrier. The amount of NMF in the Stratum corneum
+          determines how much water it can hold at a particular humidity level. Panthenol, a
+          <strong>non-oily skin hydrator</strong>, prevents transepidermal water loss and also soothes skin and works
+          well for oily/acne-prone skin.
+        </p>
+        <p>Our <strong>oil free face moisturiser for oily skin</strong> is uniquely designed to provide hydration without making the skin greasy. Here's why it stands out:</p>
+        <ul>
+          <li><strong>Non-greasy &amp; Lightweight:</strong> Unlike traditional creams, this formula absorbs quickly without leaving a sticky residue.</li>
+          <li><strong>Deep Moisturisation:</strong> Contains amino acids from the skin's Natural Moisturizing Factor (NMF) that nourish the stratum corneum and provide deep hydration.</li>
+          <li><strong>Non-Comedogenic Formula:</strong> Won't clog pores, making it the best face moisturizer for oily skin and acne-prone skin.</li>
+          <li><strong>Soothing &amp; Repairing:</strong> Panthenol calms irritation and supports skin healing.</li>
+          <li><strong>Fragrance-Free &amp; Dermatologist-Tested:</strong> Suitable even for sensitive skin types.</li>
+        </ul>
+        <p><strong>Long-Lasting Hydration:</strong> Provides 72-hour moisture without a greasy feel.</p>
+      </article>
+
+      <article class="pd-desc-block">
+        <h2>How Does It Work On The Skin?</h2>
+        <ul>
+          <li><strong>Hydration:</strong> The 3% NMF Complex, rich in amino acids and minerals, mimics the skin's natural moisturising factors to keep the skin deeply hydrated and nourished.</li>
+          <li><strong>Skin Barrier Strengthening:</strong> Panthenol (Vitamin B5) works to repair and protect the skin barrier, preventing moisture loss.</li>
+          <li><strong>Acne &amp; Breakout Prevention:</strong> The best oil free moisturiser for face ensures clogged pores and breakouts are minimised.</li>
+          <li><strong>Reduces Redness &amp; Inflammation:</strong> With soothing properties, it helps calm irritated skin.</li>
+          <li><strong>Prevents Dryness Flare-ups:</strong> Balances hydration to prevent skin from overproducing oil.</li>
+        </ul>
+      </article>
+
+      <article class="pd-desc-block">
+        <h2>How To Use?</h2>
+        <ul>
+          <li><strong>Cleanse:</strong> Wash your face with a gentle cleanser and pat dry.</li>
+          <li><strong>Apply:</strong> Take a pea-sized amount and massage gently onto your face and neck.</li>
+          <li><strong>Daily Routine:</strong> Use morning and evening for best results.</li>
+          <li><strong>Follow-up:</strong> Apply sunscreen during the day if stepping out.</li>
+          <li><strong>Layering:</strong> Can be used under makeup or other skincare products.</li>
+          <li><strong>Use Consistently:</strong> For optimal results, make it a regular part of your skincare routine.</li>
+          <li>Use a pea-sized amount of NMF <strong>oil free face moisturiser</strong> for oily skin, gently massage until the product is absorbed into the skin.</li>
+          <li>Can be used twice a day, both morning and night.</li>
+          <li>Use with DERMIFY Hydrating serum for best hydrating results.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="pd-reviews-section" aria-label="Customer reviews">
+    <div class="pd-reviews-shell">
+      <h2 class="pd-reviews-heading">Customer Reviews</h2>
+
+      <div class="pd-review-summary">
+        <div class="pd-review-score">
+          <p class="pd-review-score-value">4.2 <span>★★★★☆</span></p>
+          <p>Based on 2330 reviews</p>
+        </div>
+        <div class="pd-review-breakdown">
+          <p><span>5 ★</span><i style="--w:100%"></i><strong>1394</strong></p>
+          <p><span>4 ★</span><i style="--w:32%"></i><strong>451</strong></p>
+          <p><span>3 ★</span><i style="--w:16%"></i><strong>185</strong></p>
+          <p><span>2 ★</span><i style="--w:8%"></i><strong>92</strong></p>
+          <p><span>1 ★</span><i style="--w:14%"></i><strong>209</strong></p>
+        </div>
+      </div>
+
+      <div class="pd-customers-say">
+        <h3>Customers say</h3>
+        <p class="pd-customers-ai">✨ AI-generated from customer reviews.</p>
+        <p>The Salicylic Acid + LHA 2% Cleanser is praised for its effectiveness in reducing acne and oil, with customers noting its gentle formula and refreshing feel. While some users report no significant changes, others highlight its ability to clear acne and impurities. However, there are mixed opinions on its impact on dark spots and blackheads, and some concerns about pore clogging.</p>
+        <button type="button">Read summary by topics</button>
+      </div>
+
+      <div class="pd-review-list">
+        <article class="pd-review-item">
+          <div class="pd-review-left">
+            <div class="pd-review-userline">
+              <span class="pd-review-avatar">SJ</span>
+              <div><strong>Shruti J. IN</strong><p>✔ Verified Buyer</p></div>
+            </div>
+            <dl>
+              <div><dt>Age</dt><dd>25 to 34</dd></div>
+              <div><dt>Skin Type</dt><dd>Combination</dd></div>
+              <div><dt>Skin Concerns</dt><dd>Acne, Hyperpigmentation, Oiliness</dd></div>
+            </dl>
+          </div>
+          <div class="pd-review-right">
+            <p class="pd-review-titleline">★★★★★ <span>Salicylic Acid + LHA 2% Cleanser</span></p>
+            <p>This cleanser works really well for daily use, especially if you have oily or acne-prone skin. You only need a very small amount as it foams up nicely, which makes it last longer. It gives a deep clean and helps with oil control without making the skin feel dry or tight after washing. Post-wash, th... <strong>Read more</strong></p>
+            <div class="pd-review-meta"><time>17/04/26</time><span>Was this review helpful? 👍 3 👎 0</span></div>
+          </div>
+        </article>
+
+        <article class="pd-review-item">
+          <div class="pd-review-left">
+            <div class="pd-review-userline">
+              <span class="pd-review-avatar">SN</span>
+              <div><strong>Sumon N. IN</strong><p>✔ Verified Buyer</p></div>
+            </div>
+            <dl>
+              <div><dt>Age</dt><dd>18 to 24</dd></div>
+              <div><dt>Skin Type</dt><dd>Oily</dd></div>
+              <div><dt>Skin Concerns</dt><dd>Oiliness, Hyperpigmentation, Uneven Skin Tone, Dullness, Acne</dd></div>
+            </dl>
+          </div>
+          <div class="pd-review-right">
+            <p class="pd-review-titleline">★★★★★ <span>This is a good cleanser.</span></p>
+            <p>This is a good cleanser. I had a lot of pimples and pigmentation, now they are gradually reducing since I started using this.</p>
+            <div class="pd-review-meta"><time>03/05/26</time><span>Was this review helpful? 👍 0 👎 0</span></div>
+          </div>
+        </article>
+
+        <article class="pd-review-item">
+          <div class="pd-review-left">
+            <div class="pd-review-userline">
+              <span class="pd-review-avatar">DT</span>
+              <div><strong>Devendra T. IN</strong><p>✔ Verified Buyer</p></div>
+            </div>
+            <dl>
+              <div><dt>Age</dt><dd>25 to 34</dd></div>
+            </dl>
+          </div>
+          <div class="pd-review-right">
+            <p class="pd-review-titleline">★★★★★ <span>Question</span></p>
+            <p>This cleanser is right or I will change other</p>
+            <div class="pd-review-meta"><time>27/04/26</time><span>Was this review helpful? 👍 0 👎 0</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="pd-sticky-offer">Buy Products Worth <strong>₹699</strong> or more to get <strong>Flat 25% OFF</strong> on your order</div>
+  <div class="pd-sticky-bar">
+    <div class="pd-sticky-left">
+      <p id="pd-sticky-title">10% Niacinamide Face Serum With Kojic Acid &amp; Korean Rice Water</p>
+      <strong id="pd-sticky-price">₹649</strong>
+    </div>
+    <button id="pd-btn" class="pd-btn" type="button">Add To Cart</button>
+  </div>
+
+  <footer class="bb-footer" aria-label="Footer">
+    <div class="bb-footer-inner">
+      <div class="bb-footer-top">
+        <div class="bb-footer-col bb-footer-brand">
+          <a href="index.html" class="bb-footer-logo" aria-label="DERMIFY">
+            <img class="bb-footer-logo-img" src="./assets/img/logo.png" alt="DERMIFY" />
+          </a>
+          <p class="bb-footer-about">DERMIFY offers a wide range of Beginner-friendly highly effective yet gentle
+            skincare products.</p>
+        </div>
+        <div class="bb-footer-col">
+          <h3>ABOUT</h3>
+          <ul>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="about.html">Our Philosophy</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms-and-conditions.html">Terms and conditions</a></li>
+            <li><a href="shipping-return-policy.html">Shipping & Return Policy</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Refer and Earn</a></li>
+          </ul>
+        </div>
+        <div class="bb-footer-col">
+          <h3>ALSO AVAILABLE ON</h3>
+          <ul>
+            <li><a href="#">Amazon</a></li>
+            <li><a href="#">Flipkart</a></li>
+            <li><a href="#">Nykaa</a></li>
+            <li><a href="#">Myntra</a></li>
+            <li><a href="#">Purplle</a></li>
+            <li><a href="#">Blinkit</a></li>
+            <li><a href="#">Zepto</a></li>
+            <li><a href="#">Instamart</a></li>
+          </ul>
+        </div>
+        <div class="bb-footer-col">
+          <h3>QUICK LINKS</h3>
+          <ul>
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">Grievance Officer</a></li>
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Our Ingredients</a></li>
+            <li><a href="#">Blogs</a></li>
+          </ul>
+        </div>
+        <div class="bb-footer-col bb-footer-contact">
+          <h3>GET IN TOUCH</h3>
+          <div class="bb-footer-socials"><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a><a
+              href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="#"
+              aria-label="Linkedin"><i class="fa-brands fa-linkedin-in"></i></a><a href="#" aria-label="Youtube"><i
+                class="fa-brands fa-youtube"></i></a></div>
+          <p class="bb-footer-label">ADDRESS</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-location-dot"></i> 581, 2nd Floor, 1st Main, 6th Sector, HSR
+            Layout, Bengaluru, Karnataka - 560102</p>
+          <p class="bb-footer-label">EMAIL</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-envelope"></i> wecare@theDERMIFY.in</p>
+          <p class="bb-footer-label">PHONE</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-phone"></i> 080-471-05772<br />(Monday - Sunday 10am - 7pm)
+          </p>
+        </div>
+      </div>
+      <div class="bb-footer-mid">
+        <h4>PAYMENT OPTIONS</h4>
+        <div class="bb-footer-payments"><span>VISA</span><span>Mastercard</span><span>Amex</span><span>G
+            Pay</span><span>UPI</span></div>
+      </div>
+    </div>
+    <div class="bb-footer-bottom">
+      <p>© The DERMIFY 2025. All rights Reserved.</p>
+      <p>GST NO: 29AAICB9825H1Z8</p>
+    </div>
+    <!-- <button class="bb-float-refer" type="button"><i class="fa-solid fa-money-bill-wave"></i> REFER &amp; EARN</button> -->
+    <button class="bb-float-wa" type="button" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+  </footer>
+
+  <script src="./assets/js/script.js"></script>
+  <script src="./assets/js/product.js"></script>
+</body>
+
+</html>

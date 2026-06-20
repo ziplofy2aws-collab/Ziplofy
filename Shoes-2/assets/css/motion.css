@@ -1,0 +1,150 @@
+/* Shoes-2 — motion hooks only (no layout / design changes) */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+#main-content {
+  perspective: 1200px;
+  perspective-origin: 50% 0%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+#main-content.sh2-pdp {
+  perspective: none;
+}
+
+.sh2-pdp__layout,
+.sh2-pdp__lower-main,
+.sh2-pdp__look {
+  transform: none !important;
+}
+
+.sh2-header,
+.sh2-header__main,
+.sh2-header__main-inner {
+  transform: none;
+}
+
+.sh2-motion-block {
+  transform-origin: center top;
+  backface-visibility: hidden;
+}
+
+.sh2-motion-heading-line {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.sh2-motion-heading-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.sh2-motion-reveal-item {
+  will-change: transform, opacity;
+}
+
+.sh2-motion-parallax {
+  will-change: transform;
+}
+
+.sh2-hero__slide img.sh2-motion-parallax,
+.sh2-promo__banner img.sh2-motion-parallax,
+.sh2-bslider__slide img.sh2-motion-parallax,
+.sh2-exclusive__card img.sh2-motion-parallax,
+.sh2-walk__card img.sh2-motion-parallax,
+.sh2-na__media img.sh2-motion-parallax,
+.sh2-trend__media img.sh2-motion-parallax,
+.sh2-shop__media img.sh2-motion-parallax,
+.sh2-cat__circle img.sh2-motion-parallax,
+.sh2-pdp__main-media img.sh2-motion-parallax,
+.sh2-pdp__look-media img.sh2-motion-parallax {
+  transform-origin: center center;
+}
+
+.sh2-na__media,
+.sh2-trend__media,
+.sh2-shop__media,
+.sh2-pdp__look-media,
+.sh2-pdp__main-media,
+.sh2-hero__inner,
+.sh2-promo__banner,
+.sh2-bslider__slides,
+.sh2-bslider__slide,
+.sh2-exclusive__card,
+.sh2-walk__card {
+  overflow: hidden;
+}
+
+.sh2-motion-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sh2-motion-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.sh2-motion-btn--dark::before {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.sh2-motion-btn--light::before {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.sh2-motion-btn--accent::before {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.sh2-motion-btn:hover::before {
+  transform: scaleX(1);
+}
+
+.sh2-motion-card {
+  will-change: transform, box-shadow;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh2-motion-heading-word,
+  .sh2-motion-reveal-item,
+  .sh2-motion-parallax,
+  .sh2-motion-block,
+  .sh2-motion-card {
+    will-change: auto;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .sh2-motion-btn::before {
+    display: none;
+  }
+}

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Category - DERMIFY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="stylesheet" href="./assets/css/category.css" />
+</head>
+
+<body>
+
+  <header class="bb-header">
+    <div class="bb-offer-bar" id="offerBar">
+      <p>BUY MORE SAVE MORE</p>
+      <p>DOWNLOAD THE APP</p>
+      <div class="bb-offer-right">
+        <p>SUPER DEALS AT &#8377;99</p>
+        <button class="bb-close-btn" id="closeOfferBar" type="button" aria-label="Close offer bar">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="bb-header-main">
+      <button class="bb-menu-btn" type="button" aria-label="Open menu" aria-controls="bbMobileDrawer"
+        aria-expanded="false" data-menu-toggle>
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+      <a href="index.html" class="bb-logo" aria-label="Beauty Barn home">
+        <img class="bb-logo-img" src="./assets/img/logo-2.png" alt="Beauty Barn" />
+      </a>
+      <label class="bb-search-wrap" aria-label="Search for products">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="search" placeholder="Search" />
+      </label>
+      <div class="bb-actions">
+        <a href="#" class="bb-signin-link" aria-label="Sign in">
+          <i class="fa-regular fa-user" aria-hidden="true"></i>
+          <span>Sign In<br /><small>FOR FREE SHIPPING</small></span>
+        </a>
+        <button class="bb-icon-btn" type="button" aria-label="Wishlist">
+          <i class="fa-regular fa-heart" aria-hidden="true"></i><span class="bb-badge">0</span>
+        </button>
+        <button class="bb-icon-btn" type="button" aria-label="Cart">
+          <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i><span class="bb-badge">0</span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="bb-nav-pill" aria-label="Primary">
+      <a href="#">What's New</a><a href="#">Skin <i class="fa-solid fa-angle-down" aria-hidden="true"></i></a><a
+        href="#">Makeup</a><a href="#">Hair</a><a href="#">Body Care</a><a href="#">Men's Skincare</a><a
+        href="#">Brands</a><a href="#">Bestsellers</a><a href="#">Travel Kits &amp; Minis</a><a href="#">Bundles</a><a
+        href="#">Clearance</a><a href="#">Sale</a>
+    </nav>
+    <div class="bb-mobile-overlay" data-menu-overlay hidden></div>
+    <aside class="bb-mobile-drawer" id="bbMobileDrawer" aria-label="Mobile menu" aria-hidden="true">
+      <div class="bb-mobile-drawer-head">
+        <strong>Menu</strong>
+        <button class="bb-mobile-close" type="button" aria-label="Close menu" data-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="bb-mobile-nav" aria-label="Mobile primary">
+        <a href="#">What's New</a>
+        <a href="category.html">Skin</a>
+        <a href="#">Makeup</a>
+        <a href="#">Hair</a>
+        <a href="category.html">Body Care</a>
+        <a href="#">Men's Skincare</a>
+        <a href="#">Brands</a>
+        <a href="#">Bestsellers</a>
+        <a href="#">Travel Kits &amp; Minis</a>
+        <a href="#">Bundles</a>
+        <a href="#">Clearance</a>
+        <a href="#">Sale</a>
+      </nav>
+    </aside>
+  </header>
+
+  <section class="bb-banner-full" aria-label="Category hero banner">
+    <img class="bb-banner-full-img" src="./assets/img/shop-banner.png" alt="Category page hero banner" width="1920"
+      height="640" decoding="async" />
+  </section>
+
+  <section class="cat-grid-section" aria-label="Product listing">
+    <div class="cat-grid-shell">
+      <div class="cat-filter-overlay" data-cat-filter-overlay hidden></div>
+      <aside class="cat-filter" aria-label="Filters" id="catMobileFilterDrawer">
+        <div class="cat-filter-mobile-head">
+          <strong>Filter</strong>
+          <button type="button" class="cat-filter-mobile-close" aria-label="Close filters" data-cat-filter-close>
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="cat-filter-head">Filter</div>
+
+        <div class="cat-filter-block">
+          <button class="cat-filter-row is-open" type="button" aria-expanded="true" data-filter-toggle>
+            <span>Price</span><i class="fa-solid fa-angle-up" aria-hidden="true"></i>
+          </button>
+          <div class="cat-filter-panel is-open">
+            <div class="cat-price-box">
+              <input type="range" min="0" max="1043" value="1043" data-price-range />
+              <div class="cat-price-values">
+                <span>₹ 0</span>
+                <span>to</span>
+                <span data-price-max-label>₹ 1043</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cat-filter-block">
+          <button class="cat-filter-row is-open" type="button" aria-expanded="true" data-filter-toggle>
+            <span>Category</span><i class="fa-solid fa-angle-up" aria-hidden="true"></i>
+          </button>
+          <div class="cat-filter-panel is-open">
+            <label class="cat-check"><input type="checkbox" data-filter-group="category" value="face-care" />
+              <span>Face Care (22)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="category" value="hair-care" />
+              <span>Hair Care (3)</span></label>
+          </div>
+        </div>
+
+        <div class="cat-filter-block">
+          <button class="cat-filter-row is-open" type="button" aria-expanded="true" data-filter-toggle>
+            <span>Subcategory</span><i class="fa-solid fa-angle-up" aria-hidden="true"></i>
+          </button>
+          <div class="cat-filter-panel is-open">
+            <label class="cat-check"><input type="checkbox" data-filter-group="subcategory" value="face-peel" />
+              <span>Face Peel (2)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="subcategory" value="kits-combos" />
+              <span>Kits &amp; Combos (6)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="subcategory" value="face-serum" />
+              <span>Face Serum (8)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="subcategory" value="face-wash" />
+              <span>Face Wash (2)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="subcategory" value="moisturizer" />
+              <span>Moisturizer (4)</span></label>
+          </div>
+        </div>
+
+        <div class="cat-filter-block">
+          <button class="cat-filter-row is-open" type="button" aria-expanded="true" data-filter-toggle>
+            <span>Product Range</span><i class="fa-solid fa-angle-up" aria-hidden="true"></i>
+          </button>
+          <div class="cat-filter-panel is-open">
+            <label class="cat-check"><input type="checkbox" data-filter-group="range" value="korean-jeju" />
+              <span>Korean/Jeju Range (17)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="range" value="australian-vitamin-c" />
+              <span>Australian Vitamin C Range (3)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="range" value="squalane" />
+              <span>Squalane Range (1)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="range" value="french-vino" />
+              <span>French/Vino Range (1)</span></label>
+          </div>
+        </div>
+
+        <div class="cat-filter-block">
+          <button class="cat-filter-row is-open" type="button" aria-expanded="true" data-filter-toggle>
+            <span>Skin Type</span><i class="fa-solid fa-angle-up" aria-hidden="true"></i>
+          </button>
+          <div class="cat-filter-panel is-open">
+            <label class="cat-check"><input type="checkbox" data-filter-group="skin" value="all" />
+              <span>All (17)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="skin" value="combination" />
+              <span>Combination (20)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="skin" value="dry" />
+              <span>Dry (18)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="skin" value="normal" />
+              <span>Normal (19)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="skin" value="oily" />
+              <span>Oily (21)</span></label>
+            <label class="cat-check"><input type="checkbox" data-filter-group="skin" value="sensitive" />
+              <span>Sensitive (19)</span></label>
+          </div>
+        </div>
+
+        <div class="cat-filter-block">
+          <button class="cat-filter-row is-open" type="button" aria-expanded="true" data-filter-toggle>
+            <span>Country of Origin</span><i class="fa-solid fa-angle-up" aria-hidden="true"></i>
+          </button>
+          <div class="cat-filter-panel is-open">
+            <label class="cat-check"><input type="checkbox" data-filter-group="country" value="india" />
+              <span>India (22)</span></label>
+          </div>
+        </div>
+      </aside>
+
+      <div class="cat-products-wrap">
+        <div class="cat-mobile-toolbar">
+          <button type="button" class="cat-mobile-btn" data-cat-sort-btn><i class="fa-solid fa-arrow-down-wide-short"
+              aria-hidden="true"></i> Sort <i class="fa-solid fa-angle-down" aria-hidden="true"></i></button>
+          <button type="button" class="cat-mobile-btn" data-cat-filter-open><i class="fa-solid fa-filter"
+              aria-hidden="true"></i> Filter <i class="fa-solid fa-angle-down" aria-hidden="true"></i></button>
+          <button type="button" class="cat-mobile-chip">Face Care</button>
+          <button type="button" class="cat-mobile-chip is-active">Face Serums</button>
+        </div>
+        <div class="cat-products-top">
+          <p>26 products</p>
+          <button type="button">Sort Featured <i class="fa-solid fa-angle-down" aria-hidden="true"></i></button>
+        </div>
+
+        <div class="cat-products-grid">
+          <article class="cat-card" data-category="face-care" data-subcategory="face-serum" data-range="australian-vitamin-c" data-skin="combination,oily,normal" data-country="india" data-price="645"><img src="./assets/img/TN-1.png" alt="10% Vitamin C Face Serum" />
+            <p class="cat-card-tag">#1 in skincare</p>
+            <h3>10% Vitamin C Face Serum</h3>
+            <p class="cat-card-sub">Glowing, Brighter Skin in 5 Days*</p>
+            <p class="cat-card-size">72 ml</p>
+            <p class="cat-card-price">From ₹645</p><button type="button">Add to cart <i
+                class="fa-solid fa-arrow-right"></i></button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="face-serum" data-range="korean-jeju" data-skin="oily,combination,sensitive" data-country="india" data-price="649"><img src="./assets/img/TN-2.png" alt="10% Niacinamide Face Serum" />
+            <p class="cat-card-tag">#2 in skincare</p>
+            <h3>10% Niacinamide Face Serum</h3>
+            <p class="cat-card-sub">Fades Acne Marks & Spots</p>
+            <p class="cat-card-size">30ml</p>
+            <p class="cat-card-price">₹649</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="face-peel" data-range="korean-jeju" data-skin="oily,normal,combination" data-country="india" data-price="645"><img src="./assets/img/TN-3.png" alt="AHA BHA PHA Peeling Solution" />
+            <p class="cat-card-tag">#3 in skincare</p>
+            <h3>25% AHA 2% BHA 5% PHA Peeling Solution</h3>
+            <p class="cat-card-sub">10-Min Tan Removal</p>
+            <p class="cat-card-size">27ml</p>
+            <p class="cat-card-price">From ₹645</p><button type="button">Add to cart <i
+                class="fa-solid fa-arrow-right"></i></button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="face-serum" data-range="french-vino" data-skin="normal,dry,combination" data-country="india" data-price="695"><img src="./assets/img/TN-4.png" alt="Brightening Serum" />
+            <p class="cat-card-tag">#5 in skincare</p>
+            <h3>Brightening Serum</h3>
+            <p class="cat-card-sub">Reduces Pigmentation</p>
+            <p class="cat-card-size">30ml</p>
+            <p class="cat-card-price">₹695</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="face-serum" data-range="korean-jeju" data-skin="dry,normal,combination" data-country="india" data-price="599"><img src="./assets/img/BS-1.png" alt="24K Gold Serum" />
+            <p class="cat-card-tag">#6 in skincare</p>
+            <h3>24K Gold Serum</h3>
+            <p class="cat-card-sub">Glow & Firmness</p>
+            <p class="cat-card-size">30ml</p>
+            <p class="cat-card-price">₹599</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="moisturizer" data-range="squalane" data-skin="dry,sensitive,normal" data-country="india" data-price="549"><img src="./assets/img/BS-2.png" alt="Hydrating Serum" />
+            <p class="cat-card-tag">#7 in skincare</p>
+            <h3>Hydrating Serum</h3>
+            <p class="cat-card-sub">Smooth & Soft Skin</p>
+            <p class="cat-card-size">30ml</p>
+            <p class="cat-card-price">₹549</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="hair-care" data-subcategory="kits-combos" data-range="australian-vitamin-c" data-skin="all" data-country="india" data-price="745"><img src="./assets/img/BS-3.png" alt="Vitamin C Body Serum" />
+            <p class="cat-card-tag">#8 in skincare</p>
+            <h3>Vitamin C Body Serum</h3>
+            <p class="cat-card-sub">Even Tone & Glow</p>
+            <p class="cat-card-size">100ml</p>
+            <p class="cat-card-price">₹745</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="face-serum" data-range="korean-jeju" data-skin="sensitive,oily,combination" data-country="india" data-price="695"><img src="./assets/img/BS-4.png" alt="Azelic Acid Face Serum" />
+            <p class="cat-card-tag">#9 in skincare</p>
+            <h3>Azelic Acid Face Serum</h3>
+            <p class="cat-card-sub">Fades Spots</p>
+            <p class="cat-card-size">30ml</p>
+            <p class="cat-card-price">₹695</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="kits-combos" data-range="australian-vitamin-c" data-skin="all" data-country="india" data-price="595"><img src="./assets/img/TN-1.png" alt="Vitamin C Sunscreen" />
+            <p class="cat-card-tag">#10 in skincare</p>
+            <h3>Vitamin C Sunscreen</h3>
+            <p class="cat-card-sub">SPF 50 PA++++</p>
+            <p class="cat-card-size">50g</p>
+            <p class="cat-card-price">₹595</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="face-wash" data-range="korean-jeju" data-skin="oily,combination,sensitive" data-country="india" data-price="399"><img src="./assets/img/TN-2.png" alt="Niacinamide Face Wash" />
+            <p class="cat-card-tag">#11 in skincare</p>
+            <h3>Niacinamide Face Wash</h3>
+            <p class="cat-card-sub">Gentle Daily Cleanser</p>
+            <p class="cat-card-size">100ml</p>
+            <p class="cat-card-price">₹399</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="face-care" data-subcategory="moisturizer" data-range="korean-jeju" data-skin="oily,combination,normal" data-country="india" data-price="495"><img src="./assets/img/TN-3.png" alt="Hydra Gel Moisturizer" />
+            <p class="cat-card-tag">#12 in skincare</p>
+            <h3>Hydra Gel Moisturizer</h3>
+            <p class="cat-card-sub">Oil-Free Lightweight Gel</p>
+            <p class="cat-card-size">50g</p>
+            <p class="cat-card-price">₹495</p><button type="button">Add to cart</button>
+          </article>
+          <article class="cat-card" data-category="hair-care" data-subcategory="kits-combos" data-range="korean-jeju" data-skin="all" data-country="india" data-price="799"><img src="./assets/img/TN-4.png" alt="Overnight Repair Serum" />
+            <p class="cat-card-tag">#13 in skincare</p>
+            <h3>Overnight Repair Serum</h3>
+            <p class="cat-card-sub">Repairs & Brightens Skin</p>
+            <p class="cat-card-size">30ml</p>
+            <p class="cat-card-price">₹799</p><button type="button">Add to cart</button>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bb-footer" aria-label="Footer">
+    <div class="bb-footer-inner">
+      <div class="bb-footer-top">
+        <div class="bb-footer-col bb-footer-brand">
+          <a href="index.html" class="bb-footer-logo" aria-label="DERMIFY">
+            <img class="bb-footer-logo-img" src="./assets/img/logo.png" alt="DERMIFY" />
+          </a>
+          <p class="bb-footer-about">DERMIFY offers a wide range of Beginner-friendly highly effective yet gentle
+            skincare products.</p>
+        </div>
+        <div class="bb-footer-col">
+          <h3>ABOUT</h3>
+          <ul>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="about.html">Our Philosophy</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms-and-conditions.html">Terms and conditions</a></li>
+            <li><a href="shipping-return-policy.html">Shipping & Return Policy</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Refer and Earn</a></li>
+          </ul>
+        </div>
+        <div class="bb-footer-col">
+          <h3>ALSO AVAILABLE ON</h3>
+          <ul>
+            <li><a href="#">Amazon</a></li>
+            <li><a href="#">Flipkart</a></li>
+            <li><a href="#">Nykaa</a></li>
+            <li><a href="#">Myntra</a></li>
+            <li><a href="#">Purplle</a></li>
+            <li><a href="#">Blinkit</a></li>
+            <li><a href="#">Zepto</a></li>
+            <li><a href="#">Instamart</a></li>
+          </ul>
+        </div>
+        <div class="bb-footer-col">
+          <h3>QUICK LINKS</h3>
+          <ul>
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">Grievance Officer</a></li>
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Our Ingredients</a></li>
+            <li><a href="#">Blogs</a></li>
+          </ul>
+        </div>
+        <div class="bb-footer-col bb-footer-contact">
+          <h3>GET IN TOUCH</h3>
+          <div class="bb-footer-socials"><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a><a
+              href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a><a href="#"
+              aria-label="Linkedin"><i class="fa-brands fa-linkedin-in"></i></a><a href="#" aria-label="Youtube"><i
+                class="fa-brands fa-youtube"></i></a></div>
+          <p class="bb-footer-label">ADDRESS</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-location-dot"></i> 581, 2nd Floor, 1st Main, 6th Sector, HSR
+            Layout, Bengaluru, Karnataka - 560102</p>
+          <p class="bb-footer-label">EMAIL</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-envelope"></i> wecare@theDERMIFY.in</p>
+          <p class="bb-footer-label">PHONE</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-phone"></i> 080-471-05772<br />(Monday - Sunday 10am - 7pm)
+          </p>
+        </div>
+      </div>
+      <div class="bb-footer-mid">
+        <h4>PAYMENT OPTIONS</h4>
+        <div class="bb-footer-payments"><span>VISA</span><span>Mastercard</span><span>Amex</span><span>G
+            Pay</span><span>UPI</span></div>
+      </div>
+    </div>
+    <div class="bb-footer-bottom">
+      <p>© The DERMIFY 2025. All rights Reserved.</p>
+      <p>GST NO: 29AAICB9825H1Z8</p>
+    </div>
+    <!-- <button class="bb-float-refer" type="button"><i class="fa-solid fa-money-bill-wave"></i> REFER &amp; EARN</button> -->
+    <button class="bb-float-wa" type="button" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+  </footer>
+
+  <script src="./assets/js/script.js"></script>
+  <script src="./assets/js/category.js"></script>
+
+</body>
+
+</html>

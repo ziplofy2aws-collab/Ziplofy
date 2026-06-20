@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DERMIFY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="bb-header">
+    <div class="bb-offer-bar" id="offerBar">
+      <p>BUY MORE SAVE MORE</p>
+      <p>DOWNLOAD THE APP</p>
+      <div class="bb-offer-right">
+        <p>SUPER DEALS AT &#8377;99</p>
+        <button class="bb-close-btn" id="closeOfferBar" type="button" aria-label="Close offer bar">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="bb-header-main">
+      <button class="bb-menu-btn" type="button" aria-label="Open menu" aria-controls="bbMobileDrawer"
+        aria-expanded="false" data-menu-toggle>
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+      <a href="index.html" class="bb-logo" aria-label="Beauty Barn home">
+        <img class="bb-logo-img" src="./assets/img/logo-2.png" alt="Beauty Barn" />
+      </a>
+
+      <label class="bb-search-wrap" aria-label="Search for products">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="search" placeholder="Search" />
+      </label>
+
+      <div class="bb-actions">
+        <a href="#" class="bb-signin-link" aria-label="Sign in">
+          <i class="fa-regular fa-user" aria-hidden="true"></i>
+          <span>
+            Sign In<br />
+            <small>FOR FREE SHIPPING</small>
+          </span>
+        </a>
+        <button class="bb-icon-btn" type="button" aria-label="Wishlist">
+          <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          <span class="bb-badge">0</span>
+        </button>
+        <button class="bb-icon-btn" type="button" aria-label="Cart">
+          <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          <span class="bb-badge">0</span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="bb-nav-pill" aria-label="Primary">
+      <a href="#">What's New</a>
+      <a href="category.html">Skin <i class="fa-solid fa-angle-down" aria-hidden="true"></i></a>
+      <a href="#">Makeup</a>
+      <a href="#">Hair</a>
+      <a href="category.html">Body Care</a>
+      <a href="#">Men's Skincare</a>
+      <a href="#">Brands</a>
+      <a href="category.html">Bestsellers</a>
+      <a href="#">Travel Kits &amp; Minis</a>
+      <a href="#">Bundles</a>
+      <a href="#">Clearance</a>
+      <a href="#">Sale</a>
+    </nav>
+
+    <div class="bb-mobile-overlay" data-menu-overlay hidden></div>
+    <aside class="bb-mobile-drawer" id="bbMobileDrawer" aria-label="Mobile menu" aria-hidden="true">
+      <div class="bb-mobile-drawer-head">
+        <strong>Menu</strong>
+        <button class="bb-mobile-close" type="button" aria-label="Close menu" data-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="bb-mobile-nav" aria-label="Mobile primary">
+        <a href="#">What's New</a>
+        <a href="category.html">Skin</a>
+        <a href="#">Makeup</a>
+        <a href="#">Hair</a>
+        <a href="category.html">Body Care</a>
+        <a href="#">Men's Skincare</a>
+        <a href="#">Brands</a>
+        <a href="category.html">Bestsellers</a>
+        <a href="#">Travel Kits &amp; Minis</a>
+        <a href="#">Bundles</a>
+        <a href="#">Clearance</a>
+        <a href="#">Sale</a>
+      </nav>
+    </aside>
+  </header>
+
+  <section class="bb-hero" data-hero-slider aria-label="Promotional banners">
+    <div class="bb-hero-viewport">
+      <div class="bb-hero-track" data-hero-track>
+        <div class="bb-hero-slide" data-hero-slide>
+          <img src="assets/img/hero-banner-1.png" alt="Bioderma skincare promotion" width="1920" height="640"
+            decoding="async" />
+        </div>
+        <div class="bb-hero-slide" data-hero-slide>
+          <img src="assets/img/hero-banner-2.png" alt="Skincare promotion slide 2" width="1920" height="640"
+            decoding="async" />
+        </div>
+        <div class="bb-hero-slide" data-hero-slide>
+          <img src="assets/img/hero-banner-3.png" alt="Skincare promotion slide 3" width="1920" height="640"
+            decoding="async" />
+        </div>
+        <div class="bb-hero-slide" data-hero-slide>
+          <img src="assets/img/hero-banner-4.png" alt="Skincare promotion slide 4" width="1920" height="640"
+            decoding="async" />
+        </div>
+      </div>
+    </div>
+    <div class="bb-hero-dots" role="tablist" aria-label="Choose slide">
+      <button type="button" class="bb-hero-dot is-active" data-hero-dot role="tab" aria-selected="true"
+        aria-label="Slide 1" tabindex="0"></button>
+      <button type="button" class="bb-hero-dot" data-hero-dot role="tab" aria-selected="false" aria-label="Slide 2"
+        tabindex="-1"></button>
+      <button type="button" class="bb-hero-dot" data-hero-dot role="tab" aria-selected="false" aria-label="Slide 3"
+        tabindex="-1"></button>
+      <button type="button" class="bb-hero-dot" data-hero-dot role="tab" aria-selected="false" aria-label="Slide 4"
+        tabindex="-1"></button>
+    </div>
+  </section>
+
+  <section class="bb-bs-section" aria-labelledby="bb-bs-heading">
+    <div class="bb-bs-inner">
+      <h2 id="bb-bs-heading" class="bb-bs-title">Our Best Sellers</h2>
+
+      <div class="bb-bs-grid">
+        <article class="bb-bs-card" data-bs-card data-product-id="p1">
+          <div class="bb-bs-media">
+            <div class="bb-bs-img-wrap">
+              <img src="./assets/img/BS-1.png" alt="Salicylic Acid + LHA 2% Cleanser" width="400" height="400"
+                decoding="async" />
+            </div>
+          </div>
+          <h3 class="bb-bs-name">Salicylic Acid + LHA 2% Cleanser</h3>
+          <p class="bb-bs-desc">Acne, Breakouts &amp; Oiliness</p>
+          <div class="bb-bs-stars" aria-label="4 out of 5 stars">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-regular fa-star" aria-hidden="true"></i>
+          </div>
+          <p class="bb-bs-price">On Sale from <span class="bb-bs-price-amt">₹ 269</span></p>
+          <button type="button" class="bb-bs-select">Select Size</button>
+        </article>
+
+        <article class="bb-bs-card" data-bs-card data-product-id="p2">
+          <div class="bb-bs-media">
+            <div class="bb-bs-img-wrap">
+              <img src="./assets/img/BS-2.png" alt="SPF 50 Sunscreen" width="400" height="400" decoding="async" />
+            </div>
+          </div>
+          <h3 class="bb-bs-name">SPF 50 Sunscreen</h3>
+          <p class="bb-bs-desc">Sun protection, UV exposure / damage</p>
+          <div class="bb-bs-stars" aria-label="4 out of 5 stars">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-regular fa-star" aria-hidden="true"></i>
+          </div>
+          <p class="bb-bs-price">On Sale from <span class="bb-bs-price-amt">₹ 359</span></p>
+          <button type="button" class="bb-bs-select">Select Size</button>
+        </article>
+
+        <article class="bb-bs-card" data-bs-card data-product-id="p3">
+          <div class="bb-bs-media">
+            <div class="bb-bs-img-wrap">
+              <img src="./assets/img/BS-3.png" alt="Vitamin B5 10% Moisturizer" width="400" height="400"
+                decoding="async" />
+            </div>
+          </div>
+          <h3 class="bb-bs-name">Vitamin B5 10% Moisturizer</h3>
+          <p class="bb-bs-desc">Damaged Barrier, Oily &amp; Dehydrated</p>
+          <div class="bb-bs-stars" aria-label="4 out of 5 stars">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-regular fa-star" aria-hidden="true"></i>
+          </div>
+          <p class="bb-bs-price">On Sale from <span class="bb-bs-price-amt">₹ 314</span></p>
+          <button type="button" class="bb-bs-select">Select Size</button>
+        </article>
+
+        <article class="bb-bs-card" data-bs-card data-product-id="p4">
+          <div class="bb-bs-media">
+            <div class="bb-bs-img-wrap">
+              <img src="./assets/img/BS-4.png" alt="Niacinamide 10% Face Serum" width="400" height="400"
+                decoding="async" />
+            </div>
+          </div>
+          <h3 class="bb-bs-name">Niacinamide 10% Face Serum</h3>
+          <p class="bb-bs-desc">Acne Marks, Acne Prone &amp; Oily Skin</p>
+          <div class="bb-bs-stars" aria-label="4 out of 5 stars">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-regular fa-star" aria-hidden="true"></i>
+          </div>
+          <p class="bb-bs-price">On Sale from <span class="bb-bs-price-amt">₹ 224</span></p>
+          <button type="button" class="bb-bs-select">Select Size</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="bb-banner-full" aria-label="Promotional banner">
+    <img class="bb-banner-full-img" src="./assets/img/banner-1.png" alt="Promotional banner" width="1920" height="640"
+      decoding="async" />
+  </section>
+
+  <section class="bb-rgk-section" aria-labelledby="bb-rgk-heading">
+    <div class="bb-rgk-inner">
+      <h2 id="bb-rgk-heading" class="bb-rgk-title">ROUTINES &amp; GIFT KITS</h2>
+      <span class="bb-rgk-title-line" aria-hidden="true"></span>
+
+      <div class="bb-rgk-grid">
+        <article class="bb-rgk-card" data-product-id="p13">
+          <div class="bb-rgk-media">
+            <span class="bb-rgk-badge">-30% Off</span>
+            <div class="bb-rgk-visual">
+              <img class="bb-rgk-img bb-rgk-img--default" src="./assets/img/RGK-1.png"
+                alt="Anti-Acne Skincare Routine Kit For Oily Skin" width="480" height="480" decoding="async" />
+              <img class="bb-rgk-img bb-rgk-img--hover" src="./assets/img/RGK-1-hover.png" alt="" width="480"
+                height="480" decoding="async" loading="lazy" aria-hidden="true" />
+            </div>
+          </div>
+          <h3 class="bb-rgk-name">Anti-Acne Skincare Routine Kit For Oily Skin | Dermat Recommended Bestseller</h3>
+          <p class="bb-rgk-prices">
+            <span class="bb-rgk-price-old">₹1,696</span>
+            <span class="bb-rgk-price-new">₹1,187</span>
+          </p>
+          <div class="bb-rgk-rating">
+            <span class="bb-rgk-stars" aria-hidden="true">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+            </span>
+            <span class="bb-rgk-rating-text">4.0 (157 Reviews)</span>
+          </div>
+          <p class="bb-rgk-benefit">Fights Acne &amp; Oil Control</p>
+          <button type="button" class="bb-rgk-cart">ADD TO CART</button>
+        </article>
+
+        <article class="bb-rgk-card" data-product-id="p14">
+          <div class="bb-rgk-media">
+            <span class="bb-rgk-badge">-25% Off</span>
+            <div class="bb-rgk-visual">
+              <img class="bb-rgk-img bb-rgk-img--default" src="./assets/img/RGK-2.png"
+                alt="Summer Essential Skincare Routine Kit" width="480" height="480" decoding="async" />
+              <img class="bb-rgk-img bb-rgk-img--hover" src="./assets/img/RGK-2-hover.png" alt="" width="480"
+                height="480" loading="lazy" decoding="async" aria-hidden="true" />
+            </div>
+          </div>
+          <h3 class="bb-rgk-name">Summer Essential Skincare Routine Kit | Top Seller | Men &amp; Women</h3>
+          <p class="bb-rgk-prices">
+            <span class="bb-rgk-price-old">₹2,344</span>
+            <span class="bb-rgk-price-new">₹1,758</span>
+          </p>
+          <div class="bb-rgk-rating">
+            <span class="bb-rgk-stars" aria-hidden="true">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </span>
+            <span class="bb-rgk-rating-text">4.2 (156 Reviews)</span>
+          </div>
+          <p class="bb-rgk-benefit">Brightens, Protects &amp; Fights Acne</p>
+          <button type="button" class="bb-rgk-cart">ADD TO CART</button>
+        </article>
+
+        <article class="bb-rgk-card" data-product-id="p15">
+          <div class="bb-rgk-media">
+            <span class="bb-rgk-badge">-30% Off</span>
+            <div class="bb-rgk-visual">
+              <img class="bb-rgk-img bb-rgk-img--default" src="./assets/img/RGK-3.png"
+                alt="Skin Brightening Routine Kit For Dull Skin" width="480" height="480" decoding="async" />
+              <img class="bb-rgk-img bb-rgk-img--hover" src="./assets/img/RGK-3-hover.png" alt="" width="480"
+                height="480" loading="lazy" decoding="async" aria-hidden="true" />
+            </div>
+          </div>
+          <h3 class="bb-rgk-name">Skin Brightening Routine Kit For Dull Skin | Top Best Selling Bright Skincare Routine
+            For Men &amp; Women</h3>
+          <p class="bb-rgk-prices">
+            <span class="bb-rgk-price-old">₹1,846</span>
+            <span class="bb-rgk-price-new">₹1,292</span>
+          </p>
+          <div class="bb-rgk-rating">
+            <span class="bb-rgk-stars" aria-hidden="true">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </span>
+            <span class="bb-rgk-rating-text">4.7 (236 Reviews)</span>
+          </div>
+          <p class="bb-rgk-benefit">Brightens Skin, Fades Dark Spots</p>
+          <button type="button" class="bb-rgk-cart">ADD TO CART</button>
+        </article>
+
+        <article class="bb-rgk-card" data-product-id="p16">
+          <div class="bb-rgk-media">
+            <span class="bb-rgk-badge">-30% Off</span>
+            <div class="bb-rgk-visual">
+              <img class="bb-rgk-img bb-rgk-img--default" src="./assets/img/RGK-4.png"
+                alt="Anti-Pigmentation Skincare Routine Kit" width="480" height="480" decoding="async" />
+              <img class="bb-rgk-img bb-rgk-img--hover" src="./assets/img/RGK-4-hover.png" alt="" width="480"
+                height="480" loading="lazy" decoding="async" aria-hidden="true" />
+            </div>
+          </div>
+          <h3 class="bb-rgk-name">Anti-Pigmentation Skincare Routine Kit | Fades Dark Spots | Dermatologist Recommended
+            | Bestseller</h3>
+          <p class="bb-rgk-prices">
+            <span class="bb-rgk-price-old">₹1,896</span>
+            <span class="bb-rgk-price-new">₹1,327</span>
+          </p>
+          <div class="bb-rgk-rating">
+            <span class="bb-rgk-stars" aria-hidden="true">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </span>
+            <span class="bb-rgk-rating-text">4.7 (384 Reviews)</span>
+          </div>
+          <p class="bb-rgk-benefit">Reduce Pigmentation &amp; Dark Spots</p>
+          <button type="button" class="bb-rgk-cart">ADD TO CART</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="bb-promo-dual" aria-label="SEREKO promotional offers">
+    <img class="bb-promo-dual-img" src="./assets/img/promo-1.png" alt="Try any 3 at 699 — SEREKO skincare offer"
+      width="960" height="540" decoding="async" />
+    <img class="bb-promo-dual-img" src="./assets/img/promo-2.png" alt="Buy any 2 at 1199 — SEREKO skincare offer"
+      width="960" height="540" decoding="async" />
+  </section>
+
+  <section class="bb-sbc-section" aria-labelledby="bb-sbc-heading">
+    <div class="bb-sbc-inner">
+      <h2 id="bb-sbc-heading" class="bb-sbc-title">Shop by category</h2>
+      <div class="bb-sbc-grid" role="list">
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--cool">
+            <img class="bb-sbc-img" src="./assets/img/hair-mask.png" alt="" width="200" height="220" decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--cool">
+            <img class="bb-sbc-img" src="./assets/img/hair-care.png" alt="" width="200" height="220" decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--cool">
+            <img class="bb-sbc-img" src="./assets/img/hair-mask.png" alt="" width="200" height="220" decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--cool">
+            <img class="bb-sbc-img" src="./assets/img/moisturizers.png" alt="" width="200" height="220"
+              decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--cool">
+            <img class="bb-sbc-img" src="./assets/img/sunscreens.png" alt="" width="200" height="220"
+              decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--cool">
+            <img class="bb-sbc-img" src="./assets/img/face-serum.png" alt="" width="200" height="220"
+              decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--warm">
+            <img class="bb-sbc-img" src="./assets/img/makeup-face.png" alt="" width="200" height="220"
+              decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--warm">
+            <img class="bb-sbc-img" src="./assets/img/makeup-eye.png" alt="" width="200" height="220"
+              decoding="async" />
+          </div>
+        </a>
+        <a href="#" class="bb-sbc-card" role="listitem">
+          <div class="bb-sbc-arch bb-sbc-arch--warm">
+            <img class="bb-sbc-img" src="./assets/img/makeup-lips.png" alt="" width="200" height="220"
+              decoding="async" />
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bb-sbi-section" aria-labelledby="bb-sbi-heading">
+    <div class="bb-sbi-inner">
+      <h2 id="bb-sbi-heading" class="bb-sbi-title">Shop by Ingredients</h2>
+      <div class="bb-sbi-row">
+        <button type="button" class="bb-sbi-prev is-hidden" data-sbi-prev aria-label="Scroll ingredients left">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <div class="bb-sbi-viewport" data-sbi-viewport>
+          <div class="bb-sbi-track" data-sbi-track role="list">
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Ceramides.webp" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Vitamin-C_1.webp" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Niacinamide_1.png" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/tea-tree_1.webp" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Redensyl_1.png" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Salicylic-Acid_1.png" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Hyaluronic-Acid_1.png" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Squalane_1.webp" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+            <a href="#" class="bb-sbi-item" role="listitem">
+              <div class="bb-sbi-img-wrap">
+                <img src="./assets/img/Rosemary_1.png" alt="" width="200" height="200" decoding="async" />
+              </div>
+            </a>
+          </div>
+        </div>
+        <button type="button" class="bb-sbi-next" data-sbi-next aria-label="Scroll ingredients right">
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bb-banner-full" aria-label="Promotional banner">
+    <img class="bb-banner-full-img" src="./assets/img/banner-2.png" alt="Promotional banner" width="1920" height="640"
+      decoding="async" />
+  </section>
+
+  <section class="bb-tn-section" aria-labelledby="bb-tn-heading">
+    <div class="bb-tn-inner">
+      <h2 id="bb-tn-heading" class="bb-tn-title">Trending Now</h2>
+      <p class="bb-tn-subtitle">Curated just for you!</p>
+
+      <div class="bb-tn-tabs" role="tablist" aria-label="Trending categories">
+        <button type="button" class="bb-tn-tab is-active" role="tab" aria-selected="true">Bestsellers</button>
+        <button type="button" class="bb-tn-tab" role="tab" aria-selected="false">Skin Care</button>
+        <button type="button" class="bb-tn-tab" role="tab" aria-selected="false">Hair Care</button>
+        <button type="button" class="bb-tn-tab" role="tab" aria-selected="false">Makeup</button>
+      </div>
+
+      <div class="bb-tn-grid">
+        <article class="bb-tn-card" data-product-id="p1">
+          <div class="bb-tn-media">
+            <span class="bb-tn-offer">Up to 40% OFF</span>
+            <img class="bb-tn-img" src="./assets/img/TN-1.png" alt="10% Vitamin C Face Serum by Pilgrim" width="420"
+              height="700" decoding="async" />
+          </div>
+          <div class="bb-tn-body">
+            <p class="bb-tn-cat">#1 in skincare</p>
+            <h3 class="bb-tn-name">10% Vitamin C Face Serum</h3>
+            <p class="bb-tn-copy">Glowing, Brighter Skin in 5 Days*</p>
+            <p class="bb-tn-rating">★★★★☆ <span>5478 reviews</span></p>
+            <p class="bb-tn-price">From ₹645</p>
+            <button type="button" class="bb-tn-btn">Add to cart <i class="fa-solid fa-arrow-right"
+                aria-hidden="true"></i></button>
+          </div>
+        </article>
+        <article class="bb-tn-card" data-product-id="p2">
+          <div class="bb-tn-media">
+            <span class="bb-tn-offer">Up to 40% OFF</span>
+            <img class="bb-tn-img" src="./assets/img/TN-2.png" alt="Redensyl and Anagain Hair Growth Serum by Pilgrim"
+              width="420" height="700" decoding="async" />
+          </div>
+          <div class="bb-tn-body">
+            <p class="bb-tn-cat">#1 in hair care</p>
+            <h3 class="bb-tn-name">Redensyl &amp; Anagain Hair Growth Serum</h3>
+            <p class="bb-tn-copy">New Hair Growth in 28 Days</p>
+            <p class="bb-tn-rating">★★★★☆ <span>7659 reviews</span></p>
+            <p class="bb-tn-price">From ₹795</p>
+            <button type="button" class="bb-tn-btn">Add to cart <i class="fa-solid fa-arrow-right"
+                aria-hidden="true"></i></button>
+          </div>
+        </article>
+        <article class="bb-tn-card" data-product-id="p3">
+          <div class="bb-tn-media">
+            <span class="bb-tn-offer">Up to 40% OFF</span>
+            <img class="bb-tn-img" src="./assets/img/TN-3.png" alt="Korean Hydra Glow Moisturizer by Pilgrim"
+              width="420" height="700" decoding="async" />
+          </div>
+          <div class="bb-tn-body">
+            <p class="bb-tn-cat">#1 in moisturizers</p>
+            <h3 class="bb-tn-name">Korean Hydra Glow Moisturizer</h3>
+            <p class="bb-tn-copy">Instant Glass Skin Glow</p>
+            <p class="bb-tn-rating">★★★★☆ <span>1049 reviews</span></p>
+            <p class="bb-tn-price">₹395</p>
+            <button type="button" class="bb-tn-btn">Add to cart</button>
+          </div>
+        </article>
+        <article class="bb-tn-card" data-product-id="p4">
+          <div class="bb-tn-media">
+            <span class="bb-tn-offer">Up to 40% OFF</span>
+            <img class="bb-tn-img" src="./assets/img/TN-4.png" alt="Dubai Bling Glitter Lipstick by Pilgrim" width="420"
+              height="700" decoding="async" />
+          </div>
+          <div class="bb-tn-body">
+            <p class="bb-tn-cat">#1 in makeup</p>
+            <h3 class="bb-tn-name">Dubai Bling Glitter Lipstick</h3>
+            <p class="bb-tn-copy">Nourishing &amp; Hydrating</p>
+            <p class="bb-tn-rating">★★★★☆ <span>649 reviews</span></p>
+            <p class="bb-tn-price">₹645</p>
+            <button type="button" class="bb-tn-btn">Select Shade</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="bb-promo-slider" aria-label="Additional offers">
+    <button type="button" class="bb-promo-arrow bb-promo-arrow--prev" data-promo-prev aria-label="Previous offer">
+      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <div class="bb-promo-viewport">
+      <div class="bb-promo-track" data-promo-track>
+        <article class="bb-promo-card">
+          <img src="./assets/img/Promo-3.png" alt="Offer banner 1" decoding="async" />
+        </article>
+        <article class="bb-promo-card">
+          <img src="./assets/img/Promo-4.png" alt="Offer banner 2" decoding="async" />
+        </article>
+        <article class="bb-promo-card">
+          <img src="./assets/img/Promo-5.png" alt="Offer banner 3" decoding="async" />
+        </article>
+        <article class="bb-promo-card">
+          <img src="./assets/img/Promo-6.png" alt="Offer banner 4" decoding="async" />
+        </article>
+        <article class="bb-promo-card">
+          <img src="./assets/img/Promo-7.png" alt="Offer banner 5" decoding="async" />
+        </article>
+      </div>
+    </div>
+    <button type="button" class="bb-promo-arrow bb-promo-arrow--next" data-promo-next aria-label="Next offer">
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    </button>
+  </section>
+
+  <section class="bb-reviews-section" aria-labelledby="bb-reviews-heading">
+    <div class="bb-reviews-inner">
+      <h2 id="bb-reviews-heading" class="bb-reviews-title">Feels Good Stories</h2>
+      <div class="bb-reviews-viewport" data-reviews-viewport>
+        <div class="bb-reviews-track">
+          <article class="bb-review-card">
+            <header class="bb-review-head">
+              <img class="bb-review-avatar" src="./assets/img/rev-1.png" alt="Megha Parashar" width="76" height="76"
+                decoding="async" />
+              <div class="bb-review-user">
+                <p class="bb-review-name">MEGHA<br />PARASHAR</p>
+                <img class="bb-review-verified" src="./assets/img/rev-verified.png" alt="" width="14" height="14"
+                  decoding="async" />
+              </div>
+            </header>
+            <p class="bb-review-stars">★★★★★</p>
+            <h3 class="bb-review-title">Just Love It !</h3>
+            <p class="bb-review-copy">I’ve Been Using Dot &amp; Key Vitamin C Sunscreen For A Year Now. It’s Lightweight
+              &amp; Quick-Absorbing. Reduces Dullness Too With A Dewy Finish. A Must-Buy!</p>
+            <footer class="bb-review-foot">
+              <img src="./assets/img/rev-prod-1.png" alt="" width="56" height="56" decoding="async" />
+              <div>
+                <p>Megha Recommends This Product</p>
+                <a href="#">SHOP NOW ↓</a>
+              </div>
+            </footer>
+          </article>
+
+          <article class="bb-review-card">
+            <header class="bb-review-head">
+              <img class="bb-review-avatar" src="./assets/img/rev-2.png" alt="Reshma Satheesh" width="76" height="76"
+                decoding="async" />
+              <div class="bb-review-user">
+                <p class="bb-review-name">RESHMA<br />SATHEESH</p>
+                <img class="bb-review-verified" src="./assets/img/rev-verified.png" alt="" width="14" height="14"
+                  decoding="async" />
+              </div>
+            </header>
+            <p class="bb-review-stars">★★★★★</p>
+            <h3 class="bb-review-title">Blends In No Time</h3>
+            <p class="bb-review-copy">This Is My Third Bottle Of Using This Sunscreen. Zero White Cast &amp; Non-Pilling
+              Formula...Just Love It!</p>
+            <footer class="bb-review-foot">
+              <img src="./assets/img/rev-prod-2.png" alt="" width="56" height="56" decoding="async" />
+              <div>
+                <p>Reshma Recommends This Product</p>
+                <a href="#">SHOP NOW ↓</a>
+              </div>
+            </footer>
+          </article>
+
+          <article class="bb-review-card">
+            <header class="bb-review-head">
+              <img class="bb-review-avatar" src="./assets/img/rev-3.png" alt="Muskan Chowdhury" width="76" height="76"
+                decoding="async" />
+              <div class="bb-review-user">
+                <p class="bb-review-name">MUSKAN<br />CHOWDHURY</p>
+                <img class="bb-review-verified" src="./assets/img/rev-verified.png" alt="" width="14" height="14"
+                  decoding="async" />
+              </div>
+            </header>
+            <p class="bb-review-stars">★★★★★</p>
+            <h3 class="bb-review-title">No More Dry Skin</h3>
+            <p class="bb-review-copy">Ceramide In This Moisturizer Protects The Natural Barrier Of My Skin While Deeply
+              Moisturizing. It Also Soothes Redness &amp; Dry Skin.</p>
+            <footer class="bb-review-foot">
+              <img src="./assets/img/rev-prod-3.png" alt="" width="56" height="56" decoding="async" />
+              <div>
+                <p>Muskan Recommends This Product</p>
+                <a href="#">SHOP NOW ↓</a>
+              </div>
+            </footer>
+          </article>
+
+          <article class="bb-review-card">
+            <header class="bb-review-head">
+              <img class="bb-review-avatar" src="./assets/img/rev-4.png" alt="Sonal Sareen" width="76" height="76"
+                decoding="async" />
+              <div class="bb-review-user">
+                <p class="bb-review-name">SONAL<br />SAREEN</p>
+                <img class="bb-review-verified" src="./assets/img/rev-verified.png" alt="" width="14" height="14"
+                  decoding="async" />
+              </div>
+            </header>
+            <p class="bb-review-stars">★★★★★</p>
+            <h3 class="bb-review-title">It Works!</h3>
+            <p class="bb-review-copy">I Have Been Using This Moisturizer For A Month Now. It Is Non-Sticky &amp; Quick
+              Absorbing. Skin Is Visibly Brightened &amp; Even-Toned.</p>
+            <footer class="bb-review-foot">
+              <img src="./assets/img/rev-prod-4.png" alt="" width="56" height="56" decoding="async" />
+              <div>
+                <p>Sonal Recommends This Product</p>
+                <a href="#">SHOP NOW ↓</a>
+              </div>
+            </footer>
+          </article>
+
+          <article class="bb-review-card">
+            <header class="bb-review-head">
+              <img class="bb-review-avatar" src="./assets/img/rev-5.png" alt="Ritu Sharma" width="76" height="76"
+                decoding="async" />
+              <div class="bb-review-user">
+                <p class="bb-review-name">RITU<br />SHARMA</p>
+                <img class="bb-review-verified" src="./assets/img/rev-verified.png" alt="" width="14" height="14"
+                  decoding="async" />
+              </div>
+            </header>
+            <p class="bb-review-stars">★★★★★</p>
+            <h3 class="bb-review-title">Best SPF So Far</h3>
+            <p class="bb-review-copy">No White Cast, No Greasy Feel, And My Makeup Sits Well On Top. The Sun Protection
+              Is Great For Daily Office Commute.</p>
+            <footer class="bb-review-foot">
+              <img src="./assets/img/rev-prod-5.png" alt="" width="56" height="56" decoding="async" />
+              <div>
+                <p>Ritu Recommends This Product</p>
+                <a href="#">SHOP NOW ↓</a>
+              </div>
+            </footer>
+          </article>
+
+          <article class="bb-review-card">
+            <header class="bb-review-head">
+              <img class="bb-review-avatar" src="./assets/img/rev-6.png" alt="Priya Nair" width="76" height="76"
+                decoding="async" />
+              <div class="bb-review-user">
+                <p class="bb-review-name">PRIYA<br />NAIR</p>
+                <img class="bb-review-verified" src="./assets/img/rev-verified.png" alt="" width="14" height="14"
+                  decoding="async" />
+              </div>
+            </header>
+            <p class="bb-review-stars">★★★★★</p>
+            <h3 class="bb-review-title">Visible Glow</h3>
+            <p class="bb-review-copy">Within Two Weeks My Skin Texture Improved A Lot. This Serum Is Gentle Yet
+              Effective And Gives A Healthy Glow.</p>
+            <footer class="bb-review-foot">
+              <img src="./assets/img/rev-prod-6.png" alt="" width="56" height="56" decoding="async" />
+              <div>
+                <p>Priya Recommends This Product</p>
+                <a href="#">SHOP NOW ↓</a>
+              </div>
+            </footer>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bb-footer" aria-label="Footer">
+    <div class="bb-footer-inner">
+      <div class="bb-footer-top">
+        <div class="bb-footer-col bb-footer-brand">
+          <a href="index.html" class="bb-footer-logo" aria-label="DERMIFY">
+            <img class="bb-footer-logo-img" src="./assets/img/logo.png" alt="DERMIFY" />
+          </a>
+          <p class="bb-footer-about">DERMIFY offers a wide range of Beginner-friendly highly effective yet gentle
+            skincare products.</p>
+        </div>
+
+        <div class="bb-footer-col">
+          <h3>ABOUT</h3>
+          <ul>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="about.html">Our Philosophy</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms-and-conditions.html">Terms and conditions</a></li>
+            <li><a href="shipping-return-policy.html">Shipping & Return Policy</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Refer and Earn</a></li>
+          </ul>
+        </div>
+
+        <div class="bb-footer-col">
+          <h3>ALSO AVAILABLE ON</h3>
+          <ul>
+            <li><a href="#">Amazon</a></li>
+            <li><a href="#">Flipkart</a></li>
+            <li><a href="#">Nykaa</a></li>
+            <li><a href="#">Myntra</a></li>
+            <li><a href="#">Purplle</a></li>
+            <li><a href="#">Blinkit</a></li>
+            <li><a href="#">Zepto</a></li>
+            <li><a href="#">Instamart</a></li>
+          </ul>
+        </div>
+
+        <div class="bb-footer-col">
+          <h3>QUICK LINKS</h3>
+          <ul>
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">Grievance Officer</a></li>
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Our Ingredients</a></li>
+            <li><a href="#">Blogs</a></li>
+          </ul>
+        </div>
+
+        <div class="bb-footer-col bb-footer-contact">
+          <h3>GET IN TOUCH</h3>
+          <div class="bb-footer-socials">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="Linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" aria-label="Youtube"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+          <p class="bb-footer-label">ADDRESS</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-location-dot"></i> 581, 2nd Floor, 1st Main, 6th Sector, HSR
+            Layout, Bengaluru, Karnataka - 560102</p>
+          <p class="bb-footer-label">EMAIL</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-envelope"></i> wecare@theDERMIFY.in</p>
+          <p class="bb-footer-label">PHONE</p>
+          <p class="bb-footer-detail"><i class="fa-solid fa-phone"></i> 080-471-05772<br />(Monday - Sunday 10am - 7pm)
+          </p>
+        </div>
+      </div>
+
+      <div class="bb-footer-mid">
+        <h4>PAYMENT OPTIONS</h4>
+        <div class="bb-footer-payments">
+          <span>VISA</span>
+          <span>Mastercard</span>
+          <span>Amex</span>
+          <span>G Pay</span>
+          <span>UPI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bb-footer-bottom">
+      <p>© The DERMIFY 2025. All rights Reserved.</p>
+      <p>GST NO: 29AAICB9825H1Z8</p>
+    </div>
+    <!-- <button class="bb-float-refer" type="button"><i class="fa-solid fa-money-bill-wave"></i> REFER &amp; EARN</button> -->
+    <button class="bb-float-wa" type="button" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+  </footer>
+
+  <script src="./assets/js/script.js"></script>
+
+</body>
+
+</html>
