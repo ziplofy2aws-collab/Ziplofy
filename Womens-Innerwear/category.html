@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Category — Savante Women&apos;s Innerwear</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/category.css" />
+</head>
+
+<body>
+  <header class="sav-header" id="savHeader">
+    <div class="sav-announce" role="region" aria-label="Announcement">
+      <div class="sav-announce__inner">
+        <span class="sav-announce__spacer sav-announce__desktop-only" aria-hidden="true"></span>
+        <p class="sav-announce__msg sav-announce__desktop-only">Made for Every Woman 🤍</p>
+        <div class="sav-announce__links sav-announce__desktop-only">
+          <a href="#"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Our Stores</a>
+          <a href="contact.html"><i class="fa-solid fa-phone" aria-hidden="true"></i> Contact Us</a>
+        </div>
+        <div class="sav-announce__mob" data-sav-announce aria-live="polite">
+          <div class="sav-announce__mob-viewport">
+            <div class="sav-announce__mob-track" data-sav-announce-track>
+              <p class="sav-announce__mob-slide">Made for Every Woman 🤍</p>
+              <a class="sav-announce__mob-slide sav-announce__mob-slide--link" href="#"><i class="fa-solid fa-location-dot"
+                  aria-hidden="true"></i> Our Stores</a>
+              <a class="sav-announce__mob-slide sav-announce__mob-slide--link" href="contact.html"><i
+                  class="fa-solid fa-phone" aria-hidden="true"></i> Contact Us</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sav-main">
+      <div class="sav-main__row">
+        <div class="sav-main__grid">
+          <div class="sav-main__left">
+            <button class="sav-nav-toggle" type="button" id="savNavToggle" aria-expanded="false"
+              aria-controls="savNavPanel" aria-label="Open menu">
+              <span class="sav-nav-toggle-bar" aria-hidden="true"></span>
+              <span class="sav-nav-toggle-bar" aria-hidden="true"></span>
+              <span class="sav-nav-toggle-bar" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <a class="sav-logo" href="index.html" aria-label="Savante home">
+            <img src="assets/img/logo.png" alt="Savante" class="sav-logo__image">
+          </a>
+          <div class="sav-actions">
+            <button type="button" class="sav-actions__btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a class="sav-actions__link" href="#" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a class="sav-actions__link" href="#account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <a class="sav-actions__link" href="#" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+              <span class="sav-actions__badge" aria-hidden="true">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sav-nav-wrap" id="savNavWrap">
+        <div class="sav-nav-panel" id="savNavPanel">
+          <nav aria-label="Primary">
+            <ul class="sav-nav">
+              <li><a href="#">New Season</a></li>
+              <li><a href="#">Bras</a></li>
+              <li><a href="#">Panties</a></li>
+              <li><a href="#">Athleisure</a></li>
+              <li><a href="#">Lounge/Sleep</a></li>
+              <li><a href="#">Layering</a></li>
+              <li><a href="#">Shapewear</a></li>
+              <li><a href="#">Swimwear</a></li>
+              <li><a href="#" class="is-sale">Sale</a></li>
+              <li><a href="#">Accessories</a></li>
+            </ul>
+          </nav>
+          <p class="sav-subnav">
+            <a href="#">Savante Specials</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="sav-cat-hero" aria-labelledby="sav-cat-hero-heading">
+      <div class="sav-cat-hero__inner">
+        <h1 id="sav-cat-hero-heading" class="sav-cat-products__sr-only">Shop — category banner</h1>
+        <div class="sav-cat-hero__visual sav-cat-hero__visual--banner">
+          <img src="assets/img/shop-banner.png" width="1000" height="1250"
+            alt="Model in light blue bra and white trousers, summer sale campaign" />
+        </div>
+      </div>
+    </section>
+
+    <section class="sav-cat-products" aria-labelledby="sav-cat-products-heading">
+      <div class="sav-cat-products__inner">
+        <h2 id="sav-cat-products-heading" class="sav-cat-products__sr-only">Bras — product listing</h2>
+
+        <div class="sav-cat-products__toolbar">
+          <div class="sav-cat-products__toolbar-left">
+            <button type="button" class="sav-cat-products__filter-btn" data-cat-filter-open
+              aria-controls="savCatFilterDrawer" aria-expanded="false">
+              <i class="fa-solid fa-filter" aria-hidden="true"></i>
+              <span>Filter</span>
+              <i class="fa-solid fa-chevron-right sav-cat-products__chev" aria-hidden="true"></i>
+            </button>
+            <div class="sav-cat-products__sort">
+              <label class="sav-cat-products__sr-only" for="sav-cat-sort">Sort by</label>
+              <span class="sav-cat-products__sort-label" aria-hidden="true">Sort by:</span>
+              <div class="sav-cat-products__select-wrap">
+                <select id="sav-cat-sort" class="sav-cat-products__select" name="sort">
+                  <option value="popularity" selected>Popularity</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="new">Newest</option>
+                </select>
+                <i class="fa-solid fa-chevron-down sav-cat-products__select-icon" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+          <p class="sav-cat-products__count"><strong>62</strong> Bras items</p>
+        </div>
+
+        <div class="sav-cat-filter" id="savCatFilterDrawer" aria-hidden="true">
+          <button type="button" class="sav-cat-filter__backdrop" data-cat-filter-close
+            aria-label="Close filter"></button>
+          <aside class="sav-cat-filter__panel" role="dialog" aria-modal="true" aria-labelledby="savCatFilterTitle">
+            <div class="sav-cat-filter__head">
+              <button type="button" class="sav-cat-filter__close" data-cat-filter-close aria-label="Close filter">
+                <i class="fa-solid fa-xmark sav-cat-filter__desktop-icon" aria-hidden="true"></i>
+                <i class="fa-solid fa-arrow-left sav-cat-filter__mobile-icon" aria-hidden="true"></i>
+              </button>
+              <h3 class="sav-cat-filter__title" id="savCatFilterTitle">Filter <span>Results</span></h3>
+            </div>
+            <div class="sav-cat-filter__body">
+              <button type="button" class="sav-cat-filter__item is-active" data-cat-filter-tab="product-type">
+                <span>Product Type</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="size">
+                <span>Size</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="price">
+                <span>Price</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="colour">
+                <span>Colour</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="coverage">
+                <span>Bra Front Coverage</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="straps">
+                <span>Straps</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="back-style">
+                <span>Back style</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="wiring">
+                <span>Bra wiring</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="closure">
+                <span>Closure</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="padding">
+                <span>Bra padding</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="fabric">
+                <span>Fabric</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="collection">
+                <span>Jockey Collection</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="sav-cat-filter__item" data-cat-filter-tab="pattern">
+                <span>Pattern</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-filter__mobile-results" data-cat-filter-results aria-label="Product type options">
+                <label class="sav-cat-filter__option sav-cat-filter__option--lavender">
+                  <input type="checkbox" name="product-type" value="active-bras">
+                  <span class="sav-cat-filter__option-text"><strong>Active Bras</strong><span>13 Products</span></span>
+                  <img src="assets/img/category-2.WEBP" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--gray">
+                  <input type="checkbox" name="product-type" value="beginners-bras">
+                  <span class="sav-cat-filter__option-text"><strong>Beginners Bras</strong><span>2 Products</span></span>
+                  <img src="assets/img/category-1.webp" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--gray">
+                  <input type="checkbox" name="product-type" value="crop-tops">
+                  <span class="sav-cat-filter__option-text"><strong>Crop Tops</strong><span>3 Products</span></span>
+                  <img src="assets/img/category-3.WEBP" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--blue">
+                  <input type="checkbox" name="product-type" value="everyday-bras">
+                  <span class="sav-cat-filter__option-text"><strong>Everyday Bras</strong><span>13 Products</span></span>
+                  <img src="assets/img/category-2.WEBP" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--lavender">
+                  <input type="checkbox" name="product-type" value="lounge-bra">
+                  <span class="sav-cat-filter__option-text"><strong>Lounge Bra</strong><span>1 Products</span></span>
+                  <img src="assets/img/category-1.WEBP" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--green">
+                  <input type="checkbox" name="product-type" value="lounge-bras">
+                  <span class="sav-cat-filter__option-text"><strong>Lounge Bras</strong><span>4 Products</span></span>
+                  <img src="assets/img/category-3.WEBP" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--yellow">
+                  <input type="checkbox" name="product-type" value="multiway-backless-bra">
+                  <span class="sav-cat-filter__option-text"><strong>Multiway Backless Bra</strong><span>1 Products</span></span>
+                  <img src="assets/img/category-2.WEBP" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--peach">
+                  <input type="checkbox" name="product-type" value="nursing-bras">
+                  <span class="sav-cat-filter__option-text"><strong>Nursing Bras</strong><span>1 Products</span></span>
+                  <img src="assets/img/category-1.webp" alt="" loading="lazy">
+                </label>
+                <label class="sav-cat-filter__option sav-cat-filter__option--pink">
+                  <input type="checkbox" name="product-type" value="plus-size-bras">
+                  <span class="sav-cat-filter__option-text"><strong>Plus Size Bras</strong><span>7 Products</span></span>
+                  <img src="assets/img/category-3.WEBP" alt="" loading="lazy">
+                </label>
+              </div>
+            </div>
+            <div class="sav-cat-filter__actions">
+              <button type="button" class="sav-cat-filter__clear">Clear All</button>
+              <button type="button" class="sav-cat-filter__apply" data-cat-filter-close><span
+                  class="sav-cat-filter__apply-full">Apply Changes</span><span
+                  class="sav-cat-filter__apply-short">Apply</span></button>
+            </div>
+          </aside>
+        </div>
+
+        <div class="sav-cat-products__quick">
+          <span class="sav-cat-products__quick-label">Quick Filters</span>
+          <div class="sav-cat-products__quick-viewport">
+            <div class="sav-cat-products__quick-track" data-cat-quick-track>
+              <button type="button" class="sav-cat-products__pill">Active Bras</button>
+              <button type="button" class="sav-cat-products__pill">M</button>
+              <button type="button" class="sav-cat-products__pill">L</button>
+              <button type="button" class="sav-cat-products__pill">Black</button>
+              <button type="button" class="sav-cat-products__pill">Blue</button>
+              <button type="button" class="sav-cat-products__pill">Green</button>
+              <button type="button" class="sav-cat-products__pill">Pink</button>
+            </div>
+          </div>
+          <div class="sav-cat-products__qnav">
+            <button type="button" class="sav-cat-products__qnav-btn is-disabled" data-cat-quick-prev
+              aria-label="Scroll quick filters left" disabled>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="sav-cat-products__qnav-btn is-active" data-cat-quick-next
+              aria-label="Scroll quick filters right">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="sav-cat-products__grid">
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="9 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">9</span>
+              </div>
+              <img src="assets/img/category-1.webp" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1250</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Non Padded | Cotton Stretch | Full Coverage Eve...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹649.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="4 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">4</span>
+              </div>
+              <img src="assets/img/category-2.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#ES04</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Padded | Cotton Stretch | Lounge &amp; Sleep Bra</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹749.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="sav-cat-pcard__pack">Pack of 2</span>
+              <div class="sav-cat-pcard__badge-colors" aria-label="10 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">10</span>
+              </div>
+              <img src="assets/img/category-3.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1376</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Non Padded | Cotton Stretch | Slip-On Sports Bra</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹579.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="15 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">15</span>
+              </div>
+              <img src="assets/img/category-1.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1722</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Non Padded | Cotton Stretch | Medium Coverage B...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹579.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <section class="sav-cat-buzz" data-sav-cat-buzz aria-labelledby="sav-cat-buzz-heading">
+          <div class="sav-cat-buzz__box">
+            <h2 id="sav-cat-buzz-heading" class="sav-cat-buzz__heading">
+              The latest <strong>buzz in town</strong>
+            </h2>
+            <div class="sav-cat-buzz__stage">
+              <button type="button" class="sav-cat-buzz__nav sav-cat-buzz__nav--prev" data-cat-buzz-prev
+                aria-label="Previous spotlight">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-buzz__viewport">
+                <div class="sav-cat-buzz__slides">
+                  <figure class="sav-cat-buzz__fig sav-cat-buzz__fig--side">
+                    <div class="sav-cat-buzz__img-wrap">
+                      <img data-cat-buzz-left src="./assets/img/category-3.WEBP" width="480" height="600" alt="" />
+                    </div>
+                  </figure>
+                  <figure class="sav-cat-buzz__fig sav-cat-buzz__fig--center">
+                    <div class="sav-cat-buzz__img-wrap">
+                      <img data-cat-buzz-center src="./assets/img/category-1.WEBP" width="600" height="750" alt="" />
+                    </div>
+                  </figure>
+                  <figure class="sav-cat-buzz__fig sav-cat-buzz__fig--side">
+                    <div class="sav-cat-buzz__img-wrap">
+                      <img data-cat-buzz-right src="./assets/img/category-2.WEBP" width="480" height="600" alt="" />
+                    </div>
+                  </figure>
+                </div>
+              </div>
+              <button type="button" class="sav-cat-buzz__nav sav-cat-buzz__nav--next" data-cat-buzz-next
+                aria-label="Next spotlight">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+            <p class="sav-cat-buzz__product-title" data-cat-buzz-title>Wirefree Non Padded Microfiber Elastane Stretch
+              Full Cover...</p>
+            <div class="sav-cat-buzz__tags" data-cat-buzz-tags>
+              <span class="sav-cat-buzz__tag">Brushed Lining Cups</span>
+              <span class="sav-cat-buzz__tag">Sweat Channelling</span>
+              <span class="sav-cat-buzz__tag">StayFresh</span>
+            </div>
+            <a class="sav-cat-buzz__cta" href="product.html?p=trend-0">Explore now</a>
+          </div>
+        </section>
+
+        <div class="sav-cat-products__grid">
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="8 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch sav-cat-pcard__swatch--light" aria-hidden="true"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">8</span>
+              </div>
+              <img src="assets/img/category-2.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#SS12</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Non Padded | Cotton Stretch | Full Coverage Bra...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹469.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="sav-cat-pcard__pack">Pack of 2</span>
+              <div class="sav-cat-pcard__badge-colors" aria-label="3 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">3</span>
+              </div>
+              <img src="assets/img/category-3.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1845</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Unicup Design Pads | T-Shirt Bra | Soft Touch M...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹1,729.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="3 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">3</span>
+              </div>
+              <img src="assets/img/category-1.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#ES08</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Seamfree | Non Padded | Front Clasp Opening Nur...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹899.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="13 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">13</span>
+              </div>
+              <img src="assets/img/category-2.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1723</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Padded | Cotton Stretch | Lace Styling | Medium...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹799.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="8 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">8</span>
+              </div>
+              <img src="assets/img/category-3.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1615</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Non Padded | Cotton Stretch | Full Coverage Eve...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹639.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="6 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">6</span>
+              </div>
+              <img src="assets/img/category-1.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1242</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Non Padded | Cotton Stretch | Medium Coverage C...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹569.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <span class="sav-cat-pcard__ribbon">New Arrival</span>
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="3 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">3</span>
+              </div>
+              <img src="assets/img/category-2.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#1844</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Padded | T-Shirt Bra | Bonded Tech | Soft Touch...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹1,729.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="sav-cat-pcard">
+            <div class="sav-cat-pcard__media">
+              <button type="button" class="sav-cat-pcard__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="sav-cat-pcard__badge-colors" aria-label="10 colours available">
+                <span class="sav-cat-pcard__swatches" aria-hidden="true">
+                  <span class="sav-cat-pcard__swatch" style="background:#1e5a96"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#c45c26"></span>
+                  <span class="sav-cat-pcard__swatch" style="background:#6b6b6b"></span>
+                </span>
+                <span class="sav-cat-pcard__color-count">10</span>
+              </div>
+              <img src="assets/img/category-3.WEBP" width="800" height="1000" alt="" loading="lazy" />
+            </div>
+            <div class="sav-cat-pcard__body">
+              <p class="sav-cat-pcard__code">#FE41</p>
+              <h3 class="sav-cat-pcard__title">Wirefree | Non Padded | Cotton Stretch | Full Coverage Bra...</h3>
+              <div class="sav-cat-pcard__row">
+                <span class="sav-cat-pcard__price">₹729.00</span>
+                <button type="button" class="sav-cat-pcard__bag">
+                  <span class="sav-cat-pcard__bag-ic" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i><i
+                      class="fa-solid fa-plus sav-cat-pcard__bag-plus"></i></span>
+                  <span>Add to Bag</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="sav-cat-mobile-bar" aria-label="Filter and sort actions">
+      <button type="button" class="sav-cat-mobile-bar__btn" data-cat-filter-open aria-controls="savCatFilterDrawer"
+        aria-expanded="false">
+        <i class="fa-solid fa-filter" aria-hidden="true"></i>
+        <span>Filter</span>
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="sav-cat-mobile-bar__btn">
+        <i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i>
+        <span>Sort</span>
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+      </button>
+    </div>
+  </main>
+
+  <footer class="sav-footer" role="contentinfo">
+    <div class="sav-footer__main">
+      <div class="sav-footer__grid">
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">About</h3>
+          <ul class="sav-footer__list">
+            <li><a href="about.html">About Savante</a></li>
+            <li><a href="#">Sitemap</a></li>
+            <li><a href="blog.html">Blog</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">Account</h3>
+          <ul class="sav-footer__list">
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Caution Notice</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">Policy</h3>
+          <ul class="sav-footer__list">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Gift Card Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">Help</h3>
+          <ul class="sav-footer__list">
+            <li><a href="#">FAQs</a></li>
+            <li><a href="contact.html">Get in Touch</a></li>
+            <li><a href="#">Grievance Redressal</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col sav-footer__col--news">
+          <h3 class="sav-footer__heading sav-footer__heading--caps">Be the first to know</h3>
+          <p class="sav-footer__news-text">Sign up to stay updated on new products, brand stories and events.</p>
+          <form class="sav-footer__news-form" action="#" method="post">
+            <label class="sav-footer__sr" for="sav-cat-footer-email">Email address</label>
+            <input id="sav-cat-footer-email" class="sav-footer__input" type="email" name="email"
+              placeholder="Email Address" autocomplete="email" />
+            <button type="submit" class="sav-footer__subscribe">Subscribe</button>
+          </form>
+        </div>
+        <div class="sav-footer__col sav-footer__col--contact">
+          <p class="sav-footer__contact-line">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <span>Savante Retail Pvt. Ltd., Example Business Park, Tower-1, 7th Floor, Bengaluru, Karnataka, India,
+              560103</span>
+          </p>
+          <p class="sav-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:wecare@savante.com">wecare@savante.com</a>
+          </p>
+          <p class="sav-footer__contact-line">
+            <i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
+            <span>1800-000-0000 (Toll Free) / 1860-000-0000 (Mon–Sun, IST 10:00 AM to 7:00 PM)</span>
+          </p>
+          <div class="sav-footer__social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Snapchat"><i class="fa-brands fa-snapchat" aria-hidden="true"></i></a>
+            <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i
+                class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sav-footer__mid">
+        <div class="sav-footer__utilities">
+          <a class="sav-footer__pill" href="#"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i> Store
+            Locator</a>
+          <a class="sav-footer__pill" href="#"><i class="fa-solid fa-store" aria-hidden="true"></i> Franchise</a>
+          <a class="sav-footer__pill" href="#"><i class="fa-solid fa-gift" aria-hidden="true"></i> Corporate Gifting</a>
+        </div>
+        <div class="sav-footer__apps-wrap">
+          <p class="sav-footer__apps-title">Download the App From</p>
+          <div class="sav-footer__apps">
+            <a class="sav-footer__app-badge sav-footer__app-badge--play" href="#" aria-label="Get it on Google Play">
+              <span class="sav-footer__app-small">Get it on</span>
+              <span class="sav-footer__app-name">Google Play</span>
+            </a>
+            <a class="sav-footer__app-badge sav-footer__app-badge--apple" href="#"
+              aria-label="Download on the App Store">
+              <span class="sav-footer__app-small">Download on the</span>
+              <span class="sav-footer__app-name">App Store</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sav-footer__bar">
+      <p class="sav-footer__copy">&copy; 2013-2026 Savante all rights reserved.</p>
+    </div>
+  </footer>
+
+  <div class="sav-fab" aria-label="Quick actions">
+    <button type="button" class="sav-fab__btn sav-fab__btn--top" data-scroll-top aria-label="Back to top">
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+    <a class="sav-fab__btn sav-fab__btn--chat" href="#" aria-label="Open chat assistant">
+      <i class="fa-solid fa-robot" aria-hidden="true"></i>
+    </a>
+  </div>
+
+  <script src="./assets/js/script.js"></script>
+  <script src="./assets/js/category.js"></script>
+</body>
+
+</html>

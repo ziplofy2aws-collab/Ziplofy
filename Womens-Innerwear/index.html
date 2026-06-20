@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Savante — Women &apos;s Innerwear</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+  <header class="sav-header" id="savHeader">
+    <div class="sav-announce" role="region" aria-label="Announcement">
+      <div class="sav-announce__inner">
+        <span class="sav-announce__spacer sav-announce__desktop-only" aria-hidden="true"></span>
+        <p class="sav-announce__msg sav-announce__desktop-only">Made for Every Woman 🤍</p>
+        <div class="sav-announce__links sav-announce__desktop-only">
+          <a href="#"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Our Stores</a>
+          <a href="contact.html"><i class="fa-solid fa-phone" aria-hidden="true"></i> Contact Us</a>
+        </div>
+        <div class="sav-announce__mob" data-sav-announce aria-live="polite">
+          <div class="sav-announce__mob-viewport">
+            <div class="sav-announce__mob-track" data-sav-announce-track>
+              <p class="sav-announce__mob-slide">Made for Every Woman 🤍</p>
+              <a class="sav-announce__mob-slide sav-announce__mob-slide--link" href="#"><i
+                  class="fa-solid fa-location-dot" aria-hidden="true"></i> Our Stores</a>
+              <a class="sav-announce__mob-slide sav-announce__mob-slide--link" href="contact.html"><i
+                  class="fa-solid fa-phone" aria-hidden="true"></i> Contact Us</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sav-main">
+      <div class="sav-main__row">
+        <div class="sav-main__grid">
+          <div class="sav-main__left">
+            <button class="sav-nav-toggle" type="button" id="savNavToggle" aria-expanded="false"
+              aria-controls="savNavPanel" aria-label="Open menu">
+              <span class="sav-nav-toggle-bar" aria-hidden="true"></span>
+              <span class="sav-nav-toggle-bar" aria-hidden="true"></span>
+              <span class="sav-nav-toggle-bar" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <a class="sav-logo" href="index.html" aria-label="Savante home">
+            <img src="assets/img/logo.png" alt="Savante" class="sav-logo__image">
+          </a>
+
+          <div class="sav-actions">
+            <button type="button" class="sav-actions__btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a class="sav-actions__link" href="#" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a class="sav-actions__link" href="#account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <a class="sav-actions__link" href="#" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+              <span class="sav-actions__badge" aria-hidden="true">0</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sav-nav-wrap" id="savNavWrap">
+        <div class="sav-nav-panel" id="savNavPanel">
+          <nav aria-label="Primary">
+            <ul class="sav-nav">
+              <li><a href="#">New Season</a></li>
+              <li><a href="#">Bras</a></li>
+              <li><a href="#">Panties</a></li>
+              <li><a href="#">Athleisure</a></li>
+              <li><a href="#">Lounge/Sleep</a></li>
+              <li><a href="#">Layering</a></li>
+              <li><a href="#">Shapewear</a></li>
+              <li><a href="#">Swimwear</a></li>
+              <li><a href="#" class="is-sale">Sale</a></li>
+              <li><a href="#">Accessories</a></li>
+            </ul>
+          </nav>
+          <p class="sav-subnav">
+            <a href="#">Savante Specials</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="sav-hero" data-sav-hero aria-label="Featured collection">
+    <div class="sav-hero__intro" data-sav-hero-intro>
+      <h1 class="sav-hero__heading">
+        <span class="sav-hero__heading-line" data-sav-hero-line1>Pure, Chic</span>
+        <span class="sav-hero__heading-line sav-hero__heading-line--accent" data-sav-hero-line2>&amp; Sensual.</span>
+      </h1>
+    </div>
+    <div class="sav-hero__viewport">
+      <div class="sav-hero__track" data-sav-hero-track>
+        <div class="sav-hero__media-slide is-active" data-sav-hero-slide data-hero-line1="Pure, Chic"
+          data-hero-line2="&amp; Sensual.">
+          <img src="assets/img/banner-1.png" width="1200" height="1600" alt="Savante collection — slide 1" />
+        </div>
+        <div class="sav-hero__media-slide" data-sav-hero-slide data-hero-line1="Soft, Bold"
+          data-hero-line2="&amp; Beautiful.">
+          <img src="assets/img/banner-2.png" width="1200" height="1600" alt="Savante collection — slide 2" />
+        </div>
+        <div class="sav-hero__media-slide" data-sav-hero-slide data-hero-line1="Grace, Edge"
+          data-hero-line2="&amp; You.">
+          <img src="assets/img/banner-3.png" width="1200" height="1600" alt="Savante collection — slide 3" />
+        </div>
+      </div>
+    </div>
+
+    <div class="sav-hero__arrows">
+      <button type="button" class="sav-hero__arrow sav-hero__arrow--prev" data-sav-hero-prev
+        aria-label="Previous slide">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="sav-hero__arrow sav-hero__arrow--next" data-sav-hero-next aria-label="Next slide">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="sav-hero__ctrl" role="tablist" aria-label="Hero slides">
+      <button type="button" class="sav-hero__dot is-active" data-sav-hero-dot role="tab" aria-selected="true"
+        aria-label="Slide 1"></button>
+      <button type="button" class="sav-hero__dot" data-sav-hero-dot role="tab" aria-selected="false"
+        aria-label="Slide 2"></button>
+      <button type="button" class="sav-hero__dot" data-sav-hero-dot role="tab" aria-selected="false"
+        aria-label="Slide 3"></button>
+    </div>
+  </section>
+
+  <section class="sav-focus" aria-labelledby="sav-focus-heading">
+    <div class="sav-focus__pattern" aria-hidden="true"></div>
+    <div class="sav-focus__inner">
+      <h2 id="sav-focus-heading" class="sav-focus__title">In Focus</h2>
+      <div class="sav-focus__grid">
+        <a class="sav-focus__card" href="product.html?p=focus-1">
+          <div class="sav-focus__media">
+            <img src="assets/img/shapewear.png" width="800" height="1000" alt="Shapewear collection" />
+            <span class="sav-focus__grad" aria-hidden="true"></span>
+          </div>
+          <span class="sav-focus__label">Shapewear <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="sav-focus__card" href="product.html?p=focus-2">
+          <div class="sav-focus__media">
+            <img src="assets/img/cotton-panties.png" width="800" height="1000" alt="Cotton panties collection" />
+            <span class="sav-focus__grad" aria-hidden="true"></span>
+          </div>
+          <span class="sav-focus__label sav-focus__label--stack">
+            <span class="sav-focus__label-line">Cotton</span>
+            <span class="sav-focus__label-line">Panties <span aria-hidden="true">→</span></span>
+          </span>
+        </a>
+        <a class="sav-focus__card" href="product.html?p=focus-3">
+          <div class="sav-focus__media">
+            <img src="assets/img/layering.png" width="800" height="1000" alt="Layering collection" />
+            <span class="sav-focus__grad" aria-hidden="true"></span>
+          </div>
+          <span class="sav-focus__label">Layering <span aria-hidden="true">→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sav-trend" data-sav-trend aria-labelledby="sav-trend-heading">
+    <div class="sav-trend__inner">
+      <h2 id="sav-trend-heading" class="sav-trend__title">Trending now <span aria-hidden="true">🔥</span></h2>
+      <div class="sav-trend__rule" aria-hidden="true"></div>
+      <div class="sav-trend__filters">
+        <button type="button" class="sav-trend__filter is-active" data-trend-filter="all">All</button>
+        <button type="button" class="sav-trend__filter" data-trend-filter="bras">Bras</button>
+        <button type="button" class="sav-trend__filter" data-trend-filter="panties">Panties</button>
+        <button type="button" class="sav-trend__filter" data-trend-filter="nightwear">Nightwear</button>
+        <button type="button" class="sav-trend__filter" data-trend-filter="activewear">Activewear</button>
+        <button type="button" class="sav-trend__filter" data-trend-filter="shapewear">Shapewear</button>
+      </div>
+      <div class="sav-trend__carousel">
+        <button type="button" class="sav-trend__nav sav-trend__nav--prev" data-trend-prev
+          aria-label="Previous products">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <div class="sav-trend__viewport" data-trend-viewport>
+          <div class="sav-trend__track" data-trend-track></div>
+        </div>
+        <button type="button" class="sav-trend__nav sav-trend__nav--next" data-trend-next aria-label="Next products">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sav-bonded" data-sav-bonded aria-labelledby="sav-bonded-heading">
+    <div class="sav-bonded__inner">
+      <h2 id="sav-bonded-heading" class="sav-bonded__heading">
+        Comfort that feels <strong>invisible</strong>
+      </h2>
+      <p class="sav-bonded__sub">Discover The Bonded Collection</p>
+
+      <div class="sav-bonded__stage">
+        <button type="button" class="sav-bonded__nav sav-bonded__nav--prev" data-bonded-prev
+          aria-label="Previous slide">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="sav-bonded__viewport">
+          <div class="sav-bonded__stack">
+            <article class="sav-bonded__card sav-bonded__card--left" data-bonded-left>
+              <div class="sav-bonded__media">
+                <img data-bonded-img src="./assets/img/cat-1.png" width="800" height="600" alt="" />
+                <div class="sav-bonded__shade" aria-hidden="true"></div>
+              </div>
+              <div class="sav-bonded__body">
+                <p class="sav-bonded__tag" data-bonded-tag>From seamless to flawless.</p>
+                <p class="sav-bonded__cat" data-bonded-cat>SHAPEWEAR</p>
+                <button type="button" class="sav-bonded__cta" data-bonded-explore>EXPLORE NOW</button>
+              </div>
+            </article>
+            <article class="sav-bonded__card sav-bonded__card--center" data-bonded-center>
+              <div class="sav-bonded__media">
+                <img data-bonded-img src="./assets/img/cat-2.png" width="800" height="600" alt="" />
+                <div class="sav-bonded__shade" aria-hidden="true"></div>
+              </div>
+              <div class="sav-bonded__body">
+                <p class="sav-bonded__tag" data-bonded-tag>From balance to brilliance.</p>
+                <p class="sav-bonded__cat" data-bonded-cat>LOUNGE &amp; YOGA BRAS</p>
+                <button type="button" class="sav-bonded__cta" data-bonded-explore>EXPLORE NOW</button>
+              </div>
+            </article>
+            <article class="sav-bonded__card sav-bonded__card--right" data-bonded-right>
+              <div class="sav-bonded__media">
+                <img data-bonded-img src="./assets/img/cat-3.png" width="800" height="600" alt="" />
+                <div class="sav-bonded__shade" aria-hidden="true"></div>
+              </div>
+              <div class="sav-bonded__body">
+                <p class="sav-bonded__tag" data-bonded-tag>From laptops to rooftops.</p>
+                <p class="sav-bonded__cat" data-bonded-cat>LOUNGE BRAS</p>
+                <button type="button" class="sav-bonded__cta" data-bonded-explore>EXPLORE NOW</button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <button type="button" class="sav-bonded__nav sav-bonded__nav--next" data-bonded-next aria-label="Next slide">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="sav-bonded__dots" data-bonded-dots role="tablist" aria-label="Collection slides">
+        <button type="button" class="sav-bonded__dot" data-bonded-dot="0" role="tab" aria-selected="false"
+          aria-label="Slide 1"></button>
+        <button type="button" class="sav-bonded__dot is-active" data-bonded-dot="1" role="tab" aria-selected="true"
+          aria-label="Slide 2"></button>
+        <button type="button" class="sav-bonded__dot" data-bonded-dot="2" role="tab" aria-selected="false"
+          aria-label="Slide 3"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sav-newarr" data-sav-newarr aria-labelledby="sav-newarr-heading">
+    <div class="sav-newarr__inner">
+      <h2 id="sav-newarr-heading" class="sav-newarr__title">New Arrival</h2>
+      <div class="sav-newarr__row">
+        <aside class="sav-newarr__feature" aria-label="Featured story">
+          <div class="sav-newarr__feature-inner">
+            <img src="assets/img/NA-1.WEBP" width="640" height="880" alt="Savante new collection" />
+            <div class="sav-newarr__feature-shade" aria-hidden="true"></div>
+            <span class="sav-newarr__logo">Savante</span>
+            <div class="sav-newarr__feature-copy">
+              <p class="sav-newarr__quote">You look gorgeous, Tara.</p>
+              <a class="sav-newarr__feature-btn" href="product.html?p=newarr-0">SHOW NOW</a>
+            </div>
+          </div>
+        </aside>
+        <div class="sav-newarr__carousel">
+          <button type="button" class="sav-newarr__nav sav-newarr__nav--prev" data-newarr-prev
+            aria-label="Previous products">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <div class="sav-newarr__viewport" data-newarr-viewport>
+            <div class="sav-newarr__track" data-newarr-track></div>
+          </div>
+          <button type="button" class="sav-newarr__nav sav-newarr__nav--next" data-newarr-next
+            aria-label="Next products">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sav-shades" aria-labelledby="sav-shades-heading">
+    <div class="sav-shades__inner">
+      <div class="sav-shades__copy">
+        <h2 id="sav-shades-heading" class="sav-shades__title">
+          <span class="sav-shades__title-row">
+            <span class="sav-shades__muted">Dive into the</span>
+            <span class="sav-shades__strong"> shades of</span>
+          </span>
+          <span class="sav-shades__blue">blue</span>
+        </h2>
+        <a class="sav-shades__btn" href="category.html">Explore now</a>
+      </div>
+      <div class="sav-shades__visual">
+        <img src="./assets/img/collage.png" width="900" height="700" alt="Blue collection — product collage" />
+      </div>
+    </div>
+  </section>
+
+  <section class="sav-pgrid" aria-label="Featured bras">
+    <div class="sav-pgrid__inner">
+      <div class="sav-pgrid__grid">
+        <article class="sav-pgrid__card" data-sav-product-id="pgrid-1">
+          <div class="sav-pgrid__media">
+            <span class="sav-pgrid__badge">Bestseller</span>
+            <img src="./assets/img/BS-1.webp" width="400" height="520" alt="White full coverage bra" />
+          </div>
+          <h3 class="sav-pgrid__title">Triumph-201319 white doreen wireless non padded full coverage support big-cup
+            classics bra</h3>
+          <p class="sav-pgrid__price">₹ 1,599</p>
+          <div class="sav-pgrid__row">
+            <button type="button" class="sav-pgrid__size" aria-haspopup="listbox" aria-expanded="false">
+              34 C <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sav-pgrid__thumbs" role="list">
+              <button type="button" class="sav-pgrid__thumb is-active" aria-label="Color 1">
+                <img src="./assets/img/BS-1.webp" width="48" height="48" alt="" />
+              </button>
+              <button type="button" class="sav-pgrid__thumb" aria-label="Color 2">
+                <img src="./assets/img/BS-1-hover.webp" width="48" height="48" alt="" />
+              </button>
+              <!-- <button type="button" class="sav-pgrid__thumb" aria-label="Color 3">
+                <img src="./assets/img/BS-1.webp" width="48" height="48" alt="" />
+              </button> -->
+            </div>
+          </div>
+          <button type="button" class="sav-pgrid__cart">Add to cart</button>
+        </article>
+
+        <article class="sav-pgrid__card" data-sav-product-id="pgrid-2">
+          <div class="sav-pgrid__media">
+            <img src="./assets/img/BS-2.webp" width="400" height="520" alt="Padded push-up bra" />
+          </div>
+          <h3 class="sav-pgrid__title">Triumph-1101458 maximizer 118 comfortable padded magic-wire push-up bra</h3>
+          <p class="sav-pgrid__price">₹ 1,999</p>
+          <div class="sav-pgrid__row">
+            <button type="button" class="sav-pgrid__size" aria-haspopup="listbox" aria-expanded="false">
+              32 B <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sav-pgrid__thumbs" role="list">
+              <button type="button" class="sav-pgrid__thumb is-active" aria-label="Color 1">
+                <img src="./assets/img/BS-2.webp" width="48" height="48" alt="" />
+              </button>
+              <button type="button" class="sav-pgrid__thumb" aria-label="Color 2">
+                <img src="./assets/img/BS-2-hover.webp" width="48" height="48" alt="" />
+              </button>
+              <!-- <button type="button" class="sav-pgrid__thumb" aria-label="Color 3">
+                <img src="./assets/img/BS-2.webp" width="48" height="48" alt="" />
+              </button> -->
+            </div>
+          </div>
+          <button type="button" class="sav-pgrid__cart">Add to cart</button>
+        </article>
+
+        <article class="sav-pgrid__card" data-sav-product-id="pgrid-3">
+          <div class="sav-pgrid__media">
+            <span class="sav-pgrid__badge">Bestseller</span>
+            <img src="./assets/img/BS-3.webp" width="400" height="520" alt="Cotton sports bra" />
+          </div>
+          <h3 class="sav-pgrid__title">Enamor-sb06 low impact cotton sports bra non-padded &amp; wirefree</h3>
+          <p class="sav-pgrid__price">₹ 399</p>
+          <div class="sav-pgrid__row">
+            <button type="button" class="sav-pgrid__size" aria-haspopup="listbox" aria-expanded="false">
+              XS <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sav-pgrid__thumbs" role="list">
+              <button type="button" class="sav-pgrid__thumb is-active" aria-label="Color 1">
+                <img src="./assets/img/BS-3.webp" width="48" height="48" alt="" />
+              </button>
+              <button type="button" class="sav-pgrid__thumb" aria-label="Color 2">
+                <img src="./assets/img/BS-3-hover.webp" width="48" height="48" alt="" />
+              </button>
+            </div>
+          </div>
+          <button type="button" class="sav-pgrid__cart">Add to cart</button>
+        </article>
+
+        <article class="sav-pgrid__card" data-sav-product-id="pgrid-4">
+          <div class="sav-pgrid__media">
+            <span class="sav-pgrid__badge">Bestseller</span>
+            <img src="./assets/img/BS-4.webp" width="400" height="520" alt="Wireless full coverage bra" />
+          </div>
+          <h3 class="sav-pgrid__title">Triumph-2021490 claudette 103 wireless non padded full coverage support classics
+            bra</h3>
+          <p class="sav-pgrid__price">₹ 1,099</p>
+          <div class="sav-pgrid__row">
+            <button type="button" class="sav-pgrid__size" aria-haspopup="listbox" aria-expanded="false">
+              34 B <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sav-pgrid__thumbs" role="list">
+              <button type="button" class="sav-pgrid__thumb is-active" aria-label="Color 1">
+                <img src="./assets/img/BS-4.webp" width="48" height="48" alt="" />
+              </button>
+              <button type="button" class="sav-pgrid__thumb" aria-label="Color 2">
+                <img src="./assets/img/BS-4-hover.webp" width="48" height="48" alt="" />
+              </button>
+            </div>
+          </div>
+          <button type="button" class="sav-pgrid__cart">Add to cart</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sav-blog" aria-labelledby="sav-blog-heading">
+    <div class="sav-blog__inner">
+      <h2 id="sav-blog-heading" class="sav-blog__title">Blog posts</h2>
+      <div class="sav-blog__grid">
+        <article class="sav-blog__card">
+          <a class="sav-blog__media" href="#">
+            <img src="./assets/img/blog-1.webp" width="600" height="380" alt="" />
+          </a>
+          <div class="sav-blog__body">
+            <time class="sav-blog__date" datetime="2026-04-01">Apr 01, 26</time>
+            <h3 class="sav-blog__post-title">
+              <a href="#">Feel-Good Fits: Your Guide to Eco-Friendly Lingerie Choices</a>
+            </h3>
+            <a class="sav-blog__more" href="#">Read more</a>
+          </div>
+        </article>
+        <article class="sav-blog__card">
+          <a class="sav-blog__media" href="#">
+            <img src="./assets/img/blog-2.webp" width="600" height="380" alt="" />
+          </a>
+          <div class="sav-blog__body">
+            <time class="sav-blog__date" datetime="2026-02-27">Feb 27, 26</time>
+            <h3 class="sav-blog__post-title">
+              <a href="#">How to Pack Lingerie Smartly Without Damaging Delicate Fabrics</a>
+            </h3>
+            <a class="sav-blog__more" href="#">Read more</a>
+          </div>
+        </article>
+        <article class="sav-blog__card">
+          <a class="sav-blog__media" href="#">
+            <img src="./assets/img/banner-3.png" width="600" height="380" alt="" />
+          </a>
+          <div class="sav-blog__body">
+            <time class="sav-blog__date" datetime="2025-11-21">Nov 21, 25</time>
+            <h3 class="sav-blog__post-title">
+              <a href="#">Why Flannel Sleepwear Is the Coziest Winter Essential</a>
+            </h3>
+            <a class="sav-blog__more" href="#">Read more</a>
+          </div>
+        </article>
+        <article class="sav-blog__card">
+          <a class="sav-blog__media" href="#">
+            <img src="./assets/img/layering.png" width="600" height="380" alt="" />
+          </a>
+          <div class="sav-blog__body">
+            <time class="sav-blog__date" datetime="2025-11-21">Nov 21, 25</time>
+            <h3 class="sav-blog__post-title">
+              <a href="#">What to Wear Under Your Wedding Outfit for Comfort and Support</a>
+            </h3>
+            <a class="sav-blog__more" href="#">Read more</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sav-reviews" data-sav-reviews aria-labelledby="sav-reviews-heading">
+    <h2 id="sav-reviews-heading" class="sav-reviews__heading">Reviews</h2>
+    <div class="sav-reviews__stage">
+      <button type="button" class="sav-reviews__nav sav-reviews__nav--prev" data-reviews-prev
+        aria-label="Previous review">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <div class="sav-reviews__viewport">
+        <div class="sav-reviews__track" data-reviews-track>
+          <article class="sav-reviews__slide" data-reviews-slide>
+            <div class="sav-reviews__text">
+              <h3 class="sav-reviews__headline">Excellent support &amp; comfort for running</h3>
+              <div class="sav-reviews__stars" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="sav-reviews__copy">
+                <p>I&apos;ve been a runner and vainly searching for good running bras for 20+ yrs. Delighted with this
+                  bra, my search has finally ended. I am a small band/big cup combo, which thankfully this bra
+                  offers—wd request a 30 band size too.</p>
+                <p>The straps are detachable and can be worn cross back for greater support, which is what I do. Only
+                  thing, once one strap slipped out of the loop—needs to fit more tightly. Otherwise, fit, support and
+                  comfort all just superb. Have worn it on three runs so far.</p>
+              </div>
+              <p class="sav-reviews__author">Anjali M.</p>
+            </div>
+            <div class="sav-reviews__photo">
+              <img src="./assets/img/banner-2.png" width="480" height="640" alt="Customer wearing Savante sports bra" />
+            </div>
+          </article>
+          <article class="sav-reviews__slide" data-reviews-slide>
+            <div class="sav-reviews__text">
+              <h3 class="sav-reviews__headline">Everyday comfort that actually lasts</h3>
+              <div class="sav-reviews__stars" aria-label="5 out of 5 stars">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <div class="sav-reviews__copy">
+                <p>Soft fabric, no digging straps, and the shape stays put through long workdays. I&apos;ve washed it
+                  several times and it still looks new.</p>
+                <p>Finally found something between flimsy lounge bras and heavy sports styles. Highly recommend for
+                  daily wear.</p>
+              </div>
+              <p class="sav-reviews__author">Priya S.</p>
+            </div>
+            <div class="sav-reviews__photo">
+              <img src="./assets/img/banner-3.png" width="480" height="640" alt="Customer in Savante innerwear" />
+            </div>
+          </article>
+        </div>
+      </div>
+      <button type="button" class="sav-reviews__nav sav-reviews__nav--next" data-reviews-next aria-label="Next review">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </section>
+
+  <footer class="sav-footer" role="contentinfo">
+    <div class="sav-footer__main">
+      <div class="sav-footer__grid">
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">About</h3>
+          <ul class="sav-footer__list">
+            <li><a href="about.html">About Savante</a></li>
+            <li><a href="#">Sitemap</a></li>
+            <li><a href="blog.html">Blog</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">Account</h3>
+          <ul class="sav-footer__list">
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Caution Notice</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">Policy</h3>
+          <ul class="sav-footer__list">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Gift Card Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col">
+          <h3 class="sav-footer__heading">Help</h3>
+          <ul class="sav-footer__list">
+            <li><a href="#">FAQs</a></li>
+            <li><a href="contact.html">Get in Touch</a></li>
+            <li><a href="#">Grievance Redressal</a></li>
+          </ul>
+        </div>
+        <div class="sav-footer__col sav-footer__col--news">
+          <h3 class="sav-footer__heading sav-footer__heading--caps">Be the first to know</h3>
+          <p class="sav-footer__news-text">Sign up to stay updated on new products, brand stories and events.</p>
+          <form class="sav-footer__news-form" action="#" method="post">
+            <label class="sav-footer__sr" for="sav-footer-email">Email address</label>
+            <input id="sav-footer-email" class="sav-footer__input" type="email" name="email" placeholder="Email Address"
+              autocomplete="email" />
+            <button type="submit" class="sav-footer__subscribe">Subscribe</button>
+          </form>
+        </div>
+        <div class="sav-footer__col sav-footer__col--contact">
+          <p class="sav-footer__contact-line">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <span>Savante Retail Pvt. Ltd., Example Business Park, Tower-1, 7th Floor, Bengaluru, Karnataka, India,
+              560103</span>
+          </p>
+          <p class="sav-footer__contact-line">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:wecare@savante.com">wecare@savante.com</a>
+          </p>
+          <p class="sav-footer__contact-line">
+            <i class="fa-solid fa-mobile-screen" aria-hidden="true"></i>
+            <span>1800-000-0000 (Toll Free) / 1860-000-0000 (Mon–Sun, IST 10:00 AM to 7:00 PM)</span>
+          </p>
+          <div class="sav-footer__social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Snapchat"><i class="fa-brands fa-snapchat" aria-hidden="true"></i></a>
+            <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i
+                class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sav-footer__mid">
+        <div class="sav-footer__utilities">
+          <a class="sav-footer__pill" href="#"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i> Store
+            Locator</a>
+          <a class="sav-footer__pill" href="#"><i class="fa-solid fa-store" aria-hidden="true"></i> Franchise</a>
+          <a class="sav-footer__pill" href="#"><i class="fa-solid fa-gift" aria-hidden="true"></i> Corporate Gifting</a>
+        </div>
+        <div class="sav-footer__apps-wrap">
+          <p class="sav-footer__apps-title">Download the App From</p>
+          <div class="sav-footer__apps">
+            <a class="sav-footer__app-badge sav-footer__app-badge--play" href="#" aria-label="Get it on Google Play">
+              <span class="sav-footer__app-small">Get it on</span>
+              <span class="sav-footer__app-name">Google Play</span>
+            </a>
+            <a class="sav-footer__app-badge sav-footer__app-badge--apple" href="#"
+              aria-label="Download on the App Store">
+              <span class="sav-footer__app-small">Download on the</span>
+              <span class="sav-footer__app-name">App Store</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sav-footer__bar">
+      <p class="sav-footer__copy">&copy; 2013-2026 Savante all rights reserved.</p>
+    </div>
+  </footer>
+
+  <div class="sav-fab" aria-label="Quick actions">
+    <button type="button" class="sav-fab__btn sav-fab__btn--top" data-scroll-top aria-label="Back to top">
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+    <a class="sav-fab__btn sav-fab__btn--chat" href="#" aria-label="Open chat assistant">
+      <i class="fa-solid fa-robot" aria-hidden="true"></i>
+    </a>
+  </div>
+
+  <script src="./assets/js/script.js"></script>
+</body>
+
+</html>

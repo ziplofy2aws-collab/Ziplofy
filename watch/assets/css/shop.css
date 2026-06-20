@@ -1,0 +1,493 @@
+/* ===================== Shop page ===================== */
+
+.watch-shop {
+  background: #fff;
+  padding: 20px 0 56px;
+}
+
+.watch-shop__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.watch-shop__breadcrumb {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: #767676;
+}
+
+.watch-shop__breadcrumb a {
+  color: #767676;
+  text-decoration: none;
+}
+
+.watch-shop__breadcrumb a:hover {
+  color: #1a1a1a;
+}
+
+.watch-shop__breadcrumb span {
+  margin: 0 6px;
+  color: #ccc;
+}
+
+.watch-shop__title {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Toolbar */
+.watch-shop__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.watch-shop__filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 999px;
+  background: #1d438a;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #fff;
+  cursor: pointer;
+}
+
+.watch-shop__count {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: #767676;
+}
+
+/* Filter drawer */
+.watch-shop__backdrop {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.watch-shop__backdrop.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.watch-shop__filters {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 200;
+  width: min(320px, 88vw);
+  padding: 24px 20px;
+  background: #fff;
+  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.12);
+  transform: translateX(-105%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.watch-shop__filters.is-open {
+  transform: translateX(0);
+}
+
+.watch-shop__filters-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.watch-shop__filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.watch-shop__filters-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.watch-shop__filter-clear {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #888;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.watch-shop__filter-group + .watch-shop__filter-group {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid #ececec;
+}
+
+.watch-shop__filter-group h3 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.watch-shop__filter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.watch-shop__filter-list li + li {
+  margin-top: 8px;
+}
+
+.watch-shop__filter-list label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #444;
+  cursor: pointer;
+}
+
+.watch-shop__filter-list input {
+  accent-color: #1a1a1a;
+}
+
+/* Product grid */
+.watch-shop__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px 20px;
+}
+
+.watch-shop__card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+}
+
+.watch-shop__link {
+  display: contents;
+  color: inherit;
+  text-decoration: none;
+}
+
+.watch-shop__media {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.watch-shop__body {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.watch-shop__wish {
+  grid-row: 1;
+  grid-column: 1;
+  align-self: end;
+  justify-self: start;
+  margin: 0 0 10px 10px;
+}
+
+
+.watch-shop__link:hover .watch-shop__name {
+  opacity: 0.7;
+}
+
+.watch-shop__media {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.watch-shop__media img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+}
+
+.watch-shop__wish {
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.watch-shop__badge {
+  position: absolute;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1;
+  color: #1a1a1a;
+}
+
+.watch-shop__badge--sale {
+  top: 12px;
+  right: 12px;
+}
+
+.watch-shop__badge--bestseller {
+  right: 12px;
+  bottom: 12px;
+}
+
+.watch-shop__body {
+  padding-top: 10px;
+  text-align: left;
+}
+
+.watch-shop__name {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(12px * 1.45 * 2);
+  transition: opacity 0.2s ease;
+}
+
+.watch-shop__price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.watch-shop__price-current {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #000;
+}
+
+.watch-shop__price-mrp {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #767676;
+  text-decoration: line-through;
+}
+
+.watch-shop__price-off {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #e60000;
+  text-transform: uppercase;
+}
+
+.watch-shop__rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.watch-shop__stars {
+  display: inline-flex;
+  gap: 1px;
+  font-size: 11px;
+  line-height: 1;
+  color: #f5a623;
+  letter-spacing: 0;
+}
+
+.watch-shop__stars i {
+  font-size: 11px;
+}
+
+.watch-shop__reviews {
+  font-size: 11px;
+  font-weight: 400;
+  color: #767676;
+}
+
+@media (max-width: 1200px) {
+  .watch-shop__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .watch-shop__inner {
+    padding: 0 16px;
+  }
+
+  .watch-shop__title {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .watch-shop__toolbar {
+    margin-bottom: 16px;
+  }
+
+  .watch-shop__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 12px;
+  }
+
+  .watch-shop__body {
+    padding-top: 8px;
+    text-align: center;
+  }
+
+  .watch-shop__name {
+    font-size: 11px;
+    line-height: 1.4;
+    min-height: calc(11px * 1.4 * 2);
+    -webkit-line-clamp: 2;
+  }
+
+  .watch-shop__price-row {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: center;
+    justify-items: center;
+    column-gap: 6px;
+    row-gap: 4px;
+    margin-top: 6px;
+  }
+
+  .watch-shop__price-row:not(:has(.watch-shop__price-mrp)) .watch-shop__price-current {
+    grid-column: 1 / -1;
+  }
+
+  .watch-shop__price-current {
+    font-size: 13px;
+  }
+
+  .watch-shop__price-mrp {
+    font-size: 11px;
+  }
+
+  .watch-shop__price-off {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    margin-top: 0;
+  }
+
+  .watch-shop__rating {
+    justify-content: center;
+    margin-top: 6px;
+  }
+
+  .watch-shop__stars {
+    font-size: 10px;
+  }
+
+  .watch-shop__stars i {
+    font-size: 10px;
+  }
+
+  .watch-shop__reviews {
+    font-size: 10px;
+  }
+
+  .watch-shop__media img {
+    width: 82%;
+    height: 82%;
+  }
+
+  .watch-shop__badge {
+    font-size: 10px;
+  }
+
+  .watch-shop__badge--sale {
+    top: 10px;
+    right: 10px;
+  }
+
+  .watch-shop__badge--bestseller {
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .watch-shop__wish {
+    width: 24px;
+    height: 24px;
+    margin: 0 0 8px 8px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 520px) {
+  .watch-shop__inner {
+    padding: 0 12px;
+  }
+
+  .watch-shop__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 10px;
+  }
+
+  .watch-shop__filter-btn {
+    min-height: 34px;
+    padding: 0 18px;
+    font-size: 12px;
+  }
+
+  .watch-shop__count {
+    font-size: 11px;
+  }
+
+  .watch-shop__name {
+    font-size: 10px;
+    min-height: calc(10px * 1.4 * 2);
+  }
+
+  .watch-shop__price-current {
+    font-size: 12px;
+  }
+
+  .watch-shop__price-mrp {
+    font-size: 10px;
+  }
+}

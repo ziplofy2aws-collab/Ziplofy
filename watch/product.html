@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TIVOX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body class="watch-pdp-page">
+
+  <header class="watch-header" role="banner" data-watch-header>
+    <div class="watch-header__backdrop" data-watch-header-backdrop hidden aria-hidden="true"></div>
+
+    <aside class="watch-header__drawer" id="watch-header-drawer" data-watch-header-drawer aria-hidden="true"
+      tabindex="-1">
+      <div class="watch-header__drawer-head">
+        <span class="watch-header__drawer-title">Menu</span>
+        <button class="watch-header__drawer-close" type="button" aria-label="Close menu" data-watch-header-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="watch-header__drawer-nav" aria-label="Mobile navigation">
+        <a href="#">Visit <span class="watch-header__luxe">LUXE</span></a>
+        <a href="shop.html">All Watches</a>
+        <a href="shop.html">Men</a>
+        <a href="shop.html">Women</a>
+        <a href="shop.html">Smart</a>
+        <a href="#">Brands</a>
+        <a href="#">Stores</a>
+        <a href="#">Offers</a>
+        <a href="#">Stores Locator</a>
+        <a href="#">Contact Us</a>
+      </nav>
+    </aside>
+
+    <div class="watch-header__inner">
+      <div class="watch-header__top">
+        <button class="watch-header__menu-btn" type="button" aria-label="Open menu" aria-expanded="false"
+          aria-controls="watch-header-drawer" data-watch-header-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <div class="watch-header__top-left">
+          <a href="#" class="watch-header__utility">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <span>Stores</span>
+          </a>
+          <span class="watch-header__divider" aria-hidden="true"></span>
+          <a href="#" class="watch-header__utility">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <span>Contact Us</span>
+          </a>
+        </div>
+
+        <a href="index.html" class="watch-header__logo" aria-label="TIVOX home">
+          <img src="assets/img/logo.png" alt="TIVOX" width="180" height="48" decoding="async" />
+        </a>
+
+        <div class="watch-header__top-right">
+          <button class="watch-header__search-btn" type="button" aria-label="Search" aria-expanded="false"
+            data-watch-header-search-toggle>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+          <a href="#" class="watch-header__icon-btn" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="watch-header__icon-btn watch-header__icon-btn--account" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="watch-header__icon-btn" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="watch-header__search-mobile" data-watch-header-search-panel hidden>
+        <form class="watch-header__search watch-header__search--mobile" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="watch-header-search-mobile-pdp">Search entire store</label>
+          <i class="fa-solid fa-magnifying-glass watch-header__search-icon" aria-hidden="true"></i>
+          <input id="watch-header-search-mobile-pdp" type="search" name="q" placeholder="Search entire store here..."
+            autocomplete="off" />
+        </form>
+      </div>
+
+      <div class="watch-header__bottom">
+        <nav class="watch-header__nav" aria-label="Primary navigation">
+          <a href="#" class="watch-header__nav-link watch-header__nav-link--luxe">
+            Visit <span class="watch-header__luxe">LUXE</span>
+          </a>
+          <a href="shop.html" class="watch-header__nav-link">
+            <span class="watch-header__nav-short">All</span>
+            <span class="watch-header__nav-full">All Watches</span>
+          </a>
+          <a href="shop.html" class="watch-header__nav-link">Men</a>
+          <a href="shop.html" class="watch-header__nav-link">Women</a>
+          <a href="shop.html" class="watch-header__nav-link watch-header__nav-link--desktop-only">Smart</a>
+          <a href="#" class="watch-header__nav-link watch-header__nav-link--desktop-only">Brands</a>
+          <a href="#" class="watch-header__nav-link watch-header__nav-link--desktop-only">Stores</a>
+          <a href="#" class="watch-header__nav-link">Offers</a>
+        </nav>
+
+        <form class="watch-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="watch-header-search">Search entire store</label>
+          <i class="fa-solid fa-magnifying-glass watch-header__search-icon" aria-hidden="true"></i>
+          <input id="watch-header-search" type="search" name="q" placeholder="Search entire store here..."
+            autocomplete="off" />
+        </form>
+      </div>
+    </div>
+  </header>
+
+  <main class="watch-pdp">
+    <div class="watch-pdp__inner">
+      <nav class="watch-pdp__breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span aria-hidden="true">&gt;</span>
+        <span data-watch-pdp-breadcrumb>Men Automatic Brown Dial Multi-function Croco Leather Watch TWGX19995</span>
+      </nav>
+
+      <div class="watch-pdp__layout">
+        <div class="watch-pdp__gallery-col">
+          <div class="watch-pdp__gallery" data-watch-pdp-gallery>
+            <div class="watch-pdp__thumbs" role="tablist" aria-label="Product images" data-watch-pdp-thumbs></div>
+            <div class="watch-pdp__hero">
+              <button class="watch-pdp__wish" type="button" aria-label="Add to wishlist" data-watch-pdp-wish>
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <img src="assets/img/NA-1.webp" alt="" width="520" height="520" data-watch-pdp-main decoding="async" />
+            </div>
+          </div>
+        </div>
+
+        <div class="watch-pdp__content">
+          <div class="watch-pdp__purchase">
+            <div class="watch-pdp__brand-row">
+              <h2 class="watch-pdp__brand" data-watch-pdp-brand>TIVOX</h2>
+              <span class="watch-pdp__new-badge" data-watch-pdp-new>
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                New Arrival
+              </span>
+            </div>
+
+            <div class="watch-pdp__title-row">
+              <h1 class="watch-pdp__title" data-watch-pdp-title>Men Automatic Brown Dial Multi-function Croco Leather
+                Watch TWGX19995</h1>
+              <button class="watch-pdp__share" type="button" aria-label="Share product">
+                <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <p class="watch-pdp__sku" data-watch-pdp-sku>TWGX19995</p>
+            <p class="watch-pdp__price" data-watch-pdp-price>₹ 19,995.00</p>
+            <p class="watch-pdp__tax">(Inc. of all taxes)</p>
+            <p class="watch-pdp__delivery"><u>Free Delivery</u> across Pan India</p>
+
+            <div class="watch-pdp__emi">
+              <div class="watch-pdp__emi-logo">Pay Later<br />with TIVOX</div>
+              <p class="watch-pdp__emi-text" data-watch-pdp-emi>EMI Starting From ₹3,332/- for 2/6/9 months. 0% Interest
+                on EMI with Snapmint.</p>
+              <button class="watch-pdp__emi-arrow" type="button" aria-label="View EMI details">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="watch-pdp__points">
+              <span data-watch-pdp-points>Earn upto 199 Points on this purchase</span>
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            </div>
+
+            <div class="watch-pdp__actions">
+              <button class="watch-pdp__btn watch-pdp__btn--outline" type="button">Buy Now</button>
+              <button class="watch-pdp__btn watch-pdp__btn--primary" type="button">
+                <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                Add to Cart
+              </button>
+            </div>
+
+            <ul class="watch-pdp__policies">
+              <li><i class="fa-solid fa-percent" aria-hidden="true"></i> Discount on Prepaid Order</li>
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i> 2 Days Returns Policy</li>
+              <li><i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i> In-Store Servicing Available</li>
+            </ul>
+          </div>
+
+          <div class="watch-pdp__cards">
+            <div class="watch-pdp__card">
+              <h3 class="watch-pdp__card-title">Offers Available</h3>
+              <ul class="watch-pdp__offers">
+                <li>
+                  <i class="fa-solid fa-tag" aria-hidden="true"></i>
+                  <span>Get 10% off on your purchase with coupon code <strong>WATCHFEST10</strong> during Summer Watch
+                    Fest.</span>
+                </li>
+                <li>
+                  <i class="fa-solid fa-tag" aria-hidden="true"></i>
+                  <span>Get 5% off on prepaid orders. No minimum purchase required.</span>
+                </li>
+                <li>
+                  <i class="fa-solid fa-tag" aria-hidden="true"></i>
+                  <span>Get 5% cashback on using TIVOX Pay Later. No minimum purchase required.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="watch-pdp__card">
+              <div class="watch-pdp__card-divider"><span>Getting a Better Price?</span></div>
+              <p class="watch-pdp__card-text">Found a better price elsewhere or want to speak with our team? We're here
+                to help you get the best deal.</p>
+              <button class="watch-pdp__talk-btn" type="button">
+                <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+                Talk To Us
+              </button>
+            </div>
+
+            <div class="watch-pdp__card">
+              <h3 class="watch-pdp__card-title">Check Delivery</h3>
+              <div class="watch-pdp__pincode">
+                <input type="text" placeholder="Enter Pincode:" aria-label="Enter pincode" maxlength="6"
+                  inputmode="numeric" />
+                <button class="watch-pdp__pincode-check" type="button">Check</button>
+              </div>
+              <p class="watch-pdp__store-link">Want to check availability at store? <a href="#">Find Store</a></p>
+            </div>
+          </div>
+
+          <div class="watch-pdp__warranty">
+            <div class="watch-pdp__warranty-badge">24<br />Months<br />Warranty</div>
+            <div class="watch-pdp__warranty-text">
+              <h3>24 Months Manufacturer Warranty</h3>
+              <p>T&amp;C Applicable</p>
+            </div>
+          </div>
+
+          <div class="watch-pdp__acc" data-watch-pdp-acc>
+            <div class="watch-pdp__acc-item is-open">
+              <button class="watch-pdp__acc-btn" type="button" aria-expanded="true">
+                Product Specifications
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="watch-pdp__acc-panel">
+                <div class="watch-pdp__spec-grid">
+                  <div class="watch-pdp__spec-item">
+                    <span class="watch-pdp__spec-label">Case Shape</span>
+                    <span class="watch-pdp__spec-icon"><i class="fa-regular fa-circle" aria-hidden="true"></i></span>
+                    <span class="watch-pdp__spec-value" data-watch-pdp-spec>Round</span>
+                  </div>
+                  <div class="watch-pdp__spec-item">
+                    <span class="watch-pdp__spec-label">Dial Diameter</span>
+                    <span class="watch-pdp__spec-icon"><i class="fa-solid fa-arrows-left-right"
+                        aria-hidden="true"></i></span>
+                    <span class="watch-pdp__spec-value" data-watch-pdp-spec>42 MM</span>
+                  </div>
+                  <div class="watch-pdp__spec-item">
+                    <span class="watch-pdp__spec-label">Movement</span>
+                    <span class="watch-pdp__spec-icon"><i class="fa-solid fa-gear" aria-hidden="true"></i></span>
+                    <span class="watch-pdp__spec-value" data-watch-pdp-spec>Automatic</span>
+                  </div>
+                  <div class="watch-pdp__spec-item">
+                    <span class="watch-pdp__spec-label">Gender</span>
+                    <span class="watch-pdp__spec-icon"><i class="fa-solid fa-person" aria-hidden="true"></i></span>
+                    <span class="watch-pdp__spec-value" data-watch-pdp-spec>Men</span>
+                  </div>
+                  <div class="watch-pdp__spec-item">
+                    <span class="watch-pdp__spec-label">Display</span>
+                    <span class="watch-pdp__spec-icon"><i class="fa-regular fa-square" aria-hidden="true"></i></span>
+                    <span class="watch-pdp__spec-value" data-watch-pdp-spec>Analog</span>
+                  </div>
+                  <div class="watch-pdp__spec-item">
+                    <span class="watch-pdp__spec-label">Dial Colour</span>
+                    <span class="watch-pdp__spec-icon"><i class="fa-solid fa-droplet" aria-hidden="true"></i></span>
+                    <span class="watch-pdp__spec-value" data-watch-pdp-spec>Brown</span>
+                  </div>
+                </div>
+                <dl class="watch-pdp__spec-table" data-watch-pdp-spec-table></dl>
+              </div>
+            </div>
+
+            <div class="watch-pdp__acc-item">
+              <button class="watch-pdp__acc-btn" type="button" aria-expanded="false">
+                Product Description
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="watch-pdp__acc-panel">
+                <p class="watch-pdp__acc-text" data-watch-pdp-desc>A refined automatic timepiece with a rich brown
+                  croco-pattern leather strap, exhibition caseback, and sunburst dial.</p>
+              </div>
+            </div>
+
+            <div class="watch-pdp__acc-item">
+              <button class="watch-pdp__acc-btn" type="button" aria-expanded="false">
+                Return &amp; Refund Policy
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="watch-pdp__acc-panel">
+                <p class="watch-pdp__acc-text">Returns accepted within 2 days of delivery in original packaging with
+                  tags intact. Refunds are processed within 5–7 business days after quality inspection. Exchange
+                  available for size and strap variants subject to availability.</p>
+              </div>
+            </div>
+
+            <div class="watch-pdp__acc-item">
+              <button class="watch-pdp__acc-btn" type="button" aria-expanded="false">
+                Manufactured &amp; Imported By
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="watch-pdp__acc-panel">
+                <p class="watch-pdp__acc-text">Manufactured by TIVOX Watch Co., Switzerland. Imported &amp; Marketed by
+                  Titan Company Limited, 3, SIPCOT Industrial Complex, Hosur — 635126, Tamil Nadu, India.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="watch-pdp__related" aria-labelledby="watch-pdp-related-heading" data-watch-pdp-related-section>
+        <div class="watch-pdp__related-head">
+          <h2 id="watch-pdp-related-heading">You May Also Like</h2>
+          <a href="shop.html" class="watch-pdp__btn watch-pdp__btn--secondary">View All</a>
+        </div>
+        <div class="watch-pdp__related-slider">
+          <button class="watch-pdp__related-arrow watch-pdp__related-arrow--prev" type="button"
+            aria-label="Previous related product" data-watch-pdp-related-prev disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <div class="watch-pdp__related-viewport" data-watch-pdp-related-viewport>
+            <div class="watch-pdp__related-track" data-watch-pdp-related></div>
+          </div>
+          <button class="watch-pdp__related-arrow watch-pdp__related-arrow--next" type="button"
+            aria-label="Next related product" data-watch-pdp-related-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <section class="watch-testimonials" aria-labelledby="watch-testimonials-heading" data-watch-testimonials>
+    <div class="watch-testimonials__inner">
+      <div class="watch-testimonials__head">
+        <h2 id="watch-testimonials-heading" class="watch-testimonials__title">TESTIMONIALS</h2>
+        <a href="#" class="watch-testimonials__more">SEE MORE</a>
+      </div>
+
+      <div class="watch-testimonials__slider">
+        <button class="watch-testimonials__arrow watch-testimonials__arrow--prev" type="button"
+          aria-label="Previous testimonials" data-watch-testimonials-prev disabled>
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="watch-testimonials__viewport" data-watch-testimonials-viewport>
+          <div class="watch-testimonials__track" data-watch-testimonials-track>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 10 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Satish Chandra Mohanty</strong>
+                <time class="watch-testimonials__date" datetime="2025-11-20">20 NOV, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Excellent customer service. Extremely happy for timely completion and
+                quality of the job. The dealing Executives at BARIPADA TITAN Showroom are very courteous, helpfull,
+                dedicated, sincere and very responsible. Excellent Showroom , very nicely organised . We wish all the
+                best to the Full TITAN TEAM Management to achieve pinnacle of..</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 9 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Anuragarya</strong>
+                <time class="watch-testimonials__date" datetime="2025-11-13">13 NOV, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Polite and courteous staff .. Clarified all my queries .. The repair
+                was fast and seemed to be reasonably priced .. And how can I forget the ambience and fragrance of the
+                store .. Overall it was an amazing experience ..</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 10 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Priya Mehta</strong>
+                <time class="watch-testimonials__date" datetime="2025-11-08">08 NOV, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Beautiful collection and knowledgeable staff. They helped me pick the
+                perfect watch for my husband's birthday. The packaging was premium and delivery was on time. Highly
+                recommend this store for luxury timepieces.</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 9 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Rahul Sharma</strong>
+                <time class="watch-testimonials__date" datetime="2025-10-29">29 OCT, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Great experience from start to finish. The team explained every
+                feature of the automatic watch I purchased. Fair pricing and genuine products. Will definitely visit
+                again for my next purchase.</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 10 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Neha Kapoor</strong>
+                <time class="watch-testimonials__date" datetime="2025-10-18">18 OCT, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">The showroom ambience is outstanding. Staff was patient while I tried
+                multiple styles. Finally got a stunning rose gold piece that exceeded my expectations. Thank you for
+                the wonderful service.</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 8 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Vikram Singh</strong>
+                <time class="watch-testimonials__date" datetime="2025-10-05">05 OCT, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Quick battery replacement and polishing service. The watch looks brand
+                new again. Slightly longer wait time on a busy weekend but overall a smooth and professional
+                experience.</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 10 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Aisha Khan</strong>
+                <time class="watch-testimonials__date" datetime="2025-09-22">22 SEP, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Impressed by the curated luxury range. The consultant understood
+                exactly what I wanted within minutes. Seamless billing and a thoughtful follow-up call after delivery.
+                Five stars from me.</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 9 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Arjun Patel</strong>
+                <time class="watch-testimonials__date" datetime="2025-09-10">10 SEP, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Visited for a corporate gifting order. The team handled bulk
+                engraving and packaging flawlessly. On-time delivery for our event. Professional and reliable partner
+                for premium watches.</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 10 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Deepika Rao</strong>
+                <time class="watch-testimonials__date" datetime="2025-08-28">28 AUG, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">Exceptional after-sales support. My strap adjustment was done while I
+                browsed the new arrivals. Warm hospitality and a truly premium shopping environment. Could not ask for
+                more.</p>
+            </article>
+            <article class="watch-testimonials__card">
+              <div class="watch-testimonials__card-head">
+                <span class="watch-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+                <span class="watch-testimonials__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 9 /
+                  10</span>
+              </div>
+              <div class="watch-testimonials__meta">
+                <strong class="watch-testimonials__name">Manish Gupta</strong>
+                <time class="watch-testimonials__date" datetime="2025-08-14">14 AUG, 2025</time>
+              </div>
+              <div class="watch-testimonials__rule" aria-hidden="true"></div>
+              <p class="watch-testimonials__text">First time buying a Swiss automatic watch here. The staff walked me
+                through warranty, servicing, and care tips in detail. Transparent pricing and zero pressure selling.
+                Absolutely delighted.</p>
+            </article>
+          </div>
+        </div>
+
+        <button class="watch-testimonials__arrow watch-testimonials__arrow--next" type="button"
+          aria-label="Next testimonials" data-watch-testimonials-next>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="watch-testimonials__dots" data-watch-testimonials-dots aria-label="Testimonial slides"></div>
+    </div>
+  </section>
+
+  <div class="watch-pdp__sticky" data-watch-pdp-sticky>
+    <div class="watch-pdp__sticky-inner">
+      <div class="watch-pdp__sticky-info">
+        <p class="watch-pdp__sticky-title" data-watch-pdp-sticky-title>TIVOX | Men Automatic Brown Dial Multi-function
+          Croco Leather Watch TWGX19995</p>
+        <p class="watch-pdp__sticky-price" data-watch-pdp-sticky-price>₹ 19,995.00</p>
+      </div>
+      <div class="watch-pdp__sticky-actions">
+        <button class="watch-pdp__btn watch-pdp__btn--outline" type="button">Buy Now</button>
+        <button class="watch-pdp__btn watch-pdp__btn--primary" type="button">
+          <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          Add to Bag
+        </button>
+        <button class="watch-pdp__sticky-toggle" type="button" aria-label="Collapse bar" data-watch-pdp-sticky-toggle>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button class="watch-pdp__rewards" type="button">
+    <i class="fa-solid fa-gift" aria-hidden="true"></i>
+    Rewards
+  </button>
+
+  <a href="#" class="watch-pdp__wa" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <footer class="watch-footer" role="contentinfo" data-watch-footer>
+    <div class="watch-footer__inner">
+      <div class="watch-footer__grid">
+        <div class="watch-footer__col watch-footer__accordion watch-footer__col--collections">
+          <button class="watch-footer__trigger" type="button" aria-expanded="false"
+            aria-controls="watch-footer-collections">
+            <span class="watch-footer__heading">COLLECTIONS</span>
+            <i class="fa-solid fa-chevron-down watch-footer__chevron" aria-hidden="true"></i>
+          </button>
+          <div class="watch-footer__panel" id="watch-footer-collections" hidden>
+            <ul class="watch-footer__links">
+              <li><a href="#">Diver's</a></li>
+              <li><a href="#">Titan Automatics</a></li>
+              <li><a href="#">Police Batman</a></li>
+              <li><a href="#">Stellar</a></li>
+              <li><a href="#">Raga Power Pearls</a></li>
+              <li><a href="#">Nebula Jewels</a></li>
+              <li><a href="#">Grandmaster</a></li>
+              <li><a href="#">Maritime</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="watch-footer__col watch-footer__accordion">
+          <button class="watch-footer__trigger" type="button" aria-expanded="false"
+            aria-controls="watch-footer-service">
+            <span class="watch-footer__heading">CUSTOMER SERVICE</span>
+            <i class="fa-solid fa-chevron-down watch-footer__chevron" aria-hidden="true"></i>
+          </button>
+          <div class="watch-footer__panel" id="watch-footer-service" hidden>
+            <ul class="watch-footer__links">
+              <li><a href="#">Payment Options</a></li>
+              <li><a href="#">Track Order</a></li>
+              <li><a href="#">Encircle Program</a></li>
+              <li><a href="#">Find Titan World Stores</a></li>
+              <li><a href="#">E Warranty Registration</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="watch-footer__col watch-footer__accordion">
+          <button class="watch-footer__trigger" type="button" aria-expanded="false"
+            aria-controls="watch-footer-contact">
+            <span class="watch-footer__heading">CONTACT US</span>
+            <i class="fa-solid fa-chevron-down watch-footer__chevron" aria-hidden="true"></i>
+          </button>
+          <div class="watch-footer__panel" id="watch-footer-contact" hidden>
+            <ul class="watch-footer__links">
+              <li><a href="tel:18002660123">1800-266-0123</a></li>
+              <li><a href="mailto:customercare@titan.co.in">customercare@titan.co.in</a></li>
+              <li><a href="#">Help &amp; Contact</a></li>
+              <li><a href="#">FAQs</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="watch-footer__col watch-footer__accordion">
+          <button class="watch-footer__trigger" type="button" aria-expanded="false" aria-controls="watch-footer-about">
+            <span class="watch-footer__heading">ABOUT TITAN</span>
+            <i class="fa-solid fa-chevron-down watch-footer__chevron" aria-hidden="true"></i>
+          </button>
+          <div class="watch-footer__panel" id="watch-footer-about" hidden>
+            <ul class="watch-footer__links">
+              <li><a href="#">Brand Protection</a></li>
+              <li><a href="#">Corporate</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Blog</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="watch-footer__col watch-footer__col--wide">
+          <p class="watch-footer__subheading">Download Titan World App</p>
+          <div class="watch-footer__apps">
+            <a href="#" class="watch-footer__app-btn" aria-label="Download on the App Store">
+              <i class="fa-brands fa-apple" aria-hidden="true"></i>
+              <span><small>Download on the</small> App Store</span>
+            </a>
+            <a href="#" class="watch-footer__app-btn" aria-label="Get it on Google Play">
+              <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+              <span><small>GET IT ON</small> Google Play</span>
+            </a>
+          </div>
+
+          <p class="watch-footer__subheading">Follow Us With</p>
+          <div class="watch-footer__social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          </div>
+
+          <p class="watch-footer__help">
+            Want Help? <a href="#">Click Here</a> To Chat With Us On
+            <span class="watch-footer__wa" aria-hidden="true"><i class="fa-brands fa-whatsapp"></i></span>
+          </p>
+          <p class="watch-footer__hours"><strong>Operating Hours: 10:00AM To 10:00PM</strong></p>
+          <p class="watch-footer__hours watch-footer__hours--days"><strong>Monday To Sunday</strong></p>
+        </div>
+      </div>
+
+      <div class="watch-footer__bar">
+        <div class="watch-footer__payments" aria-label="Accepted payment methods">
+          <span class="watch-footer__pay">VISA</span>
+          <span class="watch-footer__pay watch-footer__pay--mc">Mastercard</span>
+          <span class="watch-footer__pay">PayPal</span>
+          <span class="watch-footer__pay">AMEX</span>
+          <span class="watch-footer__pay">Diners</span>
+          <span class="watch-footer__pay watch-footer__pay--rpay">RuPay</span>
+          <span class="watch-footer__pay watch-footer__pay--bank">ICICI Bank</span>
+          <span class="watch-footer__pay watch-footer__pay--bank">AXIS BANK</span>
+        </div>
+
+        <div class="watch-footer__legal">
+          <p class="watch-footer__copy">&copy; 2026 Titan Company Limited. All Rights Reserved.</p>
+          <p class="watch-footer__policies">
+            <span class="watch-footer__policy-row">
+              <a href="#">Cyber Security Policy</a>
+              <span aria-hidden="true">|</span>
+              <a href="#">Terms &amp; Conditions</a>
+              <span aria-hidden="true">|</span>
+              <a href="#">Privacy Policy</a>
+            </span>
+            <span class="watch-footer__policy-row">
+              <a href="#">Wearable Privacy Policy</a>
+              <span aria-hidden="true">|</span>
+              <a href="#">Warranty Policy</a>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

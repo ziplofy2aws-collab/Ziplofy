@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — Muscle Xcel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="sp2-header" role="banner">
+
+    <div class="sp2-header__announce" role="region" aria-label="Store announcement">
+      <div class="sp2-header__announce-inner">
+        <p class="sp2-header__announce-text">Mega Clearance Sale - Get Upto 50% Off Now!</p>
+        <a href="shop.html" class="sp2-header__announce-btn">Shop Now</a>
+      </div>
+    </div>
+
+    <div class="sp2-header__main">
+      <div class="sp2-header__main-inner">
+        <a href="index.html" class="sp2-header__logo" aria-label="Home">
+          <img src="assets/img/logo.png" alt="Muscle Xcel" width="160" height="56" decoding="async" />
+        </a>
+
+        <form class="sp2-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="sp2-header-search-product">Search for products</label>
+          <i class="fa-solid fa-magnifying-glass sp2-header__search-icon" aria-hidden="true"></i>
+          <input id="sp2-header-search-product" type="search" name="q" placeholder="Search for products..."
+            autocomplete="off" />
+        </form>
+
+        <div class="sp2-header__actions">
+          <a href="#" class="sp2-header__action" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="sp2-header__action" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="sp2-header__action sp2-header__action--account" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <button type="button" class="sp2-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-sp2-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <nav class="sp2-header__nav" aria-label="Main navigation">
+      <div class="sp2-header__nav-inner">
+        <button type="button" class="sp2-header__nav-close" data-sp2-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <ul class="sp2-header__nav-list">
+          <li><a href="shop.html">Sports Nutrition <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="shop.html">General Wellness <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="shop.html">Vitamins &amp; Supplements <i class="fa-solid fa-chevron-down"
+                aria-hidden="true"></i></a>
+          </li>
+          <li><a href="shop.html">Ayurveda &amp; Herbs <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          </li>
+          <li><a href="shop.html">Fitness Accessories <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          </li>
+          <li><a href="shop.html">Brands <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="sp2-header__overlay" data-sp2-menu-overlay hidden></div>
+  </header>
+
+  <main class="sp2-pdp" data-sp2-product>
+    <div class="sp2-pdp__inner">
+
+      <div class="sp2-pdp__layout">
+        <div class="sp2-pdp__left">
+          <div class="sp2-pdp__gallery-col">
+            <nav class="sp2-pdp__breadcrumb" aria-label="Breadcrumb">
+              <a href="index.html">Home</a>
+              <span aria-hidden="true"> | </span>
+              <span data-sp2-product-breadcrumb-name>Impact Whey Protein</span>
+            </nav>
+
+            <div class="sp2-pdp__gallery">
+              <div class="sp2-pdp__thumbs-col" data-sp2-product-thumbs></div>
+              <div class="sp2-pdp__main-view">
+                <button type="button" class="sp2-pdp__zoom" aria-label="Zoom image">
+                  <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
+                </button>
+                <img src="assets/img/product-1.png" alt="" data-sp2-product-main-img decoding="async" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Body: Left content -->
+          <div class="sp2-pdp__main">
+            <!-- Accordions -->
+            <div class="sp2-pdp__accordions" data-sp2-accordions>
+              <div class="sp2-pdp__accordion">
+                <button type="button" class="sp2-pdp__accordion-btn" aria-expanded="false">
+                  <span>Description</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="sp2-pdp__accordion-panel">
+                  <p data-sp2-product-desc>Premium whey protein blend to support muscle recovery and lean muscle growth.
+                    Each serving delivers high-quality protein to help you reach your fitness goals faster.</p>
+                </div>
+              </div>
+              <div class="sp2-pdp__accordion">
+                <button type="button" class="sp2-pdp__accordion-btn" aria-expanded="false">
+                  <span>Key Benefits</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="sp2-pdp__accordion-panel">
+                  <ul>
+                    <li>Supports lean muscle growth and faster recovery</li>
+                    <li>High protein per serving from premium whey</li>
+                    <li>Low fat and low sugar formulation</li>
+                    <li>Ideal for post-workout nutrition</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="sp2-pdp__accordion">
+                <button type="button" class="sp2-pdp__accordion-btn" aria-expanded="false">
+                  <span>Frequently Asked Questions</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="sp2-pdp__accordion-panel">
+                  <p><strong>How do I take it?</strong> Mix 1 scoop with 250ml water or milk, shake well and consume
+                    post-workout.</p>
+                  <p><strong>Is it vegetarian?</strong> Yes, this product is suitable for vegetarians.</p>
+                </div>
+              </div>
+              <div class="sp2-pdp__accordion">
+                <button type="button" class="sp2-pdp__accordion-btn" aria-expanded="false">
+                  <span>Ingredients</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="sp2-pdp__accordion-panel">
+                  <p>Whey Protein Concentrate, Emulsifier (Soy Lecithin), Flavouring, Sweetener (Sucralose).</p>
+                </div>
+              </div>
+              <div class="sp2-pdp__accordion">
+                <button type="button" class="sp2-pdp__accordion-btn" aria-expanded="false">
+                  <span>Nutritional Information</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="sp2-pdp__accordion-panel">
+                  <p>Protein 21g · Carbohydrates 3.6g · Fat 1.9g · Calories 103 per serving (30g).</p>
+                </div>
+              </div>
+              <div class="sp2-pdp__accordion">
+                <button type="button" class="sp2-pdp__accordion-btn" aria-expanded="false">
+                  <span>Suggested Use</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="sp2-pdp__accordion-panel">
+                  <p>Mix 1 scoop (30g) with 250ml water or milk. Consume 1–3 servings daily. Store in a cool, dry place.
+                  </p>
+                </div>
+              </div>
+              <div class="sp2-pdp__accordion">
+                <button type="button" class="sp2-pdp__accordion-btn" aria-expanded="false">
+                  <span>Product Details</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="sp2-pdp__accordion-panel">
+                  <p>Brand: Muscle Xcel · Form: Powder · Dietary: Vegetarian · Best before: 24 months from manufacture.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Frequently bought with -->
+            <section class="sp2-pdp__fbt" aria-label="Frequently bought with">
+              <h2 class="sp2-pdp__fbt-title">Frequently bought with</h2>
+              <p class="sp2-pdp__fbt-sub">Complete your stack with products that work better together</p>
+
+              <div class="sp2-pdp__fbt-box">
+                <div class="sp2-pdp__fbt-current">
+                  <span class="sp2-pdp__fbt-label">Current item selected</span>
+                  <article class="sp2-pdp__fbt-card sp2-pdp__fbt-card--current" data-sp2-fbt-current></article>
+                </div>
+
+                <span class="sp2-pdp__fbt-plus" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
+
+                <div class="sp2-pdp__fbt-addons" data-sp2-fbt-addons></div>
+
+                <div class="sp2-pdp__fbt-summary">
+                  <p class="sp2-pdp__fbt-total">Your total: <strong data-sp2-fbt-total>₹2,597.00</strong></p>
+                  <p class="sp2-pdp__fbt-was">Was <s data-sp2-fbt-was>₹3,397.00</s></p>
+                  <p class="sp2-pdp__fbt-save">Save <span data-sp2-fbt-save>₹800.00</span></p>
+                  <button type="button" class="sp2-pdp__fbt-btn">
+                    <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i> Add these to your routine
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Recommended for you -->
+            <section class="sp2-pdp__rec" aria-label="Recommended for you">
+              <h2 class="sp2-pdp__rec-title">Recommended for you</h2>
+              <div class="sp2-pdp__rec-viewport" data-sp2-rec-viewport>
+                <div class="sp2-pdp__rec-track" data-sp2-product-related></div>
+              </div>
+              <div class="sp2-pdp__rec-footer">
+                <div class="sp2-pdp__rec-scrollbar" aria-hidden="true">
+                  <div class="sp2-pdp__rec-scrollbar-thumb" data-sp2-rec-thumb></div>
+                </div>
+                <div class="sp2-pdp__rec-nav">
+                  <button type="button" class="sp2-pdp__rec-arrow" data-sp2-rec-prev aria-label="Previous">
+                    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="sp2-pdp__rec-arrow" data-sp2-rec-next aria-label="Next">
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Customer Reviews -->
+            <section class="sp2-pdp__reviews" id="sp2-reviews" aria-label="Customer reviews">
+              <h2 class="sp2-pdp__reviews-title">Customer reviews</h2>
+
+              <div class="sp2-pdp__review-filters">
+                <button type="button" class="sp2-pdp__review-filter is-active">5 <i class="fa-solid fa-star"></i>
+                  1K+</button>
+                <button type="button" class="sp2-pdp__review-filter">4 <i class="fa-solid fa-star"></i> 767</button>
+                <button type="button" class="sp2-pdp__review-filter">3 <i class="fa-solid fa-star"></i> 89</button>
+                <button type="button" class="sp2-pdp__review-filter">2 <i class="fa-solid fa-star"></i> 12</button>
+                <button type="button" class="sp2-pdp__review-filter">1 <i class="fa-solid fa-star"></i> 4</button>
+              </div>
+
+              <div class="sp2-pdp__reviews-layout">
+                <div class="sp2-pdp__review-summary">
+                  <p class="sp2-pdp__review-summary-label">OVERALL RATING</p>
+                  <div class="sp2-pdp__review-score">
+                    <span class="sp2-pdp__review-num" data-sp2-review-score>4.21</span>
+                    <span class="sp2-pdp__review-stars" data-sp2-review-stars aria-hidden="true"></span>
+                  </div>
+                  <p class="sp2-pdp__review-count" data-sp2-review-count>(2711 reviews)</p>
+                  <div class="sp2-pdp__review-bars" data-sp2-review-bars></div>
+                  <a href="#" class="sp2-pdp__review-all">VIEW ALL REVIEWS</a>
+                </div>
+
+                <div class="sp2-pdp__review-slider">
+                  <div class="sp2-pdp__review-track" data-sp2-review-track></div>
+                  <div class="sp2-pdp__review-slider-nav">
+                    <button type="button" class="sp2-pdp__rec-arrow" data-sp2-review-prev aria-label="Previous review">
+                      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="sp2-pdp__rec-arrow" data-sp2-review-next aria-label="Next review">
+                      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="sp2-pdp__create-review">
+                <i class="fa-solid fa-pen" aria-hidden="true"></i> CREATE A REVIEW
+              </button>
+            </section>
+
+          </div>
+        </div>
+
+        <aside class="sp2-pdp__buy-sticky">
+          <div class="sp2-pdp__hero-buy" data-sp2-buy-panel="hero">
+            <div class="sp2-pdp__badges">
+              <span class="sp2-pdp__badge">Vegetarian</span>
+              <span class="sp2-pdp__badge">Low Fat</span>
+              <span class="sp2-pdp__badge">Low Sugar</span>
+            </div>
+
+            <div class="sp2-pdp__rating-row">
+              <span class="sp2-pdp__stars" data-sp2-product-stars aria-hidden="true"></span>
+              <a href="#sp2-reviews" class="sp2-pdp__reviews-link" data-sp2-product-reviews-link>2711 Reviews</a>
+            </div>
+
+            <h1 class="sp2-pdp__title" data-sp2-product-title>Impact Whey Protein</h1>
+            <p class="sp2-pdp__tagline">Trusted by over 2.4 million worldwide</p>
+
+            <div class="sp2-pdp__field">
+              <span class="sp2-pdp__label">Flavour:</span>
+              <div class="sp2-pdp__flavour-tabs" role="tablist">
+                <button type="button" class="sp2-pdp__flavour-tab is-active" data-sp2-flavour-tab="classic" role="tab"
+                  aria-selected="true">Classic</button>
+                <button type="button" class="sp2-pdp__flavour-tab" data-sp2-flavour-tab="special" role="tab"
+                  aria-selected="false">Special Editions</button>
+              </div>
+              <div class="sp2-pdp__select-wrap">
+                <select class="sp2-pdp__select" data-sp2-flavour-select aria-label="Select flavour">
+                  <option value="kulfi" selected>Kulfi</option>
+                  <option value="chocolate">Chocolate</option>
+                  <option value="vanilla">Vanilla</option>
+                  <option value="strawberry">Strawberry</option>
+                </select>
+                <i class="fa-solid fa-chevron-down sp2-pdp__select-icon" aria-hidden="true"></i>
+              </div>
+            </div>
+
+            <div class="sp2-pdp__field">
+              <span class="sp2-pdp__label">Amount:</span>
+              <div class="sp2-pdp__size-pills" data-sp2-size-pills>
+                <button type="button" class="sp2-pdp__size-pill is-active" data-sp2-size="250g">250G</button>
+                <button type="button" class="sp2-pdp__size-pill" data-sp2-size="1kg">1KG</button>
+                <button type="button" class="sp2-pdp__size-pill" data-sp2-size="2.5kg">2.5KG</button>
+                <button type="button" class="sp2-pdp__size-pill" data-sp2-size="5kg">5KG</button>
+              </div>
+              <p class="sp2-pdp__unit-price" data-sp2-unit-price>₹6,796.00 per kg -</p>
+            </div>
+
+            <div class="sp2-pdp__qty-wish">
+              <div class="sp2-pdp__qty" data-sp2-qty>
+                <button type="button" class="sp2-pdp__qty-btn" data-sp2-qty-minus
+                  aria-label="Decrease quantity">−</button>
+                <span class="sp2-pdp__qty-val" data-sp2-qty-val>1</span>
+                <button type="button" class="sp2-pdp__qty-btn" data-sp2-qty-plus
+                  aria-label="Increase quantity">+</button>
+              </div>
+              <button type="button" class="sp2-pdp__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="sp2-pdp__promo-bar">
+              <i class="fa-solid fa-tag" aria-hidden="true"></i>
+              <p class="sp2-pdp__promo-text">EXTRA ₹1000 OFF ABOVE ₹8000 + FREE DELIVERY &amp; GIFTS</p>
+            </div>
+
+            <div class="sp2-pdp__price-block">
+              <div class="sp2-pdp__price-main">
+                <span class="sp2-pdp__price" data-sp2-product-price>₹1699</span>
+                <span class="sp2-pdp__price-per" data-sp2-price-per>₹6,796.00/kg</span>
+              </div>
+              <div class="sp2-pdp__discount-row">
+                <span class="sp2-pdp__was" data-sp2-product-was>Was ₹1,899.00</span>
+                <span class="sp2-pdp__save" data-sp2-product-save>Save ₹200.00</span>
+              </div>
+              <p class="sp2-pdp__tax">Inclusive of all taxes</p>
+            </div>
+
+            <button type="button" class="sp2-pdp__atb">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i> ADD TO BASKET
+            </button>
+
+            <span class="sp2-pdp__stock">In stock</span>
+
+            <ul class="sp2-pdp__trust">
+              <li><i class="fa-solid fa-truck" aria-hidden="true"></i> Ships in 24 hours</li>
+              <li><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> 30-day returns on all orders</li>
+            </ul>
+
+            <div class="sp2-pdp__pay-icons" aria-label="Accepted payment methods">
+              <i class="fa-brands fa-cc-visa" aria-hidden="true"></i>
+              <i class="fa-brands fa-cc-mastercard" aria-hidden="true"></i>
+              <i class="fa-brands fa-cc-amex" aria-hidden="true"></i>
+              <i class="fa-solid fa-credit-card" aria-hidden="true"></i>
+              <i class="fa-brands fa-cc-discover" aria-hidden="true"></i>
+              <i class="fa-brands fa-cc-diners-club" aria-hidden="true"></i>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="sp2-footer" role="contentinfo">
+    <div class="sp2-footer__main">
+      <div class="sp2-footer__visual">
+        <div class="sp2-footer__visual-bg" aria-hidden="true"></div>
+
+        <div class="sp2-footer__newsletter">
+          <p class="sp2-footer__newsletter-text">Sign up to our newsletter</p>
+          <button type="button" class="sp2-footer__newsletter-btn">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i> SIGN UP
+          </button>
+        </div>
+
+        <div class="sp2-footer__meta">
+          <a href="#" class="sp2-footer__cookie">
+            <i class="fa-solid fa-cookie-bite" aria-hidden="true"></i> Cookie Settings
+          </a>
+          <button type="button" class="sp2-footer__locale">
+            <span class="sp2-footer__flag" aria-hidden="true">🇮🇳</span>
+            <span>IN | <u>Change</u></span>
+          </button>
+          <div class="sp2-footer__social">
+            <span class="sp2-footer__social-label">Connect with us</span>
+            <div class="sp2-footer__social-icons">
+              <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+              <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+              <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+              <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sp2-footer__links" data-sp2-footer-accordions>
+        <div class="sp2-footer__col" data-sp2-footer-col>
+          <h3 class="sp2-footer__heading sp2-footer__heading--desktop">Help And Information</h3>
+          <button type="button" class="sp2-footer__accordion-btn" aria-expanded="false">
+            <span>Help And Information</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="sp2-footer__accordion-panel">
+            <ul>
+              <li><a href="#">Customer services</a></li>
+              <li><a href="#">Contact us</a></li>
+              <li><a href="#">Help centre</a></li>
+              <li><a href="#">Returns Policy</a></li>
+              <li><a href="#">Delivery Information</a></li>
+              <li><a href="#">Track my order</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="sp2-footer__col" data-sp2-footer-col>
+          <h3 class="sp2-footer__heading sp2-footer__heading--desktop">Products</h3>
+          <button type="button" class="sp2-footer__accordion-btn" aria-expanded="false">
+            <span>Products</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="sp2-footer__accordion-panel">
+            <ul>
+              <li><a href="shop.html">Nutrition</a></li>
+              <li><a href="shop.html">Clothing &amp; Accessories</a></li>
+              <li><a href="#">Expert Advice</a></li>
+              <li><a href="shop.html?category=clear-protein">Protein</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="sp2-footer__col" data-sp2-footer-col>
+          <h3 class="sp2-footer__heading sp2-footer__heading--desktop">Company Information</h3>
+          <button type="button" class="sp2-footer__accordion-btn" aria-expanded="false">
+            <span>Company Information</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="sp2-footer__accordion-panel">
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Quality Assurance</a></li>
+              <li><a href="#">Modern Slavery Statement</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Trade Account</a></li>
+              <li><a href="#">Careers</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="sp2-footer__col" data-sp2-footer-col>
+          <h3 class="sp2-footer__heading sp2-footer__heading--desktop">Investors</h3>
+          <button type="button" class="sp2-footer__accordion-btn" aria-expanded="false">
+            <span>Investors</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="sp2-footer__accordion-panel">
+            <ul>
+              <li><a href="#">Annual Report FY 21-22</a></li>
+              <li><a href="#">Annual Report FY 22-23</a></li>
+              <li><a href="#">Annual Report FY 23-24</a></li>
+              <li><a href="#">Annual Report FY 24-25</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp2-footer__bottom">
+      <div class="sp2-footer__bottom-inner">
+        <div class="sp2-footer__brand">
+          <p class="sp2-footer__copy">2026 The Hut.com Ltd</p>
+          <a href="index.html" class="sp2-footer__logo-link">
+            <img src="assets/img/logo.png" alt="Muscle Xcel" class="sp2-footer__logo" width="160" height="48"
+              decoding="async" />
+          </a>
+        </div>
+
+        <div class="sp2-footer__payments">
+          <span class="sp2-footer__payments-label">Pay with</span>
+          <div class="sp2-footer__payment-icons" aria-label="Accepted payment methods">
+            <span class="sp2-footer__pay sp2-footer__pay--visa"><i class="fa-brands fa-cc-visa"
+                aria-hidden="true"></i></span>
+            <span class="sp2-footer__pay sp2-footer__pay--mc"><i class="fa-brands fa-cc-mastercard"
+                aria-hidden="true"></i></span>
+            <span class="sp2-footer__pay sp2-footer__pay--amex"><i class="fa-brands fa-cc-amex"
+                aria-hidden="true"></i></span>
+            <span class="sp2-footer__pay sp2-footer__pay--maestro" title="Maestro">
+              <i class="fa-solid fa-credit-card" aria-hidden="true"></i>
+            </span>
+            <span class="sp2-footer__pay sp2-footer__pay--disc"><i class="fa-brands fa-cc-discover"
+                aria-hidden="true"></i></span>
+            <span class="sp2-footer__pay sp2-footer__pay--diners"><i class="fa-brands fa-cc-diners-club"
+                aria-hidden="true"></i></span>
+            <span class="sp2-footer__pay sp2-footer__pay--paytm" title="Paytm">
+              <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+            </span>
+            <span class="sp2-footer__pay sp2-footer__pay--rupay" title="RuPay">
+              <i class="fa-solid fa-indian-rupee-sign" aria-hidden="true"></i>
+            </span>
+            <span class="sp2-footer__pay sp2-footer__pay--gpay" title="Google Pay">
+              <i class="fa-brands fa-google-pay" aria-hidden="true"></i>
+            </span>
+            <span class="sp2-footer__pay sp2-footer__pay--upi" title="UPI">
+              <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="sp2-footer__chat" aria-label="Help chat">
+      <i class="fa-solid fa-comments" aria-hidden="true"></i>
+    </button>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>

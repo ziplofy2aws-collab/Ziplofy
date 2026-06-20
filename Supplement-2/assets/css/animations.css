@@ -1,0 +1,255 @@
+/* Supplement-2 — Animation layer only (no layout/design overrides) */
+
+:root {
+  --sp2-anim-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Sticky header scroll state */
+.sp2-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition:
+    box-shadow 0.45s var(--sp2-anim-ease),
+    backdrop-filter 0.45s var(--sp2-anim-ease);
+}
+
+.sp2-header.is-scrolled .sp2-header__main {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+.sp2-header__logo img {
+  will-change: transform;
+  transform-origin: left center;
+}
+
+/* Page load — prevent flash before GSAP inits */
+body.sp2-anim-loading .sp2-header__announce,
+body.sp2-anim-loading .sp2-header__main,
+body.sp2-anim-loading .sp2-header__nav {
+  visibility: hidden;
+}
+
+/* GPU hints */
+.sp2-hero__inner,
+.sp2-hero__slide,
+.sp2-hero__slide img,
+.sp2-promo__inner,
+.sp2-promo__slide img,
+.sp2-brand__box,
+.sp2-brand__logo,
+.sp2-brand-card__media img,
+.sp2-product-card,
+.sp2-product-card__media img,
+.sp2-categories__card,
+.sp2-categories__card img,
+.sp2-deals__card,
+.sp2-promos__card,
+.sp2-promos__card img {
+  will-change: transform, opacity;
+}
+
+/* Micro-interaction: button lift */
+.sp2-anim-btn {
+  transition:
+    transform 0.45s var(--sp2-anim-ease),
+    box-shadow 0.45s var(--sp2-anim-ease);
+}
+
+.sp2-anim-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Micro-interaction: animated link underline */
+.sp2-anim-link {
+  position: relative;
+  display: inline-block;
+}
+
+.sp2-anim-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.45s var(--sp2-anim-ease);
+}
+
+.sp2-anim-link:hover::after,
+.sp2-anim-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Product card hover */
+.sp2-product-card.sp2-anim-hover {
+  transition:
+    transform 0.5s var(--sp2-anim-ease),
+    box-shadow 0.5s var(--sp2-anim-ease);
+}
+
+.sp2-product-card.sp2-anim-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.sp2-product-card.sp2-anim-hover .sp2-product-card__media {
+  overflow: hidden;
+}
+
+.sp2-product-card.sp2-anim-hover .sp2-product-card__media img {
+  transition: transform 0.65s var(--sp2-anim-ease);
+}
+
+.sp2-product-card.sp2-anim-hover:hover .sp2-product-card__media img {
+  transform: scale(1.05);
+}
+
+/* Category card hover */
+.sp2-categories__card.sp2-anim-hover {
+  transition:
+    transform 0.5s var(--sp2-anim-ease),
+    box-shadow 0.5s var(--sp2-anim-ease);
+}
+
+.sp2-categories__card.sp2-anim-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.sp2-categories__card.sp2-anim-hover img {
+  transition: transform 0.65s var(--sp2-anim-ease);
+}
+
+.sp2-categories__card.sp2-anim-hover:hover img {
+  transform: scale(1.05);
+}
+
+/* Deals card hover */
+.sp2-deals__card.sp2-anim-hover {
+  transition:
+    transform 0.5s var(--sp2-anim-ease),
+    box-shadow 0.5s var(--sp2-anim-ease);
+}
+
+.sp2-deals__card.sp2-anim-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Promos card hover */
+.sp2-promos__card.sp2-anim-hover {
+  overflow: hidden;
+  transition:
+    transform 0.5s var(--sp2-anim-ease),
+    box-shadow 0.5s var(--sp2-anim-ease);
+}
+
+.sp2-promos__card.sp2-anim-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+.sp2-promos__card.sp2-anim-hover img {
+  transition: transform 0.65s var(--sp2-anim-ease);
+}
+
+.sp2-promos__card.sp2-anim-hover:hover img {
+  transform: scale(1.05);
+}
+
+/* Promo arrow soft pulse */
+.sp2-anim-pulse {
+  animation: sp2-pulse-soft 3.2s var(--sp2-anim-ease) infinite;
+}
+
+@keyframes sp2-pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  50% {
+    opacity: 0.88;
+    box-shadow: 0 4px 14px rgba(0, 150, 255, 0.22);
+  }
+}
+
+/* Footer social hover */
+.sp2-footer__social-icons a.sp2-anim-social {
+  transition: transform 0.4s var(--sp2-anim-ease);
+  display: inline-flex;
+}
+
+.sp2-footer__social-icons a.sp2-anim-social:hover {
+  transform: translateY(-4px);
+}
+
+/* Preserve arrow centering when GSAP lifts buttons */
+.sp2-hero__arrow.sp2-anim-btn:hover,
+.sp2-promo__arrow.sp2-anim-btn:hover {
+  transform: translateY(calc(-50% - 2px));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  body.sp2-anim-loading .sp2-header__announce,
+  body.sp2-anim-loading .sp2-header__main,
+  body.sp2-anim-loading .sp2-header__nav {
+    visibility: visible;
+  }
+
+  .sp2-anim-pulse {
+    animation: none;
+  }
+
+  .sp2-anim-btn:hover,
+  .sp2-product-card.sp2-anim-hover:hover,
+  .sp2-categories__card.sp2-anim-hover:hover,
+  .sp2-deals__card.sp2-anim-hover:hover,
+  .sp2-promos__card.sp2-anim-hover:hover,
+  .sp2-footer__social-icons a.sp2-anim-social:hover {
+    transform: none;
+  }
+
+  .sp2-product-card.sp2-anim-hover:hover .sp2-product-card__media img,
+  .sp2-categories__card.sp2-anim-hover:hover img,
+  .sp2-promos__card.sp2-anim-hover:hover img {
+    transform: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .sp2-categories__card.sp2-anim-hover:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .sp2-categories__card.sp2-anim-hover:hover img {
+    transform: none;
+  }
+}
