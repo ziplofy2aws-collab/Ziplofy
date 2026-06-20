@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — Voltix</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/electronic.css">
+  <link rel="stylesheet" href="assets/css/static-pages.css">
+</head>
+
+<body>
+
+  <header class="vs-header" role="banner">
+    <div class="vs-header__inner">
+      <div class="vs-header__main">
+        <button type="button" class="vs-menu-toggle" id="vsMenuOpen" aria-label="Open menu" aria-expanded="false"
+          aria-controls="vsNavDrawer">
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <div class="vs-header__left">
+          <a href="index.html" class="vs-logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+          <div class="vs-location" aria-label="Delivery location">
+            <svg class="vs-pin" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" stroke="currentColor" stroke-width="1.4" />
+              <circle cx="12" cy="11" r="2.1" fill="#e53935" stroke="#e53935" />
+            </svg>
+            <div class="vs-location__text">
+              <span class="vs-location__line">Mashaurhi 804452</span>
+              <a href="#" class="vs-location__change">Change Location</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="vs-header__search">
+          <div class="vs-search" role="search">
+            <svg class="vs-search__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6" />
+              <path d="M16 16l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            <input type="search" class="vs-search__input" placeholder="Search for phone, TV, home appliances..."
+              autocomplete="off" aria-label="Search products">
+            <button type="button" class="vs-search__mic" aria-label="Voice search">
+              <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="vs-header__actions">
+          <div class="vs-header__extras">
+            <a href="#" class="vs-link vs-link--icon"><span>Store Locator</span></a>
+            <a href="contact.html" class="vs-link vs-link--icon"><span>Help Center</span></a>
+            <a href="#" class="vs-icon-btn" aria-label="Wishlist"><i class="fa-regular fa-heart"></i></a>
+          </div>
+          <a href="account.html" class="vs-icon-btn vs-icon-btn--account" aria-label="Account"><i
+              class="fa-regular fa-user"></i></a>
+          <a href="#" class="vs-icon-btn" aria-label="Shopping cart"><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+      </div>
+
+      <nav class="vs-header__categories" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="vs-drawer" id="vsNavDrawer" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+    <div class="vs-drawer__backdrop" id="vsDrawerBackdrop" tabindex="-1"></div>
+    <div class="vs-drawer__panel">
+      <div class="vs-drawer__head">
+        <a href="index.html" class="vs-drawer__logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+        <button type="button" class="vs-drawer__close" id="vsMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="vs-drawer__nav" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+      <div class="vs-drawer__footer">
+        <a href="#" class="vs-drawer__footer-link">Store Locator</a>
+        <a href="contact.html" class="vs-drawer__footer-link">Help Center</a>
+        <a href="#" class="vs-drawer__footer-link">Wishlist</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="contact-page" aria-label="Contact Voltix">
+    <section class="contact-hero" aria-labelledby="contact-hero-heading">
+      <div class="contact-hero__pattern" aria-hidden="true"></div>
+      <div class="contact-hero__inner">
+        <div class="contact-hero__copy">
+          <p class="contact-hero__kicker">Contact Us</p>
+          <h1 id="contact-hero-heading" class="contact-hero__title">What can we help you with?</h1>
+          <p class="contact-hero__lead">We care about our customers, please get in touch and we&apos;ll do our best to
+            resolve your problem.</p>
+        </div>
+        <div class="contact-hero__form-col">
+          <h2 class="contact-hero__form-title">Please fill in your details below</h2>
+          <p class="contact-hero__mandatory"><span class="contact-hero__asterisk" aria-hidden="true">*</span> All fields
+            are mandatory</p>
+          <form class="contact-hero__form" action="#" method="post" novalidate>
+            <label class="contact-hero__sr" for="contact-fullname">Full Name</label>
+            <input id="contact-fullname" name="fullname" type="text" class="contact-hero__input" placeholder="Full Name"
+              autocomplete="name" required>
+            <label class="contact-hero__sr" for="contact-mobile">Mobile Number</label>
+            <input id="contact-mobile" name="mobile" type="tel" class="contact-hero__input" placeholder="Mobile Number"
+              autocomplete="tel" required inputmode="numeric">
+            <label class="contact-hero__sr" for="contact-email">Email</label>
+            <input id="contact-email" name="email" type="email" class="contact-hero__input" placeholder="Email"
+              autocomplete="email" required>
+            <label class="contact-hero__sr" for="contact-message">Your Message</label>
+            <textarea id="contact-message" name="message" class="contact-hero__textarea" placeholder="Your Message"
+              rows="6" required></textarea>
+            <button type="submit" class="contact-hero__submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-pan-care" aria-labelledby="contact-pan-care-heading">
+      <div class="contact-pan-care__inner">
+        <header class="contact-pan-care__head">
+          <h2 id="contact-pan-care-heading" class="contact-pan-care__title">Pan India Customer Care</h2>
+          <p class="contact-pan-care__subtitle">Customer Care Desk at all Outlets</p>
+        </header>
+
+        <div class="contact-pan-care__grid">
+          <ul class="contact-pan-care__list contact-pan-care__list--left">
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Mumbai</strong>
+              <a class="contact-pan-care__email" href="mailto:vscaremumbai@vijaysales.com">vscaremumbai@vijaysales.com</a>
+            </li>
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Pune</strong>
+              <a class="contact-pan-care__email" href="mailto:vscarepune@vijaysales.com">vscarepune@vijaysales.com</a>
+            </li>
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Ahmedabad</strong>
+              <a class="contact-pan-care__email" href="mailto:vscareahmedabad@vijaysales.com">vscareahmedabad@vijaysales.com</a>
+            </li>
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Surat</strong>
+              <a class="contact-pan-care__email" href="mailto:vscaresurat@vijaysales.com">vscaresurat@vijaysales.com</a>
+            </li>
+          </ul>
+
+          <div class="contact-pan-care__map-col">
+            <div class="contact-pan-care__disc" aria-hidden="true">
+              <div class="contact-pan-care__map-stack">
+                <div class="contact-pan-care__map-halftone"></div>
+                <svg class="contact-pan-care__pins" viewBox="0 0 100 115" preserveAspectRatio="xMidYMid meet">
+                  <defs>
+                    <symbol id="contact-pin" viewBox="0 0 24 32">
+                      <path d="M12 2C7.6 2 4 5.6 4 10c0 6.5 8 14 8 14s8-7.5 8-14c0-4.4-3.6-8-8-8z" fill="#000" />
+                      <circle cx="12" cy="10" r="3.2" fill="#fff" />
+                    </symbol>
+                  </defs>
+                  <!-- Pin tips aligned to city coords (same projection as mask) -->
+                  <use href="#contact-pin" x="12.1" y="55.8" width="10" height="13" />
+                  <use href="#contact-pin" x="11.1" y="39.7" width="10" height="13" />
+                  <use href="#contact-pin" x="15.4" y="58.1" width="10" height="13" />
+                  <use href="#contact-pin" x="26.5" y="17" width="10" height="13" />
+                  <use href="#contact-pin" x="30.7" y="62.7" width="10" height="13" />
+                  <use href="#contact-pin" x="27.8" y="80.6" width="10" height="13" />
+                  <use href="#contact-pin" x="36.6" y="80.2" width="10" height="13" />
+                  <use href="#contact-pin" x="63.5" y="41.6" width="10" height="13" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <ul class="contact-pan-care__list contact-pan-care__list--right">
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Vadodara</strong>
+              <a class="contact-pan-care__email" href="mailto:vscarevadodara@vijaysales.com">vscarevadodara@vijaysales.com</a>
+            </li>
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Delhi</strong>
+              <a class="contact-pan-care__email" href="mailto:vscaredelhi@vijaysales.com">vscaredelhi@vijaysales.com</a>
+            </li>
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Telangana</strong>
+              <a class="contact-pan-care__email" href="mailto:vscaretelangana@vijaysales.com">vscaretelangana@vijaysales.com</a>
+            </li>
+            <li class="contact-pan-care__item">
+              <strong class="contact-pan-care__city">Andhra Pradesh</strong>
+              <a class="contact-pan-care__email" href="mailto:vscareandhrapradesh@vijaysales.com">vscareandhrapradesh@vijaysales.com</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- <div class="vs-static-page vs-static-page--contact-extra">
+      <div class="vs-static-page__inner">
+        <aside class="vs-static-card" aria-label="Contact details">
+          <h2 class="vs-static-card__title">Get in touch</h2>
+          <div class="vs-contact-line">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <div>
+              <strong>Phone</strong>
+              <a href="tel:18001234567">1800-123-4567</a> (toll-free, 9am–9pm)
+            </div>
+          </div>
+          <div class="vs-contact-line">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            <div>
+              <strong>Email</strong>
+              <a href="mailto:care@voltix.example">care@voltix.example</a>
+            </div>
+          </div>
+          <div class="vs-contact-line">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <div>
+              <strong>Registered office</strong>
+              Voltix Retail Pvt. Ltd., Mumbai, Maharashtra 400001, India
+            </div>
+          </div>
+          <div class="vs-static-actions">
+            <a href="account.html" class="vs-btn vs-btn--outline">Sign in to your account</a>
+          </div>
+        </aside>
+      </div>
+    </div> -->
+  </main>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="site-footer__inner">
+      <section class="site-footer__connect">
+        <h3 class="site-footer__heading">CONNECT WITH US</h3>
+        <form class="site-footer__newsletter" action="#" method="post">
+          <input type="email" placeholder="Enter Email ID" aria-label="Email address">
+          <button type="submit" aria-label="Submit email"><i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+
+        <div class="site-footer__socials" aria-label="Social links">
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+
+        <p class="site-footer__copyright">© Copyright 2026 Voltix. All rights reserved</p>
+      </section>
+
+      <section class="site-footer__links">
+        <h3 class="site-footer__heading">USEFUL LINKS</h3>
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">About Croma</a></li>
+            <li><a href="#">Help And Support</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Buying Guide</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">B2B Orders</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">E-Waste</a></li>
+            <li><a href="#">Franchise Opportunity</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Site Map</a></li>
+            <li><a href="#">Careers At Croma</a></li>
+            <li><a href="#">Terms Of Use</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Unboxed</a></li>
+            <li><a href="#">Gift Card</a></li>
+            <li><a href="#">Croma E-Star</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="site-footer__products">
+        <h3 class="site-footer__heading">PRODUCTS</h3>
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">Televisions & Accessories</a></li>
+            <li><a href="#">Home Appliances</a></li>
+            <li><a href="#">Phones & Wearables</a></li>
+            <li><a href="#">Computers & Tablets</a></li>
+            <li><a href="#">Kitchen Appliances</a></li>
+            <li><a href="#">Audio & Video</a></li>
+            <li><a href="#">Health & Fitness</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Grooming & Personal Care</a></li>
+            <li><a href="#">Cameras & Accessories</a></li>
+            <li><a href="#">Smart Devices</a></li>
+            <li><a href="#">Gaming</a></li>
+            <li><a href="#">Accessories</a></li>
+            <li><a href="#">Top Brands</a></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </footer>
+
+  <script src="assets/js/electronic.js" defer></script>
+
+</body>
+
+</html>

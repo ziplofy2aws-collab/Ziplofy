@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voltix — Electronics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/electronic.css">
+</head>
+
+<body>
+
+  <header class="vs-header" role="banner">
+    <div class="vs-header__inner">
+      <div class="vs-header__main">
+        <button type="button" class="vs-menu-toggle" id="vsMenuOpen" aria-label="Open menu" aria-expanded="false"
+          aria-controls="vsNavDrawer">
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <div class="vs-header__left">
+          <a href="index.html" class="vs-logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+          <div class="vs-location" aria-label="Delivery location">
+            <svg class="vs-pin" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" stroke="currentColor" stroke-width="1.4" />
+              <circle cx="12" cy="11" r="2.1" fill="#e53935" stroke="#e53935" />
+            </svg>
+            <div class="vs-location__text">
+              <span class="vs-location__line">Mashaurhi 804452</span>
+              <a href="#" class="vs-location__change">Change Location</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="vs-header__search">
+          <div class="vs-search" role="search">
+            <svg class="vs-search__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6" />
+              <path d="M16 16l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            <input type="search" class="vs-search__input" placeholder="Search for phone, TV, home appliances..."
+              autocomplete="off" aria-label="Search products">
+            <button type="button" class="vs-search__mic" aria-label="Voice search">
+              <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="vs-header__actions">
+          <div class="vs-header__extras">
+            <a href="#" class="vs-link vs-link--icon"><span>Store Locator</span></a>
+            <a href="contact.html" class="vs-link vs-link--icon"><span>Help Center</span></a>
+            <a href="#" class="vs-icon-btn" aria-label="Wishlist"><i class="fa-regular fa-heart"></i></a>
+          </div>
+          <a href="account.html" class="vs-icon-btn vs-icon-btn--account" aria-label="Account"><i
+              class="fa-regular fa-user"></i></a>
+          <a href="#" class="vs-icon-btn" aria-label="Shopping cart"><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+      </div>
+
+      <nav class="vs-header__categories" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="vs-drawer" id="vsNavDrawer" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+    <div class="vs-drawer__backdrop" id="vsDrawerBackdrop" tabindex="-1"></div>
+    <div class="vs-drawer__panel">
+      <div class="vs-drawer__head">
+        <a href="index.html" class="vs-drawer__logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+        <button type="button" class="vs-drawer__close" id="vsMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="vs-drawer__nav" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+      <div class="vs-drawer__footer">
+        <a href="#" class="vs-drawer__footer-link">Store Locator</a>
+        <a href="contact.html" class="vs-drawer__footer-link">Help Center</a>
+        <a href="#" class="vs-drawer__footer-link">Wishlist</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="ac-hero" aria-label="Featured promotion" id="heroSection">
+    <div class="ac-hero__bg" id="heroBg" style="background-image: url('assets/img/banner-1.png');"></div>
+    <div class="ac-hero__overlay"></div>
+
+    <button type="button" class="ac-hero__arrow ac-hero__arrow--prev" id="heroPrev" aria-label="Previous slide">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+    </button>
+    <button type="button" class="ac-hero__arrow ac-hero__arrow--next" id="heroNext" aria-label="Next slide">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <div class="ac-hero__bottom">
+      <div class="ac-hero__content">
+        <div class="ac-hero__copy">
+          <span class="ac-hero__brand">Voltix</span>
+          <span class="ac-badge">Latest Launch</span>
+          <h1 class="ac-hero__title">Air Conditioners</h1>
+          <p class="ac-hero__price">Starting at ₹23,990*</p>
+          <p class="ac-hero__note">*Easy EMI Up to 12 Months</p>
+          <a href="category.html" class="ac-hero__cta">Shop now</a>
+        </div>
+      </div>
+
+      <div class="ac-hero__dots" role="tablist" aria-label="Carousel slides">
+        <button type="button" class="ac-dot is-active" data-slide="0" aria-label="Slide 1" aria-current="true"></button>
+        <button type="button" class="ac-dot" data-slide="1" aria-label="Slide 2" tabindex="-1"></button>
+        <button type="button" class="ac-dot" data-slide="2" aria-label="Slide 3" tabindex="-1"></button>
+        <button type="button" class="ac-dot" data-slide="3" aria-label="Slide 4" tabindex="-1"></button>
+        <button type="button" class="ac-dot" data-slide="4" aria-label="Slide 5" tabindex="-1"></button>
+        <button type="button" class="ac-dot" data-slide="5" aria-label="Slide 6" tabindex="-1"></button>
+        <button type="button" class="ac-dot" data-slide="6" aria-label="Slide 7" tabindex="-1"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="whats-hot" aria-label="What's Hot">
+    <div class="whats-hot__inner">
+      <h2 class="whats-hot__title">What's Hot</h2>
+      <div class="whats-hot__grid">
+        <a href="category.html" class="promo-card" aria-label="Samsung Galaxy S26 Ultra 5G offer">
+          <img src="assets/img/Promo-1.png" alt="Samsung Galaxy S26 Ultra 5G deal">
+        </a>
+        <a href="category.html" class="promo-card" aria-label="Double Door Refrigerators offer">
+          <img src="assets/img/Promo-2.png" alt="Double Door Refrigerators deal">
+        </a>
+        <a href="category.html" class="promo-card" aria-label="55 inch QLED Google TV offer">
+          <img src="assets/img/Promo-3.png" alt="55 inch QLED Google TV deal">
+        </a>
+        <a href="category.html" class="promo-card" aria-label="Lenovo Yoga Tab Plus offer">
+          <img src="assets/img/Promo-4.png" alt="Lenovo Yoga Tab Plus deal">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="best-apple" aria-label="Best Of Apple">
+    <div class="best-apple__inner">
+      <aside class="best-apple__promo">
+        <h2 class="best-apple__title">Best Of Apple</h2>
+        <p class="best-apple__text">Save up to ₹ 7,000 instantly on eligible products using ICICI / AXIS & SBI Bank
+          Credit Cards Exchange bonus up to ₹6,000 iPhone</p>
+        <div class="best-apple__emi">No Cost EMI Available</div>
+      </aside>
+
+      <div class="best-apple__slider-wrap">
+        <div class="best-apple__viewport" id="appleViewport">
+          <div class="best-apple__track" id="appleTrack">
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple iPhone 16.png" alt="Apple iPhone 17e"></div>
+              <h3 class="apple-card__name">Apple iPhone 16 (256GB Storage, Black)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹80,390</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹82,990</span><span
+                    class="apple-card__off">3% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple MacBook Neo A18 Pro.png"
+                  alt="Apple MacBook Neo A18 Pro"></div>
+              <h3 class="apple-card__name">Apple MacBook Neo A18 Pro chip (8GB RAM/ 256GB SSD/ 13-inch)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹66,390</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹69,990</span><span
+                    class="apple-card__off">5% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple iPhone 17.png" alt="Apple iPhone 17"></div>
+              <h3 class="apple-card__name">Apple iPhone 17 (128GB Storage, Blue)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹1,30,790</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹1,39,900</span><span
+                    class="apple-card__off">6% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img
+                  src="assets/img/Apple iPhone 17 Pro (256GB Storage, Cosmic Orange).png" alt="Apple iPhone 17 Pro">
+              </div>
+              <h3 class="apple-card__name">Apple iPhone 17 Pro (256GB, Cosmic Orange)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹1,42,990</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹1,49,900</span><span
+                    class="apple-card__off">4% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple iPhone 17 Pro Max.png"
+                  alt="Apple iPhone 17 Pro Max"></div>
+              <h3 class="apple-card__name">Apple iPhone 17 Pro Max (256GB)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹1,58,490</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹1,69,900</span><span
+                    class="apple-card__off">7% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple iPhone Air.png" alt="Apple iPhone Air"></div>
+              <h3 class="apple-card__name">Apple iPhone Air (128GB Storage)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹94,900</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹99,900</span><span
+                    class="apple-card__off">5% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple iPhone 17e.png" alt="Apple iPhone 17e"></div>
+              <h3 class="apple-card__name">Apple iPhone 17e (128GB Storage)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹62,990</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹67,900</span><span
+                    class="apple-card__off">6% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple iPad Air M4 2026 11-inch.png"
+                  alt="Apple iPad Air M4"></div>
+              <h3 class="apple-card__name">Apple iPad Air M4 2026 (11-inch Wi-Fi)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹52,490</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹56,900</span><span
+                    class="apple-card__off">7% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple iPad 11th Gen.png" alt="Apple iPad 11th Gen">
+              </div>
+              <h3 class="apple-card__name">Apple iPad 11th Gen (Liquid Retina Display)</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹39,990</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹44,900</span><span
+                    class="apple-card__off">8% Off</span></span>
+              </p>
+            </article>
+            <article class="apple-card">
+              <div class="apple-card__media"><img src="assets/img/Apple AirPods Pro 3.png" alt="Apple AirPods Pro 3">
+              </div>
+              <h3 class="apple-card__name">Apple AirPods Pro 3 with Noise Cancellation</h3>
+              <div class="apple-card__stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                  class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+              </div>
+              <p class="apple-card__price">
+                <span class="apple-card__now">₹21,490</span>
+                <span class="apple-card__meta"><span class="apple-card__mrp">MRP ₹24,900</span><span
+                    class="apple-card__off">9% Off</span></span>
+              </p>
+            </article>
+          </div>
+        </div>
+
+        <div class="best-apple__controls">
+          <button type="button" class="best-apple__arrow" id="applePrev" aria-label="Previous products"><i class="fa-solid fa-chevron-left"></i></button>
+          <button type="button" class="best-apple__arrow" id="appleNext" aria-label="Next products"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <button class="best-apple__cta" type="button">View All</button>
+    </div>
+  </section>
+
+  <section class="deals-day" aria-label="Deals Of The Day">
+    <div class="deals-day__inner">
+      <h2 class="deals-day__title">Deals Of The Day</h2>
+      <div class="deals-day__grid">
+        <a href="category.html" class="deals-card" aria-label="Air Coolers offer">
+          <img src="assets/img/Promo-5.png" alt="Air Coolers deal card">
+        </a>
+        <a href="category.html" class="deals-card" aria-label="Top Selling Bluetooth Speakers offer">
+          <img src="assets/img/Promo-6.png" alt="Top Selling Bluetooth Speakers deal card">
+        </a>
+        <a href="category.html" class="deals-card" aria-label="Power Banks offer">
+          <img src="assets/img/promo-7.png" alt="Power Banks deal card">
+        </a>
+        <a href="category.html" class="deals-card" aria-label="Bluetooth Calling Smartwatches offer">
+          <img src="assets/img/Promo-8.png" alt="Bluetooth Calling Smartwatches deal card">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="summer-deals" aria-label="Summer Deals">
+    <div class="summer-deals__inner">
+      <div class="summer-deals__header">
+        <h2 class="summer-deals__title">Summer Deals</h2>
+        <div class="summer-deals__sun" aria-hidden="true">
+          <svg width="88" height="52" viewBox="0 0 88 52" fill="none">
+            <path
+              d="M6 38c0-8.8 7.2-16 16-16 5.6 0 10.6 2.9 13.4 7.4C37.7 23.1 44.1 18 51.8 18c8.6 0 15.8 6.5 16.7 14.8 1.7-1.1 3.8-1.8 6-1.8 6.1 0 11 4.9 11 11H6v-4z"
+              fill="#ffffff" />
+            <circle cx="70" cy="25" r="12" fill="#ffbf00" />
+            <path
+              d="M70 8v-5M70 47v-5M54 25h-5M91 25h-5M58.7 13.7l-3.5-3.5M81.3 36.3l-3.5-3.5M58.7 36.3l-3.5 3.5M81.3 13.7l-3.5 3.5"
+              stroke="#ffbf00" stroke-width="1.2" stroke-linecap="round" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="summer-deals__tabs" role="tablist" aria-label="Summer categories">
+        <button type="button" class="summer-tab is-active">Televisions</button>
+        <button type="button" class="summer-tab">Air Conditioners</button>
+        <button type="button" class="summer-tab">Air Coolers</button>
+        <button type="button" class="summer-tab">Refrigerator</button>
+        <button type="button" class="summer-tab">Smartphones</button>
+        <button type="button" class="summer-tab">Juicers</button>
+        <button type="button" class="summer-tab">Laptops</button>
+        <button type="button" class="summer-tab">Nutri Blenders</button>
+        <button type="button" class="summer-tab">Fans</button>
+        <button type="button" class="summer-tab">Water Purifiers</button>
+      </div>
+
+      <div class="summer-deals__viewport" id="summerViewport">
+        <div class="summer-deals__track" id="summerTrack">
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <img class="summer-card__img" src="assets/img/Xiaomi S Mini LED Series 138cm.webp" alt="Xiaomi TV">
+            </div>
+            <h3 class="summer-card__name">Xiaomi S Mini LED Series 138cm (55 inch) 4K Ultra HD Google TV</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹51,999</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹89,999</span><span
+                  class="summer-card__off">42%Off</span></span>
+            </p>
+          </article>
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <div class="summer-card__badges">
+                <span class="summer-card__badge">500+ Bought</span>
+              </div>
+              <img class="summer-card__img" src="assets/img/SANSUI 80 cm.webp" alt="Sansui TV">
+            </div>
+            <h3 class="summer-card__name">SANSUI 80 cm (32 inch) HD Ready LED TV | A+ Panel | 60 Hz Refresh Rate</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹9,990</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹16,990</span><span
+                  class="summer-card__off">41%Off</span></span>
+            </p>
+          </article>
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <div class="summer-card__badges">
+                <span class="summer-card__badge summer-card__badge--dark">Best Seller</span>
+                <span class="summer-card__badge">1500+ Bought</span>
+              </div>
+              <img class="summer-card__img" src="assets/img/Sony BRAVIA 2 M2 Series 108 cm.webp" alt="Sony Bravia TV">
+            </div>
+            <h3 class="summer-card__name">Sony BRAVIA 2 M2 Series 108 cm (43 inch) 4K Ultra HD LED Google TV</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹48,990</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹54,990</span><span
+                  class="summer-card__off">11%Off</span></span>
+            </p>
+          </article>
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <div class="summer-card__badges">
+                <span class="summer-card__badge">Trending</span>
+              </div>
+              <img class="summer-card__img" src="assets/img/TCL V6C Series 108 cm.webp" alt="TCL TV">
+            </div>
+            <h3 class="summer-card__name">TCL V6C Series 108 cm (43 inch) 4K Ultra HD LED Smart Google TV</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹24,990</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹47,990</span><span
+                  class="summer-card__off">48%Off</span></span>
+            </p>
+          </article>
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <img class="summer-card__img" src="assets/img/Samsung 108 cm.avif" alt="Samsung TV">
+            </div>
+            <h3 class="summer-card__name">Samsung 108 cm Smart LED TV with Crystal Processor</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹33,990</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹42,990</span><span
+                  class="summer-card__off">21%Off</span></span>
+            </p>
+          </article>
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <img class="summer-card__img" src="assets/img/Sony BRAVIA 3 Series.avif" alt="Sony Bravia 3">
+            </div>
+            <h3 class="summer-card__name">Sony BRAVIA 3 Series 4K TV with X1 Processor</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹62,990</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹74,990</span><span
+                  class="summer-card__off">16%Off</span></span>
+            </p>
+          </article>
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <img class="summer-card__img" src="assets/img/SANSUI 80 cm.webp" alt="Sansui LED TV">
+            </div>
+            <h3 class="summer-card__name">SANSUI HD Ready Smart TV with Dolby Audio</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹10,490</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹18,990</span><span
+                  class="summer-card__off">44%Off</span></span>
+            </p>
+          </article>
+          <article class="summer-card">
+            <div class="summer-card__media">
+              <img class="summer-card__img" src="assets/img/Xiaomi S Mini LED Series 138cm.webp" alt="Xiaomi Smart TV">
+            </div>
+            <h3 class="summer-card__name">Xiaomi 55 inch Smart TV with Dolby Vision and HDR10+</h3>
+            <div class="summer-card__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i
+                class="fa-solid fa-star" aria-hidden="true"></i>
+            </div>
+            <p class="summer-card__price">
+              <span class="summer-card__now">₹53,999</span>
+              <span class="summer-card__meta"><span class="summer-card__mrp">MRP ₹91,999</span><span
+                  class="summer-card__off">41%Off</span></span>
+            </p>
+          </article>
+        </div>
+      </div>
+
+      <div class="summer-deals__controls">
+        <button type="button" class="summer-deals__arrow" id="summerPrev"
+          aria-label="Previous summer products"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" class="summer-deals__arrow" id="summerNext" aria-label="Next summer products"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="watch-out" aria-label="Watch Out For This">
+    <div class="watch-out__inner">
+      <h2 class="watch-out__title">Watch Out For This</h2>
+      <div class="watch-out__grid">
+        <a href="category.html" class="watch-card" aria-label="Oppo F33 Pro offer">
+          <img src="assets/img/Promo-9.png" alt="Oppo F33 Pro card">
+        </a>
+        <a href="category.html" class="watch-card" aria-label="Vivo V70 FE offer">
+          <img src="assets/img/Promo-10.png" alt="Vivo V70 FE card">
+        </a>
+        <a href="category.html" class="watch-card" aria-label="Deals Corner electronics offer">
+          <img src="assets/img/Promo-11.png" alt="Deals Corner card">
+        </a>
+        <a href="category.html" class="watch-card" aria-label="Google Pixel offer">
+          <img src="assets/img/Promo-12.png" alt="Google Pixel card">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="windows-laptops" aria-label="Windows Laptops deals">
+    <div class="windows-laptops__inner">
+      <div class="windows-laptops__heading">
+        <div>
+          <h2 class="windows-laptops__title">Windows Laptops | 5% Instant Bank Discount</h2>
+          <p class="windows-laptops__sub">Upto 6 Months No Cost EMI on HDFC/ICICI/SBI*</p>
+        </div>
+        <a href="#" class="windows-laptops__view-all">View All <span aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span></a>
+      </div>
+
+      <div class="windows-laptops__slider" id="windowsSlider">
+        <button type="button" class="windows-laptops__arrow windows-laptops__arrow--prev" id="windowsPrev"
+          aria-label="Previous laptops"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="windows-laptops__viewport" id="windowsViewport">
+          <div class="windows-laptops__track" id="windowsTrack">
+            <article class="windows-card">
+              <div class="windows-card__tag">7.5% Instant Disc on Credit Cards*</div>
+              <div class="windows-card__media"><img src="assets/img/HP Victus 15-FA2192TX Gaming Laptop.png"
+                  alt="HP Victus laptop"></div>
+              <h3 class="windows-card__name">HP Victus 15-FA2192TX Gaming Laptop (Intel Core i5-13420H)</h3>
+              <p class="windows-card__price">₹75,495.00 <span class="windows-card__off">10% OFF</span></p>
+              <p class="windows-card__mrp">MRP ₹83,495.00</p>
+            </article>
+
+            <article class="windows-card">
+              <div class="windows-card__tag">7.5% Instant Disc on Credit Cards*</div>
+              <div class="windows-card__media"><img src="assets/img/Dell Inspiron 15 3530 Notebook.png"
+                  alt="Dell Inspiron laptop"></div>
+              <h3 class="windows-card__name">Dell Inspiron 3530 Notebook Laptop (Intel Core i5/8 GB/512 GB SSD)</h3>
+              <p class="windows-card__price">₹50,990.00 <span class="windows-card__off">24% OFF</span></p>
+              <p class="windows-card__mrp">MRP ₹66,999.00</p>
+            </article>
+
+            <article class="windows-card">
+              <div class="windows-card__tag">5% OFF OR 6 Month No Cost EMI</div>
+              <div class="windows-card__media"><img src="assets/img/Asus VivoBook Go15.png" alt="Asus Vivobook Go15">
+              </div>
+              <h3 class="windows-card__name">Asus VivoBook Go15 E1504FA-BQ2341WS Standard Laptop</h3>
+              <p class="windows-card__price">₹37,490.00</p>
+              <p class="windows-card__mrp">MRP ₹53,990.00</p>
+            </article>
+
+            <article class="windows-card">
+              <div class="windows-card__tag">7.5% Instant Disc on Credit Cards*</div>
+              <div class="windows-card__media"><img src="assets/img/Lenovo IdeaPad Slim 3.png"
+                  alt="Lenovo IdeaPad Slim 3"></div>
+              <h3 class="windows-card__name">Lenovo IdeaPad Slim 3 15AMN8 82XQ00CXIN Standard Laptop</h3>
+              <p class="windows-card__price">₹53,990.00 <span class="windows-card__off">18% OFF</span></p>
+              <p class="windows-card__mrp">MRP ₹65,990.00</p>
+            </article>
+
+            <article class="windows-card">
+              <div class="windows-card__tag">5K Instant CA + 12M NCEMI*</div>
+              <div class="windows-card__media"><img src="assets/img/Samsung Galaxy Book4 360.png"
+                  alt="Samsung Galaxy Book4 360"></div>
+              <h3 class="windows-card__name">Samsung Galaxy Book4 360 NP750QGK-LG7IN Notebook</h3>
+              <p class="windows-card__price">₹74,985.00 <span class="windows-card__off">33% OFF</span></p>
+              <p class="windows-card__mrp">MRP ₹1,11,490.00</p>
+            </article>
+
+            <article class="windows-card">
+              <div class="windows-card__tag">5% OFF OR 6 Month No Cost EMI</div>
+              <div class="windows-card__media"><img src="assets/img/HP 15 15-FC0703AU.png" alt="HP 15 laptop"></div>
+              <h3 class="windows-card__name">HP 15 15-FC0703AU Standard Laptop (AMD Ryzen 5)</h3>
+              <p class="windows-card__price">₹49,990.00</p>
+              <p class="windows-card__mrp">MRP ₹59,999.00</p>
+            </article>
+
+            <article class="windows-card">
+              <div class="windows-card__tag">Bank Offer + Exchange Bonus</div>
+              <div class="windows-card__media"><img src="assets/img/HP 15s 15-FC0552AU Standard Laptop.png"
+                  alt="HP 15s laptop"></div>
+              <h3 class="windows-card__name">HP 15s 15-FC0552AU Standard Laptop</h3>
+              <p class="windows-card__price">₹45,990.00 <span class="windows-card__off">12% OFF</span></p>
+              <p class="windows-card__mrp">MRP ₹52,490.00</p>
+            </article>
+
+            <article class="windows-card">
+              <div class="windows-card__tag">Special Price + Card Offer</div>
+              <div class="windows-card__media"><img src="assets/img/Acer Aspire Lite AL15-52.png"
+                  alt="Acer Aspire Lite"></div>
+              <h3 class="windows-card__name">Acer Aspire Lite AL15-52 Thin & Light Laptop</h3>
+              <p class="windows-card__price">₹39,990.00 <span class="windows-card__off">15% OFF</span></p>
+              <p class="windows-card__mrp">MRP ₹47,490.00</p>
+            </article>
+          </div>
+        </div>
+        <button type="button" class="windows-laptops__arrow windows-laptops__arrow--next" id="windowsNext"
+          aria-label="Next laptops"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="from-Voltix" aria-label="From Voltix to You">
+    <div class="from-Voltix__inner">
+      <h2 class="from-Voltix__title">From Voltix to You</h2>
+      <div class="from-Voltix__grid">
+        <a href="category.html" class="from-Voltix__card" aria-label="Bestselling ACs">
+          <img src="assets/img/small-banner-1.png" alt="Bestselling ACs banner">
+        </a>
+        <a href="category.html" class="from-Voltix__card" aria-label="Bestselling TVs">
+          <img src="assets/img/small-banner-2.png" alt="Bestselling TVs banner">
+        </a>
+        <a href="category.html" class="from-Voltix__card" aria-label="Air Coolers">
+          <img src="assets/img/small-banner-3.png" alt="Air Coolers banner">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="trending-now" aria-label="Trending now">
+    <div class="trending-now__inner">
+      <h2 class="trending-now__title">Trending now</h2>
+      <div class="trending-now__slider">
+        <button type="button" class="trending-now__arrow trending-now__arrow--prev" id="trendingPrev"
+          aria-label="Previous trending products"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="trending-now__viewport" id="trendingViewport">
+          <div class="trending-now__track" id="trendingTrack">
+            <article class="trending-card">
+              <div class="trending-card__tag">7.5% Upto 4000 ICICI/HDFC*</div>
+              <div class="trending-card__media"><img src="assets/img/Samsung 108 cm.png" alt="Samsung TV"></div>
+              <h3 class="trending-card__name">Samsung 108 cm (43 inches) Crystal 4K Ultra HD Smart LED TV</h3>
+              <p class="trending-card__price">₹32,990.00 <span class="trending-card__off">22% OFF</span></p>
+              <p class="trending-card__mrp">MRP ₹42,510.00</p>
+            </article>
+            <article class="trending-card">
+              <div class="trending-card__tag">12.5% Upto 10K ICICI/HDFC*</div>
+              <div class="trending-card__media"><img src="assets/img/Sony BRAVIA 3 Series.png" alt="Sony Bravia TV">
+              </div>
+              <h3 class="trending-card__name">Sony BRAVIA 3 Series 189 cm (75 inches) 4K Ultra HD Smart TV</h3>
+              <p class="trending-card__price">₹1,59,990.00 <span class="trending-card__off">35% OFF</span></p>
+              <p class="trending-card__mrp">MRP ₹2,47,990.00</p>
+            </article>
+            <article class="trending-card">
+              <div class="trending-card__tag">12K Instant CB+6M NCEMI</div>
+              <div class="trending-card__media"><img src="assets/img/Apple iPad A16.png" alt="Apple iPad A16"></div>
+              <h3 class="trending-card__name">Apple iPad A16 11th Gen 2025 27.59 cm (11 inch) Wi-Fi Tablet</h3>
+              <p class="trending-card__price">₹34,900.00</p>
+              <p class="trending-card__rating">★★★★☆ (105)</p>
+            </article>
+            <article class="trending-card">
+              <div class="trending-card__tag">₹2000 Off + 7.5% Off CC EMI*</div>
+              <div class="trending-card__media"><img src="assets/img/Haier 1.6 Ton 5.png" alt="Haier AC"></div>
+              <h3 class="trending-card__name">Haier 1.6 Ton 5 Star Split Inverter AC With Midnight Dream</h3>
+              <p class="trending-card__price">₹45,590.00 <span class="trending-card__off">43% OFF</span></p>
+              <p class="trending-card__mrp">MRP ₹80,290.00</p>
+            </article>
+            <article class="trending-card">
+              <div class="trending-card__tag">5% OFF OR 6 Month No Cost EMI*</div>
+              <div class="trending-card__media"><img src="assets/img/Asus Vivobook 16.png" alt="Asus Vivobook 16"></div>
+              <h3 class="trending-card__name">Asus Vivobook 16 X1605VA-MB1627WS Standard Laptop</h3>
+              <p class="trending-card__price">₹62,990.00 <span class="trending-card__off">14% OFF</span></p>
+              <p class="trending-card__mrp">MRP ₹72,990.00</p>
+            </article>
+            <article class="trending-card">
+              <div class="trending-card__tag">12K Instant CB+6M NCEMI</div>
+              <div class="trending-card__media"><img src="assets/img/Apple iPad A16 11th Gen.png" alt="Apple iPad">
+              </div>
+              <h3 class="trending-card__name">Apple iPad A16 11th Gen 27.59 cm (11 inch) Wi-Fi</h3>
+              <p class="trending-card__price">₹34,899.00</p>
+              <p class="trending-card__rating">★★★★☆ (118)</p>
+            </article>
+          </div>
+        </div>
+        <button type="button" class="trending-now__arrow trending-now__arrow--next" id="trendingNext"
+          aria-label="Next trending products"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="Voltix-exclusives" aria-label="Voltix Exclusives: Hidden Deals Inside">
+    <div class="Voltix-exclusives__inner">
+      <h2 class="Voltix-exclusives__title">Voltix Exclusives: Hidden Deals Inside!</h2>
+      <div class="Voltix-exclusives__slider">
+        <button type="button" class="Voltix-exclusives__arrow Voltix-exclusives__arrow--prev" id="VoltixPrev"
+          aria-label="Previous Voltix products"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="Voltix-exclusives__viewport" id="VoltixViewport">
+          <div class="Voltix-exclusives__track" id="VoltixTrack">
+            <article class="Voltix-card">
+              <button type="button" class="Voltix-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+              <div class="Voltix-card__media"><img src="assets/img/Voltix 127cm (50 inch) 4K Ultra.png"
+                  alt="Voltix 127 cm TV"></div>
+              <h3 class="Voltix-card__name">Voltix 127cm (50 inch) 4K Ultra HD LED Smart Google TV</h3>
+              <p class="Voltix-card__price">₹24,990.00 <span class="Voltix-card__mrp">₹42,990.00</span></p>
+              <p class="Voltix-card__rating">★★★★★</p>
+            </article>
+
+            <article class="Voltix-card">
+              <button type="button" class="Voltix-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+              <div class="Voltix-card__media"><img src="assets/img/Voltix 80 cm (32 inch).png" alt="Voltix 80 cm TV">
+              </div>
+              <h3 class="Voltix-card__name">Voltix 80 cm (32 inch) HD LED Google TV 5.0 with HDR</h3>
+              <p class="Voltix-card__price">₹9,990.00 <span class="Voltix-card__mrp">₹19,990.00</span></p>
+              <p class="Voltix-card__rating">★★★★☆</p>
+            </article>
+
+            <article class="Voltix-card">
+              <button type="button" class="Voltix-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+              <div class="Voltix-card__media"><img src="assets/img/Voltix 80 cm (32 inch).png" alt="Voltix QLED TV">
+              </div>
+              <h3 class="Voltix-card__name">Voltix 80 cm (32 inch) QLED Smart Google TV 5.0</h3>
+              <p class="Voltix-card__price">₹10,990.00 <span class="Voltix-card__mrp">₹18,990.00</span></p>
+              <p class="Voltix-card__rating">★★★★☆</p>
+            </article>
+
+            <article class="Voltix-card">
+              <button type="button" class="Voltix-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+              <div class="Voltix-card__media"><img src="assets/img/Voltix 80cm (32inch).png" alt="Voltix 109 cm TV">
+              </div>
+              <h3 class="Voltix-card__name">Voltix 109 cm (43 inch) LED 4K Ultra HD Smart Google TV</h3>
+              <p class="Voltix-card__price">₹19,490.00 <span class="Voltix-card__mrp">₹29,990.00</span></p>
+              <p class="Voltix-card__rating">★★★★☆</p>
+            </article>
+
+            <article class="Voltix-card">
+              <button type="button" class="Voltix-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"></i></button>
+              <div class="Voltix-card__media"><img src="assets/img/Voltix 127cm (50 inch) 4K Ultra.png"
+                  alt="Voltix Bravia TV"></div>
+              <h3 class="Voltix-card__name">Voltix 138 cm (55 inch) 4K Smart Google TV with HDR</h3>
+              <p class="Voltix-card__price">₹44,990.00 <span class="Voltix-card__mrp">₹59,990.00</span></p>
+              <p class="Voltix-card__rating">★★★★★</p>
+            </article>
+          </div>
+        </div>
+        <button type="button" class="Voltix-exclusives__arrow Voltix-exclusives__arrow--next" id="VoltixNext"
+          aria-label="Next Voltix products"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="small-appliance-strip" aria-label="Small appliance offers">
+    <div class="small-appliance-strip__inner">
+      <a href="category.html" class="small-appliance-strip__card" aria-label="Air fryer and fryer deals">
+        <img src="assets/img/small-banner-4.jpg" alt="Crispy delicious guilt-free offer">
+      </a>
+      <a href="category.html" class="small-appliance-strip__card" aria-label="Blender and mixer deals">
+        <img src="assets/img/small-banner-5.jpg" alt="Mix blend create your ultimate summer companion offer">
+      </a>
+    </div>
+  </section>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="site-footer__inner">
+      
+      <section class="site-footer__connect">
+        <h3 class="site-footer__heading">STAY CONNECTED</h3>
+        
+        <form class="site-footer__newsletter" action="#" method="post">
+          <input type="email" placeholder="Enter your email for latest deals" aria-label="Email address">
+          <button type="submit" aria-label="Submit email">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+  
+        <p>Subscribe to get updates on latest gadgets, exclusive offers & tech news.</p>
+  
+        <div class="site-footer__socials" aria-label="Social links">
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+  
+        <p class="site-footer__copyright">
+          © 2026 Voltix Electronics Pvt. Ltd. All rights reserved
+        </p>
+      </section>
+  
+      
+      <section class="site-footer__links">
+        <h3 class="site-footer__heading">CUSTOMER SUPPORT</h3>
+        
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">About Voltix</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Return & Refund Policy</a></li>
+            <li><a href="#">Shipping Information</a></li>
+            <li><a href="#">Warranty Support</a></li>
+            <li><a href="#">Bulk Orders (B2B)</a></li>
+          </ul>
+  
+          <ul>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Site Map</a></li>
+            <li><a href="#">Gift Cards</a></li>
+            <li><a href="#">Tech Blog</a></li>
+          </ul>
+        </div>
+      </section>
+  
+      
+      <section class="site-footer__products">
+        <h3 class="site-footer__heading">SHOP BY CATEGORY</h3>
+        
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">Smart TVs & Entertainment</a></li>
+            <li><a href="#">Mobiles & Accessories</a></li>
+            <li><a href="#">Laptops & Computers</a></li>
+            <li><a href="#">Home Appliances</a></li>
+            <li><a href="#">Kitchen Appliances</a></li>
+            <li><a href="#">Audio Devices</a></li>
+            <li><a href="#">Wearables & Smart Gadgets</a></li>
+          </ul>
+  
+          <ul>
+            <li><a href="#">Gaming & Consoles</a></li>
+            <li><a href="#">Cameras & Accessories</a></li>
+            <li><a href="#">Personal Care Electronics</a></li>
+            <li><a href="#">Smart Home Devices</a></li>
+            <li><a href="#">Computer Accessories</a></li>
+            <li><a href="#">Top Brands</a></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </footer>
+
+  <script src="assets/js/electronic.js" defer></script>
+  <script src="assets/js/product-linker.js" defer></script>
+
+</body>
+
+</html>

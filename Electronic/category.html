@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voltix — Electronics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/electronic.css">
+  <link rel="stylesheet" href="assets/css/category.css">
+</head>
+
+<body>
+
+  <header class="vs-header" role="banner">
+    <div class="vs-header__inner">
+      <div class="vs-header__main">
+        <button type="button" class="vs-menu-toggle" id="vsMenuOpen" aria-label="Open menu" aria-expanded="false"
+          aria-controls="vsNavDrawer">
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <div class="vs-header__left">
+          <a href="index.html" class="vs-logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+          <div class="vs-location" aria-label="Delivery location">
+            <svg class="vs-pin" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" stroke="currentColor" stroke-width="1.4" />
+              <circle cx="12" cy="11" r="2.1" fill="#e53935" stroke="#e53935" />
+            </svg>
+            <div class="vs-location__text">
+              <span class="vs-location__line">Mashaurhi 804452</span>
+              <a href="#" class="vs-location__change">Change Location</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="vs-header__search">
+          <div class="vs-search" role="search">
+            <svg class="vs-search__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6" />
+              <path d="M16 16l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            <input type="search" class="vs-search__input" placeholder="Search for phone, TV, home appliances..."
+              autocomplete="off" aria-label="Search products">
+            <button type="button" class="vs-search__mic" aria-label="Voice search">
+              <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="vs-header__actions">
+          <div class="vs-header__extras">
+            <a href="#" class="vs-link vs-link--icon"><span>Store Locator</span></a>
+            <a href="contact.html" class="vs-link vs-link--icon"><span>Help Center</span></a>
+            <a href="#" class="vs-icon-btn" aria-label="Wishlist"><i class="fa-regular fa-heart"></i></a>
+          </div>
+          <a href="account.html" class="vs-icon-btn vs-icon-btn--account" aria-label="Account"><i
+              class="fa-regular fa-user"></i></a>
+          <a href="#" class="vs-icon-btn" aria-label="Shopping cart"><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+      </div>
+
+      <nav class="vs-header__categories" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="vs-drawer" id="vsNavDrawer" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+    <div class="vs-drawer__backdrop" id="vsDrawerBackdrop" tabindex="-1"></div>
+    <div class="vs-drawer__panel">
+      <div class="vs-drawer__head">
+        <a href="index.html" class="vs-drawer__logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+        <button type="button" class="vs-drawer__close" id="vsMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="vs-drawer__nav" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+      <div class="vs-drawer__footer">
+        <a href="#" class="vs-drawer__footer-link">Store Locator</a>
+        <a href="contact.html" class="vs-drawer__footer-link">Help Center</a>
+        <a href="#" class="vs-drawer__footer-link">Wishlist</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="category-page" aria-label="Category listing">
+    <section class="category-layout">
+      <aside class="filters-panel" id="catFiltersPanel" aria-label="Filters">
+        <button type="button" class="filters-panel__backdrop" id="catFilterBackdrop" tabindex="-1"
+          aria-label="Close filters"></button>
+        <div class="filters-panel__inner">
+          <div class="filters-panel__head">
+            <h2 id="catFilterSheetTitle">Filters</h2>
+            <button type="button" class="filters-panel__close-sheet" id="catFilterClose" aria-label="Close filters">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+            <a href="#" data-filter-clear>Clear All</a>
+          </div>
+          <label class="filters-panel__stock" for="filterExcludeOos">
+            <input type="checkbox" id="filterExcludeOos" name="excludeOos">
+            <span>Exclude out of stock</span>
+          </label>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Category</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="category" value="mobiles">
+                <span>Mobiles</span></label>
+              <label class="filter-check"><input type="checkbox" name="category" value="mobile-accessories">
+                <span>Mobile Accessories</span></label>
+              <label class="filter-check"><input type="checkbox" name="category" value="tablet-accessories">
+                <span>Tablet Accessories</span></label>
+              <label class="filter-check"><input type="checkbox" name="category" value="tablets">
+                <span>Tablets</span></label>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Brand</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="brand" value="apple"> <span>Apple</span></label>
+              <label class="filter-check"><input type="checkbox" name="brand" value="mi"> <span>MI</span></label>
+              <label class="filter-check"><input type="checkbox" name="brand" value="redmi"> <span>Redmi</span></label>
+              <label class="filter-check"><input type="checkbox" name="brand" value="oneplus">
+                <span>OnePlus</span></label>
+              <div id="brandMore" class="filter-options-more">
+                <label class="filter-check"><input type="checkbox" name="brand" value="samsung">
+                  <span>Samsung</span></label>
+                <label class="filter-check"><input type="checkbox" name="brand" value="google">
+                  <span>Google</span></label>
+                <label class="filter-check"><input type="checkbox" name="brand" value="vivo"> <span>Vivo</span></label>
+              </div>
+              <a href="#" class="filter-view-more" data-view-more="#brandMore">View More</a>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Price</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <div class="filter-price">
+                <div class="filter-price__labels">
+                  <span data-price-label-min>₹79</span>
+                  <span data-price-label-max>₹2,59,900</span>
+                </div>
+                <div class="filter-price__track-wrap">
+                  <div class="filter-price__rail" aria-hidden="true"></div>
+                  <div class="filter-price__fill" aria-hidden="true"></div>
+                  <input type="range" class="filter-price__range" id="filterPriceMin" min="79" max="259900" step="1"
+                    value="79" aria-label="Minimum price">
+                  <input type="range" class="filter-price__range" id="filterPriceMax" min="79" max="259900" step="1"
+                    value="259900" aria-label="Maximum price">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Color</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="color" value="black"> <span>Black</span></label>
+              <label class="filter-check"><input type="checkbox" name="color" value="white"> <span>White</span></label>
+              <label class="filter-check"><input type="checkbox" name="color" value="grey"> <span>Grey</span></label>
+              <label class="filter-check"><input type="checkbox" name="color" value="blue"> <span>Blue</span></label>
+              <div id="colorMore" class="filter-options-more">
+                <label class="filter-check"><input type="checkbox" name="color" value="purple">
+                  <span>Purple</span></label>
+                <label class="filter-check"><input type="checkbox" name="color" value="lilac">
+                  <span>Lilac</span></label>
+                <label class="filter-check"><input type="checkbox" name="color" value="graygreen">
+                  <span>Graygreen</span></label>
+                <label class="filter-check"><input type="checkbox" name="color" value="orange">
+                  <span>Orange</span></label>
+              </div>
+              <a href="#" class="filter-view-more" data-view-more="#colorMore">View More</a>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Operating System</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="os" value="ipados"> <span>iPad OS</span></label>
+              <label class="filter-check"><input type="checkbox" name="os" value="android"> <span>Android</span></label>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Ram Capacity</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="ram" value="3"> <span>3 GB</span></label>
+              <label class="filter-check"><input type="checkbox" name="ram" value="4"> <span>4 GB</span></label>
+              <label class="filter-check"><input type="checkbox" name="ram" value="6"> <span>6 GB</span></label>
+              <label class="filter-check"><input type="checkbox" name="ram" value="8"> <span>8 GB</span></label>
+              <div id="ramMore" class="filter-options-more">
+                <label class="filter-check"><input type="checkbox" name="ram" value="12"> <span>12 GB</span></label>
+                <label class="filter-check"><input type="checkbox" name="ram" value="16"> <span>16 GB</span></label>
+              </div>
+              <a href="#" class="filter-view-more" data-view-more="#ramMore">View More</a>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Back Camera</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="backCam" value="5-7.9"> <span>5 - 7.9
+                  MP</span></label>
+              <label class="filter-check"><input type="checkbox" name="backCam" value="8-11.9"> <span>8 - 11.9
+                  MP</span></label>
+              <label class="filter-check"><input type="checkbox" name="backCam" value="12-12.9"> <span>12 - 12.9
+                  MP</span></label>
+              <label class="filter-check"><input type="checkbox" name="backCam" value="13-15.9"> <span>13 - 15.9
+                  MP</span></label>
+              <label class="filter-check"><input type="checkbox" name="backCam" value="16-20.9"> <span>16 - 20.9
+                  MP</span></label>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Internal Storage</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="storage" value="32"> <span>32 GB</span></label>
+              <label class="filter-check"><input type="checkbox" name="storage" value="64"> <span>64 GB</span></label>
+              <label class="filter-check"><input type="checkbox" name="storage" value="128"> <span>128 GB</span></label>
+              <label class="filter-check"><input type="checkbox" name="storage" value="256"> <span>256 GB</span></label>
+              <div id="storageMore" class="filter-options-more">
+                <label class="filter-check"><input type="checkbox" name="storage" value="512"> <span>512
+                    GB</span></label>
+                <label class="filter-check"><input type="checkbox" name="storage" value="1024"> <span>1
+                    TB</span></label>
+              </div>
+              <a href="#" class="filter-view-more" data-view-more="#storageMore">View More</a>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Processor Brand</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="processor" value="snapdragon">
+                <span>Snapdragon</span></label>
+              <label class="filter-check"><input type="checkbox" name="processor" value="mediatek">
+                <span>MediaTek</span></label>
+              <label class="filter-check"><input type="checkbox" name="processor" value="octacore"> <span>Octa
+                  Core</span></label>
+              <label class="filter-check"><input type="checkbox" name="processor" value="samsung">
+                <span>Samsung</span></label>
+              <div id="processorMore" class="filter-options-more">
+                <label class="filter-check"><input type="checkbox" name="processor" value="apple">
+                  <span>Apple</span></label>
+              </div>
+              <a href="#" class="filter-view-more" data-view-more="#processorMore">View More</a>
+            </div>
+          </div>
+
+          <div class="filter-section filter-section--open">
+            <button type="button" class="filter-section__toggle" aria-expanded="true">
+              <span class="filter-section__title">Front Camera</span>
+              <span class="filter-section__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-up"></i></span>
+            </button>
+            <div class="filter-section__body">
+              <label class="filter-check"><input type="checkbox" name="frontCam" value="8-11.9"> <span>8 - 11.9
+                  MP</span></label>
+              <label class="filter-check"><input type="checkbox" name="frontCam" value="12-12.9"> <span>12 - 12.9
+                  MP</span></label>
+              <label class="filter-check"><input type="checkbox" name="frontCam" value="16-plus"> <span>16 MP &amp;
+                  Above</span></label>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="products-panel" aria-label="Products">
+        <div class="products-panel__head">
+          <div class="products-panel__toolbar" role="group" aria-label="Sort and filter">
+            <button type="button" class="cat-filter-btn" id="catFilterOpen" aria-expanded="false"
+              aria-controls="catFiltersPanel">
+              <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+              <span>Filters</span>
+            </button>
+            <span class="cat-filter-toolbar__rule" aria-hidden="true"></span>
+            <label class="products-panel__sort">
+              <span class="products-panel__sort-text">Sort By</span>
+              <select id="categorySortSelect" aria-label="Sort products">
+                <option>Popularity</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+              </select>
+              <i class="fa-solid fa-chevron-down products-panel__sort-chevron" aria-hidden="true"></i>
+            </label>
+          </div>
+          <p class="products-panel__intro"><strong class="products-panel__intro-title">Buy Mobiles Online</strong><span
+              class="products-panel__intro-count"> <span data-products-count>(Showing 1 – 15 products of 15
+                products)</span></span></p>
+        </div>
+
+        <div class="products-grid">
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="samsung"
+            data-f-price="62499" data-f-color="lilac" data-f-os="android" data-f-ram="12" data-f-back="12-12.9"
+            data-f-storage="256" data-f-processor="octacore" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <span class="p-card__badge">New Arrival</span>
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Samsung Galaxy A57.png" alt="Samsung Galaxy A57"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="a57"
+                    aria-label="Compare Samsung Galaxy A57"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Samsung Galaxy A57 5G (Awesome Lilac, 12GB RAM, 256GB Storage), Agentic AI, Triple Camera System</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹62,499</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹72,999</s></span>
+                <span class="p-card__off">14% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="apple"
+            data-f-price="62900" data-f-color="black" data-f-os="ipados" data-f-ram="8" data-f-back="12-12.9"
+            data-f-storage="256" data-f-processor="apple" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Apple iPhone 17e.png" alt="Apple iPhone 17e"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="17e"
+                    aria-label="Compare Apple iPhone 17e"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Apple iPhone 17e (256GB Storage, Black), A19 Chip, Advanced Camera, Face ID</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹62,900</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹69,900</s></span>
+                <span class="p-card__off">10% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="samsung"
+            data-f-price="41999" data-f-color="graygreen" data-f-os="android" data-f-ram="8" data-f-back="12-12.9"
+            data-f-storage="128" data-f-processor="octacore" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <span class="p-card__badge">New Arrival</span>
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Samsung Galaxy A37.png" alt="Samsung Galaxy A37"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="a37"
+                    aria-label="Compare Samsung Galaxy A37"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Samsung Galaxy A37 5G (Awesome Graygreen, 8GB RAM, 128GB), Super AMOLED, 5G Ready</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹41,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹47,999</s></span>
+                <span class="p-card__off">13% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="samsung"
+            data-f-price="150999" data-f-color="black" data-f-os="android" data-f-ram="12" data-f-back="16-20.9"
+            data-f-storage="512" data-f-processor="snapdragon" data-f-front="16-plus">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Samsung Galaxy S26 Ultra.png"
+                    alt="Samsung Galaxy S26 Ultra"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="s26u"
+                    aria-label="Compare Samsung Galaxy S26 Ultra"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Samsung Galaxy S26 Ultra 5G (12GB RAM, 512GB), 200MP Camera, S Pen Built-in, Titanium Frame</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹1,50,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹1,59,999</s></span>
+                <span class="p-card__off">6% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="samsung"
+            data-f-price="107999" data-f-color="black" data-f-os="android" data-f-ram="12" data-f-back="16-20.9"
+            data-f-storage="512" data-f-processor="snapdragon" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Samsung Galaxy S26.png" alt="Samsung Galaxy S26"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="s26"
+                    aria-label="Compare Samsung Galaxy S26"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Samsung Galaxy S26 5G (12GB RAM, 512GB), Nightography, Pro-Grade Video, Long Battery</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹1,07,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹1,14,999</s></span>
+                <span class="p-card__off">6% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="apple"
+            data-f-price="67790" data-f-color="black" data-f-os="ipados" data-f-ram="8" data-f-back="12-12.9"
+            data-f-storage="128" data-f-processor="apple" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <span class="p-card__badge p-card__badge--promo">Exchange Bonus</span>
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Apple iPhone 16.png" alt="Apple iPhone 16"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="ip16"
+                    aria-label="Compare Apple iPhone 16"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Apple iPhone 16 (128GB Storage, Black), A18 Chip, Action Button, Ceramic Shield</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹67,790</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹69,900</s></span>
+                <span class="p-card__off">3% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="apple"
+            data-f-price="58990" data-f-color="blue" data-f-os="ipados" data-f-ram="6" data-f-back="12-12.9"
+            data-f-storage="128" data-f-processor="apple" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Apple iPhone 15 128GB Blue.png" alt="Apple iPhone 15">
+                </div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="ip15"
+                    aria-label="Compare Apple iPhone 15"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Apple iPhone 15 (128GB Storage, Blue), Dynamic Island, USB-C, Photonic Engine</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹58,990</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹62,900</s></span>
+                <span class="p-card__off">6% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="samsung"
+            data-f-price="165490" data-f-color="black" data-f-os="android" data-f-ram="12" data-f-back="16-20.9"
+            data-f-storage="512" data-f-processor="samsung" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Samsung Galaxy Z Fold7.png" alt="Samsung Galaxy Z Fold7">
+                </div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="fold7"
+                    aria-label="Compare Samsung Galaxy Z Fold7"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Samsung Galaxy Z Fold7 (12GB RAM, 512GB Storage), Foldable AMOLED, Multitasking, S Pen Support</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹1,65,490</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹1,74,990</s></span>
+                <span class="p-card__off">5% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="apple"
+            data-f-price="89990" data-f-color="purple" data-f-os="ipados" data-f-ram="8" data-f-back="12-12.9"
+            data-f-storage="256" data-f-processor="apple" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <span class="p-card__badge p-card__badge--promo">Best Seller</span>
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Apple iPhone 17.png" alt="Apple iPhone 17"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="ip17"
+                    aria-label="Compare Apple iPhone 17"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Apple iPhone 17 (256GB Storage, Purple), A19 Pro, Pro Camera, Titanium Design</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹89,990</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹94,990</s></span>
+                <span class="p-card__off">5% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="oneplus"
+            data-f-price="64999" data-f-color="black" data-f-os="android" data-f-ram="12" data-f-back="16-20.9"
+            data-f-storage="256" data-f-processor="snapdragon" data-f-front="16-plus">
+            <div class="p-card__media">
+              <span class="p-card__badge">New Arrival</span>
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/OnePlus 15R 5G.png" alt="OnePlus 12 5G"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="op12"
+                    aria-label="Compare OnePlus 12 5G"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>OnePlus 15R 5G (12GB RAM, 512GB Storage) | Snapdragon 8 Gen 5 | 7400mAh Battery | Lifetime Display
+                Warranty | Mint Breeze</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹56,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹59,999</s></span>
+                <span class="p-card__off">7% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="mi" data-f-price="67999"
+            data-f-color="white" data-f-os="android" data-f-ram="12" data-f-back="13-15.9" data-f-storage="512"
+            data-f-processor="snapdragon" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/REDMI Note 15 Pro+.png" alt="Xiaomi 14"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="mi14"
+                    aria-label="Compare Xiaomi 14"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>REDMI Note 15 Pro+ 5G (12GB RAM, 512GB Storage) | Snapdragon 7s Gen 4 | 6500mAh Battery | 200MP OIS
+                Camera | Mocha Brown</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹43,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹44,999</s></span>
+                <span class="p-card__off">9% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="redmi"
+            data-f-price="21999" data-f-color="blue" data-f-os="android" data-f-ram="8" data-f-back="12-12.9"
+            data-f-storage="256" data-f-processor="mediatek" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Redmi 15A.png" alt="Redmi Note 14 Pro 5G"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="rn14"
+                    aria-label="Compare Redmi Note 14 Pro 5G"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Redmi 15A 5G (4GB RAM, 128GB Storage) | Octa-core T8300 5G | 6300mAh Battery | 32MP Camera | Purple
+              </h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹14,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹17,999</s></span>
+                <span class="p-card__off">12% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="google"
+            data-f-price="72999" data-f-color="grey" data-f-os="android" data-f-ram="12" data-f-back="16-20.9"
+            data-f-storage="256" data-f-processor="snapdragon" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Google Pixel 10.png" alt="Google Pixel 9"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="px9"
+                    aria-label="Compare Google Pixel 9"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Google Pixel 10 5G (12GB RAM, 256GB Storage) | Google Tensor G5 | 4835mAh Battery | Smarter with
+                Google Gemini AI | Obsidian</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹72,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹79,999</s></span>
+                <span class="p-card__off">9% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="vivo" data-f-price="38999"
+            data-f-color="blue" data-f-os="android" data-f-ram="8" data-f-back="12-12.9" data-f-storage="256"
+            data-f-processor="mediatek" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/vivo V70.webp" alt="Vivo V30 Pro"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="v30"
+                    aria-label="Compare Vivo V30 Pro"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>vivo V70 5G (8GB RAM, 256GB, Passion Red)</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹49,999</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹65,999</s></span>
+                <span class="p-card__off">24% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="p-card" data-f-in-stock="1" data-f-category="mobiles" data-f-brand="apple"
+            data-f-price="119900" data-f-color="orange" data-f-os="ipados" data-f-ram="8" data-f-back="16-20.9"
+            data-f-storage="256" data-f-processor="apple" data-f-front="12-12.9">
+            <div class="p-card__media">
+              <span class="p-card__badge">New Arrival</span>
+              <div class="p-card__img-wrap">
+                <div class="p-card__img"><img src="assets/img/Apple iPhone 17 Pro (256GB Storage, Cosmic Orange).png"
+                    alt="Apple iPhone 17 Pro"></div>
+                <label class="p-card__compare"><input type="checkbox" name="compare" value="ip17p"
+                    aria-label="Compare Apple iPhone 17 Pro"> <span>Compare</span></label>
+              </div>
+            </div>
+            <div class="p-card__body">
+              <h3>Apple iPhone 17 Pro (256GB Storage, Cosmic Orange), A19 Pro, ProMotion 120Hz, Titanium</h3>
+              <div class="p-card__price-row">
+                <span class="p-card__price">₹1,19,900</span>
+                <span class="p-card__mrp-wrap"><abbr class="p-card__mrp-label" title="Maximum Retail Price">MRP</abbr>:
+                  <s class="p-card__mrp">₹1,29,900</s></span>
+                <span class="p-card__off">8% off</span>
+              </div>
+              <div class="p-card__deals">
+                <span class="p-card__deals-icon" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" fill="#fff" stroke="#0d5c3f" stroke-width="1.2" />
+                    <circle cx="8.5" cy="8.5" r="1.35" fill="#0d5c3f" />
+                    <circle cx="15.5" cy="15.5" r="1.35" fill="#0d5c3f" />
+                    <path d="M15.2 8.8L8.8 15.2" stroke="#0d5c3f" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <span class="p-card__deals-text">Extra Deals Available</span>
+              </div>
+              <div class="p-card__bottom">
+                <p class="p-card__delivery">
+                  <svg class="p-card__delivery-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    aria-hidden="true">
+                    <path d="M1 3h15v13H1V3zm15 5h4l3 3v5h-7V8z" stroke="currentColor" stroke-width="1.3" />
+                    <circle cx="7.5" cy="19.5" r="1.8" fill="currentColor" />
+                    <circle cx="18.5" cy="19.5" r="1.8" fill="currentColor" />
+                  </svg>
+                  <span>Free delivery by 9th May, 2026</span>
+                </p>
+                <div class="p-card__actions">
+                  <button type="button" class="p-card__act p-card__act--wish" aria-label="Add to wishlist"><svg
+                      width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                        stroke="currentColor" stroke-width="1.35" fill="none" />
+                    </svg></button>
+                  <button type="button" class="p-card__act p-card__act--cart" aria-label="Add to cart"><svg width="18"
+                      height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M6 6h15l-1.5 9h-12L4.5 3H1" stroke="currentColor" stroke-width="1.35"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                      <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                    </svg><span class="p-card__cart-label">Add to Cart</span></button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+    
+  </main>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="site-footer__inner">
+      <section class="site-footer__connect">
+        <h3 class="site-footer__heading">CONNECT WITH US</h3>
+        <form class="site-footer__newsletter" action="#" method="post">
+          <input type="email" placeholder="Enter Email ID" aria-label="Email address">
+          <button type="submit" aria-label="Submit email"><i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+
+        <div class="site-footer__socials" aria-label="Social links">
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+
+        <p class="site-footer__copyright">© Copyright 2026 Voltix. All rights reserved</p>
+      </section>
+
+      <section class="site-footer__links">
+        <h3 class="site-footer__heading">USEFUL LINKS</h3>
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">About Croma</a></li>
+            <li><a href="#">Help And Support</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Buying Guide</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">B2B Orders</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">E-Waste</a></li>
+            <li><a href="#">Franchise Opportunity</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Site Map</a></li>
+            <li><a href="#">Careers At Croma</a></li>
+            <li><a href="#">Terms Of Use</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Unboxed</a></li>
+            <li><a href="#">Gift Card</a></li>
+            <li><a href="#">Croma E-Star</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="site-footer__products">
+        <h3 class="site-footer__heading">PRODUCTS</h3>
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">Televisions & Accessories</a></li>
+            <li><a href="#">Home Appliances</a></li>
+            <li><a href="#">Phones & Wearables</a></li>
+            <li><a href="#">Computers & Tablets</a></li>
+            <li><a href="#">Kitchen Appliances</a></li>
+            <li><a href="#">Audio & Video</a></li>
+            <li><a href="#">Health & Fitness</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Grooming & Personal Care</a></li>
+            <li><a href="#">Cameras & Accessories</a></li>
+            <li><a href="#">Smart Devices</a></li>
+            <li><a href="#">Gaming</a></li>
+            <li><a href="#">Accessories</a></li>
+            <li><a href="#">Top Brands</a></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </footer>
+
+  <script src="assets/js/electronic.js" defer></script>
+  <script src="assets/js/category-filters.js" defer></script>
+  <script src="assets/js/product-linker.js" defer></script>
+
+</body>
+
+</html>

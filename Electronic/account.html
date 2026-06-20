@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Overview — Voltix</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/electronic.css">
+  <link rel="stylesheet" href="assets/css/static-pages.css">
+</head>
+
+<body>
+
+  <header class="vs-header" role="banner">
+    <div class="vs-header__inner">
+      <div class="vs-header__main">
+        <button type="button" class="vs-menu-toggle" id="vsMenuOpen" aria-label="Open menu" aria-expanded="false"
+          aria-controls="vsNavDrawer">
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+          <span class="vs-menu-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <div class="vs-header__left">
+          <a href="index.html" class="vs-logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+          <div class="vs-location" aria-label="Delivery location">
+            <svg class="vs-pin" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z" stroke="currentColor" stroke-width="1.4" />
+              <circle cx="12" cy="11" r="2.1" fill="#e53935" stroke="#e53935" />
+            </svg>
+            <div class="vs-location__text">
+              <span class="vs-location__line">Mashaurhi 804452</span>
+              <a href="#" class="vs-location__change">Change Location</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="vs-header__search">
+          <div class="vs-search" role="search">
+            <svg class="vs-search__icon" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6" />
+              <path d="M16 16l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            <input type="search" class="vs-search__input" placeholder="Search for phone, TV, home appliances..."
+              autocomplete="off" aria-label="Search products">
+            <button type="button" class="vs-search__mic" aria-label="Voice search">
+              <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="vs-header__actions">
+          <div class="vs-header__extras">
+            <a href="#" class="vs-link vs-link--icon"><span>Store Locator</span></a>
+            <a href="contact.html" class="vs-link vs-link--icon"><span>Help Center</span></a>
+            <a href="#" class="vs-icon-btn" aria-label="Wishlist"><i class="fa-regular fa-heart"></i></a>
+          </div>
+          <a href="account.html" class="vs-icon-btn vs-icon-btn--account" aria-label="Account"><i
+              class="fa-regular fa-user"></i></a>
+          <a href="#" class="vs-icon-btn" aria-label="Shopping cart"><i class="fa-solid fa-cart-shopping"></i></a>
+        </div>
+      </div>
+
+      <nav class="vs-header__categories" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="vs-drawer" id="vsNavDrawer" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+    <div class="vs-drawer__backdrop" id="vsDrawerBackdrop" tabindex="-1"></div>
+    <div class="vs-drawer__panel">
+      <div class="vs-drawer__head">
+        <a href="index.html" class="vs-drawer__logo"><img src="assets/img/logo.png" alt="Voltix" width="152" height="36" decoding="async"></a>
+        <button type="button" class="vs-drawer__close" id="vsMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="vs-drawer__nav" aria-label="Primary categories">
+        <a href="category.html">Air Conditioners</a>
+        <a href="category.html">Mobiles, Tablets & Accessories</a>
+        <a href="category.html">Laptops & Accessories</a>
+        <a href="category.html">Home Appliances</a>
+        <a href="category.html">Kitchen Appliances</a>
+        <a href="category.html">TV & Entertainment</a>
+        <a href="category.html">Personal Care</a>
+        <a href="category.html">Headphones & Speakers</a>
+        <a href="category.html">Brand Stores</a>
+        <a href="category.html">Loyalty Hub</a>
+      </nav>
+      <div class="vs-drawer__footer">
+        <a href="#" class="vs-drawer__footer-link">Store Locator</a>
+        <a href="contact.html" class="vs-drawer__footer-link">Help Center</a>
+        <a href="#" class="vs-drawer__footer-link">Wishlist</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="vs-static-page vs-static-page--account" aria-label="My Voltix account">
+    <div class="vs-static-page__inner">
+      <div class="acc-dash">
+        <aside class="acc-dash__sidebar">
+          <p class="acc-dash__greet">Hi, Guest!</p>
+          <nav class="acc-dash__nav" role="tablist" aria-label="Account sections">
+            <button type="button" class="acc-dash__nav-link is-active" role="tab" aria-selected="true"
+              aria-controls="acc-panel-overview" id="acc-tab-overview" data-acc-tab="overview"><i
+                class="fa-regular fa-circle-user" aria-hidden="true"></i> Overview</button>
+            <button type="button" class="acc-dash__nav-link" role="tab" aria-selected="false"
+              aria-controls="acc-panel-orders" id="acc-tab-orders" data-acc-tab="orders"><i class="fa-solid fa-box"
+                aria-hidden="true"></i> My Orders</button>
+            <button type="button" class="acc-dash__nav-link" role="tab" aria-selected="false"
+              aria-controls="acc-panel-wishlist" id="acc-tab-wishlist" data-acc-tab="wishlist"><i
+                class="fa-regular fa-heart" aria-hidden="true"></i> Wishlist</button>
+            <button type="button" class="acc-dash__nav-link" role="tab" aria-selected="false"
+              aria-controls="acc-panel-personal" id="acc-tab-personal" data-acc-tab="personal"><i
+                class="fa-regular fa-user" aria-hidden="true"></i> Personal Details</button>
+            <button type="button" class="acc-dash__nav-link" role="tab" aria-selected="false"
+              aria-controls="acc-panel-addresses" id="acc-tab-addresses" data-acc-tab="addresses"><i
+                class="fa-solid fa-location-dot" aria-hidden="true"></i> Manage Addresses</button>
+            <button type="button" class="acc-dash__nav-link" role="tab" aria-selected="false"
+              aria-controls="acc-panel-preferences" id="acc-tab-preferences" data-acc-tab="preferences"><i
+                class="fa-solid fa-sliders" aria-hidden="true"></i> Preferences</button>
+            <button type="button" class="acc-dash__nav-link" role="tab" aria-selected="false"
+              aria-controls="acc-panel-loyalty" id="acc-tab-loyalty" data-acc-tab="loyalty"><i class="fa-solid fa-sparkles"
+                aria-hidden="true"></i> My Loyalty Points</button>
+          </nav>
+          <button type="button" class="acc-dash__logout">Log out</button>
+        </aside>
+
+        <div class="acc-dash__main">
+          <div class="acc-dash__panel acc-dash__panel--overview is-active" id="acc-panel-overview" role="tabpanel"
+            aria-labelledby="acc-tab-overview" data-acc-panel="overview" aria-hidden="false">
+            <h1 class="acc-dash__page-title">Overview</h1>
+
+            <section class="acc-panel" aria-labelledby="acc-personal-heading">
+              <div class="acc-panel__head">
+                <h2 id="acc-personal-heading" class="acc-panel__title">Personal Details</h2>
+                <a href="#" class="acc-panel__action acc-js-goto-personal"><i class="fa-solid fa-pencil"
+                    aria-hidden="true"></i> Edit Profile</a>
+              </div>
+              <div class="acc-profile-card">
+                <span class="acc-profile-card__icon" aria-hidden="true"><i class="fa-solid fa-house"></i></span>
+                <div class="acc-profile-card__body">
+                  <strong id="acc-overview-name" class="acc-profile-card__name">guest user</strong>
+                  <span id="acc-overview-email" class="acc-profile-card__email">rs7885992@gmail.com</span>
+                  <span id="acc-overview-mobile" class="acc-profile-card__mobile" hidden></span>
+                </div>
+              </div>
+            </section>
+
+            <section class="acc-panel" aria-labelledby="acc-orders-heading">
+              <div class="acc-panel__head">
+                <h2 id="acc-orders-heading" class="acc-panel__title">My Orders</h2>
+                <button type="button" class="acc-panel__action acc-panel__action--plain acc-js-goto-orders">View
+                  All</button>
+              </div>
+              <div class="acc-orders-empty" role="status" aria-label="No recent orders"></div>
+            </section>
+
+            <section class="acc-panel" aria-labelledby="acc-loyalty-heading">
+              <h2 id="acc-loyalty-heading" class="acc-panel__title acc-panel__title--block">Loyalty Points</h2>
+              <div class="acc-loyalty">
+                <div class="acc-loyalty__left">
+                  <span class="acc-loyalty__spark" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></span>
+                  <div class="acc-loyalty__points">
+                    <span class="acc-loyalty__label">Available Loyalty Points</span>
+                    <strong class="acc-loyalty__value">0 points = ₹0</strong>
+                  </div>
+                </div>
+                <div class="acc-loyalty__divider" aria-hidden="true"></div>
+                <div class="acc-loyalty__right">
+                  <p>Need assistance with loyalty programs or maximizing rewards? Contact our support team for help
+                    anytime.</p>
+                  <a href="#" class="acc-loyalty__more">Know More</a>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="acc-dash__panel acc-dash__panel--orders" id="acc-panel-orders" role="tabpanel"
+            aria-labelledby="acc-tab-orders" data-acc-panel="orders" aria-hidden="true">
+            <h1 class="acc-dash__page-title acc-dash__page-title--section">My Orders</h1>
+            <div class="acc-orders-tab">
+              <div class="acc-orders-tab__rule" aria-hidden="true"></div>
+              <div class="acc-orders-empty-state">
+                <h2 class="acc-orders-empty-state__title">No Order Found</h2>
+                <p class="acc-orders-empty-state__text">Dive into the joy of browsing, your perfect picks await!</p>
+                <a href="category.html" class="acc-orders-cta">Start Shopping</a>
+              </div>
+              <div class="acc-orders-tab__dash" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="acc-dash__panel acc-dash__panel--wishlist" id="acc-panel-wishlist" role="tabpanel"
+            aria-labelledby="acc-tab-wishlist" data-acc-panel="wishlist" aria-hidden="true">
+            <div class="acc-wish-tab">
+              <header class="acc-wish-tab__head">
+                <h1 class="acc-wish-tab__title">Wishlist</h1>
+                <p class="acc-wish-tab__subtitle">Nice choice! Here are the items that you have liked</p>
+              </header>
+              <div class="acc-wish-empty">
+                <div class="acc-wish-empty__icons" aria-hidden="true">
+                  <i class="fa-regular fa-heart acc-wish-empty__heart acc-wish-empty__heart--outline"></i>
+                  <i class="fa-solid fa-heart acc-wish-empty__heart acc-wish-empty__heart--solid"></i>
+                </div>
+                <h2 class="acc-wish-empty__title">Your Wishlist is empty</h2>
+                <p class="acc-wish-empty__text">Looks like your shopping cart is feeling a bit lonely at the moment.
+                  Why not add something?</p>
+                <a href="category.html" class="acc-orders-cta">Start Shopping</a>
+              </div>
+              <div class="acc-wish-tab__dash" aria-hidden="true"></div>
+              <section class="acc-wish-explore" aria-labelledby="acc-wish-explore-heading">
+                <h2 id="acc-wish-explore-heading" class="acc-wish-explore__title">Explore top-notch categories</h2>
+                <div class="acc-wish-explore__links">
+                  <a href="category.html">Mobiles &amp; Tablets</a>
+                  <a href="category.html">Home Appliances</a>
+                  <a href="category.html">TV &amp; Audio</a>
+                  <a href="category.html">Laptops &amp; Accessories</a>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <div class="acc-dash__panel acc-dash__panel--personal" id="acc-panel-personal" role="tabpanel"
+            aria-labelledby="acc-tab-personal" data-acc-panel="personal" aria-hidden="true">
+            <div class="acc-personal-tab">
+              <h1 class="acc-personal-tab__title">Personal Details</h1>
+
+              <form id="accPersonalForm" class="acc-personal-form" action="#" method="post" novalidate>
+                <fieldset class="acc-personal-gender">
+                  <legend class="acc-personal-gender__legend">Gender</legend>
+                  <div class="acc-personal-gender__options">
+                    <label class="acc-personal-radio">
+                      <input type="radio" name="pd-gender" value="male" checked>
+                      <span>Male</span>
+                    </label>
+                    <label class="acc-personal-radio">
+                      <input type="radio" name="pd-gender" value="female">
+                      <span>Female</span>
+                    </label>
+                    <label class="acc-personal-radio">
+                      <input type="radio" name="pd-gender" value="other">
+                      <span>Others</span>
+                    </label>
+                  </div>
+                </fieldset>
+                <div class="acc-personal-grid">
+                  <div class="acc-personal-field">
+                    <label class="acc-visually-hidden" for="pd-first">First Name</label>
+                    <input type="text" id="pd-first" name="firstName" class="acc-personal-input"
+                      placeholder="First Name" autocomplete="given-name">
+                  </div>
+                  <div class="acc-personal-field">
+                    <label class="acc-visually-hidden" for="pd-last">Last Name</label>
+                    <input type="text" id="pd-last" name="lastName" class="acc-personal-input" placeholder="Last Name"
+                      autocomplete="family-name">
+                  </div>
+                </div>
+
+                <div class="acc-personal-grid">
+                  <div class="acc-float">
+                    <input type="email" id="pd-email" name="email" class="acc-float__input" placeholder=" "
+                      autocomplete="email" value="rs7885992@gmail.com">
+                    <label class="acc-float__label" for="pd-email">Email ID</label>
+                  </div>
+                  <div class="acc-float">
+                    <input type="tel" id="pd-mobile" name="mobile" class="acc-float__input" placeholder=" "
+                      autocomplete="tel" value="9368486203" inputmode="numeric" maxlength="15">
+                    <label class="acc-float__label" for="pd-mobile">Mobile Number</label>
+                  </div>
+                </div>
+
+                <div class="acc-personal-grid">
+                  <div class="acc-personal-field acc-personal-field--date">
+                    <!-- <label class="acc-visually-hidden" for="pd-dob">Date of birth (optional)</label> -->
+                    <input type="date" id="pd-dob" name="dob" class="acc-personal-input acc-personal-input--date"
+                      title="DOB (optional)">
+                    <!-- <span class="acc-personal-date-placeholder" data-for="pd-dob">DOB (optional)</span> -->
+                    <!-- <span class="acc-personal-field__icon" aria-hidden="true"><i
+                        class="fa-regular fa-calendar"></i></span> -->
+                  </div>
+                  <div class="acc-personal-field acc-personal-field--date">
+                    <!-- <label class="acc-visually-hidden" for="pd-anniversary">Anniversary (optional)</label> -->
+                    <input type="date" id="pd-anniversary" name="anniversary" class="acc-personal-input acc-personal-input--date"
+                      title="Anniversary Date (optional)">
+                    <!-- <span class="acc-personal-date-placeholder" data-for="pd-anniversary">Anniversary Date
+                      (optional)</span> -->
+                    <!-- <span class="acc-personal-field__icon" aria-hidden="true"><i
+                        class="fa-regular fa-calendar"></i></span> -->
+                  </div>
+                </div>
+
+                <p class="acc-personal-safe" role="status"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                  Your data is safe with us</p>
+                <p id="acc-personal-feedback" class="acc-personal-feedback" aria-live="polite"></p>
+                <button type="submit" class="acc-personal-save">Save Information</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="acc-dash__panel acc-dash__panel--addresses" id="acc-panel-addresses" role="tabpanel"
+            aria-labelledby="acc-tab-addresses" data-acc-panel="addresses" aria-hidden="true">
+            <div class="acc-addr-tab">
+              <div id="acc-addr-browse" class="acc-addr-browse">
+                <div id="acc-addr-empty" class="acc-addr-empty">
+                  <div class="acc-addr-empty__pin" aria-hidden="true">
+                    <i class="fa-solid fa-location-dot"></i>
+                  </div>
+                  <h2 class="acc-addr-empty__title">No address added yet</h2>
+                  <p class="acc-addr-empty__text">Tap the Add Address button below to add your shipping address.</p>
+                  <button type="button" class="acc-addr-btn acc-addr-btn--primary acc-js-addr-open-form">Add Address</button>
+                  <div class="acc-addr-dash" aria-hidden="true"></div>
+                </div>
+
+                <div id="acc-addr-list-section" class="acc-addr-list-section" hidden>
+                  <h1 class="acc-addr-page-title">Manage Addresses</h1>
+                  <h2 class="acc-addr-subtitle">Other Addresses</h2>
+                  <div id="acc-addr-cards" class="acc-addr-cards"></div>
+                  <button type="button" class="acc-addr-btn acc-addr-btn--primary acc-js-addr-open-form">Add New
+                    Address</button>
+                </div>
+              </div>
+
+              <div id="acc-addr-form-view" class="acc-addr-form-view" hidden>
+                <button type="button" class="acc-addr-back acc-js-addr-close-form" aria-label="Back to addresses">
+                  <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                </button>
+                <h1 id="acc-addr-form-heading" class="acc-addr-page-title acc-addr-page-title--form">Add new Address</h1>
+
+                <form id="accAddressForm" class="acc-addr-form" action="#" method="post" novalidate>
+                  <input type="hidden" id="adr-id" name="id" value="">
+                  <div class="acc-addr-grid2">
+                    <div class="acc-addr-field">
+                      <label class="acc-visually-hidden" for="adr-first">First Name</label>
+                      <input type="text" id="adr-first" name="firstName" class="acc-addr-input" placeholder="First Name"
+                        autocomplete="given-name" required>
+                    </div>
+                    <div class="acc-addr-field">
+                      <label class="acc-visually-hidden" for="adr-last">Last Name</label>
+                      <input type="text" id="adr-last" name="lastName" class="acc-addr-input" placeholder="Last Name"
+                        autocomplete="family-name" required>
+                    </div>
+                  </div>
+                  <div class="acc-addr-grid2">
+                    <div class="acc-addr-field">
+                      <label class="acc-visually-hidden" for="adr-email">Email ID</label>
+                      <input type="email" id="adr-email" name="email" class="acc-addr-input" placeholder="Email ID"
+                        autocomplete="email" required>
+                    </div>
+                    <div class="acc-addr-field">
+                      <label class="acc-visually-hidden" for="adr-mobile">Mobile Number</label>
+                      <input type="tel" id="adr-mobile" name="mobile" class="acc-addr-input" placeholder="Mobile Number"
+                        autocomplete="tel" required>
+                    </div>
+                  </div>
+                  <div class="acc-addr-field">
+                    <label class="acc-visually-hidden" for="adr-house">House / Flat / Block No.</label>
+                    <input type="text" id="adr-house" name="house" class="acc-addr-input"
+                      placeholder="House / Flat / Block No." required>
+                  </div>
+                  <div class="acc-addr-field">
+                    <label class="acc-visually-hidden" for="adr-area">Area / Building Name</label>
+                    <input type="text" id="adr-area" name="area" class="acc-addr-input" placeholder="Area / Building Name"
+                      required>
+                  </div>
+                  <div class="acc-addr-field">
+                    <label class="acc-visually-hidden" for="adr-landmark">Landmark</label>
+                    <input type="text" id="adr-landmark" name="landmark" class="acc-addr-input" placeholder="Landmark">
+                  </div>
+                  <div class="acc-addr-grid2">
+                    <div class="acc-addr-field">
+                      <label class="acc-visually-hidden" for="adr-pincode">Pincode</label>
+                      <input type="text" id="adr-pincode" name="pincode" class="acc-addr-input" placeholder="Pincode"
+                        inputmode="numeric" maxlength="10" required>
+                    </div>
+                    <div class="acc-addr-field">
+                      <label class="acc-visually-hidden" for="adr-city">City</label>
+                      <input type="text" id="adr-city" name="city" class="acc-addr-input" placeholder="City" required>
+                    </div>
+                  </div>
+                  <div class="acc-addr-field acc-addr-field--half">
+                    <label class="acc-visually-hidden" for="adr-state">State</label>
+                    <input type="text" id="adr-state" name="state" class="acc-addr-input" placeholder="State" required>
+                  </div>
+
+                  <label class="acc-addr-check">
+                    <input type="checkbox" id="adr-default" name="isDefault">
+                    <span>Set as Default Address</span>
+                  </label>
+
+                  <fieldset class="acc-addr-saveas">
+                    <legend class="acc-addr-saveas__legend">Save as</legend>
+                    <div class="acc-addr-pills">
+                      <label class="acc-addr-pill">
+                        <input type="radio" name="adrSaveAs" value="home" checked>
+                        <span><i class="fa-solid fa-house" aria-hidden="true"></i> Home</span>
+                      </label>
+                      <label class="acc-addr-pill">
+                        <input type="radio" name="adrSaveAs" value="office">
+                        <span><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Office</span>
+                      </label>
+                      <label class="acc-addr-pill">
+                        <input type="radio" name="adrSaveAs" value="other">
+                        <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Others</span>
+                      </label>
+                    </div>
+                  </fieldset>
+
+                  <p id="acc-addr-form-feedback" class="acc-addr-form-feedback" aria-live="polite"></p>
+                  <button type="submit" class="acc-addr-btn acc-addr-btn--primary" id="adr-submit-btn">Save Address</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-dash__panel" id="acc-panel-preferences" role="tabpanel" aria-labelledby="acc-tab-preferences"
+            data-acc-panel="preferences" aria-hidden="true">
+            <h1 class="acc-dash__page-title">Preferences</h1>
+            <p class="acc-tab-placeholder">Communication and account preferences.</p>
+          </div>
+
+          <div class="acc-dash__panel" id="acc-panel-loyalty" role="tabpanel" aria-labelledby="acc-tab-loyalty"
+            data-acc-panel="loyalty" aria-hidden="true">
+            <h1 class="acc-dash__page-title">My Loyalty Points</h1>
+            <p class="acc-tab-placeholder">Track rewards and offers from here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="site-footer__inner">
+      <section class="site-footer__connect">
+        <h3 class="site-footer__heading">CONNECT WITH US</h3>
+        <form class="site-footer__newsletter" action="#" method="post">
+          <input type="email" placeholder="Enter Email ID" aria-label="Email address">
+          <button type="submit" aria-label="Submit email"><i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+
+        <div class="site-footer__socials" aria-label="Social links">
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+
+        <p class="site-footer__copyright">© Copyright 2026 Voltix. All rights reserved</p>
+      </section>
+
+      <section class="site-footer__links">
+        <h3 class="site-footer__heading">USEFUL LINKS</h3>
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">About Croma</a></li>
+            <li><a href="#">Help And Support</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Buying Guide</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">B2B Orders</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">E-Waste</a></li>
+            <li><a href="#">Franchise Opportunity</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Site Map</a></li>
+            <li><a href="#">Careers At Croma</a></li>
+            <li><a href="#">Terms Of Use</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Unboxed</a></li>
+            <li><a href="#">Gift Card</a></li>
+            <li><a href="#">Croma E-Star</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="site-footer__products">
+        <h3 class="site-footer__heading">PRODUCTS</h3>
+        <div class="site-footer__link-columns">
+          <ul>
+            <li><a href="#">Televisions & Accessories</a></li>
+            <li><a href="#">Home Appliances</a></li>
+            <li><a href="#">Phones & Wearables</a></li>
+            <li><a href="#">Computers & Tablets</a></li>
+            <li><a href="#">Kitchen Appliances</a></li>
+            <li><a href="#">Audio & Video</a></li>
+            <li><a href="#">Health & Fitness</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Grooming & Personal Care</a></li>
+            <li><a href="#">Cameras & Accessories</a></li>
+            <li><a href="#">Smart Devices</a></li>
+            <li><a href="#">Gaming</a></li>
+            <li><a href="#">Accessories</a></li>
+            <li><a href="#">Top Brands</a></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </footer>
+
+  <script src="assets/js/electronic.js" defer></script>
+
+</body>
+
+</html>
