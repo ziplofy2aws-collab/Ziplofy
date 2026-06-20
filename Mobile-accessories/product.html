@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — Mobexa Mobile Accessories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body class="ma-product-body">
+
+  <header class="ma-header" role="banner">
+
+    <div class="ma-header__top">
+      <div class="ma-header__container ma-header__top-inner">
+
+        <div class="ma-header__top-left">
+          <button type="button" class="ma-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-ma-menu-toggle>
+            <span class="ma-header__menu-bars" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+
+          <a href="index.html" class="ma-header__logo" aria-label="Mobexa home">
+            <img src="assets/img/logo.png" alt="Mobexa Mobile Accessories" width="150" height="48" decoding="async" />
+          </a>
+        </div>
+
+        <form class="ma-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="ma-header-search">Search for Products, Brands, Offers</label>
+          <input id="ma-header-search" type="search" name="q" placeholder="Search for Products, Brands, Offers"
+            autocomplete="off" />
+          <button type="submit" class="ma-header__search-btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </form>
+
+        <div class="ma-header__actions">
+
+          <button type="button" class="ma-header__action ma-header__delivery" aria-label="Change delivery location">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">Delivery to</span>
+              <span class="ma-header__action-value">
+                AGRA
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <button type="button" class="ma-header__action ma-header__stores" aria-label="Locate stores">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">Locate</span>
+              <span class="ma-header__action-value">
+                Stores
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <a href="#" class="ma-header__action ma-header__cart" aria-label="Shopping cart, 0 items">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-value">0 Items</span>
+              <span class="ma-header__action-value">&#8377; 0</span>
+            </span>
+            <i class="fa-solid fa-cart-shopping ma-header__cart-icon" aria-hidden="true"></i>
+          </a>
+
+          <a href="#" class="ma-header__action ma-header__account">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">My Account</span>
+              <span class="ma-header__action-value">Sign In</span>
+            </span>
+            <span class="ma-header__account-icon" aria-hidden="true">
+              <i class="fa-solid fa-user"></i>
+            </span>
+          </a>
+
+          <a href="#" class="ma-header__mobile-search" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <nav class="ma-header__nav" aria-label="Primary navigation">
+      <div class="ma-header__container">
+        <ul class="ma-header__nav-list">
+          <li><a href="shop.html">Mobiles &amp; Accessories</a></li>
+          <li><a href="#">Computers &amp; Tablets</a></li>
+          <li><a href="#">TV &amp; Audio</a></li>
+          <li><a href="#">Kitchen Appliances</a></li>
+          <li><a href="#">Home Appliances</a></li>
+          <li><a href="#">Smart Technology</a></li>
+          <li><a href="#">Personal &amp; Health Care</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <nav id="ma-mobile-nav" class="ma-header__mobile-nav" aria-label="Mobile navigation" hidden>
+      <div class="ma-header__container">
+        <ul>
+          <li><a href="shop.html">Mobiles &amp; Accessories</a></li>
+          <li><a href="#">Computers &amp; Tablets</a></li>
+          <li><a href="#">TV &amp; Audio</a></li>
+          <li><a href="#">Kitchen Appliances</a></li>
+          <li><a href="#">Home Appliances</a></li>
+          <li><a href="#">Smart Technology</a></li>
+          <li><a href="#">Personal &amp; Health Care</a></li>
+        </ul>
+      </div>
+    </nav>
+
+  </header>
+
+  <main id="main-content">
+
+    <section class="ma-product-page" aria-labelledby="ma-product-title">
+      <div class="ma-header__container">
+
+        <nav class="ma-product-page__crumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="ma-product-page__crumb-sep" aria-hidden="true">&gt;</span>
+          <a href="shop.html">Power Banks</a>
+          <span class="ma-product-page__crumb-sep" aria-hidden="true">&gt;</span>
+          <span data-ma-product-crumb-name>Product</span>
+        </nav>
+
+        <div class="ma-product-page__layout">
+          <div class="ma-product-page__gallery-wrap">
+            <div class="ma-product-page__gallery">
+              <div class="ma-product-page__thumbs-col">
+                <button type="button" class="ma-product-page__thumb-nav ma-product-page__thumb-nav--up"
+                  data-ma-gallery-up aria-label="Previous thumbnails">
+                  <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+                </button>
+                <div class="ma-product-page__thumbs-viewport" data-ma-product-thumbs-viewport>
+                  <div class="ma-product-page__thumbs-track" data-ma-product-thumbs></div>
+                </div>
+                <button type="button" class="ma-product-page__thumb-nav ma-product-page__thumb-nav--down"
+                  data-ma-gallery-down aria-label="Next thumbnails">
+                  <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <div class="ma-product-page__stage">
+                <span class="ma-product-page__badge" data-ma-product-badge hidden>Bestseller</span>
+                <button type="button" class="ma-product-page__arrow ma-product-page__arrow--prev"
+                  data-ma-gallery-prev aria-label="Previous image">
+                  <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <div class="ma-product-page__main-image">
+                  <img src="assets/img/aerosyncq-4.avif" alt="" width="520" height="520" decoding="async"
+                    data-ma-product-image />
+                </div>
+                <button type="button" class="ma-product-page__arrow ma-product-page__arrow--next"
+                  data-ma-gallery-next aria-label="Next image">
+                  <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ma-product-page__details">
+            <span class="ma-product-page__compat" data-ma-product-compat>iPhone 12 &amp; Above</span>
+
+            <h1 id="ma-product-title" class="ma-product-page__title" data-ma-product-title>Aerosync Snap</h1>
+            <p class="ma-product-page__desc" data-ma-product-desc></p>
+
+            <div class="ma-product-page__rating-row">
+              <span class="ma-product-page__stars" data-ma-product-stars aria-hidden="true"></span>
+              <span class="ma-product-page__reviews" data-ma-product-reviews>291 reviews</span>
+            </div>
+
+            <div class="ma-product-page__price-block">
+              <div class="ma-product-page__price-row">
+                <span class="ma-product-page__price" data-ma-product-price>Rs. 1,749</span>
+                <span class="ma-product-page__compare" data-ma-product-compare>Rs. 2,999</span>
+              </div>
+              <p class="ma-product-page__tax">Inclusive of all taxes</p>
+            </div>
+
+            <div class="ma-product-page__offers">
+              <div class="ma-product-page__offer-row">
+                <span class="ma-product-page__offer-tag">NEW</span>
+                <p class="ma-product-page__offer-text" data-ma-product-cashback>Flat 10% cashback up to &#8377;300 on orders
+                  above &#8377;1999</p>
+              </div>
+              <div class="ma-product-page__emi-row">
+                <p class="ma-product-page__emi-text">
+                  <span data-ma-product-emi-price>&#8377;583</span>/month |
+                  <span data-ma-product-emi-options>2</span> EMI options
+                </p>
+                <div class="ma-product-page__snapmint">
+                  <span class="ma-product-page__snapmint-logo">snapmint</span>
+                  <span class="ma-product-page__snapmint-text">0% EMI on UPI</span>
+                  <button type="button" class="ma-product-page__unlock-btn">Unlock Limit</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="ma-product-page__colors-block">
+              <p class="ma-product-page__colors-label">
+                COLOR: <strong data-ma-product-color-name>BLUE</strong>
+              </p>
+              <div class="ma-product-page__colors" data-ma-product-colors></div>
+            </div>
+
+            <ul class="ma-product-page__features" data-ma-product-features></ul>
+
+            <button type="button" class="ma-product-page__add-cart" data-ma-product-cart>Add To Cart</button>
+
+            <ul class="ma-product-page__trust">
+              <li>
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span>6 months warranty</span>
+              </li>
+              <li>
+                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                <span>7 days replacement</span>
+              </li>
+              <li>
+                <img src="assets/img/mii.png.webp" alt="" width="18" height="12" aria-hidden="true" />
+                <span>Made in India</span>
+              </li>
+            </ul>
+
+            <div class="ma-product-page__accordions" data-ma-product-accordions>
+              <div class="ma-product-page__accordion is-open">
+                <button type="button" class="ma-product-page__accordion-toggle" aria-expanded="true"
+                  data-ma-accordion-toggle>
+                  <span>Description</span>
+                  <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                </button>
+                <div class="ma-product-page__accordion-panel">
+                  <p data-ma-product-description></p>
+                </div>
+              </div>
+              <div class="ma-product-page__accordion">
+                <button type="button" class="ma-product-page__accordion-toggle" aria-expanded="false"
+                  data-ma-accordion-toggle>
+                  <span>Shipping &amp; Returns</span>
+                  <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                </button>
+                <div class="ma-product-page__accordion-panel" hidden>
+                  <p data-ma-product-shipping></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="ma-product-page__help">
+              <h2 class="ma-product-page__help-title">Need help? We&rsquo;re here.</h2>
+              <ul class="ma-product-page__help-list">
+                <li>
+                  <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                  <a href="tel:+918101969696">+91 81019 69696</a>
+                </li>
+                <li>
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  <a href="#">Say Hi! on Whatsapp</a>
+                </li>
+                <li>
+                  <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+                  <a href="mailto:care@mobexa.com">care@mobexa.com</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="ma-product-highlights" aria-label="Product feature highlights">
+      <div class="ma-header__container">
+        <div class="ma-product-highlights__layout" data-ma-product-highlights></div>
+      </div>
+    </section>
+
+    <section class="ma-product-specs-bar" aria-label="Specifications and manual">
+      <div class="ma-header__container">
+        <div class="ma-product-specs-bar__grid">
+          <div class="ma-product-specs-bar__item">
+            <button type="button" class="ma-product-specs-bar__toggle" aria-expanded="false"
+              data-ma-specs-toggle="specs">
+              <span>See Specifications</span>
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </button>
+            <div class="ma-product-specs-bar__panel" data-ma-specs-panel="specs" hidden></div>
+          </div>
+          <div class="ma-product-specs-bar__item">
+            <button type="button" class="ma-product-specs-bar__toggle" aria-expanded="false"
+              data-ma-specs-toggle="manual">
+              <span>User Manual</span>
+              <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            </button>
+            <div class="ma-product-specs-bar__panel" data-ma-specs-panel="manual" hidden></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-product-reviews" aria-labelledby="ma-product-reviews-title">
+      <div class="ma-header__container">
+        <h2 id="ma-product-reviews-title" class="ma-product-reviews__title">Customer Reviews</h2>
+
+        <div class="ma-product-reviews__summary">
+          <div class="ma-product-reviews__avg" data-ma-reviews-avg></div>
+          <div class="ma-product-reviews__bars" data-ma-reviews-bars></div>
+          <div class="ma-product-reviews__ask">
+            <button type="button" class="ma-product-reviews__ask-btn">Ask a question</button>
+          </div>
+        </div>
+
+        <div class="ma-product-reviews__media-row">
+          <div class="ma-product-reviews__media-col">
+            <h3 class="ma-product-reviews__media-title">Customer photos &amp; videos</h3>
+            <div class="ma-product-reviews__media-list" data-ma-reviews-media></div>
+          </div>
+          <div class="ma-product-reviews__badge-col">
+            <div class="ma-product-reviews__diamond">
+              <span class="ma-product-reviews__diamond-label">Diamond</span>
+              <span class="ma-product-reviews__diamond-score">100.0</span>
+              <span class="ma-product-reviews__diamond-sub">Transparency</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ma-product-reviews__toolbar">
+          <div class="ma-product-reviews__sort-wrap">
+            <label class="visually-hidden" for="ma-reviews-sort">Sort reviews</label>
+            <select id="ma-reviews-sort" class="ma-product-reviews__sort" data-ma-reviews-sort>
+              <option value="highest">Highest Rating</option>
+              <option value="recent">Most Recent</option>
+              <option value="lowest">Lowest Rating</option>
+            </select>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="ma-product-reviews__list" data-ma-reviews-list></div>
+      </div>
+    </section>
+
+    <div class="ma-product-sticky" data-ma-product-sticky hidden>
+      <div class="ma-header__container ma-product-sticky__inner">
+        <div class="ma-product-sticky__product">
+          <img src="assets/img/aerosyncq-4.avif" alt="" width="48" height="48" data-ma-sticky-image />
+          <span class="ma-product-sticky__name" data-ma-sticky-name>Aerosync Snap</span>
+        </div>
+        <div class="ma-product-sticky__actions">
+          <div class="ma-product-sticky__prices">
+            <span class="ma-product-sticky__price" data-ma-sticky-price>Rs. 1,749</span>
+            <span class="ma-product-sticky__compare" data-ma-sticky-compare>Rs. 2,999</span>
+          </div>
+          <div class="ma-product-sticky__color-wrap">
+            <label class="visually-hidden" for="ma-sticky-color">Select color</label>
+            <select id="ma-sticky-color" class="ma-product-sticky__color" data-ma-sticky-color></select>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </div>
+          <button type="button" class="ma-product-sticky__cart" data-ma-sticky-cart>Add To Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="ma-product-scroll-top" data-ma-product-scroll-top aria-label="Back to top" hidden>
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <section class="ma-product-page__related" aria-label="Related products">
+      <div class="ma-header__container">
+        <h2 class="ma-product-page__related-title">You May Also Like</h2>
+        <div class="ma-product-page__related-grid" data-ma-product-related></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="ma-footer" role="contentinfo">
+    <div class="ma-footer__main">
+      <div class="ma-header__container ma-footer__grid">
+
+        <div class="ma-footer__brand">
+          <a href="index.html" class="ma-footer__logo" aria-label="Mobexa home">
+            <img src="assets/img/logo.png" alt="Mobexa Mobile Accessories" width="150" height="48" loading="lazy"
+              decoding="async" />
+          </a>
+          <address class="ma-footer__address">
+            101, 1st Floor, Arun chamber, Tardeo, Mumbai, Maharashtra 400034
+          </address>
+          <a href="mailto:care@mobexa.com" class="ma-footer__link ma-footer__link--contact">care@mobexa.com</a>
+          <a href="tel:+918101969696" class="ma-footer__link ma-footer__link--contact">+918101969696</a>
+        </div>
+
+        <div class="ma-footer__col">
+          <h3 class="ma-footer__heading">COMPANY</h3>
+          <ul class="ma-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Mobexa in News</a></li>
+            <li><a href="#">Awards</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Karo Dil Ki Marzi</a></li>
+            <li><a href="#">Life At Mobexa</a></li>
+            <li><a href="#">Distributorship at Mobexa</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col">
+          <h3 class="ma-footer__heading">SUPPORT/INFO</h3>
+          <ul class="ma-footer__links">
+            <li><a href="#">FAQS</a></li>
+            <li><a href="#">E-waste Management</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col ma-footer__col--products">
+          <h3 class="ma-footer__heading">PRODUCTS</h3>
+          <ul class="ma-footer__links">
+            <li><a href="shop.html">Earbuds</a></li>
+            <li><a href="shop.html">Neckbands</a></li>
+            <li><a href="shop.html">Earphones</a></li>
+            <li><a href="shop.html">Wireless Speakers</a></li>
+            <li><a href="shop.html">Headphones</a></li>
+            <li><a href="shop.html">Microphones</a></li>
+            <li><a href="shop.html">Chargers</a></li>
+            <li><a href="shop.html">Car Chargers</a></li>
+            <li><a href="shop.html">Data Cables</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col ma-footer__col--products-extra">
+          <ul class="ma-footer__links">
+            <li><a href="shop.html">Aux Cables</a></li>
+            <li><a href="shop.html">PowerBanks</a></li>
+            <li><a href="shop.html">Mobile Stands</a></li>
+            <li><a href="shop.html">MMC / Pendrives</a></li>
+            <li><a href="shop.html">OTG / Connector</a></li>
+            <li><a href="shop.html">Screen Guards</a></li>
+            <li><a href="shop.html">Batteries</a></li>
+            <li><a href="shop.html">Gimbals</a></li>
+            <li><a href="shop.html">Star Products</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ma-footer__bottom">
+      <div class="ma-header__container ma-footer__bottom-inner">
+        <img class="ma-footer__made-in" src="assets/img/mii.png.webp" alt="Make in India" width="120" height="76"
+          loading="lazy" decoding="async" />
+
+        <p class="ma-footer__social-text">Let&rsquo;s connect socially!</p>
+
+        <ul class="ma-footer__social" aria-label="Social media links">
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
+
+        <p class="ma-footer__copy">Mobexa Mobile Solutions Private Limited, 2026 | All rights reserved</p>
+      </div>
+    </div>
+
+    <button type="button" class="ma-footer__top" data-ma-back-to-top aria-label="Back to top">
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+  </footer>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>

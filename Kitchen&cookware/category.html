@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emberlane</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/category.css" />
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="announcement-bar">
+      <div class="announcement-bar__inner">
+        <div class="announcement-bar__left"><a href="#" class="announcement-bar__link">Get $20 Rewards</a></div>
+        <div class="announcement-bar__center" data-announcement-slider>
+          <button type="button" class="announcement-bar__arrow announcement-bar__arrow--prev"
+            aria-label="Previous announcement"><svg width="8" height="14" viewBox="0 0 8 14" fill="none"
+              aria-hidden="true">
+              <path d="M7 1L1 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg></button>
+          <div class="announcement-bar__viewport" aria-live="polite">
+            <div class="announcement-bar__track">
+              <p class="announcement-bar__slide is-active">Save $208 on the Titanium Pro Cookware Set <a href="#"
+                  class="announcement-bar__cta">Shop Now</a></p>
+              <p class="announcement-bar__slide">Free shipping on orders over $135 <a href="#"
+                  class="announcement-bar__cta">Shop Now</a></p>
+              <p class="announcement-bar__slide">New arrivals in tableware — explore the collection <a href="#"
+                  class="announcement-bar__cta">Shop Now</a></p>
+            </div>
+          </div>
+          <button type="button" class="announcement-bar__arrow announcement-bar__arrow--next"
+            aria-label="Next announcement"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true">
+              <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg></button>
+        </div>
+        <div class="announcement-bar__right"><a href="#" class="announcement-bar__link">Stores</a><a href="#"
+            class="announcement-bar__link">Support</a></div>
+      </div>
+    </div>
+    <div class="main-nav">
+      <div class="main-nav__inner">
+        <a class="main-nav__logo" href="index.html" aria-label="Home"><img src="assets/img/logo.png" alt="Emberlane"
+            width="140" height="52" decoding="async" /></a>
+        <nav class="main-nav__menu" id="primary-nav" aria-label="Primary navigation">
+          <div class="mobile-menu__header">
+            <button type="button" class="mobile-menu__close" data-nav-close aria-label="Close menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </button>
+            <a href="#" class="mobile-menu__cart" aria-label="Cart">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 8h15l-1.5 9H7.5L6 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                <path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="9" cy="20" r="1" fill="currentColor" />
+                <circle cx="18" cy="20" r="1" fill="currentColor" />
+              </svg>
+            </a>
+          </div>
+          <div class="mobile-menu__primary">
+            <a href="category.html" class="main-nav__link">Cookware</a>
+            <a href="category.html" class="main-nav__link">Bakeware</a>
+            <a href="category.html" class="main-nav__link">Appliances</a>
+            <a href="category.html" class="main-nav__link">Tableware</a>
+            <a href="category.html" class="main-nav__link">Kitchen Tools</a>
+            <a href="category.html" class="main-nav__link">Collections</a>
+            <a href="category.html" class="main-nav__link is-sale">Sale</a>
+          </div>
+          <div class="mobile-menu__divider" aria-hidden="true"></div>
+          <div class="mobile-menu__secondary">
+            <a href="#">Get $20</a>
+            <a href="#">Stores</a>
+            <a href="#">Support</a>
+          </div>
+          <a href="#" class="mobile-menu__account">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5" />
+              <path d="M6.5 19.5c1.2-2.8 3.4-4.5 5.5-4.5s4.3 1.7 5.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <span>Log In / Account</span>
+          </a>
+        </nav>
+        <div class="main-nav__actions">
+          <button type="button" class="main-nav__icon-btn main-nav__icon-btn--search" aria-label="Search"><svg width="20" height="20"
+              viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" />
+              <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg></button>
+          <a href="#" class="main-nav__icon-btn main-nav__icon-btn--account" aria-label="Account"><svg width="20" height="20" viewBox="0 0 24 24"
+              fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5" />
+              <path d="M6.5 19.5c1.2-2.8 3.4-4.5 5.5-4.5s4.3 1.7 5.5 4.5" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" />
+            </svg></a>
+          <a href="#" class="main-nav__icon-btn main-nav__icon-btn--cart" aria-label="Cart"><svg width="20" height="20" viewBox="0 0 24 24"
+              fill="none" aria-hidden="true">
+              <path d="M6 8h15l-1.5 9H7.5L6 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              <path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <circle cx="9" cy="20" r="1" fill="currentColor" />
+              <circle cx="18" cy="20" r="1" fill="currentColor" />
+            </svg></a>
+          <button type="button" class="main-nav__toggle" data-nav-toggle aria-expanded="false"
+            aria-controls="primary-nav" aria-label="Open menu"><span class="main-nav__toggle-bar"
+              aria-hidden="true"></span><span class="main-nav__toggle-bar" aria-hidden="true"></span><span
+              class="main-nav__toggle-bar" aria-hidden="true"></span></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="cat-hero" aria-labelledby="cat-hero-title">
+    <div class="cat-hero__inner">
+      <div class="cat-hero__content">
+        <p class="cat-hero__breadcrumb">
+          <a href="index.html">Home</a> / <a href="category.html">Shop All</a> / <span>Cookware</span>
+        </p>
+        <h1 id="cat-hero-title" class="cat-hero__title">Cookware</h1>
+        <p class="cat-hero__desc">Non-toxic, multifunctional cookware for healthier, more inspired everyday cooking.</p>
+      </div>
+      <div class="cat-hero__media">
+        <img src="assets/img/category-1.webp" alt="Stainless steel cookware set on kitchen stovetop" width="800" height="520" decoding="async" />
+      </div>
+    </div>
+  </section>
+
+  <main class="cat-page">
+    <div class="cat-page__inner">
+      <div class="cat-shop-bar">
+        <div class="cat-shop-bar__top">
+          <button type="button" class="cat-filter-btn" data-filter-open aria-label="Open filters" aria-expanded="false" aria-controls="cat-filter-panel">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 5h18M6 12h12M9 19h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <circle cx="18" cy="5" r="1.5" fill="currentColor" />
+              <circle cx="6" cy="12" r="1.5" fill="currentColor" />
+              <circle cx="15" cy="19" r="1.5" fill="currentColor" />
+            </svg>
+            Filter
+          </button>
+          <span class="cat-shop-bar__divider" aria-hidden="true"></span>
+          <div class="cat-tags" role="tablist" aria-label="Cookware categories">
+            <button type="button" class="cat-tags__pill is-active" role="tab" aria-selected="true">All Cookware</button>
+            <button type="button" class="cat-tags__pill" role="tab" aria-selected="false">Cookware Sets</button>
+            <button type="button" class="cat-tags__pill" role="tab" aria-selected="false">Frying &amp; Sauté Pans</button>
+            <button type="button" class="cat-tags__pill" role="tab" aria-selected="false">Dutch Ovens</button>
+            <button type="button" class="cat-tags__pill" role="tab" aria-selected="false">Saucepans</button>
+            <button type="button" class="cat-tags__pill" role="tab" aria-selected="false">Grill Pans</button>
+          </div>
+        </div>
+        <div class="cat-shop-bar__sort">
+          <label class="cat-sort">
+            <span class="cat-sort__label">Sort by:</span>
+            <select class="cat-sort__select" aria-label="Sort products">
+              <option>Featured</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="cat-grid cat-grid--listing">
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-1.webp" alt="Titanium Pro Cookware Set" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-1-hover.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Titanium Pro Cookware Set <span>(10 piece)</span></h2>
+              <p class="cat-card__desc">A full set of high-performance titanium cookware</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$489.95</span> <span class="cat-card__price-value">($698 Value)</span></p>
+              <div class="cat-card__swatches" aria-hidden="true">
+                <span class="cat-card__swatch is-active" style="--swatch:#c4c4c4"></span>
+                <span class="cat-card__swatch cat-card__swatch--sale" style="--swatch:#7a9eb8"></span>
+                <span class="cat-card__swatch" style="--swatch:#b36248"></span>
+                <span class="cat-card__swatch" style="--swatch:#4a4a4a"></span>
+              </div>
+              <p class="cat-card__savings">$208 Set Savings</p>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <span class="cat-card__badge cat-card__badge--olive">Bestseller</span>
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-2.webp" alt="Cookware Set" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-2-hover.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Cookware Set <span>(13 piece)</span></h2>
+              <p class="cat-card__desc">A 13-piece Always Pan and Perfect Pot set</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$359.95</span> <span class="cat-card__price-value">($518 Value)</span></p>
+              <div class="cat-card__swatches cat-card__swatches--more" aria-hidden="true">
+                <span class="cat-card__swatch is-active" style="--swatch:#f3efe6"></span>
+                <span class="cat-card__swatch" style="--swatch:#4a4a4a"></span>
+                <span class="cat-card__swatch" style="--swatch:#7a9eb8"></span>
+                <span class="cat-card__swatch" style="--swatch:#8a9a7e"></span>
+                <span class="cat-card__swatch" style="--swatch:#b36248"></span>
+                <span class="cat-card__swatch cat-card__swatch--sale" style="--swatch:#e8c84a"></span>
+                <span class="cat-card__swatch" style="--swatch:#9ec5e8"></span>
+              </div>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <span class="cat-card__badge cat-card__badge--olive">Bestseller</span>
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-3.webp" alt="Cookware and Bakeware Set" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-3.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Cookware + Bakeware Set <span>(18 Piece)</span></h2>
+              <p class="cat-card__desc">An 18-piece Always Pan, Perfect Pot, and Bakeware Set</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$499.95</span> <span class="cat-card__price-value">($717.95 Value)</span></p>
+              <div class="cat-card__swatches cat-card__swatches--more" aria-hidden="true">
+                <span class="cat-card__swatch" style="--swatch:#7a9eb8"></span>
+                <span class="cat-card__swatch is-active" style="--swatch:#4a4a4a"></span>
+                <span class="cat-card__swatch" style="--swatch:#b36248"></span>
+                <span class="cat-card__swatch" style="--swatch:#8a9a7e"></span>
+                <span class="cat-card__swatch" style="--swatch:#f3efe6"></span>
+              </div>
+              <p class="cat-card__savings">$218 Set Savings</p>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-4.webp" alt="Cookware Set 16 piece" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-4-hover.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Cookware Set <span>(16 piece)</span></h2>
+              <p class="cat-card__desc">A 16-piece ceramic nonstick cookware set</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$459.95</span> <span class="cat-card__price-value">($677 Value)</span></p>
+              <div class="cat-card__swatches" aria-hidden="true">
+                <span class="cat-card__swatch is-active" style="--swatch:#f3efe6"></span>
+                <span class="cat-card__swatch" style="--swatch:#4a4a4a"></span>
+                <span class="cat-card__swatch" style="--swatch:#7a9eb8"></span>
+                <span class="cat-card__swatch" style="--swatch:#b36248"></span>
+                <span class="cat-card__swatch" style="--swatch:#8a9a7e"></span>
+              </div>
+              <p class="cat-card__savings">$217 Set Savings</p>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-5.webp" alt="Titanium Pro Cookware Set lifestyle" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-5-hover.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Titanium Pro Cookware Set <span>(10 piece)</span></h2>
+              <p class="cat-card__desc">Non-toxic, no-coating titanium cookware crafted for precision, durability, and lasting performance.</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$470.00</span> <span class="cat-card__price-value">($698 Value)</span></p>
+              <div class="cat-card__swatches" aria-hidden="true">
+                <span class="cat-card__swatch is-active" style="--swatch:#c4c4c4"></span>
+                <span class="cat-card__swatch" style="--swatch:#f3efe6"></span>
+                <span class="cat-card__swatch" style="--swatch:#7a9eb8"></span>
+              </div>
+              <p class="cat-card__savings">$228 Set Savings</p>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-6.webp" alt="Titanium Pro Cookware and Bakeware Set" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-6-hover.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Titanium Pro Cookware + Bakeware Set <span>(15 piece)</span></h2>
+              <p class="cat-card__desc">A set of titanium cookware, plus nonstick bakeware</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$599.95</span> <span class="cat-card__price-value">($897.95 Value)</span></p>
+              <div class="cat-card__swatches" aria-hidden="true">
+                <span class="cat-card__swatch is-active" style="--swatch:#c4c4c4"></span>
+                <span class="cat-card__swatch" style="--swatch:#f3efe6"></span>
+                <span class="cat-card__swatch" style="--swatch:#7a9eb8"></span>
+              </div>
+              <p class="cat-card__savings">Up to $328 Set Savings</p>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <span class="cat-card__badge cat-card__badge--olive">Bestseller</span>
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-7.webp" alt="Mini Cookware Duo" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-7-hover.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Mini Cookware Duo <span>(6 piece)</span></h2>
+              <p class="cat-card__desc">Mini yet multifunctional versions of our bestsellers</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$209.95</span> <span class="cat-card__price-value">($234 Value)</span></p>
+              <div class="cat-card__swatches" aria-hidden="true">
+                <span class="cat-card__swatch is-active" style="--swatch:#b36248"></span>
+                <span class="cat-card__swatch" style="--swatch:#7a9eb8"></span>
+                <span class="cat-card__swatch" style="--swatch:#f3efe6"></span>
+              </div>
+              <p class="cat-card__savings">$24 Set Savings</p>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__link">
+            <div class="cat-card__media">
+              <img class="cat-card__img cat-card__img--default" src="assets/img/category-8.webp" alt="Always Pan Trio" width="480" height="480" decoding="async" />
+              <img class="cat-card__img cat-card__img--hover" src="assets/img/category-8-hover.webp" alt="" width="480" height="480" loading="lazy" aria-hidden="true" />
+            </div>
+            <div class="cat-card__body">
+              <h2 class="cat-card__name">Always Pan Trio <span>(10 Piece)</span></h2>
+              <p class="cat-card__desc">A trio of Always Pans for every cooking need</p>
+              <p class="cat-card__price"><span class="cat-card__price-current">$299.95</span> <span class="cat-card__price-value">($403 Value)</span></p>
+              <div class="cat-card__swatches" aria-hidden="true">
+                <span class="cat-card__swatch is-active" style="--swatch:#f3efe6"></span>
+                <span class="cat-card__swatch" style="--swatch:#4a4a4a"></span>
+                <span class="cat-card__swatch" style="--swatch:#b36248"></span>
+                <span class="cat-card__swatch" style="--swatch:#7a9eb8"></span>
+              </div>
+              <p class="cat-card__savings">$103 Set Savings</p>
+            </div>
+          </a>
+          <button type="button" class="cat-card__quick-add" aria-label="Add to cart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 8h14l-1.2 7H7.2L6 8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M9 20h.01M18 20h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 9v4M10 11h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </article>
+
+        <article class="cat-promo">
+          <div class="cat-promo__inner">
+            <h2 class="cat-promo__title">100-Day Money Back Guarantee</h2>
+            <p class="cat-promo__text">We stand by our products — always. That's why we offer a 100-day trial, no ifs, ands, or buts. Our team is here to help.</p>
+          </div>
+        </article>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__main">
+        <div class="site-footer__brand">
+          <a href="index.html" class="site-footer__logo">EMBER</a>
+          <p class="site-footer__newsletter-text">Subscribe to our newsletter to get a taste of excellence</p>
+          <form class="site-footer__subscribe" action="#" method="post">
+            <label class="visually-hidden" for="footer-email">Email Address</label>
+            <input id="footer-email" type="email" name="email" placeholder="Email Address" autocomplete="email" />
+            <button type="submit" class="site-footer__subscribe-btn" aria-label="Subscribe to newsletter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+          <div class="site-footer__social">
+            <p class="site-footer__social-label">Let's stay connected</p>
+            <a href="#" class="site-footer__social-link" aria-label="Instagram">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5" />
+                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5" />
+                <circle cx="17.2" cy="6.8" r="1" fill="currentColor" />
+              </svg>
+            </a>
+          </div>
+          <div class="site-footer__legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms and condition</a>
+            <a href="#">Refund Policy</a>
+          </div>
+        </div>
+        <div class="site-footer__nav">
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Shop</h3>
+            <ul>
+              <li><a href="#">Tawa</a></li>
+              <li><a href="#">Frypans</a></li>
+              <li><a href="#">Kadai</a></li>
+              <li><a href="#">Dutch Ovens</a></li>
+              <li><a href="#">Grill Pan</a></li>
+              <li><a href="#">Kitchen tools</a></li>
+            </ul>
+          </div>
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Shop by Materials</h3>
+            <ul>
+              <li><a href="#">Ceramic Cookware</a></li>
+              <li><a href="#">Pre Seasoned Cast Iron</a></li>
+              <li><a href="#">TitaniumClad™</a></li>
+              <li><a href="#">Cast Iron</a></li>
+            </ul>
+          </div>
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Discover</h3>
+            <ul>
+              <li><a href="#">Our Story</a></li>
+              <li><a href="#">Our Material</a></li>
+              <li><a href="#">Our Quality</a></li>
+              <li><a href="#">Care &amp; Clean Rituals</a></li>
+              <li><a href="#">For Our Planet</a></li>
+              <li><a href="#">Rewards</a></li>
+              <li><a href="#">Reviews</a></li>
+            </ul>
+          </div>
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Support</h3>
+            <ul>
+              <li><a href="#">Warranty</a></li>
+              <li><a href="#">Warranty registration</a></li>
+              <li><a href="#">Circularity</a></li>
+              <li><a href="#">Returns &amp; Exchanges</a></li>
+              <li><a href="#">Contact us</a></li>
+              <li><a href="#">FAQ's</a></li>
+              <li><a href="#">Refund policy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <p>© 2025 Ember Kitchens Pvt Ltd All rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cat-filter" data-cat-filter aria-hidden="true">
+    <div class="cat-filter__backdrop" data-filter-close tabindex="-1" aria-hidden="true"></div>
+    <aside id="cat-filter-panel" class="cat-filter__panel" role="dialog" aria-modal="true" aria-labelledby="cat-filter-title" tabindex="-1">
+      <header class="cat-filter__header">
+        <button type="button" class="cat-filter__close" data-filter-close aria-label="Close filters">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+        <h2 id="cat-filter-title" class="cat-filter__title">Filter</h2>
+      </header>
+
+      <div class="cat-filter__body">
+        <section class="cat-filter__section is-open" data-filter-section>
+          <button type="button" class="cat-filter__section-head" aria-expanded="true">
+            <span>Material</span>
+            <span class="cat-filter__section-icon" aria-hidden="true">−</span>
+          </button>
+          <div class="cat-filter__section-body">
+            <div class="cat-filter__checks">
+              <label class="cat-filter__check"><input type="checkbox" name="material" value="titanium" /> <span>Titanium</span></label>
+              <label class="cat-filter__check"><input type="checkbox" name="material" value="carbon-steel" /> <span>Carbon Steel</span></label>
+              <label class="cat-filter__check"><input type="checkbox" name="material" value="ceramic" /> <span>Ceramic Nonstick</span></label>
+              <label class="cat-filter__check"><input type="checkbox" name="material" value="cast-iron" /> <span>Cast Iron</span></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="cat-filter__section is-open" data-filter-section>
+          <button type="button" class="cat-filter__section-head" aria-expanded="true">
+            <span>Color</span>
+            <span class="cat-filter__section-icon" aria-hidden="true">−</span>
+          </button>
+          <div class="cat-filter__section-body">
+            <div class="cat-filter__colors">
+              <button type="button" class="cat-filter__color" aria-label="Chrome"><span class="cat-filter__swatch" style="--swatch:linear-gradient(135deg,#e8e8e8 0%,#b8b8b8 50%,#f5f5f5 100%)"></span><span>Chrome</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Blue"><span class="cat-filter__swatch" style="--swatch:#9eb8c8"></span><span>Blue</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Beige"><span class="cat-filter__swatch" style="--swatch:#e8e4dc"></span><span>Beige</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Green"><span class="cat-filter__swatch" style="--swatch:#8a9a7e"></span><span>Green</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Black"><span class="cat-filter__swatch" style="--swatch:#1a1a1a"></span><span>Black</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Purple"><span class="cat-filter__swatch" style="--swatch:#7a6b8a"></span><span>Purple</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Yellow"><span class="cat-filter__swatch" style="--swatch:#d4a84a"></span><span>Yellow</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Pink"><span class="cat-filter__swatch" style="--swatch:#e8b4c0"></span><span>Pink</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Gold"><span class="cat-filter__swatch" style="--swatch:linear-gradient(135deg,#e8d4a8 0%,#c9a227 100%)"></span><span>Gold</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Red"><span class="cat-filter__swatch" style="--swatch:#a84832"></span><span>Red</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Brown"><span class="cat-filter__swatch" style="--swatch:#6b4a3a"></span><span>Brown</span></button>
+              <button type="button" class="cat-filter__color" aria-label="Orange"><span class="cat-filter__swatch" style="--swatch:#c4784a"></span><span>Orange</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="cat-filter__section is-open" data-filter-section>
+          <button type="button" class="cat-filter__section-head" aria-expanded="true">
+            <span>Size</span>
+            <span class="cat-filter__section-icon" aria-hidden="true">−</span>
+          </button>
+          <div class="cat-filter__section-body">
+            <div class="cat-filter__sizes">
+              <button type="button" class="cat-filter__size">8"</button>
+              <button type="button" class="cat-filter__size">8.5"</button>
+              <button type="button" class="cat-filter__size">10"</button>
+              <button type="button" class="cat-filter__size">10.5"</button>
+              <button type="button" class="cat-filter__size">10.9"</button>
+              <button type="button" class="cat-filter__size">11.2"</button>
+              <button type="button" class="cat-filter__size">11.4"</button>
+              <button type="button" class="cat-filter__size">12"</button>
+              <button type="button" class="cat-filter__size">12.5"</button>
+              <button type="button" class="cat-filter__size">13"</button>
+              <button type="button" class="cat-filter__size">13.7"</button>
+              <button type="button" class="cat-filter__size">16.4"</button>
+            </div>
+            <button type="button" class="cat-filter__more">View more +</button>
+          </div>
+        </section>
+
+        <section class="cat-filter__section is-open" data-filter-section>
+          <button type="button" class="cat-filter__section-head" aria-expanded="true">
+            <span>Price</span>
+            <span class="cat-filter__section-icon" aria-hidden="true">−</span>
+          </button>
+          <div class="cat-filter__section-body">
+            <div class="cat-filter__price-inputs">
+              <label class="cat-filter__price-field">
+                <span class="visually-hidden">Minimum price</span>
+                <input type="text" data-price-min value="$0" aria-label="Minimum price" />
+              </label>
+              <label class="cat-filter__price-field">
+                <span class="visually-hidden">Maximum price</span>
+                <input type="text" data-price-max value="$749.95" aria-label="Maximum price" />
+              </label>
+            </div>
+            <div class="cat-filter__range" data-price-range>
+              <div class="cat-filter__range-track" aria-hidden="true">
+                <div class="cat-filter__range-fill" data-range-fill></div>
+              </div>
+              <input type="range" class="cat-filter__range-min" min="0" max="750" value="0" step="5" aria-label="Minimum price slider" />
+              <input type="range" class="cat-filter__range-max" min="0" max="750" value="750" step="5" aria-label="Maximum price slider" />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="cat-filter__footer">
+        <button type="button" class="cat-filter__apply" data-filter-close>Show Products</button>
+      </footer>
+    </aside>
+  </div>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/category.js"></script>
+</body>
+
+</html>

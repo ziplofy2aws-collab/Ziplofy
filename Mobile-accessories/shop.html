@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Mobexa Mobile Accessories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+</head>
+
+<body>
+
+  <header class="ma-header" role="banner">
+
+    <div class="ma-header__top">
+      <div class="ma-header__container ma-header__top-inner">
+
+        <div class="ma-header__top-left">
+          <button type="button" class="ma-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-ma-menu-toggle>
+            <span class="ma-header__menu-bars" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+
+          <a href="index.html" class="ma-header__logo" aria-label="Mobexa home">
+            <img src="assets/img/logo.png" alt="Mobexa Mobile Accessories" width="150" height="48" decoding="async" />
+          </a>
+        </div>
+
+        <form class="ma-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="ma-header-search">Search for Products, Brands, Offers</label>
+          <input id="ma-header-search" type="search" name="q" placeholder="Search for Products, Brands, Offers"
+            autocomplete="off" />
+          <button type="submit" class="ma-header__search-btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </form>
+
+        <div class="ma-header__actions">
+
+          <button type="button" class="ma-header__action ma-header__delivery" aria-label="Change delivery location">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">Delivery to</span>
+              <span class="ma-header__action-value">
+                AGRA
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <button type="button" class="ma-header__action ma-header__stores" aria-label="Locate stores">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">Locate</span>
+              <span class="ma-header__action-value">
+                Stores
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <a href="#" class="ma-header__action ma-header__cart" aria-label="Shopping cart, 0 items">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-value">0 Items</span>
+              <span class="ma-header__action-value">&#8377; 0</span>
+            </span>
+            <i class="fa-solid fa-cart-shopping ma-header__cart-icon" aria-hidden="true"></i>
+          </a>
+
+          <a href="#" class="ma-header__action ma-header__account">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">My Account</span>
+              <span class="ma-header__action-value">Sign In</span>
+            </span>
+            <span class="ma-header__account-icon" aria-hidden="true">
+              <i class="fa-solid fa-user"></i>
+            </span>
+          </a>
+
+          <a href="#" class="ma-header__mobile-search" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <nav class="ma-header__nav" aria-label="Primary navigation">
+      <div class="ma-header__container">
+        <ul class="ma-header__nav-list">
+          <li><a href="shop.html">Mobiles &amp; Accessories</a></li>
+          <li><a href="#">Computers &amp; Tablets</a></li>
+          <li><a href="#">TV &amp; Audio</a></li>
+          <li><a href="#">Kitchen Appliances</a></li>
+          <li><a href="#">Home Appliances</a></li>
+          <li><a href="#">Smart Technology</a></li>
+          <li><a href="#">Personal &amp; Health Care</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <nav id="ma-mobile-nav" class="ma-header__mobile-nav" aria-label="Mobile navigation" hidden>
+      <div class="ma-header__container">
+        <ul>
+          <li><a href="shop.html">Mobiles &amp; Accessories</a></li>
+          <li><a href="#">Computers &amp; Tablets</a></li>
+          <li><a href="#">TV &amp; Audio</a></li>
+          <li><a href="#">Kitchen Appliances</a></li>
+          <li><a href="#">Home Appliances</a></li>
+          <li><a href="#">Smart Technology</a></li>
+          <li><a href="#">Personal &amp; Health Care</a></li>
+        </ul>
+      </div>
+    </nav>
+
+  </header>
+
+  <main id="main-content">
+
+    <section class="ma-shop-page" aria-label="Shop products">
+      <div class="ma-header__container">
+
+        <nav class="ma-shop-page__crumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="ma-shop-page__crumb-sep" aria-hidden="true">&gt;</span>
+          <span>Power Banks</span>
+        </nav>
+
+        <div class="ma-shop-page__mobile-bar">
+          <button type="button" class="ma-shop-page__mobile-btn" data-ma-shop-filter-open>
+            Filters
+          </button>
+          <button type="button" class="ma-shop-page__mobile-btn" data-ma-shop-sort-open>
+            Sort By
+          </button>
+        </div>
+
+        <div class="ma-shop-page__backdrop" data-ma-shop-backdrop hidden></div>
+
+        <div class="ma-shop-page__layout">
+          <aside class="ma-shop-page__filters" data-ma-shop-sidebar aria-label="Product filters">
+            <div class="ma-shop-page__filters-head">
+              <span class="ma-shop-page__sheet-handle" aria-hidden="true"></span>
+              <h2 class="ma-shop-page__filters-title">Filters</h2>
+              <button type="button" class="ma-shop-page__filters-close" data-ma-shop-filter-close
+                aria-label="Close filters">&times;</button>
+            </div>
+
+            <div class="ma-shop-filter is-open" data-ma-filter-group>
+              <button type="button" class="ma-shop-filter__toggle" aria-expanded="true" data-ma-filter-toggle>
+                <span>Availability</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ma-shop-filter__panel">
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="availability" value="in-stock" />
+                  <span>In Stock <em data-ma-count="availability-in-stock">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="availability" value="out-of-stock" />
+                  <span>Out Of Stock <em data-ma-count="availability-out-of-stock">(0)</em></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="ma-shop-filter is-open" data-ma-filter-group>
+              <button type="button" class="ma-shop-filter__toggle" aria-expanded="true" data-ma-filter-toggle>
+                <span>Price</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ma-shop-filter__panel ma-shop-filter__panel--price">
+                <div class="ma-shop-filter__range">
+                  <input type="range" class="ma-shop-filter__range-min" min="0" max="5999" value="0"
+                    data-ma-price-min aria-label="Minimum price" />
+                  <input type="range" class="ma-shop-filter__range-max" min="0" max="5999" value="5999"
+                    data-ma-price-max aria-label="Maximum price" />
+                </div>
+                <p class="ma-shop-filter__price-label" data-ma-price-label>Rs. 0.00 - Rs. 5,999.00</p>
+                <button type="button" class="ma-shop-filter__apply" data-ma-price-apply>FILTER</button>
+              </div>
+            </div>
+
+            <div class="ma-shop-filter is-open" data-ma-filter-group>
+              <button type="button" class="ma-shop-filter__toggle" aria-expanded="true" data-ma-filter-toggle>
+                <span>Battery Capacity</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ma-shop-filter__panel">
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="battery" value="5000" />
+                  <span>5,000 mAh <em data-ma-count="battery-5000">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="battery" value="10000" />
+                  <span>10,000 mAh <em data-ma-count="battery-10000">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="battery" value="20000" />
+                  <span>20,000 mAh <em data-ma-count="battery-20000">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="battery" value="30000" />
+                  <span>30,000 mAh <em data-ma-count="battery-30000">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="battery" value="40000" />
+                  <span>40,000 mAh <em data-ma-count="battery-40000">(0)</em></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="ma-shop-filter is-open" data-ma-filter-group>
+              <button type="button" class="ma-shop-filter__toggle" aria-expanded="true" data-ma-filter-toggle>
+                <span>Wireless Charging</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ma-shop-filter__panel">
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="wireless" value="no" />
+                  <span>No <em data-ma-count="wireless-no">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="wireless" value="qi2-magsafe" />
+                  <span>Qi2 &amp; Magsafe <em data-ma-count="wireless-qi2-magsafe">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="wireless" value="qi" />
+                  <span>Qi <em data-ma-count="wireless-qi">(0)</em></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="ma-shop-filter is-open" data-ma-filter-group>
+              <button type="button" class="ma-shop-filter__toggle" aria-expanded="true" data-ma-filter-toggle>
+                <span>Laptop Powerbank</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ma-shop-filter__panel">
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="laptop" value="65w" />
+                  <span>65W <em data-ma-count="laptop-65w">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="laptop" value="100w" />
+                  <span>100W <em data-ma-count="laptop-100w">(0)</em></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="ma-shop-filter is-open" data-ma-filter-group>
+              <button type="button" class="ma-shop-filter__toggle" aria-expanded="true" data-ma-filter-toggle>
+                <span>Flight Approved</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ma-shop-filter__panel">
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="flight" value="yes" />
+                  <span>Yes <em data-ma-count="flight-yes">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="flight" value="no" />
+                  <span>No <em data-ma-count="flight-no">(0)</em></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="ma-shop-filter is-open" data-ma-filter-group>
+              <button type="button" class="ma-shop-filter__toggle" aria-expanded="true" data-ma-filter-toggle>
+                <span>Charging Speed</span>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ma-shop-filter__panel">
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="charging" value="18w" />
+                  <span>18W <em data-ma-count="charging-18w">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="charging" value="22.5w" />
+                  <span>22.5W <em data-ma-count="charging-22.5w">(0)</em></span>
+                </label>
+                <label class="ma-shop-filter__option">
+                  <input type="checkbox" data-ma-filter="charging" value="65w" />
+                  <span>65W <em data-ma-count="charging-65w">(0)</em></span>
+                </label>
+              </div>
+            </div>
+          </aside>
+
+          <div class="ma-shop-page__sort-sheet" data-ma-shop-sort-sheet aria-label="Sort products" hidden>
+            <div class="ma-shop-page__sheet-head">
+              <span class="ma-shop-page__sheet-handle" aria-hidden="true"></span>
+              <h2 class="ma-shop-page__sheet-title">Sort By</h2>
+              <button type="button" class="ma-shop-page__sheet-close" data-ma-shop-sort-close
+                aria-label="Close sort">&times;</button>
+            </div>
+            <div class="ma-shop-page__sort-options">
+              <button type="button" class="ma-shop-page__sort-option is-active" data-ma-sort-option="featured">Featured</button>
+              <button type="button" class="ma-shop-page__sort-option" data-ma-sort-option="rating">Top Rated</button>
+              <button type="button" class="ma-shop-page__sort-option" data-ma-sort-option="price-low">Price: Low to High</button>
+              <button type="button" class="ma-shop-page__sort-option" data-ma-sort-option="price-high">Price: High to Low</button>
+              <button type="button" class="ma-shop-page__sort-option" data-ma-sort-option="name">Name: A-Z</button>
+            </div>
+          </div>
+
+          <div class="ma-shop-page__main">
+            <div class="ma-shop-page__results-head">
+              <p class="ma-shop-page__showing">Showing <span data-ma-shop-count>0</span> Products</p>
+              <div class="ma-shop-page__sort-wrap">
+                <label for="ma-shop-sort">Sort By:</label>
+                <select id="ma-shop-sort" class="ma-shop-page__sort" data-ma-shop-sort>
+                  <option value="featured">Featured</option>
+                  <option value="rating">Top Rated</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="name">Name: A-Z</option>
+                </select>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </div>
+            </div>
+
+            <div class="ma-shop-page__grid" data-ma-shop-grid></div>
+
+            <nav class="ma-shop-page__pagination" data-ma-shop-pagination aria-label="Product pages"></nav>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="ma-footer" role="contentinfo">
+    <div class="ma-footer__main">
+      <div class="ma-header__container ma-footer__grid">
+
+        <div class="ma-footer__brand">
+          <a href="index.html" class="ma-footer__logo" aria-label="Mobexa home">
+            <img src="assets/img/logo.png" alt="Mobexa Mobile Accessories" width="150" height="48" loading="lazy"
+              decoding="async" />
+          </a>
+          <address class="ma-footer__address">
+            101, 1st Floor, Arun chamber, Tardeo, Mumbai, Maharashtra 400034
+          </address>
+          <a href="mailto:care@mobexa.com" class="ma-footer__link ma-footer__link--contact">care@mobexa.com</a>
+          <a href="tel:+918101969696" class="ma-footer__link ma-footer__link--contact">+918101969696</a>
+        </div>
+
+        <div class="ma-footer__col">
+          <h3 class="ma-footer__heading">COMPANY</h3>
+          <ul class="ma-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Mobexa in News</a></li>
+            <li><a href="#">Awards</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Karo Dil Ki Marzi</a></li>
+            <li><a href="#">Life At Mobexa</a></li>
+            <li><a href="#">Distributorship at Mobexa</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col">
+          <h3 class="ma-footer__heading">SUPPORT/INFO</h3>
+          <ul class="ma-footer__links">
+            <li><a href="#">FAQS</a></li>
+            <li><a href="#">E-waste Management</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col ma-footer__col--products">
+          <h3 class="ma-footer__heading">PRODUCTS</h3>
+          <ul class="ma-footer__links">
+            <li><a href="shop.html">Earbuds</a></li>
+            <li><a href="shop.html">Neckbands</a></li>
+            <li><a href="shop.html">Earphones</a></li>
+            <li><a href="shop.html">Wireless Speakers</a></li>
+            <li><a href="shop.html">Headphones</a></li>
+            <li><a href="shop.html">Microphones</a></li>
+            <li><a href="shop.html">Chargers</a></li>
+            <li><a href="shop.html">Car Chargers</a></li>
+            <li><a href="shop.html">Data Cables</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col ma-footer__col--products-extra">
+          <ul class="ma-footer__links">
+            <li><a href="shop.html">Aux Cables</a></li>
+            <li><a href="shop.html">PowerBanks</a></li>
+            <li><a href="shop.html">Mobile Stands</a></li>
+            <li><a href="shop.html">MMC / Pendrives</a></li>
+            <li><a href="shop.html">OTG / Connector</a></li>
+            <li><a href="shop.html">Screen Guards</a></li>
+            <li><a href="shop.html">Batteries</a></li>
+            <li><a href="shop.html">Gimbals</a></li>
+            <li><a href="shop.html">Star Products</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ma-footer__bottom">
+      <div class="ma-header__container ma-footer__bottom-inner">
+        <img class="ma-footer__made-in" src="assets/img/mii.png.webp" alt="Make in India" width="120" height="76"
+          loading="lazy" decoding="async" />
+
+        <p class="ma-footer__social-text">Let&rsquo;s connect socially!</p>
+
+        <ul class="ma-footer__social" aria-label="Social media links">
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
+
+        <p class="ma-footer__copy">Mobexa Mobile Solutions Private Limited, 2026 | All rights reserved</p>
+      </div>
+    </div>
+
+    <button type="button" class="ma-footer__top" data-ma-back-to-top aria-label="Back to top">
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+  </footer>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>

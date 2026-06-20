@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emberlane</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="announcement-bar">
+      <div class="announcement-bar__inner">
+        <div class="announcement-bar__left"><a href="#" class="announcement-bar__link">Get $20 Rewards</a></div>
+        <div class="announcement-bar__center" data-announcement-slider>
+          <button type="button" class="announcement-bar__arrow announcement-bar__arrow--prev"
+            aria-label="Previous announcement"><svg width="8" height="14" viewBox="0 0 8 14" fill="none"
+              aria-hidden="true">
+              <path d="M7 1L1 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg></button>
+          <div class="announcement-bar__viewport" aria-live="polite">
+            <div class="announcement-bar__track">
+              <p class="announcement-bar__slide is-active">Save $208 on the Titanium Pro Cookware Set <a href="#"
+                  class="announcement-bar__cta">Shop Now</a></p>
+              <p class="announcement-bar__slide">Free shipping on orders over $135 <a href="#"
+                  class="announcement-bar__cta">Shop Now</a></p>
+              <p class="announcement-bar__slide">New arrivals in tableware — explore the collection <a href="#"
+                  class="announcement-bar__cta">Shop Now</a></p>
+            </div>
+          </div>
+          <button type="button" class="announcement-bar__arrow announcement-bar__arrow--next"
+            aria-label="Next announcement"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true">
+              <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg></button>
+        </div>
+        <div class="announcement-bar__right"><a href="#" class="announcement-bar__link">Stores</a><a href="#"
+            class="announcement-bar__link">Support</a></div>
+      </div>
+    </div>
+    <div class="main-nav">
+      <div class="main-nav__inner">
+        <a class="main-nav__logo" href="index.html" aria-label="Home"><img src="assets/img/logo.png" alt="Emberlane"
+            width="140" height="52" decoding="async" /></a>
+        <nav class="main-nav__menu" id="primary-nav" aria-label="Primary navigation">
+          <div class="mobile-menu__header">
+            <button type="button" class="mobile-menu__close" data-nav-close aria-label="Close menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </button>
+            <a href="#" class="mobile-menu__cart" aria-label="Cart">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 8h15l-1.5 9H7.5L6 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                <path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="9" cy="20" r="1" fill="currentColor" />
+                <circle cx="18" cy="20" r="1" fill="currentColor" />
+              </svg>
+            </a>
+          </div>
+          <div class="mobile-menu__primary">
+            <a href="category.html" class="main-nav__link">Cookware</a>
+            <a href="category.html" class="main-nav__link">Bakeware</a>
+            <a href="category.html" class="main-nav__link">Appliances</a>
+            <a href="category.html" class="main-nav__link">Tableware</a>
+            <a href="category.html" class="main-nav__link">Kitchen Tools</a>
+            <a href="category.html" class="main-nav__link">Collections</a>
+            <a href="category.html" class="main-nav__link is-sale">Sale</a>
+          </div>
+          <div class="mobile-menu__divider" aria-hidden="true"></div>
+          <div class="mobile-menu__secondary">
+            <a href="#">Get $20</a>
+            <a href="#">Stores</a>
+            <a href="#">Support</a>
+          </div>
+          <a href="#" class="mobile-menu__account">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5" />
+              <path d="M6.5 19.5c1.2-2.8 3.4-4.5 5.5-4.5s4.3 1.7 5.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <span>Log In / Account</span>
+          </a>
+        </nav>
+        <div class="main-nav__actions">
+          <button type="button" class="main-nav__icon-btn main-nav__icon-btn--search" aria-label="Search"><svg width="20" height="20"
+              viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" />
+              <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg></button>
+          <a href="#" class="main-nav__icon-btn main-nav__icon-btn--account" aria-label="Account"><svg width="20" height="20" viewBox="0 0 24 24"
+              fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5" />
+              <path d="M6.5 19.5c1.2-2.8 3.4-4.5 5.5-4.5s4.3 1.7 5.5 4.5" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" />
+            </svg></a>
+          <a href="#" class="main-nav__icon-btn main-nav__icon-btn--cart" aria-label="Cart"><svg width="20" height="20" viewBox="0 0 24 24"
+              fill="none" aria-hidden="true">
+              <path d="M6 8h15l-1.5 9H7.5L6 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              <path d="M6 8L5 4H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <circle cx="9" cy="20" r="1" fill="currentColor" />
+              <circle cx="18" cy="20" r="1" fill="currentColor" />
+            </svg></a>
+          <button type="button" class="main-nav__toggle" data-nav-toggle aria-expanded="false"
+            aria-controls="primary-nav" aria-label="Open menu"><span class="main-nav__toggle-bar"
+              aria-hidden="true"></span><span class="main-nav__toggle-bar" aria-hidden="true"></span><span
+              class="main-nav__toggle-bar" aria-hidden="true"></span></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="pdp-page" data-pdp-page>
+    <div class="pdp-page__inner">
+      <p class="pdp-breadcrumb"><a href="index.html">Home</a> / <a href="category.html">Cookware</a> / <span
+          data-pdp-breadcrumb-name>Mini Frypan 20cm</span></p>
+
+      <div class="pdp-layout" data-pdp-sticky-layout>
+        <div class="pdp-gallery-wrap">
+          <div class="pdp-gallery-spacer" data-pdp-gallery-spacer aria-hidden="true"></div>
+          <div class="pdp-gallery" data-pdp-sticky-gallery>
+            <div class="pdp-gallery__main">
+              <div class="pdp-gallery__badges">
+                <span class="pdp-gallery__badge">Designed in <strong>California</strong></span>
+                <span class="pdp-gallery__badge">Made in <strong>Italy</strong></span>
+                <span class="pdp-gallery__badge">Built for <strong>India</strong></span>
+              </div>
+              <img id="pdp-main-image" src="assets/img/category-5.webp" alt="Mini Frypan on stovetop" width="640"
+                height="640" decoding="async" />
+              <button type="button" class="pdp-gallery__zoom" aria-label="Zoom image">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M8 4H4v4M20 16v4h-4M16 4h4v4M4 16v4H0" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" />
+                  <circle cx="10" cy="10" r="5" stroke="currentColor" stroke-width="1.5" />
+                </svg>
+              </button>
+            </div>
+            <div class="pdp-thumbs" role="list" data-pdp-thumbs>
+              <button type="button" class="pdp-thumb" data-pdp-thumb data-image="assets/img/category-1.webp"
+                role="listitem"><img src="assets/img/category-1.webp" alt="" width="64" height="64" /></button>
+              <button type="button" class="pdp-thumb" data-pdp-thumb data-image="assets/img/category-2.webp"
+                role="listitem"><img src="assets/img/category-2.webp" alt="" width="64" height="64" /></button>
+              <button type="button" class="pdp-thumb" data-pdp-thumb data-image="assets/img/category-3.webp"
+                role="listitem"><img src="assets/img/category-3.webp" alt="" width="64" height="64" /></button>
+              <button type="button" class="pdp-thumb is-active" data-pdp-thumb data-image="assets/img/category-5.webp"
+                role="listitem"><img src="assets/img/category-5.webp" alt="" width="64" height="64" /></button>
+              <button type="button" class="pdp-thumb" data-pdp-thumb data-image="assets/img/category-4.webp"
+                role="listitem"><img src="assets/img/category-4.webp" alt="" width="64" height="64" /></button>
+              <button type="button" class="pdp-thumb" data-pdp-thumb data-image="assets/img/category-6.webp"
+                role="listitem"><img src="assets/img/category-6.webp" alt="" width="64" height="64" /></button>
+              <button type="button" class="pdp-thumb" data-pdp-thumb data-image="assets/img/category-7.webp"
+                role="listitem"><img src="assets/img/category-7.webp" alt="" width="64" height="64" /></button>
+              <button type="button" class="pdp-thumb" data-pdp-thumb data-image="assets/img/category-8.webp"
+                role="listitem"><img src="assets/img/category-8.webp" alt="" width="64" height="64" /></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdp-info">
+          <h1 class="pdp-info__title">Mini Frypan 20cm</h1>
+          <p class="pdp-info__subtitle">Ceramic Coating</p>
+          <p class="pdp-info__desc">Your everyday sidekick for eggs, pancakes, and more. Small, handy and effortlessly
+            non-stick.</p>
+          <div class="pdp-rating" aria-label="4.8 out of 5 stars, 117 reviews">
+            <span class="pdp-rating__stars" aria-hidden="true">★★★★★</span>
+            <span class="pdp-rating__count">117 Reviews</span>
+          </div>
+
+          <div class="pdp-price-block">
+            <div class="pdp-price-block__row">
+              <span class="pdp-price-block__current">₹2,500</span>
+              <span class="pdp-price-block__mrp">MRP <s>₹2,999</s></span>
+              <span class="pdp-price-block__off">16% OFF</span>
+            </div>
+            <p class="pdp-price-block__tax">(incl. of taxes)</p>
+          </div>
+
+          <p class="pdp-promo-bar">Up to 35% off on all Himalayan Mist cookware singles.</p>
+
+          <div class="pdp-option">
+            <p class="pdp-option__label">Size</p>
+            <div class="pdp-option__pills">
+              <button type="button" class="pdp-size-btn" data-pdp-size>24 cms</button>
+              <button type="button" class="pdp-size-btn is-active" data-pdp-size>20 cms</button>
+            </div>
+          </div>
+
+          <div class="pdp-option">
+            <p class="pdp-option__label">Color: <span id="pdp-color-name">Nilgiri Blue</span></p>
+            <div class="pdp-color__swatches">
+              <button type="button" class="pdp-color__swatch is-active" data-pdp-swatch data-color-name="Nilgiri Blue"
+                style="--swatch:#1e2a3a" aria-label="Nilgiri Blue"></button>
+              <button type="button" class="pdp-color__swatch" data-pdp-swatch data-color-name="Terracotta"
+                style="--swatch:#9a5c4a" aria-label="Terracotta"></button>
+              <button type="button" class="pdp-color__swatch" data-pdp-swatch data-color-name="Green"
+                style="--swatch:#2d4a3e" aria-label="Green"></button>
+            </div>
+          </div>
+
+          <div class="pdp-personalise">
+            <img src="assets/img/category-7.webp" alt="" width="48" height="48" class="pdp-personalise__thumb" />
+            <div class="pdp-personalise__text">
+              <strong>Personalise Cookware</strong>
+              <span>Engrave products at ₹199.00</span>
+            </div>
+            <button type="button" class="pdp-personalise__btn">+ Add</button>
+          </div>
+
+          <div class="pdp-paired">
+            <p class="pdp-paired__label">Mostly Paired With:</p>
+            <div class="pdp-paired__card">
+              <div class="pdp-paired__media">
+                <img src="assets/img/BS-3.webp" alt="Silicone Handle Holder (Set of 2)" width="72" height="72" class="pdp-paired__img" decoding="async" />
+              </div>
+              <div class="pdp-paired__details">
+                <div class="pdp-paired__info">
+                  <strong class="pdp-paired__title">Silicone Handle Holder (Set of 2)</strong>
+                  <div class="pdp-paired__swatches" aria-hidden="true">
+                    <span style="--swatch:#8a9a7e"></span>
+                    <span style="--swatch:#e8b4a0"></span>
+                    <span class="is-active" style="--swatch:#7a9eb8"></span>
+                    <span style="--swatch:#d4cfc8"></span>
+                  </div>
+                </div>
+                <div class="pdp-paired__aside">
+                  <div class="pdp-paired__price">
+                    <s>₹999</s>
+                    <span>₹350</span>
+                  </div>
+                  <input type="checkbox" class="pdp-paired__check" aria-label="Add Silicone Handle Holder (Set of 2)" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pdp-actions">
+            <div class="pdp-buy-row">
+              <div class="pdp-qty">
+                <button type="button" data-pdp-qty-minus" aria-label="Decrease quantity">−</button>
+                <input id="pdp-qty" type="text" value="1" readonly aria-label="Quantity" />
+                <button type="button" data-pdp-qty-plus" aria-label="Increase quantity">+</button>
+              </div>
+              <button type="button" class="pdp-add-cart-btn">Add to cart - ₹2,600</button>
+            </div>
+            <button type="button" class="pdp-buy-now-btn">Buy Now</button>
+          </div>
+
+          <div class="pdp-trust">
+            <div class="pdp-trust__item">
+              <span class="pdp-trust__icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.4" />
+                  <path d="M11 16.2l3 3 7-7.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span>10-Year Warranty</span>
+            </div>
+            <div class="pdp-trust__item">
+              <span class="pdp-trust__icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <rect x="6" y="8" width="20" height="16" rx="1" stroke="currentColor" stroke-width="1.4" />
+                  <circle cx="16" cy="16" r="4.5" stroke="currentColor" stroke-width="1.4" />
+                  <path d="M10 8V6M22 8V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span>All cooktops safe</span>
+            </div>
+            <div class="pdp-trust__item">
+              <span class="pdp-trust__icon pdp-trust__icon--fda" aria-hidden="true">
+                <span class="pdp-trust__fda-title">FDA</span>
+                <span class="pdp-trust__fda-sub">COMPLIANT</span>
+              </span>
+              <span>FDA Compliant</span>
+            </div>
+          </div>
+
+          <div class="pdp-pincode">
+            <input type="text" placeholder="Enter pincode here" aria-label="Enter pincode" />
+            <button type="button">Check Availability</button>
+          </div>
+
+          <div class="pdp-upgrade">
+            <h2 class="pdp-upgrade__title">Upgrade and Save 15%</h2>
+            <div class="pdp-upgrade__card">
+              <span class="pdp-upgrade__tag">Most Popular</span>
+              <img src="assets/img/category-6.webp" alt="Everyday Cookware Trio" width="72" height="72" />
+              <div class="pdp-upgrade__body">
+                <strong>Everyday Cookware Trio</strong>
+                <p class="pdp-upgrade__prices"><s>₹12,199</s> <span>₹10,300</span></p>
+                <p class="pdp-upgrade__save">SAVE ₹1,899</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pdp-accordion" data-pdp-accordion>
+            <div class="pdp-accordion__item">
+              <button type="button" class="pdp-accordion__trigger" aria-expanded="false">Product overview<span
+                  aria-hidden="true">+</span></button>
+              <div class="pdp-accordion__panel" hidden>
+                <p>Non-toxic ceramic coating designed for everyday cooking. Lightweight, easy to clean, and built for
+                  high-heat performance on Indian stovetops.</p>
+              </div>
+            </div>
+            <div class="pdp-accordion__item">
+              <button type="button" class="pdp-accordion__trigger" aria-expanded="false">How to treat it right<span
+                  aria-hidden="true">+</span></button>
+              <div class="pdp-accordion__panel" hidden>
+                <p>Use low to medium heat with a little oil or butter. Avoid metal utensils and sudden temperature
+                  changes for best results.</p>
+              </div>
+            </div>
+            <div class="pdp-accordion__item">
+              <button type="button" class="pdp-accordion__trigger" aria-expanded="false">Oil usage tips<span
+                  aria-hidden="true">+</span></button>
+              <div class="pdp-accordion__panel" hidden>
+                <p>A small amount of oil is enough. Preheat gently before adding food for even browning and easy
+                  release.</p>
+              </div>
+            </div>
+            <div class="pdp-accordion__item">
+              <button type="button" class="pdp-accordion__trigger" aria-expanded="false">The Ember Warranty<span
+                  aria-hidden="true">+</span></button>
+              <div class="pdp-accordion__panel" hidden>
+                <p>5 + 1 years warranty against manufacturing defects. Register your product within 30 days of purchase.
+                </p>
+              </div>
+            </div>
+            <div class="pdp-accordion__item">
+              <button type="button" class="pdp-accordion__trigger" aria-expanded="false">Dimensions<span
+                  aria-hidden="true">+</span></button>
+              <div class="pdp-accordion__panel" hidden>
+                <p>Diameter: 20 cm · Height: 4.5 cm · Weight: 0.6 kg · Compatible with gas, electric, and induction
+                  cooktops.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="pdp-testimonials" aria-labelledby="pdp-testimonials-heading" data-pdp-reviews-carousel>
+    <div class="pdp-testimonials__head-wrap">
+      <div class="pdp-testimonials__head">
+        <h2 id="pdp-testimonials-heading" class="pdp-testimonials__title">See what people are saying</h2>
+        <div class="pdp-testimonials__nav">
+          <button type="button" class="pdp-testimonials__arrow pdp-testimonials__arrow--prev" data-reviews-prev
+            aria-label="Previous review" disabled>
+            <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
+              <path d="M8 2L2 8l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="pdp-testimonials__arrow pdp-testimonials__arrow--next" data-reviews-next
+            aria-label="Next review">
+            <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true">
+              <path d="M2 2l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="pdp-testimonials__viewport" data-reviews-viewport>
+      <div class="pdp-testimonials__track" data-reviews-track>
+        <article class="pdp-review-card">
+          <div class="pdp-review-card__stars" aria-hidden="true">★★★★★</div>
+          <h3 class="pdp-review-card__headline">Three months in. Can't go back</h3>
+          <p class="pdp-review-card__body">I've been using the Ember kadai for three months now and honestly can't
+            imagine going back. Cooks evenly, cleans in seconds, and looks beautiful on my counter.</p>
+          <p class="pdp-review-card__author">- Priya M, Bangalore</p>
+        </article>
+        <article class="pdp-review-card">
+          <div class="pdp-review-card__stars" aria-hidden="true">★★★★★</div>
+          <h3 class="pdp-review-card__headline">The colour sold me. The cooking kept me.</h3>
+          <p class="pdp-review-card__body">Was sceptical about ceramic but this converted me completely. Made a fish
+            curry last week and nothing stuck. The colour is stunning too.</p>
+          <p class="pdp-review-card__author">- Rohit S, Mumbai</p>
+        </article>
+        <article class="pdp-review-card">
+          <div class="pdp-review-card__stars" aria-hidden="true">★★★★★</div>
+          <h3 class="pdp-review-card__headline">Peace of mind in every meal</h3>
+          <p class="pdp-review-card__body">Finally a non-stick pan I don't feel guilty cooking in. The fact that it's
+            free from all those chemicals makes such a difference to my peace of mind.</p>
+          <p class="pdp-review-card__author">- Ananya K, Delhi</p>
+        </article>
+        <article class="pdp-review-card">
+          <div class="pdp-review-card__stars" aria-hidden="true">★★★★★</div>
+          <h3 class="pdp-review-card__headline">The easiest clean in my kitchen</h3>
+          <p class="pdp-review-card__body">The cleanup alone is worth it. One wipe and it looks brand new. I cook every
+            single day and it still performs like it did on day one.</p>
+          <p class="pdp-review-card__author">- Sneha T, Pune</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__main">
+        <div class="site-footer__brand">
+          <a href="index.html" class="site-footer__logo">EMBER</a>
+          <p class="site-footer__newsletter-text">Subscribe to our newsletter to get a taste of excellence</p>
+          <form class="site-footer__subscribe" action="#" method="post">
+            <label class="visually-hidden" for="footer-email">Email Address</label>
+            <input id="footer-email" type="email" name="email" placeholder="Email Address" autocomplete="email" />
+            <button type="submit" class="site-footer__subscribe-btn" aria-label="Subscribe to newsletter">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+          <div class="site-footer__social">
+            <p class="site-footer__social-label">Let's stay connected</p>
+            <a href="#" class="site-footer__social-link" aria-label="Instagram">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5" />
+                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5" />
+                <circle cx="17.2" cy="6.8" r="1" fill="currentColor" />
+              </svg>
+            </a>
+          </div>
+          <div class="site-footer__legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms and condition</a>
+            <a href="#">Refund Policy</a>
+          </div>
+        </div>
+        <div class="site-footer__nav">
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Shop</h3>
+            <ul>
+              <li><a href="#">Tawa</a></li>
+              <li><a href="#">Frypans</a></li>
+              <li><a href="#">Kadai</a></li>
+              <li><a href="#">Dutch Ovens</a></li>
+              <li><a href="#">Grill Pan</a></li>
+              <li><a href="#">Kitchen tools</a></li>
+            </ul>
+          </div>
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Shop by Materials</h3>
+            <ul>
+              <li><a href="#">Ceramic Cookware</a></li>
+              <li><a href="#">Pre Seasoned Cast Iron</a></li>
+              <li><a href="#">TitaniumClad™</a></li>
+              <li><a href="#">Cast Iron</a></li>
+            </ul>
+          </div>
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Discover</h3>
+            <ul>
+              <li><a href="#">Our Story</a></li>
+              <li><a href="#">Our Material</a></li>
+              <li><a href="#">Our Quality</a></li>
+              <li><a href="#">Care &amp; Clean Rituals</a></li>
+              <li><a href="#">For Our Planet</a></li>
+              <li><a href="#">Rewards</a></li>
+              <li><a href="#">Reviews</a></li>
+            </ul>
+          </div>
+          <div class="site-footer__col">
+            <h3 class="site-footer__col-title">Support</h3>
+            <ul>
+              <li><a href="#">Warranty</a></li>
+              <li><a href="#">Warranty registration</a></li>
+              <li><a href="#">Circularity</a></li>
+              <li><a href="#">Returns &amp; Exchanges</a></li>
+              <li><a href="#">Contact us</a></li>
+              <li><a href="#">FAQ's</a></li>
+              <li><a href="#">Refund policy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <p>© 2025 Ember Kitchens Pvt Ltd All rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>

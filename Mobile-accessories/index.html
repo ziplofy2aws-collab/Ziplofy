@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobexa — Mobile Accessories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="ma-header" role="banner">
+
+    <!-- Top bar -->
+    <div class="ma-header__top">
+      <div class="ma-header__container ma-header__top-inner">
+
+        <div class="ma-header__top-left">
+          <button type="button" class="ma-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-ma-menu-toggle>
+            <span class="ma-header__menu-bars" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+
+          <a href="index.html" class="ma-header__logo" aria-label="Mobexa home">
+            <img src="assets/img/logo.png" alt="Mobexa Mobile Accessories" width="150" height="48" decoding="async" />
+          </a>
+        </div>
+
+        <form class="ma-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="ma-header-search">Search for Products, Brands, Offers</label>
+          <input id="ma-header-search" type="search" name="q" placeholder="Search for Products, Brands, Offers"
+            autocomplete="off" />
+          <button type="submit" class="ma-header__search-btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </form>
+
+        <div class="ma-header__actions">
+
+          <button type="button" class="ma-header__action ma-header__delivery" aria-label="Change delivery location">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">Delivery to</span>
+              <span class="ma-header__action-value">
+                AGRA
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <button type="button" class="ma-header__action ma-header__stores" aria-label="Locate stores">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">Locate</span>
+              <span class="ma-header__action-value">
+                Stores
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </span>
+            </span>
+          </button>
+
+          <a href="#" class="ma-header__action ma-header__cart" aria-label="Shopping cart, 0 items">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-value">0 Items</span>
+              <span class="ma-header__action-value">&#8377; 0</span>
+            </span>
+            <i class="fa-solid fa-cart-shopping ma-header__cart-icon" aria-hidden="true"></i>
+          </a>
+
+          <a href="#" class="ma-header__action ma-header__account">
+            <span class="ma-header__action-text">
+              <span class="ma-header__action-label">My Account</span>
+              <span class="ma-header__action-value">Sign In</span>
+            </span>
+            <span class="ma-header__account-icon" aria-hidden="true">
+              <i class="fa-solid fa-user"></i>
+            </span>
+          </a>
+
+          <a href="#" class="ma-header__mobile-search" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Category navigation -->
+    <nav class="ma-header__nav" aria-label="Primary navigation">
+      <div class="ma-header__container">
+        <ul class="ma-header__nav-list">
+          <li><a href="shop.html">Mobiles &amp; Accessories</a></li>
+          <li><a href="#">Computers &amp; Tablets</a></li>
+          <li><a href="#">TV &amp; Audio</a></li>
+          <li><a href="#">Kitchen Appliances</a></li>
+          <li><a href="#">Home Appliances</a></li>
+          <li><a href="#">Smart Technology</a></li>
+          <li><a href="#">Personal &amp; Health Care</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Mobile navigation drawer -->
+    <nav id="ma-mobile-nav" class="ma-header__mobile-nav" aria-label="Mobile navigation" hidden>
+      <div class="ma-header__container">
+        <ul>
+          <li><a href="shop.html">Mobiles &amp; Accessories</a></li>
+          <li><a href="#">Computers &amp; Tablets</a></li>
+          <li><a href="#">TV &amp; Audio</a></li>
+          <li><a href="#">Kitchen Appliances</a></li>
+          <li><a href="#">Home Appliances</a></li>
+          <li><a href="#">Smart Technology</a></li>
+          <li><a href="#">Personal &amp; Health Care</a></li>
+        </ul>
+      </div>
+    </nav>
+
+  </header>
+
+  <main id="main-content">
+
+    <section class="ma-hero" aria-label="Hero banner slider">
+      <div class="ma-hero__slider" data-current-slide="0">
+
+        <button class="ma-hero__arrow ma-hero__arrow--prev" type="button" aria-label="Previous slide">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="ma-hero__track">
+          <article class="ma-hero__slide is-active" data-slide-index="0">
+            <img src="assets/img/hero-banner-1.png" alt="Node wireless charging ecosystem" width="1920" height="720"
+              decoding="async" />
+          </article>
+          <article class="ma-hero__slide" data-slide-index="1">
+            <img src="assets/img/hero-banner-2.png" alt="Premium mobile accessories hero banner 2" width="1920"
+              height="720" loading="lazy" decoding="async" />
+          </article>
+          <article class="ma-hero__slide" data-slide-index="2">
+            <img src="assets/img/hero-banner-3.png" alt="Premium mobile accessories hero banner 3" width="1920"
+              height="720" loading="lazy" decoding="async" />
+          </article>
+        </div>
+
+        <button class="ma-hero__arrow ma-hero__arrow--next" type="button" aria-label="Next slide">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+
+        <!-- <div class="ma-hero__content">
+          <h1 class="ma-hero__heading">NODE WIRELESS<br />CHARGING ECOSYSTEM</h1>
+          <p class="ma-hero__subheading">Power that moves when you do</p>
+          <a href="shop.html" class="ma-hero__cta">EXPLORE NOW</a>
+        </div> -->
+
+        <div class="ma-hero__dots" aria-label="Slide indicators">
+          <button class="ma-hero__dot is-active" type="button" data-slide-to="0" aria-label="Slide 1"
+            aria-current="true"></button>
+          <button class="ma-hero__dot" type="button" data-slide-to="1" aria-label="Slide 2"></button>
+          <button class="ma-hero__dot" type="button" data-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="ma-shop-cat" aria-labelledby="ma-shop-cat-heading">
+      <div class="ma-header__container ma-shop-cat__inner">
+        <h2 id="ma-shop-cat-heading" class="ma-shop-cat__title">Shop by Category</h2>
+
+        <div class="ma-shop-cat__slider" data-ma-shop-cat>
+          <button type="button" class="ma-shop-cat__arrow ma-shop-cat__arrow--prev" data-ma-shop-cat-prev
+            aria-label="Scroll categories backward">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="ma-shop-cat__viewport" data-ma-shop-cat-viewport tabindex="0" aria-label="Category carousel">
+            <div class="ma-shop-cat__track" data-ma-shop-cat-track>
+
+              <a href="shop.html" class="ma-shop-cat__card">
+                <img src="assets/img/tourch.webp" alt="Flash Light" width="420" height="520" decoding="async" />
+                <span class="ma-shop-cat__label">Flash Light</span>
+                <span class="ma-shop-cat__next" aria-hidden="true">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </a>
+
+              <a href="shop.html" class="ma-shop-cat__card">
+                <img src="assets/img/continuous-light.webp" alt="Continuous Light" width="420" height="520"
+                  loading="lazy" decoding="async" />
+                <span class="ma-shop-cat__label">Continuous Light</span>
+                <span class="ma-shop-cat__next" aria-hidden="true">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </a>
+
+              <a href="shop.html" class="ma-shop-cat__card">
+                <img src="assets/img/red-light.webp" alt="Ring Light" width="420" height="520" loading="lazy"
+                  decoding="async" />
+                <span class="ma-shop-cat__label">Ring Light</span>
+                <span class="ma-shop-cat__next" aria-hidden="true">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </a>
+
+              <a href="shop.html" class="ma-shop-cat__card">
+                <img src="assets/img/Gimbal.webp" alt="Gimbal" width="420" height="520" loading="lazy"
+                  decoding="async" />
+                <span class="ma-shop-cat__label">Gimbal</span>
+                <span class="ma-shop-cat__next" aria-hidden="true">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </a>
+
+              <a href="shop.html" class="ma-shop-cat__card">
+                <img src="assets/img/Tripod.webp" alt="Tripod" width="420" height="520" loading="lazy"
+                  decoding="async" />
+                <span class="ma-shop-cat__label">Tripod</span>
+                <span class="ma-shop-cat__next" aria-hidden="true">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </a>
+
+              <a href="shop.html" class="ma-shop-cat__card">
+                <img src="assets/img/Microphones.webp" alt="Microphones" width="420" height="520" loading="lazy"
+                  decoding="async" />
+                <span class="ma-shop-cat__label">Microphones</span>
+                <span class="ma-shop-cat__next" aria-hidden="true">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </a>
+
+              <a href="shop.html" class="ma-shop-cat__card">
+                <img src="assets/img/action-camera.webp" alt="Action Camera" width="420" height="520" loading="lazy"
+                  decoding="async" />
+                <span class="ma-shop-cat__label">Action Camera</span>
+                <span class="ma-shop-cat__next" aria-hidden="true">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </span>
+              </a>
+
+            </div>
+          </div>
+
+          <button type="button" class="ma-shop-cat__arrow ma-shop-cat__arrow--next" data-ma-shop-cat-next
+            aria-label="Scroll categories forward">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-arrivals" aria-labelledby="ma-arrivals-heading" data-ma-arrivals>
+      <div class="ma-header__container ma-arrivals__inner">
+        <h2 id="ma-arrivals-heading" class="ma-arrivals__title">Shop New Arrivals</h2>
+
+        <div class="ma-arrivals__viewport" data-ma-arrivals-viewport>
+          <div class="ma-arrivals__track" data-ma-arrivals-track>
+
+            <article class="ma-arrivals__card" data-ma-product-id="aerosynq-snap-2b">
+              <a href="product.html?id=aerosynq-snap-2b" class="ma-arrivals__media">
+                <img src="assets/img/aerosyncq-4.avif" alt="AerosynQ Snap 2" width="280" height="240"
+                  decoding="async" />
+                <span class="ma-arrivals__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 4.92
+                </span>
+              </a>
+              <div class="ma-arrivals__body">
+                <h3 class="ma-arrivals__name"><a href="product.html?id=aerosynq-snap-2b">AerosynQ Snap 2</a></h3>
+                <p class="ma-arrivals__desc">10000mAh Qi2 Certified Magsafe Wireless Fast Charging Power...</p>
+                <div class="ma-arrivals__price-row">
+                  <div class="ma-arrivals__prices">
+                    <span class="ma-arrivals__price">Rs. 1,999</span>
+                    <span class="ma-arrivals__compare">Rs. 3,999</span>
+                  </div>
+                  <div class="ma-arrivals__colors" aria-label="Available colors">
+                    <span class="ma-arrivals__swatch" style="background:#1a1a1a"></span>
+                    <span class="ma-arrivals__swatch" style="background:#b0b0b0"></span>
+                    <span class="ma-arrivals__swatch-more">+1</span>
+                  </div>
+                </div>
+                <div class="ma-arrivals__emi">
+                  <span class="ma-arrivals__emi-text">or &#8377;666/Month</span>
+                  <button type="button" class="ma-arrivals__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-arrivals__card" data-ma-product-id="aerovolt-power-bank">
+              <a href="product.html?id=aerovolt-power-bank" class="ma-arrivals__media">
+                <img src="assets/img/aerosyncq-20k.avif" alt="Aerovolt Power Bank" width="280" height="240"
+                  loading="lazy" decoding="async" />
+                <span class="ma-arrivals__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 4.9
+                </span>
+              </a>
+              <div class="ma-arrivals__body">
+                <h3 class="ma-arrivals__name"><a href="product.html?id=aerovolt-power-bank">Aerovolt Power Bank</a></h3>
+                <p class="ma-arrivals__desc">20000mAh Qi2 Certified Magsafe Wireless Fast Charging Power...</p>
+                <div class="ma-arrivals__price-row">
+                  <div class="ma-arrivals__prices">
+                    <span class="ma-arrivals__price">Rs. 1,999</span>
+                    <span class="ma-arrivals__compare">Rs. 3,999</span>
+                  </div>
+                  <div class="ma-arrivals__colors" aria-label="Available colors">
+                    <span class="ma-arrivals__swatch" style="background:#1a1a1a"></span>
+                    <span class="ma-arrivals__swatch" style="background:#b0b0b0"></span>
+                    <span class="ma-arrivals__swatch-more">+1</span>
+                  </div>
+                </div>
+                <div class="ma-arrivals__emi">
+                  <span class="ma-arrivals__emi-text">or &#8377;666/Month</span>
+                  <button type="button" class="ma-arrivals__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-arrivals__card" data-ma-product-id="steller-20k">
+              <a href="product.html?id=steller-20k" class="ma-arrivals__media">
+                <img src="assets/img/steller-20k.avif" alt="Steller Power Bank 20000 mAh" width="280" height="240"
+                  loading="lazy" decoding="async" />
+                <span class="ma-arrivals__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 4.9
+                </span>
+              </a>
+              <div class="ma-arrivals__body">
+                <h3 class="ma-arrivals__name"><a href="product.html?id=steller-20k">Steller Power Bank 20000 mAh</a></h3>
+                <p class="ma-arrivals__desc">20000mAh Qi2 Certified Magsafe Wireless Fast Charging Power...</p>
+                <div class="ma-arrivals__price-row">
+                  <div class="ma-arrivals__prices">
+                    <span class="ma-arrivals__price">Rs. 1,999</span>
+                    <span class="ma-arrivals__compare">Rs. 3,999</span>
+                  </div>
+                  <div class="ma-arrivals__colors" aria-label="Available colors">
+                    <span class="ma-arrivals__swatch" style="background:#1a1a1a"></span>
+                  </div>
+                </div>
+                <div class="ma-arrivals__emi">
+                  <span class="ma-arrivals__emi-text">or &#8377;666/Month</span>
+                  <button type="button" class="ma-arrivals__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-arrivals__card" data-ma-product-id="lapmate-02">
+              <a href="product.html?id=lapmate-02" class="ma-arrivals__media">
+                <img src="assets/img/Lapmate.avif" alt="LapMate 02" width="280" height="240" loading="lazy"
+                  decoding="async" />
+                <span class="ma-arrivals__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 3.9
+                </span>
+              </a>
+              <div class="ma-arrivals__body">
+                <h3 class="ma-arrivals__name"><a href="product.html?id=lapmate-02">LapMate 02</a></h3>
+                <p class="ma-arrivals__desc">2-in-1 Adjustable Bed Table with Dual Cushion Support</p>
+                <div class="ma-arrivals__price-row">
+                  <div class="ma-arrivals__prices">
+                    <span class="ma-arrivals__price">Rs. 4,999</span>
+                    <span class="ma-arrivals__compare">Rs. 9,999</span>
+                  </div>
+                  <div class="ma-arrivals__colors" aria-label="Available colors">
+                    <span class="ma-arrivals__swatch" style="background:#1a1a1a"></span>
+                    <span class="ma-arrivals__swatch" style="background:#b0b0b0"></span>
+                  </div>
+                </div>
+                <div class="ma-arrivals__emi">
+                  <span class="ma-arrivals__emi-text">or &#8377;1,666/Month</span>
+                  <button type="button" class="ma-arrivals__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-arrivals__card" data-ma-product-id="carlink-stream">
+              <a href="product.html?id=carlink-stream" class="ma-arrivals__media">
+                <img src="assets/img/carlink-stream.avif" alt="Carlink Stream" width="280" height="240" loading="lazy"
+                  decoding="async" />
+                <span class="ma-arrivals__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 5.0
+                </span>
+              </a>
+              <div class="ma-arrivals__body">
+                <h3 class="ma-arrivals__name"><a href="product.html?id=carlink-stream">Carlink Stream</a></h3>
+                <p class="ma-arrivals__desc">Android Auto &amp; Apple CarPlay Wireless Adapter</p>
+                <div class="ma-arrivals__price-row">
+                  <div class="ma-arrivals__prices">
+                    <span class="ma-arrivals__price">Rs. 7,999</span>
+                    <span class="ma-arrivals__compare">Rs. 9,999</span>
+                  </div>
+                  <div class="ma-arrivals__colors" aria-label="Available colors">
+                    <span class="ma-arrivals__swatch" style="background:#1a1a1a"></span>
+                  </div>
+                </div>
+                <div class="ma-arrivals__emi">
+                  <span class="ma-arrivals__emi-text">or &#8377;2,666/Month</span>
+                  <button type="button" class="ma-arrivals__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-arrivals__card" data-ma-product-id="aeroflex-cable">
+              <a href="product.html?id=aeroflex-cable" class="ma-arrivals__media">
+                <img src="assets/img/aerosync.avif" alt="Aeroflex Cable" width="280" height="240" loading="lazy"
+                  decoding="async" />
+                <span class="ma-arrivals__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 4.2
+                </span>
+              </a>
+              <div class="ma-arrivals__body">
+                <h3 class="ma-arrivals__name"><a href="product.html?id=aeroflex-cable">Aeroflex Cable</a></h3>
+                <p class="ma-arrivals__desc">4-in-1 Multi Charging Cable with 100W Fast Charging</p>
+                <div class="ma-arrivals__price-row">
+                  <div class="ma-arrivals__prices">
+                    <span class="ma-arrivals__price">Rs. 749</span>
+                    <span class="ma-arrivals__compare">Rs. 1,499</span>
+                  </div>
+                  <div class="ma-arrivals__colors" aria-label="Available colors">
+                    <span class="ma-arrivals__swatch" style="background:#1a1a1a"></span>
+                    <span class="ma-arrivals__swatch" style="background:#f5c518"></span>
+                  </div>
+                </div>
+                <div class="ma-arrivals__emi">
+                  <span class="ma-arrivals__emi-text">or &#8377;250/Month</span>
+                  <button type="button" class="ma-arrivals__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+        <div class="ma-arrivals__footer">
+          <div class="ma-arrivals__progress" aria-hidden="true">
+            <span class="ma-arrivals__progress-fill" data-ma-arrivals-progress></span>
+          </div>
+          <div class="ma-arrivals__controls">
+            <button type="button" class="ma-arrivals__arrow" data-ma-arrivals-prev aria-label="Previous products"
+              disabled>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="ma-arrivals__arrow" data-ma-arrivals-next aria-label="Next products">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+            <a href="shop.html" class="ma-arrivals__show-all">Show All</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-mobile-promo" aria-labelledby="ma-mobile-promo-heading">
+      <div class="ma-header__container ma-mobile-promo__inner">
+        <div class="ma-mobile-promo__head">
+          <h2 id="ma-mobile-promo-heading" class="ma-mobile-promo__title">Mobiles &amp; Accessories</h2>
+          <nav class="ma-mobile-promo__tabs" aria-label="Mobiles and accessories filters">
+            <a href="#" class="ma-mobile-promo__tab is-active">Best seller</a>
+            <span class="ma-mobile-promo__divider" aria-hidden="true"></span>
+            <a href="#" class="ma-mobile-promo__tab">5G Mobiles</a>
+            <span class="ma-mobile-promo__divider" aria-hidden="true"></span>
+            <a href="#" class="ma-mobile-promo__tab">Top Brands</a>
+            <span class="ma-mobile-promo__divider" aria-hidden="true"></span>
+            <a href="#" class="ma-mobile-promo__tab">Accessories</a>
+          </nav>
+        </div>
+
+        <div class="ma-mobile-promo__grid">
+          <a href="shop.html" class="ma-mobile-promo__card">
+            <img src="assets/img/SB-1.png" alt="iPhones — Shop now" width="480" height="280" decoding="async" />
+          </a>
+          <a href="shop.html" class="ma-mobile-promo__card">
+            <img src="assets/img/SB-3.png" alt="Galaxy AI Phones — Shop now" width="480" height="280" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="shop.html" class="ma-mobile-promo__card ma-mobile-promo__card--tall">
+            <img src="assets/img/SB-5.png" alt="iPhone 17 Series — Available now" width="480" height="580"
+              loading="lazy" decoding="async" />
+          </a>
+          <a href="shop.html" class="ma-mobile-promo__card">
+            <img src="assets/img/SB-2.png" alt="Smart Phones — Shop now" width="480" height="280" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="shop.html" class="ma-mobile-promo__card">
+            <img src="assets/img/SB-4.png" alt="Mobile Accessories — Shop now" width="480" height="280" loading="lazy"
+              decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-silk-banner" aria-labelledby="ma-silk-banner-heading">
+      <div class="ma-header__container ma-silk-banner__wrap">
+        <div class="ma-silk-banner__card">
+          <img class="ma-silk-banner__visual" src="assets/img/banner.png"
+            alt="Silk Series colorful phone cases on a wooden surface" width="1920" height="520" loading="lazy"
+            decoding="async" />
+
+          <div class="ma-silk-banner__content">
+            <h2 id="ma-silk-banner-heading" class="ma-silk-banner__title">
+              Vibe in 40 Shades - Presenting Silk Series by Sprig
+            </h2>
+            <p class="ma-silk-banner__desc">
+              40 colors. Infinite vibes. Switch up your phone like you switch up your mood. Because your style
+              deserves a shade for every day.
+            </p>
+            <div class="ma-silk-banner__swatches" aria-label="Available colors">
+              <div class="ma-silk-banner__swatch-row">
+                <span class="ma-silk-banner__swatch" style="background:#1a1a1a"></span>
+                <span class="ma-silk-banner__swatch" style="background:#4a4a4a"></span>
+                <span class="ma-silk-banner__swatch" style="background:#3d4f3a"></span>
+                <span class="ma-silk-banner__swatch" style="background:#5c4d6e"></span>
+                <span class="ma-silk-banner__swatch" style="background:#1e3a5f"></span>
+                <span class="ma-silk-banner__swatch" style="background:#2a5f6b"></span>
+                <span class="ma-silk-banner__swatch" style="background:#1a3d6e"></span>
+              </div>
+              <div class="ma-silk-banner__swatch-row">
+                <span class="ma-silk-banner__swatch" style="background:#b8c5d0"></span>
+                <span class="ma-silk-banner__swatch" style="background:#f5d547"></span>
+                <span class="ma-silk-banner__swatch" style="background:#8fbc8f"></span>
+                <span class="ma-silk-banner__swatch" style="background:#e63946"></span>
+                <span class="ma-silk-banner__swatch" style="background:#2563eb"></span>
+                <span class="ma-silk-banner__swatch" style="background:#c4b5fd"></span>
+                <span class="ma-silk-banner__more">30+</span>
+              </div>
+            </div>
+            <a href="shop.html" class="ma-silk-banner__cta">Shop Now</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-collections" aria-labelledby="ma-collections-heading" data-ma-collections>
+      <div class="ma-header__container ma-collections__inner">
+        <h2 id="ma-collections-heading" class="ma-collections__title">Our Collections</h2>
+
+        <div class="ma-collections__filters" role="tablist" aria-label="Collection categories">
+          <button type="button" class="ma-collections__filter is-active" role="tab" aria-selected="true">Mobile
+            Chargers</button>
+          <button type="button" class="ma-collections__filter" role="tab" aria-selected="false">Power Banks</button>
+          <button type="button" class="ma-collections__filter" role="tab" aria-selected="false">Vacuum
+            Cleaners</button>
+          <button type="button" class="ma-collections__filter" role="tab" aria-selected="false">Fast Charging
+            Cables</button>
+          <button type="button" class="ma-collections__filter" role="tab" aria-selected="false">Powerstation</button>
+        </div>
+
+        <div class="ma-collections__viewport" data-ma-collections-viewport>
+          <div class="ma-collections__track" data-ma-collections-track>
+
+            <article class="ma-collections__card" data-ma-product-id="charge-c84">
+              <a href="product.html?id=charge-c84" class="ma-collections__media">
+                <img src="assets/img/OC-1.png" alt="Charge C84" width="280" height="240" decoding="async" />
+              </a>
+              <div class="ma-collections__body">
+                <h3 class="ma-collections__name"><a href="product.html?id=charge-c84">Charge C84</a></h3>
+                <div class="ma-collections__price-row">
+                  <div class="ma-collections__prices">
+                    <span class="ma-collections__price">Rs. 599</span>
+                    <span class="ma-collections__compare">Rs. 2,999</span>
+                  </div>
+                </div>
+                <div class="ma-collections__emi">
+                  <span class="ma-collections__emi-text">or &#8377;200/Month</span>
+                  <button type="button" class="ma-collections__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-collections__card" data-ma-product-id="charge-i36">
+              <a href="product.html?id=charge-i36" class="ma-collections__media">
+                <img src="assets/img/OC-2.png" alt="Charge i36" width="280" height="240" loading="lazy"
+                  decoding="async" />
+              </a>
+              <div class="ma-collections__body">
+                <h3 class="ma-collections__name"><a href="product.html?id=charge-i36">Charge i36</a></h3>
+                <div class="ma-collections__price-row">
+                  <div class="ma-collections__prices">
+                    <span class="ma-collections__price">Rs. 799</span>
+                    <span class="ma-collections__compare">Rs. 1,399</span>
+                  </div>
+                </div>
+                <div class="ma-collections__emi">
+                  <span class="ma-collections__emi-text">or &#8377;266/Month</span>
+                  <button type="button" class="ma-collections__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-collections__card" data-ma-product-id="aerosynq-2">
+              <a href="product.html?id=aerosynq-2" class="ma-collections__media">
+                <img src="assets/img/OC-3.png" alt="AerosynQ 2" width="280" height="240" loading="lazy"
+                  decoding="async" />
+              </a>
+              <div class="ma-collections__body">
+                <h3 class="ma-collections__name"><a href="product.html?id=aerosynq-2">AerosynQ 2</a></h3>
+                <p class="ma-collections__desc">Qi2 Certified 25W Fast Charging Wireless Charger with...</p>
+                <div class="ma-collections__price-row">
+                  <div class="ma-collections__prices">
+                    <span class="ma-collections__price">Rs. 1,699</span>
+                    <span class="ma-collections__compare">Rs. 3,399</span>
+                  </div>
+                  <div class="ma-collections__colors" aria-label="Available colors">
+                    <span class="ma-collections__swatch" style="background:#1a1a1a"></span>
+                    <span class="ma-collections__swatch ma-collections__swatch--split" aria-hidden="true"></span>
+                  </div>
+                </div>
+                <div class="ma-collections__emi">
+                  <span class="ma-collections__emi-text">or &#8377;566/Month</span>
+                  <button type="button" class="ma-collections__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-collections__card" data-ma-product-id="charge-r65">
+              <a href="product.html?id=charge-r65" class="ma-collections__media">
+                <img src="assets/img/OC-4.png" alt="Charge R65" width="280" height="240" loading="lazy"
+                  decoding="async" />
+                <span class="ma-collections__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 5.0
+                </span>
+              </a>
+              <div class="ma-collections__body">
+                <h3 class="ma-collections__name"><a href="product.html?id=charge-r65">Charge R65</a></h3>
+                <div class="ma-collections__price-row">
+                  <div class="ma-collections__prices">
+                    <span class="ma-collections__price">Rs. 2,999</span>
+                    <span class="ma-collections__compare">Rs. 4,999</span>
+                  </div>
+                </div>
+                <div class="ma-collections__emi">
+                  <span class="ma-collections__emi-text">or &#8377;1,000/Month</span>
+                  <button type="button" class="ma-collections__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-collections__card" data-ma-product-id="charge-x33">
+              <a href="product.html?id=charge-x33" class="ma-collections__media">
+                <img src="assets/img/OC-5.png" alt="Charge X33" width="280" height="240" loading="lazy"
+                  decoding="async" />
+                <span class="ma-collections__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 4.5
+                </span>
+              </a>
+              <div class="ma-collections__body">
+                <h3 class="ma-collections__name"><a href="product.html?id=charge-x33">Charge X33</a></h3>
+                <div class="ma-collections__price-row">
+                  <div class="ma-collections__prices">
+                    <span class="ma-collections__price">Rs. 1,299</span>
+                    <span class="ma-collections__compare">Rs. 2,599</span>
+                  </div>
+                </div>
+                <div class="ma-collections__emi">
+                  <span class="ma-collections__emi-text">or &#8377;433/Month</span>
+                  <button type="button" class="ma-collections__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="ma-collections__card" data-ma-product-id="charge-i45">
+              <a href="product.html?id=charge-i45" class="ma-collections__media">
+                <img src="assets/img/OC-6.png" alt="Charge i45" width="280" height="240" loading="lazy"
+                  decoding="async" />
+                <span class="ma-collections__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i> 4.42
+                </span>
+              </a>
+              <div class="ma-collections__body">
+                <h3 class="ma-collections__name"><a href="product.html?id=charge-i45">Charge i45</a></h3>
+                <div class="ma-collections__price-row">
+                  <div class="ma-collections__prices">
+                    <span class="ma-collections__price">Rs. 1,099</span>
+                    <span class="ma-collections__compare">Rs. 2,199</span>
+                  </div>
+                </div>
+                <div class="ma-collections__emi">
+                  <span class="ma-collections__emi-text">or &#8377;366/Month</span>
+                  <button type="button" class="ma-collections__emi-btn">Buy on EMI
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </div>
+
+        <div class="ma-collections__footer">
+          <div class="ma-collections__progress" aria-hidden="true">
+            <span class="ma-collections__progress-fill" data-ma-collections-progress></span>
+          </div>
+          <div class="ma-collections__controls">
+            <button type="button" class="ma-collections__arrow" data-ma-collections-prev aria-label="Previous products"
+              disabled>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="ma-collections__arrow" data-ma-collections-next aria-label="Next products">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+            <a href="shop.html" class="ma-collections__show-all">Show All</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-travel" aria-labelledby="ma-travel-heading">
+      <div class="ma-header__container ma-travel__inner">
+        <div class="ma-travel__head">
+          <h2 id="ma-travel-heading" class="ma-travel__title">Explore Travel Companion</h2>
+          <a href="shop.html" class="ma-travel__more">More Products</a>
+        </div>
+
+        <div class="ma-travel__grid">
+          <a href="shop.html" class="ma-travel__card ma-travel__card--wide">
+            <img src="assets/img/promo-1.png" alt="KM-850H Quantum headphones" width="640" height="320"
+              decoding="async" />
+          </a>
+
+          <a href="shop.html" class="ma-travel__card ma-travel__card--small">
+            <img src="assets/img/promo-3.png" alt="KM-ST52 car phone mount" width="320" height="360" loading="lazy"
+              decoding="async" />
+          </a>
+
+          <a href="shop.html" class="ma-travel__card ma-travel__card--tall">
+            <img src="assets/img/promo-5.png" alt="KDM EB1 power bank" width="320" height="720" loading="lazy"
+              decoding="async" />
+          </a>
+
+          <a href="shop.html" class="ma-travel__card ma-travel__card--wide">
+            <img src="assets/img/promo-2.png" alt="UC95 car charger" width="640" height="320" loading="lazy"
+              decoding="async" />
+          </a>
+
+          <a href="shop.html" class="ma-travel__card ma-travel__card--small">
+            <img src="assets/img/promo-4.png" alt="KDM REELSTAR selfie stick" width="320" height="360" loading="lazy"
+              decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="ma-snoot" aria-labelledby="ma-snoot-heading">
+      <div class="ma-header__container ma-snoot__inner">
+        <h2 id="ma-snoot-heading" class="ma-snoot__title">Shape Your Light</h2>
+        <p class="ma-snoot__subtitle">
+          Digitek Snoot turns ordinary lighting into sharp &amp; cinematic focus for every shoot.
+        </p>
+
+        <div class="ma-snoot__compare" data-ma-snoot-compare>
+          <img class="ma-snoot__img ma-snoot__img--dim" src="assets/img/After-snoot.webp"
+            alt="DS 40 WTP PRO lighting comparison" width="1280" height="520" decoding="async" />
+
+          <div class="ma-snoot__reveal" data-ma-snoot-before>
+            <div class="ma-snoot__reveal-fill" data-ma-snoot-reveal-fill aria-hidden="true"></div>
+          </div>
+
+          <span class="ma-snoot__label ma-snoot__label--before">Before DS 40 WTP PRO</span>
+          <span class="ma-snoot__label ma-snoot__label--after">After DS 40 WTP PRO</span>
+
+          <div class="ma-snoot__divider" data-ma-snoot-divider aria-hidden="true">
+            <span class="ma-snoot__line"></span>
+            <button type="button" class="ma-snoot__handle" data-ma-snoot-handle
+              aria-label="Drag to compare before and after">
+              <i class="fa-solid fa-grip-lines-vertical" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <input type="range" class="ma-snoot__range" data-ma-snoot-range min="0" max="100" value="50"
+            aria-label="Compare before and after lighting" />
+        </div>
+
+        <a href="shop.html" class="ma-snoot__cta">Shop DS 40 WTP PRO</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="ma-footer" role="contentinfo">
+    <div class="ma-footer__main">
+      <div class="ma-header__container ma-footer__grid">
+
+        <div class="ma-footer__brand">
+          <a href="index.html" class="ma-footer__logo" aria-label="Mobexa home">
+            <img src="assets/img/logo.png" alt="Mobexa Mobile Accessories" width="150" height="48" loading="lazy"
+              decoding="async" />
+          </a>
+          <address class="ma-footer__address">
+            101, 1st Floor, Arun chamber, Tardeo, Mumbai, Maharashtra 400034
+          </address>
+          <a href="mailto:care@mobexa.com" class="ma-footer__link ma-footer__link--contact">care@mobexa.com</a>
+          <a href="tel:+918101969696" class="ma-footer__link ma-footer__link--contact">+918101969696</a>
+        </div>
+
+        <div class="ma-footer__col">
+          <h3 class="ma-footer__heading">COMPANY</h3>
+          <ul class="ma-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Mobexa in News</a></li>
+            <li><a href="#">Awards</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Karo Dil Ki Marzi</a></li>
+            <li><a href="#">Life At Mobexa</a></li>
+            <li><a href="#">Distributorship at Mobexa</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col">
+          <h3 class="ma-footer__heading">SUPPORT/INFO</h3>
+          <ul class="ma-footer__links">
+            <li><a href="#">FAQS</a></li>
+            <li><a href="#">E-waste Management</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col ma-footer__col--products">
+          <h3 class="ma-footer__heading">PRODUCTS</h3>
+          <ul class="ma-footer__links">
+            <li><a href="shop.html">Earbuds</a></li>
+            <li><a href="shop.html">Neckbands</a></li>
+            <li><a href="shop.html">Earphones</a></li>
+            <li><a href="shop.html">Wireless Speakers</a></li>
+            <li><a href="shop.html">Headphones</a></li>
+            <li><a href="shop.html">Microphones</a></li>
+            <li><a href="shop.html">Chargers</a></li>
+            <li><a href="shop.html">Car Chargers</a></li>
+            <li><a href="shop.html">Data Cables</a></li>
+          </ul>
+        </div>
+
+        <div class="ma-footer__col ma-footer__col--products-extra">
+          <ul class="ma-footer__links">
+            <li><a href="shop.html">Aux Cables</a></li>
+            <li><a href="shop.html">PowerBanks</a></li>
+            <li><a href="shop.html">Mobile Stands</a></li>
+            <li><a href="shop.html">MMC / Pendrives</a></li>
+            <li><a href="shop.html">OTG / Connector</a></li>
+            <li><a href="shop.html">Screen Guards</a></li>
+            <li><a href="shop.html">Batteries</a></li>
+            <li><a href="shop.html">Gimbals</a></li>
+            <li><a href="shop.html">Star Products</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ma-footer__bottom">
+      <div class="ma-header__container ma-footer__bottom-inner">
+        <img class="ma-footer__made-in" src="assets/img/mii.png.webp" alt="Make in India" width="120" height="76"
+          loading="lazy" decoding="async" />
+
+        <p class="ma-footer__social-text">Let&rsquo;s connect socially!</p>
+
+        <ul class="ma-footer__social" aria-label="Social media links">
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="ma-footer__social-link" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
+
+        <p class="ma-footer__copy">Mobexa Mobile Solutions Private Limited, 2026 | All rights reserved</p>
+      </div>
+    </div>
+
+    <button type="button" class="ma-footer__top" data-ma-back-to-top aria-label="Back to top">
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>
