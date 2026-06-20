@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grovio — Fresh Grocery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/motion.css" />
+</head>
+
+<body>
+
+  <header class="grc-header" role="banner">
+
+    <div class="grc-header__announce" role="region" aria-label="Store announcement" data-grc-announce>
+      <div class="grc-header__container grc-header__announce-inner">
+        <p class="grc-header__announce-text">Delivering across Delhi NCR</p>
+        <button type="button" class="grc-header__announce-close" aria-label="Close announcement"
+          data-grc-announce-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="grc-header__main">
+      <div class="grc-header__container grc-header__main-inner">
+
+        <button type="button" class="grc-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-grc-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="grc-header__logo" aria-label="Grovio home">
+          <img src="assets/img/logo.png" alt="Grovio — Freshness Delivered Daily" width="140" height="56"
+            decoding="async" />
+        </a>
+
+        <form class="grc-header__search grc-header__search--desktop" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="grc-header-search">Search products</label>
+          <i class="fa-solid fa-magnifying-glass grc-header__search-icon" aria-hidden="true"></i>
+          <input id="grc-header-search" type="search" name="q" placeholder='Search "Strawberries"' autocomplete="off" />
+        </form>
+
+        <div class="grc-header__utilities">
+          <button type="button" class="grc-header__location" aria-label="Select delivery location"
+            data-grc-location-btn>
+            <i class="fa-solid fa-store grc-header__location-icon" aria-hidden="true"></i>
+            <span class="grc-header__location-text" data-grc-location-text>Fetching Location</span>
+            <i class="fa-solid fa-chevron-down grc-header__location-chevron" aria-hidden="true"></i>
+          </button>
+
+          <div class="grc-header__actions">
+            <a href="#" class="grc-header__action grc-header__action--wishlist" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-header__action grc-header__action--account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-header__action grc-header__action--cart" aria-label="Shopping cart">
+              <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="grc-header__container grc-header__mobile-search">
+        <form class="grc-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="grc-header-search-mobile">Search products</label>
+          <i class="fa-solid fa-magnifying-glass grc-header__search-icon" aria-hidden="true"></i>
+          <input id="grc-header-search-mobile" type="search" name="q" placeholder='Search "Gift Hampers"'
+            autocomplete="off" />
+        </form>
+      </div>
+    </div>
+
+    <nav class="grc-header__nav" aria-label="Primary navigation">
+      <div class="grc-header__container">
+        <ul class="grc-header__nav-list" data-grc-nav>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bulk Gifting</a></li>
+          <li><a href="#">Stories</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="grc-header__mobile-nav" data-grc-mobile-nav hidden>
+      <div class="grc-header__mobile-nav-inner">
+        <ul class="grc-header__mobile-nav-list">
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bulk Gifting</a></li>
+          <li><a href="#">Stories</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grc-header__overlay" data-grc-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="grc-hero" aria-label="Hero banner slider" data-grc-hero>
+      <div class="grc-hero__frame">
+        <div class="grc-hero__inner">
+          <article class="grc-hero__slide is-active">
+            <img src="assets/img/hero-banner-1.png" alt="" width="1920" height="800" decoding="async" />
+          </article>
+          <article class="grc-hero__slide">
+            <img src="assets/img/hero-banner-2.png" alt="" width="1920" height="800" loading="lazy" decoding="async" />
+          </article>
+          <article class="grc-hero__slide">
+            <img src="assets/img/hero-banner-3.png" alt="" width="1920" height="800" loading="lazy" decoding="async" />
+          </article>
+          <article class="grc-hero__slide">
+            <img src="assets/img/hero-banner-4.png" alt="" width="1920" height="800" loading="lazy" decoding="async" />
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="grc-categories" aria-labelledby="grc-categories-heading">
+      <div class="grc-header__container grc-categories__inner">
+        <h2 id="grc-categories-heading" class="grc-categories__title">Shop by Categories</h2>
+
+        <div class="grc-categories__board">
+          <div class="grc-categories__grid">
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Deli.webp" alt="" width="220" height="160" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Deli</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Dairy.webp" alt="" width="220" height="160" loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Dairy</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Bakery.png" alt="" width="220" height="160" loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Bakery</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Fruits and Veggies.png" alt="" width="220" height="160" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-categories__label">Fruits And Veggies</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Fresh Non Veg.png" alt="" width="220" height="160" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-categories__label">Fresh Non Veg</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Staples.png" alt="" width="220" height="160" loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Staples</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Confectionery.png" alt="" width="220" height="160" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-categories__label">Confectionery</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Beverages.png" alt="" width="220" height="160" loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Beverages</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Snack Food.png" alt="" width="220" height="160" loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Snack Food</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Frozen.png" alt="" width="220" height="160" loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Frozen</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Packaged Food.png" alt="" width="220" height="160" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-categories__label">Packaged Food</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Personal Care.png" alt="" width="220" height="160" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-categories__label">Personal Care</span>
+            </a>
+            <a href="#" class="grc-categories__card">
+              <span class="grc-categories__media">
+                <img src="assets/img/Home Care.png" alt="" width="220" height="160" loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-categories__label">Home Care</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grc-farm" aria-labelledby="grc-farm-heading" data-grc-farm>
+      <div class="grc-header__container grc-farm__inner">
+        <div class="grc-farm__head">
+          <h2 id="grc-farm-heading" class="grc-farm__title">Fresh From the Farm</h2>
+          <a href="shop.html" class="grc-farm__view-all">VIEW ALL</a>
+        </div>
+
+        <div class="grc-farm__slider">
+          <div class="grc-farm__viewport" data-grc-farm-viewport tabindex="0" aria-label="Fresh farm products">
+            <div class="grc-farm__track" data-grc-farm-track>
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--pink">
+                  <img src="assets/img/Red-grapes.webp" alt="Litchi Indian" width="160" height="160" decoding="async" />
+                </div>
+                <p class="grc-farm__time">56 MINS</p>
+                <h3 class="grc-farm__name">Litchi Indian</h3>
+                <p class="grc-farm__qty">1 kg</p>
+                <p class="grc-farm__price">₹199</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--blue">
+                  <img src="assets/img/Orange.webp" alt="Mandarin Oranges Combo Pack" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-farm__time">56 MINS</p>
+                <h3 class="grc-farm__name">Mandarin Oranges Combo Pack</h3>
+                <p class="grc-farm__qty">900 - 1000 g</p>
+                <p class="grc-farm__price">₹299</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--blue">
+                  <img src="assets/img/Dragon.webp" alt="Dragon Fruit Red Flesh" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <p class="grc-farm__time">Tomorrow</p>
+                <h3 class="grc-farm__name">Dragon Fruit Red Flesh</h3>
+                <p class="grc-farm__qty">1 pc</p>
+                <p class="grc-farm__price">₹199</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--blue">
+                  <img src="assets/img/Pears.webp" alt="Pears Beauty Imported" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <p class="grc-farm__time">56 MINS</p>
+                <h3 class="grc-farm__name">Pears Beauty Imported</h3>
+                <p class="grc-farm__qty">1 kg</p>
+                <p class="grc-farm__price">₹359</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--peach">
+                  <img src="assets/img/Blueberries.webp" alt="Indian Blueberries Combo" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-farm__time">Tomorrow</p>
+                <h3 class="grc-farm__name">Indian Blueberries Combo</h3>
+                <p class="grc-farm__qty">(125 g + 125 g)</p>
+                <p class="grc-farm__price">₹699</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--rose">
+                  <img src="assets/img/Mushroom.webp" alt="Button Mushroom" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <p class="grc-farm__time">Tomorrow</p>
+                <h3 class="grc-farm__name">Button Mushroom</h3>
+                <p class="grc-farm__qty">200 g</p>
+                <p class="grc-farm__price">₹119</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--pink">
+                  <img src="assets/img/Apple.webp" alt="Apple Fuji" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <p class="grc-farm__time">Tomorrow</p>
+                <h3 class="grc-farm__name">Apple Fuji</h3>
+                <p class="grc-farm__qty">1 kg</p>
+                <p class="grc-farm__price">₹459</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--peach">
+                  <img src="assets/img/Apple-pink.webp" alt="Apple Pink Lady" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <p class="grc-farm__time">56 MINS</p>
+                <h3 class="grc-farm__name">Apple Pink Lady</h3>
+                <p class="grc-farm__qty">1 kg</p>
+                <p class="grc-farm__price">₹539</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+
+              <article class="grc-farm__card">
+                <div class="grc-farm__media grc-farm__media--pink">
+                  <img src="assets/img/Strawberry.webp" alt="Nectarine" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <p class="grc-farm__time">56 MINS</p>
+                <h3 class="grc-farm__name">Nectarine</h3>
+                <p class="grc-farm__qty">1 kg</p>
+                <p class="grc-farm__price">₹249</p>
+                <button type="button" class="grc-farm__add">ADD</button>
+              </article>
+            </div>
+          </div>
+
+          <button type="button" class="grc-farm__nav grc-farm__nav--prev" data-grc-farm-prev
+            aria-label="Previous products" hidden>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="grc-farm__nav grc-farm__nav--next" data-grc-farm-next aria-label="Next products">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grc-promo" aria-label="Promotional offers">
+      <div class="grc-header__container grc-promo__inner">
+        <div class="grc-promo__grid">
+          <a href="#" class="grc-promo__card">
+            <img src="assets/img/promo-1.png" alt="" width="960" height="400" decoding="async" />
+          </a>
+          <a href="#" class="grc-promo__card">
+            <img src="assets/img/promo-2.png" alt="" width="960" height="400" loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="grc-essentials" aria-labelledby="grc-essentials-heading" data-grc-essentials>
+      <div class="grc-header__container grc-essentials__inner">
+        <div class="grc-essentials__head">
+          <h2 id="grc-essentials-heading" class="grc-essentials__title">Daily Essentials</h2>
+          <a href="shop.html" class="grc-essentials__view-all">VIEW ALL</a>
+        </div>
+
+        <div class="grc-essentials__slider">
+          <div class="grc-essentials__viewport" data-grc-essentials-viewport tabindex="0"
+            aria-label="Daily essentials products">
+            <div class="grc-essentials__track" data-grc-essentials-track>
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--orange">
+                  <img src="assets/img/basmati-rice.webp" alt="Daawat Biryani Basmati Rice Extra Long" width="160"
+                    height="160" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">56 MINS</p>
+                <h3 class="grc-essentials__name">Daawat Biryani Basmati Rice Extra Long</h3>
+                <p class="grc-essentials__qty">5 kg</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹1245</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--pink">
+                  <img src="assets/img/moong-dal.webp" alt="Conscious Food Mung Dal" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">Tomorrow</p>
+                <h3 class="grc-essentials__name">Conscious Food Mung Dal</h3>
+                <p class="grc-essentials__qty">500 g</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹155</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--yellow">
+                  <span class="grc-essentials__badge">14% OFF</span>
+                  <img src="assets/img/ghee.webp" alt="Hari-Bol A2 Milk Desi Cow Ghee" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">Tomorrow</p>
+                <h3 class="grc-essentials__name">Hari-Bol A2 Milk Desi Cow Ghee</h3>
+                <p class="grc-essentials__qty">1000 ml</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹1919</p>
+                  <p class="grc-essentials__mrp">₹2220</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--pink">
+                  <span class="grc-essentials__badge">25% OFF</span>
+                  <img src="assets/img/black-rice.webp" alt="Faith Foods Organic Black Rice" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">Tomorrow</p>
+                <h3 class="grc-essentials__name">Faith Foods Organic Black Rice</h3>
+                <p class="grc-essentials__qty">1 kg</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹336.75</p>
+                  <p class="grc-essentials__mrp">₹449</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--pink">
+                  <img src="assets/img/urad-dal.webp" alt="Tata Sampann Unpolished Urad Dal" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">Tomorrow</p>
+                <h3 class="grc-essentials__name">Tata Sampann Unpolished Urad Dal</h3>
+                <p class="grc-essentials__qty">1 kg</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹249</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--pink">
+                  <span class="grc-essentials__badge">22% OFF</span>
+                  <img src="assets/img/olive-oil.webp" alt="Borges Extra Virgin Olive Oil" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">Tomorrow</p>
+                <h3 class="grc-essentials__name">Borges Extra Virgin Olive Oil</h3>
+                <p class="grc-essentials__qty">1 l</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹1799</p>
+                  <p class="grc-essentials__mrp">₹2300</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--blue">
+                  <img src="assets/img/chana-dal.webp" alt="Conscious Food Organic Chana Dal" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">56 MINS</p>
+                <h3 class="grc-essentials__name">Conscious Food Organic Chana Dal</h3>
+                <p class="grc-essentials__qty">500 g</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹135</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+
+              <article class="grc-essentials__card">
+                <div class="grc-essentials__media grc-essentials__media--orange">
+                  <img src="assets/img/masoor-dal.webp" alt="Conscious Food Whole Masoor Dal" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <p class="grc-essentials__time">Tomorrow</p>
+                <h3 class="grc-essentials__name">Conscious Food Whole Masoor Dal</h3>
+                <p class="grc-essentials__qty">500 g</p>
+                <div class="grc-essentials__prices">
+                  <p class="grc-essentials__price">₹140</p>
+                </div>
+                <button type="button" class="grc-essentials__add">ADD</button>
+              </article>
+            </div>
+          </div>
+
+          <button type="button" class="grc-essentials__nav grc-essentials__nav--prev" data-grc-essentials-prev
+            aria-label="Previous products" hidden>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="grc-essentials__nav grc-essentials__nav--next" data-grc-essentials-next
+            aria-label="Next products">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grc-shopways" aria-labelledby="grc-shopways-heading">
+      <div class="grc-header__container grc-shopways__inner">
+        <h2 id="grc-shopways-heading" class="grc-shopways__title">Many Ways to Eat, Your Way to Shop</h2>
+
+        <div class="grc-shopways__grid">
+          <a href="#" class="grc-shopways__card">
+            <img src="assets/img/glutenfree-latest.webp" alt="Gluten Free" width="640" height="480" decoding="async" />
+            <span class="grc-shopways__label">Gluten Free</span>
+          </a>
+
+          <a href="#" class="grc-shopways__card grc-shopways__card--tall">
+            <img src="assets/img/gifting-latest_1.webp" alt="Gifting" width="640" height="960" loading="lazy"
+              decoding="async" />
+            <span class="grc-shopways__label">Gifting</span>
+          </a>
+
+          <a href="#" class="grc-shopways__card">
+            <img src="assets/img/party_pantry_picks.webp" alt="Party Pantry Picks" width="640" height="480"
+              loading="lazy" decoding="async" />
+            <span class="grc-shopways__label">Party Pantry Picks</span>
+          </a>
+
+          <a href="#" class="grc-shopways__card">
+            <img src="assets/img/vegan-latest.webp" alt="Vegan" width="640" height="480" loading="lazy"
+              decoding="async" />
+            <span class="grc-shopways__label">Vegan</span>
+          </a>
+
+          <a href="#" class="grc-shopways__card">
+            <img src="assets/img/barbeque_essentials.webp" alt="Barbeque Essentials" width="640" height="480"
+              loading="lazy" decoding="async" />
+            <span class="grc-shopways__label">Barbeque Essentials</span>
+          </a>
+        </div>
+
+        <a href="https://wa.me/" class="grc-shopways__wa" aria-label="Chat on WhatsApp" target="_blank"
+          rel="noopener noreferrer">
+          <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+        </a>
+      </div>
+    </section>
+
+    <section class="grc-aisles" aria-label="Shop by aisle">
+      <div class="grc-header__container grc-aisles__inner">
+
+        <div class="grc-aisles__block">
+          <h2 class="grc-aisles__title">Farm &amp; Creamery</h2>
+          <div class="grc-aisles__row">
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Fresh_Produce_drhcam.webp" alt="" width="140" height="140" decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Fresh Produce</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Butchery_Seafood_oe2jpv.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Butchery &amp; Seafood</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Artisanal_Bread_fvxcfv.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Boulangerie</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Dairy_Cheese_rxbcvu.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Dairy &amp; Cheese</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grc-aisles__block">
+          <h2 class="grc-aisles__title">The Indulgence Bar</h2>
+          <div class="grc-aisles__row">
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Chocolates_Confectionery_o7xd4a.webp" alt="" width="140" height="140"
+                  loading="lazy" decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Chocolates &amp; More</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Snacks_Treats_jbgodi.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Snacks &amp; Treats</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Tea_Coffee_Infusions_sn230s.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Tea, Coffee &amp; Infusions</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Cold_Beverages_Mixers_dutnts.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Cold Beverages</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Desserts_Bakes_xmqtoi.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Desserts &amp; Bakes</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Dessert_Ingredients.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Dessert Ingredients</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grc-aisles__block">
+          <h2 class="grc-aisles__title">The Essentials Larder</h2>
+          <div class="grc-aisles__row">
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Grains_Staples_bpp1wg.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Grain &amp; Staples</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Oils_Ghee_uzaou4.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Oils &amp; Ghee</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Sauces_Spices_More_csoxaa.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Sauces, Spices &amp; More</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Sweeteners_Salts_dcchjw.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Sweeteners &amp; Salts</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Breakfast_Instant_cbilyg.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Breakfast &amp; Instant</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Wellness_Foods_rjmezm.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Wellness Foods</span>
+            </a>
+            <a href="#" class="grc-aisles__card">
+              <span class="grc-aisles__media">
+                <img src="assets/img/Baking_Essentials_lh6q10.webp" alt="" width="140" height="140" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="grc-aisles__label">Baking Essentials</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="grc-promo-cards" aria-labelledby="grc-promo-cards-heading" data-grc-promo-cards>
+      <div class="grc-header__container grc-promo-cards__inner">
+        <div class="grc-promo-cards__slider">
+          <div class="grc-promo-cards__viewport" data-grc-promo-cards-viewport tabindex="0"
+            aria-label="Promotional offers carousel">
+            <div class="grc-promo-cards__track" data-grc-promo-cards-track>
+              <a href="#" class="grc-promo-cards__card">
+                <img src="assets/img/promo-card-1.png" alt="" width="800" height="480" decoding="async" />
+              </a>
+              <a href="#" class="grc-promo-cards__card">
+                <img src="assets/img/promo-card-2.png" alt="" width="800" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+              <a href="#" class="grc-promo-cards__card">
+                <img src="assets/img/promo-card-3.png" alt="" width="800" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+              <a href="#" class="grc-promo-cards__card">
+                <img src="assets/img/promo-card-4.png" alt="" width="800" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+              <a href="#" class="grc-promo-cards__card">
+                <img src="assets/img/promo-card-5.png" alt="" width="800" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+              <a href="#" class="grc-promo-cards__card">
+                <img src="assets/img/promo-card-6.png" alt="" width="800" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+          </div>
+
+          <button type="button" class="grc-promo-cards__nav grc-promo-cards__nav--prev" data-grc-promo-cards-prev
+            aria-label="Previous offers" hidden>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="grc-promo-cards__nav grc-promo-cards__nav--next" data-grc-promo-cards-next
+            aria-label="Next offers">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="grc-promo-cards__foot">
+          <div class="grc-promo-cards__copy">
+            <h2 id="grc-promo-cards-heading" class="grc-promo-cards__title">Gluten Free Essentials</h2>
+            <p class="grc-promo-cards__subtitle">Everyday staples, minus the gluten</p>
+          </div>
+          <a href="#" class="grc-promo-cards__view-all">View All</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="grc-footer" role="contentinfo" data-grc-footer>
+    <!-- <div class="grc-footer__wave-wrap" aria-hidden="true">
+      <svg class="grc-footer__wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path
+          d="M0,88 C180,28 340,108 520,52 C680,8 860,96 1040,38 C1180,12 1310,82 1440,64 L1440,120 L0,120 Z"
+          fill="#ffffff" />
+      </svg>
+    </div> -->
+
+    <div class="grc-footer__shell">
+      <div class="grc-footer__hills" aria-hidden="true">
+        <svg class="grc-footer__hill grc-footer__hill--left" viewBox="0 0 480 160" preserveAspectRatio="none">
+          <path d="M0,160 C90,110 180,48 310,72 C380,86 430,118 480,132 L480,160 Z" fill="#5A342D" />
+        </svg>
+        <svg class="grc-footer__hill grc-footer__hill--right" viewBox="0 0 480 160" preserveAspectRatio="none">
+          <path d="M0,128 C70,98 160,42 290,58 C370,68 420,108 480,148 L480,160 L0,160 Z" fill="#5A342D" />
+        </svg>
+      </div>
+
+      <div class="grc-footer__inner">
+        <section class="grc-footer__newsletter" aria-labelledby="grc-footer-newsletter-title">
+          <a href="index.html" class="grc-footer__logo-mark" aria-label="Grovio home" data-grc-footer-item>
+            <img src="assets/img/logo.png" alt="" width="72" height="72" decoding="async" />
+          </a>
+          <h2 id="grc-footer-newsletter-title" class="grc-footer__headline" data-grc-footer-item>
+            Good Food, Delivered to Your Inbox
+          </h2>
+          <p class="grc-footer__description" data-grc-footer-item>
+            Easy recipes, healthy tips, and exclusive offers from our kitchen.
+          </p>
+          <form class="grc-footer__form" action="#" method="post" data-grc-footer-item>
+            <label class="visually-hidden" for="grc-footer-email">Email address</label>
+            <input id="grc-footer-email" type="email" name="email" placeholder="ENTER YOUR EMAIL"
+              autocomplete="email" />
+            <button type="submit" class="grc-footer__submit">
+              <span>Submit</span>
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+          </form>
+        </section>
+
+        <div class="grc-footer__divider" role="presentation"></div>
+
+        <nav class="grc-footer__grid" aria-label="Footer navigation">
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Shop</h3>
+            <ul class="grc-footer__links">
+              <li><a href="shop.html">Best Sellers</a></li>
+              <li><a href="shop.html">New Arrivals</a></li>
+              <li><a href="shop.html">Vegetables</a></li>
+              <li><a href="shop.html">Fruits</a></li>
+              <li><a href="shop.html">Bakery</a></li>
+              <li><a href="shop.html">Beverages</a></li>
+              <li><a href="shop.html">Organic Products</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Brand</h3>
+            <ul class="grc-footer__links">
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Blogs</a></li>
+              <li><a href="#">Recipes</a></li>
+              <li><a href="#">Careers</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Legal</h3>
+            <ul class="grc-footer__links">
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Shipping Policy</a></li>
+              <li><a href="#">Returns &amp; Refund</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col grc-footer__col--help" data-grc-footer-item>
+            <h3 class="grc-footer__help-title">We're always here to help you</h3>
+            <ul class="grc-footer__contact">
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-envelope"></i>
+                </span>
+                <a href="mailto:support@grovio.in">support@grovio.in</a>
+              </li>
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-phone"></i>
+                </span>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+              </li>
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <span class="grc-footer__contact-text">Delhi NCR — Fresh organic groceries delivered daily to your doorstep.</span>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="grc-footer__divider" role="presentation"></div>
+
+        <div class="grc-footer__bottom">
+          <div class="grc-footer__powered" data-grc-footer-item>
+            <span class="grc-footer__powered-label">Powered by</span>
+            <span class="grc-footer__powered-brand">
+              <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+              Grovio
+            </span>
+          </div>
+
+          <div class="grc-footer__social-block" data-grc-footer-item>
+            <span class="grc-footer__social-label">Connect with us</span>
+            <div class="grc-footer__social" role="list">
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Instagram">
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Pinterest">
+                <i class="fa-brands fa-pinterest-p" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="YouTube">
+                <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Facebook">
+                <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="LinkedIn">
+                <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <p class="grc-footer__copyright" data-grc-footer-item>
+            <i class="fa-regular fa-copyright" aria-hidden="true"></i>
+            2026 Grovio. All Rights Reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/motion.js"></script>
+</body>
+
+</html>

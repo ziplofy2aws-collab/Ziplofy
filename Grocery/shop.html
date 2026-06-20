@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Grovio Fresh Grocery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/motion.css" />
+</head>
+
+<body>
+
+  <header class="grc-header" role="banner">
+
+    <div class="grc-header__announce" role="region" aria-label="Store announcement" data-grc-announce>
+      <div class="grc-header__container grc-header__announce-inner">
+        <p class="grc-header__announce-text">Delivering across Delhi NCR</p>
+        <button type="button" class="grc-header__announce-close" aria-label="Close announcement"
+          data-grc-announce-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="grc-header__main">
+      <div class="grc-header__container grc-header__main-inner">
+
+        <button type="button" class="grc-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-grc-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="grc-header__logo" aria-label="Grovio home">
+          <img src="assets/img/logo.png" alt="Grovio — Freshness Delivered Daily" width="140" height="56"
+            decoding="async" />
+        </a>
+
+        <form class="grc-header__search grc-header__search--desktop" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="grc-header-search">Search products</label>
+          <i class="fa-solid fa-magnifying-glass grc-header__search-icon" aria-hidden="true"></i>
+          <input id="grc-header-search" type="search" name="q" placeholder='Search "Strawberries"' autocomplete="off" />
+        </form>
+
+        <div class="grc-header__utilities">
+          <button type="button" class="grc-header__location" aria-label="Select delivery location"
+            data-grc-location-btn>
+            <i class="fa-solid fa-store grc-header__location-icon" aria-hidden="true"></i>
+            <span class="grc-header__location-text" data-grc-location-text>Fetching Location</span>
+            <i class="fa-solid fa-chevron-down grc-header__location-chevron" aria-hidden="true"></i>
+          </button>
+
+          <div class="grc-header__actions">
+            <a href="#" class="grc-header__action grc-header__action--wishlist" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-header__action grc-header__action--account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-header__action grc-header__action--cart" aria-label="Shopping cart">
+              <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="grc-header__container grc-header__mobile-search">
+        <form class="grc-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="grc-header-search-mobile">Search products</label>
+          <i class="fa-solid fa-magnifying-glass grc-header__search-icon" aria-hidden="true"></i>
+          <input id="grc-header-search-mobile" type="search" name="q" placeholder='Search "Gift Hampers"'
+            autocomplete="off" />
+        </form>
+      </div>
+    </div>
+
+    <nav class="grc-header__nav" aria-label="Primary navigation">
+      <div class="grc-header__container">
+        <ul class="grc-header__nav-list" data-grc-nav>
+          <li><a href="shop.html" class="is-active">Shop</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bulk Gifting</a></li>
+          <li><a href="#">Stories</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="grc-header__mobile-nav" data-grc-mobile-nav hidden>
+      <div class="grc-header__mobile-nav-inner">
+        <ul class="grc-header__mobile-nav-list">
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bulk Gifting</a></li>
+          <li><a href="#">Stories</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grc-header__overlay" data-grc-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="grc-shop-top" aria-labelledby="grc-shop-all-title">
+      <div class="grc-header__container">
+        <nav class="grc-shop-top__crumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="grc-shop-top__dot" aria-hidden="true">•</span>
+          <span>Shop</span>
+        </nav>
+
+        <h1 id="grc-shop-all-title" class="grc-shop-top__title">Shop All</h1>
+
+        <div class="grc-shop-cats" data-grc-shop-cats>
+          <button type="button" class="grc-shop-cats__nav grc-shop-cats__nav--prev" data-grc-shop-cats-prev
+            aria-label="Previous categories" hidden>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="grc-shop-cats__viewport" data-grc-shop-cats-viewport tabindex="0"
+            aria-label="Shop categories carousel">
+            <div class="grc-shop-cats__track" data-grc-shop-cats-track>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Fruits and Veggies.png" alt="" width="100" height="100" decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Fresh Produce</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Bakery.png" alt="" width="100" height="100" loading="lazy" decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Bakery</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Dairy.webp" alt="" width="100" height="100" loading="lazy" decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Cheese</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Packaged Food.png" alt="" width="100" height="100" loading="lazy"
+                    decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Pantry Perks</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Fresh Non Veg.png" alt="" width="100" height="100" loading="lazy"
+                    decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Meat Market</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Beverages.png" alt="" width="100" height="100" loading="lazy" decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Pantry</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Staples.png" alt="" width="100" height="100" loading="lazy" decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Everyday Staples</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Snack Food.png" alt="" width="100" height="100" loading="lazy"
+                    decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Dried Fruits &amp; Nuts</span>
+              </a>
+              <a href="#" class="grc-shop-cats__item">
+                <span class="grc-shop-cats__circle">
+                  <img src="assets/img/Deli.webp" alt="" width="100" height="100" loading="lazy" decoding="async" />
+                </span>
+                <span class="grc-shop-cats__label">Dairy</span>
+              </a>
+            </div>
+          </div>
+
+          <button type="button" class="grc-shop-cats__nav grc-shop-cats__nav--next" data-grc-shop-cats-next
+            aria-label="Next categories">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+
+          <div class="grc-shop-cats__progress" aria-hidden="true">
+            <span class="grc-shop-cats__progress-thumb" data-grc-shop-cats-progress></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grc-shop" aria-label="Product listings">
+      <div class="grc-header__container">
+
+        <div class="grc-shop__layout">
+          <aside class="grc-shop__sidebar" id="grc-shop-filters" data-grc-shop-sidebar aria-label="Product filters">
+            <div class="grc-shop__filter-sheet-head">
+              <h2 class="grc-shop__filter-sheet-title">Filters</h2>
+              <button type="button" class="grc-shop__filter-sheet-close" data-grc-filter-close
+                aria-label="Close filters">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="grc-shop__filter-sheet-body">
+              <div class="grc-shop__filter-group">
+                <h3 class="grc-shop__filter-title">Categories</h3>
+                <ul class="grc-shop__filter-list">
+                  <li><label><input type="checkbox" checked /> Fruits &amp; Vegetables</label></li>
+                  <li><label><input type="checkbox" /> Dairy &amp; Bakery</label></li>
+                  <li><label><input type="checkbox" /> Staples &amp; Grains</label></li>
+                  <li><label><input type="checkbox" /> Beverages</label></li>
+                  <li><label><input type="checkbox" /> Organic</label></li>
+                </ul>
+              </div>
+              <div class="grc-shop__filter-group">
+                <h3 class="grc-shop__filter-title">Price</h3>
+                <ul class="grc-shop__filter-list">
+                  <li><label><input type="radio" name="price" checked /> All prices</label></li>
+                  <li><label><input type="radio" name="price" /> Under ₹200</label></li>
+                  <li><label><input type="radio" name="price" /> ₹200 – ₹500</label></li>
+                  <li><label><input type="radio" name="price" /> Above ₹500</label></li>
+                </ul>
+              </div>
+              <div class="grc-shop__filter-group">
+                <h3 class="grc-shop__filter-title">Delivery</h3>
+                <ul class="grc-shop__filter-list">
+                  <li><label><input type="checkbox" /> Express (56 mins)</label></li>
+                  <li><label><input type="checkbox" /> Tomorrow</label></li>
+                </ul>
+              </div>
+            </div>
+            <div class="grc-shop__filter-sheet-foot">
+              <button type="button" class="grc-shop__filter-clear">Clear all</button>
+              <button type="button" class="grc-shop__filter-apply" data-grc-filter-close>Apply</button>
+            </div>
+          </aside>
+
+          <div class="grc-shop__main">
+            <div class="grc-shop__toolbar">
+              <p class="grc-shop__count">Showing 12 products</p>
+              <div class="grc-shop__sort">
+                <label for="grc-shop-sort">Sort by</label>
+                <select id="grc-shop-sort" name="sort">
+                  <option value="popular">Most Popular</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="new">Newest</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grc-shop__grid">
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Apple Fuji">
+                    <div class="grc-shop__media">
+                      <div class="grc-shop__badges">
+                        <span class="grc-shop__badge grc-shop__badge--primary">1.4x Bigger</span>
+                        <span class="grc-shop__badge grc-shop__badge--secondary">Bestseller</span>
+                      </div>
+                      <img src="assets/img/Apple.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist" aria-label="Add Apple Fuji to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Apple Fuji</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹459</span>
+                    <span class="grc-shop__qty">1 kg</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Fresh Strawberries">
+                    <div class="grc-shop__media">
+                      <img src="assets/img/Strawberry.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist" aria-label="Add Fresh Strawberries to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Fresh Strawberries</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹249</span>
+                    <span class="grc-shop__qty grc-shop__qty--select">250 g <i class="fa-solid fa-chevron-down"
+                        aria-hidden="true"></i></span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Indian Blueberries Combo">
+                    <div class="grc-shop__media">
+                      <div class="grc-shop__badges">
+                        <span class="grc-shop__badge grc-shop__badge--primary">Ideal for Dessert</span>
+                        <span class="grc-shop__badge grc-shop__badge--secondary">Bestseller</span>
+                      </div>
+                      <img src="assets/img/Blueberries.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist"
+                    aria-label="Add Indian Blueberries Combo to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Indian Blueberries Combo</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹699</span>
+                    <span class="grc-shop__qty">250 gm</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Button Mushroom">
+                    <div class="grc-shop__media">
+                      <div class="grc-shop__badges">
+                        <span class="grc-shop__badge grc-shop__badge--primary">Ideal for Dessert</span>
+                        <span class="grc-shop__badge grc-shop__badge--secondary">In Season</span>
+                      </div>
+                      <img src="assets/img/Mushroom.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist" aria-label="Add Button Mushroom to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Button Mushroom</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹119</span>
+                    <span class="grc-shop__qty">200 g</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Daawat Biryani Basmati Rice">
+                    <div class="grc-shop__media">
+                      <div class="grc-shop__badges">
+                        <span class="grc-shop__badge grc-shop__badge--secondary">Bestseller</span>
+                      </div>
+                      <img src="assets/img/basmati-rice.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist"
+                    aria-label="Add Daawat Biryani Basmati Rice to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Daawat Biryani Basmati Rice Extra Long</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price"><s>₹1499</s> ₹1245</span>
+                    <span class="grc-shop__qty">5 kg</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Conscious Food Mung Dal">
+                    <div class="grc-shop__media">
+                      <img src="assets/img/moong-dal.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist"
+                    aria-label="Add Conscious Food Mung Dal to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Conscious Food Mung Dal</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹189</span>
+                    <span class="grc-shop__qty">1 kg</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Hari-Bol A2 Milk Desi Cow Ghee">
+                    <div class="grc-shop__media">
+                      <div class="grc-shop__badges">
+                        <span class="grc-shop__badge grc-shop__badge--secondary">In Season</span>
+                      </div>
+                      <img src="assets/img/ghee.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist"
+                    aria-label="Add Hari-Bol A2 Milk Desi Cow Ghee to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Hari-Bol A2 Milk Desi Cow Ghee</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹899</span>
+                    <span class="grc-shop__qty">500 ml</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Apple Pink Lady">
+                    <div class="grc-shop__media">
+                      <div class="grc-shop__badges">
+                        <span class="grc-shop__badge grc-shop__badge--primary">1.4x Bigger</span>
+                        <span class="grc-shop__badge grc-shop__badge--secondary">Bestseller</span>
+                      </div>
+                      <img src="assets/img/Apple-pink.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist" aria-label="Add Apple Pink Lady to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Apple Pink Lady</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹539</span>
+                    <span class="grc-shop__qty">1 kg</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Dragon Fruit Red Flesh">
+                    <div class="grc-shop__media">
+                      <img src="assets/img/Dragon.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist" aria-label="Add Dragon Fruit Red Flesh to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Dragon Fruit Red Flesh</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹189</span>
+                    <span class="grc-shop__qty">1 pc</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Pears Beauty Imported">
+                    <div class="grc-shop__media">
+                      <div class="grc-shop__badges">
+                        <span class="grc-shop__badge grc-shop__badge--secondary">Bestseller</span>
+                      </div>
+                      <img src="assets/img/Pears.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist" aria-label="Add Pears Beauty Imported to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Pears Beauty Imported</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹359</span>
+                    <span class="grc-shop__qty">1 kg</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Borges Extra Virgin Olive Oil">
+                    <div class="grc-shop__media">
+                      <img src="assets/img/olive-oil.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist"
+                    aria-label="Add Borges Extra Virgin Olive Oil to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Borges Extra Virgin Olive Oil</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹849</span>
+                    <span class="grc-shop__qty">1 L</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+
+              <article class="grc-shop__card">
+                <div class="grc-shop__media-wrap">
+                  <a href="product.html" class="grc-shop__card-media" aria-label="Conscious Food Organic Chana Dal">
+                    <div class="grc-shop__media">
+                      <img src="assets/img/chana-dal.webp" alt="" width="160" height="160" loading="lazy"
+                        decoding="async" />
+                    </div>
+                  </a>
+                  <button type="button" class="grc-shop__wishlist"
+                    aria-label="Add Conscious Food Organic Chana Dal to wishlist">
+                    <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <a href="product.html" class="grc-shop__card-info">
+                  <h2 class="grc-shop__name">Conscious Food Organic Chana Dal</h2>
+                  <div class="grc-shop__meta">
+                    <span class="grc-shop__price">₹165</span>
+                    <span class="grc-shop__qty">1 kg</span>
+                  </div>
+                </a>
+                <button type="button" class="grc-shop__add">Add to Cart</button>
+              </article>
+            </div>
+
+            <nav class="grc-shop__pagination" aria-label="Shop pagination">
+              <button type="button" class="grc-shop__page-btn" disabled aria-label="Previous page">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="grc-shop__page-btn is-active" aria-current="page">1</button>
+              <button type="button" class="grc-shop__page-btn">2</button>
+              <button type="button" class="grc-shop__page-btn">3</button>
+              <button type="button" class="grc-shop__page-btn" aria-label="Next page">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grc-shop__filter-overlay" data-grc-filter-overlay hidden></div>
+
+    <div class="grc-shop__filter-bar">
+      <button type="button" class="grc-shop__filter-bar-btn" data-grc-filter-toggle aria-expanded="false"
+        aria-controls="grc-shop-filters">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        Filters
+      </button>
+    </div>
+
+    <a href="https://wa.me/" class="grc-shop__wa" aria-label="Chat on WhatsApp" target="_blank"
+      rel="noopener noreferrer">
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+    </a>
+
+  </main>
+
+  <footer class="grc-footer" role="contentinfo" data-grc-footer>
+    <div class="grc-footer__shell">
+      <div class="grc-footer__hills" aria-hidden="true">
+        <svg class="grc-footer__hill grc-footer__hill--left" viewBox="0 0 480 160" preserveAspectRatio="none">
+          <path d="M0,160 C90,110 180,48 310,72 C380,86 430,118 480,132 L480,160 Z" fill="#5A342D" />
+        </svg>
+        <svg class="grc-footer__hill grc-footer__hill--right" viewBox="0 0 480 160" preserveAspectRatio="none">
+          <path d="M0,128 C70,98 160,42 290,58 C370,68 420,108 480,148 L480,160 L0,160 Z" fill="#5A342D" />
+        </svg>
+      </div>
+
+      <div class="grc-footer__inner">
+        <section class="grc-footer__newsletter" aria-labelledby="grc-footer-newsletter-title">
+          <a href="index.html" class="grc-footer__logo-mark" aria-label="Grovio home" data-grc-footer-item>
+            <img src="assets/img/logo.png" alt="" width="72" height="72" decoding="async" />
+          </a>
+          <h2 id="grc-footer-newsletter-title" class="grc-footer__headline" data-grc-footer-item>
+            Good Food, Delivered to Your Inbox
+          </h2>
+          <p class="grc-footer__description" data-grc-footer-item>
+            Easy recipes, healthy tips, and exclusive offers from our kitchen.
+          </p>
+          <form class="grc-footer__form" action="#" method="post" data-grc-footer-item>
+            <label class="visually-hidden" for="grc-footer-email">Email address</label>
+            <input id="grc-footer-email" type="email" name="email" placeholder="ENTER YOUR EMAIL"
+              autocomplete="email" />
+            <button type="submit" class="grc-footer__submit">
+              <span>Submit</span>
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+          </form>
+        </section>
+
+        <div class="grc-footer__divider" role="presentation"></div>
+
+        <nav class="grc-footer__grid" aria-label="Footer navigation">
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Shop</h3>
+            <ul class="grc-footer__links">
+              <li><a href="shop.html">Best Sellers</a></li>
+              <li><a href="shop.html">New Arrivals</a></li>
+              <li><a href="shop.html">Vegetables</a></li>
+              <li><a href="shop.html">Fruits</a></li>
+              <li><a href="shop.html">Bakery</a></li>
+              <li><a href="shop.html">Beverages</a></li>
+              <li><a href="shop.html">Organic Products</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Brand</h3>
+            <ul class="grc-footer__links">
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Blogs</a></li>
+              <li><a href="#">Recipes</a></li>
+              <li><a href="#">Careers</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Legal</h3>
+            <ul class="grc-footer__links">
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Shipping Policy</a></li>
+              <li><a href="#">Returns &amp; Refund</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col grc-footer__col--help" data-grc-footer-item>
+            <h3 class="grc-footer__help-title">We're always here to help you</h3>
+            <ul class="grc-footer__contact">
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-envelope"></i>
+                </span>
+                <a href="mailto:support@grovio.in">support@grovio.in</a>
+              </li>
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-phone"></i>
+                </span>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+              </li>
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <span class="grc-footer__contact-text">Delhi NCR — Fresh organic groceries delivered daily to your
+                  doorstep.</span>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="grc-footer__divider" role="presentation"></div>
+
+        <div class="grc-footer__bottom">
+          <div class="grc-footer__powered" data-grc-footer-item>
+            <span class="grc-footer__powered-label">Powered by</span>
+            <span class="grc-footer__powered-brand">
+              <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+              Grovio
+            </span>
+          </div>
+
+          <div class="grc-footer__social-block" data-grc-footer-item>
+            <span class="grc-footer__social-label">Connect with us</span>
+            <div class="grc-footer__social" role="list">
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Instagram">
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Pinterest">
+                <i class="fa-brands fa-pinterest-p" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="YouTube">
+                <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Facebook">
+                <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="LinkedIn">
+                <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <p class="grc-footer__copyright" data-grc-footer-item>
+            <i class="fa-regular fa-copyright" aria-hidden="true"></i>
+            2026 Grovio. All Rights Reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/motion.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>

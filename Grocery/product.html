@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apple Fuji — Grovio Fresh Grocery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/motion.css" />
+</head>
+
+<body>
+
+  <header class="grc-header" role="banner">
+
+    <div class="grc-header__announce" role="region" aria-label="Store announcement" data-grc-announce>
+      <div class="grc-header__container grc-header__announce-inner">
+        <p class="grc-header__announce-text">Delivering across Delhi NCR</p>
+        <button type="button" class="grc-header__announce-close" aria-label="Close announcement"
+          data-grc-announce-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="grc-header__main">
+      <div class="grc-header__container grc-header__main-inner">
+
+        <button type="button" class="grc-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-grc-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="grc-header__logo" aria-label="Grovio home">
+          <img src="assets/img/logo.png" alt="Grovio — Freshness Delivered Daily" width="140" height="56"
+            decoding="async" />
+        </a>
+
+        <form class="grc-header__search grc-header__search--desktop" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="grc-header-search">Search products</label>
+          <i class="fa-solid fa-magnifying-glass grc-header__search-icon" aria-hidden="true"></i>
+          <input id="grc-header-search" type="search" name="q" placeholder='Search "Strawberries"' autocomplete="off" />
+        </form>
+
+        <div class="grc-header__utilities">
+          <button type="button" class="grc-header__location" aria-label="Select delivery location"
+            data-grc-location-btn>
+            <i class="fa-solid fa-store grc-header__location-icon" aria-hidden="true"></i>
+            <span class="grc-header__location-text" data-grc-location-text>Fetching Location</span>
+            <i class="fa-solid fa-chevron-down grc-header__location-chevron" aria-hidden="true"></i>
+          </button>
+
+          <div class="grc-header__actions">
+            <a href="#" class="grc-header__action grc-header__action--wishlist" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-header__action grc-header__action--account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-header__action grc-header__action--cart" aria-label="Shopping cart">
+              <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="grc-header__container grc-header__mobile-search">
+        <form class="grc-header__search" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="grc-header-search-mobile">Search products</label>
+          <i class="fa-solid fa-magnifying-glass grc-header__search-icon" aria-hidden="true"></i>
+          <input id="grc-header-search-mobile" type="search" name="q" placeholder='Search "Gift Hampers"'
+            autocomplete="off" />
+        </form>
+      </div>
+    </div>
+
+    <nav class="grc-header__nav" aria-label="Primary navigation">
+      <div class="grc-header__container">
+        <ul class="grc-header__nav-list" data-grc-nav>
+          <li><a href="shop.html" class="is-active">Shop</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bulk Gifting</a></li>
+          <li><a href="#">Stories</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="grc-header__mobile-nav" data-grc-mobile-nav hidden>
+      <div class="grc-header__mobile-nav-inner">
+        <ul class="grc-header__mobile-nav-list">
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bulk Gifting</a></li>
+          <li><a href="#">Stories</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grc-header__overlay" data-grc-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="grc-product" aria-labelledby="grc-product-title">
+      <div class="grc-header__container">
+
+        <div class="grc-product__topbar">
+          <nav class="grc-product__breadcrumb" aria-label="Breadcrumb">
+            <a href="index.html" class="grc-product__crumb-home">
+              <i class="fa-solid fa-house" aria-hidden="true"></i>
+              Home
+            </a>
+            <span class="grc-product__crumb-sep">/</span>
+            <a href="shop.html">Fruits</a>
+            <span class="grc-product__crumb-sep">/</span>
+            <a href="shop.html">Fresh Fruits</a>
+            <span class="grc-product__crumb-sep">/</span>
+            <span>Apple Fuji</span>
+          </nav>
+          <div class="grc-product__share">
+            <span class="grc-product__share-label">Share on</span>
+            <a href="#" class="grc-product__share-link" aria-label="Share on Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-product__share-link" aria-label="Share on Twitter">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="grc-product__share-link" aria-label="Share via email">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="grc-product__layout">
+          <div class="grc-product__media-col">
+            <div class="grc-product__gallery">
+              <div class="grc-product__main-image">
+                <img src="assets/img/Apple.webp" alt="Apple Fuji" width="480" height="480" decoding="async"
+                  data-grc-product-main-img />
+              </div>
+              <div class="grc-product__thumbs" role="list">
+                <button type="button" class="grc-product__thumb is-active" data-grc-product-thumb
+                  data-src="assets/img/Apple.webp" aria-label="View image 1">
+                  <img src="assets/img/Apple.webp" alt="" width="80" height="80" loading="lazy" decoding="async" />
+                </button>
+                <button type="button" class="grc-product__thumb" data-grc-product-thumb
+                  data-src="assets/img/Apple-pink.webp" aria-label="View image 2">
+                  <img src="assets/img/Apple-pink.webp" alt="" width="80" height="80" loading="lazy" decoding="async" />
+                </button>
+                <button type="button" class="grc-product__thumb" data-grc-product-thumb data-src="assets/img/Pears.webp"
+                  aria-label="View image 3">
+                  <img src="assets/img/Pears.webp" alt="" width="80" height="80" loading="lazy" decoding="async" />
+                </button>
+              </div>
+            </div>
+
+            <div class="grc-product__highlights">
+              <h2 class="grc-product__highlights-title">Highlights</h2>
+              <ul class="grc-product__highlights-list">
+                <li>Hand-picked at peak ripeness for maximum crunch</li>
+                <li>Fresh from premium orchards across Himachal Pradesh</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="grc-product__info">
+            <div class="grc-product__brand-row">
+              <span class="grc-product__brand">GROVIO FARMS</span>
+              <span class="grc-product__delivery-badge">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                56 MINS
+              </span>
+            </div>
+
+            <h1 id="grc-product-title" class="grc-product__title">Apple Fuji — Premium Fresh Produce, 1 kg Pack</h1>
+
+            <div class="grc-product__rating-row" id="grc-product-reviews">
+              <span class="grc-product__rating-badge">4.6 ★</span>
+              <a href="#grc-product-reviews" class="grc-product__reviews">842 Ratings &amp; 56 Reviews</a>
+            </div>
+
+            <div class="grc-product__price-block">
+              <p class="grc-product__price-line">
+                <span class="grc-product__price-label">Price:</span>
+                <span class="grc-product__price" data-grc-product-price>₹459</span>
+                <span class="grc-product__unit-price" data-grc-product-unit>(₹45.9 / 100 g)</span>
+              </p>
+              <p class="grc-product__tax">(inclusive of all taxes)</p>
+            </div>
+
+            <div class="grc-product__actions">
+              <button type="button" class="grc-product__cart-btn">Add to basket</button>
+              <button type="button" class="grc-product__wishlist-btn">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                Wishlist
+              </button>
+            </div>
+
+            <div class="grc-product__packs">
+              <h2 class="grc-product__packs-title">Pack sizes</h2>
+              <ul class="grc-product__pack-list" data-grc-product-packs>
+                <li>
+                  <button type="button" class="grc-product__pack is-active" data-grc-product-pack data-price="459"
+                    data-unit="(₹45.9 / 100 g)">
+                    <span class="grc-product__pack-size">
+                      <strong>1 kg</strong>
+                      <span>Pack</span>
+                    </span>
+                    <span class="grc-product__pack-price">
+                      <strong>₹459</strong>
+                      <span>(₹45.9 / 100 g)</span>
+                    </span>
+                    <span class="grc-product__pack-time">
+                      <i class="fa-solid fa-bolt" aria-hidden="true"></i> 56 MINS
+                    </span>
+                    <i class="fa-solid fa-circle-check grc-product__pack-check" aria-hidden="true"></i>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="grc-product__pack" data-grc-product-pack data-price="249"
+                    data-unit="(₹49.8 / 100 g)">
+                    <span class="grc-product__pack-size">
+                      <strong>500 g</strong>
+                      <span>Pack</span>
+                    </span>
+                    <span class="grc-product__pack-price">
+                      <strong>₹249</strong>
+                      <span>(₹49.8 / 100 g)</span>
+                    </span>
+                    <span class="grc-product__pack-time">
+                      <i class="fa-solid fa-bolt" aria-hidden="true"></i> 56 MINS
+                    </span>
+                    <i class="fa-solid fa-circle-check grc-product__pack-check" aria-hidden="true"></i>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="grc-product__pack" data-grc-product-pack data-price="129"
+                    data-unit="(₹64.5 / 100 g)">
+                    <span class="grc-product__pack-size">
+                      <strong>200 g</strong>
+                      <span>Pack</span>
+                    </span>
+                    <span class="grc-product__pack-price">
+                      <strong>₹129</strong>
+                      <span>(₹64.5 / 100 g)</span>
+                    </span>
+                    <span class="grc-product__pack-time">
+                      <i class="fa-solid fa-bolt" aria-hidden="true"></i> 56 MINS
+                    </span>
+                    <i class="fa-solid fa-circle-check grc-product__pack-check" aria-hidden="true"></i>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <section class="grc-product__trust" aria-labelledby="grc-trust-title">
+          <h2 id="grc-trust-title" class="grc-product__trust-title">Why choose Grovio?</h2>
+          <div class="grc-product__trust-grid">
+            <article class="grc-product__trust-card">
+              <i class="fa-solid fa-wine-bottle" aria-hidden="true"></i>
+              <strong>Quality products</strong>
+              <span>You can trust</span>
+            </article>
+            <article class="grc-product__trust-card">
+              <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+              <strong>56 min delivery*</strong>
+              <span>No extra cost</span>
+            </article>
+            <article class="grc-product__trust-card">
+              <i class="fa-solid fa-motorcycle" aria-hidden="true"></i>
+              <strong>Free delivery*</strong>
+              <span>On orders above ₹500</span>
+            </article>
+            <article class="grc-product__trust-card">
+              <i class="fa-solid fa-indian-rupee-sign" aria-hidden="true"></i>
+              <strong>Great prices</strong>
+              <span>On your favourite brands</span>
+            </article>
+            <article class="grc-product__trust-card">
+              <i class="fa-solid fa-gift" aria-hidden="true"></i>
+              <strong>Wide assortment</strong>
+              <span>Million+ products</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="grc-product__details" aria-labelledby="grc-details-title">
+          <h2 id="grc-details-title" class="grc-product__details-title">Apple Fuji — Premium Fresh Produce</h2>
+          <div class="grc-product__accordion" data-grc-product-accordion>
+            <div class="grc-product__acc-item is-open">
+              <button type="button" class="grc-product__acc-trigger" data-grc-acc-trigger aria-expanded="true">
+                From the Brand
+                <i class="fa-solid fa-plus grc-product__acc-icon" aria-hidden="true"></i>
+              </button>
+              <div class="grc-product__acc-panel">
+                <div class="grc-product__brand-banner">
+                  <img src="assets/img/promo-1.png" alt="Grovio Farms — fresh organic produce" width="800" height="120"
+                    loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+            <div class="grc-product__acc-item">
+              <button type="button" class="grc-product__acc-trigger" data-grc-acc-trigger aria-expanded="false">
+                About the Product
+                <i class="fa-solid fa-plus grc-product__acc-icon" aria-hidden="true"></i>
+              </button>
+              <div class="grc-product__acc-panel" hidden>
+                <p>Crisp, sweet Fuji apples sourced from premium orchards. Hand-picked at peak ripeness for maximum
+                  flavour and crunch. Perfect for snacking, salads, or baking. Each apple is inspected for quality
+                  before
+                  packing.</p>
+              </div>
+            </div>
+            <div class="grc-product__acc-item">
+              <button type="button" class="grc-product__acc-trigger" data-grc-acc-trigger aria-expanded="false">
+                Ingredients &amp; Nutritional Info
+                <i class="fa-solid fa-plus grc-product__acc-icon" aria-hidden="true"></i>
+              </button>
+              <div class="grc-product__acc-panel" hidden>
+                <p><strong>Ingredients:</strong> 100% Fresh Apple (Fuji variety)</p>
+                <p>Per 100 g: Energy 52 kcal · Carbohydrates 14 g · Dietary fibre 2.4 g · Vitamin C 4.6 mg</p>
+              </div>
+            </div>
+            <div class="grc-product__acc-item">
+              <button type="button" class="grc-product__acc-trigger" data-grc-acc-trigger aria-expanded="false">
+                Features
+                <i class="fa-solid fa-plus grc-product__acc-icon" aria-hidden="true"></i>
+              </button>
+              <div class="grc-product__acc-panel" hidden>
+                <ul>
+                  <li>100% fresh, no wax coating</li>
+                  <li>Cold-chain delivered to your doorstep</li>
+                  <li>Rich in fibre and vitamin C</li>
+                  <li>Best consumed within 7 days of delivery</li>
+                </ul>
+              </div>
+            </div>
+            <div class="grc-product__acc-item">
+              <button type="button" class="grc-product__acc-trigger" data-grc-acc-trigger aria-expanded="false">
+                Other Product Info
+                <i class="fa-solid fa-plus grc-product__acc-icon" aria-hidden="true"></i>
+              </button>
+              <div class="grc-product__acc-panel" hidden>
+                <p><strong>EAN Code:</strong> 8901234567890</p>
+                <p><strong>Country of Origin:</strong> India</p>
+                <p><strong>Shelf Life:</strong> 7 days from delivery</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="grc-reviews" id="grc-product-reviews" aria-labelledby="grc-reviews-title">
+          <h2 id="grc-reviews-title" class="grc-reviews__title">Rating and Reviews</h2>
+
+          <div class="grc-reviews__notice" role="note">
+            <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+            <p>Want to rate this product? You can rate or review this product only after purchasing from Grovio.</p>
+          </div>
+
+          <div class="grc-reviews__board">
+            <aside class="grc-reviews__summary" aria-label="Rating summary">
+              <div class="grc-reviews__score-block">
+                <p class="grc-reviews__score">
+                  4.6
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                </p>
+                <p class="grc-reviews__score-meta">842 ratings &amp; 56 reviews</p>
+              </div>
+
+              <ul class="grc-reviews__bars">
+                <li class="grc-reviews__bar-row">
+                  <span class="grc-reviews__bar-label">5 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                  <span class="grc-reviews__bar-track"><span class="grc-reviews__bar-fill grc-reviews__bar-fill--5"
+                      style="width: 62%"></span></span>
+                  <span class="grc-reviews__bar-count">522</span>
+                </li>
+                <li class="grc-reviews__bar-row">
+                  <span class="grc-reviews__bar-label">4 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                  <span class="grc-reviews__bar-track"><span class="grc-reviews__bar-fill grc-reviews__bar-fill--4"
+                      style="width: 22%"></span></span>
+                  <span class="grc-reviews__bar-count">186</span>
+                </li>
+                <li class="grc-reviews__bar-row">
+                  <span class="grc-reviews__bar-label">3 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                  <span class="grc-reviews__bar-track"><span class="grc-reviews__bar-fill grc-reviews__bar-fill--3"
+                      style="width: 8%"></span></span>
+                  <span class="grc-reviews__bar-count">68</span>
+                </li>
+                <li class="grc-reviews__bar-row">
+                  <span class="grc-reviews__bar-label">2 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                  <span class="grc-reviews__bar-track"><span class="grc-reviews__bar-fill grc-reviews__bar-fill--2"
+                      style="width: 4%"></span></span>
+                  <span class="grc-reviews__bar-count">34</span>
+                </li>
+                <li class="grc-reviews__bar-row">
+                  <span class="grc-reviews__bar-label">1 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                  <span class="grc-reviews__bar-track"><span class="grc-reviews__bar-fill grc-reviews__bar-fill--1"
+                      style="width: 4%"></span></span>
+                  <span class="grc-reviews__bar-count">32</span>
+                </li>
+              </ul>
+
+              <div class="grc-reviews__highlights">
+                <h3 class="grc-reviews__highlights-title">Highlights</h3>
+                <div class="grc-reviews__donut-wrap">
+                  <div class="grc-reviews__donut" style="--donut-pct: 78">
+                    <span class="grc-reviews__donut-value">4.2</span>
+                  </div>
+                  <p class="grc-reviews__donut-label">Freshness &amp; Quality</p>
+                  <p class="grc-reviews__donut-meta">48 ratings</p>
+                </div>
+              </div>
+            </aside>
+
+            <div class="grc-reviews__list-wrap">
+              <h3 class="grc-reviews__list-title">Product Reviews</h3>
+
+              <article class="grc-reviews__item">
+                <div class="grc-reviews__item-head">
+                  <span class="grc-reviews__badge grc-reviews__badge--5">5 <i class="fa-solid fa-star"
+                      aria-hidden="true"></i></span>
+                  <h4 class="grc-reviews__item-title">Excellent quality</h4>
+                </div>
+                <p class="grc-reviews__item-text">Apples were crisp, sweet and perfectly ripe. No bruises at all.
+                  Delivery was quick and packaging kept them fresh. Will order again.</p>
+                <div class="grc-reviews__item-foot">
+                  <span class="grc-reviews__author">R, Delhi NCR (2 weeks ago)</span>
+                  <div class="grc-reviews__actions">
+                    <button type="button" class="grc-reviews__action" aria-label="Helpful, 24 votes">
+                      <i class="fa-regular fa-thumbs-up" aria-hidden="true"></i> 24
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Not helpful">
+                      <i class="fa-regular fa-thumbs-down" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Report review">
+                      <i class="fa-regular fa-flag" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="grc-reviews__item">
+                <div class="grc-reviews__item-head">
+                  <span class="grc-reviews__badge grc-reviews__badge--4">4 <i class="fa-solid fa-star"
+                      aria-hidden="true"></i></span>
+                  <h4 class="grc-reviews__item-title">Good but slightly small</h4>
+                </div>
+                <p class="grc-reviews__item-text">Taste is great and very fresh. Size was a bit smaller than expected
+                  for the price, but overall happy with the quality.</p>
+                <div class="grc-reviews__item-foot">
+                  <span class="grc-reviews__author">A, Gurgaon (1 month ago)</span>
+                  <div class="grc-reviews__actions">
+                    <button type="button" class="grc-reviews__action" aria-label="Helpful, 11 votes">
+                      <i class="fa-regular fa-thumbs-up" aria-hidden="true"></i> 11
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Not helpful">
+                      <i class="fa-regular fa-thumbs-down" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Report review">
+                      <i class="fa-regular fa-flag" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="grc-reviews__item">
+                <div class="grc-reviews__item-head">
+                  <span class="grc-reviews__badge grc-reviews__badge--5">5 <i class="fa-solid fa-star"
+                      aria-hidden="true"></i></span>
+                  <h4 class="grc-reviews__item-title">Best Fuji apples</h4>
+                </div>
+                <p class="grc-reviews__item-text">These are the best Fuji apples I've ordered online. Sweet, crunchy
+                  and stayed fresh in the fridge for over a week.</p>
+                <div class="grc-reviews__item-foot">
+                  <span class="grc-reviews__author">P, Noida (2 months ago)</span>
+                  <div class="grc-reviews__actions">
+                    <button type="button" class="grc-reviews__action" aria-label="Helpful, 18 votes">
+                      <i class="fa-regular fa-thumbs-up" aria-hidden="true"></i> 18
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Not helpful">
+                      <i class="fa-regular fa-thumbs-down" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Report review">
+                      <i class="fa-regular fa-flag" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="grc-reviews__item">
+                <div class="grc-reviews__item-head">
+                  <span class="grc-reviews__badge grc-reviews__badge--3">3 <i class="fa-solid fa-star"
+                      aria-hidden="true"></i></span>
+                  <h4 class="grc-reviews__item-title">Average batch</h4>
+                </div>
+                <p class="grc-reviews__item-text">Two apples were fine, one was slightly soft. Expected better
+                  consistency for premium produce.</p>
+                <div class="grc-reviews__item-foot">
+                  <span class="grc-reviews__author">S, Faridabad (3 months ago)</span>
+                  <div class="grc-reviews__actions">
+                    <button type="button" class="grc-reviews__action" aria-label="Helpful, 6 votes">
+                      <i class="fa-regular fa-thumbs-up" aria-hidden="true"></i> 6
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Not helpful">
+                      <i class="fa-regular fa-thumbs-down" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Report review">
+                      <i class="fa-regular fa-flag" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="grc-reviews__item">
+                <div class="grc-reviews__item-head">
+                  <span class="grc-reviews__badge grc-reviews__badge--1">1 <i class="fa-solid fa-star"
+                      aria-hidden="true"></i></span>
+                  <h4 class="grc-reviews__item-title">Not fresh</h4>
+                </div>
+                <p class="grc-reviews__item-text">Received apples that looked dull and lacked crunch. Disappointed with
+                  this order.</p>
+                <div class="grc-reviews__item-foot">
+                  <span class="grc-reviews__author">K, Delhi NCR (4 months ago)</span>
+                  <div class="grc-reviews__actions">
+                    <button type="button" class="grc-reviews__action" aria-label="Helpful, 3 votes">
+                      <i class="fa-regular fa-thumbs-up" aria-hidden="true"></i> 3
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Not helpful">
+                      <i class="fa-regular fa-thumbs-down" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="grc-reviews__action" aria-label="Report review">
+                      <i class="fa-regular fa-flag" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="grc-product__related" aria-labelledby="grc-related-title">
+          <div class="grc-product__related-head">
+            <h2 id="grc-related-title" class="grc-product__related-title">You May Also Like</h2>
+            <a href="shop.html" class="grc-product__related-link">View All</a>
+          </div>
+          <div class="grc-product__related-grid">
+            <article class="grc-shop__card">
+              <a href="product.html" class="grc-shop__card-link">
+                <div class="grc-shop__media grc-shop__media--pink">
+                  <img src="assets/img/Apple-pink.webp" alt="Apple Pink Lady" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <span class="grc-shop__badge">56 MINS</span>
+                <h3 class="grc-shop__name">Apple Pink Lady</h3>
+                <p class="grc-shop__qty">1 kg</p>
+                <p class="grc-shop__price">₹539</p>
+              </a>
+              <button type="button" class="grc-shop__add">ADD</button>
+            </article>
+            <article class="grc-shop__card">
+              <a href="product.html" class="grc-shop__card-link">
+                <div class="grc-shop__media grc-shop__media--rose">
+                  <img src="assets/img/Strawberry.webp" alt="Fresh Strawberries" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <span class="grc-shop__badge">56 MINS</span>
+                <h3 class="grc-shop__name">Fresh Strawberries</h3>
+                <p class="grc-shop__qty">250 g</p>
+                <p class="grc-shop__price">₹249</p>
+              </a>
+              <button type="button" class="grc-shop__add">ADD</button>
+            </article>
+            <article class="grc-shop__card">
+              <a href="product.html" class="grc-shop__card-link">
+                <div class="grc-shop__media grc-shop__media--blue">
+                  <img src="assets/img/Blueberries.webp" alt="Indian Blueberries Combo" width="160" height="160"
+                    loading="lazy" decoding="async" />
+                </div>
+                <span class="grc-shop__badge">Tomorrow</span>
+                <h3 class="grc-shop__name">Indian Blueberries Combo</h3>
+                <p class="grc-shop__qty">(125 g + 125 g)</p>
+                <p class="grc-shop__price">₹699</p>
+              </a>
+              <button type="button" class="grc-shop__add">ADD</button>
+            </article>
+            <article class="grc-shop__card">
+              <a href="product.html" class="grc-shop__card-link">
+                <div class="grc-shop__media grc-shop__media--peach">
+                  <img src="assets/img/Pears.webp" alt="Pears Beauty Imported" width="160" height="160" loading="lazy"
+                    decoding="async" />
+                </div>
+                <span class="grc-shop__badge">56 MINS</span>
+                <h3 class="grc-shop__name">Pears Beauty Imported</h3>
+                <p class="grc-shop__qty">1 kg</p>
+                <p class="grc-shop__price">₹359</p>
+              </a>
+              <button type="button" class="grc-shop__add">ADD</button>
+            </article>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="grc-footer" role="contentinfo" data-grc-footer>
+    <div class="grc-footer__shell">
+      <div class="grc-footer__hills" aria-hidden="true">
+        <svg class="grc-footer__hill grc-footer__hill--left" viewBox="0 0 480 160" preserveAspectRatio="none">
+          <path d="M0,160 C90,110 180,48 310,72 C380,86 430,118 480,132 L480,160 Z" fill="#5A342D" />
+        </svg>
+        <svg class="grc-footer__hill grc-footer__hill--right" viewBox="0 0 480 160" preserveAspectRatio="none">
+          <path d="M0,128 C70,98 160,42 290,58 C370,68 420,108 480,148 L480,160 L0,160 Z" fill="#5A342D" />
+        </svg>
+      </div>
+
+      <div class="grc-footer__inner">
+        <section class="grc-footer__newsletter" aria-labelledby="grc-footer-newsletter-title">
+          <a href="index.html" class="grc-footer__logo-mark" aria-label="Grovio home" data-grc-footer-item>
+            <img src="assets/img/logo.png" alt="" width="72" height="72" decoding="async" />
+          </a>
+          <h2 id="grc-footer-newsletter-title" class="grc-footer__headline" data-grc-footer-item>
+            Good Food, Delivered to Your Inbox
+          </h2>
+          <p class="grc-footer__description" data-grc-footer-item>
+            Easy recipes, healthy tips, and exclusive offers from our kitchen.
+          </p>
+          <form class="grc-footer__form" action="#" method="post" data-grc-footer-item>
+            <label class="visually-hidden" for="grc-footer-email">Email address</label>
+            <input id="grc-footer-email" type="email" name="email" placeholder="ENTER YOUR EMAIL"
+              autocomplete="email" />
+            <button type="submit" class="grc-footer__submit">
+              <span>Submit</span>
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+          </form>
+        </section>
+
+        <div class="grc-footer__divider" role="presentation"></div>
+
+        <nav class="grc-footer__grid" aria-label="Footer navigation">
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Shop</h3>
+            <ul class="grc-footer__links">
+              <li><a href="shop.html">Best Sellers</a></li>
+              <li><a href="shop.html">New Arrivals</a></li>
+              <li><a href="shop.html">Vegetables</a></li>
+              <li><a href="shop.html">Fruits</a></li>
+              <li><a href="shop.html">Bakery</a></li>
+              <li><a href="shop.html">Beverages</a></li>
+              <li><a href="shop.html">Organic Products</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Brand</h3>
+            <ul class="grc-footer__links">
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Blogs</a></li>
+              <li><a href="#">Recipes</a></li>
+              <li><a href="#">Careers</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col" data-grc-footer-item>
+            <h3 class="grc-footer__heading">Legal</h3>
+            <ul class="grc-footer__links">
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Shipping Policy</a></li>
+              <li><a href="#">Returns &amp; Refund</a></li>
+            </ul>
+          </div>
+
+          <div class="grc-footer__col grc-footer__col--help" data-grc-footer-item>
+            <h3 class="grc-footer__help-title">We're always here to help you</h3>
+            <ul class="grc-footer__contact">
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-envelope"></i>
+                </span>
+                <a href="mailto:support@grovio.in">support@grovio.in</a>
+              </li>
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-phone"></i>
+                </span>
+                <a href="tel:+919876543210">+91 98765 43210</a>
+              </li>
+              <li class="grc-footer__contact-item">
+                <span class="grc-footer__contact-icon" aria-hidden="true">
+                  <i class="fa-solid fa-location-dot"></i>
+                </span>
+                <span class="grc-footer__contact-text">Delhi NCR — Fresh organic groceries delivered daily to your
+                  doorstep.</span>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="grc-footer__divider" role="presentation"></div>
+
+        <div class="grc-footer__bottom">
+          <div class="grc-footer__powered" data-grc-footer-item>
+            <span class="grc-footer__powered-label">Powered by</span>
+            <span class="grc-footer__powered-brand">
+              <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+              Grovio
+            </span>
+          </div>
+
+          <div class="grc-footer__social-block" data-grc-footer-item>
+            <span class="grc-footer__social-label">Connect with us</span>
+            <div class="grc-footer__social" role="list">
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Instagram">
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Pinterest">
+                <i class="fa-brands fa-pinterest-p" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="YouTube">
+                <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="Facebook">
+                <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+              </a>
+              <a href="#" class="grc-footer__social-link" role="listitem" aria-label="LinkedIn">
+                <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <p class="grc-footer__copyright" data-grc-footer-item>
+            <i class="fa-regular fa-copyright" aria-hidden="true"></i>
+            2026 Grovio. All Rights Reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/motion.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>
