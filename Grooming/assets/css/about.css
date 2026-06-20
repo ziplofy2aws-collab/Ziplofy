@@ -1,0 +1,22 @@
+.about-page {
+  padding: 70px 20px;
+}
+
+.about-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.about-title {
+  font-size: 2rem;
+  margin: 0 0 12px;
+}
+
+.about-text {
+  line-height: 1.8;
+  margin: 0 0 14px;
+}
+
+.about-text:last-child {
+  margin-bottom: 0;
+}

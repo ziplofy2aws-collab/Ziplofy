@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gentora</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./assets/css/category.css" />
+  <link rel="stylesheet" href="./assets/css/header-shared.css" />
+  <link rel="stylesheet" href="./assets/css/icons.css" />
+  <link rel="stylesheet" href="./assets/css/cart-drawer.css" />
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="announcement-bar" data-announcement-slider>
+      <div class="announcement-viewport" aria-live="polite">
+        <div class="announcement-track">
+          <p class="announcement-slide"><i class="fa-solid fa-spray-can-sparkles" aria-hidden="true"></i> Free Shipping on Orders Above ₹999</p>
+          <p class="announcement-slide"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Get Extra 10% Off on Prepaid Orders | Use Code: GROOM10</p>
+          <p class="announcement-slide"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i> Premium Grooming, Delivered to You</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-nav">
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+      </button>
+      <a class="brand" href="./index.html" aria-label="Gentora home">
+        <img class="brand-logo" src="./assets/img/logo.png" alt="Gentora" />
+      </a>
+
+      <nav class="nav-menu" id="primary-nav" aria-label="Main navigation">
+        <a href="#">Hair Care <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Beard Care <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Skin Care <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Fragrances <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Accessories <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Kits &amp; Combos <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">More <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+      </nav>
+
+      <div class="nav-actions">
+        <label class="search-wrap" aria-label="Search products">
+          <input type="search" placeholder="Search for product..." />
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        </label>
+        <button class="icon-btn" type="button" aria-label="Account"><i class="fa-solid fa-circle-user" aria-hidden="true"></i></button>
+        <button class="icon-btn cart-btn" type="button" aria-label="Cart"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i><span class="cart-count">0</span></button>
+      </div>
+    </div>
+    <div class="nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
+  </header>
+
+  <main class="category-main">
+    <section class="product-grid-section" aria-label="Products">
+      <div class="product-grid-wrap" id="product-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="footer-top-line"></div>
+    <div class="footer-mark" aria-hidden="true"><i class="fa-solid fa-gem"></i></div>
+
+    <div class="footer-links-wrap">
+      <div class="footer-col">
+        <h4>COLLECTIONS</h4>
+        <div class="footer-two-col-list">
+          <ul>
+            <li><a href="#">Beard Care</a></li>
+            <li><a href="#">Fragrance</a></li>
+            <li><a href="#">Grooming Kits</a></li>
+            <li><a href="#">Face Care</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Hair Care</a></li>
+            <li><a href="#">Body Care</a></li>
+            <li><a href="#">Skin Essentials</a></li>
+            <li><a href="#">Grooming Tools</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>ACCOUNT</h4>
+        <ul>
+          <li><a href="#">My Profile</a></li>
+          <li><a href="#">Track Your Order</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-wide">
+        <h4>INFORMATION</h4>
+        <div class="footer-two-col-list">
+          <ul>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Returns &amp; Exchanges</a></li>
+            <li><a href="#">Professional Range</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Warranty &amp; Support</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-col footer-community">
+        <h4>CONNECT</h4>
+        <div class="footer-socials">
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+        </div>
+
+        <p class="footer-sign-label">JOIN THE COMMUNITY</p>
+        <p class="footer-sign-copy">Get exclusive access to new launches, offers & grooming insights.</p>
+
+        <form class="footer-sign-form" action="#" method="post">
+          <label class="sr-only" for="footer-email">Email</label>
+          <input id="footer-email" type="email" placeholder="Enter your email" />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-caution">
+      <h3>Notice</h3>
+      <p><strong>SECURITY ALERT:</strong> Please ensure all payments are made only through our official website or to
+        the authorized delivery partner during cash on delivery.</p>
+      <p>We never request payments via calls, messages, or unverified payment links. Avoid sharing personal or payment
+        details with unknown sources.</p>
+      <p><strong>Stay alert. Stay secure.</strong></p>
+      <p>For assistance, reach out to our support team at <strong>support@yourbrand.com</strong></p>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 ALL RIGHTS RESERVED</p>
+      <a href="#">YOUR BRAND</a>
+    </div>
+  </footer>
+  
+  <script src="./assets/js/header-nav.js"></script>
+  <script src="./assets/js/category.js"></script>
+  <script src="./assets/js/cart-drawer.js"></script>
+  
+</body>
+
+</html>

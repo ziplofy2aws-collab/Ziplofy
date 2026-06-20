@@ -1,0 +1,392 @@
+/* Inner pages — About, Bridal, Cart, Checkout, Blog, Contact */
+
+.inner-page {
+  background: var(--cream);
+}
+
+.inner-hero {
+  padding: 4.5rem 1.5rem 3.5rem;
+  text-align: center;
+  background: linear-gradient(160deg, var(--maroon-dark) 0%, var(--maroon) 55%, #3a1520 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.inner-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(201, 161, 74, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.inner-hero__inner {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.inner-hero__eyebrow {
+  display: inline-block;
+  margin: 0 0 1rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.inner-hero__title {
+  margin: 0 0 1rem;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  color: var(--cream);
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+}
+
+.inner-hero__text {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(245, 235, 221, 0.82);
+}
+
+.page-section {
+  max-width: var(--header-max);
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.page-section--cream {
+  background: var(--cream);
+}
+
+.page-section--white {
+  background: var(--white);
+}
+
+.page-section__head {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 3rem;
+}
+
+.page-section__title {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  color: var(--maroon-dark);
+}
+
+.page-section__lead {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.luxury-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.luxury-card {
+  padding: 2rem 1.75rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background: var(--white);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.luxury-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-luxury);
+  border-color: var(--gold);
+}
+
+.luxury-card__icon {
+  font-size: 1.75rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.luxury-card h3 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--maroon);
+}
+
+.luxury-card p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+/* Bridal showcase */
+.bridal-showcase {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.bridal-showcase__media {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-luxury);
+}
+
+.bridal-showcase__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 360px;
+}
+
+.bridal-showcase__content h2 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--maroon-dark);
+  margin: 0 0 1rem;
+}
+
+.bridal-showcase__content p {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+}
+
+/* Cart */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background: var(--white);
+}
+
+.cart-item__img {
+  aspect-ratio: 1;
+  background: var(--cream);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cart-item__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.5rem;
+}
+
+.cart-item__name {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--maroon-dark);
+}
+
+.cart-item__price {
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.cart-summary {
+  padding: 1.75rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--gold);
+  background: var(--white);
+  box-shadow: var(--shadow-soft);
+  position: sticky;
+  top: 10rem;
+}
+
+.cart-summary h2 {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+}
+
+.cart-summary__row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  border-bottom: 1px solid rgba(201, 161, 74, 0.12);
+}
+
+.cart-summary__total {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--maroon-dark);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--gold);
+}
+
+.cart-summary .btn--primary {
+  width: 100%;
+  margin-top: 1.25rem;
+}
+
+/* Checkout */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.checkout-panel {
+  padding: 2rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background: var(--white);
+}
+
+.checkout-panel h2 {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--maroon-dark);
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 0.875rem;
+  background: var(--cream);
+  color: var(--text-dark);
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 161, 74, 0.15);
+}
+
+/* Blog */
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.blog-card {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background: var(--white);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-luxury);
+}
+
+.blog-card__img {
+  aspect-ratio: 16/10;
+  background: linear-gradient(135deg, var(--maroon) 0%, var(--maroon-dark) 100%);
+}
+
+.blog-card__body {
+  padding: 1.25rem;
+}
+
+.blog-card__date {
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.blog-card h3 {
+  margin: 0.5rem 0;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+}
+
+.blog-card p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Contact */
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.contact-info__item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.contact-info__item i {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(201, 161, 74, 0.15);
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .bridal-showcase,
+  .cart-layout,
+  .checkout-grid,
+  .contact-layout,
+  .blog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-summary {
+    position: static;
+  }
+}

@@ -1,0 +1,47 @@
+.contact-page {
+  padding: 70px 20px;
+}
+
+.contact-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.contact-title {
+  font-size: 2rem;
+  margin: 0 0 12px;
+}
+
+.contact-intro {
+  line-height: 1.8;
+  margin: 0 0 20px;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.contact-card {
+  padding: 18px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.contact-card h3 {
+  margin: 0 0 10px;
+}
+
+.contact-line {
+  margin: 0 0 8px;
+}
+
+.contact-line:last-child {
+  margin-bottom: 0;
+}
+
+.contact-address {
+  line-height: 1.7;
+  margin: 0;
+}

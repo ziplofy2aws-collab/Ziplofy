@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gentora</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="./assets/css/product.css" />
+  <link rel="stylesheet" href="./assets/css/header-shared.css" />
+  <link rel="stylesheet" href="./assets/css/icons.css" />
+  <link rel="stylesheet" href="./assets/css/cart-drawer.css" />
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="announcement-bar" data-announcement-slider>
+      <div class="announcement-viewport" aria-live="polite">
+        <div class="announcement-track">
+          <p class="announcement-slide"><i class="fa-solid fa-spray-can-sparkles" aria-hidden="true"></i> Free Shipping on Orders Above ₹999</p>
+          <p class="announcement-slide"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Get Extra 10% Off on Prepaid Orders | Use Code: GROOM10</p>
+          <p class="announcement-slide"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i> Premium Grooming, Delivered to You</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-nav">
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+      </button>
+      <a class="brand" href="./index.html" aria-label="Gentora home">
+        <img class="brand-logo" src="./assets/img/logo.png" alt="Gentora" />
+      </a>
+
+      <nav class="nav-menu" id="primary-nav" aria-label="Main navigation">
+        <a href="#">Hair Care <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Beard Care <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Skin Care <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Fragrances <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Accessories <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">Kits &amp; Combos <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+        <a href="#">More <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+      </nav>
+
+      <div class="nav-actions">
+        <label class="search-wrap" aria-label="Search products">
+          <input type="search" placeholder="Search for product..." />
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        </label>
+        <button class="icon-btn" type="button" aria-label="Account"><i class="fa-solid fa-circle-user" aria-hidden="true"></i></button>
+        <button class="icon-btn cart-btn" type="button" aria-label="Cart"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i><span class="cart-count">0</span></button>
+      </div>
+    </div>
+    <div class="nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
+  </header>
+
+  <main class="product-main">
+    <section class="product-layout">
+      <div class="product-visuals">
+        <div class="product-gallery">
+          <img id="product-image" src="./assets/img/banner-4.png" alt="Product image" />
+          <!-- <button class="gallery-next" type="button" aria-label="Next image"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button> -->
+        </div>
+        <div class="product-thumbs">
+          <button class="thumb is-active" type="button"><img id="product-thumb-1" src="./assets/img/banner-4.png" alt="Thumb 1" /></button>
+          <button class="thumb" type="button"><img id="product-thumb-2" src="./assets/img/banner-2.png" alt="Thumb 2" /></button>
+          <button class="thumb" type="button"><img id="product-thumb-3" src="./assets/img/banner-3.png" alt="Thumb 3" /></button>
+          <button class="thumb" type="button"><img id="product-thumb-4" src="./assets/img/Promo-1.png" alt="Thumb 4" /></button>
+          <button class="thumb" type="button"><img id="product-thumb-5" src="./assets/img/Promo-2.png" alt="Thumb 5" /></button>
+        </div>
+      </div>
+
+      <div class="product-info">
+        <h1 id="product-title">Max Sunscreen Cooling Gel SPF 60 (50g)</h1>
+
+        <p class="product-price-line">
+          <span class="price-current" id="product-price-current">₹399</span>
+          <span class="price-old" id="product-price-old">₹450</span>
+          <span class="price-off" id="product-price-off">12% OFF</span>
+        </p>
+        <p class="price-tax">(Inclusive of all taxes)</p>
+
+        <p class="product-rating-line">
+          <span class="rating-star"><i class="fa-solid fa-star" aria-hidden="true"></i></span>
+          <span id="product-rating">4.9</span>
+          <span>|</span>
+          <span id="product-reviews">15 reviews</span>
+        </p>
+
+        <div class="qty-block">
+          <p>Net Quantity</p>
+          <span id="product-qty">50g</span>
+        </div>
+
+        <div class="benefits-block">
+          <p>Key Benefits:</p>
+          <div class="benefits-list">
+            <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> UV Protection</span>
+            <span><i class="fa-solid fa-pump-soap" aria-hidden="true"></i> Hydration SPF</span>
+            <span><i class="fa-regular fa-snowflake" aria-hidden="true"></i> Cooling Effect</span>
+          </div>
+        </div>
+
+        <div class="delivery-block">
+          <p><i class="fa-solid fa-truck" aria-hidden="true"></i> Check delivery Date</p>
+          <div class="delivery-form">
+            <input type="text" placeholder="Enter 6-digit pincode" />
+            <button type="button">Check</button>
+          </div>
+        </div>
+
+        <div class="product-actions">
+          <button type="button" class="btn-primary">ADD TO CART</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="product-story-section" aria-label="Product details visual section">
+    <div class="product-story-wrap">
+      <h2>Engineered for Performance</h2>
+      <div class="detail-grid">
+        <img src="./assets/img/banner-4.png" alt="High performance grooming essentials" />
+        <div class="detail-copy">
+          <h3>Precision-Driven Care</h3>
+          <p>Crafted for men who demand more. This advanced formula works deep to protect, refine, and elevate your daily grooming routine with lasting performance.</p>
+        </div>
+      </div>
+      <div class="detail-grid reverse">
+        <div class="detail-copy">
+          <h3>Lightweight. Powerful. Refined.</h3>
+          <p>Experience a clean, non-greasy finish that absorbs instantly. Designed to deliver maximum results without compromising comfort or style.</p>
+        </div>
+        <img src="./assets/img/banner-1.png" alt="Refined grooming experience details" />
+      </div>
+    </div>
+  </section>
+
+  <section class="product-extra-section" aria-label="Product detail information">
+    <div class="detail-accordion">
+      <button class="detail-row" type="button" data-detail-toggle="ingredients" aria-expanded="true">
+        <span class="detail-row-left"><i class="fa-solid fa-flask" aria-hidden="true"></i> Key Ingredients</span>
+        <span class="detail-symbol" aria-hidden="true"><i class="fa-solid fa-minus js-detail-symbol-icon"></i></span>
+      </button>
+      <div class="detail-content compact" data-detail-panel="ingredients">
+        <div class="ingredients-panel">
+          <div class="ingredient-item">
+            <div class="ingredient-circle">N</div>
+            <p>Niacinamide</p>
+          </div>
+          <div class="ingredient-item menthol">
+            <div class="ingredient-circle"><i class="fa-regular fa-snowflake" aria-hidden="true"></i></div>
+            <p>Menthol Extract</p>
+            <small>Delivers a refreshing cooling effect with a clean finish</small>
+          </div>
+          <div class="ingredient-item">
+            <div class="ingredient-circle">E</div>
+            <p>Vitamin E</p>
+          </div>
+        </div>
+      </div>
+  
+      <button class="detail-row" type="button" data-detail-toggle="product-details" aria-expanded="true">
+        <span class="detail-row-left"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Product Information</span>
+        <span class="detail-symbol" aria-hidden="true"><i class="fa-solid fa-minus js-detail-symbol-icon"></i></span>
+      </button>
+      <div class="detail-content compact" data-detail-panel="product-details">
+        <div class="product-details-panel">
+          <p>Product Type: Advanced Grooming Essential</p>
+          <p>Designed For: Modern Men's Daily Care</p>
+          <p>Origin: Made in India</p>
+          <p>Formulation: Lightweight, Non-Greasy, Fast Absorbing</p>
+          <p>Shelf Life: 24 Months from Manufacturing</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bought-with-section" aria-label="People usually bought with">
+    <div class="bought-with-wrap">
+      <h2>People usually bought with</h2>
+      <div class="bought-grid">
+        <article class="bought-card">
+          <img src="./assets/img/banner-2.png" alt="Lip Lightener For Men (7g)" />
+          <div class="bought-body">
+            <h3>Lip Lightener For Men (7g)</h3>
+            <p class="bought-rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.9 | 7 reviews</p>
+            <p class="bought-price">₹499 <span>₹550</span> <em>10% off</em></p>
+            <button type="button">ADD TO CART</button>
+          </div>
+        </article>
+
+        <article class="bought-card">
+          <img src="./assets/img/Promo-1.png" alt="Whisky Smoke Bourbon Perfume EDP (50ml)" />
+          <div class="bought-body">
+            <h3>Whisky Smoke Bourbon Perfume EDP (50ml)</h3>
+            <p class="bought-rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.7 | 59 reviews</p>
+            <p class="bought-price">₹499 <span>₹999</span> <em>51% off</em></p>
+            <button type="button">ADD TO CART</button>
+          </div>
+        </article>
+
+        <article class="bought-card">
+          <img src="./assets/img/banner-1.png" alt="De-Tan Facewash for Men (200ml)" />
+          <div class="bought-body">
+            <h3>De-Tan Facewash for Men (200ml)</h3>
+            <p class="bought-rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 4.8 | 69 reviews</p>
+            <p class="bought-price">₹299 <span>₹499</span> <em>41% off</em></p>
+            <button type="button">ADD TO CART</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="reviews-section" aria-label="Customer Reviews">
+    <div class="reviews-wrap">
+      <h2>What Modern Men Say</h2>
+  
+      <div class="reviews-top">
+        <div class="reviews-score">
+          <p class="stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+          <p>4.9 out of 5</p>
+          <p>Based on 120+ reviews <i class="fa-solid fa-circle-check" aria-hidden="true"></i></p>
+        </div>
+  
+        <div class="reviews-breakdown">
+          <div><span aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span><em><span class="reviews-bar-fill" style="width: 90%"></span></em><b>108</b></div>
+          <div><span aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></span><em><span class="reviews-bar-fill" style="width: 10%"></span></em><b>12</b></div>
+          <div><span aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></span><em><span class="reviews-bar-fill" style="width: 0%"></span></em><b>0</b></div>
+          <div><span aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></span><em><span class="reviews-bar-fill" style="width: 0%"></span></em><b>0</b></div>
+          <div><span aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i></span><em><span class="reviews-bar-fill" style="width: 0%"></span></em><b>0</b></div>
+        </div>
+  
+        <div class="reviews-action">
+          <button type="button">Share Your Experience</button>
+        </div>
+      </div>
+  
+      <div class="reviews-sort">Latest Reviews <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></div>
+  
+      <div class="review-item">
+        <p class="review-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+        <div class="review-meta"><span class="avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span> Arjun Mehta <em>Verified Buyer</em></div>
+        <p class="review-text">Clean, refined, and effective. You can actually feel the difference after a few uses.</p>
+        <span class="review-date">04/02/2026</span>
+      </div>
+  
+      <div class="review-item">
+        <p class="review-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+        <div class="review-meta"><span class="avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span> Rohan Kapoor <em>Verified Buyer</em></div>
+        <p class="review-text">Lightweight texture with a premium finish. No grease, just smooth results.</p>
+        <span class="review-date">03/21/2026</span>
+      </div>
+  
+      <div class="review-item">
+        <p class="review-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+        <div class="review-meta"><span class="avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span> Vikram Singh <em>Verified Buyer</em></div>
+        <p class="review-text">Perfect for daily grooming. Subtle fragrance and long-lasting performance.</p>
+        <span class="review-date">02/18/2026</span>
+      </div>
+  
+      <div class="review-item">
+        <p class="review-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></p>
+        <div class="review-meta"><span class="avatar"><i class="fa-solid fa-user" aria-hidden="true"></i></span> Karan Malhotra</div>
+        <p class="review-title">Refined & Powerful</p>
+        <p class="review-text">The formulation feels premium from the first use. Absorbs quickly, enhances texture, and leaves a polished, non-sticky finish. Ideal for everyday use.</p>
+        <span class="review-date">01/30/2026</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="footer-top-line"></div>
+    <div class="footer-mark" aria-hidden="true"><i class="fa-solid fa-gem"></i></div>
+  
+    <div class="footer-links-wrap">
+      <div class="footer-col">
+        <h4>COLLECTIONS</h4>
+        <div class="footer-two-col-list">
+          <ul>
+            <li><a href="#">Beard Care</a></li>
+            <li><a href="#">Fragrance</a></li>
+            <li><a href="#">Grooming Kits</a></li>
+            <li><a href="#">Face Care</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Hair Care</a></li>
+            <li><a href="#">Body Care</a></li>
+            <li><a href="#">Skin Essentials</a></li>
+            <li><a href="#">Grooming Tools</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="footer-col">
+        <h4>ACCOUNT</h4>
+        <ul>
+          <li><a href="#">My Profile</a></li>
+          <li><a href="#">Track Your Order</a></li>
+        </ul>
+      </div>
+  
+      <div class="footer-col footer-col-wide">
+        <h4>INFORMATION</h4>
+        <div class="footer-two-col-list">
+          <ul>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+          <ul>
+            <li><a href="#">Returns &amp; Exchanges</a></li>
+            <li><a href="#">Professional Range</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Warranty &amp; Support</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="footer-col footer-community">
+        <h4>CONNECT</h4>
+        <div class="footer-socials">
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+        </div>
+  
+        <p class="footer-sign-label">JOIN THE COMMUNITY</p>
+        <p class="footer-sign-copy">Get exclusive access to new launches, offers & grooming insights.</p>
+  
+        <form class="footer-sign-form" action="#" method="post">
+          <label class="sr-only" for="footer-email">Email</label>
+          <input id="footer-email" type="email" placeholder="Enter your email" />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  
+    <div class="footer-caution">
+      <h3>Notice</h3>
+      <p><strong>SECURITY ALERT:</strong> Please ensure all payments are made only through our official website or to the authorized delivery partner during cash on delivery.</p>
+      <p>We never request payments via calls, messages, or unverified payment links. Avoid sharing personal or payment details with unknown sources.</p>
+      <p><strong>Stay alert. Stay secure.</strong></p>
+      <p>For assistance, reach out to our support team at <strong>support@yourbrand.com</strong></p>
+    </div>
+  
+    <div class="footer-bottom">
+      <p>© 2026 ALL RIGHTS RESERVED</p>
+      <a href="#">YOUR BRAND</a>
+    </div>
+  </footer>
+
+  <script src="./assets/js/header-nav.js"></script>
+  <script src="./assets/js/product-page.js"></script>
+  <script src="./assets/js/cart-drawer.js"></script>
+  
+</body>
+
+</html>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avyra Jewels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="header-top">
+      <div class="header-top__inner">
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"
+          aria-controls="mobile-nav-drawer">
+          <span class="menu-toggle__bar" aria-hidden="true"></span>
+          <span class="menu-toggle__bar" aria-hidden="true"></span>
+          <span class="menu-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <a class="brand" href="index.html" aria-label="Avyra Jewels home">
+          <img class="brand__logo" src="assets/img/logo.png" alt="Avyra Jewels" width="120" height="56"
+            decoding="async" />
+        </a>
+
+        <form class="header-search" role="search" action="#" method="get">
+          <label class="visually-hidden" for="header-search-input">Search jewellery</label>
+          <span class="header-search__icon" aria-hidden="true">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <input id="header-search-input" class="header-search__input" type="search" name="q"
+            placeholder="Search for gold necklace" autocomplete="off" />
+          <div class="header-search__actions">
+            <button class="header-search__action" type="button" aria-label="Search by image">
+              <i class="fa-solid fa-camera" aria-hidden="true"></i>
+            </button>
+            <button class="header-search__action" type="button" aria-label="Voice search">
+              <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+            </button>
+          </div>
+        </form>
+
+        <div class="header-utils">
+          <a class="header-utils__link header-utils__link--hide-mobile" href="#" aria-label="Jewellery guide">
+            <i class="fa-regular fa-gem" aria-hidden="true"></i>
+          </a>
+          <a class="header-utils__link header-utils__link--hide-mobile" href="#" aria-label="Find a store">
+            <i class="fa-solid fa-store" aria-hidden="true"></i>
+          </a>
+          <a class="header-utils__link" href="#" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a class="header-utils__link" href="#" aria-label="My account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a class="header-utils__link header-utils__link--cart" href="cart.html" aria-label="Shopping bag, 0 items">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            <span class="cart-badge" data-cart-count>0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="category-nav" aria-label="Jewellery categories">
+      <div class="category-nav__inner">
+        <ul class="category-nav__list">
+          <li>
+            <a href="category.html">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <path d="M16 6c-3 0-5 2.5-5 5.5 0 2 1 3.5 2.5 4.5L16 26l2.5-10c1.5-1 2.5-2.5 2.5-4.5C21 8.5 19 6 16 6z" />
+                  <ellipse cx="16" cy="11" rx="5" ry="2.5" />
+                </svg>
+              </span>
+              <span class="category-nav__label">All Jewellery</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <rect x="6" y="10" width="8" height="12" rx="1" />
+                  <rect x="18" y="10" width="8" height="12" rx="1" />
+                  <path d="M8 10V8h6v2M18 10V8h6v2" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Gold</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <path d="M16 4l4 8 8 2-6 6 1.5 9L16 24l-7.5 5L10 20 4 14l8-2 4-8z" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Diamond</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <path d="M10 8c0 4 2 8 6 12 4-4 6-8 6-12a6 6 0 10-12 0z" />
+                  <circle cx="10" cy="8" r="1.5" fill="currentColor" stroke="none" />
+                  <circle cx="22" cy="8" r="1.5" fill="currentColor" stroke="none" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Earrings</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <circle cx="16" cy="18" r="7" />
+                  <path d="M16 11V8M13 8h6" />
+                  <path d="M16 11l-2-3h4l-2 3z" fill="currentColor" stroke="none" opacity=".5" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Rings</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <ellipse cx="11" cy="16" rx="5" ry="8" />
+                  <ellipse cx="21" cy="16" rx="5" ry="8" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Daily Wear</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <circle cx="16" cy="16" r="9" />
+                  <path d="M16 7v18M7 16h18M10 10l12 12M22 10L10 22" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Gemstone</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <circle cx="12" cy="18" r="6" />
+                  <circle cx="20" cy="18" r="6" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Bridal</span>
+            </a>
+          </li>
+          <li>
+            <a href="bridal.html">
+              <span class="category-nav__icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                  <rect x="7" y="13" width="18" height="14" rx="1" />
+                  <path d="M16 13V8M11 8h10l-5 5-5-5z" />
+                  <path d="M7 17h18" />
+                </svg>
+              </span>
+              <span class="category-nav__label">Gifting</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span class="category-nav__icon category-nav__icon--more" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="currentColor">
+                  <path
+                    d="M16 4c-1.2 0-2.2.6-2.8 1.5L8 14h16L18.8 5.5C18.2 4.6 17.2 4 16 4zm-6 12v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V16H10z" />
+                </svg>
+              </span>
+              <span class="category-nav__label">More</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="mobile-search">
+      <form class="header-search header-search--mobile" role="search" action="#" method="get">
+        <span class="header-search__icon" aria-hidden="true">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <input class="header-search__input" type="search" name="q" placeholder="Search for gold necklace"
+          autocomplete="off" aria-label="Search jewellery" />
+        <div class="header-search__actions">
+          <button class="header-search__action" type="button" aria-label="Search by image">
+            <i class="fa-solid fa-camera" aria-hidden="true"></i>
+          </button>
+          <button class="header-search__action" type="button" aria-label="Voice search">
+            <i class="fa-solid fa-microphone" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div id="mobile-nav-drawer" class="nav-drawer" inert aria-hidden="true">
+      <button type="button" class="nav-drawer__backdrop" aria-label="Close menu"></button>
+      <aside class="nav-drawer__panel" role="dialog" aria-modal="true" aria-label="Site menu">
+        <div class="nav-drawer__head">
+          <a class="brand brand--drawer" href="index.html">
+            <img class="brand__logo" src="assets/img/logo.png" alt="Avyra Jewels" width="100" height="48" />
+          </a>
+          <button type="button" class="nav-drawer__close" aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="nav-drawer__nav" aria-label="Mobile categories">
+          <ul>
+            <li><a href="category.html">All Jewellery</a></li>
+            <li><a href="#">Gold</a></li>
+            <li><a href="#">Diamond</a></li>
+            <li><a href="#">Earrings</a></li>
+            <li><a href="#">Rings</a></li>
+            <li><a href="#">Daily Wear</a></li>
+            <li><a href="#">Gemstone</a></li>
+            <li><a href="#">Bridal</a></li>
+            <li><a href="#">Gifting</a></li>
+            <li><a href="#">More</a></li>
+          </ul>
+        </nav>
+        <div class="nav-drawer__utils">
+          <a href="#" aria-label="Find a store"><i class="fa-solid fa-store"></i> Stores</a>
+          <a href="#" aria-label="Wishlist"><i class="fa-regular fa-heart"></i> Wishlist</a>
+          <a href="#" aria-label="My account"><i class="fa-regular fa-user"></i> Account</a>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <main class="page-main" id="main-content">
+
+    <section class="hero-section" aria-label="Promotional banners">
+      <div class="hero-section__inner">
+        <div class="hero-slider" data-hero-slider data-current-slide="0" data-slide-total="3">
+          <button class="hero-arrow hero-arrow--prev" type="button" aria-label="Previous slide">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="hero-viewport">
+            <div class="hero-track">
+              <article class="hero-slide is-active" data-slide-index="0">
+                <img src="assets/img/hero-banner-1.png" alt="Avyra Jewels promotional banner 1" width="1920"
+                  height="640" decoding="async" />
+              </article>
+              <article class="hero-slide" data-slide-index="1">
+                <img src="assets/img/hero-banner-2.png" alt="Avyra Jewels promotional banner 2" width="1920"
+                  height="640" decoding="async" />
+              </article>
+              <article class="hero-slide" data-slide-index="2">
+                <img src="assets/img/hero-banner-3.png" alt="Avyra Jewels promotional banner 3" width="1920"
+                  height="640" decoding="async" />
+              </article>
+            </div>
+          </div>
+
+          <button class="hero-arrow hero-arrow--next" type="button" aria-label="Next slide">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+
+          <div class="hero-pagination" aria-label="Slide navigation">
+            <span class="hero-counter" data-hero-counter aria-live="polite">1/3</span>
+            <div class="hero-dots" role="tablist" aria-label="Choose slide">
+              <button class="hero-dot is-active" type="button" data-slide-to="0" role="tab"
+                aria-selected="true" aria-label="Slide 1"></button>
+              <button class="hero-dot" type="button" data-slide-to="1" role="tab" aria-selected="false"
+                aria-label="Slide 2"></button>
+              <button class="hero-dot" type="button" data-slide-to="2" role="tab" aria-selected="false"
+                aria-label="Slide 3"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="collections-section" aria-labelledby="collections-heading">
+      <div class="collections-wrap">
+        <header class="collections-head">
+          <div class="collections-ornament" aria-hidden="true">
+            <span class="collections-ornament__line"></span>
+            <i class="fa-regular fa-gem"></i>
+            <span class="collections-ornament__line"></span>
+          </div>
+          <h2 id="collections-heading" class="collections-title">COLLECTIONS</h2>
+          <p class="collections-subtitle">Find your style. Explore our diverse collections!</p>
+        </header>
+
+        <div class="collections-stage" data-collections-carousel>
+          <button type="button" class="collections-nav collections-nav--prev" aria-label="Previous collection">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="collections-cards">
+            <a class="collections-card" href="#" data-collection-card>
+              <img src="assets/img/coll-1.png" alt="Diamond Necklace Collection" width="480" height="640"
+                decoding="async" />
+            </a>
+            <a class="collections-card" href="#" data-collection-card>
+              <img src="assets/img/coll-2.png" alt="Bloomz floral jewellery collection" width="480" height="640"
+                decoding="async" />
+            </a>
+            <a class="collections-card" href="#" data-collection-card>
+              <img src="assets/img/coll-3.png" alt="Bella Collections butterfly jewellery" width="480" height="640"
+                decoding="async" />
+            </a>
+            <a class="collections-card" href="#" data-collection-card>
+              <img src="assets/img/coll-4.png" alt="Jewellery collection 4" width="480" height="640"
+                decoding="async" />
+            </a>
+            <a class="collections-card" href="#" data-collection-card>
+              <img src="assets/img/coll-5.png" alt="Jewellery collection 5" width="480" height="640"
+                decoding="async" />
+            </a>
+            <a class="collections-card" href="#" data-collection-card>
+              <img src="assets/img/coll-6.png" alt="Jewellery collection 6" width="480" height="640"
+                decoding="async" />
+            </a>
+          </div>
+
+          <button type="button" class="collections-nav collections-nav--next" aria-label="Next collection">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <a href="#" class="collections-cta">View All Collection</a>
+      </div>
+    </section>
+
+    <section class="ps-section" aria-label="Everyday 22KT gold jewellery">
+      <div class="ps-inner">
+        <aside class="ps-promo">
+          <img class="ps-promo__bg" src="assets/img/banner-2.png" alt="" width="960" height="640" decoding="async"
+            aria-hidden="true" />
+          <div class="ps-promo__overlay" aria-hidden="true"></div>
+          <div class="ps-promo__content">
+            <p class="ps-promo__kicker">For the finest in gold, choose</p>
+            <h2 class="ps-promo__title">Everyday 22KT</h2>
+            <a href="#" class="ps-promo__btn">SHOP NOW</a>
+          </div>
+        </aside>
+
+        <div class="ps-products" data-product-carousel data-carousel-active-border="#8b6cad">
+          <div class="ps-carousel" data-carousel-viewport>
+            <div class="ps-track" data-product-track>
+              <article class="ps-card" data-product-card data-product-id="11">
+                <a href="product.html?id=11" class="ps-card__media">
+                  <img src="assets/img/category-1.jpg" alt="Winsome Box 22Kt Unisex Gold Bracelet" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹47,855</p>
+                  <h3 class="ps-card__name">Winsome Box 22Kt Unisex Gold Bracelet</h3>
+                </div>
+              </article>
+              <article class="ps-card" data-product-card data-product-id="12">
+                <a href="product.html?id=12" class="ps-card__media">
+                  <img src="assets/img/category-2.png" alt="Classic Weave Blooma 22KT Gold Ring" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹85,472</p>
+                  <h3 class="ps-card__name">Classic Weave Blooma 22KT Gold Ring</h3>
+                </div>
+              </article>
+              <article class="ps-card" data-product-card data-product-id="3">
+                <a href="product.html?id=3" class="ps-card__media">
+                  <img src="assets/img/category-3.png" alt="Winsome Box 22Kt Gold Chandbali" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹69,738</p>
+                  <h3 class="ps-card__name">Winsome Box 22Kt Gold Chandbali</h3>
+                </div>
+              </article>
+              <article class="ps-card" data-product-card data-product-id="4">
+                <a href="product.html?id=4" class="ps-card__media">
+                  <img src="assets/img/category-4.jpg" alt="Euphoria Wave 22Kt Gold Nosepin" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹44,672</p>
+                  <h3 class="ps-card__name">Euphoria Wave 22Kt Gold Nosepin</h3>
+                </div>
+              </article>
+              <article class="ps-card" data-product-card data-product-id="5">
+                <a href="product.html?id=5" class="ps-card__media">
+                  <img src="assets/img/category-5.png" alt="Radiant Bloom 22Kt Gold Pendant" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹52,990</p>
+                  <h3 class="ps-card__name">Radiant Bloom 22Kt Gold Pendant</h3>
+                </div>
+              </article>
+              <article class="ps-card" data-product-card data-product-id="6">
+                <a href="product.html?id=6" class="ps-card__media">
+                  <img src="assets/img/category-6.png" alt="Graceful Link 22Kt Gold Chain" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹61,250</p>
+                  <h3 class="ps-card__name">Graceful Link 22Kt Gold Chain</h3>
+                </div>
+              </article>
+              <article class="ps-card" data-product-card data-product-id="7">
+                <a href="product.html?id=7" class="ps-card__media">
+                  <img src="assets/img/category-7.png" alt="Lustre Drop 22Kt Gold Earrings" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹38,420</p>
+                  <h3 class="ps-card__name">Lustre Drop 22Kt Gold Earrings</h3>
+                </div>
+              </article>
+              <article class="ps-card" data-product-card data-product-id="8">
+                <a href="product.html?id=8" class="ps-card__media">
+                  <img src="assets/img/category-8.png" alt="Heritage Knot 22Kt Gold Bangle" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="ps-card__info">
+                  <p class="ps-card__price">₹72,180</p>
+                  <h3 class="ps-card__name">Heritage Knot 22Kt Gold Bangle</h3>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="ps-footer">
+            <div class="ps-nav">
+              <button type="button" class="ps-nav__btn ps-nav__btn--prev" data-carousel-prev aria-label="Previous product" disabled>
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="ps-nav__btn ps-nav__btn--next" data-carousel-next aria-label="Next product">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="#" class="ps-shop-btn">Shop Now</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dj-section" aria-labelledby="dj-heading">
+      <div class="dj-wrap">
+        <header class="dj-head">
+          <h2 id="dj-heading" class="dj-head__title">DIAMOND JEWELLERY</h2>
+          <p class="dj-head__subtitle">Shine with pride. Explore our diamond jewellery!</p>
+        </header>
+
+        <div class="dj-grid">
+          <a href="#" class="dj-card dj-card--main" aria-label="Diamond jewellery collection — shop now">
+            <img src="assets/img/DJ-1.png" alt="Crafted for those who wear their brilliance with pride" width="640"
+              height="800" decoding="async" />
+          </a>
+
+          <div class="dj-grid__right">
+            <a href="#" class="dj-card dj-card--wide" aria-label="Pride diamond collection — shop now">
+              <img src="assets/img/DJ-2.png" alt="Timeless brilliance, crafted to shine" width="960" height="400"
+                decoding="async" />
+            </a>
+
+            <div class="dj-grid__bottom">
+              <a href="#" class="dj-card dj-card--small" aria-label="Diamond earrings collection">
+                <img src="assets/img/DJ-3.png" alt="Diamond earrings" width="400" height="400" decoding="async" />
+              </a>
+              <a href="#" class="dj-card dj-card--small" aria-label="Diamond necklace collection">
+                <img src="assets/img/DJ-4.png" alt="Diamond necklace on model" width="400" height="400"
+                  decoding="async" />
+              </a>
+              <a href="#" class="dj-card dj-card--small" aria-label="Diamond pendant collection">
+                <img src="assets/img/DJ-5.png" alt="Diamond pendant necklace" width="400" height="400"
+                  decoding="async" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="u30-section" aria-label="Jewellery under 30K">
+      <div class="u30-inner">
+        <aside class="u30-promo">
+          <img class="u30-promo__bg" src="assets/img/banner-1.png" alt="" width="960" height="640" decoding="async"
+            aria-hidden="true" />
+          <div class="u30-promo__overlay" aria-hidden="true"></div>
+          <div class="u30-promo__content">
+            <h2 class="u30-promo__title">Everything you love, under 30K.</h2>
+            <a href="#" class="u30-promo__btn">SHOP NOW</a>
+          </div>
+        </aside>
+
+        <div class="u30-products" data-product-carousel data-carousel-gap="14">
+          <div class="u30-carousel" data-carousel-viewport>
+            <div class="u30-track" data-product-track>
+              <article class="u30-card" data-product-card data-product-id="9">
+                <a href="product.html?id=9" class="u30-card__media">
+                  <img src="assets/img/category-12.png" alt="Alor Gold Stud Earrings" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹5,385</span>
+                    <span class="u30-card__compare">₹5,749</span>
+                  </p>
+                  <h3 class="u30-card__name">Alor Gold Stud Earrings for Women</h3>
+                </div>
+              </article>
+              <article class="u30-card" data-product-card data-product-id="10">
+                <a href="product.html?id=10" class="u30-card__media">
+                  <img src="assets/img/category-11.jpg" alt="Louzo 22kt Yellow Gold Chain Bracelet" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹6,662</span>
+                    <span class="u30-card__compare">₹7,242</span>
+                  </p>
+                  <h3 class="u30-card__name">Louzo 22kt Yellow Gold Chain Bracelet</h3>
+                </div>
+              </article>
+              <article class="u30-card" data-product-card data-product-id="11">
+                <a href="product.html?id=11" class="u30-card__media">
+                  <img src="assets/img/category-10.png" alt="Boghh 22kt Butterfly Design Gold Bracelet" width="400"
+                    height="400" decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹14,800</span>
+                    <span class="u30-card__compare">₹16,851</span>
+                  </p>
+                  <h3 class="u30-card__name">Boghh 22kt Butterfly Design Gold Bracelet</h3>
+                </div>
+              </article>
+              <article class="u30-card" data-product-card data-product-id="4">
+                <a href="product.html?id=4" class="u30-card__media">
+                  <img src="assets/img/category-9.png" alt="Euphoria Wave 22Kt Gold Nosepin" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹12,450</span>
+                    <span class="u30-card__compare">₹13,990</span>
+                  </p>
+                  <h3 class="u30-card__name">Euphoria Wave 22Kt Gold Nosepin</h3>
+                </div>
+              </article>
+              <article class="u30-card" data-product-card data-product-id="5">
+                <a href="product.html?id=5" class="u30-card__media">
+                  <img src="assets/img/category-8.png" alt="Radiant Bloom 22Kt Gold Pendant" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹18,200</span>
+                    <span class="u30-card__compare">₹19,850</span>
+                  </p>
+                  <h3 class="u30-card__name">Radiant Bloom 22Kt Gold Pendant</h3>
+                </div>
+              </article>
+              <article class="u30-card" data-product-card data-product-id="6">
+                <a href="product.html?id=6" class="u30-card__media">
+                  <img src="assets/img/category-7.png" alt="Graceful Link 22Kt Gold Chain" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹22,500</span>
+                    <span class="u30-card__compare">₹24,990</span>
+                  </p>
+                  <h3 class="u30-card__name">Graceful Link 22Kt Gold Chain</h3>
+                </div>
+              </article>
+              <article class="u30-card" data-product-card data-product-id="7">
+                <a href="product.html?id=7" class="u30-card__media">
+                  <img src="assets/img/category-6.png" alt="Lustre Drop 22Kt Gold Earrings" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹9,850</span>
+                    <span class="u30-card__compare">₹10,720</span>
+                  </p>
+                  <h3 class="u30-card__name">Lustre Drop 22Kt Gold Earrings</h3>
+                </div>
+              </article>
+              <article class="u30-card" data-product-card data-product-id="8">
+                <a href="product.html?id=8" class="u30-card__media">
+                  <img src="assets/img/category-5.png" alt="Heritage Knot 22Kt Gold Bangle" width="400" height="400"
+                    decoding="async" />
+                </a>
+                <div class="u30-card__info">
+                  <p class="u30-card__pricing">
+                    <span class="u30-card__price">₹28,900</span>
+                    <span class="u30-card__compare">₹29,999</span>
+                  </p>
+                  <h3 class="u30-card__name">Heritage Knot 22Kt Gold Bangle</h3>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="u30-footer">
+            <div class="u30-nav">
+              <button type="button" class="u30-nav__btn u30-nav__btn--prev" data-carousel-prev
+                aria-label="Previous product" disabled>
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="u30-nav__btn u30-nav__btn--next" data-carousel-next
+                aria-label="Next product">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="#" class="u30-shop-btn">Shop Now</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ej-section" aria-labelledby="ej-heading">
+      <div class="ej-wrap">
+        <header class="ej-head">
+          <h2 id="ej-heading" class="ej-head__title">EXPLORE JEWELLERY</h2>
+          <p class="ej-head__subtitle">Discover exquisite pieces for every style. Start shopping!</p>
+        </header>
+
+        <div class="ej-grid">
+          <a href="#" class="ej-card ej-card--tall ej-card--left">
+            <span class="ej-card__media">
+              <img src="assets/img/EJ-1.png" alt="Diamond jewellery collection" width="480" height="640"
+                decoding="async" />
+            </span>
+            <span class="ej-card__label">Diamond Jewellery</span>
+          </a>
+
+          <a href="#" class="ej-card ej-card--mid ej-card--mid-top">
+            <span class="ej-card__media">
+              <img src="assets/img/EJ-2.png" alt="Gold jewellery collection" width="480" height="320"
+                decoding="async" />
+            </span>
+            <span class="ej-card__label">Gold Jewellery</span>
+          </a>
+
+          <a href="#" class="ej-card ej-card--mid ej-card--mid-bottom">
+            <span class="ej-card__media">
+              <img src="assets/img/EJ-3.png" alt="Gemstone jewellery collection" width="480" height="320"
+                decoding="async" />
+            </span>
+            <span class="ej-card__label">Gemstone Jewellery</span>
+          </a>
+
+          <a href="#" class="ej-card ej-card--tall ej-card--right">
+            <span class="ej-card__media">
+              <img src="assets/img/EJ-4.png" alt="Platinum jewellery collection" width="480" height="640"
+                decoding="async" />
+            </span>
+            <span class="ej-card__label">Platinum Jewellery</span>
+          </a>
+        </div>
+
+        <a href="#" class="ej-cta">Discover More</a>
+      </div>
+    </section>
+
+    <section class="cj-section" aria-labelledby="cj-heading">
+      <div class="cj-wrap">
+        <header class="cj-head">
+          <h2 id="cj-heading" class="cj-head__title">CUSTOMIZE JEWELLERY AT OUR STORE</h2>
+          <p class="cj-head__subtitle">Get in touch with us for a complete jewellery shopping experience!</p>
+        </header>
+
+        <div class="cj-banners">
+          <a href="#" class="cj-banner" aria-label="Visit our showrooms">
+            <img src="assets/img/banner-1.png" alt="Avyra Jewels showroom and collection" width="960" height="480"
+              decoding="async" />
+          </a>
+          <a href="#" class="cj-banner" aria-label="Book a jewellery appointment">
+            <img src="assets/img/banner-2.png" alt="Book an appointment at Avyra Jewels" width="960" height="480"
+              decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" aria-label="Site footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__top">
+        <div class="site-footer__newsletter">
+          <h2 class="site-footer__newsletter-title">Join Our Newsletter Now!</h2>
+          <p class="site-footer__newsletter-text">Be the first to know about new designs, events, and more!</p>
+        </div>
+
+        <form class="site-footer__subscribe" action="#" method="post">
+          <label class="visually-hidden" for="footer-email">Email address</label>
+          <input id="footer-email" class="site-footer__subscribe-input" type="email" name="email"
+            placeholder="Enter Your Email" autocomplete="email" required />
+          <button class="site-footer__subscribe-btn" type="submit" aria-label="Subscribe to newsletter">
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+
+        <div class="site-footer__contacts">
+          <div class="site-footer__contact">
+            <span class="site-footer__contact-icon" aria-hidden="true">
+              <i class="fa-solid fa-phone"></i>
+            </span>
+            <div class="site-footer__contact-body">
+              <span class="site-footer__contact-label">Call Us</span>
+              <a href="tel:+919876543210">+91 98765 43210</a>
+            </div>
+          </div>
+
+          <div class="site-footer__contact">
+            <span class="site-footer__contact-icon" aria-hidden="true">
+              <i class="fa-solid fa-envelope"></i>
+            </span>
+            <div class="site-footer__contact-body">
+              <span class="site-footer__contact-label">Email Us</span>
+              <a href="mailto:care@avyrajewels.com">care@avyrajewels.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer navigation">
+        <div class="site-footer__col">
+          <h3 class="site-footer__col-title">Bridal</h3>
+          <ul>
+            <li><a href="bridal.html">Bridal Collection</a></li>
+            <li><a href="category.html">All Jewellery</a></li>
+            <li><a href="category.html">Wedding Sets</a></li>
+            <li><a href="category.html">Temple Jewellery</a></li>
+            <li><a href="category.html">Kundan &amp; Polki</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__col-title">About</h3>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="#">History - The Journey</a></li>
+            <li><a href="#">Awards</a></li>
+            <li><a href="#">Social Initiatives</a></li>
+            <li><a href="#">Career</a></li>
+            <li><a href="#">FAQ's</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__col-title">Jewellery Guide</h3>
+          <ul>
+            <li><a href="#">Jewellery Education</a></li>
+            <li><a href="#">Know Your Gold</a></li>
+            <li><a href="#">Know Your Diamond</a></li>
+            <li><a href="#">Know Your Gemstone</a></li>
+            <li><a href="#">Know Your Silver</a></li>
+            <li><a href="#">Bangle Size Guide</a></li>
+            <li><a href="#">Ring Size Guide</a></li>
+            <li><a href="#">Jewellery Care</a></li>
+            <li><a href="#">Platinum Care</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__col-title">Media</h3>
+          <ul>
+            <li><a href="blog.html">Our Blogs</a></li>
+            <li><a href="#">Latest Promotion</a></li>
+            <li><a href="#">Testimonials</a></li>
+            <li><a href="#">Video Campaign</a></li>
+            <li><a href="#">News &amp; Events</a></li>
+            <li><a href="#">Investor Relations</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__col-title">Policies</h3>
+          <ul>
+            <li><a href="#">Disclaimer</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Return &amp; Refund</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Exchange, Buyback Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__col-title">Quick Links</h3>
+          <ul>
+            <li><a href="#">Track My Order</a></li>
+            <li><a href="#">Scheme Payments</a></li>
+            <li><a href="#">Join New Easy Gold Scheme</a></li>
+            <li><a href="#">Buy Gift Card</a></li>
+            <li><a href="#">Corporate Gifting</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col site-footer__col--help">
+          <h3 class="site-footer__col-title">Help Desk</h3>
+          <p class="site-footer__help-line">Ph: +91 98765 43210 (Mon To Saturday 10Am-7Pm)</p>
+          <p class="site-footer__help-line">General: <a href="mailto:care@avyrajewels.com">care@avyrajewels.com</a></p>
+          <p class="site-footer__help-line">Corporate: <a
+              href="mailto:b2b@avyrajewels.com">b2b@avyrajewels.com</a></p>
+          <div class="site-footer__help-actions">
+            <a href="contact.html" class="site-footer__outline-btn">Contact us</a>
+            <a href="#" class="site-footer__outline-btn">Find a Store</a>
+          </div>
+          <div class="site-footer__socials" aria-label="Social media">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="site-footer__bottom">
+        <p class="site-footer__copy">&copy; Avyra Jewels 2026. All rights reserved</p>
+
+        <div class="site-footer__apps">
+          <a href="#" class="site-footer__app-badge" aria-label="Get it on Google Play">
+            <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+            <span>Google Play</span>
+          </a>
+          <a href="#" class="site-footer__app-badge" aria-label="Download on the App Store">
+            <i class="fa-brands fa-apple" aria-hidden="true"></i>
+            <span>App Store</span>
+          </a>
+        </div>
+
+        <div class="site-footer__payments" aria-label="Accepted payment methods">
+          <span class="site-footer__pay" title="Maestro"><i class="fa-brands fa-cc-mastercard" aria-hidden="true"></i></span>
+          <span class="site-footer__pay" title="Mastercard"><i class="fa-brands fa-cc-mastercard" aria-hidden="true"></i></span>
+          <span class="site-footer__pay" title="Visa"><i class="fa-brands fa-cc-visa" aria-hidden="true"></i></span>
+          <span class="site-footer__pay" title="American Express"><i class="fa-brands fa-cc-amex" aria-hidden="true"></i></span>
+          <span class="site-footer__pay site-footer__pay--text">Net Banking</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/product-card.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

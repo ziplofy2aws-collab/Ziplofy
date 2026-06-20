@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velmont</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/motion.css" />
+</head>
+
+<body>
+
+  <header class="gr2-header" role="banner">
+
+    <div class="gr2-header__announce" role="region" aria-label="Store announcement">
+      <p class="gr2-header__announce-text">
+        Introducing the Royal Grooming Club – Earn Rewards on Every Purchase.
+        <a href="#" class="gr2-header__announce-link">Join Now</a>
+      </p>
+    </div>
+
+    <div class="gr2-header__main">
+      <div class="gr2-header__container gr2-header__main-inner">
+        <div class="gr2-header__main-left">
+          <button type="button" class="gr2-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-gr2-menu-toggle>
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="gr2-header__icon-btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <a href="index.html" class="gr2-header__logo" aria-label="Velmont home">
+          <img src="assets/img/logo.png" alt="Velmont Men's Grooming" width="280" height="72" decoding="async" />
+        </a>
+
+        <div class="gr2-header__main-right">
+          <a href="#" class="gr2-header__icon-btn" aria-label="Account">
+            <i class="fa-regular fa-circle-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="gr2-header__icon-btn" aria-label="Shopping cart">
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="gr2-header__nav" aria-label="Primary navigation">
+      <div class="gr2-header__container">
+        <ul class="gr2-header__nav-list" data-gr2-nav>
+          <li><a href="#">About Us <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">Shaving <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">Hair Care <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">Face &amp; Body <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">Cologne</a></li>
+          <li><a href="#">Collection <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">Gifting <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">News &amp; Media <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a></li>
+          <li><a href="#">Travel Collection</a></li>
+          <li><a href="#">Rewards</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="gr2-header__overlay" data-gr2-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="gr2-hero" aria-label="Hero banner slider" data-gr2-hero>
+      <div class="gr2-hero__frame">
+        <div class="gr2-hero__inner">
+          <article class="gr2-hero__slide is-active">
+            <picture>
+              <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-banner-1.png" />
+              <img src="assets/img/hero-banner-1.png" alt="Velmont hero banner 1" width="1920" height="800"
+                decoding="async" />
+            </picture>
+          </article>
+          <article class="gr2-hero__slide">
+            <picture>
+              <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-banner-2.png" />
+              <img src="assets/img/hero-banner-2.png" alt="Velmont hero banner 2" width="1920" height="800"
+                loading="lazy" decoding="async" />
+            </picture>
+          </article>
+          <article class="gr2-hero__slide">
+            <picture>
+              <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-banner-3.png" />
+              <img src="assets/img/hero-banner-3.png" alt="Velmont hero banner 3" width="1920" height="800"
+                loading="lazy" decoding="async" />
+            </picture>
+          </article>
+          <article class="gr2-hero__slide">
+            <picture>
+              <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-banner-4.png" />
+              <img src="assets/img/hero-banner-4.png" alt="Velmont hero banner 4" width="1920" height="800"
+                loading="lazy" decoding="async" />
+            </picture>
+          </article>
+        </div>
+
+        <div class="gr2-hero__lines" role="tablist" aria-label="Choose slide">
+          <button type="button" class="gr2-hero__line is-active" data-gr2-hero-line role="tab" aria-selected="true"
+            aria-label="Slide 1" tabindex="0"></button>
+          <button type="button" class="gr2-hero__line" data-gr2-hero-line role="tab" aria-selected="false"
+            aria-label="Slide 2" tabindex="-1"></button>
+          <button type="button" class="gr2-hero__line" data-gr2-hero-line role="tab" aria-selected="false"
+            aria-label="Slide 3" tabindex="-1"></button>
+          <button type="button" class="gr2-hero__line" data-gr2-hero-line role="tab" aria-selected="false"
+            aria-label="Slide 4" tabindex="-1"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-cat" aria-labelledby="gr2-cat-heading">
+      <div class="gr2-header__container gr2-cat__inner">
+        <h2 id="gr2-cat-heading" class="gr2-cat__title">Shop By Category</h2>
+
+        <div class="gr2-cat__slider" data-gr2-cat-slider>
+          <div class="gr2-cat__viewport" data-gr2-cat-viewport tabindex="0" aria-label="Category carousel">
+            <div class="gr2-cat__track" data-gr2-cat-track>
+              <div class="gr2-cat__page">
+                <a href="shop.html" class="gr2-cat__card">
+                  <img src="assets/img/cat-1.png" alt="Shaving" width="400" height="400" decoding="async" />
+                  <span class="gr2-cat__overlay" aria-hidden="true"></span>
+                  <span class="gr2-cat__label">Shaving</span>
+                </a>
+                <a href="shop.html" class="gr2-cat__card">
+                  <img src="assets/img/cat-2.png" alt="Shampoo" width="400" height="400" loading="lazy"
+                    decoding="async" />
+                  <span class="gr2-cat__overlay" aria-hidden="true"></span>
+                  <span class="gr2-cat__label">Shampoo</span>
+                </a>
+              </div>
+              <div class="gr2-cat__page">
+                <a href="shop.html" class="gr2-cat__card">
+                  <img src="assets/img/cat-3.png" alt="Styling" width="400" height="400" loading="lazy"
+                    decoding="async" />
+                  <span class="gr2-cat__overlay" aria-hidden="true"></span>
+                  <span class="gr2-cat__label">Styling</span>
+                </a>
+                <a href="shop.html" class="gr2-cat__card">
+                  <img src="assets/img/cat-4.png" alt="Bath &amp; Body" width="400" height="400" loading="lazy"
+                    decoding="async" />
+                  <span class="gr2-cat__overlay" aria-hidden="true"></span>
+                  <span class="gr2-cat__label">Bath &amp; Body</span>
+                </a>
+              </div>
+              <div class="gr2-cat__page">
+                <a href="shop.html" class="gr2-cat__card">
+                  <img src="assets/img/cat-5.png" alt="Cleanser" width="400" height="400" loading="lazy"
+                    decoding="async" />
+                  <span class="gr2-cat__overlay" aria-hidden="true"></span>
+                  <span class="gr2-cat__label">Cleanser</span>
+                </a>
+                <a href="shop.html" class="gr2-cat__card">
+                  <img src="assets/img/cat-6.png" alt="Cologne" width="400" height="400" loading="lazy"
+                    decoding="async" />
+                  <span class="gr2-cat__overlay" aria-hidden="true"></span>
+                  <span class="gr2-cat__label">Cologne</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="gr2-cat__pager" data-gr2-cat-pager aria-label="Category slides"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-bs" aria-labelledby="gr2-bs-heading" data-gr2-product-carousel
+      data-gr2-products="GR2_BEST_SELLERS">
+      <div class="gr2-header__container gr2-bs__inner">
+        <div class="gr2-bs__header">
+          <span class="gr2-bs__header-line" aria-hidden="true"></span>
+          <h2 id="gr2-bs-heading" class="gr2-bs__title">BEST SELLERS</h2>
+          <span class="gr2-bs__header-line" aria-hidden="true"></span>
+        </div>
+
+        <div class="gr2-bs__carousel-wrap">
+          <div class="gr2-bs__viewport" data-gr2-bs-viewport tabindex="0">
+            <div class="gr2-bs__track" data-gr2-bs-track></div>
+          </div>
+
+          <button type="button" class="gr2-bs__arrow gr2-bs__arrow--prev" data-gr2-bs-prev aria-label="Previous product"
+            disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="gr2-bs__arrow gr2-bs__arrow--next" data-gr2-bs-next aria-label="Next product">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-promo" aria-labelledby="gr2-promo-heading">
+      <div class="gr2-header__container gr2-promo__inner">
+        <div class="gr2-promo__copy">
+          <h2 id="gr2-promo-heading" class="gr2-promo__title">Great Grooming Tools!</h2>
+          <p class="gr2-promo__subtitle">Tools Designed For The Job</p>
+        </div>
+
+        <div class="gr2-promo__banner">
+          <img src="assets/img/big-banner-1.png" alt="Premium grooming tools showcase" width="1320" height="520"
+            decoding="async" />
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-sgrid" aria-label="Featured grooming collections">
+      <div class="gr2-header__container">
+        <div class="gr2-sgrid__grid">
+          <a href="#" class="gr2-sgrid__card">
+            <img src="assets/img/small-banner-1.png" alt="Same Greatness New Colour" width="660" height="320"
+              decoding="async" />
+          </a>
+          <a href="#" class="gr2-sgrid__card">
+            <img src="assets/img/small-banner-2.png" alt="Pro Styling Head" width="660" height="320" loading="lazy"
+              decoding="async" />
+          </a>
+          <a href="#" class="gr2-sgrid__card">
+            <img src="assets/img/small-banner-3.png" alt="World's First Wide Blade Tech" width="660" height="320"
+              loading="lazy" decoding="async" />
+          </a>
+          <a href="#" class="gr2-sgrid__card">
+            <img src="assets/img/small-banner-4.png" alt="The Grooming Trimmer 4.0" width="660" height="320"
+              loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-bs" aria-labelledby="gr2-na-heading" data-gr2-product-carousel
+      data-gr2-products="GR2_NEW_ARRIVALS" data-gr2-carousel-progress>
+      <div class="gr2-header__container gr2-bs__inner">
+        <div class="gr2-bs__header">
+          <span class="gr2-bs__header-line" aria-hidden="true"></span>
+          <h2 id="gr2-na-heading" class="gr2-bs__title">NEW ARRIVALS</h2>
+          <span class="gr2-bs__header-line" aria-hidden="true"></span>
+        </div>
+
+        <div class="gr2-bs__carousel-wrap">
+          <div class="gr2-bs__viewport" data-gr2-bs-viewport tabindex="0">
+            <div class="gr2-bs__track" data-gr2-bs-track></div>
+          </div>
+
+          <button type="button" class="gr2-bs__arrow gr2-bs__arrow--prev" data-gr2-bs-prev aria-label="Previous product"
+            disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="gr2-bs__arrow gr2-bs__arrow--next" data-gr2-bs-next aria-label="Next product">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="gr2-bs__progress" aria-hidden="true">
+          <span class="gr2-bs__progress-bar" data-gr2-bs-progress></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-promo-duo" aria-label="Promotional offers">
+      <div class="gr2-promo-duo__grid">
+        <a href="#" class="gr2-promo-duo__card">
+          <img src="assets/img/promo-1.png" alt="Get Fresh Down There — So fresh, you feel carefree" width="720"
+            height="720" decoding="async" />
+        </a>
+        <a href="#" class="gr2-promo-duo__card">
+          <img src="assets/img/promo-2.png" alt="Made for Men's Skin — Gentle enough for daily use" width="720"
+            height="720" loading="lazy" decoding="async" />
+        </a>
+      </div>
+    </section>
+
+    <section class="gr2-trust" aria-labelledby="gr2-trust-heading">
+      <div class="gr2-header__container gr2-trust__inner">
+        <h2 id="gr2-trust-heading" class="gr2-trust__title">Why This Is The Best Place For Men's Grooming</h2>
+
+        <div class="gr2-trust__grid">
+          <article class="gr2-trust__card">
+            <i class="fa-solid fa-award gr2-trust__icon" aria-hidden="true"></i>
+            <p class="gr2-trust__text">
+              <strong>100% original Menhood® products</strong> with warranty &amp; support.
+            </p>
+          </article>
+
+          <article class="gr2-trust__card">
+            <i class="fa-solid fa-headset gr2-trust__icon" aria-hidden="true"></i>
+            <p class="gr2-trust__text">
+              <strong>24/7 expert support</strong> for orders, tracking, exchanges &amp; warranty.
+            </p>
+          </article>
+
+          <article class="gr2-trust__card">
+            <i class="fa-solid fa-tag gr2-trust__icon" aria-hidden="true"></i>
+            <p class="gr2-trust__text">
+              <strong>Better Deals, Better Prices,</strong> On All Grooming Essentials.
+            </p>
+          </article>
+
+          <article class="gr2-trust__card">
+            <i class="fa-solid fa-rotate-left gr2-trust__icon" aria-hidden="true"></i>
+            <p class="gr2-trust__text">
+              Enjoy worry free shopping with our <strong>10-Day Money Back Guarantee</strong> on eligible Menhood
+            </p>
+          </article>
+
+          <article class="gr2-trust__card">
+            <i class="fa-solid fa-shield-halved gr2-trust__icon" aria-hidden="true"></i>
+            <p class="gr2-trust__text">
+              <strong>100% secure payments</strong> via Cards, NetBanking, UPI &amp; Wallets.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-brand-banner" aria-label="Specialized in men's grooming">
+      <div class="gr2-header__container">
+        <div class="gr2-brand-banner__frame">
+          <img src="assets/img/big-banner-2.png" alt="Velmont is specialized in men's grooming" width="1320"
+            height="520" loading="lazy" decoding="async" />
+        </div>
+      </div>
+    </section>
+
+    <section class="gr2-reviews" aria-label="Customer reviews" data-gr2-reviews>
+      <div class="gr2-reviews__viewport">
+        <div class="gr2-reviews__track" data-gr2-reviews-track></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="gr2-footer" aria-label="Site footer">
+    <div class="gr2-header__container gr2-footer__inner">
+      <div class="gr2-footer__top">
+        <a href="index.html" class="gr2-footer__logo" aria-label="Velmont home">
+          <img src="assets/img/logo.png" alt="Velmont Men's Grooming" width="220" height="56" loading="lazy"
+            decoding="async" />
+        </a>
+        <p class="gr2-footer__tagline">
+          Velmont is a range of grooming products, for men. Helping our Bros look their best since 2015
+        </p>
+      </div>
+
+      <div class="gr2-footer__grid">
+        <div class="gr2-footer__col">
+          <h3 class="gr2-footer__heading">Company</h3>
+          <ul class="gr2-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Brand Protection</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms Of Use</a></li>
+            <li><a href="#">Sulphates And Parabens</a></li>
+            <li><a href="#">Velmont - Grooming Tips</a></li>
+            <li><a href="#">Intern With Us</a></li>
+            <li><a href="#">We Are Hiring</a></li>
+            <li><a href="#">GST Rate Announcement</a></li>
+            <li><a href="#">How To Use Our Products</a></li>
+          </ul>
+        </div>
+
+        <div class="gr2-footer__col">
+          <h3 class="gr2-footer__heading">General Info</h3>
+          <ul class="gr2-footer__links">
+            <li><a href="#">Subscription Plans</a></li>
+            <li><a href="#">Subscription Cancellation Policy</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Warranty</a></li>
+            <li><a href="#">Velmont Return &amp; Replacement Policy</a></li>
+            <li><a href="#">Fragrances Return &amp; Replacement Policy</a></li>
+            <li><a href="#">Trimmer Return &amp; Replacement Policy</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Shipping And Handling</a></li>
+            <li><a href="#">Cashback Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+
+        <div class="gr2-footer__col">
+          <h3 class="gr2-footer__heading">Order Related Enquiries:</h3>
+          <p class="gr2-footer__text">Email: help@velmont.com</p>
+          <p class="gr2-footer__text">Call: 1800 103 6121 |</p>
+
+          <h3 class="gr2-footer__heading gr2-footer__heading--spaced">Trade Related Enquiries:</h3>
+          <p class="gr2-footer__text">Domestic: trade@velmont.com</p>
+          <p class="gr2-footer__text">International/Export: trade@velmont.com</p>
+        </div>
+
+        <div class="gr2-footer__aside">
+          <div class="gr2-footer__connect">
+            <h3 class="gr2-footer__connect-heading">Stay Connected</h3>
+            <div class="gr2-footer__socials">
+              <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+              <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+              <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+            </div>
+
+            <h3 class="gr2-footer__connect-heading gr2-footer__connect-heading--apps">Mobile Apps</h3>
+            <div class="gr2-footer__apps">
+              <a href="#" class="gr2-footer__app-btn">
+                <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+                <span>
+                  <small>GET IT ON</small>
+                  Google Play
+                </span>
+              </a>
+              <a href="#" class="gr2-footer__app-btn">
+                <i class="fa-brands fa-apple" aria-hidden="true"></i>
+                <span>
+                  <small>Download on the</small>
+                  App Store
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/motion.js"></script>
+</body>
+
+</html>

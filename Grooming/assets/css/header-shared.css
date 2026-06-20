@@ -1,0 +1,342 @@
+/* Shared site header: announcement slider + desktop/mobile nav */
+
+.site-header {
+  width: 100%;
+  background: #06080b;
+  border-bottom: 1px solid #232831;
+  position: relative;
+  z-index: 500;
+}
+
+.announcement-bar {
+  padding: 0 28px;
+  border-bottom: 1px solid #232831;
+  color: #d7dbe2;
+}
+
+.announcement-viewport {
+  height: 42px;
+  overflow: hidden;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.announcement-track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.announcement-slide {
+  flex: 0 0 42px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0 8px;
+  font-size: 13px;
+  line-height: 1.25;
+  color: #d0d4db;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  text-align: center;
+}
+
+.announcement-slide i {
+  flex-shrink: 0;
+}
+
+.main-nav {
+  min-height: 74px;
+  padding: 0 28px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 22px;
+}
+
+.nav-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #e3e7ee;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.nav-toggle:focus-visible {
+  outline: 2px solid #c9a36a;
+  outline-offset: 2px;
+}
+
+.nav-toggle-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle.is-open .nav-toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle.is-open .nav-toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle.is-open .nav-toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  display: block;
+  height: 74px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand-icon {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.brand-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-family: Cambria, "Times New Roman", serif;
+  color: #f3e0be;
+  letter-spacing: 2px;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.brand-tagline {
+  margin-top: 2px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 11px;
+  color: #a38a62;
+  letter-spacing: 1.5px;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  gap: 20px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #d3d8e0;
+  white-space: nowrap;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.search-wrap {
+  min-width: 270px;
+  height: 43px;
+  border: 1px solid #313845;
+  border-radius: 999px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #0b1118;
+}
+
+.search-wrap input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f1f3f7;
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.search-wrap input::placeholder {
+  color: #9ea6b5;
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  color: #e3e7ee;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cart-btn {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: 5px;
+  right: 2px;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #f4c56f;
+  color: #000;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 10px;
+  line-height: 14px;
+}
+
+.nav-backdrop {
+  display: none;
+}
+
+body.is-nav-open {
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .main-nav {
+    padding: 8px 12px;
+    gap: 8px;
+    min-height: 56px;
+  }
+
+  .brand-logo {
+    height: 48px;
+  }
+
+  .brand-title {
+    font-size: 32px;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(300px, 86vw);
+    height: 100dvh;
+    margin: 0;
+    padding: 72px 20px 28px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    flex: none;
+    background: #0b0e14;
+    border-right: 1px solid #232831;
+    z-index: 1002;
+    transform: translateX(-102%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.45);
+  }
+
+  .site-header.is-nav-open .nav-menu {
+    transform: translateX(0);
+  }
+
+  .nav-menu a {
+    white-space: normal;
+    padding: 14px 0;
+    border-bottom: 1px solid #1e2430;
+    font-size: 15px;
+  }
+
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .site-header.is-nav-open .nav-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav-actions {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .search-wrap {
+    min-width: 0;
+    flex: 1 1 auto;
+    height: 40px;
+    padding: 0 10px;
+  }
+
+  .search-wrap input {
+    font-size: 13px;
+  }
+
+  .search-wrap input::placeholder {
+    font-size: 12px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .announcement-bar {
+    padding: 0 12px;
+  }
+
+  .announcement-viewport {
+    height: 52px;
+  }
+
+  .announcement-slide {
+    flex: 0 0 52px;
+    min-height: 52px;
+    font-size: 12px;
+    white-space: normal;
+    padding: 0 4px;
+  }
+}

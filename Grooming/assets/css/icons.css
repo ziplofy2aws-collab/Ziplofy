@@ -1,0 +1,226 @@
+/* Font Awesome – layout and tuning */
+
+.brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.brand-icon .fa-solid {
+  font-size: 26px;
+  color: #f3e0be;
+}
+
+.nav-menu a .fa-chevron-down {
+  margin-left: 0.2em;
+  font-size: 0.65em;
+  opacity: 0.75;
+  vertical-align: middle;
+}
+
+.search-wrap .fa-magnifying-glass {
+  color: #9ea6b5;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn .fa-solid {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.announcement-item .fa-solid,
+.announcement-slide .fa-solid {
+  margin-right: 0.45em;
+  width: 1.15em;
+  text-align: center;
+  opacity: 0.92;
+}
+
+.hero-feature-heading .fa-solid,
+.strip-title .fa-solid {
+  margin-right: 0.35em;
+  color: #c9a36a;
+}
+
+.hero-cta-primary .fa-arrow-right {
+  margin-left: 0.4em;
+  font-size: 0.88em;
+  vertical-align: -0.02em;
+}
+
+.best-nav-btn .fa-solid,
+.skin-nav-btn .fa-solid {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.skin-care-head a .fa-angle-right {
+  margin-left: 0.3em;
+  font-size: 0.72em;
+  vertical-align: middle;
+}
+
+.footer-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-mark .fa-solid {
+  font-size: 38px;
+  color: #fff;
+  opacity: 0.88;
+}
+
+.footer-socials a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-socials a .fa-brands {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.deal-card-meta .fa-star {
+  color: #f6ba3e;
+  font-size: 11px;
+}
+
+.best-rating .best-rating-stars {
+  margin-right: 5px;
+  letter-spacing: 1px;
+}
+
+.best-rating .best-rating-stars .fa-solid {
+  color: #f6ba3e;
+  font-size: 10px;
+}
+
+.skin-card-rating .fa-star {
+  color: #db2f34;
+  font-size: 11px;
+  margin-right: 3px;
+}
+
+.gallery-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.gallery-next .fa-solid {
+  font-size: 14px;
+}
+
+.rating-star .fa-star {
+  color: #f4c56f;
+  font-size: 14px;
+}
+
+.benefits-list span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.benefits-list .fa-solid,
+.benefits-list .fa-regular {
+  flex-shrink: 0;
+  width: 1.1em;
+  text-align: center;
+  color: #c9a36a;
+}
+
+.delivery-block > p:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.delivery-block .fa-truck {
+  color: #c9a36a;
+}
+
+.detail-row-left .fa-solid {
+  width: 1.15em;
+  text-align: center;
+  color: #c9a36a;
+  font-size: 0.95em;
+}
+
+.detail-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  font-size: inherit;
+}
+
+.detail-symbol .fa-solid {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.ingredient-circle .fa-snowflake {
+  font-size: 48px;
+  color: #7eb8d4;
+}
+
+.reviews-sort .fa-chevron-down {
+  margin-left: 0.25em;
+  font-size: 0.85em;
+  opacity: 0.85;
+}
+
+.reviews-score .stars .fa-solid {
+  color: #f4c56f;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.review-stars .fa-solid {
+  color: #f4c56f;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.reviews-breakdown span .fa-solid,
+.reviews-breakdown span .fa-regular {
+  color: #f4c56f;
+  font-size: 10px;
+  margin-right: 1px;
+}
+
+.review-meta .avatar .fa-solid {
+  font-size: 12px;
+  color: #b8b8b8;
+}
+
+.bought-rating .fa-star {
+  color: #f4c56f;
+  font-size: 12px;
+  margin-right: 3px;
+}
+
+.product-card-rating .fa-star {
+  color: #f4c56f;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.reviews-score .fa-circle-check {
+  margin-left: 0.35em;
+  color: #4caf50;
+  font-size: 0.95em;
+}

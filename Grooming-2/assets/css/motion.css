@@ -1,0 +1,197 @@
+/* Grooming-2 — motion hooks only (no layout / design changes) */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+#main-content {
+  perspective: 1200px;
+  perspective-origin: 50% 0%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+#main-content.gr2-shop,
+#main-content.gr2-pdp {
+  perspective: none;
+}
+
+.gr2-header,
+.gr2-header__main,
+.gr2-header__main-inner {
+  transform: none;
+}
+
+.gr2-motion-block {
+  transform-origin: center top;
+  backface-visibility: hidden;
+  overflow-x: clip;
+}
+
+.gr2-motion-split {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.gr2-motion-char,
+.gr2-motion-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.gr2-motion-reveal-item {
+  will-change: transform, opacity;
+}
+
+.gr2-motion-parallax {
+  will-change: transform;
+}
+
+.gr2-hero__slide img.gr2-motion-parallax,
+.gr2-promo__banner img.gr2-motion-parallax,
+.gr2-sgrid__card img.gr2-motion-parallax,
+.gr2-promo-duo__card img.gr2-motion-parallax,
+.gr2-brand-banner__frame img.gr2-motion-parallax,
+.gr2-bs__media img.gr2-motion-parallax,
+.gr2-cat__card img.gr2-motion-parallax {
+  transform-origin: center center;
+}
+
+.gr2-hero__inner,
+.gr2-hero__slide,
+.gr2-promo__banner,
+.gr2-sgrid__card,
+.gr2-promo-duo__card,
+.gr2-brand-banner__frame,
+.gr2-bs__media,
+.gr2-cat__card {
+  overflow: hidden;
+}
+
+.gr2-promo__banner,
+.gr2-promo-duo__card {
+  position: relative;
+  isolation: isolate;
+}
+
+.gr2-motion-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.gr2-motion-shine::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -60%;
+  width: 40%;
+  height: 140%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.08) 55%,
+    transparent 100%
+  );
+  transform: translateX(-120%) skewX(-18deg);
+  will-change: transform;
+}
+
+.gr2-motion-glow {
+  position: absolute;
+  inset: -8%;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 50%,
+    rgba(197, 157, 109, 0.14) 0%,
+    transparent 72%
+  );
+  opacity: 0.6;
+  will-change: transform, opacity;
+}
+
+.gr2-motion-float {
+  will-change: transform;
+}
+
+.gr2-motion-card {
+  will-change: transform, box-shadow;
+}
+
+.gr2-motion-btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.gr2-motion-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.gr2-motion-btn--dark::before {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.gr2-motion-btn--light::before {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.gr2-motion-btn:hover::before {
+  transform: scaleX(1);
+}
+
+.gr2-motion-link {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr2-motion-char,
+  .gr2-motion-word,
+  .gr2-motion-reveal-item,
+  .gr2-motion-parallax,
+  .gr2-motion-block,
+  .gr2-motion-card,
+  .gr2-motion-float,
+  .gr2-motion-glow,
+  .gr2-motion-shine::after {
+    will-change: auto;
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .gr2-motion-btn::before {
+    display: none;
+  }
+}
