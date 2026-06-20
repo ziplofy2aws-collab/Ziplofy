@@ -1,0 +1,971 @@
+.pf2-pdp {
+  padding: 32px 0 64px;
+  background: var(--pf2-white);
+}
+
+.pf2-pdp__inner {
+  width: var(--pf2-container);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 46%) minmax(0, 54%);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+
+.pf2-pdp__gallery {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.pf2-pdp__thumbs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.pf2-pdp__thumb {
+  width: 72px;
+  height: 72px;
+  border: 1px solid #e0e0e0;
+  padding: 4px;
+  background: var(--pf2-white);
+  cursor: pointer;
+  line-height: 0;
+  transition: border-color 0.2s ease;
+}
+
+.pf2-pdp__thumb.is-active {
+  border-color: var(--pf2-black);
+}
+
+.pf2-pdp__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pf2-pdp__thumb-more {
+  border: 0;
+  background: transparent;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.pf2-pdp__main {
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f7f7;
+}
+
+.pf2-pdp__main-img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+}
+
+.pf2-pdp__content {
+  min-width: 0;
+}
+
+.pf2-pdp__crumb {
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: #888;
+}
+
+.pf2-pdp__crumb a {
+  color: #666;
+  text-decoration: none;
+}
+
+.pf2-pdp__crumb a:hover {
+  opacity: 0.7;
+}
+
+.pf2-pdp__title {
+  margin: 0 0 16px;
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #111;
+}
+
+.pf2-pdp__prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.pf2-pdp__price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+}
+
+.pf2-pdp__mrp {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.pf2-pdp__save {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2b6cb0;
+}
+
+.pf2-pdp__unit {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+.pf2-pdp__tax {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: #666;
+}
+
+.pf2-pdp__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 22px;
+}
+
+.pf2-pdp__star {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background: #ddd;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.pf2-pdp__star.is-filled {
+  background: #c9a227;
+}
+
+.pf2-pdp__star.is-half {
+  background: linear-gradient(90deg, #c9a227 50%, #ddd 50%);
+}
+
+.pf2-pdp__size-block {
+  margin-bottom: 20px;
+}
+
+.pf2-pdp__size-label {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-pdp__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pf2-pdp__size {
+  min-width: 72px;
+  border: 1px solid #d0d0d0;
+  padding: 10px 18px;
+  background: var(--pf2-white);
+  font-size: 13px;
+  color: #222;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.pf2-pdp__size.is-active {
+  border-color: var(--pf2-black);
+  background: var(--pf2-white);
+  font-weight: 600;
+}
+
+.pf2-pdp__cart {
+  width: 100%;
+  border: 0;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  background: var(--pf2-black);
+  color: var(--pf2-white);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.pf2-pdp__cart:hover {
+  opacity: 0.9;
+}
+
+.pf2-pdp__delivery {
+  margin-bottom: 20px;
+}
+
+.pf2-pdp__delivery-label {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-pdp__delivery-row {
+  display: flex;
+  gap: 0;
+}
+
+.pf2-pdp__delivery-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #d0d0d0;
+  border-right: 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #333;
+}
+
+.pf2-pdp__delivery-input::placeholder {
+  color: #aaa;
+}
+
+.pf2-pdp__delivery-btn {
+  border: 1px solid var(--pf2-black);
+  padding: 12px 20px;
+  background: var(--pf2-black);
+  color: var(--pf2-white);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pf2-pdp__trust {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pf2-pdp__trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #333;
+}
+
+.pf2-pdp__trust-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: #666;
+}
+
+.pf2-pdp__perfect {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: #fce8ea;
+  font-size: 13px;
+  color: #333;
+}
+
+.pf2-pdp__perfect-icon {
+  color: #d64550;
+  font-size: 14px;
+}
+
+.pf2-pdp__card {
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  border-radius: 8px;
+  background: #f3f3f3;
+}
+
+.pf2-pdp__card-title {
+  margin: 0 0 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-pdp__card-text {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #444;
+}
+
+.pf2-pdp__card-family {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: #444;
+}
+
+.pf2-pdp__card-family strong {
+  color: #2b6cb0;
+  font-weight: 600;
+}
+
+.pf2-pdp__snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 20px;
+}
+
+.pf2-pdp__snapshot-item {
+  font-size: 12px;
+  color: #555;
+}
+
+.pf2-pdp__snapshot-item span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.pf2-pdp__notes {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.pf2-pdp__notes-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.pf2-pdp__meter {
+  margin-bottom: 12px;
+}
+
+.pf2-pdp__meter:last-child {
+  margin-bottom: 0;
+}
+
+.pf2-pdp__meter-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #444;
+}
+
+.pf2-pdp__meter-bars {
+  display: flex;
+  gap: 4px;
+}
+
+.pf2-pdp__meter-bar {
+  width: 28px;
+  height: 6px;
+  border-radius: 2px;
+  background: #d8d8d8;
+}
+
+.pf2-pdp__meter-bar.is-filled {
+  background: #1e4d7b;
+}
+
+.pf2-pdp__accordions {
+  margin-top: 8px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.pf2-pdp__accordion + .pf2-pdp__accordion {
+  border-top: 1px solid #e8e8e8;
+}
+
+.pf2-pdp__accordion-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 18px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #222;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pf2-pdp__accordion-caret {
+  font-size: 12px;
+  color: #666;
+  transition: transform 0.2s ease;
+}
+
+.pf2-pdp__accordion.is-open .pf2-pdp__accordion-caret {
+  transform: rotate(180deg);
+}
+
+.pf2-pdp__accordion-panel {
+  display: none;
+  padding: 0 0 18px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #555;
+}
+
+.pf2-pdp__accordion.is-open .pf2-pdp__accordion-panel {
+  display: block;
+}
+
+.pf2-pdp__reviews {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.pf2-pdp__reviews-title {
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-pdp__reviews-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px 32px;
+  margin-bottom: 24px;
+  align-items: start;
+}
+
+.pf2-pdp__reviews-score {
+  text-align: center;
+}
+
+.pf2-pdp__reviews-stars {
+  display: inline-flex;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.pf2-pdp__reviews-average {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: #333;
+}
+
+.pf2-pdp__reviews-count {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.pf2-pdp__reviews-bars {
+  display: grid;
+  gap: 6px;
+}
+
+.pf2-pdp__reviews-bar-row {
+  display: grid;
+  grid-template-columns: 48px 1fr 20px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.pf2-pdp__reviews-bar-track {
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pf2-pdp__reviews-bar-fill {
+  height: 100%;
+  background: #c9a227;
+  border-radius: 4px;
+}
+
+.pf2-pdp__write-review {
+  display: inline-block;
+  margin-bottom: 28px;
+  padding: 12px 24px;
+  border: 1px solid #c9a227;
+  background: var(--pf2-black);
+  color: var(--pf2-white);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pf2-pdp__reviews-sort {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.pf2-pdp__reviews-sort select {
+  border: 1px solid #d8d8d8;
+  padding: 8px 32px 8px 12px;
+  font-size: 12px;
+  color: #333;
+  appearance: none;
+  background: var(--pf2-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.2' fill='none'/%3E%3C/svg%3E") no-repeat right 10px center;
+  cursor: pointer;
+}
+
+.pf2-pdp__review {
+  padding: 20px 0;
+  border-top: 1px solid #eee;
+}
+
+.pf2-pdp__review-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.pf2-pdp__review-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.pf2-pdp__review-user {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #999;
+}
+
+.pf2-pdp__review-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b8922e;
+}
+
+.pf2-pdp__review-verified {
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #c9a227;
+  color: var(--pf2-white);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pf2-pdp__review-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.pf2-pdp__review-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.pf2-pdp__review-body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.pf2-pdp__top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 20;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--pf2-black);
+  color: var(--pf2-white);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.pf2-pdp__top.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.pf2-product-page .pf2-breadcrumb {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .pf2-pdp__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .pf2-pdp__gallery {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pf2-pdp__main {
+    order: 1;
+    min-height: 360px;
+  }
+
+  .pf2-pdp__thumbs {
+    order: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .pf2-pdp__thumb {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+  }
+
+  .pf2-pdp__reviews-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pf2-pdp {
+    padding: 20px 0 48px;
+  }
+
+  .pf2-pdp__main {
+    min-height: 280px;
+  }
+
+  .pf2-pdp__thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .pf2-pdp__snapshot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pf2-pdp__delivery-row {
+    flex-direction: column;
+  }
+
+  .pf2-pdp__delivery-input {
+    border-right: 1px solid #d0d0d0;
+  }
+}
+
+/* You May Also Like */
+.pf2-also-like {
+  padding: 48px 0 56px;
+  background: var(--pf2-white);
+  border-top: 1px solid #eee;
+}
+
+.pf2-also-like__inner {
+  width: var(--pf2-container);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.pf2-also-like__title {
+  margin: 0 0 36px;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-also-like__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.pf2-also-like__carousel {
+  position: relative;
+}
+
+.pf2-also-like__arrow {
+  display: none;
+  border: 0;
+  background: transparent;
+  color: var(--pf2-black);
+  font-size: 24px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.pf2-also-like__arrow:hover:not(:disabled) {
+  opacity: 0.55;
+}
+
+.pf2-also-like__arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.pf2-also-like__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pf2-also-like__media {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.pf2-also-like__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #dcc07a 0%, #c9a56a 100%);
+  color: #2f2618;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.pf2-also-like__badge--sale {
+  background: #e8b4b8;
+  color: var(--pf2-white);
+}
+
+.pf2-also-like__media img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 210px;
+  object-fit: contain;
+}
+
+.pf2-also-like__name {
+  margin: 0 0 10px;
+  max-width: 220px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-also-like__rating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.pf2-also-like__star {
+  width: 13px;
+  height: 13px;
+  display: inline-block;
+  background: #ddd;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.pf2-also-like__star.is-filled {
+  background: #c9a227;
+}
+
+.pf2-also-like__pricing {
+  width: 100%;
+}
+
+.pf2-also-like__price-row {
+  margin: 0 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.35;
+}
+
+.pf2-also-like__mrp {
+  font-size: 11px;
+  color: #9a9a9a;
+  text-decoration: line-through;
+}
+
+.pf2-also-like__price {
+  font-size: 12px;
+  font-weight: 700;
+  color: #111;
+}
+
+.pf2-also-like__save {
+  font-size: 11px;
+  font-weight: 500;
+  color: #c45c5c;
+}
+
+.pf2-also-like__unit {
+  margin: 0;
+  font-size: 11px;
+  color: #888;
+}
+
+@media (max-width: 1100px) {
+  .pf2-also-like__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pf2-also-like {
+    padding: 36px 0 44px;
+  }
+
+  .pf2-also-like__title {
+    margin-bottom: 28px;
+  }
+
+  .pf2-also-like__carousel {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 24px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pf2-also-like__arrow {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .pf2-also-like__viewport {
+    overflow: hidden;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .pf2-also-like__grid {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    width: 100%;
+    transition: transform 0.35s ease;
+    grid-template-columns: unset;
+  }
+
+  .pf2-also-like__card {
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .pf2-also-like__name {
+    max-width: min(280px, 100%);
+  }
+
+  .pf2-also-like__media {
+    min-height: 180px;
+  }
+
+  .pf2-also-like__media img {
+    max-height: 170px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pf2-also-like__carousel {
+    grid-template-columns: 20px minmax(0, 1fr) 20px;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf2-also-like__grid {
+    transition: none;
+  }
+}

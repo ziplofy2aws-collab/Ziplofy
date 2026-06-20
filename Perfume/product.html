@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfume Product</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="top-offer">
+      <button class="offer-arrow" type="button" aria-label="Previous offer">&#8249;</button>
+      <p class="offer-text">Buy Any 3 Perfumes @ &#8377;367 Each</p>
+      <button class="offer-arrow" type="button" aria-label="Next offer">&#8250;</button>
+    </div>
+
+    <div class="main-header">
+      <div class="header-left">
+        <button class="icon-btn nav-menu-btn" type="button" aria-label="Open menu" aria-expanded="false"
+          aria-controls="site-nav-drawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+        <button class="icon-btn search-btn" type="button" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        </button>
+        <button class="search-label" type="button">SEARCH FOR OI</button>
+      </div>
+
+      <a href="index.html" class="brand" aria-label="Bellin Home">
+        <img src="assets/img/logo.png" alt="" class="brand-logo" width="160" height="48" decoding="async" />
+      </a>
+
+      <div class="header-right">
+        <button class="icon-btn" type="button" aria-label="Account">
+          <i class="fa-regular fa-user" aria-hidden="true"></i>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Cart">
+          <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <nav class="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#">Crazy Deals <span class="nav-caret">&#709;</span></a></li>
+        <li><a href="category.html">Shop All</a></li>
+        <li><a href="#">Bestsellers</a></li>
+        <li><a href="product.html">Perfumes</a></li>
+        <li><a href="#">Body Washes</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Gifting</a></li>
+      </ul>
+    </nav>
+
+    <div id="site-nav-drawer" class="nav-drawer" inert aria-hidden="true">
+      <button type="button" class="nav-drawer-backdrop" aria-label="Close menu"></button>
+      <div class="nav-drawer-panel" role="dialog" aria-modal="true" aria-label="Site menu">
+        <div class="nav-drawer-header">
+          <button type="button" class="nav-drawer-close" aria-label="Close menu"><i class="fa-solid fa-xmark"
+              aria-hidden="true"></i></button>
+        </div>
+        <nav class="nav-drawer-nav" aria-label="Primary">
+          <ul>
+            <li><a href="#">Crazy Deals <span class="nav-caret">&#709;</span></a></li>
+            <li><a href="category.html">Shop All</a></li>
+            <li><a href="#">Bestsellers</a></li>
+            <li><a href="product.html">Perfumes</a></li>
+            <li><a href="#">Body Washes</a></li>
+            <li><a href="#">New Arrivals</a></li>
+            <li><a href="#">Gifting</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="product-page-main" aria-label="Product content">
+    <section class="product-detail">
+      <div class="product-detail-left">
+        <div class="pd-main-image-wrap">
+          <span class="pd-badge-top">BESTSELLER</span>
+          <img class="pd-main-image" src="assets/img/product-detail-main.png" alt="CEO Man Perfume 100ml" />
+          <span class="pd-badge-bottom">45% OFF</span>
+        </div>
+
+        <div class="pd-thumbs-wrap">
+          <button class="pd-thumb-arrow" type="button" aria-label="Previous image">&#8249;</button>
+          <div class="pd-thumbs">
+            <button class="pd-thumb is-active" type="button" data-image="assets/img/product-detail-main.png"><img
+                src="assets/img/product-detail-thumb-1.png" alt="Product thumb 1" /></button>
+            <button class="pd-thumb" type="button" data-image="assets/img/product-detail-thumb-2.png"><img
+                src="assets/img/product-detail-thumb-2.png" alt="Product thumb 2" /></button>
+            <button class="pd-thumb" type="button" data-image="assets/img/product-detail-thumb-3.png"><img
+                src="assets/img/product-detail-thumb-3.png" alt="Product thumb 3" /></button>
+            <button class="pd-thumb" type="button" data-image="assets/img/product-detail-thumb-4.png"><img
+                src="assets/img/product-detail-thumb-4.png" alt="Product thumb 4" /></button>
+          </div>
+          <button class="pd-thumb-arrow" type="button" aria-label="Next image">&#8250;</button>
+        </div>
+      </div>
+
+      <div class="product-detail-right">
+        <h1>CEO Man Perfume - 100ml</h1>
+        <p class="pd-notes">AMBERGRIS | LEMON | MUSK</p>
+        <p class="pd-rating">&#9733; 4.8 <span>| &#128100;(1105 Reviews)</span></p>
+        <p class="pd-price-line">-45% <span>&#8377;499.00</span></p>
+        <p class="pd-mrp">MRP: <span>&#8377;899.00</span></p>
+        <p class="pd-tax">incl. of all taxes</p>
+        <p class="pd-pay">&#9889; Pay <strong>&#8377;474.05</strong> <span>Save &#8377;24.95 with prepaid</span></p>
+
+        <div class="pd-qty-cart">
+          <div class="pd-qty">
+            <button type="button" class="pd-qty-minus">-</button>
+            <input type="text" value="1" aria-label="Quantity" readonly />
+            <button type="button" class="pd-qty-plus">+</button>
+          </div>
+          <button class="pd-cart-btn" type="button">ADD TO CART</button>
+        </div>
+
+        <div class="pd-combo-box">
+          <h3>BEST SELLING COMBOS</h3>
+          <div class="pd-combo-item">
+            <img src="assets/img/product-combo-1.png" alt="Combo product 1" />
+            <div>
+              <p>CEO Man Perfume - 100ml</p>
+              <small>100ml + Musky Wood</small>
+            </div>
+            <span>&#8377;899.00</span>
+          </div>
+          <div class="pd-combo-item">
+            <img src="assets/img/product-combo-2.png" alt="Combo product 2" />
+            <div>
+              <p>WHITE Oud Unisex Perfume - 100ml</p>
+              <small>100ml + Musky</small>
+            </div>
+            <span>&#8377;999.00</span>
+          </div>
+          <div class="pd-combo-footer">
+            <div>
+              <strong>&#8377;899.00</strong>
+              <span>&#8377;1,898.00</span>
+              <p>Save &#8377;999.00 Extra</p>
+            </div>
+            <button type="button">ADD TO CART</button>
+          </div>
+        </div>
+
+        <div class="pd-icons">
+          <div><span>🌐</span>
+            <p>IMPORTED OILS</p>
+          </div>
+          <div><span>🐇</span>
+            <p>CRUELTY-FREE</p>
+          </div>
+          <div><span>✔</span>
+            <p>IFRA CERTIFIED</p>
+          </div>
+          <div><span>📦</span>
+            <p>ASSURED DELIVERY</p>
+          </div>
+        </div>
+
+        <p class="pd-desc">Bring out your inner CEO to work everyday with the Bella Vita Luxury CEO Man Luxury Perfume.
+        </p>
+        <a class="pd-readmore" href="#">Read more</a>
+
+        <div class="pd-offers">
+          <h3>&#10038; EXCLUSIVE OFFERS</h3>
+          <div class="pd-offers-grid">
+            <article>
+              <h4>2 FOR &#8377;899</h4>
+              <p>Get any 2 Perfumes for just &#8377;899</p>
+              <a href="#">Perfect Duo</a>
+            </article>
+            <article>
+              <h4>3 FOR &#8377;1298</h4>
+              <p>Get any 3 Perfumes for just &#8377;1298</p>
+              <a href="#">Ultimate Perfume...</a>
+            </article>
+            <article>
+              <h4>6 FOR &#8377;1298</h4>
+              <p>Get any 100ml perfume and 5 skincare products for just &#8377;1298!</p>
+              <a href="#">Self Love Kit</a>
+            </article>
+          </div>
+          <img class="pd-offer-banner" src="assets/img/banner.png" alt="Offer banner" />
+        </div>
+      </div>
+    </section>
+
+    <section class="pd-accordion" aria-label="Product details">
+      <article class="pd-acc-item">
+        <button type="button" class="pd-acc-trigger"><span>KEY BENEFITS</span><span
+            class="pd-acc-icon">+</span></button>
+        <div class="pd-acc-content">
+          <p>Long lasting premium fragrance with imported oils crafted for everyday confident wear.</p>
+        </div>
+      </article>
+
+      <article class="pd-acc-item">
+        <button type="button" class="pd-acc-trigger"><span>HOW TO USE</span><span class="pd-acc-icon">+</span></button>
+        <div class="pd-acc-content">
+          <p>Spray directly on pulse points like neck and wrists from a distance of 15-20 cm.</p>
+        </div>
+      </article>
+
+      <article class="pd-acc-item">
+        <button type="button" class="pd-acc-trigger"><span>PERFUME NOTES</span><span
+            class="pd-acc-icon">+</span></button>
+        <div class="pd-acc-content">
+          <p>Top: Lemon, Middle: Ambergris, Base: Musk.</p>
+        </div>
+      </article>
+
+      <article class="pd-acc-item">
+        <button type="button" class="pd-acc-trigger"><span>IS THIS YOUR FIRST BELLA VITA PURCHASE?</span><span
+            class="pd-acc-icon">+</span></button>
+        <div class="pd-acc-content">
+          <p>Try this fragrance as a versatile starter profile suitable for office and evening use.</p>
+        </div>
+      </article>
+
+      <article class="pd-acc-item">
+        <button type="button" class="pd-acc-trigger"><span>FAQs</span><span class="pd-acc-icon">+</span></button>
+        <div class="pd-acc-content">
+          <p>For common product and delivery questions, please check our FAQ and support section.</p>
+        </div>
+      </article>
+
+      <article class="pd-acc-item">
+        <button type="button" class="pd-acc-trigger"><span>OTHER INFORMATION</span><span
+            class="pd-acc-icon">+</span></button>
+        <div class="pd-acc-content">
+          <p>Country of origin, batch details and MRP are printed on product packaging.</p>
+        </div>
+      </article>
+
+      <article class="pd-acc-item">
+        <button type="button" class="pd-acc-trigger"><span>ALL INGREDIENTS</span><span
+            class="pd-acc-icon">+</span></button>
+        <div class="pd-acc-content">
+          <p>Alcohol Denat., Fragrance, Aqua and approved perfumery compounds.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="pd-reviews" aria-label="Customer reviews">
+      <h2>Customer Reviews</h2>
+
+      <div class="pd-review-summary">
+        <div class="pd-review-score">
+          <p class="pd-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+          <p>4.7/1 out of 5</p>
+        </div>
+
+        <div class="pd-review-bars">
+          <div><span>&#9733;&#9733;&#9733;&#9733;&#9733;</span><i style="width: 68%"></i><b>91</b></div>
+          <div><span>&#9733;&#9733;&#9733;&#9733;&#9734;</span><i style="width: 28%"></i><b>38</b></div>
+          <div><span>&#9733;&#9733;&#9733;&#9734;&#9734;</span><i style="width: 2%"></i><b>0</b></div>
+          <div><span>&#9733;&#9733;&#9734;&#9734;&#9734;</span><i style="width: 2%"></i><b>0</b></div>
+          <div><span>&#9733;&#9734;&#9734;&#9734;&#9734;</span><i style="width: 2%"></i><b>0</b></div>
+        </div>
+
+        <button class="pd-review-btn" type="button">Write a review</button>
+      </div>
+
+      <div class="pd-review-filter">
+        <button type="button">Pictures First <span>&#709;</span></button>
+      </div>
+
+      <article class="pd-review-item">
+        <div class="pd-review-head">
+          <p class="pd-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+          <span>03/24/2026</span>
+        </div>
+        <b class="pd-review-user">&#128100; Abh <em>Verified</em></b>
+        <h3>Good and smooth</h3>
+        <p>Good and smooth fragrances</p>
+      </article>
+
+      <article class="pd-review-item">
+        <div class="pd-review-head">
+          <p class="pd-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+          <span>03/20/2026</span>
+        </div>
+        <p class="pd-review-user">&#128100; Chaitanya Soni</p>
+        <h3>Total Success Pack</h3>
+        <p>White Leather, Chief, and VIP Rush - you have every mood covered in this one pack.</p>
+      </article>
+
+      <article class="pd-review-item">
+        <div class="pd-review-head">
+          <p class="pd-review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</p>
+          <span>03/19/2026</span>
+        </div>
+        <p class="pd-review-user">&#128100; Pranav Kant Chopra</p>
+        <h3>Chief's Bold Presence</h3>
+        <p>Chief has a punchy aromatic spice that demands respect. It's small but very powerful.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer" aria-label="Footer">
+    <div class="footer-wrap">
+      <div class="footer-col">
+        <h3>BESTSELLERS</h3>
+        <ul>
+          <li><a href="#">Ultimate Perfume Box</a></li>
+          <li><a href="#">Perfume Gift Set For Men</a></li>
+          <li><a href="#">Perfume Gift Set For Women</a></li>
+          <li><a href="#">Under Eye Cream for Dark Circles</a></li>
+          <li><a href="#">Perfume For Men</a></li>
+          <li><a href="#">Perfume For Women</a></li>
+          <li><a href="#">Unisex Perfume</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>INFORMATION</h3>
+        <ul>
+          <li><a href="#">Blogs</a></li>
+          <li><a href="#">Newsroom</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Refund and Return</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Bulk Order - GST Invoice</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>SUPPORT</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Order Tracking</a></li>
+          <li><a href="#">All Products</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Sitemap</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-contact">
+        <h3>CONTACT US</h3>
+        <p>Office Location: Plot no. 417, Udyog Vihar Phase III, Gurgaon, Haryana, India</p>
+        <p><a href="#">Contact Us on WhatsApp</a></p>
+        <p>+91-9810154380</p>
+        <p>Timing: 10:00 AM to 7:00 PM, Monday to Sunday</p>
+      </div>
+
+      <div class="footer-col footer-newsletter">
+        <h3>EXCLUSIVE</h3>
+        <div class="footer-input">
+          <input type="email" placeholder="Enter email here" />
+          <button type="button" aria-label="Submit email">&#8594;</button>
+        </div>
+        <p>Sign up here to get the latest news, updates and special offers delivered to your inbox.</p>
+        <p>Plus, you'll be the first to know about our discounts!</p>
+        <div class="footer-social" aria-label="Social links">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+        </div>
+        <p class="footer-copyright">&copy; 2026, Bella Vita Organic (IDAM Natural Welness Pvt. Ltd.).</p>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="mobile-bottom-nav" aria-label="Bottom navigation">
+    <a href="index.html" class="mobile-bottom-nav-item">
+      <i class="fa-solid fa-house" aria-hidden="true"></i>
+      <span>Home</span>
+    </a>
+    <a href="category.html" class="mobile-bottom-nav-item">
+      <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+      <span>SHOP ALL</span>
+    </a>
+    <a href="#" class="mobile-bottom-nav-item">
+      <i class="fa-solid fa-percent" aria-hidden="true"></i>
+      <span>CRAZY DEALS</span>
+    </a>
+    <a href="#" class="mobile-bottom-nav-item is-active">
+      <i class="fa-regular fa-star" aria-hidden="true"></i>
+      <span>BESTSELLERS</span>
+    </a>
+  </nav>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>

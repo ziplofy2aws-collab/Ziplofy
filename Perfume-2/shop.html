@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop | Perfume Store</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+  <link rel="stylesheet" href="assets/css/motion.css" />
+</head>
+
+<body>
+  <header class="pf2-header" role="banner">
+    <div class="pf2-announcement" aria-label="Promotional announcements">
+      <div class="pf2-announcement__track">
+        <div class="pf2-announcement__content">
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+        </div>
+        <div class="pf2-announcement__content" aria-hidden="true">
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf2-header__main">
+      <div class="pf2-header__container pf2-header__main-inner">
+        <div class="pf2-header__main-left">
+          <button class="pf2-header__icon-btn pf2-header__menu-toggle" type="button" aria-label="Open menu"
+            aria-expanded="false" aria-controls="pf2-mobile-nav">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="pf2-header__icon-btn pf2-header__icon-btn--search" type="button" aria-label="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="M16.5 16.5L20 20" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <a href="index.html" class="pf2-header__logo" aria-label="Home">
+          <img src="assets/img/logo.png" alt="Store logo" width="180" height="42" decoding="async" />
+        </a>
+
+        <div class="pf2-header__main-right">
+          <button class="pf2-header__icon-btn" type="button" aria-label="Account">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5 19c0-3.5 3-6 7-6s7 2.5 7 6" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="pf2-header__icon-btn" type="button" aria-label="Shopping bag">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 9V7a5 5 0 0 1 10 0v2" stroke-linecap="round" />
+              <path d="M6 9h12l-1 12H7L6 9z" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="pf2-header__nav" aria-label="Primary navigation">
+      <div class="pf2-header__container">
+        <ul class="pf2-header__nav-list">
+          <li>
+            <a href="shop.html">Perfumes <span class="pf2-header__nav-caret" aria-hidden="true">&#709;</span></a>
+          </li>
+          <li>
+            <a href="shop.html">New Arrivals <span class="pf2-header__badge-new">NEW</span></a>
+          </li>
+          <li><a href="shop.html">Summer Collection</a></li>
+          <li><a href="shop.html">Special Pricing</a></li>
+          <li><a href="shop.html">The Royal Collection</a></li>
+          <li>
+            <a href="#" class="pf2-header__collab" aria-label="ELIXOR x Chivas collaboration">
+              <span>ELIXOR</span>
+              <span class="pf2-header__collab-x">X</span>
+              <span>Chivas</span>
+            </a>
+          </li>
+          <li><a href="shop.html">Discovery Set</a></li>
+          <li><a href="shop.html">BYOB</a></li>
+          <li><a href="shop.html">Gifting</a></li>
+          <li><a href="shop.html">Bundles &amp; Combos</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <nav id="pf2-mobile-nav" class="pf2-header__mobile-nav" aria-label="Mobile navigation">
+      <div class="pf2-header__container">
+        <ul>
+          <li><a href="shop.html">Perfumes</a></li>
+          <li><a href="shop.html">New Arrivals</a></li>
+          <li><a href="shop.html">Summer Collection</a></li>
+          <li><a href="shop.html">Special Pricing</a></li>
+          <li><a href="shop.html">The Royal Collection</a></li>
+          <li><a href="shop.html">Discovery Set</a></li>
+          <li><a href="shop.html">BYOB</a></li>
+          <li><a href="shop.html">Gifting</a></li>
+          <li><a href="shop.html">Bundles &amp; Combos</a></li>
+          <li><a href="#">Track My Order</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <nav class="pf2-breadcrumb" aria-label="Breadcrumb">
+    <div class="pf2-header__container">
+      <a href="index.html">Home</a> / <a href="shop.html">Collections</a> /
+    </div>
+  </nav>
+
+  <main class="pf2-shop" aria-label="Shop products">
+    <div class="pf2-shop__inner">
+      <div class="pf2-shop__hero">
+        <p class="pf2-shop__crumb"><a href="index.html">Home</a> / <a href="shop.html">Collections</a> /</p>
+        <h1 class="pf2-shop__title">Best Sellers Men</h1>
+      </div>
+
+      <div class="pf2-shop__layout">
+        <div class="pf2-shop__filter-backdrop" data-pf2-filter-close hidden aria-hidden="true"></div>
+        <aside class="pf2-shop__filters" id="pf2-shop-filters" aria-label="Product filters">
+          <div class="pf2-shop__filters-header">
+            <h2 class="pf2-shop__filters-title">Filters</h2>
+            <button type="button" class="pf2-shop__filters-close" data-pf2-filter-close
+              aria-label="Close filters">&times;</button>
+          </div>
+          <div class="pf2-shop__filter">
+            <button class="pf2-shop__filter-toggle" type="button" aria-expanded="false">Gender <span
+                class="pf2-shop__filter-caret" aria-hidden="true">&#709;</span></button>
+            <div class="pf2-shop__filter-panel">
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="men"
+                  data-pf2-filter-input="gender" /> Men</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="women"
+                  data-pf2-filter-input="gender" /> Women</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="unisex"
+                  data-pf2-filter-input="gender" /> Unisex</label>
+            </div>
+          </div>
+
+          <div class="pf2-shop__filter">
+            <button class="pf2-shop__filter-toggle" type="button" aria-expanded="false">Brand <span
+                class="pf2-shop__filter-caret" aria-hidden="true">&#709;</span></button>
+            <div class="pf2-shop__filter-panel">
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="calvin-klein"
+                  data-pf2-filter-input="brand" /> Calvin Klein</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="davidoff"
+                  data-pf2-filter-input="brand" /> Davidoff</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="guerlain"
+                  data-pf2-filter-input="brand" /> Guerlain</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="versace"
+                  data-pf2-filter-input="brand" /> Versace</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="hermes"
+                  data-pf2-filter-input="brand" /> Hermes</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="ferragamo"
+                  data-pf2-filter-input="brand" /> Ferragamo</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="elizabeth-arden"
+                  data-pf2-filter-input="brand" /> Elizabeth Arden</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="drakkar"
+                  data-pf2-filter-input="brand" /> Drakkar</label>
+            </div>
+          </div>
+
+          <div class="pf2-shop__filter">
+            <button class="pf2-shop__filter-toggle" type="button" aria-expanded="false">Product Type <span
+                class="pf2-shop__filter-caret" aria-hidden="true">&#709;</span></button>
+            <div class="pf2-shop__filter-panel">
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="edt"
+                  data-pf2-filter-input="type" /> Eau de Toilette</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="edp"
+                  data-pf2-filter-input="type" /> Eau de Parfum</label>
+            </div>
+          </div>
+
+          <div class="pf2-shop__filter">
+            <button class="pf2-shop__filter-toggle" type="button" aria-expanded="false">Size <span
+                class="pf2-shop__filter-caret" aria-hidden="true">&#709;</span></button>
+            <div class="pf2-shop__filter-panel">
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="60ml"
+                  data-pf2-filter-input="size" /> 60 ml</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="100ml"
+                  data-pf2-filter-input="size" /> 100 ml</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="125ml"
+                  data-pf2-filter-input="size" /> 125 ml</label>
+            </div>
+          </div>
+
+          <div class="pf2-shop__filter">
+            <button class="pf2-shop__filter-toggle" type="button" aria-expanded="false">Price <span
+                class="pf2-shop__filter-caret" aria-hidden="true">&#709;</span></button>
+            <div class="pf2-shop__filter-panel">
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="under-5000"
+                  data-pf2-filter-input="price-range" /> Under Rs. 5,000</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="5000-10000"
+                  data-pf2-filter-input="price-range" /> Rs. 5,000 - 10,000</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="above-10000"
+                  data-pf2-filter-input="price-range" /> Above Rs. 10,000</label>
+            </div>
+          </div>
+
+          <div class="pf2-shop__filter">
+            <button class="pf2-shop__filter-toggle" type="button" aria-expanded="false">Availability <span
+                class="pf2-shop__filter-caret" aria-hidden="true">&#709;</span></button>
+            <div class="pf2-shop__filter-panel">
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="in-stock"
+                  data-pf2-filter-input="availability" /> In stock</label>
+              <label class="pf2-shop__filter-option"><input type="checkbox" value="out-of-stock"
+                  data-pf2-filter-input="availability" /> Out of stock</label>
+            </div>
+          </div>
+          <button type="button" class="pf2-shop__filters-apply" data-pf2-filter-close>Apply Filters</button>
+        </aside>
+
+        <div class="pf2-shop__content">
+          <div class="pf2-shop__toolbar">
+            <div class="pf2-shop__toolbar-left">
+              <button type="button" class="pf2-shop__mobile-filter" data-pf2-filter-open>Filter +</button>
+              <p class="pf2-shop__count" id="pf2-shop-count">10 products</p>
+            </div>
+            <div class="pf2-shop__sort-wrap">
+              <span class="pf2-shop__sort-label">Sort by</span>
+              <select id="pf2-shop-sort" class="pf2-shop__sort" aria-label="Sort products">
+                <option value="best-selling">Best selling</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name">Name: A to Z</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="pf2-shop__grid" id="pf2-shop-grid">
+            <a href="product.html?id=ck-obsession" class="pf2-shop__card" data-gender="men" data-brand="calvin-klein" data-type="edt"
+              data-size="125ml" data-price-range="under-5000" data-availability="in-stock" data-price="4000"
+              data-sort="1">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge">Best Seller</span>
+                <img src="assets/img/popular-1.png" alt="Calvin Klein CK Obsession Eau de Toilette for Men" width="180"
+                  height="220" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Calvin Klein CK Obsession Eau de Toilette for Men</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4.5 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-half" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 5,950</span>
+                  <span class="pf2-shop__price">from Rs. 4,000</span>
+                  <span class="pf2-shop__save">Save 33%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 32/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=davidoff-cool-water" class="pf2-shop__card" data-gender="men" data-brand="davidoff" data-type="edt"
+              data-size="125ml" data-price-range="under-5000" data-availability="in-stock" data-price="4200"
+              data-sort="2">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge">Best Seller</span>
+                <img src="assets/img/popular-2.png" alt="Davidoff Cool Water Eau de Toilette for Men" width="180"
+                  height="220" loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Davidoff Cool Water Eau de Toilette for Men</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 5,995</span>
+                  <span class="pf2-shop__price">from Rs. 4,200</span>
+                  <span class="pf2-shop__save">Save 30%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 34/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=ck-one" class="pf2-shop__card" data-gender="unisex" data-brand="calvin-klein" data-type="edt"
+              data-size="100ml" data-price-range="under-5000" data-availability="in-stock" data-price="3990"
+              data-sort="3">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge">Best Seller</span>
+                <img src="assets/img/popular-3.png" alt="Calvin Klein CK One Eau de Toilette" width="180" height="220"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Calvin Klein CK One Eau de Toilette</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 4,995</span>
+                  <span class="pf2-shop__price">from Rs. 3,990</span>
+                  <span class="pf2-shop__save">Save 20%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 40/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=ck-eternity" class="pf2-shop__card" data-gender="women" data-brand="calvin-klein" data-type="edp"
+              data-size="100ml" data-price-range="under-5000" data-availability="in-stock" data-price="4800"
+              data-sort="4">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge pf2-shop__badge--sale">Sale</span>
+                <img src="assets/img/popular-4.png" alt="Calvin Klein CK Eternity Moment Eau de Parfum for Women"
+                  width="180" height="220" loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Calvin Klein CK Eternity Moment Eau de Parfum for Women</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4.5 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-half" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 6,600</span>
+                  <span class="pf2-shop__price">from Rs. 4,800</span>
+                  <span class="pf2-shop__save">Save 27%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 48/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=elizabeth-arden-5th" class="pf2-shop__card" data-gender="women" data-brand="elizabeth-arden"
+              data-type="edp" data-size="100ml" data-price-range="under-5000" data-availability="in-stock"
+              data-price="3850" data-sort="5">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge">Best Seller</span>
+                <img src="assets/img/popular-5.png" alt="Elizabeth Arden 5th Avenue Eau de Parfum for Women" width="180"
+                  height="220" loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Elizabeth Arden 5th Avenue Eau de Parfum for Women</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4.5 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-half" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 5,100</span>
+                  <span class="pf2-shop__price">from Rs. 3,850</span>
+                  <span class="pf2-shop__save">Save 25%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 45/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=guerlain-linstant" class="pf2-shop__card" data-gender="men" data-brand="guerlain" data-type="edp"
+              data-size="100ml" data-price-range="5000-10000" data-availability="in-stock" data-price="11070"
+              data-sort="6">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge pf2-shop__badge--new">New</span>
+                <img src="assets/img/NA-1.png" alt="Guerlain L'Instant de Homme Eau de Parfum for Men" width="180"
+                  height="220" loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Guerlain L'Instant de Homme Eau de Parfum for Men</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 5 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 12,300</span>
+                  <span class="pf2-shop__price">Rs. 11,070</span>
+                  <span class="pf2-shop__save">Save 10%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 111/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=drakkar-blue" class="pf2-shop__card" data-gender="men" data-brand="drakkar" data-type="edp"
+              data-size="100ml" data-price-range="under-5000" data-availability="in-stock" data-price="3500"
+              data-sort="7">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge pf2-shop__badge--new">New</span>
+                <img src="assets/img/NA-2.png" alt="Drakkar Blue Eau de Parfum for Men" width="180" height="220"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Drakkar Blue Eau de Parfum for Men</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 4,100</span>
+                  <span class="pf2-shop__price">Rs. 3,500</span>
+                  <span class="pf2-shop__save">Save 15%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 35/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=versace-eros" class="pf2-shop__card" data-gender="men" data-brand="versace" data-type="edp"
+              data-size="100ml" data-price-range="5000-10000" data-availability="in-stock" data-price="10400"
+              data-sort="8">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge pf2-shop__badge--new">New</span>
+                <img src="assets/img/NA-3.png" alt="Versace Eros Energy Pour Homme Eau de Parfum for Men" width="180"
+                  height="220" loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Versace Eros Energy Pour Homme Eau de Parfum for Men</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 5 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 11,550</span>
+                  <span class="pf2-shop__price">Rs. 10,400</span>
+                  <span class="pf2-shop__save">Save 10%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 104/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=hermes-h24" class="pf2-shop__card" data-gender="men" data-brand="hermes" data-type="edp"
+              data-size="60ml" data-price-range="above-10000" data-availability="in-stock" data-price="12300"
+              data-sort="9">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge pf2-shop__badge--new">New</span>
+                <img src="assets/img/NA-4.png" alt="Hermes H24 Eau de Parfum for Men" width="180" height="220"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Hermes H24 Eau de Parfum for Men</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4.5 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-half" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__price">from Rs. 12,300</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 205/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=ferragamo-bright-leather" class="pf2-shop__card" data-gender="men" data-brand="ferragamo" data-type="edt"
+              data-size="100ml" data-price-range="5000-10000" data-availability="in-stock" data-price="6000"
+              data-sort="10">
+              <div class="pf2-shop__media">
+                <span class="pf2-shop__badge">Best Seller</span>
+                <img src="assets/img/NA-5.png" alt="Salvatore Ferragamo Bright Leather Eau de Toilette for Men"
+                  width="180" height="220" loading="lazy" decoding="async" />
+              </div>
+              <h2 class="pf2-shop__name">Salvatore Ferragamo Bright Leather Eau de Toilette for Men</h2>
+              <div class="pf2-shop__rating" role="img" aria-label="Rated 4 out of 5 stars">
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-shop__star" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-shop__pricing">
+                <p class="pf2-shop__price-row">
+                  <span class="pf2-shop__mrp">Rs. 8,550</span>
+                  <span class="pf2-shop__price">Rs. 6,000</span>
+                  <span class="pf2-shop__save">Save 30%</span>
+                </p>
+                <p class="pf2-shop__unit">Rs. 60/ml</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="pf2-footer" role="contentinfo">
+    <div class="pf2-footer__main">
+      <div class="pf2-footer__inner">
+        <div class="pf2-footer__brand">
+          <a href="index.html" class="pf2-footer__logo" aria-label="ELIXOR home">ELIXOR</a>
+          <p class="pf2-footer__tagline">The Beauty of Luxury</p>
+        </div>
+
+        <div class="pf2-footer__col">
+          <h3 class="pf2-footer__heading">Shop</h3>
+          <ul class="pf2-footer__links">
+            <li><a href="shop.html">Fragrance</a></li>
+            <li><a href="#">Makeup</a></li>
+            <li><a href="#">Skin</a></li>
+            <li><a href="#">Hair</a></li>
+            <li><a href="#">Brands</a></li>
+            <li><a href="#">Gifting</a></li>
+          </ul>
+        </div>
+
+        <div class="pf2-footer__col">
+          <h3 class="pf2-footer__heading">Parcos</h3>
+          <ul class="pf2-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">My Orders</a></li>
+            <li><a href="#">Luxezine</a></li>
+          </ul>
+        </div>
+
+        <div class="pf2-footer__col">
+          <h3 class="pf2-footer__heading">Policy</h3>
+          <ul class="pf2-footer__links">
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="pf2-footer__col pf2-footer__col--contact">
+          <ul class="pf2-footer__contact-links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Store Locator</a></li>
+          </ul>
+
+          <h3 class="pf2-footer__heading pf2-footer__heading--news">Stay Updated!</h3>
+          <p class="pf2-footer__news-copy">Sign up for latest offers and promotion</p>
+          <form class="pf2-footer__newsletter" action="#" method="post">
+            <label class="visually-hidden" for="pf2-footer-email-shop">Email Address</label>
+            <input id="pf2-footer-email-shop" type="email" name="email" placeholder="Email Address"
+              autocomplete="email" />
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf2-footer__bottom">
+      <div class="pf2-footer__inner pf2-footer__bottom-inner">
+        <div class="pf2-footer__social" aria-label="Social media">
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="4" ry="4" fill="none" stroke="currentColor"
+                stroke-width="1.5" />
+              <circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="17" cy="7" r="1" fill="currentColor" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" fill="currentColor" />
+              <path
+                d="M13.2 7.5H15V5.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2H6.5v2.4h2.8V19h2.9v-4.9h2.4l.4-2.4h-2.8V9.4c0-.8.2-1.3 1.3-1.3z"
+                fill="#fff" />
+            </svg>
+          </a>
+          <a href="#" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="6" width="18" height="12" rx="3" fill="currentColor" />
+              <path d="M11 9.5v5l4.5-2.5L11 9.5z" fill="#fff" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="pf2-footer__payments" aria-label="Accepted payment methods">
+          <span class="pf2-footer__pay pf2-footer__pay--mc" aria-label="Mastercard">
+            <span class="pf2-footer__pay-circle pf2-footer__pay-circle--red"></span>
+            <span class="pf2-footer__pay-circle pf2-footer__pay-circle--yellow"></span>
+          </span>
+          <span class="pf2-footer__pay pf2-footer__pay--amex" aria-label="American Express">AMEX</span>
+          <span class="pf2-footer__pay pf2-footer__pay--visa" aria-label="Visa">VISA</span>
+          <span class="pf2-footer__pay pf2-footer__pay--rupay" aria-label="RuPay">RuPay</span>
+          <span class="pf2-footer__pay pf2-footer__pay--upi" aria-label="UPI">UPI</span>
+        </div>
+      </div>
+
+      <p class="pf2-footer__copy">Copyright © ELIXOR2025. All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/shop.js"></script>
+  <script src="assets/js/motion.js"></script>
+</body>
+
+</html>

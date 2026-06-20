@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELIXOR</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/motion.css" />
+</head>
+
+<body>
+  <header class="pf2-header" role="banner">
+    <div class="pf2-announcement" aria-label="Promotional announcements">
+      <div class="pf2-announcement__track">
+        <div class="pf2-announcement__content">
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+        </div>
+        <div class="pf2-announcement__content" aria-hidden="true">
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+          <span>Explore our newest launches</span>
+          <span>Extra 5% off prepaid orders</span>
+          <span>A try-me sample free with every order</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf2-header__main">
+      <div class="pf2-header__container pf2-header__main-inner">
+        <div class="pf2-header__main-left">
+          <button class="pf2-header__icon-btn pf2-header__menu-toggle" type="button" aria-label="Open menu"
+            aria-expanded="false" aria-controls="pf2-mobile-nav">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="pf2-header__icon-btn pf2-header__icon-btn--search" type="button" aria-label="Search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="M16.5 16.5L20 20" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <a href="index.html" class="pf2-header__logo" aria-label="Home">
+          <img src="assets/img/logo.png" alt="Store logo" width="180" height="42" decoding="async" />
+        </a>
+
+        <div class="pf2-header__main-right">
+          <button class="pf2-header__icon-btn" type="button" aria-label="Account">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5 19c0-3.5 3-6 7-6s7 2.5 7 6" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="pf2-header__icon-btn" type="button" aria-label="Shopping bag">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 9V7a5 5 0 0 1 10 0v2" stroke-linecap="round" />
+              <path d="M6 9h12l-1 12H7L6 9z" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="pf2-header__nav" aria-label="Primary navigation">
+      <div class="pf2-header__container">
+        <ul class="pf2-header__nav-list">
+          <li>
+            <a href="shop.html">Perfumes <span class="pf2-header__nav-caret" aria-hidden="true">&#709;</span></a>
+          </li>
+          <li>
+            <a href="#">New Arrivals <span class="pf2-header__badge-new">NEW</span></a>
+          </li>
+          <li><a href="#">Summer Collection</a></li>
+          <li><a href="#">Special Pricing</a></li>
+          <li><a href="#">The Royal Collection</a></li>
+          <li>
+            <a href="#" class="pf2-header__collab" aria-label="ELIXOR x Chivas collaboration">
+              <span>ELIXOR</span>
+              <span class="pf2-header__collab-x">X</span>
+              <span>Chivas</span>
+            </a>
+          </li>
+          <li><a href="#">Discovery Set</a></li>
+          <li><a href="#">BYOB</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bundles &amp; Combos</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- <div class="pf2-header__track-order">
+      <div class="pf2-header__container">
+        <a href="#">Track My Order</a>
+      </div>
+    </div> -->
+
+    <nav id="pf2-mobile-nav" class="pf2-header__mobile-nav" aria-label="Mobile navigation">
+      <div class="pf2-header__container">
+        <ul>
+          <li><a href="shop.html">Perfumes</a></li>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Summer Collection</a></li>
+          <li><a href="#">Special Pricing</a></li>
+          <li><a href="#">The Royal Collection</a></li>
+          <li><a href="#">Discovery Set</a></li>
+          <li><a href="#">BYOB</a></li>
+          <li><a href="#">Gifting</a></li>
+          <li><a href="#">Bundles &amp; Combos</a></li>
+          <li><a href="#">Track My Order</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <section class="pf2-hero" aria-label="Hero banner slider">
+    <div class="pf2-hero__slider" data-current-slide="0">
+      <button class="pf2-hero__arrow pf2-hero__arrow--prev" type="button" aria-label="Previous slide">&#8249;</button>
+
+      <div class="pf2-hero__track">
+        <article class="pf2-hero__slide is-active" data-slide-index="0">
+          <img src="assets/img/hero-banner-1.png" alt="Discover your signature summer scent" width="1920" height="800"
+            decoding="async" />
+        </article>
+        <article class="pf2-hero__slide" data-slide-index="1">
+          <img src="assets/img/hero-banner-2.png" alt="Premium fragrances hero banner 2" width="1920" height="800"
+            loading="lazy" decoding="async" />
+        </article>
+        <article class="pf2-hero__slide" data-slide-index="2">
+          <img src="assets/img/hero-banner-3.png" alt="Premium fragrances hero banner 3" width="1920" height="800"
+            loading="lazy" decoding="async" />
+        </article>
+        <article class="pf2-hero__slide" data-slide-index="3">
+          <img src="assets/img/hero-banner-4.png" alt="Premium fragrances hero banner 4" width="1920" height="800"
+            loading="lazy" decoding="async" />
+        </article>
+      </div>
+
+      <button class="pf2-hero__arrow pf2-hero__arrow--next" type="button" aria-label="Next slide">&#8250;</button>
+
+      <div class="pf2-hero__content">
+        <h1 class="pf2-hero__heading">Discover Your Signature</h1>
+        <p class="pf2-hero__subheading">Curated luxury fragrances for every moment</p>
+        <a href="shop.html" class="pf2-hero__cta pf2-btn--magnetic">Explore Collection</a>
+      </div>
+    </div>
+
+    <div class="pf2-hero__dots" aria-label="Slide indicators">
+      <button class="pf2-hero__dot is-active" type="button" data-slide-to="0" aria-label="Slide 1"></button>
+      <button class="pf2-hero__dot" type="button" data-slide-to="1" aria-label="Slide 2"></button>
+      <button class="pf2-hero__dot" type="button" data-slide-to="2" aria-label="Slide 3"></button>
+      <button class="pf2-hero__dot" type="button" data-slide-to="3" aria-label="Slide 4"></button>
+    </div>
+  </section>
+
+  <section class="pf2-finder" aria-labelledby="pf2-finder-title">
+    <div class="pf2-finder__inner">
+      <h2 id="pf2-finder-title" class="pf2-finder__title">
+        <span class="pf2-finder__title-accent">Fragrance</span> Finder
+      </h2>
+
+      <div class="pf2-finder__carousel">
+        <button class="pf2-finder__arrow pf2-finder__arrow--prev" type="button" aria-label="Previous categories"
+          disabled>&#8249;</button>
+
+        <div class="pf2-finder__viewport">
+          <div class="pf2-finder__track">
+            <a href="#" class="pf2-finder__card">
+              <img src="assets/img/Aromatic.webp" alt="Aromatic fragrance family" width="320" height="420"
+                decoding="async" />
+              <span class="pf2-finder__label pf2-finder__label--aromatic">Aromatic</span>
+            </a>
+            <a href="#" class="pf2-finder__card">
+              <img src="assets/img/Fougere.webp" alt="Fougere fragrance family" width="320" height="420" loading="lazy"
+                decoding="async" />
+              <span class="pf2-finder__label pf2-finder__label--fougere">Fougere</span>
+            </a>
+            <a href="#" class="pf2-finder__card">
+              <img src="assets/img/Fruity.webp" alt="Fruity fragrance family" width="320" height="420" loading="lazy"
+                decoding="async" />
+              <span class="pf2-finder__label pf2-finder__label--fruity">Fruity</span>
+            </a>
+            <a href="#" class="pf2-finder__card">
+              <img src="assets/img/Musky.webp" alt="Musky fragrance family" width="320" height="420" loading="lazy"
+                decoding="async" />
+              <span class="pf2-finder__label pf2-finder__label--musky">Musky</span>
+            </a>
+            <a href="#" class="pf2-finder__card">
+              <img src="assets/img/Floral.webp" alt="Floral fragrance family" width="320" height="420" loading="lazy"
+                decoding="async" />
+              <span class="pf2-finder__label pf2-finder__label--floral">Floral</span>
+            </a>
+            <a href="#" class="pf2-finder__card">
+              <img src="assets/img/Oriental.webp" alt="Oriental fragrance family" width="320" height="420"
+                loading="lazy" decoding="async" />
+              <span class="pf2-finder__label pf2-finder__label--oriental">Oriental</span>
+            </a>
+            <a href="#" class="pf2-finder__card">
+              <img src="assets/img/Spicy.webp" alt="Spicy fragrance family" width="320" height="420" loading="lazy"
+                decoding="async" />
+              <span class="pf2-finder__label pf2-finder__label--spicy">Spicy</span>
+            </a>
+          </div>
+        </div>
+
+        <button class="pf2-finder__arrow pf2-finder__arrow--next" type="button"
+          aria-label="Next categories">&#8250;</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pf2-popular" aria-labelledby="pf2-popular-title">
+    <div class="pf2-popular__inner">
+      <h2 id="pf2-popular-title" class="pf2-popular__title">Popular Picks</h2>
+      <a href="shop.html" class="pf2-popular__view-all">View All</a>
+
+      <div class="pf2-popular__carousel">
+        <button type="button" class="pf2-popular__arrow pf2-popular__arrow--prev" aria-label="Previous product"
+          disabled>&#8249;</button>
+        <div class="pf2-popular__viewport">
+          <div class="pf2-popular__grid">
+            <a href="product.html?id=ck-obsession" class="pf2-popular__card">
+              <div class="pf2-popular__media">
+                <span class="pf2-popular__badge">Best Seller</span>
+                <img src="assets/img/popular-1.png" alt="Calvin Klein CK Obsession Eau de Toilette for Men" width="180"
+                  height="220" decoding="async" />
+              </div>
+              <h3 class="pf2-popular__name">Calvin Klein CK Obsession Eau de Toilette for Men</h3>
+              <div class="pf2-popular__rating" role="img" aria-label="Rated 4.5 out of 5 stars">
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-half" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-popular__pricing">
+                <p class="pf2-popular__price-row">
+                  <span class="pf2-popular__mrp">Rs. 5,950</span>
+                  <span class="pf2-popular__price">from Rs. 4,000</span>
+                  <span class="pf2-popular__save">Save 33%</span>
+                </p>
+                <p class="pf2-popular__unit">Rs. 32/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=davidoff-cool-water" class="pf2-popular__card">
+              <div class="pf2-popular__media">
+                <span class="pf2-popular__badge">Best Seller</span>
+                <img src="assets/img/popular-2.png" alt="Davidoff Cool Water Eau de Toilette for Men" width="180"
+                  height="220" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-popular__name">Davidoff Cool Water Eau de Toilette for Men</h3>
+              <div class="pf2-popular__rating" role="img" aria-label="Rated 4 out of 5 stars">
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-popular__pricing">
+                <p class="pf2-popular__price-row">
+                  <span class="pf2-popular__mrp">Rs. 5,995</span>
+                  <span class="pf2-popular__price">from Rs. 4,200</span>
+                  <span class="pf2-popular__save">Save 30%</span>
+                </p>
+                <p class="pf2-popular__unit">Rs. 34/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=ck-one" class="pf2-popular__card">
+              <div class="pf2-popular__media">
+                <span class="pf2-popular__badge">Best Seller</span>
+                <img src="assets/img/popular-3.png" alt="Calvin Klein CK One Eau de Toilette" width="180" height="220"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-popular__name">Calvin Klein CK One Eau de Toilette</h3>
+              <div class="pf2-popular__rating" role="img" aria-label="Rated 4 out of 5 stars">
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-popular__pricing">
+                <p class="pf2-popular__price-row">
+                  <span class="pf2-popular__mrp">Rs. 4,995</span>
+                  <span class="pf2-popular__price">from Rs. 3,990</span>
+                  <span class="pf2-popular__save">Save 20%</span>
+                </p>
+                <p class="pf2-popular__unit">Rs. 40/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=ck-eternity" class="pf2-popular__card">
+              <div class="pf2-popular__media">
+                <span class="pf2-popular__badge">Best Seller</span>
+                <img src="assets/img/popular-4.png" alt="Calvin Klein CK Eternity Moment Eau de Parfum for Women"
+                  width="180" height="220" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-popular__name">Calvin Klein CK Eternity Moment Eau de Parfum for Women</h3>
+              <div class="pf2-popular__rating" role="img" aria-label="Rated 4.5 out of 5 stars">
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-half" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-popular__pricing">
+                <p class="pf2-popular__price-row">
+                  <span class="pf2-popular__mrp">Rs. 6,600</span>
+                  <span class="pf2-popular__price">from Rs. 4,800</span>
+                  <span class="pf2-popular__save">Save 27%</span>
+                </p>
+                <p class="pf2-popular__unit">Rs. 48/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=elizabeth-arden-5th" class="pf2-popular__card">
+              <div class="pf2-popular__media">
+                <span class="pf2-popular__badge">Best Seller</span>
+                <img src="assets/img/popular-5.png" alt="Elizabeth Arden 5th Avenue Eau de Parfum for Women" width="180"
+                  height="220" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-popular__name">Elizabeth Arden 5th Avenue Eau de Parfum for Women</h3>
+              <div class="pf2-popular__rating" role="img" aria-label="Rated 4.5 out of 5 stars">
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-popular__star is-half" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-popular__pricing">
+                <p class="pf2-popular__price-row">
+                  <span class="pf2-popular__mrp">Rs. 5,100</span>
+                  <span class="pf2-popular__price">from Rs. 3,850</span>
+                  <span class="pf2-popular__save">Save 25%</span>
+                </p>
+                <p class="pf2-popular__unit">Rs. 45/ml</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        <button type="button" class="pf2-popular__arrow pf2-popular__arrow--next" aria-label="Next product">&#8250;</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pf2-banner" aria-label="Discover the essence of Mykonos promotion">
+    <div class="pf2-banner__inner">
+      <a href="#" class="pf2-banner__link">
+        <span class="pf2-banner__parallax">
+          <img src="assets/img/banner-1.png" alt="Discover the essence of Mykonos — Premium fragrances, up to 25% off"
+            width="1920" height="720" loading="lazy" decoding="async" />
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <section class="pf2-promo" aria-label="Best for men and best for her promotions">
+    <div class="pf2-promo__grid">
+      <a href="#" class="pf2-promo__card">
+        <img src="assets/img/promo-card-1.png" alt="Best for men — shop men's fragrances" width="960" height="520"
+          loading="lazy" decoding="async" />
+      </a>
+      <a href="#" class="pf2-promo__card">
+        <img src="assets/img/promo-card-2.png" alt="Best for her — shop women's fragrances" width="960" height="520"
+          loading="lazy" decoding="async" />
+      </a>
+    </div>
+  </section>
+
+  <section class="pf2-arrivals" aria-labelledby="pf2-arrivals-title">
+    <div class="pf2-arrivals__inner">
+      <h2 id="pf2-arrivals-title" class="pf2-arrivals__title">New Arrivals</h2>
+      <a href="shop.html" class="pf2-arrivals__view-all">View All</a>
+
+      <div class="pf2-arrivals__carousel">
+        <button type="button" class="pf2-arrivals__arrow pf2-arrivals__arrow--prev" aria-label="Previous product"
+          disabled>&#8249;</button>
+        <div class="pf2-arrivals__viewport">
+          <div class="pf2-arrivals__grid">
+            <a href="product.html?id=guerlain-linstant" class="pf2-arrivals__card">
+              <div class="pf2-arrivals__media">
+                <span class="pf2-arrivals__badge">New</span>
+                <img src="assets/img/NA-1.png" alt="Guerlain L'Instant de Homme Eau de Parfum for Men" width="180"
+                  height="220" decoding="async" />
+              </div>
+              <h3 class="pf2-arrivals__name">Guerlain L'Instant de Homme Eau de Parfum for Men</h3>
+              <div class="pf2-arrivals__rating" role="img" aria-label="Rated 5 out of 5 stars">
+                <span class="pf2-arrivals__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-arrivals__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-arrivals__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-arrivals__star is-filled" aria-hidden="true"></span>
+                <span class="pf2-arrivals__star is-filled" aria-hidden="true"></span>
+              </div>
+              <div class="pf2-arrivals__pricing">
+                <p class="pf2-arrivals__price-row">
+                  <span class="pf2-arrivals__mrp">Rs. 12,300</span>
+                  <span class="pf2-arrivals__price">Rs. 11,070</span>
+                  <span class="pf2-arrivals__save">Save 10%</span>
+                </p>
+                <p class="pf2-arrivals__unit">Rs. 111/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=drakkar-blue" class="pf2-arrivals__card">
+              <div class="pf2-arrivals__media">
+                <span class="pf2-arrivals__badge">New</span>
+                <img src="assets/img/NA-2.png" alt="Drakkar Blue Eau de Parfum for Men" width="180" height="220"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-arrivals__name">Drakkar Blue Eau de Parfum for Men</h3>
+              <div class="pf2-arrivals__pricing">
+                <p class="pf2-arrivals__price-row">
+                  <span class="pf2-arrivals__mrp">Rs. 4,100</span>
+                  <span class="pf2-arrivals__price">Rs. 3,500</span>
+                  <span class="pf2-arrivals__save">Save 15%</span>
+                </p>
+                <p class="pf2-arrivals__unit">Rs. 35/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=versace-eros" class="pf2-arrivals__card">
+              <div class="pf2-arrivals__media">
+                <span class="pf2-arrivals__badge">New</span>
+                <img src="assets/img/NA-3.png" alt="Versace Eros Energy Pour Homme Eau de Parfum for Men" width="180"
+                  height="220" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-arrivals__name">Versace Eros Energy Pour Homme Eau de Parfum for Men</h3>
+              <div class="pf2-arrivals__pricing">
+                <p class="pf2-arrivals__price-row">
+                  <span class="pf2-arrivals__mrp">Rs. 11,550</span>
+                  <span class="pf2-arrivals__price">Rs. 10,400</span>
+                  <span class="pf2-arrivals__save">Save 10%</span>
+                </p>
+                <p class="pf2-arrivals__unit">Rs. 104/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=hermes-h24" class="pf2-arrivals__card">
+              <div class="pf2-arrivals__media">
+                <span class="pf2-arrivals__badge">New</span>
+                <img src="assets/img/NA-4.png" alt="Hermes H24 Eau de Parfum for Men" width="180" height="220"
+                  loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-arrivals__name">Hermes H24 Eau de Parfum for Men</h3>
+              <div class="pf2-arrivals__pricing">
+                <p class="pf2-arrivals__price-row">
+                  <span class="pf2-arrivals__price">from Rs. 12,300</span>
+                </p>
+                <p class="pf2-arrivals__unit">Rs. 205/ml</p>
+              </div>
+            </a>
+
+            <a href="product.html?id=ferragamo-bright-leather" class="pf2-arrivals__card">
+              <div class="pf2-arrivals__media">
+                <span class="pf2-arrivals__badge">New</span>
+                <img src="assets/img/NA-5.png" alt="Salvatore Ferragamo Bright Leather Eau de Toilette for Men"
+                  width="180" height="220" loading="lazy" decoding="async" />
+              </div>
+              <h3 class="pf2-arrivals__name">Salvatore Ferragamo Bright Leather Eau de Toilette for Men</h3>
+              <div class="pf2-arrivals__pricing">
+                <p class="pf2-arrivals__price-row">
+                  <span class="pf2-arrivals__mrp">Rs. 8,550</span>
+                  <span class="pf2-arrivals__price">Rs. 6,000</span>
+                  <span class="pf2-arrivals__save">Save 30%</span>
+                </p>
+                <p class="pf2-arrivals__unit">Rs. 60/ml</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        <button type="button" class="pf2-arrivals__arrow pf2-arrivals__arrow--next" aria-label="Next product">&#8250;</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="pf2-banner" aria-label="Discover the essence of power promotion">
+    <div class="pf2-banner__inner">
+      <a href="#" class="pf2-banner__link">
+        <span class="pf2-banner__parallax">
+          <img src="assets/img/banner-2.png" alt="Discover the essence of power — Premium fragrances, up to 30% off"
+            width="1920" height="720" loading="lazy" decoding="async" />
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <section class="pf2-product" aria-label="Product details">
+    <div class="pf2-product__inner">
+      <div class="pf2-product__gallery">
+        <div class="pf2-product__main">
+          <img id="pf2-product-main" class="pf2-product__main-img" src="assets/img/product-1.png"
+            alt="YSL Yves Saint Laurent Kouros EDT for Men" width="520" height="620" decoding="async" />
+        </div>
+        <div class="pf2-product__thumbs">
+          <button class="pf2-product__thumb is-active" type="button" data-image="assets/img/product-1.png"
+            aria-label="View product image 1">
+            <img src="assets/img/product-1.png" alt="" width="72" height="90" decoding="async" />
+          </button>
+          <button class="pf2-product__thumb" type="button" data-image="assets/img/product-2.png"
+            aria-label="View product image 2">
+            <img src="assets/img/product-2.png" alt="" width="72" height="90" loading="lazy" decoding="async" />
+          </button>
+        </div>
+      </div>
+
+      <div class="pf2-product__info">
+        <h2 class="pf2-product__title">YSL Yves Saint Laurent Kouros EDT for Men</h2>
+
+        <div class="pf2-product__prices">
+          <span class="pf2-product__price">Rs. 4,850.00</span>
+          <span class="pf2-product__mrp">Rs. 7,000.00</span>
+        </div>
+
+        <div class="pf2-product__emi">
+          <div class="pf2-product__emi-copy">
+            <p class="pf2-product__emi-line"><strong>₹825/month</strong> | 2/4 EMI options</p>
+            <p class="pf2-product__emi-line">0% EMI on UPI • <span class="pf2-product__emi-brand">snapmint</span></p>
+          </div>
+          <button class="pf2-product__emi-btn" type="button">Buy on EMI</button>
+        </div>
+
+        <div class="pf2-product__countdown" aria-label="Offer countdown">
+          <div class="pf2-product__countdown-item">
+            <span class="pf2-product__countdown-value" data-pf2-countdown="days">10</span>
+            <span class="pf2-product__countdown-label">Days</span>
+          </div>
+          <span class="pf2-product__countdown-sep" aria-hidden="true">:</span>
+          <div class="pf2-product__countdown-item">
+            <span class="pf2-product__countdown-value" data-pf2-countdown="hours">09</span>
+            <span class="pf2-product__countdown-label">Hrs</span>
+          </div>
+          <span class="pf2-product__countdown-sep" aria-hidden="true">:</span>
+          <div class="pf2-product__countdown-item">
+            <span class="pf2-product__countdown-value" data-pf2-countdown="minutes">36</span>
+            <span class="pf2-product__countdown-label">Mins</span>
+          </div>
+          <span class="pf2-product__countdown-sep" aria-hidden="true">:</span>
+          <div class="pf2-product__countdown-item">
+            <span class="pf2-product__countdown-value" data-pf2-countdown="seconds">44</span>
+            <span class="pf2-product__countdown-label">Secs</span>
+          </div>
+        </div>
+
+        <div class="pf2-product__option">
+          <p class="pf2-product__option-label">Size : <span>100ml</span></p>
+          <button class="pf2-product__size is-active" type="button">100ml</button>
+        </div>
+
+        <div class="pf2-product__option">
+          <p class="pf2-product__option-label">Quantity :</p>
+          <div class="pf2-product__qty">
+            <button class="pf2-product__qty-btn" type="button" data-pf2-qty="minus"
+              aria-label="Decrease quantity">−</button>
+            <input class="pf2-product__qty-input" type="text" value="1" readonly aria-label="Quantity" />
+            <button class="pf2-product__qty-btn" type="button" data-pf2-qty="plus"
+              aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+
+        <div class="pf2-product__actions">
+          <button class="pf2-product__btn pf2-product__btn--cart pf2-btn--magnetic" type="button">Add to cart</button>
+          <button class="pf2-product__btn pf2-product__btn--buy pf2-btn--magnetic" type="button">Buy it now</button>
+        </div>
+
+        <div class="pf2-product__pickup">
+          <p class="pf2-product__pickup-title">
+            <span class="pf2-product__pickup-icon" aria-hidden="true"></span>
+            Pickup available at Belvish - The Luxurious Perfume Boutique
+          </p>
+          <p class="pf2-product__pickup-note">Usually ready in 24 hours</p>
+          <a href="#" class="pf2-product__pickup-link">View store information</a>
+        </div>
+      </div>
+    </div>
+
+    <button class="pf2-product__top" type="button" aria-label="Back to top">&#8593;</button>
+  </section>
+
+  <section class="pf2-night-promo" aria-labelledby="pf2-night-promo-title">
+    <div class="pf2-night-promo__inner">
+      <h2 id="pf2-night-promo-title" class="pf2-night-promo__title">Own The Night</h2>
+      <div class="pf2-night-promo__grid">
+        <a href="#" class="pf2-night-promo__card">
+          <img src="assets/img/promo-1.png" alt="Azure Royal fragrance promotion" width="460" height="620"
+            loading="lazy" decoding="async" />
+        </a>
+        <a href="#" class="pf2-night-promo__card">
+          <img src="assets/img/promo-2.png" alt="Amouage fragrance promotion" width="460" height="620" loading="lazy"
+            decoding="async" />
+        </a>
+        <a href="#" class="pf2-night-promo__card">
+          <img src="assets/img/promo-3.png" alt="Sauvage Elixir fragrance promotion" width="460" height="620"
+            loading="lazy" decoding="async" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pf2-testimonials" aria-labelledby="pf2-testimonials-title">
+    <div class="pf2-testimonials__inner">
+      <h2 id="pf2-testimonials-title" class="pf2-testimonials__title">They Say</h2>
+
+      <div class="pf2-testimonials__slider" data-current-slide="0">
+        <div class="pf2-testimonials__viewport">
+          <div class="pf2-testimonials__track">
+            <article class="pf2-testimonials__card">
+              <div class="pf2-testimonials__stars" aria-label="5 out of 5 stars">
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span
+                  aria-hidden="true"></span><span aria-hidden="true"></span>
+              </div>
+              <blockquote class="pf2-testimonials__quote">
+                "Excellent service and genuine products. The packaging was secure and delivery arrived earlier than
+                expected."
+              </blockquote>
+              <p class="pf2-testimonials__author">Ananya Desai</p>
+            </article>
+
+            <article class="pf2-testimonials__card">
+              <div class="pf2-testimonials__stars" aria-label="5 out of 5 stars">
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span
+                  aria-hidden="true"></span><span aria-hidden="true"></span>
+              </div>
+              <blockquote class="pf2-testimonials__quote">
+                "Fantastic experience with Belvish! I tried to find if the products are original or not in every way I
+                can and is known to me and the products happened to be authentic by my inspection which I believe is
+                true. This site is the only site which I look forward to when finding authentic products to buy in the
+                online market, in the era of counterfeit products."
+              </blockquote>
+              <p class="pf2-testimonials__author">Mello</p>
+            </article>
+
+            <article class="pf2-testimonials__card">
+              <div class="pf2-testimonials__stars" aria-label="5 out of 5 stars">
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span
+                  aria-hidden="true"></span><span aria-hidden="true"></span>
+              </div>
+              <blockquote class="pf2-testimonials__quote">
+                "Recently made a purchase from Belvish and was mightily impressed by the top notch services - superb
+                communication, swift delivery, safe and sturdy packaging, and of course a very good deal. Absolutely no
+                qualms about the authenticity of the perfume. They are one of the best in this sphere."
+              </blockquote>
+              <p class="pf2-testimonials__author">Yashraj Samant</p>
+            </article>
+
+            <article class="pf2-testimonials__card">
+              <div class="pf2-testimonials__stars" aria-label="5 out of 5 stars">
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span
+                  aria-hidden="true"></span><span aria-hidden="true"></span>
+              </div>
+              <blockquote class="pf2-testimonials__quote">
+                "I was skeptical at the start while ordering from Belvish but later they wronged me on all my doubts.
+                The delivery was fast and the customer service is so amazing. They are personally available at your
+                service. The products are 100% genuine and plus the complimentary samples that you get are cherry on
+                top. Thanks a lot for existing !!"
+              </blockquote>
+              <p class="pf2-testimonials__author">Pankaj Verma</p>
+            </article>
+
+            <article class="pf2-testimonials__card">
+              <div class="pf2-testimonials__stars" aria-label="5 out of 5 stars">
+                <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span
+                  aria-hidden="true"></span><span aria-hidden="true"></span>
+              </div>
+              <blockquote class="pf2-testimonials__quote">
+                "Authentic fragrances every time. Great deals, smooth checkout, and the team always responds quickly to
+                questions."
+              </blockquote>
+              <p class="pf2-testimonials__author">Riya Sharma</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="pf2-testimonials__dots" aria-label="Testimonial slides">
+          <button class="pf2-testimonials__dot is-active" type="button" data-slide-to="0"
+            aria-label="Show testimonial slide 1"></button>
+          <button class="pf2-testimonials__dot" type="button" data-slide-to="1"
+            aria-label="Show testimonial slide 2"></button>
+          <button class="pf2-testimonials__dot" type="button" data-slide-to="2"
+            aria-label="Show testimonial slide 3"></button>
+          <button class="pf2-testimonials__dot" type="button" data-slide-to="3"
+            aria-label="Show testimonial slide 4"></button>
+          <button class="pf2-testimonials__dot" type="button" data-slide-to="4"
+            aria-label="Show testimonial slide 5"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pf2-footer" role="contentinfo">
+    <div class="pf2-footer__main">
+      <div class="pf2-footer__inner">
+        <div class="pf2-footer__brand">
+          <a href="index.html" class="pf2-footer__logo" aria-label="ELIXOR home">ELIXOR</a>
+          <p class="pf2-footer__tagline">The Beauty of Luxury</p>
+        </div>
+
+        <div class="pf2-footer__col">
+          <h3 class="pf2-footer__heading">Shop</h3>
+          <ul class="pf2-footer__links">
+            <li><a href="shop.html">Fragrance</a></li>
+            <li><a href="#">Makeup</a></li>
+            <li><a href="#">Skin</a></li>
+            <li><a href="#">Hair</a></li>
+            <li><a href="#">Brands</a></li>
+            <li><a href="#">Gifting</a></li>
+          </ul>
+        </div>
+
+        <div class="pf2-footer__col">
+          <h3 class="pf2-footer__heading">Parcos</h3>
+          <ul class="pf2-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">My Orders</a></li>
+            <li><a href="#">Luxezine</a></li>
+          </ul>
+        </div>
+
+        <div class="pf2-footer__col">
+          <h3 class="pf2-footer__heading">Policy</h3>
+          <ul class="pf2-footer__links">
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="pf2-footer__col pf2-footer__col--contact">
+          <ul class="pf2-footer__contact-links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Store Locator</a></li>
+          </ul>
+
+          <h3 class="pf2-footer__heading pf2-footer__heading--news">Stay Updated!</h3>
+          <p class="pf2-footer__news-copy">Sign up for latest offers and promotion</p>
+          <form class="pf2-footer__newsletter" action="#" method="post">
+            <label class="visually-hidden" for="pf2-footer-email">Email Address</label>
+            <input id="pf2-footer-email" type="email" name="email" placeholder="Email Address" autocomplete="email" />
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf2-footer__bottom">
+      <div class="pf2-footer__inner pf2-footer__bottom-inner">
+        <div class="pf2-footer__social" aria-label="Social media">
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="4" ry="4" fill="none" stroke="currentColor"
+                stroke-width="1.5" />
+              <circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="17" cy="7" r="1" fill="currentColor" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" fill="currentColor" />
+              <path d="M13.2 7.5H15V5.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2H6.5v2.4h2.8V19h2.9v-4.9h2.4l.4-2.4h-2.8V9.4c0-.8.2-1.3 1.3-1.3z"
+                fill="#fff" />
+            </svg>
+          </a>
+          <a href="#" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="6" width="18" height="12" rx="3" fill="currentColor" />
+              <path d="M11 9.5v5l4.5-2.5L11 9.5z" fill="#fff" />
+            </svg>
+          </a>
+        </div>
+
+        <div class="pf2-footer__payments" aria-label="Accepted payment methods">
+          <span class="pf2-footer__pay pf2-footer__pay--mc" aria-label="Mastercard">
+            <span class="pf2-footer__pay-circle pf2-footer__pay-circle--red"></span>
+            <span class="pf2-footer__pay-circle pf2-footer__pay-circle--yellow"></span>
+          </span>
+          <span class="pf2-footer__pay pf2-footer__pay--amex" aria-label="American Express">AMEX</span>
+          <span class="pf2-footer__pay pf2-footer__pay--visa" aria-label="Visa">VISA</span>
+          <span class="pf2-footer__pay pf2-footer__pay--rupay" aria-label="RuPay">RuPay</span>
+          <span class="pf2-footer__pay pf2-footer__pay--upi" aria-label="UPI">UPI</span>
+        </div>
+      </div>
+
+      <p class="pf2-footer__copy">Copyright © ELIXOR2025. All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/motion.js"></script>
+</body>
+
+</html>

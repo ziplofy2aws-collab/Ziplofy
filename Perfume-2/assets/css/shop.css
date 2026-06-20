@@ -1,0 +1,615 @@
+.pf2-shop {
+  padding: 0 0 56px;
+  background: var(--pf2-white);
+}
+
+.pf2-shop__inner {
+  width: var(--pf2-container);
+  margin-inline: auto;
+}
+
+.pf2-breadcrumb {
+  display: none;
+}
+
+.pf2-breadcrumb .pf2-header__container {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.pf2-breadcrumb a {
+  color: #333;
+  text-decoration: none;
+}
+
+.pf2-breadcrumb a:hover {
+  opacity: 0.65;
+}
+
+.pf2-breadcrumb span {
+  color: #111;
+}
+
+.pf2-shop__hero {
+  padding: 24px 0 28px;
+  text-align: center;
+}
+
+.pf2-shop__crumb {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #888;
+}
+
+.pf2-shop__crumb a {
+  color: #666;
+  text-decoration: none;
+}
+
+.pf2-shop__title {
+  margin: 0;
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #111;
+}
+
+.pf2-shop__layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+.pf2-shop__filters {
+  border-top: 1px solid #e8e8e8;
+}
+
+.pf2-shop__filter-backdrop,
+.pf2-shop__filters-header,
+.pf2-shop__filters-apply {
+  display: none;
+}
+
+.pf2-shop__filters-header {
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.pf2-shop__filters-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-shop__filters-close {
+  border: 0;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  color: #333;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pf2-shop__filters-apply {
+  width: calc(100% - 32px);
+  margin: 16px auto;
+  border: 0;
+  padding: 14px 20px;
+  background: var(--pf2-black);
+  color: var(--pf2-white);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+body.pf2-shop-filter-open {
+  overflow: hidden;
+}
+
+.pf2-shop__filter + .pf2-shop__filter {
+  border-top: 1px solid #e8e8e8;
+}
+
+.pf2-shop__filter-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #222;
+  cursor: pointer;
+  text-align: left;
+}
+
+.pf2-shop__filter-caret {
+  font-size: 12px;
+  color: #666;
+  transition: transform 0.2s ease;
+}
+
+.pf2-shop__filter.is-open .pf2-shop__filter-caret {
+  transform: rotate(180deg);
+}
+
+.pf2-shop__filter-panel {
+  display: none;
+  padding: 0 0 16px;
+}
+
+.pf2-shop__filter.is-open .pf2-shop__filter-panel {
+  display: block;
+}
+
+.pf2-shop__filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+}
+
+.pf2-shop__filter-option:last-child {
+  margin-bottom: 0;
+}
+
+.pf2-shop__filter-option input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #111;
+}
+
+.pf2-shop__content {
+  min-width: 0;
+}
+
+.pf2-shop__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.pf2-shop__toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pf2-shop__mobile-filter {
+  display: none;
+  border: 1px solid #d0d0d0;
+  background: var(--pf2-white);
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #222;
+  cursor: pointer;
+}
+
+.pf2-shop__count {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.pf2-shop__sort-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pf2-shop__sort-label {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.pf2-shop__sort {
+  border: 1px solid #d8d8d8;
+  background: var(--pf2-white);
+  padding: 8px 32px 8px 12px;
+  font-size: 12px;
+  color: #222;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.pf2-shop__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px 22px;
+}
+
+.pf2-shop__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+}
+
+.pf2-shop__card[hidden] {
+  display: none;
+}
+
+.pf2-shop__media {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.pf2-shop__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #dcc07a 0%, #c9a56a 100%);
+  color: #2f2618;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.pf2-shop__badge--sale {
+  background: #e8b4b8;
+  color: var(--pf2-white);
+}
+
+.pf2-shop__badge--new {
+  background: #b8d4eb;
+  color: var(--pf2-white);
+}
+
+.pf2-shop__media img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 210px;
+  object-fit: contain;
+}
+
+.pf2-shop__name {
+  margin: 0 0 10px;
+  max-width: 240px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #222;
+}
+
+.pf2-shop__rating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.pf2-shop__star {
+  width: 13px;
+  height: 13px;
+  display: inline-block;
+  background: #ddd;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.pf2-shop__star.is-filled {
+  background: #c9a227;
+}
+
+.pf2-shop__star.is-half {
+  background: linear-gradient(90deg, #c9a227 50%, #ddd 50%);
+}
+
+.pf2-shop__pricing {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.pf2-shop__price-row {
+  margin: 0 0 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.35;
+}
+
+.pf2-shop__mrp {
+  font-size: 11px;
+  color: #9a9a9a;
+  text-decoration: line-through;
+}
+
+.pf2-shop__price {
+  font-size: 12px;
+  font-weight: 700;
+  color: #111;
+}
+
+.pf2-shop__save {
+  font-size: 11px;
+  font-weight: 500;
+  color: #c45c5c;
+}
+
+.pf2-shop__unit {
+  margin: 0;
+  font-size: 11px;
+  color: #888;
+}
+
+.pf2-shop__empty {
+  grid-column: 1 / -1;
+  padding: 48px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+@media (max-width: 1100px) {
+  .pf2-shop__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .pf2-shop__layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .pf2-shop__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 14px;
+  }
+
+  .pf2-shop__name {
+    max-width: 100%;
+    padding-inline: 4px;
+  }
+
+  .pf2-shop__filter-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+
+  .pf2-shop__filter-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .pf2-shop__filters-header,
+  .pf2-shop__filters-apply {
+    display: flex;
+  }
+
+  .pf2-shop__filters {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 121;
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 16px 16px 0 0;
+    background: var(--pf2-white);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateY(100%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0.4s ease;
+  }
+
+  .pf2-shop__filters.is-open {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .pf2-shop__filters-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--pf2-white);
+  }
+
+  .pf2-shop__filters > .pf2-shop__filter {
+    flex-shrink: 0;
+  }
+
+  .pf2-shop__filters-apply {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    flex-shrink: 0;
+    width: 100%;
+    margin: 0;
+    border-top: 1px solid #e8e8e8;
+    box-sizing: border-box;
+  }
+
+  .pf2-shop__filter {
+    border-top: 1px solid #e8e8e8;
+    min-width: 0;
+    border-right: 0;
+  }
+
+  .pf2-shop__filter:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .pf2-shop__filter-toggle {
+    padding: 16px 20px;
+    font-size: 11px;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .pf2-shop__filter.is-open {
+    grid-column: auto;
+  }
+
+  .pf2-shop__filter-panel {
+    padding: 0 20px 16px;
+  }
+
+  .pf2-shop__mobile-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .pf2-shop__toolbar {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .pf2-shop__toolbar-left {
+    flex: 1;
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .pf2-shop__count {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pf2-shop__sort-wrap {
+    flex-shrink: 0;
+    width: auto;
+  }
+
+  .pf2-shop__sort {
+    min-width: 118px;
+    max-width: 140px;
+    padding-inline: 10px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pf2-shop {
+    padding-bottom: 44px;
+  }
+
+  .pf2-shop__grid {
+    gap: 16px 12px;
+  }
+
+  .pf2-shop__media {
+    min-height: 150px;
+    margin-bottom: 10px;
+  }
+
+  .pf2-shop__media img {
+    max-height: 140px;
+  }
+
+  .pf2-shop__name {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+
+  .pf2-shop__rating {
+    margin-bottom: 8px;
+  }
+
+  .pf2-shop__price-row {
+    gap: 4px;
+  }
+
+  .pf2-shop__mrp,
+  .pf2-shop__save,
+  .pf2-shop__unit {
+    font-size: 10px;
+  }
+
+  .pf2-shop__price {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf2-shop__filters,
+  .pf2-shop__filter-backdrop {
+    transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pf2-shop__filter-toggle {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 12px 8px;
+  }
+
+  .pf2-shop__sort-label {
+    display: none;
+  }
+
+  .pf2-shop__sort {
+    min-width: 108px;
+  }
+}
