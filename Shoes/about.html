@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - StepUp Shoes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/about.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="offer-strip">
+      <div class="container header-row">
+        <p class="offer-text">
+          <span>🚚 Free Shipping on Orders Above ₹999</span>
+          <span class="divider">|</span>
+          <span>🎁 Extra 5% Off on Prepaid Orders</span>
+          <span class="divider">|</span>
+          <span>Code: STEPUP5</span>
+          <span class="divider">|</span>
+          <a href="#" class="offer-link">Shop Now</a>
+        </p>
+        <a href="#" class="drop-link">New Drop Live →</a>
+      </div>
+    </div>
+
+    <div class="main-nav-wrap">
+      <div class="container main-nav">
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Open navigation menu">
+          <i class="bi bi-list"></i>
+        </button>
+
+        <a href="index.html" class="brand">
+          <img src="assets/img/logo.png" alt="StepUp Shoes" class="brand-logo" width="160" height="48">
+        </a>
+
+        <nav class="primary-nav" id="primaryNav">
+          <a href="#">Men</a>
+          <a href="#">Women</a>
+          <a href="#">Kids</a>
+          <a href="#">New Arrivals</a>
+          <a href="#" class="with-badge">Collections <span class="new-badge">New</span></a>
+          <a href="#">Offers</a>
+        </nav>
+
+        <div class="main-actions">
+          <label class="search-box" for="navSearch">
+            <i class="bi bi-search"></i>
+            <input id="navSearch" type="text" placeholder="Search for shoes...">
+          </label>
+          <a href="#" class="icon-link" aria-label="Account"><i class="bi bi-person"></i><span>Account</span></a>
+          <a href="#" class="icon-link" aria-label="Wishlist"><i class="bi bi-heart"></i><span>Wishlist</span></a>
+          <a href="#" class="icon-link cart-link" aria-label="Cart">
+            <i class="bi bi-bag"></i>
+            <span>Cart</span>
+            <em class="cart-count">0</em>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-nav-wrap" id="categoryNavWrap">
+      <div class="container category-nav">
+        <a href="#" class="shop-by">
+          <i class="bi bi-list"></i>
+          <span>Shop By Category</span>
+          <i class="bi bi-chevron-down"></i>
+        </a>
+        <nav class="category-links">
+          <a href="#">Running</a>
+          <a href="#">Sneakers</a>
+          <a href="#">Sports</a>
+          <a href="#">Casual</a>
+          <a href="#">Outdoor</a>
+          <a href="#">Accessories</a>
+        </nav>
+        <!-- <div class="category-actions">
+          <a href="#" class="gift-store">Gift Store</a>
+          <a href="#" aria-label="Search"><i class="bi bi-search"></i></a>
+          <a href="#" aria-label="Account"><i class="bi bi-person"></i></a>
+          <a href="#" aria-label="Cart"><i class="bi bi-cart3"></i></a>
+        </div> -->
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- About Page Hero -->
+    <section class="about-hero" aria-label="About our store">
+      <div class="about-hero__inner">
+        <div class="about-hero__content">
+          <h1 class="about-hero__title">About Our Store</h1>
+          <p class="about-hero__breadcrumb">
+            <a href="index.html">Homepage</a>
+            <span> &gt; </span>
+            <span>Pages</span>
+            <span> &gt; </span>
+            <span>About Our Store</span>
+          </p>
+        </div>
+        <div class="about-hero__image">
+          <img src="assets/img/banner-1.png" alt="Back view of woman in black dress" width="600" height="220">
+        </div>
+      </div>
+    </section>
+
+    <!-- About Intro Section -->
+    <section class="about-intro" aria-label="FootCraft about introduction">
+      <div class="about-intro__inner">
+        <div class="about-intro__media">
+          <img src="assets/img/Nike Journey Run.avif" alt="Woman in orange knit outfit holding bag" width="520" height="420">
+        </div>
+        <div class="about-intro__content">
+          <h2 class="about-intro__title">FootCraft - Offering rare and beautiful items worldwide</h2>
+
+          <nav class="about-intro__tabs" aria-label="About sections">
+            <button type="button" class="about-intro__tab about-intro__tab--active" data-tab="introduction">
+              Introduction
+            </button>
+            <button type="button" class="about-intro__tab" data-tab="vision">
+              Our Vision
+            </button>
+            <button type="button" class="about-intro__tab" data-tab="what-sets-us-apart">
+              What Sets Us Apart
+            </button>
+            <button type="button" class="about-intro__tab" data-tab="commitment">
+              Our Commitment
+            </button>
+          </nav>
+
+          <div class="about-intro__panels">
+            <div class="about-intro__panel about-intro__panel--active" id="about-tab-introduction">
+              <p>
+                Welcome to FootCraft Store, your premier destination for fashion-forward clothing and accessories.
+                We pride ourselves on offering a curated selection of rare and beautiful items sourced both locally
+                and globally. Our mission is to bring you the latest trends and timeless styles, ensuring every
+                piece reflects quality and elegance. Discover the perfect addition to your wardrobe at FootCraft Store.
+              </p>
+            </div>
+            <div class="about-intro__panel" id="about-tab-vision" hidden>
+              <p>
+                Our vision is to inspire confidence and self-expression through distinctive designs and thoughtful
+                craftsmanship, making luxury-inspired style accessible to fashion lovers everywhere.
+              </p>
+            </div>
+            <div class="about-intro__panel" id="about-tab-what-sets-us-apart" hidden>
+              <p>
+                From limited-edition pieces to carefully sourced materials, every product in our collection is chosen
+                with care, giving you unique finds that stand out from the crowd.
+              </p>
+            </div>
+            <div class="about-intro__panel" id="about-tab-commitment" hidden>
+              <p>
+                We are committed to delivering exceptional service, fast shipping, and a seamless shopping experience
+                so you can focus on enjoying the styles you love.
+              </p>
+            </div>
+          </div>
+
+          <button type="button" class="about-intro__btn">Read More</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Features Row -->
+    <section class="about-features" aria-label="Store benefits">
+      <div class="about-features__inner">
+        <div class="about-features__item">
+          <span class="about-features__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7v6h6" />
+              <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+            </svg>
+          </span>
+          <div class="about-features__text">
+            <h3 class="about-features__title">14-Day Returns</h3>
+            <p class="about-features__desc">Risk-free shopping with easy returns.</p>
+          </div>
+        </div>
+
+        <div class="about-features__item">
+          <span class="about-features__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13" />
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+              <circle cx="5.5" cy="18.5" r="2.5" />
+              <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+          </span>
+          <div class="about-features__text">
+            <h3 class="about-features__title">Free Shipping</h3>
+            <p class="about-features__desc">No extra costs, just the price you see.</p>
+          </div>
+        </div>
+
+        <div class="about-features__item">
+          <span class="about-features__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+              <path
+                d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+            </svg>
+          </span>
+          <div class="about-features__text">
+            <h3 class="about-features__title">24/7 Support</h3>
+            <p class="about-features__desc">24/7 support, always here just for you.</p>
+          </div>
+        </div>
+
+        <div class="about-features__item">
+          <span class="about-features__icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+              <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg>
+          </span>
+          <div class="about-features__text">
+            <h3 class="about-features__title">Member Discounts</h3>
+            <p class="about-features__desc">Special prices for our loyal customers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Meet Our Teams -->
+    <section class="about-team" aria-labelledby="about-team-heading">
+      <div class="about-team__inner">
+        <header class="about-team__header">
+          <h2 id="about-team-heading" class="about-team__title">Meet Our Teams</h2>
+          <p class="about-team__subtitle">
+            Discover exceptional experiences through testimonials from our satisfied customers.
+          </p>
+        </header>
+
+        <div class="about-team__grid">
+          <article class="about-team__card">
+            <div class="about-team__photo-wrap">
+              <img src="assets/img/Infu-1.jpg" alt="Annette Black" class="about-team__photo" width="260" height="260">
+            </div>
+            <div class="about-team__info">
+              <h3 class="about-team__name">Annette Black</h3>
+              <p class="about-team__role">Founder / CEO</p>
+              <button type="button" class="about-team__social" aria-label="Annette Black on Facebook">
+                <span class="about-team__social-icon">f</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="about-team__card">
+            <div class="about-team__photo-wrap">
+              <img src="assets/img/Infu-2.jpg" alt="Jane Cooper" class="about-team__photo" width="260" height="260">
+            </div>
+            <div class="about-team__info">
+              <h3 class="about-team__name">Jane Cooper</h3>
+              <p class="about-team__role">Sales Director</p>
+              <button type="button" class="about-team__social" aria-label="Jane Cooper on Facebook">
+                <span class="about-team__social-icon">f</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="about-team__card">
+            <div class="about-team__photo-wrap">
+              <img src="assets/img/Infu-3.jpg" alt="Brooklyn Simmons" class="about-team__photo" width="260" height="260">
+            </div>
+            <div class="about-team__info">
+              <h3 class="about-team__name">Brooklyn Simmons</h3>
+              <p class="about-team__role">Manager</p>
+              <button type="button" class="about-team__social" aria-label="Brooklyn Simmons on Facebook">
+                <span class="about-team__social-icon">f</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="about-team__card">
+            <div class="about-team__photo-wrap">
+              <img src="assets/img/Infu-4.jpg" alt="Theresa Webb" class="about-team__photo" width="260" height="260">
+            </div>
+            <div class="about-team__info">
+              <h3 class="about-team__name">Theresa Webb</h3>
+              <p class="about-team__role">Product Manager</p>
+              <button type="button" class="about-team__social" aria-label="Theresa Webb on Facebook">
+                <span class="about-team__social-icon">f</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Review -->
+    <section class="about-reviews" aria-labelledby="about-reviews-heading">
+      <div class="about-reviews__inner">
+        <header class="about-reviews__header">
+          <h2 id="about-reviews-heading" class="about-reviews__title">Customer Review</h2>
+        </header>
+
+        <div class="about-reviews__grid">
+          <article class="about-reviews__card">
+            <div class="about-reviews__icon" aria-hidden="true">
+              <span>"</span>
+            </div>
+            <h3 class="about-reviews__card-title">Variety of Styles!</h3>
+            <p class="about-reviews__text">
+              "Fantastic shop! Great selection, fair prices, and friendly staff. Highly recommended.
+              The quality of the products is exceptional, and the prices are very reasonable!"
+            </p>
+            <p class="about-reviews__author">Sybil Sharp</p>
+            <p class="about-reviews__stars">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </p>
+          </article>
+
+          <article class="about-reviews__card">
+            <div class="about-reviews__icon" aria-hidden="true">
+              <span>"</span>
+            </div>
+            <h3 class="about-reviews__card-title">Quality of Clothing!</h3>
+            <p class="about-reviews__text">
+              "I absolutely love this shop! The products are high-quality and the customer service is
+              excellent. I always leave with exactly what I need and a smile on my face."
+            </p>
+            <p class="about-reviews__author">Mark G.</p>
+            <p class="about-reviews__stars">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </p>
+          </article>
+
+          <article class="about-reviews__card">
+            <div class="about-reviews__icon" aria-hidden="true">
+              <span>"</span>
+            </div>
+            <h3 class="about-reviews__card-title">Customer Service!</h3>
+            <p class="about-reviews__text">
+              "I love this shop! The products are always top-quality, and the staff is incredibly
+              friendly and helpful. They go out of their way to make sure that I'm satisfied with
+              my purchase."
+            </p>
+            <p class="about-reviews__author">Emily S.</p>
+            <p class="about-reviews__stars">
+              <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </p>
+          </article>
+        </div>
+
+        <div class="about-reviews__dots" aria-label="Review slider pagination">
+          <button type="button" class="about-reviews__dot about-reviews__dot--active" aria-current="true"
+            aria-label="Slide 1"></button>
+          <button type="button" class="about-reviews__dot" aria-label="Slide 2"></button>
+          <button type="button" class="about-reviews__dot" aria-label="Slide 3"></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-subscribe-card">
+        <h3>Step into the world of UrbanKicks.</h3>
+        <p>Get early access to new sneaker drops, exclusive deals, limited editions, and style inspiration!</p>
+        <form class="subscribe-form">
+          <input type="email" placeholder="Enter your email" aria-label="Email">
+          <button type="button">Join Now</button>
+        </form>
+      </div>
+
+      <div class="footer-links-grid">
+        <div>
+          <h4>Shop by category</h4>
+          <a href="#">Running Shoes</a>
+          <a href="#">Sneakers</a>
+          <a href="#">Casual Shoes</a>
+          <a href="#">Sports Shoes</a>
+          <a href="#">High Tops</a>
+          <a href="#">Limited Edition</a>
+          <a href="#">New Arrivals</a>
+          <a href="#">Accessories</a>
+        </div>
+        <div>
+          <h4>Shop by lifestyle</h4>
+          <a href="#">Everyday Wear</a>
+          <a href="#">Gym & Training</a>
+          <a href="#">Street Style</a>
+          <a href="#">Travel Ready</a>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <a href="#">Size Guide</a>
+          <a href="#">Customer Support</a>
+          <a href="#">Track Order</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="#">Careers</a>
+          <a href="blog.html">Blogs</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div>
+          <h4>Bulk Orders</h4>
+          <a href="#">Corporate Orders</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div class="footer-social">
+        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="footer-policies">
+        <a href="#">Terms &amp; Conditions</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Site Map</a>
+        <a href="#">Return & Exchange Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+</body>
+
+</html>

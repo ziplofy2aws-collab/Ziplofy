@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdleaf — Plants & Indoor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="pi-header" role="banner">
+    <!-- Top announcement bar -->
+    <div class="pi-header__announce" role="region" aria-label="Site announcements">
+      <div class="pi-header__announce-inner">
+        <p class="pi-header__announce-left">
+          Free Delivery Above ₹499 | <a href="#" class="pi-header__announce-link">Shop Now</a>
+        </p>
+        <p class="pi-header__announce-center">Summer Survival Sale 🔥</p>
+        <p class="pi-header__announce-right">Next day Delivery Available</p>
+      </div>
+    </div>
+
+    <!-- Main header row -->
+    <div class="pi-header__main">
+      <div class="pi-header__main-inner">
+        <a href="index.html" class="pi-header__logo" aria-label="Verdleaf home">
+          <img src="assets/img/logo.png" alt="Verdleaf" width="150" height="54" decoding="async" />
+        </a>
+
+        <form class="pi-header__search" role="search" action="#" method="get">
+          <label class="visually-hidden" for="pi-header-search">Search products</label>
+          <i class="fa-solid fa-magnifying-glass pi-header__search-icon" aria-hidden="true"></i>
+          <input id="pi-header-search" type="search" name="q" placeholder="Search" autocomplete="off" />
+        </form>
+
+        <div class="pi-header__actions">
+          <a href="#" class="pi-header__action" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="pi-header__action" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <button type="button" class="pi-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-pi-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Category navigation -->
+    <nav class="pi-header__nav" aria-label="Category navigation">
+      <div class="pi-header__nav-inner">
+        <button type="button" class="pi-header__nav-close" data-pi-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <a href="#" class="pi-header__nav-link">🔥 SUMMER SALE</a>
+        <a href="category.html" class="pi-header__nav-link">PLANTS</a>
+        <a href="#" class="pi-header__nav-link">SEEDS</a>
+        <a href="#" class="pi-header__nav-link">POTS &amp; PLANTERS</a>
+        <a href="#" class="pi-header__nav-link">PLANT CARE</a>
+        <a href="#" class="pi-header__nav-link">GIFTING</a>
+        <a href="#" class="pi-header__nav-link">CORPORATE GIFTS</a>
+        <a href="#" class="pi-header__nav-link">GARDEN SERVICES</a>
+        <a href="#" class="pi-header__nav-link">BLOG</a>
+        <a href="#" class="pi-header__nav-link">OFFERS</a>
+      </div>
+    </nav>
+
+    <div class="pi-header__overlay" data-pi-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="pi-hero" data-pi-hero-slider aria-label="Hero banners">
+      <div class="pi-hero__viewport">
+        <div class="pi-hero__track" data-pi-hero-track>
+          <div class="pi-hero__slide" data-pi-hero-slide>
+            <img src="assets/img/hero-banner-1.png" alt="Verdleaf hero banner 1" width="1920" height="640"
+              decoding="async" />
+          </div>
+          <div class="pi-hero__slide" data-pi-hero-slide>
+            <img src="assets/img/hero-banner-2.png" alt="Verdleaf hero banner 2" width="1920" height="640"
+              loading="lazy" decoding="async" />
+          </div>
+          <div class="pi-hero__slide" data-pi-hero-slide>
+            <img src="assets/img/hero-banner-3.png" alt="Verdleaf hero banner 3" width="1920" height="640"
+              loading="lazy" decoding="async" />
+          </div>
+          <div class="pi-hero__slide" data-pi-hero-slide>
+            <img src="assets/img/hero-banner-4.png" alt="Verdleaf hero banner 4" width="1920" height="640"
+              loading="lazy" decoding="async" />
+          </div>
+        </div>
+      </div>
+
+      <div class="pi-hero__dots" role="tablist" aria-label="Choose slide">
+        <button type="button" class="pi-hero__dot is-active" data-pi-hero-dot role="tab" aria-selected="true"
+          aria-label="Slide 1" tabindex="0"></button>
+        <button type="button" class="pi-hero__dot" data-pi-hero-dot role="tab" aria-selected="false"
+          aria-label="Slide 2" tabindex="-1"></button>
+        <button type="button" class="pi-hero__dot" data-pi-hero-dot role="tab" aria-selected="false"
+          aria-label="Slide 3" tabindex="-1"></button>
+        <button type="button" class="pi-hero__dot" data-pi-hero-dot role="tab" aria-selected="false"
+          aria-label="Slide 4" tabindex="-1"></button>
+      </div>
+    </section>
+
+    <section class="pi-categories" aria-labelledby="pi-categories-heading">
+      <div class="pi-categories__inner">
+        <h2 id="pi-categories-heading" class="pi-categories__title">
+          <span class="pi-categories__title-accent">Popular</span> Categories
+        </h2>
+
+        <div class="pi-categories__viewport" data-pi-categories-viewport>
+          <div class="pi-categories__grid" data-pi-categories-track>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-1.webp" alt="Bulbs" width="400" height="400" loading="lazy" decoding="async" />
+            <span class="pi-categories__label">Bulbs</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-2.webp" alt="Outdoor Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Outdoor Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-3.webp" alt="Indoor Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Indoor Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-4.webp" alt="Avenue Trees" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Avenue Trees</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-5.webp" alt="Fruit Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Fruit Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-6.webp" alt="Hanging Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Hanging Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-7.webp" alt="Low Maintenance Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Low Maintenance Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-8.webp" alt="Ornamental Leaves" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Ornamental Leaves</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-9.webp" alt="Air Purifying Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Air Purifying Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-10.webp" alt="Flowering Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Flowering Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-11.webp" alt="New Arrivals Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">New Arrivals Plants</span>
+          </a>
+          <a href="category.html" class="pi-categories__card">
+            <img src="assets/img/cat-12.webp" alt="Variegated Foliage Plants" width="400" height="400" loading="lazy"
+              decoding="async" />
+            <span class="pi-categories__label">Variegated Foliage Plants</span>
+          </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi-picks" aria-labelledby="pi-picks-heading" data-pi-picks>
+      <div class="pi-picks__inner">
+        <div class="pi-picks__head">
+          <h2 id="pi-picks-heading" class="pi-picks__title">Shark&rsquo;s Favourite Picks!</h2>
+          <div class="pi-picks__nav">
+            <button type="button" class="pi-picks__arrow pi-picks__arrow--prev is-disabled" data-pi-picks-prev
+              aria-label="Previous product" disabled>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="pi-picks__arrow pi-picks__arrow--next" data-pi-picks-next
+              aria-label="Next product">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="pi-picks__slider">
+          <div class="pi-picks__viewport" data-pi-picks-viewport>
+            <div class="pi-picks__track" data-pi-picks-track>
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-1.png" alt="China Doll with Metal Self Watering Pot" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.5 out of 5 from 25 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.5 | 25</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">China Doll with Metal Self Watering Pot</a>
+                  </h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹2,899</span>
+                    <span class="pi-picks-card__mrp">₹3,768</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size is-active">L</button>
+                      <button type="button" class="pi-picks-card__size">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-2.png" alt="Philodendron Oxycardium Green with Plastic Self Watering Pot"
+                    width="400" height="400" loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.6 out of 5 from 23 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.6 | 23</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">Philodendron Oxycardium Green with Plastic
+                      Self
+                      Watering Pot</a></h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹2,299</span>
+                    <span class="pi-picks-card__mrp">₹2,989</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size">L</button>
+                      <button type="button" class="pi-picks-card__size is-active">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-3.png" alt="Jade Mini Bonsai with Plastic Self Watering Pot" width="400"
+                    height="400" loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.5 out of 5 from 21 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.5 | 21</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">Jade Mini Bonsai with Plastic Self Watering
+                      Pot</a></h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹499</span>
+                    <span class="pi-picks-card__mrp">₹649</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size is-active">L</button>
+                      <button type="button" class="pi-picks-card__size">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-4.png" alt="Syngonium Pink with Plastic Self Watering Pot" width="400"
+                    height="400" loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.4 out of 5 from 40 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.4 | 40</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">Syngonium Pink with Plastic Self Watering
+                      Pot</a></h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹299</span>
+                    <span class="pi-picks-card__mrp">₹389</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size">L</button>
+                      <button type="button" class="pi-picks-card__size is-active">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-5.png" alt="Snake Plant with Ceramic Self Watering Pot" width="400"
+                    height="400" loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.7 out of 5 from 32 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.7 | 32</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">Snake Plant with Ceramic Self Watering Pot</a>
+                  </h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹899</span>
+                    <span class="pi-picks-card__mrp">₹1,199</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size is-active">L</button>
+                      <button type="button" class="pi-picks-card__size">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-6.png" alt="Money Plant with Hanging Self Watering Pot" width="400"
+                    height="400" loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.5 out of 5 from 18 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.5 | 18</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">Money Plant with Hanging Self Watering Pot</a>
+                  </h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹399</span>
+                    <span class="pi-picks-card__mrp">₹549</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size">L</button>
+                      <button type="button" class="pi-picks-card__size is-active">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-7.png" alt="Aloe Vera with Terracotta Self Watering Pot" width="400"
+                    height="400" loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.3 out of 5 from 15 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.3 | 15</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">Aloe Vera with Terracotta Self Watering
+                      Pot</a>
+                  </h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹249</span>
+                    <span class="pi-picks-card__mrp">₹349</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size is-active">L</button>
+                      <button type="button" class="pi-picks-card__size">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+
+              <article class="pi-picks-card">
+                <a href="product.html" class="pi-picks-card__media">
+                  <img src="assets/img/BS-8.png" alt="Peace Lily with Self Watering Pot" width="400" height="400"
+                    loading="lazy" decoding="async" />
+                </a>
+                <div class="pi-picks-card__body">
+                  <div class="pi-picks-card__rating" aria-label="Rated 4.6 out of 5 from 28 reviews">
+                    <span class="pi-picks-card__stars" aria-hidden="true">
+                      <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </span>
+                    <span class="pi-picks-card__score">4.6 | 28</span>
+                  </div>
+                  <h3 class="pi-picks-card__title"><a href="product.html">Peace Lily with Self Watering Pot</a></h3>
+                  <p class="pi-picks-card__pricing">
+                    <span class="pi-picks-card__price">₹1,499</span>
+                    <span class="pi-picks-card__mrp">₹1,899</span>
+                  </p>
+                  <div class="pi-picks-card__badges">
+                    <span class="pi-picks-card__badge pi-picks-card__badge--air"><i class="fa-solid fa-leaf"
+                        aria-hidden="true"></i> Air Purifying</span>
+                    <span class="pi-picks-card__badge pi-picks-card__badge--gift"><i class="fa-solid fa-gift"
+                        aria-hidden="true"></i> Perfect Gift</span>
+                  </div>
+                  <div class="pi-picks-card__sizes">
+                    <span class="pi-picks-card__sizes-label">Select Size</span>
+                    <div class="pi-picks-card__size-btns" role="group" aria-label="Select size">
+                      <button type="button" class="pi-picks-card__size">L</button>
+                      <button type="button" class="pi-picks-card__size is-active">XL</button>
+                    </div>
+                  </div>
+                  <button type="button" class="pi-picks-card__cta">Add to Basket</button>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <div class="pi-picks__action">
+          <button type="button" class="pi-picks__view-all" data-pi-picks-view-all>View all products</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi-banner" aria-label="Promotional banner">
+      <img class="pi-banner__img" src="assets/img/banner.png"
+        alt="Bring Home Green Happiness — Best combo plants starting at Rs. 299" width="1920" height="480"
+        loading="lazy" decoding="async" />
+    </section>
+
+    <section class="pi-pots" aria-label="Pot categories">
+      <div class="pi-pots__inner">
+        <div class="pi-pots__viewport" data-pi-pots-viewport>
+          <div class="pi-pots__grid">
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/resing-ports.webp" alt="Resin Pots" width="280" height="280" loading="lazy"
+                decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Resin Pots</span> -->
+          </a>
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/metal-pots.webp" alt="Metal pots" width="280" height="280" loading="lazy"
+                decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Metal pots</span> -->
+          </a>
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/plastic-pots.avif" alt="Plastic pots" width="280" height="280" loading="lazy"
+                decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Plastic pots</span> -->
+          </a>
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/ceramix-pots.webp" alt="Ceramic Pots" width="280" height="280" loading="lazy"
+                decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Ceramic Pots</span> -->
+          </a>
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/self-watering-pots.avif" alt="Self-Watering Pots" width="280" height="280"
+                loading="lazy" decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Self-Watering Pots</span> -->
+          </a>
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/net-pots.avif" alt="Net Pots" width="280" height="280" loading="lazy"
+                decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Net Pots</span> -->
+          </a>
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/coir-pots.avif" alt="Coir Pots" width="280" height="280" loading="lazy"
+                decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Coir Pots</span> -->
+          </a>
+          <a href="category.html" class="pi-pots__item">
+            <div class="pi-pots__media">
+              <img src="assets/img/Hanging-Pots.webp" alt="Hanging Pots" width="280" height="280" loading="lazy"
+                decoding="async" />
+            </div>
+            <!-- <span class="pi-pots__label">Hanging Pots</span> -->
+          </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi-planters" aria-label="Featured planters" data-pi-planters>
+      <div class="pi-planters__inner">
+        <div class="pi-planters__head">
+          <div class="pi-planters__nav" aria-label="Featured planters navigation">
+            <button type="button" class="pi-planters__arrow pi-planters__arrow--prev is-disabled" data-pi-planters-prev
+              aria-label="Previous planter" disabled>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="pi-planters__arrow pi-planters__arrow--next" data-pi-planters-next
+              aria-label="Next planter">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="pi-planters__viewport" data-pi-planters-viewport>
+          <div class="pi-planters__grid" data-pi-planters-track>
+          <article class="pi-planters-card">
+            <a href="product.html" class="pi-planters-card__media">
+              <img src="assets/img/BS-1.png" alt="Amsterdam Muse Fiberglass Planter" width="400" height="400"
+                loading="lazy" decoding="async" />
+            </a>
+            <div class="pi-planters-card__body">
+              <div class="pi-planters-card__rating" aria-label="Rated 4.8 out of 5 from 40 reviews">
+                <span class="pi-planters-card__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="pi-planters-card__score">4.8 | 40</span>
+              </div>
+              <p class="pi-planters-card__pricing">
+                <span class="pi-planters-card__price">₹6,499</span>
+                <span class="pi-planters-card__mrp">₹9,999</span>
+              </p>
+              <span class="pi-planters-card__tag">Aesthetic</span>
+              <h3 class="pi-planters-card__title"><a href="product.html">Amsterdam Muse Fiberglass Planter</a></h3>
+              <div class="pi-planters-card__sizes">
+                <span class="pi-planters-card__sizes-label">Select Size</span>
+                <div class="pi-planters-card__size-btns" role="group" aria-label="Select size">
+                  <button type="button" class="pi-planters-card__size is-active">Small</button>
+                  <button type="button" class="pi-planters-card__size">Medium</button>
+                </div>
+              </div>
+              <button type="button" class="pi-planters-card__cta">Add to Basket</button>
+            </div>
+          </article>
+
+          <article class="pi-planters-card">
+            <a href="product.html" class="pi-planters-card__media">
+              <img src="assets/img/BS-2.png" alt="City Globe Fiberglass Planter" width="400" height="400" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="pi-planters-card__body">
+              <div class="pi-planters-card__rating" aria-label="Rated 4.8 out of 5 from 40 reviews">
+                <span class="pi-planters-card__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="pi-planters-card__score">4.8 | 40</span>
+              </div>
+              <p class="pi-planters-card__pricing">
+                <span class="pi-planters-card__price">₹4,999</span>
+                <span class="pi-planters-card__mrp">₹6,999</span>
+              </p>
+              <span class="pi-planters-card__tag">Aesthetic</span>
+              <h3 class="pi-planters-card__title"><a href="product.html">City Globe Fiberglass Planter</a></h3>
+              <div class="pi-planters-card__sizes">
+                <span class="pi-planters-card__sizes-label">Select Size</span>
+                <div class="pi-planters-card__size-btns" role="group" aria-label="Select size">
+                  <button type="button" class="pi-planters-card__size is-active">Small</button>
+                  <button type="button" class="pi-planters-card__size">Medium</button>
+                </div>
+              </div>
+              <button type="button" class="pi-planters-card__cta">Add to Basket</button>
+            </div>
+          </article>
+
+          <article class="pi-planters-card">
+            <a href="product.html" class="pi-planters-card__media">
+              <img src="assets/img/BS-3.png" alt="Downtown Luxe FiberGlass Planter" width="400" height="400"
+                loading="lazy" decoding="async" />
+            </a>
+            <div class="pi-planters-card__body">
+              <div class="pi-planters-card__rating" aria-label="Rated 4.8 out of 5 from 40 reviews">
+                <span class="pi-planters-card__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="pi-planters-card__score">4.8 | 40</span>
+              </div>
+              <p class="pi-planters-card__pricing">
+                <span class="pi-planters-card__price">₹4,799</span>
+                <span class="pi-planters-card__mrp">₹6,999</span>
+              </p>
+              <span class="pi-planters-card__tag">Indoor Planters</span>
+              <h3 class="pi-planters-card__title"><a href="product.html">Downtown Luxe FiberGlass Planter</a></h3>
+              <div class="pi-planters-card__sizes">
+                <span class="pi-planters-card__sizes-label">Select Size</span>
+                <div class="pi-planters-card__size-btns" role="group" aria-label="Select size">
+                  <button type="button" class="pi-planters-card__size is-active">Small</button>
+                  <button type="button" class="pi-planters-card__size">Medium</button>
+                  <button type="button" class="pi-planters-card__size">Large</button>
+                </div>
+              </div>
+              <button type="button" class="pi-planters-card__cta">Add to Basket</button>
+            </div>
+          </article>
+
+          <article class="pi-planters-card">
+            <a href="product.html" class="pi-planters-card__media">
+              <img src="assets/img/BS-4.png" alt="Manhattan Bloom Fiberglass Planter" width="400" height="400"
+                loading="lazy" decoding="async" />
+            </a>
+            <div class="pi-planters-card__body">
+              <div class="pi-planters-card__rating" aria-label="Rated 4.8 out of 5 from 40 reviews">
+                <span class="pi-planters-card__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="pi-planters-card__score">4.8 | 40</span>
+              </div>
+              <p class="pi-planters-card__pricing">
+                <span class="pi-planters-card__price">₹2,599</span>
+                <span class="pi-planters-card__mrp">₹3,999</span>
+              </p>
+              <span class="pi-planters-card__tag">Indoor Planters</span>
+              <h3 class="pi-planters-card__title"><a href="product.html">Manhattan Bloom Fiberglass Planter</a></h3>
+              <div class="pi-planters-card__sizes">
+                <span class="pi-planters-card__sizes-label">Select Size</span>
+                <div class="pi-planters-card__size-btns" role="group" aria-label="Select size">
+                  <button type="button" class="pi-planters-card__size is-active">Small</button>
+                  <button type="button" class="pi-planters-card__size">Medium</button>
+                </div>
+              </div>
+              <button type="button" class="pi-planters-card__cta">Add to Basket</button>
+            </div>
+          </article>
+          </div>
+        </div>
+
+        <div class="pi-planters__action">
+          <a href="category.html" class="pi-planters__view-all">View all products</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi-promo" aria-labelledby="pi-promo-heading">
+      <div class="pi-promo__inner">
+        <h2 id="pi-promo-heading" class="pi-promo__title">Elegant Self-Watering Pots for Every Space</h2>
+
+        <div class="pi-promo__viewport" data-pi-promo-viewport>
+          <div class="pi-promo__grid">
+          <a href="category.html" class="pi-promo__card">
+            <div class="pi-promo__media">
+              <img src="assets/img/promo-1.png" alt="Plants with Extra Large Pots" width="400" height="400"
+                loading="lazy" decoding="async" />
+            </div>
+            <span class="pi-promo__label">Plants with Extra Large Pots</span>
+          </a>
+          <a href="category.html" class="pi-promo__card">
+            <div class="pi-promo__media">
+              <img src="assets/img/promo-2.png" alt="Plants with Large Pots" width="400" height="400" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pi-promo__label">Plants with Large Pots</span>
+          </a>
+          <a href="category.html" class="pi-promo__card">
+            <div class="pi-promo__media">
+              <img src="assets/img/promo-3.png" alt="Plants with Medium Pots" width="400" height="400" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pi-promo__label">Plants with Medium Pots</span>
+          </a>
+          <a href="category.html" class="pi-promo__card">
+            <div class="pi-promo__media">
+              <img src="assets/img/promo-4.png" alt="Plants with Small Pots" width="400" height="400" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pi-promo__label">Plants with Small Pots</span>
+          </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi-blog" aria-labelledby="pi-blog-heading">
+      <div class="pi-blog__inner">
+        <h2 id="pi-blog-heading" class="pi-blog__title">Blogs</h2>
+
+        <div class="pi-blog__viewport" data-pi-blog-viewport>
+          <div class="pi-blog__grid">
+          <article class="pi-blog-card">
+            <a href="#" class="pi-blog-card__media">
+              <img src="assets/img/blog-1.png" alt="Best Site to Buy Plants Online India" width="400" height="260"
+                loading="lazy" decoding="async" />
+            </a>
+            <div class="pi-blog-card__body">
+              <h3 class="pi-blog-card__heading"><a href="#">Best Site to Buy Plants Online India with Fast Delivery
+                  &amp; Great Prices</a></h3>
+              <p class="pi-blog-card__excerpt">In recent years, buying plants online has become increasingly popular
+                ac...</p>
+              <a href="#" class="pi-blog-card__link">Continue Reading</a>
+            </div>
+          </article>
+
+          <article class="pi-blog-card">
+            <a href="#" class="pi-blog-card__media">
+              <img src="assets/img/blog-2.png" alt="Best Indoor Plants For Office" width="400" height="260" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="pi-blog-card__body">
+              <h3 class="pi-blog-card__heading"><a href="#">Best Indoor Plants For Office To Create A Fresh &amp;
+                  Positive Workspace</a></h3>
+              <p class="pi-blog-card__excerpt">A modern office should be more than just desks, computers, and bright
+                lights. It should feel welcoming, fresh, and motivating. One of t...</p>
+              <a href="#" class="pi-blog-card__link">Continue Reading</a>
+            </div>
+          </article>
+
+          <article class="pi-blog-card">
+            <a href="#" class="pi-blog-card__media">
+              <img src="assets/img/blog-3.png" alt="Vastu-Friendly Plants" width="400" height="260" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="pi-blog-card__body">
+              <h3 class="pi-blog-card__heading"><a href="#">Vastu-Friendly Plants That Bring Positivity, Peace, and
+                  Prosperity to Your Home</a></h3>
+              <p class="pi-blog-card__excerpt">Creating a home filled with peace, positivity, and natural balance is
+                something everyone desires. One of the simplest and most effectiv...</p>
+              <a href="#" class="pi-blog-card__link">Continue Reading</a>
+            </div>
+          </article>
+
+          <article class="pi-blog-card">
+            <a href="#" class="pi-blog-card__media">
+              <img src="assets/img/blog-4.png" alt="Online Plants Delivery" width="400" height="260" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="pi-blog-card__body">
+              <h3 class="pi-blog-card__heading"><a href="#">Online Plants Delivery Redefining How Green Enters Modern
+                  Homes</a></h3>
+              <p class="pi-blog-card__excerpt">The way people and plants interact has changed a lot. Plants used to be
+                hard to get to, only available on weekends at nurseries and loc...</p>
+              <a href="#" class="pi-blog-card__link">Continue Reading</a>
+            </div>
+          </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pi-footer" role="contentinfo">
+    <div class="pi-footer__inner">
+      <div class="pi-footer__top">
+        <div class="pi-footer__brand">
+          <a href="index.html" class="pi-footer__logo" aria-label="Plantshub home">
+            <img src="assets/img/logo.png" alt="Plantshub" width="154" height="44" loading="lazy" decoding="async" />
+          </a>
+          <p class="pi-footer__desc">Plantshub is a website dedicated to providing a variety of plants, Flower bulbs,
+            Plants care products and resources for plant enthusiasts and gardeners.</p>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Popular Categories</h3>
+          <ul class="pi-footer__links">
+            <li><a href="category.html">Plants</a></li>
+            <li><a href="category.html">Bulbs</a></li>
+            <li><a href="#">Seeds</a></li>
+            <li><a href="category.html">Planter</a></li>
+            <li><a href="#">Dried Flowers</a></li>
+            <li><a href="#">Plants Care</a></li>
+            <li><a href="#">Combos</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Customers Services</h3>
+          <ul class="pi-footer__links">
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Terms And Conditions ("Terms")</a></li>
+            <li><a href="#">Shipping And Delivery Policy</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Refund And Replacement Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Useful Links</h3>
+          <ul class="pi-footer__links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Promotions</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Sitemap</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="https://wa.me/">Support WhatsApp</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col pi-footer__col--app">
+          <h3 class="pi-footer__heading">Avalible On:</h3>
+          <a href="#" class="pi-footer__play" aria-label="Get it on Google Play">
+            <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+            <span><small>GET IT ON</small> Google Play</span>
+          </a>
+          <h3 class="pi-footer__heading pi-footer__heading--social">Social links:</h3>
+          <div class="pi-footer__social">
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--fb" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--x" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="mailto:info@plantshub.in" class="pi-footer__social-link pi-footer__social-link--mail"
+              aria-label="Email">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--ig" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--yt" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+            <a href="https://wa.me/" class="pi-footer__social-link pi-footer__social-link--wa" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pi-footer__qr">
+        <p class="pi-footer__qr-text">Scan our QR to get the App</p>
+        <div class="pi-footer__qr-code" aria-hidden="true">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR code">
+            <rect width="100" height="100" fill="#fff" />
+            <rect x="8" y="8" width="24" height="24" fill="#111" />
+            <rect x="12" y="12" width="16" height="16" fill="#fff" />
+            <rect x="16" y="16" width="8" height="8" fill="#111" />
+            <rect x="68" y="8" width="24" height="24" fill="#111" />
+            <rect x="72" y="12" width="16" height="16" fill="#fff" />
+            <rect x="76" y="16" width="8" height="8" fill="#111" />
+            <rect x="8" y="68" width="24" height="24" fill="#111" />
+            <rect x="12" y="72" width="16" height="16" fill="#fff" />
+            <rect x="16" y="76" width="8" height="8" fill="#111" />
+            <rect x="40" y="8" width="4" height="4" fill="#111" />
+            <rect x="48" y="8" width="4" height="4" fill="#111" />
+            <rect x="40" y="16" width="4" height="4" fill="#111" />
+            <rect x="44" y="24" width="4" height="4" fill="#111" />
+            <rect x="52" y="20" width="4" height="4" fill="#111" />
+            <rect x="36" y="36" width="28" height="28" fill="#111" />
+            <rect x="40" y="40" width="20" height="20" fill="#fff" />
+            <rect x="44" y="44" width="12" height="12" fill="#111" />
+            <rect x="68" y="40" width="4" height="4" fill="#111" />
+            <rect x="76" y="44" width="4" height="4" fill="#111" />
+            <rect x="84" y="36" width="4" height="4" fill="#111" />
+            <rect x="40" y="68" width="4" height="4" fill="#111" />
+            <rect x="48" y="72" width="4" height="4" fill="#111" />
+            <rect x="56" y="68" width="4" height="4" fill="#111" />
+            <rect x="44" y="80" width="4" height="4" fill="#111" />
+            <rect x="52" y="84" width="4" height="4" fill="#111" />
+            <rect x="68" y="68" width="4" height="4" fill="#111" />
+            <rect x="76" y="72" width="4" height="4" fill="#111" />
+            <rect x="84" y="68" width="4" height="4" fill="#111" />
+            <rect x="72" y="80" width="4" height="4" fill="#111" />
+            <rect x="80" y="84" width="4" height="4" fill="#111" />
+            <rect x="88" y="76" width="4" height="4" fill="#111" />
+          </svg>
+        </div>
+      </div>
+
+      <p class="pi-footer__copy">&copy; 2025 Plantshub.in. All rights reserved</p>
+    </div>
+  </footer>
+
+  <button type="button" class="pi-float-chat" aria-label="Open chat">
+    <i class="fa-solid fa-comment-dots" aria-hidden="true"></i>
+    <span class="pi-float-chat__dot" aria-hidden="true"></span>
+  </button>
+
+  <button type="button" class="pi-scroll-top" data-pi-scroll-top aria-label="Scroll to top" hidden>
+    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product-cards.js"></script>
+</body>
+
+</html>

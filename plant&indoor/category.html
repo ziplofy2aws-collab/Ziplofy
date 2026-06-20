@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdleaf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/category.css" />
+</head>
+
+<body>
+
+  <header class="pi-header" role="banner">
+    <!-- Top announcement bar -->
+    <div class="pi-header__announce" role="region" aria-label="Site announcements">
+      <div class="pi-header__announce-inner">
+        <p class="pi-header__announce-left">
+          Free Delivery Above ₹499 | <a href="#" class="pi-header__announce-link">Shop Now</a>
+        </p>
+        <p class="pi-header__announce-center">Summer Survival Sale 🔥</p>
+        <p class="pi-header__announce-right">Next day Delivery Available</p>
+      </div>
+    </div>
+
+    <!-- Main header row -->
+    <div class="pi-header__main">
+      <div class="pi-header__main-inner">
+        <a href="index.html" class="pi-header__logo" aria-label="Verdleaf home">
+          <img src="assets/img/logo.png" alt="Verdleaf" width="150" height="54" decoding="async" />
+        </a>
+
+        <form class="pi-header__search" role="search" action="#" method="get">
+          <label class="visually-hidden" for="pi-header-search-cat">Search products</label>
+          <i class="fa-solid fa-magnifying-glass pi-header__search-icon" aria-hidden="true"></i>
+          <input id="pi-header-search-cat" type="search" name="q" placeholder="Search" autocomplete="off" />
+        </form>
+
+        <div class="pi-header__actions">
+          <a href="#" class="pi-header__action" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="pi-header__action" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <button type="button" class="pi-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-pi-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Category navigation -->
+    <nav class="pi-header__nav" aria-label="Category navigation">
+      <div class="pi-header__nav-inner">
+        <button type="button" class="pi-header__nav-close" data-pi-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <a href="#" class="pi-header__nav-link">🔥 SUMMER SALE</a>
+        <a href="category.html" class="pi-header__nav-link">PLANTS</a>
+        <a href="#" class="pi-header__nav-link">SEEDS</a>
+        <a href="#" class="pi-header__nav-link">POTS &amp; PLANTERS</a>
+        <a href="#" class="pi-header__nav-link">PLANT CARE</a>
+        <a href="#" class="pi-header__nav-link">GIFTING</a>
+        <a href="#" class="pi-header__nav-link">CORPORATE GIFTS</a>
+        <a href="#" class="pi-header__nav-link">GARDEN SERVICES</a>
+        <a href="#" class="pi-header__nav-link">BLOG</a>
+        <a href="#" class="pi-header__nav-link">OFFERS</a>
+      </div>
+    </nav>
+
+    <div class="pi-header__overlay" data-pi-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+    <section class="pi-shop" aria-label="Shop products">
+      <div class="pi-shop__inner">
+        <nav class="pi-shop__breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="pi-shop__breadcrumb-sep" aria-hidden="true">/</span>
+          <span>Shop</span>
+        </nav>
+
+        <div class="pi-shop-cats">
+          <div class="pi-shop-cats__viewport" data-pi-shop-cats-viewport>
+            <div class="pi-shop-cats__row" role="list">
+            <a href="#" class="pi-shop-cats__item" role="listitem">
+              <span class="pi-shop-cats__media">
+                <img src="assets/img/promo-1.png" alt="XL Plants" width="120" height="120" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="pi-shop-cats__label">XL Plants</span>
+            </a>
+            <a href="#" class="pi-shop-cats__item" role="listitem">
+              <span class="pi-shop-cats__media">
+                <img src="assets/img/promo-2.png" alt="Large Plants" width="120" height="120" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="pi-shop-cats__label">Large Plants</span>
+            </a>
+            <a href="#" class="pi-shop-cats__item" role="listitem">
+              <span class="pi-shop-cats__media">
+                <img src="assets/img/promo-3.png" alt="Medium Plants" width="120" height="120" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="pi-shop-cats__label">Medium Plants</span>
+            </a>
+            <a href="#" class="pi-shop-cats__item" role="listitem">
+              <span class="pi-shop-cats__media">
+                <img src="assets/img/BS-4.png" alt="Green Marvels" width="120" height="120" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="pi-shop-cats__label">Green Marvels</span>
+            </a>
+            <a href="#" class="pi-shop-cats__item" role="listitem">
+              <span class="pi-shop-cats__media">
+                <img src="assets/img/BS-7.png" alt="Plant Food" width="120" height="120" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="pi-shop-cats__label">Plant Food</span>
+            </a>
+            <a href="#" class="pi-shop-cats__item" role="listitem">
+              <span class="pi-shop-cats__media">
+                <img src="assets/img/BS-6.png" alt="Plant care" width="120" height="120" loading="lazy"
+                  decoding="async" />
+              </span>
+              <span class="pi-shop-cats__label">Plant care</span>
+            </a>
+            </div>
+          </div>
+
+          <div class="pi-shop-coupon" role="note">
+            <span class="pi-shop-coupon__icon" aria-hidden="true">
+              <i class="fa-solid fa-percent"></i>
+            </span>
+            <p class="pi-shop-coupon__text">Get 8% off on order above @999</p>
+            <span class="pi-shop-coupon__code">BREATHE8</span>
+          </div>
+        </div>
+
+        <div class="pi-shop-toolbar">
+          <div class="pi-shop-filters">
+            <button type="button" class="pi-shop-filters__pill is-active">
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              Only Top 10 Best-Sellers
+            </button>
+            <button type="button" class="pi-shop-filters__drop">Price <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+            <button type="button" class="pi-shop-filters__drop">Size <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+            <button type="button" class="pi-shop-filters__drop">Plant Characteristics <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+            <button type="button" class="pi-shop-filters__drop">Sun Light <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+            <button type="button" class="pi-shop-filters__drop">Water Level <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+          </div>
+          <div class="pi-shop-toolbar__sort">
+            <label class="visually-hidden" for="pi-shop-sort">Sort products</label>
+            <select id="pi-shop-sort" class="pi-shop-toolbar__select" aria-label="Sort products">
+              <option>Featured</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="pi-shop-showing">Showing <span data-pi-shop-count>8</span> products</p>
+
+        <div class="pi-shop__grid" data-pi-shop-grid></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pi-footer" role="contentinfo">
+    <div class="pi-footer__inner">
+      <div class="pi-footer__top">
+        <div class="pi-footer__brand">
+          <a href="index.html" class="pi-footer__logo" aria-label="Plantshub home">
+            <img src="assets/img/logo.png" alt="Plantshub" width="154" height="44" loading="lazy" decoding="async" />
+          </a>
+          <p class="pi-footer__desc">Plantshub is a website dedicated to providing a variety of plants, Flower bulbs,
+            Plants care products and resources for plant enthusiasts and gardeners.</p>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Popular Categories</h3>
+          <ul class="pi-footer__links">
+            <li><a href="category.html">Plants</a></li>
+            <li><a href="category.html">Bulbs</a></li>
+            <li><a href="#">Seeds</a></li>
+            <li><a href="category.html">Planter</a></li>
+            <li><a href="#">Dried Flowers</a></li>
+            <li><a href="#">Plants Care</a></li>
+            <li><a href="#">Combos</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Customers Services</h3>
+          <ul class="pi-footer__links">
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Terms And Conditions ("Terms")</a></li>
+            <li><a href="#">Shipping And Delivery Policy</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Refund And Replacement Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Useful Links</h3>
+          <ul class="pi-footer__links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Promotions</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Sitemap</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="https://wa.me/">Support WhatsApp</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col pi-footer__col--app">
+          <h3 class="pi-footer__heading">Avalible On:</h3>
+          <a href="#" class="pi-footer__play" aria-label="Get it on Google Play">
+            <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+            <span><small>GET IT ON</small> Google Play</span>
+          </a>
+          <h3 class="pi-footer__heading pi-footer__heading--social">Social links:</h3>
+          <div class="pi-footer__social">
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--fb" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--x" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="mailto:info@plantshub.in" class="pi-footer__social-link pi-footer__social-link--mail"
+              aria-label="Email">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--ig" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--yt" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+            <a href="https://wa.me/" class="pi-footer__social-link pi-footer__social-link--wa" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pi-footer__qr">
+        <p class="pi-footer__qr-text">Scan our QR to get the App</p>
+        <div class="pi-footer__qr-code" aria-hidden="true">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR code">
+            <rect width="100" height="100" fill="#fff" />
+            <rect x="8" y="8" width="24" height="24" fill="#111" />
+            <rect x="12" y="12" width="16" height="16" fill="#fff" />
+            <rect x="16" y="16" width="8" height="8" fill="#111" />
+            <rect x="68" y="8" width="24" height="24" fill="#111" />
+            <rect x="72" y="12" width="16" height="16" fill="#fff" />
+            <rect x="76" y="16" width="8" height="8" fill="#111" />
+            <rect x="8" y="68" width="24" height="24" fill="#111" />
+            <rect x="12" y="72" width="16" height="16" fill="#fff" />
+            <rect x="16" y="76" width="8" height="8" fill="#111" />
+            <rect x="40" y="8" width="4" height="4" fill="#111" />
+            <rect x="48" y="8" width="4" height="4" fill="#111" />
+            <rect x="40" y="16" width="4" height="4" fill="#111" />
+            <rect x="44" y="24" width="4" height="4" fill="#111" />
+            <rect x="52" y="20" width="4" height="4" fill="#111" />
+            <rect x="36" y="36" width="28" height="28" fill="#111" />
+            <rect x="40" y="40" width="20" height="20" fill="#fff" />
+            <rect x="44" y="44" width="12" height="12" fill="#111" />
+            <rect x="68" y="40" width="4" height="4" fill="#111" />
+            <rect x="76" y="44" width="4" height="4" fill="#111" />
+            <rect x="84" y="36" width="4" height="4" fill="#111" />
+            <rect x="40" y="68" width="4" height="4" fill="#111" />
+            <rect x="48" y="72" width="4" height="4" fill="#111" />
+            <rect x="56" y="68" width="4" height="4" fill="#111" />
+            <rect x="44" y="80" width="4" height="4" fill="#111" />
+            <rect x="52" y="84" width="4" height="4" fill="#111" />
+            <rect x="68" y="68" width="4" height="4" fill="#111" />
+            <rect x="76" y="72" width="4" height="4" fill="#111" />
+            <rect x="84" y="68" width="4" height="4" fill="#111" />
+            <rect x="72" y="80" width="4" height="4" fill="#111" />
+            <rect x="80" y="84" width="4" height="4" fill="#111" />
+            <rect x="88" y="76" width="4" height="4" fill="#111" />
+          </svg>
+        </div>
+      </div>
+
+      <p class="pi-footer__copy">&copy; 2025 Plantshub.in. All rights reserved</p>
+    </div>
+  </footer>
+
+  <button type="button" class="pi-float-chat" aria-label="Open chat">
+    <i class="fa-solid fa-comment-dots" aria-hidden="true"></i>
+    <span class="pi-float-chat__dot" aria-hidden="true"></span>
+  </button>
+
+  <button type="button" class="pi-scroll-top" data-pi-scroll-top aria-label="Scroll to top" hidden>
+    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/category.js"></script>
+  <script src="assets/js/product-cards.js"></script>
+</body>
+
+</html>

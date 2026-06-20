@@ -1,0 +1,424 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdleaf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body class="pi-pdp-page">
+
+  <header class="pi-header" role="banner">
+
+    <!-- Top announcement bar -->
+    <div class="pi-header__announce" role="region" aria-label="Site announcements">
+      <div class="pi-header__announce-inner">
+        <p class="pi-header__announce-left">
+          Free Delivery Above ₹499 | <a href="#" class="pi-header__announce-link">Shop Now</a>
+        </p>
+        <p class="pi-header__announce-center">Summer Survival Sale 🔥</p>
+        <p class="pi-header__announce-right">Next day Delivery Available</p>
+      </div>
+    </div>
+
+    <!-- Main header row -->
+    <div class="pi-header__main">
+      <div class="pi-header__main-inner">
+        <a href="index.html" class="pi-header__logo" aria-label="Verdleaf home">
+          <img src="assets/img/logo.png" alt="Verdleaf" width="150" height="54" decoding="async" />
+        </a>
+
+        <form class="pi-header__search" role="search" action="#" method="get">
+          <label class="visually-hidden" for="pi-header-search-pdp">Search products</label>
+          <i class="fa-solid fa-magnifying-glass pi-header__search-icon" aria-hidden="true"></i>
+          <input id="pi-header-search-pdp" type="search" name="q" placeholder="Search" autocomplete="off" />
+        </form>
+
+        <div class="pi-header__actions">
+          <a href="#" class="pi-header__action" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="pi-header__action" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <button type="button" class="pi-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          data-pi-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Category navigation -->
+    <nav class="pi-header__nav" aria-label="Category navigation">
+      <div class="pi-header__nav-inner">
+        <button type="button" class="pi-header__nav-close" data-pi-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <a href="#" class="pi-header__nav-link">🔥 SUMMER SALE</a>
+        <a href="category.html" class="pi-header__nav-link">PLANTS</a>
+        <a href="#" class="pi-header__nav-link">SEEDS</a>
+        <a href="#" class="pi-header__nav-link">POTS &amp; PLANTERS</a>
+        <a href="#" class="pi-header__nav-link">PLANT CARE</a>
+        <a href="#" class="pi-header__nav-link">GIFTING</a>
+        <a href="#" class="pi-header__nav-link">CORPORATE GIFTS</a>
+        <a href="#" class="pi-header__nav-link">GARDEN SERVICES</a>
+        <a href="#" class="pi-header__nav-link">BLOG</a>
+        <a href="#" class="pi-header__nav-link">OFFERS</a>
+      </div>
+    </nav>
+
+    <div class="pi-header__overlay" data-pi-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="pi-pdp" aria-label="Product details">
+      <div class="pi-pdp__inner">
+        <div class="pi-pdp__layout">
+          <!-- Left: sticky product image -->
+          <div class="pi-pdp__gallery">
+            <div class="pi-pdp__main-media">
+              <img src="assets/img/BS-3.png" alt="" width="640" height="800" decoding="async" data-pi-pdp-main-image />
+            </div>
+          </div>
+
+          <!-- Right: product info -->
+          <div class="pi-pdp__info">
+            <div class="pi-pdp__badges" data-pi-pdp-badges></div>
+
+            <h1 class="pi-pdp__title" data-pi-pdp-title>Lucky Jade Plant With Self Watering Pot</h1>
+
+            <div class="pi-pdp__rating" data-pi-pdp-rating aria-label="Product rating">
+              <span class="pi-pdp__stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+              </span>
+              <span class="pi-pdp__score" data-pi-pdp-score>4.5 | 231 Customer Reviews</span>
+            </div>
+
+            <p class="pi-pdp__bought">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+              <span data-pi-pdp-bought>507+ bought in last week</span>
+            </p>
+
+            <div class="pi-pdp__pricing-row">
+              <div class="pi-pdp__pricing">
+                <span class="pi-pdp__price" data-pi-pdp-price>₹299</span>
+                <span class="pi-pdp__mrp" data-pi-pdp-mrp>₹496</span>
+              </div>
+              <a href="#" class="pi-pdp__size-chart">
+                Size Chart
+                <i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i>
+              </a>
+            </div>
+
+            <div class="pi-pdp__option">
+              <p class="pi-pdp__option-label">Select Size</p>
+              <div class="pi-pdp__size-btns" data-pi-pdp-sizes role="group" aria-label="Select size"></div>
+            </div>
+
+            <div class="pi-pdp__option">
+              <p class="pi-pdp__option-label">Select Pot Type</p>
+              <div class="pi-pdp__pot-btns" data-pi-pdp-pots role="group" aria-label="Select pot type">
+                <button type="button" class="pi-pdp__pot is-active" data-pi-pdp-pot>Poetic</button>
+                <button type="button" class="pi-pdp__pot" data-pi-pdp-pot>Nova</button>
+                <button type="button" class="pi-pdp__pot" data-pi-pdp-pot>Repot</button>
+              </div>
+            </div>
+
+            <div class="pi-pdp__option">
+              <p class="pi-pdp__option-label">Select Color</p>
+              <div class="pi-pdp__color-btns" data-pi-pdp-colors role="group" aria-label="Select color"></div>
+            </div>
+
+            <h2 class="pi-pdp__addons-heading">DON'T FORGET THEIR ADD-ONS!</h2>
+            <div class="pi-pdp__addons" data-pi-pdp-addons></div>
+
+            <div class="pi-pdp__bundle">
+              <div class="pi-pdp__bundle-text">
+                Buy any 4 Plants with Self-Watering Pots at <s>₹1495</s> <strong>₹999</strong>
+              </div>
+              <div class="pi-pdp__bundle-media">
+                <img src="assets/img/promo-1.png" alt="" width="120" height="80" loading="lazy" decoding="async" />
+              </div>
+            </div>
+
+            <div class="pi-pdp__desc-box">
+              <h3 class="pi-pdp__desc-box-title" data-pi-pdp-desc-title>Lucky Jade Plant With Self Watering Pot</h3>
+              <p class="pi-pdp__desc-box-text" data-pi-pdp-desc></p>
+            </div>
+
+            <nav class="pi-pdp__tabs" aria-label="Product information">
+              <a href="#" class="pi-pdp__tab">Benefits &amp; Styling</a>
+              <span class="pi-pdp__tab-sep" aria-hidden="true">|</span>
+              <a href="#" class="pi-pdp__tab">About Self-Watering</a>
+              <span class="pi-pdp__tab-sep" aria-hidden="true">|</span>
+              <a href="#" class="pi-pdp__tab">What's in the Box</a>
+              <i class="fa-solid fa-play pi-pdp__tab-play" aria-hidden="true"></i>
+            </nav>
+
+            <div class="pi-pdp__offer-bar">
+              <span class="pi-pdp__offer-icon" aria-hidden="true"><i class="fa-solid fa-percent"></i></span>
+              <p class="pi-pdp__offer-text">Add more items of ₹999 to get 8% OFF on all orders above ₹999</p>
+              <i class="fa-solid fa-chevron-right pi-pdp__offer-arrow" aria-hidden="true"></i>
+            </div>
+
+            <div class="pi-pdp__guarantee">
+              <div class="pi-pdp__guarantee-badge" aria-hidden="true">
+                <span>GUARANTEE</span>
+              </div>
+              <div class="pi-pdp__guarantee-text">
+                <strong>10-Day Damage Replacement Guarantee</strong>
+                <span>Damaged or Lifeless? We'll replace it for free!</span>
+              </div>
+              <button type="button" class="pi-pdp__guarantee-info" aria-label="More information">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="pi-pdp__promo-row">
+              <article class="pi-pdp__promo-card pi-pdp__promo-card--cream">
+                <p>Buy any 4 Plants with Mylo at <strong>₹999</strong></p>
+                <img src="assets/img/promo-2.png" alt="" width="100" height="70" loading="lazy" decoding="async" />
+                <a href="category.html" class="pi-pdp__promo-card-btn">Buy Plants with Mylo</a>
+              </article>
+              <article class="pi-pdp__promo-card pi-pdp__promo-card--green">
+                <p>Find your perfect match</p>
+                <img src="assets/img/promo-3.png" alt="" width="100" height="70" loading="lazy" decoding="async" />
+                <a href="#" class="pi-pdp__promo-card-btn">Plant Quiz</a>
+              </article>
+              <article class="pi-pdp__promo-card pi-pdp__promo-card--brown">
+                <p class="pi-pdp__promo-deal">DEAL OF THE DAY</p>
+                <span>Flash Deal. Fresh Feels.</span>
+                <a href="category.html" class="pi-pdp__promo-card-btn">Shop Now</a>
+              </article>
+            </div>
+
+            <div class="pi-pdp__services">
+              <div class="pi-pdp__service">
+                <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+                <span>Plant care support</span>
+              </div>
+              <div class="pi-pdp__service">
+                <i class="fa-solid fa-truck" aria-hidden="true"></i>
+                <span>Free shipping above ₹399</span>
+              </div>
+              <div class="pi-pdp__service">
+                <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                <span>High quality plants</span>
+              </div>
+            </div>
+
+            <div class="pi-pdp__bulk">
+              Call +91 9238115298 &amp; get the best discount upto 30% on bulk buying
+            </div>
+
+            <button type="button" class="pi-pdp__policy" data-pi-pdp-policy aria-expanded="false">
+              REPLACEMENT &amp; REFUND POLICY
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="pi-pdp__policy-panel" data-pi-pdp-policy-panel hidden>
+              <p>Pan-India delivery with secure packaging. Replacement support available for damaged plants on arrival
+                within 10 days.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi-pdp-related" aria-label="You may also like" data-pi-pdp-related>
+      <div class="pi-pdp-related__inner">
+        <div class="pi-pdp-related__head">
+          <div class="pi-pdp-related__nav" aria-label="Related products navigation">
+            <button type="button" class="pi-pdp-related__arrow pi-pdp-related__arrow--prev is-disabled" data-pi-pdp-related-prev
+              aria-label="Previous product" disabled>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="pi-pdp-related__arrow pi-pdp-related__arrow--next" data-pi-pdp-related-next
+              aria-label="Next product">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <div class="pi-pdp-related__viewport" data-pi-pdp-related-viewport>
+          <div class="pi-pdp-related__grid" data-pi-pdp-related-grid></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi-pdp-reviews" aria-labelledby="pi-pdp-reviews-title">
+      <div class="pi-pdp-reviews__inner">
+        <h2 id="pi-pdp-reviews-title" class="pi-pdp-reviews__title">Customer Reviews</h2>
+        <div class="pi-pdp-reviews__summary" data-pi-pdp-reviews-summary></div>
+        <div class="pi-pdp-reviews__toolbar">
+          <label class="visually-hidden" for="pi-pdp-reviews-sort">Sort reviews</label>
+          <select id="pi-pdp-reviews-sort" class="pi-pdp-reviews__sort" aria-label="Sort reviews">
+            <option>Most Recent</option>
+            <option>Highest Rated</option>
+            <option>Lowest Rated</option>
+          </select>
+        </div>
+        <div class="pi-pdp-reviews__list" data-pi-pdp-reviews-list></div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="pi-pdp-sticky" aria-label="Add to basket">
+    <div class="pi-pdp-sticky__inner">
+      <p class="pi-pdp-sticky__title" data-pi-pdp-sticky-title>Lucky Jade Plant With Self Watering Pot</p>
+      <button type="button" class="pi-pdp-sticky__btn" data-pi-pdp-add>ADD TO BASKET</button>
+    </div>
+  </div>
+
+  <footer class="pi-footer" role="contentinfo">
+    <div class="pi-footer__inner">
+      <div class="pi-footer__top">
+        <div class="pi-footer__brand">
+          <a href="index.html" class="pi-footer__logo" aria-label="Plantshub home">
+            <img src="assets/img/logo.png" alt="Plantshub" width="154" height="44" loading="lazy" decoding="async" />
+          </a>
+          <p class="pi-footer__desc">Plantshub is a website dedicated to providing a variety of plants, Flower bulbs,
+            Plants care products and resources for plant enthusiasts and gardeners.</p>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Popular Categories</h3>
+          <ul class="pi-footer__links">
+            <li><a href="category.html">Plants</a></li>
+            <li><a href="category.html">Bulbs</a></li>
+            <li><a href="#">Seeds</a></li>
+            <li><a href="category.html">Planter</a></li>
+            <li><a href="#">Dried Flowers</a></li>
+            <li><a href="#">Plants Care</a></li>
+            <li><a href="#">Combos</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Customers Services</h3>
+          <ul class="pi-footer__links">
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Terms And Conditions ("Terms")</a></li>
+            <li><a href="#">Shipping And Delivery Policy</a></li>
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Refund And Replacement Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col">
+          <h3 class="pi-footer__heading">Useful Links</h3>
+          <ul class="pi-footer__links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Promotions</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Sitemap</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="https://wa.me/">Support WhatsApp</a></li>
+          </ul>
+        </div>
+
+        <div class="pi-footer__col pi-footer__col--app">
+          <h3 class="pi-footer__heading">Avalible On:</h3>
+          <a href="#" class="pi-footer__play" aria-label="Get it on Google Play">
+            <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+            <span><small>GET IT ON</small> Google Play</span>
+          </a>
+          <h3 class="pi-footer__heading pi-footer__heading--social">Social links:</h3>
+          <div class="pi-footer__social">
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--fb" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--x" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="mailto:info@plantshub.in" class="pi-footer__social-link pi-footer__social-link--mail"
+              aria-label="Email">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--ig" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="pi-footer__social-link pi-footer__social-link--yt" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+            <a href="https://wa.me/" class="pi-footer__social-link pi-footer__social-link--wa" aria-label="WhatsApp">
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pi-footer__qr">
+        <p class="pi-footer__qr-text">Scan our QR to get the App</p>
+        <div class="pi-footer__qr-code" aria-hidden="true">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR code">
+            <rect width="100" height="100" fill="#fff" />
+            <rect x="8" y="8" width="24" height="24" fill="#111" />
+            <rect x="12" y="12" width="16" height="16" fill="#fff" />
+            <rect x="16" y="16" width="8" height="8" fill="#111" />
+            <rect x="68" y="8" width="24" height="24" fill="#111" />
+            <rect x="72" y="12" width="16" height="16" fill="#fff" />
+            <rect x="76" y="16" width="8" height="8" fill="#111" />
+            <rect x="8" y="68" width="24" height="24" fill="#111" />
+            <rect x="12" y="72" width="16" height="16" fill="#fff" />
+            <rect x="16" y="76" width="8" height="8" fill="#111" />
+            <rect x="40" y="8" width="4" height="4" fill="#111" />
+            <rect x="48" y="8" width="4" height="4" fill="#111" />
+            <rect x="40" y="16" width="4" height="4" fill="#111" />
+            <rect x="44" y="24" width="4" height="4" fill="#111" />
+            <rect x="52" y="20" width="4" height="4" fill="#111" />
+            <rect x="36" y="36" width="28" height="28" fill="#111" />
+            <rect x="40" y="40" width="20" height="20" fill="#fff" />
+            <rect x="44" y="44" width="12" height="12" fill="#111" />
+            <rect x="68" y="40" width="4" height="4" fill="#111" />
+            <rect x="76" y="44" width="4" height="4" fill="#111" />
+            <rect x="84" y="36" width="4" height="4" fill="#111" />
+            <rect x="40" y="68" width="4" height="4" fill="#111" />
+            <rect x="48" y="72" width="4" height="4" fill="#111" />
+            <rect x="56" y="68" width="4" height="4" fill="#111" />
+            <rect x="44" y="80" width="4" height="4" fill="#111" />
+            <rect x="52" y="84" width="4" height="4" fill="#111" />
+            <rect x="68" y="68" width="4" height="4" fill="#111" />
+            <rect x="76" y="72" width="4" height="4" fill="#111" />
+            <rect x="84" y="68" width="4" height="4" fill="#111" />
+            <rect x="72" y="80" width="4" height="4" fill="#111" />
+            <rect x="80" y="84" width="4" height="4" fill="#111" />
+            <rect x="88" y="76" width="4" height="4" fill="#111" />
+          </svg>
+        </div>
+      </div>
+
+      <p class="pi-footer__copy">&copy; 2025 Plantshub.in. All rights reserved</p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/" class="pi-pdp-wa" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <button type="button" class="pi-scroll-top" data-pi-scroll-top aria-label="Scroll to top" hidden>
+    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+  </button>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/product-cards.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StepUp Shoes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+
+    <div class="offer-strip">
+      <div class="container header-row">
+        <p class="offer-text">
+          <span>🚚 Free Shipping on Orders Above ₹999</span>
+          <span class="divider">|</span>
+          <span>🎁 Extra 5% Off on Prepaid Orders</span>
+          <span class="divider">|</span>
+          <span>Code: STEPUP5</span>
+          <span class="divider">|</span>
+          <a href="#" class="offer-link">Shop Now</a>
+        </p>
+        <a href="#" class="drop-link">New Drop Live →</a>
+      </div>
+    </div>
+
+    <div class="main-nav-wrap">
+      <div class="container main-nav">
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Open navigation menu">
+          <i class="bi bi-list"></i>
+        </button>
+
+        <a href="index.html" class="brand">
+          <img src="assets/img/logo.png" alt="StepUp Shoes" class="brand-logo" width="160" height="48">
+        </a>
+
+        <nav class="primary-nav" id="primaryNav">
+          <a href="#">Men</a>
+          <a href="#">Women</a>
+          <a href="#">Kids</a>
+          <a href="#">New Arrivals</a>
+          <a href="#" class="with-badge">Collections <span class="new-badge">New</span></a>
+          <a href="#">Offers</a>
+        </nav>
+
+        <div class="main-actions">
+          <label class="search-box" for="navSearch">
+            <i class="bi bi-search"></i>
+            <input id="navSearch" type="text" placeholder="Search for shoes...">
+          </label>
+          <a href="#" class="icon-link" aria-label="Account"><i class="bi bi-person"></i><span>Account</span></a>
+          <a href="#" class="icon-link" aria-label="Wishlist"><i class="bi bi-heart"></i><span>Wishlist</span></a>
+          <a href="#" class="icon-link cart-link" aria-label="Cart">
+            <i class="bi bi-bag"></i>
+            <span>Cart</span>
+            <em class="cart-count">0</em>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-nav-wrap" id="categoryNavWrap">
+      <div class="container category-nav">
+        <a href="#" class="shop-by">
+          <i class="bi bi-list"></i>
+          <span>Shop By Category</span>
+          <i class="bi bi-chevron-down"></i>
+        </a>
+        <nav class="category-links">
+          <a href="#">Running</a>
+          <a href="#">Sneakers</a>
+          <a href="#">Sports</a>
+          <a href="#">Casual</a>
+          <a href="#">Outdoor</a>
+          <a href="#">Accessories</a>
+        </nav>
+        <!-- <div class="category-actions">
+          <a href="#" class="gift-store">Gift Store</a>
+          <a href="#" aria-label="Search"><i class="bi bi-search"></i></a>
+          <a href="#" aria-label="Account"><i class="bi bi-person"></i></a>
+          <a href="#" aria-label="Cart"><i class="bi bi-cart3"></i></a>
+        </div> -->
+      </div>
+    </div>
+
+  </header>
+
+  <section class="cinematic-hero">
+    <div class="hero-overlay-rings"></div>
+    <div class="hero-slides">
+      <article class="hero-slide is-active" style="background-image: url('assets/img/banner-1.png');">
+        <div class="hero-inner container">
+          <div class="hero-copy">
+            <div class="hero-top-line">
+              <p class="drop-tag">NEW DROP 2024</p>
+              <p class="hero-mini-brand">STEP UP. STAND OUT.</p>
+            </div>
+            <h1>
+              <span>CUSTOM IS THE</span>
+              <span class="hero-big-line">NEW <em>COOL</em></span>
+            </h1>
+            <p class="hero-sub">Design your vibe. Your color. Your way.</p>
+            <p class="hero-price">Starting at <strong>₹69*</strong> <del>₹149</del></p>
+            <div class="hero-cta">
+              <a href="#" class="btn-primary">SHOP NOW <i class="bi bi-arrow-right"></i></a>
+              <a href="#" class="btn-secondary"><i class="bi bi-play-fill"></i> Watch Video</a>
+            </div>
+          </div>
+          <div class="hero-stage-spacer" aria-hidden="true"></div>
+        </div>
+      </article>
+
+      <article class="hero-slide" style="background-image: url('assets/img/banner-2.png');">
+        <div class="hero-inner container">
+          <div class="hero-copy">
+            <div class="hero-top-line">
+              <p class="drop-tag">PERFORMANCE DROP</p>
+              <p class="hero-mini-brand">LIGHT. FAST. BOLD.</p>
+            </div>
+            <h1>
+              <span>RUN WITH</span>
+              <span class="hero-big-line">PURE <em>ENERGY</em></span>
+            </h1>
+            <p class="hero-sub">Built for pace, grip, and all-day stability.</p>
+            <p class="hero-price">Starting at <strong>₹79*</strong> <del>₹169</del></p>
+            <div class="hero-cta">
+              <a href="#" class="btn-primary">SHOP NOW <i class="bi bi-arrow-right"></i></a>
+              <a href="#" class="btn-secondary"><i class="bi bi-play-fill"></i> Watch Video</a>
+            </div>
+          </div>
+          <div class="hero-stage-spacer" aria-hidden="true"></div>
+        </div>
+      </article>
+
+      <article class="hero-slide" style="background-image: url('assets/img/banner-3.png');">
+        <div class="hero-inner container">
+          <div class="hero-copy">
+            <div class="hero-top-line">
+              <p class="drop-tag">LIMITED EDITION</p>
+              <p class="hero-mini-brand">CRAFTED TO FLEX.</p>
+            </div>
+            <h1>
+              <span>STYLE YOUR</span>
+              <span class="hero-big-line">OWN <em>MOVE</em></span>
+            </h1>
+            <p class="hero-sub">Premium detailing with futuristic cushioning.</p>
+            <p class="hero-price">Starting at <strong>₹89*</strong> <del>₹189</del></p>
+            <div class="hero-cta">
+              <a href="#" class="btn-primary">SHOP NOW <i class="bi bi-arrow-right"></i></a>
+              <a href="#" class="btn-secondary"><i class="bi bi-play-fill"></i> Watch Video</a>
+            </div>
+          </div>
+          <div class="hero-stage-spacer" aria-hidden="true"></div>
+        </div>
+      </article>
+
+      <article class="hero-slide" style="background-image: url('assets/img/banner-4.png');">
+        <div class="hero-inner container">
+          <div class="hero-copy">
+            <div class="hero-top-line">
+              <p class="drop-tag">URBAN SERIES</p>
+              <p class="hero-mini-brand">CITY READY FIT.</p>
+            </div>
+            <h1>
+              <span>OWN THE</span>
+              <span class="hero-big-line">STREET <em>LOOK</em></span>
+            </h1>
+            <p class="hero-sub">A cinematic blend of comfort and statement style.</p>
+            <p class="hero-price">Starting at <strong>₹99*</strong> <del>₹199</del></p>
+            <div class="hero-cta">
+              <a href="#" class="btn-primary">SHOP NOW <i class="bi bi-arrow-right"></i></a>
+              <a href="#" class="btn-secondary"><i class="bi bi-play-fill"></i> Watch Video</a>
+            </div>
+          </div>
+          <div class="hero-stage-spacer" aria-hidden="true"></div>
+        </div>
+      </article>
+    </div>
+
+    <button class="hero-arrow hero-arrow-left" type="button" aria-label="Previous slide">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+    <button class="hero-arrow hero-arrow-right" type="button" aria-label="Next slide">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+
+    <div class="hero-dots" aria-label="Slider indicators">
+      <button class="dot dot-active" type="button" aria-label="Slide 1"></button>
+      <button class="dot" type="button" aria-label="Slide 2"></button>
+      <button class="dot" type="button" aria-label="Slide 3"></button>
+      <button class="dot" type="button" aria-label="Slide 4"></button>
+    </div>
+
+    <!-- <div class="hero-features">
+      <article>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M2 7h12v8H2zM14 10h3l3 3v2h-2a2 2 0 1 1-4 0H8a2 2 0 1 1-4 0H2"></path>
+        </svg>
+        <div>
+          <h3>FREE SHIPPING</h3>
+          <p>On orders above ₹999</p>
+        </div>
+      </article>
+      <article>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6z"></path>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+        <div>
+          <h3>PREMIUM QUALITY</h3>
+          <p>Crafted for comfort</p>
+        </div>
+      </article>
+      <article>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-3.2-6.9"></path>
+          <path d="M21 4v6h-6"></path>
+        </svg>
+        <div>
+          <h3>EASY RETURNS</h3>
+          <p>Hassle free returns</p>
+        </div>
+      </article>
+      <article>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 13v4a2 2 0 0 0 2 2h1v-5H4zM20 13v4a2 2 0 0 1-2 2h-1v-5h3zM7 14V9a5 5 0 0 1 10 0v5"></path>
+        </svg>
+        <div>
+          <h3>24/7 SUPPORT</h3>
+          <p>We're here to help</p>
+        </div>
+      </article>
+    </div> -->
+  </section>
+
+  <section class="category-section">
+    <div class="container category-shell">
+      <h2>Explore by Category</h2>
+      <div class="category-track-wrap">
+        <div class="category-track" id="categoryTrack">
+          <a href="category.html" class="category-card cat-1">
+            <img src="assets/img/Nike Pegasus 42.avif" alt="Running shoes">
+            <span class="card-default">
+              <small>SHOP</small>
+              <strong>Running</strong>
+            </span>
+            <span class="card-hover">
+              <small>SHOP NOW</small>
+              <strong>Running</strong>
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </a>
+          <a href="category.html" class="category-card cat-2">
+            <img src="assets/img/Nike%20Court%20Shot.avif" alt="Sneakers shoes">
+            <span class="card-default">
+              <small>SHOP</small>
+              <strong>Sneakers</strong>
+            </span>
+            <span class="card-hover">
+              <small>SHOP NOW</small>
+              <strong>Sneakers</strong>
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </a>
+          <a href="category.html" class="category-card cat-3">
+            <img src="assets/img/Nike%20Structure%2026.avif" alt="Sports shoes">
+            <span class="card-default">
+              <small>SHOP</small>
+              <strong>Sports</strong>
+            </span>
+            <span class="card-hover">
+              <small>SHOP NOW</small>
+              <strong>Sports</strong>
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </a>
+          <a href="category.html" class="category-card cat-4">
+            <img src="assets/img/Air%20Jordan%20Skyline%20Low.avif" alt="Kids shoes">
+            <span class="card-default">
+              <small>SHOP</small>
+              <strong>Kids</strong>
+            </span>
+            <span class="card-hover">
+              <small>SHOP NOW</small>
+              <strong>Kids</strong>
+              <i class="bi bi-chevron-double-right"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bestseller-section">
+    <div class="container">
+      <div class="bestseller-head">
+        <h2>Top Sneaker Picks</h2>
+        <a href="#" class="view-all-link">Explore All</a>
+      </div>
+
+      <div class="bestseller-tabs">
+        <button class="tab-btn is-active" type="button">Bestsellers</button>
+        <button class="tab-btn" type="button">Limited Drops</button>
+      </div>
+
+      <div class="bestseller-track">
+        <article class="product-card" data-product="air-jordan-mid-classic">
+          <span class="product-badge">🔥 Hot Pick</span>
+          <div class="product-image">
+            <img src="assets/img/Air Jordan 1 Low.avif" alt="Air Jordan 1 Mid sneaker">
+          </div>
+          <div class="product-info">
+            <p class="product-rating">★★★★★ <span>(231)</span></p>
+            <h3>Air Jordan 1 Low</h3>
+            <p class="price-line"><del>₹8,999</del> <strong>₹5,999</strong> <em>33% OFF</em></p>
+            <p class="product-sub">Premium leather | Iconic design</p>
+            <label class="compare-line"><input type="checkbox"> Add to Compare</label>
+          </div>
+        </article>
+
+        <article class="product-card" data-product="airwave-max-runner">
+          <span class="product-badge">🚀 New Drop</span>
+          <div class="product-image">
+            <img src="assets/img/Air Jordan Skyline Low.avif" alt="Airwave Max Runner sneaker">
+          </div>
+          <div class="product-info">
+            <p class="product-rating">★★★★☆ <span>(40)</span></p>
+            <h3>Air Jordan Skyline Low</h3>
+            <p class="price-line"><del>₹6,499</del> <strong>₹4,499</strong> <em>30% OFF</em></p>
+            <p class="product-sub">Air cushion sole | Breathable mesh</p>
+            <label class="compare-line"><input type="checkbox"> Add to Compare</label>
+          </div>
+        </article>
+
+        <article class="product-card" data-product="urban-street-low">
+          <div class="product-image">
+            <img src="assets/img/Nike Air Force 1 '07 LV8.avif" alt="Urban Street Low sneaker">
+          </div>
+          <div class="product-info">
+            <p class="product-rating">★★★★☆ <span>(40)</span></p>
+            <h3>Nike Air Force 1 '07 LV8</h3>
+            <p class="price-line"><del>₹4,999</del> <strong>₹2,999</strong> <em>40% OFF</em></p>
+            <p class="product-sub">Classic low-top | Everyday wear</p>
+            <p class="offer-line">🪙 Offer Price <strong>₹2,799</strong></p>
+            <label class="compare-line"><input type="checkbox"> Add to Compare</label>
+          </div>
+        </article>
+
+        <article class="product-card" data-product="court-flex-lite">
+          <div class="product-image">
+            <img src="assets/img/Nike Court Shot.avif" alt="Court Flex Lite sneaker">
+          </div>
+          <div class="product-info">
+            <p class="product-rating">★★★★☆ <span>(126)</span></p>
+            <h3>Nike Court Shot</h3>
+            <p class="price-line"><del>₹3,999</del> <strong>₹1,999</strong> <em>50% OFF</em></p>
+            <p class="product-sub">Lightweight build | Flexible sole</p>
+            <p class="offer-line">🪙 Offer Price <strong>₹1,899</strong></p>
+            <label class="compare-line"><input type="checkbox"> Add to Compare</label>
+          </div>
+        </article>
+
+        <article class="product-card" data-product="air-jordan-pro">
+          <span class="product-badge">🔥 Premium</span>
+          <div class="product-image">
+            <img src="assets/img/Air Jordan 1 Mid.avif" alt="Air Jordan Pro sneaker">
+          </div>
+          <div class="product-info">
+            <p class="product-rating">★★★★☆ <span>(421)</span></p>
+            <h3>Air Jordan 1 Mid</h3>
+            <p class="price-line"><del>₹11,999</del> <strong>₹8,999</strong> <em>25% OFF</em></p>
+            <p class="product-sub">High-top design | Premium comfort</p>
+            <p class="offer-line">🪙 Offer Price <strong>₹8,499</strong></p>
+            <label class="compare-line"><input type="checkbox"> Add to Compare</label>
+          </div>
+        </article>
+
+        <article class="product-card" data-product="endeavour-runner-pro">
+          <span class="product-badge">⚡ Trending</span>
+          <div class="product-image">
+            <img src="assets/img/Nike Victori One.avif" alt="Endeavour Runner Pro sneaker">
+          </div>
+          <div class="product-info">
+            <p class="product-rating">★★★★☆ <span>(290)</span></p>
+            <h3>Nike Victori One</h3>
+            <p class="price-line"><del>₹7,999</del> <strong>₹5,499</strong> <em>31% OFF</em></p>
+            <p class="product-sub">Performance sole | All-day comfort</p>
+            <p class="offer-line">🪙 Offer Price <strong>₹5,249</strong></p>
+            <label class="compare-line"><input type="checkbox"> Add to Compare</label>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="lifestyle-section">
+    <div class="container">
+      <h2>Shop By Lifestyle</h2>
+      <div class="lifestyle-stack">
+        <article class="lifestyle-banner">
+          <!-- <span class="lifestyle-number">01</span> -->
+          <img src="assets/img/Promo-1.png" alt="Audiophile lifestyle banner">
+        </article>
+        <article class="lifestyle-banner">
+          <!-- <span class="lifestyle-number">02</span> -->
+          <img src="assets/img/Promo-2.png" alt="Workout lifestyle banner">
+        </article>
+        <article class="lifestyle-banner">
+          <!-- <span class="lifestyle-number">03</span> -->
+          <img src="assets/img/Promo-3.png" alt="Travel lifestyle banner">
+        </article>
+        <article class="lifestyle-banner">
+          <!-- <span class="lifestyle-number">04</span> -->
+          <img src="assets/img/Promo-4.png" alt="Gaming lifestyle banner">
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="top-deals-section">
+    <div class="container">
+      <h2>Top Sneaker Deals</h2>
+      <div class="top-deals-track">
+        <article class="deal-card" data-product="urban-runner-green">
+          <div class="deal-media deal-img-1">
+            <img src="assets/img/ADIDAS FEROZA AUDI REVOLUT F1 TEAM SHOES.avif" alt="Urban Runner Green">
+            <span class="deal-chip">Hot Deal</span>
+            <span class="deal-score">★ 5.0</span>
+          </div>
+          <div class="deal-body">
+            <h3>ADIDAS FEROZA AUDI REVOLUT F1 TEAM SHOES</h3>
+            <p class="deal-specs"><span>Lightweight</span><span>Air Cushion</span><span>All-Day Comfort</span></p>
+            <p class="deal-price"><del>₹5,999</del> <strong>₹2,499</strong> <em>₹200 Extra off</em></p>
+            <div class="deal-bottom">
+              <p>₹2,299 with extra offer</p>
+              <button type="button">ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="deal-card" data-product="street-flex-women">
+          <div class="deal-media deal-img-2">
+            <img src="assets/img/ULTRABOOST 5 AUDI REVOLUT F1 TEAM SHOES.avif" alt="Street Flex Women Sneakers">
+            <span class="deal-chip">Top Deal</span>
+            <span class="deal-score">★ 4.9</span>
+          </div>
+          <div class="deal-body">
+            <h3>ULTRABOOST 5 AUDI REVOLUT F1 TEAM SHOES</h3>
+            <p class="deal-specs"><span>Breathable Mesh</span><span>Flexible Sole</span><span>Stylish Fit</span></p>
+            <p class="deal-price"><del>₹6,999</del> <strong>₹2,999</strong> <em>₹300 Extra off</em></p>
+            <div class="deal-bottom">
+              <p>₹2,699 with extra offer</p>
+              <button type="button">ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="deal-card" data-product="airstride-black">
+          <div class="deal-media deal-img-3">
+            <img src="assets/img/Lightblaze Shoes.avif" alt="AirStride Black Sneakers">
+            <span class="deal-chip">Top Deal</span>
+            <span class="deal-score">★ 4.9</span>
+          </div>
+          <div class="deal-body">
+            <h3>Lightblaze Shoes</h3>
+            <p class="deal-specs"><span>Shock Absorption</span><span>Premium Build</span><span>Grip Sole</span></p>
+            <p class="deal-price"><del>₹7,999</del> <strong>₹3,499</strong></p>
+            <div class="deal-bottom">
+              <p>&nbsp;</p>
+              <button type="button">ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="deal-card" data-product="powerfit-trainer">
+          <div class="deal-media deal-img-4">
+            <img src="assets/img/Rapidmove ADV 2 Training Shoes.avif" alt="PowerFit Trainer Sneakers">
+            <span class="deal-chip">Trending</span>
+            <span class="deal-score">★ 4.8</span>
+          </div>
+          <div class="deal-body">
+            <h3>Rapidmove ADV 2 Training Shoes</h3>
+            <p class="deal-specs"><span>High Grip</span><span>Training Ready</span><span>Durable</span></p>
+            <p class="deal-price"><del>₹4,999</del> <strong>₹2,999</strong> <em>₹200 Extra off</em></p>
+            <div class="deal-bottom">
+              <p>₹2,799 with extra offer</p>
+              <button type="button">ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="deal-card" data-product="cloudwalk-yellow">
+          <div class="deal-media deal-img-5">
+            <img src="assets/img/CLOUDFOAM CUXXION RAPIDFIT SHOES.avif" alt="CloudWalk Yellow Sneakers">
+            <span class="deal-chip">Limited Deal</span>
+            <span class="deal-score">★ 4.8</span>
+          </div>
+          <div class="deal-body">
+            <h3>CLOUDFOAM CUXXION RAPIDFIT SHOES</h3>
+            <p class="deal-specs"><span>Ultra Light</span><span>Comfort Fit</span><span>Everyday Wear</span></p>
+            <p class="deal-price"><del>₹3,999</del> <strong>₹2,499</strong> <em>₹150 Extra off</em></p>
+            <div class="deal-bottom">
+              <p>₹2,349 with extra offer</p>
+              <button type="button" disabled>SOLD OUT</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="influencer-showcase" aria-labelledby="influencerShowcaseHeading">
+    <div class="container">
+      <h2 class="influencer-showcase__title" id="influencerShowcaseHeading">#UrbanKicksCrew</h2>
+      <div class="influencer-showcase__grid" id="influencerShowcaseGrid">
+        <article class="influencer-card influencer-card--spotlight" data-influencer-card>
+          <div class="influencer-card__media">
+            <img src="assets/img/Infu-1.jpg" alt="Influencer styling Urban Runner X sneakers" width="600" height="800" loading="lazy">
+            <div class="influencer-card__gradient" aria-hidden="true"></div>
+            <div class="influencer-card__spotlight">
+              <p class="influencer-card__spotlight-text">
+                <span class="influencer-card__spotlight-icons" aria-hidden="true">
+                  <i class="bi bi-lightning-fill"></i>
+                  <i class="bi bi-youtube influencer-card__yt"></i>
+                </span>
+                Street style meets high performance
+              </p>
+            </div>
+          </div>
+          <div class="influencer-card__glass">
+            <img class="influencer-card__thumb" src="assets/img/Infu-1.jpg" alt="" width="48" height="48">
+            <div class="influencer-card__meta">
+              <p class="influencer-card__name">Urban Runner X</p>
+              <p class="influencer-card__price">₹2,999</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="influencer-card" data-influencer-card>
+          <div class="influencer-card__media">
+            <img src="assets/img/Infu-2.jpg" alt="Influencer wearing Street Flex Pro sneakers" width="600" height="800" loading="lazy">
+            <div class="influencer-card__gradient" aria-hidden="true"></div>
+          </div>
+          <div class="influencer-card__glass">
+            <img class="influencer-card__thumb" src="assets/img/Infu-2.jpg" alt="" width="48" height="48">
+            <div class="influencer-card__meta">
+              <p class="influencer-card__name">Street Flex Pro</p>
+              <p class="influencer-card__price">₹3,499</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="influencer-card" data-influencer-card>
+          <div class="influencer-card__media">
+            <img src="assets/img/Infu-3.jpg" alt="Influencer wearing AirStride Elite sneakers" width="600" height="800" loading="lazy">
+            <div class="influencer-card__gradient" aria-hidden="true"></div>
+          </div>
+          <div class="influencer-card__glass">
+            <img class="influencer-card__thumb" src="assets/img/Infu-3.jpg" alt="" width="48" height="48">
+            <div class="influencer-card__meta">
+              <p class="influencer-card__name">AirStride Elite</p>
+              <p class="influencer-card__price">₹3,199</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="influencer-card" data-influencer-card>
+          <div class="influencer-card__media">
+            <img src="assets/img/Infu-4.jpg" alt="Lifestyle shot with PowerFit Trainer sneakers" width="600" height="800" loading="lazy">
+            <div class="influencer-card__gradient" aria-hidden="true"></div>
+          </div>
+          <div class="influencer-card__glass">
+            <img class="influencer-card__thumb" src="assets/img/Infu-4.jpg" alt="" width="48" height="48">
+            <div class="influencer-card__meta">
+              <p class="influencer-card__name">PowerFit Trainer</p>
+              <p class="influencer-card__price">₹2,799</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <a href="https://wa.me/" class="influencer-float influencer-float--wa" aria-label="Chat on WhatsApp" target="_blank" rel="noopener noreferrer">
+      <i class="bi bi-whatsapp" aria-hidden="true"></i>
+    </a>
+    <button type="button" class="influencer-float influencer-float--help" aria-label="Help and support">
+      <i class="bi bi-headset" aria-hidden="true"></i>
+      <span>Need Help?</span>
+    </button>
+  </section>
+
+  <section class="sale-live-section" aria-labelledby="saleLiveHeading">
+    <div class="container sale-live-shell">
+      <div class="sale-live-head">
+        <h2 id="saleLiveHeading">
+          <span>Sale Is</span>
+          <em>Live</em>
+        </h2>
+        <a href="#" class="sale-live-viewall">Explore All Sneakers <i class="bi bi-arrow-right"></i></a>
+      </div>
+
+      <div class="sale-live-carousel-wrap">
+        <button class="sale-live-arrow sale-live-arrow--prev" id="saleLivePrev" type="button" aria-label="Previous products">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <div class="sale-live-track" id="saleLiveTrack">
+          <article class="sale-card" data-product="urban-runner-x">
+            <div class="sale-card__media">
+              <img src="assets/img/ADIDAS FEROZA AUDI REVOLUT F1 TEAM SHOES.avif" alt="Urban Runner X Shoes" loading="lazy" width="360" height="360">
+              <span class="sale-card__badge">🔥 Best Seller</span>
+              <button type="button" class="sale-card__cart" aria-label="Add Urban Runner X Shoes to cart">
+                <i class="bi bi-bag-plus"></i>
+              </button>
+              <div class="sale-card__featurebar">
+                <span>Ultra Cushion Sole</span>
+                <strong>⭐ 4.9</strong>
+              </div>
+            </div>
+            <div class="sale-card__body">
+              <h3>ADIDAS FEROZA AUDI REVOLUT F1 TEAM SHOES</h3>
+              <p class="sale-card__price"><strong>₹2,999</strong> <del>₹5,990</del> <em>50% off</em></p>
+              <div class="sale-card__variants">
+                <span style="--dot:#111827;"></span>
+                <span style="--dot:#14532d;"></span>
+                <small>+3</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="sale-card" data-product="street-flex-pro">
+            <div class="sale-card__media">
+              <img src="assets/img/CLOUDFOAM CUXXION RAPIDFIT SHOES-2.avif" alt="Street Flex Pro Shoes" loading="lazy" width="360" height="360">
+              <span class="sale-card__badge">🚀 New Drop</span>
+              <button type="button" class="sale-card__cart" aria-label="Add Street Flex Pro Shoes to cart">
+                <i class="bi bi-bag-plus"></i>
+              </button>
+              <div class="sale-card__featurebar">
+                <span>Breathable Mesh</span>
+                <strong>⭐ 4.8</strong>
+              </div>
+            </div>
+            <div class="sale-card__body">
+              <h3>CLOUDFOAM CUXXION RAPIDFIT SHOES</h3>
+              <p class="sale-card__price"><strong>₹3,499</strong> <del>₹6,990</del> <em>50% off</em></p>
+              <div class="sale-card__variants">
+                <span style="--dot:#111827;"></span>
+                <span style="--dot:#cbd5e1;"></span>
+                <small>+5</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="sale-card" data-product="airstride-elite">
+            <div class="sale-card__media">
+              <img src="assets/img/Lightblaze Shoes.avif" alt="AirStride Elite Shoes" loading="lazy" width="360" height="360">
+              <span class="sale-card__badge">⚡ Flat ₹200 OFF</span>
+              <button type="button" class="sale-card__cart" aria-label="Add AirStride Elite Shoes to cart">
+                <i class="bi bi-bag-plus"></i>
+              </button>
+              <div class="sale-card__featurebar">
+                <span>Shock Absorption</span>
+                <strong>⭐ 4.8</strong>
+              </div>
+            </div>
+            <div class="sale-card__body">
+              <h3>Lightblaze Shoes</h3>
+              <p class="sale-card__price"><strong>₹3,199</strong> <del>₹6,490</del> <em>51% off</em></p>
+              <div class="sale-card__variants">
+                <span style="--dot:#111827;"></span>
+                <span style="--dot:#f59e0b;"></span>
+                <small>+4</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="sale-card" data-product="powerfit-trainer">
+            <div class="sale-card__media">
+              <img src="assets/img/Rapidmove ADV 2 Training Shoes.avif" alt="PowerFit Trainer Shoes" loading="lazy" width="360" height="360">
+              <span class="sale-card__badge">🔥 Trending</span>
+              <button type="button" class="sale-card__cart" aria-label="Add PowerFit Trainer Shoes to cart">
+                <i class="bi bi-bag-plus"></i>
+              </button>
+              <div class="sale-card__featurebar">
+                <span>High Grip Sole</span>
+                <strong>⭐ 4.7</strong>
+              </div>
+            </div>
+            <div class="sale-card__body">
+              <h3>Rapidmove ADV 2 Training Shoes</h3>
+              <p class="sale-card__price"><strong>₹2,799</strong> <del>₹5,499</del> <em>49% off</em></p>
+              <div class="sale-card__variants">
+                <span style="--dot:#1d4ed8;"></span>
+                <span style="--dot:#020617;"></span>
+                <small>+2</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="sale-card" data-product="cloudwalk-lite">
+            <div class="sale-card__media">
+              <img src="assets/img/CLOUDFOAM CUXXION RAPIDFIT SHOES.avif" alt="CloudWalk Lite Shoes" loading="lazy" width="360" height="360">
+              <span class="sale-card__badge">🔥 Limited Stock</span>
+              <button type="button" class="sale-card__cart" aria-label="Add CloudWalk Lite Shoes to cart">
+                <i class="bi bi-bag-plus"></i>
+              </button>
+              <div class="sale-card__featurebar">
+                <span>Feather Light</span>
+                <strong>⭐ 4.7</strong>
+              </div>
+            </div>
+            <div class="sale-card__body">
+              <h3>CLOUDFOAM CUXXION RAPIDFIT SHOES</h3>
+              <p class="sale-card__price"><strong>₹2,499</strong> <del>₹4,990</del> <em>50% off</em></p>
+              <div class="sale-card__variants">
+                <span style="--dot:#0ea5e9;"></span>
+                <span style="--dot:#020617;"></span>
+                <small>+3</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="sale-card" data-product="ultra-boost-max">
+            <div class="sale-card__media">
+              <img src="assets/img/ULTRABOOST 5 AUDI REVOLUT F1 TEAM SHOES.avif" alt="Ultra Boost Max Shoes" loading="lazy" width="360" height="360">
+              <span class="sale-card__badge">⚡ Flat ₹300 OFF</span>
+              <button type="button" class="sale-card__cart" aria-label="Add Ultra Boost Max Shoes to cart">
+                <i class="bi bi-bag-plus"></i>
+              </button>
+              <div class="sale-card__featurebar">
+                <span>Energy Return Sole</span>
+                <strong>⭐ 4.9</strong>
+              </div>
+            </div>
+            <div class="sale-card__body">
+              <h3>ULTRABOOST 5 AUDI REVOLUT F1 TEAM SHOES</h3>
+              <p class="sale-card__price"><strong>₹3,999</strong> <del>₹7,990</del> <em>50% off</em></p>
+              <div class="sale-card__variants">
+                <span style="--dot:#111827;"></span>
+                <span style="--dot:#14532d;"></span>
+                <small>+2</small>
+              </div>
+            </div>
+          </article>
+        </div>
+        <button class="sale-live-arrow sale-live-arrow--next" id="saleLiveNext" type="button" aria-label="Next products">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="blog-posts-section">
+    <div class="container">
+      <h2>Sneaker Stories</h2>
+      <div class="blog-posts-grid">
+        <article class="blog-card">
+          <div class="blog-thumb blog-thumb-1">
+            <img src="assets/img/Nike Air Force 1 '07 LV8.avif" alt="Sneaker buying guide">
+          </div>
+          <div class="blog-body">
+            <p class="blog-date">APRIL 21, 2026</p>
+            <h3>How to Choose the Perfect Sneakers in 2026: The Ultimate Buying Guide</h3>
+            <p class="blog-excerpt">Choosing the right sneakers today is more than just style. From comfort and cushioning to durability and performance, modern footwear offers a wide range of features that can completely transform your experience...</p>
+            <a href="#" class="blog-read-btn">Read More</a>
+          </div>
+        </article>
+
+        <article class="blog-card">
+          <div class="blog-thumb blog-thumb-2">
+            <img src="assets/img/Nike Journey Run.avif" alt="Running vs casual shoes">
+          </div>
+          <div class="blog-body">
+            <p class="blog-date">APRIL 18, 2026</p>
+            <h3>Running Shoes vs Casual Sneakers: Which One Should You Pick?</h3>
+            <p class="blog-excerpt">Confused between running shoes and casual sneakers? You're not alone. While both look stylish, they serve different purposes. Understanding the difference can help you choose the perfect pair for your lifestyle...</p>
+            <a href="#" class="blog-read-btn">Read More</a>
+          </div>
+        </article>
+
+        <article class="blog-card">
+          <div class="blog-thumb blog-thumb-3">
+            <img src="assets/img/Nike Pegasus Premium.avif" alt="Sneaker technology guide">
+          </div>
+          <div class="blog-body">
+            <p class="blog-date">APRIL 18, 2026</p>
+            <h3>Latest Sneaker Technologies in 2026: Comfort Meets Performance</h3>
+            <p class="blog-excerpt">Modern sneakers are evolving fast. From advanced cushioning systems to breathable materials and smart design innovations, today's footwear is built for both performance and everyday comfort...</p>
+            <a href="#" class="blog-read-btn">Read More</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonial-section">
+    <div class="container">
+      <p class="trust-badge">Rated 4.8 out of 5 ★ by Sneaker Lovers</p>
+      <h2>What Our Customers Say</h2>
+
+      <div class="testimonial-viewport">
+        <div class="testimonial-track" id="testimonialTrack">
+          <article class="testimonial-card is-featured">
+            <div class="testimonial-top">
+              <span>Jan 18, 2026</span>
+              <span class="user-pill">BA</span>
+            </div>
+            <h3>Brittany Ashley</h3>
+            <p class="meta">US · 16 reviews</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>Unmatched Comfort & Style</h4>
+            <p class="review-text">These sneakers completely changed my daily routine. Super lightweight, stylish, and insanely comfortable. I get compliments everywhere I go!</p>
+            <p class="review-date">December 24, 2025</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <span>Nov 4, 2026</span>
+              <span class="user-pill">JS</span>
+            </div>
+            <h3>Jody Shaw</h3>
+            <p class="meta">US · 4 reviews</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>Perfect for Everyday Wear</h4>
+            <p class="review-text">I’ve been wearing these daily for weeks now — no discomfort at all. Great cushioning and support. Easily my favorite pair right now.</p>
+            <p class="review-date">December 25, 2025</p>
+          </article>
+
+          <article class="testimonial-card is-featured">
+            <div class="testimonial-top">
+              <span>Jan 19, 2026</span>
+              <span class="user-pill">SS</span>
+            </div>
+            <h3>Sukhwant Singh</h3>
+            <p class="meta">CA · 2 reviews</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>Great for Training Sessions</h4>
+            <p class="review-text">I use these for gym and running — grip is solid and cushioning is perfect. Helps improve performance and feels very stable.</p>
+            <p class="review-date">February 11, 2026</p>
+          </article>
+
+          <article class="testimonial-card is-featured">
+            <div class="testimonial-top">
+              <span>Feb 11, 2026</span>
+              <span class="user-pill">DS</span>
+            </div>
+            <h3>Deepit Singh</h3>
+            <p class="meta">US · 1 review</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>Best Sneakers I’ve Owned</h4>
+            <p class="review-text">The quality is top-notch. Perfect fit, breathable material, and long-lasting comfort. Totally worth it!</p>
+            <p class="review-date">November 30, 2025</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <span>Updated Jan 25, 2026</span>
+              <span class="user-pill">KZ</span>
+            </div>
+            <h3>Kirsty Ziobell</h3>
+            <p class="meta">AU · 1 review</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>Premium Feel</h4>
+            <p class="review-text">The design and build quality feel premium. Super comfortable even after long walks. Definitely buying another pair soon.</p>
+            <p class="review-date">January 4, 2025</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <span>Dec 14, 2025</span>
+              <span class="user-pill">SH</span>
+            </div>
+            <h3>Shannon</h3>
+            <p class="meta">CA · 7 reviews</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>All-Day Comfort</h4>
+            <p class="review-text">I work long hours and these sneakers keep my feet comfortable all day. Great support and stylish look.</p>
+            <p class="review-date">November 14, 2025</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <span>Dec 29, 2026</span>
+              <span class="user-pill">GM</span>
+            </div>
+            <h3>GMP</h3>
+            <p class="meta">US · 6 reviews</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>Performance Boosting</h4>
+            <p class="review-text">Amazing grip and flexibility. Perfect for intense workouts and running sessions. Highly recommended!</p>
+            <p class="review-date">December 17, 2026</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <span>Jan 2, 2026</span>
+              <span class="user-pill">ME</span>
+            </div>
+            <h3>MeAshie</h3>
+            <p class="meta">US · 1 review</p>
+            <p class="stars">★★★★★ <em>Verified</em></p>
+            <h4>Stylish & Comfortable</h4>
+            <p class="review-text">Perfect combination of fashion and function. Looks great with every outfit and feels amazing to wear.</p>
+            <p class="review-date">December 9, 2025</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="testimonial-nav">
+        <button id="testimonialPrev" type="button" aria-label="Previous testimonials">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button id="testimonialNext" type="button" aria-label="Next testimonials">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-subscribe-card">
+        <h3>Step into the world of UrbanKicks.</h3>
+        <p>Get early access to new sneaker drops, exclusive deals, limited editions, and style inspiration!</p>
+        <form class="subscribe-form">
+          <input type="email" placeholder="Enter your email" aria-label="Email">
+          <button type="button">Join Now</button>
+        </form>
+      </div>
+
+      <div class="footer-links-grid">
+        <div>
+          <h4>Shop by category</h4>
+          <a href="#">Running Shoes</a>
+          <a href="#">Sneakers</a>
+          <a href="#">Casual Shoes</a>
+          <a href="#">Sports Shoes</a>
+          <a href="#">High Tops</a>
+          <a href="#">Limited Edition</a>
+          <a href="#">New Arrivals</a>
+          <a href="#">Accessories</a>
+        </div>
+        <div>
+          <h4>Shop by lifestyle</h4>
+          <a href="#">Everyday Wear</a>
+          <a href="#">Gym & Training</a>
+          <a href="#">Street Style</a>
+          <a href="#">Travel Ready</a>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <a href="#">Size Guide</a>
+          <a href="#">Customer Support</a>
+          <a href="#">Track Order</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="#">Careers</a>
+          <a href="blog.html">Blogs</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div>
+          <h4>Bulk Orders</h4>
+          <a href="#">Corporate Orders</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div class="footer-social">
+        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="footer-policies">
+        <a href="#">Terms &amp; Conditions</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Site Map</a>
+        <a href="#">Return & Exchange Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StepUp Shoes - Category</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/category.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="offer-strip">
+      <div class="container header-row">
+        <p class="offer-text">
+          <span>🚚 Free Shipping on Orders Above ₹999</span>
+          <span class="divider">|</span>
+          <span>🎁 Extra 5% Off on Prepaid Orders</span>
+          <span class="divider">|</span>
+          <span>Code: STEPUP5</span>
+          <span class="divider">|</span>
+          <a href="#" class="offer-link">Shop Now</a>
+        </p>
+        <a href="#" class="drop-link">New Drop Live →</a>
+      </div>
+    </div>
+
+    <div class="main-nav-wrap">
+      <div class="container main-nav">
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Open navigation menu">
+          <i class="bi bi-list"></i>
+        </button>
+
+        <a href="index.html" class="brand">
+          <img src="assets/img/logo.png" alt="StepUp Shoes" class="brand-logo" width="160" height="48">
+        </a>
+
+        <nav class="primary-nav" id="primaryNav">
+          <a href="#">Men</a>
+          <a href="#">Women</a>
+          <a href="#">Kids</a>
+          <a href="#">New Arrivals</a>
+          <a href="#" class="with-badge">Collections <span class="new-badge">New</span></a>
+          <a href="#">Offers</a>
+        </nav>
+
+        <div class="main-actions">
+          <label class="search-box" for="navSearch">
+            <i class="bi bi-search"></i>
+            <input id="navSearch" type="text" placeholder="Search for shoes...">
+          </label>
+          <a href="#" class="icon-link" aria-label="Account"><i class="bi bi-person"></i><span>Account</span></a>
+          <a href="#" class="icon-link" aria-label="Wishlist"><i class="bi bi-heart"></i><span>Wishlist</span></a>
+          <a href="#" class="icon-link cart-link" aria-label="Cart">
+            <i class="bi bi-bag"></i>
+            <span>Cart</span>
+            <em class="cart-count">0</em>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-nav-wrap" id="categoryNavWrap">
+      <div class="container category-nav">
+        <a href="#" class="shop-by">
+          <i class="bi bi-list"></i>
+          <span>Shop By Category</span>
+          <i class="bi bi-chevron-down"></i>
+        </a>
+        <nav class="category-links">
+          <a href="#">Running</a>
+          <a href="#">Sneakers</a>
+          <a href="#">Sports</a>
+          <a href="#">Casual</a>
+          <a href="#">Outdoor</a>
+          <a href="#">Accessories</a>
+        </nav>
+        <!-- <div class="category-actions">
+          <a href="#" class="gift-store">Gift Store</a>
+          <a href="#" aria-label="Search"><i class="bi bi-search"></i></a>
+          <a href="#" aria-label="Account"><i class="bi bi-person"></i></a>
+          <a href="#" aria-label="Cart"><i class="bi bi-cart3"></i></a>
+        </div> -->
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main category-main">
+
+    <section class="category-hero-wrap">
+      <div class="category-hero-banner">
+        <!-- <h1>Smartwatches</h1> -->
+      </div>
+    </section>
+
+    <section class="container category-catalog">
+      <button type="button" class="mobile-filter-trigger" id="mobileFilterTrigger" aria-controls="filterSidebar" aria-expanded="false">
+        <i class="bi bi-funnel"></i>
+        <span>Filters</span>
+      </button>
+      <div class="filter-drawer-backdrop" id="filterDrawerBackdrop" aria-hidden="true"></div>
+      <aside class="filter-sidebar" id="filterSidebar">
+        <div class="filter-drawer-head">
+          <h3>FILTERS</h3>
+          <button type="button" class="filter-drawer-close" id="filterDrawerClose" aria-label="Close filters">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <section class="filter-group is-open">
+          <button type="button" class="filter-toggle" aria-expanded="true">
+            <span>Sort:</span><i class="bi bi-dash"></i>
+          </button>
+          <div class="filter-content">
+            <label><input type="radio" name="sort" checked> Recommended</label>
+            <label><input type="radio" name="sort"> Best selling</label>
+            <label><input type="radio" name="sort"> Price, Low to High</label>
+            <label><input type="radio" name="sort"> Price, High to Low</label>
+            <label><input type="radio" name="sort"> New Arrivals</label>
+            <label><input type="radio" name="sort"> Trending</label>
+          </div>
+        </section>
+
+        <section class="filter-group is-open">
+          <button type="button" class="filter-toggle" aria-expanded="true">
+            <span>CATEGORY</span><i class="bi bi-dash"></i>
+          </button>
+          <div class="filter-content">
+            <label><input type="checkbox"> Running Shoes <small>(18)</small></label>
+            <label><input type="checkbox"> Casual Sneakers <small>(25)</small></label>
+            <label><input type="checkbox"> High Top Sneakers <small>(10)</small></label>
+            <label><input type="checkbox"> Sports Trainers <small>(14)</small></label>
+          </div>
+        </section>
+
+        <section class="filter-group is-open">
+          <button type="button" class="filter-toggle" aria-expanded="true">
+            <span>FEATURES</span><i class="bi bi-dash"></i>
+          </button>
+          <div class="filter-content">
+            <label><input type="checkbox"> Lightweight <small>(20)</small></label>
+            <label><input type="checkbox"> Breathable Mesh <small>(15)</small></label>
+            <label><input type="checkbox"> Cushion Sole <small>(12)</small></label>
+            <label><input type="checkbox"> High Grip <small>(9)</small></label>
+            <label><input type="checkbox"> Waterproof <small>(6)</small></label>
+          </div>
+        </section>
+
+        <section class="filter-group is-open">
+          <button type="button" class="filter-toggle" aria-expanded="true">
+            <span>ACTIVITY</span><i class="bi bi-dash"></i>
+          </button>
+          <div class="filter-content">
+            <label><input type="checkbox"> Running <small>(16)</small></label>
+            <label><input type="checkbox"> Gym & Workout <small>(12)</small></label>
+            <label><input type="checkbox"> Casual Wear <small>(22)</small></label>
+            <label><input type="checkbox"> Travel <small>(8)</small></label>
+          </div>
+        </section>
+
+        <section class="filter-group is-open">
+          <button type="button" class="filter-toggle" aria-expanded="true">
+            <span>COLORS</span><i class="bi bi-dash"></i>
+          </button>
+          <div class="filter-content">
+            <div class="color-swatches">
+              <button type="button" style="--swatch:#000;"></button>
+              <button type="button" style="--swatch:#1d4ed8;"></button>
+              <button type="button" style="--swatch:#f59e0b;"></button>
+              <button type="button" style="--swatch:#737373;"></button>
+              <button type="button" style="--swatch:#15803d;"></button>
+              <button type="button" style="--swatch:#f3b4c6;"></button>
+              <button type="button" style="--swatch:#f8fafc;"></button>
+              <button type="button" style="--swatch:#b91c1c;"></button>
+              <button type="button" style="--swatch:#facc15;"></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="filter-group is-open">
+          <button type="button" class="filter-toggle" aria-expanded="true">
+            <span>PRICE</span><i class="bi bi-dash"></i>
+          </button>
+          <div class="filter-content">
+            <div class="price-boxes">
+              <span>₹1,499.00</span>
+              <span>₹9,999.00</span>
+            </div>
+            <div class="price-range-wrap">
+              <input type="range" min="1499" max="9999" value="1499" aria-label="Minimum price">
+              <input type="range" min="1499" max="9999" value="9999" aria-label="Maximum price">
+            </div>
+            <div class="price-minmax">
+              <span>₹1,499.00</span>
+              <span>₹9,999.00</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <div class="catalog-grid">
+        <a class="catalog-card" data-product="urban-runner-black" href="product.html?product=urban-runner-black">
+          <div class="catalog-media">
+            <img src="assets/img/Nike Air Force 1 '07 LV8.avif" alt="Urban Runner Black">
+            <span class="chip">New Arrival</span>
+            <span class="rating">4.9 ★</span>
+          </div>
+          <div class="catalog-title-row">
+            <h4>Urban Runner Black</h4>
+            <span>Street Series</span>
+          </div>
+          <p class="catalog-sub">Lightweight • Cushion Sole</p>
+          <p class="catalog-price"><strong>₹3,999</strong> <del>₹6,999</del></p>
+        </a>
+
+        <a class="catalog-card" data-product="airflex-pro-white" href="product.html?product=airflex-pro-white">
+          <div class="catalog-media">
+            <img src="assets/img/Nike Court Shot.avif" alt="AirFlex Pro White">
+            <span class="chip">Trending</span>
+            <span class="rating">4.8 ★</span>
+          </div>
+          <div class="catalog-title-row">
+            <h4>AirFlex Pro White</h4>
+            <span>Performance</span>
+          </div>
+          <p class="catalog-sub">Breathable • Running</p>
+          <p class="catalog-price"><strong>₹4,499</strong> <del>₹7,999</del></p>
+        </a>
+
+        <a class="catalog-card" data-product="street-low-grey" href="product.html?product=street-low-grey">
+          <div class="catalog-media">
+            <img src="assets/img/Nike Journey Run.avif" alt="Street Low Grey">
+            <span class="chip">Best Seller</span>
+            <span class="rating">4.9 ★</span>
+          </div>
+          <div class="catalog-title-row">
+            <h4>Street Low Grey</h4>
+            <span>Casual Wear</span>
+          </div>
+          <p class="catalog-sub">Everyday Comfort</p>
+          <p class="catalog-price"><strong>₹2,999</strong> <del>₹4,999</del></p>
+        </a>
+
+        <a class="catalog-card" data-product="runner-x-orange" href="product.html?product=runner-x-orange">
+          <div class="catalog-media">
+            <img src="assets/img/Nike Pegasus 42.avif" alt="Runner X Orange">
+            <span class="chip">Hot Pick</span>
+            <span class="rating">4.7 ★</span>
+          </div>
+          <div class="catalog-title-row">
+            <h4>Runner X Orange</h4>
+            <span>Sports</span>
+          </div>
+          <p class="catalog-sub">Shock Absorption</p>
+          <p class="catalog-price"><strong>₹4,999</strong> <del>₹8,999</del></p>
+        </a>
+
+        <a class="catalog-card" data-product="classic-court-white" href="product.html?product=classic-court-white">
+          <div class="catalog-media">
+            <img src="assets/img/Nike Pegasus Premium.avif" alt="Classic Court White">
+            <span class="chip">Classic</span>
+            <span class="rating">4.8 ★</span>
+          </div>
+          <div class="catalog-title-row">
+            <h4>Classic Court White</h4>
+            <span>Minimal Style</span>
+          </div>
+          <p class="catalog-sub">Clean Look • Daily Wear</p>
+          <p class="catalog-price"><strong>₹3,499</strong> <del>₹5,999</del></p>
+        </a>
+
+        <a class="catalog-card" data-product="muscle-run-black" href="product.html?product=muscle-run-black">
+          <div class="catalog-media">
+            <img src="assets/img/Nike Revolution 8 EasyOn.avif" alt="Muscle Run Black">
+            <span class="chip">New Drop</span>
+            <span class="rating">4.9 ★</span>
+          </div>
+          <div class="catalog-title-row">
+            <h4>Muscle Run Black</h4>
+            <span>Gym Ready</span>
+          </div>
+          <p class="catalog-sub">High Grip • Training</p>
+          <p class="catalog-price"><strong>₹2,999</strong> <del>₹5,499</del></p>
+        </a>
+      </div>
+    </section>
+    
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-subscribe-card">
+        <h3>Step into the world of UrbanKicks.</h3>
+        <p>Get early access to new sneaker drops, exclusive deals, limited editions, and style inspiration!</p>
+        <form class="subscribe-form">
+          <input type="email" placeholder="Enter your email" aria-label="Email">
+          <button type="button">Join Now</button>
+        </form>
+      </div>
+
+      <div class="footer-links-grid">
+        <div>
+          <h4>Shop by category</h4>
+          <a href="#">Running Shoes</a>
+          <a href="#">Sneakers</a>
+          <a href="#">Casual Shoes</a>
+          <a href="#">Sports Shoes</a>
+          <a href="#">High Tops</a>
+          <a href="#">Limited Edition</a>
+          <a href="#">New Arrivals</a>
+          <a href="#">Accessories</a>
+        </div>
+        <div>
+          <h4>Shop by lifestyle</h4>
+          <a href="#">Everyday Wear</a>
+          <a href="#">Gym & Training</a>
+          <a href="#">Street Style</a>
+          <a href="#">Travel Ready</a>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <a href="#">Size Guide</a>
+          <a href="#">Customer Support</a>
+          <a href="#">Track Order</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html">About Us</a>
+          <a href="#">Careers</a>
+          <a href="blog.html">Blogs</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div>
+          <h4>Bulk Orders</h4>
+          <a href="#">Corporate Orders</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div class="footer-social">
+        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="footer-policies">
+        <a href="#">Terms &amp; Conditions</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Site Map</a>
+        <a href="#">Return & Exchange Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/category.js"></script>
+</body>
+
+</html>
