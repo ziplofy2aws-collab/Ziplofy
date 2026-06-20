@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vyronx</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/product.css">
+</head>
+
+<body class="pdp-page">
+
+  <div class="announce-bar" id="announceBar" role="region" aria-label="Promotion">
+    <div class="announce-bar__inner">
+      <div class="announce-bar__copy">
+        <p class="announce-bar__title">25% OFF EVERYTHING</p>
+        <p class="announce-bar__sub">No Code Needed | April Drop Excluded</p>
+      </div>
+      <div class="announce-bar__timer" aria-label="Offer ends in">
+        <i class="fa-regular fa-clock announce-bar__timer-icon" aria-hidden="true"></i>
+        <span class="announce-bar__digit" id="countHours" aria-hidden="true">11</span>
+        <span class="announce-bar__digit" id="countMins" aria-hidden="true">55</span>
+        <span class="announce-bar__digit" id="countSecs" aria-hidden="true">23</span>
+      </div>
+    </div>
+    <button type="button" class="announce-bar__close" id="announceClose" aria-label="Close announcement">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <header class="site-header" role="banner">
+    <nav class="main-nav" aria-label="Primary">
+      <div class="main-nav__inner">
+        <button type="button" class="main-nav__menu-btn" id="navMenuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNavPanel">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <div class="main-nav__left">
+          <a href="category.html" class="main-nav__link">Sale</a>
+          <a href="category.html" class="main-nav__link">Mens</a>
+          <a href="category.html" class="main-nav__link main-nav__link--womens">Womens</a>
+        </div>
+        <div class="main-nav__center">
+          <a href="index.html" class="main-nav__logo">
+            <img src="assets/img/logo.png" alt="Sports and Gym" width="180" height="28" decoding="async">
+          </a>
+        </div>
+        <div class="main-nav__right">
+          <div class="main-nav__row main-nav__row--top">
+          <button type="button" class="main-nav__select main-nav__select--currency" aria-label="Change currency">
+            <img class="main-nav__flag"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600'%3E%3Crect fill='%23f93' width='900' height='200'/%3E%3Crect fill='%23fff' y='200' width='900' height='200'/%3E%3Crect fill='%23128808' y='400' width='900' height='200'/%3E%3Ccircle fill='%23000887' cx='450' cy='300' r='95'/%3E%3Ccircle fill='%23fff' cx='450' cy='300' r='80'/%3E%3Ccircle fill='%23000887' cx='450' cy='300' r='18'/%3E%3C/svg%3E"
+              alt="" width="20" height="14">
+            <span class="main-nav__currency-text">INR ₹</span>
+            <i class="fa-solid fa-chevron-down main-nav__chevron" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="main-nav__select main-nav__select--lang" aria-label="Change language">
+            <i class="fa-solid fa-globe main-nav__select-icon" aria-hidden="true"></i>
+            <span>English</span>
+            <i class="fa-solid fa-chevron-down main-nav__chevron" aria-hidden="true"></i>
+          </button>
+          </div>
+          <div class="main-nav__row main-nav__row--bottom">
+          <a href="#" class="main-nav__help"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><span class="main-nav__help-text">Help</span></a>
+          <div class="main-nav__icons">
+            <a href="#" class="main-nav__icon-btn main-nav__icon-btn--account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <button type="button" class="main-nav__icon-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a href="#" class="main-nav__icon-btn" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="main-nav__icon-btn" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <button type="button" class="mobile-nav__overlay" id="mobileNavOverlay" aria-label="Close menu" tabindex="-1"></button>
+    <aside class="mobile-nav__panel" id="mobileNavPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+      <div class="mobile-nav__head">
+        <span class="mobile-nav__title">Menu</span>
+        <button type="button" class="mobile-nav__close" id="navMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="mobile-nav__links" aria-label="Mobile">
+        <a href="index.html">Home</a>
+        <a href="category.html">Sale</a>
+        <a href="category.html">Mens</a>
+        <a href="category.html">Womens</a>
+      </nav>
+    </aside>
+  </div>
+
+  <main class="pdp-main">
+    <div class="pdp-main__container">
+      <nav class="pdp-breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="pdp-breadcrumb__sep" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+        <a href="category.html">T-Shirt's</a>
+        <span class="pdp-breadcrumb__sep" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+        <span class="pdp-breadcrumb__current">Camoflex T-Shirt</span>
+      </nav>
+
+      <div class="pdp-main__grid">
+      <div class="pdp-gallery">
+        <div class="pdp-gallery__thumb-col">
+          <button type="button" class="pdp-gallery__nav pdp-gallery__nav--up" id="pdpThumbUp" aria-label="Scroll thumbnails up">
+            <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+          </button>
+          <div class="pdp-gallery__thumbs" id="pdpThumbs">
+            <button type="button" class="pdp-gallery__thumb is-active" aria-label="View image 1" data-full="assets/img/P-1.png">
+              <img src="assets/img/P-1.png" alt="" width="72" height="72" decoding="async">
+            </button>
+            <button type="button" class="pdp-gallery__thumb" aria-label="View image 2" data-full="assets/img/P-1-hover.png">
+              <img src="assets/img/P-1-hover.png" alt="" width="72" height="72" decoding="async">
+            </button>
+            <button type="button" class="pdp-gallery__thumb" aria-label="View image 3" data-full="assets/img/P-2.png">
+              <img src="assets/img/P-2.png" alt="" width="72" height="72" decoding="async">
+            </button>
+            <button type="button" class="pdp-gallery__thumb" aria-label="View image 4" data-full="assets/img/P-2-hover.png">
+              <img src="assets/img/P-2-hover.png" alt="" width="72" height="72" decoding="async">
+            </button>
+            <button type="button" class="pdp-gallery__thumb" aria-label="View image 5" data-full="assets/img/P-3.png">
+              <img src="assets/img/P-3.png" alt="" width="72" height="72" decoding="async">
+            </button>
+            <button type="button" class="pdp-gallery__thumb" aria-label="View image 6" data-full="assets/img/P-4.png">
+              <img src="assets/img/P-4.png" alt="" width="72" height="72" decoding="async">
+            </button>
+          </div>
+          <button type="button" class="pdp-gallery__nav pdp-gallery__nav--down" id="pdpThumbDown" aria-label="Scroll thumbnails down">
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="pdp-gallery__stage">
+          <img id="pdpMainImage" src="assets/img/P-1.png" alt="Camoflex T-Shirt Grey" width="800" height="1000" decoding="async">
+        </div>
+      </div>
+
+      <div class="pdp-info">
+        <h1 class="pdp-info__title">Camoflex T-Shirt</h1>
+        <p class="pdp-info__price">Rs. 999.00</p>
+
+        <div class="pdp-info__emi">
+          <p class="pdp-info__emi-line">
+            or 3 Monthly Payments of <strong class="pdp-info__emi-amt">₹333</strong>
+            <span class="pdp-info__emi-badge">Buy on EMI <i class="fa-solid fa-credit-card" aria-hidden="true"></i></span>
+          </p>
+          <p class="pdp-info__pay-note">UPI &amp; Cards Accepted &bull; 0 Extra Cost</p>
+        </div>
+
+        <div class="pdp-info__tags">
+          <span class="pdp-tag">Regular Fit</span>
+          <span class="pdp-tag">Material: <span class="pdp-tag__accent">Polyester jacquard</span></span>
+        </div>
+
+        <div class="pdp-size">
+          <p class="pdp-size__label" id="pdpSizeLabel">Size: M</p>
+          <div class="pdp-size__options">
+            <button type="button" class="pdp-size__btn is-active" data-size="M">M</button>
+            <button type="button" class="pdp-size__btn" data-size="L">L</button>
+            <button type="button" class="pdp-size__btn" data-size="XL">XL</button>
+            <button type="button" class="pdp-size__btn" data-size="XXL">XXL</button>
+          </div>
+        </div>
+
+        <div class="pdp-color">
+          <p class="pdp-color__selected">
+            <span class="pdp-color__swatch-dot" style="background:#8a8a8a" aria-hidden="true"></span>
+            Color: <span id="pdpColorName">Grey</span>
+          </p>
+          <p class="pdp-color__heading">Color Options</p>
+          <div class="pdp-color__options">
+            <button type="button" class="pdp-color__btn" data-color="Navy" data-img="assets/img/P-2.png" aria-label="Navy">
+              <img src="assets/img/P-2.png" alt="" width="64" height="64" decoding="async">
+            </button>
+            <button type="button" class="pdp-color__btn" data-color="Olive" data-img="assets/img/P-3.png" aria-label="Olive">
+              <img src="assets/img/P-3.png" alt="" width="64" height="64" decoding="async">
+            </button>
+            <button type="button" class="pdp-color__btn is-active" data-color="Grey" data-img="assets/img/P-1.png" aria-label="Grey">
+              <img src="assets/img/P-1.png" alt="" width="64" height="64" decoding="async">
+            </button>
+            <button type="button" class="pdp-color__btn" data-color="Black" data-img="assets/img/P-4.png" aria-label="Black">
+              <img src="assets/img/P-4.png" alt="" width="64" height="64" decoding="async">
+            </button>
+          </div>
+        </div>
+
+        <div class="pdp-qty-row">
+          <div class="pdp-qty">
+            <button type="button" class="pdp-qty__btn" id="pdpQtyMinus" aria-label="Decrease quantity"><i class="fa-solid fa-minus" aria-hidden="true"></i></button>
+            <span class="pdp-qty__val" id="pdpQtyVal">1</span>
+            <button type="button" class="pdp-qty__btn" id="pdpQtyPlus" aria-label="Increase quantity"><i class="fa-solid fa-plus" aria-hidden="true"></i></button>
+          </div>
+          <button type="button" class="pdp-sizechart">
+            <i class="fa-solid fa-ruler-combined" aria-hidden="true"></i> Size Chart
+          </button>
+        </div>
+
+        <div class="pdp-actions">
+          <button type="button" class="pdp-btn pdp-btn--cart">ADD TO CART — RS. 999.00</button>
+          <button type="button" class="pdp-btn pdp-btn--buy">BUY IT NOW</button>
+        </div>
+
+        <div class="pdp-rating-bar">
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          <span>4.5 OUT OF 5 STAR RATINGS</span>
+        </div>
+
+        <section class="pdp-complete" aria-labelledby="pdp-complete-heading">
+          <h2 id="pdp-complete-heading" class="pdp-complete__title">Complete the look</h2>
+          <div class="pdp-complete__grid">
+            <article class="pdp-complete__card">
+              <a href="product.html" class="pdp-complete__media">
+                <span class="pdp-complete__badge">Basics</span>
+                <img src="assets/img/cat-7.png" alt="Stride Straight Fit Pants" width="200" height="240" decoding="async">
+              </a>
+              <div class="pdp-complete__info">
+                <div class="pdp-complete__meta">
+                  <h3 class="pdp-complete__name"><a href="product.html">Stride Straight Fit Pants</a></h3>
+                  <p class="pdp-complete__attr">Straight Fit</p>
+                  <p class="pdp-complete__attr">Black</p>
+                </div>
+                <p class="pdp-complete__price">Rs. 1,999.00</p>
+              </div>
+            </article>
+            <span class="pdp-complete__plus" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
+            <article class="pdp-complete__card">
+              <a href="product.html" class="pdp-complete__media">
+                <span class="pdp-complete__badge">Camo Edition</span>
+                <img src="assets/img/cat-1.png" alt="Camoflex T-Shirt" width="200" height="240" decoding="async">
+              </a>
+              <div class="pdp-complete__info">
+                <div class="pdp-complete__meta">
+                  <h3 class="pdp-complete__name"><a href="product.html">Camoflex T-Shirt</a></h3>
+                  <p class="pdp-complete__attr">Regular Fit</p>
+                  <p class="pdp-complete__attr">Black</p>
+                </div>
+                <p class="pdp-complete__price">Rs. 999.00</p>
+              </div>
+            </article>
+          </div>
+          <div class="pdp-share">
+            <a href="#" class="pdp-share__link" aria-label="Share on Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" class="pdp-share__link" aria-label="Share on X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            <a href="#" class="pdp-share__link" aria-label="Share on Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+            <a href="#" class="pdp-share__link" aria-label="Share on Tumblr"><i class="fa-brands fa-tumblr" aria-hidden="true"></i></a>
+            <a href="#" class="pdp-share__link" aria-label="Share on Telegram"><i class="fa-brands fa-telegram" aria-hidden="true"></i></a>
+            <a href="#" class="pdp-share__link" aria-label="Share via Email"><i class="fa-regular fa-envelope" aria-hidden="true"></i></a>
+            <a href="#" class="pdp-share__link" aria-label="Share on WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+          </div>
+        </section>
+      </div>
+    </div>
+    </div>
+
+    <section class="pdp-tabs" aria-label="Product information">
+      <div class="pdp-tabs__container">
+        <div class="pdp-tabs__nav" role="tablist" aria-label="Product details tabs">
+          <button type="button" class="pdp-tabs__btn is-active" role="tab" id="pdp-tab-spec" aria-selected="true"
+            aria-controls="pdp-panel-spec" data-tab="spec">Spec &amp; Description</button>
+          <button type="button" class="pdp-tabs__btn" role="tab" id="pdp-tab-material" aria-selected="false"
+            aria-controls="pdp-panel-material" data-tab="material" tabindex="-1">Material &amp; Care</button>
+          <button type="button" class="pdp-tabs__btn" role="tab" id="pdp-tab-shipping" aria-selected="false"
+            aria-controls="pdp-panel-shipping" data-tab="shipping" tabindex="-1">Shipping &amp; Return</button>
+        </div>
+
+        <div class="pdp-tabs__panels">
+          <div class="pdp-tabs__panel is-active" role="tabpanel" id="pdp-panel-spec" aria-labelledby="pdp-tab-spec"
+            data-panel="spec">
+            <p class="pdp-tabs__intro"><strong>Camoflex T-shirt,</strong> built for those who move with purpose and
+              style. Crafted from premium polyester jacquard fabric, this tee feels incredibly light while delivering
+              performance where it matters. The breathable camo design subtly stands out, making it perfect for both
+              workouts and everyday wear. Its dry-fit technology keeps you cool and comfortable, no matter how intense
+              your day gets. Designed to match your pace, this regular-fit t-shirt blends function with effortless
+              style.</p>
+            <h3 class="pdp-tabs__subheading">Key Features</h3>
+            <ul class="pdp-tabs__list">
+              <li><strong>Fabric:</strong> Premium Polyester Jacquard</li>
+              <li><strong>GSM:</strong> 180 GSM (Lightweight &amp; durable)</li>
+              <li><strong>Fit:</strong> Regular Fit</li>
+              <li><strong>Technology:</strong> Dry-Fit for sweat management</li>
+              <li><strong>Design:</strong> Breathable camo pattern</li>
+              <li><strong>Feel:</strong> Lightweight &amp; all-day comfortable</li>
+            </ul>
+          </div>
+
+          <div class="pdp-tabs__panel" role="tabpanel" id="pdp-panel-material" aria-labelledby="pdp-tab-material"
+            data-panel="material" hidden>
+            <p class="pdp-tabs__intro"><strong>Material &amp; Care</strong> — Machine wash cold with like colours. Do
+              not bleach. Tumble dry low or hang dry. Cool iron on reverse if needed. Avoid fabric softeners to preserve
+              dry-fit performance and colour vibrancy of the camo jacquard weave.</p>
+            <h3 class="pdp-tabs__subheading">Care Instructions</h3>
+            <ul class="pdp-tabs__list">
+              <li><strong>Wash:</strong> Cold machine wash (30°C max)</li>
+              <li><strong>Dry:</strong> Low heat tumble or line dry</li>
+              <li><strong>Iron:</strong> Low temperature, inside out</li>
+              <li><strong>Storage:</strong> Fold or hang in a cool, dry place</li>
+            </ul>
+          </div>
+
+          <div class="pdp-tabs__panel" role="tabpanel" id="pdp-panel-shipping" aria-labelledby="pdp-tab-shipping"
+            data-panel="shipping" hidden>
+            <p class="pdp-tabs__intro"><strong>Shipping &amp; Return</strong> — Orders are dispatched within 1–2
+              business days. Standard delivery across India typically takes 3–7 business days. Express options may be
+              available at checkout depending on your pin code.</p>
+            <h3 class="pdp-tabs__subheading">Returns Policy</h3>
+            <ul class="pdp-tabs__list">
+              <li><strong>Window:</strong> 7 days from delivery for unused items with tags</li>
+              <li><strong>Exchange:</strong> Free size exchange on eligible styles</li>
+              <li><strong>Refund:</strong> Processed within 5–7 business days after inspection</li>
+              <li><strong>Support:</strong> Contact us for pickup or drop-off instructions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pdp-look" aria-labelledby="pdp-look-heading">
+      <div class="pdp-look__container">
+        <h2 id="pdp-look-heading" class="pdp-look__title">Shop the Look</h2>
+        <div class="pdp-look__carousel" aria-roledescription="carousel" aria-label="Shop the look products">
+        <div class="pdp-look__grid">
+          <article class="pdp-look__card">
+            <a href="product.html" class="pdp-look__media">
+              <img src="assets/img/PD-1.png" alt="Python Flex Duo" width="480" height="600" decoding="async">
+            </a>
+            <div class="pdp-look__body">
+              <h3 class="pdp-look__name"><a href="product.html">Python Flex Duo</a></h3>
+              <div class="pdp-look__pricing">
+                <div class="pdp-look__prices">
+                  <span class="pdp-look__price">₹2,420</span>
+                  <span class="pdp-look__compare">₹2,548</span>
+                </div>
+                <span class="pdp-look__discount">5% OFF</span>
+              </div>
+              <div class="pdp-look__emi">
+                <span class="pdp-look__emi-text">or ₹807/Month</span>
+                <a href="#" class="pdp-look__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="pdp-look__card">
+            <a href="product.html" class="pdp-look__media">
+              <img src="assets/img/PD-2.png" alt="Seamless Division Set" width="480" height="600" decoding="async">
+            </a>
+            <div class="pdp-look__body">
+              <h3 class="pdp-look__name"><a href="product.html">Seamless Division Set</a></h3>
+              <div class="pdp-look__pricing">
+                <div class="pdp-look__prices">
+                  <span class="pdp-look__price">₹2,990</span>
+                  <span class="pdp-look__compare">₹3,148</span>
+                </div>
+                <span class="pdp-look__discount">5% OFF</span>
+              </div>
+              <div class="pdp-look__emi">
+                <span class="pdp-look__emi-text">or ₹997/Month</span>
+                <a href="#" class="pdp-look__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="pdp-look__card">
+            <a href="product.html" class="pdp-look__media">
+              <img src="assets/img/PD-3.png" alt="Ash Relaxed Fit Duo" width="480" height="600" decoding="async">
+            </a>
+            <div class="pdp-look__body">
+              <h3 class="pdp-look__name"><a href="product.html">Ash Relaxed Fit Duo</a></h3>
+              <div class="pdp-look__pricing">
+                <div class="pdp-look__prices">
+                  <span class="pdp-look__price">₹2,373</span>
+                  <span class="pdp-look__compare">₹2,498</span>
+                </div>
+                <span class="pdp-look__discount">5% OFF</span>
+              </div>
+              <div class="pdp-look__emi">
+                <span class="pdp-look__emi-text">or ₹791/Month</span>
+                <a href="#" class="pdp-look__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </article>
+
+          <article class="pdp-look__card">
+            <a href="product.html" class="pdp-look__media">
+              <img src="assets/img/PD-4.png" alt="Levitate Edge Duo" width="480" height="600" decoding="async">
+            </a>
+            <div class="pdp-look__body">
+              <h3 class="pdp-look__name"><a href="product.html">Levitate Edge Duo</a></h3>
+              <div class="pdp-look__pricing">
+                <div class="pdp-look__prices">
+                  <span class="pdp-look__price">₹2,088</span>
+                  <span class="pdp-look__compare">₹2,198</span>
+                </div>
+                <span class="pdp-look__discount">5% OFF</span>
+              </div>
+              <div class="pdp-look__emi">
+                <span class="pdp-look__emi-text">or ₹696/Month</span>
+                <a href="#" class="pdp-look__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </article>
+        </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <div class="site-footer__grid">
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">About Our Store</h3>
+          <p class="site-footer__about">vyronxwas born out of a dream to bring you high-performance activewear
+            that ticked all the boxes from technology to trends. Our products are proudly 100% MADE IN INDIA</p>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Footer Menu</h3>
+          <ul class="site-footer__list">
+            <li><a href="#">Size Chart</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Exchanges &amp; Returns</a></li>
+            <li><a href="#">Search</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Contact us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Refer &amp; Earn</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Footer Collection</h3>
+          <ul class="site-footer__list site-footer__list--caps">
+            <li><a href="category.html">Women</a></li>
+            <li><a href="category.html">The Yoga Edit</a></li>
+            <li><a href="category.html">Co-ord Sets</a></li>
+            <li><a href="category.html">Oika Linen Collection</a></li>
+            <li><a href="category.html">Bags</a></li>
+            <li><a href="category.html">Offers</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Newsletter</h3>
+          <p class="site-footer__news-text">Get 10% Off by signing up for our newsletter</p>
+          <form class="site-footer__news-form" action="#" method="post">
+            <label class="site-footer__sr-only" for="footerEmailPdp">Email address</label>
+            <div class="site-footer__input-wrap">
+              <input id="footerEmailPdp" class="site-footer__input" type="email" name="email" placeholder="Your e-mail"
+                autocomplete="email">
+              <button type="submit" class="site-footer__submit" aria-label="Subscribe to newsletter">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Follow Us</h3>
+          <p class="site-footer__follow-text">Keep up with new launches and fitness content on our Instagram!</p>
+          <a href="#" class="site-footer__social" aria-label="Follow us on Instagram">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+      <div class="site-footer__bar">
+        <button type="button" class="site-footer__region" aria-label="Change country and currency">
+          <span>India (INR ₹)</span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <p class="site-footer__copy">vyronx&bull; Powered by Ziplofy</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="whatsapp-fab" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>

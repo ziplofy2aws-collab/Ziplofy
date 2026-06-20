@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutraNova</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- Top Announcement Bar -->
+    <div class="top-bar">
+        <div class="top-bar-carousel" data-top-bar-carousel>
+            <button type="button" class="top-bar-arrow" data-top-prev aria-label="Previous announcement">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <p class="top-bar-message" data-top-message>₹150 OFF on 1st Prepaid Order Over ₹2,999 – Use NutraNovaFIRST</p>
+            <button type="button" class="top-bar-arrow" data-top-next aria-label="Next announcement">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="marquee top-bar-marquee">
+            <div class="marquee-track">
+                <span>₹150 OFF on 1st Prepaid Order Over ₹2,999 – Use NutraNovaFIRST</span>
+                <span class="dot">•</span>
+                <span>Free Shipping on Prepaid Orders Over ₹799</span>
+                <span class="dot">•</span>
+                <span>₹150 OFF on 1st Prepaid Order Over ₹2,999 – Use NutraNovaFIRST</span>
+                <span class="dot">•</span>
+                <span>Free Shipping on Prepaid Orders Over ₹799</span>
+                <span class="dot">•</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="header">
+        <div class="header-inner">
+
+            <div class="header-left">
+                <button type="button" class="menu-toggle" data-menu-toggle aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="index.html" class="logo">
+                    <img src="assets/img/logo.png" alt="NutraNova Live Well">
+                </a>
+            </div>
+
+            <nav class="nav-menu" aria-label="Main navigation">
+                <ul>
+                    <li><a href="shop.html">Crazy Deals <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Wellness <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Fitness <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Shop by Concern <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Weight Management <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Brands <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Blogs</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-icons">
+                <a href="#" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href="#" class="icon-user" aria-label="Account">
+                    <i class="fa-regular fa-user"></i>
+                    <i class="fa-solid fa-bolt user-badge"></i>
+                </a>
+                <a href="#" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="mobile-overlay" data-mobile-overlay hidden></div>
+    <aside class="mobile-drawer" data-mobile-drawer aria-hidden="true" aria-label="Mobile navigation">
+        <div class="mobile-drawer-head">
+            <a href="index.html" class="mobile-drawer-logo">
+                <img src="assets/img/logo.png" alt="NutraNova">
+            </a>
+            <button type="button" class="mobile-drawer-close" data-menu-close aria-label="Close menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-nav">
+            <ul>
+                <li><a href="shop.html">Crazy Deals <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Wellness <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Fitness <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Shop by Concern <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Weight Management <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Brands <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Blogs</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Hero Slider -->
+    <section class="hero" aria-label="Hero banner" data-hero-slider>
+        <div class="hero-inner">
+            <article class="hero-slide is-active">
+                <img src="assets/img/hero-banner-1.png" alt="Hero banner 1">
+            </article>
+            <article class="hero-slide">
+                <img src="assets/img/hero-banner-2.png" alt="Hero banner 2">
+            </article>
+            <article class="hero-slide">
+                <img src="assets/img/hero-banner-3.png" alt="Hero banner 3">
+            </article>
+            <article class="hero-slide">
+                <img src="assets/img/hero-banner-4.png" alt="Hero banner 4">
+            </article>
+        </div>
+
+        <div class="hero-pagination" aria-label="Hero slide controls">
+            <button class="hero-line is-active" type="button" aria-label="Go to slide 1" data-hero-line="0"></button>
+            <button class="hero-line" type="button" aria-label="Go to slide 2" data-hero-line="1"></button>
+            <button class="hero-line" type="button" aria-label="Go to slide 3" data-hero-line="2"></button>
+            <button class="hero-line" type="button" aria-label="Go to slide 4" data-hero-line="3"></button>
+        </div>
+    </section>
+
+    <!-- Product Categories -->
+    <section class="categories">
+        <div class="categories-inner">
+
+            <!-- Performance Nutrition -->
+            <div class="category-row">
+                <div class="category-row-header">
+                    <h2>Performance Nutrition</h2>
+                    <a href="#" class="category-all">All <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+                <div class="category-grid">
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Whey-Protein-Concentrate-1.webp" alt="Whey Protein">
+                        </div>
+                        <span class="category-card-label">Whey Protein</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Pea-Protein.webp" alt="Pea & Plant Protein">
+                        </div>
+                        <span class="category-card-label">Pea & Plant Protein</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Yeast-Protein.webp" alt="Yeast Protein">
+                        </div>
+                        <span class="category-card-label">Yeast Protein</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Creatine-2.webp" alt="Creatine">
+                        </div>
+                        <span class="category-card-label">Creatine</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Pre-Workout.webp" alt="Pre Workout">
+                        </div>
+                        <span class="category-card-label">Pre Workout</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Mass-&-Weight-gainers.webp" alt="Mass & Weight Gainer">
+                        </div>
+                        <span class="category-card-label">Mass & Weight Gainer</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/L-Carnitine.webp" alt="L Carnitine">
+                        </div>
+                        <span class="category-card-label">L Carnitine</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/BCAA-1.webp" alt="BCAA">
+                        </div>
+                        <span class="category-card-label">BCAA</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Vitamins -->
+            <div class="category-row">
+                <div class="category-row-header">
+                    <h2>Vitamins</h2>
+                    <a href="#" class="category-all">All <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+                <div class="category-grid">
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Omega.webp" alt="Fish Oil">
+                        </div>
+                        <span class="category-card-label">Fish Oil</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Multivitamins-for-Men.webp" alt="Multivitamins">
+                        </div>
+                        <span class="category-card-label">Multivitamins</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Magnesium.webp" alt="Magnesium">
+                        </div>
+                        <span class="category-card-label">Magnesium</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Single-Vitamins.webp" alt="Single Vitamins">
+                        </div>
+                        <span class="category-card-label">Single Vitamins</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Shilajit.webp" alt="Shilajit">
+                        </div>
+                        <span class="category-card-label">Shilajit</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Supplements-for-Skin-&-Hair.webp" alt="Collagen">
+                        </div>
+                        <span class="category-card-label">Collagen</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Ashwagandha.webp" alt="Ashwagandha">
+                        </div>
+                        <span class="category-card-label">Ashwagandha</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Pre-&-Probiotic-1.webp" alt="Pre & Probiotics">
+                        </div>
+                        <span class="category-card-label">Pre & Probiotics</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Health Food -->
+            <div class="category-row">
+                <div class="category-row-header">
+                    <h2>Health Food</h2>
+                    <a href="#" class="category-all">All <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+                <div class="category-grid category-grid--4">
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Nuts,-Seed-7-grain.webp" alt="Protein Oats">
+                        </div>
+                        <span class="category-card-label">Protein Oats</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Peanut-Butter.webp" alt="Peanut Butter">
+                        </div>
+                        <span class="category-card-label">Peanut Butter</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Apple-Cidar-Vinegar.webp" alt="Apple Cider Vinegar (ACV)">
+                        </div>
+                        <span class="category-card-label">Apple Cider Vinegar (ACV)</span>
+                    </a>
+                    <a href="#" class="category-card">
+                        <div class="category-card-image">
+                            <img src="assets/img/Protein-Bars.webp" alt="Protein Bars">
+                        </div>
+                        <span class="category-card-label">Protein Bars</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Promo Banners -->
+    <section class="promo-banners">
+        <div class="promo-banners-inner">
+            <div class="promo-grid">
+                <a href="#" class="promo-item promo-item--large">
+                    <img src="assets/img/promo-banner-1.png" alt="Promo banner 1">
+                </a>
+                <a href="#" class="promo-item promo-item--top">
+                    <img src="assets/img/promo-banner-2.png" alt="Promo banner 2">
+                </a>
+                <a href="#" class="promo-item promo-item--bottom">
+                    <img src="assets/img/promo-banner-3.png" alt="Promo banner 3">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Suggested For You -->
+    <section class="suggested" aria-labelledby="suggested-heading" data-suggested-carousel>
+        <div class="suggested-inner">
+            <div class="suggested-head">
+                <h2 id="suggested-heading">Suggested For You</h2>
+                <a href="shop.html" class="suggested-head-link" aria-label="View all suggested products">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+                <div class="suggested-nav">
+                    <button type="button" class="suggested-arrow suggested-prev" data-suggested-prev
+                        aria-label="Previous product" disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="suggested-arrow suggested-next" data-suggested-next
+                        aria-label="Next product">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="suggested-tabs" role="tablist" aria-label="Product filters">
+                <button type="button" class="suggested-tab is-active" role="tab" aria-selected="true"
+                    data-suggested-tab="bestsellers">
+                    <i class="fa-solid fa-arrow-trend-up"></i> Bestsellers
+                </button>
+                <button type="button" class="suggested-tab" role="tab" aria-selected="false"
+                    data-suggested-tab="new-arrivals">
+                    <i class="fa-solid fa-plus"></i> New Arrivals
+                </button>
+                <button type="button" class="suggested-tab" role="tab" aria-selected="false"
+                    data-suggested-tab="top-rated">
+                    <i class="fa-solid fa-star"></i> Top Rated
+                </button>
+                <button type="button" class="suggested-tab" role="tab" aria-selected="false"
+                    data-suggested-tab="multivitamin">
+                    <i class="fa-solid fa-capsules"></i> Multivitamin
+                </button>
+            </div>
+
+            <div class="suggested-viewport" data-suggested-viewport>
+                <div class="suggested-track" data-suggested-track></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Cards -->
+    <section class="promo-cards" data-promo-cards-carousel>
+        <div class="promo-cards-inner">
+            <div class="promo-cards-viewport" data-promo-cards-viewport>
+                <div class="promo-cards-track" data-promo-cards-track>
+                    <a href="#" class="promo-card">
+                        <img src="assets/img/promo-1.png" alt="Whey Protein promo">
+                    </a>
+                    <a href="#" class="promo-card">
+                        <img src="assets/img/promo-2.png" alt="Multivitamin promo">
+                    </a>
+                    <a href="#" class="promo-card">
+                        <img src="assets/img/promo-3.png" alt="Whey Isolate promo">
+                    </a>
+                    <a href="#" class="promo-card">
+                        <img src="assets/img/promo-4.png" alt="Free shaker promo">
+                    </a>
+                </div>
+            </div>
+            <div class="promo-cards-dots" data-promo-cards-dots aria-hidden="true"></div>
+        </div>
+    </section>
+
+    <!-- Wellness Stack -->
+    <section class="wellness" aria-labelledby="wellness-heading" data-wellness-carousel>
+        <div class="wellness-inner">
+            <div class="wellness-head">
+                <h2 id="wellness-heading">Wellness Stack</h2>
+                <div class="wellness-nav">
+                    <button type="button" class="wellness-arrow wellness-prev" data-wellness-prev
+                        aria-label="Previous product" disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="wellness-arrow wellness-next" data-wellness-next
+                        aria-label="Next product">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="wellness-viewport" data-wellness-viewport>
+                <div class="wellness-track" data-wellness-track></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newly Launched Brands -->
+    <section class="new-brands" aria-labelledby="new-brands-heading" data-brands-carousel>
+        <div class="new-brands-inner">
+            <div class="new-brands-head">
+                <h2 id="new-brands-heading">NEWLY LAUNCHED BRANDS</h2>
+                <div class="new-brands-nav">
+                    <button type="button" class="new-brands-arrow new-brands-prev" data-brands-prev
+                        aria-label="Previous brand" disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" class="new-brands-arrow new-brands-next" data-brands-next
+                        aria-label="Next brand">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="new-brands-viewport" data-brands-viewport>
+                <div class="new-brands-track" data-brands-track></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blogs -->
+    <section class="blogs" aria-labelledby="blogs-heading">
+        <div class="blogs-inner">
+            <h2 id="blogs-heading">Blogs</h2>
+            <div class="blogs-divider"></div>
+
+            <div class="blogs-carousel" data-blogs-carousel>
+                <div class="blogs-viewport" data-blogs-viewport>
+                    <div class="blogs-track" data-blogs-track>
+                <article class="blog-card">
+                    <a href="#" class="blog-card-image">
+                        <img src="assets/img/blog-1.png" alt="Best budget friendly whey protein in India">
+                    </a>
+                    <h3 class="blog-card-title">
+                        <a href="#">Best budget friendly whey protein in India for muscle gain</a>
+                    </h3>
+                    <p class="blog-card-excerpt">Selecting a Budget-Friendly Whey Protein in India When choosing a
+                        budget-friendly...</p>
+                    <a href="#" class="blog-card-link">Read more</a>
+                </article>
+
+                <article class="blog-card">
+                    <a href="#" class="blog-card-image">
+                        <img src="assets/img/blog-2.png" alt="Which creatine to buy in India">
+                    </a>
+                    <h3 class="blog-card-title">
+                        <a href="#">Which creatine to buy in India?</a>
+                    </h3>
+                    <p class="blog-card-excerpt">XLR8 Creatine Price: ₹499 for 100g Composition: 100% Pure Micronized...
+                    </p>
+                    <a href="#" class="blog-card-link">Read more</a>
+                </article>
+
+                <article class="blog-card">
+                    <a href="#" class="blog-card-image">
+                        <img src="assets/img/blog-3.png" alt="Soy Protein vs Whey Protein">
+                    </a>
+                    <h3 class="blog-card-title">
+                        <a href="#">Soy Protein vs. Whey Protein: Which One Suits Your Fitness...</a>
+                    </h3>
+                    <p class="blog-card-excerpt">Protein supplements are a staple in the fitness and nutrition world,
+                        offering a...</p>
+                    <a href="#" class="blog-card-link">Read more</a>
+                </article>
+
+                <article class="blog-card">
+                    <a href="#" class="blog-card-image">
+                        <img src="assets/img/blog-4.png" alt="Optimum Nutrition Whey Protein review">
+                    </a>
+                    <h3 class="blog-card-title">
+                        <a href="#">क्या Optimum Nutrition Whey Protein खरीदना सही रहेगा?</a>
+                    </h3>
+                    <p class="blog-card-excerpt">अपनी फिटनेस यात्रा को ऑप्टिमम न्यूट्रिशन के प्रोटीन के साथ बढ़ाएं - अब
+                        ऑनलाइन उपलब्ध जब आपकी...</p>
+                    <a href="#" class="blog-card-link">Read more</a>
+                </article>
+                    </div>
+                </div>
+                <div class="blogs-dots" data-blogs-dots aria-hidden="true"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="site-footer-inner">
+            <div class="footer-layout">
+                <div class="footer-grid">
+                    <!-- Column 1 -->
+                    <div class="footer-col footer-col--brand">
+                        <a href="#" class="footer-logo">
+                            <img src="assets/img/logo.png" alt="NutraNova">
+                        </a>
+                        <p class="footer-about">Buy 100% Genuine and Authentic Supplements Online at Best Prices. NutraNova
+                            is a preferred Platinum Distributor and Online Wholesaler, resolves a severe problem by bringing
+                            all top-notch supplement brands in India under one roof.</p>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="footer-col footer-col--connect footer-col--accordion" data-footer-accordion>
+                        <h3 class="footer-col-title footer-col-title--desktop">Connect with us</h3>
+                        <button type="button" class="footer-accordion-trigger" aria-expanded="false">
+                            <span>Connect with us</span>
+                            <i class="fa-solid fa-plus footer-accordion-icon" aria-hidden="true"></i>
+                        </button>
+                        <div class="footer-accordion-panel">
+                            <ul class="footer-links">
+                                <li><a href="#">Contact us</a></li>
+                                <li><a href="#">Bulk Purchase Enquiry (Retailers Only)</a></li>
+                                <li><a href="#">List your Brand with NutraNova (Become a seller)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="footer-col footer-col--nutranova footer-col--accordion" data-footer-accordion>
+                        <h3 class="footer-col-title footer-col-title--desktop">NutraNova</h3>
+                        <button type="button" class="footer-accordion-trigger" aria-expanded="false">
+                            <span>NutraNova</span>
+                            <i class="fa-solid fa-plus footer-accordion-icon" aria-hidden="true"></i>
+                        </button>
+                        <div class="footer-accordion-panel">
+                            <ul class="footer-links">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Authenticity</a></li>
+                                <li><a href="#">All Brands</a></li>
+                                <li><a href="#">Importers</a></li>
+                                <li><a href="#">NutraNova In House Products</a></li>
+                                <li><a href="#">FAQs/ Help</a></li>
+                                <li><a href="#">Offers</a></li>
+                                <li><a href="#">Blogs</a></li>
+                                <li><a href="#">Store Locator</a></li>
+                                <li><a href="#">Sitemap</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Column 4 -->
+                    <div class="footer-col footer-col--newsletter">
+                        <h3 class="footer-col-title">Sign up to our Newsletter</h3>
+                        <form class="footer-newsletter" action="#" method="post">
+                            <div class="footer-newsletter-field">
+                                <input type="email" placeholder="Your Email" aria-label="Your Email">
+                                <button type="submit" aria-label="Subscribe"><i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                        </form>
+                        <div class="footer-badges">
+                            <div class="footer-badge">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>100%<br>SECURE</span>
+                            </div>
+                            <div class="footer-badge footer-badge--seal">
+                                <i class="fa-solid fa-certificate"></i>
+                                <span>AUTHENTICITY<br>GUARANTEED</span>
+                            </div>
+                            <div class="footer-badge">
+                                <i class="fa-solid fa-rotate"></i>
+                                <span>7 Days<br>Return</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-col footer-col--social">
+                        <div class="footer-social">
+                            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-col footer-col--app">
+                        <p class="footer-app-title">Download Mobile App</p>
+                        <div class="footer-app-buttons">
+                            <a href="#" class="footer-app-btn">
+                                <i class="fa-brands fa-google-play"></i>
+                                <span><small>GET IT ON</small>Google Play</span>
+                            </a>
+                            <a href="#" class="footer-app-btn">
+                                <i class="fa-brands fa-apple"></i>
+                                <span><small>Available on the</small>App Store</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular Searches -->
+                <div class="footer-searches">
+                    <h3 class="footer-searches-title">Popular Searches</h3>
+                    <p class="footer-searches-links">
+                        <a href="#">Proteins</a> |
+                        <a href="#">Whey Proteins</a> |
+                        <a href="#">Whey Proteins Isolates</a> |
+                        <a href="#">Vegan Proteins</a> |
+                        <a href="#">Casein Proteins</a> |
+                        <a href="#">Gainers</a> |
+                        <a href="#">Mass Gainers</a> |
+                        <a href="#">Lean Mass Gainers</a> |
+                        <a href="#">Carbos</a> |
+                        <a href="#">Creatines</a> |
+                        <a href="#">Aminos & BCAA'S</a> |
+                        <a href="#">Weight Loss</a> |
+                        <a href="#">Fat Burners</a> |
+                        <a href="#">CLA</a> |
+                        <a href="#">L Carnitine</a> |
+                        <a href="#">Wellness</a> |
+                        <a href="#">Multivitamins</a> |
+                        <a href="#">T Boosters</a> |
+                        <a href="#">Omega Fatty Acids</a> |
+                        <a href="#">Fish Oil</a> |
+                        <a href="#">Cereals</a> |
+                        <a href="#">Muesli</a> |
+                        <a href="#">Oats</a> |
+                        <a href="#">Protein Snacks</a> |
+                        <a href="#">Peanut Butter</a> |
+                        <a href="#">Gym Essentials</a> |
+                        <a href="#">Gym Bags</a> |
+                        <a href="#">Gym Shakers</a>
+                    </p>
+                </div>
+
+                <!-- Bottom Bar -->
+                <div class="footer-bottom">
+                    <p class="footer-copyright">© 2026 A product of Square Bubbles Pvt. Ltd</p>
+                    <div class="footer-bottom-right">
+                        <div class="footer-payments">
+                            <span class="pay-badge pay-upi">UPI</span>
+                            <span class="pay-badge pay-visa">VISA</span>
+                            <span class="pay-badge pay-mc">MC</span>
+                            <span class="pay-badge pay-bank">Bank</span>
+                            <span class="pay-badge pay-emi">EMI</span>
+                            <span class="pay-badge pay-rupay">RuPay</span>
+                        </div>
+                        <div class="footer-legal">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Returns & Cancellation</a>
+                            <a href="#">Shipping Policy</a>
+                            <a href="#">Terms & Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="back-to-top" data-back-to-top aria-label="Back to top">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+    </footer>
+
+    <script src="assets/js/products-data.js"></script>
+    <script src="assets/js/script.js"></script>
+
+    <nav class="bottom-nav" aria-label="Mobile app navigation">
+        <a href="index.html" class="bottom-nav-item is-active" aria-current="page">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="shop.html" class="bottom-nav-item">
+            <i class="fa-solid fa-grip"></i>
+            <span>Categories</span>
+        </a>
+        <a href="#" class="bottom-nav-item">
+            <i class="fa-solid fa-coins"></i>
+            <span>NutraNova Cash</span>
+        </a>
+        <a href="shop.html" class="bottom-nav-item">
+            <i class="fa-solid fa-percent"></i>
+            <span>Crazy Deals</span>
+        </a>
+        <a href="#" class="bottom-nav-item">
+            <i class="fa-solid fa-user-group"></i>
+            <span>Community</span>
+        </a>
+    </nav>
+    
+</body>
+
+</html>

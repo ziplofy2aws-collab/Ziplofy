@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vyronx</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+  <div class="announce-bar" id="announceBar" role="region" aria-label="Promotion">
+    <div class="announce-bar__inner">
+      <div class="announce-bar__copy">
+        <p class="announce-bar__title">25% OFF EVERYTHING</p>
+        <p class="announce-bar__sub">No Code Needed | April Drop Excluded</p>
+      </div>
+      <div class="announce-bar__timer" aria-label="Offer ends in">
+        <i class="fa-regular fa-clock announce-bar__timer-icon" aria-hidden="true"></i>
+        <span class="announce-bar__digit" id="countHours" aria-hidden="true">11</span>
+        <span class="announce-bar__digit" id="countMins" aria-hidden="true">55</span>
+        <span class="announce-bar__digit" id="countSecs" aria-hidden="true">23</span>
+      </div>
+    </div>
+    <button type="button" class="announce-bar__close" id="announceClose" aria-label="Close announcement">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <header class="site-header" role="banner">
+    <nav class="main-nav" aria-label="Primary">
+      <div class="main-nav__inner">
+        <button type="button" class="main-nav__menu-btn" id="navMenuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNavPanel">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <div class="main-nav__left">
+          <a href="category.html" class="main-nav__link">Sale</a>
+          <a href="category.html" class="main-nav__link">Mens</a>
+          <a href="category.html" class="main-nav__link main-nav__link--womens">Womens</a>
+        </div>
+
+        <div class="main-nav__center">
+          <a href="index.html" class="main-nav__logo">
+            <img src="assets/img/logo.png" alt="Sports and Gym" width="180" height="28" decoding="async">
+          </a>
+        </div>
+
+        <div class="main-nav__right">
+          <div class="main-nav__row main-nav__row--top">
+          <button type="button" class="main-nav__select main-nav__select--currency" aria-label="Change currency">
+            <img class="main-nav__flag"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600'%3E%3Crect fill='%23f93' width='900' height='200'/%3E%3Crect fill='%23fff' y='200' width='900' height='200'/%3E%3Crect fill='%23128808' y='400' width='900' height='200'/%3E%3Ccircle fill='%23000887' cx='450' cy='300' r='95'/%3E%3Ccircle fill='%23fff' cx='450' cy='300' r='80'/%3E%3Ccircle fill='%23000887' cx='450' cy='300' r='18'/%3E%3C/svg%3E"
+              alt="" width="20" height="14">
+            <span class="main-nav__currency-text">INR ₹</span>
+            <i class="fa-solid fa-chevron-down main-nav__chevron" aria-hidden="true"></i>
+          </button>
+
+          <button type="button" class="main-nav__select main-nav__select--lang" aria-label="Change language">
+            <i class="fa-solid fa-globe main-nav__select-icon" aria-hidden="true"></i>
+            <span>English</span>
+            <i class="fa-solid fa-chevron-down main-nav__chevron" aria-hidden="true"></i>
+          </button>
+          </div>
+          <div class="main-nav__row main-nav__row--bottom">
+          <a href="#" class="main-nav__help"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><span class="main-nav__help-text">Help</span></a>
+
+          <div class="main-nav__icons">
+            <a href="#" class="main-nav__icon-btn main-nav__icon-btn--account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <button type="button" class="main-nav__icon-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a href="#" class="main-nav__icon-btn" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="main-nav__icon-btn" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <button type="button" class="mobile-nav__overlay" id="mobileNavOverlay" aria-label="Close menu" tabindex="-1"></button>
+    <aside class="mobile-nav__panel" id="mobileNavPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+      <div class="mobile-nav__head">
+        <span class="mobile-nav__title">Menu</span>
+        <button type="button" class="mobile-nav__close" id="navMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="mobile-nav__links" aria-label="Mobile">
+        <a href="index.html">Home</a>
+        <a href="category.html">Sale</a>
+        <a href="category.html">Mens</a>
+        <a href="category.html">Womens</a>
+      </nav>
+    </aside>
+  </div>
+
+  <section class="hero-carousel" aria-roledescription="carousel" aria-label="Featured collection">
+    <div class="hero-carousel__stage">
+      <div class="hero-carousel__slides">
+        <div class="hero-carousel__slide is-active" data-slide="0" role="group" aria-roledescription="slide"
+          aria-label="1 of 4">
+          <img class="hero-carousel__img" src="assets/img/hero-banner-1.png" alt="Hero banner 1" width="1920"
+            height="800" decoding="async">
+        </div>
+        <div class="hero-carousel__slide" data-slide="1" role="group" aria-roledescription="slide" aria-label="2 of 4">
+          <img class="hero-carousel__img" src="assets/img/hero-banner-2.png" alt="Hero banner 2" width="1920"
+            height="800" decoding="async">
+        </div>
+        <div class="hero-carousel__slide" data-slide="2" role="group" aria-roledescription="slide" aria-label="3 of 4">
+          <img class="hero-carousel__img" src="assets/img/hero-banner-3.png" alt="Hero banner 3" width="1920"
+            height="800" decoding="async">
+        </div>
+        <div class="hero-carousel__slide" data-slide="3" role="group" aria-roledescription="slide" aria-label="4 of 4">
+          <img class="hero-carousel__img" src="assets/img/hero-banner-4.png" alt="Hero banner 4" width="1920"
+            height="800" decoding="async">
+        </div>
+      </div>
+
+      <nav class="hero-carousel__nav" aria-label="Hero slide navigation">
+        <button type="button" class="hero-carousel__dot is-active" data-slide="0" aria-label="Go to slide 1"
+          aria-current="true"></button>
+        <button type="button" class="hero-carousel__dot" data-slide="1" aria-label="Go to slide 2"></button>
+        <button type="button" class="hero-carousel__dot" data-slide="2" aria-label="Go to slide 3"></button>
+        <button type="button" class="hero-carousel__dot" data-slide="3" aria-label="Go to slide 4"></button>
+      </nav>
+    </div>
+  </section>
+
+  <section class="na-section" aria-labelledby="na-tabs-heading">
+    <div class="na-wrap">
+      <nav class="na-tabs" id="na-tabs-heading" aria-label="New arrival collections">
+        <a href="#" class="na-tab is-active"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> NEW: SPRING REVOLVE</a>
+        <a href="#" class="na-tab"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> NEW: APRIL DROP</a>
+        <a href="#" class="na-tab"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> MENS: NEW IN</a>
+      </nav>
+
+      <div class="na-carousel" aria-roledescription="carousel" aria-label="New arrivals products">
+      <div class="na-grid">
+        <article class="na-card">
+          <a href="#" class="na-card__media">
+            <button type="button" class="na-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </button>
+            <div class="na-card__img-wrap">
+              <img class="na-card__img na-card__img--default" src="assets/img/NA-1.png"
+                alt="Revolve Glass White Oversized T Shirt" width="480" height="640" decoding="async">
+              <img class="na-card__img na-card__img--hover" src="assets/img/NA-1-hover.png" alt="" width="480"
+                height="640" decoding="async" aria-hidden="true">
+            </div>
+            <span class="na-card__badge">NEW</span>
+          </a>
+          <h3 class="na-card__title">Revolve Glass White Oversized T Shirt</h3>
+          <p class="na-card__price">RS. 4,300.00</p>
+        </article>
+
+        <article class="na-card">
+          <a href="#" class="na-card__media">
+            <button type="button" class="na-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </button>
+            <div class="na-card__img-wrap">
+              <img class="na-card__img na-card__img--default" src="assets/img/NA-2.png"
+                alt="Revolve Community Black Oversized T Shirt" width="480" height="640" decoding="async">
+              <img class="na-card__img na-card__img--hover" src="assets/img/NA-2-hover.png" alt="" width="480"
+                height="640" decoding="async" aria-hidden="true">
+            </div>
+            <span class="na-card__badge">NEW</span>
+          </a>
+          <h3 class="na-card__title">Revolve Community Black Oversized T Shirt</h3>
+          <p class="na-card__price">RS. 4,300.00</p>
+        </article>
+
+        <article class="na-card">
+          <a href="#" class="na-card__media">
+            <button type="button" class="na-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </button>
+            <div class="na-card__img-wrap">
+              <img class="na-card__img na-card__img--default" src="assets/img/NA-3.png"
+                alt="Revolve Community White Oversized T Shirt" width="480" height="640" decoding="async">
+              <img class="na-card__img na-card__img--hover" src="assets/img/NA-3-hover.png" alt="" width="480"
+                height="640" decoding="async" aria-hidden="true">
+            </div>
+            <span class="na-card__badge">NEW</span>
+          </a>
+          <h3 class="na-card__title">Revolve Community White Oversized T Shirt</h3>
+          <p class="na-card__price">RS. 4,300.00</p>
+        </article>
+
+        <article class="na-card">
+          <a href="#" class="na-card__media">
+            <button type="button" class="na-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </button>
+            <div class="na-card__img-wrap">
+              <img class="na-card__img na-card__img--default" src="assets/img/NA-4.png"
+                alt="Revolve Script Black Oversized T Shirt" width="480" height="640" decoding="async">
+              <img class="na-card__img na-card__img--hover" src="assets/img/NA-4-hover.png" alt="" width="480"
+                height="640" decoding="async" aria-hidden="true">
+            </div>
+            <span class="na-card__badge">NEW</span>
+          </a>
+          <h3 class="na-card__title">Revolve Script Black Oversized T Shirt</h3>
+          <p class="na-card__price">RS. 4,300.00</p>
+        </article>
+        </div>
+      </div>
+
+        <a href="category.html" class="na-view-all">View All</a>
+    </div>
+  </section>
+
+  <section class="promo-banner" aria-labelledby="promo-banner-heading">
+    <img class="promo-banner__bg" src="assets/img/banner.png" alt="" width="1920" height="720" decoding="async"
+      aria-hidden="true">
+    <div class="promo-banner__overlay" aria-hidden="true"></div>
+    <div class="promo-banner__content">
+      <h2 id="promo-banner-heading" class="promo-banner__title">Earn Every Rep</h2>
+      <p class="promo-banner__sub">Performance layers built to push through every workout</p>
+      <a href="category.html" class="promo-banner__cta">Shop Men's Workout <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </section>
+
+  <section class="pls-section" aria-labelledby="pls-heading">
+    <div class="pls-wrap">
+      <div class="pls-head">
+        <div class="pls-head__left">
+          <h2 id="pls-heading" class="pls-title">Popular Lifting Styles</h2>
+          <a href="category.html" class="pls-view-all">View All</a>
+        </div>
+        <div class="pls-nav" aria-label="Product carousel navigation">
+          <button type="button" class="pls-nav__btn pls-nav__btn--prev" aria-label="Previous products" disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="pls-nav__btn pls-nav__btn--next" aria-label="Next products">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="pls-carousel">
+        <div class="pls-track">
+          <article class="pls-card">
+            <a href="#" class="pls-card__media">
+              <button type="button" class="pls-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="pls-card__img-wrap">
+                <img class="pls-card__img pls-card__img--default" src="assets/img/P-1.png" alt="Power T-Shirt"
+                  width="480" height="600" decoding="async">
+                <img class="pls-card__img pls-card__img--hover" src="assets/img/P-1-hover.png" alt="" width="480"
+                  height="600" decoding="async" aria-hidden="true">
+              </div>
+              <span class="pls-card__badge">NEW</span>
+            </a>
+            <div class="pls-card__body">
+              <div class="pls-card__row">
+                <h3 class="pls-card__name">Power T-Shirt</h3>
+                <span class="pls-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 3.8</span>
+              </div>
+              <p class="pls-card__meta">Oversized Fit</p>
+              <p class="pls-card__meta">Conditioning Red</p>
+              <p class="pls-card__price">$36</p>
+            </div>
+          </article>
+
+          <article class="pls-card">
+            <a href="#" class="pls-card__media">
+              <button type="button" class="pls-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="pls-card__img-wrap">
+                <img class="pls-card__img pls-card__img--default" src="assets/img/P-2.png" alt="Power T-Shirt"
+                  width="480" height="600" decoding="async">
+                <img class="pls-card__img pls-card__img--hover" src="assets/img/P-2-hover.png" alt="" width="480"
+                  height="600" decoding="async" aria-hidden="true">
+              </div>
+              <span class="pls-card__badge">NEW</span>
+            </a>
+            <div class="pls-card__body">
+              <div class="pls-card__row">
+                <h3 class="pls-card__name">Power T-Shirt</h3>
+                <span class="pls-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 3.8</span>
+              </div>
+              <p class="pls-card__meta">Oversized Fit</p>
+              <p class="pls-card__meta">Force Blue</p>
+              <p class="pls-card__price">$36</p>
+            </div>
+          </article>
+
+          <article class="pls-card">
+            <a href="#" class="pls-card__media">
+              <button type="button" class="pls-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="pls-card__img-wrap">
+                <img class="pls-card__img pls-card__img--default" src="assets/img/P-3.png" alt="Element Tank"
+                  width="480" height="600" decoding="async">
+                <img class="pls-card__img pls-card__img--hover" src="assets/img/P-3-hover.png" alt="" width="480"
+                  height="600" decoding="async" aria-hidden="true">
+              </div>
+            </a>
+            <div class="pls-card__body">
+              <div class="pls-card__row">
+                <h3 class="pls-card__name">Element Tank</h3>
+                <span class="pls-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 3.4</span>
+              </div>
+              <p class="pls-card__meta">Compression Fit</p>
+              <p class="pls-card__meta">Black</p>
+              <p class="pls-card__price">$24</p>
+            </div>
+          </article>
+
+          <article class="pls-card">
+            <a href="#" class="pls-card__media">
+              <button type="button" class="pls-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <div class="pls-card__img-wrap">
+                <img class="pls-card__img pls-card__img--default" src="assets/img/P-4.png" alt="Ribbed Tank 1PK"
+                  width="480" height="600" decoding="async">
+                <img class="pls-card__img pls-card__img--hover" src="assets/img/P-4-hover.png" alt="" width="480"
+                  height="600" decoding="async" aria-hidden="true">
+              </div>
+            </a>
+            <div class="pls-card__body">
+              <div class="pls-card__row">
+                <h3 class="pls-card__name">Ribbed Tank 1PK</h3>
+                <span class="pls-card__rating"><i class="fa-solid fa-star" aria-hidden="true"></i> 3.6</span>
+              </div>
+              <p class="pls-card__meta">Muscle Fit</p>
+              <p class="pls-card__meta">Black</p>
+              <p class="pls-card__price">$16</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="promo-grid" aria-label="Shop by category">
+    <div class="promo-grid__layout">
+      <div class="promo-grid__left">
+        <a href="#" class="promo-grid__tile">
+          <img src="assets/img/promo-1.png" alt="T-Shirts collection" width="640" height="640" decoding="async">
+          <span class="promo-grid__label">T-Shirts</span>
+        </a>
+        <a href="#" class="promo-grid__tile">
+          <img src="assets/img/promo-2.png" alt="Compressions collection" width="640" height="640" decoding="async">
+          <span class="promo-grid__label">Compressions</span>
+        </a>
+        <a href="#" class="promo-grid__tile">
+          <img src="assets/img/promo-3.png" alt="Tanks collection" width="640" height="640" decoding="async">
+          <span class="promo-grid__label">Tanks</span>
+        </a>
+        <a href="#" class="promo-grid__tile">
+          <img src="assets/img/promo-4.png" alt="Accessories collection" width="640" height="640" decoding="async">
+          <span class="promo-grid__label">Accessories</span>
+        </a>
+      </div>
+      <a href="#" class="promo-grid__tile promo-grid__tile--large">
+        <img src="assets/img/big-promo.png" alt="Track-pants and Joggers collection" width="640" height="1280"
+          decoding="async">
+        <span class="promo-grid__label promo-grid__label--left">Track-pants &amp; Joggers</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="coll-section" aria-labelledby="coll-heading">
+    <div class="coll-wrap">
+      <div class="coll-head">
+        <h2 id="coll-heading" class="coll-title">vyronx Collection</h2>
+        <a href="#" class="coll-view-all">View All</a>
+      </div>
+      <div class="coll-divider" role="presentation"></div>
+
+      <div class="coll-carousel-wrap">
+        <!-- <button type="button" class="coll-nav coll-nav--prev" aria-label="Previous collection products" disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button> -->
+
+        <div class="coll-carousel" aria-roledescription="carousel" aria-label="Collection products">
+          <div class="coll-track">
+            <article class="coll-card">
+              <a href="#" class="coll-card__media">
+                <span class="coll-card__badge">Alex &times; vyronx</span>
+                <img src="assets/img/coll-1.png" alt="Alx Grid Cargo" width="480" height="600" decoding="async">
+              </a>
+              <div class="coll-card__info">
+                <div class="coll-card__copy">
+                  <h3 class="coll-card__name">Alx Grid Cargo</h3>
+                  <p class="coll-card__meta">Dusty Beige</p>
+                </div>
+                <p class="coll-card__price">Rs. 2,199.00</p>
+              </div>
+            </article>
+
+            <article class="coll-card">
+              <a href="#" class="coll-card__media">
+                <span class="coll-card__badge">Alex &times; vyronx</span>
+                <img src="assets/img/coll-2.png" alt="Alx Arc Compression Full Sleeve T-Shirt" width="480" height="600"
+                  decoding="async">
+              </a>
+              <div class="coll-card__info">
+                <div class="coll-card__copy">
+                  <h3 class="coll-card__name">Alx Arc Compression Full Sleeve T-Shirt</h3>
+                  <p class="coll-card__meta">Compression Fit</p>
+                  <p class="coll-card__meta">Black</p>
+                </div>
+                <p class="coll-card__price">Rs. 1,599.00</p>
+              </div>
+            </article>
+
+            <article class="coll-card">
+              <a href="#" class="coll-card__media">
+                <span class="coll-card__badge">Alex &times; vyronx</span>
+                <img src="assets/img/coll-3.png" alt="Alx Arc Compression T-Shirt" width="480" height="600"
+                  decoding="async">
+              </a>
+              <div class="coll-card__info">
+                <div class="coll-card__copy">
+                  <h3 class="coll-card__name">Alx Arc Compression T-Shirt</h3>
+                  <p class="coll-card__meta">Compression Fit</p>
+                  <p class="coll-card__meta">Black</p>
+                </div>
+                <p class="coll-card__price">Rs. 1,499.00</p>
+              </div>
+            </article>
+
+            <article class="coll-card">
+              <a href="#" class="coll-card__media">
+                <span class="coll-card__badge">Alex &times; vyronx</span>
+                <img src="assets/img/coll-4.png" alt="Alx Arc Compression Full Sleeve T-Shirt" width="480" height="600"
+                  decoding="async">
+              </a>
+              <div class="coll-card__info">
+                <div class="coll-card__copy">
+                  <h3 class="coll-card__name">Alx Arc Compression Full Sleeve T-Shirt</h3>
+                  <p class="coll-card__meta">Compression Fit</p>
+                  <p class="coll-card__meta">Dusty Beige</p>
+                </div>
+                <p class="coll-card__price">Rs. 1,599.00</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- <button type="button" class="coll-nav coll-nav--next" aria-label="Next collection products">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button> -->
+      </div>
+    </div>
+  </section>
+
+  <section class="image-banner" aria-label="vyronx accessories banner">
+    <img class="image-banner__img" src="assets/img/banner-2.png" alt="vyronx accessories collection" width="1920"
+      height="720" decoding="async">
+  </section>
+
+  <section class="acc-section" aria-labelledby="acc-heading">
+    <div class="acc-wrap">
+      <div class="acc-head">
+        <h2 id="acc-heading" class="acc-title">Accessories</h2>
+        <a href="#" class="acc-view-all">View All</a>
+      </div>
+      <div class="acc-divider" role="presentation"></div>
+
+      <div class="acc-carousel-wrap">
+        <!-- <button type="button" class="acc-nav acc-nav--prev" aria-label="Previous accessories" disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button> -->
+
+        <div class="acc-carousel" aria-roledescription="carousel" aria-label="Accessories products">
+          <div class="acc-track">
+            <article class="acc-card">
+              <a href="#" class="acc-card__media">
+                <span class="acc-card__badge">30L Bag</span>
+                <img src="assets/img/accessories-1.png" alt="vyronx Roll Top Bag" width="480" height="600"
+                  decoding="async">
+              </a>
+              <div class="acc-card__info">
+                <div class="acc-card__row">
+                  <h3 class="acc-card__name">vyronx Roll Top Bag</h3>
+                  <p class="acc-card__price">Rs. 2,499.00</p>
+                </div>
+                <p class="acc-card__sub">Matte Black</p>
+              </div>
+            </article>
+
+            <article class="acc-card">
+              <a href="#" class="acc-card__media">
+                <span class="acc-card__badge">1.2L Capacity</span>
+                <img src="assets/img/accessories-2.png" alt="vyronx Stainless Steel Tumbler" width="480" height="600"
+                  decoding="async">
+              </a>
+              <div class="acc-card__info">
+                <div class="acc-card__row">
+                  <h3 class="acc-card__name">vyronx Stainless Steel Tumbler</h3>
+                  <p class="acc-card__price">Rs. 1,499.00</p>
+                </div>
+                <p class="acc-card__sub">White</p>
+              </div>
+            </article>
+
+            <article class="acc-card">
+              <a href="#" class="acc-card__media">
+                <span class="acc-card__badge">500ml Capacity</span>
+                <img src="assets/img/accessories-3.png" alt="vyronx Coffee Mug" width="480" height="600"
+                  decoding="async">
+              </a>
+              <div class="acc-card__info">
+                <div class="acc-card__row">
+                  <h3 class="acc-card__name">vyronx Coffee Mug</h3>
+                  <p class="acc-card__price">Rs. 899.00</p>
+                </div>
+                <p class="acc-card__sub">Compact Black</p>
+              </div>
+            </article>
+
+            <article class="acc-card">
+              <a href="#" class="acc-card__media">
+                <span class="acc-card__badge">750ml Capacity</span>
+                <img src="assets/img/accessories-4.png" alt="vyronx Hydra Glass Bottle" width="480" height="600"
+                  decoding="async">
+              </a>
+              <div class="acc-card__info">
+                <div class="acc-card__row">
+                  <h3 class="acc-card__name">vyronx Hydra Glass Bottle</h3>
+                  <p class="acc-card__price">Rs. 499.00</p>
+                </div>
+                <p class="acc-card__sub">Clear</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- <button type="button" class="acc-nav acc-nav--next" aria-label="Next accessories">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button> -->
+      </div>
+    </div>
+  </section>
+
+  <section class="mv-section" aria-label="Our mission and vision">
+    <article class="mv-block mv-block--mission">
+      <div class="mv-block__circle" aria-hidden="true">
+        <i class="fa-solid fa-bullseye mv-block__icon" aria-hidden="true"></i>
+      </div>
+      <div class="mv-block__panel">
+        <h2 class="mv-block__title">Our Mission</h2>
+        <span class="mv-block__line" aria-hidden="true"></span>
+        <p class="mv-block__text">To deliver premium yet affordable gym wear that blends quality, comfort, and style,
+          specifically tailored for Indian fitness needs and lifestyles.</p>
+      </div>
+    </article>
+
+    <article class="mv-block mv-block--vision">
+      <div class="mv-block__panel">
+        <h2 class="mv-block__title">Our Vision</h2>
+        <span class="mv-block__line" aria-hidden="true"></span>
+        <p class="mv-block__text">To create gym wear that empowers the Indian fitness community with designs made for
+          Indian bodies and skin types.</p>
+      </div>
+      <div class="mv-block__circle" aria-hidden="true">
+        <i class="fa-regular fa-lightbulb mv-block__icon" aria-hidden="true"></i>
+      </div>
+    </article>
+  </section>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <div class="site-footer__grid">
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">About Our Store</h3>
+          <p class="site-footer__about">vyronx was born out of a dream to bring you high-performance activewear
+            that ticked all the boxes from technology to trends. Our products are proudly 100% MADE IN INDIA</p>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Footer Menu</h3>
+          <ul class="site-footer__list">
+            <li><a href="#">Size Chart</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Exchanges &amp; Returns</a></li>
+            <li><a href="#">Search</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Contact us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Refer &amp; Earn</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Footer Collection</h3>
+          <ul class="site-footer__list site-footer__list--caps">
+            <li><a href="#">Women</a></li>
+            <li><a href="#">The Yoga Edit</a></li>
+            <li><a href="#">Co-ord Sets</a></li>
+            <li><a href="#">Oika Linen Collection</a></li>
+            <li><a href="#">Bags</a></li>
+            <li><a href="#">Offers</a></li>
+          </ul>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Newsletter</h3>
+          <p class="site-footer__news-text">Get 10% Off by signing up for our newsletter</p>
+          <form class="site-footer__news-form" action="#" method="post">
+            <label class="site-footer__sr-only" for="footerEmail">Email address</label>
+            <div class="site-footer__input-wrap">
+              <input id="footerEmail" class="site-footer__input" type="email" name="email" placeholder="Your e-mail"
+                autocomplete="email">
+              <button type="submit" class="site-footer__submit" aria-label="Subscribe to newsletter">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Follow Us</h3>
+          <p class="site-footer__follow-text">Keep up with new launches and fitness content on our Instagram!</p>
+          <a href="#" class="site-footer__social" aria-label="Follow us on Instagram">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="site-footer__bar">
+        <button type="button" class="site-footer__region" aria-label="Change country and currency">
+          <span>India (INR ₹)</span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <p class="site-footer__copy">vyronx&bull; Powered by Ziplofy</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="whatsapp-fab" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

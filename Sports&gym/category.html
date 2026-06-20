@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vyronx</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/category.css">
+</head>
+
+<body class="cat-page">
+
+  <div class="announce-bar" id="announceBar" role="region" aria-label="Promotion">
+    <div class="announce-bar__inner">
+      <div class="announce-bar__copy">
+        <p class="announce-bar__title">25% OFF EVERYTHING</p>
+        <p class="announce-bar__sub">No Code Needed | April Drop Excluded</p>
+      </div>
+      <div class="announce-bar__timer" aria-label="Offer ends in">
+        <i class="fa-regular fa-clock announce-bar__timer-icon" aria-hidden="true"></i>
+        <span class="announce-bar__digit" id="countHours" aria-hidden="true">11</span>
+        <span class="announce-bar__digit" id="countMins" aria-hidden="true">55</span>
+        <span class="announce-bar__digit" id="countSecs" aria-hidden="true">23</span>
+      </div>
+    </div>
+    <button type="button" class="announce-bar__close" id="announceClose" aria-label="Close announcement">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <header class="site-header" role="banner">
+    <nav class="main-nav" aria-label="Primary">
+      <div class="main-nav__inner">
+        <button type="button" class="main-nav__menu-btn" id="navMenuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNavPanel">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <div class="main-nav__left">
+          <a href="category.html" class="main-nav__link">Sale</a>
+          <a href="category.html" class="main-nav__link">Mens</a>
+          <a href="category.html" class="main-nav__link main-nav__link--womens">Womens</a>
+        </div>
+        <div class="main-nav__center">
+          <a href="index.html" class="main-nav__logo">
+            <img src="assets/img/logo.png" alt="Sports and Gym" width="180" height="28" decoding="async">
+          </a>
+        </div>
+        <div class="main-nav__right">
+          <div class="main-nav__row main-nav__row--top">
+          <button type="button" class="main-nav__select main-nav__select--currency" aria-label="Change currency">
+            <img class="main-nav__flag"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600'%3E%3Crect fill='%23f93' width='900' height='200'/%3E%3Crect fill='%23fff' y='200' width='900' height='200'/%3E%3Crect fill='%23128808' y='400' width='900' height='200'/%3E%3Ccircle fill='%23000887' cx='450' cy='300' r='95'/%3E%3Ccircle fill='%23fff' cx='450' cy='300' r='80'/%3E%3Ccircle fill='%23000887' cx='450' cy='300' r='18'/%3E%3C/svg%3E"
+              alt="" width="20" height="14">
+            <span class="main-nav__currency-text">INR ₹</span>
+            <i class="fa-solid fa-chevron-down main-nav__chevron" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="main-nav__select main-nav__select--lang" aria-label="Change language">
+            <i class="fa-solid fa-globe main-nav__select-icon" aria-hidden="true"></i>
+            <span>English</span>
+            <i class="fa-solid fa-chevron-down main-nav__chevron" aria-hidden="true"></i>
+          </button>
+          </div>
+          <div class="main-nav__row main-nav__row--bottom">
+          <a href="#" class="main-nav__help"><i class="fa-regular fa-circle-question" aria-hidden="true"></i><span class="main-nav__help-text">Help</span></a>
+          <div class="main-nav__icons">
+            <a href="#" class="main-nav__icon-btn main-nav__icon-btn--account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+            </a>
+            <button type="button" class="main-nav__icon-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+            <a href="#" class="main-nav__icon-btn" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="main-nav__icon-btn" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <button type="button" class="mobile-nav__overlay" id="mobileNavOverlay" aria-label="Close menu" tabindex="-1"></button>
+    <aside class="mobile-nav__panel" id="mobileNavPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+      <div class="mobile-nav__head">
+        <span class="mobile-nav__title">Menu</span>
+        <button type="button" class="mobile-nav__close" id="navMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="mobile-nav__links" aria-label="Mobile">
+        <a href="index.html">Home</a>
+        <a href="category.html">Sale</a>
+        <a href="category.html">Mens</a>
+        <a href="category.html">Womens</a>
+      </nav>
+    </aside>
+  </div>
+
+  <main>
+    <section class="cat-hero" aria-labelledby="cat-heading">
+      <div class="cat-hero__wrap">
+        <nav class="cat-hero__breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Collections</a>
+          <span class="cat-hero__sep" aria-hidden="true">/</span>
+          <span class="cat-hero__current">Men</span>
+        </nav>
+        <h1 id="cat-heading" class="cat-hero__title">Men</h1>
+      </div>
+    </section>
+
+    <div class="cat-toolbar">
+      <div class="cat-toolbar__left">
+        <button type="button" class="cat-toolbar__btn" id="catFilterOpen" aria-expanded="false" aria-controls="catFilterPanel">
+          <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filter
+        </button>
+        <button type="button" class="cat-toolbar__btn">
+          <i class="fa-solid fa-arrow-down-wide-short" aria-hidden="true"></i>
+          Sort <span class="cat-toolbar__sort-val">Featured</span>
+        </button>
+        <button type="button" class="cat-toolbar__btn">
+          <i class="fa-solid fa-shirt" aria-hidden="true"></i> Fit
+        </button>
+      </div>
+      <div class="cat-toolbar__right">
+        <span class="cat-toolbar__results">12 Results</span>
+        <div class="cat-toolbar__grid" role="group" aria-label="Grid layout">
+          <button type="button" class="cat-toolbar__grid-btn" data-cols="2" aria-label="2 column grid">
+            <i class="fa-solid fa-table-list" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="cat-toolbar__grid-btn" data-cols="3" aria-label="3 column grid">
+            <i class="fa-solid fa-table-cells" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="cat-toolbar__grid-btn is-active" data-cols="4" aria-label="4 column grid">
+            <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <section class="cat-grid-section" aria-label="Product listing">
+      <div class="cat-grid cat-grid--cols-4" id="catGrid">
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-1.png" alt="Brookline Oversized T-shirt Black" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Brookline Oversized T-shirt Black</a></h2>
+            <p class="cat-card__fit">Oversized Fit</p>
+            <p class="cat-card__price">₹1,099</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹366/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-2.png" alt="Dragon Capsleeves Tank Black" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Dragon Capsleeves Tank Black</a></h2>
+            <p class="cat-card__fit">Oversized Fit</p>
+            <p class="cat-card__price">₹999</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹333/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-3.png" alt="Ember T-shirt White" width="480" height="600"
+              decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Ember T-shirt White</a></h2>
+            <p class="cat-card__fit">Slim Fit</p>
+            <p class="cat-card__price">₹749</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹250/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-4.png" alt="Checks Running Tank Bottle Green" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Checks Running Tank Bottle Green</a></h2>
+            <p class="cat-card__fit">Regular Fit</p>
+            <p class="cat-card__price">₹649</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹216/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-5.png" alt="Iconic Oversized T-shirt White" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Iconic Oversized T-shirt White</a></h2>
+            <p class="cat-card__fit">Oversized Fit</p>
+            <p class="cat-card__price">₹1,099</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹366/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-6.png" alt="Power Compression Tee Navy" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Power Compression Tee Navy</a></h2>
+            <p class="cat-card__fit">Compression Fit</p>
+            <p class="cat-card__price">₹899</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹300/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-7.png" alt="Core Training Short Black" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Core Training Short Black</a></h2>
+            <p class="cat-card__fit">Regular Fit</p>
+            <p class="cat-card__price">₹799</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹266/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-8.png" alt="Apex Performance Hoodie Grey" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Apex Performance Hoodie Grey</a></h2>
+            <p class="cat-card__fit">Oversized Fit</p>
+            <p class="cat-card__price">₹1,299</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹433/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card">
+          <a href="product.html" class="cat-card__media">
+            <img class="cat-card__img" src="assets/img/cat-9.png" alt="Shadow Washed Capsleeves Hoodie Dark Grey"
+              width="480" height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Shadow Washed Capsleeves Hoodie Dark Grey</a></h2>
+            <p class="cat-card__fit">Oversized Fit</p>
+            <p class="cat-card__price">₹1,399</p>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹466/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card cat-card--sale">
+          <a href="product.html" class="cat-card__media">
+            <span class="cat-card__stock">LIMITED STOCK</span>
+            <img class="cat-card__img" src="assets/img/cat-10.png" alt="Ontrack Jackets Light Grey" width="480"
+              height="600" decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Ontrack Jackets Light Grey</a></h2>
+            <p class="cat-card__fit">Regular Fit</p>
+            <div class="cat-card__pricing">
+              <div class="cat-card__prices">
+                <span class="cat-card__price">₹1,289</span>
+                <span class="cat-card__compare">₹1,849</span>
+              </div>
+              <span class="cat-card__discount">30% OFF</span>
+            </div>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹430/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card cat-card--sale">
+          <a href="product.html" class="cat-card__media">
+            <span class="cat-card__stock">LIMITED STOCK</span>
+            <img class="cat-card__img" src="assets/img/cat-11.png" alt="Ontrack Jackets Black" width="480" height="600"
+              decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Ontrack Jackets Black</a></h2>
+            <p class="cat-card__fit">Regular Fit</p>
+            <div class="cat-card__pricing">
+              <div class="cat-card__prices">
+                <span class="cat-card__price">₹1,479</span>
+                <span class="cat-card__compare">₹1,849</span>
+              </div>
+              <span class="cat-card__discount">20% OFF</span>
+            </div>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹493/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="cat-card cat-card--sale">
+          <a href="product.html" class="cat-card__media">
+            <span class="cat-card__stock">LIMITED STOCK</span>
+            <img class="cat-card__img" src="assets/img/cat-12.png" alt="Ontrack Jackets Navy" width="480" height="600"
+              decoding="async">
+          </a>
+          <div class="cat-card__body">
+            <h2 class="cat-card__title"><a href="product.html">Ontrack Jackets Navy</a></h2>
+            <p class="cat-card__fit">Regular Fit</p>
+            <div class="cat-card__pricing">
+              <div class="cat-card__prices">
+                <span class="cat-card__price">₹1,289</span>
+                <span class="cat-card__compare">₹1,849</span>
+              </div>
+              <span class="cat-card__discount">30% OFF</span>
+            </div>
+            <div class="cat-card__emi">
+              <span class="cat-card__emi-text">or ₹430/Month</span>
+              <a href="#" class="cat-card__emi-btn">Buy on EMI <i class="fa-solid fa-arrow-right"
+                  aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <div class="site-footer__grid">
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">About Our Store</h3>
+          <p class="site-footer__about">vyronx was born out of a dream to bring you high-performance activewear
+            that ticked all the boxes from technology to trends. Our products are proudly 100% MADE IN INDIA</p>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Footer Menu</h3>
+          <ul class="site-footer__list">
+            <li><a href="#">Size Chart</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Exchanges &amp; Returns</a></li>
+            <li><a href="#">Search</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Contact us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Refer &amp; Earn</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Footer Collection</h3>
+          <ul class="site-footer__list site-footer__list--caps">
+            <li><a href="category.html">Women</a></li>
+            <li><a href="category.html">The Yoga Edit</a></li>
+            <li><a href="category.html">Co-ord Sets</a></li>
+            <li><a href="category.html">Oika Linen Collection</a></li>
+            <li><a href="category.html">Bags</a></li>
+            <li><a href="category.html">Offers</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Newsletter</h3>
+          <p class="site-footer__news-text">Get 10% Off by signing up for our newsletter</p>
+          <form class="site-footer__news-form" action="#" method="post">
+            <label class="site-footer__sr-only" for="footerEmailCat">Email address</label>
+            <div class="site-footer__input-wrap">
+              <input id="footerEmailCat" class="site-footer__input" type="email" name="email" placeholder="Your e-mail"
+                autocomplete="email">
+              <button type="submit" class="site-footer__submit" aria-label="Subscribe to newsletter">
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Follow Us</h3>
+          <p class="site-footer__follow-text">Keep up with new launches and fitness content on our Instagram!</p>
+          <a href="#" class="site-footer__social" aria-label="Follow us on Instagram">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+      <div class="site-footer__bar">
+        <button type="button" class="site-footer__region" aria-label="Change country and currency">
+          <span>India (INR ₹)</span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <p class="site-footer__copy">vyronx&bull; Powered by Ziplofy</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="whatsapp-fab" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <div class="cat-filter" id="catFilter" aria-hidden="true">
+    <button type="button" class="cat-filter__overlay" id="catFilterOverlay" aria-label="Close filters" tabindex="-1"></button>
+    <aside class="cat-filter__panel" id="catFilterPanel" role="dialog" aria-modal="true" aria-labelledby="catFilterTitle">
+      <header class="cat-filter__head">
+        <h2 class="cat-filter__title" id="catFilterTitle">
+          Filter <span class="cat-filter__count">(857 Results)</span>
+        </h2>
+        <button type="button" class="cat-filter__close" id="catFilterClose" aria-label="Close filters">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div class="cat-filter__body">
+        <section class="cat-filter__group">
+          <h3 class="cat-filter__heading">Price</h3>
+          <div class="cat-filter__price">
+            <span class="cat-filter__price-val" id="catPriceMinLabel">0</span>
+            <div class="cat-filter__range-wrap">
+              <div class="cat-filter__range-track" aria-hidden="true">
+                <div class="cat-filter__range-fill" id="catPriceFill"></div>
+              </div>
+              <input type="range" class="cat-filter__range cat-filter__range--min" id="catPriceMin" min="0" max="1799" value="0" aria-label="Minimum price">
+              <input type="range" class="cat-filter__range cat-filter__range--max" id="catPriceMax" min="0" max="1799" value="1799" aria-label="Maximum price">
+            </div>
+            <span class="cat-filter__price-val" id="catPriceMaxLabel">1799</span>
+          </div>
+        </section>
+
+        <section class="cat-filter__group">
+          <h3 class="cat-filter__heading">Size</h3>
+          <ul class="cat-filter__list">
+            <li><label class="cat-filter__option"><input type="checkbox" name="size" value="xs"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">XS</span><span class="cat-filter__qty">(114)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="size" value="s"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">S</span><span class="cat-filter__qty">(816)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="size" value="m"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">M</span><span class="cat-filter__qty">(816)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="size" value="l"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">L</span><span class="cat-filter__qty">(816)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="size" value="xl"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">XL</span><span class="cat-filter__qty">(816)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="size" value="xxl"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">XXL</span><span class="cat-filter__qty">(706)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="size" value="3xl"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">3XL</span><span class="cat-filter__qty">(42)</span></label></li>
+          </ul>
+          <button type="button" class="cat-filter__more" data-more="size">+ More</button>
+        </section>
+
+        <section class="cat-filter__group">
+          <h3 class="cat-filter__heading">Fit</h3>
+          <ul class="cat-filter__list">
+            <li><label class="cat-filter__option"><input type="checkbox" name="fit" value="27l"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">27 L Space</span><span class="cat-filter__qty">(1)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="fit" value="25l"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">25 L Space</span><span class="cat-filter__qty">(1)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="fit" value="28l"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">28 L Space</span><span class="cat-filter__qty">(1)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="fit" value="30l"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">30 L Space</span><span class="cat-filter__qty">(3)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="fit" value="35l"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">35 L Space</span><span class="cat-filter__qty">(1)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="fit" value="40l"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">40 L Space</span><span class="cat-filter__qty">(2)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="fit" value="oversized"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Oversized Fit</span><span class="cat-filter__qty">(124)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="fit" value="regular"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Regular Fit</span><span class="cat-filter__qty">(88)</span></label></li>
+          </ul>
+          <button type="button" class="cat-filter__more" data-more="fit">+ More</button>
+        </section>
+
+        <section class="cat-filter__group">
+          <h3 class="cat-filter__heading">Color</h3>
+          <ul class="cat-filter__list">
+            <li><label class="cat-filter__option"><input type="checkbox" name="color" value="black"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Black</span><span class="cat-filter__qty">(175)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="color" value="white"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">White</span><span class="cat-filter__qty">(64)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="color" value="red"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Red</span><span class="cat-filter__qty">(39)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="color" value="grey"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Grey</span><span class="cat-filter__qty">(168)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="color" value="beige"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Beige</span><span class="cat-filter__qty">(34)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="color" value="blue"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Blue</span><span class="cat-filter__qty">(114)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="color" value="green"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Green</span><span class="cat-filter__qty">(52)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="color" value="navy"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Navy</span><span class="cat-filter__qty">(41)</span></label></li>
+          </ul>
+          <button type="button" class="cat-filter__more" data-more="color">+ More</button>
+        </section>
+
+        <section class="cat-filter__group">
+          <h3 class="cat-filter__heading">Category</h3>
+          <ul class="cat-filter__list">
+            <li><label class="cat-filter__option"><input type="checkbox" name="category" value="bag"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Bag</span><span class="cat-filter__qty">(10)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="category" value="caps"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Caps</span><span class="cat-filter__qty">(12)</span></label></li>
+            <li><label class="cat-filter__option"><input type="checkbox" name="category" value="hoodie"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Hoodie</span><span class="cat-filter__qty">(16)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="category" value="innerwears"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Innerwears</span><span class="cat-filter__qty">(16)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="category" value="jackets"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Jackets</span><span class="cat-filter__qty">(18)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="category" value="joggers"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">Joggers</span><span class="cat-filter__qty">(68)</span></label></li>
+            <li class="cat-filter__list-item--more"><label class="cat-filter__option"><input type="checkbox" name="category" value="tshirts"><span class="cat-filter__box" aria-hidden="true"></span><span class="cat-filter__label">T-Shirts</span><span class="cat-filter__qty">(210)</span></label></li>
+          </ul>
+          <button type="button" class="cat-filter__more" data-more="category">+ More</button>
+        </section>
+      </div>
+
+      <footer class="cat-filter__foot">
+        <button type="button" class="cat-filter__apply" id="catFilterApply">Apply</button>
+      </footer>
+    </aside>
+  </div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

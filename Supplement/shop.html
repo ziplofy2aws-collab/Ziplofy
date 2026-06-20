@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop — NutraNova</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/shop.css">
+</head>
+
+<body>
+
+    <!-- Top Announcement Bar -->
+    <div class="top-bar">
+        <div class="top-bar-carousel" data-top-bar-carousel>
+            <button type="button" class="top-bar-arrow" data-top-prev aria-label="Previous announcement">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <p class="top-bar-message" data-top-message>₹150 OFF on 1st Prepaid Order Over ₹2,999 – Use NutraNovaFIRST</p>
+            <button type="button" class="top-bar-arrow" data-top-next aria-label="Next announcement">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="marquee top-bar-marquee">
+            <div class="marquee-track">
+                <span>₹150 OFF on 1st Prepaid Order Over ₹2,999 – Use NutraNovaFIRST</span>
+                <span class="dot">•</span>
+                <span>Free Shipping on Prepaid Orders Over ₹799</span>
+                <span class="dot">•</span>
+                <span>₹150 OFF on 1st Prepaid Order Over ₹2,999 – Use NutraNovaFIRST</span>
+                <span class="dot">•</span>
+                <span>Free Shipping on Prepaid Orders Over ₹799</span>
+                <span class="dot">•</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="header">
+        <div class="header-inner">
+
+            <div class="header-left">
+                <button type="button" class="menu-toggle" data-menu-toggle aria-label="Open menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="index.html" class="logo">
+                    <img src="assets/img/logo.png" alt="NutraNova Live Well">
+                </a>
+            </div>
+
+            <nav class="nav-menu" aria-label="Main navigation">
+                <ul>
+                    <li><a href="shop.html">Crazy Deals <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Wellness <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Fitness <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Shop by Concern <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Weight Management <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Brands <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="shop.html">Blogs</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-icons">
+                <a href="#" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href="#" class="icon-user" aria-label="Account">
+                    <i class="fa-regular fa-user"></i>
+                    <i class="fa-solid fa-bolt user-badge"></i>
+                </a>
+                <a href="#" aria-label="Cart"><i class="fa-solid fa-cart-shopping"></i></a>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="mobile-overlay" data-mobile-overlay hidden></div>
+    <aside class="mobile-drawer" data-mobile-drawer aria-hidden="true" aria-label="Mobile navigation">
+        <div class="mobile-drawer-head">
+            <a href="index.html" class="mobile-drawer-logo">
+                <img src="assets/img/logo.png" alt="NutraNova">
+            </a>
+            <button type="button" class="mobile-drawer-close" data-menu-close aria-label="Close menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <nav class="mobile-drawer-nav">
+            <ul>
+                <li><a href="shop.html">Crazy Deals <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Wellness <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Fitness <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Shop by Concern <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Weight Management <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Brands <i class="fa-solid fa-chevron-down"></i></a></li>
+                <li><a href="shop.html">Blogs</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="shop-page">
+        <div class="shop-inner">
+
+            <!-- Category Tabs -->
+            <div class="shop-categories" role="tablist" aria-label="Shop categories">
+                <button type="button" class="shop-category is-active" data-shop-category="all" role="tab" aria-selected="true">SHOP ALL</button>
+                <button type="button" class="shop-category" data-shop-category="bestseller" role="tab" aria-selected="false">BESTSELLER</button>
+                <button type="button" class="shop-category" data-shop-category="wellness" role="tab" aria-selected="false">WELLNESS</button>
+                <button type="button" class="shop-category" data-shop-category="protein" role="tab" aria-selected="false">PROTEIN</button>
+                <button type="button" class="shop-category" data-shop-category="fitness" role="tab" aria-selected="false">FITNESS</button>
+                <button type="button" class="shop-category" data-shop-category="multivitamins" role="tab" aria-selected="false">MULTIVITAMINS</button>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="shop-toolbar-row">
+                <button type="button" class="shop-filters-btn" data-shop-filter-toggle aria-expanded="false">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Filters</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="shop-sort">
+                    <label for="shop-sort-select">Sort by:</label>
+                    <div class="shop-sort-select-wrap">
+                        <select id="shop-sort-select" name="sort">
+                            <option value="featured">Featured</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Top Rated</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-filter-overlay" data-shop-filter-overlay hidden></div>
+
+            <!-- Layout: Sidebar + Grid -->
+            <div class="shop-layout">
+
+                <!-- Filter Sidebar -->
+                <aside class="shop-sidebar" data-shop-filter-drawer aria-label="Product filters">
+                    <div class="shop-filter-drawer-head">
+                        <h2>Filters</h2>
+                        <button type="button" class="shop-filter-drawer-close" data-shop-filter-close aria-label="Close filters">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <div class="shop-sidebar-inner">
+
+                    <div class="filter-group" data-filter-key="price">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Price</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="under-1000">Under ₹1,000</button>
+                            <button type="button" class="filter-option" data-filter-option="1000-2000">₹1,000 – ₹2,000</button>
+                            <button type="button" class="filter-option" data-filter-option="2000-4000">₹2,000 – ₹4,000</button>
+                            <button type="button" class="filter-option" data-filter-option="above-4000">Above ₹4,000</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group" data-filter-key="brand">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Brand</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="nutranova">NutraNova</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group" data-filter-key="foodType">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Food Type</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="vegetarian">Vegetarian</button>
+                            <button type="button" class="filter-option" data-filter-option="vegan">Vegan</button>
+                            <button type="button" class="filter-option" data-filter-option="non-vegetarian">Non-Vegetarian</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group" data-filter-key="flavour">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Flavour</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="chocolate">Chocolate</button>
+                            <button type="button" class="filter-option" data-filter-option="vanilla">Vanilla</button>
+                            <button type="button" class="filter-option" data-filter-option="fruit punch">Fruit Punch</button>
+                            <button type="button" class="filter-option" data-filter-option="lemon">Lemon</button>
+                            <button type="button" class="filter-option" data-filter-option="unflavoured">Unflavoured</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group" data-filter-key="size">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Size</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="2 kg">2 kg</button>
+                            <button type="button" class="filter-option" data-filter-option="1 kg">1 kg</button>
+                            <button type="button" class="filter-option" data-filter-option="400 g">400 g</button>
+                            <button type="button" class="filter-option" data-filter-option="300 g">300 g</button>
+                            <button type="button" class="filter-option" data-filter-option="250 g">250 g</button>
+                            <button type="button" class="filter-option" data-filter-option="60 tablets">60 Tablets</button>
+                            <button type="button" class="filter-option" data-filter-option="60 capsules">60 Capsules</button>
+                            <button type="button" class="filter-option" data-filter-option="90 softgels">90 Softgels</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group" data-filter-key="categories">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Categories</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="protein">Protein</button>
+                            <button type="button" class="filter-option" data-filter-option="fitness">Fitness</button>
+                            <button type="button" class="filter-option" data-filter-option="wellness">Wellness</button>
+                            <button type="button" class="filter-option" data-filter-option="multivitamins">Multivitamins</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group" data-filter-key="collections">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Collections</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="bestseller">Bestseller</button>
+                            <button type="button" class="filter-option" data-filter-option="fitness">Fitness</button>
+                            <button type="button" class="filter-option" data-filter-option="wellness">Wellness</button>
+                            <button type="button" class="filter-option" data-filter-option="protein">Protein</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group" data-filter-key="products">
+                        <button type="button" class="filter-group-header" aria-expanded="false">
+                            <span>Products</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="filter-group-body">
+                            <button type="button" class="filter-option" data-filter-option="1">100% Whey Protein</button>
+                            <button type="button" class="filter-option" data-filter-option="3">Pure Isolate</button>
+                            <button type="button" class="filter-option" data-filter-option="6">Creatine Monohydrate</button>
+                            <button type="button" class="filter-option" data-filter-option="7">One Daily Multivitamin</button>
+                        </div>
+                    </div>
+
+                    </div>
+
+                </aside>
+
+                <!-- Product Grid -->
+                <div class="shop-content">
+                    <div class="shop-page-header">
+                        <div class="shop-page-header-text">
+                            <h1 class="shop-page-title">Fitness &amp; Wellness</h1>
+                            <p class="shop-page-count" id="shop-page-count">502 products</p>
+                        </div>
+                        <button type="button" class="shop-share-btn" aria-label="Share page">
+                            <i class="fa-solid fa-share"></i>
+                        </button>
+                    </div>
+                    <p class="shop-results-count visually-hidden" id="shop-results-count" aria-live="polite">20 products</p>
+                    <div class="shop-grid" id="shop-grid"></div>
+                    <p class="shop-loader" id="shop-loader" hidden>Loading more products...</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="site-footer-inner">
+            <div class="footer-layout">
+                <div class="footer-grid">
+                    <div class="footer-col footer-col--brand">
+                        <a href="#" class="footer-logo">
+                            <img src="assets/img/logo.png" alt="NutraNova">
+                        </a>
+                        <p class="footer-about">Buy 100% Genuine and Authentic Supplements Online at Best Prices. NutraNova
+                            is a preferred Platinum Distributor and Online Wholesaler, resolves a severe problem by bringing
+                            all top-notch supplement brands in India under one roof.</p>
+                    </div>
+
+                    <div class="footer-col footer-col--connect footer-col--accordion" data-footer-accordion>
+                        <h3 class="footer-col-title footer-col-title--desktop">Connect with us</h3>
+                        <button type="button" class="footer-accordion-trigger" aria-expanded="false">
+                            <span>Connect with us</span>
+                            <i class="fa-solid fa-plus footer-accordion-icon" aria-hidden="true"></i>
+                        </button>
+                        <div class="footer-accordion-panel">
+                            <ul class="footer-links">
+                                <li><a href="#">Contact us</a></li>
+                                <li><a href="#">Bulk Purchase Enquiry (Retailers Only)</a></li>
+                                <li><a href="#">List your Brand with NutraNova (Become a seller)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="footer-col footer-col--nutranova footer-col--accordion" data-footer-accordion>
+                        <h3 class="footer-col-title footer-col-title--desktop">NutraNova</h3>
+                        <button type="button" class="footer-accordion-trigger" aria-expanded="false">
+                            <span>NutraNova</span>
+                            <i class="fa-solid fa-plus footer-accordion-icon" aria-hidden="true"></i>
+                        </button>
+                        <div class="footer-accordion-panel">
+                            <ul class="footer-links">
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Authenticity</a></li>
+                                <li><a href="#">All Brands</a></li>
+                                <li><a href="#">Importers</a></li>
+                                <li><a href="#">NutraNova In House Products</a></li>
+                                <li><a href="#">FAQs/ Help</a></li>
+                                <li><a href="#">Offers</a></li>
+                                <li><a href="#">Blogs</a></li>
+                                <li><a href="#">Store Locator</a></li>
+                                <li><a href="#">Sitemap</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="footer-col footer-col--newsletter">
+                        <h3 class="footer-col-title">Sign up to our Newsletter</h3>
+                        <form class="footer-newsletter" action="#" method="post">
+                            <div class="footer-newsletter-field">
+                                <input type="email" placeholder="Your Email" aria-label="Your Email">
+                                <button type="submit" aria-label="Subscribe"><i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                        </form>
+                        <div class="footer-badges">
+                            <div class="footer-badge">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>100%<br>SECURE</span>
+                            </div>
+                            <div class="footer-badge footer-badge--seal">
+                                <i class="fa-solid fa-certificate"></i>
+                                <span>AUTHENTICITY<br>GUARANTEED</span>
+                            </div>
+                            <div class="footer-badge">
+                                <i class="fa-solid fa-rotate"></i>
+                                <span>7 Days<br>Return</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-col footer-col--social">
+                        <div class="footer-social">
+                            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-col footer-col--app">
+                        <p class="footer-app-title">Download Mobile App</p>
+                        <div class="footer-app-buttons">
+                            <a href="#" class="footer-app-btn">
+                                <i class="fa-brands fa-google-play"></i>
+                                <span><small>GET IT ON</small>Google Play</span>
+                            </a>
+                            <a href="#" class="footer-app-btn">
+                                <i class="fa-brands fa-apple"></i>
+                                <span><small>Available on the</small>App Store</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-searches">
+                    <h3 class="footer-searches-title">Popular Searches</h3>
+                    <p class="footer-searches-links">
+                        <a href="#">Proteins</a> |
+                        <a href="#">Whey Proteins</a> |
+                        <a href="#">Whey Proteins Isolates</a> |
+                        <a href="#">Vegan Proteins</a> |
+                        <a href="#">Casein Proteins</a> |
+                        <a href="#">Gainers</a> |
+                        <a href="#">Mass Gainers</a> |
+                        <a href="#">Lean Mass Gainers</a> |
+                        <a href="#">Carbos</a> |
+                        <a href="#">Creatines</a> |
+                        <a href="#">Aminos & BCAA'S</a> |
+                        <a href="#">Weight Loss</a> |
+                        <a href="#">Fat Burners</a> |
+                        <a href="#">CLA</a> |
+                        <a href="#">L Carnitine</a> |
+                        <a href="#">Wellness</a> |
+                        <a href="#">Multivitamins</a> |
+                        <a href="#">T Boosters</a> |
+                        <a href="#">Omega Fatty Acids</a> |
+                        <a href="#">Fish Oil</a> |
+                        <a href="#">Cereals</a> |
+                        <a href="#">Muesli</a> |
+                        <a href="#">Oats</a> |
+                        <a href="#">Protein Snacks</a> |
+                        <a href="#">Peanut Butter</a> |
+                        <a href="#">Gym Essentials</a> |
+                        <a href="#">Gym Bags</a> |
+                        <a href="#">Gym Shakers</a>
+                    </p>
+                </div>
+
+                <div class="footer-bottom">
+                    <p class="footer-copyright">© 2026 A product of Square Bubbles Pvt. Ltd</p>
+                    <div class="footer-bottom-right">
+                        <div class="footer-payments">
+                            <span class="pay-badge pay-upi">UPI</span>
+                            <span class="pay-badge pay-visa">VISA</span>
+                            <span class="pay-badge pay-mc">MC</span>
+                            <span class="pay-badge pay-bank">Bank</span>
+                            <span class="pay-badge pay-emi">EMI</span>
+                            <span class="pay-badge pay-rupay">RuPay</span>
+                        </div>
+                        <div class="footer-legal">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Returns & Cancellation</a>
+                            <a href="#">Shipping Policy</a>
+                            <a href="#">Terms & Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="back-to-top" data-back-to-top aria-label="Back to top">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+    </footer>
+
+    <script src="assets/js/products-data.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/shop.js"></script>
+
+    <nav class="bottom-nav" aria-label="Mobile app navigation">
+        <a href="index.html" class="bottom-nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="shop.html" class="bottom-nav-item is-active" aria-current="page">
+            <i class="fa-solid fa-grip"></i>
+            <span>Categories</span>
+        </a>
+        <a href="#" class="bottom-nav-item">
+            <i class="fa-solid fa-coins"></i>
+            <span>NutraNova Cash</span>
+        </a>
+        <a href="shop.html" class="bottom-nav-item">
+            <i class="fa-solid fa-percent"></i>
+            <span>Crazy Deals</span>
+        </a>
+        <a href="#" class="bottom-nav-item">
+            <i class="fa-solid fa-user-group"></i>
+            <span>Community</span>
+        </a>
+    </nav>
+</body>
+
+</html>
