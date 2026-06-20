@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urban Woods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+  <link rel="stylesheet" href="assets/css/category.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-top-strip">
+      <div class="header-container top-strip-inner">
+        <ul class="top-links top-links--left">
+          <li><a href="#">Furniture</a></li>
+          <li><a href="#">Home Interiors</a></li>
+          <li><a href="#">Bulk Order</a></li>
+        </ul>
+
+        <ul class="top-links top-links--right">
+          <li><a href="tel:+919314447747"><i class="fa-solid fa-phone"></i> +91-9314447747</a></li>
+          <li><a href="#"><i class="fa-regular fa-building"></i> Become a Franchise</a></li>
+          <li><a href="#"><i class="fa-solid fa-truck-fast"></i> Track Order</a></li>
+          <li><a href="#"><i class="fa-regular fa-circle-question"></i> Help Center</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="header-container header-main-inner">
+        <button type="button" class="mobile-menu-btn" data-mobile-menu-open aria-label="Open menu"
+          aria-expanded="false" aria-controls="mobile-nav-drawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a class="site-logo" href="index.html" aria-label="Furniture home">
+          <img src="assets/img/logo.png" alt="Furniture" width="230" height="64" />
+        </a>
+
+        <div class="header-mobile-actions" aria-label="Quick actions">
+          <a href="#" class="header-mobile-action" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="header-mobile-action" aria-label="Cart">
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <form class="header-search" role="search" action="#" method="get">
+          <input type="search" name="q" placeholder="Search Products, Color & More..." aria-label="Search" />
+          <button type="submit" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+
+        <div class="header-actions">
+          <a href="#" class="header-action-item">
+            <i class="fa-solid fa-store" aria-hidden="true"></i>
+            <span>Stores</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-regular fa-user"></i>
+            <span>Profile</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-regular fa-heart"></i>
+            <span>Wishlist (0)</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Cart (0)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="header-nav" aria-label="Primary navigation">
+      <div class="header-container">
+        <ul class="nav-menu">
+          <li><a href="category.html">Sofas</a></li>
+          <li><a href="#">Living</a></li>
+          <li><a href="#">Bedroom</a></li>
+          <li><a href="#">Mattress</a></li>
+          <li><a href="#">Dining</a></li>
+          <li><a href="#">Storage</a></li>
+          <li><a href="#">Study & Office</a></li>
+          <li><a href="#">Outdoor</a></li>
+          <li><a href="#">Decor & Furnishing</a></li>
+          <li><a href="#">Modular Kitchen & Wardrobe</a></li>
+          <li><a class="ws-luxe" href="#">WS Luxe</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="mobile-nav-drawer" id="mobile-nav-drawer" data-mobile-menu aria-hidden="true">
+      <div class="mobile-nav-drawer__backdrop" data-mobile-menu-close aria-hidden="true"></div>
+      <aside class="mobile-nav-drawer__panel" role="dialog" aria-label="Navigation menu">
+        <div class="mobile-nav-drawer__head">
+          <span class="mobile-nav-drawer__title">Menu</span>
+          <button type="button" class="mobile-nav-drawer__close" data-mobile-menu-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="mobile-nav-drawer__nav" aria-label="Mobile navigation">
+          <a href="category.html">Sofas</a>
+          <a href="#">Living</a>
+          <a href="#">Bedroom</a>
+          <a href="#">Mattress</a>
+          <a href="#">Dining</a>
+          <a href="#">Storage</a>
+          <a href="#">Study &amp; Office</a>
+          <a href="#">Outdoor</a>
+          <a href="#">Decor &amp; Furnishing</a>
+          <a href="#">Modular Kitchen &amp; Wardrobe</a>
+          <a class="ws-luxe" href="#">WS Luxe</a>
+        </nav>
+      </aside>
+    </div>
+  </header>
+
+  <main class="page-main cat-page">
+    <nav class="page-breadcrumb" aria-label="Breadcrumb">
+      <div class="header-container">
+        <ol>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">Deal Zone</a></li>
+          <li><a href="#">Furniture</a></li>
+          <li aria-current="page">Bestsellers</li>
+        </ol>
+      </div>
+    </nav>
+
+    <div class="header-container">
+      <div class="cat-page-head">
+        <h1 class="cat-page-title">Urban Ladder Bestsellers</h1>
+        <span class="cat-page-count">98 Products</span>
+      </div>
+
+      <div class="cat-filters" role="toolbar" aria-label="Product filters">
+        <button type="button" class="cat-filters__all" data-filter-open aria-expanded="false"
+          aria-controls="filter-drawer-panel">
+          <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+          ALL FILTERS
+        </button>
+        <div class="cat-filters__dropdowns">
+          <label class="cat-filter-select">
+            <span class="visually-hidden">Primary material</span>
+            <select name="material" aria-label="Primary material">
+              <option>PRIMARY MATERIAL</option>
+              <option>Wood</option>
+              <option>Metal</option>
+              <option>Fabric</option>
+            </select>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </label>
+          <label class="cat-filter-select">
+            <span class="visually-hidden">Brand</span>
+            <select name="brand" aria-label="Brand">
+              <option>BRAND</option>
+              <option>Urban Ladder</option>
+            </select>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </label>
+          <label class="cat-filter-select">
+            <span class="visually-hidden">Bed size</span>
+            <select name="bed-size" aria-label="Bed size">
+              <option>BED SIZE</option>
+              <option>Queen</option>
+              <option>King</option>
+            </select>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </label>
+          <label class="cat-filter-select">
+            <span class="visually-hidden">Storage type</span>
+            <select name="storage" aria-label="Storage type">
+              <option>STORAGE TYPE</option>
+              <option>With Storage</option>
+              <option>Without Storage</option>
+            </select>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </label>
+          <label class="cat-filter-select">
+            <span class="visually-hidden">Seating capacity</span>
+            <select name="seating" aria-label="Seating capacity">
+              <option>SEATING CAPACITY</option>
+              <option>2 Seater</option>
+              <option>3 Seater</option>
+            </select>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </label>
+        </div>
+        <label class="cat-filter-select cat-filter-select--sort">
+          <span class="visually-hidden">Sort by</span>
+          <select name="sort" aria-label="Sort by">
+            <option>SORT BY</option>
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </label>
+      </div>
+
+      <div class="plp-grid">
+        <article class="plp-card" data-product-id="casey">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=casey">
+              <img src="assets/img/exclusive-1.webp" alt="Casey Swivel Dining Chair" />
+            </a>
+            <span class="plp-card__badge">Bestseller</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=casey">Casey Swivel Dining Chair In Olive And Tan Colour Set Of
+                2</a></h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹19,999</span>
+              <span class="plp-card__old">₹29,999</span>
+              <span class="plp-card__off">33% OFF</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="plp-card" data-product-id="caribu">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=caribu">
+              <img src="assets/img/exclusive-2.webp" alt="Caribu Glass Dining Table" />
+            </a>
+            <span class="plp-card__badge plp-card__badge--new">New Arrivals</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=caribu">Caribu Glass 4 To 6 Seater Extendable Dining Table In
+                White High Gloss Finish</a></h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹41,999</span>
+              <span class="plp-card__old">₹57,799</span>
+              <span class="plp-card__off">27% OFF</span>
+            </div>
+            <div class="plp-card__swatches">
+              <span class="plp-swatch" style="background:#e8e4dc"></span>
+              <span class="plp-swatch" style="background:#3d3d3d"></span>
+              <span class="plp-swatch-more">+2</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="plp-card" data-product-id="bennis">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=bennis">
+              <img src="assets/img/exclusive-3.webp" alt="Bennis Shoe Rack" />
+            </a>
+            <span class="plp-card__badge">Bestseller</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=bennis">Bennis 25 Pair Shoe Rack in Dark Walnut Finish</a></h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹11,999</span>
+              <span class="plp-card__old">₹17,799</span>
+              <span class="plp-card__off">33% OFF</span>
+            </div>
+            <div class="plp-card__swatches">
+              <span class="plp-swatch" style="background:#5c4033"></span>
+              <span class="plp-swatch" style="background:#2f2f2f"></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="plp-card" data-product-id="taran">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=taran">
+              <img src="assets/img/exclusive-4.webp" alt="Taran 3 Seater Sofa" />
+            </a>
+            <span class="plp-card__badge">Bestseller</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=taran">Taran 3 Seater Wooden Sofa in Deep Olive Velvet
+                Colour</a></h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹64,999</span>
+              <span class="plp-card__old">₹78,750</span>
+              <span class="plp-card__off">17% OFF</span>
+            </div>
+            <div class="plp-card__swatches">
+              <span class="plp-swatch" style="background:#4a5d3a"></span>
+              <span class="plp-swatch-more">+4</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="plp-card" data-product-id="aruba">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=aruba">
+              <img src="assets/img/exclusive-5.webp" alt="Aruba Queen Size Bed" />
+            </a>
+            <span class="plp-card__badge">Bestseller</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=aruba">Aruba Engineered Wood Queen Size Bed With Hydraulic
+                Storage (Rustic Walnut Finish)</a></h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹26,999</span>
+              <span class="plp-card__old">₹45,599</span>
+              <span class="plp-card__off">41% OFF</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="plp-card" data-product-id="florence">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=florence">
+              <img src="assets/img/exclusive-6.webp" alt="Florence Lounge Chair" />
+            </a>
+            <span class="plp-card__badge">Bestseller</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=florence">Florence Solid Wood Lounge Chair in Calico Floral
+                Colour</a></h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹10,999</span>
+              <span class="plp-card__old">₹14,999</span>
+              <span class="plp-card__off">27% OFF</span>
+            </div>
+            <div class="plp-card__swatches">
+              <span class="plp-swatch plp-swatch--img"><img src="assets/img/exclusive-6.webp" alt="" /></span>
+              <span class="plp-swatch plp-swatch--img"><img src="assets/img/exclusive-1.webp" alt="" /></span>
+              <span class="plp-swatch-more">+1</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="plp-card" data-product-id="raynor">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=raynor">
+              <img src="assets/img/exclusive-7.webp" alt="Raynor 3 Seater Sofa" />
+            </a>
+            <span class="plp-card__badge">Bestseller</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=raynor">Raynor 3 Seater Wooden Sofa in Macadamia Brown Colour</a>
+            </h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹32,999</span>
+              <span class="plp-card__old">₹47,999</span>
+              <span class="plp-card__off">31% OFF</span>
+            </div>
+            <div class="plp-card__swatches">
+              <span class="plp-swatch" style="background:#8b7355"></span>
+              <span class="plp-swatch" style="background:#c4b8a8"></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="plp-card" data-product-id="amy">
+          <div class="plp-card__media-wrap">
+            <a class="plp-card__media" href="product.html?id=amy">
+              <img src="assets/img/exclusive-8.webp" alt="Amy Queen Size Bed" />
+            </a>
+            <span class="plp-card__badge">Bestseller</span>
+            <button type="button" class="plp-card__wish" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="plp-card__body">
+            <p class="plp-card__brand">Urban Ladder</p>
+            <h2 class="plp-card__title"><a href="product.html?id=amy">Amy Engineered Wood Queen Size Bed With Box Storage
+                (Classic Walnut Finish, Brown Colour)</a></h2>
+            <div class="plp-card__price-row">
+              <span class="plp-card__price">₹15,999</span>
+              <span class="plp-card__old">₹30,999</span>
+              <span class="plp-card__off">48% OFF</span>
+            </div>
+            <div class="plp-card__swatches">
+              <span class="plp-swatch plp-swatch--rect" style="background:#6b4f3a"></span>
+              <span class="plp-swatch plp-swatch--rect" style="background:#3d2817"></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-col">
+          <h3 class="footer-heading">Corporate</h3>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Corporate Governance</a></li>
+            <li><a href="#">Pepperfry in the News</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Useful Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Explore Gift Cards</a></li>
+            <li><a href="#">Buy in Bulk</a></li>
+            <li><a href="#">Discover Our Brands</a></li>
+            <li><a href="#">Check Out Bonhomie</a></li>
+            <li><a href="#">Our Blog</a></li>
+            <li><a href="#">Find a Store</a></li>
+            <li><a href="#">Track Your Order</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Partner With Us</h3>
+          <ul class="footer-links">
+            <li><a href="#">Sell on Pepperfry</a></li>
+            <li><a href="#">Become a Franchisee</a></li>
+            <li><a href="#">Become Our Channel Partner</a></li>
+            <li><a href="#">Become Our Pep Homie</a></li>
+            <li><a href="#">Our Marketplace Policies</a></li>
+            <li><a href="#">Merchant Dashboard Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Need Help?</h3>
+          <ul class="footer-links">
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Policies</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-col--apps">
+          <h3 class="footer-heading">Shop Built Safe Products</h3>
+          <ul class="footer-links footer-links--compact">
+            <li><a href="#">Kids &amp; Pet Friendly</a></li>
+            <li><a href="#">Certified Non-Toxic</a></li>
+            <li><a href="#">Made with Vegetarian Glue</a></li>
+            <li><a href="#">Scratch Resistant Finish</a></li>
+          </ul>
+          <h3 class="footer-heading footer-heading--spaced">Download our App</h3>
+          <div class="footer-app-buttons">
+            <a href="#" class="footer-app-btn" aria-label="Download on the App Store">
+              <i class="fa-brands fa-apple" aria-hidden="true"></i>
+              <span class="footer-app-btn__text"><span class="footer-app-btn__small">Download on the</span> App
+                Store</span>
+            </a>
+            <a href="#" class="footer-app-btn" aria-label="Get it on Google Play">
+              <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+              <span class="footer-app-btn__text"><span class="footer-app-btn__small">GET IT ON</span> Google Play</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular Categories</h3>
+          <p class="footer-keywords">Sofas, Sectional Sofas, Sofa Sets, Queen Size Beds, King Size Beds, Coffee Tables,
+            Dining Sets, Recliners, Sofa Cum Beds, Queen Size Mattresses, Cabinets &amp; Sideboards, Book Shelves, TV
+            &amp; Media Units, Wardrobes, Foldable Mattresses, Pillows, Wall Shelves, Photo Frames, Bed Sheets, Table
+            Linen, Study Tables, Office Furniture, Dining Tables, Carpets, Wall Decor.</p>
+        </div>
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular Brands</h3>
+          <p class="footer-keywords">Mintwud, Woodsworth, CasaCraft, Amberville, Mudramark, Bohemiana, Springtek,
+            Spacewood, A Globia Creations, Febonic, Durian, Nilkamal, Sleepycat, Bluewud, Duroflex, Sleepyhead, Green
+            Soul, Orange Tree, Clouddio.</p>
+        </div>
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular cities</h3>
+          <p class="footer-keywords">Bengaluru, Mumbai, Navi Mumbai, Delhi, Hyderabad, Pune, Chennai, Gurgaon, Kolkata,
+            Noida, Goa, Ghaziabad, Faridabad, Jaipur, Lucknow, Kochi, Visakhapatnam, Chandigarh, Vadodara, Nagpur,
+            Thiruvananthapuram, Indore, Mysore, Bhopal, Surat, Patna, Ludhiana, Ahmedabad, Nashik, Aurangabad.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="cat-mobile-bar" aria-label="Category page actions">
+    <button type="button" class="cat-mobile-bar__btn" data-sort-open aria-expanded="false"
+      aria-controls="sort-sheet-panel">
+      <i class="fa-solid fa-arrows-up-down" aria-hidden="true"></i>
+      <span>Sort By</span>
+    </button>
+    <button type="button" class="cat-mobile-bar__btn" data-filter-open aria-expanded="false"
+      aria-controls="filter-drawer-panel">
+      <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+      <span>Filters</span>
+    </button>
+    <button type="button" class="cat-mobile-bar__btn" data-category-open aria-expanded="false"
+      aria-controls="category-sheet-panel">
+      <i class="fa-solid fa-shapes" aria-hidden="true"></i>
+      <span>Category</span>
+    </button>
+  </nav>
+
+  <a href="#" class="plp-chat-fab" aria-label="Chat with us">
+    <i class="fa-solid fa-comment" aria-hidden="true"></i>
+  </a>
+
+  <div class="cat-sheet cat-sheet--sort" data-sort-sheet aria-hidden="true">
+    <button type="button" class="cat-sheet__backdrop" data-sheet-close aria-label="Close sort options"></button>
+    <div id="sort-sheet-panel" class="cat-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="sort-sheet-title">
+      <header class="cat-sheet__head">
+        <h2 id="sort-sheet-title" class="cat-sheet__head-title">Sort By</h2>
+        <button type="button" class="cat-sheet__close" data-sheet-close aria-label="Close sort options">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+      <ul class="cat-sort-list">
+        <li>
+          <button type="button" class="cat-sort-list__btn is-active" data-sort-value="popularity">
+            <i class="fa-solid fa-fire" aria-hidden="true"></i>
+            <span>Popularity</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="cat-sort-list__btn" data-sort-value="price-desc">
+            <i class="fa-solid fa-arrow-trend-down" aria-hidden="true"></i>
+            <span>Price High to Low</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="cat-sort-list__btn" data-sort-value="price-asc">
+            <i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i>
+            <span>Price Low to High</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="cat-sort-list__btn" data-sort-value="discount">
+            <i class="fa-solid fa-percent" aria-hidden="true"></i>
+            <span>Discount High to Low</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cat-sheet cat-sheet--category" data-category-sheet aria-hidden="true">
+    <button type="button" class="cat-sheet__backdrop" data-sheet-close aria-label="Close categories"></button>
+    <div id="category-sheet-panel" class="cat-sheet__panel" role="dialog" aria-modal="true"
+      aria-labelledby="category-sheet-title">
+      <header class="cat-sheet__head">
+        <h2 id="category-sheet-title" class="cat-sheet__head-title">Category</h2>
+        <button type="button" class="cat-sheet__close" data-sheet-close aria-label="Close categories">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+      <nav class="cat-category-list" aria-label="Browse categories">
+        <a href="category.html" class="is-active">Sofas</a>
+        <a href="#">Living</a>
+        <a href="#">Bedroom</a>
+        <a href="#">Mattress</a>
+        <a href="#">Dining</a>
+        <a href="#">Storage</a>
+        <a href="#">Study &amp; Office</a>
+        <a href="#">Outdoor</a>
+        <a href="#">Decor &amp; Furnishing</a>
+        <a href="#">Modular Kitchen &amp; Wardrobe</a>
+        <a href="#" class="ws-luxe">WS Luxe</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="filter-drawer filter-drawer--sheet" data-filter-drawer aria-hidden="true">
+    <button type="button" class="filter-drawer__backdrop" data-filter-close aria-label="Close filters"></button>
+    <aside id="filter-drawer-panel" class="filter-drawer__panel" role="dialog" aria-modal="true"
+      aria-labelledby="filter-drawer-title">
+      <header class="filter-drawer__head">
+        <h2 id="filter-drawer-title" class="filter-drawer__title">Filter and Sort</h2>
+        <button type="button" class="filter-drawer__close" data-filter-close aria-label="Close filters">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div class="filter-drawer__body">
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Sort <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="radio" name="sort-filter" checked /> Featured</label>
+            <label class="filter-option"><input type="radio" name="sort-filter" /> Price: Low to High</label>
+            <label class="filter-option"><input type="radio" name="sort-filter" /> Price: High to Low</label>
+            <label class="filter-option"><input type="radio" name="sort-filter" /> Newest</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Primary Material <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Wood</label>
+            <label class="filter-option"><input type="checkbox" /> Metal</label>
+            <label class="filter-option"><input type="checkbox" /> Fabric</label>
+            <label class="filter-option"><input type="checkbox" /> Leather</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Brand <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" checked /> Urban Ladder</label>
+            <label class="filter-option"><input type="checkbox" /> Mintwud</label>
+            <label class="filter-option"><input type="checkbox" /> Woodsworth</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Seating Capacity <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> 2 Seater</label>
+            <label class="filter-option"><input type="checkbox" /> 3 Seater</label>
+            <label class="filter-option"><input type="checkbox" /> 4+ Seater</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Upholstery <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Fabric</label>
+            <label class="filter-option"><input type="checkbox" /> Leatherette</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Cushion Type <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Firm</label>
+            <label class="filter-option"><input type="checkbox" /> Soft</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Sofa Size <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Compact</label>
+            <label class="filter-option"><input type="checkbox" /> Standard</label>
+            <label class="filter-option"><input type="checkbox" /> Large</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Back Height <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Low Back</label>
+            <label class="filter-option"><input type="checkbox" /> High Back</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Storage Availability <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> With Storage</label>
+            <label class="filter-option"><input type="checkbox" /> Without Storage</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Discount <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> 10% and above</label>
+            <label class="filter-option"><input type="checkbox" /> 20% and above</label>
+            <label class="filter-option"><input type="checkbox" /> 40% and above</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Product Model <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Casey</label>
+            <label class="filter-option"><input type="checkbox" /> Taran</label>
+            <label class="filter-option"><input type="checkbox" /> Raynor</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Primary Colour <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Beige</label>
+            <label class="filter-option"><input type="checkbox" /> Brown</label>
+            <label class="filter-option"><input type="checkbox" /> Grey</label>
+            <label class="filter-option"><input type="checkbox" /> Green</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Category <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Sofas</label>
+            <label class="filter-option"><input type="checkbox" /> Beds</label>
+            <label class="filter-option"><input type="checkbox" /> Dining</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Price <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> Under ₹10,000</label>
+            <label class="filter-option"><input type="checkbox" /> ₹10,000 – ₹25,000</label>
+            <label class="filter-option"><input type="checkbox" /> ₹25,000 – ₹50,000</label>
+            <label class="filter-option"><input type="checkbox" /> Above ₹50,000</label>
+          </div>
+        </details>
+        <details class="filter-accordion">
+          <summary class="filter-accordion__trigger">Sofa Type <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></summary>
+          <div class="filter-accordion__panel">
+            <label class="filter-option"><input type="checkbox" /> 3 Seater</label>
+            <label class="filter-option"><input type="checkbox" /> L-Shape</label>
+            <label class="filter-option"><input type="checkbox" /> Sectional</label>
+            <label class="filter-option"><input type="checkbox" /> Sofa Cum Bed</label>
+          </div>
+        </details>
+      </div>
+
+      <footer class="filter-drawer__foot">
+        <button type="button" class="filter-drawer__reset" data-filter-reset><i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i> Reset Filter</button>
+        <button type="button" class="filter-drawer__apply" data-filter-close><i class="fa-solid fa-check" aria-hidden="true"></i> Apply Filter</button>
+      </footer>
+    </aside>
+  </div>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+
+</html>

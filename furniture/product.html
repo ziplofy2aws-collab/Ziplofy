@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urban Woods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/pages.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body class="pdp-page">
+  <header class="site-header">
+    <div class="header-top-strip">
+      <div class="header-container top-strip-inner">
+        <ul class="top-links top-links--left">
+          <li><a href="#">Furniture</a></li>
+          <li><a href="#">Home Interiors</a></li>
+          <li><a href="#">Bulk Order</a></li>
+        </ul>
+
+        <ul class="top-links top-links--right">
+          <li><a href="tel:+919314447747"><i class="fa-solid fa-phone"></i> +91-9314447747</a></li>
+          <li><a href="#"><i class="fa-regular fa-building"></i> Become a Franchise</a></li>
+          <li><a href="#"><i class="fa-solid fa-truck-fast"></i> Track Order</a></li>
+          <li><a href="#"><i class="fa-regular fa-circle-question"></i> Help Center</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="header-container header-main-inner">
+        <button type="button" class="mobile-menu-btn" data-mobile-menu-open aria-label="Open menu"
+          aria-expanded="false" aria-controls="mobile-nav-drawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a class="site-logo" href="index.html" aria-label="Furniture home">
+          <img src="assets/img/logo.png" alt="Furniture" width="230" height="64" />
+        </a>
+
+        <div class="header-mobile-actions" aria-label="Quick actions">
+          <a href="#" class="header-mobile-action" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="header-mobile-action" aria-label="Cart">
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <form class="header-search" role="search" action="#" method="get">
+          <input type="search" name="q" placeholder="Search Products, Color & More..." aria-label="Search" />
+          <button type="submit" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+
+        <div class="header-actions">
+          <a href="#" class="header-action-item">
+            <i class="fa-solid fa-store" aria-hidden="true"></i>
+            <span>Stores</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-regular fa-user"></i>
+            <span>Profile</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-regular fa-heart"></i>
+            <span>Wishlist (0)</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Cart (0)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="header-nav" aria-label="Primary navigation">
+      <div class="header-container">
+        <ul class="nav-menu">
+          <li><a href="category.html">Sofas</a></li>
+          <li><a href="#">Living</a></li>
+          <li><a href="#">Bedroom</a></li>
+          <li><a href="#">Mattress</a></li>
+          <li><a href="#">Dining</a></li>
+          <li><a href="#">Storage</a></li>
+          <li><a href="#">Study & Office</a></li>
+          <li><a href="#">Outdoor</a></li>
+          <li><a href="#">Decor & Furnishing</a></li>
+          <li><a href="#">Modular Kitchen & Wardrobe</a></li>
+          <li><a class="ws-luxe" href="#">WS Luxe</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="mobile-nav-drawer" id="mobile-nav-drawer" data-mobile-menu aria-hidden="true">
+      <div class="mobile-nav-drawer__backdrop" data-mobile-menu-close aria-hidden="true"></div>
+      <aside class="mobile-nav-drawer__panel" role="dialog" aria-label="Navigation menu">
+        <div class="mobile-nav-drawer__head">
+          <span class="mobile-nav-drawer__title">Menu</span>
+          <button type="button" class="mobile-nav-drawer__close" data-mobile-menu-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="mobile-nav-drawer__nav" aria-label="Mobile navigation">
+          <a href="category.html">Sofas</a>
+          <a href="#">Living</a>
+          <a href="#">Bedroom</a>
+          <a href="#">Mattress</a>
+          <a href="#">Dining</a>
+          <a href="#">Storage</a>
+          <a href="#">Study &amp; Office</a>
+          <a href="#">Outdoor</a>
+          <a href="#">Decor &amp; Furnishing</a>
+          <a href="#">Modular Kitchen &amp; Wardrobe</a>
+          <a class="ws-luxe" href="#">WS Luxe</a>
+        </nav>
+      </aside>
+    </div>
+  </header>
+
+  <main class="page-main pdp-page" data-pdp-page>
+    <nav class="page-breadcrumb pdp-breadcrumb" aria-label="Breadcrumb">
+      <div class="header-container">
+        <ol>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="category.html">Sofa Set</a></li>
+          <li aria-current="page" data-pdp-breadcrumb-current>Fabric Sofas</li>
+        </ol>
+      </div>
+    </nav>
+
+    <div class="header-container pdp-layout">
+      <div class="pdp-gallery" data-pdp-gallery>
+        <div class="pdp-gallery__stage">
+          <div class="pdp-gallery__main" data-pdp-main>
+            <img src="assets/img/exclusive-5.webp" alt="Albert L Shape Corner Sofa" width="800" height="600" data-pdp-main-img />
+          </div>
+          <div class="pdp-gallery__overlay-actions">
+            <button type="button" class="pdp-icon-btn" aria-label="Share product">
+              <i class="fa-solid fa-share-nodes"></i>
+            </button>
+            <button type="button" class="pdp-icon-btn" aria-label="Add to wishlist">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <button type="button" class="pdp-gallery__arrow pdp-gallery__arrow--prev" data-pdp-prev aria-label="Previous image">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button type="button" class="pdp-gallery__arrow pdp-gallery__arrow--next" data-pdp-next aria-label="Next image">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="pdp-gallery__thumbs" role="tablist" aria-label="Product images">
+          <button type="button" class="pdp-thumb is-active" data-pdp-thumb data-src="assets/img/exclusive-5.webp" aria-label="View image 1" aria-selected="true">
+            <img src="assets/img/exclusive-5.webp" alt="" />
+          </button>
+          <button type="button" class="pdp-thumb pdp-thumb--video" data-pdp-thumb data-src="assets/img/exclusive-4.webp" aria-label="Play video">
+            <img src="assets/img/exclusive-4.webp" alt="" />
+            <span class="pdp-thumb__play"><i class="fa-solid fa-play"></i></span>
+          </button>
+          <button type="button" class="pdp-thumb" data-pdp-thumb data-src="assets/img/exclusive-3.webp" aria-label="View image 3">
+            <img src="assets/img/exclusive-3.webp" alt="" />
+          </button>
+          <button type="button" class="pdp-thumb" data-pdp-thumb data-src="assets/img/exclusive-2.webp" aria-label="View image 4">
+            <img src="assets/img/exclusive-2.webp" alt="" />
+          </button>
+          <button type="button" class="pdp-thumb" data-pdp-thumb data-src="assets/img/exclusive-1.webp" aria-label="View image 5">
+            <img src="assets/img/exclusive-1.webp" alt="" />
+          </button>
+          <button type="button" class="pdp-thumb" data-pdp-thumb data-src="assets/img/exclusive-6.webp" aria-label="View image 6">
+            <img src="assets/img/exclusive-6.webp" alt="" />
+          </button>
+          <button type="button" class="pdp-thumb pdp-thumb--more" aria-label="View more images">
+            <img src="assets/img/exclusive-7.webp" alt="" />
+            <span class="pdp-thumb__more"><i class="fa-regular fa-images" aria-hidden="true"></i> +9 More</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="pdp-info">
+        <h1 class="pdp-info__title">Albert L Shape Right Aligned Corner Sofa with Tilt-Adjustable Headrests (Velvet, Graphite Grey)</h1>
+
+        <p class="pdp-info__rating">
+          <span class="pdp-stars fa-stars" aria-label="4.5 out of 5 stars">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+          </span>
+          <span class="pdp-info__reviews">(8)</span>
+        </p>
+
+        <div class="pdp-price-block">
+          <span class="pdp-deal-tag">Limited-Time Deal</span>
+          <div class="pdp-price-line">
+            <span class="pdp-price-main">₹59,999</span>
+            <span class="pdp-price-off">55% Off</span>
+            <button type="button" class="pdp-price-info" aria-label="Price information">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
+          <p class="pdp-mrp">MRP <span>₹1,33,999</span></p>
+          <p class="pdp-promo"><i class="fa-solid fa-tag" aria-hidden="true"></i> Get Today's Instant Extra Discount on This Product — <a href="#"><i class="fa-solid fa-lock-open" aria-hidden="true"></i> Unlock Now!</a></p>
+        </div>
+
+        <div class="pdp-section pdp-orientation" data-pdp-orientation>
+          <p class="pdp-section__label">Orientation : <strong>Right Align</strong></p>
+          <div class="pdp-orientation__options">
+            <button type="button" class="pdp-orient-btn">
+              <span class="pdp-orient-btn__name">Left Align</span>
+              <span class="pdp-orient-btn__price">₹59,999</span>
+            </button>
+            <button type="button" class="pdp-orient-btn is-active">
+              <span class="pdp-orient-btn__name">Right Align</span>
+              <span class="pdp-orient-btn__price">₹59,999</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="pdp-section pdp-offers">
+          <h2 class="pdp-offers__title">Save Extra with Below Offers</h2>
+          <div class="pdp-offers__grid">
+            <article class="pdp-offer-card">
+              <header class="pdp-offer-card__head">
+                <h3>Store Discount</h3>
+              </header>
+              <div class="pdp-offer-card__body">
+                <p class="pdp-offer-card__highlight">Get Instant Extra Discount*</p>
+                <p class="pdp-offer-card__desc">Experience this product in-store and enjoy special additional savings.</p>
+                <a href="#" class="pdp-offer-card__cta"><i class="fa-solid fa-store" aria-hidden="true"></i> BOOK A VISIT</a>
+              </div>
+            </article>
+            <article class="pdp-offer-card">
+              <header class="pdp-offer-card__head pdp-offer-card__head--action">
+                <h3>No Cost EMI</h3>
+                <span class="pdp-offer-card__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+              </header>
+              <div class="pdp-offer-card__body">
+                <p class="pdp-offer-card__emi">Get it for <strong>₹2937/m</strong></p>
+                <div class="pdp-offer-card__banks">HDFC · ICICI · Axis <span>+4</span></div>
+              </div>
+            </article>
+            <article class="pdp-offer-card">
+              <header class="pdp-offer-card__head pdp-offer-card__head--action">
+                <h3>Easy EMI</h3>
+                <span class="pdp-offer-card__chevron" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+              </header>
+              <div class="pdp-offer-card__body">
+                <p class="pdp-offer-card__emi">Get it for <strong>₹2909/m</strong></p>
+                <div class="pdp-offer-card__banks">Banks <span>+7</span></div>
+              </div>
+            </article>
+          </div>
+          <p class="pdp-offers__timer"><i class="fa-regular fa-clock" aria-hidden="true"></i> Sale Ends In 19d 23h 0m 57s</p>
+        </div>
+
+        <div class="pdp-section pdp-delivery">
+          <p class="pdp-delivery__label"><i class="fa-solid fa-truck"></i> Check delivery &amp; assembly details</p>
+          <div class="pdp-pincode">
+            <input type="text" placeholder="Enter Pincode" maxlength="6" aria-label="Enter pincode" />
+            <button type="button"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> CHECK</button>
+          </div>
+        </div>
+
+        <div class="pdp-buy-row">
+          <label class="pdp-qty-select">
+            <span>Qty:</span>
+            <select name="qty" aria-label="Quantity" data-qty-select>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </label>
+          <p class="pdp-buy-price"><strong>₹59,999</strong> <span>(incl. of all taxes)</span></p>
+          <button type="button" class="pdp-btn-cart"><i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> ADD TO CART</button>
+        </div>
+
+        <ul class="pdp-trust">
+          <li>
+            <span class="pdp-trust__icon"><i class="fa-solid fa-truck"></i></span>
+            <span>Free Delivery &amp; Installation*</span>
+          </li>
+          <li>
+            <span class="pdp-trust__icon"><i class="fa-solid fa-shield-halved"></i></span>
+            <span>36 Month Warranty*</span>
+          </li>
+          <li>
+            <span class="pdp-trust__icon"><i class="fa-solid fa-lock"></i></span>
+            <span>Safe &amp; Secure Payment</span>
+          </li>
+        </ul>
+
+        <div class="pdp-section pdp-help">
+          <h2 class="pdp-help__title">Need Help in Buying?</h2>
+          <div class="pdp-help__grid">
+            <a href="tel:+919314447747" class="pdp-help__item">
+              <span class="pdp-help__icon"><i class="fa-solid fa-phone"></i></span>
+              <span><strong>Call Us</strong><br />+91-9314444747</span>
+            </a>
+            <a href="#" class="pdp-help__item">
+              <span class="pdp-help__icon"><i class="fa-solid fa-video"></i></span>
+              <span><span class="pdp-live"><i class="fa-solid fa-circle" aria-hidden="true"></i> Live</span> <strong>Product Demo</strong></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="pdp-product-info" data-pdp-tabs aria-label="Product information">
+      <div class="header-container">
+        <h2 class="pdp-product-info__heading">Product Information</h2>
+
+        <div class="pdp-tabs__nav" role="tablist" aria-label="Product information tabs">
+          <button type="button" class="pdp-tab is-active" role="tab" id="tab-specs" aria-selected="true"
+            aria-controls="panel-specs" data-pdp-tab="panel-specs">Specifications</button>
+          <button type="button" class="pdp-tab" role="tab" id="tab-overview" aria-selected="false"
+            aria-controls="panel-overview" data-pdp-tab="panel-overview">Product Overview</button>
+          <button type="button" class="pdp-tab" role="tab" id="tab-care" aria-selected="false"
+            aria-controls="panel-care" data-pdp-tab="panel-care">Care Instructions</button>
+          <button type="button" class="pdp-tab" role="tab" id="tab-terms" aria-selected="false"
+            aria-controls="panel-terms" data-pdp-tab="panel-terms">Terms And Conditions</button>
+          <button type="button" class="pdp-tab" role="tab" id="tab-warranty" aria-selected="false"
+            aria-controls="panel-warranty" data-pdp-tab="panel-warranty">Warranty</button>
+          <button type="button" class="pdp-tab" role="tab" id="tab-merchant" aria-selected="false"
+            aria-controls="panel-merchant" data-pdp-tab="panel-merchant">Merchant Details</button>
+          <button type="button" class="pdp-tab" role="tab" id="tab-disclaimer" aria-selected="false"
+            aria-controls="panel-disclaimer" data-pdp-tab="panel-disclaimer">Disclaimer</button>
+          <button type="button" class="pdp-tab" role="tab" id="tab-delivery" aria-selected="false"
+            aria-controls="panel-delivery" data-pdp-tab="panel-delivery">Delivery &amp; Installation</button>
+        </div>
+
+        <div class="pdp-tabs__panels">
+          <div id="panel-specs" class="pdp-tab-panel is-active" role="tabpanel" aria-labelledby="tab-specs">
+            <div class="pdp-specs-layout">
+              <dl class="pdp-specs-table">
+                <div><dt>Designs</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Modern</dd></div>
+                <div><dt>Material</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Velvet</dd></div>
+                <div><dt>Color</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Grey</dd></div>
+                <div><dt>Seater</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>4 Seater</dd></div>
+                <div><dt>Features</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Tilt Adjustable Headrests, Anti Sag Build, High-Density Foam, and Comfortable Cushion Seating</dd></div>
+                <div><dt>Dimensions (Inch)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>106 L x 38 W x 33 H</dd></div>
+                <div><dt>Dimensions (cm)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>269.2 L x 96.5 W x 83.8 H</dd></div>
+                <div><dt>Seating Height (Inch)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>17</dd></div>
+                <div><dt>Seating Height (cm)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>43.2 H</dd></div>
+                <div><dt>Chaise Length (Inch)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>62</dd></div>
+                <div><dt>Chaise Length (cm)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>157.5 H</dd></div>
+                <div><dt>Backrest Height (Inch)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>10</dd></div>
+                <div><dt>Backrest Height (cm)</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>25.4 H</dd></div>
+                <div><dt>Inner Seat Depth</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>24</dd></div>
+                <div><dt>Product Quantity</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>1 Unit</dd></div>
+                <div><dt>Brand</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Wooden Street</dd></div>
+                <div><dt>Storage</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Without Storage</dd></div>
+                <div><dt>Aligned</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Right</dd></div>
+                <div><dt>Sku</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>WSSCB649GG25100</dd></div>
+                <div><dt>Delivery Condition</dt><span class="pdp-spec-colon" aria-hidden="true">:</span><dd>Expert-Assembly (within 2 days of delivery)</dd></div>
+              </dl>
+
+              <div class="pdp-specs-visual">
+                <div class="pdp-specs-visual__brand">
+                  <img src="assets/img/logo.png" alt="Wooden Street" class="pdp-specs-visual__logo" />
+                </div>
+                <div class="pdp-specs-visual__diagram">
+                  <div class="pdp-scale" aria-hidden="true">
+                    <div class="pdp-scale__compare">
+                      <div class="pdp-scale__ruler">
+                        <span>70</span><span>60</span><span>50</span><span>40</span><span>30</span><span>20</span><span>10</span>
+                      </div>
+                      <div class="pdp-scale__figure"></div>
+                    </div>
+                    <p class="pdp-scale__note">Model height - 5.8 Feet</p>
+                  </div>
+                  <div class="pdp-dimension-img">
+                    <img src="assets/img/exclusive-5.webp" alt="Sofa dimensions diagram" />
+                  </div>
+                </div>
+                <p class="pdp-specs-visual__badge">
+                  <i class="fa-solid fa-award" aria-hidden="true"></i>
+                  Manufactured with Precision Premium Quality
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-overview" class="pdp-tab-panel" role="tabpanel" aria-labelledby="tab-overview" hidden>
+            <div class="pdp-tab-content">
+              <p>The Albert L Shape Right Aligned Corner Sofa combines modern aesthetics with everyday comfort. Velvet upholstery and tilt-adjustable headrests make it ideal for relaxed living spaces. High-density foam ensures lasting support without sagging.</p>
+              <ul>
+                <li>Right-aligned L-shape configuration</li>
+                <li>Graphite grey velvet finish</li>
+                <li>Suitable for medium to large living rooms</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="panel-care" class="pdp-tab-panel" role="tabpanel" aria-labelledby="tab-care" hidden>
+            <div class="pdp-tab-content">
+              <ul>
+                <li>Vacuum regularly using a soft brush attachment.</li>
+                <li>Blot spills immediately; avoid rubbing the fabric.</li>
+                <li>Keep away from direct sunlight to prevent fading.</li>
+                <li>Rotate cushions periodically for even wear.</li>
+                <li>Professional cleaning recommended once a year.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="panel-terms" class="pdp-tab-panel" role="tabpanel" aria-labelledby="tab-terms" hidden>
+            <div class="pdp-tab-content">
+              <p>Orders are subject to availability and confirmation at checkout. Prices include applicable taxes unless stated otherwise. Returns and cancellations follow store policy timelines. Customized or assembled products may have additional terms communicated at purchase.</p>
+            </div>
+          </div>
+
+          <div id="panel-warranty" class="pdp-tab-panel" role="tabpanel" aria-labelledby="tab-warranty" hidden>
+            <div class="pdp-tab-content">
+              <p>This product includes a <strong>36-month warranty</strong> against manufacturing defects under normal residential use. Warranty does not cover damage from misuse, accidents, or unauthorized modifications. For claims, contact customer support with invoice and product images.</p>
+            </div>
+          </div>
+
+          <div id="panel-merchant" class="pdp-tab-panel" role="tabpanel" aria-labelledby="tab-merchant" hidden>
+            <div class="pdp-tab-content">
+              <p><strong>Merchant:</strong> Wooden Street Furniture Pvt. Ltd.</p>
+              <p><strong>Registered address:</strong> India</p>
+              <p><strong>Customer care:</strong> +91-9314444747</p>
+              <p><strong>Email:</strong> support@furniturestore.com</p>
+            </div>
+          </div>
+
+          <div id="panel-disclaimer" class="pdp-tab-panel" role="tabpanel" aria-labelledby="tab-disclaimer" hidden>
+            <div class="pdp-tab-content">
+              <p>Product images are for representation purposes. Actual colour may vary slightly due to screen settings and lighting. Dimensions are approximate and may have a tolerance of ±2%. Assembly requirements and timelines depend on location and service availability.</p>
+            </div>
+          </div>
+
+          <div id="panel-delivery" class="pdp-tab-panel" role="tabpanel" aria-labelledby="tab-delivery" hidden>
+            <div class="pdp-tab-content">
+              <p>Free delivery and expert assembly are available in select pin codes. Standard delivery timelines are shared after pincode verification. Our team will schedule installation within 2 days of delivery where expert assembly is included.</p>
+              <ul>
+                <li>Enter your pincode on the product page to check serviceability.</li>
+                <li>Large items are delivered in multiple packages when required.</li>
+                <li>Please ensure clear access at the delivery location.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pdp-reviews" aria-label="Customer reviews">
+      <div class="header-container">
+        <h2 class="pdp-reviews__heading">Customer Reviews</h2>
+
+        <div class="pdp-reviews__layout">
+          <aside class="pdp-reviews__summary">
+            <div class="pdp-reviews__score-block">
+              <span class="pdp-reviews__score" aria-hidden="true">4.4</span>
+              <div class="pdp-reviews__score-meta">
+                <div class="pdp-reviews__score-top">
+                  <span class="pdp-reviews__stars" aria-label="Rated 4.4 out of 5">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+                  </span>
+                  <span class="pdp-reviews__score-count">(13)</span>
+                </div>
+                <p class="pdp-reviews__totals">57 Ratings &amp; 13 Reviews</p>
+              </div>
+            </div>
+
+            <a href="#" class="pdp-reviews__write">
+              <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+              Write a Review
+            </a>
+
+            <div class="pdp-reviews__breakdown" aria-label="Rating breakdown">
+              <div class="pdp-reviews__bar-row">
+                <span class="pdp-reviews__bar-label">5 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                <div class="pdp-reviews__bar"><span class="pdp-reviews__bar-fill" style="width: 46%"></span></div>
+                <span class="pdp-reviews__bar-pct">46%</span>
+              </div>
+              <div class="pdp-reviews__bar-row">
+                <span class="pdp-reviews__bar-label">4 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                <div class="pdp-reviews__bar"><span class="pdp-reviews__bar-fill" style="width: 46%"></span></div>
+                <span class="pdp-reviews__bar-pct">46%</span>
+              </div>
+              <div class="pdp-reviews__bar-row">
+                <span class="pdp-reviews__bar-label">3 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                <div class="pdp-reviews__bar"><span class="pdp-reviews__bar-fill" style="width: 8%"></span></div>
+                <span class="pdp-reviews__bar-pct">8%</span>
+              </div>
+              <div class="pdp-reviews__bar-row">
+                <span class="pdp-reviews__bar-label">2 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                <div class="pdp-reviews__bar"><span class="pdp-reviews__bar-fill" style="width: 0%"></span></div>
+                <span class="pdp-reviews__bar-pct">0%</span>
+              </div>
+              <div class="pdp-reviews__bar-row">
+                <span class="pdp-reviews__bar-label">1 <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                <div class="pdp-reviews__bar"><span class="pdp-reviews__bar-fill" style="width: 0%"></span></div>
+                <span class="pdp-reviews__bar-pct">0%</span>
+              </div>
+            </div>
+          </aside>
+
+          <div class="pdp-reviews__feed">
+            <h3 class="pdp-reviews__feed-title">Reviewed by customers</h3>
+
+            <ul class="pdp-reviews__list">
+              <li class="pdp-review">
+                <div class="pdp-review__body">
+                  <div class="pdp-review__stars" aria-label="5 out of 5 stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <span class="pdp-review__rating-num">(5)</span>
+                  </div>
+                  <p class="pdp-review__text">The moment I saw this sofa set, I knew it was going to be the centrepiece of my living room. I bought it in June 2024 and the delivery happened within the promised timeline. The fabric quality and cushioning are excellent — guests always compliment how comfortable it feels.</p>
+                  <p class="pdp-review__author"><strong>Farooq Adam</strong>, Mumbai</p>
+                  <p class="pdp-review__meta">
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                    <strong>Verified Buyer</strong>
+                    <span class="pdp-review__date">17 Jul 2024</span>
+                  </p>
+                </div>
+                <div class="pdp-review__media">
+                  <img src="assets/img/exclusive-1.webp" alt="Customer photo of sofa in living room" width="120" height="120" loading="lazy" />
+                </div>
+              </li>
+
+              <li class="pdp-review">
+                <div class="pdp-review__body">
+                  <div class="pdp-review__stars" aria-label="5 out of 5 stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <span class="pdp-review__rating-num">(5)</span>
+                  </div>
+                  <p class="pdp-review__text">I purchased the 4 seater version and it fits perfectly in my apartment. Assembly was smooth and the team was professional. The grey velvet looks premium and is easy to maintain. Very happy with the purchase and would recommend to anyone looking for a modern L-shape sofa.</p>
+                  <p class="pdp-review__author"><strong>Viral Shah</strong>, Rajkot</p>
+                  <p class="pdp-review__meta">
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                    <strong>Verified Buyer</strong>
+                    <span class="pdp-review__date">9 Jun 2024</span>
+                  </p>
+                </div>
+                <div class="pdp-review__media">
+                  <img src="assets/img/exclusive-2.webp" alt="Customer photo of grey corner sofa" width="120" height="120" loading="lazy" />
+                </div>
+              </li>
+
+              <li class="pdp-review">
+                <div class="pdp-review__body">
+                  <div class="pdp-review__stars" aria-label="5 out of 5 stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <span class="pdp-review__rating-num">(5)</span>
+                  </div>
+                  <p class="pdp-review__text">Sturdy build and the headrest adjustment is a nice touch for movie nights. Colour matched the website photos. Only suggestion would be to add more fabric swatch options at the store, but overall a solid buy for the price point.</p>
+                  <p class="pdp-review__author"><strong>Priya Nair</strong>, Bengaluru</p>
+                  <p class="pdp-review__meta">
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                    <strong>Verified Buyer</strong>
+                    <span class="pdp-review__date">22 May 2024</span>
+                  </p>
+                </div>
+                <div class="pdp-review__media">
+                  <img src="assets/img/exclusive-3.webp" alt="Customer photo of sofa setup at home" width="120" height="120" loading="lazy" />
+                </div>
+              </li>
+
+              <li class="pdp-review">
+                <div class="pdp-review__body">
+                  <div class="pdp-review__stars" aria-label="4 out of 5 stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-regular fa-star" aria-hidden="true"></i>
+                    <span class="pdp-review__rating-num">(4)</span>
+                  </div>
+                  <p class="pdp-review__text">Good value for money. Delivery took a day longer than expected but the product quality made up for it. Cushions are firm yet comfortable. The right-aligned chaise works well for our room layout.</p>
+                  <p class="pdp-review__author"><strong>Rahul Mehta</strong>, Pune</p>
+                  <p class="pdp-review__meta">
+                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                    <strong>Verified Buyer</strong>
+                    <span class="pdp-review__date">3 Apr 2024</span>
+                  </p>
+                </div>
+                <div class="pdp-review__media">
+                  <img src="assets/img/exclusive-4.webp" alt="Customer photo of L-shaped sofa" width="120" height="120" loading="lazy" />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pdp-similar" aria-label="Visually similar products">
+      <div class="header-container">
+        <h2 class="pdp-similar__heading">Visually Similar Fabric Sofas</h2>
+
+        <div class="similar-grid">
+          <article class="similar-card" data-product-id="niwara">
+            <div class="similar-card__media-wrap">
+              <a class="similar-card__media" href="product.html?id=niwara">
+                <img src="assets/img/exclusive-5.webp" alt="Niwara 3+1+1 Seater Fabric Sofa Set" loading="lazy" />
+              </a>
+              <button type="button" class="similar-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="similar-card__body">
+              <h3 class="similar-card__title"><a href="product.html?id=niwara">Niwara 3+1+1 Seater Fabric Sofa Set (Cotton, Azure Blue)</a></h3>
+              <div class="similar-card__meta">
+                <div class="similar-card__rating" aria-label="Rated 4.5 out of 5">
+                  <span class="similar-card__stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+                  </span>
+                  <span class="similar-card__count">(103)</span>
+                </div>
+                <div class="similar-card__options">
+                  <span class="similar-card__swatch-group" aria-hidden="true">
+                    <span class="similar-card__swatch" style="background:#4a6fa5"></span>
+                    <span class="similar-card__swatch" style="background:#8b7355"></span>
+                  </span>
+                  <span class="similar-card__options-text">2+ Options</span>
+                </div>
+              </div>
+              <div class="similar-card__price-row">
+                <span class="similar-card__price">₹56,999</span>
+                <span class="similar-card__mrp">₹1,03,999</span>
+                <span class="similar-card__off">45% Off</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="similar-card" data-product-id="berlin">
+            <div class="similar-card__media-wrap">
+              <a class="similar-card__media" href="product.html?id=berlin">
+                <img src="assets/img/exclusive-6.webp" alt="Berlin 3 Seater Sofa" loading="lazy" />
+              </a>
+              <span class="similar-card__badge">Limited-Time Deal</span>
+              <button type="button" class="similar-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="similar-card__body">
+              <h3 class="similar-card__title"><a href="product.html?id=berlin">Berlin 3 Seater Sofa (Velvet, Indigo Blue)</a></h3>
+              <div class="similar-card__meta">
+                <div class="similar-card__rating" aria-label="Rated 4 out of 5">
+                  <span class="similar-card__stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-regular fa-star" aria-hidden="true"></i>
+                  </span>
+                  <span class="similar-card__count">(337)</span>
+                </div>
+                <div class="similar-card__options">
+                  <span class="similar-card__swatch-group" aria-hidden="true">
+                    <span class="similar-card__swatch" style="background:#3d4f7c"></span>
+                    <span class="similar-card__swatch" style="background:#6b5b4f"></span>
+                  </span>
+                  <span class="similar-card__options-text">2+ Options</span>
+                </div>
+              </div>
+              <div class="similar-card__price-row">
+                <span class="similar-card__price">₹43,999</span>
+                <span class="similar-card__mrp">₹83,999</span>
+                <span class="similar-card__off">48% Off</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="similar-card" data-product-id="albus">
+            <div class="similar-card__media-wrap">
+              <a class="similar-card__media" href="product.html?id=albus">
+                <img src="assets/img/exclusive-7.webp" alt="Albus 3+1+1 Seater Fabric Sofa Set" loading="lazy" />
+              </a>
+              <button type="button" class="similar-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="similar-card__body">
+              <h3 class="similar-card__title"><a href="product.html?id=albus">Albus 3+1+1 Seater Fabric Sofa Set (Velvet, Indigo Blue)</a></h3>
+              <div class="similar-card__meta">
+                <div class="similar-card__rating" aria-label="Rated 4.5 out of 5">
+                  <span class="similar-card__stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+                  </span>
+                  <span class="similar-card__count">(34)</span>
+                </div>
+                <div class="similar-card__options">
+                  <span class="similar-card__swatch-group" aria-hidden="true">
+                    <span class="similar-card__swatch" style="background:#3d4f7c"></span>
+                    <span class="similar-card__swatch" style="background:#7a6a8a"></span>
+                    <span class="similar-card__swatch" style="background:#5c5c5c"></span>
+                  </span>
+                  <span class="similar-card__options-text">3+ Options</span>
+                </div>
+              </div>
+              <div class="similar-card__price-row">
+                <span class="similar-card__price">₹65,999</span>
+                <span class="similar-card__mrp">₹1,44,999</span>
+                <span class="similar-card__off">54% Off</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="similar-card" data-product-id="albert-left">
+            <div class="similar-card__media-wrap">
+              <a class="similar-card__media" href="product.html?id=albert-left">
+                <img src="assets/img/exclusive-8.webp" alt="Albert L Shape Left Aligned Corner Sofa" loading="lazy" />
+              </a>
+              <span class="similar-card__badge">Limited-Time Deal</span>
+              <button type="button" class="similar-card__wish" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="similar-card__body">
+              <h3 class="similar-card__title"><a href="product.html?id=albert-left">Albert L Shape Left Aligned Corner Sofa with Tilt-Adjustable Headrests (Velvet, Graphite Grey)</a></h3>
+              <div class="similar-card__meta similar-card__meta--empty" aria-hidden="true"></div>
+              <div class="similar-card__price-row">
+                <span class="similar-card__price">₹59,999</span>
+                <span class="similar-card__mrp">₹92,999</span>
+                <span class="similar-card__off">35% Off</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-col">
+          <h3 class="footer-heading">Corporate</h3>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Corporate Governance</a></li>
+            <li><a href="#">Pepperfry in the News</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Useful Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Explore Gift Cards</a></li>
+            <li><a href="#">Buy in Bulk</a></li>
+            <li><a href="#">Discover Our Brands</a></li>
+            <li><a href="#">Check Out Bonhomie</a></li>
+            <li><a href="#">Our Blog</a></li>
+            <li><a href="#">Find a Store</a></li>
+            <li><a href="#">Track Your Order</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Partner With Us</h3>
+          <ul class="footer-links">
+            <li><a href="#">Sell on Pepperfry</a></li>
+            <li><a href="#">Become a Franchisee</a></li>
+            <li><a href="#">Become Our Channel Partner</a></li>
+            <li><a href="#">Become Our Pep Homie</a></li>
+            <li><a href="#">Our Marketplace Policies</a></li>
+            <li><a href="#">Merchant Dashboard Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Need Help?</h3>
+          <ul class="footer-links">
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Policies</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-col--apps">
+          <h3 class="footer-heading">Shop Built Safe Products</h3>
+          <ul class="footer-links footer-links--compact">
+            <li><a href="#">Kids &amp; Pet Friendly</a></li>
+            <li><a href="#">Certified Non-Toxic</a></li>
+            <li><a href="#">Made with Vegetarian Glue</a></li>
+            <li><a href="#">Scratch Resistant Finish</a></li>
+          </ul>
+          <h3 class="footer-heading footer-heading--spaced">Download our App</h3>
+          <div class="footer-app-buttons">
+            <a href="#" class="footer-app-btn" aria-label="Download on the App Store">
+              <i class="fa-brands fa-apple" aria-hidden="true"></i>
+              <span class="footer-app-btn__text"><span class="footer-app-btn__small">Download on the</span> App Store</span>
+            </a>
+            <a href="#" class="footer-app-btn" aria-label="Get it on Google Play">
+              <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+              <span class="footer-app-btn__text"><span class="footer-app-btn__small">GET IT ON</span> Google Play</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular Categories</h3>
+          <p class="footer-keywords">Sofas, Sectional Sofas, Sofa Sets, Queen Size Beds, King Size Beds, Coffee Tables, Dining Sets, Recliners, Sofa Cum Beds, Queen Size Mattresses, Cabinets &amp; Sideboards, Book Shelves, TV &amp; Media Units, Wardrobes, Foldable Mattresses, Pillows, Wall Shelves, Photo Frames, Bed Sheets, Table Linen, Study Tables, Office Furniture, Dining Tables, Carpets, Wall Decor.</p>
+        </div>
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular Brands</h3>
+          <p class="footer-keywords">Mintwud, Woodsworth, CasaCraft, Amberville, Mudramark, Bohemiana, Springtek, Spacewood, A Globia Creations, Febonic, Durian, Nilkamal, Sleepycat, Bluewud, Duroflex, Sleepyhead, Green Soul, Orange Tree, Clouddio.</p>
+        </div>
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular cities</h3>
+          <p class="footer-keywords">Bengaluru, Mumbai, Navi Mumbai, Delhi, Hyderabad, Pune, Chennai, Gurgaon, Kolkata, Noida, Goa, Ghaziabad, Faridabad, Jaipur, Lucknow, Kochi, Visakhapatnam, Chandigarh, Vadodara, Nagpur, Thiruvananthapuram, Indore, Mysore, Bhopal, Surat, Patna, Ludhiana, Ahmedabad, Nashik, Aurangabad.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="pdp-mobile-sticky" aria-label="Purchase actions">
+    <button type="button" class="pdp-mobile-sticky__emi">
+      <span class="pdp-mobile-sticky__emi-title">Pay With EMI</span>
+      <span class="pdp-mobile-sticky__emi-sub" data-emi-sub>From 2,230/Month</span>
+    </button>
+    <button type="button" class="pdp-mobile-sticky__cart" data-mobile-add-cart>
+      ADD TO CART
+    </button>
+  </div>
+
+  <a href="#" class="pdp-chat-fab" aria-label="Chat with us">
+    <i class="fa-solid fa-comment" aria-hidden="true"></i>
+  </a>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+
+</html>

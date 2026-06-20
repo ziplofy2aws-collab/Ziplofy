@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urban Woods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-top-strip">
+      <div class="header-container top-strip-inner">
+        <ul class="top-links top-links--left">
+          <li><a href="#">Furniture</a></li>
+          <li><a href="#">Home Interiors</a></li>
+          <li><a href="#">Bulk Order</a></li>
+        </ul>
+
+        <ul class="top-links top-links--right">
+          <li><a href="tel:+919314447747"><i class="fa-solid fa-phone"></i> +91-9314447747</a></li>
+          <li><a href="#"><i class="fa-regular fa-building"></i> Become a Franchise</a></li>
+          <li><a href="#"><i class="fa-solid fa-truck-fast"></i> Track Order</a></li>
+          <li><a href="#"><i class="fa-regular fa-circle-question"></i> Help Center</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="header-container header-main-inner">
+        <button type="button" class="mobile-menu-btn" data-mobile-menu-open aria-label="Open menu"
+          aria-expanded="false" aria-controls="mobile-nav-drawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a class="site-logo" href="index.html" aria-label="Furniture home">
+          <img src="assets/img/logo.png" alt="Furniture" width="230" height="64" />
+        </a>
+
+        <div class="header-mobile-actions" aria-label="Quick actions">
+          <a href="#" class="header-mobile-action" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="header-mobile-action" aria-label="Cart">
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <form class="header-search" role="search" action="#" method="get">
+          <input type="search" name="q" placeholder="Search Products, Color & More..." aria-label="Search" />
+          <button type="submit" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+
+        <div class="header-actions">
+          <a href="#" class="header-action-item">
+            <i class="fa-solid fa-store" aria-hidden="true"></i>
+            <span>Stores</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-regular fa-user"></i>
+            <span>Profile</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-regular fa-heart"></i>
+            <span>Wishlist (0)</span>
+          </a>
+          <a href="#" class="header-action-item">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Cart (0)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="header-nav" aria-label="Primary navigation">
+      <div class="header-container">
+        <ul class="nav-menu">
+          <li><a href="category.html">Sofas</a></li>
+          <li><a href="#">Living</a></li>
+          <li><a href="#">Bedroom</a></li>
+          <li><a href="#">Mattress</a></li>
+          <li><a href="#">Dining</a></li>
+          <li><a href="#">Storage</a></li>
+          <li><a href="#">Study & Office</a></li>
+          <li><a href="#">Outdoor</a></li>
+          <li><a href="#">Decor & Furnishing</a></li>
+          <li><a href="#">Modular Kitchen & Wardrobe</a></li>
+          <li><a class="ws-luxe" href="#">WS Luxe</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="mobile-nav-drawer" id="mobile-nav-drawer" data-mobile-menu aria-hidden="true">
+      <div class="mobile-nav-drawer__backdrop" data-mobile-menu-close aria-hidden="true"></div>
+      <aside class="mobile-nav-drawer__panel" role="dialog" aria-label="Navigation menu">
+        <div class="mobile-nav-drawer__head">
+          <span class="mobile-nav-drawer__title">Menu</span>
+          <button type="button" class="mobile-nav-drawer__close" data-mobile-menu-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="mobile-nav-drawer__nav" aria-label="Mobile navigation">
+          <a href="category.html">Sofas</a>
+          <a href="#">Living</a>
+          <a href="#">Bedroom</a>
+          <a href="#">Mattress</a>
+          <a href="#">Dining</a>
+          <a href="#">Storage</a>
+          <a href="#">Study &amp; Office</a>
+          <a href="#">Outdoor</a>
+          <a href="#">Decor &amp; Furnishing</a>
+          <a href="#">Modular Kitchen &amp; Wardrobe</a>
+          <a class="ws-luxe" href="#">WS Luxe</a>
+        </nav>
+      </aside>
+    </div>
+  </header>
+
+  <section class="hero-section" aria-label="Hero banners">
+    <div class="header-container hero-layout">
+      <div class="hero-slider" data-hero-slider>
+        <div class="hero-track" data-hero-track>
+          <article class="hero-slide is-active">
+            <img src="assets/img/hero-banner-1.png" alt="Furniture seasonal sale banner 1" />
+          </article>
+          <article class="hero-slide">
+            <img src="assets/img/hero-banner-2.png" alt="Furniture seasonal sale banner 2" />
+          </article>
+          <article class="hero-slide">
+            <img src="assets/img/hero-banner-3.png" alt="Furniture seasonal sale banner 3" />
+          </article>
+          <article class="hero-slide">
+            <img src="assets/img/hero-banner-4.png" alt="Furniture seasonal sale banner 4" />
+          </article>
+          <article class="hero-slide">
+            <img src="assets/img/hero-banner-5.png" alt="Furniture seasonal sale banner 5" />
+          </article>
+        </div>
+
+        <div class="hero-controls">
+          <button type="button" class="hero-control-btn" data-hero-prev aria-label="Previous slide">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button type="button" class="hero-control-btn" data-hero-next aria-label="Next slide">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <aside class="hero-side-banners" aria-label="Promotional banners">
+        <a class="hero-side-card" href="#">
+          <img src="assets/img/hero-banner-4.png" alt="Sleep. Sink. Snooze banner" />
+        </a>
+        <a class="hero-side-card" href="#">
+          <img src="assets/img/hero-banner-5.png" alt="Massive price drop banner" />
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="category-section" aria-label="Furniture categories">
+    <div class="header-container">
+      <div class="category-filter">
+        <button type="button" class="category-filter__chip is-active">All</button>
+        <button type="button" class="category-filter__chip">Living</button>
+        <button type="button" class="category-filter__chip">Bedroom</button>
+        <button type="button" class="category-filter__chip">Dining</button>
+        <button type="button" class="category-filter__chip">Mattress</button>
+        <button type="button" class="category-filter__chip">Decor</button>
+      </div>
+
+      <div class="category-scroll">
+        <div class="category-grid" data-category-scroll>
+        <a href="category.html" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/sofa.png" alt="Sofas" />
+          </div>
+          <h3 class="category-card__title">Sofas</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/all-beds.png" alt="Beds" />
+          </div>
+          <h3 class="category-card__title">Beds</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/all-dining-table-sets.jpg" alt="Dining" />
+          </div>
+          <h3 class="category-card__title">Dining</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/tv-units.jpg" alt="TV Units" />
+          </div>
+          <h3 class="category-card__title">TV Units</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/coffee-tables.png" alt="Coffee Tables" />
+          </div>
+          <h3 class="category-card__title">Coffee Tables</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/cabinet-sideboards.jpg" alt="Cabinets" />
+          </div>
+          <h3 class="category-card__title">Cabinets</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/mattress-online.png" alt="Mattresses" />
+          </div>
+          <h3 class="category-card__title">Mattresses</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/wardrobes.jpg" alt="Wardrobes" />
+          </div>
+          <h3 class="category-card__title">Wardrobes</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/sofa-cum-beds.jpg" alt="Sofa Cum Bed" />
+          </div>
+          <h3 class="category-card__title">Sofa Cum Bed</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/bookshelves.jpg" alt="Bookshelves" />
+          </div>
+          <h3 class="category-card__title">Bookshelves</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/all-study-tables.jpg" alt="All Study Tables" />
+          </div>
+          <h3 class="category-card__title">All Study Tables</h3>
+        </a>
+
+        <a href="#" class="category-card">
+          <div class="category-card__media">
+            <img src="assets/img/kitchen-cabinets.png" alt="Kitchen Cabinets" />
+          </div>
+          <h3 class="category-card__title">Kitchen Cabinets</h3>
+        </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="collection-section" aria-label="Collection highlights">
+    <div class="header-container collection-layout">
+      <a href="#" class="collection-card collection-card--large">
+        <img src="assets/img/coll-1.png" alt="The New Dawn collection" />
+      </a>
+
+      <div class="collection-grid">
+        <a href="#" class="collection-card">
+          <img src="assets/img/coll-2.png" alt="Bedroom collection" />
+          <span class="collection-card__label">BEDROOM <i class="fa-solid fa-arrow-right-long"></i></span>
+        </a>
+
+        <a href="#" class="collection-card">
+          <img src="assets/img/coll-3.png" alt="Living room collection" />
+          <span class="collection-card__label">LIVING ROOM <i class="fa-solid fa-arrow-right-long"></i></span>
+        </a>
+
+        <a href="#" class="collection-card">
+          <img src="assets/img/coll-4.png" alt="Dining room collection" />
+          <span class="collection-card__label">DINING ROOM <i class="fa-solid fa-arrow-right-long"></i></span>
+        </a>
+
+        <a href="#" class="collection-card collection-card--explore">
+          <span class="collection-card__explore">EXPLORE ALL <i class="fa-solid fa-arrow-right-long"></i></span>
+          <i class="fa-regular fa-sun collection-card__mark" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="products-section" aria-label="Top rated products">
+    <div class="header-container">
+      <div class="products-head">
+        <div>
+          <h2 class="products-title">Top-Rated by Indian Homes</h2>
+          <p class="products-subtitle">Crafted to complement Indian lifestyles</p>
+        </div>
+        <a href="#" class="products-view-all">View All <i class="fa-solid fa-arrow-right-long"></i></a>
+      </div>
+
+      <div class="products-carousel" data-products-carousel>
+        <div class="products-track" data-products-track>
+          <article class="product-card" data-product-id="osbert">
+            <a class="product-card__media" href="product.html?id=osbert"><img src="assets/img/Top-rated-1.jpg" alt="Top rated sofa 1" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Osbert 3 Seater Curved Sofa (Cotton, Jade Ivory)</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(385)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹45,999</span>
+                <span class="product-card__old-price">₹81,999</span>
+                <span class="product-card__off">44% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="mcbeth">
+            <a class="product-card__media" href="product.html?id=mcbeth"><img src="assets/img/Top-rated-2.jpg" alt="Top rated dining set" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Mcbeth - Sofie Sheesham Wood 6 Seater Dining Set</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(25)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹59,999</span>
+                <span class="product-card__old-price">₹71,999</span>
+                <span class="product-card__off">51% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="lorenz">
+            <a class="product-card__media" href="product.html?id=lorenz"><img src="assets/img/Top-rated-3.jpg" alt="Top rated sofa 3" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Lorenz 3 Seater Sofa (Cotton, Jade Ivory)</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(212)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹42,999</span>
+                <span class="product-card__old-price">₹91,999</span>
+                <span class="product-card__off">53% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="feltro">
+            <a class="product-card__media" href="product.html?id=feltro"><img src="assets/img/Top-rated-4.jpg" alt="Top rated sofa bed" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Feltro Sheesham Wood Sofa Bed With Storage</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(170)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹39,999</span>
+                <span class="product-card__old-price">₹76,999</span>
+                <span class="product-card__off">48% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="oasis">
+            <a class="product-card__media" href="product.html?id=oasis"><img src="assets/img/Top-rated-5.jpg" alt="Top rated sofa 5" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Oasis L-Shape Left Aligned Sofa (Cotton, Jade Ivory)</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(17)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹75,999</span>
+                <span class="product-card__old-price">₹1,45,999</span>
+                <span class="product-card__off">48% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="merlin">
+            <a class="product-card__media" href="product.html?id=merlin"><img src="assets/img/Top-rated-6.jpg" alt="Top rated sofa 6" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Merlin 2 Seater Fabric Sofa (Honey Beige)</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(96)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹31,999</span>
+                <span class="product-card__old-price">₹63,999</span>
+                <span class="product-card__off">50% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="nova">
+            <a class="product-card__media" href="product.html?id=nova"><img src="assets/img/Top-rated-7.jpg" alt="Top rated sofa 7" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Nova Sheesham Wood 3 Seater Sofa Set (Ivory)</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(123)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹52,999</span>
+                <span class="product-card__old-price">₹96,999</span>
+                <span class="product-card__off">45% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="aurora">
+            <a class="product-card__media" href="product.html?id=aurora"><img src="assets/img/Top-rated-1.jpg" alt="Top rated sofa 8" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Aurora 3 Seater Fabric Sofa (Pearl White)</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(88)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹47,999</span>
+                <span class="product-card__old-price">₹89,999</span>
+                <span class="product-card__off">47% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="vesta">
+            <a class="product-card__media" href="product.html?id=vesta"><img src="assets/img/Top-rated-2.jpg" alt="Top rated dining set 9" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Vesta Sheesham Wood 6 Seater Dining Set</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(64)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹57,999</span>
+                <span class="product-card__old-price">₹1,09,999</span>
+                <span class="product-card__off">47% OFF</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-product-id="helios">
+            <a class="product-card__media" href="product.html?id=helios"><img src="assets/img/Top-rated-3.jpg" alt="Top rated sofa 10" /></a>
+            <div class="product-card__body">
+              <h3 class="product-card__name">Helios 3 Seater Premium Sofa (Honey Beige)</h3>
+              <div class="product-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>(141)</span></div>
+              <div class="product-card__price-row">
+                <span class="product-card__price">₹49,999</span>
+                <span class="product-card__old-price">₹92,999</span>
+                <span class="product-card__off">46% OFF</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <button type="button" class="products-next-btn" data-products-next aria-label="Show next products">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="ff-section" aria-label="Freshly Fried Finds">
+    <div class="header-container">
+      <h2 class="ff-title">Freshly Fried Finds</h2>
+
+      <div class="ff-grid">
+        <a href="#" class="ff-card">
+          <div class="ff-card__media">
+            <img src="assets/img/FF-1.png" alt="Swivel Chairs" />
+          </div>
+          <div class="ff-card__content">
+            <h3 class="ff-card__title">Swivel Chairs</h3>
+            <p class="ff-card__meta">70+ Options Starting at 4,949+</p>
+          </div>
+        </a>
+
+        <a href="#" class="ff-card">
+          <div class="ff-card__media">
+            <img src="assets/img/FF-2.png" alt="Curated Coffee Tables" />
+          </div>
+          <div class="ff-card__content">
+            <h3 class="ff-card__title">Curated Coffee Tables</h3>
+            <p class="ff-card__meta">130+ Options Starting at 15,120+</p>
+          </div>
+        </a>
+
+        <a href="#" class="ff-card">
+          <div class="ff-card__media">
+            <img src="assets/img/FF-3.png" alt="Kids Bedroom" />
+          </div>
+          <div class="ff-card__content">
+            <h3 class="ff-card__title">Kids Bedroom</h3>
+            <p class="ff-card__meta">60+ Options Starting at 599+</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="promo-section" aria-label="Furniture offers">
+    <div class="header-container promo-layout">
+      <a href="#" class="promo-card promo-card--large promo-card--dark">
+        <div class="promo-card__media">
+          <img src="assets/img/promo-1.png" alt="Hydraulic storage beds offer" />
+        </div>
+        <!-- <div class="promo-card__content">
+          <p class="promo-card__title">Hydraulic Storage Beds | 140+ Options</p>
+          <p class="promo-card__price">from ₹26,999</p>
+          <span class="promo-card__arrow"><i class="fa-solid fa-arrow-right"></i></span>
+        </div> -->
+      </a>
+
+      <div class="promo-grid">
+        <a href="#" class="promo-card promo-card--dark">
+          <div class="promo-card__media">
+            <img src="assets/img/promo-2.png" alt="Shoe racks offer" />
+          </div>
+          <!-- <div class="promo-card__content">
+            <p class="promo-card__title">Shoe Racks | 50+ Options</p>
+            <p class="promo-card__price">from ₹2,255</p>
+            <span class="promo-card__arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          </div> -->
+        </a>
+
+        <a href="#" class="promo-card promo-card--light">
+          <div class="promo-card__media">
+            <img src="assets/img/promo-3.png" alt="Three seater sofas offer" />
+          </div>
+          <!-- <div class="promo-card__content">
+            <p class="promo-card__title">3-Seater Sofas | 200+ Options</p>
+            <p class="promo-card__price">from ₹13,999</p>
+            <span class="promo-card__arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          </div> -->
+        </a>
+
+        <a href="#" class="promo-card promo-card--light">
+          <div class="promo-card__media">
+            <img src="assets/img/promo-4.png" alt="Dining sets offer" />
+          </div>
+          <!-- <div class="promo-card__content">
+            <p class="promo-card__title">Dining Sets | 750+ Options</p>
+            <p class="promo-card__price">from ₹19,429</p>
+            <span class="promo-card__arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          </div> -->
+        </a>
+
+        <a href="#" class="promo-card promo-card--dark">
+          <div class="promo-card__media">
+            <img src="assets/img/promo-5.png" alt="Coffee tables offer" />
+          </div>
+          <!-- <div class="promo-card__content">
+            <p class="promo-card__title">Coffee Tables | 550+ Options</p>
+            <p class="promo-card__price">from ₹2,099</p>
+            <span class="promo-card__arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          </div> -->
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="exclusive-section" aria-label="Explore our exclusive range">
+    <div class="header-container">
+      <div class="exclusive-head">
+        <h2 class="exclusive-title">Explore Our Exclusive Range</h2>
+        <p class="exclusive-subtitle">NEW ARRIVALS</p>
+      </div>
+
+      <div class="exclusive-carousel" data-exclusive-carousel>
+        <button type="button" class="exclusive-nav-btn exclusive-nav-btn--prev" data-exclusive-prev
+          aria-label="Show previous cards">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="exclusive-track" data-exclusive-track>
+          <article class="exclusive-card" data-product-id="austin">
+            <a class="exclusive-card__media" href="product.html?id=austin"><img src="assets/img/exclusive-1.webp" alt="Exclusive chair" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle Austin Fabric Recliner</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 15,780</span><span class="exclusive-price">Rs. 14,289.00</span><span class="exclusive-save">SAVE 9%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>15 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Select Options</a>
+            </div>
+          </article>
+
+          <article class="exclusive-card" data-product-id="namur">
+            <a class="exclusive-card__media" href="product.html?id=namur"><img src="assets/img/exclusive-2.webp" alt="Exclusive wardrobe" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle Namur Engineered Wardrobe</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 7,855.00</span><span class="exclusive-price">Rs. 5,049.00</span><span class="exclusive-save">SAVE 36%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>9 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add To Cart</a>
+            </div>
+          </article>
+
+          <article class="exclusive-card" data-product-id="lisbon">
+            <a class="exclusive-card__media" href="product.html?id=lisbon"><img src="assets/img/exclusive-3.webp" alt="Exclusive bed" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle Lisbon Engineered Bed</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 14,285.00</span><span class="exclusive-price">Rs. 10,989.00</span><span class="exclusive-save">SAVE 23%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>14 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add To Cart</a>
+            </div>
+          </article>
+
+          <article class="exclusive-card" data-product-id="spinet">
+            <a class="exclusive-card__media" href="product.html?id=spinet"><img src="assets/img/exclusive-4.webp" alt="Exclusive TV unit" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle Spinet Engineered TV Unit</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 7,142.00</span><span class="exclusive-price">Rs. 5,489.00</span><span class="exclusive-save">SAVE 23%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>8 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add To Cart</a>
+            </div>
+          </article>
+
+          <article class="exclusive-card" data-product-id="lshape-sofa">
+            <a class="exclusive-card__media" href="product.html?id=lshape-sofa"><img src="assets/img/exclusive-5.webp" alt="Exclusive sofa" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle L-Shape Fabric Sofa</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 48,999.00</span><span class="exclusive-price">Rs. 37,990.00</span><span class="exclusive-save">SAVE 22%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>11 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Select Options</a>
+            </div>
+          </article>
+
+          <article class="exclusive-card" data-product-id="marly">
+            <a class="exclusive-card__media" href="product.html?id=marly"><img src="assets/img/exclusive-6.webp" alt="Exclusive center table" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle Marly Center Table</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 9,240.00</span><span class="exclusive-price">Rs. 6,899.00</span><span class="exclusive-save">SAVE 25%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>6 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add To Cart</a>
+            </div>
+          </article>
+
+          <article class="exclusive-card" data-product-id="orion">
+            <a class="exclusive-card__media" href="product.html?id=orion"><img src="assets/img/exclusive-7.webp" alt="Exclusive bed side" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle Orion King Bedside</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 16,499.00</span><span class="exclusive-price">Rs. 12,999.00</span><span class="exclusive-save">SAVE 21%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>13 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add To Cart</a>
+            </div>
+          </article>
+
+          <article class="exclusive-card" data-product-id="aero">
+            <a class="exclusive-card__media" href="product.html?id=aero"><img src="assets/img/exclusive-8.webp" alt="Exclusive cabinet" /></a>
+            <div class="exclusive-card__body">
+              <h3 class="exclusive-card__name">Bharat Lifestyle Aero Storage Cabinet</h3>
+              <div class="exclusive-card__price-row"><span class="exclusive-old">Rs. 11,790.00</span><span class="exclusive-price">Rs. 8,499.00</span><span class="exclusive-save">SAVE 28%</span></div>
+              <p class="exclusive-card__rating"><span class="fa-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span> <span>10 reviews</span></p>
+              <a href="#" class="exclusive-card__cta"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add To Cart</a>
+            </div>
+          </article>
+        </div>
+
+        <button type="button" class="exclusive-nav-btn exclusive-nav-btn--next" data-exclusive-next aria-label="Show next cards">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-banner-section" aria-label="Promotional banner">
+    <div class="header-container">
+      <a href="#" class="split-banner">
+        <img src="assets/img/banner.png" alt="Promotional banner" decoding="async" />
+      </a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-col">
+          <h3 class="footer-heading">Corporate</h3>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Corporate Governance</a></li>
+            <li><a href="#">Pepperfry in the News</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Useful Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Explore Gift Cards</a></li>
+            <li><a href="#">Buy in Bulk</a></li>
+            <li><a href="#">Discover Our Brands</a></li>
+            <li><a href="#">Check Out Bonhomie</a></li>
+            <li><a href="#">Our Blog</a></li>
+            <li><a href="#">Find a Store</a></li>
+            <li><a href="#">Track Your Order</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Partner With Us</h3>
+          <ul class="footer-links">
+            <li><a href="#">Sell on Pepperfry</a></li>
+            <li><a href="#">Become a Franchisee</a></li>
+            <li><a href="#">Become Our Channel Partner</a></li>
+            <li><a href="#">Become Our Pep Homie</a></li>
+            <li><a href="#">Our Marketplace Policies</a></li>
+            <li><a href="#">Merchant Dashboard Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-heading">Need Help?</h3>
+          <ul class="footer-links">
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Policies</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-col--apps">
+          <h3 class="footer-heading">Shop Built Safe Products</h3>
+          <ul class="footer-links footer-links--compact">
+            <li><a href="#">Kids &amp; Pet Friendly</a></li>
+            <li><a href="#">Certified Non-Toxic</a></li>
+            <li><a href="#">Made with Vegetarian Glue</a></li>
+            <li><a href="#">Scratch Resistant Finish</a></li>
+          </ul>
+          <h3 class="footer-heading footer-heading--spaced">Download our App</h3>
+          <div class="footer-app-buttons">
+            <a href="#" class="footer-app-btn" aria-label="Download on the App Store">
+              <i class="fa-brands fa-apple" aria-hidden="true"></i>
+              <span class="footer-app-btn__text"><span class="footer-app-btn__small">Download on the</span> App Store</span>
+            </a>
+            <a href="#" class="footer-app-btn" aria-label="Get it on Google Play">
+              <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+              <span class="footer-app-btn__text"><span class="footer-app-btn__small">GET IT ON</span> Google Play</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular Categories</h3>
+          <p class="footer-keywords">Sofas, Sectional Sofas, Sofa Sets, Queen Size Beds, King Size Beds, Coffee Tables, Dining Sets, Recliners, Sofa Cum Beds, Queen Size Mattresses, Cabinets &amp; Sideboards, Book Shelves, TV &amp; Media Units, Wardrobes, Foldable Mattresses, Pillows, Wall Shelves, Photo Frames, Bed Sheets, Table Linen, Study Tables, Office Furniture, Dining Tables, Carpets, Wall Decor.</p>
+        </div>
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular Brands</h3>
+          <p class="footer-keywords">Mintwud, Woodsworth, CasaCraft, Amberville, Mudramark, Bohemiana, Springtek, Spacewood, A Globia Creations, Febonic, Durian, Nilkamal, Sleepycat, Bluewud, Duroflex, Sleepyhead, Green Soul, Orange Tree, Clouddio.</p>
+        </div>
+        <div class="footer-block">
+          <h3 class="footer-heading">Popular cities</h3>
+          <p class="footer-keywords">Bengaluru, Mumbai, Navi Mumbai, Delhi, Hyderabad, Pune, Chennai, Gurgaon, Kolkata, Noida, Goa, Ghaziabad, Faridabad, Jaipur, Lucknow, Kochi, Visakhapatnam, Chandigarh, Vadodara, Nagpur, Thiruvananthapuram, Indore, Mysore, Bhopal, Surat, Patna, Ludhiana, Ahmedabad, Nashik, Aurangabad.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+
+</html>
