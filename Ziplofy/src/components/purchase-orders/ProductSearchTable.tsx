@@ -1,5 +1,6 @@
 import React from 'react';
 import ProductSearchResults from './ProductSearchResults';
+import { poTableCellClass, poTableHeadClass, poTableHeadRightClass } from './purchase-order-ui.util';
 
 interface ProductSearchTableProps {
   searching: boolean;
@@ -15,43 +16,38 @@ const ProductSearchTable: React.FC<ProductSearchTableProps> = ({
   onVariantToggle,
 }) => {
   return (
-    <table className="min-w-full divide-y divide-gray-200">
-      <thead className="bg-white">
-        <tr>
-          <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">
-            Product / Variant
-          </th>
-          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">
-            Availability
-          </th>
+    <table className="w-full min-w-[480px] text-left">
+      <thead>
+        <tr className="border-b border-gray-100 bg-gray-50/50">
+          <th className={poTableHeadClass}>Product / variant</th>
+          <th className={poTableHeadRightClass}>Availability</th>
         </tr>
       </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {searching && (
+      <tbody className="bg-white">
+        {searching ? (
           <tr>
-            <td colSpan={2} className="px-4 py-2 text-sm text-gray-600">
-              Searching...
+            <td colSpan={2} className={`${poTableCellClass} py-8 text-center text-gray-500`}>
+              Searching…
             </td>
           </tr>
-        )}
-        {!searching && results.length === 0 && (
+        ) : null}
+        {!searching && results.length === 0 ? (
           <tr>
-            <td colSpan={2} className="px-4 py-2 text-sm text-gray-600">
-              No results
+            <td colSpan={2} className={`${poTableCellClass} py-8 text-center text-gray-500`}>
+              Search to find products
             </td>
           </tr>
-        )}
-        {!searching && (
+        ) : null}
+        {!searching ? (
           <ProductSearchResults
             results={results}
             selectedVariantIds={selectedVariantIds}
             onVariantToggle={onVariantToggle}
           />
-        )}
+        ) : null}
       </tbody>
     </table>
   );
 };
 
 export default ProductSearchTable;
-

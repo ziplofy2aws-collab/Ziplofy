@@ -6,6 +6,7 @@ import {
   getProductById,
   deleteVariantsFromProduct,
   getProductByIdPublic,
+  getProductByUrlHandlePublic,
   getProductsByStoreId,
   getProductsByStoreIdPublic,
   searchProductsBasic,
@@ -21,6 +22,9 @@ export const productRouter = Router();
 
 // Public route for getting products by store ID with pagination
 productRouter.get("/public/store/:storeId", getProductsByStoreIdPublic);
+
+// Public route for getting product details by store + URL handle
+productRouter.get("/public/store/:storeId/url-handle/:urlHandle", getProductByUrlHandlePublic);
 
 // Public route for getting product details by product ID
 productRouter.get("/public/:productId", getProductByIdPublic);

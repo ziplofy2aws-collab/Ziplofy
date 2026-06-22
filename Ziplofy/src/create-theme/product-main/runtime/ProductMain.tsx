@@ -10,6 +10,7 @@ import {
 } from '@render-store/sdk';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 
@@ -181,7 +182,10 @@ export function ProductMain({
                 nodeId={blockNodeId(templateId, sectionId, 'product_content', 'description')}
                 label="Description"
               >
-                <p style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}>{productDetail?.description}</p>
+                <ThemeEditorRichTextContent
+                  html={productDetail?.description ?? ''}
+                  style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}
+                />
               </EditorBlock>
             ) : null}
             <EditorBlock

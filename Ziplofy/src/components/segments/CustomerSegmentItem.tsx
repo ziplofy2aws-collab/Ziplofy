@@ -1,5 +1,10 @@
-import { ChevronRightIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import React, { useCallback } from 'react';
+import {
+  segmentSecondaryButtonClass,
+  segmentTableCellClass,
+  segmentTableCellRightClass,
+} from './customer-segment-ui.util';
 
 interface CustomerSegment {
   _id: string;
@@ -31,25 +36,27 @@ const CustomerSegmentItem: React.FC<CustomerSegmentItemProps> = ({
 
   return (
     <tr
-      className="hover:bg-gray-50/80 cursor-pointer transition-colors group"
+      className="group cursor-pointer border-b border-gray-100 transition-colors hover:bg-gray-50/60"
       onClick={handleClick}
     >
-      <td className="px-5 py-4">
+      <td className={`${segmentTableCellClass} font-medium text-gray-900`}>
         <div className="flex items-center gap-2">
-          <span className="font-medium text-gray-900">{segment.name}</span>
-          <ChevronRightIcon className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <span>{segment.name}</span>
+          <ChevronRightIcon
+            className="h-4 w-4 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100"
+            aria-hidden
+          />
         </div>
       </td>
-      <td className="px-5 py-4 text-sm text-gray-500">
+      <td className={`${segmentTableCellClass} text-gray-500`}>
         {new Date(segment.createdAt).toLocaleDateString()}
       </td>
-      <td className="px-5 py-4 text-right">
+      <td className={segmentTableCellRightClass}>
         <button
           type="button"
           onClick={handleEdit}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          className={segmentSecondaryButtonClass}
         >
-          <PencilSquareIcon className="w-4 h-4" />
           Edit
         </button>
       </td>

@@ -6,17 +6,22 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useCategories } from '../contexts/category.context';
 import CategoryList from './CategoryList';
+import type { ProductFormAppearance } from './products/product-form-appearance';
 
 interface HierarchicalCategoryDropdownProps {
   selectedCategory: string;
+  selectedCategoryName?: string;
   onCategorySelect: (categoryId: string, categoryName: string) => void;
   storeId: string;
+  appearance?: ProductFormAppearance;
 }
 
 const HierarchicalCategoryDropdown: React.FC<HierarchicalCategoryDropdownProps> = ({
   selectedCategory,
+  selectedCategoryName: selectedCategoryNameProp,
   onCategorySelect,
-  storeId
+  storeId,
+  appearance = 'default',
 }) => {
   const { categories, loading, fetchBaseCategories, fetchCategoriesByParentId } = useCategories();
   const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +37,12 @@ const HierarchicalCategoryDropdown: React.FC<HierarchicalCategoryDropdownProps> 
   useEffect(() => {
     if (!selectedCategory) {
       setSelectedCategoryName('');
+      return;
     }
-  }, [selectedCategory]);
+    if (selectedCategoryNameProp) {
+      setSelectedCategoryName(selectedCategoryNameProp);
+    }
+  }, [selectedCategory, selectedCategoryNameProp]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -99,16 +108,21 @@ const HierarchicalCategoryDropdown: React.FC<HierarchicalCategoryDropdownProps> 
 
   const breadcrumbPath = navigationStack.map((item) => item.name).join(" > ");
 
+  const triggerClass =
+    appearance === 'minimal'
+      ? 'flex w-full items-center justify-between gap-2 rounded-md border border-gray-200/70 bg-white px-3 py-2 text-left text-sm transition-colors focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200'
+      : 'flex w-full items-center justify-between gap-2 rounded border border-gray-200 bg-white px-3 py-2 text-left text-base transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400';
+
   return (
     <div className="relative" ref={containerRef}>
       <button
         type="button"
         onClick={() => (isOpen ? setIsOpen(false) : openPicker())}
-        className="flex w-full items-center justify-between gap-2 rounded border border-gray-200 bg-white px-3 py-2 text-left text-base transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
+        className={triggerClass}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <span className={selectedCategoryName ? 'text-gray-900' : 'text-gray-500'}>
+        <span className={selectedCategoryName ? 'text-gray-800' : 'text-gray-400'}>
           {selectedCategoryName || 'Choose a product category'}
         </span>
         <ChevronUpDownIcon className="h-5 w-5 shrink-0 text-gray-400" aria-hidden />

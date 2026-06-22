@@ -27,12 +27,39 @@ async function findBlogByStoreAndHandle(storeId, blogHandle) {
     return blog_model_1.Blog.findOne({
         storeId,
         urlHandle: normalizeUrlHandle(blogHandle),
-    }).lean();
+    })
+        .select(STOREFRONT_BLOG_SELECT)
+        .lean();
 }
 function enrichPostFeaturedImage(publicOrigin, post) {
     const featuredImageUrl = (0, public_origin_util_1.absolutizeMediaUrl)(publicOrigin, String(post.featuredImageUrl ?? ""));
     return { ...post, featuredImageUrl };
 }
+const STOREFRONT_BLOG_SELECT = {
+    storeId: 1,
+    title: 1,
+    pageTitle: 1,
+    metaDescription: 1,
+    urlHandle: 1,
+    comments: 1,
+    createdAt: 1,
+    updatedAt: 1,
+};
+const STOREFRONT_BLOG_POST_DETAIL_SELECT = {
+    storeId: 1,
+    blogId: 1,
+    title: 1,
+    content: 1,
+    excerpt: 1,
+    pageTitle: 1,
+    metaDescription: 1,
+    urlHandle: 1,
+    visibility: 1,
+    author: 1,
+    featuredImageUrl: 1,
+    createdAt: 1,
+    updatedAt: 1,
+};
 /** Storefront: resolve a blog by store + url handle. */
 exports.getBlogByUrlHandle = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     const { storeId, urlHandle } = req.params;
@@ -118,7 +145,9 @@ exports.getVisiblePostByUrlHandles = (0, error_utils_1.asyncErrorHandler)(async 
         blogId: blog._id,
         urlHandle: normalizeUrlHandle(postHandle),
         ...(isPreviewRequest(req) ? {} : { visibility: "visible" }),
-    }).lean();
+    })
+        .select(STOREFRONT_BLOG_POST_DETAIL_SELECT)
+        .lean();
     if (!post) {
         throw new error_utils_1.CustomError("Blog post not found", 404);
     }

@@ -12,6 +12,8 @@ exports.collectionsRouter.get("/store/:storeId", collections_controller_1.getCol
 exports.collectionsRouter.get("/search/:storeId", collections_controller_1.searchCollections);
 // SEARCH products inside a collection
 exports.collectionsRouter.get("/:collectionId/products/search", collections_controller_1.searchProductsInCollection);
+// GET collection by id
+exports.collectionsRouter.get("/:id", collections_controller_1.getCollectionById);
 // CREATE
 exports.collectionsRouter.post("/", collections_controller_1.createCollection);
 // UPDATE

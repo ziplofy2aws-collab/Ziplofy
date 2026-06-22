@@ -1,6 +1,12 @@
-import { TruckIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import Select from '../Select';
+import {
+  productFormCardClass,
+  productFormInputClass,
+  productFormLabelClass,
+  productFormSectionTitleClass,
+} from '../products/product-form-appearance';
+import { PO_FORM_APPEARANCE } from './purchase-order-ui.util';
 
 interface SelectOption {
   value: string;
@@ -27,59 +33,19 @@ const ShipmentSection: React.FC<ShipmentSectionProps> = ({
   carrierOptions,
 }) => {
   return (
-    <div className="border border-gray-200 p-4 bg-white/95">
-      <h2 className="text-base font-medium text-gray-900 mb-3">Shipment</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
+      <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Shipment details</h2>
+      <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
         <div>
-          <label className="block text-xs text-gray-600 mb-1.5">
+          <label className={productFormLabelClass(PO_FORM_APPEARANCE)} htmlFor="po-eta">
             Estimated arrival
           </label>
           <input
+            id="po-eta"
             type="date"
             value={eta}
             onChange={(e) => onEtaChange(e.target.value)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-            className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            className={productFormInputClass(PO_FORM_APPEARANCE)}
           />
         </div>
         <Select
@@ -90,21 +56,21 @@ const ShipmentSection: React.FC<ShipmentSectionProps> = ({
           placeholder="Select carrier"
         />
         <div>
-          <label className="block text-xs text-gray-600 mb-1.5">
+          <label className={productFormLabelClass(PO_FORM_APPEARANCE)} htmlFor="po-tracking">
             Tracking number
           </label>
           <input
+            id="po-tracking"
             type="text"
             placeholder="Enter tracking"
             value={tracking}
             onChange={(e) => onTrackingChange(e.target.value)}
-            className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            className={productFormInputClass(PO_FORM_APPEARANCE)}
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
 export default ShipmentSection;
-

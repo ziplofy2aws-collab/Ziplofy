@@ -4,8 +4,16 @@ import AddProductsSection from '../components/purchase-orders/AddProductsSection
 import AdditionalDetailsSection from '../components/purchase-orders/AdditionalDetailsSection';
 import CostSummarySection from '../components/purchase-orders/CostSummarySection';
 import ManageCostSummaryModal from '../components/purchase-orders/ManageCostSummaryModal';
+import PurchaseOrderFormHeader from '../components/purchase-orders/PurchaseOrderFormHeader';
 import ShipmentSection from '../components/purchase-orders/ShipmentSection';
 import SupplierDestinationSection from '../components/purchase-orders/SupplierDestinationSection';
+import {
+  productFormAsideStackClass,
+  productFormGridClass,
+  productFormMainStackClass,
+  productFormPageClass,
+} from '../components/products/product-form-appearance';
+import { PO_FORM_APPEARANCE } from '../components/purchase-orders/purchase-order-ui.util';
 import { useLocations } from '../contexts/location.context';
 import { useProducts } from '../contexts/product.context';
 import { usePurchaseOrderTags } from '../contexts/purchase-order-tags.context';
@@ -279,94 +287,92 @@ const PurchaseOrderNewPage: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-        {/* Header */}
-        <div className="border-b border-gray-200 px-4 py-3">
-          <div className="max-w-7xl mx-auto">
-            <h1 className="text-xl font-medium text-gray-900">Create Purchase Order</h1>
+    <div className={productFormPageClass(PO_FORM_APPEARANCE)}>
+      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+        <PurchaseOrderFormHeader
+          title="Create purchase order"
+          backLabel="Back to purchase orders"
+          onBack={handleCancel}
+          onCancel={handleCancel}
+          onSubmit={() => void handleCreatePurchaseOrder()}
+          submitLabel={creatingPO ? 'Creating…' : 'Create purchase order'}
+          submitDisabled={creatingPO || !activeStoreId || !supplierId || !destinationId || items.length === 0}
+        />
+
+        <div className={productFormGridClass(PO_FORM_APPEARANCE)}>
+          <div className={productFormMainStackClass(PO_FORM_APPEARANCE)}>
+            <SupplierDestinationSection
+              supplierId={supplierId}
+              onSupplierIdChange={setSupplierId}
+              destinationId={destinationId}
+              onDestinationIdChange={setDestinationId}
+              paymentTerms={paymentTerms}
+              onPaymentTermsChange={setPaymentTerms}
+              currency={currency}
+              onCurrencyChange={setCurrency}
+              vendorOptions={vendorOptions}
+              locationOptions={locationOptions}
+              paymentTermsOptions={paymentTermsOptions}
+              currencyOptions={currencyOptions}
+            />
+
+            <ShipmentSection
+              eta={eta}
+              onEtaChange={setEta}
+              carrier={carrier}
+              onCarrierChange={setCarrier}
+              tracking={tracking}
+              onTrackingChange={setTracking}
+              carrierOptions={carrierOptions}
+            />
+
+            <AddProductsSection
+              search={search}
+              onSearchChange={setSearch}
+              searching={searching}
+              results={results}
+              selectedVariantIds={selectedVariantIds}
+              onVariantToggle={handleVariantToggle}
+              onAddSelected={handleAddSelected}
+              items={items}
+              onItemsChange={setItems}
+            />
+
+            <AdditionalDetailsSection
+              reference={reference}
+              onReferenceChange={setReference}
+              tagIds={tagIds}
+              onTagIdsChange={setTagIds}
+              note={note}
+              onNoteChange={setNote}
+              tagOptions={tagOptions}
+              tagsLoading={tagsLoading}
+            />
           </div>
+
+          <aside className={productFormAsideStackClass(PO_FORM_APPEARANCE)}>
+            <CostSummarySection
+              itemsCount={items.length}
+              subtotal={subtotal}
+              taxAmount={taxAmount}
+              adjustmentsTotal={adjustmentsTotal}
+              adjustmentsRows={adjustmentsRows}
+              shippingCost={shippingCost}
+              total={total}
+              onManageClick={handleManageOpen}
+              showActions={false}
+            />
+          </aside>
         </div>
 
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
-
-          {/* Supplier & Destination */}
-          <SupplierDestinationSection
-            supplierId={supplierId}
-            onSupplierIdChange={setSupplierId}
-            destinationId={destinationId}
-            onDestinationIdChange={setDestinationId}
-            paymentTerms={paymentTerms}
-            onPaymentTermsChange={setPaymentTerms}
-            currency={currency}
-            onCurrencyChange={setCurrency}
-            vendorOptions={vendorOptions}
-            locationOptions={locationOptions}
-            paymentTermsOptions={paymentTermsOptions}
-            currencyOptions={currencyOptions}
-          />
-
-          {/* Shipment */}
-          <ShipmentSection
-            eta={eta}
-            onEtaChange={setEta}
-            carrier={carrier}
-            onCarrierChange={setCarrier}
-            tracking={tracking}
-            onTrackingChange={setTracking}
-            carrierOptions={carrierOptions}
-          />
-
-          {/* Add Products */}
-          <AddProductsSection
-            search={search}
-            onSearchChange={setSearch}
-            searching={searching}
-            results={results}
-            selectedVariantIds={selectedVariantIds}
-            onVariantToggle={handleVariantToggle}
-            onAddSelected={handleAddSelected}
-            items={items}
-            onItemsChange={setItems}
-          />
-
-          {/* Additional details */}
-          <AdditionalDetailsSection
-            reference={reference}
-            onReferenceChange={setReference}
-            tagIds={tagIds}
-            onTagIdsChange={setTagIds}
-            note={note}
-            onNoteChange={setNote}
-            tagOptions={tagOptions}
-            tagsLoading={tagsLoading}
-          />
-
-          {/* Cost summary */}
-          <CostSummarySection
-            itemsCount={items.length}
-            subtotal={subtotal}
-            taxAmount={taxAmount}
-            adjustmentsTotal={adjustmentsTotal}
-            adjustmentsRows={adjustmentsRows}
-            shippingCost={shippingCost}
-            total={total}
-            onManageClick={handleManageOpen}
-            onCancel={handleCancel}
-            onCreatePurchaseOrder={handleCreatePurchaseOrder}
-            creatingPO={creatingPO}
-            canCreate={!creatingPO && !!activeStoreId && !!supplierId && !!destinationId && items.length > 0}
-          />
-
-          {/* Manage Cost Summary Dialog */}
-          <ManageCostSummaryModal
-            open={manageOpen}
-            onClose={() => setManageOpen(false)}
-            adjustmentsRows={adjustmentsRows}
-            onAdjustmentsRowsChange={setAdjustmentsRows}
-            adjustmentTypeOptions={adjustmentTypeOptions}
-          />
-        </div>
+        <ManageCostSummaryModal
+          open={manageOpen}
+          onClose={() => setManageOpen(false)}
+          adjustmentsRows={adjustmentsRows}
+          onAdjustmentsRowsChange={setAdjustmentsRows}
+          adjustmentTypeOptions={adjustmentTypeOptions}
+        />
+      </div>
     </div>
   );
 };

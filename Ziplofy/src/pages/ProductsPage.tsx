@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import ConfirmUndeleteProductModal from "../components/ConfirmUndeleteProductModal";
-import ProductsPageEmptyState from "../components/products/ProductsPageEmptyState";
 import ProductsPageFilters from "../components/products/ProductsPageFilters";
 import ProductsPageHeader from "../components/products/ProductsPageHeader";
 import ProductsTable from "../components/products/ProductsTable";
@@ -77,7 +76,7 @@ const ProductsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
         <ProductsPageHeader />
 
         <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
@@ -89,7 +88,12 @@ const ProductsPage: React.FC = () => {
           />
 
           {!hasProducts ? (
-            <ProductsPageEmptyState />
+            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
+              <p className="text-[15px] font-semibold text-gray-900">Add your products</p>
+              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+                Start by stocking your store with products your customers will love
+              </p>
+            </div>
           ) : (
             <ProductsTable
               products={filteredProducts}
@@ -100,9 +104,8 @@ const ProductsPage: React.FC = () => {
 
         <div className="py-5 text-center">
           <p className="text-xs text-gray-500">
-            Learn more about{" "}
             <a href="#" className="text-blue-600 hover:text-blue-700">
-              products
+              Learn more about products
             </a>
           </p>
         </div>

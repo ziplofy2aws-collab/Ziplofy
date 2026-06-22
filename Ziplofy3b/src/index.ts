@@ -34,6 +34,7 @@ import { giftCardProductRouter } from './routes/gift-card-product.route';
 import { inventoryLevelRouter } from './routes/inventory-level.route';
 import { locationRouter } from './routes/location.route';
 import { orderRouter } from './routes/order.route';
+import { orderTimelineRouter } from './routes/order-timeline.route';
 import { packagingRouter } from './routes/packaging.route';
 import { productTagsRouter } from './routes/product-tags.route';
 
@@ -197,6 +198,7 @@ app.use("/api/assigned-support-developer", assignedSupportDeveloperRouter);
 app.use("/api/customers", customerRouter);
 app.use("/api/customer-timeline", customerTimelineRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/order-timeline", orderTimelineRouter);
 app.use("/api/tags", tagsRouter);
 app.use("/api/vendors", vendorRouter);
 app.use("/api/store-billing-address", storeBillingAddressRouter);

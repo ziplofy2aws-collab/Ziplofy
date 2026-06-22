@@ -11,6 +11,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Modal from '../../components/Modal';
 import Tabs from '../../components/Tabs';
@@ -20,6 +21,7 @@ import {
   SettingsHero,
   SettingsPanel,
 } from '../../components/settings/SettingsPageScaffold';
+import CheckoutConfigurationsBlock from '../../components/settings/CheckoutConfigurationsBlock';
 import { useCheckoutSettings } from '../../contexts/checkout-settings.context';
 import { useCountries } from '../../contexts/country.context';
 import { useStore } from '../../contexts/store.context';
@@ -41,8 +43,9 @@ const panelWarningClass =
   'rounded-xl border border-amber-200/80 bg-amber-50/90 p-4 text-amber-950 shadow-sm';
 
 const CheckoutSettingsPage: React.FC = () => {
+  const navigate = useNavigate();
   const { countries, total, loading: countriesLoading, getCountries } = useCountries();
-  const { activeStoreId } = useStore();
+  const { activeStoreId, stores } = useStore();
   const { settings, fetchByStoreId, loading: checkoutLoading, update } = useCheckoutSettings();
   // Customer contact method
   const [contactMethod, setContactMethod] = useState<'phone_or_email' | 'email'>('phone_or_email');
@@ -511,6 +514,11 @@ const CheckoutSettingsPage: React.FC = () => {
     return selectedRegions.length > 0 && selectedRegions.length < countries.length;
   }, [selectedRegions.length, countries.length]);
 
+  const activeStoreName = useMemo(() => {
+    if (!activeStoreId) return 'My Store';
+    return stores.find((store) => store._id === activeStoreId)?.storeName || 'My Store';
+  }, [activeStoreId, stores]);
+
   return (
     <div className="w-full">
       <div className={SETTINGS_PAGE_CONTAINER_CLASS}>
@@ -531,6 +539,14 @@ const CheckoutSettingsPage: React.FC = () => {
             ) : undefined
           }
         />
+
+        <SettingsPanel className="ring-1 ring-slate-200/60">
+          <CheckoutConfigurationsBlock
+            storeName={activeStoreName}
+            lastSavedAt={settings?.updatedAt}
+            onEdit={() => navigate('/checkout/editor/profiles/')}
+          />
+        </SettingsPanel>
 
         <SettingsPanel className="ring-1 ring-slate-200/60">
           <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-5 py-4 sm:px-6">

@@ -34,7 +34,9 @@ export function StorefrontCollectionByUrlHandleLoader({ urlHandleOverride }: Pro
 
     void (async () => {
       try {
-        await getCollectionDetailsByUrlHandle(storeId, handle);
+        if (handle !== 'all') {
+          await getCollectionDetailsByUrlHandle(storeId, handle);
+        }
         await fetchProductsInCollectionByUrlHandle(storeId, handle);
       } catch {
         /* errors surfaced via context.error */

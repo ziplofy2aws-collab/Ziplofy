@@ -1,5 +1,6 @@
 import React from 'react';
 import SelectedItemsTableBody from './SelectedItemsTableBody';
+import { poTableHeadClass, poTableHeadRightClass } from './purchase-order-ui.util';
 
 interface ProductItem {
   variantId: string;
@@ -31,16 +32,16 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
   onRemove,
 }) => {
   return (
-    <table className="min-w-full divide-y divide-gray-200">
-      <thead className="bg-white">
-        <tr>
-          <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Product</th>
-          <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Supplier SKU</th>
-          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Qty</th>
-          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Cost</th>
-          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Tax %</th>
-          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Total</th>
-          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900"></th>
+    <table className="w-full min-w-[760px] text-left">
+      <thead>
+        <tr className="border-b border-gray-100 bg-gray-50/50">
+          <th className={poTableHeadClass}>Product</th>
+          <th className={poTableHeadClass}>Supplier SKU</th>
+          <th className={poTableHeadRightClass}>Qty</th>
+          <th className={poTableHeadRightClass}>Cost</th>
+          <th className={poTableHeadRightClass}>Tax %</th>
+          <th className={poTableHeadRightClass}>Total</th>
+          <th className="w-10 px-3 py-2.5" />
         </tr>
       </thead>
       <SelectedItemsTableBody
@@ -56,4 +57,3 @@ const SelectedItemsTable: React.FC<SelectedItemsTableProps> = ({
 };
 
 export default SelectedItemsTable;
-

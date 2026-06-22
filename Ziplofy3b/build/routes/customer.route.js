@@ -13,4 +13,7 @@ exports.customerRouter.get("/search/:storeId", customer_controller_1.searchCusto
 // POST /api/customers - Add a new customer
 exports.customerRouter.post("/", customer_controller_1.addCustomer);
 // DELETE /api/customers/:id - Delete a customer by ID
+exports.customerRouter.get("/:id", customer_controller_1.getCustomerById);
+// PUT /api/customers/:id - Update a customer by ID
+exports.customerRouter.put("/:id", customer_controller_1.updateCustomer);
 exports.customerRouter.delete("/:id", customer_controller_1.deleteCustomer);

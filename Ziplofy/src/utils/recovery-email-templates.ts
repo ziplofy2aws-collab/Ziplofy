@@ -1,24 +1,21 @@
-export type RecoveryEmailTemplateId =
-  | 'custom'
-  | 'friendly-nudge'
-  | 'social-proof'
-  | 'free-shipping'
-  | 'limited-offer'
-  | 'low-stock'
-  | 'last-chance';
+export type RecoveryEmailTemplateId = 'custom' | 'friendly-nudge';
+
+/** Temporary: customer emails are not real yet — all recovery sends go here (backend mirrors this). */
+export const RECOVERY_EMAIL_TEST_RECIPIENT = 'developer200419@gmail.com';
 
 export const RECOVERY_EMAIL_TEMPLATE_OPTIONS: Array<{
   id: RecoveryEmailTemplateId;
   label: string;
 }> = [
-  { id: 'custom', label: 'Classic Recovery' },
-  { id: 'friendly-nudge', label: 'Friendly Nudge' },
-  { id: 'social-proof', label: 'Trending Picks' },
-  { id: 'free-shipping', label: 'Free Shipping Push' },
-  { id: 'limited-offer', label: 'Limited-Time Offer' },
-  { id: 'low-stock', label: 'Low Stock Alert' },
-  { id: 'last-chance', label: 'Last Chance Reminder' },
+  { id: 'custom', label: 'Classic recovery' },
+  { id: 'friendly-nudge', label: 'Friendly reminder' },
 ];
+
+export type WrapCartRecoveryEmailOptions = {
+  storeName: string;
+  customerFirstName?: string;
+  cartLink?: string;
+};
 
 const sanitizeName = (name?: string): string => {
   const safe = (name || 'there').trim();
@@ -30,56 +27,104 @@ const sanitizeName = (name?: string): string => {
     .replace(/'/g, '&#39;');
 };
 
+const sanitizeStoreName = (name?: string): string => sanitizeName(name || 'Your Store');
+
+function buildInnerClassicRecovery(name: string): string {
+  return `
+<h2 style="margin: 0 0 16px 0; color: #18181b; font-size: 22px; font-weight: 600; letter-spacing: -0.3px;">Hi ${name},</h2>
+<p style="margin: 0 0 16px 0; color: #3f3f46; font-size: 16px; line-height: 1.65;">We noticed you left something behind in your cart. Your selected items are still saved and ready whenever you are.</p>
+<p style="margin: 0 0 8px 0; color: #3f3f46; font-size: 16px; line-height: 1.65;">Pick up where you left off and complete your order in just a few clicks.</p>
+`.trim();
+}
+
+function buildInnerFriendlyReminder(name: string): string {
+  return `
+<h2 style="margin: 0 0 16px 0; color: #18181b; font-size: 22px; font-weight: 600; letter-spacing: -0.3px;">Hi ${name},</h2>
+<p style="margin: 0 0 16px 0; color: #3f3f46; font-size: 16px; line-height: 1.65;">Just a quick note — your cart is still waiting for you.</p>
+<p style="margin: 0 0 8px 0; color: #3f3f46; font-size: 16px; line-height: 1.65;">We saved your items so you can checkout smoothly when you're ready. If you had any questions, our team is happy to help.</p>
+`.trim();
+}
+
 export function buildRecoveryEmailTemplate(
   templateId: string,
-  firstName?: string
+  firstName?: string,
+  storeName?: string
 ): { subject: string; bodyHtml: string } {
   const name = sanitizeName(firstName);
+  const store = sanitizeStoreName(storeName);
 
   if (templateId === 'friendly-nudge') {
     return {
-      subject: `${firstName || 'Hey'} - your cart is waiting for you`,
-      bodyHtml: `<h2>Hi ${name},</h2><p>You left a few great picks in your cart and we saved them for you.</p><p>Complete your checkout now before your selection changes.</p><p><a href="[Cart Link]"><strong>Return to your cart</strong></a></p><p>See you at checkout,<br/><strong>Your Store Team</strong></p>`,
-    };
-  }
-
-  if (templateId === 'social-proof') {
-    return {
-      subject: `${firstName || 'You'} have popular items in your cart`,
-      bodyHtml: `<h2>Hi ${name},</h2><p>Great choice. The items in your cart are among our most-loved picks right now.</p><ul><li>Highly rated by recent shoppers</li><li>Frequently bought together</li><li>Often sold out quickly</li></ul><p><a href="[Cart Link]"><strong>Complete your order now</strong></a></p><p>Warmly,<br/><strong>Your Store Team</strong></p>`,
-    };
-  }
-
-  if (templateId === 'free-shipping') {
-    return {
-      subject: `Complete your order, ${firstName || 'friend'} - shipping perks inside`,
-      bodyHtml: `<h2>Hi ${name},</h2><p>Your cart is still active. Finish your purchase now and enjoy a smoother checkout experience.</p><p>Good news: your order may qualify for a shipping benefit at checkout.</p><p><a href="[Cart Link]"><strong>Continue to checkout</strong></a></p><p>Cheers,<br/><strong>Your Store Team</strong></p>`,
-    };
-  }
-
-  if (templateId === 'limited-offer') {
-    return {
-      subject: `A little thank-you offer just for you, ${firstName || 'there'}`,
-      bodyHtml: `<h2>Hi ${name},</h2><p>We noticed your cart is still waiting. Use code <strong>SAVE10</strong> at checkout for a limited-time extra value.</p><p style="margin:10px 0;padding:10px 12px;border:1px dashed #9ca3af;border-radius:8px;background:#f9fafb;"><strong>Code:</strong> SAVE10<br/><span style="font-size:12px;color:#6b7280;">Offer valid for a short time.</span></p><p><a href="[Cart Link]"><strong>Apply code and checkout</strong></a></p><p>Thanks,<br/><strong>Your Store Team</strong></p>`,
-    };
-  }
-
-  if (templateId === 'low-stock') {
-    return {
-      subject: `${firstName || 'Heads up'} - items in your cart are moving fast`,
-      bodyHtml: `<h2>Hi ${name},</h2><p>Quick reminder: some products in your cart may run low soon.</p><p>If you still want them, this is a great moment to complete your purchase.</p><p><a href="[Cart Link]"><strong>Secure your items now</strong></a></p><p>Best,<br/><strong>Your Store Team</strong></p>`,
-    };
-  }
-
-  if (templateId === 'last-chance') {
-    return {
-      subject: `Final reminder, ${firstName || 'friend'} - your cart expires soon`,
-      bodyHtml: `<h2>Hi ${name},</h2><p>This is a final reminder about your saved cart.</p><p>Complete checkout now so you do not miss out on your selected items.</p><p><a href="[Cart Link]"><strong>Checkout before it expires</strong></a></p><p>We'd love to deliver this to you,<br/><strong>Your Store Team</strong></p>`,
+      subject: `${firstName?.trim() || 'Hey'}, your cart is still saved at ${store}`,
+      bodyHtml: buildInnerFriendlyReminder(name),
     };
   }
 
   return {
-    subject: `Complete your purchase - ${firstName || 'there'}`,
-    bodyHtml: `<h2>Hi ${name},</h2><p>We noticed you left some items in your cart. Don't miss out on these great products.</p><p><a href="[Cart Link]"><strong>Click here to complete your purchase</strong></a></p><p>Best regards,<br/><strong>Your Store Team</strong></p>`,
+    subject: `Complete your order at ${store}`,
+    bodyHtml: buildInnerClassicRecovery(name),
   };
+}
+
+/** Wraps editor/template body in a store-branded HTML email layout. */
+export function wrapCartRecoveryEmailHtml(
+  innerHtml: string,
+  options: WrapCartRecoveryEmailOptions
+): string {
+  const trimmed = innerHtml.trim();
+  if (trimmed.startsWith('<!DOCTYPE') || trimmed.startsWith('<html')) {
+    return trimmed;
+  }
+
+  const store = sanitizeStoreName(options.storeName);
+  const cartLink = options.cartLink?.trim() || '#';
+  const year = new Date().getFullYear();
+  const preheader = `Your cart at ${store} is still saved. Complete checkout when you're ready.`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>${store}</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f4f4f5; line-height: 1.6;">
+  <div style="display: none; max-height: 0; overflow: hidden; opacity: 0;">${preheader}</div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f5; padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06); overflow: hidden;">
+          <tr>
+            <td style="background: linear-gradient(135deg, #18181b 0%, #27272a 100%); padding: 28px 32px; text-align: center;">
+              <p style="margin: 0 0 4px 0; color: #a1a1aa; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;">From your store</p>
+              <h1 style="margin: 0; color: #ffffff; font-size: 26px; font-weight: 700; letter-spacing: -0.4px;">${store}</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 36px 32px 28px 32px;">
+              ${trimmed}
+              <table role="presentation" cellspacing="0" cellpadding="0" style="margin: 28px 0 8px 0;">
+                <tr>
+                  <td style="border-radius: 8px; background-color: #18181b;">
+                    <a href="${cartLink}" target="_blank" style="display: inline-block; padding: 14px 28px; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; letter-spacing: 0.01em;">Return to your cart</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin: 24px 0 0 0; color: #71717a; font-size: 14px; line-height: 1.6;">If the button doesn't work, copy and paste this link into your browser:<br><a href="${cartLink}" style="color: #2563eb; word-break: break-all;">${cartLink}</a></p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 24px 32px; background-color: #fafafa; border-top: 1px solid #e4e4e7; text-align: center;">
+              <p style="margin: 0 0 6px 0; color: #71717a; font-size: 13px;">Thank you for shopping with ${store}.</p>
+              <p style="margin: 0; color: #a1a1aa; font-size: 12px;">© ${year} ${store}. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`.trim();
 }

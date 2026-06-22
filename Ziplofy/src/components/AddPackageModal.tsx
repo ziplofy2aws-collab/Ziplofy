@@ -1,5 +1,4 @@
 import React from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import Modal from './Modal';
 import Select from './Select';
 import ToggleSwitch from './ToggleSwitch';
@@ -63,17 +62,7 @@ const AddPackageModal: React.FC<AddPackageModalProps> = ({
     <Modal
       open={open}
       onClose={onClose}
-      title={
-        <div className="flex justify-between items-center w-full">
-          <h3 className="text-lg font-semibold">Add New Package</h3>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded transition-colors"
-          >
-            <XMarkIcon className="w-5 h-5" />
-          </button>
-        </div>
-      }
+      title="Add New Package"
       maxWidth="sm"
       actions={
         <>

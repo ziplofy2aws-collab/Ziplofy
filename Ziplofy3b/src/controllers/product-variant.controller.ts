@@ -1,7 +1,61 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
+import { SecureUserInfo } from "../middlewares/auth.middleware";
 import { ProductVariant } from "../models/product/product-variants.model";
 import { Product } from "../models/product/product.model";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
+import { assertStoreAccess } from "../utils/store-access.util";
+import { assertStoreCloudImageUrls } from "../utils/cloud-storage-image.util";
+
+const VARIANT_UPDATE_FIELDS = [
+  "sku",
+  "barcode",
+  "price",
+  "compareAtPrice",
+  "cost",
+  "profit",
+  "marginPercent",
+  "unitPriceTotalAmount",
+  "unitPriceTotalAmountMetric",
+  "unitPriceBaseMeasure",
+  "unitPriceBaseMeasureMetric",
+  "chargeTax",
+  "weightValue",
+  "weightUnit",
+  "package",
+  "countryOfOrigin",
+  "hsCode",
+  "images",
+  "outOfStockContinueSelling",
+  "isInventoryTrackingEnabled",
+  "isPhysicalProduct",
+] as const;
+
+function buildVariantUpdatePayload(body: Record<string, unknown>): Record<string, unknown> {
+  const updatePayload: Record<string, unknown> = {};
+
+  for (const field of VARIANT_UPDATE_FIELDS) {
+    if (!Object.prototype.hasOwnProperty.call(body, field)) continue;
+    updatePayload[field] = body[field];
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "package")) {
+    const pkg = updatePayload.package;
+    if (pkg === null || pkg === "") {
+      updatePayload.package = null;
+    } else if (typeof pkg === "string" && !mongoose.isValidObjectId(pkg)) {
+      throw new CustomError("Invalid package id", 400);
+    }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "sku")) {
+    const sku = String(updatePayload.sku ?? "").trim();
+    if (!sku) throw new CustomError("SKU is required", 400);
+    updatePayload.sku = sku;
+  }
+
+  return updatePayload;
+}
 
 // GET variants by product id
 export const getVariantsByProductId = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -56,35 +110,52 @@ export const getVariantById = asyncErrorHandler(async (req: Request, res: Respon
   });
 });
 
-// PUT update variant by id
+// PATCH update variant by id
 export const updateVariantById = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const updateData = req.body;
 
-  if (!id) {
-    throw new CustomError("Variant id is required", 400);
+  if (!id || !mongoose.isValidObjectId(id)) {
+    throw new CustomError("Valid variant id is required", 400);
   }
 
-  // Validate that variant exists
-  const existingVariant = await ProductVariant.findById(id);
+  const updateData = buildVariantUpdatePayload(req.body as Record<string, unknown>);
+  if (!Object.keys(updateData).length) {
+    throw new CustomError("No valid fields provided for update", 400);
+  }
+
+  const existingVariant = await ProductVariant.findOne({ _id: id, depricated: false });
   if (!existingVariant) {
     throw new CustomError("Variant not found", 404);
   }
 
-  // Update the variant with new data
+  const product = await Product.findOne({ _id: existingVariant.productId, isDeleted: { $ne: true } }).select("storeId");
+  if (!product) {
+    throw new CustomError("Product not found", 404);
+  }
+
+  await assertStoreAccess(product.storeId.toString(), req.user as SecureUserInfo | undefined);
+
+  if (Array.isArray(updateData.images)) {
+    await assertStoreCloudImageUrls(product.storeId.toString(), updateData.images as string[]);
+  }
+
   const updatedVariant = await ProductVariant.findByIdAndUpdate(
     id,
     updateData,
-    { 
-      new: true, 
-      runValidators: true 
+    {
+      new: true,
+      runValidators: true,
     }
-  ).populate({ path: 'package', model: 'Packaging' });
+  ).populate({ path: "package", model: "Packaging" });
+
+  if (!updatedVariant) {
+    throw new CustomError("Variant not found", 404);
+  }
 
   res.status(200).json({
     success: true,
     data: updatedVariant,
-    message: 'Variant updated successfully',
+    message: "Variant updated successfully",
   });
 });
 

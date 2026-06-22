@@ -2,15 +2,7 @@ import { useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
-
-function normalizeRouteHandle(raw: string | undefined): string {
-  if (!raw) return '';
-  const decoded = decodeURIComponent(raw.trim());
-  return decoded
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+import { normalizeStorefrontPathHandle } from '@/utils/storefront-path-handle.util';
 
 /**
  * When the route is `/blogs/:blogHandle/:articleHandle`, loads the visible post
@@ -23,23 +15,18 @@ export function StorefrontBlogPostByUrlHandleLoader() {
   }>();
   const [searchParams] = useSearchParams();
   const { storeFrontMeta } = useStorefront();
-  const { getVisiblePostByUrlHandles, clearActivePost } = useStorefrontBlogs();
+  const { getVisiblePostByUrlHandles, clearActivePost, clearActiveBlog } = useStorefrontBlogs();
 
   const storeId = storeFrontMeta?.storeId;
   const preview = searchParams.get('preview') === '1' || searchParams.get('preview') === 'true';
 
   useEffect(() => {
-    const blog = normalizeRouteHandle(blogHandle);
-    const post = normalizeRouteHandle(articleHandle);
+    const blog = normalizeStorefrontPathHandle(blogHandle ?? '');
+    const post = normalizeStorefrontPathHandle(articleHandle ?? '');
 
-    if (
-      !storeId ||
-      !blog ||
-      !post ||
-      blog === 'preview' ||
-      post === 'preview'
-    ) {
+    if (!storeId || !blog || !post || blog === 'preview' || post === 'preview') {
       clearActivePost();
+      clearActiveBlog();
       return;
     }
 
@@ -53,6 +40,7 @@ export function StorefrontBlogPostByUrlHandleLoader() {
 
     return () => {
       clearActivePost();
+      clearActiveBlog();
     };
   }, [
     storeId,
@@ -61,6 +49,7 @@ export function StorefrontBlogPostByUrlHandleLoader() {
     preview,
     getVisiblePostByUrlHandles,
     clearActivePost,
+    clearActiveBlog,
   ]);
 
   return null;

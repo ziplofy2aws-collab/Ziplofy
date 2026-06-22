@@ -1,10 +1,6 @@
 import {
-  ArrowLeftIcon,
   Bars3Icon,
-  ChevronDownIcon,
   MagnifyingGlassIcon,
-  PencilSquareIcon,
-  PhotoIcon,
   PlusIcon,
   RectangleStackIcon,
   XMarkIcon,
@@ -13,15 +9,38 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal';
-import ProductDescriptionInput from '../components/products/ProductDescriptionInput';
-import { useAwsUpload } from '../contexts/aws-upload.context';
+import CollectionBasicInfoSection from '../components/collections/CollectionBasicInfoSection';
+import CollectionFormHeader from '../components/collections/CollectionFormHeader';
+import CollectionImageSidebarSection from '../components/collections/CollectionImageSidebarSection';
+import CollectionPublishingSection from '../components/collections/CollectionPublishingSection';
+import CollectionSeoSection from '../components/collections/CollectionSeoSection';
+import {
+  collectionInputClass,
+  collectionMutedAddButtonClass,
+  collectionPrimaryButtonClass,
+  collectionProductRowClass,
+  collectionProductsPanelClass,
+  collectionSecondaryButtonClass,
+} from '../components/collections/collection-form-ui.util';
+import {
+  COLLECTION_PRODUCT_SORT_OPTIONS,
+  type CollectionProductSort,
+} from '../components/collections/collection-form.types';
+import {
+  productFormAsideStackClass,
+  productFormCardClass,
+  productFormGridClass,
+  productFormMainStackClass,
+  productFormPageClass,
+  productFormSectionTitleClass,
+} from '../components/products/product-form-appearance';
 import { type Collection, useCollections } from '../contexts/collection.context';
 import { useProducts } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
+import { useDescriptionCloudStorageSave } from '../hooks/useDescriptionCloudStorageSave';
 import { THEME_EDITOR_STATIC_CONFIG } from '../config/theme-editor-static.config';
 
-const inputClass =
-  'w-full rounded-lg border border-gray-200/90 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+const FORM_APPEARANCE = 'minimal' as const;
 
 interface SelectedCollectionProduct {
   _id: string;
@@ -47,8 +66,8 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
   const isSheet = variant === 'sheet';
   const { createCollection, loading: collectionLoading } = useCollections();
   const { searchProductsWithVariants } = useProducts();
-  const { uploadImageWithSignedUrl, loading: awsUploading } = useAwsUpload();
   const { activeStoreId } = useStore();
+  const prepareDescriptionForSave = useDescriptionCloudStorageSave(activeStoreId || undefined);
   const storeId = activeStoreId || THEME_EDITOR_STATIC_CONFIG.devStoreId;
   const sheetModalZIndex = 16000;
   const [form, setForm] = useState({
@@ -67,9 +86,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
   const [productSearchResults, setProductSearchResults] = useState<
     Array<{ _id: string; title: string; imageUrl: string | null; price: number | null }>
   >([]);
-  const [productSort, setProductSort] = useState<
-    'manual' | 'title-asc' | 'title-desc' | 'price-high' | 'price-low' | 'newest' | 'oldest'
-  >('manual');
+  const [productSort, setProductSort] = useState<CollectionProductSort>('manual');
   const [isProductsSearching, setIsProductsSearching] = useState(false);
   const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
   const [selectedProducts, setSelectedProducts] = useState<SelectedCollectionProduct[]>([]);
@@ -78,13 +95,10 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
   const [dragOverProductId, setDragOverProductId] = useState<string | null>(null);
   const lastReorderTargetRef = useRef<string | null>(null);
   const nextAddedSequenceRef = useRef(1);
-  const [isImageDragOver, setIsImageDragOver] = useState(false);
-  const [isImageActionsOpen, setIsImageActionsOpen] = useState(false);
   const [isImageAltModalOpen, setIsImageAltModalOpen] = useState(false);
   const [imageAltText, setImageAltText] = useState('');
   const [imageAltTextDraft, setImageAltTextDraft] = useState('');
   const modalSearchInputRef = useRef<HTMLInputElement | null>(null);
-  const imageFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleChange = useCallback((field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -98,107 +112,60 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     navigate('/products/collections');
   }, [isSheet, navigate, onCancel]);
 
-  const dataUrlToFile = useCallback((dataUrl: string, fallbackName: string): File | null => {
-    const match = dataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
-    if (!match) return null;
-    const mimeType = match[1];
-    const base64Data = match[2];
-    const binary = window.atob(base64Data);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i += 1) {
-      bytes[i] = binary.charCodeAt(i);
+  const handleSubmit = useCallback(async () => {
+    if (!storeId) {
+      if (isSheet && onCancel) {
+        onCancel();
+      } else {
+        navigate('/products/collections');
+      }
+      return;
     }
-    const extension = mimeType.split('/')[1] || 'png';
-    return new File([bytes], `${fallbackName}.${extension}`, { type: mimeType });
-  }, []);
-
-  const uploadDescriptionImages = useCallback(
-    async (descriptionHtml: string): Promise<string> => {
-      if (!descriptionHtml.trim() || !storeId) return descriptionHtml;
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(descriptionHtml, 'text/html');
-      const imageNodes = Array.from(doc.querySelectorAll('img[src]'));
-      const localImages = imageNodes.filter((img) => {
-        const src = img.getAttribute('src') || '';
-        return src.startsWith('data:image/') || src.startsWith('blob:');
+    if (!form.title.trim()) {
+      toast.error('Collection title is required');
+      return;
+    }
+    try {
+      const descriptionWithUploadedImages = await prepareDescriptionForSave(form.description);
+      const created = await createCollection({
+        storeId,
+        title: form.title,
+        imageUrl: form.imageUrl || undefined,
+        imageAltText: imageAltText.trim() || undefined,
+        description: descriptionWithUploadedImages,
+        pageTitle: form.pageTitle,
+        metaDescription: form.metaDescription,
+        urlHandle: form.urlHandle,
+        productSort,
+        productIds: selectedProducts.map((product) => product._id),
+        status: form.status,
       });
-
-      if (!localImages.length) return descriptionHtml;
-
-      const uploadToastId = toast.loading(
-        `Uploading ${localImages.length} description image${localImages.length > 1 ? 's' : ''}...`
-      );
-
-      try {
-        await Promise.all(
-          localImages.map(async (img, index) => {
-            const src = img.getAttribute('src') || '';
-            let file: File | null = null;
-
-            if (src.startsWith('data:image/')) {
-              file = dataUrlToFile(src, `collection-description-image-${index + 1}`);
-            } else if (src.startsWith('blob:')) {
-              const blob = await fetch(src).then((res) => res.blob());
-              const extension = (blob.type || 'image/png').split('/')[1] || 'png';
-              file = new File([blob], `collection-description-image-${index + 1}.${extension}`, {
-                type: blob.type || 'image/png',
-              });
-            }
-
-            if (!file) return;
-            const uploaded = await uploadImageWithSignedUrl(file, {
-              folder: `${storeId}/collection-description-image`,
-            });
-            img.setAttribute('src', uploaded.objectUrl);
-          })
-        );
-
-        toast.success('Description images uploaded', { id: uploadToastId });
-        return doc.body.innerHTML;
-      } catch (error) {
-        toast.error('Failed to upload description images', { id: uploadToastId });
-        throw error;
+      if (isSheet && onSuccess) {
+        onSuccess(created);
+        return;
       }
-    },
-    [storeId, dataUrlToFile, uploadImageWithSignedUrl]
-  );
-
-  const uploadCollectionImageIfNeeded = useCallback(
-    async (imageUrl: string): Promise<string> => {
-      if (!imageUrl || !storeId) return imageUrl;
-      const isLocalImage = imageUrl.startsWith('data:image/') || imageUrl.startsWith('blob:');
-      if (!isLocalImage) return imageUrl;
-
-      const uploadToastId = toast.loading('Uploading collection image...');
-      try {
-        let file: File | null = null;
-
-        if (imageUrl.startsWith('data:image/')) {
-          file = dataUrlToFile(imageUrl, 'collection-image');
-        } else if (imageUrl.startsWith('blob:')) {
-          const blob = await fetch(imageUrl).then((res) => res.blob());
-          const extension = (blob.type || 'image/png').split('/')[1] || 'png';
-          file = new File([blob], `collection-image.${extension}`, {
-            type: blob.type || 'image/png',
-          });
-        }
-
-        if (!file) {
-          toast.error('Failed to prepare collection image for upload', { id: uploadToastId });
-          return imageUrl;
-        }
-
-        const uploaded = await uploadImageWithSignedUrl(file, { folder: 'collections' });
-        toast.success('Collection image uploaded', { id: uploadToastId });
-        return uploaded.objectUrl;
-      } catch (error) {
-        toast.error('Failed to upload collection image', { id: uploadToastId });
-        throw error;
+      if (created._id) {
+        navigate(`/products/collections/${created._id}`, { state: { collectionJustCreated: true } });
+      } else {
+        navigate('/products/collections');
       }
-    },
-    [storeId, dataUrlToFile, uploadImageWithSignedUrl]
-  );
+    } catch (error: unknown) {
+      const message = (error as Error)?.message;
+      if (message) toast.error(message);
+    }
+  }, [
+    storeId,
+    form,
+    createCollection,
+    imageAltText,
+    isSheet,
+    navigate,
+    onCancel,
+    onSuccess,
+    prepareDescriptionForSave,
+    productSort,
+    selectedProducts,
+  ]);
 
   const handleQuickAddProduct = useCallback(
     (product: { _id: string; title: string; imageUrl: string | null; price: number | null }) => {
@@ -217,97 +184,6 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
       setProductSearchResults([]);
     },
     []
-  );
-
-  const handleSubmit = useCallback(async () => {
-    if (!storeId) {
-      if (isSheet && onCancel) {
-        onCancel();
-      } else {
-        navigate('/products/collections');
-      }
-      return;
-    }
-    if (!form.title.trim()) {
-      toast.error('Collection title is required');
-      return;
-    }
-    try {
-      const uploadedCollectionImageUrl = await uploadCollectionImageIfNeeded(form.imageUrl);
-      const descriptionWithUploadedImages = await uploadDescriptionImages(form.description);
-      const created = await createCollection({
-        storeId,
-        title: form.title,
-        imageUrl: uploadedCollectionImageUrl || undefined,
-        imageAltText: imageAltText.trim() || undefined,
-        description: descriptionWithUploadedImages,
-        pageTitle: form.pageTitle,
-        metaDescription: form.metaDescription,
-        urlHandle: form.urlHandle,
-        productSort,
-        productIds: selectedProducts.map((product) => product._id),
-        status: form.status,
-      });
-      toast.success('Collection created successfully');
-      if (isSheet && onSuccess) {
-        onSuccess(created);
-        return;
-      }
-      navigate('/products/collections');
-    } catch {
-      // error is handled in context
-    }
-  }, [
-    storeId,
-    form,
-    createCollection,
-    imageAltText,
-    isSheet,
-    navigate,
-    onCancel,
-    onSuccess,
-    productSort,
-    selectedProducts,
-    uploadCollectionImageIfNeeded,
-    uploadDescriptionImages,
-  ]);
-
-  const handleImageUpload = useCallback(
-    async (file: File) => {
-      const uploaded = await uploadImageWithSignedUrl(file, { folder: 'collections' });
-      handleChange('imageUrl', uploaded.objectUrl);
-    },
-    [handleChange, uploadImageWithSignedUrl]
-  );
-
-  const handleImageDrop = useCallback(
-    async (event: React.DragEvent<HTMLLabelElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-      setIsImageDragOver(false);
-      const file = event.dataTransfer.files?.[0];
-      if (!file || !file.type.startsWith('image/')) return;
-      try {
-        await handleImageUpload(file);
-      } catch {
-        // upload errors are handled in context
-      }
-    },
-    [handleImageUpload]
-  );
-
-  const handleImageFileSelection = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      event.currentTarget.value = '';
-      if (!file) return;
-      try {
-        await handleImageUpload(file);
-      } catch {
-        // upload errors are handled in context
-      }
-    },
-    [handleImageUpload]
   );
 
   useEffect(() => {
@@ -479,94 +355,31 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
   }, [productSearchResults, productSort]);
 
   return (
-    <div className={isSheet ? 'bg-page-background-color' : 'min-h-screen bg-page-background-color'}>
-      <div className={isSheet ? 'px-4 py-4 sm:px-6' : 'mx-auto max-w-[1400px] px-3 py-4 sm:px-4'}>
-        <div className={`${isSheet ? 'mb-4' : 'mb-6'} flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between`}>
-          <div className="min-w-0">
-            {!isSheet ? (
-              <button
-                type="button"
-                onClick={handleBack}
-                className="mb-3 inline-flex items-center gap-2 rounded-full border border-gray-200/90 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
-              >
-                <ArrowLeftIcon className="h-3.5 w-3.5" aria-hidden />
-                Back to collections
-              </button>
-            ) : null}
-            <div className={isSheet ? '' : 'border-l-4 border-blue-500/60 pl-3'}>
-              <div className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
-                  <RectangleStackIcon className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <h1 className={`${isSheet ? 'text-xl sm:text-2xl' : 'text-2xl'} font-bold tracking-tight text-gray-900`}>
-                    Create collection
-                  </h1>
-                  {!isSheet ? (
-                    <p className="mt-0.5 text-sm text-gray-500">
-                      Add details and SEO settings. You can add products after saving.
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex shrink-0 items-center gap-2 self-start">
-            {isSheet && onCancel ? (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => void handleSubmit()}
-              disabled={collectionLoading}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <PlusIcon className="h-4 w-4" />
-              Save collection
-            </button>
-          </div>
-        </div>
+    <div className={isSheet ? 'bg-page-background-color' : productFormPageClass(FORM_APPEARANCE)}>
+      <div className={isSheet ? 'px-4 py-4 sm:px-6' : 'mx-auto max-w-[1500px] px-3 py-4 sm:px-4'}>
+        <CollectionFormHeader
+          mode="create"
+          title={form.title}
+          submitLabel={collectionLoading ? 'Saving…' : 'Save'}
+          submitDisabled={collectionLoading}
+          onBack={!isSheet ? handleBack : undefined}
+          onCancel={isSheet ? onCancel : undefined}
+          onSubmit={() => void handleSubmit()}
+        />
 
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-          <div className="min-w-0 space-y-6 xl:col-span-8">
-            <section className="rounded-xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
-              <h2 className="text-base font-semibold text-gray-900">Title and description</h2>
-              <p className="mt-1 text-sm text-gray-500">Shown on your storefront where this collection appears.</p>
-              <div className="mt-5 space-y-4 border-t border-gray-100 pt-5">
-                <div>
-                  <label htmlFor="title" className="mb-2 block text-sm font-medium text-gray-700">
-                    Title <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="title"
-                    type="text"
-                    value={form.title}
-                    onChange={(e) => handleChange('title', e.target.value)}
-                    required
-                    className={inputClass}
-                    placeholder="e.g. Summer sale"
-                  />
-                </div>
-                <div>
-                  <ProductDescriptionInput
-                    value={form.description}
-                    onChange={(html) => handleChange('description', html)}
-                    placeholder="Optional description for customers"
-                  />
-                </div>
-              </div>
-            </section>
+        <div className={productFormGridClass(FORM_APPEARANCE)}>
+          <div className={productFormMainStackClass(FORM_APPEARANCE)}>
+            <CollectionBasicInfoSection
+              title={form.title}
+              description={form.description}
+              titleInputId="title"
+              onTitleChange={(value) => handleChange('title', value)}
+              onDescriptionChange={(html) => handleChange('description', html)}
+            />
 
-            <section className="rounded-xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
-              <h2 className="text-base font-semibold text-gray-900">Products</h2>
-              <p className="mt-1 text-sm text-gray-500">Search or browse products to add after you save this collection.</p>
-              <div className="mt-5 border-t border-gray-100 pt-5">
+            <section className={productFormCardClass(FORM_APPEARANCE)}>
+              <h2 className={productFormSectionTitleClass(FORM_APPEARANCE)}>Products</h2>
+              <div className="mt-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="relative min-w-[220px] flex-1">
                     <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -575,42 +388,29 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                       value={productSearchQuery}
                       onChange={(e) => setProductSearchQuery(e.target.value)}
                       placeholder="Search products"
-                      className={`${inputClass} pl-9`}
+                      className={`${collectionInputClass} pl-9`}
                     />
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsProductsModalOpen(true)}
-                    className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+                    className={collectionSecondaryButtonClass}
                   >
                     Browse
                   </button>
                   <select
                     value={productSort}
-                    onChange={(e) =>
-                      setProductSort(
-                        e.target.value as
-                          | 'manual'
-                          | 'title-asc'
-                          | 'title-desc'
-                          | 'price-high'
-                          | 'price-low'
-                          | 'newest'
-                          | 'oldest'
-                      )
-                    }
-                    className="min-w-48 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                    onChange={(e) => setProductSort(e.target.value as CollectionProductSort)}
+                    className={`${collectionInputClass} min-w-44 cursor-pointer`}
                   >
-                    <option value="title-asc">Sort: Product title A-Z</option>
-                    <option value="title-desc">Sort: Product title Z-A</option>
-                    <option value="price-high">Sort: Highest price</option>
-                    <option value="price-low">Sort: Lowest price</option>
-                    <option value="newest">Sort: Newest</option>
-                    <option value="oldest">Sort: Oldest</option>
-                    <option value="manual">Sort: Manually</option>
+                    {COLLECTION_PRODUCT_SORT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        Sort: {option.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
-                <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/40 px-4 py-4">
+                <div className={`mt-4 ${collectionProductsPanelClass} px-3 py-3`}>
                   {productSearchQuery.trim() ? (
                     <div className="overflow-hidden rounded-lg border border-gray-100 bg-white text-left">
                       {isProductsSearching ? (
@@ -637,11 +437,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                                   type="button"
                                   disabled={alreadyAdded}
                                   onClick={() => handleQuickAddProduct(product)}
-                                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
-                                    alreadyAdded
-                                      ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-                                      : 'bg-blue-600 text-white hover:bg-blue-700'
-                                  }`}
+                                  className={alreadyAdded ? collectionMutedAddButtonClass : collectionPrimaryButtonClass}
                                 >
                                   {alreadyAdded ? 'Added' : 'Add'}
                                 </button>
@@ -655,8 +451,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                     </div>
                   ) : displayedSelectedProducts.length === 0 ? (
                     <div className="py-6 text-center">
-                      <p className="text-sm text-gray-500">There are no products in this collection.</p>
-                      <p className="mt-1 text-xs text-gray-400">Search or browse to add products.</p>
+                      <p className="text-[13px] text-gray-500">No products in this collection yet.</p>
                     </div>
                   ) : (
                     <div className="overflow-hidden rounded-lg border border-gray-100 bg-white text-left">
@@ -686,13 +481,13 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                             setDragOverProductId(null);
                             lastReorderTargetRef.current = null;
                           }}
-                          className={`flex items-center gap-3 border-b border-gray-100 px-3 py-2.5 transition-all duration-200 ease-out last:border-b-0 ${
+                          className={`${collectionProductRowClass} ${
                             productSort === 'manual' ? 'cursor-grab active:cursor-grabbing' : ''
                           } ${
-                            draggedProductId === product._id ? 'scale-[0.995] opacity-85' : ''
+                            draggedProductId === product._id ? 'opacity-80' : ''
                           } ${
                             dragOverProductId === product._id && draggedProductId !== product._id
-                              ? 'bg-blue-50/70 ring-1 ring-blue-200'
+                              ? 'bg-gray-100'
                               : ''
                           }`}
                         >
@@ -716,11 +511,11 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                                     return next;
                                   });
                                 }}
-                                className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500/40"
+                                className="h-3.5 w-3.5 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                               />
                             </>
                           ) : null}
-                          <span className="w-7 shrink-0 text-right text-sm text-gray-700">{index + 1}.</span>
+                          <span className="w-6 shrink-0 text-right text-[12px] text-gray-400">{index + 1}</span>
                           <div className="h-9 w-9 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
                             {product.imageUrl ? (
                               <img src={product.imageUrl} alt="" className="h-full w-full object-cover" />
@@ -730,10 +525,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                               </div>
                             )}
                           </div>
-                          <p className="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">{product.title}</p>
-                          <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-0.5 text-sm font-semibold text-emerald-800">
-                            Active
-                          </span>
+                          <p className="min-w-0 flex-1 truncate text-[13px] font-medium text-gray-900">{product.title}</p>
                           <button
                             type="button"
                             onClick={() => {
@@ -757,211 +549,37 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
               </div>
             </section>
 
-            <section className="overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-sm">
-              <div className="flex items-start justify-between gap-3 px-5 py-5 sm:px-6">
-                <div>
-                  <h2 className="text-base font-semibold text-gray-900">Search engine listing</h2>
-                  <p className="mt-1 text-sm text-gray-600">
-                    Add a title and description to see how this collection might appear in a search engine listing
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsSeoExpanded((prev) => !prev)}
-                  aria-label={isSeoExpanded ? 'Collapse search engine listing' : 'Edit search engine listing'}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
-                >
-                  <PencilSquareIcon className="h-4 w-4" />
-                </button>
-              </div>
-
-              {isSeoExpanded ? (
-                <div className="space-y-4 border-t border-gray-100 px-5 py-5 sm:px-6">
-                  <div>
-                    <label htmlFor="pageTitle" className="mb-2 block text-sm font-medium text-gray-700">
-                      Page title
-                    </label>
-                    <input
-                      id="pageTitle"
-                      type="text"
-                      maxLength={70}
-                      value={form.pageTitle}
-                      onChange={(e) => handleChange('pageTitle', e.target.value)}
-                      className={inputClass}
-                    />
-                    <p className="mt-1.5 text-xs text-gray-500">{form.pageTitle.length} of 70 characters used</p>
-                  </div>
-                  <div>
-                    <label htmlFor="metaDescription" className="mb-2 block text-sm font-medium text-gray-700">
-                      Meta description
-                    </label>
-                    <textarea
-                      id="metaDescription"
-                      maxLength={160}
-                      value={form.metaDescription}
-                      onChange={(e) => handleChange('metaDescription', e.target.value)}
-                      rows={4}
-                      className={`${inputClass} resize-none`}
-                    />
-                    <p className="mt-1.5 text-xs text-gray-500">{form.metaDescription.length} of 160 characters used</p>
-                  </div>
-                  <div>
-                    <label htmlFor="urlHandle" className="mb-2 block text-sm font-medium text-gray-700">
-                      URL handle
-                    </label>
-                    <div className="relative">
-                      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-                        collections/
-                      </span>
-                      <input
-                        id="urlHandle"
-                        type="text"
-                        value={form.urlHandle}
-                        onChange={(e) => handleChange('urlHandle', e.target.value)}
-                        className={`${inputClass} pl-24`}
-                        placeholder=""
-                      />
-                    </div>
-                    <p className="mt-1.5 text-sm text-gray-500">https://your-store.com/collections/{form.urlHandle}</p>
-                  </div>
-                </div>
-              ) : null}
-            </section>
+            <CollectionSeoSection
+              pageTitle={form.pageTitle}
+              metaDescription={form.metaDescription}
+              urlHandle={form.urlHandle}
+              expanded={isSeoExpanded}
+              onToggleExpanded={() => setIsSeoExpanded((prev) => !prev)}
+              onPageTitleChange={(value) => handleChange('pageTitle', value)}
+              onMetaDescriptionChange={(value) => handleChange('metaDescription', value)}
+              onUrlHandleChange={(value) => handleChange('urlHandle', value)}
+            />
           </div>
 
-          <aside className="space-y-6 xl:col-span-4">
-            <section className="rounded-xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
-              <h2 className="text-base font-semibold text-gray-900">Publishing</h2>
-              <p className="mt-1 text-sm text-gray-500">Set whether this collection is visible on your store.</p>
-              <div className="mt-5 border-t border-gray-100 pt-5">
-                <label htmlFor="status" className="mb-2 block text-sm font-medium text-gray-700">
-                  Status
-                </label>
-                <select
-                  id="status"
-                  value={form.status}
-                  onChange={(e) => handleChange('status', e.target.value as 'draft' | 'published')}
-                  className={`${inputClass} cursor-pointer`}
-                >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                </select>
-              </div>
-            </section>
+          <aside className={productFormAsideStackClass(FORM_APPEARANCE)}>
+            <CollectionPublishingSection
+              status={form.status}
+              onStatusChange={(status) => handleChange('status', status)}
+            />
 
-            <section className="rounded-xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-semibold text-gray-900">Image</h2>
-                {form.imageUrl ? (
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setIsImageActionsOpen((prev) => !prev)}
-                      className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-sm font-semibold text-blue-700 transition-colors hover:bg-blue-50"
-                    >
-                      Edit
-                      <ChevronDownIcon className="h-4 w-4" />
-                    </button>
-                    {isImageActionsOpen ? (
-                      <div className="absolute right-0 z-20 mt-2 min-w-44 overflow-hidden rounded-2xl border border-gray-200 bg-white py-1 shadow-lg">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsImageActionsOpen(false);
-                            imageFileInputRef.current?.click();
-                          }}
-                          className="block w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
-                        >
-                          Change image
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsImageActionsOpen(false);
-                            setImageAltTextDraft(imageAltText);
-                            setIsImageAltModalOpen(true);
-                          }}
-                          className="block w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
-                        >
-                          Edit alt text
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsImageActionsOpen(false);
-                            setIsImageAltModalOpen(false);
-                            setImageAltText('');
-                            handleChange('imageUrl', '');
-                          }}
-                          className="block w-full px-4 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
-              <p className="mt-1 text-sm text-gray-500">Upload a featured image for this collection.</p>
-              <div className="mt-5 border-t border-gray-100 pt-5">
-                {form.imageUrl ? (
-                  <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
-                    <img src={form.imageUrl} alt={imageAltText || 'Collection'} className="h-44 w-full object-cover" />
-                  </div>
-                ) : (
-                  <label
-                    onClick={() => imageFileInputRef.current?.click()}
-                    onDragEnter={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsImageDragOver(true);
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsImageDragOver(true);
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsImageDragOver(false);
-                    }}
-                    onDrop={handleImageDrop}
-                    className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed px-4 py-8 text-center transition-colors ${
-                      isImageDragOver
-                        ? 'border-blue-400 bg-blue-50/60'
-                        : 'border-gray-300 bg-white hover:border-blue-300 hover:bg-blue-50/30'
-                    }`}
-                  >
-                    <PhotoIcon className="h-8 w-8 text-gray-400" />
-                    <span className="mt-2 text-sm font-medium text-gray-700">
-                      {awsUploading ? 'Uploading image...' : 'Upload collection image'}
-                    </span>
-                    <span className="mt-1 text-xs text-gray-500">Drag and drop, or click to upload (PNG, JPG, WEBP)</span>
-                  </label>
-                )}
-                <input
-                  ref={imageFileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageFileSelection}
-                />
-              </div>
-            </section>
-
-            <section className="rounded-xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
-              <h2 className="text-base font-semibold text-gray-900">Theme template</h2>
-              <p className="mt-1 text-sm text-gray-500">Template used to render this collection page.</p>
-              <div className="mt-5 border-t border-gray-100 pt-5">
-                <label htmlFor="themeTemplate" className="mb-2 block text-sm font-medium text-gray-700">
-                  Template
-                </label>
-                <select id="themeTemplate" value="default" disabled className={`${inputClass} cursor-not-allowed bg-gray-50`}>
-                  <option value="default">Default collection</option>
-                </select>
-              </div>
-            </section>
+            <CollectionImageSidebarSection
+              imageUrl={form.imageUrl}
+              imageAlt={imageAltText || form.title || 'Collection'}
+              onImageUrlChange={(url) => handleChange('imageUrl', url)}
+              onEditAltText={
+                form.imageUrl
+                  ? () => {
+                      setImageAltTextDraft(imageAltText);
+                      setIsImageAltModalOpen(true);
+                    }
+                  : undefined
+              }
+            />
           </aside>
         </div>
       </div>
@@ -1011,7 +629,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
               type="text"
               value={imageAltTextDraft}
               onChange={(e) => setImageAltTextDraft(e.target.value)}
-              className={inputClass}
+              className={collectionInputClass}
               placeholder="Describe this image"
             />
             <p className="mt-4 text-sm leading-relaxed text-gray-600">
@@ -1065,7 +683,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                 value={productSearchQuery}
                 onChange={(e) => setProductSearchQuery(e.target.value)}
                 placeholder="Search products"
-                className={`${inputClass} h-11 pl-10 pr-10 text-base`}
+                className={`${collectionInputClass} h-11 pl-10 pr-10 text-base`}
               />
               {productSearchQuery ? (
                 <button
@@ -1081,7 +699,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             <select
               value={searchBy}
               onChange={(e) => setSearchBy(e.target.value as 'all' | 'title' | 'sku')}
-              className="h-11 min-w-60 rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              className={`${collectionInputClass} h-11 min-w-60`}
             >
               <option value="all">Search by All</option>
               <option value="title">Search by Title</option>
@@ -1107,7 +725,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                   <li
                     key={product._id}
                     className={`flex items-center gap-3 px-4 py-3 transition-colors ${
-                      isChecked ? 'bg-blue-50/40' : 'hover:bg-gray-50/70'
+                      isChecked ? 'bg-gray-50' : 'hover:bg-gray-50/70'
                     }`}
                   >
                     <input
@@ -1115,7 +733,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                       checked={isChecked}
                       onChange={(e) => handleToggleProductSelection(product._id, e.target.checked)}
                       aria-label={`Select ${product.title}`}
-                      className="h-5 w-5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/40"
+                      className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <div className="h-10 w-10 overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
                       {product.imageUrl ? (

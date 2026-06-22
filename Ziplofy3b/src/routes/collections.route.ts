@@ -1,5 +1,13 @@
 import { Router } from "express";
-import { createCollection, deleteCollection,getCollectionsByStoreId, searchCollections, searchProductsInCollection, updateCollection } from "../controllers/collections.controller";
+import {
+  createCollection,
+  deleteCollection,
+  getCollectionById,
+  getCollectionsByStoreId,
+  searchCollections,
+  searchProductsInCollection,
+  updateCollection,
+} from "../controllers/collections.controller";
 import { protect } from "../middlewares/auth.middleware";
 
 export const collectionsRouter = Router();
@@ -14,6 +22,9 @@ collectionsRouter.get("/search/:storeId", searchCollections);
 
 // SEARCH products inside a collection
 collectionsRouter.get("/:collectionId/products/search", searchProductsInCollection);
+
+// GET collection by id
+collectionsRouter.get("/:id", getCollectionById);
 
 // CREATE
 collectionsRouter.post("/", createCollection);

@@ -149,6 +149,8 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
   }
 
   if (blogPostMatch && blogPost) {
+    const blogHandle = blog?.urlHandle?.trim() || blogPostMatch[1];
+    const postHandle = blogPost.urlHandle?.trim() || blogPostMatch[2];
     const title = joinTitle([blogPost.pageTitle?.trim() || blogPost.title, storeName]);
     const description =
       blogPost.metaDescription?.trim() ||
@@ -157,7 +159,7 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
     return {
       title,
       description,
-      canonicalUrl,
+      canonicalUrl: canonicalFromPath(origin, `/blogs/${blogHandle}/${postHandle}`),
       ogType: 'website',
       ogImage: blogPost.featuredImageUrl,
       jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
@@ -176,12 +178,13 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
   }
 
   if (blogMatch && blog) {
+    const blogHandle = blog.urlHandle?.trim() || blogMatch[1];
     const title = joinTitle([blog.pageTitle?.trim() || blog.title, storeName]);
     const description = blog.metaDescription?.trim() || storeDescription;
     return {
       title,
       description,
-      canonicalUrl,
+      canonicalUrl: canonicalFromPath(origin, `/blogs/${blogHandle}`),
       ogType: 'website',
       jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
     };

@@ -2,15 +2,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
-
-function normalizeRouteHandle(raw: string | undefined): string {
-  if (!raw) return '';
-  const decoded = decodeURIComponent(raw.trim());
-  return decoded
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+import { normalizeStorefrontPathHandle } from '@/utils/storefront-path-handle.util';
 
 /**
  * When the route is `/blogs/:blogHandle`, loads blog metadata and visible posts
@@ -24,7 +16,7 @@ export function StorefrontBlogByUrlHandleLoader() {
   const storeId = storeFrontMeta?.storeId;
 
   useEffect(() => {
-    const handle = normalizeRouteHandle(blogHandle);
+    const handle = normalizeStorefrontPathHandle(blogHandle ?? '');
 
     if (!storeId || !handle || handle === 'preview') {
       clearActiveBlog();
@@ -34,9 +26,14 @@ export function StorefrontBlogByUrlHandleLoader() {
     void (async () => {
       try {
         await getBlogByUrlHandle(storeId, handle);
-        await fetchVisiblePostsByBlogUrlHandle(storeId, handle);
       } catch {
         /* errors surfaced via context.error */
+      }
+
+      try {
+        await fetchVisiblePostsByBlogUrlHandle(storeId, handle);
+      } catch {
+        /* post list failures should not block blog SEO metadata */
       }
     })();
 

@@ -39,7 +39,7 @@ function extractPayload(body: Record<string, unknown>): OnlineStorePreferencesPa
   }
   if (typeof body.b2bCustomersOnly === 'boolean') {
     payload.b2bCustomersOnly = body.b2bCustomersOnly;
-  }
+  }x
   if (typeof body.countryRedirectionEnabled === 'boolean') {
     payload.countryRedirectionEnabled = body.countryRedirectionEnabled;
   }

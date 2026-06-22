@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { useAwsUpload } from '../contexts/aws-upload.context';
 import {
   type CreateGiftCardProductRequest,
   type GiftCardProduct,
@@ -8,11 +7,7 @@ import {
   useGiftCardProducts,
 } from '../contexts/gift-card-products.context';
 import { useStore } from '../contexts/store.context';
-
-export type SelectedGiftCardProductImage = {
-  file: File;
-  previewUrl: string;
-};
+import { useProductMediaUrls } from './useProductMediaUrls';
 
 export type GiftCardProductFormData = {
   title: string;
@@ -46,7 +41,7 @@ export function useGiftCardProductForm(options: UseGiftCardProductFormOptions = 
   const { onSuccess } = options;
   const { activeStoreId, stores } = useStore();
   const { createGiftCardProduct, loading } = useGiftCardProducts();
-  const { uploadImageWithSignedUrl } = useAwsUpload();
+  const { mediaUrls, displayImages, addImageUrl, removeImage, resetMediaUrls } = useProductMediaUrls();
 
   const [formData, setFormData] = useState<GiftCardProductFormData>(INITIAL_FORM_DATA);
   const [denominations, setDenominations] = useState<string[]>(['10.00', '25.00', '50.00', '100.00']);
@@ -54,21 +49,9 @@ export function useGiftCardProductForm(options: UseGiftCardProductFormOptions = 
   const [themeTemplate, setThemeTemplate] = useState('default-product');
   const [giftCardTemplate, setGiftCardTemplate] = useState('gift_card');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedImages, setSelectedImages] = useState<SelectedGiftCardProductImage[]>([]);
-  const selectedImagesRef = useRef<SelectedGiftCardProductImage[]>([]);
   const [initialized, setInitialized] = useState(false);
 
   const activeStore = stores.find((store) => store._id === activeStoreId) ?? null;
-
-  useEffect(() => {
-    selectedImagesRef.current = selectedImages;
-  }, [selectedImages]);
-
-  useEffect(() => {
-    return () => {
-      selectedImagesRef.current.forEach((image) => URL.revokeObjectURL(image.previewUrl));
-    };
-  }, []);
 
   useEffect(() => {
     if (!activeStore || initialized) return;
@@ -82,27 +65,6 @@ export function useGiftCardProductForm(options: UseGiftCardProductFormOptions = 
 
   const handleInputChange = useCallback((field: keyof GiftCardProductFormData, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  }, []);
-
-  const addImageFiles = useCallback((files: File[]) => {
-    const imageFiles = files.filter((file) => file.type.startsWith('image/'));
-    if (!imageFiles.length) return;
-    setSelectedImages((prev) => [
-      ...prev,
-      ...imageFiles.map((file) => ({
-        file,
-        previewUrl: URL.createObjectURL(file),
-      })),
-    ]);
-  }, []);
-
-  const removeImage = useCallback((index: number) => {
-    setSelectedImages((prev) => {
-      const next = [...prev];
-      const [removed] = next.splice(index, 1);
-      if (removed) URL.revokeObjectURL(removed.previewUrl);
-      return next;
-    });
   }, []);
 
   const slugify = useCallback((input: string) => {
@@ -137,27 +99,11 @@ export function useGiftCardProductForm(options: UseGiftCardProductFormOptions = 
 
     setIsSubmitting(true);
     try {
-      let imageUrls: string[] = [];
-      if (selectedImages.length > 0) {
-        const uploadToastId = toast.loading(
-          `Uploading ${selectedImages.length} image${selectedImages.length > 1 ? 's' : ''}...`
-        );
-        const uploaded = await Promise.all(
-          selectedImages.map((image) =>
-            uploadImageWithSignedUrl(image.file, {
-              folder: `${activeStoreId}/gift-card-product-image`,
-            })
-          )
-        );
-        imageUrls = uploaded.map((image) => image.objectUrl);
-        toast.success('Images uploaded', { id: uploadToastId });
-      }
-
       const payload: CreateGiftCardProductRequest = {
         storeId: activeStoreId,
         title: formData.title.trim(),
         description: formData.description,
-        imageUrls,
+        imageUrls: mediaUrls,
         denominations: parsedDenominations,
         storeCurrencyCode: 'INR',
         redemptionScope: redemptionScope === 'store' ? 'store_currency' : 'all_currencies',
@@ -174,6 +120,7 @@ export function useGiftCardProductForm(options: UseGiftCardProductFormOptions = 
 
       const created = await createGiftCardProduct(payload);
       toast.success('Gift card product created successfully');
+      resetMediaUrls([]);
       onSuccess?.(created);
     } catch (error: unknown) {
       const message =
@@ -189,12 +136,12 @@ export function useGiftCardProductForm(options: UseGiftCardProductFormOptions = 
     denominations,
     formData,
     giftCardTemplate,
+    mediaUrls,
     onSuccess,
     redemptionScope,
-    selectedImages,
+    resetMediaUrls,
     slugify,
     themeTemplate,
-    uploadImageWithSignedUrl,
   ]);
 
   return {
@@ -205,8 +152,8 @@ export function useGiftCardProductForm(options: UseGiftCardProductFormOptions = 
     handleSubmit,
     isSubmitting,
     loading,
-    selectedImages,
-    addImageFiles,
+    displayImages,
+    addImageUrl,
     removeImage,
     denominations,
     setDenominations,

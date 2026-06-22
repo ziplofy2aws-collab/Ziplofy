@@ -1,4 +1,5 @@
 import React from 'react';
+import { poTableCellClass, poTableCellRightClass } from './purchase-order-ui.util';
 
 interface VariantTableRowProps {
   variantId: string;
@@ -14,26 +15,33 @@ const VariantTableRow: React.FC<VariantTableRowProps> = ({
   onToggle,
 }) => {
   const variantLabel = (() => {
-    const ov = variant.optionValues || {};
-    const parts = Object.values(ov).map((val: any) => String(val));
-    return parts.join(' / ');
+    const optionValues = variant.optionValues || {};
+    return Object.values(optionValues).map((value) => String(value)).join(' / ');
   })();
 
   const availability = typeof variant.availability === 'number' ? variant.availability : 0;
 
   return (
     <tr
-      key={`var-${variantId}`}
       onClick={() => onToggle(variantId)}
-      className={`cursor-pointer hover:bg-gray-50 ${isSelected ? 'bg-gray-100' : ''}`}
+      className={`cursor-pointer border-b border-gray-100 transition-colors hover:bg-gray-50/60 ${
+        isSelected ? 'bg-gray-50' : ''
+      }`}
     >
-      <td className="px-4 py-2">
-        <span className="text-sm text-gray-900">{variantLabel}</span>
+      <td className={`${poTableCellClass} pl-12`}>
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            readOnly
+            className="h-3.5 w-3.5 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+          />
+          <span>{variantLabel || 'Default variant'}</span>
+        </div>
       </td>
-      <td className="px-4 py-2 text-right text-sm text-gray-900">{availability}</td>
+      <td className={poTableCellRightClass}>{availability}</td>
     </tr>
   );
 };
 
 export default VariantTableRow;
-

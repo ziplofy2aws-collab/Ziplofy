@@ -1,0 +1,54 @@
+Today's Work — Saturday, May 30, 2026
+=====================================
+
+1. Collections — migrated to E-Store Cloud Storage flow
+   - Finished ProductCollectionCreatePage: removed direct S3/useAwsUpload; cover image via CollectionCoverImageField; description save via useDescriptionCloudStorageSave on submit.
+   - Updated ProductCollectionDetailsPage: description updates run through useDescriptionCloudStorageSave before PATCH.
+   - EditCollectionModal already used CollectionCoverImageField + ProductDescriptionInput (from earlier in session).
+
+2. Backend — security & validation hardening
+   - collections.controller.ts: store ACL on create/read/update/delete/search; field whitelist on update; sanitizeRichTextHtml on descriptions; assertOptionalStoreCloudImageUrl on imageUrl.
+   - product.controller.ts: sanitize description on update; validate imageUrls against store cloud file registry.
+   - product-variant.controller.ts: validate variant images against store cloud file registry.
+
+3. Storefront — product description rendering
+   - ProductMain.tsx and horizon ProductPage.tsx: descriptions now render with ThemeEditorRichTextContent (HTML/formatting) instead of plain text.
+
+4. Collection details page — UI aligned with create collection page
+   - Rebuilt ProductCollectionDetailsPage to match create page layout: header with Save, inline form (title, description, products, SEO), sidebar (Publishing, Image, Delete).
+   - Removed Edit collection modal; metadata saves via header Save; products add/remove immediately via API.
+   - Products section: search, Browse modal, sort dropdown, same list styling as create page.
+
+5. Collections — removed Theme template section
+   - Removed Theme template card from ProductCollectionDetailsPage and ProductCollectionCreatePage sidebars.
+
+6. Orders — OrderTimeline model & API (backend)
+   - Created order-timeline.model.ts: orderId, type (comment|event), comment, timestamps.
+   - Created order-timeline.controller.ts and order-timeline.route.ts.
+   - Registered /api/order-timeline (POST, GET by orderId, PUT, DELETE).
+   - Exported model/types from models/index.ts.
+
+7. Orders — timeline on admin order details (frontend)
+   - Created order-timeline.context.tsx with getTimelineByOrderId, createTimelineEntry, updateTimelineEntry, deleteTimelineEntry.
+   - Added OrderTimelineProvider in App.tsx.
+   - Built OrderTimelineComposer, OrderTimelineList, OrderTimelineItem, OrderTimelineSection.
+   - Wired timeline on OrderDetailsPage: load on open, post/edit/delete comments, staff avatar initials.
+
+8. Order details page — Shopify-style UI restructure
+   - Rebuilt layout to match reference: header (order #, Paid/Unfulfilled badges, date, Refund/Edit/Print/More actions, prev/next order nav).
+   - Left column: Fulfillment card, Payment card, Timeline section.
+   - Right sidebar: Notes, Customer (addresses), Conversion summary placeholder, Order risk placeholder, Tags placeholder.
+   - Extracted OrderDetailsHeader, OrderFulfillmentCard, OrderPaymentCard, OrderDetailsSidebar, order-details.util.ts.
+   - Compact cards, Shopify-style status badges.
+
+9. Order details page — removed grey background
+   - Replaced custom #f1f1f1 page background with bg-page-background-color to match the rest of the admin app.
+
+10. Checkout settings — Configurations block
+   - Added CheckoutConfigurationsBlock above Customer contact method on CheckoutSettingsPage.
+   - Shows store configuration name, Active badge, last saved time from settings.updatedAt, New badge, and Edit/more-actions UI (Shopify-style).
+
+11. Checkout profile editor
+   - Edit on Configurations navigates to /checkout/editor/profiles/.
+   - Dedicated checkout-editor module: Shopify-style header (config name, Active, Information), sidebar tree (Header/Main/Order summary/Footer), preview placeholder.
+   - Reuses create-theme CreateThemeEditorSidebar, loader, theme pack for settings tab; fixed fullscreen layout.

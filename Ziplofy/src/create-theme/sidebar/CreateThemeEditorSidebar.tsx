@@ -641,6 +641,8 @@ function SidebarRow({
 
 export type CreateThemeEditorSidebarProps = {
   pageLabel: string;
+  /** When `plain`, the sidebar heading shows only `pageLabel` (checkout editor style). */
+  sidebarTitleMode?: 'editing' | 'plain';
   sidebarTab: ThemeEditorSidebarTab;
   onSidebarTabChange: (tab: ThemeEditorSidebarTab) => void;
   onExit: () => void;
@@ -674,6 +676,7 @@ export type CreateThemeEditorSidebarProps = {
 
 const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = ({
   pageLabel,
+  sidebarTitleMode = 'editing',
   sidebarTab,
   onSidebarTabChange,
   onExit,
@@ -754,9 +757,13 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
 
       <h2 className="border-b border-[#e1e1e1] bg-[#f6f6f7] px-3 py-3 text-[13px] font-medium text-gray-500">
         {sidebarTab === 'sections' ? (
-          <>
-            Editing: <span className="font-semibold text-gray-900">{pageLabel}</span>
-          </>
+          sidebarTitleMode === 'plain' ? (
+            <span className="font-semibold text-gray-900">{pageLabel}</span>
+          ) : (
+            <>
+              Editing: <span className="font-semibold text-gray-900">{pageLabel}</span>
+            </>
+          )
         ) : (
           title
         )}

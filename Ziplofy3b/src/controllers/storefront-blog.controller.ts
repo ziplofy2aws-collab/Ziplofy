@@ -26,7 +26,9 @@ async function findBlogByStoreAndHandle(storeId: string, blogHandle: string) {
   return Blog.findOne({
     storeId,
     urlHandle: normalizeUrlHandle(blogHandle),
-  }).lean();
+  })
+    .select(STOREFRONT_BLOG_SELECT)
+    .lean();
 }
 
 function enrichPostFeaturedImage(publicOrigin: string, post: Record<string, unknown>) {
@@ -36,6 +38,33 @@ function enrichPostFeaturedImage(publicOrigin: string, post: Record<string, unkn
   );
   return { ...post, featuredImageUrl };
 }
+
+const STOREFRONT_BLOG_SELECT = {
+  storeId: 1,
+  title: 1,
+  pageTitle: 1,
+  metaDescription: 1,
+  urlHandle: 1,
+  comments: 1,
+  createdAt: 1,
+  updatedAt: 1,
+} as const;
+
+const STOREFRONT_BLOG_POST_DETAIL_SELECT = {
+  storeId: 1,
+  blogId: 1,
+  title: 1,
+  content: 1,
+  excerpt: 1,
+  pageTitle: 1,
+  metaDescription: 1,
+  urlHandle: 1,
+  visibility: 1,
+  author: 1,
+  featuredImageUrl: 1,
+  createdAt: 1,
+  updatedAt: 1,
+} as const;
 
 /** Storefront: resolve a blog by store + url handle. */
 export const getBlogByUrlHandle = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -131,7 +160,9 @@ export const getVisiblePostByUrlHandles = asyncErrorHandler(async (req: Request,
     blogId: blog._id,
     urlHandle: normalizeUrlHandle(postHandle),
     ...(isPreviewRequest(req) ? {} : { visibility: "visible" as const }),
-  }).lean();
+  })
+    .select(STOREFRONT_BLOG_POST_DETAIL_SELECT)
+    .lean();
 
   if (!post) {
     throw new CustomError("Blog post not found", 404);

@@ -30,13 +30,15 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
   }, [onUndeleteProduct, product]);
 
   const categoryName =
-    product.category && typeof product.category === "object" ? product.category.name : "—";
+    product.category && typeof product.category === "object" && product.category.name
+      ? product.category.name
+      : "Uncategorized";
   const productTypeName =
     product.productType && typeof product.productType === "object" ? product.productType.name : "";
   const vendorName =
     product.vendor && typeof product.vendor === "object"
       ? product.vendor.name
-      : storeName || "—";
+      : storeName || "My Store";
   const channelCount =
     Number(product.onlineStorePublishing) + Number(product.pointOfSalePublishing);
   const inventoryLabel = product.inventoryTrackingEnabled
@@ -46,8 +48,8 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
 
   return (
     <tr
-      className={`cursor-pointer transition-colors ${
-        isSelected ? "bg-gray-50" : "hover:bg-gray-50/80"
+      className={`cursor-pointer border-b border-gray-100 transition-colors last:border-b-0 ${
+        isSelected ? "bg-gray-50" : "hover:bg-gray-50/60"
       }`}
       onClick={handleClick}
     >
@@ -93,22 +95,22 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
           </div>
         </div>
       </td>
-      <td className="whitespace-nowrap px-3 py-2 text-[13px] text-gray-600">
+      <td className="whitespace-nowrap px-3 py-2.5 text-[13px] text-gray-600">
         <span
-          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-normal ${
+          className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
             product.status === "active"
-              ? "bg-emerald-50 text-emerald-700"
+              ? "bg-emerald-100 text-emerald-800"
               : "bg-gray-100 text-gray-600"
           }`}
         >
           {product.status === "active" ? "Active" : "Draft"}
         </span>
       </td>
-      <td className="whitespace-nowrap px-3 py-2 text-[13px] font-normal text-gray-600">{inventoryLabel}</td>
-      <td className="whitespace-nowrap px-3 py-2 text-[13px] font-normal text-gray-600">{categoryName}</td>
-      <td className="whitespace-nowrap px-3 py-2 text-[13px] font-normal text-gray-600">{channelCount}</td>
-      <td className="whitespace-nowrap px-3 py-2 text-[13px] font-normal text-gray-600">{productTypeName}</td>
-      <td className="whitespace-nowrap px-3 py-2 text-[13px] font-normal text-gray-600">{vendorName}</td>
+      <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">{inventoryLabel}</td>
+      <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">{categoryName}</td>
+      <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">{channelCount}</td>
+      <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">{productTypeName}</td>
+      <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">{vendorName}</td>
     </tr>
   );
 };

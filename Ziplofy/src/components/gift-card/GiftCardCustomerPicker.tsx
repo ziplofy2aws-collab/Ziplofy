@@ -22,7 +22,7 @@ export function GiftCardCustomerPicker({
   onSelectedCustomerChange,
 }: GiftCardCustomerPickerProps) {
   const { activeStoreId } = useStore();
-  const { customers, searchCustomers, loading, fetchCustomersByStoreId } = useCustomers();
+  const { customers, customerSearchResults, searchCustomers, customerSearchLoading, fetchCustomersByStoreId } = useCustomers();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -50,13 +50,14 @@ export function GiftCardCustomerPicker({
   }, []);
 
   const filteredCustomers = useMemo(() => {
+    const source = debouncedQuery.trim() ? customerSearchResults : customers;
     const q = query.trim().toLowerCase();
-    if (!q) return customers.slice(0, 8);
-    return customers.filter((customer) => {
+    if (!q) return source.slice(0, 8);
+    return source.filter((customer) => {
       const haystack = `${customer.firstName} ${customer.lastName} ${customer.email} ${customer.phoneNumber}`.toLowerCase();
       return haystack.includes(q);
     });
-  }, [customers, query]);
+  }, [customers, customerSearchResults, debouncedQuery, query]);
 
   const handleSelectCustomer = useCallback(
     (customer: Customer) => {
@@ -136,7 +137,7 @@ export function GiftCardCustomerPicker({
 
             <div className="border-t border-gray-100" />
 
-            {loading ? (
+            {customerSearchLoading ? (
               <div className="px-4 py-3 text-sm text-gray-500">Searching customers...</div>
             ) : filteredCustomers.length > 0 ? (
               <ul className="max-h-56 overflow-y-auto py-1">

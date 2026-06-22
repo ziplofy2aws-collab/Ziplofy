@@ -1,5 +1,5 @@
 import React, { startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ThemeEditorLiveConfigModal from '../components/themes/ThemeEditorLiveConfigModal';
 import {
@@ -254,7 +254,19 @@ type FieldType = ThemeEditorFieldType;
 
 const CREATOR_DELETE: ThemeEditorDeleteOptions = { creatorMode: true };
 
-const CreateThemePage: React.FC = () => {
+export type CreateThemePageMode = 'theme' | 'checkout-profile';
+
+export type CreateThemePageProps = {
+  mode?: CreateThemePageMode;
+};
+
+const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => {
+  const location = useLocation();
+  const isCheckoutProfile =
+    mode === 'checkout-profile' || location.pathname.startsWith('/checkout/editor');
+  const exitPath = isCheckoutProfile ? '/settings/checkout' : '/online-store/themes';
+  const headerPackLabel = isCheckoutProfile ? 'Checkout' : 'Horizon';
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editThemeId = searchParams.get('id');
@@ -280,7 +292,9 @@ const CreateThemePage: React.FC = () => {
   const [themeRuntime, setThemeRuntime] = useState<{ jsUrl?: string | null; cssUrl?: string | null }>({});
 
   const [showViewTheme, setShowViewTheme] = useState(false);
-  const [previewPage, setPreviewPage] = useState<ThemePreviewPage>('index');
+  const [previewPage, setPreviewPage] = useState<ThemePreviewPage>(
+    isCheckoutProfile ? 'checkout' : 'index'
+  );
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [inspectorEnabled, setInspectorEnabled] = useState(true);
   const [sidebarTab, setSidebarTab] = useState<ThemeEditorSidebarTab>('sections');
@@ -314,6 +328,12 @@ const CreateThemePage: React.FC = () => {
   const previewStoreId = activeStoreId || THEME_EDITOR_STATIC_CONFIG.devStoreId;
   const activeStoreName =
     stores.find((s) => s._id === previewStoreId)?.storeName ?? 'Preview store';
+  const checkoutConfigurationName = `${activeStoreName} configuration`;
+
+  useEffect(() => {
+    if (!isCheckoutProfile) return;
+    setThemeName(checkoutConfigurationName);
+  }, [isCheckoutProfile, checkoutConfigurationName]);
 
   useEffect(() => {
     if (activeStoreId) {
@@ -348,11 +368,13 @@ const CreateThemePage: React.FC = () => {
 
         let config = JSON.parse(JSON.stringify(data.config)) as Record<string, unknown>;
         let nextValues = { ...data.values };
-        let nextName = (config.themeName as string) || data.themeName || 'Creator Basic';
+        let nextName = isCheckoutProfile
+          ? checkoutConfigurationName
+          : (config.themeName as string) || data.themeName || 'Creator Basic';
         let loadedSavedId: string | null = null;
 
         const storeId = activeStoreId || THEME_EDITOR_STATIC_CONFIG.devStoreId;
-        if (editThemeId && storeId) {
+        if (!isCheckoutProfile && editThemeId && storeId) {
           const list = await getByStoreId(storeId);
           if (cancelled) return;
           const saved = list.find((t) => t._id === editThemeId);
@@ -404,7 +426,7 @@ const CreateThemePage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [editThemeId, activeStoreId, getByStoreId]);
+  }, [editThemeId, activeStoreId, getByStoreId, isCheckoutProfile, activeStoreName]);
 
   const debouncedValuesForTree = useDebouncedValue(values, 140);
   const tplId = templateIdForPage(previewPage);
@@ -1610,10 +1632,10 @@ const CreateThemePage: React.FC = () => {
         <p className="text-sm text-red-600">{error}</p>
         <button
           type="button"
-          onClick={() => navigate('/online-store/themes')}
+          onClick={() => navigate(exitPath)}
           className="text-sm text-[#005bd3] hover:underline"
         >
-          Back to themes
+          {isCheckoutProfile ? 'Back to checkout settings' : 'Back to themes'}
         </button>
       </div>
     );
@@ -1629,6 +1651,7 @@ const CreateThemePage: React.FC = () => {
       <CreateThemeHeader
         themeName={themeName}
         onThemeNameChange={setThemeName}
+        packLabel={headerPackLabel}
         previewPage={previewPage}
         onPreviewPageChange={handlePreviewPageChange}
         manifest={manifest}
@@ -1653,7 +1676,7 @@ const CreateThemePage: React.FC = () => {
             setSidebarTab(tab);
             if (tab === 'theme-settings') setSelectedNodeId('');
           }}
-          onExit={() => navigate('/online-store/themes')}
+          onExit={() => navigate(exitPath)}
           tree={activeTree}
           expanded={expanded}
           onToggleExpand={toggleExpand}

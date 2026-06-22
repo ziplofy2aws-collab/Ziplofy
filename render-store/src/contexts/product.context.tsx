@@ -86,11 +86,30 @@ interface StorefrontProductContextType {
   orderDiscount: OrderDiscount | null;
   fetchProductsByStoreId: (args: { storeId: string; page?: number; limit?: number }) => Promise<void>;
   fetchProductById: (productId: string) => Promise<StorefrontProductDetailItem | null>;
+  /** Resolve `/products/:id` where :id may be a Mongo id or a product URL handle. */
+  fetchProductForRoute: (storeId: string, routeParam: string) => Promise<StorefrontProductDetailItem | null>;
   clear: () => void;
   clearProductDetail: () => void;
 }
 
 const StorefrontProductContext = createContext<StorefrontProductContextType | undefined>(undefined);
+
+function isMongoObjectId(value: string): boolean {
+  return /^[a-f\d]{24}$/i.test(value);
+}
+
+function encodeProductUrlHandle(urlHandle: string): string {
+  return encodeURIComponent(urlHandle.trim().toLowerCase());
+}
+
+function mapProductDetailResponse(
+  data: StorefrontProductDetailItem & { variants?: StorefrontProductVariant[] }
+): StorefrontProductDetailItem {
+  return {
+    ...data,
+    variantDetails: data.variants ?? data.variantDetails,
+  };
+}
 
 export const StorefrontProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<StorefrontProductItem[]>([]);
@@ -128,11 +147,9 @@ export const StorefrontProductProvider: React.FC<{ children: React.ReactNode }> 
       setProductDetailError(null);
       const res = await axiosi.get<StorefrontProductDetailResponse>(`/products/public/${productId}`);
       if (!res.data.success || !res.data.data) return null;
-      const data = res.data.data as StorefrontProductDetailItem & { variants?: StorefrontProductVariant[] };
-      const detail: StorefrontProductDetailItem = {
-        ...data,
-        variantDetails: data.variants ?? data.variantDetails,
-      };
+      const detail = mapProductDetailResponse(
+        res.data.data as StorefrontProductDetailItem & { variants?: StorefrontProductVariant[] }
+      );
       setProductDetail(detail);
       return detail;
     } catch (err: unknown) {
@@ -144,6 +161,41 @@ export const StorefrontProductProvider: React.FC<{ children: React.ReactNode }> 
       setProductDetailLoading(false);
     }
   }, []);
+
+  const fetchProductForRoute = useCallback(
+    async (storeId: string, routeParam: string): Promise<StorefrontProductDetailItem | null> => {
+      const trimmed = routeParam.trim();
+      if (!storeId || !trimmed) return null;
+
+      const requestUrl = isMongoObjectId(trimmed)
+        ? `/products/public/${trimmed}`
+        : `/products/public/store/${storeId}/url-handle/${encodeProductUrlHandle(trimmed)}`;
+
+      try {
+        setProductDetailLoading(true);
+        setProductDetailError(null);
+        const res = await axiosi.get<StorefrontProductDetailResponse>(requestUrl);
+        if (!res.data.success || !res.data.data) return null;
+        const detail = mapProductDetailResponse(
+          res.data.data as StorefrontProductDetailItem & { variants?: StorefrontProductVariant[] }
+        );
+        setProductDetail(detail);
+        return detail;
+      } catch (err: unknown) {
+        const msg =
+          (err as { response?: { data?: { message?: string }; message?: string }; message?: string })?.response
+            ?.data?.message ??
+          (err as { message?: string })?.message ??
+          "Failed to fetch product";
+        setProductDetailError(msg);
+        setProductDetail(null);
+        return null;
+      } finally {
+        setProductDetailLoading(false);
+      }
+    },
+    []
+  );
 
   const clearProductDetail = useCallback(() => {
     setProductDetail(null);
@@ -172,6 +224,7 @@ export const StorefrontProductProvider: React.FC<{ children: React.ReactNode }> 
     orderDiscount,
     fetchProductsByStoreId,
     fetchProductById,
+    fetchProductForRoute,
     clear,
     clearProductDetail,
   };

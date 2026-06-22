@@ -1,20 +1,27 @@
 import React from "react";
+import {
+  type ProductFormAppearance,
+  productFormInputClass,
+  productFormLabelClass,
+} from "./product-form-appearance";
 
 interface ProductTitleInputProps {
   value: string;
   onChange: (value: string) => void;
   required?: boolean;
+  appearance?: ProductFormAppearance;
 }
 
-const ProductTitleInput: React.FC<ProductTitleInputProps> = ({ 
-  value, 
-  onChange, 
-  required = true 
+const ProductTitleInput: React.FC<ProductTitleInputProps> = ({
+  value,
+  onChange,
+  required = true,
+  appearance = 'default',
 }) => {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        Product Title {required && <span className="text-red-500">*</span>}
+      <label className={productFormLabelClass(appearance)}>
+        Product Title {required && <span className="text-red-400">*</span>}
       </label>
       <input
         type="text"
@@ -22,11 +29,10 @@ const ProductTitleInput: React.FC<ProductTitleInputProps> = ({
         onChange={(e) => onChange(e.target.value)}
         placeholder="Enter product title"
         required={required}
-        className="w-full px-3 py-2 border border-gray-200 rounded text-base focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 transition-colors"
+        className={productFormInputClass(appearance)}
       />
     </div>
   );
 };
 
 export default ProductTitleInput;
-

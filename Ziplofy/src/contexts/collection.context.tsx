@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { axiosi } from '../config/axios.config';
 
 export interface Collection {
@@ -68,6 +68,11 @@ interface GetCollectionsByStoreResponse {
   count: number;
 }
 
+interface GetCollectionByIdResponse {
+  success: boolean;
+  data: Collection;
+}
+
 interface SearchCollectionsResponse {
   success: boolean;
   data: Collection[];
@@ -103,23 +108,44 @@ export interface SearchProductsInCollectionResponse {
 
 interface CollectionContextType {
   collections: Collection[];
+  activeCollection: Collection | null;
   loading: boolean;
+  activeCollectionLoading: boolean;
   error: string | null;
   fetchCollectionsByStoreId: (storeId: string) => Promise<void>;
+  fetchCollectionById: (collectionId: string) => Promise<Collection>;
   searchCollections: (storeId: string, query: string, page?: number, limit?: number) => Promise<SearchCollectionsResponse>;
   searchProductsInCollection: (collectionId: string, query: string, page?: number, limit?: number) => Promise<SearchProductsInCollectionResponse>;
   createCollection: (payload: CreateCollectionPayload) => Promise<Collection>;
   updateCollection: (id: string, payload: UpdateCollectionPayload) => Promise<Collection>;
   deleteCollection: (id: string) => Promise<string>;
   clearCollections: () => void;
+  clearActiveCollection: () => void;
 }
 
 const CollectionContext = createContext<CollectionContextType | undefined>(undefined);
 
 export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [activeCollection, setActiveCollection] = useState<Collection | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [activeCollectionLoading, setActiveCollectionLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const activeCollectionFetchRef = useRef(0);
+
+  const extractApiErrorMessage = useCallback((err: unknown, fallback: string) => {
+    const apiErr = err as {
+      response?: { data?: { message?: string; error?: string; details?: { message?: string } } };
+      message?: string;
+    };
+    const apiMessage =
+      apiErr?.response?.data?.message ||
+      apiErr?.response?.data?.error ||
+      apiErr?.response?.data?.details?.message;
+    if (typeof apiMessage === 'string' && apiMessage.trim()) return apiMessage;
+    if (typeof apiErr?.message === 'string' && apiErr.message.trim()) return apiErr.message;
+    return fallback;
+  }, []);
 
   const fetchCollectionsByStoreId = useCallback(async (storeId: string) => {
     try {
@@ -135,6 +161,38 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setLoading(false);
     }
   }, []);
+
+  const fetchCollectionById = useCallback(async (collectionId: string): Promise<Collection> => {
+    const fetchId = ++activeCollectionFetchRef.current;
+    try {
+      setActiveCollectionLoading(true);
+      setError(null);
+      const res = await axiosi.get<GetCollectionByIdResponse>(`/collections/${collectionId}`);
+      const { success, data } = res.data;
+      if (!success) throw new Error('Failed to fetch collection details');
+      if (fetchId !== activeCollectionFetchRef.current) return data;
+      setActiveCollection(data);
+      setCollections((prev) => {
+        const exists = prev.some((collection) => collection._id === data._id);
+        if (exists) {
+          return prev.map((collection) => (collection._id === data._id ? data : collection));
+        }
+        return [data, ...prev];
+      });
+      return data;
+    } catch (err: unknown) {
+      if (fetchId === activeCollectionFetchRef.current) {
+        const msg = extractApiErrorMessage(err, 'Failed to fetch collection details');
+        setError(msg);
+        setActiveCollection(null);
+      }
+      throw new Error(extractApiErrorMessage(err, 'Failed to fetch collection details'));
+    } finally {
+      if (fetchId === activeCollectionFetchRef.current) {
+        setActiveCollectionLoading(false);
+      }
+    }
+  }, [extractApiErrorMessage]);
 
   const searchCollections = useCallback(async (storeId: string, query: string, page: number = 1, limit: number = 10) => {
     try {
@@ -198,6 +256,7 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       const { success, data } = res.data;
       if (!success) throw new Error('Failed to update collection');
       setCollections(prev => prev.map(c => (c._id === id ? data : c)));
+      setActiveCollection(prev => (prev && prev._id === id ? data : prev));
       return data;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to update collection';
@@ -216,6 +275,7 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       const { success, data } = res.data;
       if (!success) throw new Error('Failed to delete collection');
       setCollections(prev => prev.filter(c => c._id !== id));
+      setActiveCollection(prev => (prev && prev._id === id ? null : prev));
       return data.deletedId;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to delete collection';
@@ -232,17 +292,27 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setLoading(false);
   }, []);
 
+  const clearActiveCollection = useCallback(() => {
+    activeCollectionFetchRef.current += 1;
+    setActiveCollection(null);
+    setActiveCollectionLoading(false);
+  }, []);
+
   const value: CollectionContextType = {
     collections,
+    activeCollection,
     loading,
+    activeCollectionLoading,
     error,
     fetchCollectionsByStoreId,
+    fetchCollectionById,
     searchCollections,
     searchProductsInCollection,
     createCollection,
     updateCollection,
     deleteCollection,
     clearCollections,
+    clearActiveCollection,
   };
 
   return (

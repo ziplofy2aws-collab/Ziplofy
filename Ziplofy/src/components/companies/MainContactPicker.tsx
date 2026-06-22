@@ -23,7 +23,7 @@ export default function MainContactPicker({
   onCreateNewCustomer,
 }: Props) {
   const { activeStoreId } = useStore();
-  const { customers, searchCustomers, loading, fetchCustomersByStoreId } = useCustomers();
+  const { customers, customerSearchResults, searchCustomers, customerSearchLoading, fetchCustomersByStoreId } = useCustomers();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,14 +50,15 @@ export default function MainContactPicker({
   }, []);
 
   const filteredCustomers = useMemo(() => {
+    const source = debouncedQuery.trim() ? customerSearchResults : customers;
     const q = query.trim().toLowerCase();
-    if (!q) return customers.slice(0, 8);
-    return customers.filter((customer) => {
+    if (!q) return source.slice(0, 8);
+    return source.filter((customer) => {
       const haystack =
         `${customer.firstName} ${customer.lastName} ${customer.email} ${customer.phoneNumber}`.toLowerCase();
       return haystack.includes(q);
     });
-  }, [customers, query]);
+  }, [customers, customerSearchResults, debouncedQuery, query]);
 
   const handleSelectContact = useCallback(
     (customer: Customer) => {
@@ -127,7 +128,7 @@ export default function MainContactPicker({
             Add new customer
           </button>
 
-          {loading ? (
+          {customerSearchLoading ? (
             <div className="border-t border-gray-100 px-4 py-3 text-[13px] text-gray-500">
               Searching customers...
             </div>

@@ -53,33 +53,36 @@ const ProductsTable: React.FC<ProductsTableProps> = ({ products, onUndeleteProdu
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-100">
-        <thead className="bg-gray-50/50">
-          <tr>
-            <th className="w-10 px-3 py-2 text-center">
+      <table className="w-full min-w-[900px] text-left">
+        <thead>
+          <tr className="border-b border-gray-100 bg-gray-50/50">
+            <th className="w-10 px-3 py-2.5 text-center">
               <input
                 ref={selectAllRef}
                 type="checkbox"
                 checked={allVisibleSelected}
                 onChange={(e) => handleSelectAllVisible(e.target.checked)}
                 aria-label="Select all products"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
               />
             </th>
-            <th className="px-3 py-2 text-left text-xs font-normal text-gray-500">Product</th>
-            <th className="px-3 py-2 text-left text-xs font-normal text-gray-500">Status</th>
-            <th className="px-3 py-2 text-left text-xs font-normal text-gray-500">Inventory</th>
-            <th className="px-3 py-2 text-left text-xs font-normal text-gray-500">Category</th>
-            <th className="px-3 py-2 text-left text-xs font-normal text-gray-500">Channels</th>
-            <th className="px-3 py-2 text-left text-xs font-normal text-gray-500">Product type</th>
-            <th className="px-3 py-2 text-left text-xs font-normal text-gray-500">Vendor</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Product</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Status</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Inventory</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Category</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Channels</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Product type</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Vendor</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
+        <tbody className="bg-white">
           {products.length === 0 ? (
             <tr>
-              <td colSpan={8} className="px-3 py-8 text-center text-[13px] text-gray-500">
-                No products match your search or filters.
+              <td colSpan={8} className="px-3 py-16 text-center">
+                <p className="text-[15px] font-semibold text-gray-900">No products found</p>
+                <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+                  Try changing the filters or search term
+                </p>
               </td>
             </tr>
           ) : (

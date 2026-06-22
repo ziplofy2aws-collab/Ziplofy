@@ -122,7 +122,7 @@ export const BlogPostCreatePage = () => {
 
     try {
       setSaving(true);
-      await createBlogPost({
+      const created = await createBlogPost({
         storeId: activeStoreId,
         blogId,
         title: title.trim(),
@@ -139,7 +139,7 @@ export const BlogPostCreatePage = () => {
         featuredImageUploadId: featuredImageUploadId || undefined,
       });
       toast.success('Blog post saved');
-      navigate('/content/articles');
+      navigate(`/content/articles/${created._id}`, { state: { articleJustCreated: true } });
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to save blog post';
       toast.error(msg);

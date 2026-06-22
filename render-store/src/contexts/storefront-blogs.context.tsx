@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { axiosi } from '../config/axios.config';
+import { encodeStorefrontPathHandle } from '../utils/storefront-path-handle.util';
 
 export interface StorefrontBlog {
 	_id: string;
@@ -80,15 +81,6 @@ interface StorefrontBlogsContextType {
 
 const StorefrontBlogsContext = createContext<StorefrontBlogsContextType | undefined>(undefined);
 
-	function encodeUrlHandle(urlHandle: string): string {
-		const normalized = urlHandle
-			.trim()
-			.toLowerCase()
-			.replace(/[^a-z0-9]+/g, '-')
-			.replace(/^-+|-+$/g, '');
-		return encodeURIComponent(normalized);
-	}
-
 export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [activeBlog, setActiveBlog] = useState<StorefrontBlog | null>(null);
 	const [activePost, setActivePost] = useState<StorefrontBlogPost | null>(null);
@@ -101,7 +93,7 @@ export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = 
 			setLoading(true);
 			setError(null);
 			const res = await axiosi.get<FetchBlogDetailsApiResponse>(
-				`/storefront/blogs/store/${storeId}/url-handle/${encodeUrlHandle(urlHandle)}`
+				`/storefront/blogs/store/${storeId}/url-handle/${encodeStorefrontPathHandle(urlHandle)}`
 			);
 			const blog = res.data?.data;
 			if (!blog) {
@@ -134,7 +126,7 @@ export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = 
 				setLoading(true);
 				setError(null);
 				const res = await axiosi.get<FetchBlogPostsApiResponse>(
-					`/storefront/blogs/store/${storeId}/url-handle/${encodeUrlHandle(urlHandle)}/posts`,
+					`/storefront/blogs/store/${storeId}/url-handle/${encodeStorefrontPathHandle(urlHandle)}/posts`,
 					{
 						params: {
 							page: params?.page,
@@ -171,7 +163,7 @@ export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = 
 				setLoading(true);
 				setError(null);
 				const res = await axiosi.get<FetchBlogPostDetailsApiResponse>(
-					`/storefront/blogs/store/${storeId}/url-handle/${encodeUrlHandle(blogHandle)}/posts/${encodeUrlHandle(postHandle)}`,
+					`/storefront/blogs/store/${storeId}/url-handle/${encodeStorefrontPathHandle(blogHandle)}/posts/${encodeStorefrontPathHandle(postHandle)}`,
 					{
 						params: options?.preview ? { preview: '1' } : undefined,
 					}

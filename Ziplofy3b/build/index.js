@@ -40,6 +40,7 @@ const gift_card_product_route_1 = require("./routes/gift-card-product.route");
 const inventory_level_route_1 = require("./routes/inventory-level.route");
 const location_route_1 = require("./routes/location.route");
 const order_route_1 = require("./routes/order.route");
+const order_timeline_route_1 = require("./routes/order-timeline.route");
 const packaging_route_1 = require("./routes/packaging.route");
 const product_tags_route_1 = require("./routes/product-tags.route");
 const product_type_route_1 = require("./routes/product-type.route");
@@ -191,6 +192,7 @@ app.use("/api/assigned-support-developer", assigned_support_developer_route_1.as
 app.use("/api/customers", customer_route_1.customerRouter);
 app.use("/api/customer-timeline", customer_timeline_route_1.customerTimelineRouter);
 app.use("/api/orders", order_route_1.orderRouter);
+app.use("/api/order-timeline", order_timeline_route_1.orderTimelineRouter);
 app.use("/api/tags", tags_route_1.tagsRouter);
 app.use("/api/vendors", vendor_route_1.vendorRouter);
 app.use("/api/store-billing-address", store_billing_address_route_1.default);

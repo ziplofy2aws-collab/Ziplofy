@@ -55,8 +55,8 @@ export const GiftCardProductForm: React.FC<GiftCardProductFormProps> = ({
     handleSubmit,
     isSubmitting,
     loading,
-    selectedImages,
-    addImageFiles,
+    displayImages,
+    addImageUrl,
     removeImage,
     denominations,
     setDenominations,
@@ -138,8 +138,8 @@ export const GiftCardProductForm: React.FC<GiftCardProductFormProps> = ({
 
             <GiftCardSection>
               <ProductImagesSection
-                images={selectedImages.map((image) => image.previewUrl)}
-                onAddImageFiles={addImageFiles}
+                images={displayImages}
+                onAddImageUrl={addImageUrl}
                 onRemoveImage={removeImage}
                 disabled={isSubmitting || loading}
               />

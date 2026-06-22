@@ -74,4 +74,36 @@ describe('StorefrontProductProvider', () => {
     await userEvent.click(screen.getByText('Clear'));
     await waitFor(() => expect(screen.getByTestId('detail')).toHaveTextContent('null'));
   });
+
+  it('fetchProductForRoute uses url-handle endpoint for non-ObjectId params', async () => {
+    const Consumer = () => {
+      const { productDetail, fetchProductForRoute } = useStorefrontProducts();
+      return (
+        <div>
+          <span data-testid="detail">{productDetail?.pageTitle ?? 'null'}</span>
+          <button onClick={() => fetchProductForRoute('s1', 'gaming-mouse')}>FetchHandle</button>
+        </div>
+      );
+    };
+    const { axiosi } = await import('../config/axios.config');
+    (axiosi.get as ReturnType<typeof vi.fn>).mockResolvedValue({
+      data: {
+        success: true,
+        data: { _id: 'p1', title: 'Gaming Mouse', pageTitle: 'Pro Gaming Mouse' },
+      },
+    });
+
+    render(
+      <StorefrontProductProvider>
+        <Consumer />
+      </StorefrontProductProvider>
+    );
+
+    await userEvent.click(screen.getByText('FetchHandle'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('detail')).toHaveTextContent('Pro Gaming Mouse');
+    });
+    expect(axiosi.get).toHaveBeenCalledWith('/products/public/store/s1/url-handle/gaming-mouse');
+  });
 });

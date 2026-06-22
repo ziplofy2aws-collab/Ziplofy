@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
-import { ArrowLeftIcon, ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import DiscountFormHeader from "../../components/discounts/DiscountFormHeader";
+import { buyXGetYDetailsPath } from "../../utils/discount-navigation.util";
 import { useProducts } from "../../contexts/product.context";
 import { useCollections } from "../../contexts/collection.context";
 import { useStore } from "../../contexts/store.context";
@@ -18,7 +20,7 @@ const BuyXGetYPage: React.FC = () => {
   const { searchBasic, loading: productsLoading } = useProducts();
   const { searchCollections, loading: collectionsLoading, collections } = useCollections();
   const { segments, searchCustomerSegments, fetchSegmentsByStoreId, loading: segmentsLoading } = useCustomerSegments();
-  const { customers, searchCustomers, fetchCustomersByStoreId, loading: customersLoading } = useCustomers();
+  const { customers, customerSearchResults, searchCustomers, fetchCustomersByStoreId, loading: customersLoading, customerSearchLoading } = useCustomers();
   const { createDiscount, updateDiscount, fetchDiscountById, loading: creating, error: createError, clearError } = useBuyXGetYDiscount();
   
   const [formData, setFormData] = useState({
@@ -195,7 +197,7 @@ const BuyXGetYPage: React.FC = () => {
     if (editId) {
       navigate(`/discounts/pyxgety/${editId}`);
     } else {
-      navigate('/discounts?createDiscountModal=open');
+      navigate('/discounts');
     }
   }, [navigate, editId]);
 
@@ -248,8 +250,8 @@ const BuyXGetYPage: React.FC = () => {
         }
       } else {
         const res = await createDiscount(payload);
-        if (res.success) {
-          navigate('/discounts');
+        if (res.success && res.data?._id) {
+          navigate(buyXGetYDetailsPath(res.data._id));
         }
       }
     } catch (err) {
@@ -288,38 +290,28 @@ const BuyXGetYPage: React.FC = () => {
     label: s.name,
   }));
 
-  const customerOptions = customers.map(c => ({
+  const customersForSelect = customerSearchQuery.trim() ? customerSearchResults : customers;
+
+  const customerOptions = customersForSelect.map(c => ({
     value: c._id,
     label: `${c.firstName} ${c.lastName}`.trim() || c.email,
     secondaryText: c.email,
   }));
 
   const inputClass =
-    'w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm';
+    'w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-[13px] font-normal text-gray-700 transition-colors placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200';
 
   return (
-    <div className="min-h-screen">
-        <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6">
-          {/* Page Header */}
-          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden mb-6">
-            <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-                  aria-label="Back"
-                >
-                  <ArrowLeftIcon className="w-5 h-5" />
-                </button>
-                <h1 className="text-lg font-semibold text-gray-900 sm:text-xl">
-                  {editId ? 'Edit Buy X get Y' : 'Buy X get Y'}
-                </h1>
-              </div>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <div className="min-h-screen bg-page-background-color">
+        <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <DiscountFormHeader
+              title={editId ? 'Edit Buy X get Y' : 'Buy X get Y'}
+              onBack={handleCancel}
+              onCancel={handleCancel}
+              submitLabel={editId ? 'Save changes' : 'Create discount'}
+              loading={creating}
+            />
             {createError && (
               <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 flex items-center justify-between gap-3">
                 <p className="text-sm text-red-800">{createError}</p>
@@ -335,9 +327,9 @@ const BuyXGetYPage: React.FC = () => {
             )}
 
             {/* Method */}
-            <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
               <div className="px-5 py-4 sm:px-6 sm:py-5">
-                <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Method</h2>
+                <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Method</h2>
                 <fieldset className="mb-3">
                   <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Discount method</legend>
                   <div className="space-y-2">
@@ -348,7 +340,7 @@ const BuyXGetYPage: React.FC = () => {
                         value="discount-code"
                         checked={formData.method === 'discount-code'}
                         onChange={(e) => handleInputChange('method', e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">Discount code</span>
                     </label>
@@ -359,7 +351,7 @@ const BuyXGetYPage: React.FC = () => {
                         value="automatic"
                         checked={formData.method === 'automatic'}
                         onChange={(e) => handleInputChange('method', e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">Automatic discount</span>
                     </label>
@@ -395,15 +387,15 @@ const BuyXGetYPage: React.FC = () => {
             </div>
 
             {formData.method === 'discount-code' && (
-              <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+              <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
                 <div className="px-5 py-4 sm:px-6 sm:py-5">
-                  <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Sales channel access</h2>
+                  <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Sales channel access</h2>
                   <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                     <input
                       type="checkbox"
                       checked={formData.allowDiscountOnChannels}
                       onChange={(e) => handleInputChange('allowDiscountOnChannels', e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <span className="text-sm text-gray-700">Allow discount to be featured on selected channels</span>
                   </label>
@@ -412,9 +404,9 @@ const BuyXGetYPage: React.FC = () => {
             )}
 
             {/* Customer buys / spends */}
-            <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
               <div className="px-5 py-4 sm:px-6 sm:py-5">
-                <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
+                <h2 className="text-[13px] font-semibold text-gray-900 mb-4">
                   {formData.customerBuys === 'minimum-amount' ? 'Customer spends' : 'Customer buys'}
                 </h2>
                 <fieldset className="mb-4">
@@ -429,7 +421,7 @@ const BuyXGetYPage: React.FC = () => {
                         value="minimum-quantity"
                         checked={formData.customerBuys === 'minimum-quantity'}
                         onChange={(e) => handleInputChange('customerBuys', e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">Minimum quantity of items</span>
                     </label>
@@ -440,7 +432,7 @@ const BuyXGetYPage: React.FC = () => {
                         value="minimum-amount"
                         checked={formData.customerBuys === 'minimum-amount'}
                         onChange={(e) => handleInputChange('customerBuys', e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">Minimum purchase amount</span>
                     </label>
@@ -558,9 +550,9 @@ const BuyXGetYPage: React.FC = () => {
             </div>
 
             {/* Customer gets */}
-            <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
               <div className="px-5 py-4 sm:px-6 sm:py-5">
-                <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Customer gets</h2>
+                <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Customer gets</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Quantity</label>
@@ -661,7 +653,7 @@ const BuyXGetYPage: React.FC = () => {
                           value="free"
                           checked={formData.discountedValue === 'free'}
                           onChange={(e) => handleInputChange('discountedValue', e.target.value)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                          className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                         />
                         <span className="text-sm text-gray-700">Free</span>
                       </label>
@@ -672,7 +664,7 @@ const BuyXGetYPage: React.FC = () => {
                           value="amount"
                           checked={formData.discountedValue === 'amount'}
                           onChange={(e) => handleInputChange('discountedValue', e.target.value)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                          className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                         />
                         <span className="text-sm text-gray-700">Amount off each</span>
                       </label>
@@ -683,7 +675,7 @@ const BuyXGetYPage: React.FC = () => {
                           value="percentage"
                           checked={formData.discountedValue === 'percentage'}
                           onChange={(e) => handleInputChange('discountedValue', e.target.value)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                          className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                         />
                         <span className="text-sm text-gray-700">Percentage off</span>
                       </label>
@@ -729,7 +721,7 @@ const BuyXGetYPage: React.FC = () => {
                         type="checkbox"
                         checked={formData.setMaxUsersPerOrder}
                         onChange={(e) => handleInputChange('setMaxUsersPerOrder', e.target.checked)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">Set a maximum number of uses per order</span>
                     </label>
@@ -751,7 +743,7 @@ const BuyXGetYPage: React.FC = () => {
             </div>
 
             {/* Eligibility */}
-            <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
               <div className="px-5 py-4 sm:px-6 sm:py-5">
                 <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-1">Eligibility</h2>
                 <p className="text-xs text-gray-500 mb-4">Available on all sales channels</p>
@@ -765,7 +757,7 @@ const BuyXGetYPage: React.FC = () => {
                         value="all-customers"
                         checked={formData.eligibility === 'all-customers'}
                         onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">All customers</span>
                     </label>
@@ -776,7 +768,7 @@ const BuyXGetYPage: React.FC = () => {
                         value="specific-customer-segments"
                         checked={formData.eligibility === 'specific-customer-segments'}
                         onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">Specific customer segments</span>
                     </label>
@@ -787,7 +779,7 @@ const BuyXGetYPage: React.FC = () => {
                         value="specific-customers"
                         checked={formData.eligibility === 'specific-customers'}
                         onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
                       />
                       <span className="text-sm text-gray-700">Specific customers</span>
                     </label>
@@ -799,7 +791,7 @@ const BuyXGetYPage: React.FC = () => {
                       type="checkbox"
                       checked={formData.applyOnPOSPro}
                       onChange={(e) => handleInputChange('applyOnPOSPro', e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <span className="text-sm text-gray-700">Apply on POS Pro locations</span>
                   </label>
@@ -826,7 +818,7 @@ const BuyXGetYPage: React.FC = () => {
                         placeholder={formData.eligibility === 'specific-customer-segments' ? 'Search segments...' : 'Search customers...'}
                         className={inputClass}
                       />
-                      {((formData.eligibility === 'specific-customer-segments' && segmentsLoading) || (formData.eligibility === 'specific-customers' && customersLoading)) && (
+                      {((formData.eligibility === 'specific-customer-segments' && segmentsLoading) || (formData.eligibility === 'specific-customers' && (customersLoading || customerSearchLoading))) && (
                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
                           <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                         </div>
@@ -847,7 +839,7 @@ const BuyXGetYPage: React.FC = () => {
                         <p className="mt-1.5 text-xs text-gray-500">{selectedSegmentIds.length} segment(s) selected</p>
                       </div>
                     )}
-                    {formData.eligibility === 'specific-customers' && customers.length > 0 && (
+                    {formData.eligibility === 'specific-customers' && customersForSelect.length > 0 && (
                       <div className="mt-3">
                         <MultiSelect
                           label="Choose customers"
@@ -865,15 +857,15 @@ const BuyXGetYPage: React.FC = () => {
             </div>
 
             {formData.method === 'discount-code' && (
-              <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+              <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
                 <div className="px-5 py-4 sm:px-6 sm:py-5">
-                  <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Maximum discount uses</h2>
+                  <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Maximum discount uses</h2>
                   <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                     <input
                       type="checkbox"
                       checked={formData.limitTotalUses}
                       onChange={(e) => handleInputChange('limitTotalUses', e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <span className="text-sm text-gray-700">Limit total number of uses</span>
                   </label>
@@ -894,7 +886,7 @@ const BuyXGetYPage: React.FC = () => {
                       type="checkbox"
                       checked={formData.limitOneUsePerCustomer}
                       onChange={(e) => handleInputChange('limitOneUsePerCustomer', e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <span className="text-sm text-gray-700">Limit to one use per customer</span>
                   </label>
@@ -903,16 +895,16 @@ const BuyXGetYPage: React.FC = () => {
             )}
 
             {/* Combinations */}
-            <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
               <div className="px-5 py-4 sm:px-6 sm:py-5">
-                <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Combinations</h2>
+                <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Combinations</h2>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                     <input
                       type="checkbox"
                       checked={formData.productDiscounts}
                       onChange={(e) => handleInputChange('productDiscounts', e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <span className="text-sm text-gray-700">Product discounts</span>
                   </label>
@@ -924,7 +916,7 @@ const BuyXGetYPage: React.FC = () => {
                       type="checkbox"
                       checked={formData.orderDiscounts}
                       onChange={(e) => handleInputChange('orderDiscounts', e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <span className="text-sm text-gray-700">Order discounts</span>
                   </label>
@@ -936,7 +928,7 @@ const BuyXGetYPage: React.FC = () => {
                       type="checkbox"
                       checked={formData.shippingDiscounts}
                       onChange={(e) => handleInputChange('shippingDiscounts', e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                     />
                     <span className="text-sm text-gray-700">Shipping discounts</span>
                   </label>
@@ -953,9 +945,9 @@ const BuyXGetYPage: React.FC = () => {
             </div>
 
             {/* Active dates */}
-            <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
               <div className="px-5 py-4 sm:px-6 sm:py-5">
-                <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Active dates</h2>
+                <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Active dates</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Start date</label>
@@ -982,7 +974,7 @@ const BuyXGetYPage: React.FC = () => {
                     type="checkbox"
                     checked={formData.setEndDate}
                     onChange={(e) => handleInputChange('setEndDate', e.target.checked)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
                   />
                   <span className="text-sm text-gray-700">Set end date</span>
                 </label>
@@ -1012,26 +1004,6 @@ const BuyXGetYPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex flex-wrap gap-3 justify-end">
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={creating}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {creating && (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                )}
-                {creating ? (editId ? 'Saving…' : 'Creating…') : (editId ? 'Save changes' : 'Create discount')}
-              </button>
-            </div>
           </form>
         </div>
       </div>

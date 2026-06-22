@@ -1,11 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import FulfillmentSection from '../../components/FulfillmentSection';
 import LocationFormFields from '../../components/LocationFormFields';
+import LocationFormHeader from '../../components/locations/LocationFormHeader';
 import { useLocations } from '../../contexts/location.context';
 import { useStore } from '../../contexts/store.context';
-import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
 
 const NewLocationForm: React.FC = () => {
   const navigate = useNavigate();
@@ -26,7 +25,7 @@ const NewLocationForm: React.FC = () => {
     canPickup: false,
   });
 
-  const handleChange = useCallback((k: string, v: any) => {
+  const handleChange = useCallback((k: string, v: unknown) => {
     setForm((p) => ({ ...p, [k]: v }));
   }, []);
 
@@ -51,7 +50,7 @@ const NewLocationForm: React.FC = () => {
       isDefault: false,
       isFulfillmentAllowed: fulfillmentEnabled,
       isActive: true,
-    } as any);
+    } as Parameters<typeof createLocation>[0]);
     navigate('/settings/locations');
   }, [activeStoreId, form, fulfillmentEnabled, createLocation, navigate]);
 
@@ -72,39 +71,13 @@ const NewLocationForm: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
-        <SettingsHero
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-4">
+        <LocationFormHeader
           title="Add location"
-          description="Add a new store location with address and fulfillment options."
-          leading={
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200/90 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50/90 transition-colors shrink-0"
-              aria-label="Back to locations"
-            >
-              <ArrowLeftIcon className="h-4 w-4" />
-              Back
-            </button>
-          }
-          actions={
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="rounded-xl px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200/90 shadow-sm hover:bg-gray-50/90 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleAdd}
-                className="rounded-xl px-4 py-2.5 text-sm font-medium text-white bg-blue-600 shadow-sm hover:bg-blue-700 transition-colors"
-              >
-                Add location
-              </button>
-            </div>
-          }
+          onBack={handleCancel}
+          onCancel={handleCancel}
+          onSubmit={handleAdd}
+          submitLabel="Add location"
         />
 
         <LocationFormFields form={form} onChange={handleChange} />

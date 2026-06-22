@@ -52,16 +52,16 @@ const FreeShippingTable: React.FC<FreeShippingTableProps> = ({
                   className="hover:bg-blue-50/50 cursor-pointer transition-colors"
                   onClick={() => handleRowClick(d._id)}
                 >
-                  <td className="px-4 py-3 text-sm text-gray-900">{codeOrTitle || '-'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.method}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.countrySelection}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.excludeShippingRates ? 'Yes' : 'No'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.excludeShippingRates ? (d.shippingRateLimit ?? '-') : '-'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.eligibility}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{minReq}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{combos}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.status || 'active'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.createdAt ? new Date(d.createdAt).toLocaleDateString() : '-'}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{codeOrTitle || '-'}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.method}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.countrySelection}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.excludeShippingRates ? 'Yes' : 'No'}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.excludeShippingRates ? (d.shippingRateLimit ?? '-') : '-'}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.eligibility}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{minReq}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{combos}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.status || 'active'}</td>
+                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.createdAt ? new Date(d.createdAt).toLocaleDateString() : '-'}</td>
                 </tr>
               );
             })}

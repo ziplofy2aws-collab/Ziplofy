@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontProducts } from '@/contexts/product.context';
 import { useStorefrontProductVariants } from '@/contexts/product-variant.context';
 
@@ -9,17 +10,47 @@ import { useStorefrontProductVariants } from '@/contexts/product-variant.context
  */
 export function StorefrontProductPreviewLoader() {
   const { id: paramId } = useParams<{ id: string }>();
-  const { products, fetchProductById } = useStorefrontProducts();
+  const { storeFrontMeta } = useStorefront();
+  const {
+    products,
+    productDetail,
+    fetchProductsByStoreId,
+    fetchProductForRoute,
+    fetchProductById,
+  } = useStorefrontProducts();
   const { fetchVariantsByProductId } = useStorefrontProductVariants();
-
-  const productId =
-    paramId && paramId !== 'preview' ? paramId : (products[0]?._id ?? null);
+  const storeId = storeFrontMeta?.storeId;
 
   useEffect(() => {
-    if (!productId) return;
-    void fetchProductById(productId);
-    void fetchVariantsByProductId(productId);
-  }, [productId, fetchProductById, fetchVariantsByProductId]);
+    if (!storeId) return;
+
+    if (!paramId || paramId === 'preview') {
+      if (!products.length) {
+        void fetchProductsByStoreId({ storeId, page: 1, limit: 1 });
+      }
+      return;
+    }
+
+    void fetchProductForRoute(storeId, paramId);
+  }, [storeId, paramId, products.length, fetchProductsByStoreId, fetchProductForRoute]);
+
+  useEffect(() => {
+    if (!storeId) return;
+
+    if (paramId === 'preview' || !paramId) {
+      const fallbackId = products[0]?._id;
+      if (fallbackId) {
+        void fetchProductById(fallbackId);
+      }
+    }
+  }, [storeId, paramId, products, fetchProductById]);
+
+  const variantProductId = productDetail?._id ?? products[0]?._id ?? null;
+
+  useEffect(() => {
+    if (!variantProductId) return;
+    void fetchVariantsByProductId(variantProductId);
+  }, [variantProductId, fetchVariantsByProductId]);
 
   return null;
 }

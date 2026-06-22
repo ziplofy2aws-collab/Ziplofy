@@ -7,10 +7,12 @@ import {
   SparklesIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { DeleteBlogPostModal } from '../components/DeleteBlogPostModal';
+import ArticleAddedBanner from '../components/blog-posts/ArticleAddedBanner';
+import BlogPostFormPageSkeleton from '../components/blog-posts/BlogPostFormPageSkeleton';
 import ProductDescriptionInput from '../components/products/ProductDescriptionInput';
 import {
   SelectImageModal,
@@ -28,6 +30,7 @@ import {
   normalizeStorefrontOrigin,
   resolveBlogPostUrlHandle,
 } from '../utils/storefront-url.util';
+import { readArticleJustCreated } from '../utils/blog-post-navigation.util';
 
 type Visibility = BlogPostVisibility;
 
@@ -123,6 +126,12 @@ function snapshotsEqual(a: BlogPostFormSnapshot, b: BlogPostFormSnapshot): boole
 export const BlogPostEditPage = () => {
   const { articleId } = useParams<{ articleId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const articleJustCreatedOnMount = useRef(readArticleJustCreated(location.state));
+  const previousArticleIdRef = useRef(articleId);
+  const [showArticleAddedBanner, setShowArticleAddedBanner] = useState(
+    () => articleJustCreatedOnMount.current
+  );
   const { activeStoreId } = useStore();
   const { blogs, fetchBlogsByStoreId, fetchBlogById } = useBlogs();
   const {
@@ -227,6 +236,20 @@ export const BlogPostEditPage = () => {
   });
 
   useEffect(() => {
+    if (articleJustCreatedOnMount.current) {
+      articleJustCreatedOnMount.current = false;
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location.pathname, navigate]);
+
+  useEffect(() => {
+    if (previousArticleIdRef.current !== articleId) {
+      previousArticleIdRef.current = articleId;
+      setShowArticleAddedBanner(false);
+    }
+  }, [articleId]);
+
+  useEffect(() => {
     if (!activeStoreId) return;
     void getByStoreId(activeStoreId);
     void fetchBlogsByStoreId(activeStoreId);
@@ -268,7 +291,10 @@ export const BlogPostEditPage = () => {
         }
       })
       .catch(() => {
-        if (!cancelled) toast.error('Failed to load blog post');
+        if (!cancelled) {
+          toast.error('Failed to load blog post');
+          setLoaded(true);
+        }
       });
 
     return () => {
@@ -370,6 +396,14 @@ export const BlogPostEditPage = () => {
     }
   };
 
+  const handleDismissArticleAddedBanner = useCallback(() => {
+    setShowArticleAddedBanner(false);
+  }, []);
+
+  const handleAddAnotherArticle = useCallback(() => {
+    navigate('/content/articles/new');
+  }, [navigate]);
+
   const handleConfirmDelete = async () => {
     if (!articleId || !activeStoreId) return;
 
@@ -393,6 +427,10 @@ export const BlogPostEditPage = () => {
         Blog post not found.
       </div>
     );
+  }
+
+  if (!loaded) {
+    return <BlogPostFormPageSkeleton />;
   }
 
   return (
@@ -487,11 +525,15 @@ export const BlogPostEditPage = () => {
           </div>
         </div>
 
-        {!loaded && loading ? (
-          <p className="text-[13px] font-normal text-gray-500">Loading blog post…</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+        {showArticleAddedBanner ? (
+          <ArticleAddedBanner
+            articleTitle={title.trim() || initial?.title || 'Article'}
+            onDismiss={handleDismissArticleAddedBanner}
+            onAddAnother={handleAddAnotherArticle}
+          />
+        ) : null}
+
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
               <div className="flex flex-col gap-3">
                 <section className="rounded-lg border border-gray-200/80 bg-white p-4 shadow-sm">
                   <div className="space-y-4">
@@ -709,7 +751,7 @@ export const BlogPostEditPage = () => {
               </div>
             </div>
 
-            <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-end">
               <button
                 type="button"
                 onClick={() => void handleSave()}
@@ -718,9 +760,7 @@ export const BlogPostEditPage = () => {
               >
                 {saving ? 'Saving…' : 'Save'}
               </button>
-            </div>
-          </>
-        )}
+        </div>
       </div>
 
       <SelectImageModal

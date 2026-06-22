@@ -44,9 +44,9 @@ const DiscountValueLimitsCard: React.FC<DiscountValueLimitsCardProps> = ({
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
       <div className="px-5 py-4 sm:px-6 sm:py-5">
-        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Value & limits</h2>
+        <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Value & limits</h2>
         <div className="space-y-5">
           <div>
             <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Discount value</h3>
@@ -54,7 +54,7 @@ const DiscountValueLimitsCard: React.FC<DiscountValueLimitsCardProps> = ({
               {valueRows.map(({ label, value: v }) => (
                 <div key={label}>
                   <dt className="text-xs text-gray-500">{label}</dt>
-                  <dd className="mt-0.5 text-sm text-gray-900">{v}</dd>
+                  <dd className="mt-0.5 text-[13px] text-gray-900">{v}</dd>
                 </div>
               ))}
             </dl>
@@ -65,7 +65,7 @@ const DiscountValueLimitsCard: React.FC<DiscountValueLimitsCardProps> = ({
               {limitRows.map(({ label, value: v }) => (
                 <div key={label}>
                   <dt className="text-xs text-gray-500">{label}</dt>
-                  <dd className="mt-0.5 text-sm text-gray-900">{v}</dd>
+                  <dd className="mt-0.5 text-[13px] text-gray-900">{v}</dd>
                 </div>
               ))}
             </dl>
@@ -76,7 +76,7 @@ const DiscountValueLimitsCard: React.FC<DiscountValueLimitsCardProps> = ({
               {comboRows.map(({ label, value: v }) => (
                 <div key={label}>
                   <dt className="text-xs text-gray-500">{label}</dt>
-                  <dd className="mt-0.5 text-sm text-gray-900">{v}</dd>
+                  <dd className="mt-0.5 text-[13px] text-gray-900">{v}</dd>
                 </div>
               ))}
             </dl>

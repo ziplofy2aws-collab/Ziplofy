@@ -1,50 +1,73 @@
 import { TrashIcon } from '@heroicons/react/24/outline';
 import React, { useCallback } from 'react';
+import {
+  getCustomerFromSegmentEntry,
+  segmentSecondaryButtonClass,
+  segmentTableCellClass,
+  segmentTableCellRightClass,
+} from './customer-segment-ui.util';
 
 interface CustomerSegmentEntryItemProps {
   entry: {
     _id: string;
     customerId: string | {
+      _id?: string;
       fullName?: string;
       firstName?: string;
       lastName?: string;
+      email?: string;
     };
     createdAt: string | Date;
   };
   onDelete: (entry: CustomerSegmentEntryItemProps['entry']) => void;
+  onCustomerClick?: (customerId: string) => void;
 }
 
 const CustomerSegmentEntryItem: React.FC<CustomerSegmentEntryItemProps> = ({
   entry,
   onDelete,
+  onCustomerClick,
 }) => {
-  const getCustomerName = useCallback((customerId: any) => {
-    if (typeof customerId === 'string') {
-      return customerId;
-    }
-    return customerId.fullName || `${customerId.firstName || ''} ${customerId.lastName || ''}`.trim();
-  }, []);
+  const customer = getCustomerFromSegmentEntry(entry.customerId);
 
-  const handleDelete = useCallback(() => {
-    onDelete(entry);
-  }, [entry, onDelete]);
+  const handleDelete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onDelete(entry);
+    },
+    [entry, onDelete]
+  );
+
+  const handleClick = useCallback(() => {
+    if (customer.id && onCustomerClick) {
+      onCustomerClick(customer.id);
+    }
+  }, [customer.id, onCustomerClick]);
 
   return (
-    <div className="flex justify-between items-center py-3 px-4 hover:bg-gray-50 transition-colors group border-b border-gray-100 last:border-b-0">
-      <span className="text-sm font-medium text-gray-900">{getCustomerName(entry.customerId)}</span>
-      <div className="flex items-center gap-4">
-        <span className="text-xs text-gray-500">{new Date(entry.createdAt).toLocaleDateString()}</span>
+    <tr
+      onClick={handleClick}
+      className={`border-b border-gray-100 transition-colors ${
+        customer.id && onCustomerClick ? 'cursor-pointer hover:bg-gray-50/60' : ''
+      }`}
+    >
+      <td className={`${segmentTableCellClass} font-medium text-gray-900`}>{customer.name}</td>
+      <td className={segmentTableCellClass}>{customer.email || '—'}</td>
+      <td className={`${segmentTableCellClass} text-gray-500`}>
+        {new Date(entry.createdAt).toLocaleDateString()}
+      </td>
+      <td className={segmentTableCellRightClass}>
         <button
+          type="button"
           onClick={handleDelete}
-          className="p-1.5 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-          aria-label="delete"
+          className={`${segmentSecondaryButtonClass} text-red-600 hover:bg-red-50 hover:text-red-700`}
+          aria-label={`Remove ${customer.name} from segment`}
         >
-          <TrashIcon className="w-4 h-4 text-gray-500 hover:text-red-600 transition-colors" />
+          <TrashIcon className="h-3.5 w-3.5" aria-hidden />
         </button>
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 };
 
 export default CustomerSegmentEntryItem;
-

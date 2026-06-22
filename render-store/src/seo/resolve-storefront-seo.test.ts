@@ -55,4 +55,45 @@ describe('resolveStorefrontSeo', () => {
     expect(seo.description).toBe('Shop gaming accessories.');
     expect(seo.ogType).toBe('collection');
   });
+
+  it('uses blog SEO fields when available', () => {
+    const seo = resolveStorefrontSeo({
+      pathname: '/blogs/news',
+      origin: 'https://abc.ziplofy.com',
+      store,
+      blog: {
+        title: 'News',
+        pageTitle: 'Store News',
+        metaDescription: 'Latest updates from our store.',
+        urlHandle: 'news',
+      },
+    });
+
+    expect(seo.title).toBe('Store News - ABC Gaming Store');
+    expect(seo.description).toBe('Latest updates from our store.');
+    expect(seo.canonicalUrl).toBe('https://abc.ziplofy.com/blogs/news');
+  });
+
+  it('uses blog post SEO fields when available', () => {
+    const seo = resolveStorefrontSeo({
+      pathname: '/blogs/news/summer-sale',
+      origin: 'https://abc.ziplofy.com',
+      store,
+      blog: {
+        title: 'News',
+        urlHandle: 'news',
+      },
+      blogPost: {
+        title: 'Summer Sale',
+        pageTitle: 'Summer Sale Announcement',
+        metaDescription: 'Our biggest summer sale starts today.',
+        urlHandle: 'summer-sale',
+        excerpt: 'Sale details inside.',
+      },
+    });
+
+    expect(seo.title).toBe('Summer Sale Announcement - ABC Gaming Store');
+    expect(seo.description).toBe('Our biggest summer sale starts today.');
+    expect(seo.canonicalUrl).toBe('https://abc.ziplofy.com/blogs/news/summer-sale');
+  });
 });

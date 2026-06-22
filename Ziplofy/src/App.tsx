@@ -27,6 +27,7 @@ import { PurchaseOrderProvider } from "./contexts/purchase-order.context";
 import { StoreRolesProvider } from "./contexts/store-roles.context";
 import { StoreSecuritySettingsProvider } from "./contexts/store-security-settings.context";
 import { CreateThemePoweredByLoader } from "./create-theme/chrome/CreateThemePoweredByLoader";
+import CheckoutProfileEditorPage from "./checkout-editor/CheckoutProfileEditorPage";
 
 // Lazy-loaded page components (code splitting)
 const BasicElementor = lazy(() => import("./pages/themes/BasicElementor"));
@@ -37,6 +38,12 @@ const ThemeEditor = lazy(() => import("./pages/themes/ThemeEditor"));
 const StoreThemeConfigEditor = lazy(() => import("./pages/themes/StoreThemeConfigEditor"));
 const ThemeLayoutEditor = lazy(() => import("./pages/themes/ThemeLayoutEditor"));
 const CreateThemePage = lazy(() => import("./create-theme/CreateThemePage"));
+
+const fullscreenEditorFallback = (
+  <div className="fixed inset-0 z-[1310] flex items-center justify-center bg-white">
+    <CreateThemePoweredByLoader />
+  </div>
+);
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 const ContentPage = lazy(() => import("./pages/ContentPage"));
 const CreateOrderPage = lazy(() => import("./pages/CreateOrderPage"));
@@ -187,6 +194,7 @@ const MarketsPage = lazy(() => import("./pages/markets/MarketsPage"));
 const AbandonedCartsPage = lazy(() => import("./pages/orders/AbandonedCartPage"));
 const AbandonedCartDetailsPage = lazy(() => import("./pages/orders/AbondonedCartDetailsPage"));
 const DraftsPage = lazy(() => import("./pages/orders/DraftsPage"));
+const CreateDraftOrderPage = lazy(() => import("./pages/orders/CreateDraftOrderPage"));
 const CustomerEventPixelDetailsPage = lazy(() => import("./pages/settings/CustomerEventPixelDetailsPage"));
 const CustomerEventsPage = lazy(() => import("./pages/settings/CustomerEventsPage"));
 const ShippingProfileCreatePage = lazy(() => import("./pages/settings/ShippingProfileCreatePage"));
@@ -199,6 +207,7 @@ import { CustomerSegmentsEntryProvider } from "./contexts/CustomerSegmentsEntry.
 import { AbandonedCartProvider } from "./contexts/abandoned-cart.context";
 import { ActionProvider } from "./contexts/action.context";
 import { AdminOrderProvider } from "./contexts/admin-order.context";
+import { OrderTimelineProvider } from "./contexts/order-timeline.context";
 import { AmountOffOrderDiscountProvider } from "./contexts/amount-off-order-discount.context";
 import { AutomationFlowProvider } from "./contexts/automation-flow.context";
 import { BuyXGetYDiscountProvider } from "./contexts/buy-x-get-y-discount.context";
@@ -306,6 +315,7 @@ const AdminApp: React.FC = () => {
   const isBuilderFullScreen = location.pathname.startsWith('/themes/builder');
   const isBasicElementor = location.pathname.startsWith('/themes/basic-elementor');
   const isThemeCreator = location.pathname.startsWith('/themes/create');
+  const isCheckoutProfileEditor = location.pathname.startsWith('/checkout/editor');
   const isThemeSchemaEditor =
     location.pathname === '/themes/dev-editor' ||
     /^\/themes\/[^/]+\/editor$/.test(location.pathname);
@@ -314,10 +324,12 @@ const AdminApp: React.FC = () => {
     isBuilderFullScreen ||
     isBasicElementor ||
     isThemeSchemaEditor ||
-    isThemeCreator;
+    isThemeCreator ||
+    isCheckoutProfileEditor;
   const isSettings = location.pathname.startsWith('/settings');
   const showNavbar = !isFullScreen;
-  const showSidebar = !isFullScreen && !isSettings && !isThemeCreator;
+  const showSidebar =
+    !isFullScreen && !isSettings && !isThemeCreator && !isCheckoutProfileEditor;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -329,8 +341,10 @@ const AdminApp: React.FC = () => {
 
         <main
           className={[
-            "flex-1 overflow-y-auto overflow-x-hidden antialiased text-gray-900 transition-[margin-left] duration-300 ease-out",
-            isFullScreen ? "bg-transparent p-0" : "bg-page-background-color p-4 sm:p-6 lg:p-8",
+            "flex-1 antialiased text-gray-900",
+            isFullScreen
+              ? "relative overflow-hidden bg-transparent p-0"
+              : "overflow-y-auto overflow-x-hidden bg-page-background-color p-4 sm:p-6 lg:p-8 transition-[margin-left] duration-300 ease-out",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -341,13 +355,30 @@ const AdminApp: React.FC = () => {
             height: showNavbar ? `calc(100vh - ${NAVBAR_HEIGHT}px)` : "100vh",
           }}
         >
-          <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={isFullScreen ? fullscreenEditorFallback : <PageLoader />}>
           <Routes>
+            <Route path="/themes/create" element={<CreateThemePage />} />
+            <Route
+              path="/checkout/editor"
+              element={<Navigate to="/checkout/editor/profiles" replace />}
+            />
+            <Route
+              path="/checkout/editor/"
+              element={<Navigate to="/checkout/editor/profiles" replace />}
+            />
+            <Route path="/checkout/editor/profiles" element={<CheckoutProfileEditorPage />} />
+            <Route
+              path="/checkout/editor/profiles/"
+              element={<Navigate to="/checkout/editor/profiles" replace />}
+            />
+
             <Route element={<AdminStandardLayout />}>
             {/* Top-level */}
             <Route path="/" element={<HomePage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/orders/create" element={<CreateOrderPage />} />
+            <Route path="/orders/drafts/new" element={<CreateDraftOrderPage />} />
+            <Route path="/orders/drafts" element={<DraftsPage />} />
             <Route path="/orders/abandoned-carts" element={<AbandonedCartsPage />} />
             <Route path="/orders/abandoned-carts/customer/:customerId" element={<AbandonedCartDetailsPage />} />
             <Route path="/orders/:id" element={<OrderDetailsPage />} />
@@ -495,26 +526,9 @@ const AdminApp: React.FC = () => {
               <Route path="policies/manage-return-rules/new" element={<CreateReturnRules />} />
             </Route>
 
-            {/* Orders subsections */}
-            <Route path="/orders/drafts" element={<DraftsPage />} />
-            
 
             {/* Themes Subsection */}
             <Route path="/themes/all-themes" element={<AllThemes />} />
-            <Route
-              path="/themes/create"
-              element={
-                <Suspense
-                  fallback={
-                    <div className="fixed inset-0 z-[1310] flex items-center justify-center bg-white">
-                      <CreateThemePoweredByLoader />
-                    </div>
-                  }
-                >
-                  <CreateThemePage />
-                </Suspense>
-              }
-            />
             <Route path="/themes/builder" element={<CustomThemeBuilder />} />
             <Route path="/themes/basic-elementor" element={<BasicElementor />} />
             <Route path="/themes/edit/:themeId" element={<ThemeEditor />} />
@@ -614,6 +628,7 @@ const App: React.FC = () => {
         <AutomationFlowProvider>
         <PixelProvider>
         <AdminOrderProvider>
+        <OrderTimelineProvider>
         <NotificationCategoriesProvider>
         <NotificationOptionsProvider>
         <NotificationOverridesProvider>
@@ -674,6 +689,7 @@ const App: React.FC = () => {
         </NotificationOverridesProvider>
         </NotificationOptionsProvider>
         </NotificationCategoriesProvider>
+        </OrderTimelineProvider>
         </AdminOrderProvider>
         </PixelProvider>
         </AutomationFlowProvider>

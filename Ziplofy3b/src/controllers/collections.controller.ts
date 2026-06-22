@@ -1,9 +1,63 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
+import { SecureUserInfo } from "../middlewares/auth.middleware";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { Collections, ICollection } from "../models/collections/collections.model";
 import { CollectionEntry } from "../models/collection-entry/collection-entry.model";
 import { Product } from "../models/product/product.model";
+import { assertOptionalStoreCloudImageUrl } from "../utils/cloud-storage-image.util";
+import { sanitizeRichTextHtml } from "../utils/sanitize-html.util";
+import { assertStoreAccess } from "../utils/store-access.util";
+
+const COLLECTION_UPDATE_FIELDS = [
+  "title",
+  "imageUrl",
+  "imageAltText",
+  "description",
+  "pageTitle",
+  "metaDescription",
+  "urlHandle",
+  "productSort",
+  "status",
+] as const;
+
+const ALLOWED_SORTS = ["manual", "title-asc", "title-desc", "price-high", "price-low", "newest", "oldest"] as const;
+
+function buildCollectionUpdatePayload(body: Record<string, unknown>): Partial<ICollection> {
+  const updatePayload: Partial<ICollection> = {};
+
+  for (const field of COLLECTION_UPDATE_FIELDS) {
+    if (!Object.prototype.hasOwnProperty.call(body, field)) continue;
+    (updatePayload as Record<string, unknown>)[field] = body[field];
+  }
+
+  return updatePayload;
+}
+
+async function getCollectionOrThrow(id: string) {
+  if (!id || !mongoose.isValidObjectId(id)) {
+    throw new CustomError("Valid collection id is required", 400);
+  }
+
+  const collection = await Collections.findById(id).select("storeId");
+  if (!collection) {
+    throw new CustomError("Collection not found", 404);
+  }
+
+  return collection;
+}
+
+function validateCollectionStatus(status: unknown): void {
+  if (typeof status !== "undefined" && status !== "draft" && status !== "published") {
+    throw new CustomError("Invalid status. Allowed values are 'draft' or 'published'", 400);
+  }
+}
+
+function validateProductSort(productSort: unknown): void {
+  if (typeof productSort !== "undefined" && !ALLOWED_SORTS.includes(productSort as (typeof ALLOWED_SORTS)[number])) {
+    throw new CustomError("Invalid productSort value", 400);
+  }
+}
 
 // Create a new collection
 export const createCollection = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -25,14 +79,12 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
     throw new CustomError("Missing required fields", 400);
   }
 
-  // Optional status validation
-  if (typeof status !== 'undefined' && status !== 'draft' && status !== 'published') {
-    throw new CustomError("Invalid status. Allowed values are 'draft' or 'published'", 400);
-  }
-  const allowedSorts = ['manual', 'title-asc', 'title-desc', 'price-high', 'price-low', 'newest', 'oldest'];
-  if (typeof productSort !== 'undefined' && !allowedSorts.includes(productSort)) {
-    throw new CustomError("Invalid productSort value", 400);
-  }
+  await assertStoreAccess(storeId.toString(), req.user as SecureUserInfo | undefined);
+  validateCollectionStatus(status);
+  validateProductSort(productSort);
+
+  const sanitizedDescription = sanitizeRichTextHtml(String(description));
+  await assertOptionalStoreCloudImageUrl(storeId.toString(), imageUrl);
 
   const normalizedProductIds = Array.isArray(productIds)
     ? [...new Set(productIds.filter((id: unknown) => typeof id === "string" && mongoose.isValidObjectId(id)))]
@@ -67,12 +119,12 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
             title,
             imageUrl,
             imageAltText,
-            description,
+            description: sanitizedDescription,
             pageTitle,
             metaDescription,
             urlHandle,
-            ...(typeof productSort !== 'undefined' ? { productSort } : {}),
-            ...(typeof status !== 'undefined' ? { status } : {}),
+            ...(typeof productSort !== "undefined" ? { productSort } : {}),
+            ...(typeof status !== "undefined" ? { status } : {}),
           },
         ],
         { session }
@@ -103,16 +155,84 @@ export const getCollectionsByStoreId = asyncErrorHandler(async (req: Request, re
   const { storeId } = req.params;
   if (!storeId) throw new CustomError("storeId is required", 400);
 
-  const collections = await Collections.find({ storeId }).sort({ createdAt: -1 });
-  res.status(200).json({ success: true, data: collections, count: collections.length });
+  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
+
+  const collections = await Collections.find({ storeId }).sort({ createdAt: -1 }).lean();
+
+  if (collections.length === 0) {
+    res.status(200).json({ success: true, data: [], count: 0 });
+    return;
+  }
+
+  const collectionIds = collections.map((collection) => collection._id);
+  const productCounts = await CollectionEntry.aggregate<{ _id: mongoose.Types.ObjectId; count: number }>([
+    { $match: { collectionId: { $in: collectionIds } } },
+    { $group: { _id: "$collectionId", count: { $sum: 1 } } },
+  ]);
+
+  const countByCollectionId = new Map(
+    productCounts.map((entry) => [String(entry._id), entry.count])
+  );
+
+  const data = collections.map((collection) => ({
+    ...collection,
+    productCount: countByCollectionId.get(String(collection._id)) ?? 0,
+  }));
+
+  res.status(200).json({ success: true, data, count: data.length });
+});
+
+// Get collection by id
+export const getCollectionById = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id || !mongoose.isValidObjectId(id)) {
+    throw new CustomError("Valid collection id is required", 400);
+  }
+
+  const collection = await Collections.findById(id).lean();
+  if (!collection) {
+    throw new CustomError("Collection not found", 404);
+  }
+
+  await assertStoreAccess(collection.storeId.toString(), req.user as SecureUserInfo | undefined);
+
+  const productCount = await CollectionEntry.countDocuments({ collectionId: collection._id });
+
+  res.status(200).json({
+    success: true,
+    data: {
+      ...collection,
+      productCount,
+    },
+  });
 });
 
 // Update collection
 export const updateCollection = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const update = req.body as Partial<ICollection>;
+  const existing = await getCollectionOrThrow(id);
+  const storeId = existing.storeId.toString();
 
-  const updated = await Collections.findByIdAndUpdate(id, update, { new: true, runValidators: true });
+  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
+
+  const updatePayload = buildCollectionUpdatePayload(req.body as Record<string, unknown>);
+  if (!Object.keys(updatePayload).length) {
+    throw new CustomError("No valid fields provided to update", 400);
+  }
+
+  validateCollectionStatus(updatePayload.status);
+  validateProductSort(updatePayload.productSort);
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
+    updatePayload.description = sanitizeRichTextHtml(String(updatePayload.description ?? ""));
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrl")) {
+    await assertOptionalStoreCloudImageUrl(storeId, updatePayload.imageUrl);
+  }
+
+  const updated = await Collections.findByIdAndUpdate(id, updatePayload, { new: true, runValidators: true });
   if (!updated) throw new CustomError("Collection not found", 404);
 
   res.status(200).json({ success: true, data: updated, message: "Collection updated successfully" });
@@ -121,6 +241,10 @@ export const updateCollection = asyncErrorHandler(async (req: Request, res: Resp
 // Delete collection
 export const deleteCollection = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+  const existing = await getCollectionOrThrow(id);
+
+  await assertStoreAccess(existing.storeId.toString(), req.user as SecureUserInfo | undefined);
+
   const deleted = await Collections.findByIdAndDelete(id);
   if (!deleted) throw new CustomError("Collection not found", 404);
 
@@ -131,40 +255,38 @@ export const deleteCollection = asyncErrorHandler(async (req: Request, res: Resp
 export const searchCollections = asyncErrorHandler(async (req: Request, res: Response) => {
   const { storeId } = req.params;
   const { q, page = 1, limit = 10 } = req.query;
-  
+
   if (!storeId) throw new CustomError("storeId is required", 400);
-  if (!q || typeof q !== 'string') throw new CustomError("Search query 'q' is required", 400);
+  if (!q || typeof q !== "string") throw new CustomError("Search query 'q' is required", 400);
+
+  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
 
   const skip = (Number(page) - 1) * Number(limit);
 
-  // Simple fuzzy search on collection names
   const searchCriteria = {
     storeId,
-    title: { $regex: q, $options: 'i' }
+    title: { $regex: q, $options: "i" },
   };
 
-  // Get collections with pagination
   const collections = await Collections.find(searchCriteria)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(Number(limit))
     .lean();
 
-  // Get product counts for each collection
   const collectionsWithProductCount = await Promise.all(
     collections.map(async (collection) => {
       const productCount = await CollectionEntry.countDocuments({
-        collectionId: collection._id
+        collectionId: collection._id,
       });
 
       return {
         ...collection,
-        productCount
+        productCount,
       };
     })
   );
 
-  // Get total count for pagination
   const totalCollections = await Collections.countDocuments(searchCriteria);
 
   res.status(200).json({
@@ -174,8 +296,8 @@ export const searchCollections = asyncErrorHandler(async (req: Request, res: Res
       currentPage: Number(page),
       totalPages: Math.ceil(totalCollections / Number(limit)),
       totalItems: totalCollections,
-      itemsPerPage: Number(limit)
-    }
+      itemsPerPage: Number(limit),
+    },
   });
 });
 
@@ -190,12 +312,14 @@ export const searchProductsInCollection = asyncErrorHandler(async (req: Request,
     throw new CustomError("Search query 'q' is required", 400);
   }
 
+  const collection = await getCollectionOrThrow(collectionId);
+  await assertStoreAccess(collection.storeId.toString(), req.user as SecureUserInfo | undefined);
+
   const pageNum = Math.max(1, Number(page) || 1);
   const limitNum = Math.min(100, Math.max(1, Number(limit) || 10));
   const skip = (pageNum - 1) * limitNum;
   const rx = new RegExp(q.trim(), "i");
 
-  // Get product ids in the collection
   const productIds: mongoose.Types.ObjectId[] = await CollectionEntry.find({ collectionId })
     .distinct("productId");
 
@@ -215,10 +339,7 @@ export const searchProductsInCollection = asyncErrorHandler(async (req: Request,
   const filter = {
     _id: { $in: productIds },
     isDeleted: { $ne: true },
-    $or: [
-      { title: rx },
-      { sku: rx },
-    ],
+    $or: [{ title: rx }, { sku: rx }],
   } as any;
 
   const [products, total] = await Promise.all([
@@ -242,4 +363,3 @@ export const searchProductsInCollection = asyncErrorHandler(async (req: Request,
     },
   });
 });
-
