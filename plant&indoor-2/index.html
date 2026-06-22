@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HariVatika — Plants & Indoor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="pi2-header" role="banner">
+
+    <div class="pi2-header__top">
+      <div class="pi2-header__top-inner">
+
+        <div class="pi2-header__start">
+          <button type="button" class="pi2-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-pi2-menu-toggle>
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+
+          <a href="index.html" class="pi2-header__logo" aria-label="HariVatika home">
+            <img src="assets/img/logo.png" alt="HariVatika" width="160" height="72" decoding="async" />
+          </a>
+        </div>
+
+        <form class="pi2-header__search" role="search" action="#" method="get" data-pi2-header-search>
+          <label class="visually-hidden" for="pi2-header-search">Search products</label>
+          <input id="pi2-header-search" type="search" name="q" placeholder="Search..." autocomplete="off" />
+          <button type="submit" class="pi2-header__search-btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </form>
+
+        <div class="pi2-header__end">
+          <button type="button" class="pi2-header__icon-btn pi2-mobile-only" data-pi2-search-toggle aria-label="Search"
+            aria-expanded="false">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+
+          <a href="#" class="pi2-header__icon-btn pi2-mobile-only" aria-label="My account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+
+          <a href="#" class="pi2-header__account pi2-desktop-only">
+            <span class="pi2-header__account-top">Login / Signup</span>
+            <span class="pi2-header__account-title">My account</span>
+          </a>
+
+          <span class="pi2-header__divider pi2-desktop-only" aria-hidden="true"></span>
+
+          <a href="#" class="pi2-header__cart" aria-label="Cart, 0 items">
+            <span class="pi2-header__cart-icon-wrap">
+              <i class="fa-solid fa-cart-shopping pi2-header__cart-icon" aria-hidden="true"></i>
+              <span class="pi2-header__cart-count">0</span>
+            </span>
+            <span class="pi2-header__cart-label">Cart</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <nav class="pi2-header__nav" aria-label="Category navigation">
+      <div class="pi2-header__nav-inner">
+        <button type="button" class="pi2-header__nav-close" data-pi2-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+
+        <a href="shop.html" class="pi2-header__nav-link">
+          Nature Decor
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </a>
+        <a href="shop.html" class="pi2-header__nav-link">
+          Fresh Plants
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </a>
+        <a href="shop.html" class="pi2-header__nav-link">
+          Flower Bulbs
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="pi2-header__nav-link">
+          Seeds
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="pi2-header__nav-link">
+          Pots &amp; Planters
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="pi2-header__nav-link">
+          Garden Essentials
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="pi2-header__nav-link">
+          Combo Offers
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </a>
+      </div>
+    </nav>
+
+    <div class="pi2-header__overlay" data-pi2-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="pi2-hero" data-pi2-hero-slider aria-label="Hero banners">
+      <div class="pi2-hero__viewport">
+        <div class="pi2-hero__track" data-pi2-hero-track>
+          <div class="pi2-hero__slide is-active" data-pi2-hero-slide>
+            <img src="assets/img/hero-banner-1.png"
+              alt="Trending Plant Bundles — curated greenery for calmer living spaces" width="1920" height="640"
+              decoding="async" fetchpriority="high" />
+          </div>
+          <div class="pi2-hero__slide" data-pi2-hero-slide>
+            <img src="assets/img/hero-banner-2.png" alt="Nourish Nature, Enrich Life — premium plant care essentials"
+              width="1920" height="640" loading="lazy" decoding="async" />
+          </div>
+        </div>
+      </div>
+
+      <div class="pi2-hero__dots" role="tablist" aria-label="Choose slide">
+        <button type="button" class="pi2-hero__dot is-active" data-pi2-hero-dot role="tab" aria-selected="true"
+          aria-label="Slide 1" tabindex="0"></button>
+        <button type="button" class="pi2-hero__dot" data-pi2-hero-dot role="tab" aria-selected="false"
+          aria-label="Slide 2" tabindex="-1"></button>
+      </div>
+    </section>
+
+    <section class="pi2-categories" aria-labelledby="pi2-categories-heading">
+      <div class="pi2-categories__inner">
+        <header class="pi2-categories__head">
+          <p class="pi2-categories__eyebrow">Handpicked for you</p>
+          <h2 id="pi2-categories-heading" class="pi2-categories__title">Plants for all moods</h2>
+          <span class="pi2-categories__rule" aria-hidden="true"></span>
+        </header>
+
+        <div class="pi2-categories__viewport" data-pi2-categories-slider tabindex="0"
+          aria-label="Plant categories carousel">
+          <div class="pi2-categories__grid">
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-1.avif" alt="Plants Under ₹99" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Plants Under ₹99</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-2.avif" alt="Low Maintenance" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Low Maintenance</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-3.avif" alt="Potted Plants" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Potted Plants</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-4.avif" alt="Table Top Plants" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Table Top Plants</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-5.avif" alt="Good Luck Plants" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Good Luck Plants</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-6.avif" alt="Large Indoor" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Large Indoor</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-7.avif" alt="Fragrant Flowering" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Fragrant Flowering</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-8.avif" alt="Flowering Perennial" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Flowering Perennial</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-9.avif" alt="Fruit Plants" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Fruit Plants</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-10.avif" alt="Outdoor Plants" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Outdoor Plants</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-11.avif" alt="Air Purifying" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Air Purifying</span>
+            </a>
+            <a href="#" class="pi2-categories__card">
+              <div class="pi2-categories__media">
+                <img src="assets/img/cat-11.avif" alt="Pooja Flowering" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </div>
+              <span class="pi2-categories__label">Pooja Flowering</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi2-products" aria-label="Featured plants">
+      <div class="pi2-products__inner">
+        <div class="pi2-products__viewport pi2-cards-viewport" data-pi2-cards-slider tabindex="0"
+          aria-label="Featured plants carousel">
+          <div class="pi2-products__grid">
+
+            <article class="pi2-product-card" data-product-id="saffron">
+              <a href="product.html?id=saffron" class="pi2-product-card__media">
+                <img src="assets/img/saffron.webp" alt="Saffron Crocus Bulb(1Pc)" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=saffron">Saffron Crocus Bulb(1Pc)</a></h3>
+                <span class="pi2-product-card__tag">bulbs</span>
+                <div class="pi2-product-card__meta">
+                  <div class="pi2-product-card__pricing">
+                    <span class="pi2-product-card__price">Rs. 39.00</span>
+                    <span class="pi2-product-card__mrp">Rs. 69.00</span>
+                  </div>
+                  <div class="pi2-product-card__rating" aria-label="Rated 5.0 out of 5">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <span>5.0</span>
+                  </div>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+            <article class="pi2-product-card" data-product-id="lisianthus">
+              <a href="product.html?id=lisianthus" class="pi2-product-card__media">
+                <img src="assets/img/lisianthus.webp" alt="Lisianthus Plant Sapling (1pc)" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=lisianthus">Lisianthus Plant Sapling
+                    (1pc)</a></h3>
+                <span class="pi2-product-card__tag">Plant</span>
+                <div class="pi2-product-card__meta">
+                  <div class="pi2-product-card__pricing">
+                    <span class="pi2-product-card__price">Rs. 69.00</span>
+                    <span class="pi2-product-card__mrp">Rs. 99.00</span>
+                  </div>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+            <article class="pi2-product-card" data-product-id="peace-lily">
+              <a href="product.html?id=peace-lily" class="pi2-product-card__media">
+                <img src="assets/img/peace-lily.webp" alt="Peace Lily Plant Sapling (1pc)" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=peace-lily">Peace Lily Plant Sapling
+                    (1pc)</a></h3>
+                <span class="pi2-product-card__tag">Plant</span>
+                <div class="pi2-product-card__meta">
+                  <div class="pi2-product-card__pricing">
+                    <span class="pi2-product-card__price">Rs. 79.00</span>
+                    <span class="pi2-product-card__mrp">Rs. 149.00</span>
+                  </div>
+                  <div class="pi2-product-card__rating" aria-label="Rated 4.8 out of 5">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <span>4.8</span>
+                  </div>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+            <article class="pi2-product-card" data-product-id="rosemary">
+              <a href="product.html?id=rosemary" class="pi2-product-card__media">
+                <img src="assets/img/rosemary.webp" alt="Rosemary Plant Sapling (1pc)" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=rosemary">Rosemary Plant Sapling (1pc)</a>
+                </h3>
+                <span class="pi2-product-card__tag">Plant</span>
+                <div class="pi2-product-card__meta">
+                  <div class="pi2-product-card__pricing">
+                    <span class="pi2-product-card__price">Rs. 79.00</span>
+                    <span class="pi2-product-card__mrp">Rs. 159.00</span>
+                  </div>
+                  <div class="pi2-product-card__rating" aria-label="Rated 4.9 out of 5">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <span>4.9</span>
+                  </div>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+            <article class="pi2-product-card" data-product-id="rubber">
+              <a href="product.html?id=rubber" class="pi2-product-card__media">
+                <img src="assets/img/rubber.webp" alt="Rubber Plant Sapling (1pc)" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=rubber">Rubber Plant Sapling (1pc)</a></h3>
+                <span class="pi2-product-card__tag">Plant</span>
+                <div class="pi2-product-card__meta">
+                  <div class="pi2-product-card__pricing">
+                    <span class="pi2-product-card__price">Rs. 89.00</span>
+                  </div>
+                  <div class="pi2-product-card__rating" aria-label="Rated 4.8 out of 5">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <span>4.8</span>
+                  </div>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi2-top-selling" aria-labelledby="pi2-top-selling-heading">
+      <div class="pi2-top-selling__inner">
+        <header class="pi2-top-selling__head">
+          <h2 id="pi2-top-selling-heading" class="pi2-top-selling__title">Top selling at Urvann</h2>
+          <span class="pi2-top-selling__rule" aria-hidden="true"></span>
+        </header>
+
+        <div class="pi2-top-selling__grid">
+          <a href="#" class="pi2-top-selling__card">
+            <div class="pi2-top-selling__media">
+              <img src="assets/img/jade.avif" alt="Jade" width="400" height="400" loading="lazy" decoding="async" />
+            </div>
+            <span class="pi2-top-selling__label">Jade</span>
+          </a>
+          <a href="#" class="pi2-top-selling__card">
+            <div class="pi2-top-selling__media">
+              <img src="assets/img/tulsi.avif" alt="Tulsi" width="400" height="400" loading="lazy" decoding="async" />
+            </div>
+            <span class="pi2-top-selling__label">Tulsi</span>
+          </a>
+          <a href="#" class="pi2-top-selling__card">
+            <div class="pi2-top-selling__media">
+              <img src="assets/img/rose.avif" alt="Rose" width="400" height="400" loading="lazy" decoding="async" />
+            </div>
+            <span class="pi2-top-selling__label">Rose</span>
+          </a>
+          <a href="#" class="pi2-top-selling__card">
+            <div class="pi2-top-selling__media">
+              <img src="assets/img/money.avif" alt="Money Plant" width="400" height="400" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pi2-top-selling__label">Money Plant</span>
+          </a>
+          <a href="#" class="pi2-top-selling__card">
+            <div class="pi2-top-selling__media">
+              <img src="assets/img/areca.avif" alt="Areca Palm" width="400" height="400" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pi2-top-selling__label">Areca Palm</span>
+          </a>
+          <a href="#" class="pi2-top-selling__card">
+            <div class="pi2-top-selling__media">
+              <img src="assets/img/jasmine.avif" alt="Jasmine" width="400" height="400" loading="lazy"
+                decoding="async" />
+            </div>
+            <span class="pi2-top-selling__label">Jasmine</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi2-shop-banners" aria-label="Shop promotions">
+      <div class="pi2-shop-banners__inner">
+        <a href="#" class="pi2-shop-banner">
+          <img src="assets/img/SB-1.png" alt="Shop plant duos — set of 2 plants" width="800" height="500" loading="lazy"
+            decoding="async" />
+        </a>
+        <a href="#" class="pi2-shop-banner">
+          <img src="assets/img/SB-2.png" alt="Shop plant combos — set of 3 or more plants" width="800" height="500"
+            loading="lazy" decoding="async" />
+        </a>
+      </div>
+    </section>
+
+    <section class="pi2-combos" aria-labelledby="pi2-combos-heading">
+      <div class="pi2-combos__inner">
+        <h2 id="pi2-combos-heading" class="pi2-combos__title">Ready to Buy Combos</h2>
+
+        <div class="pi2-combos__viewport pi2-cards-viewport" data-pi2-cards-slider tabindex="0"
+          aria-label="Ready to buy combos carousel">
+          <div class="pi2-combos__grid">
+            <article class="pi2-product-card" data-product-id="eye-combo">
+              <a href="product.html?id=eye-combo" class="pi2-product-card__media">
+                <img src="assets/img/eye.webp" alt="The Eye Relief Combo" width="400" height="400" loading="lazy"
+                  decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=eye-combo">The Eye Relief Combo</a></h3>
+                <span class="pi2-product-card__tag">bundle</span>
+                <div class="pi2-product-card__pricing pi2-product-card__pricing--solo">
+                  <span class="pi2-product-card__price">Rs. 299.00</span>
+                  <span class="pi2-product-card__mrp">Rs. 591.00</span>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+            <article class="pi2-product-card" data-product-id="tfp-combo">
+              <a href="product.html?id=tfp-combo" class="pi2-product-card__media">
+                <img src="assets/img/tfp.webp" alt="TFP Gardening Pots Set of 3 (3.5 Inch)" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=tfp-combo">TFP Gardening Pots Set of 3 (3.5
+                    Inch)</a></h3>
+                <span class="pi2-product-card__tag">bundle</span>
+                <div class="pi2-product-card__pricing pi2-product-card__pricing--solo">
+                  <span class="pi2-product-card__price">Rs. 29.00</span>
+                  <span class="pi2-product-card__mrp">Rs. 45.00</span>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+            <article class="pi2-product-card" data-product-id="stress-combo">
+              <a href="product.html?id=stress-combo" class="pi2-product-card__media">
+                <img src="assets/img/stress.webp" alt="Stress Relief Plant Combo" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=stress-combo">Stress Relief Plant Combo</a>
+                </h3>
+                <span class="pi2-product-card__tag">bundle</span>
+                <div class="pi2-product-card__pricing pi2-product-card__pricing--solo">
+                  <span class="pi2-product-card__price">Rs. 239.00</span>
+                  <span class="pi2-product-card__mrp">Rs. 437.00</span>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+
+            <article class="pi2-product-card" data-product-id="vastu-combo">
+              <a href="product.html?id=vastu-combo" class="pi2-product-card__media">
+                <img src="assets/img/vastu.webp" alt="Vastu Good Luck Plants for Home" width="400" height="400"
+                  loading="lazy" decoding="async" />
+                <div class="pi2-product-card__dots" aria-hidden="true">
+                  <span class="is-active"></span><span></span><span></span>
+                </div>
+              </a>
+              <div class="pi2-product-card__body">
+                <h3 class="pi2-product-card__title"><a href="product.html?id=vastu-combo">Vastu Good Luck Plants for
+                    Home</a></h3>
+                <span class="pi2-product-card__tag">bundle</span>
+                <div class="pi2-product-card__pricing pi2-product-card__pricing--solo">
+                  <span class="pi2-product-card__price">Rs. 199.00</span>
+                  <span class="pi2-product-card__mrp">Rs. 297.00</span>
+                </div>
+                <div class="pi2-product-card__qty" role="group" aria-label="Select quantity">
+                  <button type="button" class="pi2-product-card__qty-btn is-active">1</button>
+                  <button type="button" class="pi2-product-card__qty-btn">2</button>
+                  <button type="button" class="pi2-product-card__qty-btn">5</button>
+                  <button type="button" class="pi2-product-card__qty-btn">10</button>
+                  <label class="pi2-product-card__qty-field">
+                    <span class="visually-hidden">Custom quantity</span>
+                    <input type="text" inputmode="numeric" placeholder="Qty" />
+                  </label>
+                </div>
+                <button type="button" class="pi2-product-card__cta">ADD TO CART</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="pi2-gift-cards" aria-label="Gift cards">
+      <div class="pi2-gift-cards__inner">
+        <a href="#" class="pi2-gift-cards__card">
+          <img src="assets/img/gift-card.png" alt="Gifting for your loved ones" width="800" height="400" loading="lazy"
+            decoding="async" />
+        </a>
+        <a href="#" class="pi2-gift-cards__card">
+          <img src="assets/img/gift-card-2.png" alt="Gifting for every occasion" width="800" height="400" loading="lazy"
+            decoding="async" />
+        </a>
+      </div>
+    </section>
+
+    <section class="pi2-featured" aria-labelledby="pi2-featured-heading">
+      <div class="pi2-featured__inner">
+        <div class="pi2-featured__layout">
+
+          <div class="pi2-featured__gallery" aria-label="Product images">
+            <div class="pi2-featured__collage">
+              <img class="pi2-featured__img pi2-featured__img--tl" src="assets/img/P-2.png"
+                alt="How to apply Sea Vital and Neem++" width="320" height="320" loading="lazy" decoding="async" />
+              <img class="pi2-featured__img pi2-featured__img--tr" src="assets/img/P-3.png"
+                alt="Garden care combo lifestyle" width="320" height="320" loading="lazy" decoding="async" />
+              <img class="pi2-featured__img pi2-featured__img--main" src="assets/img/P-1.png"
+                alt="Sea Vital and Neem++ complete garden care combo" width="480" height="480" decoding="async" />
+              <img class="pi2-featured__img pi2-featured__img--bl" src="assets/img/P-4.png"
+                alt="Before and after plant growth results" width="320" height="320" loading="lazy" decoding="async" />
+            </div>
+          </div>
+
+          <div class="pi2-featured__info">
+            <h2 id="pi2-featured-heading" class="pi2-featured__title">Sea Vital 100ML + Neem++ 100ML Complete Garden
+              Care Combo</h2>
+
+            <div class="pi2-featured__pricing">
+              <span class="pi2-featured__mrp">Rs. 448.00</span>
+              <span class="pi2-featured__price">Rs. 249.00</span>
+              <span class="pi2-featured__discount">-45%</span>
+            </div>
+            <p class="pi2-featured__shipping"><span class="pi2-featured__shipping-link">Shipping</span> calculated at
+              checkout.</p>
+
+            <div class="pi2-featured__qty" data-pi2-featured-qty>
+              <button type="button" class="pi2-featured__qty-btn" data-pi2-qty-minus
+                aria-label="Decrease quantity">−</button>
+              <span class="pi2-featured__qty-value" data-pi2-qty-value>1</span>
+              <button type="button" class="pi2-featured__qty-btn" data-pi2-qty-plus
+                aria-label="Increase quantity">+</button>
+            </div>
+
+            <div class="pi2-featured__actions">
+              <button type="button" class="pi2-featured__btn pi2-featured__btn--cart">ADD TO CART</button>
+              <button type="button" class="pi2-featured__btn pi2-featured__btn--buy">BUY IT NOW</button>
+            </div>
+
+            <div class="pi2-featured__benefits">
+              <h3 class="pi2-featured__benefits-title">Why Choose This Product</h3>
+              <ul class="pi2-featured__benefits-list">
+                <li><i class="fa-solid fa-check" aria-hidden="true"></i>100% Organic &amp; Plant Safe Formula</li>
+                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Suitable for Indoor, Balcony &amp; Garden Plants
+                </li>
+                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Easy Mixing &amp; Spray Application</li>
+                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Effective Against Aphids, Mealybugs &amp; Mites
+                </li>
+                <li><i class="fa-solid fa-check" aria-hidden="true"></i>Complete Garden Care Combo</li>
+              </ul>
+            </div>
+
+            <div class="pi2-featured__footer">
+              <a href="#" class="pi2-featured__details">
+                VIEW FULL DETAILS
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </a>
+              <button type="button" class="pi2-featured__share">
+                <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+                Share
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="pi2-faq" aria-labelledby="pi2-faq-heading">
+      <div class="pi2-faq__inner">
+        <h2 id="pi2-faq-heading" class="pi2-faq__title">Frequently Asked Questions</h2>
+
+        <div class="pi2-faq__layout">
+          <div class="pi2-faq__media">
+            <img src="assets/img/faq.png" alt="Indoor plants on a wooden table" width="520" height="680" loading="lazy"
+              decoding="async" />
+          </div>
+
+          <div class="pi2-faq__list" data-pi2-faq-accordion>
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>What all do you have at The Affordable Organic Store?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>We offer seeds, bulbs, indoor and outdoor plants, pots, planters, garden essentials, organic
+                  fertilizers, and curated plant combos for home and balcony gardening.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>Is The Affordable Organic Store genuine or fake?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>We are a genuine online store with verified products, secure payments, and thousands of happy
+                  customers across India. You can check reviews and ratings on our product pages.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>Does The Affordable Organic Store have a Cash on Delivery Option?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>Yes, Cash on Delivery is available on eligible pin codes. You can select COD at checkout if it is
+                  available for your delivery address.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>Will all the seeds germinate?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>Germination depends on soil, climate, watering, and care. Our seeds are quality-checked, and we
+                  provide sowing instructions to help you get the best results.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>When will I receive my order? How to track my order?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>Orders are usually dispatched within 1–3 business days. You will receive tracking details by email
+                  and
+                  SMS once your order is shipped. You can also track it from your account.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>Can I cancel my order?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>Yes, you can cancel before the order is dispatched. After dispatch, cancellation may not be possible,
+                  but you can contact our support team for assistance.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>Can you provide seeds for free?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>We occasionally run promotional offers and giveaways. Follow us on social media and subscribe to our
+                  newsletter to stay updated on free seed campaigns.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>How can I collaborate with you?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>For collaborations, reach out to us at partnerships@harivatika.com with your proposal, audience
+                  details, and collaboration ideas. Our team will get back to you shortly.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>How can I supply seeds to you?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>If you are a seed supplier, email us at vendors@harivatika.com with your product catalog, pricing,
+                  and
+                  quality certifications. We review all vendor applications carefully.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>We are an NGO and we want to collaborate with The Affordable Organic Store. How can we do
+                  that?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>NGOs can write to us at ngo@harivatika.com with your organization details, mission, and how you would
+                  like to collaborate. We support community greening and education initiatives.</p>
+              </div>
+            </div>
+
+            <div class="pi2-faq__item">
+              <button type="button" class="pi2-faq__trigger" aria-expanded="false">
+                <span>Do you sponsor events?</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pi2-faq__panel" hidden>
+                <p>We selectively sponsor gardening, sustainability, and community events. Send your event brief to
+                  events@harivatika.com and we will review sponsorship opportunities.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pi2-footer" role="contentinfo">
+    <div class="pi2-footer__bar-wrap">
+      <button type="button" class="pi2-footer__bar" data-pi2-footer-bar aria-expanded="false">
+        <span class="pi2-footer__bar-left">
+          <i class="fa-solid fa-box" aria-hidden="true"></i>
+          HariVatika: Bringing Fresh Greenery to Indian Homes
+        </span>
+        <i class="fa-solid fa-chevron-down pi2-footer__bar-chevron" aria-hidden="true"></i>
+      </button>
+      <div class="pi2-footer__bar-panel" data-pi2-footer-bar-panel hidden>
+        <p>HariVatika is your trusted online nursery for indoor plants, outdoor greens, seeds, bulbs, planters, and
+          garden care essentials — delivered fresh across India with expert plant guidance and next-day delivery on
+          eligible orders.</p>
+      </div>
+    </div>
+
+    <div class="pi2-footer__inner">
+      <div class="pi2-footer__promo">
+        <div class="pi2-footer__newsletter">
+          <h3 class="pi2-footer__promo-title">Looking for Great Deals?</h3>
+          <form class="pi2-footer__email-form" action="#" method="post">
+            <label class="visually-hidden" for="pi2-footer-email">Your Email</label>
+            <input id="pi2-footer-email" type="email" name="email" placeholder="Your Email" autocomplete="email" />
+            <button type="submit" class="pi2-footer__email-submit" aria-label="Subscribe">
+              <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+        <div class="pi2-footer__apps">
+          <h3 class="pi2-footer__promo-title">Download Our App</h3>
+          <div class="pi2-footer__app-btns">
+            <a href="#" class="pi2-footer__app-btn" aria-label="Get it on Google Play">
+              <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+              <span><small>GET IT ON</small> Google Play</span>
+            </a>
+            <a href="#" class="pi2-footer__app-btn pi2-footer__app-btn--apple" aria-label="Download on the App Store">
+              <i class="fa-brands fa-apple" aria-hidden="true"></i>
+              <span><small>Download on the</small> App Store</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pi2-footer__main">
+        <div class="pi2-footer__brand-col">
+          <a href="index.html" class="pi2-footer__logo" aria-label="HariVatika home">
+            <img src="assets/img/logo.png" alt="HariVatika" width="150" height="54" loading="lazy" decoding="async" />
+          </a>
+          <p class="pi2-footer__desc">HariVatika is your one-stop online nursery for plants, planters, gardening
+            accessories, and tools. Order fresh plants and get free home delivery on the next day!</p>
+
+          <div class="pi2-footer__contact-grid">
+            <div class="pi2-footer__contact-item">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              <div>
+                <span class="pi2-footer__contact-label">Call Support</span>
+                <a href="tel:9599585773">9599585773</a>
+              </div>
+            </div>
+            <div class="pi2-footer__contact-item">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              <div>
+                <span class="pi2-footer__contact-label">Mail us at</span>
+                <a href="mailto:info@harivatika.com">info@harivatika.com</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="pi2-footer__contact-item pi2-footer__contact-item--full">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <div>
+              <span class="pi2-footer__contact-label">Corporate Office</span>
+              <p>E-176, Delhi, Delhi - 110060, India</p>
+            </div>
+          </div>
+
+          <div class="pi2-footer__social" aria-label="Social media">
+            <a href="#" class="pi2-footer__social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"
+                aria-hidden="true"></i></a>
+            <a href="#" class="pi2-footer__social-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"
+                aria-hidden="true"></i></a>
+            <a href="#" class="pi2-footer__social-link" aria-label="YouTube"><i class="fa-brands fa-youtube"
+                aria-hidden="true"></i></a>
+            <a href="#" class="pi2-footer__social-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"
+                aria-hidden="true"></i></a>
+            <a href="https://wa.me/" class="pi2-footer__social-link" aria-label="WhatsApp"><i
+                class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+            <a href="mailto:info@harivatika.com" class="pi2-footer__social-link" aria-label="Email"><i
+                class="fa-solid fa-envelope" aria-hidden="true"></i></a>
+            <a href="#" class="pi2-footer__social-link" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"
+                aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <div class="pi2-footer__col">
+          <h3 class="pi2-footer__heading">Information</h3>
+          <ul class="pi2-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Get Help</a></li>
+            <li><a href="#">HariVatika's Delivery Network</a></li>
+          </ul>
+        </div>
+
+        <div class="pi2-footer__col">
+          <h3 class="pi2-footer__heading">Policies</h3>
+          <ul class="pi2-footer__links">
+            <li><a href="#">Refund Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Cashback Program</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Green Team Scheme</a></li>
+            <li><a href="#">Seller T&amp;C - Pan India Deliveries</a></li>
+          </ul>
+        </div>
+
+        <div class="pi2-footer__col">
+          <h3 class="pi2-footer__heading">Account</h3>
+          <ul class="pi2-footer__links">
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">Wishlist</a></li>
+            <li><a href="#">Track order</a></li>
+          </ul>
+        </div>
+
+        <div class="pi2-footer__col">
+          <h3 class="pi2-footer__heading">Major Categories</h3>
+          <ul class="pi2-footer__links">
+            <li><a href="#">Plants</a></li>
+            <li><a href="#">Planters &amp; Pots</a></li>
+            <li><a href="#">Soil Fertilizers &amp; Pesticides</a></li>
+            <li><a href="#">Seeds &amp; Bulbs</a></li>
+            <li><a href="#">Gardening Tools &amp; Equipments</a></li>
+            <li><a href="#">Gifting</a></li>
+            <li><a href="#">Decor</a></li>
+            <li><a href="#">Memberships &amp; Gift Cards</a></li>
+            <li><a href="#">Sale</a></li>
+            <li><a href="#">Best Sellers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="pi2-footer__copy">&copy; 2026 HariVatika. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/products-data.js" defer></script>
+  <script src="assets/js/script.js" defer></script>
+</body>
+
+</html>
