@@ -29,11 +29,22 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: var(--pi2-font);
   color: var(--pi2-text);
   background: var(--pi2-white);
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+#main-content {
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 a {
@@ -730,7 +741,7 @@ button {
 
 @media (max-width: 900px) {
   .pi2-categories {
-    padding: 40px 0 44px;
+    padding: 30px 0 30px;
   }
 
   .pi2-categories__inner {
@@ -756,8 +767,14 @@ button {
 }
 
 @media (max-width: 600px) {
+  .pi2-categories {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
   .pi2-categories__inner {
     padding: 0;
+    max-width: 100%;
   }
 
   .pi2-categories__head {
@@ -765,12 +782,16 @@ button {
   }
 
   .pi2-categories__viewport {
+    container-type: inline-size;
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 20px;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
+    touch-action: pan-x;
     scrollbar-width: none;
     padding: 0 20px;
   }
@@ -797,8 +818,8 @@ button {
   }
 
   .pi2-categories__card {
-    flex: 0 0 calc(50vw - 26px);
-    max-width: calc(50vw - 26px);
+    flex: 0 0 calc((100cqw - 40px - 12px) / 2);
+    max-width: calc((100cqw - 40px - 12px) / 2);
     scroll-snap-stop: always;
   }
 
@@ -1080,7 +1101,7 @@ button {
 
 @media (max-width: 900px) {
   .pi2-products {
-    padding: 24px 0 36px;
+    padding: 30px 0 30px;
   }
 }
 
@@ -1197,7 +1218,7 @@ button {
 
 @media (max-width: 700px) {
   .pi2-top-selling {
-    padding: 36px 0 40px;
+    padding: 30px 0 30px;
   }
 
   .pi2-top-selling__inner {
@@ -1264,7 +1285,7 @@ button {
 
 @media (max-width: 900px) {
   .pi2-shop-banners {
-    padding: 24px 0 32px;
+    padding: 30px 0 30px;
   }
 
   .pi2-shop-banners__inner {
@@ -1322,7 +1343,7 @@ button {
 
 @media (max-width: 600px) {
   .pi2-combos {
-    padding: 28px 0 36px;
+    padding: 30px 0 30px;
   }
 
   .pi2-combos__title {
@@ -1333,10 +1354,17 @@ button {
 /* Mobile product carousels — one card per swipe (featured + combos) */
 
 @media (max-width: 900px) {
+  .pi2-products,
+  .pi2-combos {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
   .pi2-products__inner,
   .pi2-combos__inner,
   .pi2-pdp-related__inner {
     padding: 0;
+    max-width: 100%;
   }
 
   .pi2-combos__title,
@@ -1346,6 +1374,9 @@ button {
   }
 
   .pi2-cards-viewport {
+    container-type: inline-size;
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -1385,9 +1416,9 @@ button {
   .pi2-products__grid > .pi2-product-card,
   .pi2-combos__grid > .pi2-product-card,
   .pi2-pdp-related__grid > .pi2-product-card {
-    flex: 0 0 calc(100vw - 40px);
-    width: calc(100vw - 40px);
-    max-width: calc(100vw - 40px);
+    flex: 0 0 calc(100cqw - 40px);
+    width: calc(100cqw - 40px);
+    max-width: calc(100cqw - 40px);
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
@@ -1430,7 +1461,7 @@ button {
 
 @media (max-width: 900px) {
   .pi2-gift-cards {
-    padding: 0 0 32px;
+    padding: 30px 0 30px;
   }
 
   .pi2-gift-cards__inner {
@@ -1468,6 +1499,13 @@ button {
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   gap: 48px;
   align-items: start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.pi2-featured__layout > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .pi2-featured__gallery {
@@ -1543,6 +1581,7 @@ button {
   font-weight: 700;
   line-height: 1.3;
   color: var(--pi2-pdp-green);
+  overflow-wrap: anywhere;
 }
 
 .pi2-featured__pricing {
@@ -1770,7 +1809,7 @@ button {
 
 @media (max-width: 600px) {
   .pi2-featured {
-    padding: 28px 0 36px;
+    padding: 30px 0 30px;
   }
 
   .pi2-featured__inner {
@@ -1783,6 +1822,8 @@ button {
 
   .pi2-featured__gallery {
     width: 100%;
+    max-width: 100%;
+    overflow: hidden;
     justify-content: center;
   }
 
@@ -2046,7 +2087,7 @@ button {
 
 @media (max-width: 600px) {
   .pi2-faq {
-    padding: 36px 0 44px;
+    padding: 30px 0 30px;
   }
 
   .pi2-faq__inner {
@@ -2147,7 +2188,7 @@ button {
   grid-template-columns: 1fr 1fr;
   gap: 32px;
   padding-bottom: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -2396,7 +2437,7 @@ button {
 
 @media (max-width: 768px) {
   .pi2-footer__bar {
-    padding: 12px 20px;
+    padding: 30px 20px;
     font-size: 12px;
   }
 
@@ -2405,7 +2446,7 @@ button {
   }
 
   .pi2-footer__inner {
-    padding: 28px 20px 24px;
+    padding: 30px 20px 30px;
   }
 
   .pi2-footer__promo {
@@ -2437,7 +2478,7 @@ button {
   }
 
   .pi2-footer__app-btns {
-    flex-direction: column;
+    /* flex-direction: column; */
     align-items: flex-start;
   }
 }
