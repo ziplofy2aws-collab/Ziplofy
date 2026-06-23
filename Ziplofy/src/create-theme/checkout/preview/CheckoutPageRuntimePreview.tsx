@@ -14,8 +14,11 @@ import { CheckoutMainRuntimePreview } from './CheckoutMainRuntimePreview';
 import { CheckoutOrderSummaryRuntimePreview } from './CheckoutOrderSummaryRuntimePreview';
 import { CheckoutTypographyFontLoader } from './CheckoutTypographyFontLoader';
 
+type PreviewDevice = 'desktop' | 'mobile';
+
 type Props = {
   pageId: CheckoutEditorPage;
+  device?: PreviewDevice;
   storeId?: string | null;
   storeName?: string;
   storeUrl?: string | null;
@@ -36,6 +39,7 @@ function HeaderSlot({
   storeUrl,
   logo,
   theme,
+  device,
   highlightNodeId,
   onSelectNode,
   constrained = false,
@@ -44,13 +48,14 @@ function HeaderSlot({
   storeUrl?: string | null;
   logo?: CheckoutLogoPreviewConfig;
   theme?: CheckoutPaletteTheme;
+  device: PreviewDevice;
   highlightNodeId?: string | null;
   onSelectNode?: (nodeId: string) => void;
   constrained?: boolean;
 }) {
   return (
     <div
-      className="border-b border-[#e1e3e5]"
+      className="shrink-0 border-b border-[#e1e3e5]"
       style={{ backgroundColor: theme?.headerBackgroundColor ?? '#ffffff' }}
     >
       <div className={constrained ? `mx-auto w-full ${CHECKOUT_FORM_MAX_WIDTH_CLASS}` : 'w-full'}>
@@ -59,6 +64,7 @@ function HeaderSlot({
           storeUrl={storeUrl}
           logo={logo}
           theme={theme}
+          device={device}
           highlightNodeId={highlightNodeId}
           onSelectNode={onSelectNode}
         />
@@ -69,11 +75,15 @@ function HeaderSlot({
 
 function FooterSlot({
   footerConfig,
+  device,
   highlightNodeId,
+  onSelectNode,
   constrained = false,
 }: {
   footerConfig?: CheckoutFooterConfig;
+  device: PreviewDevice;
   highlightNodeId?: string | null;
+  onSelectNode?: (nodeId: string) => void;
   constrained?: boolean;
 }) {
   return (
@@ -81,7 +91,9 @@ function FooterSlot({
       <div className={constrained ? '' : 'w-full'}>
         <CheckoutFooterRuntimePreview
           alignment={footerConfig?.alignment ?? 'left'}
+          device={device}
           highlightNodeId={highlightNodeId}
+          onSelectNode={onSelectNode}
           constrained={constrained}
         />
       </div>
@@ -89,8 +101,47 @@ function FooterSlot({
   );
 }
 
+function OrderSummarySlot({
+  storeId,
+  orderSummaryConfig,
+  device,
+  highlightNodeId,
+  onSelectNode,
+  sticky = false,
+}: {
+  storeId?: string | null;
+  orderSummaryConfig?: CheckoutOrderSummaryConfig;
+  device: PreviewDevice;
+  highlightNodeId?: string | null;
+  onSelectNode?: (nodeId: string) => void;
+  sticky?: boolean;
+}) {
+  const isMobile = device === 'mobile';
+
+  return (
+    <div
+      className={
+        isMobile
+          ? 'w-full shrink-0 border-b border-[#e1e3e5] bg-[#fafafa]'
+          : `w-[42%] max-w-[480px] shrink-0 self-start border-l border-[#e1e3e5] bg-[#fafafa] ${
+              sticky ? 'sticky top-0 max-h-full overflow-y-auto overscroll-contain' : ''
+            }`
+      }
+    >
+      <CheckoutOrderSummaryRuntimePreview
+        storeId={storeId}
+        orderSummaryConfig={orderSummaryConfig}
+        highlightNodeId={highlightNodeId}
+        layout={device}
+        onSelectNode={onSelectNode}
+      />
+    </div>
+  );
+}
+
 export function CheckoutPageRuntimePreview({
   pageId,
+  device = 'desktop',
   storeId,
   storeName,
   storeUrl,
@@ -107,7 +158,7 @@ export function CheckoutPageRuntimePreview({
 }: Props) {
   if (pageId !== 'checkout') {
     return (
-      <div className="flex min-h-full flex-1 items-center justify-center bg-white p-8 text-center">
+      <div className="flex min-h-0 flex-1 items-center justify-center bg-white p-8 text-center">
         <p className="max-w-sm text-sm text-gray-600">
           Runtime preview for this page is coming soon.
         </p>
@@ -115,11 +166,48 @@ export function CheckoutPageRuntimePreview({
     );
   }
 
+  const isMobile = device === 'mobile';
   const isFullWidthHeader = headerPosition === 'full_width';
   const isFullWidthFooter = (footerConfig?.location ?? 'checkout_form') === 'full_width';
 
+  const mainColumn = (
+    <div className="min-w-0 flex-1">
+      {!isFullWidthHeader ? (
+        <HeaderSlot
+          storeName={storeName}
+          storeUrl={storeUrl}
+          logo={logo}
+          theme={theme}
+          device={device}
+          highlightNodeId={highlightNodeId}
+          onSelectNode={onSelectNode}
+          constrained={!isMobile}
+        />
+      ) : null}
+      <div style={{ backgroundColor: theme?.mainBackgroundColor ?? '#ffffff' }}>
+        <CheckoutMainRuntimePreview
+          accentColor={theme?.accentColor}
+          buttonColor={theme?.buttonColor}
+          addressAutocompletion={addressAutocompletion}
+          inputFieldsTransparent={inputFieldsTransparent}
+          typography={typography}
+          device={device}
+        />
+        {!isFullWidthFooter ? (
+          <FooterSlot
+            footerConfig={footerConfig}
+            device={device}
+            highlightNodeId={highlightNodeId}
+            onSelectNode={onSelectNode}
+            constrained={!isMobile}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-white">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
       <CheckoutTypographyFontLoader
         fonts={[typography?.headingGoogleFont, typography?.bodyGoogleFont]}
       />
@@ -129,51 +217,48 @@ export function CheckoutPageRuntimePreview({
           storeUrl={storeUrl}
           logo={logo}
           theme={theme}
+          device={device}
           highlightNodeId={highlightNodeId}
           onSelectNode={onSelectNode}
         />
       ) : null}
 
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <div className="flex min-h-[240px] min-w-0 flex-1 flex-col overflow-y-auto lg:min-h-0">
-          {!isFullWidthHeader ? (
-            <HeaderSlot
-              storeName={storeName}
-              storeUrl={storeUrl}
-              logo={logo}
-              theme={theme}
+      <div className="checkout-preview-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div
+          className={`mx-auto flex w-full ${isMobile ? 'max-w-none flex-col' : 'min-h-full flex-row items-start'}`}
+        >
+          {isMobile ? (
+            <OrderSummarySlot
+              storeId={storeId}
+              orderSummaryConfig={orderSummaryConfig}
+              device={device}
               highlightNodeId={highlightNodeId}
               onSelectNode={onSelectNode}
-              constrained
             />
           ) : null}
-          <div
-            className="min-h-0 flex-1"
-            style={{ backgroundColor: theme?.mainBackgroundColor ?? '#ffffff' }}
-          >
-            <CheckoutMainRuntimePreview
-              accentColor={theme?.accentColor}
-              buttonColor={theme?.buttonColor}
-              addressAutocompletion={addressAutocompletion}
-              inputFieldsTransparent={inputFieldsTransparent}
-              typography={typography}
+
+          {mainColumn}
+
+          {!isMobile ? (
+            <OrderSummarySlot
+              storeId={storeId}
+              orderSummaryConfig={orderSummaryConfig}
+              device={device}
+              highlightNodeId={highlightNodeId}
+              onSelectNode={onSelectNode}
+              sticky
             />
-            {!isFullWidthFooter ? (
-              <FooterSlot footerConfig={footerConfig} highlightNodeId={highlightNodeId} constrained />
-            ) : null}
-          </div>
-        </div>
-        <div className="w-full border-t border-[#e1e3e5] bg-[#fafafa] lg:w-[42%] lg:max-w-[480px] lg:border-t-0 lg:border-l">
-          <CheckoutOrderSummaryRuntimePreview
-            storeId={storeId}
-            orderSummaryConfig={orderSummaryConfig}
-            highlightNodeId={highlightNodeId}
-          />
+          ) : null}
         </div>
       </div>
 
       {isFullWidthFooter ? (
-        <FooterSlot footerConfig={footerConfig} highlightNodeId={highlightNodeId} />
+        <FooterSlot
+          footerConfig={footerConfig}
+          device={device}
+          highlightNodeId={highlightNodeId}
+          onSelectNode={onSelectNode}
+        />
       ) : null}
     </div>
   );

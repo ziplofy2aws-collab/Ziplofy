@@ -1,10 +1,19 @@
-export type CheckoutSettingsPanelId = 'header' | 'order-summary' | 'footer';
+export type CheckoutSettingsPanelId =
+  | 'header'
+  | 'order-summary'
+  | 'footer'
+  | 'sign-in-main'
+  | 'thank-you-main';
 
 const HEADER_NODE_IDS = new Set(['checkout:header']);
 
 const ORDER_SUMMARY_NODE_IDS = new Set(['checkout:order-summary']);
 
 const FOOTER_NODE_IDS = new Set(['checkout:footer']);
+
+const SIGN_IN_MAIN_NODE_IDS = new Set(['checkout:sign-in:group:main']);
+
+const THANK_YOU_MAIN_NODE_IDS = new Set(['checkout:thank-you:group:main']);
 
 export function resolveCheckoutSettingsPanelId(nodeId: string): CheckoutSettingsPanelId | null {
   if (HEADER_NODE_IDS.has(nodeId)) {
@@ -15,6 +24,12 @@ export function resolveCheckoutSettingsPanelId(nodeId: string): CheckoutSettings
   }
   if (FOOTER_NODE_IDS.has(nodeId)) {
     return 'footer';
+  }
+  if (SIGN_IN_MAIN_NODE_IDS.has(nodeId)) {
+    return 'sign-in-main';
+  }
+  if (THANK_YOU_MAIN_NODE_IDS.has(nodeId)) {
+    return 'thank-you-main';
   }
   return null;
 }

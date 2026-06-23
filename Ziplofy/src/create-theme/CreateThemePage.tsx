@@ -28,7 +28,15 @@ import { usePreviewEditSync } from './chrome/usePreviewEditSync';
 import { CreateThemePoweredByLoader } from './chrome/CreateThemePoweredByLoader';
 import {
   buildCheckoutProfileSidebarTree,
+  buildCheckoutAccountProfileSidebarTree,
+  buildCheckoutOrdersSidebarTree,
+  buildCheckoutSignInSidebarTree,
+  buildCheckoutThankYouSidebarTree,
+  defaultCheckoutAccountProfileSidebarExpanded,
   defaultCheckoutProfileSidebarExpanded,
+  defaultCheckoutOrdersSidebarExpanded,
+  defaultCheckoutSignInSidebarExpanded,
+  defaultCheckoutThankYouSidebarExpanded,
   CheckoutEditorHeader,
   CheckoutProfilePreview,
   CheckoutEditorSettingsPanel,
@@ -38,6 +46,8 @@ import {
   readCheckoutFooterConfig,
   readCheckoutGlobalSettings,
   readCheckoutOrderSummaryConfig,
+  readCheckoutSignInMainConfig,
+  readCheckoutThankYouMainConfig,
   resolveCheckoutPaletteTheme,
   resolveCheckoutTypographyTheme,
   resolveCheckoutSettingsPanelId,
@@ -46,6 +56,8 @@ import {
   type CheckoutGlobalSettings,
   type CheckoutHeaderPosition,
   type CheckoutOrderSummaryConfig,
+  type CheckoutSignInMainConfig,
+  type CheckoutThankYouMainConfig,
 } from './checkout';
 import { buildThemeEditorPageMenu, findPageMenuItemByPreview } from './utils/page-menu';
 import { ensureRegistryTemplatesInConfig } from './utils/theme-page-registry';
@@ -305,7 +317,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   } = useStoreCustomThemes();
   const {
     configuration: checkoutConfiguration,
-    loading: checkoutConfigurationLoading,
     getById: getCheckoutConfigurationById,
     update: updateCheckoutConfiguration,
   } = useStoreCheckoutConfigurations();
@@ -324,6 +335,19 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     useState<Required<CheckoutFooterConfig>>({
       location: 'checkout_form',
       alignment: 'left',
+    });
+  const [checkoutSignInMainConfig, setCheckoutSignInMainConfig] =
+    useState<Required<CheckoutSignInMainConfig>>({
+      logoImage: null,
+      backgroundColor: '#ffffff',
+      accentColor: 'default',
+      mediaImage: null,
+    });
+  const [checkoutThankYouMainConfig, setCheckoutThankYouMainConfig] =
+    useState<Required<CheckoutThankYouMainConfig>>({
+      backgroundColor: 'default',
+      accentColor: 'default',
+      backgroundImage: null,
     });
   const [checkoutGlobalSettings, setCheckoutGlobalSettings] =
     useState<Required<CheckoutGlobalSettings>>({
@@ -453,6 +477,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       readCheckoutOrderSummaryConfig(checkoutConfiguration.checkoutConfig)
     );
     setCheckoutFooterConfig(readCheckoutFooterConfig(checkoutConfiguration.checkoutConfig));
+    setCheckoutSignInMainConfig(readCheckoutSignInMainConfig(checkoutConfiguration.checkoutConfig));
+    setCheckoutThankYouMainConfig(readCheckoutThankYouMainConfig(checkoutConfiguration.checkoutConfig));
     setCheckoutGlobalSettings(readCheckoutGlobalSettings(checkoutConfiguration.checkoutConfig));
   }, [isCheckoutProfile, checkoutConfiguration]);
 
@@ -558,6 +584,18 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
   const sectionsTree = useMemo(() => {
     if (isCheckoutProfile) {
+      if (checkoutPreviewPage === 'sign-in') {
+        return buildCheckoutSignInSidebarTree();
+      }
+      if (checkoutPreviewPage === 'thank-you') {
+        return buildCheckoutThankYouSidebarTree();
+      }
+      if (checkoutPreviewPage === 'orders') {
+        return buildCheckoutOrdersSidebarTree();
+      }
+      if (checkoutPreviewPage === 'profile') {
+        return buildCheckoutAccountProfileSidebarTree();
+      }
       return buildCheckoutProfileSidebarTree();
     }
     if (!editorSchema || !defaultConfig) {
@@ -577,6 +615,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     );
   }, [
     isCheckoutProfile,
+    checkoutPreviewPage,
     editorSchema,
     debouncedValuesForTree,
     previewPage,
@@ -595,7 +634,12 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
   useEffect(() => {
     treeInitRef.current = false;
-  }, [isCheckoutProfile]);
+  }, [isCheckoutProfile, checkoutPreviewPage]);
+
+  useEffect(() => {
+    if (!isCheckoutProfile) return;
+    setSelectedNodeId('');
+  }, [checkoutPreviewPage, isCheckoutProfile]);
 
   useEffect(() => {
     if (!activeTree.length) return;
@@ -603,11 +647,19 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       treeInitRef.current = true;
       setExpanded(
         isCheckoutProfile
-          ? defaultCheckoutProfileSidebarExpanded()
+          ? checkoutPreviewPage === 'sign-in'
+            ? defaultCheckoutSignInSidebarExpanded()
+            : checkoutPreviewPage === 'thank-you'
+              ? defaultCheckoutThankYouSidebarExpanded()
+              : checkoutPreviewPage === 'orders'
+                ? defaultCheckoutOrdersSidebarExpanded()
+                : checkoutPreviewPage === 'profile'
+                  ? defaultCheckoutAccountProfileSidebarExpanded()
+                  : defaultCheckoutProfileSidebarExpanded()
           : defaultExpandedSidebar(activeTree)
       );
     }
-  }, [activeTree, sidebarTab, isCheckoutProfile]);
+  }, [activeTree, sidebarTab, isCheckoutProfile, checkoutPreviewPage]);
 
   const pageMenuItems = useMemo(
     () => buildThemeEditorPageMenu(manifest, editorSchema),
@@ -1222,6 +1274,19 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             location: checkoutFooterConfig.location,
             alignment: checkoutFooterConfig.alignment,
           },
+          signInMain: {
+            ...((checkoutConfiguration.checkoutConfig?.signInMain as Record<string, unknown>) ?? {}),
+            logoImage: checkoutSignInMainConfig.logoImage,
+            backgroundColor: checkoutSignInMainConfig.backgroundColor,
+            accentColor: checkoutSignInMainConfig.accentColor,
+            mediaImage: checkoutSignInMainConfig.mediaImage,
+          },
+          thankYouMain: {
+            ...((checkoutConfiguration.checkoutConfig?.thankYouMain as Record<string, unknown>) ?? {}),
+            backgroundColor: checkoutThankYouMainConfig.backgroundColor,
+            accentColor: checkoutThankYouMainConfig.accentColor,
+            backgroundImage: checkoutThankYouMainConfig.backgroundImage,
+          },
           settings: {
             ...((checkoutConfiguration.checkoutConfig?.settings as Record<string, unknown>) ?? {}),
             layout: checkoutGlobalSettings.layout,
@@ -1243,7 +1308,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           },
         },
       });
-      toast.success('Checkout configuration saved');
+      toast.success('Saved');
     } catch (err: unknown) {
       toast.error((err as Error)?.message ?? 'Failed to save checkout configuration');
     } finally {
@@ -1255,6 +1320,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     checkoutHeaderPosition,
     checkoutOrderSummaryConfig,
     checkoutFooterConfig,
+    checkoutSignInMainConfig,
+    checkoutThankYouMainConfig,
     checkoutGlobalSettings,
     updateCheckoutConfiguration,
   ]);
@@ -1812,6 +1879,17 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     setCheckoutFooterConfig((prev) => ({ ...prev, ...patch }));
   }, []);
 
+  const handleCheckoutSignInMainConfigChange = useCallback((patch: Partial<CheckoutSignInMainConfig>) => {
+    setCheckoutSignInMainConfig((prev) => ({ ...prev, ...patch }));
+  }, []);
+
+  const handleCheckoutThankYouMainConfigChange = useCallback(
+    (patch: Partial<CheckoutThankYouMainConfig>) => {
+      setCheckoutThankYouMainConfig((prev) => ({ ...prev, ...patch }));
+    },
+    []
+  );
+
   const handleCheckoutGlobalSettingsChange = useCallback((patch: Partial<CheckoutGlobalSettings>) => {
     setCheckoutGlobalSettings((prev) => ({ ...prev, ...patch }));
   }, []);
@@ -1829,6 +1907,10 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         onOrderSummaryConfigChange={handleCheckoutOrderSummaryConfigChange}
         footerConfig={checkoutFooterConfig}
         onFooterConfigChange={handleCheckoutFooterConfigChange}
+        signInMainConfig={checkoutSignInMainConfig}
+        onSignInMainConfigChange={handleCheckoutSignInMainConfigChange}
+        thankYouMainConfig={checkoutThankYouMainConfig}
+        onThankYouMainConfigChange={handleCheckoutThankYouMainConfigChange}
         onClose={closeSettings}
       />
     );
@@ -1838,8 +1920,12 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     checkoutHeaderPosition,
     checkoutOrderSummaryConfig,
     checkoutFooterConfig,
+    checkoutSignInMainConfig,
+    checkoutThankYouMainConfig,
     handleCheckoutOrderSummaryConfigChange,
     handleCheckoutFooterConfigChange,
+    handleCheckoutSignInMainConfigChange,
+    handleCheckoutThankYouMainConfigChange,
     closeSettings,
   ]);
 
@@ -1885,6 +1971,19 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     }
   }, []);
 
+  const handleCheckoutPreviewSelect = useCallback(
+    (nodeId: string) => {
+      setSidebarTab('sections');
+      setSelectedNodeId((current) => (current === nodeId ? '' : nodeId));
+      setExpanded((prev) => ({
+        ...prev,
+        [nodeId]: true,
+        ...expandedIdsForPreviewNode(nodeId, sectionsTree),
+      }));
+    },
+    [sectionsTree]
+  );
+
   const handleRemoveSettingsSection = useCallback(() => {
     if (!settingsNode) return;
     handleDeleteSidebarNode(settingsNode.id);
@@ -1903,7 +2002,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     );
   }
 
-  if (isCheckoutProfile && (!checkoutConfigHydrated || checkoutConfigurationLoading)) {
+  if (isCheckoutProfile && !checkoutConfigHydrated) {
     return (
       <div className="fixed inset-0 z-[1310] flex items-center justify-center bg-white">
         <CreateThemePoweredByLoader />
@@ -2000,10 +2099,12 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           saveDisabled={!checkoutConfiguration}
           saving={savingCheckoutConfiguration}
           storeUrl={storeSubdomain?.url ?? null}
+          inspectorEnabled={inspectorEnabled}
+          onInspectorEnabledChange={handleInspectorEnabledChange}
         />
       )}
 
-      <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         <CreateThemeEditorSidebar
           pageLabel={pageLabel}
           sidebarTitleMode={isCheckoutProfile ? 'plain' : 'editing'}
@@ -2096,7 +2197,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           onRemoveSettingsBlock={handleRemoveSettingsBlock}
         />
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-white">
+      <div className="relative z-0 flex min-h-0 min-w-0 flex-1 overflow-hidden">
+        <div className="pointer-events-auto flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white">
           {isCheckoutProfile ? (
             <CheckoutProfilePreview
               device={device}
@@ -2108,13 +2210,16 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               headerPosition={checkoutHeaderPosition}
               footerConfig={checkoutFooterConfig}
               orderSummaryConfig={checkoutOrderSummaryConfig}
+              signInMainConfig={checkoutSignInMainConfig}
+              thankYouMainConfig={checkoutThankYouMainConfig}
               logo={checkoutLogoPreview}
               theme={checkoutPaletteTheme}
               typography={checkoutTypographyTheme}
               inputFieldsTransparent={checkoutGlobalSettings.inputFieldsTransparent}
               addressAutocompletion={checkoutGlobalSettings.addressAutocompletion}
-              highlightNodeId={selectedNodeId || null}
-              onSelectNode={setSelectedNodeId}
+              inspectorEnabled={inspectorEnabled}
+              highlightNodeId={inspectorEnabled ? selectedNodeId || null : null}
+              onSelectNode={handleCheckoutPreviewSelect}
             />
           ) : (
           <div
@@ -2152,6 +2257,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           </div>
           )}
         </div>
+      </div>
       </div>
 
       <AddBlockModal

@@ -2,39 +2,39 @@ import { ChevronUpDownIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react';
 import { ThemeEditorImagePickerModal } from '../../sidebar/ThemeEditorImagePickerModal';
 import {
-  CHECKOUT_DEFAULT_ORDER_SUMMARY_ACCENT,
-  CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND,
-  type CheckoutOrderSummaryConfig,
+  CHECKOUT_DEFAULT_THANK_YOU_MAIN_ACCENT,
+  CHECKOUT_DEFAULT_THANK_YOU_MAIN_BACKGROUND,
+  type CheckoutThankYouMainConfig,
 } from './checkout-settings.types';
 import { CheckoutSettingsPanelShell } from './CheckoutSettingsPanelShell';
 import { CheckoutSettingsRow, CheckoutThemeColorField } from './CheckoutThemeSettingsFields';
 
 type Props = {
-  config: Required<CheckoutOrderSummaryConfig>;
-  onConfigChange: (patch: Partial<CheckoutOrderSummaryConfig>) => void;
+  config: Required<CheckoutThankYouMainConfig>;
+  onConfigChange: (patch: Partial<CheckoutThankYouMainConfig>) => void;
   onClose: () => void;
 };
 
-export function CheckoutOrderSummarySettingsPanel({ config, onConfigChange, onClose }: Props) {
+export function CheckoutThankYouMainSettingsPanel({ config, onConfigChange, onClose }: Props) {
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const hasImage = Boolean(config.backgroundImage?.trim());
 
   return (
-    <CheckoutSettingsPanelShell title="Order summary" onClose={onClose}>
+    <CheckoutSettingsPanelShell title="Main" onClose={onClose}>
       <section className="border-b border-[#e1e1e1] px-4 py-4">
         <h4 className="text-[13px] font-semibold text-gray-900">Color</h4>
         <div className="mt-3 space-y-4">
           <CheckoutSettingsRow label="Background">
             <CheckoutThemeColorField
               value={config.backgroundColor}
-              defaultHex={CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND}
+              defaultHex={CHECKOUT_DEFAULT_THANK_YOU_MAIN_BACKGROUND}
               onChange={(backgroundColor) => onConfigChange({ backgroundColor })}
             />
           </CheckoutSettingsRow>
           <CheckoutSettingsRow label="Accent">
             <CheckoutThemeColorField
               value={config.accentColor}
-              defaultHex={CHECKOUT_DEFAULT_ORDER_SUMMARY_ACCENT}
+              defaultHex={CHECKOUT_DEFAULT_THANK_YOU_MAIN_ACCENT}
               onChange={(accentColor) => onConfigChange({ accentColor })}
             />
           </CheckoutSettingsRow>

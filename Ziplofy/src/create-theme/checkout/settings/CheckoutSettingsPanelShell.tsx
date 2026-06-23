@@ -22,7 +22,7 @@ export function CheckoutSettingsPanelShell({ title, onClose, children }: Props) 
           <XMarkIcon className="h-5 w-5" />
         </button>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">{children}</div>
+      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">{children}</div>
     </div>
   );
 }

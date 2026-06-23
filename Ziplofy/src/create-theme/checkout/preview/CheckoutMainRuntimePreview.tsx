@@ -101,6 +101,7 @@ type Props = {
   addressAutocompletion?: boolean;
   inputFieldsTransparent?: boolean;
   typography?: CheckoutTypographyTheme;
+  device?: 'desktop' | 'mobile';
 };
 
 export function CheckoutMainRuntimePreview({
@@ -109,7 +110,9 @@ export function CheckoutMainRuntimePreview({
   addressAutocompletion = false,
   inputFieldsTransparent = false,
   typography,
+  device = 'desktop',
 }: Props) {
+  const isMobile = device === 'mobile';
   const bodyFontFamily = typography?.bodyFontFamily;
   const headingsFontFamily = typography?.headingsFontFamily;
   const chrome = buildFieldChrome(inputFieldsTransparent);
@@ -121,19 +124,19 @@ export function CheckoutMainRuntimePreview({
 
   return (
     <main
-      className="pointer-events-none mx-auto w-full max-w-[580px] select-none px-6 py-8 sm:px-8"
+      className={`mx-auto w-full select-none ${isMobile ? 'max-w-none px-4 py-6' : 'max-w-[580px] px-6 py-8 sm:px-8'}`}
       style={bodyFontFamily ? { fontFamily: bodyFontFamily } : undefined}
     >
-      <div className="space-y-8">
+      <div className={isMobile ? 'space-y-6' : 'space-y-8'}>
         <section>
           <div className="mb-4 flex items-center justify-between gap-4">
             <h2
-              className={`text-[19px] font-semibold ${chrome.headingClass}`}
+              className={`font-semibold ${chrome.headingClass} ${isMobile ? 'text-[17px]' : 'text-[19px]'}`}
               style={headingsFontFamily ? { fontFamily: headingsFontFamily } : undefined}
             >
               Contact
             </h2>
-            <span className="text-[14px] font-medium" style={{ color: accentColor }}>
+            <span className={`shrink-0 font-medium ${isMobile ? 'text-[13px]' : 'text-[14px]'}`} style={{ color: accentColor }}>
               Sign in
             </span>
           </div>
@@ -146,7 +149,7 @@ export function CheckoutMainRuntimePreview({
 
         <section>
           <h2
-            className={`mb-4 text-[19px] font-semibold ${chrome.headingClass}`}
+            className={`mb-4 font-semibold ${chrome.headingClass} ${isMobile ? 'text-[17px]' : 'text-[19px]'}`}
             style={headingsFontFamily ? { fontFamily: headingsFontFamily } : undefined}
           >
             Delivery
@@ -194,7 +197,7 @@ export function CheckoutMainRuntimePreview({
 
             <PreviewField label="Apartment, suite, etc. (optional)" value="Lal Qila, Chandni Chowk" chrome={chrome} />
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-3'}`}>
               <PreviewField label="City" value="New Delhi" chrome={chrome} />
               <PreviewField
                 label="State"
@@ -226,7 +229,7 @@ export function CheckoutMainRuntimePreview({
 
         <section>
           <h2
-            className={`mb-4 text-[19px] font-semibold ${chrome.headingClass}`}
+            className={`mb-4 font-semibold ${chrome.headingClass} ${isMobile ? 'text-[17px]' : 'text-[19px]'}`}
             style={headingsFontFamily ? { fontFamily: headingsFontFamily } : undefined}
           >
             Shipping method
@@ -244,7 +247,7 @@ export function CheckoutMainRuntimePreview({
 
         <section>
           <h2
-            className={`text-[19px] font-semibold ${chrome.headingClass}`}
+            className={`font-semibold ${chrome.headingClass} ${isMobile ? 'text-[17px]' : 'text-[19px]'}`}
             style={headingsFontFamily ? { fontFamily: headingsFontFamily } : undefined}
           >
             Payment

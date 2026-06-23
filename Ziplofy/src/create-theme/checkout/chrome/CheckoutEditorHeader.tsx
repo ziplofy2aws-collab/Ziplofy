@@ -8,6 +8,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import DropdownMenu from '../../../components/DropdownMenu';
 import DropdownMenuItem from '../../../components/DropdownMenuItem';
+import { InspectorToggleIcon } from '../../chrome/InspectorToggleIcon';
 import { CheckoutEditorPagePicker } from './CheckoutEditorPagePicker';
 import type { CheckoutEditorPage } from '../checkout-editor-page-menu';
 
@@ -22,6 +23,8 @@ type Props = {
   saveDisabled?: boolean;
   saving?: boolean;
   storeUrl?: string | null;
+  inspectorEnabled?: boolean;
+  onInspectorEnabledChange?: (enabled: boolean) => void;
 };
 
 export function CheckoutEditorHeader({
@@ -35,6 +38,8 @@ export function CheckoutEditorHeader({
   saveDisabled = true,
   saving = false,
   storeUrl,
+  inspectorEnabled = true,
+  onInspectorEnabledChange,
 }: Props) {
   const [moreMenuAnchor, setMoreMenuAnchor] = useState<HTMLElement | null>(null);
   const moreMenuOpen = Boolean(moreMenuAnchor);
@@ -66,6 +71,22 @@ export function CheckoutEditorHeader({
       </div>
 
       <div className="flex shrink-0 items-center gap-2 justify-self-end">
+        {onInspectorEnabledChange ? (
+          <button
+            type="button"
+            onClick={() => onInspectorEnabledChange(!inspectorEnabled)}
+            className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-colors ${
+              inspectorEnabled
+                ? 'border-[#b4cce8] bg-[#e8f0fe] text-[#005bd3]'
+                : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+            title={inspectorEnabled ? 'Turn off inspector' : 'Turn on inspector'}
+            aria-pressed={inspectorEnabled}
+            aria-label="Inspector"
+          >
+            <InspectorToggleIcon className="h-5 w-5" />
+          </button>
+        ) : null}
         <div className="flex rounded-lg border border-gray-200 p-0.5">
           <button
             type="button"

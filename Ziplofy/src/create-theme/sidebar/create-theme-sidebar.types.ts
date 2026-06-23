@@ -25,6 +25,9 @@ export type SidebarIcon =
   | 'receipt'
   | 'checkout-block'
   | 'checkout-field'
+  | 'confirmation'
+  | 'order-status'
+  | 'announcement'
   | 'default';
 
 export type EditorFieldOption = { value: string; label: string };
@@ -80,6 +83,8 @@ export type SidebarNode = {
   checkoutSection?: boolean;
   /** Checkout Main group heading (compact Shopify-style label). */
   checkoutMainGroup?: boolean;
+  /** When set with checkoutMainGroup, the label opens that group's settings panel. */
+  checkoutMainGroupSelectable?: boolean;
   /** Checkout Main category row (semantic icon, always shows children). */
   checkoutMainCategory?: boolean;
   /** Checkout profile category row (semantic icon, e.g. Cart or Total). */

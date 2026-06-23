@@ -14,6 +14,22 @@ export {
   buildCheckoutProfileSidebarTree,
   defaultCheckoutProfileSidebarExpanded,
 } from './sidebar/build-checkout-profile-sidebar.tree';
+export {
+  buildCheckoutAccountProfileSidebarTree,
+  defaultCheckoutAccountProfileSidebarExpanded,
+} from './sidebar/build-checkout-account-profile-sidebar.tree';
+export {
+  buildCheckoutOrdersSidebarTree,
+  defaultCheckoutOrdersSidebarExpanded,
+} from './sidebar/build-checkout-orders-sidebar.tree';
+export {
+  buildCheckoutThankYouSidebarTree,
+  defaultCheckoutThankYouSidebarExpanded,
+} from './sidebar/build-checkout-thank-you-sidebar.tree';
+export {
+  buildCheckoutSignInSidebarTree,
+  defaultCheckoutSignInSidebarExpanded,
+} from './sidebar/build-checkout-sign-in-sidebar.tree';
 
 export { CheckoutEditorHeader } from './chrome/CheckoutEditorHeader';
 export { CheckoutEditorPagePicker } from './chrome/CheckoutEditorPagePicker';
@@ -22,6 +38,10 @@ export { CheckoutFooterRuntimePreview } from './preview/CheckoutFooterRuntimePre
 export { CheckoutHeaderRuntimePreview } from './preview/CheckoutHeaderRuntimePreview';
 export { CheckoutMainRuntimePreview } from './preview/CheckoutMainRuntimePreview';
 export { CheckoutOrderSummaryRuntimePreview } from './preview/CheckoutOrderSummaryRuntimePreview';
+export { CheckoutSignInRuntimePreview } from './preview/CheckoutSignInRuntimePreview';
+export { CheckoutAccountProfileRuntimePreview } from './preview/CheckoutAccountProfileRuntimePreview';
+export { CheckoutOrdersRuntimePreview } from './preview/CheckoutOrdersRuntimePreview';
+export { CheckoutThankYouRuntimePreview } from './preview/CheckoutThankYouRuntimePreview';
 export { CheckoutPageRuntimePreview } from './preview/CheckoutPageRuntimePreview';
 export { CheckoutProfilePreview } from './preview/CheckoutProfilePreview';
 
@@ -30,6 +50,8 @@ export { CheckoutEditorSettingsPanel } from './settings/CheckoutEditorSettingsPa
 export { CheckoutFooterSettingsPanel } from './settings/CheckoutFooterSettingsPanel';
 export { CheckoutHeaderSettingsPanel } from './settings/CheckoutHeaderSettingsPanel';
 export { CheckoutOrderSummarySettingsPanel } from './settings/CheckoutOrderSummarySettingsPanel';
+export { CheckoutSignInMainSettingsPanel } from './settings/CheckoutSignInMainSettingsPanel';
+export { CheckoutThankYouMainSettingsPanel } from './settings/CheckoutThankYouMainSettingsPanel';
 export { resolveCheckoutSettingsPanelId } from './settings/resolve-checkout-settings-panel';
 export {
   CHECKOUT_DEFAULT_COLOR_PALETTE,
@@ -42,6 +64,8 @@ export {
   readCheckoutGlobalSettings,
   readCheckoutHeaderPosition,
   readCheckoutOrderSummaryConfig,
+  readCheckoutSignInMainConfig,
+  readCheckoutThankYouMainConfig,
   resolveCheckoutPaletteTheme,
   resolveCheckoutTypographyTheme,
   resolveCheckoutColorSetting,
@@ -54,5 +78,7 @@ export {
   type CheckoutHeaderPosition,
   type CheckoutColorSetting,
   type CheckoutOrderSummaryConfig,
+  type CheckoutSignInMainConfig,
+  type CheckoutThankYouMainConfig,
   type CheckoutTypographyTheme,
 } from './settings/checkout-settings.types';

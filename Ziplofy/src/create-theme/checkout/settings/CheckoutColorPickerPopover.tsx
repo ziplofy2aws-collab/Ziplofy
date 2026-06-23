@@ -90,6 +90,15 @@ export function CheckoutColorPickerPopover({
     }
   };
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
   if (!open || !anchorRect) return null;
 
   const top = Math.min(anchorRect.top, window.innerHeight - 320);
@@ -104,6 +113,7 @@ export function CheckoutColorPickerPopover({
         className="fixed inset-0 z-[1390] cursor-default bg-transparent"
         aria-label="Close color picker"
         onClick={onClose}
+        onPointerDown={(e) => e.stopPropagation()}
       />
       <div
         className="fixed z-[1400] w-[252px] rounded-xl border border-[#e1e3e5] bg-white p-3 shadow-xl"

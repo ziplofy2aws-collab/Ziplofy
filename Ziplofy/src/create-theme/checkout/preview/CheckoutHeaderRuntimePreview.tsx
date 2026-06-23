@@ -16,6 +16,7 @@ type Props = {
   storeUrl?: string | null;
   logo?: CheckoutLogoPreviewConfig;
   theme?: CheckoutThemePreviewConfig;
+  device?: 'desktop' | 'mobile';
   highlightNodeId?: string | null;
   onSelectNode?: (nodeId: string) => void;
 };
@@ -59,6 +60,7 @@ export function CheckoutHeaderRuntimePreview({
   storeUrl,
   logo,
   theme,
+  device = 'desktop',
   highlightNodeId = null,
   onSelectNode,
 }: Props) {
@@ -67,6 +69,7 @@ export function CheckoutHeaderRuntimePreview({
   const headerAccentColor = theme?.headerAccentColor ?? logo?.accentColor ?? '#005bd3';
   const onDarkBackground = theme?.headerBackgroundIsDark ?? false;
   const alignment = logo?.alignment ?? 'left';
+  const isMobile = device === 'mobile';
 
   const cartIcon = (
     <span
@@ -86,11 +89,15 @@ export function CheckoutHeaderRuntimePreview({
 
   return (
     <header
-      className={`relative flex shrink-0 items-center bg-transparent px-6 py-4 sm:px-8 ${
-        headerHighlighted ? 'ring-2 ring-inset ring-[#005bd3]' : ''
-      }`}
+      className={`relative flex shrink-0 items-center bg-transparent pointer-events-auto ${
+        isMobile ? 'px-4 py-3.5' : 'px-6 py-4 sm:px-8'
+      } ${onSelectNode ? 'cursor-pointer' : ''} ${headerHighlighted ? 'ring-2 ring-inset ring-[#005bd3]' : ''}`}
       data-checkout-node-id="checkout:header"
-      onClick={() => onSelectNode?.('checkout:header')}
+      data-checkout-selectable={onSelectNode ? 'true' : undefined}
+      onClick={(e) => {
+        onSelectNode?.('checkout:header');
+        e.stopPropagation();
+      }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -103,7 +110,7 @@ export function CheckoutHeaderRuntimePreview({
       {alignment === 'left' ? logoLink : <span className="w-6 shrink-0" aria-hidden />}
 
       {alignment === 'center' ? (
-        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="pointer-events-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {logoLink}
         </div>
       ) : null}

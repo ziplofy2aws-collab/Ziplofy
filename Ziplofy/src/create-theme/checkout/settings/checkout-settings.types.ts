@@ -18,6 +18,25 @@ export type CheckoutOrderSummaryConfig = {
 export const CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND = '#fafafa';
 export const CHECKOUT_DEFAULT_ORDER_SUMMARY_ACCENT = '#005bd3';
 
+export type CheckoutSignInMainConfig = {
+  logoImage?: string | null;
+  backgroundColor?: CheckoutColorSetting;
+  accentColor?: CheckoutColorSetting;
+  mediaImage?: string | null;
+};
+
+export const CHECKOUT_DEFAULT_SIGN_IN_MAIN_BACKGROUND = '#ffffff';
+export const CHECKOUT_DEFAULT_SIGN_IN_MAIN_ACCENT = '#005bd3';
+
+export type CheckoutThankYouMainConfig = {
+  backgroundColor?: CheckoutColorSetting;
+  accentColor?: CheckoutColorSetting;
+  backgroundImage?: string | null;
+};
+
+export const CHECKOUT_DEFAULT_THANK_YOU_MAIN_BACKGROUND = '#ffffff';
+export const CHECKOUT_DEFAULT_THANK_YOU_MAIN_ACCENT = '#005bd3';
+
 export const CHECKOUT_COLOR_SETTING_OPTIONS: Array<{
   value: CheckoutColorSetting;
   label: string;
@@ -159,6 +178,54 @@ export function readCheckoutHeaderPosition(
   if (position === 'full_width') return 'full_width';
   if (position === 'checkout_form' || position === 'inline') return 'checkout_form';
   return 'checkout_form';
+}
+
+export function readCheckoutThankYouMainConfig(
+  checkoutConfig?: Record<string, unknown> | null
+): Required<CheckoutThankYouMainConfig> {
+  const thankYouMain = checkoutConfig?.thankYouMain;
+  if (!thankYouMain || typeof thankYouMain !== 'object' || Array.isArray(thankYouMain)) {
+    return {
+      backgroundColor: 'default',
+      accentColor: 'default',
+      backgroundImage: null,
+    };
+  }
+  const typed = thankYouMain as CheckoutThankYouMainConfig;
+  return {
+    backgroundColor: readCheckoutColorSetting(typed.backgroundColor, 'default'),
+    accentColor: readCheckoutColorSetting(typed.accentColor, 'default'),
+    backgroundImage:
+      typeof typed.backgroundImage === 'string' && typed.backgroundImage.trim()
+        ? typed.backgroundImage
+        : null,
+  };
+}
+
+export function readCheckoutSignInMainConfig(
+  checkoutConfig?: Record<string, unknown> | null
+): Required<CheckoutSignInMainConfig> {
+  const signInMain = checkoutConfig?.signInMain;
+  if (!signInMain || typeof signInMain !== 'object' || Array.isArray(signInMain)) {
+    return {
+      logoImage: null,
+      backgroundColor: CHECKOUT_DEFAULT_SIGN_IN_MAIN_BACKGROUND,
+      accentColor: 'default',
+      mediaImage: null,
+    };
+  }
+  const typed = signInMain as CheckoutSignInMainConfig;
+  return {
+    logoImage:
+      typeof typed.logoImage === 'string' && typed.logoImage.trim() ? typed.logoImage : null,
+    backgroundColor: readCheckoutColorSetting(
+      typed.backgroundColor,
+      CHECKOUT_DEFAULT_SIGN_IN_MAIN_BACKGROUND
+    ),
+    accentColor: readCheckoutColorSetting(typed.accentColor, 'default'),
+    mediaImage:
+      typeof typed.mediaImage === 'string' && typed.mediaImage.trim() ? typed.mediaImage : null,
+  };
 }
 
 export function readCheckoutOrderSummaryConfig(

@@ -40,13 +40,13 @@ export function CheckoutSettingsRow({
   helper?: string;
 }) {
   return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between gap-3">
-        <span className="shrink-0 text-[13px] text-gray-800">{label}</span>
-        <div className="min-w-0 flex-1">{children}</div>
+    <div className="space-y-1.5">
+      <div className="space-y-2">
+        <span className="block text-[13px] text-gray-800">{label}</span>
+        <div className="min-w-0 w-full">{children}</div>
       </div>
       {helper ? (
-        <p className="text-right text-[12px] leading-relaxed text-gray-600">{helper}</p>
+        <p className="text-[12px] leading-relaxed text-gray-600">{helper}</p>
       ) : null}
     </div>
   );
@@ -68,7 +68,7 @@ export function CheckoutDefaultColorSelect({
   const displayLabel = useMemo(() => (isDefault ? 'Default' : resolved.toUpperCase()), [isDefault, resolved]);
 
   return (
-    <div className="relative ml-auto min-w-[208px] max-w-full">
+    <div className="relative w-full min-w-0 max-w-full">
       <span
         className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 rounded border border-[#e1e3e5]"
         style={{ background: resolved }}
@@ -130,7 +130,7 @@ export function CheckoutThemeColorField({
         ref={buttonRef}
         type="button"
         onClick={openPicker}
-        className="ml-auto flex min-w-[208px] max-w-full items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-left hover:bg-[#fafafa]"
+        className="flex w-full min-w-0 max-w-full items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-left hover:bg-[#fafafa]"
       >
         <span
           className="h-4 w-4 shrink-0 rounded border border-[#e1e3e5]"
@@ -173,7 +173,7 @@ export function CheckoutSegmentedAlignment({
   onChange: (value: CheckoutLogoAlignment) => void;
 }) {
   return (
-    <div className="ml-auto flex min-w-[208px] rounded-lg border border-[#c9cccf] bg-[#f6f6f7] p-0.5">
+    <div className="flex w-full min-w-0 max-w-full rounded-lg border border-[#c9cccf] bg-[#f6f6f7] p-0.5">
       {ALIGNMENT_OPTIONS.map((option) => {
         const selected = value === option.value;
         return (
@@ -210,7 +210,7 @@ export function CheckoutLogoImageField({
       <button
         type="button"
         onClick={() => setPickerOpen(true)}
-        className="ml-auto block min-w-[208px] max-w-full overflow-hidden rounded-lg border border-[#c9cccf] bg-white text-left hover:border-[#aeb4b9]"
+        className="block w-full min-w-0 max-w-full overflow-hidden rounded-lg border border-[#c9cccf] bg-white text-left hover:border-[#aeb4b9]"
       >
         {imageUrl ? (
           <span className="relative block h-24 w-full">
@@ -294,7 +294,7 @@ export function CheckoutTypographyFontSelect({
   const normalized = normalizeCheckoutTypographyFont(value);
 
   return (
-    <div className="relative ml-auto min-w-[208px] max-w-full">
+    <div className="relative w-full min-w-0 max-w-full">
       <select
         id={id}
         value={normalized}
@@ -325,7 +325,7 @@ export function CheckoutDefaultFontSelect({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="relative ml-auto min-w-[208px] max-w-full">
+    <div className="relative w-full min-w-0 max-w-full">
       <select
         id={id}
         value={value}

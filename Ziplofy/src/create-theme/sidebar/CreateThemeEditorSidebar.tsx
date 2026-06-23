@@ -5,12 +5,15 @@ import {
   Bars3Icon,
   ChevronDownIcon,
   ChevronRightIcon,
+  CheckCircleIcon,
+  ClockIcon,
   Cog6ToothIcon,
   CreditCardIcon,
   CursorArrowRaysIcon,
   EyeIcon,
   EyeSlashIcon,
   LinkIcon,
+  MegaphoneIcon,
   PhotoIcon,
   PlusCircleIcon,
   ShoppingCartIcon,
@@ -198,6 +201,12 @@ function SidebarRowIcon({ icon, muted }: { icon?: SidebarIcon; muted?: boolean }
       return <CheckoutBlockIcon className={cls} />;
     case 'checkout-field':
       return <CheckoutFieldIcon className={cls} />;
+    case 'confirmation':
+      return <CheckCircleIcon className={cls} />;
+    case 'order-status':
+      return <ClockIcon className={cls} />;
+    case 'announcement':
+      return <MegaphoneIcon className={cls} />;
     default:
       return <SectionIcon className={cls} />;
   }
@@ -259,25 +268,41 @@ function SidebarGroup({
   setDragState,
   childrenListKey,
   checkoutMainGroup,
+  groupNode,
 }: Omit<TreeRowProps, 'node'> & {
   label: string;
   nodes: SidebarNode[];
   childrenListKey?: string;
   checkoutMainGroup?: boolean;
+  groupNode?: SidebarNode;
 }) {
   const insertGroup = sectionInsertGroupForLabel(label);
+  const isMainGroupSelected = Boolean(groupNode && selectedNodeId === groupNode.id);
+  const labelPaddingLeft = SIDEBAR_BASE_PADDING + depth * SIDEBAR_DEPTH_STEP;
+  const mainGroupLabelClassName = checkoutMainGroup
+    ? 'px-3 pb-1 pt-3 text-[13px] font-semibold text-gray-900'
+    : 'px-3 pb-1.5 pt-4 text-[15px] font-semibold text-gray-900';
+
   return (
     <>
-      <p
-        className={
-          checkoutMainGroup
-            ? 'px-3 pb-1 pt-3 text-[13px] font-semibold text-gray-900'
-            : 'px-3 pb-1.5 pt-4 text-[15px] font-semibold text-gray-900'
-        }
-        style={{ paddingLeft: SIDEBAR_BASE_PADDING + depth * SIDEBAR_DEPTH_STEP }}
-      >
-        {label}
-      </p>
+      {checkoutMainGroup && groupNode?.checkoutMainGroupSelectable ? (
+        <button
+          type="button"
+          onClick={() => onSelect(groupNode)}
+          className={`block w-full text-left transition-colors duration-150 ${
+            isMainGroupSelected
+              ? 'bg-[#005bd3] text-white'
+              : 'text-gray-900 hover:bg-[#ededed]'
+          } ${mainGroupLabelClassName}`}
+          style={{ paddingLeft: labelPaddingLeft }}
+        >
+          {label}
+        </button>
+      ) : (
+        <p className={mainGroupLabelClassName} style={{ paddingLeft: labelPaddingLeft }}>
+          {label}
+        </p>
+      )}
       <SortableSiblingList
         listKey={childrenListKey}
         nodes={nodes}
@@ -543,6 +568,7 @@ function SidebarTreeRow({
         setDragState={setDragState}
         childrenListKey={node.childrenListKey}
         checkoutMainGroup={node.checkoutMainGroup}
+        groupNode={node}
       />
     );
   }
@@ -1150,6 +1176,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
                     setDragState={setDragState}
                     childrenListKey={node.childrenListKey}
                     checkoutMainGroup={node.checkoutMainGroup}
+                    groupNode={node}
                   />
                 ) : (
                   <SidebarTreeRow
