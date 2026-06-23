@@ -891,7 +891,7 @@ body.boj-menu-open {
 /* ── The K-Edit ── */
 
 .boj-kedit {
-  padding: 40px 0 40px;
+  padding: 0 0 40px;
   background: var(--boj-white);
   line-height: normal;
 }
@@ -1273,7 +1273,7 @@ body.boj-menu-open {
 /* ── Trending Now ── */
 
 .boj-trending {
-  padding: 40px 0 40px;
+  padding: 0 0 40px;
   background: var(--boj-white);
   line-height: normal;
 }
@@ -1724,7 +1724,7 @@ body.boj-menu-open {
 /* ── Underrated K-Beauty ── */
 
 .boj-kbeauty {
-  padding: 40px 0 40px;
+  padding: 0 0 40px;
   background: var(--boj-white);
   line-height: normal;
 }

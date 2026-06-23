@@ -46,15 +46,19 @@
 .boj-pdp__page {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-areas:
-    "aside intro"
-    "aside main";
+  grid-template-areas: "aside content";
   gap: 40px 48px;
   align-items: start;
 }
 
+.boj-pdp__content {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .boj-pdp__intro {
-  grid-area: intro;
   min-width: 0;
 }
 
@@ -76,7 +80,6 @@
 }
 
 .boj-pdp__main-col {
-  grid-area: main;
   min-width: 0;
 }
 
@@ -902,12 +905,24 @@
 }
 
 @media (max-width: 992px) {
+  .boj-pdp__content {
+    display: contents;
+  }
+
   .boj-pdp__page {
     grid-template-columns: 1fr;
     grid-template-areas:
       "intro"
       "aside"
       "main";
+  }
+
+  .boj-pdp__intro {
+    grid-area: intro;
+  }
+
+  .boj-pdp__main-col {
+    grid-area: main;
   }
 
   .boj-pdp__sticky-inner {

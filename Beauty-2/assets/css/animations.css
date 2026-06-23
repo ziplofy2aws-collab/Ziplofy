@@ -151,6 +151,25 @@ body.lux-cursor-active [role="button"] {
   will-change: transform, opacity;
 }
 
+/* Title word reveal — overflow clips italic/bold glyph overhang without padding */
+.lux-title-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-right: 0.22em;
+  margin-right: -0.22em;
+}
+
+.lux-title-word.is-revealed {
+  overflow: visible;
+  padding-right: 0;
+  margin-right: 0;
+}
+
+.lux-title-word__inner {
+  display: inline-block;
+}
+
 /* Stats strip */
 .lux-stats {
   display: flex;

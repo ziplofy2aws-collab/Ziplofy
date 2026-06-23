@@ -460,17 +460,15 @@
       words.forEach(function (word, i) {
         var wrap = document.createElement("span");
         wrap.className = "lux-title-word";
-        wrap.style.display = "inline-block";
-        wrap.style.overflow = "hidden";
-        wrap.style.verticalAlign = "top";
 
         var inner = document.createElement("span");
+        inner.className = "lux-title-word__inner";
         inner.textContent = word + (i < words.length - 1 ? "\u00a0" : "");
-        inner.style.display = "inline-block";
         wrap.appendChild(inner);
         title.appendChild(wrap);
 
         if (prefersReduced) {
+          wrap.classList.add("is-revealed");
           gsap.set(inner, { clearProps: "all" });
           return;
         }
@@ -486,6 +484,9 @@
             trigger: title.closest("section") || title,
             start: "top 88%",
             once: true,
+          },
+          onComplete: function () {
+            wrap.classList.add("is-revealed");
           },
         });
       });
