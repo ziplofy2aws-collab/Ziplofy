@@ -23,6 +23,7 @@ import {
 } from '../../components/settings/SettingsPageScaffold';
 import CheckoutConfigurationsBlock from '../../components/settings/CheckoutConfigurationsBlock';
 import { useCheckoutSettings } from '../../contexts/checkout-settings.context';
+import { useStoreCheckoutConfigurations } from '../../contexts/store-checkout-configurations.context';
 import { useCountries } from '../../contexts/country.context';
 import { useStore } from '../../contexts/store.context';
 
@@ -47,6 +48,15 @@ const CheckoutSettingsPage: React.FC = () => {
   const { countries, total, loading: countriesLoading, getCountries } = useCountries();
   const { activeStoreId, stores } = useStore();
   const { settings, fetchByStoreId, loading: checkoutLoading, update } = useCheckoutSettings();
+  const {
+    configuration: checkoutConfiguration,
+    loading: checkoutConfigurationLoading,
+    getByStoreId: fetchCheckoutConfiguration,
+    create: createCheckoutConfiguration,
+    deleteConfiguration,
+  } = useStoreCheckoutConfigurations();
+  const [creatingCheckoutConfiguration, setCreatingCheckoutConfiguration] = useState(false);
+  const [deletingCheckoutConfiguration, setDeletingCheckoutConfiguration] = useState(false);
   // Customer contact method
   const [contactMethod, setContactMethod] = useState<'phone_or_email' | 'email'>('phone_or_email');
   
@@ -145,7 +155,10 @@ const CheckoutSettingsPage: React.FC = () => {
       toast.dismiss();
       toast.error(err.message || 'Failed to load checkout settings');
     });
-  }, [activeStoreId, fetchByStoreId]);
+    fetchCheckoutConfiguration(activeStoreId).catch(() => {
+      // Block handles empty state; avoid noisy toast on first visit.
+    });
+  }, [activeStoreId, fetchByStoreId, fetchCheckoutConfiguration]);
 
   // Tipping
   const [showTipping, setShowTipping] = useState(true);
@@ -519,6 +532,44 @@ const CheckoutSettingsPage: React.FC = () => {
     return stores.find((store) => store._id === activeStoreId)?.storeName || 'My Store';
   }, [activeStoreId, stores]);
 
+  const handleCreateCheckoutConfiguration = useCallback(async () => {
+    if (!activeStoreId) {
+      toast.error('Select a store first');
+      return;
+    }
+    setCreatingCheckoutConfiguration(true);
+    try {
+      await createCheckoutConfiguration({
+        storeId: activeStoreId,
+        checkoutConfig: {},
+      });
+      toast.success('Checkout configuration created');
+    } catch (err: unknown) {
+      toast.error((err as Error)?.message || 'Failed to create checkout configuration');
+    } finally {
+      setCreatingCheckoutConfiguration(false);
+    }
+  }, [activeStoreId, createCheckoutConfiguration]);
+
+  const handleDeleteCheckoutConfiguration = useCallback(async () => {
+    if (!checkoutConfiguration?._id) return;
+    if (!window.confirm('Delete this checkout configuration? This cannot be undone.')) return;
+    setDeletingCheckoutConfiguration(true);
+    try {
+      await deleteConfiguration(checkoutConfiguration._id);
+      toast.success('Checkout configuration deleted');
+    } catch (err: unknown) {
+      toast.error((err as Error)?.message || 'Failed to delete checkout configuration');
+    } finally {
+      setDeletingCheckoutConfiguration(false);
+    }
+  }, [checkoutConfiguration?._id, deleteConfiguration]);
+
+  const handleEditCheckoutConfiguration = useCallback(() => {
+    if (!checkoutConfiguration?._id) return;
+    navigate(`/themes/editor/checkout/${checkoutConfiguration._id}`);
+  }, [navigate, checkoutConfiguration?._id]);
+
   return (
     <div className="w-full">
       <div className={SETTINGS_PAGE_CONTAINER_CLASS}>
@@ -543,8 +594,13 @@ const CheckoutSettingsPage: React.FC = () => {
         <SettingsPanel className="ring-1 ring-slate-200/60">
           <CheckoutConfigurationsBlock
             storeName={activeStoreName}
-            lastSavedAt={settings?.updatedAt}
-            onEdit={() => navigate('/checkout/editor/profiles/')}
+            configuration={checkoutConfiguration}
+            loading={checkoutConfigurationLoading}
+            creating={creatingCheckoutConfiguration}
+            deleting={deletingCheckoutConfiguration}
+            onCreate={handleCreateCheckoutConfiguration}
+            onEdit={handleEditCheckoutConfiguration}
+            onDelete={handleDeleteCheckoutConfiguration}
           />
         </SettingsPanel>
 

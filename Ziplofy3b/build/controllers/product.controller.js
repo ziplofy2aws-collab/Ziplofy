@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.softDeleteProductById = exports.searchProductsWithVariantAndDestination = exports.searchProductsWithVariants = exports.searchProductsBasic = exports.searchProductsWithAvailability = exports.addOptionToProduct = exports.deleteVariantsFromProduct = exports.addVariantsToProduct = exports.getProductByUrlHandlePublic = exports.getProductByIdPublic = exports.getProductById = exports.getProductsByStoreIdPublic = exports.getProductsByStoreId = exports.updateProductById = exports.createProduct = void 0;
+exports.softDeleteProductById = exports.searchProductsWithVariantAndDestination = exports.searchProductsWithVariants = exports.searchProductsBasic = exports.searchProductsWithAvailability = exports.addOptionToProduct = exports.deleteVariantsFromProduct = exports.addVariantsToProduct = exports.getProductByUrlHandlePublic = exports.getProductByIdPublic = exports.getProductById = exports.getProductsByStoreIdPublic = exports.getStorePreviewProduct = exports.getProductsByStoreId = exports.updateProductById = exports.createProduct = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const inventory_level_model_1 = require("../models/inventory-level/inventory-level.model");
 const location_model_1 = require("../models/location/location.model");
@@ -390,6 +390,35 @@ exports.getProductsByStoreId = (0, error_utils_1.asyncErrorHandler)(async (req, 
         success: true,
         data: products,
         count: products.length,
+    });
+});
+/** Latest active product for checkout editor order-summary preview. */
+exports.getStorePreviewProduct = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
+    const { storeId } = req.params;
+    if (!storeId || !mongoose_1.default.isValidObjectId(storeId)) {
+        throw new error_utils_1.CustomError("Valid storeId is required", 400);
+    }
+    await (0, store_access_util_1.assertStoreAccess)(storeId, req.user);
+    const product = await product_model_1.Product.findOne({
+        storeId,
+        isDeleted: { $ne: true },
+    })
+        .sort({ status: 1, createdAt: -1 })
+        .select({ title: 1, price: 1, imageUrls: 1 })
+        .lean();
+    if (!product) {
+        return res.status(200).json({ success: true, data: null });
+    }
+    const origin = (0, public_origin_util_1.publicOriginFromRequest)(req);
+    const imageUrls = (0, public_origin_util_1.absolutizeImageUrlsArray)(Array.isArray(product.imageUrls) ? product.imageUrls : [], origin);
+    return res.status(200).json({
+        success: true,
+        data: {
+            _id: product._id,
+            title: product.title,
+            price: product.price,
+            imageUrl: imageUrls[0] ?? null,
+        },
     });
 });
 // Get products by store id with pagination (public route)

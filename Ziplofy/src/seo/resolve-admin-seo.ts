@@ -48,6 +48,7 @@ const ROUTE_RULES: RouteRule[] = [
   { test: (p) => p.startsWith('/settings/'), title: 'Settings' },
   { test: (p) => p === '/settings', title: 'Settings' },
   { test: (p) => p.startsWith('/checkout/editor'), title: 'Checkout editor', robots: 'noindex, nofollow' },
+  { test: (p) => p.startsWith('/themes/editor/checkout'), title: 'Checkout editor', robots: 'noindex, nofollow' },
   { test: (p) => p.startsWith('/themes/create'), title: 'Theme creator', robots: 'noindex, nofollow' },
   { test: (p) => p.startsWith('/themes/'), title: 'Themes', robots: 'noindex, nofollow' },
   { test: (p) => p.startsWith('/markets/'), title: 'Markets' },

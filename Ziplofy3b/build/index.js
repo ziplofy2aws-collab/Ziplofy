@@ -114,6 +114,7 @@ const shipping_zone_route_1 = __importDefault(require("./routes/shipping-zone.ro
 const state_route_1 = __importDefault(require("./routes/state.route"));
 const store_banner_route_1 = __importDefault(require("./routes/store-banner.route"));
 const store_custom_theme_route_1 = __importDefault(require("./routes/store-custom-theme.route"));
+const store_checkout_configuration_route_1 = __importDefault(require("./routes/store-checkout-configuration.route"));
 const store_cloud_storage_route_1 = __importDefault(require("./routes/store-cloud-storage.route"));
 const payment_route_1 = __importDefault(require("./routes/payment.route"));
 const store_branding_route_1 = __importDefault(require("./routes/store-branding.route"));
@@ -255,6 +256,7 @@ app.use("/api/store-return-refund-policy", store_return_refund_policy_route_1.de
 app.use("/api/store-branding", store_branding_route_1.default);
 app.use("/api/store-banners", store_banner_route_1.default);
 app.use("/api/store-custom-themes", store_custom_theme_route_1.default);
+app.use("/api/store-checkout-configurations", store_checkout_configuration_route_1.default);
 app.use("/api/store/cloud-storage", store_cloud_storage_route_1.default);
 app.use("/api/payments", payment_route_1.default);
 app.use("/api/local-delivery-settings", local_delivery_settings_route_1.default);

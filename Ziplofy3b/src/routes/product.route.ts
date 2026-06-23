@@ -9,6 +9,7 @@ import {
   getProductByUrlHandlePublic,
   getProductsByStoreId,
   getProductsByStoreIdPublic,
+  getStorePreviewProduct,
   searchProductsBasic,
   searchProductsWithAvailability,
   searchProductsWithVariantAndDestination,
@@ -42,6 +43,7 @@ productRouter.patch("/:id", updateProductById);
 productRouter.delete("/:id", softDeleteProductById);
 
 // Get products by store id
+productRouter.get("/store/:storeId/preview", getStorePreviewProduct);
 productRouter.get("/store/:storeId", getProductsByStoreId);
 
 // add variants to product

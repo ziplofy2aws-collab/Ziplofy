@@ -429,6 +429,44 @@ export const getProductsByStoreId = asyncErrorHandler(async (req: Request, res: 
   });
 });
 
+/** Latest active product for checkout editor order-summary preview. */
+export const getStorePreviewProduct = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+  if (!storeId || !mongoose.isValidObjectId(storeId)) {
+    throw new CustomError("Valid storeId is required", 400);
+  }
+
+  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
+
+  const product = await Product.findOne({
+    storeId,
+    isDeleted: { $ne: true },
+  })
+    .sort({ status: 1, createdAt: -1 })
+    .select({ title: 1, price: 1, imageUrls: 1 })
+    .lean();
+
+  if (!product) {
+    return res.status(200).json({ success: true, data: null });
+  }
+
+  const origin = publicOriginFromRequest(req);
+  const imageUrls = absolutizeImageUrlsArray(
+    Array.isArray(product.imageUrls) ? product.imageUrls : [],
+    origin
+  );
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      _id: product._id,
+      title: product.title,
+      price: product.price,
+      imageUrl: imageUrls[0] ?? null,
+    },
+  });
+});
+
 // Get products by store id with pagination (public route)
 export const getProductsByStoreIdPublic = asyncErrorHandler(async (req: Request, res: Response) => {
   const { storeId } = req.params;

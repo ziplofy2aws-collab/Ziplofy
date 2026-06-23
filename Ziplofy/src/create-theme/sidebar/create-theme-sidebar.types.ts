@@ -18,6 +18,13 @@ export type SidebarIcon =
   | 'product-card'
   | 'group'
   | 'link'
+  | 'contact'
+  | 'delivery'
+  | 'payment'
+  | 'cart'
+  | 'receipt'
+  | 'checkout-block'
+  | 'checkout-field'
   | 'default';
 
 export type EditorFieldOption = { value: string; label: string };
@@ -69,6 +76,16 @@ export type SidebarNode = {
   showVisibilityToggle?: boolean;
   /** Trash control to remove this section from the page (header/footer/template). */
   showDeleteButton?: boolean;
+  /** Shopify checkout profile section row (label + right chevron, no leading icon). */
+  checkoutSection?: boolean;
+  /** Checkout Main group heading (compact Shopify-style label). */
+  checkoutMainGroup?: boolean;
+  /** Checkout Main category row (semantic icon, always shows children). */
+  checkoutMainCategory?: boolean;
+  /** Checkout profile category row (semantic icon, e.g. Cart or Total). */
+  checkoutCategory?: boolean;
+  /** Always expanded with no chevron (checkout Main sub-groups). */
+  checkoutStatic?: boolean;
 };
 
 export type EditorSchemaDoc = {

@@ -20,6 +20,7 @@ exports.productRouter.patch("/:id", product_controller_1.updateProductById);
 // Soft delete product
 exports.productRouter.delete("/:id", product_controller_1.softDeleteProductById);
 // Get products by store id
+exports.productRouter.get("/store/:storeId/preview", product_controller_1.getStorePreviewProduct);
 exports.productRouter.get("/store/:storeId", product_controller_1.getProductsByStoreId);
 // add variants to product
 exports.productRouter.post("/:id/variants", product_controller_1.addVariantsToProduct);

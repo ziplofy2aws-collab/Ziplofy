@@ -10,12 +10,14 @@ import CreateThemeEditorSidebar from '../create-theme/sidebar/CreateThemeEditorS
 import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
 import { loadCreatorThemeEditorPack } from '../utils/theme-editor-static-pack';
-import { CheckoutEditorHeader } from './CheckoutEditorHeader';
-import { CheckoutProfilePreview } from './CheckoutProfilePreview';
 import {
   buildCheckoutProfileSidebarTree,
   defaultCheckoutProfileSidebarExpanded,
-} from './build-checkout-profile-sidebar.tree';
+  CheckoutEditorHeader,
+  CheckoutProfilePreview,
+  findCheckoutEditorPageLabel,
+  type CheckoutEditorPage,
+} from '../create-theme/checkout';
 
 const CheckoutProfileEditorPage: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +28,7 @@ const CheckoutProfileEditorPage: React.FC = () => {
   const [packError, setPackError] = useState<string | null>(null);
   const [editorSchema, setEditorSchema] = useState<EditorSchemaDoc | null>(null);
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
+  const [checkoutPreviewPage, setCheckoutPreviewPage] = useState<CheckoutEditorPage>('checkout');
   const [sidebarTab, setSidebarTab] = useState<ThemeEditorSidebarTab>('sections');
   const [selectedNodeId, setSelectedNodeId] = useState('');
   const [expanded, setExpanded] = useState<Record<string, boolean>>(
@@ -35,7 +38,7 @@ const CheckoutProfileEditorPage: React.FC = () => {
   const activeStoreName =
     stores.find((s) => s._id === activeStoreId)?.storeName ?? 'My Store';
   const configurationName = `${activeStoreName} configuration`;
-  const pageLabel = 'Information';
+  const pageLabel = findCheckoutEditorPageLabel(checkoutPreviewPage);
 
   const sectionsTree = useMemo(() => buildCheckoutProfileSidebarTree(), []);
   const themeSettingsTree = useMemo(
@@ -88,7 +91,9 @@ const CheckoutProfileEditorPage: React.FC = () => {
     <div className="fixed inset-0 z-[1310] flex flex-col bg-[#1e1e1e]">
       <CheckoutEditorHeader
         configurationName={configurationName}
-        pageLabel={pageLabel}
+        previewPage={checkoutPreviewPage}
+        onPreviewPageChange={setCheckoutPreviewPage}
+        onOnlineStoreTheme={() => navigate('/online-store/themes')}
         device={device}
         onDeviceChange={setDevice}
         saveDisabled
@@ -126,7 +131,13 @@ const CheckoutProfileEditorPage: React.FC = () => {
           error={sidebarError}
         />
 
-        <CheckoutProfilePreview device={device} storeUrl={storeSubdomain?.url ?? null} />
+        <CheckoutProfilePreview
+          device={device}
+          storeName={activeStoreName}
+          storeUrl={storeSubdomain?.url ?? null}
+          pageId={checkoutPreviewPage}
+          pageLabel={pageLabel}
+        />
       </div>
     </div>
   );

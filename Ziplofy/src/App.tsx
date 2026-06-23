@@ -27,8 +27,6 @@ import { PurchaseOrderProvider } from "./contexts/purchase-order.context";
 import { StoreRolesProvider } from "./contexts/store-roles.context";
 import { StoreSecuritySettingsProvider } from "./contexts/store-security-settings.context";
 import { CreateThemePoweredByLoader } from "./create-theme/chrome/CreateThemePoweredByLoader";
-import CheckoutProfileEditorPage from "./checkout-editor/CheckoutProfileEditorPage";
-
 // Lazy-loaded page components (code splitting)
 const BasicElementor = lazy(() => import("./pages/themes/BasicElementor"));
 const CustomThemeBuilder = lazy(() => import("./pages/themes/CustomThemeBuilder"));
@@ -268,6 +266,7 @@ import { ShippingZoneProvider } from "./contexts/shipping-zone.context";
 import { StateProvider } from "./contexts/state.context";
 import { StoreBannerProvider } from "./contexts/store-banner.context";
 import { StoreCustomThemesProvider } from "./contexts/store-custom-themes.context";
+import { StoreCheckoutConfigurationsProvider } from "./contexts/store-checkout-configurations.context";
 import { StoreBrandingProvider } from "./contexts/store-branding.context";
 import { StoreContactInfoProvider } from "./contexts/store-contact-info.context";
 import { StoreNotificationEmailProvider } from "./contexts/store-notification-email.context";
@@ -315,7 +314,9 @@ const AdminApp: React.FC = () => {
   const isBuilderFullScreen = location.pathname.startsWith('/themes/builder');
   const isBasicElementor = location.pathname.startsWith('/themes/basic-elementor');
   const isThemeCreator = location.pathname.startsWith('/themes/create');
-  const isCheckoutProfileEditor = location.pathname.startsWith('/checkout/editor');
+  const isThemesEditorCheckout = location.pathname.startsWith('/themes/editor/checkout');
+  const isCheckoutProfileEditor =
+    location.pathname.startsWith('/checkout/editor') || isThemesEditorCheckout;
   const isThemeSchemaEditor =
     location.pathname === '/themes/dev-editor' ||
     /^\/themes\/[^/]+\/editor$/.test(location.pathname);
@@ -359,17 +360,28 @@ const AdminApp: React.FC = () => {
           <Routes>
             <Route path="/themes/create" element={<CreateThemePage />} />
             <Route
+              path="/themes/editor/checkout/:configId"
+              element={<CreateThemePage mode="checkout-profile" />}
+            />
+            <Route
+              path="/themes/editor/checkout"
+              element={<Navigate to="/settings/checkout" replace />}
+            />
+            <Route
               path="/checkout/editor"
-              element={<Navigate to="/checkout/editor/profiles" replace />}
+              element={<Navigate to="/settings/checkout" replace />}
             />
             <Route
               path="/checkout/editor/"
-              element={<Navigate to="/checkout/editor/profiles" replace />}
+              element={<Navigate to="/settings/checkout" replace />}
             />
-            <Route path="/checkout/editor/profiles" element={<CheckoutProfileEditorPage />} />
+            <Route
+              path="/checkout/editor/profiles"
+              element={<Navigate to="/settings/checkout" replace />}
+            />
             <Route
               path="/checkout/editor/profiles/"
-              element={<Navigate to="/checkout/editor/profiles" replace />}
+              element={<Navigate to="/settings/checkout" replace />}
             />
 
             <Route element={<AdminStandardLayout />}>
@@ -561,6 +573,7 @@ const App: React.FC = () => {
         <ThemesProvider>
           <CustomThemesProvider>
           <StoreCustomThemesProvider>
+          <StoreCheckoutConfigurationsProvider>
         <VendorProvider>
         <CollectionProvider>
         <StoreMenuProvider>
@@ -757,6 +770,7 @@ const App: React.FC = () => {
         </StoreMenuProvider>
         </CollectionProvider>
         </VendorProvider>
+        </StoreCheckoutConfigurationsProvider>
         </StoreCustomThemesProvider>
         </CustomThemesProvider>
         </ThemesProvider>

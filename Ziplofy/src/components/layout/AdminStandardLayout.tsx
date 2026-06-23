@@ -8,6 +8,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 function isImmersiveOrFullWidthPath(pathname: string): boolean {
   if (pathname.startsWith('/settings')) return true;
   if (pathname.startsWith('/themes/create')) return true;
+  if (pathname.startsWith('/themes/editor/checkout')) return true;
   if (pathname.startsWith('/checkout/editor')) return true;
   if (pathname.startsWith('/themes/code-fullscreen/')) return true;
   if (pathname.startsWith('/themes/builder')) return true;

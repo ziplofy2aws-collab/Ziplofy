@@ -6,15 +6,19 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   Cog6ToothIcon,
+  CreditCardIcon,
   CursorArrowRaysIcon,
   EyeIcon,
   EyeSlashIcon,
   LinkIcon,
   PhotoIcon,
   PlusCircleIcon,
+  ShoppingCartIcon,
   Squares2X2Icon,
   TagIcon,
   TrashIcon,
+  TruckIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline';
 import type { SidebarIcon, SidebarNode, ThemeEditorSidebarTab } from './create-theme-sidebar.types';
 import { isSortableSidebarNode } from './create-theme-structure-order';
@@ -94,6 +98,29 @@ function SectionIcon({ className }: { className?: string }) {
   );
 }
 
+function CheckoutBlockIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" aria-hidden>
+      <rect x="2" y="3" width="12" height="2.5" rx="0.5" fill="currentColor" />
+      <rect x="2" y="7" width="12" height="6" rx="1" stroke="currentColor" strokeWidth="1.25" strokeDasharray="2 2" />
+    </svg>
+  );
+}
+
+function CheckoutFieldIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" aria-hidden>
+      <path
+        d="M3 6V3h3M10 3h3v3M13 10v3h-3M6 13H3v-3"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function DragHandleIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden>
@@ -142,6 +169,35 @@ function SidebarRowIcon({ icon, muted }: { icon?: SidebarIcon; muted?: boolean }
       );
     case 'link':
       return <LinkIcon className={cls} />;
+    case 'contact':
+      return <UserIcon className={cls} />;
+    case 'delivery':
+      return <TruckIcon className={cls} />;
+    case 'payment':
+      return <CreditCardIcon className={cls} />;
+    case 'cart':
+      return <ShoppingCartIcon className={cls} />;
+    case 'receipt':
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none" aria-hidden>
+          <path
+            d="M4 2.5h8v11l-1.5-1-1.5 1-1.5-1-1.5 1-1.5-1L4 13.5V2.5z"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M6 5.5h4M6 7.5h4M6 9.5h2.5"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    case 'checkout-block':
+      return <CheckoutBlockIcon className={cls} />;
+    case 'checkout-field':
+      return <CheckoutFieldIcon className={cls} />;
     default:
       return <SectionIcon className={cls} />;
   }
@@ -173,6 +229,17 @@ type DragState = {
   overId: string | null;
 };
 
+function isCheckoutDisabledRow(node: SidebarNode): boolean {
+  return Boolean(
+    node.disabled &&
+      (node.checkoutStatic ||
+        node.checkoutMainCategory ||
+        node.checkoutCategory ||
+        node.icon === 'checkout-field' ||
+        node.icon === 'checkout-block')
+  );
+}
+
 function SidebarGroup({
   label,
   nodes,
@@ -191,12 +258,22 @@ function SidebarGroup({
   dragState,
   setDragState,
   childrenListKey,
-}: Omit<TreeRowProps, 'node'> & { label: string; nodes: SidebarNode[]; childrenListKey?: string }) {
+  checkoutMainGroup,
+}: Omit<TreeRowProps, 'node'> & {
+  label: string;
+  nodes: SidebarNode[];
+  childrenListKey?: string;
+  checkoutMainGroup?: boolean;
+}) {
   const insertGroup = sectionInsertGroupForLabel(label);
   return (
     <>
       <p
-        className="px-3 pb-1.5 pt-4 text-[15px] font-semibold text-gray-900"
+        className={
+          checkoutMainGroup
+            ? 'px-3 pb-1 pt-3 text-[13px] font-semibold text-gray-900'
+            : 'px-3 pb-1.5 pt-4 text-[15px] font-semibold text-gray-900'
+        }
         style={{ paddingLeft: SIDEBAR_BASE_PADDING + depth * SIDEBAR_DEPTH_STEP }}
       >
         {label}
@@ -204,7 +281,7 @@ function SidebarGroup({
       <SortableSiblingList
         listKey={childrenListKey}
         nodes={nodes}
-        depth={depth}
+        depth={depth + 1}
         expanded={expanded}
         selectedNodeId={selectedNodeId}
         hiddenNodes={hiddenNodes}
@@ -338,6 +415,91 @@ function SortableSiblingList({
   );
 }
 
+function CheckoutDisabledTreeRow({
+  node,
+  depth,
+  indent,
+  expanded,
+  selectedNodeId,
+  hiddenNodes,
+  visibilityValues,
+  onToggleExpand,
+  onSelect,
+  onToggleHidden,
+  onDeleteNode,
+  onReorder,
+  dragState,
+  setDragState,
+}: {
+  node: SidebarNode;
+  depth: number;
+  indent: number;
+} & Omit<TreeRowProps, 'node' | 'onInsertSection' | 'onInsertHoverChange' | 'dragState' | 'setDragState'> & {
+  dragState: DragState;
+  setDragState: React.Dispatch<React.SetStateAction<DragState>>;
+}) {
+  const hasChildren = Boolean(node.children?.length);
+  const isStatic = node.checkoutStatic === true;
+  const isOpen = isStatic || expanded[node.id] === true;
+  const showChevron = hasChildren && !isStatic;
+  const icon =
+    node.icon ??
+    (node.checkoutMainCategory || node.checkoutCategory
+      ? 'default'
+      : node.kind === 'section'
+        ? 'section'
+        : 'checkout-field');
+
+  return (
+    <>
+      <div
+        className="flex items-center gap-0.5 pr-1 text-[13px] text-gray-800"
+        style={{ paddingLeft: indent - 4 }}
+      >
+        <span className="w-5 shrink-0" />
+        {showChevron ? (
+          <button
+            type="button"
+            onClick={() => onToggleExpand(node.id)}
+            className="flex h-7 w-5 shrink-0 items-center justify-center text-gray-500 hover:text-gray-800"
+            aria-label={isOpen ? 'Collapse' : 'Expand'}
+          >
+            {isOpen ? (
+              <ChevronDownIcon className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronRightIcon className="h-3.5 w-3.5" />
+            )}
+          </button>
+        ) : (
+          <span className="w-5 shrink-0" />
+        )}
+        <div className="flex min-h-[32px] min-w-0 flex-1 items-center gap-2 py-1 pr-1">
+          <SidebarRowIcon icon={icon} muted={false} />
+          <span className="shrink-0 text-[13px] font-medium">{node.label}</span>
+        </div>
+      </div>
+      {hasChildren && isOpen ? (
+        <SortableSiblingList
+          listKey={node.childrenListKey}
+          nodes={node.children!}
+          depth={depth + 1}
+          expanded={expanded}
+          selectedNodeId={selectedNodeId}
+          hiddenNodes={hiddenNodes}
+          visibilityValues={visibilityValues}
+          onToggleExpand={onToggleExpand}
+          onSelect={onSelect}
+          onToggleHidden={onToggleHidden}
+          onDeleteNode={onDeleteNode}
+          onReorder={onReorder}
+          dragState={dragState}
+          setDragState={setDragState}
+        />
+      ) : null}
+    </>
+  );
+}
+
 function SidebarTreeRow({
   node,
   depth,
@@ -380,6 +542,7 @@ function SidebarTreeRow({
         dragState={dragState}
         setDragState={setDragState}
         childrenListKey={node.childrenListKey}
+        checkoutMainGroup={node.checkoutMainGroup}
       />
     );
   }
@@ -416,6 +579,118 @@ function SidebarTreeRow({
         />
         {node.label}
       </button>
+    );
+  }
+
+  if (node.checkoutSection) {
+    return (
+      <>
+        <CheckoutSidebarSectionRow
+          node={node}
+          indent={indent}
+          hasChildren={hasChildren}
+          isOpen={isOpen}
+          isSelected={isSelected}
+          isHidden={isHidden}
+          onToggleExpand={onToggleExpand}
+          onSelect={onSelect}
+        />
+        {hasChildren && isOpen ? (
+          <SortableSiblingList
+            listKey={node.childrenListKey}
+            nodes={node.children!}
+            depth={depth + 1}
+            expanded={expanded}
+            selectedNodeId={selectedNodeId}
+            hiddenNodes={hiddenNodes}
+            visibilityValues={visibilityValues}
+            onToggleExpand={onToggleExpand}
+            onSelect={onSelect}
+            onToggleHidden={onToggleHidden}
+            onDeleteNode={onDeleteNode}
+            onReorder={onReorder}
+            onInsertSection={onInsertSection}
+            onInsertHoverChange={onInsertHoverChange}
+            dragState={dragState}
+            setDragState={setDragState}
+          />
+        ) : null}
+      </>
+    );
+  }
+
+  if (node.disabled && isCheckoutDisabledRow(node)) {
+    return (
+      <CheckoutDisabledTreeRow
+        node={node}
+        depth={depth}
+        indent={indent}
+        expanded={expanded}
+        selectedNodeId={selectedNodeId}
+        hiddenNodes={hiddenNodes}
+        visibilityValues={visibilityValues}
+        onToggleExpand={onToggleExpand}
+        onSelect={onSelect}
+        onToggleHidden={onToggleHidden}
+        onDeleteNode={onDeleteNode}
+        onReorder={onReorder}
+        dragState={dragState}
+        setDragState={setDragState}
+      />
+    );
+  }
+
+  if (node.disabled) {
+    return (
+      <>
+        <div
+          className="flex items-center gap-0.5 pr-1 text-[13px] text-gray-600"
+          style={{ paddingLeft: indent - 4 }}
+        >
+          <span className="w-5 shrink-0" />
+          {hasChildren ? (
+            <button
+              type="button"
+              onClick={() => onToggleExpand(node.id)}
+              className="flex h-7 w-5 shrink-0 items-center justify-center text-gray-500 hover:text-gray-800"
+              aria-label={isOpen ? 'Collapse' : 'Expand'}
+            >
+              {isOpen ? (
+                <ChevronDownIcon className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronRightIcon className="h-3.5 w-3.5" />
+              )}
+            </button>
+          ) : (
+            <span className="w-5 shrink-0" />
+          )}
+          <div className="flex min-h-[32px] min-w-0 flex-1 items-center gap-2 py-1 pr-1">
+            <SidebarRowIcon
+              icon={node.icon ?? (node.kind === 'section' ? 'section' : 'default')}
+              muted
+            />
+            <span className="shrink-0 text-[13px] font-medium">{node.label}</span>
+          </div>
+        </div>
+        {hasChildren && isOpen ? (
+          <SortableSiblingList
+            listKey={node.childrenListKey}
+            nodes={node.children!}
+            depth={depth + 1}
+            expanded={expanded}
+            selectedNodeId={selectedNodeId}
+            hiddenNodes={hiddenNodes}
+            visibilityValues={visibilityValues}
+            onToggleExpand={onToggleExpand}
+            onSelect={onSelect}
+            onToggleHidden={onToggleHidden}
+            onDeleteNode={onDeleteNode}
+            onReorder={onReorder}
+            dragState={dragState}
+            setDragState={setDragState}
+          />
+        ) : null}
+      </>
     );
   }
 
@@ -486,6 +761,63 @@ function SidebarTreeRow({
         />
       ) : null}
     </>
+  );
+}
+
+function CheckoutSidebarSectionRow({
+  node,
+  indent,
+  hasChildren,
+  isOpen,
+  isSelected,
+  isHidden,
+  onToggleExpand,
+  onSelect,
+}: {
+  node: SidebarNode;
+  indent: number;
+  hasChildren: boolean;
+  isOpen: boolean;
+  isSelected: boolean;
+  isHidden: boolean;
+  onToggleExpand: (id: string) => void;
+  onSelect: (node: SidebarNode) => void;
+}) {
+  return (
+    <div
+      data-sidebar-node-id={node.id}
+      className={`group flex items-center gap-0.5 pr-2 text-[13px] transition-colors duration-150 ${
+        isSelected
+          ? 'bg-[#005bd3] font-medium text-white'
+          : 'text-gray-900 hover:bg-[#ededed]'
+      } ${isHidden ? 'opacity-50' : ''}`}
+      style={{ paddingLeft: indent - 4 }}
+    >
+      <span className="w-5 shrink-0" />
+      <button
+        type="button"
+        className="flex min-h-[32px] min-w-0 flex-1 items-center py-1 pr-1 text-left"
+        onClick={() => onSelect(node)}
+      >
+        <span className="text-[13px] font-semibold">{node.label}</span>
+      </button>
+      {hasChildren ? (
+        <button
+          type="button"
+          onClick={() => onToggleExpand(node.id)}
+          className={`flex h-7 w-5 shrink-0 items-center justify-center ${
+            isSelected ? 'text-white/90 hover:text-white' : 'text-gray-500 hover:text-gray-800'
+          }`}
+          aria-label={isOpen ? 'Collapse' : 'Expand'}
+        >
+          {isOpen ? (
+            <ChevronDownIcon className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronRightIcon className="h-3.5 w-3.5" />
+          )}
+        </button>
+      ) : null}
+    </div>
   );
 }
 
@@ -661,6 +993,8 @@ export type CreateThemeEditorSidebarProps = {
   loading?: boolean;
   error?: string | null;
   settingsNode?: SidebarNode | null;
+  checkoutSettingsPanel?: React.ReactNode;
+  checkoutThemeSettingsNav?: React.ReactNode;
   settingsValues?: Record<string, string | boolean>;
   onSettingsFieldChange?: (
     path: string,
@@ -695,6 +1029,8 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   loading,
   error,
   settingsNode,
+  checkoutSettingsPanel,
+  checkoutThemeSettingsNav,
   settingsValues = {},
   onSettingsFieldChange,
   onCollectionLinksApply,
@@ -709,8 +1045,14 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
     overId: null,
   });
 
-  const title = sidebarTab === 'sections' ? pageLabel : 'Theme settings';
-  const showSettingsPanel = Boolean(settingsNode && onSettingsFieldChange && onCloseSettings);
+  const title =
+    sidebarTab === 'sections'
+      ? pageLabel
+      : sidebarTitleMode === 'plain'
+        ? 'Settings'
+        : 'Theme settings';
+  const showThemeSettingsPanel = Boolean(settingsNode && onSettingsFieldChange && onCloseSettings);
+  const showCheckoutSettingsPanel = Boolean(checkoutSettingsPanel && onCloseSettings);
 
   useEffect(() => {
     if (!selectedNodeId) return;
@@ -764,6 +1106,8 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
               Editing: <span className="font-semibold text-gray-900">{pageLabel}</span>
             </>
           )
+        ) : sidebarTitleMode === 'plain' ? (
+          <span className="font-semibold text-gray-900">{title}</span>
         ) : (
           title
         )}
@@ -772,56 +1116,66 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
       <div className="create-theme-sidebar-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {loading ? <p className="p-4 text-sm text-gray-500">Loading theme…</p> : null}
         {error ? <p className="p-4 text-sm text-red-600">{error}</p> : null}
-        {!loading && sidebarTab === 'theme-settings' ? <ThemeSettingsNav /> : null}
+        {!loading && sidebarTab === 'theme-settings' ? (
+          checkoutThemeSettingsNav ?? <ThemeSettingsNav />
+        ) : null}
         {!loading && sidebarTab === 'sections' && tree.length > 0 ? (
           <div className="pb-3 pt-1">
-            {tree.map((node) =>
-              node.kind === 'group-label' ? (
-                <SidebarGroup
-                  key={node.id}
-                  label={node.label}
-                  nodes={node.children ?? []}
-                  depth={0}
-                  expanded={expanded}
-                  selectedNodeId={selectedNodeId}
-                  hiddenNodes={hiddenNodes}
-                  visibilityValues={visibilityValues}
-                  onToggleExpand={onToggleExpand}
-                  onSelect={onSelectNode}
-                  onToggleHidden={onToggleHidden}
-                  onDeleteNode={onDeleteNode}
-                  onReorder={onReorder}
-                  onInsertSection={onInsertSection}
-                  onInsertHoverChange={onInsertHoverChange}
-                  dragState={dragState}
-                  setDragState={setDragState}
-                  childrenListKey={node.childrenListKey}
-                />
-              ) : (
-                <SidebarTreeRow
-                  key={node.id}
-                  node={node}
-                  depth={0}
-                  expanded={expanded}
-                  selectedNodeId={selectedNodeId}
-                  hiddenNodes={hiddenNodes}
-                  visibilityValues={visibilityValues}
-                  onToggleExpand={onToggleExpand}
-                  onSelect={onSelectNode}
-                  onToggleHidden={onToggleHidden}
-                  onDeleteNode={onDeleteNode}
-                  onReorder={onReorder}
-                  onInsertHoverChange={onInsertHoverChange}
-                  dragState={dragState}
-                  setDragState={setDragState}
-                />
-              )
-            )}
+            {tree.map((node, index) => (
+              <Fragment key={node.id}>
+                {sidebarTitleMode === 'plain' && index > 0 ? (
+                  <div
+                    className="mx-3 border-t border-[#e1e3e5]"
+                    role="presentation"
+                    aria-hidden
+                  />
+                ) : null}
+                {node.kind === 'group-label' ? (
+                  <SidebarGroup
+                    label={node.label}
+                    nodes={node.children ?? []}
+                    depth={0}
+                    expanded={expanded}
+                    selectedNodeId={selectedNodeId}
+                    hiddenNodes={hiddenNodes}
+                    visibilityValues={visibilityValues}
+                    onToggleExpand={onToggleExpand}
+                    onSelect={onSelectNode}
+                    onToggleHidden={onToggleHidden}
+                    onDeleteNode={onDeleteNode}
+                    onReorder={onReorder}
+                    onInsertSection={onInsertSection}
+                    onInsertHoverChange={onInsertHoverChange}
+                    dragState={dragState}
+                    setDragState={setDragState}
+                    childrenListKey={node.childrenListKey}
+                    checkoutMainGroup={node.checkoutMainGroup}
+                  />
+                ) : (
+                  <SidebarTreeRow
+                    node={node}
+                    depth={0}
+                    expanded={expanded}
+                    selectedNodeId={selectedNodeId}
+                    hiddenNodes={hiddenNodes}
+                    visibilityValues={visibilityValues}
+                    onToggleExpand={onToggleExpand}
+                    onSelect={onSelectNode}
+                    onToggleHidden={onToggleHidden}
+                    onDeleteNode={onDeleteNode}
+                    onReorder={onReorder}
+                    onInsertHoverChange={onInsertHoverChange}
+                    dragState={dragState}
+                    setDragState={setDragState}
+                  />
+                )}
+              </Fragment>
+            ))}
           </div>
         ) : null}
       </div>
 
-      {sidebarTab === 'sections' && showSettingsPanel && settingsNode ? (
+      {sidebarTab === 'sections' && showThemeSettingsPanel && settingsNode ? (
         <ThemeEditorSettingsSheet>
           <ThemeSectionSettingsPanel
             node={settingsNode}
@@ -834,6 +1188,9 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
             onRemoveBlock={onRemoveSettingsBlock}
           />
         </ThemeEditorSettingsSheet>
+      ) : null}
+      {sidebarTab === 'sections' && showCheckoutSettingsPanel ? (
+        <ThemeEditorSettingsSheet>{checkoutSettingsPanel}</ThemeEditorSettingsSheet>
       ) : null}
     </aside>
   );
