@@ -93,7 +93,7 @@ export function CheckoutOrderSummaryView({
 
   return (
     <aside
-      className={`relative flex min-h-0 flex-col ${isMobile ? 'w-full shrink-0 p-4' : 'p-6 sm:p-8'}`}
+      className={`relative flex min-h-full w-full flex-1 flex-col ${isMobile ? 'w-full shrink-0 p-4' : 'p-6 sm:p-8'}`}
       style={{ backgroundColor }}
     >
       {backgroundImage ? (

@@ -35,6 +35,11 @@ export const EMPTY_CHECKOUT_ADDRESS: CheckoutAddressFields = {
   country: 'IN',
 };
 
+export type CheckoutMainViewHandle = {
+  getValues: () => CheckoutFormValues;
+  validate: () => boolean;
+};
+
 export function createEmptyCheckoutFormValues(): CheckoutFormValues {
   return {
     email: '',

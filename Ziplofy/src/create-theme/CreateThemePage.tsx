@@ -101,6 +101,7 @@ import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { THEME_EDITOR_STATIC_CONFIG } from '../config/theme-editor-static.config';
 import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
+import { openThemeCreatorForActiveStore } from '../utils/theme-creator-navigation';
 import type { Collection } from '../contexts/collection.context';
 import type { StoreMenu, StoreMenuItem } from '../contexts/store-menu.context';
 import {
@@ -1255,6 +1256,10 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     });
   }, [defaultConfig, editorSchema, savedThemeId, themeName, themeDesc, persistTheme]);
 
+  const handleOnlineStoreTheme = useCallback(() => {
+    openThemeCreatorForActiveStore(stores, activeStoreId);
+  }, [stores, activeStoreId]);
+
   const handleSaveThemeModalConfirm = useCallback(
     (payload: { themeName: string; themeDesc?: string }) => {
       void persistTheme({ ...payload, isCreate: true }).catch((err: unknown) => {
@@ -2156,7 +2161,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           configurationName={checkoutConfigurationName}
           previewPage={checkoutPreviewPage}
           onPreviewPageChange={setCheckoutPreviewPage}
-          onOnlineStoreTheme={() => navigate('/online-store/themes')}
+          onOnlineStoreTheme={handleOnlineStoreTheme}
           device={device}
           onDeviceChange={setDevice}
           onSave={() => void handleCheckoutSave()}

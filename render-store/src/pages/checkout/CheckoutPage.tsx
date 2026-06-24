@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import type { CheckoutMainViewHandle } from '@ziplofy/create-theme/checkout/CheckoutMainView';
+import type { CheckoutMainViewHandle } from '@ziplofy/create-theme/checkout/checkout-form.types';
 import { CheckoutCheckoutView } from '@ziplofy/create-theme/checkout/CheckoutCheckoutView';
 import { CHECKOUT_STOREFRONT_ROOT_CLASS } from '@ziplofy/create-theme/checkout/checkout-storefront.constants';
 import { useCheckoutPageAppearance } from '@/hooks/useCheckoutPageAppearance';

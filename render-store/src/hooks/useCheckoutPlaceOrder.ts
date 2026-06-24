@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import type { CheckoutMainViewHandle } from '@ziplofy/create-theme/checkout/CheckoutMainView';
+import type { CheckoutMainViewHandle } from '@ziplofy/create-theme/checkout/checkout-form.types';
 import { useCustomerAddresses } from '@/contexts/customer-address-storefront.context';
 import { useStorefrontAuth } from '@/contexts/storefront-auth.context';
 import { useStorefrontCart } from '@/contexts/storefront-cart.context';

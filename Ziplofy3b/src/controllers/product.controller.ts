@@ -452,8 +452,8 @@ export const getStorePreviewProduct = asyncErrorHandler(async (req: Request, res
 
   const origin = publicOriginFromRequest(req);
   const imageUrls = absolutizeImageUrlsArray(
-    Array.isArray(product.imageUrls) ? product.imageUrls : [],
-    origin
+    origin,
+    Array.isArray(product.imageUrls) ? product.imageUrls : []
   );
 
   return res.status(200).json({

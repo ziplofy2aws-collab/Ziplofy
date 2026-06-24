@@ -9,6 +9,7 @@ import type {
 import CreateThemeEditorSidebar from '../create-theme/sidebar/CreateThemeEditorSidebar';
 import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
+import { openThemeCreatorForActiveStore } from '../utils/theme-creator-navigation';
 import { loadCreatorThemeEditorPack } from '../utils/theme-editor-static-pack';
 import {
   buildCheckoutProfileSidebarTree,
@@ -87,13 +88,17 @@ const CheckoutProfileEditorPage: React.FC = () => {
     navigate('/settings/checkout');
   }, [navigate]);
 
+  const handleOnlineStoreTheme = useCallback(() => {
+    openThemeCreatorForActiveStore(stores, activeStoreId);
+  }, [stores, activeStoreId]);
+
   return (
     <div className="fixed inset-0 z-[1310] flex flex-col bg-[#1e1e1e]">
       <CheckoutEditorHeader
         configurationName={configurationName}
         previewPage={checkoutPreviewPage}
         onPreviewPageChange={setCheckoutPreviewPage}
-        onOnlineStoreTheme={() => navigate('/online-store/themes')}
+        onOnlineStoreTheme={handleOnlineStoreTheme}
         device={device}
         onDeviceChange={setDevice}
         saveDisabled

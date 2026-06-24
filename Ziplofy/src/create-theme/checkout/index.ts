@@ -61,8 +61,7 @@ export { CheckoutOrderStatusRuntimePreview } from './preview/CheckoutOrderStatus
 export { CheckoutThankYouRuntimePreview } from './preview/CheckoutThankYouRuntimePreview';
 export { CheckoutCheckoutView } from './CheckoutCheckoutView';
 export type { CheckoutCheckoutViewProps } from './CheckoutCheckoutView';
-export { CheckoutMainView } from './CheckoutMainView';
-export { CheckoutOrderSummaryView } from './CheckoutOrderSummaryView';
+export type { CheckoutMainViewHandle } from './checkout-form.types';
 export { CheckoutPageRuntimePreview } from './preview/CheckoutPageRuntimePreview';
 export { CheckoutProfilePreview } from './preview/CheckoutProfilePreview';
 

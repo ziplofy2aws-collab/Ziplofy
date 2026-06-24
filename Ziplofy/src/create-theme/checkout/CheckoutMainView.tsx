@@ -2,7 +2,7 @@ import { ChevronDownIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/out
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStorefrontAuth } from '@render-store/sdk';
-import type { CheckoutAddressFields, CheckoutFormValues } from './checkout-form.types';
+import type { CheckoutAddressFields, CheckoutFormValues, CheckoutMainViewHandle } from './checkout-form.types';
 import { createEmptyCheckoutFormValues } from './checkout-form.types';
 import { isColorDark } from './settings/checkout-color.utils';
 import { buildCheckoutFieldChrome, type CheckoutMainViewTypography } from './checkout-form-styles';
@@ -32,11 +32,6 @@ type Props = {
   device?: 'desktop' | 'mobile';
   onCompleteOrder?: () => void;
   submitting?: boolean;
-};
-
-export type CheckoutMainViewHandle = {
-  getValues: () => CheckoutFormValues;
-  validate: () => boolean;
 };
 
 function FieldLabel({

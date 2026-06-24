@@ -1,5 +1,5 @@
-import { type Ref } from 'react';
-import type { CheckoutMainViewHandle } from './CheckoutMainView';
+import { Suspense, lazy, type Ref } from 'react';
+import type { CheckoutMainViewHandle } from './checkout-form.types';
 import type {
   CheckoutFooterConfig,
   CheckoutHeaderPosition,
@@ -7,14 +7,22 @@ import type {
   CheckoutPaletteTheme,
 } from './settings/checkout-settings.types';
 import type { CheckoutTypographyTheme } from './settings/checkout-typography-fonts';
-import { CHECKOUT_FORM_MAX_WIDTH_CLASS } from './settings/checkout-settings.types';
-import { CheckoutMainView } from './CheckoutMainView';
-import { CheckoutOrderSummaryView } from './CheckoutOrderSummaryView';
+import {
+  CHECKOUT_FORM_MAX_WIDTH_CLASS,
+  resolveCheckoutOrderSummaryColors,
+} from './settings/checkout-settings.types';
 import { CheckoutFooterRuntimePreview } from './preview/CheckoutFooterRuntimePreview';
 import { CheckoutHeaderRuntimePreview, type CheckoutLogoPreviewConfig } from './preview/CheckoutHeaderRuntimePreview';
 import { CheckoutMainRuntimePreview } from './preview/CheckoutMainRuntimePreview';
 import { CheckoutOrderSummaryRuntimePreview } from './preview/CheckoutOrderSummaryRuntimePreview';
 import { CheckoutTypographyFontLoader } from './preview/CheckoutTypographyFontLoader';
+
+const CheckoutMainView = lazy(() =>
+  import('./CheckoutMainView').then((m) => ({ default: m.CheckoutMainView }))
+);
+const CheckoutOrderSummaryView = lazy(() =>
+  import('./CheckoutOrderSummaryView').then((m) => ({ default: m.CheckoutOrderSummaryView }))
+);
 
 type PreviewDevice = 'desktop' | 'mobile';
 
@@ -145,20 +153,26 @@ export function CheckoutCheckoutView(props: CheckoutCheckoutViewProps) {
   const isLive = mode === 'live';
   const highlightNodeId = isPreview ? props.highlightNodeId : null;
   const onSelectNode = isPreview ? props.onSelectNode : undefined;
+  const orderSummaryColors = resolveCheckoutOrderSummaryColors(
+    orderSummaryConfig,
+    theme?.colorPalette
+  );
 
   const mainForm =
     mode === 'live' ? (
-      <CheckoutMainView
-        ref={props.mainFormRef}
-        accentColor={theme?.accentColor}
-        buttonColor={theme?.buttonColor}
-        addressAutocompletion={addressAutocompletion}
-        inputFieldsTransparent={inputFieldsTransparent}
-        typography={typography}
-        device={device}
-        onCompleteOrder={props.onCompleteOrder}
-        submitting={props.submitting}
-      />
+      <Suspense fallback={<div className="px-6 py-8 text-sm text-[#707070]">Loading checkout…</div>}>
+        <CheckoutMainView
+          ref={props.mainFormRef}
+          accentColor={theme?.accentColor}
+          buttonColor={theme?.buttonColor}
+          addressAutocompletion={addressAutocompletion}
+          inputFieldsTransparent={inputFieldsTransparent}
+          typography={typography}
+          device={device}
+          onCompleteOrder={props.onCompleteOrder}
+          submitting={props.submitting}
+        />
+      </Suspense>
     ) : (
       <CheckoutMainRuntimePreview
         accentColor={theme?.accentColor}
@@ -172,12 +186,14 @@ export function CheckoutCheckoutView(props: CheckoutCheckoutViewProps) {
 
   const orderSummary =
     mode === 'live' ? (
-      <CheckoutOrderSummaryView
-        storeId={storeId}
-        orderSummaryConfig={orderSummaryConfig}
-        colorPalette={theme?.colorPalette}
-        layout={device}
-      />
+      <Suspense fallback={<div className="p-6 text-sm text-[#707070]">Loading summary…</div>}>
+        <CheckoutOrderSummaryView
+          storeId={storeId}
+          orderSummaryConfig={orderSummaryConfig}
+          colorPalette={theme?.colorPalette}
+          layout={device}
+        />
+      </Suspense>
     ) : (
       <CheckoutOrderSummaryRuntimePreview
         storeId={storeId}
@@ -193,18 +209,19 @@ export function CheckoutCheckoutView(props: CheckoutCheckoutViewProps) {
     <div
       className={
         isMobile
-          ? 'w-full shrink-0 border-b border-[#e1e3e5] bg-[#fafafa]'
-          : `w-[42%] max-w-[480px] shrink-0 self-start border-l border-[#e1e3e5] bg-[#fafafa] ${
-              isLive ? 'sticky top-0' : 'sticky top-0 max-h-full overflow-y-auto overscroll-contain'
+          ? 'w-full shrink-0 border-b border-[#e1e3e5]'
+          : `flex min-h-full min-w-0 flex-1 flex-col border-l border-[#e1e3e5] ${
+              isLive ? 'sticky top-0 max-h-screen overflow-y-auto' : ''
             }`
       }
+      style={{ backgroundColor: orderSummaryColors.backgroundColor }}
     >
       {orderSummary}
     </div>
   );
 
   const mainColumn = (
-    <div className="min-w-0 flex-1">
+    <div className="flex min-h-full min-w-0 flex-1 flex-col bg-white">
       {!isFullWidthHeader ? (
         <HeaderSlot
           storeName={storeName}
@@ -236,7 +253,9 @@ export function CheckoutCheckoutView(props: CheckoutCheckoutViewProps) {
 
   const contentRow = (
     <div
-      className={`mx-auto flex w-full ${isMobile ? 'max-w-none flex-col' : 'flex-row items-start'}`}
+      className={`flex w-full ${
+        isMobile ? 'max-w-none flex-col' : 'min-h-full flex-row items-stretch'
+      }`}
     >
       {isMobile ? orderSummarySlot : null}
       {mainColumn}

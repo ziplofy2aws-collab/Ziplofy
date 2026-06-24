@@ -410,7 +410,7 @@ exports.getStorePreviewProduct = (0, error_utils_1.asyncErrorHandler)(async (req
         return res.status(200).json({ success: true, data: null });
     }
     const origin = (0, public_origin_util_1.publicOriginFromRequest)(req);
-    const imageUrls = (0, public_origin_util_1.absolutizeImageUrlsArray)(Array.isArray(product.imageUrls) ? product.imageUrls : [], origin);
+    const imageUrls = (0, public_origin_util_1.absolutizeImageUrlsArray)(origin, Array.isArray(product.imageUrls) ? product.imageUrls : []);
     return res.status(200).json({
         success: true,
         data: {
