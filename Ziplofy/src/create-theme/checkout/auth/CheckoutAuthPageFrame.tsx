@@ -6,6 +6,7 @@ import {
 import type { CheckoutPaletteTheme } from '../settings/checkout-settings.types';
 import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
 import { CheckoutTypographyFontLoader } from '../preview/CheckoutTypographyFontLoader';
+import { CHECKOUT_STOREFRONT_ROOT_CLASS } from '../checkout-storefront.constants';
 
 type Props = {
   mainConfig?: CheckoutSignInMainConfig | null;
@@ -33,7 +34,7 @@ export function CheckoutAuthPageFrame({
 
   const outerClass =
     variant === 'storefront'
-      ? 'relative flex min-h-screen w-full flex-col overflow-y-auto overscroll-contain'
+      ? `${CHECKOUT_STOREFRONT_ROOT_CLASS} relative flex min-h-screen w-full flex-col overflow-y-auto overscroll-contain`
       : 'checkout-preview-scroll relative flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain';
 
   const innerClass =

@@ -280,6 +280,23 @@ export function saveStaticThemeConfigLocal(
 
 export const THEME_CREATOR_CONFIG_STORAGE_KEY = 'ziplofy-theme-creator-config';
 
+/** True when the given template has at least one section in its section_order. */
+export function creatorTemplateHasSections(
+  config: Record<string, unknown> | null,
+  templateId: string
+): boolean {
+  if (!config) return false;
+  const tpl = (
+    config.templates as
+      | Record<string, { sections?: Record<string, unknown>; section_order?: string[] }>
+      | undefined
+  )?.[templateId];
+  const tplSections = tpl?.sections ?? {};
+  const tplKeys = new Set(Object.keys(tplSections));
+  const tplOrder = Array.isArray(tpl?.section_order) ? tpl.section_order : [];
+  return tplOrder.some((id) => tplKeys.has(id));
+}
+
 /** True when the creator config has at least one section listed in layout_order or template section_order. */
 export function creatorConfigHasSections(
   config: Record<string, unknown> | null,
@@ -294,13 +311,7 @@ export function creatorConfigHasSections(
   );
   if (listedLayout.length > 0) return true;
 
-  const tpl = (config.templates as Record<string, { sections?: Record<string, unknown>; section_order?: string[] }> | undefined)?.[
-    templateId
-  ];
-  const tplSections = tpl?.sections ?? {};
-  const tplKeys = new Set(Object.keys(tplSections));
-  const tplOrder = Array.isArray(tpl?.section_order) ? tpl.section_order : [];
-  return tplOrder.some((id) => tplKeys.has(id));
+  return creatorTemplateHasSections(config, templateId);
 }
 
 /** Drop orphan layout/template sections and sync order — use after load/save in Theme Creator. */

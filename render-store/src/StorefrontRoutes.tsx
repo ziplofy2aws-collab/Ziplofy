@@ -1,5 +1,10 @@
 import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import { useStorefrontAuth } from './contexts/storefront-auth.context';
+import { CheckoutAuthRequiredRoute } from './components/auth/CheckoutAuthRequiredRoute';
+import { CheckoutOrdersPage } from './pages/checkout-profile/CheckoutOrdersPage';
+import { CheckoutProfilePage } from './pages/checkout-profile/CheckoutProfilePage';
+import { CheckoutPage } from './pages/checkout/CheckoutPage';
+import { CheckoutThankYouPage } from './pages/checkout/CheckoutThankYouPage';
 import { StorefrontBlogContentShell } from './components/StorefrontBlogContentShell.tsx';
 import { StorefrontBlogByUrlHandleLoader } from './components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from './components/StorefrontBlogPostByUrlHandleLoader.tsx';
@@ -40,17 +45,17 @@ const StorefrontForgotRoute = () => {
   return <Page />;
 };
 
-const StorefrontProfileRoute = () => {
-  const theme = useLoadedThemeContract();
-  const Page = theme.ProfilePage;
-  return <Page />;
-};
+const StorefrontProfileRoute = () => (
+  <CheckoutAuthRequiredRoute>
+    <CheckoutProfilePage />
+  </CheckoutAuthRequiredRoute>
+);
 
-const StorefrontOrdersRoute = () => {
-  const theme = useLoadedThemeContract();
-  const Page = theme.OrdersPage;
-  return <Page />;
-};
+const StorefrontOrdersRoute = () => (
+  <CheckoutAuthRequiredRoute>
+    <CheckoutOrdersPage />
+  </CheckoutAuthRequiredRoute>
+);
 
 const StorefrontPreferencesRoute = () => {
   const theme = useLoadedThemeContract();
@@ -106,6 +111,8 @@ export const StorefrontRoutes = () => (
       <Route path="/my-orders" element={<StorefrontOrdersRoute />} />
       <Route path="/preferences" element={<StorefrontPreferencesRoute />} />
       <Route path="/cart" element={<StorefrontCartRoute />} />
+      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
       <Route path="/search" element={<StorefrontHomeRoute />} />
       <Route
         path="/blogs/:blogHandle/:articleHandle"

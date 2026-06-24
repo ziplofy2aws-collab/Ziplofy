@@ -7,12 +7,8 @@ import type {
   CheckoutPaletteTheme,
 } from '../settings/checkout-settings.types';
 import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
-import { CHECKOUT_FORM_MAX_WIDTH_CLASS } from '../settings/checkout-settings.types';
-import { CheckoutFooterRuntimePreview } from './CheckoutFooterRuntimePreview';
-import { CheckoutHeaderRuntimePreview, type CheckoutLogoPreviewConfig } from './CheckoutHeaderRuntimePreview';
-import { CheckoutMainRuntimePreview } from './CheckoutMainRuntimePreview';
-import { CheckoutOrderSummaryRuntimePreview } from './CheckoutOrderSummaryRuntimePreview';
-import { CheckoutTypographyFontLoader } from './CheckoutTypographyFontLoader';
+import type { CheckoutLogoPreviewConfig } from './CheckoutHeaderRuntimePreview';
+import { CheckoutCheckoutView } from '../CheckoutCheckoutView';
 
 type PreviewDevice = 'desktop' | 'mobile';
 
@@ -33,120 +29,6 @@ type Props = {
   highlightNodeId?: string | null;
   onSelectNode?: (nodeId: string) => void;
 };
-
-function HeaderSlot({
-  storeName,
-  storeUrl,
-  logo,
-  theme,
-  device,
-  highlightNodeId,
-  onSelectNode,
-  constrained = false,
-}: {
-  storeName?: string;
-  storeUrl?: string | null;
-  logo?: CheckoutLogoPreviewConfig;
-  theme?: CheckoutPaletteTheme;
-  device: PreviewDevice;
-  highlightNodeId?: string | null;
-  onSelectNode?: (nodeId: string) => void;
-  constrained?: boolean;
-}) {
-  return (
-    <div
-      className="shrink-0 border-b border-[#e1e3e5]"
-      style={{ backgroundColor: theme?.headerBackgroundColor ?? '#ffffff' }}
-    >
-      <div className={constrained ? `mx-auto w-full ${CHECKOUT_FORM_MAX_WIDTH_CLASS}` : 'w-full'}>
-        <CheckoutHeaderRuntimePreview
-          storeName={storeName}
-          storeUrl={storeUrl}
-          logo={logo}
-          theme={theme}
-          device={device}
-          highlightNodeId={highlightNodeId}
-          onSelectNode={onSelectNode}
-        />
-      </div>
-    </div>
-  );
-}
-
-function FooterSlot({
-  storeId,
-  footerConfig,
-  device,
-  highlightNodeId,
-  onSelectNode,
-  constrained = false,
-  accentColor,
-}: {
-  storeId?: string | null;
-  footerConfig?: CheckoutFooterConfig;
-  device: PreviewDevice;
-  highlightNodeId?: string | null;
-  onSelectNode?: (nodeId: string) => void;
-  constrained?: boolean;
-  accentColor?: string;
-}) {
-  return (
-    <div className={constrained ? '' : 'border-t border-[#e1e3e5] bg-white'}>
-      <div className={constrained ? '' : 'w-full'}>
-        <CheckoutFooterRuntimePreview
-          storeId={storeId}
-          alignment={footerConfig?.alignment ?? 'left'}
-          device={device}
-          highlightNodeId={highlightNodeId}
-          onSelectNode={onSelectNode}
-          constrained={constrained}
-          accentColor={accentColor}
-        />
-      </div>
-    </div>
-  );
-}
-
-function OrderSummarySlot({
-  storeId,
-  orderSummaryConfig,
-  theme,
-  device,
-  highlightNodeId,
-  onSelectNode,
-  sticky = false,
-}: {
-  storeId?: string | null;
-  orderSummaryConfig?: CheckoutOrderSummaryConfig;
-  theme?: CheckoutPaletteTheme;
-  device: PreviewDevice;
-  highlightNodeId?: string | null;
-  onSelectNode?: (nodeId: string) => void;
-  sticky?: boolean;
-}) {
-  const isMobile = device === 'mobile';
-
-  return (
-    <div
-      className={
-        isMobile
-          ? 'w-full shrink-0 border-b border-[#e1e3e5] bg-[#fafafa]'
-          : `w-[42%] max-w-[480px] shrink-0 self-start border-l border-[#e1e3e5] bg-[#fafafa] ${
-              sticky ? 'sticky top-0 max-h-full overflow-y-auto overscroll-contain' : ''
-            }`
-      }
-    >
-      <CheckoutOrderSummaryRuntimePreview
-        storeId={storeId}
-        orderSummaryConfig={orderSummaryConfig}
-        colorPalette={theme?.colorPalette}
-        highlightNodeId={highlightNodeId}
-        layout={device}
-        onSelectNode={onSelectNode}
-      />
-    </div>
-  );
-}
 
 export function CheckoutPageRuntimePreview({
   pageId,
@@ -175,106 +57,23 @@ export function CheckoutPageRuntimePreview({
     );
   }
 
-  const isMobile = device === 'mobile';
-  const isFullWidthHeader = headerPosition === 'full_width';
-  const isFullWidthFooter = (footerConfig?.location ?? 'checkout_form') === 'full_width';
-
-  const mainColumn = (
-    <div className="min-w-0 flex-1">
-      {!isFullWidthHeader ? (
-        <HeaderSlot
-          storeName={storeName}
-          storeUrl={storeUrl}
-          logo={logo}
-          theme={theme}
-          device={device}
-          highlightNodeId={highlightNodeId}
-          onSelectNode={onSelectNode}
-          constrained={!isMobile}
-        />
-      ) : null}
-      <div style={{ backgroundColor: theme?.mainBackgroundColor ?? '#ffffff' }}>
-        <CheckoutMainRuntimePreview
-          accentColor={theme?.accentColor}
-          buttonColor={theme?.buttonColor}
-          addressAutocompletion={addressAutocompletion}
-          inputFieldsTransparent={inputFieldsTransparent}
-          typography={typography}
-          device={device}
-        />
-        {!isFullWidthFooter ? (
-          <FooterSlot
-            storeId={storeId}
-            footerConfig={footerConfig}
-            device={device}
-            highlightNodeId={highlightNodeId}
-            onSelectNode={onSelectNode}
-            constrained={!isMobile}
-            accentColor={theme?.accentColor}
-          />
-        ) : null}
-      </div>
-    </div>
-  );
-
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-      <CheckoutTypographyFontLoader
-        fonts={[typography?.headingGoogleFont, typography?.bodyGoogleFont]}
-      />
-      {isFullWidthHeader ? (
-        <HeaderSlot
-          storeName={storeName}
-          storeUrl={storeUrl}
-          logo={logo}
-          theme={theme}
-          device={device}
-          highlightNodeId={highlightNodeId}
-          onSelectNode={onSelectNode}
-        />
-      ) : null}
-
-      <div className="checkout-preview-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        <div
-          className={`mx-auto flex w-full ${isMobile ? 'max-w-none flex-col' : 'min-h-full flex-row items-start'}`}
-        >
-          {isMobile ? (
-            <OrderSummarySlot
-              storeId={storeId}
-              orderSummaryConfig={orderSummaryConfig}
-              theme={theme}
-              device={device}
-              highlightNodeId={highlightNodeId}
-              onSelectNode={onSelectNode}
-            />
-          ) : null}
-
-          {mainColumn}
-
-          {!isMobile ? (
-            <OrderSummarySlot
-              storeId={storeId}
-              orderSummaryConfig={orderSummaryConfig}
-              theme={theme}
-              device={device}
-              highlightNodeId={highlightNodeId}
-              onSelectNode={onSelectNode}
-              sticky
-            />
-          ) : null}
-        </div>
-      </div>
-
-      {isFullWidthFooter ? (
-        <FooterSlot
-          storeId={storeId}
-          footerConfig={footerConfig}
-          device={device}
-          highlightNodeId={highlightNodeId}
-          onSelectNode={onSelectNode}
-          accentColor={theme?.accentColor}
-        />
-      ) : null}
-    </div>
+    <CheckoutCheckoutView
+      mode="preview"
+      device={device}
+      storeId={storeId}
+      storeName={storeName}
+      storeUrl={storeUrl}
+      headerPosition={headerPosition}
+      footerConfig={footerConfig}
+      orderSummaryConfig={orderSummaryConfig}
+      logo={logo}
+      theme={theme}
+      typography={typography}
+      inputFieldsTransparent={inputFieldsTransparent}
+      addressAutocompletion={addressAutocompletion}
+      highlightNodeId={highlightNodeId}
+      onSelectNode={onSelectNode}
+    />
   );
 }

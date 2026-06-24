@@ -1,12 +1,12 @@
 import type { EditorSchemaDoc } from '../../components/themes/theme-editor-sidebar/theme-editor-sidebar.types';
-import { creatorConfigHasSections } from '../../utils/theme-editor-static-pack';
+import { creatorTemplateHasSections } from '../../utils/theme-editor-static-pack';
 import {
   extendValuesForTemplateInstance,
   templateBlueprintKey,
 } from '../../utils/theme-editor-insert-section';
 
 /** Page types that get a one-time in-memory starter from the theme pack when the template bucket is empty. */
-export const PACK_STARTER_TEMPLATE_IDS = new Set(['product']);
+export const PACK_STARTER_TEMPLATE_IDS = new Set(['product', 'cart']);
 
 export function seedTemplateFromPackIfEmpty(
   config: Record<string, unknown>,
@@ -14,7 +14,7 @@ export function seedTemplateFromPackIfEmpty(
   packDefault: Record<string, unknown>
 ): boolean {
   if (!PACK_STARTER_TEMPLATE_IDS.has(templateId)) return false;
-  if (creatorConfigHasSections(config, templateId)) return false;
+  if (creatorTemplateHasSections(config, templateId)) return false;
 
   const packTemplates = packDefault.templates as
     | Record<string, Record<string, unknown>>

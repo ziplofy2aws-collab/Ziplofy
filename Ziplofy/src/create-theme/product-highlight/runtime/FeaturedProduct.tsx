@@ -1,5 +1,16 @@
-import { useEffect, useMemo, type CSSProperties } from 'react';
-import { formatINR, useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  formatINR,
+  getThemeConfigValue,
+  useStorefront,
+  useStorefrontCart,
+  useStorefrontProductVariants,
+  useStorefrontProducts,
+  useThemeConfig,
+  useThemeEditorPreview,
+} from '@render-store/sdk';
+import { FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER } from '../../../utils/featured-product-sidebar.util';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
@@ -22,6 +33,27 @@ import {
   sectionScopeClass,
 } from '../../runtime/shared/responsive';
 import { readProductHighlightLayout, scopedProductHighlightCss } from './productHighlightStyles';
+
+function AddToCartBagIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M6 8h12l-1.2 11.4a1 1 0 0 1-1 .6H8.2a1 1 0 0 1-1-.6L6 8Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 8V6a3 3 0 1 1 6 0v2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path d="M12 14v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M10.5 15.5h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
 
 function clampPercent(value: number, fallback = 100): number {
   if (!Number.isFinite(value)) return fallback;
@@ -109,6 +141,13 @@ export function FeaturedProduct({
   const { fontBody, fontHeading, text: themeText, accent: themeAccent } = useThemeColors();
   const { storeFrontMeta } = useStorefront();
   const { products, fetchProductsByStoreId, fetchProductById, productDetail } = useStorefrontProducts();
+  const { variants, fetchVariantsByProductId } = useStorefrontProductVariants();
+  const { createCartEntry } = useStorefrontCart();
+  const isEditorPreview = useThemeEditorPreview();
+  const navigate = useNavigate();
+  const [quantity, setQuantity] = useState(1);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  const [adding, setAdding] = useState(false);
 
   const settingsBase =
     placement === 'template'
@@ -170,6 +209,11 @@ export function FeaturedProduct({
       ? `templates.${templateId}.sections.${sectionId}.blocks.details.blocks.buy_buttons.blocks.accelerated_checkout.settings`
       : `sections.${sectionId}.blocks.details.blocks.buy_buttons.blocks.accelerated_checkout.settings`;
 
+  const buyButtonsBlocksBase =
+    placement === 'template'
+      ? `templates.${templateId}.sections.${sectionId}.blocks.details.blocks.buy_buttons`
+      : `sections.${sectionId}.blocks.details.blocks.buy_buttons`;
+
   const editorNodeId =
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
 
@@ -184,12 +228,12 @@ export function FeaturedProduct({
   const reviewCount = cfgNumber(config, `${settingsBase}.reviewCount`, 3);
   const showTaxNote = cfgBool(config, `${settingsBase}.showTaxNote`, true);
   const taxNote = cfgString(config, `${settingsBase}.taxNote`, 'Taxes included.');
-  const buttonLabel = cfgString(
+  const configuredAddToCartLabel = cfgString(
     config,
     `${addToCartSettingsBase}.buttonLabel`,
-    cfgString(config, `${settingsBase}.buttonLabel`, 'Sold out')
+    cfgString(config, `${settingsBase}.buttonLabel`, 'Add to cart')
   );
-  const soldOut = cfgBool(config, `${settingsBase}.soldOut`, true);
+  const configSoldOut = cfgBool(config, `${settingsBase}.soldOut`, true);
 
   const mediaCornerRadius = cfgNumber(config, `${mediaSettingsBase}.cornerRadius`, 0);
   const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'contain');
@@ -241,6 +285,16 @@ export function FeaturedProduct({
     if (!inList) void fetchProductById(productId);
   }, [productId, products, fetchProductById]);
 
+  useEffect(() => {
+    if (!productId || isEditorPreview) return;
+    void fetchVariantsByProductId(productId);
+  }, [productId, isEditorPreview, fetchVariantsByProductId]);
+
+  useEffect(() => {
+    setSelectedVariantIndex(0);
+    setQuantity(1);
+  }, [productId]);
+
   const resolvedProduct = useMemo(() => {
     if (!productId) return null;
     if (productDetail?._id === productId) return productDetail;
@@ -250,6 +304,88 @@ export function FeaturedProduct({
   const productTitle = resolvedProduct?.title ?? cachedTitle;
   const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
+
+  const soldOut = useMemo(() => {
+    if (isEditorPreview) return configSoldOut;
+    if (resolvedProduct) return resolvedProduct.status !== 'active';
+    return configSoldOut;
+  }, [isEditorPreview, configSoldOut, resolvedProduct]);
+
+  const addToCartLabel = soldOut
+    ? 'Sold out'
+    : configuredAddToCartLabel === 'Sold out'
+      ? 'Add to cart'
+      : configuredAddToCartLabel;
+
+  const buyButtonsBlockOrder = useMemo(() => {
+    const order = getThemeConfigValue(config, `${buyButtonsBlocksBase}.block_order`);
+    return Array.isArray(order) ? (order as string[]) : [...FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER];
+  }, [config, buyButtonsBlocksBase]);
+
+  const showQuantityBlock = buyButtonsBlockOrder.includes('quantity');
+  const showAddToCartBlock = buyButtonsBlockOrder.includes('add_to_cart');
+  const showBuyItNowBlock =
+    buyButtonsBlockOrder.includes('accelerated_checkout') &&
+    cfgBool(config, `${acceleratedCheckoutSettingsBase}.enabled`, true);
+
+  const variantOptions = useMemo(() => {
+    if (variants.length > 0) {
+      return variants.map((variant, index) => ({
+        key: variant._id,
+        label:
+          Object.values(variant.optionValues ?? {})
+            .filter(Boolean)
+            .join(' / ') || `Option ${index + 1}`,
+      }));
+    }
+    if (productDetail?.variantDetails?.length) {
+      return productDetail.variantDetails.map((variant, index) => ({
+        key: variant._id,
+        label:
+          Object.values(variant.optionValues ?? {})
+            .filter(Boolean)
+            .join(' / ') || `Option ${index + 1}`,
+      }));
+    }
+    return ['S', 'M', 'L'].map((size) => ({ key: size, label: size }));
+  }, [variants, productDetail]);
+
+  const selectedVariant = useMemo(() => {
+    if (variants.length > 0) return variants[selectedVariantIndex] ?? variants[0];
+    if (productDetail?.variantDetails?.length) {
+      return productDetail.variantDetails[selectedVariantIndex] ?? productDetail.variantDetails[0];
+    }
+    return null;
+  }, [variants, productDetail, selectedVariantIndex]);
+
+  const canPurchase = Boolean(!soldOut && !isEditorPreview && storeId && selectedVariant);
+
+  const handleAddToCart = useCallback(async () => {
+    if (!canPurchase || adding || !selectedVariant) return;
+    try {
+      setAdding(true);
+      await createCartEntry(
+        { storeId, productVariantId: selectedVariant._id, quantity },
+        selectedVariant
+      );
+    } finally {
+      setAdding(false);
+    }
+  }, [adding, canPurchase, createCartEntry, quantity, selectedVariant, storeId]);
+
+  const handleBuyItNow = useCallback(async () => {
+    if (!canPurchase || adding || !selectedVariant) return;
+    try {
+      setAdding(true);
+      await createCartEntry(
+        { storeId, productVariantId: selectedVariant._id, quantity },
+        selectedVariant
+      );
+      navigate('/cart');
+    } finally {
+      setAdding(false);
+    }
+  }, [adding, canPurchase, createCartEntry, navigate, quantity, selectedVariant, storeId]);
 
   const scheme = style.scheme;
   const mediaOnLeft = mediaPosition !== 'right';
@@ -414,10 +550,28 @@ export function FeaturedProduct({
   const buyButtonsRow: CSSProperties = {
     display: 'flex',
     flexDirection: buyButtonsStyle.alwaysStackButtons ? 'column' : 'row',
-    flexWrap: buyButtonsStyle.alwaysStackButtons ? 'nowrap' : 'wrap',
-    gap: buyButtonsStyle.alwaysStackButtons ? 12 : 8,
+    flexWrap: buyButtonsStyle.alwaysStackButtons ? 'nowrap' : 'nowrap',
+    gap: 12,
     alignItems: buyButtonsStyle.alwaysStackButtons ? 'stretch' : 'center',
     width: '100%',
+  };
+
+  const actionButtonBase: CSSProperties = {
+    marginTop: 0,
+    height: 48,
+    padding: '0 20px',
+    borderRadius: 12,
+    fontSize: 15,
+    fontWeight: 500,
+    fontFamily: fontBody,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    flex: buyButtonsStyle.alwaysStackButtons ? undefined : '1 1 0',
+    width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined,
+    minWidth: buyButtonsStyle.alwaysStackButtons ? undefined : 0,
+    boxSizing: 'border-box',
   };
 
   const titleBlockStyle = useMemo(
@@ -521,27 +675,25 @@ export function FeaturedProduct({
   );
 
   const addToCartButtonStyle: CSSProperties = {
-    marginTop: 0,
-    width: buyButtonsStyle.alwaysStackButtons ? '100%' : 'auto',
-    flex: buyButtonsStyle.alwaysStackButtons ? undefined : '1 1 auto',
-    minWidth: buyButtonsStyle.alwaysStackButtons ? undefined : 160,
-    padding: '14px 24px',
-    border:
-      addToCartStyle.style === 'secondary' && !soldOut
-        ? `1px solid ${scheme.muted}88`
+    ...actionButtonBase,
+    border: soldOut
+      ? 'none'
+      : addToCartStyle.style === 'secondary'
+        ? '1px solid #111827'
         : 'none',
-    borderRadius: 999,
-    background:
-      soldOut
-        ? '#6b7280'
-        : addToCartStyle.style === 'secondary'
-          ? '#ffffff'
-          : '#111827',
+    background: soldOut ? '#9ca3af' : addToCartStyle.style === 'secondary' ? '#ffffff' : '#111827',
     color: soldOut ? '#ffffff' : addToCartStyle.style === 'secondary' ? '#111827' : '#ffffff',
-    fontSize: 15,
-    fontWeight: 500,
-    cursor: soldOut ? 'not-allowed' : 'pointer',
-    fontFamily: fontBody,
+    cursor: soldOut || adding ? 'not-allowed' : 'pointer',
+    opacity: adding ? 0.75 : 1,
+  };
+
+  const buyItNowButtonStyle: CSSProperties = {
+    ...actionButtonBase,
+    border: 'none',
+    background: '#111827',
+    color: '#ffffff',
+    cursor: adding ? 'wait' : 'pointer',
+    opacity: adding ? 0.75 : 1,
   };
 
   const pickupStyle: CSSProperties = {
@@ -575,21 +727,23 @@ export function FeaturedProduct({
     display: 'inline-flex',
     alignItems: 'center',
     border: `1px solid ${scheme.muted}88`,
-    borderRadius: 999,
+    borderRadius: 12,
     overflow: 'hidden',
     flex: buyButtonsStyle.alwaysStackButtons ? undefined : '0 0 auto',
     width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined,
     justifyContent: buyButtonsStyle.alwaysStackButtons ? 'center' : undefined,
+    height: 48,
+    boxSizing: 'border-box',
   };
 
   const quantityBtnStyle: CSSProperties = {
     width: 40,
-    height: 44,
+    height: '100%',
     border: 'none',
     background: 'transparent',
     color: scheme.color,
     fontSize: 18,
-    cursor: 'default',
+    cursor: soldOut || isEditorPreview ? 'default' : 'pointer',
     fontFamily: fontBody,
   };
 
@@ -620,7 +774,7 @@ export function FeaturedProduct({
     color: selected ? scheme.background : scheme.color,
     fontSize: 14,
     fontFamily: fontBody,
-    cursor: 'default',
+    cursor: isEditorPreview ? 'default' : 'pointer',
   });
 
   const variantSwatchStyle = (color: string, selected: boolean): CSSProperties => ({
@@ -780,9 +934,16 @@ export function FeaturedProduct({
                       width: '100%',
                     }}
                   >
-                    {['S', 'M', 'L'].map((size, index) => (
-                      <button key={size} type="button" style={variantOptionStyle(index === 1)}>
-                        {size}
+                    {variantOptions.map((option, index) => (
+                      <button
+                        key={option.key}
+                        type="button"
+                        style={variantOptionStyle(index === selectedVariantIndex)}
+                        onClick={() => {
+                          if (!isEditorPreview) setSelectedVariantIndex(index);
+                        }}
+                      >
+                        {option.label}
                       </button>
                     ))}
                   </div>
@@ -800,33 +961,55 @@ export function FeaturedProduct({
                   </EditorField>
                 ) : null}
                 <div style={buyButtonsRow}>
-                  <EditorField
-                    fieldPath={quantitySettingsBase}
-                    label="Quantity"
-                    as="span"
-                    style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
-                  >
-                    <span style={quantityWrapStyle}>
-                      <button type="button" aria-label="Decrease quantity" style={quantityBtnStyle}>
-                        −
+                  {showQuantityBlock ? (
+                    <EditorField
+                      fieldPath={quantitySettingsBase}
+                      label="Quantity"
+                      as="span"
+                      style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
+                    >
+                      <span style={quantityWrapStyle}>
+                        <button
+                          type="button"
+                          aria-label="Decrease quantity"
+                          style={quantityBtnStyle}
+                          disabled={soldOut || isEditorPreview}
+                          onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                        >
+                          −
+                        </button>
+                        <span style={quantityValueStyle}>{quantity}</span>
+                        <button
+                          type="button"
+                          aria-label="Increase quantity"
+                          style={quantityBtnStyle}
+                          disabled={soldOut || isEditorPreview}
+                          onClick={() => setQuantity((value) => value + 1)}
+                        >
+                          +
+                        </button>
+                      </span>
+                    </EditorField>
+                  ) : null}
+                  {showAddToCartBlock ? (
+                    <EditorField
+                      fieldPath={`${addToCartSettingsBase}.style`}
+                      label="Add to cart"
+                      as="span"
+                      style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
+                    >
+                      <button
+                        type="button"
+                        disabled={soldOut || adding}
+                        style={addToCartButtonStyle}
+                        onClick={() => void handleAddToCart()}
+                      >
+                        {!soldOut ? <AddToCartBagIcon /> : null}
+                        {addToCartLabel}
                       </button>
-                      <span style={quantityValueStyle}>1</span>
-                      <button type="button" aria-label="Increase quantity" style={quantityBtnStyle}>
-                        +
-                      </button>
-                    </span>
-                  </EditorField>
-                  <EditorField
-                    fieldPath={`${addToCartSettingsBase}.style`}
-                    label="Add to cart"
-                    as="span"
-                    style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
-                  >
-                    <button type="button" disabled={soldOut} style={addToCartButtonStyle}>
-                      {buttonLabel}
-                    </button>
-                  </EditorField>
-                  {!soldOut ? (
+                    </EditorField>
+                  ) : null}
+                  {showBuyItNowBlock && !soldOut ? (
                     <EditorField
                       fieldPath={`${acceleratedCheckoutSettingsBase}.enabled`}
                       label="Accelerated checkout"
@@ -835,12 +1018,9 @@ export function FeaturedProduct({
                     >
                       <button
                         type="button"
-                        style={{
-                          ...addToCartButtonStyle,
-                          background: '#ffffff',
-                          color: '#111827',
-                          border: `1px solid ${scheme.muted}88`,
-                        }}
+                        disabled={adding}
+                        style={buyItNowButtonStyle}
+                        onClick={() => void handleBuyItNow()}
                       >
                         Buy it now
                       </button>

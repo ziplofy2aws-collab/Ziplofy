@@ -1,0 +1,90 @@
+/**
+ * Storefront isolation + layout helpers for checkout editor pages on render-store.
+ * Tailwind utilities from shared views are enabled via @source in render-store/index.css.
+ */
+
+.checkout-storefront-page {
+  background: #ffffff;
+  color: #121212;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.checkout-storefront-page *,
+.checkout-storefront-page *::before,
+.checkout-storefront-page *::after {
+  box-sizing: border-box;
+}
+
+.checkout-storefront-page h1,
+.checkout-storefront-page h2,
+.checkout-storefront-page h3,
+.checkout-storefront-page h4,
+.checkout-storefront-page p,
+.checkout-storefront-page dl,
+.checkout-storefront-page dd,
+.checkout-storefront-page dt,
+.checkout-storefront-page ul,
+.checkout-storefront-page ol {
+  margin: 0;
+}
+
+.checkout-storefront-page button,
+.checkout-storefront-page a {
+  color: inherit;
+}
+
+.checkout-storefront-page button {
+  font: inherit;
+}
+
+.checkout-storefront-page .checkout-preview-scroll {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* Live storefront checkout: scroll the document, not a trapped inner panel. */
+.checkout-storefront-page.checkout-storefront-checkout {
+  min-height: 100vh;
+  overflow: visible;
+}
+
+/* Profile + orders two-column shell (matches checkout editor desktop layout). */
+.checkout-storefront-page .checkout-account-layout {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.checkout-storefront-page .checkout-account-nav {
+  flex-shrink: 0;
+  width: 148px;
+}
+
+.checkout-storefront-page .checkout-account-main {
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+@media (max-width: 639px) {
+  .checkout-storefront-page .checkout-account-layout {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .checkout-storefront-page .checkout-account-nav {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #dedede;
+    padding-bottom: 1rem;
+  }
+}

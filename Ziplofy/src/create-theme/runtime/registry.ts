@@ -23,6 +23,7 @@ import { BlogPostsCarousel } from '../blog-posts-carousel/runtime/BlogPostsCarou
 import { ContactForm } from '../contact-form/runtime/ContactForm';
 import { EmailSignup } from '../email-signup/runtime/EmailSignup';
 import { ProductMain } from '../product-main/runtime/ProductMain';
+import { CartMain } from '../cart-main/runtime/CartMain';
 import { ProductHighlight } from '../product-highlight/runtime/ProductHighlight';
 import { CollectionListBento } from '../collection-list-bento/runtime/CollectionListBento';
 /** Live UI components keyed by schema `section.type`. */
@@ -39,6 +40,7 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
   'collection-list-editorial': CollectionListBento,
   'product-highlight': ProductHighlight,
   'product-main': ProductMain,
+  'cart-main': CartMain,
   faq: Faq,
   'icons-with-text': IconsWithText,
   'text-marquee': TextMarquee,
@@ -76,6 +78,7 @@ export function blueprintIdFromInstanceId(instanceId: string): string {
     'collection_list_bento',
     'product_highlight',
     'product_main',
+    'cart_main',
     'storytelling_video',
     'image_with_text',
     'image_compare',

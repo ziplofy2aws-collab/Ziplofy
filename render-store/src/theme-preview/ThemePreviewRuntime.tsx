@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
+import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
 import type { ThemeContract } from '@/themes/contract';
 import { loadRemoteTheme } from '@/themes/loadRemoteTheme';
 import { rewriteRemoteThemeImports } from '@/themes/rewriteRemoteThemeImports';
@@ -156,6 +158,8 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, pageRevision }: Theme
         <Route path="/my-orders" element={<Orders />} />
         <Route path="/preferences" element={<Preferences />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
         <Route path="/search" element={<Home />} />
         <Route path="*" element={<Home />} />
       </Routes>

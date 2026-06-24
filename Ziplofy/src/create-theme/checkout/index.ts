@@ -52,9 +52,17 @@ export { CheckoutSignInView } from './auth/CheckoutSignInView';
 export { CheckoutSignupView } from './auth/CheckoutSignupView';
 export { resolveCheckoutAuthPageAppearance } from './runtime/checkout-auth-page.utils';
 export { CheckoutAccountProfileRuntimePreview } from './preview/CheckoutAccountProfileRuntimePreview';
+export { CheckoutProfileView } from './profile/CheckoutProfileView';
 export { CheckoutOrdersRuntimePreview } from './preview/CheckoutOrdersRuntimePreview';
+export { CheckoutOrdersView } from './orders/CheckoutOrdersView';
+export { resolveCheckoutProfilePageAppearance } from './runtime/checkout-profile-page.utils';
+export { resolveCheckoutPageAppearance } from './runtime/checkout-page.utils';
 export { CheckoutOrderStatusRuntimePreview } from './preview/CheckoutOrderStatusRuntimePreview';
 export { CheckoutThankYouRuntimePreview } from './preview/CheckoutThankYouRuntimePreview';
+export { CheckoutCheckoutView } from './CheckoutCheckoutView';
+export type { CheckoutCheckoutViewProps } from './CheckoutCheckoutView';
+export { CheckoutMainView } from './CheckoutMainView';
+export { CheckoutOrderSummaryView } from './CheckoutOrderSummaryView';
 export { CheckoutPageRuntimePreview } from './preview/CheckoutPageRuntimePreview';
 export { CheckoutProfilePreview } from './preview/CheckoutProfilePreview';
 

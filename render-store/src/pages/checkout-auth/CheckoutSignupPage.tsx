@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CheckoutSignupView } from '@ziplofy/create-theme/checkout/auth/CheckoutSignupView';
 import {
   checkoutAuthLinkStyle,
@@ -15,6 +15,8 @@ import { useCheckoutAuthPageAppearance } from '@/hooks/useCheckoutAuthPageAppear
 
 export function CheckoutSignupPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = (location.state as { from?: string } | null)?.from ?? '/';
   const { signup, loading: authLoading } = useStorefrontAuth();
   const { storeId, storeName, signInMain, theme, typography, globalLogo, loading } =
     useCheckoutAuthPageAppearance();
@@ -54,7 +56,7 @@ export function CheckoutSignupPage() {
         email: email.trim(),
         password,
       });
-      navigate('/');
+      navigate(returnTo);
     } catch {
       /* toast from auth context */
     }
@@ -86,7 +88,7 @@ export function CheckoutSignupPage() {
       onMarketingOptInChange={setMarketingOptIn}
       onSubmit={() => void handleSubmit()}
       signInLink={
-        <Link to="/auth/login" className="font-medium underline" style={policyLinkStyle}>
+        <Link to="/auth/login" state={{ from: returnTo }} className="font-medium underline" style={policyLinkStyle}>
           Sign in
         </Link>
       }

@@ -1,4 +1,4 @@
-import { axiosi } from '../../../config/axios.config';
+import { checkoutHttp } from '../api/checkout-http';
 import type {
   CheckoutStorePolicyContent,
   CheckoutStorePolicyType,
@@ -49,7 +49,7 @@ export async function fetchCheckoutWrittenPolicies(
   const existing = inflightAll.get(storeId);
   if (existing) return existing;
 
-  const promise = axiosi
+  const promise = checkoutHttp
     .get<{ success: boolean; data: CheckoutStoreWrittenPolicies; message?: string }>(
       `/storefront/policies/store/${storeId}`
     )
@@ -76,7 +76,7 @@ export async function fetchCheckoutPolicyByType(
   const existing = inflightByType.get(cacheKey);
   if (existing) return existing;
 
-  const promise = axiosi
+  const promise = checkoutHttp
     .get<{ success: boolean; data: CheckoutStorePolicyContent | null; message?: string }>(
       `/storefront/policies/store/${storeId}/type/${type}`
     )

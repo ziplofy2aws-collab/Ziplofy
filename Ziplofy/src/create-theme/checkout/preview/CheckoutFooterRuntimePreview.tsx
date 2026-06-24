@@ -33,7 +33,7 @@ export function CheckoutFooterRuntimePreview({
 
   return (
     <footer
-      className={`pointer-events-auto w-full select-none ${
+      className={`pointer-events-auto w-full ${onSelectNode ? 'select-none' : ''} ${
         constrained
           ? `mx-auto max-w-[580px] ${isMobile ? 'px-4 pb-6' : 'px-6 pb-8 sm:px-8'}`
           : `${isMobile ? 'px-4 py-6' : 'px-6 py-8 sm:px-8'}`

@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Scan shared checkout/theme UI from Ziplofy so Tailwind generates all utility classes. */
+@source "../../Ziplofy/src/create-theme";
+@source "./";
+
+@import "../../Ziplofy/src/create-theme/checkout/checkout-storefront.css";
+
 :root {
   --ivory-white: #f7f6f4;
   --champagne-beige: #f1ede7;

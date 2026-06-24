@@ -2,6 +2,8 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-d
 import { StorefrontSeoManager } from '../seo/StorefrontSeoManager.tsx';
 import {
   renderCheckoutAuthRoutes,
+  renderCheckoutProfileRoutes,
+  renderCheckoutPageRoutes,
   renderThemePageRoutes,
 } from '../theme-preview/ThemePageRouteElements.tsx';
 
@@ -11,7 +13,9 @@ export function CustomThemeRoutes() {
       <StorefrontSeoManager />
       <Routes>
         {renderCheckoutAuthRoutes()}
-        {renderThemePageRoutes({ excludeCheckoutAuth: true })}
+        {renderCheckoutProfileRoutes()}
+        {renderCheckoutPageRoutes()}
+        {renderThemePageRoutes({ excludeCheckoutAuth: true, excludeCheckoutProfile: true })}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

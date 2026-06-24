@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { axiosi } from '../../../config/axios.config';
+import { checkoutHttp } from '../api/checkout-http';
 
 export type CheckoutPreviewProduct = {
   _id: string;
@@ -28,7 +28,7 @@ export function useCheckoutPreviewProduct(storeId?: string | null) {
     (async () => {
       setLoading(true);
       try {
-        const res = await axiosi.get<PreviewProductResponse>(`/products/store/${storeId}/preview`);
+        const res = await checkoutHttp.get<PreviewProductResponse>(`/products/store/${storeId}/preview`);
         if (cancelled) return;
         setProduct(res.data.success ? res.data.data : null);
       } catch {

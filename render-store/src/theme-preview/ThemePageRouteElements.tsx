@@ -4,6 +4,11 @@ import { CustomThemeTemplatePage } from '@ziplofy/create-theme/runtime';
 import { CheckoutSignInPage } from '@/pages/checkout-auth/CheckoutSignInPage';
 import { CheckoutSignupPage } from '@/pages/checkout-auth/CheckoutSignupPage';
 import { CheckoutAuthGuestRoute } from '@/components/auth/CheckoutAuthGuestRoute';
+import { CheckoutAuthRequiredRoute } from '@/components/auth/CheckoutAuthRequiredRoute';
+import { CheckoutOrdersPage } from '@/pages/checkout-profile/CheckoutOrdersPage';
+import { CheckoutProfilePage } from '@/pages/checkout-profile/CheckoutProfilePage';
+import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
+import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
 import { listThemePageRouteSpecs } from '@ziplofy/create-theme/utils/theme-page-registry';
 import { StorefrontBlogByUrlHandleLoader } from '../components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from '../components/StorefrontBlogPostByUrlHandleLoader.tsx';
@@ -14,6 +19,7 @@ const ROUTE_SPECS = listThemePageRouteSpecs();
 
 /** Auth pages use checkout editor UI — not theme JSON templates. */
 const CHECKOUT_AUTH_PATHS = new Set(['/auth/login', '/auth/signup']);
+const CHECKOUT_PROFILE_PATHS = new Set(['/my-orders', '/profile']);
 
 export function renderCheckoutAuthRoutes(): ReactElement[] {
   return [
@@ -38,16 +44,64 @@ export function renderCheckoutAuthRoutes(): ReactElement[] {
   ];
 }
 
+export function renderCheckoutProfileRoutes(): ReactElement[] {
+  return [
+    <Route
+      key="/my-orders"
+      path="/my-orders"
+      element={
+        <CheckoutAuthRequiredRoute>
+          <CheckoutOrdersPage />
+        </CheckoutAuthRequiredRoute>
+      }
+    />,
+    <Route
+      key="/profile"
+      path="/profile"
+      element={
+        <CheckoutAuthRequiredRoute>
+          <CheckoutProfilePage />
+        </CheckoutAuthRequiredRoute>
+      }
+    />,
+  ];
+}
+
+/** @deprecated Use renderCheckoutProfileRoutes */
+export function renderCheckoutOrdersRoute(): ReactElement {
+  return renderCheckoutProfileRoutes()[0]!;
+}
+
+export function renderCheckoutPageRoutes(): ReactElement[] {
+  return [
+    <Route key="/checkout" path="/checkout" element={<CheckoutPage />} />,
+    <Route
+      key="/checkout/thank-you"
+      path="/checkout/thank-you"
+      element={<CheckoutThankYouPage />}
+    />,
+  ];
+}
+
+/** @deprecated Use renderCheckoutPageRoutes */
+export function renderCheckoutPageRoute(): ReactElement {
+  return renderCheckoutPageRoutes()[0]!;
+}
+
 type ThemePageRouteOptions = {
   /** Omit login/signup template routes when checkout auth routes are registered separately. */
   excludeCheckoutAuth?: boolean;
+  /** Omit customer account routes that use checkout editor UI. */
+  excludeCheckoutProfile?: boolean;
 };
 
 /** Direct <Route> children for <Routes> — cannot wrap in a custom component (react-router v6). */
 export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactElement[] {
-  const specs = options?.excludeCheckoutAuth
-    ? ROUTE_SPECS.filter((spec) => !CHECKOUT_AUTH_PATHS.has(spec.path))
-    : ROUTE_SPECS;
+  const specs = ROUTE_SPECS.filter((spec) => {
+    if (options?.excludeCheckoutAuth && CHECKOUT_AUTH_PATHS.has(spec.path)) return false;
+    if (options?.excludeCheckoutProfile && CHECKOUT_PROFILE_PATHS.has(spec.path)) return false;
+    return true;
+  });
 
   return specs.map((spec) => {
     const page = (

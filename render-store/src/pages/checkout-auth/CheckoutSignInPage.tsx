@@ -22,7 +22,8 @@ export function CheckoutSignInPage() {
   const { loading: policyLoading, error: policyError, fetchPolicyByType, getPolicyByType } =
     useStorefrontPolicies();
 
-  const locationState = location.state as { email?: string } | null;
+  const locationState = location.state as { email?: string; from?: string } | null;
+  const returnTo = locationState?.from ?? '/';
   const [email, setEmail] = useState(locationState?.email ?? '');
   const [password, setPassword] = useState('');
   const [marketingOptIn, setMarketingOptIn] = useState(false);
@@ -48,7 +49,7 @@ export function CheckoutSignInPage() {
     if (!storeId || !email.trim() || !password) return;
     try {
       await login({ storeId, email: email.trim(), password });
-      navigate('/');
+      navigate(returnTo);
     } catch {
       /* toast from auth context */
     }
@@ -81,7 +82,12 @@ export function CheckoutSignInPage() {
         </Link>
       }
       signupLink={
-        <Link to="/auth/signup" className="font-medium underline" style={policyLinkStyle}>
+        <Link
+          to="/auth/signup"
+          state={{ from: returnTo }}
+          className="font-medium underline"
+          style={policyLinkStyle}
+        >
           Create account
         </Link>
       }
