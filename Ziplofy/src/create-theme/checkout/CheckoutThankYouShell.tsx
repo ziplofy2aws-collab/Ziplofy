@@ -104,7 +104,11 @@ export function CheckoutThankYouShell({
   );
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
+    <div
+      className={`flex min-h-0 flex-col overflow-hidden bg-white ${
+        scrollable ? 'h-full' : 'min-h-screen'
+      }`}
+    >
       <CheckoutTypographyFontLoader fonts={[typography?.headingGoogleFont, typography?.bodyGoogleFont]} />
       {isFullWidthHeader ? headerSlot : null}
       {scrollable ? (

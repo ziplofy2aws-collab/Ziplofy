@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import type { CheckoutFooterConfig, CheckoutHeaderPosition, CheckoutPaletteTheme } from '../settings/checkout-settings.types';
 import { CHECKOUT_FORM_MAX_WIDTH_CLASS } from '../settings/checkout-settings.types';
 import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
-import { formatCheckoutPrice } from '../utils/format-checkout-price';
 import { CheckoutFooterRuntimePreview } from '../preview/CheckoutFooterRuntimePreview';
 import { CheckoutHeaderRuntimePreview, type CheckoutLogoPreviewConfig } from '../preview/CheckoutHeaderRuntimePreview';
 import { CheckoutTypographyFontLoader } from '../preview/CheckoutTypographyFontLoader';
 import type { CheckoutOrderCardData } from './checkout-order-card.types';
 import { CHECKOUT_EXAMPLE_ORDERS } from './checkout-order-card.types';
+import { CheckoutOrderCard } from './CheckoutOrderCard';
 import { CHECKOUT_STOREFRONT_ROOT_CLASS } from '../checkout-storefront.constants';
 
 type PreviewDevice = 'desktop' | 'mobile';
@@ -41,52 +41,6 @@ type LiveProps = BaseProps & {
 
 export type CheckoutOrdersViewProps = PreviewProps | LiveProps;
 
-function OrderCard({
-  order,
-  buttonColor,
-  isMobile,
-}: {
-  order: CheckoutOrderCardData;
-  buttonColor: string;
-  isMobile: boolean;
-}) {
-  return (
-    <article className="rounded-md border border-[#dedede] bg-white p-4">
-      <div className={`flex gap-4 ${isMobile ? 'flex-col' : 'items-start'}`}>
-        <div
-          className={`h-16 w-16 shrink-0 rounded-md bg-linear-to-br ${order.imageGradient}`}
-          aria-hidden
-        />
-        <div className="min-w-0 flex-1">
-          <p className="text-[14px] font-medium text-[#121212]">Order #{order.id}</p>
-          <p className="mt-1 text-[13px] text-[#707070]">{order.status}</p>
-          <p className="mt-1 text-[13px] text-[#121212]">{formatCheckoutPrice(order.amount)} INR</p>
-          <p className="mt-0.5 text-[13px] text-[#707070]">Due {order.dueDate}</p>
-        </div>
-        <div className={`flex shrink-0 gap-2 ${isMobile ? 'w-full' : 'flex-col'}`}>
-          <button
-            type="button"
-            className={`rounded-md px-4 py-2 text-[13px] font-medium text-white ${
-              isMobile ? 'flex-1' : 'min-w-[96px]'
-            }`}
-            style={{ backgroundColor: buttonColor }}
-          >
-            Pay now
-          </button>
-          <button
-            type="button"
-            className={`rounded-md border border-[#dedede] bg-white px-4 py-2 text-[13px] font-medium text-[#121212] ${
-              isMobile ? 'flex-1' : 'min-w-[96px]'
-            }`}
-          >
-            Buy again
-          </button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
 function ProfileBreadcrumb({ children }: { children: ReactNode }) {
   return <p className="mt-3 text-[14px] text-[#b5b5b5]">{children}</p>;
 }
@@ -113,7 +67,7 @@ export function CheckoutOrdersView(props: CheckoutOrdersViewProps) {
   const isFullWidthFooter = (footerConfig?.location ?? 'checkout_form') === 'full_width';
   const headingsFontFamily = typography?.headingsFontFamily;
   const bodyFontFamily = typography?.bodyFontFamily;
-  const buttonColor = theme?.buttonColor ?? '#005bd3';
+  const buttonColor = theme?.buttonColor ?? theme?.accentColor ?? '#005bd3';
   const mainHighlighted = highlightNodeId === 'checkout:orders:group:main';
   const orders = isPreview ? CHECKOUT_EXAMPLE_ORDERS : props.orders;
   const loading = !isPreview && props.loading;
@@ -184,9 +138,19 @@ export function CheckoutOrdersView(props: CheckoutOrdersViewProps) {
       ) : orders.length === 0 ? (
         <p className="mt-6 text-[14px] text-[#707070]">You haven&apos;t placed any orders yet.</p>
       ) : (
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-3">
           {orders.map((order) => (
-            <OrderCard key={order.id} order={order} buttonColor={buttonColor} isMobile={isMobile} />
+            <CheckoutOrderCard
+              key={order.orderRefId ?? order.id}
+              order={order}
+              buttonColor={buttonColor}
+              isMobile={isMobile}
+              detailHref={
+                !isPreview && order.orderRefId
+                  ? `/my-orders/${order.orderRefId}`
+                  : undefined
+              }
+            />
           ))}
         </div>
       )}

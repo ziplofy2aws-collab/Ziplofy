@@ -6,6 +6,7 @@ import { CheckoutSignupPage } from '@/pages/checkout-auth/CheckoutSignupPage';
 import { CheckoutAuthGuestRoute } from '@/components/auth/CheckoutAuthGuestRoute';
 import { CheckoutAuthRequiredRoute } from '@/components/auth/CheckoutAuthRequiredRoute';
 import { CheckoutOrdersPage } from '@/pages/checkout-profile/CheckoutOrdersPage';
+import { CheckoutOrderStatusPage } from '@/pages/checkout-profile/CheckoutOrderStatusPage';
 import { CheckoutProfilePage } from '@/pages/checkout-profile/CheckoutProfilePage';
 import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
@@ -52,6 +53,15 @@ export function renderCheckoutProfileRoutes(): ReactElement[] {
       element={
         <CheckoutAuthRequiredRoute>
           <CheckoutOrdersPage />
+        </CheckoutAuthRequiredRoute>
+      }
+    />,
+    <Route
+      key="/my-orders/:orderId"
+      path="/my-orders/:orderId"
+      element={
+        <CheckoutAuthRequiredRoute>
+          <CheckoutOrderStatusPage />
         </CheckoutAuthRequiredRoute>
       }
     />,

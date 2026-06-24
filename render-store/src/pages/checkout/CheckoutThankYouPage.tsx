@@ -35,7 +35,7 @@ export function CheckoutThankYouPage() {
   }
 
   return (
-    <div className={`${CHECKOUT_STOREFRONT_ROOT_CLASS} checkout-storefront-thank-you min-h-screen bg-white`}>
+    <div className={`${CHECKOUT_STOREFRONT_ROOT_CLASS} checkout-storefront-thank-you flex min-h-screen flex-col bg-white`}>
       <CheckoutThankYouView
         device="desktop"
         storeId={storeId}

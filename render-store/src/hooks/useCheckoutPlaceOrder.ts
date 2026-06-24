@@ -111,7 +111,7 @@ export function useCheckoutPlaceOrder(storeId: string | null) {
           buildCompletedCheckoutOrderSummary({
             orderId: order._id,
             form,
-            total,
+            cartItems,
           })
         );
 

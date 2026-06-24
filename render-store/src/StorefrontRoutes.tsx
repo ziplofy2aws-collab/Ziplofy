@@ -2,6 +2,7 @@ import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'r
 import { useStorefrontAuth } from './contexts/storefront-auth.context';
 import { CheckoutAuthRequiredRoute } from './components/auth/CheckoutAuthRequiredRoute';
 import { CheckoutOrdersPage } from './pages/checkout-profile/CheckoutOrdersPage';
+import { CheckoutOrderStatusPage } from './pages/checkout-profile/CheckoutOrderStatusPage';
 import { CheckoutProfilePage } from './pages/checkout-profile/CheckoutProfilePage';
 import { CheckoutPage } from './pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from './pages/checkout/CheckoutThankYouPage';
@@ -57,6 +58,12 @@ const StorefrontOrdersRoute = () => (
   </CheckoutAuthRequiredRoute>
 );
 
+const StorefrontOrderStatusRoute = () => (
+  <CheckoutAuthRequiredRoute>
+    <CheckoutOrderStatusPage />
+  </CheckoutAuthRequiredRoute>
+);
+
 const StorefrontPreferencesRoute = () => {
   const theme = useLoadedThemeContract();
   const Page = theme.PreferencesPage;
@@ -109,6 +116,7 @@ export const StorefrontRoutes = () => (
       <Route path="/auth/forgot" element={<StorefrontForgotRoute />} />
       <Route path="/profile" element={<StorefrontProfileRoute />} />
       <Route path="/my-orders" element={<StorefrontOrdersRoute />} />
+      <Route path="/my-orders/:orderId" element={<StorefrontOrderStatusRoute />} />
       <Route path="/preferences" element={<StorefrontPreferencesRoute />} />
       <Route path="/cart" element={<StorefrontCartRoute />} />
       <Route path="/checkout" element={<CheckoutPage />} />

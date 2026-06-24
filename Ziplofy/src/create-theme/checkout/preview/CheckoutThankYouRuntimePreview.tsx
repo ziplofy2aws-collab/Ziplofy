@@ -1,16 +1,15 @@
-import React from 'react';
 import type {
   CheckoutFooterConfig,
   CheckoutHeaderPosition,
   CheckoutOrderSummaryConfig,
   CheckoutPaletteTheme,
   CheckoutThankYouMainConfig,
-} from './settings/checkout-settings.types';
-import type { CheckoutTypographyTheme } from './settings/checkout-typography-fonts';
-import { CheckoutOrderSummaryRuntimePreview } from './preview/CheckoutOrderSummaryRuntimePreview';
-import { CheckoutThankYouMainContent, CHECKOUT_THANK_YOU_PREVIEW_DETAILS } from './CheckoutThankYouMainContent';
-import { CheckoutThankYouShell } from './CheckoutThankYouShell';
-import type { CheckoutLogoPreviewConfig } from './preview/CheckoutHeaderRuntimePreview';
+} from '../settings/checkout-settings.types';
+import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
+import { CheckoutOrderSummaryRuntimePreview } from './CheckoutOrderSummaryRuntimePreview';
+import { CheckoutThankYouMainContent, CHECKOUT_THANK_YOU_PREVIEW_DETAILS } from '../CheckoutThankYouMainContent';
+import { CheckoutThankYouShell } from '../CheckoutThankYouShell';
+import type { CheckoutLogoPreviewConfig } from './CheckoutHeaderRuntimePreview';
 
 type PreviewDevice = 'desktop' | 'mobile';
 

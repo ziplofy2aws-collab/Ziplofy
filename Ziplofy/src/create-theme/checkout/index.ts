@@ -58,6 +58,7 @@ export { CheckoutOrdersView } from './orders/CheckoutOrdersView';
 export { resolveCheckoutProfilePageAppearance } from './runtime/checkout-profile-page.utils';
 export { resolveCheckoutPageAppearance } from './runtime/checkout-page.utils';
 export { CheckoutOrderStatusRuntimePreview } from './preview/CheckoutOrderStatusRuntimePreview';
+export { CheckoutOrderStatusView } from './order-status/CheckoutOrderStatusView';
 export { CheckoutThankYouRuntimePreview } from './preview/CheckoutThankYouRuntimePreview';
 export { CheckoutCheckoutView } from './CheckoutCheckoutView';
 export type { CheckoutCheckoutViewProps } from './CheckoutCheckoutView';
