@@ -90,10 +90,9 @@ export function CheckoutHeaderRuntimePreview({
       }`}
       data-checkout-node-id="checkout:header:logo"
       onClick={(e) => {
-        if (onSelectNode) {
-          onSelectNode('checkout:header:logo');
-          e.stopPropagation();
-        }
+        if (!onSelectNode) return;
+        onSelectNode('checkout:header:logo');
+        e.stopPropagation();
       }}
     >
       <LogoContent storeName={storeName} logo={logo} onDarkBackground={onDarkBackground} />
@@ -110,13 +109,15 @@ export function CheckoutHeaderRuntimePreview({
       data-checkout-node-id="checkout:header"
       data-checkout-selectable={onSelectNode ? 'true' : undefined}
       onClick={(e) => {
-        onSelectNode?.('checkout:header');
+        if (!onSelectNode) return;
+        onSelectNode('checkout:header');
         e.stopPropagation();
       }}
       onKeyDown={(e) => {
+        if (!onSelectNode) return;
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onSelectNode?.('checkout:header');
+          onSelectNode('checkout:header');
         }
       }}
       role={onSelectNode ? 'button' : undefined}

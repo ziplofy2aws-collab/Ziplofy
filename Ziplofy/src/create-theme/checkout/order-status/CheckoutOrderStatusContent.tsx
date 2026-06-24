@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import type { CheckoutFooterConfig, CheckoutPaletteTheme } from '../settings/checkout-settings.types';
 import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
 import { checkoutPreviewCurrencyCode, formatCheckoutPrice } from '../utils/format-checkout-price';
+import { CHECKOUT_ACCOUNT_MAX_WIDTH_CLASS } from '../settings/checkout-settings.types';
 import { CheckoutFooterRuntimePreview } from '../preview/CheckoutFooterRuntimePreview';
 import type { CheckoutOrderStatusDetails } from './checkout-order-status.types';
 
@@ -327,6 +328,7 @@ export function CheckoutOrderStatusContent({
             highlightNodeId={highlightNodeId}
             onSelectNode={onSelectNode}
             constrained
+            constrainedMaxWidthClass={CHECKOUT_ACCOUNT_MAX_WIDTH_CLASS}
           />
         ) : null}
       </div>

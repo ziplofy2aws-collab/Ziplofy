@@ -22,7 +22,7 @@ export function mapCustomerAddressToCheckoutProfile(
   return {
     id: address._id,
     name,
-    lines: [street, cityLine, country].filter(Boolean),
+    lines: [street, cityLine, country, address.phoneNumber].filter(Boolean),
     isDefault: Boolean(defaultAddressId && defaultAddressId === address._id),
   };
 }
@@ -38,7 +38,9 @@ export function mapStorefrontUserToCheckoutProfile(
     addresses: addresses.map((address) =>
       mapCustomerAddressToCheckoutProfile(address, user.defaultAddress)
     ),
-    storeCredit: 100,
-    marketingEmailOptIn: user.agreedToMarketingEmails,
+    showStoreCredit: false,
+    storeCredit: 0,
+    marketingEmailOptIn: Boolean(user.agreedToMarketingEmails),
+    marketingSmsOptIn: Boolean(user.agreedToSmsMarketing),
   };
 }

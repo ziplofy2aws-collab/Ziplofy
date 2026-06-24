@@ -10,8 +10,11 @@ export type CheckoutProfileViewData = {
   email: string;
   phone: string;
   addresses: CheckoutProfileAddress[];
+  /** Preview-only store credit display. Hidden on live storefront when false. */
+  showStoreCredit?: boolean;
   storeCredit: number;
   marketingEmailOptIn: boolean;
+  marketingSmsOptIn: boolean;
 };
 
 export const CHECKOUT_EXAMPLE_PROFILE: CheckoutProfileViewData = {
@@ -39,6 +42,8 @@ export const CHECKOUT_EXAMPLE_PROFILE: CheckoutProfileViewData = {
       ],
     },
   ],
+  showStoreCredit: true,
   storeCredit: 100,
   marketingEmailOptIn: true,
+  marketingSmsOptIn: false,
 };

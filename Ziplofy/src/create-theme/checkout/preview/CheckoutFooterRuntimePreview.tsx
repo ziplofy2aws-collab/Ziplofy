@@ -1,5 +1,6 @@
 import React from 'react';
 import type { CheckoutFooterAlignment } from '../settings/checkout-settings.types';
+import { CHECKOUT_FORM_MAX_WIDTH_CLASS } from '../settings/checkout-settings.types';
 import { CheckoutPolicyLinks } from '../policies/CheckoutPolicyLinks';
 
 const ALIGNMENT_CLASS: Record<CheckoutFooterAlignment, string> = {
@@ -15,6 +16,7 @@ type Props = {
   device?: 'desktop' | 'mobile';
   highlightNodeId?: string | null;
   constrained?: boolean;
+  constrainedMaxWidthClass?: string;
   onSelectNode?: (nodeId: string) => void;
 };
 
@@ -25,6 +27,7 @@ export function CheckoutFooterRuntimePreview({
   device = 'desktop',
   highlightNodeId = null,
   constrained = true,
+  constrainedMaxWidthClass = CHECKOUT_FORM_MAX_WIDTH_CLASS,
   onSelectNode,
 }: Props) {
   const highlighted = highlightNodeId === 'checkout:footer';
@@ -35,7 +38,7 @@ export function CheckoutFooterRuntimePreview({
     <footer
       className={`pointer-events-auto w-full ${onSelectNode ? 'select-none' : ''} ${
         constrained
-          ? `mx-auto max-w-[580px] ${isMobile ? 'px-4 pb-6' : 'px-6 pb-8 sm:px-8'}`
+          ? `mx-auto w-full ${constrainedMaxWidthClass} ${isMobile ? 'px-4 pb-6' : 'px-6 pb-8 sm:px-8'}`
           : `${isMobile ? 'px-4 py-6' : 'px-6 py-8 sm:px-8'}`
       } ${onSelectNode ? 'cursor-pointer' : ''} ${
         highlighted ? 'ring-2 ring-inset ring-[#005bd3]' : ''

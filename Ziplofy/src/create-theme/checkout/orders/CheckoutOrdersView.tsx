@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { CheckoutFooterConfig, CheckoutHeaderPosition, CheckoutPaletteTheme } from '../settings/checkout-settings.types';
-import { CHECKOUT_FORM_MAX_WIDTH_CLASS } from '../settings/checkout-settings.types';
+import { CHECKOUT_ACCOUNT_MAX_WIDTH_CLASS } from '../settings/checkout-settings.types';
 import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
 import { CheckoutFooterRuntimePreview } from '../preview/CheckoutFooterRuntimePreview';
 import { CheckoutHeaderRuntimePreview, type CheckoutLogoPreviewConfig } from '../preview/CheckoutHeaderRuntimePreview';
@@ -75,12 +75,12 @@ export function CheckoutOrdersView(props: CheckoutOrdersViewProps) {
 
   const outerClass =
     variant === 'storefront'
-      ? `${CHECKOUT_STOREFRONT_ROOT_CLASS} flex min-h-screen flex-col overflow-hidden bg-white`
+      ? `${CHECKOUT_STOREFRONT_ROOT_CLASS} checkout-storefront-account pointer-events-auto flex min-h-screen flex-col bg-white`
       : 'flex h-full min-h-0 flex-col overflow-hidden bg-white';
 
   const scrollClass =
     variant === 'storefront'
-      ? 'min-h-0 flex-1 overflow-y-auto overscroll-contain'
+      ? 'checkout-account-scroll pointer-events-auto w-full'
       : 'checkout-preview-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain';
 
   const headerSlot = (
@@ -88,7 +88,7 @@ export function CheckoutOrdersView(props: CheckoutOrdersViewProps) {
       className="shrink-0 border-b border-[#e1e3e5]"
       style={{ backgroundColor: theme?.headerBackgroundColor ?? '#ffffff' }}
     >
-      <div className={isMobile ? 'w-full' : `mx-auto w-full ${CHECKOUT_FORM_MAX_WIDTH_CLASS}`}>
+      <div className={isMobile ? 'w-full' : `mx-auto w-full ${CHECKOUT_ACCOUNT_MAX_WIDTH_CLASS}`}>
         <CheckoutHeaderRuntimePreview
           storeName={storeName}
           storeUrl={storeUrl}
@@ -112,6 +112,7 @@ export function CheckoutOrdersView(props: CheckoutOrdersViewProps) {
         highlightNodeId={highlightNodeId}
         onSelectNode={onSelectNode}
         constrained
+        constrainedMaxWidthClass={CHECKOUT_ACCOUNT_MAX_WIDTH_CLASS}
       />
     ) : null;
 
@@ -168,7 +169,7 @@ export function CheckoutOrdersView(props: CheckoutOrdersViewProps) {
 
       <div className={scrollClass}>
         <div
-          className={`mx-auto w-full ${isMobile ? 'max-w-none' : CHECKOUT_FORM_MAX_WIDTH_CLASS}`}
+          className={`mx-auto w-full ${isMobile ? 'max-w-none' : CHECKOUT_ACCOUNT_MAX_WIDTH_CLASS}`}
           style={bodyFontFamily ? { fontFamily: bodyFontFamily } : undefined}
         >
           {!isFullWidthHeader ? headerSlot : null}
@@ -198,7 +199,7 @@ export function CheckoutOrdersView(props: CheckoutOrdersViewProps) {
             </div>
           ) : (
             <div
-              className={`w-full ${isMobile ? 'px-4 py-6' : 'px-6 py-8 sm:px-8'}`}
+              className={`w-full pointer-events-auto ${isMobile ? 'px-4 py-6' : 'px-6 py-8 sm:px-8'}`}
               style={{ backgroundColor: theme?.mainBackgroundColor ?? '#ffffff' }}
             >
               {mainInner}

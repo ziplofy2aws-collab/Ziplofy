@@ -62,6 +62,8 @@ export const CHECKOUT_HEADER_POSITION_OPTIONS: Array<{
 ];
 
 export const CHECKOUT_FORM_MAX_WIDTH_CLASS = 'max-w-[580px]';
+/** Wider shell for customer account pages (profile, orders, order status). */
+export const CHECKOUT_ACCOUNT_MAX_WIDTH_CLASS = 'max-w-[1100px]';
 
 export type CheckoutFooterAlignment = 'left' | 'center' | 'right';
 

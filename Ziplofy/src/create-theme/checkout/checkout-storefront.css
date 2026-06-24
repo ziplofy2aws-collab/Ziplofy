@@ -59,6 +59,17 @@
   overflow: visible;
 }
 
+/* Customer account pages (profile, orders, order status). */
+.checkout-storefront-page.checkout-storefront-account {
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.checkout-storefront-page.checkout-storefront-account .checkout-account-scroll {
+  overflow: visible;
+  flex: 1 1 auto;
+}
+
 /* Profile + orders two-column shell (matches checkout editor desktop layout). */
 .checkout-storefront-page .checkout-account-layout {
   display: flex;

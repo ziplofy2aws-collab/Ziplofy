@@ -1,8 +1,27 @@
-import type { CustomerAddress, StorefrontOrder } from '@/contexts/storefront-order.context';
+import type { StorefrontOrder } from '@/contexts/storefront-order.context';
 import type { CheckoutOrderStatusDetails } from '@ziplofy/create-theme/checkout/order-status/checkout-order-status.types';
 import { CHECKOUT_ORDER_STATUS_GRADIENTS } from '@ziplofy/create-theme/checkout/order-status/checkout-order-status.types';
 import { checkoutPaymentMethodLabel } from '@ziplofy/create-theme/checkout/utils/checkout-order.utils';
 import { formatCheckoutPrice } from '@ziplofy/create-theme/checkout/utils/format-checkout-price';
+
+type OrderShippingAddress = {
+  firstName?: string;
+  lastName?: string;
+  address?: string;
+  apartment?: string;
+  city?: string;
+  state?: string;
+  pinCode?: string;
+  phoneNumber?: string;
+  countryId?: string | { _id?: string; name?: string; iso2?: string };
+};
+
+type OrderCustomer = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+};
 
 function formatShortDate(iso: string): string {
   const date = new Date(iso);
@@ -22,13 +41,35 @@ function formatOrderDisplayId(order: StorefrontOrder, index = 0): string {
   return String(1001 + index);
 }
 
-function formatShippingAddressLines(address: CustomerAddress): string[] {
+function countryNameFromAddress(address: OrderShippingAddress): string {
+  const countryId = address.countryId;
+  if (typeof countryId === 'object' && countryId?.name) return countryId.name;
+  return '';
+}
+
+function formatShippingAddressLines(address?: OrderShippingAddress | null): string[] {
+  if (!address || typeof address !== 'object') return [];
+
   const name = [address.firstName, address.lastName].filter(Boolean).join(' ');
   const street = [address.address, address.apartment].filter(Boolean).join(', ');
   const locality = [address.city, address.state, address.pinCode].filter(Boolean).join(' ');
-  return [name, street, locality, address.country, address.phoneNumber].filter(
-    (line) => line.length > 0
+  const country = countryNameFromAddress(address);
+
+  return [name, street, locality, country, address.phoneNumber].filter(
+    (line): line is string => typeof line === 'string' && line.length > 0
   );
+}
+
+function resolveCustomer(order: StorefrontOrder): OrderCustomer | null {
+  const customer = order.customerId;
+  if (!customer || typeof customer !== 'object') return null;
+  return customer;
+}
+
+function resolveShippingAddress(order: StorefrontOrder): OrderShippingAddress | null {
+  const address = order.shippingAddressId;
+  if (!address || typeof address !== 'object') return null;
+  return address as OrderShippingAddress;
 }
 
 function lineFulfillmentStatus(order: StorefrontOrder): 'delivered' | 'confirmed' | 'shipped' {
@@ -88,6 +129,9 @@ export function mapStorefrontOrderToCheckoutStatus(
       ? `${formatCheckoutPrice(amountPaid)} INR · ${formatShortDate(order.updatedAt || order.createdAt)}`
       : null;
 
+  const customer = resolveCustomer(order);
+  const shippingAddress = resolveShippingAddress(order);
+
   return {
     orderNumber,
     confirmedDate,
@@ -100,10 +144,12 @@ export function mapStorefrontOrderToCheckoutStatus(
     total: order.total,
     showPaymentCard: amountDue > 0,
     lineItems,
-    customerName: [order.customerId.firstName, order.customerId.lastName].filter(Boolean).join(' '),
-    customerEmail: order.customerId.email,
-    customerPhone: order.shippingAddressId.phoneNumber,
-    shippingAddressLines: formatShippingAddressLines(order.shippingAddressId),
+    customerName: customer
+      ? [customer.firstName, customer.lastName].filter(Boolean).join(' ')
+      : '',
+    customerEmail: customer?.email ?? '',
+    customerPhone: shippingAddress?.phoneNumber ?? customer?.phoneNumber ?? '',
+    shippingAddressLines: formatShippingAddressLines(shippingAddress),
     shippingMethodLabel: 'Standard',
     paymentMethodLabel: paymentMethodLabel(order),
     paymentDetailLine,
