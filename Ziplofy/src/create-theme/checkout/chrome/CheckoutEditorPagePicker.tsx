@@ -9,6 +9,7 @@ import {
   KeyIcon,
   ShoppingCartIcon,
   UserIcon,
+  UserPlusIcon,
 } from '@heroicons/react/24/outline';
 import '../../chrome/create-theme-page-picker.css';
 import {
@@ -33,6 +34,8 @@ function PageIcon({ icon, className }: { icon: CheckoutEditorPageIcon; className
       return <CheckCircleIcon className={cls} />;
     case 'sign-in':
       return <KeyIcon className={cls} />;
+    case 'signup':
+      return <UserPlusIcon className={cls} />;
     case 'orders':
       return <CubeIcon className={cls} />;
     case 'order-status':

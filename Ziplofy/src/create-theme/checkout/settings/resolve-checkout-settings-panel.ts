@@ -15,6 +15,7 @@ const ORDER_SUMMARY_NODE_IDS = new Set(['checkout:order-summary']);
 const FOOTER_NODE_IDS = new Set(['checkout:footer']);
 
 const SIGN_IN_MAIN_NODE_IDS = new Set(['checkout:sign-in:group:main']);
+const SIGN_UP_MAIN_NODE_IDS = new Set(['checkout:signup:group:main']);
 
 const THANK_YOU_MAIN_NODE_IDS = new Set(['checkout:thank-you:group:main']);
 
@@ -31,7 +32,7 @@ export function resolveCheckoutSettingsPanelId(nodeId: string): CheckoutSettings
   if (FOOTER_NODE_IDS.has(nodeId)) {
     return 'footer';
   }
-  if (SIGN_IN_MAIN_NODE_IDS.has(nodeId)) {
+  if (SIGN_IN_MAIN_NODE_IDS.has(nodeId) || SIGN_UP_MAIN_NODE_IDS.has(nodeId)) {
     return 'sign-in-main';
   }
   if (THANK_YOU_MAIN_NODE_IDS.has(nodeId)) {

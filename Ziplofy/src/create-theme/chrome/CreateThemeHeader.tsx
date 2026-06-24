@@ -13,6 +13,7 @@ type Props = {
   packLabel?: string;
   previewPage: ThemePreviewPage;
   onPreviewPageChange: (page: ThemePreviewPage) => void;
+  onOpenCheckoutEditor?: () => void;
   manifest: Record<string, unknown> | null;
   editorSchema: EditorSchemaDoc | null;
   device: 'desktop' | 'mobile';
@@ -34,6 +35,7 @@ export function CreateThemeHeader({
   packLabel = 'Horizon',
   previewPage,
   onPreviewPageChange,
+  onOpenCheckoutEditor,
   manifest,
   editorSchema,
   device,
@@ -79,6 +81,9 @@ export function CreateThemeHeader({
         <CreateThemePagePicker
           value={previewPage}
           onChange={onPreviewPageChange}
+          onOpenInNewTab={(item) => {
+            if (item.previewPage === 'checkout') onOpenCheckoutEditor?.();
+          }}
           manifest={manifest}
           editorSchema={editorSchema}
         />

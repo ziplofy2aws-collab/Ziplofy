@@ -32,12 +32,14 @@ import {
   buildCheckoutOrdersSidebarTree,
   buildCheckoutOrderStatusSidebarTree,
   buildCheckoutSignInSidebarTree,
+  buildCheckoutSignUpSidebarTree,
   buildCheckoutThankYouSidebarTree,
   defaultCheckoutAccountProfileSidebarExpanded,
   defaultCheckoutProfileSidebarExpanded,
   defaultCheckoutOrdersSidebarExpanded,
   defaultCheckoutOrderStatusSidebarExpanded,
   defaultCheckoutSignInSidebarExpanded,
+  defaultCheckoutSignUpSidebarExpanded,
   defaultCheckoutThankYouSidebarExpanded,
   CheckoutEditorHeader,
   CheckoutProfilePreview,
@@ -53,11 +55,13 @@ import {
   resolveCheckoutPaletteTheme,
   resolveCheckoutTypographyTheme,
   resolveCheckoutSettingsPanelId,
+  syncCheckoutThemeFromPalette,
   type CheckoutEditorPage,
   type CheckoutFooterConfig,
   type CheckoutGlobalSettings,
   type CheckoutHeaderPosition,
   type CheckoutOrderSummaryConfig,
+  type CheckoutPaletteSyncResult,
   type CheckoutSignInMainConfig,
   type CheckoutThankYouMainConfig,
 } from './checkout';
@@ -320,6 +324,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const {
     configuration: checkoutConfiguration,
     getById: getCheckoutConfigurationById,
+    getByStoreId: getCheckoutConfigurationByStoreId,
+    create: createCheckoutConfiguration,
     update: updateCheckoutConfiguration,
   } = useStoreCheckoutConfigurations();
   const [checkoutConfigHydrated, setCheckoutConfigHydrated] = useState(false);
@@ -470,7 +476,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     const activePage = checkoutConfiguration.checkoutConfig.activePage;
     if (
       typeof activePage === 'string' &&
-      ['checkout', 'thank-you', 'sign-in', 'orders', 'order-status', 'profile'].includes(activePage)
+      ['checkout', 'thank-you', 'sign-in', 'signup', 'orders', 'order-status', 'profile'].includes(activePage)
     ) {
       setCheckoutPreviewPage(activePage as CheckoutEditorPage);
     }
@@ -589,6 +595,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       if (checkoutPreviewPage === 'sign-in') {
         return buildCheckoutSignInSidebarTree();
       }
+      if (checkoutPreviewPage === 'signup') {
+        return buildCheckoutSignUpSidebarTree();
+      }
       if (checkoutPreviewPage === 'thank-you') {
         return buildCheckoutThankYouSidebarTree();
       }
@@ -654,6 +663,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         isCheckoutProfile
           ? checkoutPreviewPage === 'sign-in'
             ? defaultCheckoutSignInSidebarExpanded()
+            : checkoutPreviewPage === 'signup'
+              ? defaultCheckoutSignUpSidebarExpanded()
             : checkoutPreviewPage === 'thank-you'
               ? defaultCheckoutThankYouSidebarExpanded()
               : checkoutPreviewPage === 'orders'
@@ -1333,6 +1344,39 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     updateCheckoutConfiguration,
   ]);
 
+  const handleOpenCheckoutEditor = useCallback(() => {
+    void (async () => {
+      if (!activeStoreId) {
+        toast.error('Select a store first');
+        return;
+      }
+      try {
+        const existing =
+          checkoutConfiguration?.storeId === activeStoreId
+            ? checkoutConfiguration
+            : await getCheckoutConfigurationByStoreId(activeStoreId);
+        const config =
+          existing ??
+          (await createCheckoutConfiguration({
+            storeId: activeStoreId,
+            checkoutConfig: {},
+          }));
+        const url = new URL(
+          `/themes/editor/checkout/${config._id}`,
+          window.location.origin
+        );
+        window.open(url.toString(), '_blank', 'noopener,noreferrer');
+      } catch (err: unknown) {
+        toast.error((err as Error)?.message ?? 'Failed to open checkout editor');
+      }
+    })();
+  }, [
+    activeStoreId,
+    checkoutConfiguration,
+    createCheckoutConfiguration,
+    getCheckoutConfigurationByStoreId,
+  ]);
+
   const handlePreviewPageChange = useCallback(
     (page: ThemePreviewPage) => {
       if (page === previewPage) return;
@@ -1901,6 +1945,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     setCheckoutGlobalSettings((prev) => ({ ...prev, ...patch }));
   }, []);
 
+  const handleCheckoutPaletteSync = useCallback((result: CheckoutPaletteSyncResult) => {
+    setCheckoutGlobalSettings((prev) => ({ ...prev, ...result.global }));
+    setCheckoutOrderSummaryConfig((prev) => ({ ...prev, ...result.orderSummary }));
+    setCheckoutSignInMainConfig((prev) => ({ ...prev, ...result.signInMain }));
+    setCheckoutThankYouMainConfig((prev) => ({ ...prev, ...result.thankYouMain }));
+  }, []);
+
   const checkoutSettingsPanel = useMemo(() => {
     if (!isCheckoutProfile || !selectedNodeId) return null;
     const panelId = resolveCheckoutSettingsPanelId(selectedNodeId);
@@ -1946,6 +1997,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       <CheckoutThemeSettingsNav
         settings={checkoutGlobalSettings}
         onSettingsChange={handleCheckoutGlobalSettingsChange}
+        onPaletteSync={handleCheckoutPaletteSync}
         onNavigateToOrderSummary={() => {
           setSidebarTab('sections');
           setSelectedNodeId('checkout:order-summary');
@@ -1953,7 +2005,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         }}
       />
     );
-  }, [isCheckoutProfile, checkoutGlobalSettings, handleCheckoutGlobalSettingsChange]);
+  }, [isCheckoutProfile, checkoutGlobalSettings, handleCheckoutGlobalSettingsChange, handleCheckoutPaletteSync]);
 
   const checkoutPaletteTheme = useMemo(
     () => resolveCheckoutPaletteTheme(checkoutGlobalSettings),
@@ -2085,6 +2137,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         packLabel={headerPackLabel}
         previewPage={previewPage}
         onPreviewPageChange={handlePreviewPageChange}
+        onOpenCheckoutEditor={handleOpenCheckoutEditor}
         manifest={manifest}
         editorSchema={editorSchema}
         device={device}

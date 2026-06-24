@@ -80,6 +80,7 @@ function FooterSlot({
   highlightNodeId,
   onSelectNode,
   constrained = false,
+  accentColor,
 }: {
   storeId?: string | null;
   footerConfig?: CheckoutFooterConfig;
@@ -87,6 +88,7 @@ function FooterSlot({
   highlightNodeId?: string | null;
   onSelectNode?: (nodeId: string) => void;
   constrained?: boolean;
+  accentColor?: string;
 }) {
   return (
     <div className={constrained ? '' : 'border-t border-[#e1e3e5] bg-white'}>
@@ -98,6 +100,7 @@ function FooterSlot({
           highlightNodeId={highlightNodeId}
           onSelectNode={onSelectNode}
           constrained={constrained}
+          accentColor={accentColor}
         />
       </div>
     </div>
@@ -107,6 +110,7 @@ function FooterSlot({
 function OrderSummarySlot({
   storeId,
   orderSummaryConfig,
+  theme,
   device,
   highlightNodeId,
   onSelectNode,
@@ -114,6 +118,7 @@ function OrderSummarySlot({
 }: {
   storeId?: string | null;
   orderSummaryConfig?: CheckoutOrderSummaryConfig;
+  theme?: CheckoutPaletteTheme;
   device: PreviewDevice;
   highlightNodeId?: string | null;
   onSelectNode?: (nodeId: string) => void;
@@ -134,6 +139,7 @@ function OrderSummarySlot({
       <CheckoutOrderSummaryRuntimePreview
         storeId={storeId}
         orderSummaryConfig={orderSummaryConfig}
+        colorPalette={theme?.colorPalette}
         highlightNodeId={highlightNodeId}
         layout={device}
         onSelectNode={onSelectNode}
@@ -204,6 +210,7 @@ export function CheckoutPageRuntimePreview({
             highlightNodeId={highlightNodeId}
             onSelectNode={onSelectNode}
             constrained={!isMobile}
+            accentColor={theme?.accentColor}
           />
         ) : null}
       </div>
@@ -235,6 +242,7 @@ export function CheckoutPageRuntimePreview({
             <OrderSummarySlot
               storeId={storeId}
               orderSummaryConfig={orderSummaryConfig}
+              theme={theme}
               device={device}
               highlightNodeId={highlightNodeId}
               onSelectNode={onSelectNode}
@@ -247,6 +255,7 @@ export function CheckoutPageRuntimePreview({
             <OrderSummarySlot
               storeId={storeId}
               orderSummaryConfig={orderSummaryConfig}
+              theme={theme}
               device={device}
               highlightNodeId={highlightNodeId}
               onSelectNode={onSelectNode}
@@ -263,6 +272,7 @@ export function CheckoutPageRuntimePreview({
           device={device}
           highlightNodeId={highlightNodeId}
           onSelectNode={onSelectNode}
+          accentColor={theme?.accentColor}
         />
       ) : null}
     </div>

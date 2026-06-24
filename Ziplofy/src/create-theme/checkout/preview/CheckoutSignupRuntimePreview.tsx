@@ -62,7 +62,7 @@ function StoreLogo({
   );
 }
 
-export function CheckoutSignInRuntimePreview({
+export function CheckoutSignupRuntimePreview({
   storeId,
   storeName = 'My Store',
   logo,
@@ -84,7 +84,7 @@ export function CheckoutSignInRuntimePreview({
     mainConfig?.accentColor ?? 'default',
     theme?.accentColor ?? CHECKOUT_DEFAULT_SIGN_IN_MAIN_ACCENT
   );
-  const signInLogo: CheckoutLogoPreviewConfig | undefined =
+  const signupLogo: CheckoutLogoPreviewConfig | undefined =
     mainConfig?.logoImage?.trim()
       ? { image: mainConfig.logoImage, width: logo?.width ?? 50, alignment: logo?.alignment ?? 'center' }
       : logo;
@@ -117,7 +117,7 @@ export function CheckoutSignInRuntimePreview({
         }`}
       >
         <div className="mb-10">
-          <StoreLogo storeName={storeName} logo={signInLogo} headingsFontFamily={headingsFontFamily} />
+          <StoreLogo storeName={storeName} logo={signupLogo} headingsFontFamily={headingsFontFamily} />
         </div>
 
         <div className="flex flex-1 flex-col">
@@ -125,11 +125,28 @@ export function CheckoutSignInRuntimePreview({
             className="text-[28px] font-semibold leading-tight text-[#121212]"
             style={headingsFontFamily ? { fontFamily: headingsFontFamily } : undefined}
           >
-            Sign in
+            Create account
           </h1>
-          <p className="mt-2 text-[15px] text-[#707070]">Sign in or create an account</p>
+          <p className="mt-2 text-[15px] text-[#707070]">Sign up to shop and track your orders</p>
 
-          <div className="mt-6 space-y-3">
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <input
+              type="text"
+              readOnly
+              placeholder="First name"
+              className={inputClassName}
+              aria-label="First name"
+            />
+            <input
+              type="text"
+              readOnly
+              placeholder="Last name"
+              className={inputClassName}
+              aria-label="Last name"
+            />
+          </div>
+
+          <div className="mt-3 space-y-3">
             <input
               type="email"
               readOnly
@@ -146,24 +163,18 @@ export function CheckoutSignInRuntimePreview({
             />
           </div>
 
-          <p className="mt-3 text-right text-[13px]">
-            <span className="underline" style={policyLinkStyle}>
-              Forgot password?
-            </span>
-          </p>
-
           <button
             type="button"
-            className="mt-4 flex w-full items-center justify-center rounded-md px-4 py-3.5 text-[15px] font-semibold text-white"
+            className="mt-6 flex w-full items-center justify-center rounded-md px-4 py-3.5 text-[15px] font-semibold text-white"
             style={{ backgroundColor: accentColor }}
           >
-            Sign in
+            Create account
           </button>
 
           <p className="mt-4 text-center text-[14px] text-[#707070]">
-            Don&apos;t have an account?{' '}
+            Already have an account?{' '}
             <span className="font-medium underline" style={policyLinkStyle}>
-              Create account
+              Sign in
             </span>
           </p>
 
@@ -173,7 +184,7 @@ export function CheckoutSignInRuntimePreview({
           </label>
 
           <p className="mt-6 text-[13px] leading-relaxed text-[#707070]">
-            By continuing, you agree to our{' '}
+            By creating an account, you agree to our{' '}
             {storeId ? (
               <button
                 type="button"

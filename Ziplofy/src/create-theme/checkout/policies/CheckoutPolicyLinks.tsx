@@ -5,6 +5,7 @@ import { useCheckoutPolicyModal } from './useCheckoutPolicyModal';
 
 type Props = {
   storeId?: string | null;
+  accentColor?: string;
   device?: 'desktop' | 'mobile';
   disabled?: boolean;
   className?: string;
@@ -12,6 +13,7 @@ type Props = {
 
 export function CheckoutPolicyLinks({
   storeId,
+  accentColor = '#005bd3',
   device = 'desktop',
   disabled = false,
   className = '',
@@ -20,9 +22,10 @@ export function CheckoutPolicyLinks({
     useCheckoutPolicyModal(storeId);
 
   const isMobile = device === 'mobile';
-  const linkClass = `text-[#1773b0] underline decoration-[#1773b0] ${
-    isMobile ? 'text-[13px]' : 'text-[14px]'
-  } ${disabled || !storeId ? 'cursor-default' : 'cursor-pointer hover:opacity-90'}`;
+  const linkClass = `underline ${isMobile ? 'text-[13px]' : 'text-[14px]'} ${
+    disabled || !storeId ? 'cursor-default' : 'cursor-pointer hover:opacity-90'
+  }`;
+  const linkStyle = { color: accentColor, textDecorationColor: accentColor };
 
   return (
     <>
@@ -32,6 +35,7 @@ export function CheckoutPolicyLinks({
             key={link.type}
             type="button"
             className={`${linkClass} border-0 bg-transparent p-0 font-inherit`}
+            style={linkStyle}
             disabled={disabled || !storeId}
             onClick={(e) => {
               e.stopPropagation();

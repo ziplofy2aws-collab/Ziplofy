@@ -32,6 +32,7 @@ import './create-theme-page-picker.css';
 type CreateThemePagePickerProps = {
   value: ThemePreviewPage;
   onChange: (page: ThemePreviewPage) => void;
+  onOpenInNewTab?: (item: ThemeEditorPageMenuItem) => void;
   manifest: Record<string, unknown> | null;
   editorSchema: EditorSchemaDoc | null;
 };
@@ -71,6 +72,7 @@ function PageIcon({ icon, className }: { icon: ThemePageIcon; className?: string
 const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
   value,
   onChange,
+  onOpenInNewTab,
   manifest,
   editorSchema,
 }) => {
@@ -162,6 +164,12 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
 
   const handleRowClick = useCallback(
     (item: ThemeEditorPageMenuItem, showChevron: boolean, e: React.MouseEvent) => {
+      if (item.openInNewTab) {
+        onOpenInNewTab?.(item);
+        setOpen(false);
+        setQuery('');
+        return;
+      }
       if (showChevron && item.children?.length) {
         const chevronHit = (e.target as HTMLElement).closest('[data-submenu-chevron]');
         if (chevronHit) {
@@ -175,7 +183,7 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
       }
       selectPage(item.previewPage);
     },
-    [expandedMenus, selectPage, toggleSubmenu]
+    [expandedMenus, onOpenInNewTab, selectPage, toggleSubmenu]
   );
 
   const menu =
@@ -226,7 +234,7 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
                     }
 
                     const { item, depth, showChevron } = row;
-                    const isSelected = item.previewPage === value;
+                    const isSelected = !item.openInNewTab && item.previewPage === value;
                     const padLeft = 10 + depth * 16;
 
                     return (

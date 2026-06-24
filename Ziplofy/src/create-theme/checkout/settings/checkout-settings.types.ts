@@ -335,16 +335,48 @@ export function resolveCheckoutColorSetting(
 }
 
 export type CheckoutPaletteTheme = {
+  colorPalette: string[];
   accentColor: string;
   buttonColor: string;
   headerAccentColor: string;
   headerBackgroundColor: string;
   mainBackgroundColor: string;
+  orderSummaryBackgroundColor: string;
+  orderSummaryAccentColor: string;
   headerBackgroundIsDark: boolean;
   mainBackgroundIsDark: boolean;
 };
 
-/** Palette swatch 1 = accent, swatch 2 = header. Main background is independent. */
+export function getCheckoutPaletteColor(
+  palette: string[] | undefined,
+  index: number,
+  fallback: string
+): string {
+  const color = palette?.[index]?.trim();
+  return color || fallback;
+}
+
+/** Swatch 0 = accent, 1 = surface, 2 = secondary surface (e.g. order summary). */
+export function resolveCheckoutOrderSummaryColors(
+  config: CheckoutOrderSummaryConfig | undefined,
+  palette: string[] | undefined
+): { backgroundColor: string; accentColor: string } {
+  const paletteAccent = getCheckoutPaletteColor(palette, 0, CHECKOUT_DEFAULT_ORDER_SUMMARY_ACCENT);
+  const paletteSecondary = getCheckoutPaletteColor(
+    palette,
+    2,
+    CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND
+  );
+  return {
+    backgroundColor: resolveCheckoutColorSetting(
+      config?.backgroundColor ?? 'default',
+      paletteSecondary
+    ),
+    accentColor: resolveCheckoutColorSetting(config?.accentColor ?? 'default', paletteAccent),
+  };
+}
+
+/** Palette swatch 1 = accent, swatch 2 = header/surface. Main background uses surface. */
 export function resolveCheckoutPaletteTheme(
   settings: Pick<
     CheckoutGlobalSettings,
@@ -357,32 +389,80 @@ export function resolveCheckoutPaletteTheme(
   >
 ): CheckoutPaletteTheme {
   const palette = settings.colorPalette ?? CHECKOUT_DEFAULT_COLOR_PALETTE;
-  const paletteAccent = palette[0]?.trim() || CHECKOUT_DEFAULT_ACCENT_COLOR;
+  const paletteAccent = getCheckoutPaletteColor(palette, 0, CHECKOUT_DEFAULT_ACCENT_COLOR);
+  const paletteSurface = getCheckoutPaletteColor(palette, 1, CHECKOUT_DEFAULT_HEADER_BACKGROUND);
+  const paletteSecondary = getCheckoutPaletteColor(
+    palette,
+    2,
+    CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND
+  );
   const accentColor = resolveCheckoutColorSetting(settings.accentColor ?? 'default', paletteAccent);
   const headerAccentColor = resolveCheckoutColorSetting(
     settings.headerAccentColor ?? 'default',
     paletteAccent
   );
-  const buttonColor = resolveCheckoutColorSetting(
-    settings.buttonColor ?? 'default',
-    paletteAccent
-  );
+  const buttonColor = resolveCheckoutColorSetting(settings.buttonColor ?? 'default', paletteAccent);
   const headerBackgroundColor = resolveCheckoutColorSetting(
     settings.headerBackgroundColor ?? 'default',
-    palette[1]?.trim() || CHECKOUT_DEFAULT_HEADER_BACKGROUND
+    paletteSurface
   );
   const mainBackgroundColor = resolveCheckoutColorSetting(
     settings.mainBackgroundColor ?? 'default',
-    CHECKOUT_DEFAULT_MAIN_BACKGROUND
+    paletteSurface
   );
   return {
+    colorPalette: palette,
     accentColor,
     buttonColor,
     headerAccentColor,
     headerBackgroundColor,
     mainBackgroundColor,
+    orderSummaryBackgroundColor: paletteSecondary,
+    orderSummaryAccentColor: paletteAccent,
     headerBackgroundIsDark: isColorDark(headerBackgroundColor),
     mainBackgroundIsDark: isColorDark(mainBackgroundColor),
+  };
+}
+
+export type CheckoutPaletteSyncResult = {
+  global: Pick<
+    CheckoutGlobalSettings,
+    | 'colorPalette'
+    | 'accentColor'
+    | 'headerAccentColor'
+    | 'headerBackgroundColor'
+    | 'mainBackgroundColor'
+    | 'buttonColor'
+  >;
+  orderSummary: Pick<Required<CheckoutOrderSummaryConfig>, 'accentColor' | 'backgroundColor'>;
+  signInMain: Pick<Required<CheckoutSignInMainConfig>, 'accentColor'>;
+  thankYouMain: Pick<Required<CheckoutThankYouMainConfig>, 'accentColor'>;
+};
+
+export function syncCheckoutThemeFromPalette(colors: string[]): CheckoutPaletteSyncResult {
+  const accent = getCheckoutPaletteColor(colors, 0, CHECKOUT_DEFAULT_ACCENT_COLOR);
+  const surface = getCheckoutPaletteColor(colors, 1, CHECKOUT_DEFAULT_HEADER_BACKGROUND);
+  const secondary = getCheckoutPaletteColor(colors, 2, CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND);
+
+  return {
+    global: {
+      colorPalette: colors,
+      accentColor: accent,
+      headerAccentColor: accent,
+      buttonColor: accent,
+      headerBackgroundColor: surface,
+      mainBackgroundColor: surface,
+    },
+    orderSummary: {
+      accentColor: accent,
+      backgroundColor: secondary,
+    },
+    signInMain: {
+      accentColor: accent,
+    },
+    thankYouMain: {
+      accentColor: accent,
+    },
   };
 }
 
@@ -390,14 +470,14 @@ export function syncSettingsFromPalette(
   colors: string[]
 ): Pick<
   CheckoutGlobalSettings,
-  'colorPalette' | 'accentColor' | 'headerAccentColor' | 'headerBackgroundColor'
+  | 'colorPalette'
+  | 'accentColor'
+  | 'headerAccentColor'
+  | 'headerBackgroundColor'
+  | 'mainBackgroundColor'
+  | 'buttonColor'
 > {
-  return {
-    colorPalette: colors,
-    accentColor: colors[0] ?? CHECKOUT_DEFAULT_ACCENT_COLOR,
-    headerAccentColor: colors[0] ?? CHECKOUT_DEFAULT_HEADER_THEME_ACCENT,
-    headerBackgroundColor: colors[1] ?? CHECKOUT_DEFAULT_HEADER_BACKGROUND,
-  };
+  return syncCheckoutThemeFromPalette(colors).global;
 }
 
 export function colorSettingLabel(

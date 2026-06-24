@@ -5,7 +5,8 @@ import { CheckoutColorPickerPopover } from './CheckoutColorPickerPopover';
 import { normalizeHexColor } from './checkout-color.utils';
 import {
   CHECKOUT_DEFAULT_COLOR_PALETTE,
-  syncSettingsFromPalette,
+  syncCheckoutThemeFromPalette,
+  type CheckoutPaletteSyncResult,
 } from './checkout-settings.types';
 import {
   CHECKOUT_MAX_LOGO_WIDTH,
@@ -371,7 +372,7 @@ export function CheckoutColorPaletteEditor({
   onChange,
 }: {
   colors: string[];
-  onChange: (patch: ReturnType<typeof syncSettingsFromPalette>) => void;
+  onChange: (result: CheckoutPaletteSyncResult) => void;
 }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
@@ -387,7 +388,7 @@ export function CheckoutColorPaletteEditor({
   const updateColor = (index: number, hex: string) => {
     const next = [...colors];
     next[index] = normalizeHexColor(hex, next[index] ?? '#000000');
-    onChange(syncSettingsFromPalette(next));
+    onChange(syncCheckoutThemeFromPalette(next));
   };
 
   const deleteColor = (index: number) => {
@@ -395,10 +396,10 @@ export function CheckoutColorPaletteEditor({
       const defaults = [...CHECKOUT_DEFAULT_COLOR_PALETTE];
       const next = [...colors];
       next[index] = defaults[index] ?? defaults[0];
-      onChange(syncSettingsFromPalette(next));
+      onChange(syncCheckoutThemeFromPalette(next));
     } else {
       const next = colors.filter((_, i) => i !== index);
-      onChange(syncSettingsFromPalette(next));
+      onChange(syncCheckoutThemeFromPalette(next));
     }
     setActiveIndex(null);
     setAnchorRect(null);
@@ -406,7 +407,7 @@ export function CheckoutColorPaletteEditor({
 
   const addColor = () => {
     const next = [...colors, colors[colors.length - 1] ?? '#005bd3'];
-    onChange(syncSettingsFromPalette(next));
+    onChange(syncCheckoutThemeFromPalette(next));
   };
 
   const activeColor = activeIndex === null ? null : colors[activeIndex];

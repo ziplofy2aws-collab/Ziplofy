@@ -34,6 +34,10 @@ export {
   buildCheckoutSignInSidebarTree,
   defaultCheckoutSignInSidebarExpanded,
 } from './sidebar/build-checkout-sign-in-sidebar.tree';
+export {
+  buildCheckoutSignUpSidebarTree,
+  defaultCheckoutSignUpSidebarExpanded,
+} from './sidebar/build-checkout-sign-up-sidebar.tree';
 
 export { CheckoutEditorHeader } from './chrome/CheckoutEditorHeader';
 export { CheckoutEditorPagePicker } from './chrome/CheckoutEditorPagePicker';
@@ -43,6 +47,7 @@ export { CheckoutHeaderRuntimePreview } from './preview/CheckoutHeaderRuntimePre
 export { CheckoutMainRuntimePreview } from './preview/CheckoutMainRuntimePreview';
 export { CheckoutOrderSummaryRuntimePreview } from './preview/CheckoutOrderSummaryRuntimePreview';
 export { CheckoutSignInRuntimePreview } from './preview/CheckoutSignInRuntimePreview';
+export { CheckoutSignupRuntimePreview } from './preview/CheckoutSignupRuntimePreview';
 export { CheckoutAccountProfileRuntimePreview } from './preview/CheckoutAccountProfileRuntimePreview';
 export { CheckoutOrdersRuntimePreview } from './preview/CheckoutOrdersRuntimePreview';
 export { CheckoutOrderStatusRuntimePreview } from './preview/CheckoutOrderStatusRuntimePreview';
@@ -77,6 +82,8 @@ export {
   readCheckoutSignInMainConfig,
   readCheckoutThankYouMainConfig,
   resolveCheckoutPaletteTheme,
+  resolveCheckoutOrderSummaryColors,
+  syncCheckoutThemeFromPalette,
   resolveCheckoutTypographyTheme,
   resolveCheckoutColorSetting,
   type CheckoutFooterAlignment,
@@ -88,6 +95,8 @@ export {
   type CheckoutHeaderPosition,
   type CheckoutColorSetting,
   type CheckoutOrderSummaryConfig,
+  type CheckoutPaletteSyncResult,
+  type CheckoutPaletteTheme,
   type CheckoutSignInMainConfig,
   type CheckoutThankYouMainConfig,
   type CheckoutTypographyTheme,

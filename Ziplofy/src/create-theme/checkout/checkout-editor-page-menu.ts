@@ -2,6 +2,7 @@ export type CheckoutEditorPage =
   | 'checkout'
   | 'thank-you'
   | 'sign-in'
+  | 'signup'
   | 'orders'
   | 'order-status'
   | 'profile';
@@ -10,6 +11,7 @@ export type CheckoutEditorPageIcon =
   | 'checkout'
   | 'thank-you'
   | 'sign-in'
+  | 'signup'
   | 'orders'
   | 'order-status'
   | 'profile'
@@ -43,6 +45,7 @@ export const CHECKOUT_EDITOR_PAGE_MENU: CheckoutEditorPageMenuGroup[] = [
     label: 'Customer accounts',
     items: [
       { pageId: 'sign-in', label: 'Sign-in', icon: 'sign-in' },
+      { pageId: 'signup', label: 'Sign-up', icon: 'signup' },
       { pageId: 'orders', label: 'Orders', icon: 'orders' },
       { pageId: 'order-status', label: 'Order status', icon: 'order-status' },
       { pageId: 'profile', label: 'Profile', icon: 'profile' },

@@ -226,6 +226,7 @@ function ThankYouMainContent({
           <CheckoutFooterRuntimePreview
             storeId={storeId}
             alignment={footerConfig?.alignment ?? 'left'}
+            accentColor={theme?.accentColor}
             device={device}
             highlightNodeId={highlightNodeId}
             onSelectNode={onSelectNode}
@@ -286,6 +287,7 @@ export function CheckoutThankYouRuntimePreview({
       <CheckoutOrderSummaryRuntimePreview
         storeId={storeId}
         orderSummaryConfig={orderSummaryConfig}
+        colorPalette={theme?.colorPalette}
         highlightNodeId={highlightNodeId}
         layout={device}
         onSelectNode={onSelectNode}
@@ -331,6 +333,7 @@ export function CheckoutThankYouRuntimePreview({
         <CheckoutFooterRuntimePreview
           storeId={storeId}
           alignment={footerConfig?.alignment ?? 'left'}
+          accentColor={theme?.accentColor}
           device={device}
           highlightNodeId={highlightNodeId}
           onSelectNode={onSelectNode}

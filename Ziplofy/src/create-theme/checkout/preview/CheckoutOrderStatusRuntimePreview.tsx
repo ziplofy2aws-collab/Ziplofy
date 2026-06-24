@@ -386,6 +386,7 @@ export function CheckoutOrderStatusRuntimePreview({
                   <CheckoutFooterRuntimePreview
                     storeId={storeId}
                     alignment={footerConfig?.alignment ?? 'left'}
+                    accentColor={theme?.accentColor}
                     device={device}
                     highlightNodeId={highlightNodeId}
                     onSelectNode={onSelectNode}
@@ -402,6 +403,7 @@ export function CheckoutOrderStatusRuntimePreview({
         <CheckoutFooterRuntimePreview
           storeId={storeId}
           alignment={footerConfig?.alignment ?? 'left'}
+          accentColor={theme?.accentColor}
           device={device}
           highlightNodeId={highlightNodeId}
           onSelectNode={onSelectNode}

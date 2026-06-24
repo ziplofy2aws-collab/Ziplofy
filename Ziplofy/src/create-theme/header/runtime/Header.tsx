@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useStorefrontAuth, useStorefrontCart } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
@@ -14,6 +14,7 @@ import {
   menuBlockColorScheme,
   scopedHeaderCss,
 } from './headerStyles';
+import { HeaderAccountPanel } from './HeaderAccountPanel';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { scopedHeaderResponsiveCss } from '../../runtime/shared/responsive';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
@@ -177,6 +178,12 @@ export function Header({ sectionId = 'header' }: Props) {
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [accountPanelOpen, setAccountPanelOpen] = useState(false);
+  const accountButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    setAccountPanelOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     if (stickyMode !== 'on-scroll-up') return;
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -401,46 +408,31 @@ export function Header({ sectionId = 'header' }: Props) {
         </Link>
       ) : null}
       {showAccount ? (
-        user ? (
-          <button
-            type="button"
-            onClick={() => void logout()}
-            title="Sign out"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              border: 'none',
-              background: 'transparent',
-              padding: 0,
-              cursor: 'pointer',
-              color: iconColor,
-            }}
-          >
-            {useIcons ? (
-              <HeaderIconAccount color={iconColor} />
-            ) : (
-              <span style={{ fontSize: 14, color: primary }}>Sign out</span>
-            )}
-          </button>
-        ) : (
-          <Link
-            to="/auth/login"
-            title="Account"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              color: iconColor,
-              textDecoration: 'none',
-            }}
-            aria-label="Account"
-          >
-            {useIcons ? (
-              <HeaderIconAccount color={iconColor} />
-            ) : (
-              <span style={{ fontSize: 14, fontWeight: 600, color: primary }}>Sign in</span>
-            )}
-          </Link>
-        )
+        <button
+          ref={accountButtonRef}
+          type="button"
+          onClick={() => setAccountPanelOpen((open) => !open)}
+          title={user ? 'Account' : 'Sign in'}
+          aria-expanded={accountPanelOpen}
+          aria-haspopup="dialog"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            border: 'none',
+            background: 'transparent',
+            padding: 0,
+            cursor: 'pointer',
+            color: iconColor,
+          }}
+        >
+          {useIcons ? (
+            <HeaderIconAccount color={iconColor} />
+          ) : (
+            <span style={{ fontSize: 14, fontWeight: 600, color: primary }}>
+              {user ? 'Account' : 'Sign in'}
+            </span>
+          )}
+        </button>
       ) : null}
       <Link
         to="/cart"
@@ -524,6 +516,13 @@ export function Header({ sectionId = 'header' }: Props) {
     <>
       {scopedCss ? <style>{scopedCss}</style> : null}
       <style>{headerResponsiveCss}</style>
+      <HeaderAccountPanel
+        open={accountPanelOpen && showAccount}
+        anchorRef={accountButtonRef}
+        onClose={() => setAccountPanelOpen(false)}
+        user={user}
+        onSignOut={logout}
+      />
       <EditorSection
         sectionId={sectionId}
         label="Header"

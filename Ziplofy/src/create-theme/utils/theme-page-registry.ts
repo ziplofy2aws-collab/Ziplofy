@@ -302,6 +302,8 @@ export type ThemePageMenuSeed = {
   icon: ThemePageIcon;
   dividerBefore?: boolean;
   hasSubmenu?: boolean;
+  /** Opens checkout editor in a new tab — not a selectable preview page. */
+  openInNewTab?: boolean;
   children?: ThemePageMenuSeed[];
 };
 
@@ -331,7 +333,12 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
   { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
   { previewPage: 'gift-card', label: 'Gift card', icon: 'gift' },
   { previewPage: 'cart', label: 'Cart', icon: 'cart', dividerBefore: true },
-  { previewPage: 'checkout', label: 'Checkout and customer accounts', icon: 'checkout' },
+  {
+    previewPage: 'checkout',
+    label: 'Checkout and customer accounts',
+    icon: 'checkout',
+    openInNewTab: true,
+  },
   { previewPage: 'pages', label: 'Pages', icon: 'page', dividerBefore: true },
   {
     previewPage: 'blogs',

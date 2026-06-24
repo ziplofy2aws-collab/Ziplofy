@@ -7,6 +7,7 @@ import { CheckoutOrdersRuntimePreview } from './CheckoutOrdersRuntimePreview';
 import { CheckoutOrderStatusRuntimePreview } from './CheckoutOrderStatusRuntimePreview';
 import { CheckoutPageRuntimePreview } from './CheckoutPageRuntimePreview';
 import { CheckoutSignInRuntimePreview } from './CheckoutSignInRuntimePreview';
+import { CheckoutSignupRuntimePreview } from './CheckoutSignupRuntimePreview';
 import { CheckoutThankYouRuntimePreview } from './CheckoutThankYouRuntimePreview';
 import type { CheckoutLogoPreviewConfig } from './CheckoutHeaderRuntimePreview';
 
@@ -81,6 +82,17 @@ export function CheckoutProfilePreview({
         storeName={storeName}
         logo={logo}
         typography={typography}
+        theme={theme}
+        mainConfig={signInMainConfig}
+        device={device}
+      />
+    ) : pageId === 'signup' ? (
+      <CheckoutSignupRuntimePreview
+        storeId={storeId}
+        storeName={storeName}
+        logo={logo}
+        typography={typography}
+        theme={theme}
         mainConfig={signInMainConfig}
         device={device}
       />

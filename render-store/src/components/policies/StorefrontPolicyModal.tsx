@@ -1,4 +1,3 @@
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -56,7 +55,9 @@ export function StorefrontPolicyModal({ open, title, loading = false, error = nu
             className="rounded-md p-1.5 text-[#707070] transition-colors hover:bg-[#f1f1f1] hover:text-[#121212]"
             aria-label="Close"
           >
-            <XMarkIcon className="h-5 w-5" />
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 

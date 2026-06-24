@@ -9,10 +9,10 @@ import { CheckoutThankYouMainSettingsPanel } from './CheckoutThankYouMainSetting
 import type {
   CheckoutFooterConfig,
   CheckoutHeaderPosition,
+  CheckoutGlobalSettings,
   CheckoutOrderSummaryConfig,
   CheckoutSignInMainConfig,
   CheckoutThankYouMainConfig,
-  type CheckoutGlobalSettings,
 } from './checkout-settings.types';
 
 type Props = {

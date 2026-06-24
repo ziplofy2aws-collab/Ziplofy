@@ -2,11 +2,7 @@ import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import React, { useMemo } from 'react';
 import { useCheckoutPreviewProduct } from '../hooks/useCheckoutPreviewProduct';
 import type { CheckoutOrderSummaryConfig } from '../settings/checkout-settings.types';
-import {
-  CHECKOUT_DEFAULT_ORDER_SUMMARY_ACCENT,
-  CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND,
-  resolveCheckoutColorSetting,
-} from '../settings/checkout-settings.types';
+import { resolveCheckoutOrderSummaryColors } from '../settings/checkout-settings.types';
 import { checkoutPreviewCurrencyCode, formatCheckoutPrice } from '../utils/format-checkout-price';
 
 const PREVIEW_SHIPPING_AMOUNT = 10;
@@ -15,6 +11,7 @@ const PREVIEW_QUANTITY = 1;
 type Props = {
   storeId?: string | null;
   orderSummaryConfig?: CheckoutOrderSummaryConfig;
+  colorPalette?: string[];
   highlightNodeId?: string | null;
   layout?: 'desktop' | 'mobile';
   onSelectNode?: (nodeId: string) => void;
@@ -53,6 +50,7 @@ function ProductImagePlaceholder() {
 export function CheckoutOrderSummaryRuntimePreview({
   storeId,
   orderSummaryConfig,
+  colorPalette,
   highlightNodeId = null,
   layout = 'desktop',
   onSelectNode,
@@ -60,13 +58,9 @@ export function CheckoutOrderSummaryRuntimePreview({
   const { product, loading } = useCheckoutPreviewProduct(storeId);
   const isMobile = layout === 'mobile';
 
-  const backgroundColor = resolveCheckoutColorSetting(
-    orderSummaryConfig?.backgroundColor ?? 'default',
-    CHECKOUT_DEFAULT_ORDER_SUMMARY_BACKGROUND
-  );
-  const accentColor = resolveCheckoutColorSetting(
-    orderSummaryConfig?.accentColor ?? 'default',
-    CHECKOUT_DEFAULT_ORDER_SUMMARY_ACCENT
+  const { backgroundColor, accentColor } = resolveCheckoutOrderSummaryColors(
+    orderSummaryConfig,
+    colorPalette
   );
   const backgroundImage = orderSummaryConfig?.backgroundImage?.trim() || null;
   const sectionHighlighted = highlightNodeId === 'checkout:order-summary';

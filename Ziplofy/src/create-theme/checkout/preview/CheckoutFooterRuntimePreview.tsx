@@ -11,6 +11,7 @@ const ALIGNMENT_CLASS: Record<CheckoutFooterAlignment, string> = {
 type Props = {
   storeId?: string | null;
   alignment?: CheckoutFooterAlignment;
+  accentColor?: string;
   device?: 'desktop' | 'mobile';
   highlightNodeId?: string | null;
   constrained?: boolean;
@@ -20,6 +21,7 @@ type Props = {
 export function CheckoutFooterRuntimePreview({
   storeId,
   alignment = 'left',
+  accentColor = '#005bd3',
   device = 'desktop',
   highlightNodeId = null,
   constrained = true,
@@ -57,6 +59,7 @@ export function CheckoutFooterRuntimePreview({
       <div className={`border-t border-[#dedede] pt-4 ${highlighted ? 'pointer-events-none' : ''}`}>
         <CheckoutPolicyLinks
           storeId={storeId}
+          accentColor={accentColor}
           device={device}
           disabled={linksDisabled}
           className={ALIGNMENT_CLASS[alignment]}

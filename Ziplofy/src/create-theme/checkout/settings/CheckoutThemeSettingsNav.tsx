@@ -9,6 +9,7 @@ import {
   CHECKOUT_DEFAULT_HEADER_THEME_ACCENT,
   CHECKOUT_DEFAULT_MAIN_BACKGROUND,
   type CheckoutGlobalSettings,
+  type CheckoutPaletteSyncResult,
 } from './checkout-settings.types';
 import { CHECKOUT_THEME_SETTINGS_CATALOG } from './checkout-theme-settings-catalog';
 import { CheckoutLayoutPicker } from './CheckoutLayoutPicker';
@@ -26,6 +27,7 @@ import {
 type Props = {
   settings: Required<CheckoutGlobalSettings>;
   onSettingsChange: (patch: Partial<CheckoutGlobalSettings>) => void;
+  onPaletteSync: (result: CheckoutPaletteSyncResult) => void;
   onNavigateToOrderSummary?: () => void;
 };
 
@@ -33,6 +35,7 @@ function renderAccordionPanel(
   id: string,
   settings: Required<CheckoutGlobalSettings>,
   onSettingsChange: (patch: Partial<CheckoutGlobalSettings>) => void,
+  onPaletteSync: (result: CheckoutPaletteSyncResult) => void,
   onNavigateToOrderSummary?: () => void
 ) {
   switch (id) {
@@ -61,7 +64,7 @@ function renderAccordionPanel(
       return (
         <CheckoutColorPaletteEditor
           colors={settings.colorPalette}
-          onChange={onSettingsChange}
+          onChange={onPaletteSync}
         />
       );
     case 'main':
@@ -70,6 +73,7 @@ function renderAccordionPanel(
           <CheckoutThemeColorField
             value={settings.mainBackgroundColor}
             defaultHex={CHECKOUT_DEFAULT_MAIN_BACKGROUND}
+            paletteColor={settings.colorPalette[1]}
             onChange={(mainBackgroundColor) => onSettingsChange({ mainBackgroundColor })}
           />
         </CheckoutSettingsRow>
@@ -187,6 +191,7 @@ function renderAccordionPanel(
 export function CheckoutThemeSettingsNav({
   settings,
   onSettingsChange,
+  onPaletteSync,
   onNavigateToOrderSummary,
 }: Props) {
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
@@ -217,7 +222,7 @@ export function CheckoutThemeSettingsNav({
             </button>
             {isOpen ? (
               <div className="border-t border-[#e1e1e1] bg-white px-3 py-4">
-                {renderAccordionPanel(item.id, settings, onSettingsChange, onNavigateToOrderSummary)}
+                {renderAccordionPanel(item.id, settings, onSettingsChange, onPaletteSync, onNavigateToOrderSummary)}
               </div>
             ) : null}
           </div>

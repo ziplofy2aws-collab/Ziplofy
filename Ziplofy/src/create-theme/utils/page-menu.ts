@@ -23,6 +23,7 @@ export type ThemeEditorPageMenuItem = {
   icon: ThemePageIcon;
   dividerBefore?: boolean;
   hasSubmenu?: boolean;
+  openInNewTab?: boolean;
   children?: ThemeEditorPageMenuItem[];
 };
 
@@ -32,6 +33,7 @@ type MenuSeed = {
   icon: ThemePageIcon;
   dividerBefore?: boolean;
   hasSubmenu?: boolean;
+  openInNewTab?: boolean;
   children?: MenuSeed[];
 };
 
@@ -111,6 +113,7 @@ function seedToItem(seed: MenuSeed, available: Set<string>): ThemeEditorPageMenu
       icon: seed.icon,
       dividerBefore: seed.dividerBefore,
       hasSubmenu: true,
+      openInNewTab: seed.openInNewTab,
       children,
     };
   }
@@ -122,6 +125,7 @@ function seedToItem(seed: MenuSeed, available: Set<string>): ThemeEditorPageMenu
     icon: seed.icon,
     dividerBefore: seed.dividerBefore,
     hasSubmenu: seed.hasSubmenu && hasVisibleChildren,
+    openInNewTab: seed.openInNewTab,
     children: hasVisibleChildren ? children : undefined,
   };
 }
