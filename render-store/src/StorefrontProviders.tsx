@@ -10,6 +10,7 @@ import { StorefrontAccessProvider } from './contexts/store-access.context';
 import { StorefrontAuthProvider } from './contexts/storefront-auth.context';
 import { StorefrontCartProvider } from './contexts/storefront-cart.context';
 import { StorefrontBlogsProvider } from './contexts/storefront-blogs.context';
+import { StorefrontPoliciesProvider } from './contexts/storefront-policies.context';
 import { StorefrontCollectionsProvider } from './contexts/storefront-collections.context';
 import { StorefrontSearchProvider } from './contexts/storefront-search.context';
 import { BuyXGetYProvider } from './contexts/buy-x-get-y.context';
@@ -35,6 +36,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
                 <StorefrontCountryProvider>
                   <StorefrontCollectionsProvider>
                     <StorefrontBlogsProvider>
+                    <StorefrontPoliciesProvider>
                     <StorefrontSearchProvider>
                       <AmountOffOrderProvider>
                         <AmountOffProductProvider>
@@ -48,6 +50,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
                         </AmountOffProductProvider>
                       </AmountOffOrderProvider>
                     </StorefrontSearchProvider>
+                    </StorefrontPoliciesProvider>
                     </StorefrontBlogsProvider>
                   </StorefrontCollectionsProvider>
                 </StorefrontCountryProvider>

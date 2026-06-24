@@ -30,8 +30,15 @@ exports.updateStoreShippingPolicy = (0, error_utils_1.asyncErrorHandler)(async (
     if (!id || !mongoose_1.default.isValidObjectId(id))
         throw new error_utils_1.CustomError('Valid id is required', 400);
     const update = {};
-    if (typeof shippingPolicy === 'string')
+    if (typeof shippingPolicy === 'string') {
+        if (shippingPolicy.trim().length === 0) {
+            const deleted = await store_shipping_policy_model_1.StoreShippingPolicy.findByIdAndDelete(id);
+            if (!deleted)
+                throw new error_utils_1.CustomError('Store shipping policy not found', 404);
+            return res.status(200).json({ success: true, data: null, message: 'Store shipping policy removed' });
+        }
         update.shippingPolicy = shippingPolicy;
+    }
     const updated = await store_shipping_policy_model_1.StoreShippingPolicy.findByIdAndUpdate(id, { $set: update }, { new: true });
     if (!updated)
         throw new error_utils_1.CustomError('Store shipping policy not found', 404);

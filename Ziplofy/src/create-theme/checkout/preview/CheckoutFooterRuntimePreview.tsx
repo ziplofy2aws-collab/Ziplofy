@@ -1,13 +1,6 @@
 import React from 'react';
 import type { CheckoutFooterAlignment } from '../settings/checkout-settings.types';
-
-const POLICY_LINKS = [
-  'Refund policy',
-  'Shipping',
-  'Privacy policy',
-  'Terms of service',
-  'Legal notice',
-] as const;
+import { CheckoutPolicyLinks } from '../policies/CheckoutPolicyLinks';
 
 const ALIGNMENT_CLASS: Record<CheckoutFooterAlignment, string> = {
   left: 'justify-start',
@@ -16,6 +9,7 @@ const ALIGNMENT_CLASS: Record<CheckoutFooterAlignment, string> = {
 };
 
 type Props = {
+  storeId?: string | null;
   alignment?: CheckoutFooterAlignment;
   device?: 'desktop' | 'mobile';
   highlightNodeId?: string | null;
@@ -24,6 +18,7 @@ type Props = {
 };
 
 export function CheckoutFooterRuntimePreview({
+  storeId,
   alignment = 'left',
   device = 'desktop',
   highlightNodeId = null,
@@ -32,6 +27,7 @@ export function CheckoutFooterRuntimePreview({
 }: Props) {
   const highlighted = highlightNodeId === 'checkout:footer';
   const isMobile = device === 'mobile';
+  const linksDisabled = highlighted || !storeId;
 
   return (
     <footer
@@ -59,22 +55,12 @@ export function CheckoutFooterRuntimePreview({
       tabIndex={onSelectNode ? 0 : undefined}
     >
       <div className={`border-t border-[#dedede] pt-4 ${highlighted ? 'pointer-events-none' : ''}`}>
-        <div
-          className={`flex flex-wrap items-center gap-x-5 gap-y-2 ${ALIGNMENT_CLASS[alignment]} ${
-            isMobile ? 'gap-x-3 gap-y-1.5' : ''
-          }`}
-        >
-          {POLICY_LINKS.map((label) => (
-            <span
-              key={label}
-              className={`text-[#1773b0] underline decoration-[#1773b0] ${
-                isMobile ? 'text-[13px]' : 'text-[14px]'
-              }`}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
+        <CheckoutPolicyLinks
+          storeId={storeId}
+          device={device}
+          disabled={linksDisabled}
+          className={ALIGNMENT_CLASS[alignment]}
+        />
       </div>
     </footer>
   );

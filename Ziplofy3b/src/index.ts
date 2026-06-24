@@ -134,6 +134,7 @@ import { storefrontFreeShippingRouter } from './routes/storefront/free-shipping.
 import { storefrontOrderRouter } from './routes/storefront/order.route';
 import { storeFrontBlogCommentRouter } from './routes/storefront/storefront-blog-comment.route';
 import { storeFrontBlogRouter } from './routes/storefront/storefront-blog.route';
+import { storeFrontPoliciesRouter } from './routes/storefront/storefront-policies.route';
 import { storeFrontCollectionRouter } from './routes/storefront/storefront-collection.route';
 import { storefrontCustomerRouter } from './routes/storefront/storefront-customer.route';
 import { taxAndDutiesGlobalSettingsRouter } from './routes/tax-and-duties-global-settings.route';
@@ -224,6 +225,7 @@ app.use("/api/blog-comments", blogCommentRouter);
 app.use("/api/blog-tags", blogTagsRouter);
 app.use("/api/storefront/collections", storeFrontCollectionRouter);
 app.use("/api/storefront/blogs", storeFrontBlogRouter);
+app.use("/api/storefront/policies", storeFrontPoliciesRouter);
 app.use("/api/storefront/blog-comments", storeFrontBlogCommentRouter);
 app.use("/api/collection-entries", collectionEntryRouter);
 app.use("/api/categories", categoryRouter);

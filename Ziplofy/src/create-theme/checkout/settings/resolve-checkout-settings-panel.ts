@@ -1,11 +1,14 @@
 export type CheckoutSettingsPanelId =
   | 'header'
+  | 'logo'
   | 'order-summary'
   | 'footer'
   | 'sign-in-main'
   | 'thank-you-main';
 
 const HEADER_NODE_IDS = new Set(['checkout:header']);
+
+const LOGO_NODE_IDS = new Set(['checkout:header:logo']);
 
 const ORDER_SUMMARY_NODE_IDS = new Set(['checkout:order-summary']);
 
@@ -18,6 +21,9 @@ const THANK_YOU_MAIN_NODE_IDS = new Set(['checkout:thank-you:group:main']);
 export function resolveCheckoutSettingsPanelId(nodeId: string): CheckoutSettingsPanelId | null {
   if (HEADER_NODE_IDS.has(nodeId)) {
     return 'header';
+  }
+  if (LOGO_NODE_IDS.has(nodeId)) {
+    return 'logo';
   }
   if (ORDER_SUMMARY_NODE_IDS.has(nodeId)) {
     return 'order-summary';

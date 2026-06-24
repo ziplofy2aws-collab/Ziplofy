@@ -1,5 +1,5 @@
 import { ChevronUpDownIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/outline';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ThemeEditorImagePickerModal } from '../../sidebar/ThemeEditorImagePickerModal';
 import { CheckoutColorPickerPopover } from './CheckoutColorPickerPopover';
 import { normalizeHexColor } from './checkout-color.utils';
@@ -250,10 +250,27 @@ export function CheckoutLogoWidthField({
   const clampWidth = (next: number) =>
     Math.min(CHECKOUT_MAX_LOGO_WIDTH, Math.max(CHECKOUT_MIN_LOGO_WIDTH, Math.round(next)));
 
+  const [draft, setDraft] = useState(String(value));
+
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  const commitDraft = () => {
+    const parsed = Number(draft);
+    if (!Number.isFinite(parsed) || draft.trim() === '') {
+      setDraft(String(value));
+      return;
+    }
+    const clamped = clampWidth(parsed);
+    setDraft(String(clamped));
+    if (clamped !== value) onChange(clamped);
+  };
+
   return (
-    <div className="flex items-center justify-between gap-3">
+    <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
       <span className="shrink-0 text-[13px] text-gray-800">Width</span>
-      <div className="ml-auto flex items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <input
           type="range"
           min={CHECKOUT_MIN_LOGO_WIDTH}
@@ -261,19 +278,26 @@ export function CheckoutLogoWidthField({
           step={1}
           value={value}
           onChange={(e) => onChange(clampWidth(Number(e.target.value)))}
-          className="h-1.5 w-[120px] cursor-pointer accent-gray-900"
+          onInput={(e) => onChange(clampWidth(Number((e.target as HTMLInputElement).value)))}
+          className="h-1.5 min-w-0 flex-1 cursor-pointer accent-gray-900"
           aria-label="Logo width"
         />
-        <div className="flex items-center rounded-lg border border-[#c9cccf] bg-white shadow-sm">
+        <div className="flex shrink-0 items-center rounded-lg border border-[#c9cccf] bg-white shadow-sm">
           <input
-            type="number"
-            min={CHECKOUT_MIN_LOGO_WIDTH}
-            max={CHECKOUT_MAX_LOGO_WIDTH}
-            step={1}
-            value={value}
-            onChange={(e) => onChange(clampWidth(Number(e.target.value)))}
-            className="w-10 border-0 bg-transparent px-2 py-1.5 text-center text-[13px] text-gray-900 focus:outline-none"
-            aria-label="Logo width"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value.replace(/[^\d]/g, ''))}
+            onBlur={commitDraft}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                commitDraft();
+              }
+            }}
+            className="w-12 border-0 bg-transparent px-2 py-1.5 text-center text-[13px] text-gray-900 focus:outline-none"
+            aria-label="Logo width in pixels"
           />
           <span className="border-l border-[#e1e1e1] px-2 text-[12px] text-gray-500">px</span>
         </div>

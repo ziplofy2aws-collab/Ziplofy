@@ -83,7 +83,7 @@ export const StoreContactInfoProvider: React.FC<{ children: React.ReactNode }> =
       const res = await axiosi.put<ApiResponse<StoreContactInfo>>(`/store-contact-info/${id}`, payload);
       const { success, data, message } = res.data;
       if (!success) throw new Error(message || 'Failed to update contact info');
-      setInfo(data);
+      setInfo(data || null);
       return data;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to update contact info';

@@ -30,8 +30,15 @@ exports.updateStorePrivacyPolicy = (0, error_utils_1.asyncErrorHandler)(async (r
     if (!id || !mongoose_1.default.isValidObjectId(id))
         throw new error_utils_1.CustomError('Valid id is required', 400);
     const update = {};
-    if (typeof privacyPolicy === 'string')
+    if (typeof privacyPolicy === 'string') {
+        if (privacyPolicy.trim().length === 0) {
+            const deleted = await store_privacy_policy_model_1.StorePrivacyPolicy.findByIdAndDelete(id);
+            if (!deleted)
+                throw new error_utils_1.CustomError('Store privacy policy not found', 404);
+            return res.status(200).json({ success: true, data: null, message: 'Store privacy policy removed' });
+        }
         update.privacyPolicy = privacyPolicy;
+    }
     const updated = await store_privacy_policy_model_1.StorePrivacyPolicy.findByIdAndUpdate(id, { $set: update }, { new: true });
     if (!updated)
         throw new error_utils_1.CustomError('Store privacy policy not found', 404);

@@ -14,7 +14,6 @@ export function buildCheckoutProfileSidebarTree(): SidebarNode[] {
           label: 'Logo',
           kind: 'field',
           icon: 'checkout-block',
-          disabled: true,
         },
         {
           id: 'checkout:header:cart-link',

@@ -139,6 +139,7 @@ const free_shipping_route_1 = require("./routes/storefront/free-shipping.route")
 const order_route_2 = require("./routes/storefront/order.route");
 const storefront_blog_comment_route_1 = require("./routes/storefront/storefront-blog-comment.route");
 const storefront_blog_route_1 = require("./routes/storefront/storefront-blog.route");
+const storefront_policies_route_1 = require("./routes/storefront/storefront-policies.route");
 const storefront_collection_route_1 = require("./routes/storefront/storefront-collection.route");
 const storefront_customer_route_1 = require("./routes/storefront/storefront-customer.route");
 const tax_and_duties_global_settings_route_1 = require("./routes/tax-and-duties-global-settings.route");
@@ -218,6 +219,7 @@ app.use("/api/blog-comments", blog_comment_route_1.blogCommentRouter);
 app.use("/api/blog-tags", blog_tags_route_1.blogTagsRouter);
 app.use("/api/storefront/collections", storefront_collection_route_1.storeFrontCollectionRouter);
 app.use("/api/storefront/blogs", storefront_blog_route_1.storeFrontBlogRouter);
+app.use("/api/storefront/policies", storefront_policies_route_1.storeFrontPoliciesRouter);
 app.use("/api/storefront/blog-comments", storefront_blog_comment_route_1.storeFrontBlogCommentRouter);
 app.use("/api/collection-entries", collection_entry_route_1.collectionEntryRouter);
 app.use("/api/categories", category_route_1.categoryRouter);

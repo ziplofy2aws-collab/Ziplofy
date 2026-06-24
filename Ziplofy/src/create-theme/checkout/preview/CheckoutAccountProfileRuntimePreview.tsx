@@ -26,6 +26,7 @@ const ADDRESS_LINES = [
 
 type Props = {
   device?: PreviewDevice;
+  storeId?: string | null;
   storeName?: string;
   storeUrl?: string | null;
   headerPosition?: CheckoutHeaderPosition;
@@ -131,6 +132,7 @@ function MarketingToggleRow() {
 
 export function CheckoutAccountProfileRuntimePreview({
   device = 'desktop',
+  storeId,
   storeName = 'My Store',
   storeUrl,
   headerPosition = 'checkout_form',
@@ -265,6 +267,7 @@ export function CheckoutAccountProfileRuntimePreview({
 
                 {(footerConfig?.location ?? 'checkout_form') !== 'full_width' ? (
                   <CheckoutFooterRuntimePreview
+                    storeId={storeId}
                     alignment={footerConfig?.alignment ?? 'left'}
                     device={device}
                     highlightNodeId={highlightNodeId}
@@ -280,6 +283,7 @@ export function CheckoutAccountProfileRuntimePreview({
 
       {isFullWidthFooter ? (
         <CheckoutFooterRuntimePreview
+          storeId={storeId}
           alignment={footerConfig?.alignment ?? 'left'}
           device={device}
           highlightNodeId={highlightNodeId}

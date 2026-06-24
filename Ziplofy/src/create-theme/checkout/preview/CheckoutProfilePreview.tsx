@@ -4,6 +4,7 @@ import type { CheckoutHeaderPosition, CheckoutFooterConfig, CheckoutOrderSummary
 import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
 import { CheckoutAccountProfileRuntimePreview } from './CheckoutAccountProfileRuntimePreview';
 import { CheckoutOrdersRuntimePreview } from './CheckoutOrdersRuntimePreview';
+import { CheckoutOrderStatusRuntimePreview } from './CheckoutOrderStatusRuntimePreview';
 import { CheckoutPageRuntimePreview } from './CheckoutPageRuntimePreview';
 import { CheckoutSignInRuntimePreview } from './CheckoutSignInRuntimePreview';
 import { CheckoutThankYouRuntimePreview } from './CheckoutThankYouRuntimePreview';
@@ -76,6 +77,7 @@ export function CheckoutProfilePreview({
       />
     ) : pageId === 'sign-in' ? (
       <CheckoutSignInRuntimePreview
+        storeId={storeId}
         storeName={storeName}
         logo={logo}
         typography={typography}
@@ -101,6 +103,21 @@ export function CheckoutProfilePreview({
     ) : pageId === 'orders' ? (
       <CheckoutOrdersRuntimePreview
         device={device}
+        storeId={storeId}
+        storeName={storeName}
+        storeUrl={storeUrl}
+        headerPosition={headerPosition}
+        footerConfig={footerConfig}
+        logo={logo}
+        theme={theme}
+        typography={typography}
+        highlightNodeId={highlightNodeId}
+        onSelectNode={onSelectNode}
+      />
+    ) : pageId === 'order-status' ? (
+      <CheckoutOrderStatusRuntimePreview
+        device={device}
+        storeId={storeId}
         storeName={storeName}
         storeUrl={storeUrl}
         headerPosition={headerPosition}
@@ -114,6 +131,7 @@ export function CheckoutProfilePreview({
     ) : pageId === 'profile' ? (
       <CheckoutAccountProfileRuntimePreview
         device={device}
+        storeId={storeId}
         storeName={storeName}
         storeUrl={storeUrl}
         headerPosition={headerPosition}

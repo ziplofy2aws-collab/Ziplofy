@@ -2,6 +2,7 @@ import React from 'react';
 import type { CheckoutSettingsPanelId } from './resolve-checkout-settings-panel';
 import { CheckoutFooterSettingsPanel } from './CheckoutFooterSettingsPanel';
 import { CheckoutHeaderSettingsPanel } from './CheckoutHeaderSettingsPanel';
+import { CheckoutLogoSettingsPanel } from './CheckoutLogoSettingsPanel';
 import { CheckoutOrderSummarySettingsPanel } from './CheckoutOrderSummarySettingsPanel';
 import { CheckoutSignInMainSettingsPanel } from './CheckoutSignInMainSettingsPanel';
 import { CheckoutThankYouMainSettingsPanel } from './CheckoutThankYouMainSettingsPanel';
@@ -11,12 +12,15 @@ import type {
   CheckoutOrderSummaryConfig,
   CheckoutSignInMainConfig,
   CheckoutThankYouMainConfig,
+  type CheckoutGlobalSettings,
 } from './checkout-settings.types';
 
 type Props = {
   panelId: CheckoutSettingsPanelId;
   headerPosition: CheckoutHeaderPosition;
   onHeaderPositionChange: (position: CheckoutHeaderPosition) => void;
+  logoSettings: Required<Pick<CheckoutGlobalSettings, 'logoImage' | 'logoWidth' | 'logoAlignment'>>;
+  onLogoSettingsChange: (patch: Partial<CheckoutGlobalSettings>) => void;
   orderSummaryConfig: Required<CheckoutOrderSummaryConfig>;
   onOrderSummaryConfigChange: (patch: Partial<CheckoutOrderSummaryConfig>) => void;
   footerConfig: Required<CheckoutFooterConfig>;
@@ -32,6 +36,8 @@ export function CheckoutEditorSettingsPanel({
   panelId,
   headerPosition,
   onHeaderPositionChange,
+  logoSettings,
+  onLogoSettingsChange,
   orderSummaryConfig,
   onOrderSummaryConfigChange,
   footerConfig,
@@ -48,6 +54,14 @@ export function CheckoutEditorSettingsPanel({
         <CheckoutHeaderSettingsPanel
           position={headerPosition}
           onPositionChange={onHeaderPositionChange}
+          onClose={onClose}
+        />
+      );
+    case 'logo':
+      return (
+        <CheckoutLogoSettingsPanel
+          settings={logoSettings}
+          onSettingsChange={onLogoSettingsChange}
           onClose={onClose}
         />
       );

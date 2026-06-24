@@ -28,7 +28,6 @@ export function buildCheckoutAccountProfileSidebarTree(): SidebarNode[] {
           label: 'Logo',
           kind: 'field',
           icon: 'checkout-block',
-          disabled: true,
         },
         disabledAddBlock('checkout:profile:header:add-block'),
       ],

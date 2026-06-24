@@ -74,12 +74,14 @@ function HeaderSlot({
 }
 
 function FooterSlot({
+  storeId,
   footerConfig,
   device,
   highlightNodeId,
   onSelectNode,
   constrained = false,
 }: {
+  storeId?: string | null;
   footerConfig?: CheckoutFooterConfig;
   device: PreviewDevice;
   highlightNodeId?: string | null;
@@ -90,6 +92,7 @@ function FooterSlot({
     <div className={constrained ? '' : 'border-t border-[#e1e3e5] bg-white'}>
       <div className={constrained ? '' : 'w-full'}>
         <CheckoutFooterRuntimePreview
+          storeId={storeId}
           alignment={footerConfig?.alignment ?? 'left'}
           device={device}
           highlightNodeId={highlightNodeId}
@@ -195,6 +198,7 @@ export function CheckoutPageRuntimePreview({
         />
         {!isFullWidthFooter ? (
           <FooterSlot
+            storeId={storeId}
             footerConfig={footerConfig}
             device={device}
             highlightNodeId={highlightNodeId}
@@ -254,6 +258,7 @@ export function CheckoutPageRuntimePreview({
 
       {isFullWidthFooter ? (
         <FooterSlot
+          storeId={storeId}
           footerConfig={footerConfig}
           device={device}
           highlightNodeId={highlightNodeId}

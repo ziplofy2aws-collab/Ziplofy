@@ -1,5 +1,7 @@
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import { CheckoutPolicyModal } from '../policies/CheckoutPolicyModal';
+import { useCheckoutPolicyModal } from '../policies/useCheckoutPolicyModal';
 import type { CheckoutSignInMainConfig } from '../settings/checkout-settings.types';
 import { resolveCheckoutColorSetting } from '../settings/checkout-settings.types';
 import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
@@ -9,6 +11,7 @@ import { CheckoutTypographyFontLoader } from './CheckoutTypographyFontLoader';
 const SHOP_PURPLE = '#5433eb';
 
 type Props = {
+  storeId?: string | null;
   storeName?: string;
   logo?: CheckoutLogoPreviewConfig;
   typography?: CheckoutTypographyTheme;
@@ -27,13 +30,18 @@ function StoreLogo({
 }) {
   const image = logo?.image?.trim();
   const width = logo?.width ?? 50;
+  const alignment = logo?.alignment ?? 'center';
+  const alignClass =
+    alignment === 'left' ? 'mr-auto' : alignment === 'right' ? 'ml-auto' : 'mx-auto';
+  const textAlignClass =
+    alignment === 'left' ? 'text-left' : alignment === 'right' ? 'text-right' : 'text-center';
 
   if (image) {
     return (
       <img
         src={image}
         alt={storeName}
-        className="mx-auto h-auto max-h-16 object-contain"
+        className={`block h-auto max-w-full object-contain ${alignClass}`}
         style={{ width: `${width}px` }}
       />
     );
@@ -41,7 +49,7 @@ function StoreLogo({
 
   return (
     <p
-      className="text-center text-[22px] font-semibold tracking-[-0.02em] text-[#121212]"
+      className={`text-[22px] font-semibold tracking-[-0.02em] text-[#121212] ${textAlignClass}`}
       style={headingsFontFamily ? { fontFamily: headingsFontFamily } : undefined}
     >
       {storeName}
@@ -50,12 +58,15 @@ function StoreLogo({
 }
 
 export function CheckoutSignInRuntimePreview({
+  storeId,
   storeName = 'My Store',
   logo,
   typography,
   mainConfig,
   device = 'desktop',
 }: Props) {
+  const { open, activeTitle, loading, error, content, openPolicy, closePolicy } =
+    useCheckoutPolicyModal(storeId);
   const isMobile = device === 'mobile';
   const bodyFontFamily = typography?.bodyFontFamily;
   const headingsFontFamily = typography?.headingsFontFamily;
@@ -72,6 +83,8 @@ export function CheckoutSignInRuntimePreview({
       ? { image: mainConfig.logoImage, width: logo?.width ?? 50, alignment: logo?.alignment ?? 'center' }
       : logo;
   const mediaImage = mainConfig?.mediaImage?.trim();
+  const policyLinkClass = `underline ${storeId ? 'cursor-pointer hover:opacity-90' : 'cursor-default'}`;
+  const policyLinkStyle = { color: accentColor, textDecorationColor: accentColor };
 
   return (
     <div
@@ -144,25 +157,56 @@ export function CheckoutSignInRuntimePreview({
 
           <p className="mt-6 text-[13px] leading-relaxed text-[#707070]">
             By continuing, you agree to our{' '}
-            <span
-              className="underline"
-              style={{ color: accentColor, textDecorationColor: accentColor }}
-            >
-              Terms of service
-            </span>
+            {storeId ? (
+              <button
+                type="button"
+                className={`${policyLinkClass} border-0 bg-transparent p-0 font-inherit`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  void openPolicy('terms', 'Terms of service');
+                }}
+                style={policyLinkStyle}
+              >
+                Terms of service
+              </button>
+            ) : (
+              <span className="underline" style={policyLinkStyle}>
+                Terms of service
+              </span>
+            )}
             .
           </p>
         </div>
 
         <div className="mt-auto pt-10 text-center">
-          <span
-            className="text-[14px] underline"
-            style={{ color: accentColor, textDecorationColor: accentColor }}
-          >
-            Privacy policy
-          </span>
+          {storeId ? (
+            <button
+              type="button"
+              className={`text-[14px] ${policyLinkClass} border-0 bg-transparent p-0 font-inherit`}
+              onClick={(e) => {
+                e.stopPropagation();
+                void openPolicy('privacy', 'Privacy policy');
+              }}
+              style={policyLinkStyle}
+            >
+              Privacy policy
+            </button>
+          ) : (
+            <span className="text-[14px] underline" style={policyLinkStyle}>
+              Privacy policy
+            </span>
+          )}
         </div>
       </div>
+
+      <CheckoutPolicyModal
+        open={open}
+        title={activeTitle}
+        loading={loading && !content}
+        error={error}
+        content={content}
+        onClose={closePolicy}
+      />
     </div>
   );
 }

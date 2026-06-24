@@ -23,6 +23,10 @@ export {
   defaultCheckoutOrdersSidebarExpanded,
 } from './sidebar/build-checkout-orders-sidebar.tree';
 export {
+  buildCheckoutOrderStatusSidebarTree,
+  defaultCheckoutOrderStatusSidebarExpanded,
+} from './sidebar/build-checkout-order-status-sidebar.tree';
+export {
   buildCheckoutThankYouSidebarTree,
   defaultCheckoutThankYouSidebarExpanded,
 } from './sidebar/build-checkout-thank-you-sidebar.tree';
@@ -41,9 +45,15 @@ export { CheckoutOrderSummaryRuntimePreview } from './preview/CheckoutOrderSumma
 export { CheckoutSignInRuntimePreview } from './preview/CheckoutSignInRuntimePreview';
 export { CheckoutAccountProfileRuntimePreview } from './preview/CheckoutAccountProfileRuntimePreview';
 export { CheckoutOrdersRuntimePreview } from './preview/CheckoutOrdersRuntimePreview';
+export { CheckoutOrderStatusRuntimePreview } from './preview/CheckoutOrderStatusRuntimePreview';
 export { CheckoutThankYouRuntimePreview } from './preview/CheckoutThankYouRuntimePreview';
 export { CheckoutPageRuntimePreview } from './preview/CheckoutPageRuntimePreview';
 export { CheckoutProfilePreview } from './preview/CheckoutProfilePreview';
+
+export { CheckoutPolicyLinks } from './policies/CheckoutPolicyLinks';
+export { CheckoutPolicyModal } from './policies/CheckoutPolicyModal';
+export { useCheckoutStorePolicies } from './policies/useCheckoutStorePolicies';
+export { CHECKOUT_POLICY_LINKS } from './policies/checkout-policy-links.config';
 
 export { CheckoutThemeSettingsNav } from './settings/CheckoutThemeSettingsNav';
 export { CheckoutEditorSettingsPanel } from './settings/CheckoutEditorSettingsPanel';

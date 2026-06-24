@@ -30,11 +30,13 @@ import {
   buildCheckoutProfileSidebarTree,
   buildCheckoutAccountProfileSidebarTree,
   buildCheckoutOrdersSidebarTree,
+  buildCheckoutOrderStatusSidebarTree,
   buildCheckoutSignInSidebarTree,
   buildCheckoutThankYouSidebarTree,
   defaultCheckoutAccountProfileSidebarExpanded,
   defaultCheckoutProfileSidebarExpanded,
   defaultCheckoutOrdersSidebarExpanded,
+  defaultCheckoutOrderStatusSidebarExpanded,
   defaultCheckoutSignInSidebarExpanded,
   defaultCheckoutThankYouSidebarExpanded,
   CheckoutEditorHeader,
@@ -593,6 +595,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       if (checkoutPreviewPage === 'orders') {
         return buildCheckoutOrdersSidebarTree();
       }
+      if (checkoutPreviewPage === 'order-status') {
+        return buildCheckoutOrderStatusSidebarTree();
+      }
       if (checkoutPreviewPage === 'profile') {
         return buildCheckoutAccountProfileSidebarTree();
       }
@@ -653,6 +658,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               ? defaultCheckoutThankYouSidebarExpanded()
               : checkoutPreviewPage === 'orders'
                 ? defaultCheckoutOrdersSidebarExpanded()
+                : checkoutPreviewPage === 'order-status'
+                  ? defaultCheckoutOrderStatusSidebarExpanded()
                 : checkoutPreviewPage === 'profile'
                   ? defaultCheckoutAccountProfileSidebarExpanded()
                   : defaultCheckoutProfileSidebarExpanded()
@@ -1903,6 +1910,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         panelId={panelId}
         headerPosition={checkoutHeaderPosition}
         onHeaderPositionChange={setCheckoutHeaderPosition}
+        logoSettings={checkoutGlobalSettings}
+        onLogoSettingsChange={handleCheckoutGlobalSettingsChange}
         orderSummaryConfig={checkoutOrderSummaryConfig}
         onOrderSummaryConfigChange={handleCheckoutOrderSummaryConfigChange}
         footerConfig={checkoutFooterConfig}
@@ -1922,10 +1931,12 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     checkoutFooterConfig,
     checkoutSignInMainConfig,
     checkoutThankYouMainConfig,
+    checkoutGlobalSettings,
     handleCheckoutOrderSummaryConfigChange,
     handleCheckoutFooterConfigChange,
     handleCheckoutSignInMainConfigChange,
     handleCheckoutThankYouMainConfigChange,
+    handleCheckoutGlobalSettingsChange,
     closeSettings,
   ]);
 

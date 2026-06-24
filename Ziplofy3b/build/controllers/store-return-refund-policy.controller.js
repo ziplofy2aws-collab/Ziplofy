@@ -30,8 +30,15 @@ exports.updateStoreReturnRefundPolicy = (0, error_utils_1.asyncErrorHandler)(asy
     if (!id || !mongoose_1.default.isValidObjectId(id))
         throw new error_utils_1.CustomError('Valid id is required', 400);
     const update = {};
-    if (typeof returnRefundPolicy === 'string')
+    if (typeof returnRefundPolicy === 'string') {
+        if (returnRefundPolicy.trim().length === 0) {
+            const deleted = await store_return_refund_policy_model_1.StoreReturnRefundPolicy.findByIdAndDelete(id);
+            if (!deleted)
+                throw new error_utils_1.CustomError('Store return/refund policy not found', 404);
+            return res.status(200).json({ success: true, data: null, message: 'Store return/refund policy removed' });
+        }
         update.returnRefundPolicy = returnRefundPolicy;
+    }
     const updated = await store_return_refund_policy_model_1.StoreReturnRefundPolicy.findByIdAndUpdate(id, { $set: update }, { new: true });
     if (!updated)
         throw new error_utils_1.CustomError('Store return/refund policy not found', 404);

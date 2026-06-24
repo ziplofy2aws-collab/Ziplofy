@@ -27,7 +27,14 @@ export const updateStorePrivacyPolicy = asyncErrorHandler(async (req: Request, r
   if (!id || !mongoose.isValidObjectId(id)) throw new CustomError('Valid id is required', 400);
 
   const update: any = {};
-  if (typeof privacyPolicy === 'string') update.privacyPolicy = privacyPolicy;
+  if (typeof privacyPolicy === 'string') {
+    if (privacyPolicy.trim().length === 0) {
+      const deleted = await StorePrivacyPolicy.findByIdAndDelete(id);
+      if (!deleted) throw new CustomError('Store privacy policy not found', 404);
+      return res.status(200).json({ success: true, data: null, message: 'Store privacy policy removed' });
+    }
+    update.privacyPolicy = privacyPolicy;
+  }
 
   const updated = await StorePrivacyPolicy.findByIdAndUpdate(id, { $set: update }, { new: true });
   if (!updated) throw new CustomError('Store privacy policy not found', 404);

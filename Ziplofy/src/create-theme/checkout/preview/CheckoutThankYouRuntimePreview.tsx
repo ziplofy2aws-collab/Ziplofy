@@ -42,6 +42,7 @@ const EXAMPLE_CUSTOMER = 'Isidro';
 const EXAMPLE_EMAIL = 'isidro@example.com';
 
 function ThankYouMainContent({
+  storeId,
   theme,
   typography,
   device,
@@ -50,6 +51,7 @@ function ThankYouMainContent({
   highlightNodeId,
   onSelectNode,
 }: {
+  storeId?: string | null;
   theme?: CheckoutPaletteTheme;
   typography?: CheckoutTypographyTheme;
   device: PreviewDevice;
@@ -222,6 +224,7 @@ function ThankYouMainContent({
 
         {(footerConfig?.location ?? 'checkout_form') !== 'full_width' ? (
           <CheckoutFooterRuntimePreview
+            storeId={storeId}
             alignment={footerConfig?.alignment ?? 'left'}
             device={device}
             highlightNodeId={highlightNodeId}
@@ -309,6 +312,7 @@ export function CheckoutThankYouRuntimePreview({
           <div className="min-w-0 flex-1">
             {!isFullWidthHeader ? headerSlot : null}
             <ThankYouMainContent
+              storeId={storeId}
               theme={theme}
               typography={typography}
               device={device}
@@ -325,6 +329,7 @@ export function CheckoutThankYouRuntimePreview({
 
       {isFullWidthFooter ? (
         <CheckoutFooterRuntimePreview
+          storeId={storeId}
           alignment={footerConfig?.alignment ?? 'left'}
           device={device}
           highlightNodeId={highlightNodeId}

@@ -36,6 +36,7 @@ const EXAMPLE_ORDERS: OrderPreview[] = [
 
 type Props = {
   device?: PreviewDevice;
+  storeId?: string | null;
   storeName?: string;
   storeUrl?: string | null;
   headerPosition?: CheckoutHeaderPosition;
@@ -97,6 +98,7 @@ function OrderCard({
 
 export function CheckoutOrdersRuntimePreview({
   device = 'desktop',
+  storeId,
   storeName = 'My Store',
   storeUrl,
   headerPosition = 'checkout_form',
@@ -191,8 +193,9 @@ export function CheckoutOrdersRuntimePreview({
               </div>
 
               {(footerConfig?.location ?? 'checkout_form') !== 'full_width' ? (
-                <CheckoutFooterRuntimePreview
-                  alignment={footerConfig?.alignment ?? 'left'}
+          <CheckoutFooterRuntimePreview
+            storeId={storeId}
+            alignment={footerConfig?.alignment ?? 'left'}
                   device={device}
                   highlightNodeId={highlightNodeId}
                   onSelectNode={onSelectNode}
@@ -205,8 +208,9 @@ export function CheckoutOrdersRuntimePreview({
       </div>
 
       {isFullWidthFooter ? (
-        <CheckoutFooterRuntimePreview
-          alignment={footerConfig?.alignment ?? 'left'}
+          <CheckoutFooterRuntimePreview
+            storeId={storeId}
+            alignment={footerConfig?.alignment ?? 'left'}
           device={device}
           highlightNodeId={highlightNodeId}
           onSelectNode={onSelectNode}

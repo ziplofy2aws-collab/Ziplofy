@@ -49,7 +49,7 @@ function LogoContent({
     <img
       src={image}
       alt={storeName}
-      className="h-auto max-h-16 object-contain"
+      className="h-auto max-w-full object-contain"
       style={{ width: `${width}px` }}
     />
   );
@@ -65,6 +65,7 @@ export function CheckoutHeaderRuntimePreview({
   onSelectNode,
 }: Props) {
   const headerHighlighted = highlightNodeId === 'checkout:header';
+  const logoHighlighted = highlightNodeId === 'checkout:header:logo';
   const storefrontHref = storeUrl?.trim() || '#';
   const headerAccentColor = theme?.headerAccentColor ?? logo?.accentColor ?? '#005bd3';
   const onDarkBackground = theme?.headerBackgroundIsDark ?? false;
@@ -82,16 +83,30 @@ export function CheckoutHeaderRuntimePreview({
   );
 
   const logoLink = (
-    <a href={storefrontHref} className="pointer-events-auto shrink-0" onClick={(e) => e.stopPropagation()}>
+    <a
+      href={storefrontHref}
+      className={`pointer-events-auto inline-flex shrink-0 rounded-sm ${
+        logoHighlighted ? 'ring-2 ring-inset ring-[#005bd3]' : ''
+      }`}
+      data-checkout-node-id="checkout:header:logo"
+      onClick={(e) => {
+        if (onSelectNode) {
+          onSelectNode('checkout:header:logo');
+          e.stopPropagation();
+        }
+      }}
+    >
       <LogoContent storeName={storeName} logo={logo} onDarkBackground={onDarkBackground} />
     </a>
   );
 
   return (
     <header
-      className={`relative flex shrink-0 items-center bg-transparent pointer-events-auto ${
+      className={`relative shrink-0 bg-transparent pointer-events-auto ${
         isMobile ? 'px-4 py-3.5' : 'px-6 py-4 sm:px-8'
-      } ${onSelectNode ? 'cursor-pointer' : ''} ${headerHighlighted ? 'ring-2 ring-inset ring-[#005bd3]' : ''}`}
+      } ${onSelectNode ? 'cursor-pointer' : ''} ${
+        headerHighlighted && !logoHighlighted ? 'ring-2 ring-inset ring-[#005bd3]' : ''
+      }`}
       data-checkout-node-id="checkout:header"
       data-checkout-selectable={onSelectNode ? 'true' : undefined}
       onClick={(e) => {
@@ -107,22 +122,20 @@ export function CheckoutHeaderRuntimePreview({
       role={onSelectNode ? 'button' : undefined}
       tabIndex={onSelectNode ? 0 : undefined}
     >
-      {alignment === 'left' ? logoLink : <span className="w-6 shrink-0" aria-hidden />}
-
-      {alignment === 'center' ? (
-        <div className="pointer-events-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          {logoLink}
+      <div className="grid w-full grid-cols-3 items-center gap-3">
+        <div className="flex min-w-0 items-center justify-start">
+          {alignment === 'left' ? logoLink : null}
+          {alignment === 'right' ? cartIcon : null}
         </div>
-      ) : null}
 
-      {alignment === 'right' ? (
-        <div className="ml-auto flex items-center gap-4">
-          {logoLink}
-          {cartIcon}
+        <div className="flex min-w-0 items-center justify-center">
+          {alignment === 'center' ? logoLink : null}
         </div>
-      ) : (
-        <div className="ml-auto flex items-center">{cartIcon}</div>
-      )}
+
+        <div className="flex min-w-0 items-center justify-end">
+          {alignment === 'right' ? logoLink : cartIcon}
+        </div>
+      </div>
 
       {storefrontHref !== '#' ? (
         <span className="sr-only">

@@ -28,7 +28,6 @@ export function buildCheckoutThankYouSidebarTree(): SidebarNode[] {
           label: 'Logo',
           kind: 'field',
           icon: 'checkout-block',
-          disabled: true,
         },
         disabledAddBlock('checkout:thank-you:header:add-block'),
       ],

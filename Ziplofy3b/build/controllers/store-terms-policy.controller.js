@@ -30,8 +30,15 @@ exports.updateStoreTermsPolicy = (0, error_utils_1.asyncErrorHandler)(async (req
     if (!id || !mongoose_1.default.isValidObjectId(id))
         throw new error_utils_1.CustomError('Valid id is required', 400);
     const update = {};
-    if (typeof termsPolicy === 'string')
+    if (typeof termsPolicy === 'string') {
+        if (termsPolicy.trim().length === 0) {
+            const deleted = await store_terms_policy_model_1.StoreTermsPolicy.findByIdAndDelete(id);
+            if (!deleted)
+                throw new error_utils_1.CustomError('Store terms policy not found', 404);
+            return res.status(200).json({ success: true, data: null, message: 'Store terms policy removed' });
+        }
         update.termsPolicy = termsPolicy;
+    }
     const updated = await store_terms_policy_model_1.StoreTermsPolicy.findByIdAndUpdate(id, { $set: update }, { new: true });
     if (!updated)
         throw new error_utils_1.CustomError('Store terms policy not found', 404);

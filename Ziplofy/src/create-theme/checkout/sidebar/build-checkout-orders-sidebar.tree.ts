@@ -28,7 +28,6 @@ export function buildCheckoutOrdersSidebarTree(): SidebarNode[] {
           label: 'Logo',
           kind: 'field',
           icon: 'checkout-block',
-          disabled: true,
         },
         disabledAddBlock('checkout:orders:header:add-block'),
       ],

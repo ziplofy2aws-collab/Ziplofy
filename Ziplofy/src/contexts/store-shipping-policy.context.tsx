@@ -83,7 +83,7 @@ export const StoreShippingPolicyProvider: React.FC<{ children: React.ReactNode }
       const res = await axiosi.put<ApiResponse<StoreShippingPolicy>>(`/store-shipping-policy/${id}`, payload);
       const { success, data, message } = res.data;
       if (!success) throw new Error(message || 'Failed to update shipping policy');
-      setPolicy(data);
+      setPolicy(data || null);
       return data;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to update shipping policy';

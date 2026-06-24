@@ -83,7 +83,7 @@ export const StoreReturnRefundPolicyProvider: React.FC<{ children: React.ReactNo
       const res = await axiosi.put<ApiResponse<StoreReturnRefundPolicy>>(`/store-return-refund-policy/${id}`, payload);
       const { success, data, message } = res.data;
       if (!success) throw new Error(message || 'Failed to update return/refund policy');
-      setPolicy(data);
+      setPolicy(data || null);
       return data;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to update return/refund policy';

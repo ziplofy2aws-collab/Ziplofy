@@ -27,7 +27,14 @@ export const updateStoreContactInfo = asyncErrorHandler(async (req: Request, res
   const { contactInfo } = req.body as { contactInfo?: string };
   if (!id || !mongoose.isValidObjectId(id)) throw new CustomError('Valid id is required', 400);
   const update: any = {};
-  if (typeof contactInfo === 'string') update.contactInfo = contactInfo;
+  if (typeof contactInfo === 'string') {
+    if (contactInfo.trim().length === 0) {
+      const deleted = await StoreContactInfo.findByIdAndDelete(id);
+      if (!deleted) throw new CustomError('Store contact info not found', 404);
+      return res.status(200).json({ success: true, data: null, message: 'Store contact info removed' });
+    }
+    update.contactInfo = contactInfo;
+  }
 
   const updated = await StoreContactInfo.findByIdAndUpdate(id, { $set: update }, { new: true });
   if (!updated) throw new CustomError('Store contact info not found', 404);
