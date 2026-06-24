@@ -1,4 +1,5 @@
 import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import { useStorefrontAuth } from './contexts/storefront-auth.context';
 import { StorefrontBlogContentShell } from './components/StorefrontBlogContentShell.tsx';
 import { StorefrontBlogByUrlHandleLoader } from './components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from './components/StorefrontBlogPostByUrlHandleLoader.tsx';
@@ -24,7 +25,12 @@ const StorefrontProductRoute = () => {
 const StorefrontAuthRoute = () => {
   const location = useLocation();
   const theme = useLoadedThemeContract();
+  const { user, initializing } = useStorefrontAuth();
   const Page = location.pathname.includes('/signup') ? theme.SignupPage : theme.LoginPage;
+
+  if (initializing) return null;
+  if (user) return <Navigate to="/" replace />;
+
   return <Page />;
 };
 

@@ -48,6 +48,9 @@ export { CheckoutMainRuntimePreview } from './preview/CheckoutMainRuntimePreview
 export { CheckoutOrderSummaryRuntimePreview } from './preview/CheckoutOrderSummaryRuntimePreview';
 export { CheckoutSignInRuntimePreview } from './preview/CheckoutSignInRuntimePreview';
 export { CheckoutSignupRuntimePreview } from './preview/CheckoutSignupRuntimePreview';
+export { CheckoutSignInView } from './auth/CheckoutSignInView';
+export { CheckoutSignupView } from './auth/CheckoutSignupView';
+export { resolveCheckoutAuthPageAppearance } from './runtime/checkout-auth-page.utils';
 export { CheckoutAccountProfileRuntimePreview } from './preview/CheckoutAccountProfileRuntimePreview';
 export { CheckoutOrdersRuntimePreview } from './preview/CheckoutOrdersRuntimePreview';
 export { CheckoutOrderStatusRuntimePreview } from './preview/CheckoutOrderStatusRuntimePreview';

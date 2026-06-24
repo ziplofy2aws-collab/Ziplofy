@@ -5,6 +5,7 @@ export { useStorefrontAuth } from '@/contexts/storefront-auth.context';
 export { useStorefrontProducts } from '@/contexts/product.context';
 export { useStorefrontCollections } from '@/contexts/storefront-collections.context';
 export { useStorefrontPolicies } from '@/contexts/storefront-policies.context';
+export { useStorefrontCheckoutConfiguration } from '@/contexts/storefront-checkout-configuration.context';
 export { StorefrontPolicyLinks } from '@/components/policies/StorefrontPolicyLinks';
 export { StorefrontPolicyModal } from '@/components/policies/StorefrontPolicyModal';
 export { useStorefrontOrder } from '@/contexts/storefront-order.context';

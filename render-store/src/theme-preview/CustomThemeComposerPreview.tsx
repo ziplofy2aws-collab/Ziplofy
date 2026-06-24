@@ -4,7 +4,7 @@ import { CustomThemeTemplatePage } from '@ziplofy/create-theme/runtime';
 import { previewPageToTemplateId } from '@ziplofy/create-theme/utils/theme-page-registry';
 import { postToParent } from './previewBridge';
 import { previewPageToRoute, type ThemePreviewPage } from './previewBridge';
-import { renderThemePageRoutes } from './ThemePageRouteElements';
+import { renderThemePageRoutes, renderCheckoutAuthRoutes } from './ThemePageRouteElements';
 
 type Props = {
   page: ThemePreviewPage;
@@ -23,7 +23,8 @@ export function CustomThemeComposerPreview({ page, pageRevision }: Props) {
   return (
     <MemoryRouter key={routeKey} initialEntries={[initialEntry]}>
       <Routes>
-        {renderThemePageRoutes()}
+        {renderCheckoutAuthRoutes()}
+        {renderThemePageRoutes({ excludeCheckoutAuth: true })}
         <Route
           path="*"
           element={<CustomThemeTemplatePage templateId={fallbackTemplateId} />}

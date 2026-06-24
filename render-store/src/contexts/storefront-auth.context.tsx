@@ -86,6 +86,8 @@ interface UpdateUserPayload {
 interface StorefrontAuthContextType {
   user: StorefrontUser | null;
   loading: boolean;
+  /** True until the initial session restore from accessToken completes. */
+  initializing: boolean;
   error: string | null;
   signup: (payload: SignupPayload) => Promise<StorefrontUser>;
   login: (payload: LoginPayload) => Promise<StorefrontUser>;
@@ -104,6 +106,7 @@ const StorefrontAuthContext = createContext<StorefrontAuthContextType | undefine
 export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<StorefrontUser | null>(null);
   const [loading, setLoading] = useState(false);
+  const [initializing, setInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const logoutCallbacksRef = useRef<Set<() => void>>(new Set());
   const loginCallbacksRef = useRef<Set<(user: StorefrontUser) => void>>(new Set());
@@ -117,6 +120,46 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
       const newUrl = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
       window.history.replaceState({}, "", newUrl);
     }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const restoreSession = async () => {
+      const token = safeLocalStorage.getItem("accessToken");
+      if (!token) {
+        if (!cancelled) setInitializing(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await axiosi.get<{ success: boolean; data: StorefrontUser }>("/storefront/auth/me");
+        if (cancelled) return;
+        if (res.data?.success && res.data?.data) {
+          setUser(res.data.data);
+        } else {
+          setUser(null);
+          safeLocalStorage.removeItem("accessToken");
+        }
+      } catch {
+        if (!cancelled) {
+          setUser(null);
+          safeLocalStorage.removeItem("accessToken");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+          setInitializing(false);
+        }
+      }
+    };
+
+    void restoreSession();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const registerLogoutCallback = useCallback((callback: () => void) => {
@@ -197,6 +240,12 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
   }, []);
 
   const checkAuth = useCallback(async (): Promise<StorefrontUser | null> => {
+    const token = safeLocalStorage.getItem("accessToken");
+    if (!token) {
+      setUser(null);
+      return null;
+    }
+
     try {
       setLoading(true);
       setError(null);
@@ -206,12 +255,15 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
         return res.data.data;
       }
       setUser(null);
+      safeLocalStorage.removeItem("accessToken");
       return null;
     } catch {
       setUser(null);
+      safeLocalStorage.removeItem("accessToken");
       return null;
     } finally {
       setLoading(false);
+      setInitializing(false);
     }
   }, []);
 
@@ -283,6 +335,7 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
   const value: StorefrontAuthContextType = {
     user,
     loading,
+    initializing,
     error,
     signup,
     login,
