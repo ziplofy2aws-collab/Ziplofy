@@ -1,0 +1,125 @@
+/* Font Awesome — shared icon alignment & sizing */
+[class*="fa-"] {
+  line-height: 1;
+}
+
+.f2-header__promo-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.f2-header__promo-links a i {
+  font-size: 11px;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.f2-header__icon-btn i:not(.f2-header__icon-chevron) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.f2-header__icon-btn--bag i {
+  font-size: 21px;
+}
+
+@media (max-width: 960px) {
+  .f2-header__icon-btn i:not(.f2-header__icon-chevron) {
+    font-size: 21px;
+  }
+
+  .f2-header__icon-btn--bag i {
+    font-size: 22px;
+  }
+}
+
+.f2-header__drawer-close i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f2-header__menu-toggle i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+}
+
+.f2-header__search-icon,
+.f2-header__location-icon,
+.f2-header__location-chevron,
+.f2-header__icon-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f2-hero__arrow i,
+.f2-deals__nav i,
+.f2-justin__nav i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: inherit;
+}
+
+.f2-deals__action i,
+.f2-justin__action i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: inherit;
+  width: 1em;
+  height: 1em;
+}
+
+.f2-refer__icon i,
+.f2-perks__icon i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f2-footer__contact-line i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.f2-footer__store-badge i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.f2-footer__social a i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f2-footer__back-top i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f2-shop__float-btn i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f2-shop__chip-remove i {
+  font-size: 10px;
+}

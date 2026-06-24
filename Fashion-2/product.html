@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product — KYRO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/icons.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/product.css">
+</head>
+
+<body>
+
+  <header class="f2-header" role="banner" data-f2-header>
+    <div class="f2-header__backdrop" data-f2-backdrop hidden aria-hidden="true"></div>
+
+    <aside class="f2-header__drawer" id="f2-drawer" data-f2-drawer aria-hidden="true" tabindex="-1">
+      <div class="f2-header__drawer-head">
+        <span class="f2-header__drawer-title">Menu</span>
+        <button type="button" class="f2-header__drawer-close" aria-label="Close menu" data-f2-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="f2-header__drawer-nav" aria-label="Mobile navigation">
+        <ul class="f2-header__drawer-list">
+          <li><a href="#" class="f2-header__drawer-link f2-header__drawer-link--bargains">BARGA%NS</a></li>
+          <li><a href="shop.html" class="f2-header__drawer-link is-active">MEN</a></li>
+          <li><a href="#" class="f2-header__drawer-link">WOMEN</a></li>
+          <li><a href="#" class="f2-header__drawer-link">KIDS</a></li>
+          <li><a href="#" class="f2-header__drawer-link">WATCHES</a></li>
+          <li><a href="#" class="f2-header__drawer-link">HOMESTOP</a></li>
+          <li><a href="#" class="f2-header__drawer-link f2-header__drawer-link--luxe">LUXE</a></li>
+          <li><a href="#" class="f2-header__drawer-link">BRANDS</a></li>
+          <li><a href="#" class="f2-header__drawer-link">GIFTS</a></li>
+          <li>
+            <a href="#" class="f2-header__drawer-link f2-header__drawer-link--beauty">
+              <span class="f2-header__beauty-ss" aria-hidden="true">SS</span>
+              <span class="f2-header__beauty-text">BEAUTY</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="f2-header__promo">
+      <div class="f2-header__container f2-header__promo-inner">
+        <p class="f2-header__promo-text">
+          Use Code: <strong>NEW10</strong>, For An Extra 10% Off For First-Time Users.
+        </p>
+        <div class="f2-header__promo-links">
+          <a href="#"><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Store Locator</a>
+          <span class="f2-header__promo-divider" aria-hidden="true"></span>
+          <a href="#"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>Get The App</a>
+          <span class="f2-header__promo-divider" aria-hidden="true"></span>
+          <a href="#"><i class="fa-regular fa-circle-question" aria-hidden="true"></i>Help</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="f2-header__main">
+      <div class="f2-header__container f2-header__main-inner">
+        <button type="button" class="f2-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          aria-controls="f2-drawer" data-f2-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <div class="f2-header__brand-group">
+          <a href="index.html" class="f2-header__logo" aria-label="KOTRO home">
+            <img src="assets/img/logo-2.png" alt="KOTRO" width="160" height="36" decoding="async">
+          </a>
+          <span class="f2-header__brand-divider" aria-hidden="true"></span>
+          <button type="button" class="f2-header__location" aria-label="Add delivery location">
+            <i class="fa-solid fa-location-dot f2-header__location-icon" aria-hidden="true"></i>
+            <span class="f2-header__location-text">Add Delivery Location</span>
+            <i class="fa-solid fa-chevron-right f2-header__location-chevron" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="f2-header__actions-group">
+          <form class="f2-header__search" role="search" action="#" method="get">
+            <label class="visually-hidden" for="f2-header-search">Search apparel</label>
+            <i class="fa-solid fa-magnifying-glass f2-header__search-icon" aria-hidden="true"></i>
+            <input id="f2-header-search" class="f2-header__search-input" type="search" name="q" autocomplete="off"
+              aria-label="Search apparel">
+            <span class="f2-header__search-placeholder" aria-hidden="true" data-f2-search-placeholder>
+              Search <span class="f2-header__search-accent">Apparel</span>
+            </span>
+          </form>
+        </div>
+
+        <div class="f2-header__icons">
+          <button type="button" class="f2-header__icon-btn f2-header__icon-btn--account" aria-label="Account menu"
+            aria-haspopup="true">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+            <i class="fa-solid fa-chevron-down f2-header__icon-chevron" aria-hidden="true"></i>
+          </button>
+          <a href="#" class="f2-header__icon-btn" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="f2-header__icon-btn f2-header__icon-btn--bag" aria-label="Shopping bag">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="f2-header__nav" aria-label="Primary navigation">
+      <div class="f2-header__container">
+        <ul class="f2-header__nav-list">
+          <li><a href="#" class="f2-header__nav-link f2-header__nav-link--bargains">BARGA%NS</a></li>
+          <li><a href="shop.html" class="f2-header__nav-link is-active">MEN</a></li>
+          <li><a href="#" class="f2-header__nav-link">WOMEN</a></li>
+          <li><a href="#" class="f2-header__nav-link">KIDS</a></li>
+          <li><a href="#" class="f2-header__nav-link">WATCHES</a></li>
+          <li><a href="#" class="f2-header__nav-link">HOMESTOP</a></li>
+          <li><a href="#" class="f2-header__nav-link f2-header__nav-link--luxe">LUXE</a></li>
+          <li><a href="#" class="f2-header__nav-link">BRANDS</a></li>
+          <li><a href="#" class="f2-header__nav-link">GIFTS</a></li>
+          <li>
+            <a href="#" class="f2-header__nav-link f2-header__nav-link--beauty">
+              <span class="f2-header__beauty-ss" aria-hidden="true">SS</span>
+              <span class="f2-header__beauty-text">BEAUTY</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main class="f2-pdp" data-f2-pdp>
+    <div class="f2-pdp__container">
+      <nav class="f2-pdp__breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="f2-pdp__breadcrumb-sep">/</span>
+        <a href="shop.html">Men</a>
+        <span class="f2-pdp__breadcrumb-sep">/</span>
+        <span>Top Wear</span>
+        <span class="f2-pdp__breadcrumb-sep">/</span>
+        <span>Shirts</span>
+        <span class="f2-pdp__breadcrumb-sep">/</span>
+        <span data-f2-pdp-breadcrumb>Product</span>
+      </nav>
+
+      <div class="f2-pdp__layout">
+        <!-- Left: 2x2 image gallery -->
+        <div class="f2-pdp__gallery-col">
+          <div class="f2-pdp__gallery-grid" data-f2-pdp-gallery aria-label="Product images"></div>
+        </div>
+
+        <!-- Right: product info -->
+        <div class="f2-pdp__info">
+          <p class="f2-pdp__brand" data-f2-pdp-brand>BRAND</p>
+
+          <div class="f2-pdp__title-row">
+            <h1 class="f2-pdp__title" data-f2-pdp-title>Product Title</h1>
+            <button class="f2-pdp__share" type="button" aria-label="Share product">
+              <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="f2-pdp__rating" type="button">
+            <i class="fa-regular fa-star" aria-hidden="true"></i>
+            <span>Be the first one to rate!</span>
+          </button>
+
+          <div class="f2-pdp__price-block">
+            <div class="f2-pdp__price" data-f2-pdp-price>
+              <span class="f2-pdp__price-current">&#8377; 649</span>
+            </div>
+            <p class="f2-pdp__tax">Inclusive of GST benefit</p>
+          </div>
+
+          <div class="f2-pdp__block">
+            <p class="f2-pdp__label">SELECT SIZE</p>
+            <div class="f2-pdp__sizes" data-f2-pdp-sizes></div>
+            <div class="f2-pdp__size-meta">
+              <p class="f2-pdp__size-note">Size not in stock <a href="#">NOTIFY</a></p>
+              <a href="#" class="f2-pdp__size-chart"><i class="fa-solid fa-ruler-horizontal" aria-hidden="true"></i> SIZE CHART</a>
+            </div>
+          </div>
+
+          <div class="f2-pdp__block">
+            <p class="f2-pdp__label">SELECT COLOR</p>
+            <div class="f2-pdp__colors" data-f2-pdp-colors></div>
+          </div>
+
+          <div class="f2-pdp__offers-box">
+            <p class="f2-pdp__offers-title">OFFERS</p>
+            <ul class="f2-pdp__offers-list">
+              <li><i class="fa-solid fa-tag" aria-hidden="true"></i><span>Get 10% off with coupon code <strong>NEW10</strong> for first-time users. <a href="#">View T&amp;C</a></span></li>
+              <li><i class="fa-solid fa-tag" aria-hidden="true"></i><span>Get 5% off on prepaid orders. <a href="#">View T&amp;C</a></span></li>
+              <li><i class="fa-solid fa-tag" aria-hidden="true"></i><span>Extra &#8377;1000 off on orders above &#8377;4999 with code <strong>PTEXTRA1000</strong>. <a href="#">View T&amp;C</a></span></li>
+            </ul>
+          </div>
+
+          <div class="f2-pdp__qty-bar">
+            <span class="f2-pdp__qty-label">QUANTITY</span>
+            <div class="f2-pdp__qty" data-f2-pdp-qty>
+              <button type="button" class="f2-pdp__qty-btn" data-f2-qty-minus aria-label="Decrease quantity">&#8722;</button>
+              <span class="f2-pdp__qty-val" data-f2-qty-val>1</span>
+              <button type="button" class="f2-pdp__qty-btn" data-f2-qty-plus aria-label="Increase quantity">&#43;</button>
+            </div>
+          </div>
+
+          <div class="f2-pdp__delivery-block">
+            <p class="f2-pdp__label">DELIVERY DETAILS</p>
+            <div class="f2-pdp__pincode">
+              <input type="text" placeholder="Enter pin code" aria-label="Enter pincode" maxlength="6" inputmode="numeric">
+              <button class="f2-pdp__pincode-check" type="button">CHECK</button>
+            </div>
+            <ul class="f2-pdp__delivery-list">
+              <li>
+                <i class="fa-solid fa-truck" aria-hidden="true"></i>
+                <div>
+                  <strong>Fast Delivery</strong> — additional charges applicable
+                  <span>Enter pincode to check</span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-store" aria-hidden="true"></i>
+                <div>
+                  <strong>Self Pickup</strong>
+                  <span>Enter pincode to check</span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-box" aria-hidden="true"></i>
+                <div>
+                  <strong>Standard Delivery</strong>
+                  <span>Typically delivered in 5–7 working days</span>
+                  <span>All India FREE Shipping on Orders above Rs.999</span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+                <div>
+                  <strong>Easy 30 days exchange &amp; return available</strong>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="f2-pdp__cta-row">
+            <button class="f2-pdp__btn f2-pdp__btn--wishlist" type="button">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i> WISHLIST
+            </button>
+            <button class="f2-pdp__btn f2-pdp__btn--bag" type="button">
+              ADD TO BAG
+            </button>
+          </div>
+
+          <div class="f2-pdp__accordions f2-pdp__accordions--material" data-f2-pdp-accordions>
+            <div class="f2-pdp__acc-item is-open">
+              <button class="f2-pdp__acc-btn" type="button" aria-expanded="true">
+                <span>MATERIAL &amp; FITS</span>
+                <i class="fa-solid fa-minus" aria-hidden="true"></i>
+              </button>
+              <div class="f2-pdp__acc-panel">
+                <ul class="f2-pdp__spec-list" data-f2-pdp-material></ul>
+              </div>
+            </div>
+          </div>
+
+          <p class="f2-pdp__desc" data-f2-pdp-description></p>
+
+          <div class="f2-pdp__accordions" data-f2-pdp-accordions-more>
+            <div class="f2-pdp__acc-item">
+              <button class="f2-pdp__acc-btn" type="button" aria-expanded="false">
+                <span>FABRIC CARE</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="f2-pdp__acc-panel">
+                <p>Machine wash cold with like colours. Do not bleach. Tumble dry low. Warm iron if needed.</p>
+              </div>
+            </div>
+            <div class="f2-pdp__acc-item">
+              <button class="f2-pdp__acc-btn" type="button" aria-expanded="false">
+                <span>EAN</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="f2-pdp__acc-panel">
+                <p data-f2-pdp-ean>EAN: —</p>
+              </div>
+            </div>
+            <div class="f2-pdp__acc-item">
+              <button class="f2-pdp__acc-btn" type="button" aria-expanded="false">
+                <span>DELIVERY &amp; RETURNS</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="f2-pdp__acc-panel">
+                <p>Free delivery across Pan India on orders above &#8377;999. Returns accepted within 15 days in original packaging with tags intact.</p>
+              </div>
+            </div>
+            <div class="f2-pdp__acc-item">
+              <button class="f2-pdp__acc-btn" type="button" aria-expanded="false">
+                <span>DETAILS</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="f2-pdp__acc-panel" data-f2-pdp-details></div>
+            </div>
+            <div class="f2-pdp__acc-item">
+              <button class="f2-pdp__acc-btn" type="button" aria-expanded="false">
+                <span>REVIEWS</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="f2-pdp__acc-panel">
+                <p>No reviews yet. Be the first to review this product.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="f2-pdp__related" data-f2-pdp-related aria-labelledby="f2-pdp-related-title">
+        <h2 class="f2-pdp__related-title" id="f2-pdp-related-title">More like these</h2>
+
+        <div class="f2-pdp__related-carousel">
+          <button class="f2-pdp__related-arrow f2-pdp__related-arrow--prev" type="button"
+            aria-label="Previous product" data-f2-pdp-related-prev disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="f2-pdp__related-viewport" data-f2-pdp-related-viewport>
+            <div class="f2-pdp__related-track" data-f2-pdp-related-track></div>
+          </div>
+
+          <button class="f2-pdp__related-arrow f2-pdp__related-arrow--next" type="button"
+            aria-label="Next product" data-f2-pdp-related-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="f2-footer" role="contentinfo">
+    <div class="f2-footer__shell">
+      <div class="f2-footer__top">
+        <div class="f2-footer__brand-col">
+          <p class="f2-footer__brand-name">KYRO</p>
+          <h3 class="f2-footer__heading">Reach Out To Us</h3>
+          <p class="f2-footer__contact-line">
+            <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
+            <a href="tel:+917969727777">+91 - 796-972-7777</a>
+          </p>
+          <p class="f2-footer__contact-line">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:customercare@kotro.com">customercare@kotro.com</a>
+          </p>
+          <h3 class="f2-footer__heading f2-footer__heading--apps">Experience KOTRO App On Mobile</h3>
+          <div class="f2-footer__store-badges">
+            <a href="#" class="f2-footer__store-badge" aria-label="Download on the App Store">
+              <i class="fa-brands fa-apple" aria-hidden="true"></i>
+              <span>GET IT ON<br>App Store</span>
+            </a>
+            <a href="#" class="f2-footer__store-badge" aria-label="Get it on Google Play">
+              <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+              <span>GET IT ON<br>Google Play</span>
+            </a>
+          </div>
+        </div>
+        <div class="f2-footer__links-col">
+          <h3 class="f2-footer__heading">Top Categories</h3>
+          <a href="shop.html">Men</a>
+          <a href="#">Women</a>
+          <a href="#">Kids</a>
+          <a href="#">Beauty</a>
+          <a href="#">Watches</a>
+          <a href="#">Gift</a>
+          <a href="#">Home</a>
+          <a href="#">Luxe</a>
+          <a href="#">Bargain</a>
+        </div>
+        <div class="f2-footer__links-col">
+          <h3 class="f2-footer__heading">Useful Links</h3>
+          <a href="#">About Us</a>
+          <a href="#">Contact Us</a>
+          <a href="#">Track Orders</a>
+          <a href="#">Corporate Site</a>
+          <a href="#">Store Locator</a>
+          <a href="#">Careers</a>
+          <a href="#">Help/FAQs</a>
+          <a href="#">Rewards Club</a>
+          <a href="#">Rewards Policy</a>
+        </div>
+        <div class="f2-footer__links-col">
+          <h3 class="f2-footer__heading">Our Policies</h3>
+          <a href="#">Terms Of Use</a>
+          <a href="#">Privacy</a>
+          <a href="#">Delivery Policy</a>
+          <a href="#">Exchange &amp; Return</a>
+        </div>
+        <div class="f2-footer__pay-col">
+          <h3 class="f2-footer__heading">Pay Securely By</h3>
+          <div class="f2-footer__pay-badges">
+            <img src="assets/img/visa.png" alt="Visa" width="58" height="28" loading="lazy" decoding="async">
+            <img src="assets/img/mc.png" alt="Mastercard" width="58" height="28" loading="lazy" decoding="async">
+            <img src="assets/img/amex.png" alt="American Express" width="58" height="28" loading="lazy" decoding="async">
+            <img src="assets/img/rupay.png" alt="RuPay" width="58" height="28" loading="lazy" decoding="async">
+          </div>
+          <h3 class="f2-footer__heading">Verified By</h3>
+          <div class="f2-footer__pay-badges">
+            <img src="assets/img/visa.png" alt="Visa" width="58" height="28" loading="lazy" decoding="async">
+            <img src="assets/img/mc.png" alt="Mastercard" width="58" height="28" loading="lazy" decoding="async">
+            <img src="assets/img/amex.png" alt="American Express" width="58" height="28" loading="lazy" decoding="async">
+            <img src="assets/img/rupay.png" alt="RuPay" width="58" height="28" loading="lazy" decoding="async">
+          </div>
+        </div>
+      </div>
+      <div class="f2-footer__bottom">
+        <div class="f2-footer__social">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+        </div>
+        <p class="f2-footer__copy">Copyright &copy; 2026 KYRO. All Rights Reserved.</p>
+        <a href="#" class="f2-footer__back-top" aria-label="Back to top" data-f2-back-top>
+          <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/product.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

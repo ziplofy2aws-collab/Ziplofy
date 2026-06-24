@@ -1,0 +1,102 @@
+/* Font Awesome icon utilities — CHRONEXA theme */
+
+.wc2-i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.wc2-breadcrumb__sep {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 8px;
+  font-size: 9px;
+  color: #bbb;
+}
+
+.wc2-breadcrumb__sep i {
+  font-size: 9px;
+}
+
+.wc2-footer__contact-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wc2-footer__contact-line i {
+  flex-shrink: 0;
+  width: 14px;
+  margin-top: 3px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.wc2-footer__subscribe.wc2-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wc2-float-wa {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 150;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #25d366;
+  font-size: 28px;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wc2-float-wa:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  color: #fff;
+}
+
+.wc2-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wc2-btn-icon i {
+  font-size: 0.95em;
+}
+
+.wc2-inline-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wc2-inline-icon i {
+  flex-shrink: 0;
+  font-size: 0.95em;
+  color: inherit;
+}
+
+.wc2-list-icon li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.wc2-list-icon li i {
+  flex-shrink: 0;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #1c2f5e;
+}

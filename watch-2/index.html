@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHRONEXA — Luxury Watches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/icons.css" />
+</head>
+
+<body>
+
+  <header class="wc2-header" role="banner" data-wc2-header>
+    <div class="wc2-header__backdrop" data-wc2-backdrop hidden aria-hidden="true"></div>
+
+    <aside class="wc2-header__drawer" id="wc2-drawer" data-wc2-drawer aria-hidden="true" tabindex="-1">
+      <div class="wc2-header__drawer-head">
+        <span class="wc2-header__drawer-title">Menu</span>
+        <button class="wc2-header__drawer-close" type="button" aria-label="Close menu" data-wc2-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="wc2-header__drawer-nav" aria-label="Mobile navigation">
+        <a href="shop.html">Watches</a>
+        <a href="#">CHRONEXA</a>
+        <a href="#">Service Center</a>
+        <a href="#">Accessories</a>
+        <a href="#">Jewellery</a>
+        <a href="#">Store Locator</a>
+        <a href="#">Wrist Diaries</a>
+      </nav>
+    </aside>
+
+    <!-- Top row: contact | logo | retailer badges -->
+    <div class="wc2-header__top">
+      <div class="wc2-header__inner wc2-header__inner--top">
+        <div class="wc2-header__contact">
+          <a href="tel:+918888881000" class="wc2-header__contact-link">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <span>+91-8888881000</span>
+          </a>
+          <span class="wc2-header__dot" aria-hidden="true"></span>
+          <a href="#" class="wc2-header__contact-link wc2-header__contact-link--icon" aria-label="WhatsApp">
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+          </a>
+          <span class="wc2-header__dot" aria-hidden="true"></span>
+          <a href="mailto:info@chronexa.com" class="wc2-header__contact-link wc2-header__contact-link--icon"
+            aria-label="Email">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <a href="index.html" class="wc2-header__logo" aria-label="CHRONEXA home">
+          <img src="assets/img/logo.png" alt="CHRONEXA" width="220" height="90" decoding="async" />
+        </a>
+
+        <div class="wc2-header__badges">
+          <div class="wc2-header__badge wc2-header__badge--watch">
+            <img src="assets/img/NS-1.png" alt="Authorized luxury watch" width="56" height="56" decoding="async" />
+          </div>
+          <div class="wc2-header__badge wc2-header__badge--retailer">
+            <i class="fa-solid fa-crown wc2-header__badge-crown" aria-hidden="true"></i>
+            <span class="wc2-header__badge-brand">CHRONEXA</span>
+            <span class="wc2-header__badge-label">OFFICIAL<br />RETAILER</span>
+          </div>
+        </div>
+
+        <div class="wc2-header__mobile-utils" aria-label="Quick actions">
+          <button class="wc2-header__util-btn" type="button" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+          <span class="wc2-header__util-divider" aria-hidden="true"></span>
+          <a href="tel:+918888881000" class="wc2-header__util-btn" aria-label="Call us">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+          </a>
+          <span class="wc2-header__util-divider" aria-hidden="true"></span>
+          <a href="#" class="wc2-header__util-btn" aria-label="WhatsApp">
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+          </a>
+          <span class="wc2-header__util-divider" aria-hidden="true"></span>
+          <a href="mailto:info@chronexa.com" class="wc2-header__util-btn" aria-label="Email">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row: navigation -->
+    <div class="wc2-header__nav-bar">
+      <div class="wc2-header__inner wc2-header__inner--nav">
+        <button class="wc2-header__menu-btn" type="button" aria-label="Open menu" aria-expanded="false"
+          aria-controls="wc2-drawer" data-wc2-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+        <a href="index.html" class="wc2-header__logo wc2-header__logo--nav-mobile" aria-label="CHRONEXA home">
+          <img src="assets/img/logo.png" alt="CHRONEXA" width="220" height="90" decoding="async" />
+        </a>
+        <nav class="wc2-header__nav" aria-label="Primary navigation">
+          <a href="shop.html" class="wc2-header__nav-link">
+            Watches
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="wc2-header__nav-link">CHRONEXA</a>
+          <a href="#" class="wc2-header__nav-link">Service Center</a>
+          <a href="#" class="wc2-header__nav-link">
+            Accessories
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="wc2-header__nav-link">
+            Jewellery
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="wc2-header__nav-link">Store Locator</a>
+          <a href="#" class="wc2-header__nav-link">Wrist Diaries</a>
+        </nav>
+
+        <div class="wc2-header__actions">
+          <button class="wc2-header__action-btn wc2-header__action-btn--search" type="button" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+          <a href="#" class="wc2-header__action-btn" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <section class="wc2-hero" aria-label="Hero banner" data-wc2-hero>
+    <div class="wc2-hero__slider">
+      <article class="wc2-hero__slide is-active">
+        <img src="assets/img/hero-banner-1.png" alt="Luxury watch collection" width="1899" height="828"
+          decoding="async" />
+      </article>
+      <article class="wc2-hero__slide">
+        <img src="assets/img/hero-banner-2.png" alt="Premium timepieces" width="1899" height="828" loading="lazy"
+          decoding="async" />
+      </article>
+      <article class="wc2-hero__slide">
+        <img src="assets/img/hero-banner-3.png" alt="Swiss watch craftsmanship" width="1899" height="828" loading="lazy"
+          decoding="async" />
+      </article>
+
+      <button class="wc2-hero__nav wc2-hero__nav--prev" type="button" aria-label="Previous slide"
+        data-wc2-hero-prev></button>
+      <button class="wc2-hero__nav wc2-hero__nav--next" type="button" aria-label="Next slide"
+        data-wc2-hero-next></button>
+
+      <div class="wc2-hero__pagination" aria-label="Hero slide controls">
+        <button class="wc2-hero__line is-active" type="button" aria-label="Go to slide 1" aria-current="true"
+          data-wc2-hero-line="0"></button>
+        <button class="wc2-hero__line" type="button" aria-label="Go to slide 2" aria-current="false"
+          data-wc2-hero-line="1"></button>
+        <button class="wc2-hero__line" type="button" aria-label="Go to slide 3" aria-current="false"
+          data-wc2-hero-line="2"></button>
+      </div>
+    </div>
+
+    <div class="wc2-hero__promo" role="region" aria-label="Promotional highlights" data-wc2-promo-slider
+      aria-live="polite">
+      <div class="wc2-hero__promo-viewport">
+        <div class="wc2-hero__promo-track">
+          <div class="wc2-hero__promo-slide is-active">
+            <span class="wc2-hero__promo-item"><i class="fa-solid fa-clock" aria-hidden="true"></i> Shop Tissot
+              Watches</span>
+          </div>
+          <div class="wc2-hero__promo-slide">
+            <span class="wc2-hero__promo-item"><i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i> Book
+              Your Watch for Service</span>
+          </div>
+          <div class="wc2-hero__promo-slide">
+            <span class="wc2-hero__promo-item"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i> Free
+              Delivery</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wc2-category" aria-labelledby="wc2-category-heading">
+    <div class="wc2-category__inner">
+      <h2 class="wc2-category__title" id="wc2-category-heading">Shop by Category</h2>
+
+      <div class="wc2-category__grid">
+        <article class="wc2-category__card">
+          <a href="#" class="wc2-category__media">
+            <img src="assets/img/Men_2-a.png" alt="Men's watches collection" width="600" height="750" loading="lazy"
+              decoding="async" />
+          </a>
+          <div class="wc2-category__foot">
+            <div class="wc2-category__copy">
+              <h3 class="wc2-category__name">Men's</h3>
+              <p class="wc2-category__price">&#8377; 1,999 Onwards</p>
+            </div>
+            <a href="#" class="wc2-category__btn" aria-label="Shop Men's watches">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+
+        <article class="wc2-category__card">
+          <a href="#" class="wc2-category__media">
+            <img src="assets/img/Women_1-a.png" alt="Women's watches collection" width="600" height="750"
+              loading="lazy" decoding="async" />
+          </a>
+          <div class="wc2-category__foot">
+            <div class="wc2-category__copy">
+              <h3 class="wc2-category__name">Women's</h3>
+              <p class="wc2-category__price">&#8377; 2,999 Onwards</p>
+            </div>
+            <a href="#" class="wc2-category__btn" aria-label="Shop Women's watches">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+
+        <article class="wc2-category__card">
+          <a href="#" class="wc2-category__media">
+            <img src="assets/img/Trending-a.png" alt="Trending watches collection" width="600" height="750"
+              loading="lazy" decoding="async" />
+          </a>
+          <div class="wc2-category__foot">
+            <div class="wc2-category__copy">
+              <h3 class="wc2-category__name">Trending</h3>
+              <p class="wc2-category__price">&#8377; 3,999 Onwards</p>
+            </div>
+            <a href="#" class="wc2-category__btn" aria-label="Shop Trending watches">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wc2-arrivals" aria-label="New arrivals and best sellers" data-wc2-arrivals>
+    <div class="wc2-arrivals__inner">
+      <div class="wc2-arrivals__head">
+        <div class="wc2-arrivals__tabs" role="tablist" aria-label="Product collections">
+          <button class="wc2-arrivals__tab is-active" type="button" role="tab" aria-selected="true"
+            data-wc2-arrivals-tab="new">New Arrivals</button>
+          <button class="wc2-arrivals__tab" type="button" role="tab" aria-selected="false"
+            data-wc2-arrivals-tab="best">Best Seller</button>
+        </div>
+        <div class="wc2-arrivals__nav">
+          <button class="wc2-arrivals__arrow" type="button" aria-label="Previous product" data-wc2-arrivals-prev
+            disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button class="wc2-arrivals__arrow" type="button" aria-label="Next product" data-wc2-arrivals-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="wc2-arrivals__viewport" data-wc2-arrivals-viewport>
+        <div class="wc2-arrivals__track" data-wc2-arrivals-track>
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="new">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=ns-1" data-product="ns-1" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-1.png" alt="Timex Atelier Chronograph watch" width="400" height="400"
+                  decoding="async" />
+              </a>
+              <span class="wc2-arrivals__badge">New</span>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=ns-1" data-product="ns-1" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">Timex Atelier Chronograph Two Tone Stainless Steel Bracelet Watch
+                TA000012</h3>
+              <p class="wc2-arrivals__price">&#8377; 199,995</p>
+            </a>
+          </article>
+
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="new">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=ns-2" data-product="ns-2" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-2.png" alt="Tissot Gentleman Powermatic watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <span class="wc2-arrivals__badge">New</span>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=ns-2" data-product="ns-2" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">Tissot Gentleman Powermatic 80 Silicium Stainless Steel Watch
+                T1274071104100</h3>
+              <p class="wc2-arrivals__price">&#8377; 159,995</p>
+            </a>
+          </article>
+
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="new">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=ns-3" data-product="ns-3" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-3.png" alt="Seiko Presage automatic watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <span class="wc2-arrivals__badge">New</span>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=ns-3" data-product="ns-3" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">Seiko Presage Automatic Open Heart Blue Dial Leather Watch SRPK15K1</h3>
+              <p class="wc2-arrivals__price">&#8377; 179,995</p>
+            </a>
+          </article>
+
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="new">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=ns-4" data-product="ns-4" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-4.png" alt="Citizen Eco-Drive classic watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <span class="wc2-arrivals__badge">New</span>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=ns-4" data-product="ns-4" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">Citizen Eco-Drive Classic Two Tone Stainless Steel Watch AW1690-51A</h3>
+              <p class="wc2-arrivals__price">&#8377; 149,995</p>
+            </a>
+          </article>
+
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="best">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=bs-1" data-product="bs-1" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-1.png" alt="CHRONEXA Oyster Perpetual watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=bs-1" data-product="bs-1" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">CHRONEXA Oyster Perpetual 41 Bright Blue Dial Stainless Steel Watch
+                124300</h3>
+              <p class="wc2-arrivals__price">&#8377; 599,995</p>
+            </a>
+          </article>
+
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="best">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=bs-2" data-product="bs-2" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-2.png" alt="Omega Seamaster watch" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </a>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=bs-2" data-product="bs-2" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">Omega Seamaster Diver 300M Blue Dial Stainless Steel Watch
+                210.30.42.20.03.001
+              </h3>
+              <p class="wc2-arrivals__price">&#8377; 459,995</p>
+            </a>
+          </article>
+
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="best">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=bs-3" data-product="bs-3" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-3.png" alt="TAG Heuer Carrera watch" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </a>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=bs-3" data-product="bs-3" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">TAG Heuer Carrera Chronograph Blue Dial Stainless Steel Watch
+                CBN2010.BA0642
+              </h3>
+              <p class="wc2-arrivals__price">&#8377; 329,995</p>
+            </a>
+          </article>
+
+          <article class="wc2-arrivals__card" data-wc2-arrivals-group="best">
+            <div class="wc2-arrivals__media">
+              <a href="product.html?id=bs-4" data-product="bs-4" class="wc2-arrivals__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-4.png" alt="Breitling Navitimer watch" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </a>
+              <button class="wc2-arrivals__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+            </div>
+            <a href="product.html?id=bs-4" data-product="bs-4" class="wc2-arrivals__link">
+              <h3 class="wc2-arrivals__name">Breitling Navitimer B01 Chronograph Black Dial Leather Watch AB0138211B1P1
+              </h3>
+              <p class="wc2-arrivals__price">&#8377; 389,995</p>
+            </a>
+          </article>
+        </div>
+      </div>
+
+      <div class="wc2-arrivals__foot">
+        <a href="shop.html" class="wc2-arrivals__view-all">View All</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wc2-promo-duo" aria-label="Men's and women's watch collections">
+    <div class="wc2-promo-duo__inner">
+      <article class="wc2-promo-duo__card">
+        <div class="wc2-promo-duo__media">
+          <img src="assets/img/menswatches.png" alt="Men's luxury watches" width="800" height="1000" loading="lazy"
+            decoding="async" />
+        </div>
+        <div class="wc2-promo-duo__panel">
+          <h2 class="wc2-promo-duo__title">Men's Watches</h2>
+          <p class="wc2-promo-duo__desc">An expansive selection of new launches and classic timepieces.</p>
+        </div>
+        <a href="#" class="wc2-promo-duo__btn">Discover Now</a>
+      </article>
+
+      <article class="wc2-promo-duo__card">
+        <div class="wc2-promo-duo__media">
+          <img src="assets/img/womenswatches.png" alt="Women's luxury watches" width="800" height="1000" loading="lazy"
+            decoding="async" />
+        </div>
+        <div class="wc2-promo-duo__panel">
+          <h2 class="wc2-promo-duo__title">Women's Watches</h2>
+          <p class="wc2-promo-duo__desc">A collection of luxury watches and beautifully designed high jewellery.</p>
+        </div>
+        <a href="#" class="wc2-promo-duo__btn">Discover Now</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="wc2-reviewed" aria-labelledby="wc2-reviewed-heading" data-wc2-reviewed>
+    <div class="wc2-reviewed__inner">
+      <div class="wc2-reviewed__head">
+        <h2 class="wc2-reviewed__title" id="wc2-reviewed-heading">Most Reviewed and Liked</h2>
+        <div class="wc2-reviewed__nav">
+          <button class="wc2-reviewed__arrow" type="button" aria-label="Previous product" data-wc2-reviewed-prev
+            disabled>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button class="wc2-reviewed__arrow" type="button" aria-label="Next product" data-wc2-reviewed-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="wc2-reviewed__viewport" data-wc2-reviewed-viewport>
+        <div class="wc2-reviewed__track" data-wc2-reviewed-track>
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=bs-1" data-product="bs-1" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-1.png" alt="Aston Martin Blue Round Dial watch" width="400" height="400"
+                  decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=bs-1" data-product="bs-1" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Aston Martin Blue Round Dial Analog Men's Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 33,995</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">1 review</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=bs-2" data-product="bs-2" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-2.png" alt="Green dial chronograph watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=bs-2" data-product="bs-2" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Green Dial Chronograph Two Tone Stainless Steel Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 38,995</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">5 reviews</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=bs-3" data-product="bs-3" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-3.png" alt="Gold tonneau automatic watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=bs-3" data-product="bs-3" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Gold Tonneau Automatic Black Leather Strap Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 18,995</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">14 reviews</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=bs-4" data-product="bs-4" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/BS-4.png" alt="Rose gold skeleton watch" width="400" height="400" loading="lazy"
+                  decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=bs-4" data-product="bs-4" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Rose Gold Skeleton Automatic Black Leather Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 72,500</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">5 reviews</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=ns-1" data-product="ns-1" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-1.png" alt="Timex Atelier chronograph watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=ns-1" data-product="ns-1" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Timex Atelier Chronograph Two Tone Stainless Steel Bracelet Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 199,995</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">3 reviews</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=ns-2" data-product="ns-2" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-2.png" alt="Tissot Gentleman Powermatic watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=ns-2" data-product="ns-2" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Tissot Gentleman Powermatic 80 Silicium Stainless Steel Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 159,995</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">8 reviews</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=ns-3" data-product="ns-3" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-3.png" alt="Seiko Presage automatic watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=ns-3" data-product="ns-3" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Seiko Presage Automatic Open Heart Blue Dial Leather Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 179,995</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">12 reviews</span>
+              </div>
+            </a>
+          </article>
+
+          <article class="wc2-reviewed__card">
+            <div class="wc2-reviewed__media">
+              <a href="product.html?id=ns-4" data-product="ns-4" class="wc2-reviewed__media-link" tabindex="-1" aria-hidden="true">
+                <img src="assets/img/NS-4.png" alt="Citizen Eco-Drive classic watch" width="400" height="400"
+                  loading="lazy" decoding="async" />
+              </a>
+              <button class="wc2-reviewed__wish" type="button" aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <span class="wc2-reviewed__tag">Bestseller</span>
+            </div>
+            <a href="product.html?id=ns-4" data-product="ns-4" class="wc2-reviewed__link">
+              <h3 class="wc2-reviewed__name">Citizen Eco-Drive Classic Two Tone Stainless Steel Watch</h3>
+              <p class="wc2-reviewed__price">&#8377; 149,995</p>
+              <div class="wc2-reviewed__rating">
+                <span class="wc2-reviewed__stars" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                    class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </span>
+                <span class="wc2-reviewed__count">6 reviews</span>
+              </div>
+            </a>
+          </article>
+        </div>
+      </div>
+
+      <div class="wc2-reviewed__foot">
+        <a href="shop.html" class="wc2-reviewed__view-all">View All</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wc2-luxe" aria-labelledby="wc2-luxe-heading">
+    <div class="wc2-luxe__inner">
+      <header class="wc2-luxe__head">
+        <p class="wc2-luxe__eyebrow">Just In Time</p>
+        <h2 class="wc2-luxe__brand" id="wc2-luxe-heading">
+          <span class="wc2-luxe__line" aria-hidden="true"></span>
+          <span class="wc2-luxe__brand-text">CHRONEXA</span>
+          <span class="wc2-luxe__line" aria-hidden="true"></span>
+        </h2>
+        <p class="wc2-luxe__desc">Seize every second with our luxurious offerings of select timepieces from the brands
+          that you would be proud to own.</p>
+      </header>
+
+      <div class="wc2-luxe__slider" data-wc2-luxe-slider>
+        <div class="wc2-luxe__viewport" data-wc2-luxe-viewport>
+          <div class="wc2-luxe__track" data-wc2-luxe-track>
+        <article class="wc2-luxe__card">
+          <a href="#" class="wc2-luxe__media">
+            <img src="assets/img/promo-1.png" alt="The World of Rado" width="600" height="720" loading="lazy"
+              decoding="async" />
+          </a>
+          <div class="wc2-luxe__foot">
+            <div class="wc2-luxe__copy">
+              <h3 class="wc2-luxe__title">The World of Chronexa</h3>
+              <a href="#" class="wc2-luxe__link">View Collection</a>
+            </div>
+            <a href="#" class="wc2-luxe__btn" aria-label="View Rado collection">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+
+        <article class="wc2-luxe__card">
+          <a href="#" class="wc2-luxe__media">
+            <img src="assets/img/promo-2.png" alt="All About Longines" width="600" height="720" loading="lazy"
+              decoding="async" />
+          </a>
+          <div class="wc2-luxe__foot">
+            <div class="wc2-luxe__copy">
+              <h3 class="wc2-luxe__title">All About Longines</h3>
+              <a href="#" class="wc2-luxe__link">View Collection</a>
+            </div>
+            <a href="#" class="wc2-luxe__btn" aria-label="View Longines collection">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+
+        <article class="wc2-luxe__card">
+          <a href="#" class="wc2-luxe__media">
+            <img src="assets/img/promo-3.png" alt="Ferragamo Flair" width="600" height="720" loading="lazy"
+              decoding="async" />
+          </a>
+          <div class="wc2-luxe__foot">
+            <div class="wc2-luxe__copy">
+              <h3 class="wc2-luxe__title">Ferragamo Flair</h3>
+              <a href="#" class="wc2-luxe__link">View Collection</a>
+            </div>
+            <a href="#" class="wc2-luxe__btn" aria-label="View Ferragamo collection">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+          </div>
+        </div>
+        <div class="wc2-luxe__progress" aria-hidden="true">
+          <div class="wc2-luxe__progress-rail">
+            <span class="wc2-luxe__progress-thumb" data-wc2-luxe-progress></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wc2-testimonials" aria-labelledby="wc2-testimonials-heading" data-wc2-testimonials>
+    <div class="wc2-testimonials__inner">
+      <h2 class="wc2-testimonials__title" id="wc2-testimonials-heading">Customer Testimonials</h2>
+
+      <div class="wc2-testimonials__viewport" data-wc2-testimonials-viewport>
+        <div class="wc2-testimonials__track" data-wc2-testimonials-track>
+          <article class="wc2-testimonials__card">
+            <span class="wc2-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+            <p class="wc2-testimonials__text">Nice store on the ground floor. I was looking for a Longines watch and
+              they were very accommodating. Manmeet in particular was extremely helpful. He called me after my visit and
+              tried to arrange the best deal.</p>
+            <strong class="wc2-testimonials__name">Ruban Mehta</strong>
+          </article>
+
+          <article class="wc2-testimonials__card">
+            <span class="wc2-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+            <p class="wc2-testimonials__text">Very polite staff, great collection of tag heuer and seiko watches i was
+              looking for, thanks kapoor watch team and the manager khushboo. Cheers.</p>
+            <strong class="wc2-testimonials__name">Alok Diva</strong>
+          </article>
+
+          <article class="wc2-testimonials__card">
+            <span class="wc2-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+            <p class="wc2-testimonials__text">I have always loved Kapoor watch ... my brother was looking for a precious
+              watch from last 1 year and Kapoor watch fulfilled the promise.</p>
+            <strong class="wc2-testimonials__name">Ashish Gupta</strong>
+          </article>
+
+          <article class="wc2-testimonials__card">
+            <span class="wc2-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+            <p class="wc2-testimonials__text">Purchased a CHRONEXA for my anniversary and the team made the entire
+              experience seamless. Authentic pieces, transparent pricing, and exceptional after-sales support.</p>
+            <strong class="wc2-testimonials__name">Neha Kapoor</strong>
+          </article>
+
+          <article class="wc2-testimonials__card">
+            <span class="wc2-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+            <p class="wc2-testimonials__text">Their service center handled my watch repair with great care. Quick
+              turnaround, regular updates, and the timepiece came back looking brand new.</p>
+            <strong class="wc2-testimonials__name">Vikram Singh</strong>
+          </article>
+
+          <article class="wc2-testimonials__card">
+            <span class="wc2-testimonials__quote" aria-hidden="true"><i class="fa-solid fa-quote-left"></i></span>
+            <p class="wc2-testimonials__text">A wonderful destination for luxury watches. The staff guided me patiently
+              through several brands until I found the perfect fit for daily wear.</p>
+            <strong class="wc2-testimonials__name">Priya Sharma</strong>
+          </article>
+        </div>
+      </div>
+
+      <div class="wc2-testimonials__dots" aria-label="Testimonial slide controls">
+        <button class="wc2-testimonials__dot is-active" type="button" aria-label="Show testimonials 1 to 3"
+          aria-current="true" data-wc2-testimonials-dot="0"></button>
+        <button class="wc2-testimonials__dot" type="button" aria-label="Show testimonials 4 to 6" aria-current="false"
+          data-wc2-testimonials-dot="1"></button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wc2-footer" role="contentinfo">
+    <div class="wc2-footer__inner">
+      <div class="wc2-footer__grid">
+        <div class="wc2-footer__col">
+          <h3 class="wc2-footer__heading">Our World</h3>
+          <ul class="wc2-footer__links">
+            <li><a href="#">Our Legacy</a></li>
+            <li><a href="#">Men's Watches</a></li>
+            <li><a href="#">Women's Watches</a></li>
+            <li><a href="#">New Arrivals</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Service Center</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Sitemap</a></li>
+          </ul>
+        </div>
+
+        <div class="wc2-footer__col">
+          <h3 class="wc2-footer__heading">Support &amp; Policy</h3>
+          <ul class="wc2-footer__links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">CSR Policies</a></li>
+            <li><a href="#">Constitution of CSR Committee</a></li>
+            <li><a href="#">CSR Annual Action Plan FY 2025-26</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Cookies Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="wc2-footer__col wc2-footer__col--brands">
+          <h3 class="wc2-footer__heading">Brands</h3>
+          <div class="wc2-footer__brands">
+            <ul class="wc2-footer__links">
+              <li><a href="#">CHRONEXA</a></li>
+              <li><a href="#">Breitling</a></li>
+              <li><a href="#">Bvlgari</a></li>
+              <li><a href="#">Cartier</a></li>
+              <li><a href="#">Chopard</a></li>
+              <li><a href="#">Franck Muller</a></li>
+              <li><a href="#">Hublot</a></li>
+              <li><a href="#">IWC Schaffhausen</a></li>
+              <li><a href="#">Longines</a></li>
+            </ul>
+            <ul class="wc2-footer__links">
+              <li><a href="#">Omega</a></li>
+              <li><a href="#">Panerai</a></li>
+              <li><a href="#">Rado</a></li>
+              <li><a href="#">Roger Dubuis</a></li>
+              <li><a href="#">Seven Friday</a></li>
+              <li><a href="#">TAG Heuer</a></li>
+              <li><a href="#">Tissot</a></li>
+              <li><a href="#">Tudor</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="wc2-footer__col">
+          <h3 class="wc2-footer__heading">Company Details</h3>
+          <div class="wc2-footer__details">
+            <p class="wc2-footer__company">Chronexa Watch Company Private Limited</p>
+            <p class="wc2-footer__contact-line"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span><span class="wc2-footer__label">Registered Office:</span><br />2nd Floor, D-31, Defence Colony,
+              Delhi-110024, India</span></p>
+            <p class="wc2-footer__contact-line"><i class="fa-solid fa-building" aria-hidden="true"></i><span>CIN: U33309DL1996PTC078735</span></p>
+            <p class="wc2-footer__contact-line"><i class="fa-solid fa-phone" aria-hidden="true"></i><a href="tel:+918888881000">+91-8888881000</a></p>
+            <p class="wc2-footer__contact-line"><i class="fa-regular fa-envelope" aria-hidden="true"></i><a href="mailto:enquiry@chronexa.com">enquiry@chronexa.com</a></p>
+          </div>
+        </div>
+
+        <div class="wc2-footer__col wc2-footer__col--newsletter">
+          <h3 class="wc2-footer__heading">Newsletter</h3>
+          <p class="wc2-footer__newsletter-text">Subscribe to stay updated about new products, promotional offers and
+            more.</p>
+          <form class="wc2-footer__form" action="#" method="post">
+            <label class="visually-hidden" for="wc2-footer-email">Email address</label>
+            <input id="wc2-footer-email" class="wc2-footer__input" type="email" name="email"
+              placeholder="Please Enter Email" autocomplete="email" />
+            <button class="wc2-footer__subscribe wc2-btn-icon" type="submit"><i class="fa-regular fa-paper-plane" aria-hidden="true"></i> Subscribe</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="wc2-footer__bar">
+        <p class="wc2-footer__copy">&copy; 2026 Chronexa Co. All Rights Reserved.</p>
+
+        <div class="wc2-footer__social-wrap">
+          <p class="wc2-footer__social-title">Keep In Touch</p>
+          <div class="wc2-footer__social" aria-label="Social media">
+            <a href="#" class="wc2-footer__social-link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="wc2-footer__social-link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="wc2-footer__social-link" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="wc2-footer__social-link" aria-label="LinkedIn">
+              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="wc2-footer__social-link" aria-label="RSS">
+              <i class="fa-solid fa-rss" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="wc2-footer__social-link" aria-label="Pinterest">
+              <i class="fa-brands fa-pinterest-p" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="wc2-footer__social-link" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <button class="wc2-footer__top" type="button" aria-label="Back to top" data-wc2-back-top>
+          <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="wc2-float-wa" aria-label="Chat on WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+
+</body>
+
+</html>
