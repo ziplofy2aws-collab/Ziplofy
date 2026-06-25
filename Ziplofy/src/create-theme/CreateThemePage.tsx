@@ -65,6 +65,21 @@ import {
   type CheckoutSignInMainConfig,
   type CheckoutThankYouMainConfig,
 } from './checkout';
+import { ThemeSettingsNav } from './sidebar/ThemeSettingsNav';
+import { THEME_LOGO_DEFAULT_PATH } from './settings/theme-logo-favicon.settings';
+import {
+  readThemeColorPalette,
+  seedThemePaletteValues,
+  syncThemePaletteToFieldValues,
+} from './settings/theme-color-palette.settings';
+import {
+  seedThemeTypographyValues,
+  syncThemeTypographyFontFields,
+  THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH,
+} from './settings/theme-typography.settings';
 import { buildThemeEditorPageMenu, findPageMenuItemByPreview } from './utils/page-menu';
 import { ensureRegistryTemplatesInConfig } from './utils/theme-page-registry';
 import {
@@ -201,6 +216,7 @@ import {
   loadCreatorThemeEditorPack,
   normalizeCreatorThemeConfig,
 } from '../utils/theme-editor-static-pack';
+import { setConfigAtPath } from '../utils/theme-editor-config.utils';
 import { ensureFeaturedProductSectionBlocks } from '../utils/featured-product-preset.util';
 import { ensureFaqSectionBlocks } from '../utils/faq-preset.util';
 import {
@@ -552,6 +568,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             ...formValuesFromEditorConfig(schema, config),
           };
         }
+        nextValues = seedThemeTypographyValues(seedThemePaletteValues(nextValues, config), config);
         ensureRegistryTemplatesInConfig(config);
 
         setEditorSchema(schema);
@@ -2012,6 +2029,85 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     );
   }, [isCheckoutProfile, checkoutGlobalSettings, handleCheckoutGlobalSettingsChange, handleCheckoutPaletteSync]);
 
+  const themeColorPalette = useMemo(
+    () => readThemeColorPalette(livePreviewConfig),
+    [livePreviewConfig]
+  );
+
+  const handleThemePaletteChange = useCallback(
+    (colors: string[]) => {
+      const fieldUpdates = syncThemePaletteToFieldValues(colors);
+      startTransition(() => {
+        setValues((prev) => ({ ...prev, ...fieldUpdates }));
+        setDefaultConfig((prev) => {
+          if (!prev) return prev;
+          const config = JSON.parse(JSON.stringify(prev)) as Record<string, unknown>;
+          setConfigAtPath(config, 'settings.colors.palette', colors);
+          for (const [path, value] of Object.entries(fieldUpdates)) {
+            if (!path.startsWith('settings.colors.palette.')) {
+              setConfigAtPath(config, path, value);
+            }
+          }
+          return config;
+        });
+      });
+      commitPreviewNow();
+    },
+    [commitPreviewNow]
+  );
+
+  const themeSettingsNav = useMemo(() => {
+    if (isCheckoutProfile) return null;
+    return (
+      <ThemeSettingsNav
+        values={values}
+        colorPalette={themeColorPalette}
+        onPaletteChange={handleThemePaletteChange}
+        onFieldChange={(path, type, raw) => {
+          handleFieldChange(path, type, raw);
+          if (path === THEME_LOGO_DEFAULT_PATH && type === 'text') {
+            handleFieldChange('sections.header.settings.defaultLogoUrl', 'text', String(raw));
+          }
+          if (
+            path === THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH ||
+            path === THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH ||
+            path === THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH ||
+            path === THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH
+          ) {
+            startTransition(() => {
+              setValues((prev) => {
+                const next = { ...prev, [path]: String(raw) };
+                const synced = syncThemeTypographyFontFields({
+                  body: next[THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH],
+                  subheading: next[THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH],
+                  heading: next[THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH],
+                  accent: next[THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH],
+                });
+                return { ...next, ...synced };
+              });
+            });
+          }
+          if (
+            path.startsWith('settings.typography.') ||
+            path.startsWith('settings.logo.') ||
+            path.startsWith('settings.colors.')
+          ) {
+            commitPreviewNow();
+          }
+        }}
+        onManageStoreName={() => navigate('/settings/general/branding')}
+      />
+    );
+  }, [
+    isCheckoutProfile,
+    values,
+    themeColorPalette,
+    handleThemePaletteChange,
+    handleFieldChange,
+    navigate,
+    commitPreviewNow,
+  ]);
+
   const checkoutPaletteTheme = useMemo(
     () => resolveCheckoutPaletteTheme(checkoutGlobalSettings),
     [checkoutGlobalSettings]
@@ -2257,6 +2353,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           settingsNode={isCheckoutProfile ? null : settingsNode}
           checkoutSettingsPanel={checkoutSettingsPanel}
           checkoutThemeSettingsNav={checkoutThemeSettingsNav ?? undefined}
+          themeSettingsNav={themeSettingsNav ?? undefined}
           settingsValues={values}
           onSettingsFieldChange={isCheckoutProfile ? undefined : handleFieldChange}
           onCollectionLinksApply={handleCollectionLinksApply}

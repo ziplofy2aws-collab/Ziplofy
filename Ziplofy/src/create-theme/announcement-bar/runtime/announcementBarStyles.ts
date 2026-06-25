@@ -1,16 +1,10 @@
 import { cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveThemePaletteSchemes } from '../../settings/theme-color-palette.settings';
 
 export type AnnouncementScheme = {
   background: string;
   color: string;
   linkColor: string;
-};
-
-const COLOR_SCHEMES: Record<string, AnnouncementScheme> = {
-  'scheme-1': { background: '#111827', color: '#f9fafb', linkColor: '#93c5fd' },
-  'scheme-2': { background: '#1e3a5f', color: '#eff6ff', linkColor: '#bfdbfe' },
-  'scheme-3': { background: '#431407', color: '#fff7ed', linkColor: '#fdba74' },
-  'scheme-4': { background: '#4c1d95', color: '#f5f3ff', linkColor: '#ddd6fe' },
 };
 
 export function announcementColorScheme(
@@ -19,7 +13,14 @@ export function announcementColorScheme(
   fallback: AnnouncementScheme
 ): AnnouncementScheme {
   const key = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-4');
-  return COLOR_SCHEMES[key] ?? fallback;
+  const schemes = resolveThemePaletteSchemes(config);
+  const scheme = schemes[key];
+  if (!scheme) return fallback;
+  return {
+    background: scheme.background,
+    color: scheme.color,
+    linkColor: scheme.color,
+  };
 }
 
 export function announcementSectionWidth(config: Record<string, unknown> | null, settingsBase: string): 'page' | 'full' {

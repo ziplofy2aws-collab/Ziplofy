@@ -14,6 +14,11 @@ type Props = {
   onChange: (color: string) => void;
   onDelete?: () => void;
   onClose: () => void;
+  /** Theme palette swatches shown below the hue slider (Shopify typography picker). */
+  paletteColors?: string[];
+  /** Highlighted palette swatch index when text color is linked to the palette. */
+  activePaletteIndex?: number | null;
+  onPaletteSelect?: (index: number, color: string) => void;
 };
 
 export function CheckoutColorPickerPopover({
@@ -23,6 +28,9 @@ export function CheckoutColorPickerPopover({
   onChange,
   onDelete,
   onClose,
+  paletteColors,
+  activePaletteIndex = null,
+  onPaletteSelect,
 }: Props) {
   const [hsv, setHsv] = useState(() => hexToHsv(color));
   const [hexDraft, setHexDraft] = useState(color.toUpperCase());
@@ -101,10 +109,13 @@ export function CheckoutColorPickerPopover({
 
   if (!open || !anchorRect) return null;
 
-  const top = Math.min(anchorRect.top, window.innerHeight - 320);
+  const hasPalette = Boolean(paletteColors?.length);
+  const popoverHeight = hasPalette ? 380 : 320;
+  const top = Math.min(anchorRect.top, window.innerHeight - popoverHeight);
   const left = Math.min(anchorRect.right + 8, window.innerWidth - 280);
 
   const hueColor = hsvToHex(hsv.h, 1, 1);
+  const previewColor = hsvToHex(hsv.h, hsv.s, hsv.v);
 
   return createPortal(
     <>
@@ -137,32 +148,47 @@ export function CheckoutColorPickerPopover({
             style={{
               left: `${hsv.s * 100}%`,
               top: `${(1 - hsv.v) * 100}%`,
-              backgroundColor: hsvToHex(hsv.h, hsv.s, hsv.v),
+              backgroundColor: previewColor,
             }}
           />
         </div>
 
         <div className="mt-3 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => void handleEyedropper()}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#e1e3e5] text-gray-700 hover:bg-[#f6f6f7]"
-            title="Pick color"
-          >
-            <EyeDropperIcon className="h-4 w-4" aria-hidden />
-          </button>
-          <input
-            type="text"
-            value={hexDraft}
-            onChange={(e) => setHexDraft(e.target.value.toUpperCase())}
-            onBlur={() => {
-              const hex = normalizeHexColor(hexDraft, color);
-              onChange(hex);
-              commitHsv(hexToHsv(hex));
-            }}
-            className="min-w-0 flex-1 rounded-lg border border-[#c9cccf] px-2.5 py-1.5 text-[13px] text-gray-900 focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-            aria-label="Hex color"
+          <span
+            className="h-8 w-8 shrink-0 rounded-lg border border-[#e1e3e5] shadow-sm"
+            style={{ background: previewColor }}
+            aria-hidden
           />
+          <div className="relative min-w-0 flex-1">
+            <input
+              type="text"
+              value={hexDraft}
+              onChange={(e) => setHexDraft(e.target.value.toUpperCase())}
+              onBlur={() => {
+                const hex = normalizeHexColor(hexDraft, color);
+                onChange(hex);
+                commitHsv(hexToHsv(hex));
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const hex = normalizeHexColor(hexDraft, color);
+                  onChange(hex);
+                  commitHsv(hexToHsv(hex));
+                }
+              }}
+              className="w-full rounded-lg border border-[#c9cccf] py-1.5 pl-2.5 pr-9 text-[13px] text-gray-900 focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+              aria-label="Hex color"
+            />
+            <button
+              type="button"
+              onClick={() => void handleEyedropper()}
+              className="absolute right-1 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-600 hover:bg-[#f6f6f7]"
+              title="Pick color from screen"
+            >
+              <EyeDropperIcon className="h-4 w-4" aria-hidden />
+            </button>
+          </div>
         </div>
 
         <input
@@ -179,6 +205,36 @@ export function CheckoutColorPickerPopover({
           }}
           aria-label="Hue"
         />
+
+        {hasPalette ? (
+          <div className="mt-4 border-t border-[#e1e1e1] pt-3">
+            <p className="mb-2 text-[12px] text-gray-500">Color palette</p>
+            <div className="flex flex-wrap items-center gap-2">
+              {paletteColors!.map((swatch, index) => {
+                const normalized = normalizeHexColor(swatch, '#000000');
+                const isActive = activePaletteIndex === index;
+                const isWhite =
+                  normalized.toLowerCase() === '#ffffff' || normalized.toLowerCase() === '#fff';
+                return (
+                  <button
+                    key={`${normalized}-${index}`}
+                    type="button"
+                    onClick={() => onPaletteSelect?.(index, normalized)}
+                    className={`h-9 w-9 rounded-lg border-2 transition-shadow ${
+                      isActive
+                        ? 'border-gray-900 ring-1 ring-gray-900 ring-offset-1'
+                        : 'border-transparent hover:border-[#c9cccf]'
+                    } ${isWhite ? 'bg-white shadow-sm' : ''}`}
+                    style={{ background: isWhite ? undefined : normalized }}
+                    title={normalized}
+                    aria-label={`Use palette color ${index + 1}`}
+                    aria-pressed={isActive}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
 
         {onDelete ? (
           <button

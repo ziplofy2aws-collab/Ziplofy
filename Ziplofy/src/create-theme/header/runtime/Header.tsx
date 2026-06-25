@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useStorefrontAuth, useStorefrontCart } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgMenuItems, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveActiveThemeLogoUrl, resolveThemeLogoHeights, scopedHeaderLogoHeightCss } from '../../runtime/shared/resolveThemeLogo';
 import {
   headerBorderPx,
   headerColorScheme,
@@ -94,7 +95,8 @@ export function Header({ sectionId = 'header' }: Props) {
       customCss: cfgString(config, `${settingsBase}.customCss`, ''),
       logoText: cfgString(config, `${logoBase}.text`, 'My Store'),
       tagline: cfgString(config, `${logoBase}.tagline`, ''),
-      logoUrl: cfgString(config, `${settingsBase}.defaultLogoUrl`, '').trim(),
+      logoUrl: resolveActiveThemeLogoUrl(config, sectionId, pathname),
+      logoHeights: resolveThemeLogoHeights(config),
       hideLogoOnHomePage: cfgBool(config, `${logoBase}.hideLogoOnHomePage`, false),
       logoPaddingTop: Math.max(0, cfgNumber(config, `${logoBase}.paddingTop`, 0)),
       logoPaddingBottom: Math.max(0, cfgNumber(config, `${logoBase}.paddingBottom`, 0)),
@@ -121,7 +123,7 @@ export function Header({ sectionId = 'header' }: Props) {
       countryRegionLabel: cfgString(config, `${settingsBase}.countryRegionLabel`),
       languageLabel: cfgString(config, `${settingsBase}.languageLabel`),
     };
-  }, [config, sectionId, settingsBase, logoBase, menuBase, themeBg, themeColors.text, themeColors]);
+  }, [config, sectionId, settingsBase, logoBase, menuBase, themeBg, themeColors.text, themeColors, pathname]);
 
   const {
     scheme,
@@ -133,6 +135,7 @@ export function Header({ sectionId = 'header' }: Props) {
     logoText,
     tagline,
     logoUrl,
+    logoHeights,
     hideLogoOnHomePage,
     logoPaddingTop,
     logoPaddingBottom,
@@ -161,6 +164,11 @@ export function Header({ sectionId = 'header' }: Props) {
   const iconColor = text;
   const scopedCss = scopedHeaderCss(sectionId, customCss);
   const headerResponsiveCss = scopedHeaderResponsiveCss(sectionId);
+  const logoHeightCss = scopedHeaderLogoHeightCss(
+    sectionId,
+    logoHeights.desktop,
+    logoHeights.mobile
+  );
 
   const menuLinkFontFamily =
     menuFont === 'heading' ? fontHeading : menuFont === 'subheading' ? fontBody : fontBody;
@@ -217,7 +225,12 @@ export function Header({ sectionId = 'header' }: Props) {
       >
         {logoUrl ? (
           <Link to="/" style={{ textDecoration: 'none', display: 'flex' }}>
-            <img src={logoUrl} alt={logoText} style={{ maxHeight: 36, display: 'block' }} />
+            <img
+              src={logoUrl}
+              alt={logoText}
+              className="ziplofy-header-logo-img"
+              style={{ display: 'block' }}
+            />
           </Link>
         ) : (
           <Link to="/" style={{ textDecoration: 'none', color: text }}>
@@ -516,6 +529,7 @@ export function Header({ sectionId = 'header' }: Props) {
     <>
       {scopedCss ? <style>{scopedCss}</style> : null}
       <style>{headerResponsiveCss}</style>
+      <style>{logoHeightCss}</style>
       <HeaderAccountPanel
         open={accountPanelOpen && showAccount}
         anchorRef={accountButtonRef}

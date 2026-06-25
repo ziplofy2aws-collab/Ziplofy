@@ -1,4 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react';
+import { applyThemeFaviconToDocument, readThemeFaviconUrl } from '@/seo/theme-favicon.util';
+import {
+  applyThemeTypographyCssVars,
+  applyThemeTypographyFontsToDocument,
+} from '@/theme/theme-typography.util';
 
 export type ThemeConfig = Record<string, unknown>;
 
@@ -12,12 +17,16 @@ declare global {
 
 function applyThemeConfigCssVars(config: ThemeConfig | null): void {
   const root = document.documentElement;
-  const colors = config?.colors as Record<string, string> | undefined;
-  const typography = config?.typography as Record<string, string> | undefined;
+  const settings = config?.settings as Record<string, unknown> | undefined;
+  const colors = settings?.colors as Record<string, string> | undefined;
   if (colors?.primary) root.style.setProperty('--ziplofy-primary', colors.primary);
   if (colors?.accent) root.style.setProperty('--ziplofy-accent', colors.accent);
   if (colors?.background) root.style.setProperty('--ziplofy-background', colors.background);
-  if (typography?.fontFamily) root.style.setProperty('--ziplofy-font-family', typography.fontFamily);
+  if (colors?.text) root.style.setProperty('--ziplofy-text', colors.text);
+  if (colors?.surface) root.style.setProperty('--ziplofy-surface', colors.surface);
+  if (colors?.muted) root.style.setProperty('--ziplofy-muted', colors.muted);
+  if (colors?.border) root.style.setProperty('--ziplofy-border', colors.border);
+  applyThemeTypographyCssVars(config);
 }
 
 function configSignature(config: ThemeConfig | null): string {
@@ -58,6 +67,8 @@ export function ThemeConfigProvider({
       delete window.__ZIPLOFY_THEME_CONFIG__;
     }
     applyThemeConfigCssVars(contextValue);
+    applyThemeTypographyFontsToDocument(contextValue);
+    applyThemeFaviconToDocument(readThemeFaviconUrl(contextValue));
     window.dispatchEvent(
       new CustomEvent('ziplofy-theme-config-changed', { detail: contextValue ?? null })
     );

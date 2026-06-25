@@ -110,8 +110,8 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
     [config, accordionSettingsBase]
   );
   const questionTypography = useMemo(
-    () => accordionQuestionTypography(accordionStyle.headingTypographyPreset, { fontHeading, fontBody }),
-    [accordionStyle.headingTypographyPreset, fontHeading, fontBody]
+    () => accordionQuestionTypography(config, accordionStyle.headingTypographyPreset, { fontHeading, fontBody }),
+    [config, accordionStyle.headingTypographyPreset, fontHeading, fontBody]
   );
   const heading = useMemo(
     () => readFaqHeading(config, sectionBase, settingsBase),

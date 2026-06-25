@@ -1021,6 +1021,7 @@ export type CreateThemeEditorSidebarProps = {
   settingsNode?: SidebarNode | null;
   checkoutSettingsPanel?: React.ReactNode;
   checkoutThemeSettingsNav?: React.ReactNode;
+  themeSettingsNav?: React.ReactNode;
   settingsValues?: Record<string, string | boolean>;
   onSettingsFieldChange?: (
     path: string,
@@ -1057,6 +1058,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   settingsNode,
   checkoutSettingsPanel,
   checkoutThemeSettingsNav,
+  themeSettingsNav,
   settingsValues = {},
   onSettingsFieldChange,
   onCollectionLinksApply,
@@ -1143,7 +1145,14 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
         {loading ? <p className="p-4 text-sm text-gray-500">Loading theme…</p> : null}
         {error ? <p className="p-4 text-sm text-red-600">{error}</p> : null}
         {!loading && sidebarTab === 'theme-settings' ? (
-          checkoutThemeSettingsNav ?? <ThemeSettingsNav />
+          checkoutThemeSettingsNav ?? themeSettingsNav ?? (
+            <ThemeSettingsNav
+              values={{}}
+              colorPalette={[]}
+              onFieldChange={() => {}}
+              onPaletteChange={() => {}}
+            />
+          )
         ) : null}
         {!loading && sidebarTab === 'sections' && tree.length > 0 ? (
           <div className="pb-3 pt-1">

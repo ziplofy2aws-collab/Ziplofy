@@ -2,21 +2,10 @@ import type { CSSProperties } from 'react';
 import { getThemeConfigValue } from '@render-store/sdk';
 import { readHeroHeadingText } from '../../hero/runtime/heroHeadingStyles';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
-
-const TEXT_TYPOGRAPHY_PRESETS: Record<
-  string,
-  { fontSize: number; fontWeight: number; lineHeight: number; fontFamilyKey: 'heading' | 'body' }
-> = {
-  default: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
-  paragraph: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
-  body: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
-  'heading-1': { fontSize: 32, fontWeight: 600, lineHeight: 1.15, fontFamilyKey: 'heading' },
-  'heading-2': { fontSize: 28, fontWeight: 600, lineHeight: 1.2, fontFamilyKey: 'heading' },
-  'heading-3': { fontSize: 24, fontWeight: 600, lineHeight: 1.25, fontFamilyKey: 'heading' },
-  'heading-4': { fontSize: 20, fontWeight: 600, lineHeight: 1.3, fontFamilyKey: 'heading' },
-  'heading-5': { fontSize: 18, fontWeight: 600, lineHeight: 1.35, fontFamilyKey: 'heading' },
-  'heading-6': { fontSize: 14, fontWeight: 600, lineHeight: 1.4, fontFamilyKey: 'heading' },
-};
+import {
+  resolveThemeTypographyStyle,
+  type ThemeFonts,
+} from '../../runtime/shared/themeTypographyRuntime';
 
 const TEXT_MAX_WIDTH: Record<string, string | undefined> = {
   narrow: '280px',
@@ -28,11 +17,11 @@ const TEXT_MAX_WIDTH: Record<string, string | undefined> = {
 export function readFaqTextBlockStyle(
   config: Record<string, unknown> | null,
   settingsBase: string,
-  themeFonts: { fontHeading: string; fontBody: string },
+  themeFonts: ThemeFonts,
   color: string
 ): CSSProperties {
   const preset = cfgString(config, `${settingsBase}.typographyPreset`, 'default');
-  const typo = TEXT_TYPOGRAPHY_PRESETS[preset] ?? TEXT_TYPOGRAPHY_PRESETS.default;
+  const typo = resolveThemeTypographyStyle(config, preset, themeFonts);
   const widthMode = cfgString(config, `${settingsBase}.width`, 'fill');
   const maxKey = cfgString(config, `${settingsBase}.maxWidth`, 'normal');
   const alignment = cfgString(config, `${settingsBase}.alignment`, 'left');
@@ -42,10 +31,13 @@ export function readFaqTextBlockStyle(
     width: widthMode === 'fill' ? '100%' : 'fit-content',
     maxWidth: TEXT_MAX_WIDTH[maxKey] ?? TEXT_MAX_WIDTH.normal,
     textAlign: alignment === 'center' || alignment === 'right' ? alignment : 'left',
-    fontFamily: typo.fontFamilyKey === 'heading' ? themeFonts.fontHeading : themeFonts.fontBody,
+    fontFamily: typo.fontFamily,
     fontSize: typo.fontSize,
     fontWeight: typo.fontWeight,
+    fontStyle: typo.fontStyle,
     lineHeight: typo.lineHeight,
+    letterSpacing: typo.letterSpacing,
+    textTransform: typo.textTransform,
     color,
     background: bgOn ? 'rgba(0,0,0,0.04)' : undefined,
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),
@@ -226,21 +218,6 @@ export function readFaqLayout(
   };
 }
 
-const ACCORDION_TYPOGRAPHY_PRESETS: Record<
-  string,
-  { fontSize: number; fontWeight: number; lineHeight: number; fontFamilyKey: 'heading' | 'body' }
-> = {
-  default: { fontSize: 16, fontWeight: 400, lineHeight: 1.4, fontFamilyKey: 'body' },
-  paragraph: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
-  body: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
-  'heading-1': { fontSize: 40, fontWeight: 700, lineHeight: 1.15, fontFamilyKey: 'heading' },
-  'heading-2': { fontSize: 32, fontWeight: 600, lineHeight: 1.2, fontFamilyKey: 'heading' },
-  'heading-3': { fontSize: 24, fontWeight: 600, lineHeight: 1.25, fontFamilyKey: 'heading' },
-  'heading-4': { fontSize: 20, fontWeight: 600, lineHeight: 1.3, fontFamilyKey: 'heading' },
-  'heading-5': { fontSize: 18, fontWeight: 600, lineHeight: 1.35, fontFamilyKey: 'heading' },
-  'heading-6': { fontSize: 14, fontWeight: 600, lineHeight: 1.4, fontFamilyKey: 'heading' },
-};
-
 export type FaqAccordionStyle = {
   icon: 'caret' | 'plus';
   dividers: boolean;
@@ -280,15 +257,19 @@ export function readFaqAccordionStyle(
 }
 
 export function accordionQuestionTypography(
+  config: Record<string, unknown> | null,
   preset: string,
-  themeFonts: { fontHeading: string; fontBody: string }
-): Pick<CSSProperties, 'fontSize' | 'fontWeight' | 'lineHeight' | 'fontFamily'> {
-  const typo = ACCORDION_TYPOGRAPHY_PRESETS[preset] ?? ACCORDION_TYPOGRAPHY_PRESETS['heading-5'];
+  themeFonts: ThemeFonts
+): Pick<CSSProperties, 'fontSize' | 'fontWeight' | 'lineHeight' | 'fontFamily' | 'fontStyle' | 'letterSpacing' | 'textTransform'> {
+  const typo = resolveThemeTypographyStyle(config, preset, themeFonts);
   return {
-    fontFamily: typo.fontFamilyKey === 'heading' ? themeFonts.fontHeading : themeFonts.fontBody,
+    fontFamily: typo.fontFamily,
     fontSize: typo.fontSize,
     fontWeight: typo.fontWeight,
+    fontStyle: typo.fontStyle,
     lineHeight: typo.lineHeight,
+    letterSpacing: typo.letterSpacing,
+    textTransform: typo.textTransform,
   };
 }
 

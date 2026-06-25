@@ -22,6 +22,20 @@ import {
 import { seedBottomAlignedHeroValues } from './hero-bottom-aligned.util';
 import { seedSectionEnabledValues } from './theme-editor-section-visibility.util';
 import { THEME_PAGE_REGISTRY } from '../create-theme/utils/theme-page-registry';
+import {
+  ensureThemeLogoFaviconDefaults,
+  withThemeLogoFaviconSchema,
+} from '../create-theme/settings/theme-logo-favicon.settings';
+import {
+  ensureThemeColorPaletteDefaults,
+  seedThemePaletteValues,
+  withThemeColorPaletteSchema,
+} from '../create-theme/settings/theme-color-palette.settings';
+import {
+  ensureThemeTypographyDefaults,
+  seedThemeTypographyValues,
+  withThemeTypographySchema,
+} from '../create-theme/settings/theme-typography.settings';
 
 const PACK_MODULES: Record<
   string,
@@ -321,6 +335,13 @@ export function normalizeCreatorThemeConfig(config: Record<string, unknown>): vo
   sanitizeThemeConfigStructure(config);
   syncLayoutOrderFromSections(config);
   sanitizeThemeConfigStructure(config);
+  ensureThemeLogoFaviconDefaults(config);
+  ensureThemeColorPaletteDefaults(config);
+  ensureThemeTypographyDefaults(config);
+}
+
+export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchemaDoc {
+  return withThemeTypographySchema(withThemeColorPaletteSchema(withThemeLogoFaviconSchema(schema)));
 }
 
 /** Theme settings only — avoids materializing layout/template sections via applyValues. */
@@ -389,7 +410,7 @@ export async function loadCreatorThemeEditorPack(
   packId: DevStaticThemePackId = 'horizon'
 ): Promise<ThemeEditorLoadResult> {
   const loaded = await loadPackFromBundled(packId);
-  const editorSchema = loaded.schema as EditorSchemaDoc;
+  const editorSchema = prepareCreatorEditorSchema(loaded.schema as EditorSchemaDoc);
   const packDefault = JSON.parse(JSON.stringify(loaded.defaultConfig)) as Record<string, unknown>;
   try {
     localStorage.removeItem(THEME_CREATOR_CONFIG_STORAGE_KEY);
@@ -398,12 +419,24 @@ export async function loadCreatorThemeEditorPack(
   }
   const config = createEmptyCreatorConfig(packDefault);
   sanitizeThemeConfigStructure(config);
-  const values = creatorConfigHasSections(config)
-    ? {
-        ...formValuesFromEditorConfig(editorSchema, config),
-        ...seedSectionEnabledValues(config),
-      }
-    : creatorGlobalSettingsValues(editorSchema, config);
+  ensureThemeLogoFaviconDefaults(config);
+  ensureThemeColorPaletteDefaults(config);
+  ensureThemeTypographyDefaults(config);
+  ensureThemeLogoFaviconDefaults(packDefault);
+  ensureThemeColorPaletteDefaults(packDefault);
+  ensureThemeTypographyDefaults(packDefault);
+  const values = seedThemeTypographyValues(
+    seedThemePaletteValues(
+      creatorConfigHasSections(config)
+        ? {
+            ...formValuesFromEditorConfig(editorSchema, config),
+            ...seedSectionEnabledValues(config),
+          }
+        : creatorGlobalSettingsValues(editorSchema, config),
+      config
+    ),
+    config
+  );
   return {
     themeName: (config.themeName as string) || 'Creator Basic',
     themePath: `theme-packs/${packId}`,
@@ -434,8 +467,9 @@ export async function loadStaticThemeEditorPack(
     ? await loadPackFromBaseUrl()
     : await loadPackFromBundled(packId);
 
-  const editorSchema = loaded.schema as EditorSchemaDoc;
+  const editorSchema = prepareCreatorEditorSchema(loaded.schema as EditorSchemaDoc);
   const defaultConfig = loaded.defaultConfig;
+  ensureThemeLogoFaviconDefaults(defaultConfig);
   const saved = readLocalConfig(packId);
   const config = saved
     ? (JSON.parse(JSON.stringify(saved)) as Record<string, unknown>)

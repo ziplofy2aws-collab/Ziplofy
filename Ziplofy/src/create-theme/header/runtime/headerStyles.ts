@@ -1,4 +1,5 @@
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveThemePaletteSchemes, type ThemeSchemeColors } from '../../settings/theme-color-palette.settings';
 
 export type HeaderScheme = {
   background: string;
@@ -13,12 +14,22 @@ const COLOR_SCHEMES: Record<string, HeaderScheme> = {
   'scheme-4': { background: '#4c1d95', color: '#f5f3ff', border: '#6d28d9' },
 };
 
+function schemeToHeader(scheme: ThemeSchemeColors): HeaderScheme {
+  return {
+    background: scheme.background,
+    color: scheme.color,
+    border: scheme.border,
+  };
+}
+
 export function headerColorScheme(
   config: Record<string, unknown> | null,
   settingsBase: string,
   fallback: HeaderScheme
 ): HeaderScheme {
   const key = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  const dynamic = resolveThemePaletteSchemes(config)[key];
+  if (dynamic) return schemeToHeader(dynamic);
   return COLOR_SCHEMES[key] ?? fallback;
 }
 
@@ -29,6 +40,8 @@ export function menuBlockColorScheme(
   fallback: HeaderScheme
 ): HeaderScheme {
   const key = cfgString(config, `${menuSettingsBase}.colorScheme`, 'scheme-1');
+  const dynamic = resolveThemePaletteSchemes(config)[key];
+  if (dynamic) return schemeToHeader(dynamic);
   return COLOR_SCHEMES[key] ?? fallback;
 }
 
