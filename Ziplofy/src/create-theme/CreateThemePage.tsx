@@ -82,6 +82,22 @@ import {
 } from './settings/theme-typography.settings';
 import { seedThemeAnimationsValues } from './settings/theme-animations.settings';
 import { seedThemeBadgesValues } from './settings/theme-badges.settings';
+import { seedThemeButtonsValues } from './settings/theme-buttons.settings';
+import {
+  readThemeCartSettingsFromValues,
+  seedThemeCartValues,
+  syncThemeCartHeaderFieldValues,
+} from './settings/theme-cart.settings';
+import { seedThemeDrawersValues } from './settings/theme-drawers.settings';
+import { seedThemeProductMediaValues } from './settings/theme-product-media.settings';
+import { seedThemeIconsValues } from './settings/theme-icons.settings';
+import { seedThemeInputFieldsValues } from './settings/theme-input-fields.settings';
+import { seedThemePopoversModalsValues } from './settings/theme-popovers-modals.settings';
+import { seedThemePricesValues } from './settings/theme-prices.settings';
+import { seedThemeProductCardsValues } from './settings/theme-product-cards.settings';
+import { seedThemeSearchValues } from './settings/theme-search.settings';
+import { seedThemeSwatchesValues } from './settings/theme-swatches.settings';
+import { seedThemeVariantPickersValues } from './settings/theme-variant-pickers.settings';
 import {
   seedThemePageValues,
   syncThemePageFieldValues,
@@ -576,14 +592,50 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             ...formValuesFromEditorConfig(schema, config),
           };
         }
-        nextValues = seedThemeBadgesValues(
-          seedThemeAnimationsValues(
-            seedThemePageValues(
-              seedThemeTypographyValues(seedThemePaletteValues(nextValues, config), config),
+        nextValues = seedThemeVariantPickersValues(
+          seedThemeSwatchesValues(
+            seedThemeSearchValues(
+            seedThemeProductCardsValues(
+            seedThemePricesValues(
+            seedThemePopoversModalsValues(
+            seedThemeInputFieldsValues(
+              seedThemeIconsValues(
+                seedThemeProductMediaValues(
+                  seedThemeDrawersValues(
+                    seedThemeCartValues(
+                      seedThemeButtonsValues(
+                        seedThemeBadgesValues(
+                          seedThemeAnimationsValues(
+                            seedThemePageValues(
+                              seedThemeTypographyValues(seedThemePaletteValues(nextValues, config), config),
+                              config
+                            ),
+                            config
+                          ),
+                          config
+                        ),
+                        config
+                      ),
+                      config
+                    ),
+                    config
+                  ),
+                  config
+                ),
+                config
+              ),
               config
             ),
             config
           ),
+          config
+        ),
+          config
+        ),
+          config
+        ),
+          config
+        ),
           config
         );
         ensureRegistryTemplatesInConfig(config);
@@ -2119,11 +2171,35 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               });
             });
           }
+          if (path.startsWith('settings.cart.')) {
+            startTransition(() => {
+              setValues((prev) => {
+                const next = {
+                  ...prev,
+                  [path]: type === 'boolean' ? Boolean(raw) : String(raw),
+                };
+                const cart = readThemeCartSettingsFromValues(next);
+                return { ...next, ...syncThemeCartHeaderFieldValues(cart) };
+              });
+            });
+          }
           if (
             path.startsWith('settings.typography.') ||
             path.startsWith('settings.page.') ||
             path.startsWith('settings.animations.') ||
             path.startsWith('settings.badges.') ||
+            path.startsWith('settings.buttons.') ||
+            path.startsWith('settings.cart.') ||
+            path.startsWith('settings.drawers.') ||
+            path.startsWith('settings.productMedia.') ||
+            path.startsWith('settings.icons.') ||
+            path.startsWith('settings.inputFields.') ||
+            path.startsWith('settings.popoversModals.') ||
+            path.startsWith('settings.prices.') ||
+            path.startsWith('settings.productCards.') ||
+            path.startsWith('settings.search.') ||
+            path.startsWith('settings.swatches.') ||
+            path.startsWith('settings.variantPickers.') ||
             path.startsWith('settings.logo.') ||
             path.startsWith('settings.colors.')
           ) {

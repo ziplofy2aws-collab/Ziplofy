@@ -19,6 +19,10 @@ type Props = {
   /** Highlighted palette swatch index when text color is linked to the palette. */
   activePaletteIndex?: number | null;
   onPaletteSelect?: (index: number, color: string) => void;
+  /** Show a transparent swatch (theme button backgrounds). */
+  allowTransparent?: boolean;
+  isTransparent?: boolean;
+  onTransparentSelect?: () => void;
 };
 
 export function CheckoutColorPickerPopover({
@@ -31,6 +35,9 @@ export function CheckoutColorPickerPopover({
   paletteColors,
   activePaletteIndex = null,
   onPaletteSelect,
+  allowTransparent = false,
+  isTransparent = false,
+  onTransparentSelect,
 }: Props) {
   const [hsv, setHsv] = useState(() => hexToHsv(color));
   const [hexDraft, setHexDraft] = useState(color.toUpperCase());
@@ -109,8 +116,8 @@ export function CheckoutColorPickerPopover({
 
   if (!open || !anchorRect) return null;
 
-  const hasPalette = Boolean(paletteColors?.length);
-  const popoverHeight = hasPalette ? 380 : 320;
+  const hasPalette = Boolean(paletteColors?.length) || allowTransparent;
+  const popoverHeight = hasPalette ? (allowTransparent ? 420 : 380) : 320;
   const top = Math.min(anchorRect.top, window.innerHeight - popoverHeight);
   const left = Math.min(anchorRect.right + 8, window.innerWidth - 280);
 
@@ -208,31 +215,64 @@ export function CheckoutColorPickerPopover({
 
         {hasPalette ? (
           <div className="mt-4 border-t border-[#e1e1e1] pt-3">
-            <p className="mb-2 text-[12px] text-gray-500">Color palette</p>
-            <div className="flex flex-wrap items-center gap-2">
-              {paletteColors!.map((swatch, index) => {
-                const normalized = normalizeHexColor(swatch, '#000000');
-                const isActive = activePaletteIndex === index;
-                const isWhite =
-                  normalized.toLowerCase() === '#ffffff' || normalized.toLowerCase() === '#fff';
-                return (
+            {allowTransparent ? (
+              <>
+                <p className="mb-2 text-[12px] text-gray-500">Background</p>
+                <div className="mb-3 flex flex-wrap items-center gap-2">
                   <button
-                    key={`${normalized}-${index}`}
                     type="button"
-                    onClick={() => onPaletteSelect?.(index, normalized)}
+                    onClick={() => {
+                      onTransparentSelect?.();
+                      onClose();
+                    }}
                     className={`h-9 w-9 rounded-lg border-2 transition-shadow ${
-                      isActive
+                      isTransparent
                         ? 'border-gray-900 ring-1 ring-gray-900 ring-offset-1'
                         : 'border-transparent hover:border-[#c9cccf]'
-                    } ${isWhite ? 'bg-white shadow-sm' : ''}`}
-                    style={{ background: isWhite ? undefined : normalized }}
-                    title={normalized}
-                    aria-label={`Use palette color ${index + 1}`}
-                    aria-pressed={isActive}
+                    }`}
+                    style={{
+                      backgroundColor: '#ffffff',
+                      backgroundImage:
+                        'linear-gradient(45deg, #d1d5db 25%, transparent 25%), linear-gradient(-45deg, #d1d5db 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #d1d5db 75%), linear-gradient(-45deg, transparent 75%, #d1d5db 75%)',
+                      backgroundSize: '8px 8px',
+                      backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0px',
+                    }}
+                    title="Transparent"
+                    aria-label="Transparent background"
+                    aria-pressed={isTransparent}
                   />
-                );
-              })}
-            </div>
+                </div>
+              </>
+            ) : null}
+            {paletteColors?.length ? (
+              <>
+                <p className="mb-2 text-[12px] text-gray-500">Color palette</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  {paletteColors.map((swatch, index) => {
+                    const normalized = normalizeHexColor(swatch, '#000000');
+                    const isActive = activePaletteIndex === index;
+                    const isWhite =
+                      normalized.toLowerCase() === '#ffffff' || normalized.toLowerCase() === '#fff';
+                    return (
+                      <button
+                        key={`${normalized}-${index}`}
+                        type="button"
+                        onClick={() => onPaletteSelect?.(index, normalized)}
+                        className={`h-9 w-9 rounded-lg border-2 transition-shadow ${
+                          isActive
+                            ? 'border-gray-900 ring-1 ring-gray-900 ring-offset-1'
+                            : 'border-transparent hover:border-[#c9cccf]'
+                        } ${isWhite ? 'bg-white shadow-sm' : ''}`}
+                        style={{ background: isWhite ? undefined : normalized }}
+                        title={normalized}
+                        aria-label={`Use palette color ${index + 1}`}
+                        aria-pressed={isActive}
+                      />
+                    );
+                  })}
+                </div>
+              </>
+            ) : null}
           </div>
         ) : null}
 

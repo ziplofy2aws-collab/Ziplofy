@@ -4,6 +4,7 @@ import {
   heroHeadingTypographyCss,
   readHeroHeadingStyle,
 } from '../../hero/runtime/heroHeadingStyles';
+import { useThemeIconStrokeWidth } from '../../runtime/shared/themeIconsRuntime';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { useThemeColors } from '../../runtime/shared/tokens';
@@ -32,7 +33,15 @@ const LAYOUT = {
   maxWidth: 1200,
 };
 
-function AccordionIcon({ kind, open }: { kind: 'caret' | 'plus'; open: boolean }) {
+function AccordionIcon({
+  kind,
+  open,
+  strokeWidth,
+}: {
+  kind: 'caret' | 'plus';
+  open: boolean;
+  strokeWidth: number;
+}) {
   if (kind === 'plus') {
     return (
       <svg
@@ -46,7 +55,7 @@ function AccordionIcon({ kind, open }: { kind: 'caret' | 'plus'; open: boolean }
         <path
           d={open ? 'M4 8h8' : 'M8 4v8M4 8h8'}
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
       </svg>
@@ -68,7 +77,7 @@ function AccordionIcon({ kind, open }: { kind: 'caret' | 'plus'; open: boolean }
       <path
         d="M4 6l4 4 4-4"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -93,6 +102,7 @@ function editorAttrs(
 
 export function Faq({ sectionId = 'faq_section', templateId = 'index', placement = 'template' }: SectionRuntimeProps) {
   const config = useThemeConfig();
+  const iconStroke = useThemeIconStrokeWidth();
   const { text: themeText, fontHeading, fontBody } = useThemeColors();
   const settingsBase =
     placement === 'template'
@@ -370,7 +380,7 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
                   />
                 </span>
               </span>
-              <AccordionIcon kind={accordionStyle.icon} open={open} />
+              <AccordionIcon kind={accordionStyle.icon} open={open} strokeWidth={iconStroke} />
             </button>
             {showAnswerContent ? (
               <div

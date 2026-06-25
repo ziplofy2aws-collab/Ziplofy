@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+  type RefObject,
+} from 'react';
 import {
   ArrowLeftIcon,
   ChevronRightIcon,
@@ -105,6 +113,7 @@ export function ThemeEditorLinkPickerDropdown({
   onClose,
   storeId: storeIdProp,
   placement = 'below',
+  boundaryRef,
 }: {
   open: boolean;
   searchQuery: string;
@@ -113,6 +122,8 @@ export function ThemeEditorLinkPickerDropdown({
   storeId?: string | null;
   /** Pop above the anchor (e.g. Insert link modal) or below (default). */
   placement?: 'below' | 'above';
+  /** Clicks inside this element do not close the picker (e.g. the trigger field). */
+  boundaryRef?: RefObject<HTMLElement | null>;
 }) {
   const { activeStoreId } = useStore();
   const storeId = storeIdProp ?? activeStoreId;
@@ -131,13 +142,14 @@ export function ThemeEditorLinkPickerDropdown({
   useEffect(() => {
     if (!open) return;
     const onDocClick = (e: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        onClose();
-      }
+      const target = e.target as Node;
+      if (panelRef.current?.contains(target)) return;
+      if (boundaryRef?.current?.contains(target)) return;
+      onClose();
     };
     document.addEventListener('mousedown', onDocClick);
     return () => document.removeEventListener('mousedown', onDocClick);
-  }, [open, onClose]);
+  }, [open, onClose, boundaryRef]);
 
   const filteredCollections = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -382,11 +394,11 @@ export function ThemeEditorLinkPickerDropdown({
               <>
                 <button
                   type="button"
-                  onClick={() => pickAndClose({ link: '/collections/all', label: 'All products' })}
+                  onClick={() => pickAndClose({ link: '/collections/all', label: 'All Products' })}
                   className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
                 >
                   <TagIcon className="h-5 w-5 shrink-0 text-gray-500" />
-                  <span className="min-w-0 flex-1 truncate">All products</span>
+                  <span className="min-w-0 flex-1 truncate">All Products</span>
                 </button>
                 {filteredProducts.map((product) => {
                   const imageUrl = product.imageUrls?.[0];

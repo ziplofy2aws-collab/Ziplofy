@@ -1,6 +1,7 @@
 import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
+import { resolveThemeInputFieldInlineStyle } from '../../runtime/shared/themeInputFieldsRuntime';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
@@ -46,18 +47,12 @@ export function ContactForm({
   const justifyContent =
     style.position === 'top' ? 'flex-start' : style.position === 'bottom' ? 'flex-end' : 'center';
 
-  const inputRadius = Math.max(style.cornerRadius > 0 ? style.cornerRadius : 8, 0);
+  const themeInputStyle = useMemo(() => resolveThemeInputFieldInlineStyle(config), [config]);
 
   const inputStyle: CSSProperties = {
     width: '100%',
     boxSizing: 'border-box',
-    fontFamily: fontBody,
-    fontSize: 15,
-    lineHeight: 1.4,
-    color: scheme.color,
-    background: scheme.inputBg,
-    border: `1px solid ${scheme.inputBorder}`,
-    borderRadius: inputRadius,
+    ...themeInputStyle,
     padding: '12px 14px',
     outline: 'none',
   };
@@ -171,6 +166,7 @@ export function ContactForm({
             <EditorField fieldPath={`${settingsBase}.namePlaceholder`} label="Name placeholder" as="span">
               <input
                 type="text"
+                className="ziplofy-theme-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={namePlaceholder}
@@ -181,6 +177,7 @@ export function ContactForm({
             <EditorField fieldPath={`${settingsBase}.emailPlaceholder`} label="Email placeholder" as="span">
               <input
                 type="email"
+                className="ziplofy-theme-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={emailPlaceholder}
@@ -194,6 +191,7 @@ export function ContactForm({
             <EditorField fieldPath={`${settingsBase}.phonePlaceholder`} label="Phone placeholder" as="span">
               <input
                 type="tel"
+                className="ziplofy-theme-input"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder={phonePlaceholder}
@@ -210,6 +208,7 @@ export function ContactForm({
               as="span"
             >
               <textarea
+                className="ziplofy-theme-input"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder={commentPlaceholder}

@@ -1,4 +1,8 @@
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import {
+  resolveThemeButtonVariantStyle,
+  themeButtonInlineStyle,
+} from '../../runtime/shared/themeButtonRuntime';
 
 export type HeroButtonStyle = {
   width: string;
@@ -77,16 +81,19 @@ export function readHeroButtonStyle(
     };
   }
 
+  const themeButton = resolveThemeButtonVariantStyle(config, variant);
+  const inline = themeButtonInlineStyle(themeButton);
+
   return {
     width,
     mobileWidth,
     padding: isPrimary ? '14px 28px' : '14px 24px',
-    borderRadius: 8,
+    borderRadius: inline.borderRadius ?? 8,
     fontSize: 14,
-    fontWeight: 600,
-    background: isPrimary ? colors.primary : 'transparent',
-    color: isPrimary ? colors.background : colors.text,
-    border: isPrimary ? 'none' : `1px solid ${colors.line}`,
+    fontWeight: typeof inline.fontWeight === 'number' ? inline.fontWeight : 600,
+    background: String(inline.background ?? (isPrimary ? colors.primary : 'transparent')),
+    color: String(inline.color ?? (isPrimary ? colors.background : colors.text)),
+    border: String(inline.border ?? (isPrimary ? 'none' : `1px solid ${colors.line}`)),
     openInNewTab,
   };
 }

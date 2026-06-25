@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  formatINR,
   useStorefrontAuth,
   useStorefrontCart,
   useThemeConfig,
@@ -10,6 +9,7 @@ import {
   type StorefrontCartItem,
 } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
+import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { PREVIEW_CART_LINES } from '../../runtime/shared/editorPreviewFixtures';
 import { inputStyle, layout, useThemeColors } from '../../runtime/shared/tokens';
@@ -185,7 +185,9 @@ export function CartMain({
                           ) : (
                             <span>Item</span>
                           )}
-                          <p style={{ margin: '8px 0 0' }}>{v ? formatINR(v.price) : '—'} each</p>
+                          <p style={{ margin: '8px 0 0' }}>
+                            {v ? formatThemePrice(config, v.price, 'cartItems') : '—'} each
+                          </p>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
                           <input
@@ -245,7 +247,7 @@ export function CartMain({
                 >
                   {subtotalPrefix}
                 </EditorField>{' '}
-                {formatINR(total)}
+                {formatThemePrice(config, total, 'cartTotal')}
               </p>
               <div style={{ marginTop: 20, maxWidth: 360 }}>
                 <EditorField

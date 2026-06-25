@@ -1,8 +1,9 @@
 import type { CSSProperties, RefObject } from 'react';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { useStorefront, useStorefrontAuth, type StorefrontUser } from '@render-store/sdk';
+import { useStorefront, useStorefrontAuth, useThemeConfig, type StorefrontUser } from '@render-store/sdk';
+import { resolveThemePopoverModalInlineStyle } from '../../runtime/shared/themePopoversModalsRuntime';
 
 const PANEL_WIDTH = 360;
 const ACCENT = '#005bd3';
@@ -84,6 +85,8 @@ const fieldStyle: CSSProperties = {
 };
 
 export function HeaderAccountPanel({ open, anchorRef, onClose, user, onSignOut }: Props) {
+  const config = useThemeConfig();
+  const themePopoverStyle = useMemo(() => resolveThemePopoverModalInlineStyle(config), [config]);
   const { storeFrontMeta } = useStorefront();
   const { login, loading } = useStorefrontAuth();
   const [email, setEmail] = useState('');
@@ -160,12 +163,8 @@ export function HeaderAccountPanel({ open, anchorRef, onClose, user, onSignOut }
     width: PANEL_WIDTH,
     maxWidth: 'calc(100vw - 24px)',
     zIndex: 6000,
-    borderRadius: 16,
-    border: '1px solid #e8e8e8',
-    background: '#ffffff',
-    boxShadow: '0 12px 40px rgba(0, 0, 0, 0.14)',
     fontFamily: 'inherit',
-    color: '#121212',
+    ...themePopoverStyle,
   };
 
   const footerLinks = (
@@ -184,6 +183,7 @@ export function HeaderAccountPanel({ open, anchorRef, onClose, user, onSignOut }
   return createPortal(
     <div
       id="ziplofy-header-account-panel"
+      className="ziplofy-popover"
       role="dialog"
       aria-modal="false"
       aria-label={user ? 'Account menu' : 'Sign in or create account'}

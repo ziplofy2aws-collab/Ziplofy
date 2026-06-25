@@ -42,6 +42,66 @@ import {
   withThemeBadgesSchema,
 } from '../create-theme/settings/theme-badges.settings';
 import {
+  ensureThemeButtonsDefaults,
+  seedThemeButtonsValues,
+  withThemeButtonsSchema,
+} from '../create-theme/settings/theme-buttons.settings';
+import {
+  ensureThemeCartDefaults,
+  seedThemeCartValues,
+  withThemeCartSchema,
+} from '../create-theme/settings/theme-cart.settings';
+import {
+  ensureThemeDrawersDefaults,
+  seedThemeDrawersValues,
+  withThemeDrawersSchema,
+} from '../create-theme/settings/theme-drawers.settings';
+import {
+  ensureThemeProductMediaDefaults,
+  seedThemeProductMediaValues,
+  withThemeProductMediaSchema,
+} from '../create-theme/settings/theme-product-media.settings';
+import {
+  ensureThemeIconsDefaults,
+  seedThemeIconsValues,
+  withThemeIconsSchema,
+} from '../create-theme/settings/theme-icons.settings';
+import {
+  ensureThemeInputFieldsDefaults,
+  seedThemeInputFieldsValues,
+  withThemeInputFieldsSchema,
+} from '../create-theme/settings/theme-input-fields.settings';
+import {
+  ensureThemePopoversModalsDefaults,
+  seedThemePopoversModalsValues,
+  withThemePopoversModalsSchema,
+} from '../create-theme/settings/theme-popovers-modals.settings';
+import {
+  ensureThemePricesDefaults,
+  seedThemePricesValues,
+  withThemePricesSchema,
+} from '../create-theme/settings/theme-prices.settings';
+import {
+  ensureThemeProductCardsDefaults,
+  seedThemeProductCardsValues,
+  withThemeProductCardsSchema,
+} from '../create-theme/settings/theme-product-cards.settings';
+import {
+  ensureThemeSearchDefaults,
+  seedThemeSearchValues,
+  withThemeSearchSchema,
+} from '../create-theme/settings/theme-search.settings';
+import {
+  ensureThemeSwatchesDefaults,
+  seedThemeSwatchesValues,
+  withThemeSwatchesSchema,
+} from '../create-theme/settings/theme-swatches.settings';
+import {
+  ensureThemeVariantPickersDefaults,
+  seedThemeVariantPickersValues,
+  withThemeVariantPickersSchema,
+} from '../create-theme/settings/theme-variant-pickers.settings';
+import {
   ensureThemePageDefaults,
   seedThemePageValues,
   withThemePageSchema,
@@ -356,13 +416,49 @@ export function normalizeCreatorThemeConfig(config: Record<string, unknown>): vo
   ensureThemePageDefaults(config);
   ensureThemeAnimationsDefaults(config);
   ensureThemeBadgesDefaults(config);
+  ensureThemeButtonsDefaults(config);
+  ensureThemeCartDefaults(config);
+  ensureThemeDrawersDefaults(config);
+  ensureThemeProductMediaDefaults(config);
+  ensureThemeIconsDefaults(config);
+  ensureThemeInputFieldsDefaults(config);
+  ensureThemePopoversModalsDefaults(config);
+  ensureThemePricesDefaults(config);
+  ensureThemeProductCardsDefaults(config);
+  ensureThemeSearchDefaults(config);
+  ensureThemeSwatchesDefaults(config);
+  ensureThemeVariantPickersDefaults(config);
 }
 
 export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchemaDoc {
-  return withThemeBadgesSchema(
-    withThemeAnimationsSchema(
-      withThemePageSchema(
-        withThemeTypographySchema(withThemeColorPaletteSchema(withThemeLogoFaviconSchema(schema)))
+  return withThemeVariantPickersSchema(
+    withThemeSwatchesSchema(
+      withThemeSearchSchema(
+        withThemeProductCardsSchema(
+          withThemePricesSchema(
+            withThemePopoversModalsSchema(
+              withThemeInputFieldsSchema(
+                withThemeIconsSchema(
+                  withThemeProductMediaSchema(
+                    withThemeDrawersSchema(
+                      withThemeCartSchema(
+                        withThemeButtonsSchema(
+                          withThemeBadgesSchema(
+                            withThemeAnimationsSchema(
+                              withThemePageSchema(
+                                withThemeTypographySchema(withThemeColorPaletteSchema(withThemeLogoFaviconSchema(schema)))
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
       )
     )
   );
@@ -449,23 +545,65 @@ export async function loadCreatorThemeEditorPack(
   ensureThemePageDefaults(config);
   ensureThemeAnimationsDefaults(config);
   ensureThemeBadgesDefaults(config);
+  ensureThemeButtonsDefaults(config);
+  ensureThemeCartDefaults(config);
+  ensureThemeDrawersDefaults(config);
+  ensureThemeProductMediaDefaults(config);
+  ensureThemeIconsDefaults(config);
+  ensureThemeInputFieldsDefaults(config);
+  ensureThemePopoversModalsDefaults(config);
+  ensureThemePricesDefaults(config);
+  ensureThemeProductCardsDefaults(config);
+  ensureThemeSearchDefaults(config);
+  ensureThemeSwatchesDefaults(config);
+  ensureThemeVariantPickersDefaults(config);
   ensureThemeLogoFaviconDefaults(packDefault);
   ensureThemeColorPaletteDefaults(packDefault);
   ensureThemeTypographyDefaults(packDefault);
   ensureThemePageDefaults(packDefault);
   ensureThemeAnimationsDefaults(packDefault);
   ensureThemeBadgesDefaults(packDefault);
-  const values = seedThemeBadgesValues(
-    seedThemeAnimationsValues(
-      seedThemePageValues(
-        seedThemeTypographyValues(
-          seedThemePaletteValues(
-            creatorConfigHasSections(config)
-              ? {
-                  ...formValuesFromEditorConfig(editorSchema, config),
-                  ...seedSectionEnabledValues(config),
-                }
-              : creatorGlobalSettingsValues(editorSchema, config),
+  ensureThemeButtonsDefaults(packDefault);
+  ensureThemeCartDefaults(packDefault);
+  ensureThemeDrawersDefaults(packDefault);
+  ensureThemeProductMediaDefaults(packDefault);
+  ensureThemeIconsDefaults(packDefault);
+  ensureThemeInputFieldsDefaults(packDefault);
+  ensureThemePopoversModalsDefaults(packDefault);
+  ensureThemePricesDefaults(packDefault);
+  ensureThemeProductCardsDefaults(packDefault);
+  ensureThemeSearchDefaults(packDefault);
+  ensureThemeSwatchesDefaults(packDefault);
+  ensureThemeVariantPickersDefaults(packDefault);
+  const values = seedThemeVariantPickersValues(
+    seedThemeSwatchesValues(
+      seedThemeSearchValues(
+      seedThemeProductCardsValues(
+      seedThemePricesValues(
+    seedThemePopoversModalsValues(
+      seedThemeInputFieldsValues(
+      seedThemeIconsValues(
+      seedThemeProductMediaValues(
+      seedThemeDrawersValues(
+        seedThemeCartValues(
+      seedThemeButtonsValues(
+        seedThemeBadgesValues(
+          seedThemeAnimationsValues(
+            seedThemePageValues(
+              seedThemeTypographyValues(
+                seedThemePaletteValues(
+                  creatorConfigHasSections(config)
+                    ? {
+                        ...formValuesFromEditorConfig(editorSchema, config),
+                        ...seedSectionEnabledValues(config),
+                      }
+                    : creatorGlobalSettingsValues(editorSchema, config),
+                  config
+                ),
+                config
+              ),
+              config
+            ),
             config
           ),
           config
@@ -474,6 +612,24 @@ export async function loadCreatorThemeEditorPack(
       ),
       config
     ),
+    config
+  ),
+    config
+  ),
+    config
+  ),
+    config
+  ),
+    config
+  ),
+    config
+  ),
+    config
+  ),
+    config
+  ),
+    config
+  ),
     config
   );
   return {

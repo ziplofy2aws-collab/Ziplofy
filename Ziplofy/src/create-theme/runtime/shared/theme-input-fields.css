@@ -1,0 +1,22 @@
+.ziplofy-theme-input,
+input.ziplofy-theme-input,
+textarea.ziplofy-theme-input,
+select.ziplofy-theme-input {
+  background: var(--ziplofy-input-bg, #ffffff);
+  color: var(--ziplofy-input-text, #111827);
+  border: var(--ziplofy-input-border-width, 1px) solid var(--ziplofy-input-border, #d1d5db);
+  border-radius: var(--ziplofy-input-radius, 4px);
+  font-family: var(--ziplofy-input-font-family, inherit);
+  font-size: var(--ziplofy-input-font-size, 14px);
+  font-weight: var(--ziplofy-input-font-weight, 400);
+  line-height: var(--ziplofy-input-line-height, 1.35);
+  letter-spacing: var(--ziplofy-input-letter-spacing, normal);
+  text-transform: var(--ziplofy-input-text-transform, none);
+}
+
+.ziplofy-theme-input:focus,
+input.ziplofy-theme-input:focus,
+textarea.ziplofy-theme-input:focus,
+select.ziplofy-theme-input:focus {
+  outline: none;
+}

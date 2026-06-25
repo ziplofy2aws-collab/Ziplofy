@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  formatINR,
   useStorefront,
   useStorefrontCart,
   useStorefrontProductVariants,
@@ -9,6 +8,7 @@ import {
   useThemeConfig,
 } from '@render-store/sdk';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
+import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
@@ -194,7 +194,9 @@ export function ProductMain({
               label="Price"
             >
               <p style={{ fontSize: 24, fontWeight: 600, marginBottom: 24 }}>
-                {productDetail ? formatINR(productDetail.price) : priceFallback}
+                {productDetail
+                  ? formatThemePrice(config, productDetail.price, 'productPages')
+                  : priceFallback}
               </p>
             </EditorBlock>
           </EditorBlock>

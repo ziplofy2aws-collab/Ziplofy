@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useStorefrontAuth, useStorefrontCart } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgMenuItems, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { useThemeIconStrokeWidth } from '../../runtime/shared/themeIconsRuntime';
 import { resolveActiveThemeLogoUrl, resolveThemeLogoHeights, scopedHeaderLogoHeightCss } from '../../runtime/shared/resolveThemeLogo';
 import {
   headerBorderPx,
@@ -22,44 +23,42 @@ import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tok
 
 type Props = { sectionId?: string };
 
-const iconStroke = 1.75;
-
-function HeaderIconSearch({ color }: { color: string }) {
+function HeaderIconSearch({ color, strokeWidth }: { color: string; strokeWidth: number }) {
   return (
     <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="6" stroke={color} strokeWidth={iconStroke} />
-      <path d="M16 16l4 4" stroke={color} strokeWidth={iconStroke} strokeLinecap="round" />
+      <circle cx="11" cy="11" r="6" stroke={color} strokeWidth={strokeWidth} />
+      <path d="M16 16l4 4" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
     </svg>
   );
 }
 
-function HeaderIconAccount({ color }: { color: string }) {
+function HeaderIconAccount({ color, strokeWidth }: { color: string; strokeWidth: number }) {
   return (
     <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="8" r="3.5" stroke={color} strokeWidth={iconStroke} />
+      <circle cx="12" cy="8" r="3.5" stroke={color} strokeWidth={strokeWidth} />
       <path
         d="M6 19c0-3.3 2.7-6 6-6s6 2.7 6 6"
         stroke={color}
-        strokeWidth={iconStroke}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
       />
     </svg>
   );
 }
 
-function HeaderIconCart({ color }: { color: string }) {
+function HeaderIconCart({ color, strokeWidth }: { color: string; strokeWidth: number }) {
   return (
     <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M8 8V6a4 4 0 118 0v2"
         stroke={color}
-        strokeWidth={iconStroke}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
       />
       <path
         d="M6 8h12l-1 12H7L6 8z"
         stroke={color}
-        strokeWidth={iconStroke}
+        strokeWidth={strokeWidth}
         strokeLinejoin="round"
       />
     </svg>
@@ -69,6 +68,7 @@ function HeaderIconCart({ color }: { color: string }) {
 export function Header({ sectionId = 'header' }: Props) {
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
+  const iconStroke = useThemeIconStrokeWidth();
   const { pathname } = useLocation();
   const themeColors = useThemeColors();
   const { fontHeading, fontBody, primary, background: themeBg } = themeColors;
@@ -415,7 +415,7 @@ export function Header({ sectionId = 'header' }: Props) {
           aria-label={searchPlaceholder || 'Search'}
         >
           {useIcons ? (
-            <HeaderIconSearch color={iconColor} />
+            <HeaderIconSearch color={iconColor} strokeWidth={iconStroke} />
           ) : (
             <span style={{ fontSize: 14 }}>Search</span>
           )}
@@ -440,7 +440,7 @@ export function Header({ sectionId = 'header' }: Props) {
           }}
         >
           {useIcons ? (
-            <HeaderIconAccount color={iconColor} />
+            <HeaderIconAccount color={iconColor} strokeWidth={iconStroke} />
           ) : (
             <span style={{ fontSize: 14, fontWeight: 600, color: primary }}>
               {user ? 'Account' : 'Sign in'}
@@ -462,7 +462,7 @@ export function Header({ sectionId = 'header' }: Props) {
         aria-label={cartLabel}
       >
         {useIcons ? (
-          <HeaderIconCart color={iconColor} />
+          <HeaderIconCart color={iconColor} strokeWidth={iconStroke} />
         ) : (
           <span style={{ fontSize: 13 }}>
             {cartLabel} ({cartCount})

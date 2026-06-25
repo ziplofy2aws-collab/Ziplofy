@@ -1,0 +1,11 @@
+.ziplofy-cart-line-item-price,
+.ziplofy-cart-product-price {
+  font-family: var(--ziplofy-cart-price-font-family, inherit);
+  font-weight: var(--ziplofy-cart-price-font-weight, 600);
+  font-style: var(--ziplofy-cart-price-font-style, normal);
+}
+
+.ziplofy-cart-line-item-title,
+.ziplofy-cart-product-title {
+  text-transform: var(--ziplofy-cart-product-title-transform, none);
+}

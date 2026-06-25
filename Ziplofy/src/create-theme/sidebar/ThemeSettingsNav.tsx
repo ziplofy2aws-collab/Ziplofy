@@ -6,6 +6,18 @@ import { ThemeLogoFaviconImageField, ThemeLogoHeightField } from '../settings/Th
 import { ThemeColorPaletteEditor } from '../settings/ThemeColorPaletteEditor';
 import { ThemeAnimationsSettingsPanel } from '../settings/ThemeAnimationsSettingsPanel';
 import { ThemeBadgesSettingsPanel } from '../settings/ThemeBadgesSettingsPanel';
+import { ThemeButtonsSettingsPanel } from '../settings/ThemeButtonsSettingsPanel';
+import { ThemeCartSettingsPanel } from '../settings/ThemeCartSettingsPanel';
+import { ThemeDrawersSettingsPanel } from '../settings/ThemeDrawersSettingsPanel';
+import { ThemeIconsSettingsPanel } from '../settings/ThemeIconsSettingsPanel';
+import { ThemeInputFieldsSettingsPanel } from '../settings/ThemeInputFieldsSettingsPanel';
+import { ThemePopoversModalsSettingsPanel } from '../settings/ThemePopoversModalsSettingsPanel';
+import { ThemePricesSettingsPanel } from '../settings/ThemePricesSettingsPanel';
+import { ThemeProductCardsSettingsPanel } from '../settings/ThemeProductCardsSettingsPanel';
+import { ThemeSearchSettingsPanel } from '../settings/ThemeSearchSettingsPanel';
+import { ThemeSwatchesSettingsPanel } from '../settings/ThemeSwatchesSettingsPanel';
+import { ThemeVariantPickersSettingsPanel } from '../settings/ThemeVariantPickersSettingsPanel';
+import { ThemeProductMediaSettingsPanel } from '../settings/ThemeProductMediaSettingsPanel';
 import { ThemePageSettingsPanel } from '../settings/ThemePageSettingsPanel';
 import { ThemeTypographySettingsPanel } from '../settings/ThemeTypographySettingsPanel';
 import {
@@ -135,6 +147,132 @@ function renderBadgesPanel(
   );
 }
 
+function renderButtonsPanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemeButtonsSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
+function renderCartPanel(
+  values: Record<string, string | boolean>,
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return <ThemeCartSettingsPanel values={values} onFieldChange={onFieldChange} />;
+}
+
+function renderDrawersPanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemeDrawersSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
+function renderProductMediaPanel(
+  values: Record<string, string | boolean>,
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return <ThemeProductMediaSettingsPanel values={values} onFieldChange={onFieldChange} />;
+}
+
+function renderIconsPanel(
+  values: Record<string, string | boolean>,
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return <ThemeIconsSettingsPanel values={values} onFieldChange={onFieldChange} />;
+}
+
+function renderInputFieldsPanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemeInputFieldsSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
+function renderPopoversModalsPanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemePopoversModalsSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
+function renderPricesPanel(
+  values: Record<string, string | boolean>,
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return <ThemePricesSettingsPanel values={values} onFieldChange={onFieldChange} />;
+}
+
+function renderProductCardsPanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemeProductCardsSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
+function renderSearchPanel(
+  values: Record<string, string | boolean>,
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return <ThemeSearchSettingsPanel values={values} onFieldChange={onFieldChange} />;
+}
+
+function renderSwatchesPanel(
+  values: Record<string, string | boolean>,
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return <ThemeSwatchesSettingsPanel values={values} onFieldChange={onFieldChange} />;
+}
+
+function renderVariantPickersPanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemeVariantPickersSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
 function renderPagePanel(
   values: Record<string, string | boolean>,
   colorPalette: string[],
@@ -170,6 +308,30 @@ function renderAccordionPanel(
       return renderAnimationsPanel(values, onFieldChange);
     case 'badges':
       return renderBadgesPanel(values, colorPalette, onFieldChange);
+    case 'buttons':
+      return renderButtonsPanel(values, colorPalette, onFieldChange);
+    case 'cart':
+      return renderCartPanel(values, onFieldChange);
+    case 'drawers':
+      return renderDrawersPanel(values, colorPalette, onFieldChange);
+    case 'product-media':
+      return renderProductMediaPanel(values, onFieldChange);
+    case 'icons':
+      return renderIconsPanel(values, onFieldChange);
+    case 'input-fields':
+      return renderInputFieldsPanel(values, colorPalette, onFieldChange);
+    case 'popovers-modals':
+      return renderPopoversModalsPanel(values, colorPalette, onFieldChange);
+    case 'prices':
+      return renderPricesPanel(values, onFieldChange);
+    case 'product-cards':
+      return renderProductCardsPanel(values, colorPalette, onFieldChange);
+    case 'search':
+      return renderSearchPanel(values, onFieldChange);
+    case 'swatches':
+      return renderSwatchesPanel(values, onFieldChange);
+    case 'variant-pickers':
+      return renderVariantPickersPanel(values, colorPalette, onFieldChange);
     default:
       return (
         <p className="text-[13px] leading-relaxed text-gray-600">

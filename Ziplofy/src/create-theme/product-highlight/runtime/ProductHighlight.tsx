@@ -1,5 +1,6 @@
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from 'react';
-import { formatINR, useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
+import { useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
+import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
@@ -60,7 +61,9 @@ function ProductHighlightDefault({
   }, [productId, productDetail, products]);
 
   const productTitle = resolvedProduct?.title ?? cachedTitle;
-  const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
+  const price = resolvedProduct
+    ? formatThemePrice(config, resolvedProduct.price, 'productCards')
+    : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
   const scheme = style.scheme;

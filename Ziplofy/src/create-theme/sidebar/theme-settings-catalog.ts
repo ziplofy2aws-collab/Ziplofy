@@ -17,6 +17,7 @@ export const THEME_SETTINGS_CATALOG: ThemeSettingsCatalogItem[] = [
   { id: 'buttons', label: 'Buttons' },
   { id: 'cart', label: 'Cart' },
   { id: 'drawers', label: 'Drawers' },
+  { id: 'product-media', label: 'Product media' },
   { id: 'icons', label: 'Icons' },
   { id: 'input-fields', label: 'Input fields' },
   { id: 'popovers-modals', label: 'Popovers and modals' },

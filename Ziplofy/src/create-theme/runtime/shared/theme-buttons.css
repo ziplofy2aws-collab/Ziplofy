@@ -1,0 +1,31 @@
+.ziplofy-btn-primary,
+a.ziplofy-btn-primary,
+button.ziplofy-btn-primary {
+  background: var(--ziplofy-btn-primary-bg, #111827);
+  color: var(--ziplofy-btn-primary-text, #ffffff);
+  border: var(--ziplofy-btn-primary-border-width, 0) solid
+    var(--ziplofy-btn-primary-border-color, transparent);
+  border-radius: var(--ziplofy-btn-primary-radius, 14px);
+  font-family: var(--ziplofy-btn-primary-font-family, inherit);
+  font-weight: var(--ziplofy-btn-primary-font-weight, 400);
+  font-style: var(--ziplofy-btn-primary-font-style, normal);
+  text-transform: var(--ziplofy-btn-primary-text-transform, none);
+}
+
+.ziplofy-btn-secondary,
+a.ziplofy-btn-secondary,
+button.ziplofy-btn-secondary {
+  background: var(--ziplofy-btn-secondary-bg, transparent);
+  color: var(--ziplofy-btn-secondary-text, #111827);
+  border: var(--ziplofy-btn-secondary-border-width, 1px) solid
+    var(--ziplofy-btn-secondary-border-color, #111827);
+  border-radius: var(--ziplofy-btn-secondary-radius, 14px);
+  font-family: var(--ziplofy-btn-secondary-font-family, inherit);
+  font-weight: var(--ziplofy-btn-secondary-font-weight, 400);
+  font-style: var(--ziplofy-btn-secondary-font-style, normal);
+  text-transform: var(--ziplofy-btn-secondary-text-transform, none);
+}
+
+.ziplofy-pill {
+  border-radius: var(--ziplofy-pill-radius, 40px);
+}

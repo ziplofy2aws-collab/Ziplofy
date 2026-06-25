@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  formatINR,
   getThemeConfigValue,
   useStorefront,
   useStorefrontCart,
@@ -12,6 +11,10 @@ import {
 } from '@render-store/sdk';
 import { FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER } from '../../../utils/featured-product-sidebar.util';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
+import { resolveThemeSwatchInlineStyle } from '../../runtime/shared/themeSwatchesRuntime';
+import { resolveThemeVariantPickerOptionStyle } from '../../runtime/shared/themeVariantPickersRuntime';
+import { readThemeSwatchesSettings } from '../../settings/theme-swatches.settings';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
@@ -303,7 +306,9 @@ export function FeaturedProduct({
   }, [productId, productDetail, products]);
 
   const productTitle = resolvedProduct?.title ?? cachedTitle;
-  const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
+  const price = resolvedProduct
+    ? formatThemePrice(config, resolvedProduct.price, 'productCards')
+    : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
   const soldOut = useMemo(() => {
@@ -524,6 +529,9 @@ export function FeaturedProduct({
     () => readFeaturedProductVariantPickerStyle(config, variantPickerSettingsBase),
     [config, variantPickerSettingsBase]
   );
+
+  const themeSwatches = useMemo(() => readThemeSwatchesSettings(config), [config]);
+  const themeSwatchBaseStyle = useMemo(() => resolveThemeSwatchInlineStyle(config), [config]);
 
   const buyButtonsStyle = useMemo(
     () => readFeaturedProductBuyButtonsStyle(config, buyButtonsSettingsBase),
@@ -767,25 +775,25 @@ export function FeaturedProduct({
   };
 
   const variantOptionStyle = (selected: boolean): CSSProperties => ({
-    minWidth: 44,
     padding: '10px 16px',
-    borderRadius: 999,
-    border: `1px solid ${selected ? scheme.color : `${scheme.muted}88`}`,
-    background: selected ? scheme.color : scheme.background,
-    color: selected ? scheme.background : scheme.color,
     fontSize: 14,
     fontFamily: fontBody,
     cursor: isEditorPreview ? 'default' : 'pointer',
+    ...resolveThemeVariantPickerOptionStyle(config, selected),
   });
 
-  const variantSwatchStyle = (color: string, selected: boolean): CSSProperties => ({
-    width: 32,
-    height: 32,
-    borderRadius: '50%',
-    border: `2px solid ${selected ? scheme.color : 'transparent'}`,
-    background: color,
-    boxShadow: `inset 0 0 0 1px ${scheme.muted}55`,
+  const variantSwatchStyle = (color: string, selected: boolean, imageUrl?: string): CSSProperties => ({
+    ...themeSwatchBaseStyle,
+    border: selected
+      ? `2px solid ${scheme.color}`
+      : themeSwatchBaseStyle.border ?? `1px solid ${scheme.muted}55`,
+    background:
+      themeSwatches.variantImages && imageUrl
+        ? `url(${imageUrl}) center/cover no-repeat`
+        : color,
+    boxShadow: selected ? undefined : `inset 0 0 0 1px ${scheme.muted}55`,
     cursor: 'default',
+    flexShrink: 0,
   });
 
   return (
@@ -894,6 +902,7 @@ export function FeaturedProduct({
                       <span
                         key={color}
                         aria-hidden
+                        className="ziplofy-theme-swatch"
                         style={variantSwatchStyle(color, index === 0)}
                       />
                     ))}
@@ -939,6 +948,11 @@ export function FeaturedProduct({
                       <button
                         key={option.key}
                         type="button"
+                        className={`ziplofy-variant-picker-option${
+                          index === selectedVariantIndex
+                            ? ' ziplofy-variant-picker-option--selected'
+                            : ''
+                        }`}
                         style={variantOptionStyle(index === selectedVariantIndex)}
                         onClick={() => {
                           if (!isEditorPreview) setSelectedVariantIndex(index);
