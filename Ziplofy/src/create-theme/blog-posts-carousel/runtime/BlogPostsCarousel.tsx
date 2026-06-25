@@ -4,7 +4,7 @@ import { BlogPostIllustration } from '../../blog-posts-grid/runtime/BlogPostIllu
 import { readBlogPostCards, type BlogPostCardData } from '../../blog-posts-grid/runtime/blogPostCards';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { readBlogPostsCarouselLayout, scopedBlogPostsCarouselCss } from './blogPostsCarouselStyles';
 
 function NavButton({
@@ -134,6 +134,7 @@ export function BlogPostsCarousel({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
   const trackRef = useRef<HTMLDivElement>(null);
@@ -159,7 +160,7 @@ export function BlogPostsCarousel({
   );
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `ziplofy-blog-posts-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cardBasis =
     style.columns > 0

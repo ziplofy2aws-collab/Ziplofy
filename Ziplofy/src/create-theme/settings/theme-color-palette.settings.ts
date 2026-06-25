@@ -22,6 +22,40 @@ export function getThemePaletteColor(palette: string[], index: number, fallback:
   return color ? normalizeHexColor(color, fallback) : fallback;
 }
 
+export function parseThemePaletteColorSetting(
+  raw: unknown,
+  defaultIndex = 0
+): { kind: 'palette'; index: number } | { kind: 'custom'; hex: string } {
+  if (typeof raw !== 'string' || !raw.trim()) return { kind: 'palette', index: defaultIndex };
+  if (raw === 'palette') return { kind: 'palette', index: defaultIndex };
+  const match = /^palette:(\d+)$/.exec(raw.trim());
+  if (match) {
+    const index = Number(match[1]);
+    return { kind: 'palette', index: Number.isFinite(index) ? index : defaultIndex };
+  }
+  return { kind: 'custom', hex: normalizeHexColor(raw, '#ffffff') };
+}
+
+export function themePaletteColorValue(index: number): string {
+  return `palette:${index}`;
+}
+
+export function isThemePaletteColorSetting(raw: unknown): boolean {
+  return parseThemePaletteColorSetting(raw).kind === 'palette';
+}
+
+export function resolveThemePaletteColorSetting(
+  config: Record<string, unknown> | null | undefined,
+  raw: unknown,
+  defaultIndex: number,
+  fallback: string
+): string {
+  const parsed = parseThemePaletteColorSetting(raw, defaultIndex);
+  if (parsed.kind === 'custom') return parsed.hex;
+  const palette = readThemeColorPalette(config);
+  return getThemePaletteColor(palette, parsed.index, fallback);
+}
+
 function deriveMuted(hex: string): string {
   const normalized = normalizeHexColor(hex, '#6b7280');
   if (isColorDark(normalized)) return '#9ca3af';

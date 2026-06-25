@@ -80,6 +80,14 @@ import {
   THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH,
   THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH,
 } from './settings/theme-typography.settings';
+import { seedThemeAnimationsValues } from './settings/theme-animations.settings';
+import { seedThemeBadgesValues } from './settings/theme-badges.settings';
+import {
+  seedThemePageValues,
+  syncThemePageFieldValues,
+  THEME_PAGE_WIDTH_PATH,
+  normalizeThemePageWidth,
+} from './settings/theme-page.settings';
 import { buildThemeEditorPageMenu, findPageMenuItemByPreview } from './utils/page-menu';
 import { ensureRegistryTemplatesInConfig } from './utils/theme-page-registry';
 import {
@@ -568,7 +576,16 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             ...formValuesFromEditorConfig(schema, config),
           };
         }
-        nextValues = seedThemeTypographyValues(seedThemePaletteValues(nextValues, config), config);
+        nextValues = seedThemeBadgesValues(
+          seedThemeAnimationsValues(
+            seedThemePageValues(
+              seedThemeTypographyValues(seedThemePaletteValues(nextValues, config), config),
+              config
+            ),
+            config
+          ),
+          config
+        );
         ensureRegistryTemplatesInConfig(config);
 
         setEditorSchema(schema);
@@ -2087,8 +2104,26 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               });
             });
           }
+          if (path === THEME_PAGE_WIDTH_PATH) {
+            startTransition(() => {
+              setValues((prev) => {
+                const pageWidth = normalizeThemePageWidth(String(raw));
+                const synced = syncThemePageFieldValues(pageWidth);
+                return {
+                  ...prev,
+                  [path]: pageWidth,
+                  ...Object.fromEntries(
+                    Object.entries(synced).map(([key, value]) => [key, String(value)])
+                  ),
+                };
+              });
+            });
+          }
           if (
             path.startsWith('settings.typography.') ||
+            path.startsWith('settings.page.') ||
+            path.startsWith('settings.animations.') ||
+            path.startsWith('settings.badges.') ||
             path.startsWith('settings.logo.') ||
             path.startsWith('settings.colors.')
           ) {

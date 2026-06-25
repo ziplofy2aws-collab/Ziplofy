@@ -3,7 +3,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
   combineResponsiveCss,
   scopedFooterMobileCss,
@@ -86,6 +86,7 @@ function NewsletterSubmit({
 }
 
 export function Footer({ sectionId = 'footer' }: Props) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontHeading, fontBody, text, background, primary } = useThemeColors();
   const [email, setEmail] = useState('');
@@ -142,7 +143,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
     setEmail('');
   };
 
-  const innerMaxWidth = sectionStyle.widthMode === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = sectionStyle.widthMode === 'full' ? '100%' : maxWidth;
   const horizontalPad = sectionStyle.widthMode === 'full' ? 24 : layout.padX;
   const pillRadius = newsletterStyle.input.borderRadius;
   const mutedText = 'rgba(55, 65, 81, 0.9)';

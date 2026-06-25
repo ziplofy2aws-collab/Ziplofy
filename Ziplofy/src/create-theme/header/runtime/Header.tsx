@@ -18,7 +18,7 @@ import {
 import { HeaderAccountPanel } from './HeaderAccountPanel';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { scopedHeaderResponsiveCss } from '../../runtime/shared/responsive';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 
 type Props = { sectionId?: string };
 
@@ -67,6 +67,7 @@ function HeaderIconCart({ color }: { color: string }) {
 }
 
 export function Header({ sectionId = 'header' }: Props) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { pathname } = useLocation();
   const themeColors = useThemeColors();
@@ -518,7 +519,7 @@ export function Header({ sectionId = 'header' }: Props) {
     width: '100%',
   };
 
-  const innerMaxWidth = widthMode === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = widthMode === 'full' ? '100%' : maxWidth;
   /** Classic storefront header: logo + nav stay on one row (legacy `row: top` treated as inline). */
   const menuOnOwnRowTop = false;
   const menuOnOwnRowBottom = menuRow === 'bottom';

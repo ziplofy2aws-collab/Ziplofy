@@ -11,7 +11,7 @@ import {
 import { cfgBool, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 
 function secBase(templateId: string, sectionId: string): string {
@@ -26,6 +26,7 @@ export function ProductMain({
   sectionId = 'product_main',
   templateId = 'product',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const { id: routeId } = useParams<{ id: string }>();
   const config = useThemeConfig();
   const { text, background, primary, fontHeading, fontBody } = useThemeColors();
@@ -116,7 +117,7 @@ export function ProductMain({
     >
       <div
         style={{
-          maxWidth: layout.maxWidth,
+          maxWidth: maxWidth,
           margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',

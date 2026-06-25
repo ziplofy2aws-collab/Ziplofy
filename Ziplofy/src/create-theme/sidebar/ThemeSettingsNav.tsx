@@ -4,6 +4,9 @@ import type { ThemeEditorFieldType } from './create-theme-field.utils';
 import { THEME_SETTINGS_CATALOG } from './theme-settings-catalog';
 import { ThemeLogoFaviconImageField, ThemeLogoHeightField } from '../settings/ThemeLogoFaviconImageField';
 import { ThemeColorPaletteEditor } from '../settings/ThemeColorPaletteEditor';
+import { ThemeAnimationsSettingsPanel } from '../settings/ThemeAnimationsSettingsPanel';
+import { ThemeBadgesSettingsPanel } from '../settings/ThemeBadgesSettingsPanel';
+import { ThemePageSettingsPanel } from '../settings/ThemePageSettingsPanel';
 import { ThemeTypographySettingsPanel } from '../settings/ThemeTypographySettingsPanel';
 import {
   THEME_LOGO_DEFAULT_PATH,
@@ -111,6 +114,41 @@ function renderTypographyPanel(
   );
 }
 
+function renderAnimationsPanel(
+  values: Record<string, string | boolean>,
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return <ThemeAnimationsSettingsPanel values={values} onFieldChange={onFieldChange} />;
+}
+
+function renderBadgesPanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemeBadgesSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
+function renderPagePanel(
+  values: Record<string, string | boolean>,
+  colorPalette: string[],
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void
+) {
+  return (
+    <ThemePageSettingsPanel
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+    />
+  );
+}
+
 function renderAccordionPanel(
   id: string,
   values: Record<string, string | boolean>,
@@ -126,6 +164,12 @@ function renderAccordionPanel(
       return renderColorPalettePanel(onPaletteChange, colorPalette);
     case 'typography':
       return renderTypographyPanel(values, colorPalette, onFieldChange);
+    case 'page-layout':
+      return renderPagePanel(values, colorPalette, onFieldChange);
+    case 'animations':
+      return renderAnimationsPanel(values, onFieldChange);
+    case 'badges':
+      return renderBadgesPanel(values, colorPalette, onFieldChange);
     default:
       return (
         <p className="text-[13px] leading-relaxed text-gray-600">

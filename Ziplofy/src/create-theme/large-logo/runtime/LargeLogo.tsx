@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { LARGE_LOGO_BODY } from '../../../utils/hero-banner-variants.util';
 import { readHeroStyle, scopedHeroCss } from '../../hero/runtime/heroStyles';
 import {
@@ -60,6 +60,7 @@ export function LargeLogo({
   placement = 'template',
   templateId = 'index',
 }: Props) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontHeading, fontBody, background, text } = useThemeColors();
 
@@ -91,7 +92,7 @@ export function LargeLogo({
   const padX = 40;
   const sectionMinHeight = hero.minHeight;
   const contentMaxWidth =
-    typeof hero.maxWidth === 'number' ? hero.maxWidth : hero.maxWidth === '100%' ? '100%' : layout.maxWidth;
+    typeof hero.maxWidth === 'number' ? hero.maxWidth : hero.maxWidth === '100%' ? '100%' : maxWidth;
 
   const backgroundMedia = cfgString(config, `${settingsPath}.backgroundMedia`, 'none');
   const backgroundImageUrl = cfgString(config, `${settingsPath}.backgroundImageUrl`, '');

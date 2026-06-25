@@ -3,7 +3,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { TealFoldedShirtIllustration } from '../../editorial/runtime/EditorialArt';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
   readCarouselSlides,
   readStorytellingCarouselLayout,
@@ -56,6 +56,7 @@ export function StorytellingCarousel({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
   const trackRef = useRef<HTMLDivElement>(null);
@@ -81,7 +82,7 @@ export function StorytellingCarousel({
   );
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `ziplofy-storytelling-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cols = Math.max(1, Math.min(4, style.columns));
   const cardBasis = `calc((100% - ${(cols - 1) * style.horizontalGap}px) / ${cols})`;

@@ -1,0 +1,59 @@
+[data-ziplofy-badge-position='top-left'] .ziplofy-product-card-badge {
+  top: 8px;
+  left: 8px;
+  right: auto;
+  bottom: auto;
+}
+
+[data-ziplofy-badge-position='top-right'] .ziplofy-product-card-badge {
+  top: 8px;
+  right: 8px;
+  left: auto;
+  bottom: auto;
+}
+
+[data-ziplofy-badge-position='bottom-left'] .ziplofy-product-card-badge {
+  bottom: 8px;
+  left: 8px;
+  top: auto;
+  right: auto;
+}
+
+[data-ziplofy-badge-position='bottom-right'] .ziplofy-product-card-badge {
+  bottom: 8px;
+  right: 8px;
+  top: auto;
+  left: auto;
+}
+
+.ziplofy-product-card-badge {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  border-radius: var(--ziplofy-badge-radius, 100px);
+  font-family: var(--ziplofy-badge-font-family, inherit);
+  font-weight: var(--ziplofy-badge-font-weight, 400);
+  font-style: var(--ziplofy-badge-font-style, normal);
+  text-transform: var(--ziplofy-badge-text-transform, none);
+}
+
+.ziplofy-product-card-badge--sale {
+  background: var(--ziplofy-badge-sale-bg, #ffffff);
+  color: var(--ziplofy-badge-sale-text, #111827);
+}
+
+.ziplofy-product-card-badge--sold-out {
+  background: var(--ziplofy-badge-sold-out-bg, #eef1ea);
+  color: var(--ziplofy-badge-sold-out-text, #111827);
+}
+
+.ziplofy-product-card-media {
+  position: relative;
+}

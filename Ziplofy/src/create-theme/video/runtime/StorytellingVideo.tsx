@@ -4,7 +4,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { VideoStorytellingShirtsIllustration } from './VideoStorytellingArt';
 import {
   alignItemsForPosition,
@@ -65,6 +65,7 @@ export function StorytellingVideo({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
 
@@ -95,7 +96,7 @@ export function StorytellingVideo({
   const scheme = style.scheme;
   const minHeight = storytellingVideoMinHeight(style.height);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const mediaOnRight = style.videoOnRight;
   const isHorizontal = style.direction === 'horizontal';
   const scopeClass = `ziplofy-storytelling-video-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;

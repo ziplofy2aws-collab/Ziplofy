@@ -32,6 +32,21 @@ import {
   withThemeColorPaletteSchema,
 } from '../create-theme/settings/theme-color-palette.settings';
 import {
+  ensureThemeAnimationsDefaults,
+  seedThemeAnimationsValues,
+  withThemeAnimationsSchema,
+} from '../create-theme/settings/theme-animations.settings';
+import {
+  ensureThemeBadgesDefaults,
+  seedThemeBadgesValues,
+  withThemeBadgesSchema,
+} from '../create-theme/settings/theme-badges.settings';
+import {
+  ensureThemePageDefaults,
+  seedThemePageValues,
+  withThemePageSchema,
+} from '../create-theme/settings/theme-page.settings';
+import {
   ensureThemeTypographyDefaults,
   seedThemeTypographyValues,
   withThemeTypographySchema,
@@ -338,10 +353,19 @@ export function normalizeCreatorThemeConfig(config: Record<string, unknown>): vo
   ensureThemeLogoFaviconDefaults(config);
   ensureThemeColorPaletteDefaults(config);
   ensureThemeTypographyDefaults(config);
+  ensureThemePageDefaults(config);
+  ensureThemeAnimationsDefaults(config);
+  ensureThemeBadgesDefaults(config);
 }
 
 export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchemaDoc {
-  return withThemeTypographySchema(withThemeColorPaletteSchema(withThemeLogoFaviconSchema(schema)));
+  return withThemeBadgesSchema(
+    withThemeAnimationsSchema(
+      withThemePageSchema(
+        withThemeTypographySchema(withThemeColorPaletteSchema(withThemeLogoFaviconSchema(schema)))
+      )
+    )
+  );
 }
 
 /** Theme settings only — avoids materializing layout/template sections via applyValues. */
@@ -422,17 +446,32 @@ export async function loadCreatorThemeEditorPack(
   ensureThemeLogoFaviconDefaults(config);
   ensureThemeColorPaletteDefaults(config);
   ensureThemeTypographyDefaults(config);
+  ensureThemePageDefaults(config);
+  ensureThemeAnimationsDefaults(config);
+  ensureThemeBadgesDefaults(config);
   ensureThemeLogoFaviconDefaults(packDefault);
   ensureThemeColorPaletteDefaults(packDefault);
   ensureThemeTypographyDefaults(packDefault);
-  const values = seedThemeTypographyValues(
-    seedThemePaletteValues(
-      creatorConfigHasSections(config)
-        ? {
-            ...formValuesFromEditorConfig(editorSchema, config),
-            ...seedSectionEnabledValues(config),
-          }
-        : creatorGlobalSettingsValues(editorSchema, config),
+  ensureThemePageDefaults(packDefault);
+  ensureThemeAnimationsDefaults(packDefault);
+  ensureThemeBadgesDefaults(packDefault);
+  const values = seedThemeBadgesValues(
+    seedThemeAnimationsValues(
+      seedThemePageValues(
+        seedThemeTypographyValues(
+          seedThemePaletteValues(
+            creatorConfigHasSections(config)
+              ? {
+                  ...formValuesFromEditorConfig(editorSchema, config),
+                  ...seedSectionEnabledValues(config),
+                }
+              : creatorGlobalSettingsValues(editorSchema, config),
+            config
+          ),
+          config
+        ),
+        config
+      ),
       config
     ),
     config

@@ -1,7 +1,7 @@
 import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { IconGlyph } from './IconGlyph';
 import {
   combineResponsiveCss,
@@ -37,6 +37,7 @@ export function IconsWithText({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
   const settingsBase =
@@ -57,7 +58,7 @@ export function IconsWithText({
 
   const scheme = style.scheme;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `ziplofy-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const colCount = Math.max(items.length, style.columns);
   const isHorizontal = style.direction === 'horizontal';

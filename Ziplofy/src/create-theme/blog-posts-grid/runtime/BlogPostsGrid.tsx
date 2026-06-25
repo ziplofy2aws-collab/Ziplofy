@@ -2,7 +2,7 @@ import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { BlogPostIllustration } from './BlogPostIllustration';
 import { readBlogPostCards, type BlogPostCardData } from './blogPostCards';
 import { readBlogPostsGridLayout, scopedBlogPostsGridCss } from './blogPostsGridStyles';
@@ -95,6 +95,7 @@ export function BlogPostsGrid({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
 
@@ -116,7 +117,7 @@ export function BlogPostsGrid({
   );
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `ziplofy-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cols = Math.max(1, Math.min(4, style.columns));
 

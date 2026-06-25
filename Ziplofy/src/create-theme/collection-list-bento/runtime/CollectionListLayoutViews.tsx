@@ -4,7 +4,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { EditorBlock, EditorField } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { readTextBlockLayoutStyle, readTextBlockStyle } from '../../runtime/shared/textBlockStyles';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { cfgString } from '../../runtime/shared/config';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import {
@@ -255,6 +255,7 @@ export function CollectionListBentoLayoutView({
   placement = 'template',
   settingsBase,
 }: LayoutProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
   const layoutStyle = useMemo(
@@ -279,7 +280,7 @@ export function CollectionListBentoLayoutView({
     layoutStyle.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: horizontalPad, paddingRight: horizontalPad }
       : {
-          maxWidth: layout.maxWidth,
+          maxWidth: maxWidth,
           margin: '0 auto',
           paddingLeft: horizontalPad,
           paddingRight: horizontalPad,
@@ -346,6 +347,7 @@ export function CollectionListGridLayoutView({
   settingsBase,
 }: LayoutProps) {
   const config = useThemeConfig();
+  const { maxWidth } = useThemeLayout();
   const { fontBody, fontHeading } = useThemeColors();
   const style = useMemo(() => readCollectionListGridLayout(config, settingsBase), [config, settingsBase]);
   const tiles = useMemo(
@@ -365,7 +367,7 @@ export function CollectionListGridLayoutView({
     style.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: 24, paddingRight: 24 }
       : {
-          maxWidth: layout.maxWidth,
+          maxWidth: maxWidth,
           margin: '0 auto',
           paddingLeft: 24,
           paddingRight: 24,
@@ -521,6 +523,7 @@ export function CollectionListCarouselLayoutView({
   settingsBase,
 }: LayoutProps) {
   const config = useThemeConfig();
+  const { maxWidth } = useThemeLayout();
   const { fontBody, fontHeading } = useThemeColors();
   const trackRef = useRef<HTMLDivElement>(null);
   const style = useMemo(
@@ -550,7 +553,7 @@ export function CollectionListCarouselLayoutView({
   };
 
   return (
-    <div className={scopeClass} style={{ maxWidth: layout.maxWidth, margin: '0 auto' }} data-mobile-columns={style.mobileColumns}>
+    <div className={scopeClass} style={{ maxWidth: maxWidth, margin: '0 auto' }} data-mobile-columns={style.mobileColumns}>
       <style>
         {`
           .${scopeClass} [data-carousel-track]::-webkit-scrollbar { display: none; }
@@ -676,6 +679,7 @@ export function CollectionListEditorialLayoutView({
   settingsBase,
 }: LayoutProps) {
   const config = useThemeConfig();
+  const { maxWidth } = useThemeLayout();
   const { fontBody, fontHeading } = useThemeColors();
   const layoutStyle = useMemo(
     () => readCollectionListEditorialLayout(config, settingsBase),
@@ -702,7 +706,7 @@ export function CollectionListEditorialLayoutView({
     layoutStyle.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: 24, paddingRight: 24 }
       : {
-          maxWidth: layout.maxWidth,
+          maxWidth: maxWidth,
           margin: '0 auto',
           paddingLeft: 24,
           paddingRight: 24,

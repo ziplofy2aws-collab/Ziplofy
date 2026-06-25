@@ -1,5 +1,6 @@
-import type { CSSProperties } from 'react';
+import { useMemo, type CSSProperties } from 'react';
 import { getThemeConfigValue, useThemeConfig } from '@render-store/sdk';
+import { resolveThemePageBackgroundColor, resolveThemePageMaxWidth } from '../../settings/theme-page.settings';
 import {
   resolveThemeTypographyFonts,
   resolveThemeTypographyTextColor,
@@ -9,7 +10,7 @@ import { themeFontsFromConfig } from './themeTypographyRuntime';
 export function useThemeColors() {
   const config = useThemeConfig();
   const primary = String(getThemeConfigValue(config, 'settings.colors.primary') ?? '#111827');
-  const background = String(getThemeConfigValue(config, 'settings.colors.background') ?? '#ffffff');
+  const background = resolveThemePageBackgroundColor(config);
   const text = resolveThemeTypographyTextColor(config);
   const accent = String(getThemeConfigValue(config, 'settings.colors.accent') ?? primary);
   const surface = String(getThemeConfigValue(config, 'settings.colors.surface') ?? background);
@@ -40,6 +41,19 @@ export function useThemeColors() {
 export function useThemeFonts() {
   const config = useThemeConfig();
   return themeFontsFromConfig(config);
+}
+
+export function useThemeLayout() {
+  const config = useThemeConfig();
+  return useMemo(
+    () => ({
+      maxWidth: resolveThemePageMaxWidth(config),
+      padX: layout.padX,
+      padXMobile: layout.padXMobile,
+      line: layout.line,
+    }),
+    [config]
+  );
 }
 
 export const layout = {

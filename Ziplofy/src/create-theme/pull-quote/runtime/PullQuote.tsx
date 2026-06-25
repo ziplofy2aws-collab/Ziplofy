@@ -4,7 +4,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
   combineResponsiveCss,
   scopedMobileFlexStackCss,
@@ -25,6 +25,7 @@ export function PullQuote({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontHeading } = useThemeColors();
 
@@ -46,7 +47,7 @@ export function PullQuote({
   const scheme = style.scheme;
   const textAlign = pullQuoteContentAlign(style.layoutAlignment);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `ziplofy-pull-quote-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const shellClass = `${scopeClass}-shell`;
 

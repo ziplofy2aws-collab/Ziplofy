@@ -2,7 +2,7 @@ import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout } from '../../runtime/shared/tokens';
 import {
   combineResponsiveCss,
   scopedMobileHorizontalPadCss,
@@ -21,6 +21,7 @@ export function Multicolumn({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const settingsBase =
     placement === 'template'
@@ -38,7 +39,7 @@ export function Multicolumn({
 
   const scheme = style.scheme;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `ziplofy-multicolumn-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const colCount = Math.max(items.length, style.columns);
   const isHorizontal = style.direction === 'horizontal';

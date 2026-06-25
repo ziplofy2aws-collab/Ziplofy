@@ -2,7 +2,7 @@ import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { readDividerStyle, scopedDividerCss } from './dividerStyles';
 import { EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 
 type Props = {
   sectionId: string;
@@ -12,6 +12,7 @@ type Props = {
 };
 
 export function Divider({ sectionId, placement = 'layout', templateId = 'index' }: Props) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
 
@@ -25,7 +26,7 @@ export function Divider({ sectionId, placement = 'layout', templateId = 'index' 
 
   const style = useMemo(() => readDividerStyle(config, settingsBase), [config, settingsBase]);
 
-  const innerMaxWidth = style.widthMode === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.widthMode === 'full' ? '100%' : maxWidth;
   const horizontalPad = style.widthMode === 'full' ? 24 : layout.padX;
   const lineThickness = Math.max(style.thickness, 1);
 

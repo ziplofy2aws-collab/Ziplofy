@@ -4,6 +4,7 @@ import {
   applyThemeTypographyCssVars,
   applyThemeTypographyFontsToDocument,
 } from '@/theme/theme-typography.util';
+import { readThemePageBackgroundForCss, readThemePageMaxWidthForCss } from '@/theme/theme-page.util';
 
 export type ThemeConfig = Record<string, unknown>;
 
@@ -22,6 +23,11 @@ function applyThemeConfigCssVars(config: ThemeConfig | null): void {
   if (colors?.primary) root.style.setProperty('--ziplofy-primary', colors.primary);
   if (colors?.accent) root.style.setProperty('--ziplofy-accent', colors.accent);
   if (colors?.background) root.style.setProperty('--ziplofy-background', colors.background);
+  const page = settings?.page as Record<string, unknown> | undefined;
+  const pageBg = readThemePageBackgroundForCss(config);
+  if (pageBg) root.style.setProperty('--ziplofy-background', pageBg);
+  const pageMaxWidth = readThemePageMaxWidthForCss(config);
+  if (pageMaxWidth) root.style.setProperty('--ziplofy-page-max-width', `${pageMaxWidth}px`);
   if (colors?.text) root.style.setProperty('--ziplofy-text', colors.text);
   if (colors?.surface) root.style.setProperty('--ziplofy-surface', colors.surface);
   if (colors?.muted) root.style.setProperty('--ziplofy-muted', colors.muted);

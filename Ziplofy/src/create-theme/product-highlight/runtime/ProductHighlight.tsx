@@ -2,7 +2,7 @@ import { useEffect, useMemo, type CSSProperties, type ReactNode } from 'react';
 import { formatINR, useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { FeaturedProduct } from './FeaturedProduct';
 import { FeaturedProductShirtIllustration, StackedTealShirtsIllustration } from './FeaturedProductArt';
@@ -81,7 +81,7 @@ function ProductHighlightDefault({
   };
 
   const grid: CSSProperties = {
-    maxWidth: layout.maxWidth,
+    maxWidth: maxWidth,
     margin: '0 auto',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
@@ -207,6 +207,7 @@ function ProductHighlightDefault({
 }
 
 export function ProductHighlight(props: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { templateId = 'index', placement = 'template', sectionId } = props;
 

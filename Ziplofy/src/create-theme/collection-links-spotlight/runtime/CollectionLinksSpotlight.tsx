@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { CollectionLinksSpotlightArt } from './CollectionLinksSpotlightArt';
 import { CollectionLinksTextHoverPreview } from './CollectionLinksTextHoverPreview';
@@ -30,6 +30,7 @@ export function CollectionLinksSpotlight({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
   const themeFonts = useMemo(() => ({ fontHeading, fontBody }), [fontHeading, fontBody]);
@@ -145,7 +146,7 @@ export function CollectionLinksSpotlight({
   const innerStyle: CSSProperties =
     layoutStyle.sectionWidth === 'full'
       ? { maxWidth: '100%', width: '100%' }
-      : { maxWidth: layout.maxWidth, margin: '0 auto', width: '100%' };
+      : { maxWidth: maxWidth, margin: '0 auto', width: '100%' };
 
   const linkItemStyle: CSSProperties = {
     margin: 0,

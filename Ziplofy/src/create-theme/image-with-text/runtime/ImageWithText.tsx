@@ -4,7 +4,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { StackedTealShirtsIllustration } from '../../product-highlight/runtime/FeaturedProductArt';
 import {
   alignItemsForPosition,
@@ -35,6 +35,7 @@ export function ImageWithText({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
 
@@ -72,7 +73,7 @@ export function ImageWithText({
   const scheme = style.scheme;
   const panelMinHeight = imageWithTextMinHeight(style.height);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const isHorizontal = style.direction === 'horizontal';
 
   const shell: CSSProperties = {

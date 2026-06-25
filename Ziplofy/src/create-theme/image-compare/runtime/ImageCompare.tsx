@@ -4,7 +4,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection, EditorBlock } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { ImageCompareSlider } from './ImageCompareSlider';
 import {
   imageCompareContentMobileCss,
@@ -43,6 +43,7 @@ export function ImageCompare({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
 
@@ -85,7 +86,7 @@ export function ImageCompare({
   const button2Url = cfgString(config, `${settingsBase}.button2Url`, '/products');
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
 
   const shell: CSSProperties = {
     position: 'relative',

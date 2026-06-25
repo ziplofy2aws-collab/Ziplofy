@@ -13,7 +13,7 @@ import {
 import { FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER } from '../../../utils/featured-product-sidebar.util';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { FeaturedProductShirtIllustration } from './FeaturedProductArt';
 import { readFeaturedProductAddToCartStyle } from './featuredProductAddToCartStyles';
@@ -137,6 +137,7 @@ export function FeaturedProduct({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading, text: themeText, accent: themeAccent } = useThemeColors();
   const { storeFrontMeta } = useStorefront();
@@ -389,7 +390,7 @@ export function FeaturedProduct({
 
   const scheme = style.scheme;
   const mediaOnLeft = mediaPosition !== 'right';
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const gridCols = style.equalColumns ? '1fr 1fr' : '1.05fr 0.95fr';
   const shellClass = sectionScopeClass('ziplofy-featured-product', sectionId);

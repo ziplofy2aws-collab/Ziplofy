@@ -4,7 +4,7 @@ import { BlogPostIllustration } from '../../blog-posts-grid/runtime/BlogPostIllu
 import { readBlogPostCards, type BlogPostCardData } from '../../blog-posts-grid/runtime/blogPostCards';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
   editorialPairCardOffset,
   readBlogPostsEditorialLayout,
@@ -111,6 +111,7 @@ export function BlogPostsEditorial({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
 
@@ -135,7 +136,7 @@ export function BlogPostsEditorial({
   );
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `ziplofy-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const gap = style.layoutGap;
 
