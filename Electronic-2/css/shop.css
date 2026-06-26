@@ -1,0 +1,249 @@
+/* ===== Breadcrumb ===== */
+.el2-breadcrumb {
+  width: 100%;
+  background: #f4f5f7;
+  border-bottom: 1px solid #e7e9ec;
+}
+
+.el2-breadcrumb__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.el2-breadcrumb__inner a {
+  color: #6b7280;
+}
+
+.el2-breadcrumb__inner a:hover {
+  color: var(--el2-blue);
+}
+
+.el2-breadcrumb__inner i {
+  font-size: 9px;
+  color: #b3b8bf;
+}
+
+.el2-breadcrumb__inner span {
+  color: #1d1f23;
+  font-weight: 600;
+}
+
+/* ===== Shop page ===== */
+.el2-shop {
+  width: 100%;
+  background: #fff;
+  padding: 40px 0 40px;
+}
+
+.el2-shop__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.el2-shop__filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d8dadf;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Sidebar */
+.el2-shop__sidebar {
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 8px 20px 20px;
+  position: sticky;
+  top: 16px;
+}
+
+.el2-shop__filter {
+  padding: 18px 0;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.el2-shop__filter:last-child {
+  border-bottom: none;
+}
+
+.el2-shop__filter-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1d1f23;
+  margin-bottom: 14px;
+}
+
+.el2-shop__filter-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.el2-shop__filter-list label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: #4b4f56;
+  cursor: pointer;
+}
+
+.el2-shop__filter-list input {
+  accent-color: var(--el2-teal);
+  width: 15px;
+  height: 15px;
+}
+
+/* Main area */
+.el2-shop__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+}
+
+.el2-shop__count {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.el2-shop__sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #4b4f56;
+}
+
+.el2-shop__sort select {
+  border: 1px solid #d8dadf;
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: #1d1f23;
+  background: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.el2-shop__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+
+.el2-shop__grid .el2-card {
+  flex: none;
+  max-width: none;
+}
+
+.el2-card__media {
+  display: block;
+}
+
+.el2-card__name a {
+  color: inherit;
+}
+
+.el2-card__name a:hover {
+  color: var(--el2-blue);
+}
+
+/* Pagination */
+.el2-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 34px;
+}
+
+.el2-pagination__btn {
+  min-width: 38px;
+  height: 38px;
+  border: 1px solid #e0e2e6;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b4f56;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.el2-pagination__btn:hover {
+  border-color: var(--el2-teal);
+  color: var(--el2-teal);
+}
+
+.el2-pagination__btn.is-active {
+  background: var(--el2-teal);
+  border-color: var(--el2-teal);
+  color: #fff;
+}
+
+@media (max-width: 1024px) {
+  .el2-shop__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .el2-breadcrumb__inner {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .el2-shop__container {
+    padding-left: 14px;
+    padding-right: 14px;
+    grid-template-columns: 1fr;
+  }
+  .el2-shop__filter-toggle {
+    display: inline-flex;
+  }
+  .el2-shop__sidebar {
+    display: none;
+    position: static;
+  }
+  .el2-shop__sidebar.is-open {
+    display: block;
+  }
+  .el2-shop__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .el2-shop__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 400px) {
+  .el2-shop__grid {
+    grid-template-columns: 1fr;
+  }
+}

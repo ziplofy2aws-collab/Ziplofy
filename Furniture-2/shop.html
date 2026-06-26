@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop – Nivaas Furniture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/shop.css" />
+</head>
+
+<body>
+
+  <header class="fr2-header" role="banner">
+
+    <!-- Top utility bar -->
+    <div class="fr2-header__top">
+      <div class="fr2-header__container fr2-header__top-inner">
+
+        <div class="fr2-header__delivery">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          <span>Deliver to -</span>
+          <button type="button" class="fr2-header__pincode" aria-label="Change delivery pincode">
+            560001
+            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <nav class="fr2-header__utility" aria-label="Utility links">
+          <a href="#">Track Order</a>
+          <a href="#">Royaloak Stores</a>
+          <a href="#">Franchise Enquiry</a>
+          <a href="#">About Us</a>
+          <a href="#">Customer Support</a>
+          <a href="#">Careers</a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Main header bar -->
+    <div class="fr2-header__main">
+      <div class="fr2-header__container fr2-header__main-inner">
+
+        <button type="button" class="fr2-header__burger" data-fr2-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="fr2-mobile-nav">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <div class="fr2-header__main-left">
+          <form class="fr2-header__search" role="search" action="#" method="get">
+            <input type="search" class="fr2-header__search-input" name="q" placeholder="Enter Keyword or Item"
+              aria-label="Search products" />
+            <button type="submit" class="fr2-header__search-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+
+        <a href="index.html" class="fr2-header__logo" aria-label="Nivaas home">
+          <img src="img/logo.png" alt="Nivaas – Home, Redefined" width="180" height="72" decoding="async" />
+        </a>
+
+        <nav class="fr2-header__actions" aria-label="Account utilities">
+          <a href="#" class="fr2-header__action">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+            <span>LOGIN</span>
+          </a>
+          <a href="#" class="fr2-header__action">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            <span>WISHLIST</span>
+          </a>
+          <a href="#" class="fr2-header__action">
+            <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i>
+            <span>CART</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Bottom navigation -->
+    <div class="fr2-header__nav">
+      <div class="fr2-header__container">
+        <nav class="fr2-header__menu" aria-label="Primary navigation">
+          <a href="shop.html">International Collection <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Living <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Bedroom <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Mattresses <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Dining <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Study &amp; Office <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Outdoor <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Decor <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Furnishings <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">New Arrivals</a>
+          <a href="shop.html">House of Interiors</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Mobile slide-in nav -->
+    <div class="fr2-header__mobile" id="fr2-mobile-nav" data-fr2-mobile hidden>
+      <div class="fr2-header__mobile-panel">
+        <div class="fr2-header__mobile-top">
+          <span class="fr2-header__mobile-title">Menu</span>
+          <button type="button" class="fr2-header__mobile-close" data-fr2-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="fr2-header__mobile-nav" aria-label="Mobile navigation">
+          <a href="shop.html">International Collection</a>
+          <a href="shop.html">Living</a>
+          <a href="shop.html">Bedroom</a>
+          <a href="shop.html">Mattresses</a>
+          <a href="shop.html">Dining</a>
+          <a href="shop.html">Study &amp; Office</a>
+          <a href="shop.html">Outdoor</a>
+          <a href="shop.html">Decor</a>
+          <a href="shop.html">Furnishings</a>
+          <a href="shop.html">New Arrivals</a>
+          <a href="shop.html">House of Interiors</a>
+          <span class="fr2-header__mobile-divider"></span>
+          <a href="#">Track Order</a>
+          <a href="#">Royaloak Stores</a>
+          <a href="#">Franchise Enquiry</a>
+          <a href="#">About Us</a>
+          <a href="#">Customer Support</a>
+          <a href="#">Careers</a>
+        </nav>
+      </div>
+      <div class="fr2-header__mobile-overlay" data-fr2-close></div>
+    </div>
+
+  </header>
+
+  <!-- ===== Breadcrumb ===== -->
+  <nav class="fr2-crumb" aria-label="Breadcrumb">
+    <div class="fr2-crumb__inner">
+      <a href="index.html">Home</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span>Shop</span>
+    </div>
+  </nav>
+
+  <!-- ===== Shop ===== -->
+  <main class="fr2-shop">
+    <div class="fr2-shop__container">
+
+      <div class="fr2-shop__bar">
+        <button type="button" class="fr2-shop__filter-btn" data-fr2-filter-toggle aria-controls="fr2-filter">
+          Filter <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        </button>
+        <div class="fr2-shop__sort">
+          <select aria-label="Sort products">
+            <option>Featured</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest First</option>
+            <option>Discount</option>
+          </select>
+          <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i>
+        </div>
+      </div>
+
+      <div class="fr2-shop__grid">
+
+        <article class="fr2-gcard" data-product-id="sofas-1">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/sofas-1.webp" alt="Brentwood Leather Accent Chair" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Brentwood Leather Accent Chair in Rust Tan</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 22,999</span> <span class="fr2-gcard__was">Rs.
+                39,999</span></p>
+            <p class="fr2-gcard__save">Save 42% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="sofas-2">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/sofas-2.webp" alt="Aspen Fabric 3 Seater Sofa" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Aspen Fabric 3 Seater Sofa in Mist Grey</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 45,999</span> <span class="fr2-gcard__was">Rs.
+                74,999</span></p>
+            <p class="fr2-gcard__save">Save 38% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="sofas-3">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/sofas-3.webp" alt="Milano Sectional Sofa" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Milano L-Shaped Sectional Sofa in Charcoal</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 68,999</span> <span class="fr2-gcard__was">Rs.
+                99,999</span></p>
+            <p class="fr2-gcard__save">Save 31% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="sofas-4">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/sofas-4.webp" alt="Nordic 2 Seater Loveseat" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Nordic 2 Seater Fabric Loveseat in Beige</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 34,999</span> <span class="fr2-gcard__was">Rs.
+                54,999</span></p>
+            <p class="fr2-gcard__save">Save 36% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="sofas-5">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/sofas-5.webp" alt="Vienna Recliner Sofa" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Vienna 3 Seater Recliner Sofa in Slate Grey</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 57,999</span> <span class="fr2-gcard__was">Rs.
+                89,999</span></p>
+            <p class="fr2-gcard__save">Save 36% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="sofas-6">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/sofas-6.webp" alt="Oslo Fabric Corner Sofa" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Oslo Fabric Corner Sofa in Forest Green</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 72,999</span> <span class="fr2-gcard__was">Rs.
+                109,999</span></p>
+            <p class="fr2-gcard__save">Save 34% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="bs-1">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/BS-1.webp" alt="Lunaro Upholstered Queen Bed" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Lunaro Upholstered Queen Bed with Storage</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 81,900</span> <span class="fr2-gcard__was">Rs.
+                199,900</span></p>
+            <p class="fr2-gcard__save">Save 59% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="bs-2">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/BS-2.webp" alt="Lunaro Upholstered King Bed" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Lunaro Upholstered King Bed with Storage</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 86,900</span> <span class="fr2-gcard__was">Rs.
+                209,900</span></p>
+            <p class="fr2-gcard__save">Save 58% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="bs-3">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/BS-3.webp" alt="Levanto Recliner 2 Seater Ocean Blue" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Levanto Zero Wall Recliner | 2 Seater | Ocean Blue</a>
+            </h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 96,000</span> <span class="fr2-gcard__was">Rs.
+                279,000</span></p>
+            <p class="fr2-gcard__save">Save 65% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="bs-4">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/BS-4.webp" alt="Levanto Recliner 3 Seater Ocean Blue" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Levanto Zero Wall Recliner | 3 Seater | Ocean Blue</a>
+            </h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 117,900</span> <span class="fr2-gcard__was">Rs.
+                354,900</span></p>
+            <p class="fr2-gcard__save">Save 66% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="bs-5">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/BS-5.webp" alt="Levanto Recliner 3 Seater Slate Grey" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Levanto Zero Wall Recliner | 3 Seater | Slate Grey</a>
+            </h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 117,900</span> <span class="fr2-gcard__was">Rs.
+                354,900</span></p>
+            <p class="fr2-gcard__save">Save 66% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+        <article class="fr2-gcard" data-product-id="bs-6">
+          <a href="product.html" class="fr2-gcard__media">
+            <span class="fr2-gcard__tags">
+              <span class="fr2-gcard__tag">New Arrival</span>
+              <span class="fr2-gcard__tag">Ready To Ship</span>
+            </span>
+            <img src="img/BS-6.webp" alt="Celesto Upholstered Bed Light Brown" loading="lazy" decoding="async" />
+          </a>
+          <div class="fr2-gcard__body">
+            <h3 class="fr2-gcard__name"><a href="product.html">Celesto Upholstered Hydraulic Bed | Light Brown</a></h3>
+            <p class="fr2-gcard__price"><span class="fr2-gcard__now">Rs. 61,900</span> <span class="fr2-gcard__was">Rs.
+                199,900</span></p>
+            <p class="fr2-gcard__save">Save 69% off</p>
+            <p class="fr2-gcard__prepaid">Prepaid Orders — Get <strong>5% off</strong> with <strong>LIVING5</strong></p>
+          </div>
+        </article>
+
+      </div>
+
+      <nav class="fr2-pagination" aria-label="Pagination">
+        <button type="button" class="fr2-pagination__btn" aria-label="Previous"><i class="fa-solid fa-chevron-left"
+            aria-hidden="true"></i></button>
+        <button type="button" class="fr2-pagination__btn is-active">1</button>
+        <button type="button" class="fr2-pagination__btn">2</button>
+        <button type="button" class="fr2-pagination__btn">3</button>
+        <button type="button" class="fr2-pagination__btn" aria-label="Next"><i class="fa-solid fa-chevron-right"
+            aria-hidden="true"></i></button>
+      </nav>
+    </div>
+
+    <!-- Filter drawer -->
+    <div class="fr2-filter" id="fr2-filter" data-fr2-filter hidden>
+      <div class="fr2-filter__panel">
+        <div class="fr2-filter__head">
+          <span class="fr2-filter__title">Filters</span>
+          <button type="button" class="fr2-filter__close" data-fr2-filter-close aria-label="Close filters">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div class="fr2-filter__body">
+          <div class="fr2-shop__filter">
+            <h3 class="fr2-shop__filter-title">Category</h3>
+            <ul class="fr2-shop__filter-list">
+              <li><label><input type="checkbox" checked /> Beds</label></li>
+              <li><label><input type="checkbox" /> Sofas</label></li>
+              <li><label><input type="checkbox" /> Recliners</label></li>
+              <li><label><input type="checkbox" /> Wardrobes</label></li>
+              <li><label><input type="checkbox" /> Dining</label></li>
+              <li><label><input type="checkbox" /> Decor</label></li>
+            </ul>
+          </div>
+
+          <div class="fr2-shop__filter">
+            <h3 class="fr2-shop__filter-title">Brand</h3>
+            <ul class="fr2-shop__filter-list">
+              <li><label><input type="checkbox" /> HomeTown</label></li>
+              <li><label><input type="checkbox" /> Urban Ladder</label></li>
+              <li><label><input type="checkbox" /> Nestroots</label></li>
+              <li><label><input type="checkbox" /> Arra</label></li>
+              <li><label><input type="checkbox" /> Woodbuzz</label></li>
+            </ul>
+          </div>
+
+          <div class="fr2-shop__filter">
+            <h3 class="fr2-shop__filter-title">Price Range</h3>
+            <ul class="fr2-shop__filter-list">
+              <li><label><input type="radio" name="price" checked /> Under Rs. 25,000</label></li>
+              <li><label><input type="radio" name="price" /> Rs. 25,000 - Rs. 50,000</label></li>
+              <li><label><input type="radio" name="price" /> Rs. 50,000 - Rs. 1,00,000</label></li>
+              <li><label><input type="radio" name="price" /> Above Rs. 1,00,000</label></li>
+            </ul>
+          </div>
+
+          <div class="fr2-shop__filter">
+            <h3 class="fr2-shop__filter-title">Rating</h3>
+            <ul class="fr2-shop__filter-list">
+              <li><label><input type="checkbox" /> 4&#9733; &amp; above</label></li>
+              <li><label><input type="checkbox" /> 3&#9733; &amp; above</label></li>
+              <li><label><input type="checkbox" /> 2&#9733; &amp; above</label></li>
+            </ul>
+          </div>
+        </div>
+        <div class="fr2-filter__foot">
+          <button type="button" class="fr2-filter__clear">Clear All</button>
+          <button type="button" class="fr2-filter__apply" data-fr2-filter-close>Apply</button>
+        </div>
+      </div>
+      <div class="fr2-filter__overlay" data-fr2-filter-close></div>
+    </div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="fr2-footer" role="contentinfo">
+    <div class="fr2-footer__top">
+      <div class="fr2-footer__container">
+
+        <div class="fr2-footer__brand">
+          <a href="index.html" class="fr2-footer__logo" aria-label="Nivaas home">
+            <img src="img/logo.png" alt="Nivaas" decoding="async" />
+          </a>
+          <p class="fr2-footer__about">India's trusted destination for stylish &amp; affordable furniture and home
+            decor.</p>
+          <div class="fr2-footer__social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <nav class="fr2-footer__col" aria-label="Customer Service">
+          <h3 class="fr2-footer__heading">Customer Service</h3>
+          <ul class="fr2-footer__links">
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Service Assurance / Warranty</a></li>
+            <li><a href="#">Usage &amp; Care</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </nav>
+
+        <nav class="fr2-footer__col" aria-label="About Nivaas">
+          <h3 class="fr2-footer__heading">About Nivaas</h3>
+          <ul class="fr2-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Sitemap</a></li>
+          </ul>
+        </nav>
+
+        <div class="fr2-footer__col">
+          <h3 class="fr2-footer__heading">Contact Us</h3>
+          <ul class="fr2-footer__contact">
+            <li>
+              <span class="fr2-footer__cicon fr2-footer__cicon--mail"><i class="fa-solid fa-envelope"
+                  aria-hidden="true"></i></span>
+              <a href="mailto:care@nivaas.in">care@nivaas.in</a>
+            </li>
+            <li>
+              <span class="fr2-footer__cicon fr2-footer__cicon--phone"><i class="fa-solid fa-phone"
+                  aria-hidden="true"></i></span>
+              <span>08069252525 (Availability 10AM – 6PM)</span>
+            </li>
+            <li>
+              <span class="fr2-footer__cicon fr2-footer__cicon--loc"><i class="fa-solid fa-location-dot"
+                  aria-hidden="true"></i></span>
+              <a href="#">Store Locator</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fr2-footer__locations">
+      <div class="fr2-footer__container">
+        <h3 class="fr2-footer__heading">Locations</h3>
+        <p class="fr2-footer__cities">
+          <a href="#">Aurangabad</a> | <a href="#">Bhubaneswar</a> | <a href="#">Guwahati</a> | <a
+            href="#">Hyderabad</a> | <a href="#">Kolkata</a> | <a href="#">Lucknow</a> | <a href="#">Nagpur</a> | <a
+            href="#">Nashik</a> | <a href="#">Patna</a> | <a href="#">Pune</a> | <a href="#">Raipur</a> | <a
+            href="#">Siliguri</a> | <a href="#">Visakhapatnam</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="fr2-footer__bottom">
+      <div class="fr2-footer__container fr2-footer__bottom-inner">
+        <p class="fr2-footer__copy">&copy; 2026 Nivaas. All rights reserved. Owned and operated by Praxis Home Retail
+          Limited</p>
+        <nav class="fr2-footer__legal" aria-label="Legal">
+          <a href="#">Terms &amp; Conditions</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Refund policy</a>
+          <a href="#">Shipping policy</a>
+          <a href="#">Contact information</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="fr2-whatsapp" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script src="js/products.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+
+</html>

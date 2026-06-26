@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nivaas Furniture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <header class="fr2-header" role="banner">
+
+    <!-- Top utility bar -->
+    <div class="fr2-header__top">
+      <div class="fr2-header__container fr2-header__top-inner">
+
+        <div class="fr2-header__delivery">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          <span>Deliver to -</span>
+          <button type="button" class="fr2-header__pincode" aria-label="Change delivery pincode">
+            560001
+            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <nav class="fr2-header__utility" aria-label="Utility links">
+          <a href="#">Track Order</a>
+          <a href="#">Royaloak Stores</a>
+          <a href="#">Franchise Enquiry</a>
+          <a href="#">About Us</a>
+          <a href="#">Customer Support</a>
+          <a href="#">Careers</a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Main header bar -->
+    <div class="fr2-header__main">
+      <div class="fr2-header__container fr2-header__main-inner">
+
+        <button type="button" class="fr2-header__burger" data-fr2-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="fr2-mobile-nav">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <div class="fr2-header__main-left">
+          <form class="fr2-header__search" role="search" action="#" method="get">
+            <input type="search" class="fr2-header__search-input" name="q" placeholder="Enter Keyword or Item"
+              aria-label="Search products" />
+            <button type="submit" class="fr2-header__search-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+
+        <a href="index.html" class="fr2-header__logo" aria-label="Nivaas home">
+          <img src="img/logo.png" alt="Nivaas – Home, Redefined" width="180" height="72" decoding="async" />
+        </a>
+
+        <nav class="fr2-header__actions" aria-label="Account utilities">
+          <a href="#" class="fr2-header__action">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+            <span>LOGIN</span>
+          </a>
+          <a href="#" class="fr2-header__action">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            <span>WISHLIST</span>
+          </a>
+          <a href="#" class="fr2-header__action">
+            <i class="fa-solid fa-basket-shopping" aria-hidden="true"></i>
+            <span>CART</span>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Bottom navigation -->
+    <div class="fr2-header__nav">
+      <div class="fr2-header__container">
+        <nav class="fr2-header__menu" aria-label="Primary navigation">
+          <a href="shop.html">International Collection <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Living <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Bedroom <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="shop.html">Mattresses <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="#">Dining <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="#">Study &amp; Office <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="#">Outdoor <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="#">Decor <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="#">Furnishings <i class="fa-solid fa-chevron-down" aria-hidden="true"></i></a>
+          <a href="#">New Arrivals</a>
+          <a href="#">House of Interiors</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Mobile slide-in nav -->
+    <div class="fr2-header__mobile" id="fr2-mobile-nav" data-fr2-mobile hidden>
+      <div class="fr2-header__mobile-panel">
+        <div class="fr2-header__mobile-top">
+          <span class="fr2-header__mobile-title">Menu</span>
+          <button type="button" class="fr2-header__mobile-close" data-fr2-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="fr2-header__mobile-nav" aria-label="Mobile navigation">
+          <a href="shop.html">International Collection</a>
+          <a href="#">Living</a>
+          <a href="#">Bedroom</a>
+          <a href="#">Mattresses</a>
+          <a href="#">Dining</a>
+          <a href="#">Study &amp; Office</a>
+          <a href="#">Outdoor</a>
+          <a href="#">Decor</a>
+          <a href="#">Furnishings</a>
+          <a href="#">New Arrivals</a>
+          <a href="#">House of Interiors</a>
+          <span class="fr2-header__mobile-divider"></span>
+          <a href="#">Track Order</a>
+          <a href="#">Royaloak Stores</a>
+          <a href="#">Franchise Enquiry</a>
+          <a href="#">About Us</a>
+          <a href="#">Customer Support</a>
+          <a href="#">Careers</a>
+        </nav>
+      </div>
+      <div class="fr2-header__mobile-overlay" data-fr2-close></div>
+    </div>
+
+  </header>
+
+  <!-- ===== Hero section ===== -->
+  <section class="fr2-hero" aria-label="Featured offers">
+    <div class="fr2-hero__container">
+
+      <!-- Left: large static banner -->
+      <a href="#" class="fr2-hero__feature">
+        <img src="img/big-hero.png" alt="Monsoon Splash Sale – Upto 70% off + 20% cashback" decoding="async" />
+      </a>
+
+      <!-- Right: auto slider card -->
+      <div class="fr2-hero__slider" data-fr2-slider>
+        <div class="fr2-hero__viewport">
+          <div class="fr2-hero__track" data-fr2-track>
+            <a href="#" class="fr2-hero__slide">
+              <img src="img/hero-banner-1.png" alt="Your wardrobe deserves a refresh too" decoding="async" />
+            </a>
+            <a href="#" class="fr2-hero__slide">
+              <img src="img/hero-banner-2.png" alt="Featured offer" loading="lazy" decoding="async" />
+            </a>
+            <a href="#" class="fr2-hero__slide">
+              <img src="img/hero-banner-3.png" alt="Featured offer" loading="lazy" decoding="async" />
+            </a>
+            <a href="#" class="fr2-hero__slide">
+              <img src="img/hero-banner-4.png" alt="Featured offer" loading="lazy" decoding="async" />
+            </a>
+          </div>
+        </div>
+
+        <div class="fr2-hero__dots" data-fr2-dots aria-label="Slide navigation"></div>
+
+        <button type="button" class="fr2-hero__next" data-fr2-next aria-label="Next slide">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Category section ===== -->
+  <section class="fr2-cats" aria-label="Shop by category">
+    <div class="fr2-cats__container">
+
+      <!-- Trust bar -->
+      <ul class="fr2-trust">
+        <li class="fr2-trust__item">
+          <i class="fa-solid fa-award" aria-hidden="true"></i>
+          <span>20 Years of Trust</span>
+        </li>
+        <li class="fr2-trust__item">
+          <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+          <span>Pan India Delivery</span>
+        </li>
+        <li class="fr2-trust__item">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <span>Free Installation</span>
+        </li>
+        <li class="fr2-trust__item">
+          <i class="fa-solid fa-people-group" aria-hidden="true"></i>
+          <span>15+ Million Happy Families</span>
+        </li>
+      </ul>
+
+      <!-- Category circles -->
+      <ul class="fr2-cats__grid">
+        <li class="fr2-cat">
+          <a href="#" class="fr2-cat__link">
+            <span class="fr2-cat__thumb">
+              <i class="fa-solid fa-gift fr2-cat__bow" aria-hidden="true"></i>
+              <img src="img/cat-1.avif" alt="Sofa" loading="lazy" decoding="async" />
+            </span>
+            <span class="fr2-cat__name">Sofa</span>
+          </a>
+        </li>
+        <li class="fr2-cat">
+          <a href="#" class="fr2-cat__link">
+            <span class="fr2-cat__thumb">
+              <i class="fa-solid fa-gift fr2-cat__bow" aria-hidden="true"></i>
+              <img src="img/cat-2.avif" alt="Beds" loading="lazy" decoding="async" />
+            </span>
+            <span class="fr2-cat__name">Beds</span>
+          </a>
+        </li>
+        <li class="fr2-cat">
+          <a href="#" class="fr2-cat__link">
+            <span class="fr2-cat__thumb">
+              <i class="fa-solid fa-gift fr2-cat__bow" aria-hidden="true"></i>
+              <img src="img/cat-3.avif" alt="Dining" loading="lazy" decoding="async" />
+            </span>
+            <span class="fr2-cat__name">Dining</span>
+          </a>
+        </li>
+        <li class="fr2-cat">
+          <a href="#" class="fr2-cat__link">
+            <span class="fr2-cat__thumb">
+              <i class="fa-solid fa-gift fr2-cat__bow" aria-hidden="true"></i>
+              <img src="img/cat-4.avif" alt="Recliners" loading="lazy" decoding="async" />
+            </span>
+            <span class="fr2-cat__name">Recliners</span>
+          </a>
+        </li>
+        <li class="fr2-cat">
+          <a href="#" class="fr2-cat__link">
+            <span class="fr2-cat__thumb">
+              <i class="fa-solid fa-gift fr2-cat__bow" aria-hidden="true"></i>
+              <img src="img/cat-5.avif" alt="Decor" loading="lazy" decoding="async" />
+            </span>
+            <span class="fr2-cat__name">Decor</span>
+          </a>
+        </li>
+        <li class="fr2-cat">
+          <a href="#" class="fr2-cat__link">
+            <span class="fr2-cat__thumb">
+              <i class="fa-solid fa-gift fr2-cat__bow" aria-hidden="true"></i>
+              <img src="img/cat-6.avif" alt="Shoe Rack" loading="lazy" decoding="async" />
+            </span>
+            <span class="fr2-cat__name">Shoe Rack</span>
+          </a>
+        </li>
+        <li class="fr2-cat">
+          <a href="#" class="fr2-cat__link">
+            <span class="fr2-cat__thumb">
+              <i class="fa-solid fa-gift fr2-cat__bow" aria-hidden="true"></i>
+              <img src="img/cat-7.avif" alt="Kitchen & Appliances" loading="lazy" decoding="async" />
+            </span>
+            <span class="fr2-cat__name">Kitchen &amp; Appliances</span>
+          </a>
+        </li>
+      </ul>
+
+    </div>
+  </section>
+
+  <!-- ===== Bestsellers section ===== -->
+  <section class="fr2-best" aria-label="Our Bestsellers">
+    <!-- <span class="fr2-best__ribbon fr2-best__ribbon--left" aria-hidden="true"></span>
+      <span class="fr2-best__ribbon fr2-best__ribbon--right" aria-hidden="true"></span> -->
+    <div class="fr2-best__container">
+
+      <h2 class="fr2-best__title">Our <span>Bestsellers</span></h2>
+
+      <div class="fr2-best__tabs" data-fr2-tabs role="tablist" aria-label="Bestseller categories">
+        <button type="button" class="fr2-best__tab is-active" role="tab" aria-selected="true">New Arrivals</button>
+        <button type="button" class="fr2-best__tab" role="tab" aria-selected="false">Sofas</button>
+        <button type="button" class="fr2-best__tab" role="tab" aria-selected="false">Recliners</button>
+        <button type="button" class="fr2-best__tab" role="tab" aria-selected="false">Wardrobes</button>
+        <button type="button" class="fr2-best__tab" role="tab" aria-selected="false">Dressing Tables</button>
+        <button type="button" class="fr2-best__tab" role="tab" aria-selected="false">Center Tables</button>
+      </div>
+
+      <div class="fr2-best__carousel">
+        <button type="button" class="fr2-best__nav fr2-best__nav--prev" data-fr2-best-prev aria-label="Show previous products">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <div class="fr2-best__grid" data-fr2-best-track>
+
+          <article class="fr2-pcard" data-product-id="bs-1">
+            <a href="#" class="fr2-pcard__media">
+              <span class="fr2-pcard__badge">59% OFF</span>
+              <img src="img/BS-1.webp" alt="Lunaro Upholstered Queen Bed with Hydraulic Storage" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="fr2-pcard__body">
+              <span class="fr2-pcard__brand">HOMETOWN</span>
+              <h3 class="fr2-pcard__name"><a href="#">Lunaro Uphlstr Queen Bed W/hyd Storage</a></h3>
+              <p class="fr2-pcard__price"><span class="fr2-pcard__now">&#8377;81,900</span> <span
+                  class="fr2-pcard__was">&#8377;199,900</span></p>
+              <button type="button" class="fr2-pcard__cart">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> ADD TO CART
+              </button>
+            </div>
+          </article>
+
+          <article class="fr2-pcard" data-product-id="bs-2">
+            <a href="#" class="fr2-pcard__media">
+              <span class="fr2-pcard__badge">58% OFF</span>
+              <img src="img/BS-2.webp" alt="Lunaro Upholstered King Bed with Hydraulic Storage" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="fr2-pcard__body">
+              <span class="fr2-pcard__brand">HOMETOWN</span>
+              <h3 class="fr2-pcard__name"><a href="#">Lunaro Uphlstr King Bed W/hyd Storage</a></h3>
+              <p class="fr2-pcard__price"><span class="fr2-pcard__now">&#8377;86,900</span> <span
+                  class="fr2-pcard__was">&#8377;209,900</span></p>
+              <button type="button" class="fr2-pcard__cart">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> ADD TO CART
+              </button>
+            </div>
+          </article>
+
+          <article class="fr2-pcard" data-product-id="bs-3">
+            <a href="#" class="fr2-pcard__media">
+              <span class="fr2-pcard__badge">65% OFF</span>
+              <img src="img/BS-3.webp" alt="Levanto Half Leather Zero Wall Electric Recliner 2 Seater Ocean Blue"
+                loading="lazy" decoding="async" />
+            </a>
+            <div class="fr2-pcard__body">
+              <span class="fr2-pcard__brand">HOMETOWN</span>
+              <h3 class="fr2-pcard__name"><a href="#">Levanto Half Leather Zero Wall Electric Recliner | 2 Seater |
+                  Ocean Blue</a></h3>
+              <p class="fr2-pcard__price"><span class="fr2-pcard__now">&#8377;96,000</span> <span
+                  class="fr2-pcard__was">&#8377;279,000</span></p>
+              <button type="button" class="fr2-pcard__cart">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> ADD TO CART
+              </button>
+            </div>
+          </article>
+
+          <article class="fr2-pcard" data-product-id="bs-4">
+            <a href="#" class="fr2-pcard__media">
+              <span class="fr2-pcard__badge">66% OFF</span>
+              <img src="img/BS-4.webp" alt="Levanto Half Leather Zero Wall Electric Recliner 3 Seater Ocean Blue"
+                loading="lazy" decoding="async" />
+            </a>
+            <div class="fr2-pcard__body">
+              <span class="fr2-pcard__brand">HOMETOWN</span>
+              <h3 class="fr2-pcard__name"><a href="#">Levanto Half Leather Zero Wall Electric Recliner | 3 Seater |
+                  Ocean Blue</a></h3>
+              <p class="fr2-pcard__price"><span class="fr2-pcard__now">&#8377;117,900</span> <span
+                  class="fr2-pcard__was">&#8377;354,900</span></p>
+              <button type="button" class="fr2-pcard__cart">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> ADD TO CART
+              </button>
+            </div>
+          </article>
+
+          <article class="fr2-pcard" data-product-id="bs-5">
+            <a href="#" class="fr2-pcard__media">
+              <span class="fr2-pcard__badge">66% OFF</span>
+              <img src="img/BS-5.webp" alt="Levanto Half Leather Zero Wall Electric Recliner 3 Seater Slate Grey"
+                loading="lazy" decoding="async" />
+            </a>
+            <div class="fr2-pcard__body">
+              <span class="fr2-pcard__brand">HOMETOWN</span>
+              <h3 class="fr2-pcard__name"><a href="#">Levanto Half Leather Zero Wall Electric Recliner | 3 Seater |
+                  Slate Grey</a></h3>
+              <p class="fr2-pcard__price"><span class="fr2-pcard__now">&#8377;117,900</span> <span
+                  class="fr2-pcard__was">&#8377;354,900</span></p>
+              <button type="button" class="fr2-pcard__cart">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> ADD TO CART
+              </button>
+            </div>
+          </article>
+
+          <article class="fr2-pcard" data-product-id="bs-6">
+            <a href="#" class="fr2-pcard__media">
+              <span class="fr2-pcard__badge">69% OFF</span>
+              <img src="img/BS-6.webp" alt="Celesto Upholstered Hydraulic Bed Queen Light Brown" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="fr2-pcard__body">
+              <span class="fr2-pcard__brand">HOMETOWN</span>
+              <h3 class="fr2-pcard__name"><a href="#">Celesto Upholstered Hydraulic Bed | Queen | Light Brown</a></h3>
+              <p class="fr2-pcard__price"><span class="fr2-pcard__now">&#8377;61,900</span> <span
+                  class="fr2-pcard__was">&#8377;199,900</span></p>
+              <button type="button" class="fr2-pcard__cart">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i> ADD TO CART
+              </button>
+            </div>
+          </article>
+
+        </div>
+        <button type="button" class="fr2-best__nav fr2-best__nav--next" data-fr2-best-next aria-label="Show next products">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== In the Spotlight section ===== -->
+  <section class="fr2-spot" aria-label="In the Spotlight">
+    <div class="fr2-spot__container">
+
+      <h2 class="fr2-spot__title">In the Spotlight</h2>
+
+      <div class="fr2-spot__grid">
+
+        <a href="#" class="fr2-spot__card fr2-spot__card--feature">
+          <span class="fr2-spot__media">
+            <img src="img/big-product.webp" alt="Coffee Table" loading="lazy" decoding="async" />
+          </span>
+          <span class="fr2-spot__label">Coffee Table</span>
+        </a>
+
+        <a href="#" class="fr2-spot__card fr2-spot__card--a">
+          <span class="fr2-spot__media">
+            <img src="img/Fabric-sofa.webp" alt="Fabric Sofas" loading="lazy" decoding="async" />
+          </span>
+          <span class="fr2-spot__label">Fabric Sofas</span>
+        </a>
+
+        <a href="#" class="fr2-spot__card fr2-spot__card--b">
+          <span class="fr2-spot__media">
+            <img src="img/Dining-table.webp" alt="Dining Tables" loading="lazy" decoding="async" />
+          </span>
+          <span class="fr2-spot__label">Dining Tables</span>
+        </a>
+
+        <a href="#" class="fr2-spot__card fr2-spot__card--c">
+          <span class="fr2-spot__media">
+            <img src="img/Dresser.webp" alt="Dresser" loading="lazy" decoding="async" />
+          </span>
+          <span class="fr2-spot__label">Dresser</span>
+        </a>
+
+        <a href="#" class="fr2-spot__card fr2-spot__card--d">
+          <span class="fr2-spot__media">
+            <img src="img/Beds.webp" alt="Beds" loading="lazy" decoding="async" />
+          </span>
+          <span class="fr2-spot__label">Beds</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Brand Bazaar section ===== -->
+  <section class="fr2-bazaar" aria-label="Brand Bazaar">
+    <div class="fr2-bazaar__container">
+
+      <h2 class="fr2-bazaar__title">Brand Bazaar</h2>
+
+      <div class="fr2-bazaar__tabs" data-fr2-bazaar-tabs role="tablist" aria-label="Brand categories">
+        <button type="button" class="fr2-bazaar__tab is-active" role="tab" aria-selected="true">
+          <i class="fa-solid fa-couch" aria-hidden="true"></i>
+          <span>Furniture</span>
+        </button>
+        <button type="button" class="fr2-bazaar__tab" role="tab" aria-selected="false">
+          <i class="fa-solid fa-bed" aria-hidden="true"></i>
+          <span>Mattresses</span>
+        </button>
+        <button type="button" class="fr2-bazaar__tab" role="tab" aria-selected="false">
+          <i class="fa-solid fa-hand-sparkles" aria-hidden="true"></i>
+          <span>Home Decor</span>
+        </button>
+      </div>
+
+      <div class="fr2-bazaar__grid">
+        <a href="#" class="fr2-bazaar__card">
+          <img src="img/BB-1.webp" alt="HomeTown – Extra 10% Off" loading="lazy" decoding="async" />
+        </a>
+        <a href="#" class="fr2-bazaar__card">
+          <img src="img/BB-2.webp" alt="Nestroots – Extra 5% Off" loading="lazy" decoding="async" />
+        </a>
+        <a href="#" class="fr2-bazaar__card">
+          <img src="img/BB-3.webp" alt="Madesa – Extra 5% Off" loading="lazy" decoding="async" />
+        </a>
+        <a href="#" class="fr2-bazaar__card">
+          <img src="img/BB-4.webp" alt="Arra – Extra 5% Off" loading="lazy" decoding="async" />
+        </a>
+        <a href="#" class="fr2-bazaar__card">
+          <img src="img/BB-5.webp" alt="The Flamingo Life – Extra 10% Off" loading="lazy" decoding="async" />
+        </a>
+        <a href="#" class="fr2-bazaar__card">
+          <img src="img/BB-6.webp" alt="Woodbuzz – Extra 5% Off" loading="lazy" decoding="async" />
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Explore Lounge Chairs section ===== -->
+  <section class="fr2-explore" aria-label="Explore Lounge Chairs" data-fr2-carousel>
+    <div class="fr2-explore__container">
+
+      <div class="fr2-explore__head">
+        <h2 class="fr2-explore__title">Explore Lounge Chairs</h2>
+        <a href="#" class="fr2-explore__viewall">View All</a>
+      </div>
+
+      <div class="fr2-explore__viewport">
+        <div class="fr2-explore__track" data-fr2-carousel-track>
+
+          <article class="fr2-ec" data-product-id="explore-1">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-1.avif" alt="Florence Solid Wood Lounge Chair in Calico Floral Colour"
+                loading="lazy" decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Florence Solid Wood Lounge Chair in Calico Floral Colour</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;10,999</span>
+              <span class="fr2-ec__was">&#8377;14,999</span>
+              <span class="fr2-ec__off">27% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-2">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-2.avif" alt="Genoa Fabric Wing Chair in Monochrome Paisley Colour" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Genoa Fabric Wing Chair in Monochrome Paisley Colour</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;19,999</span>
+              <span class="fr2-ec__was">&#8377;32,999</span>
+              <span class="fr2-ec__off">39% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-3">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-3.avif" alt="Odette Lounge Chair in Army Green Leather" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Odette Lounge Chair in Army Green Leather</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;44,999</span>
+              <span class="fr2-ec__was">&#8377;89,999</span>
+              <span class="fr2-ec__off">50% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-4">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-4.avif" alt="Morgen Solid Wood Lounge Chair in Calico Print Colour" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Morgen Solid Wood Lounge Chair in Calico Print Colour</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;19,999</span>
+              <span class="fr2-ec__was">&#8377;32,999</span>
+              <span class="fr2-ec__off">39% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-5">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-5.avif" alt="Eclipse Fabric Lounge Chair in Pixel Blue Colour" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Eclipse Fabric Lounge Chair in Pixel Blue Colour</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;39,999</span>
+              <span class="fr2-ec__was">&#8377;89,999</span>
+              <span class="fr2-ec__off">56% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-6">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-6.avif" alt="Sven Fabric Accent Lounge Chair in Stone Grey" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Sven Fabric Accent Lounge Chair in Stone Grey</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;15,999</span>
+              <span class="fr2-ec__was">&#8377;27,999</span>
+              <span class="fr2-ec__off">42% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-7">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-7.avif" alt="Aria Velvet Lounge Chair in Teal Colour" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Aria Velvet Lounge Chair in Teal Colour</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;24,999</span>
+              <span class="fr2-ec__was">&#8377;44,999</span>
+              <span class="fr2-ec__off">44% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-8">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-8.avif" alt="Bristol Leather Wing Chair in Tan Colour" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Bristol Leather Wing Chair in Tan Colour</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;49,999</span>
+              <span class="fr2-ec__was">&#8377;89,999</span>
+              <span class="fr2-ec__off">44% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-9">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-9.avif" alt="Lumio Solid Wood Lounge Chair in Walnut Finish" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Lumio Solid Wood Lounge Chair in Walnut Finish</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;17,999</span>
+              <span class="fr2-ec__was">&#8377;29,999</span>
+              <span class="fr2-ec__off">40% OFF</span>
+            </p>
+          </article>
+
+          <article class="fr2-ec" data-product-id="explore-10">
+            <a href="#" class="fr2-ec__media">
+              <img src="img/explore-10.avif" alt="Nordic Fabric Accent Lounge Chair in Mustard Colour" loading="lazy"
+                decoding="async" />
+            </a>
+            <span class="fr2-ec__brand">Urban Ladder</span>
+            <h3 class="fr2-ec__name"><a href="#">Nordic Fabric Accent Lounge Chair in Mustard Colour</a></h3>
+            <p class="fr2-ec__price">
+              <span class="fr2-ec__now">&#8377;21,999</span>
+              <span class="fr2-ec__was">&#8377;37,999</span>
+              <span class="fr2-ec__off">42% OFF</span>
+            </p>
+          </article>
+
+        </div>
+
+        <button type="button" class="fr2-explore__nav fr2-explore__nav--prev" data-fr2-carousel-prev
+          aria-label="Previous">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="fr2-explore__nav fr2-explore__nav--next" data-fr2-carousel-next aria-label="Next">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Limited Time Offers section ===== -->
+  <section class="fr2-offers" aria-label="Limited Time Offers">
+    <div class="fr2-offers__container">
+
+      <div class="fr2-offers__head">
+        <h2 class="fr2-offers__title">Limited Time <span>Offers</span></h2>
+        <p class="fr2-offers__sub">Shop by category before they're gone</p>
+      </div>
+
+      <div class="fr2-offers__carousel">
+      <button type="button" class="fr2-offers__nav fr2-offers__nav--prev" data-fr2-offers-prev aria-label="Show previous offers">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <div class="fr2-offers__grid" data-fr2-offers-track>
+
+        <a href="#" class="fr2-offer">
+          <img src="img/SOFA__1.webp" alt="Sofas" loading="lazy" decoding="async" />
+          <span class="fr2-offer__overlay">
+            <span class="fr2-offer__name">Sofas</span>
+            <span class="fr2-offer__price">&#8377;12,990 Onwards</span>
+          </span>
+        </a>
+
+        <a href="#" class="fr2-offer">
+          <img src="img/DINING_1.webp" alt="Dining" loading="lazy" decoding="async" />
+          <span class="fr2-offer__overlay">
+            <span class="fr2-offer__name">Dining</span>
+            <span class="fr2-offer__price">&#8377;17,900 Onwards</span>
+          </span>
+        </a>
+
+        <a href="#" class="fr2-offer">
+          <img src="img/HOME_DECOR__1.webp" alt="Home Decor" loading="lazy" decoding="async" />
+          <span class="fr2-offer__overlay">
+            <span class="fr2-offer__name">Home Decor</span>
+            <span class="fr2-offer__price">&#8377;569 Onwards</span>
+          </span>
+        </a>
+
+        <a href="#" class="fr2-offer">
+          <img src="img/BED_1.webp" alt="Beds" loading="lazy" decoding="async" />
+          <span class="fr2-offer__overlay">
+            <span class="fr2-offer__name">Beds</span>
+            <span class="fr2-offer__price">&#8377;12,999 Onwards</span>
+          </span>
+        </a>
+
+        <a href="#" class="fr2-offer">
+          <img src="img/oil_diffuser.webp" alt="Oil & Diffuser" loading="lazy" decoding="async" />
+          <span class="fr2-offer__overlay">
+            <span class="fr2-offer__name">Oil &amp; Diffuser</span>
+            <span class="fr2-offer__price">&#8377;499 Onwards</span>
+          </span>
+        </a>
+
+        <a href="#" class="fr2-offer">
+          <img src="img/Drink-ware.webp" alt="Drink ware" loading="lazy" decoding="async" />
+          <span class="fr2-offer__overlay">
+            <span class="fr2-offer__name">Drink ware</span>
+            <span class="fr2-offer__price">&#8377;476 Onwards</span>
+          </span>
+        </a>
+
+      </div>
+      <button type="button" class="fr2-offers__nav fr2-offers__nav--next" data-fr2-offers-next aria-label="Show next offers">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Testimonials section ===== -->
+  <section class="fr2-love" aria-label="Customer testimonials">
+    <div class="fr2-love__container">
+
+      <aside class="fr2-love__intro">
+        <i class="fa-solid fa-quote-left fr2-love__quote fr2-love__quote--open" aria-hidden="true"></i>
+        <h2 class="fr2-love__title">See Why<br />They Love Us</h2>
+        <p class="fr2-love__sub">Trusted By Over 11 Million Customers</p>
+        <i class="fa-solid fa-quote-right fr2-love__quote fr2-love__quote--close" aria-hidden="true"></i>
+      </aside>
+
+      <div class="fr2-love__cards">
+
+        <article class="fr2-tcard">
+          <span class="fr2-tcard__avatar" style="--avt:#e08a5a">MR</span>
+          <div class="fr2-tcard__body">
+            <p class="fr2-tcard__text">"I absolutely love this table! The moment I saw it on the Pepperfry website, I
+              knew it would be perfect for my room."</p>
+            <div class="fr2-tcard__foot">
+              <span class="fr2-tcard__name">– Michelle Rose</span>
+              <span class="fr2-stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+              </span>
+            </div>
+          </div>
+          <span class="fr2-tcard__thumb"><img src="img/Dining-table.webp" alt="" loading="lazy"
+              decoding="async" /></span>
+        </article>
+
+        <article class="fr2-tcard">
+          <span class="fr2-tcard__avatar" style="--avt:#6c9bd1">PC</span>
+          <div class="fr2-tcard__body">
+            <p class="fr2-tcard__text">"My recent purchase was a pillow with a gift card discount. I'll recommend
+              Pepperfry to everyone!"</p>
+            <div class="fr2-tcard__foot">
+              <span class="fr2-tcard__name">– Paras Chugh</span>
+              <span class="fr2-stars" aria-label="Rated 4 out of 5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+              </span>
+            </div>
+          </div>
+          <span class="fr2-tcard__thumb"><img src="img/Beds.webp" alt="" loading="lazy" decoding="async" /></span>
+        </article>
+
+        <article class="fr2-tcard">
+          <span class="fr2-tcard__avatar" style="--avt:#9a8cc4">PU</span>
+          <div class="fr2-tcard__body">
+            <p class="fr2-tcard__text">"Brought this wonderful and really strong Pen Stand, Love this."</p>
+            <div class="fr2-tcard__foot">
+              <span class="fr2-tcard__name">– Prabhas Upadhyay</span>
+              <span class="fr2-stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+              </span>
+            </div>
+          </div>
+          <span class="fr2-tcard__thumb"><img src="img/oil_diffuser.webp" alt="" loading="lazy"
+              decoding="async" /></span>
+        </article>
+
+        <article class="fr2-tcard">
+          <span class="fr2-tcard__avatar" style="--avt:#d98aa0">JJ</span>
+          <div class="fr2-tcard__body">
+            <p class="fr2-tcard__text">"The Melbourne Leatherette RHS Sectional Sofa in Brown looks very nice and
+              offers comfortable seating."</p>
+            <div class="fr2-tcard__foot">
+              <span class="fr2-tcard__name">– Jayavant Jadhav</span>
+              <span class="fr2-stars" aria-label="Rated 4.5 out of 5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+              </span>
+            </div>
+          </div>
+          <span class="fr2-tcard__thumb"><img src="img/sofas-1.webp" alt="" loading="lazy" decoding="async" /></span>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Newsletter section ===== -->
+  <section class="fr2-news" aria-label="Newsletter subscription">
+    <div class="fr2-news__container">
+
+      <div class="fr2-news__text">
+        <h2 class="fr2-news__title">Subscribe to our Newsletter</h2>
+        <p class="fr2-news__sub">Be the first to know about new arrivals, sales &amp; promos by submitting your
+          email!</p>
+      </div>
+
+      <form class="fr2-news__form" action="#" method="post">
+        <input type="email" class="fr2-news__input" name="email" placeholder="Please enter your email"
+          aria-label="Email address" required />
+        <button type="submit" class="fr2-news__btn">Subscribe</button>
+      </form>
+
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="fr2-footer" role="contentinfo">
+    <div class="fr2-footer__top">
+      <div class="fr2-footer__container">
+
+        <div class="fr2-footer__brand">
+          <a href="index.html" class="fr2-footer__logo" aria-label="Nivaas home">
+            <img src="img/logo.png" alt="Nivaas" decoding="async" />
+          </a>
+          <p class="fr2-footer__about">India's trusted destination for stylish &amp; affordable furniture and home
+            decor.</p>
+          <div class="fr2-footer__social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <nav class="fr2-footer__col" aria-label="Customer Service">
+          <h3 class="fr2-footer__heading">Customer Service</h3>
+          <ul class="fr2-footer__links">
+            <li><a href="#">Cancellation Policy</a></li>
+            <li><a href="#">Service Assurance / Warranty</a></li>
+            <li><a href="#">Usage &amp; Care</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </nav>
+
+        <nav class="fr2-footer__col" aria-label="About Nivaas">
+          <h3 class="fr2-footer__heading">About Nivaas</h3>
+          <ul class="fr2-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Sitemap</a></li>
+          </ul>
+        </nav>
+
+        <div class="fr2-footer__col">
+          <h3 class="fr2-footer__heading">Contact Us</h3>
+          <ul class="fr2-footer__contact">
+            <li>
+              <span class="fr2-footer__cicon fr2-footer__cicon--mail"><i class="fa-solid fa-envelope"
+                  aria-hidden="true"></i></span>
+              <a href="mailto:care@nivaas.in">care@nivaas.in</a>
+            </li>
+            <li>
+              <span class="fr2-footer__cicon fr2-footer__cicon--phone"><i class="fa-solid fa-phone"
+                  aria-hidden="true"></i></span>
+              <span>08069252525 (Availability 10AM – 6PM)</span>
+            </li>
+            <li>
+              <span class="fr2-footer__cicon fr2-footer__cicon--loc"><i class="fa-solid fa-location-dot"
+                  aria-hidden="true"></i></span>
+              <a href="#">Store Locator</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fr2-footer__locations">
+      <div class="fr2-footer__container">
+        <h3 class="fr2-footer__heading">Locations</h3>
+        <p class="fr2-footer__cities">
+          <a href="#">Aurangabad</a> | <a href="#">Bhubaneswar</a> | <a href="#">Guwahati</a> | <a
+            href="#">Hyderabad</a> | <a href="#">Kolkata</a> | <a href="#">Lucknow</a> | <a href="#">Nagpur</a> | <a
+            href="#">Nashik</a> | <a href="#">Patna</a> | <a href="#">Pune</a> | <a href="#">Raipur</a> | <a
+            href="#">Siliguri</a> | <a href="#">Visakhapatnam</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="fr2-footer__bottom">
+      <div class="fr2-footer__container fr2-footer__bottom-inner">
+        <p class="fr2-footer__copy">&copy; 2026 Nivaas. All rights reserved. Owned and operated by Praxis Home Retail
+          Limited</p>
+        <nav class="fr2-footer__legal" aria-label="Legal">
+          <a href="#">Terms &amp; Conditions</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Refund policy</a>
+          <a href="#">Shipping policy</a>
+          <a href="#">Contact information</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="fr2-whatsapp" aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script src="js/products.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

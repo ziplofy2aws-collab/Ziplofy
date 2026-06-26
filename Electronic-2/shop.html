@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop - Axionix Electronics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/shop.css" />
+</head>
+
+<body>
+
+  <header class="el2-header" role="banner">
+
+    <!-- Primary bar -->
+    <div class="el2-header__main">
+      <div class="el2-header__container">
+
+        <button type="button" class="el2-header__burger" data-el2-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="el2-mobile-nav">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <a href="index.html" class="el2-header__logo" aria-label="Axionix home">
+          <img src="img/logo.png" alt="Axionix" width="150" height="48" decoding="async" />
+        </a>
+
+        <form class="el2-header__search" role="search" action="#" method="get">
+          <input type="search" class="el2-header__search-input" name="q" placeholder="Search Axionix"
+            aria-label="Search Axionix" />
+          <button type="submit" class="el2-header__search-btn" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+        </form>
+
+        <nav class="el2-header__actions" aria-label="Account utilities">
+          <a href="#" class="el2-header__action">
+            <i class="fa-solid fa-location-dot el2-header__action-icon" aria-hidden="true"></i>
+            <span class="el2-header__action-text">
+              <small>Your store</small>
+              <strong>Find a store</strong>
+            </span>
+          </a>
+          <a href="#" class="el2-header__action">
+            <i class="fa-regular fa-user el2-header__action-icon" aria-hidden="true"></i>
+            <span class="el2-header__action-text">
+              <small>Account</small>
+              <strong>Sign in</strong>
+            </span>
+          </a>
+          <a href="#" class="el2-header__cart" aria-label="Cart">
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Secondary nav bar -->
+    <div class="el2-header__sub">
+      <div class="el2-header__container">
+
+        <nav class="el2-header__pills" aria-label="Browse">
+          <a href="shop.html" class="el2-header__pill">Shop <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></a>
+          <a href="shop.html" class="el2-header__pill">Deals <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></a>
+          <a href="shop.html" class="el2-header__pill">Support &amp; Services <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></a>
+          <a href="shop.html" class="el2-header__pill">Discover <i class="fa-solid fa-chevron-down"
+              aria-hidden="true"></i></a>
+        </nav>
+
+        <nav class="el2-header__links" aria-label="Quick links">
+          <a href="shop.html" class="el2-header__link el2-header__link--gift">
+            <i class="fa-solid fa-gift" aria-hidden="true"></i> Gift Ideas
+          </a>
+          <a href="shop.html" class="el2-header__link">Top Deals</a>
+          <a href="shop.html" class="el2-header__link">Deal of the Day</a>
+          <a href="shop.html" class="el2-header__link">My Axionix Memberships</a>
+          <a href="shop.html" class="el2-header__link">Credit Cards</a>
+          <a href="shop.html" class="el2-header__link">Gift Cards</a>
+          <a href="shop.html" class="el2-header__link">Trade-In</a>
+          <a href="shop.html" class="el2-header__link">Axionix Business</a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Mobile slide-in nav -->
+    <div class="el2-header__mobile" id="el2-mobile-nav" data-el2-mobile hidden>
+      <div class="el2-header__mobile-panel">
+        <div class="el2-header__mobile-top">
+          <span class="el2-header__mobile-title">Menu</span>
+          <button type="button" class="el2-header__mobile-close" data-el2-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="el2-header__mobile-nav" aria-label="Mobile">
+          <a href="shop.html">Shop</a>
+          <a href="shop.html">Deals</a>
+          <a href="shop.html">Support &amp; Services</a>
+          <a href="shop.html">Discover</a>
+          <span class="el2-header__mobile-divider"></span>
+          <a href="shop.html"><i class="fa-solid fa-gift" aria-hidden="true"></i> Gift Ideas</a>
+          <a href="shop.html">Top Deals</a>
+          <a href="shop.html">Deal of the Day</a>
+          <a href="shop.html">My Axionix Memberships</a>
+          <a href="shop.html">Credit Cards</a>
+          <a href="shop.html">Gift Cards</a>
+          <a href="shop.html">Trade-In</a>
+          <a href="shop.html">Axionix Business</a>
+        </nav>
+      </div>
+      <div class="el2-header__mobile-overlay" data-el2-close></div>
+    </div>
+
+  </header>
+
+  <!-- ===== Shop ===== -->
+  <nav class="el2-breadcrumb" aria-label="Breadcrumb">
+    <div class="el2-breadcrumb__inner">
+      <a href="index.html">Home</a>
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      <span>Shop</span>
+    </div>
+  </nav>
+
+  <main class="el2-shop">
+    <div class="el2-shop__container">
+
+      <button type="button" class="el2-shop__filter-toggle" data-el2-filter-toggle>
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filters
+      </button>
+
+      <!-- Sidebar -->
+      <aside class="el2-shop__sidebar" data-el2-filter>
+        <div class="el2-shop__filter">
+          <h3 class="el2-shop__filter-title">Category</h3>
+          <ul class="el2-shop__filter-list">
+            <li><label><input type="checkbox" checked /> Smartphones</label></li>
+            <li><label><input type="checkbox" /> Refrigerators</label></li>
+            <li><label><input type="checkbox" /> Washing Machines</label></li>
+            <li><label><input type="checkbox" /> Televisions</label></li>
+            <li><label><input type="checkbox" /> Laptops</label></li>
+            <li><label><input type="checkbox" /> Audio</label></li>
+          </ul>
+        </div>
+
+        <div class="el2-shop__filter">
+          <h3 class="el2-shop__filter-title">Brand</h3>
+          <ul class="el2-shop__filter-list">
+            <li><label><input type="checkbox" /> Samsung</label></li>
+            <li><label><input type="checkbox" /> LG</label></li>
+            <li><label><input type="checkbox" /> Apple</label></li>
+            <li><label><input type="checkbox" /> Google</label></li>
+            <li><label><input type="checkbox" /> IFB</label></li>
+          </ul>
+        </div>
+
+        <div class="el2-shop__filter">
+          <h3 class="el2-shop__filter-title">Price Range</h3>
+          <ul class="el2-shop__filter-list">
+            <li><label><input type="radio" name="price" checked /> Under &#8377; 50,000</label></li>
+            <li><label><input type="radio" name="price" /> &#8377; 50,000 - &#8377; 1,00,000</label></li>
+            <li><label><input type="radio" name="price" /> &#8377; 1,00,000 - &#8377; 2,00,000</label></li>
+            <li><label><input type="radio" name="price" /> Above &#8377; 2,00,000</label></li>
+          </ul>
+        </div>
+
+        <div class="el2-shop__filter">
+          <h3 class="el2-shop__filter-title">Rating</h3>
+          <ul class="el2-shop__filter-list">
+            <li><label><input type="checkbox" /> 4&#9733; &amp; above</label></li>
+            <li><label><input type="checkbox" /> 3&#9733; &amp; above</label></li>
+            <li><label><input type="checkbox" /> 2&#9733; &amp; above</label></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Product area -->
+      <section class="el2-shop__main">
+        <div class="el2-shop__bar">
+          <p class="el2-shop__count">Showing <strong>15</strong> products</p>
+          <label class="el2-shop__sort">
+            <span>Sort by:</span>
+            <select aria-label="Sort products">
+              <option>Popularity</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest First</option>
+              <option>Discount</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="el2-shop__grid">
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">0% OFF</span>
+              <img src="img/mobile-phone-1.webp" alt="Samsung Galaxy Z Fold 7 5G" loading="lazy" decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung Android Smartphone Galaxy Z Fold 7 5G (12GB RAM,
+                  256GB Storage/ROM)...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 1,74,999</span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">0% OFF</span>
+              <img src="img/mobile-phone-2.webp" alt="Samsung Galaxy Z Fold 7 5G" loading="lazy" decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung Android Smartphone Galaxy Z Fold 7 5G (12GB RAM,
+                  256GB Storage/ROM)...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 1,74,999</span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">0% OFF</span>
+              <img src="img/mobile-phone-3.webp" alt="Samsung Galaxy Z Fold 7 5G" loading="lazy" decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung Android Smartphone Galaxy Z Fold 7 5G (12GB RAM,
+                  256GB Storage/ROM)...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 1,74,999</span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">0% OFF</span>
+              <img src="img/mobile-phone-4.webp" alt="Google Pixel 10 Pro Fold 5G" loading="lazy" decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Google Android Smartphone Pixel 10 Pro Fold 5G (16GB
+                  RAM, 256GB Storage/ROM)...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 1,72,999</span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">21% OFF</span>
+              <img src="img/REFRIGERATORS-1.webp" alt="Samsung French Door Refrigerator 809 Litres" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung French Door Refrigerator 809 Litres Convertible
+                  Inverter Water Dispenser...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 4,03,299 <del>&#8377; 5,09,000</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">15% OFF</span>
+              <img src="img/REFRIGERATORS-2.webp" alt="Samsung French Door Refrigerator 650 Litres" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung French Door Refrigerator 650 Litres Convertible
+                  Inverter Triple Cooling...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 2,07,099 <del>&#8377; 2,44,000</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">28% OFF</span>
+              <img src="img/REFRIGERATORS-3.webp" alt="Samsung Side By Side Refrigerator 615 Litres" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung Side By Side Refrigerator 615 Litres 3 Star
+                  Inverter Family Hub LCD Wi-Fi Ice &amp;...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 2,06,399 <del>&#8377; 2,86,000</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">25% OFF</span>
+              <img src="img/REFRIGERATORS-4.webp" alt="LG Side By Side Refrigerator 630 Litres" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">LG Side By Side Refrigerator 630 Litres 3 Star Inverter
+                  Wi-Fi Ice &amp; Water...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 2,04,999 <del>&#8377; 2,71,990</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">18% OFF</span>
+              <img src="img/REFRIGERATORS-5.webp" alt="LG French Door Refrigerator 594 Litres" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">LG French Door Refrigerator 594 Litres Convertible
+                  Inverter Linear Cooling Smart...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 1,89,999 <del>&#8377; 2,31,990</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">30% OFF</span>
+              <img src="img/WASHING-MACHINES-1.webp" alt="LG Front Load Washing Machine 12/7 Kg" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">LG Front Load Automatic Washing Machine 12/7 Kg 5 Star
+                  Inverter FHD1207STB...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 71,299 <del>&#8377; 1,02,490</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">32% OFF</span>
+              <img src="img/WASHING-MACHINES-2.webp" alt="Samsung Front Load Washing Machine 12/7 Kg" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung Front Load Automatic Washing Machine 12/7 Kg 5
+                  Star WD12FG5B34BBTL...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 70,599 <del>&#8377; 1,03,990</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">11% OFF</span>
+              <img src="img/WASHING-MACHINES-3.webp" alt="IFB Front Load Washing Machine 10/7/3 Kg" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">IFB Front Load Automatic Washing Machine 10 /7 /3 Kg 5
+                  Star WDR EXECUTIVE PLUS...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 68,199 <del>&#8377; 76,990</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">16% OFF</span>
+              <img src="img/WASHING-MACHINES-4.webp" alt="LG Front Load Washing Machine 10.0 Kg" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">LG Front Load Automatic Washing Machine 10.0 Kg 5 Star
+                  Inverter FHP1410Z7P ThinQ...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 56,899 <del>&#8377; 67,990</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">22% OFF</span>
+              <img src="img/WASHING-MACHINES-5.webp" alt="Samsung Front Load Washing Machine 9.0 Kg" loading="lazy"
+                decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung Front Load Automatic Washing Machine 9.0 Kg 5
+                  Star Inverter WW90T504DAW...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 48,499 <del>&#8377; 62,190</del></span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="el2-card">
+            <a href="product.html" class="el2-card__media">
+              <button type="button" class="el2-card__wish" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <span class="el2-card__badge">0% OFF</span>
+              <img src="img/mobile-phone-5.webp" alt="Samsung Galaxy Z Fold 7 5G" loading="lazy" decoding="async" />
+            </a>
+            <div class="el2-card__body">
+              <h3 class="el2-card__name"><a href="product.html">Samsung Android Smartphone Galaxy Z Fold 7 5G (12GB RAM,
+                  512GB Storage/ROM)...</a></h3>
+              <div class="el2-card__foot">
+                <span class="el2-card__price">&#8377; 1,84,999</span>
+                <a href="product.html" class="el2-card__link">View Details</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <nav class="el2-pagination" aria-label="Pagination">
+          <button type="button" class="el2-pagination__btn" aria-label="Previous"><i class="fa-solid fa-chevron-left"
+              aria-hidden="true"></i></button>
+          <button type="button" class="el2-pagination__btn is-active">1</button>
+          <button type="button" class="el2-pagination__btn">2</button>
+          <button type="button" class="el2-pagination__btn">3</button>
+          <button type="button" class="el2-pagination__btn" aria-label="Next"><i class="fa-solid fa-chevron-right"
+              aria-hidden="true"></i></button>
+        </nav>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="el2-footer" role="contentinfo">
+    <div class="el2-footer__container">
+
+      <div class="el2-footer__grid">
+
+        <div class="el2-footer__news">
+          <p class="el2-footer__news-title">Stay in touch with us, get product updates, offers, discounts directly to
+            your inbox</p>
+          <form class="el2-footer__form" action="#" method="post">
+            <input type="email" class="el2-footer__input" placeholder="Enter Email Address"
+              aria-label="Enter Email Address" />
+            <label class="el2-footer__consent">
+              <input type="checkbox" checked />
+              <span>By selecting this option you agree with our Privacy policy and Terms &amp; Conditions</span>
+            </label>
+            <button type="submit" class="el2-footer__subscribe">Subscribe</button>
+          </form>
+        </div>
+
+        <nav class="el2-footer__col" aria-label="Categories">
+          <h3 class="el2-footer__heading">Categories</h3>
+          <ul class="el2-footer__list">
+            <li><a href="#">Television</a></li>
+            <li><a href="#">Smartphone</a></li>
+            <li><a href="#">Laptops</a></li>
+            <li><a href="#">Washing Machines</a></li>
+            <li><a href="#">Party Speakers</a></li>
+            <li><a href="#">Gaming</a></li>
+          </ul>
+        </nav>
+
+        <nav class="el2-footer__col" aria-label="Services">
+          <h3 class="el2-footer__heading">Services</h3>
+          <ul class="el2-footer__list">
+            <li><a href="#">Cancellation and Return</a></li>
+            <li><a href="#">Loyalty Program</a></li>
+            <li><a href="#">VS Warranty</a></li>
+            <li><a href="#">Enquires/B2B Orders</a></li>
+          </ul>
+        </nav>
+
+        <nav class="el2-footer__col" aria-label="Trending Products">
+          <h3 class="el2-footer__heading">Trending Products</h3>
+          <ul class="el2-footer__list">
+            <li><a href="#">iPhone 17</a></li>
+            <li><a href="#">iPhone 17 Pro</a></li>
+            <li><a href="#">iPhone 17 Pro Max</a></li>
+            <li><a href="#">iPhone 17e</a></li>
+            <li><a href="#">AC</a></li>
+            <li><a href="#">Air Cooler</a></li>
+            <li><a href="#">TV</a></li>
+            <li><a href="#">Smartphone</a></li>
+            <li><a href="#">Washing Machine</a></li>
+          </ul>
+        </nav>
+
+        <span class="el2-footer__spacer" aria-hidden="true"></span>
+
+        <nav class="el2-footer__col el2-footer__col--bold" aria-label="Company">
+          <ul class="el2-footer__list">
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">e-Waste</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Order Status</a></li>
+          </ul>
+        </nav>
+
+        <nav class="el2-footer__col el2-footer__col--bold" aria-label="Help">
+          <ul class="el2-footer__list">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Shipping &amp; Delivery</a></li>
+            <li><a href="#">My Account</a></li>
+          </ul>
+        </nav>
+
+        <nav class="el2-footer__col" aria-label="Policies">
+          <ul class="el2-footer__list">
+            <li><a href="#">Pricing and Payments</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Bank Offers</a></li>
+          </ul>
+        </nav>
+
+        <nav class="el2-footer__col" aria-label="Legal">
+          <ul class="el2-footer__list">
+            <li><a href="#">Brand Stores</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Caution Notice</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <div class="el2-footer__bottom">
+        <div class="el2-footer__social">
+          <span class="el2-footer__social-label">Follow us on Socials</span>
+          <div class="el2-footer__social-icons">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <div class="el2-footer__apps">
+          <span class="el2-footer__apps-label">Download The Service App</span>
+          <a href="#" class="el2-footer__store">
+            <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+            <span><small>GET IT ON</small><strong>Google Play</strong></span>
+          </a>
+          <a href="#" class="el2-footer__store">
+            <i class="fa-brands fa-apple" aria-hidden="true"></i>
+            <span><small>Download on the</small><strong>App Store</strong></span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <button type="button" class="el2-footer__top" data-el2-top aria-label="Back to top">
+      <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+    </button>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+
+</html>
