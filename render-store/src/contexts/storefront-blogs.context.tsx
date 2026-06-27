@@ -67,7 +67,7 @@ interface StorefrontBlogsContextType {
 		storeId: string,
 		urlHandle: string,
 		params?: { page?: number; limit?: number }
-	) => Promise<void>;
+	) => Promise<StorefrontBlogPost[]>;
 	getVisiblePostByUrlHandles: (
 		storeId: string,
 		blogHandle: string,
@@ -121,7 +121,7 @@ export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = 
 			storeId: string,
 			urlHandle: string,
 			params?: { page?: number; limit?: number }
-		): Promise<void> => {
+		): Promise<StorefrontBlogPost[]> => {
 			try {
 				setLoading(true);
 				setError(null);
@@ -134,7 +134,9 @@ export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = 
 						},
 					}
 				);
-				setPosts(res.data?.data ?? []);
+				const list = res.data?.data ?? [];
+				setPosts(list);
+				return list;
 			} catch (err: unknown) {
 				const msg =
 					(err as { response?: { data?: { message?: string; error?: string } }; message?: string })

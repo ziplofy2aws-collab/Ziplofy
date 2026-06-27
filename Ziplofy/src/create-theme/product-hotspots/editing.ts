@@ -80,8 +80,23 @@ export const editing: CreateThemeEditing = {
       "label": "Hotspot",
       "settingsOrder": [
         {
+          "key": "productTitle",
+          "label": "Product title",
+          "type": "text"
+        },
+        {
+          "key": "price",
+          "label": "Price",
+          "type": "text"
+        },
+        {
           "key": "positionX",
           "label": "Horizontal position",
+          "type": "number"
+        },
+        {
+          "key": "positionY",
+          "label": "Vertical position",
           "type": "number"
         }
       ]

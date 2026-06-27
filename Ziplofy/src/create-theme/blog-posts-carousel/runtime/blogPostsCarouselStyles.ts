@@ -16,6 +16,7 @@ const SCHEMES: Record<string, BlogPostsCarouselScheme> = {
 export type BlogPostsCarouselLayout = {
   scheme: BlogPostsCarouselScheme;
   heading: string;
+  blogHandle: string;
   postCount: number;
   columns: number;
   mobileCardSize: 1 | 2;
@@ -42,6 +43,7 @@ export function readBlogPostsCarouselLayout(
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
     heading: cfgString(config, `${settingsBase}.heading`, 'Blog posts'),
+    blogHandle: cfgString(config, `${settingsBase}.blogHandle`, ''),
     postCount: cfgNumber(config, `${settingsBase}.postCount`, 5),
     columns: cfgNumber(config, `${settingsBase}.columns`, 3),
     mobileCardSize: mobile === '2' ? 2 : 1,

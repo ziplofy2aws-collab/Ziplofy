@@ -32,7 +32,7 @@ export function readCollectionListCardStyle(
       cfgString(config, `${base}.horizontalAlignment`, 'flex-start')
     ),
     verticalAlignment: parseFlexAlign(
-      cfgString(config, `${base}.verticalAlignment`, 'flex-end')
+      cfgString(config, `${base}.verticalAlignment`, 'flex-start')
     ),
     verticalGap: cfgNumber(config, `${base}.verticalGap`, 8),
     inheritColorScheme: cfgBool(config, `${base}.inheritColorScheme`, false),

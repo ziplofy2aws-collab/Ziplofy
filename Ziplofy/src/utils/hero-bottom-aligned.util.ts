@@ -161,10 +161,9 @@ export function applyBottomAlignedHeroSection(section: Record<string, unknown>, 
   settings.title = 'New arrivals';
   settings.subtitle = HERO_BOTTOM_ALIGNED_BODY;
   settings.media1Type = 'image';
+  // Leave media empty by default so the landscape illustration backdrop renders.
   settings.media1ImageUrl =
-    typeof settings.media1ImageUrl === 'string' && settings.media1ImageUrl.trim()
-      ? settings.media1ImageUrl
-      : HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE;
+    typeof settings.media1ImageUrl === 'string' ? settings.media1ImageUrl : '';
   settings.media2Type = 'image';
   settings.media2ImageUrl = settings.media2ImageUrl ?? '';
   settings.direction = 'vertical';

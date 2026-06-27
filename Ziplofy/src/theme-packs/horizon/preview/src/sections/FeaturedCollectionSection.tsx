@@ -17,6 +17,10 @@ import { readProductCardStyle } from '../lib/productCardStyles';
 import { formatProductCardPrice, readProductCardPriceStyle } from '../lib/productCardPriceStyles';
 import { readProductCardTitleStyle } from '../lib/productCardTitleStyles';
 import {
+  readGlobalProductCardColors,
+  shouldShowProductCardCurrencyCode,
+} from '../lib/themeGlobalProductCardStyles';
+import {
   featuredCollectionColorScheme,
   featuredCollectionGaps,
   featuredCollectionPadding,
@@ -320,6 +324,35 @@ export function FeaturedCollectionSection({
       }),
     [config, fontBody, color, primary, scheme.muted]
   );
+  const globalProductCard = useMemo(() => readGlobalProductCardColors(config), [config]);
+  const showCardCurrencyCode = useMemo(
+    () => shouldShowProductCardCurrencyCode(config),
+    [config]
+  );
+  const quickAddCss = useMemo(
+    () => `
+[data-ziplofy-section="${sectionId}"] .fc-quick-add {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+[data-ziplofy-section="${sectionId}"] .fc-product-card:hover .fc-quick-add,
+[data-ziplofy-section="${sectionId}"] .fc-product-card:focus-within .fc-quick-add {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+@media (max-width: 749px) {
+  [data-ziplofy-section="${sectionId}"] .fc-quick-add {
+    opacity: ${globalProductCard.mobileQuickAdd ? '1' : '0'};
+    transform: none;
+    pointer-events: ${globalProductCard.mobileQuickAdd ? 'auto' : 'none'};
+  }
+}
+`,
+    [sectionId, globalProductCard.mobileQuickAdd]
+  );
   const blockOrder = templateBlockOrder(config, templateId, sectionId, [
     'collection_header',
     'product_card',
@@ -482,7 +515,7 @@ export function FeaturedCollectionSection({
                     fontSize: Math.max(12, Math.round(productCardTitleStyle.fontSize * compactScale)),
                     fontWeight: productCardTitleStyle.fontWeight,
                     lineHeight: productCardTitleStyle.lineHeight,
-                    color: productCardTitleStyle.color,
+                    color: globalProductCard.text,
                     background: productCardTitleStyle.background,
                     paddingTop: productCardTitleStyle.paddingTop,
                     paddingBottom: productCardTitleStyle.paddingBottom,
@@ -518,7 +551,7 @@ export function FeaturedCollectionSection({
                       fontSize: Math.max(11, Math.round(productCardPriceStyle.fontSize * compactScale)),
                       fontWeight: productCardPriceStyle.fontWeight,
                       lineHeight: productCardPriceStyle.lineHeight,
-                      color: productCardPriceStyle.color,
+                      color: globalProductCard.text,
                     }}
                   >
                     {(() => {
@@ -530,7 +563,10 @@ export function FeaturedCollectionSection({
                       );
                       return (
                         <>
-                          <span>{priced.primary}</span>
+                          <span>
+                            {priced.primary}
+                            {showCardCurrencyCode ? ' INR' : ''}
+                          </span>
                           {priced.compareAt ? (
                             <span
                               style={{
@@ -565,12 +601,14 @@ export function FeaturedCollectionSection({
             return (
               <article
                 key={product._id}
+                className="fc-product-card"
                 style={{
+                  position: 'relative',
                   border: productCardStyle.border === 'none' ? `1px solid ${layout.line}` : productCardStyle.border,
                   borderRadius: productCardStyle.borderRadius,
                   overflow: 'hidden',
-                  background: productCardStyle.background,
-                  color: productCardStyle.color,
+                  background: globalProductCard.background,
+                  color: globalProductCard.text,
                   paddingTop: productCardStyle.paddingTop,
                   paddingBottom: productCardStyle.paddingBottom,
                   paddingLeft: productCardStyle.paddingLeft,
@@ -581,7 +619,36 @@ export function FeaturedCollectionSection({
                 }}
               >
                 {productNestedOrder.map((nestedId) => {
-                  if (nestedId === 'media') return <div key={nestedId}>{mediaNode}</div>;
+                  if (nestedId === 'media')
+                    return (
+                      <div key={nestedId} style={{ position: 'relative' }}>
+                        {mediaNode}
+                        {globalProductCard.quickAdd && showMedia ? (
+                          <button
+                            type="button"
+                            className="fc-quick-add"
+                            style={{
+                              position: 'absolute',
+                              left: contentPadding,
+                              right: contentPadding,
+                              bottom: contentPadding,
+                              border: 'none',
+                              borderRadius: 8,
+                              padding: '8px 12px',
+                              background: globalProductCard.text,
+                              color: globalProductCard.background,
+                              fontFamily: fontBody,
+                              fontSize: 13,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                            }}
+                          >
+                            Add to cart
+                          </button>
+                        ) : null}
+                      </div>
+                    );
                   if (nestedId === 'product_title')
                     return (
                       <div
@@ -675,6 +742,7 @@ export function FeaturedCollectionSection({
     <>
       {scopedCss ? <style>{scopedCss}</style> : null}
       <style>{layoutCss}</style>
+      <style>{quickAddCss}</style>
       {headerResponsiveCss ? <style>{headerResponsiveCss}</style> : null}
       <EditorSection
         nodeId={editorNodeId}

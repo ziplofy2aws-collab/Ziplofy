@@ -4,11 +4,6 @@ export const editing: CreateThemeEditing = {
   "sectionLabel": "Blog posts: Carousel",
   "sectionSettingsOrder": [
     {
-      "key": "heading",
-      "label": "Heading",
-      "type": "text"
-    },
-    {
       "key": "blogHandle",
       "label": "Blog",
       "type": "text"
@@ -77,6 +72,11 @@ export const editing: CreateThemeEditing = {
       "key": "customCss",
       "label": "Custom CSS",
       "type": "textarea"
+    },
+    {
+      "key": "heading",
+      "label": "Heading",
+      "type": "text"
     }
   ],
   "blocks": [

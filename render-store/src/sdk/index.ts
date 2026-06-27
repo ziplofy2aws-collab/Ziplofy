@@ -3,6 +3,7 @@ export { useThemeConfig, getThemeConfigValue } from '@/contexts/theme-config.con
 export type { ThemeConfig } from '@/contexts/theme-config.context';
 export { useStorefrontAuth } from '@/contexts/storefront-auth.context';
 export { useStorefrontProducts } from '@/contexts/product.context';
+export { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
 export { useStorefrontCollections } from '@/contexts/storefront-collections.context';
 export { useStorefrontPolicies } from '@/contexts/storefront-policies.context';
 export { useStorefrontCheckoutConfiguration } from '@/contexts/storefront-checkout-configuration.context';
@@ -31,6 +32,11 @@ export type {
 export type {
   StorefrontCollection,
 } from '@/contexts/storefront-collections.context';
+
+export type {
+  StorefrontBlog,
+  StorefrontBlogPost,
+} from '@/contexts/storefront-blogs.context';
 
 export type {
   StorefrontWrittenPolicies,

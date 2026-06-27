@@ -35,13 +35,14 @@ export function readHeroButtonStyle(
   settingsBase: string,
   fallbackVariant: 'primary' | 'secondary',
   colors: { primary: string; background: string; text: string; line: string },
-  options?: { onImageHero?: boolean; marqueeFilled?: boolean }
+  options?: { onImageHero?: boolean; marqueeFilled?: boolean; marqueeOnLight?: boolean }
 ): HeroButtonStyle {
   const variantKey = cfgString(config, `${settingsBase}.buttonStyle`, fallbackVariant);
   const variant = variantKey === 'primary' ? 'primary' : 'secondary';
   const isPrimary = variant === 'primary';
   const onImage = Boolean(options?.onImageHero);
   const marqueeFilled = Boolean(options?.marqueeFilled);
+  const marqueeOnLight = Boolean(options?.marqueeOnLight);
 
   const desktopMode = cfgString(config, `${settingsBase}.desktopWidth`, 'fit');
   const mobileMode = cfgString(config, `${settingsBase}.mobileWidth`, 'fit');
@@ -50,6 +51,21 @@ export function readHeroButtonStyle(
   const width = buttonWidthCss(desktopMode, desktopPercent);
   const mobileWidth = buttonWidthCss(mobileMode, mobilePercent);
   const openInNewTab = cfgBool(config, `${settingsBase}.openInNewTab`, false);
+
+  if (marqueeOnLight && isPrimary) {
+    return {
+      width,
+      mobileWidth,
+      padding: '12px 26px',
+      borderRadius: 9999,
+      fontSize: 14,
+      fontWeight: 500,
+      background: '#111827',
+      color: '#ffffff',
+      border: 'none',
+      openInNewTab,
+    };
+  }
 
   if (marqueeFilled && isPrimary) {
     return {

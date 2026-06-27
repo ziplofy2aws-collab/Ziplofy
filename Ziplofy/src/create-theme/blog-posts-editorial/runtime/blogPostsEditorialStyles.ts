@@ -16,6 +16,7 @@ const SCHEMES: Record<string, BlogPostsEditorialScheme> = {
 export type BlogPostsEditorialLayout = {
   scheme: BlogPostsEditorialScheme;
   heading: string;
+  blogHandle: string;
   postCount: number;
   carouselOnMobile: boolean;
   sectionWidth: 'page' | 'full';
@@ -35,6 +36,7 @@ export function readBlogPostsEditorialLayout(
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
     heading: cfgString(config, `${settingsBase}.heading`, 'Blog posts'),
+    blogHandle: cfgString(config, `${settingsBase}.blogHandle`, ''),
     postCount: cfgNumber(config, `${settingsBase}.postCount`, 3),
     carouselOnMobile: cfgBool(config, `${settingsBase}.carouselOnMobile`, false),
     sectionWidth: sectionWidth === 'full' ? 'full' : 'page',

@@ -35,6 +35,7 @@ type Props = {
   colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
   onPaletteChange: (colors: string[]) => void;
+  onResetToDefaults?: () => void;
   storeName?: string;
   onManageStoreName?: () => void;
   initialExpandedId?: string;
@@ -346,6 +347,7 @@ export function ThemeSettingsNav({
   colorPalette,
   onFieldChange,
   onPaletteChange,
+  onResetToDefaults,
   onManageStoreName,
   initialExpandedId,
 }: Props) {
@@ -359,6 +361,17 @@ export function ThemeSettingsNav({
 
   return (
     <nav className="pb-2" aria-label="Theme settings">
+      {onResetToDefaults ? (
+        <div className="border-b border-[#e1e1e1] px-3 py-3">
+          <button
+            type="button"
+            onClick={onResetToDefaults}
+            className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] font-medium text-gray-800 shadow-sm transition-colors hover:bg-gray-50"
+          >
+            Reset to defaults
+          </button>
+        </div>
+      ) : null}
       {THEME_SETTINGS_CATALOG.map((item) => {
         if (item.infoOnly) {
           return (

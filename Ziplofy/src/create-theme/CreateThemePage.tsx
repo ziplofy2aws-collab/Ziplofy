@@ -239,6 +239,7 @@ import {
   formValuesFromEditorConfig,
   loadCreatorThemeEditorPack,
   normalizeCreatorThemeConfig,
+  resetCreatorThemeGlobalSettings,
 } from '../utils/theme-editor-static-pack';
 import { setConfigAtPath } from '../utils/theme-editor-config.utils';
 import { ensureFeaturedProductSectionBlocks } from '../utils/featured-product-preset.util';
@@ -677,6 +678,12 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     return applyValuesToThemeConfig(defaultConfig, debouncedValuesForTree, editorSchema);
   }, [defaultConfig, debouncedValuesForTree, editorSchema, hasSections]);
 
+  const previewConfig = useMemo(() => {
+    if (!defaultConfig || !editorSchema) return defaultConfig ?? {};
+    if (!hasSections) return defaultConfig;
+    return applyValuesToThemeConfig(defaultConfig, values, editorSchema);
+  }, [defaultConfig, values, editorSchema, hasSections]);
+
   const sectionsTree = useMemo(() => {
     if (isCheckoutProfile) {
       if (checkoutPreviewPage === 'sign-in') {
@@ -788,8 +795,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   }, [activeTree, selectedNodeId, editorSchema]);
 
   const settingsNode = useMemo(
-    () => settingsNodeForSelection(selectedNode, activeTree, editorSchema),
-    [selectedNode, activeTree, editorSchema]
+    () => settingsNodeForSelection(selectedNode, activeTree, editorSchema, values, previewConfig),
+    [selectedNode, activeTree, editorSchema, values, previewConfig]
   );
 
   /** Sync heading block panel values (text mirror + style field seed from config). */
@@ -2125,6 +2132,25 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     [commitPreviewNow]
   );
 
+  const handleResetThemeSettingsToDefaults = useCallback(() => {
+    if (!defaultConfig || !editorSchema || !packDefaultRef.current) return;
+    const { config: resetConfig, values: resetValues } = resetCreatorThemeGlobalSettings(
+      defaultConfig,
+      packDefaultRef.current,
+      editorSchema
+    );
+    startTransition(() => {
+      setDefaultConfig(resetConfig);
+      setValues((prev) => {
+        const next = { ...prev, ...resetValues };
+        seedCommittedPreview(next);
+        return next;
+      });
+    });
+    commitPreviewNow();
+    toast.success('Theme settings reset to defaults');
+  }, [defaultConfig, editorSchema, seedCommittedPreview, commitPreviewNow]);
+
   const themeSettingsNav = useMemo(() => {
     if (isCheckoutProfile) return null;
     return (
@@ -2132,6 +2158,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         values={values}
         colorPalette={themeColorPalette}
         onPaletteChange={handleThemePaletteChange}
+        onResetToDefaults={handleResetThemeSettingsToDefaults}
         onFieldChange={(path, type, raw) => {
           handleFieldChange(path, type, raw);
           if (path === THEME_LOGO_DEFAULT_PATH && type === 'text') {
@@ -2214,6 +2241,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     values,
     themeColorPalette,
     handleThemePaletteChange,
+    handleResetThemeSettingsToDefaults,
     handleFieldChange,
     navigate,
     commitPreviewNow,
@@ -2466,6 +2494,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           checkoutThemeSettingsNav={checkoutThemeSettingsNav ?? undefined}
           themeSettingsNav={themeSettingsNav ?? undefined}
           settingsValues={values}
+          themeConfig={previewConfig}
           onSettingsFieldChange={isCheckoutProfile ? undefined : handleFieldChange}
           onCollectionLinksApply={handleCollectionLinksApply}
           onStoreMenuSelect={handleStoreMenuSelect}

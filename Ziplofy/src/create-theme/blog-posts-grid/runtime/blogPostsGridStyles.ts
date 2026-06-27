@@ -16,6 +16,7 @@ const SCHEMES: Record<string, BlogPostsGridScheme> = {
 export type BlogPostsGridLayout = {
   scheme: BlogPostsGridScheme;
   heading: string;
+  blogHandle: string;
   postCount: number;
   columns: number;
   mobileColumns: 1 | 2;
@@ -40,6 +41,7 @@ export function readBlogPostsGridLayout(
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
     heading: cfgString(config, `${settingsBase}.heading`, 'Blog posts'),
+    blogHandle: cfgString(config, `${settingsBase}.blogHandle`, ''),
     postCount: cfgNumber(config, `${settingsBase}.postCount`, 3),
     columns: cfgNumber(config, `${settingsBase}.columns`, 3),
     mobileColumns: mobile === '1' ? 1 : 2,

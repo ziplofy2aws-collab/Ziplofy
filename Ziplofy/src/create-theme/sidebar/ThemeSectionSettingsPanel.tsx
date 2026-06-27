@@ -95,6 +95,10 @@ import {
   PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER,
   groupProductHighlightPanelFields,
   isProductHighlightSettingsPanelFields,
+  productHighlightSettingsBaseFromNodeId,
+  productHighlightVariantLabel,
+  readProductHighlightSettingValue,
+  resolveProductHighlightVariant,
 } from './theme-editor-product-highlight-panel.utils';
 import {
   FEATURED_PRODUCT_PANEL_GROUP_ORDER,
@@ -386,11 +390,17 @@ import {
 } from './theme-editor-collection-list-card-title-panel.utils';
 import {
   FEATURED_COLLECTION_PANEL_GROUP_ORDER,
+  featuredCollectionSettingsBaseFromNodeId,
   groupFeaturedCollectionPanelFields,
   isFeaturedCollectionCarouselSettingsPanelFields,
   isFeaturedCollectionEditorialSettingsPanelFields,
   isFeaturedCollectionGridSettingsPanelFields,
+  isFeaturedCollectionPanelField,
+  isFeaturedCollectionSectionNodeId,
   filterFeaturedCollectionPanelFieldsForVariant,
+  readFeaturedCollectionSettingValue,
+  resolveFeaturedCollectionLabel,
+  resolveFeaturedCollectionVariant,
 } from './theme-editor-featured-collection-panel.utils';
 import {
   ANNOUNCEMENT_PANEL_GROUP_ORDER,
@@ -9990,6 +10000,7 @@ function GroupedSettingsFields({
 type ThemeSectionSettingsPanelProps = {
   node: SidebarNode;
   values: Record<string, string | boolean>;
+  themeConfig?: Record<string, unknown> | null;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
   onCollectionLinksApply?: (settingsPath: string, collections: Collection[]) => void;
   onStoreMenuSelect?: (
@@ -10005,6 +10016,7 @@ type ThemeSectionSettingsPanelProps = {
 const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> = ({
   node,
   values,
+  themeConfig = null,
   onFieldChange,
   onCollectionLinksApply,
   onStoreMenuSelect,
@@ -10065,8 +10077,33 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isImageCompareSettingsPanelFields(fields) &&
     node.kind !== 'block' &&
     (node.label === 'Custom section' || isCustomSectionSettingsPanelFields(fields));
+  const productHighlightSettingsBase = productHighlightSettingsBaseFromNodeId(node.id);
+  const productHighlightCatalogVariant = productHighlightSettingsBase
+    ? readProductHighlightSettingValue(
+        values,
+        themeConfig,
+        productHighlightSettingsBase,
+        'catalogVariant'
+      )
+    : '';
+  const productHighlightVariant = productHighlightSettingsBase
+    ? resolveProductHighlightVariant({
+        label: node.label,
+        catalogVariant: productHighlightCatalogVariant,
+        fields,
+      })
+    : null;
+  const productHighlightHeaderLabel =
+    productHighlightVariant != null
+      ? productHighlightVariantLabel(productHighlightVariant)
+      : null;
   const isFeaturedProductPanel =
-    node.label === 'Featured product' || isFeaturedProductSettingsPanelFields(fields);
+    productHighlightVariant === 'featured-product' ||
+    (productHighlightVariant == null &&
+      node.label !== 'Recommended products' &&
+      node.label !== 'Product hotspots' &&
+      !isRecommendedProductsSettingsPanelFields(fields) &&
+      (node.label === 'Featured product' || isFeaturedProductSettingsPanelFields(fields)));
   const isFeaturedProductMediaBlockPanel =
     node.label === 'Product media' ||
     isFeaturedProductMediaBlockNodeId(node.id) ||
@@ -10110,19 +10147,20 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.label === 'Accelerated checkout' ||
     isFeaturedProductAcceleratedCheckoutNestedNodeId(node.id);
   const isProductHighlightPanel =
-    !isFeaturedProductPanel &&
-    !isFeaturedProductMediaBlockPanel &&
-    !isFeaturedProductDetailsBlockPanel &&
-    !isFeaturedProductHeaderBlockPanel &&
-    !isFeaturedProductHeaderTitleBlockPanel &&
-    !isFeaturedProductHeaderPriceBlockPanel &&
-    !isFeaturedProductReviewStarsBlockPanel &&
-    !isFeaturedProductVariantPickerBlockPanel &&
-    !isFeaturedProductBuyButtonsBlockPanel &&
-    !isFeaturedProductAddToCartBlockPanel &&
-    !isFeaturedProductQuantityBlockPanel &&
-    !isFeaturedProductAcceleratedCheckoutBlockPanel &&
-    (node.label === 'Product highlight' || isProductHighlightSettingsPanelFields(fields));
+    productHighlightVariant === 'product-highlight' ||
+    (!isFeaturedProductPanel &&
+      !isFeaturedProductMediaBlockPanel &&
+      !isFeaturedProductDetailsBlockPanel &&
+      !isFeaturedProductHeaderBlockPanel &&
+      !isFeaturedProductHeaderTitleBlockPanel &&
+      !isFeaturedProductHeaderPriceBlockPanel &&
+      !isFeaturedProductReviewStarsBlockPanel &&
+      !isFeaturedProductVariantPickerBlockPanel &&
+      !isFeaturedProductBuyButtonsBlockPanel &&
+      !isFeaturedProductAddToCartBlockPanel &&
+      !isFeaturedProductQuantityBlockPanel &&
+      !isFeaturedProductAcceleratedCheckoutBlockPanel &&
+      (node.label === 'Product highlight' || isProductHighlightSettingsPanelFields(fields)));
   const isEditorialPanel = node.label === 'Editorial' || isEditorialSettingsPanelFields(fields);
   const isEditorialJumboPanel =
     node.label === 'Editorial: Jumbo text' || isEditorialJumboSettingsPanelFields(fields);
@@ -10222,17 +10260,49 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       (fields.length > 0 && fields.every(isRichTextBlockField)));
   const isTextMarqueePanel =
     node.label === 'Marquee' || isTextMarqueeSettingsPanelFields(fields);
+  const isFeaturedCollectionSectionPanel =
+    isFeaturedCollectionSectionNodeId(node.id) ||
+    fields.some(isFeaturedCollectionPanelField) ||
+    (node.label?.startsWith('Featured collection') ?? false);
+  const featuredCollectionSettingsBase = featuredCollectionSettingsBaseFromNodeId(node.id);
+  const featuredCollectionLayoutType = featuredCollectionSettingsBase
+    ? readFeaturedCollectionSettingValue(
+        values,
+        themeConfig,
+        featuredCollectionSettingsBase,
+        'layoutType'
+      )
+    : '';
+  const featuredCollectionCatalogVariant = featuredCollectionSettingsBase
+    ? readFeaturedCollectionSettingValue(
+        values,
+        themeConfig,
+        featuredCollectionSettingsBase,
+        'catalogVariant'
+      )
+    : '';
+  const featuredCollectionVariant = isFeaturedCollectionSectionPanel
+    ? resolveFeaturedCollectionVariant({
+        label: node.label,
+        layoutType: featuredCollectionLayoutType,
+        catalogVariant: featuredCollectionCatalogVariant,
+        fields,
+      })
+    : 'default';
+  const featuredCollectionHeaderLabel = isFeaturedCollectionSectionPanel
+    ? resolveFeaturedCollectionLabel({
+        label: node.label,
+        layoutType: featuredCollectionLayoutType,
+        catalogVariant: featuredCollectionCatalogVariant,
+        fields,
+      })
+    : null;
   const isFeaturedCollectionGridPanel =
-    node.label === 'Featured collection: Grid' || isFeaturedCollectionGridSettingsPanelFields(fields);
+    isFeaturedCollectionSectionPanel && featuredCollectionVariant === 'grid';
   const isFeaturedCollectionEditorialPanel =
-    !isFeaturedCollectionGridPanel &&
-    (node.label === 'Featured collection: Editorial' ||
-      isFeaturedCollectionEditorialSettingsPanelFields(fields));
+    isFeaturedCollectionSectionPanel && featuredCollectionVariant === 'editorial';
   const isFeaturedCollectionCarouselPanel =
-    !isFeaturedCollectionGridPanel &&
-    !isFeaturedCollectionEditorialPanel &&
-    (node.label === 'Featured collection: Carousel' ||
-      isFeaturedCollectionCarouselSettingsPanelFields(fields));
+    isFeaturedCollectionSectionPanel && featuredCollectionVariant === 'carousel';
   const isBlogPostsCarouselPanel =
     node.label === 'Blog posts: Carousel' || isBlogPostsCarouselSettingsPanelFields(fields);
   const isBlogPostsEditorialPanel =
@@ -10440,7 +10510,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           ) : (
             <SectionIcon className="h-4 w-4 shrink-0 opacity-90" />
           )}
-          <span className="truncate text-[13px] font-semibold">{node.label}</span>
+          <span className="truncate text-[13px] font-semibold">
+            {productHighlightHeaderLabel ?? featuredCollectionHeaderLabel ?? node.label}
+          </span>
         </div>
         <button
           type="button"

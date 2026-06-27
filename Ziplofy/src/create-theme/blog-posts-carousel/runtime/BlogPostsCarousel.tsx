@@ -1,7 +1,17 @@
-import { useMemo, useRef, type CSSProperties } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import {
+  useThemeConfig,
+  useStorefront,
+  useStorefrontBlogs,
+  type StorefrontBlogPost,
+} from '@render-store/sdk';
 import { BlogPostIllustration } from '../../blog-posts-grid/runtime/BlogPostIllustration';
-import { readBlogPostCards, type BlogPostCardData } from '../../blog-posts-grid/runtime/blogPostCards';
+import {
+  mapBlogPostsToCards,
+  readBlogPostCards,
+  type BlogPostCardData,
+} from '../../blog-posts-grid/runtime/blogPostCards';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
@@ -54,9 +64,17 @@ type CardProps = {
   blockBase: string;
   scheme: { color: string; muted: string };
   cardStyle: CSSProperties;
+  editable: boolean;
 };
 
-function BlogPostCarouselCard({ card, blockNodeId, blockBase, scheme, cardStyle }: CardProps) {
+function BlogPostCarouselCard({
+  card,
+  blockNodeId,
+  blockBase,
+  scheme,
+  cardStyle,
+  editable,
+}: CardProps) {
   const imageBox: CSSProperties = {
     aspectRatio: '4 / 3',
     borderRadius: 8,
@@ -89,6 +107,48 @@ function BlogPostCarouselCard({ card, blockNodeId, blockBase, scheme, cardStyle 
     color: scheme.color,
   };
 
+  const image = card.imageUrl ? (
+    <img
+      src={card.imageUrl}
+      alt=""
+      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+    />
+  ) : (
+    <BlogPostIllustration variant={card.illustrationVariant} />
+  );
+
+  if (!editable) {
+    return (
+      <article
+        data-blog-card
+        data-ziplofy-node={blockNodeId}
+        data-ziplofy-label={card.title || 'Blog post'}
+        data-ziplofy-kind="block"
+        style={cardStyle}
+      >
+        <div style={imageBox}>{image}</div>
+        <h3 style={titleStyle}>{card.title}</h3>
+        <p style={metaStyle}>
+          {card.date}
+          {card.date && card.author ? ' | ' : ''}
+          {card.author}
+        </p>
+        {card.excerpt ? (
+          <ThemeEditorRichTextContent
+            html={card.excerpt}
+            style={{
+              ...excerptStyle,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          />
+        ) : null}
+      </article>
+    );
+  }
+
   return (
     <article
       data-blog-card
@@ -99,15 +159,7 @@ function BlogPostCarouselCard({ card, blockNodeId, blockBase, scheme, cardStyle 
     >
       <div style={imageBox}>
         <EditorField fieldPath={`${blockBase}.imageUrl`} label="Image" as="span">
-          {card.imageUrl ? (
-            <img
-              src={card.imageUrl}
-              alt=""
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          ) : (
-            <BlogPostIllustration variant={card.illustrationVariant} />
-          )}
+          {image}
         </EditorField>
       </div>
       <EditorField fieldPath={`${blockBase}.title`} label="Title" as="h3" style={titleStyle}>
@@ -137,7 +189,10 @@ export function BlogPostsCarousel({
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
+  const { fetchVisiblePostsByBlogUrlHandle } = useStorefrontBlogs();
   const trackRef = useRef<HTMLDivElement>(null);
+  const [livePosts, setLivePosts] = useState<StorefrontBlogPost[]>([]);
 
   const settingsBase =
     placement === 'template'
@@ -154,10 +209,39 @@ export function BlogPostsCarousel({
     [config, settingsBase]
   );
 
-  const cards = useMemo(
+  const placeholderCards = useMemo(
     () => readBlogPostCards(config, templateId, sectionId, placement, style.postCount),
     [config, templateId, sectionId, placement, style.postCount]
   );
+
+  const storeId = storeFrontMeta?.storeId ?? '';
+  const blogHandle = style.blogHandle;
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!storeId || !blogHandle) {
+      setLivePosts([]);
+      return;
+    }
+    fetchVisiblePostsByBlogUrlHandle(storeId, blogHandle, { page: 1, limit: 12 })
+      .then((posts: StorefrontBlogPost[]) => {
+        if (!cancelled) setLivePosts(posts);
+      })
+      .catch(() => {
+        if (!cancelled) setLivePosts([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [storeId, blogHandle, fetchVisiblePostsByBlogUrlHandle]);
+
+  const liveCards = useMemo(
+    () => mapBlogPostsToCards(livePosts, style.postCount),
+    [livePosts, style.postCount]
+  );
+
+  const usingLive = liveCards.length > 0;
+  const cards = usingLive ? liveCards : placeholderCards;
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
@@ -174,6 +258,7 @@ export function BlogPostsCarousel({
   };
 
   const showNav = style.navIcon !== 'none' && cards.length > style.columns;
+  const navShape: 'arrows' | 'chevron' = style.navIcon === 'chevron' ? 'chevron' : 'arrows';
 
   const shell: CSSProperties = {
     position: 'relative',
@@ -272,7 +357,7 @@ export function BlogPostsCarousel({
                 label="Previous"
                 onClick={() => scrollByPage(-1)}
                 background={style.navIconBackground}
-                shape={style.navIcon}
+                shape={navShape}
               />
             ) : null}
 
@@ -285,6 +370,7 @@ export function BlogPostsCarousel({
                   blockBase={blockBaseFor(card.id)}
                   scheme={style.scheme}
                   cardStyle={cardStyle}
+                  editable={!usingLive}
                 />
               ))}
             </div>
@@ -294,7 +380,7 @@ export function BlogPostsCarousel({
                 label="Next"
                 onClick={() => scrollByPage(1)}
                 background={style.navIconBackground}
-                shape={style.navIcon}
+                shape={navShape}
               />
             ) : null}
           </div>

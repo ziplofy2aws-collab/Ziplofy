@@ -1,10 +1,16 @@
-import { useMemo, type CSSProperties } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import {
+  useThemeConfig,
+  useStorefront,
+  useStorefrontBlogs,
+  type StorefrontBlogPost,
+} from '@render-store/sdk';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { BlogPostIllustration } from './BlogPostIllustration';
-import { readBlogPostCards, type BlogPostCardData } from './blogPostCards';
+import { mapBlogPostsToCards, readBlogPostCards, type BlogPostCardData } from './blogPostCards';
 import { readBlogPostsGridLayout, scopedBlogPostsGridCss } from './blogPostsGridStyles';
 
 type CardProps = {
@@ -13,9 +19,10 @@ type CardProps = {
   blockBase: string;
   scheme: { color: string; muted: string };
   fontBody: string;
+  editable: boolean;
 };
 
-function BlogPostCardView({ card, blockNodeId, blockBase, scheme, fontBody }: CardProps) {
+function BlogPostCardView({ card, blockNodeId, blockBase, scheme, fontBody, editable }: CardProps) {
   const imageBox: CSSProperties = {
     aspectRatio: '4 / 3',
     borderRadius: 8,
@@ -51,6 +58,47 @@ function BlogPostCardView({ card, blockNodeId, blockBase, scheme, fontBody }: Ca
     color: scheme.color,
   };
 
+  const image = card.imageUrl ? (
+    <img
+      src={card.imageUrl}
+      alt=""
+      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+    />
+  ) : (
+    <BlogPostIllustration variant={card.illustrationVariant} />
+  );
+
+  if (!editable) {
+    return (
+      <article
+        data-blog-card
+        data-ziplofy-node={blockNodeId}
+        data-ziplofy-label={card.title || 'Blog post'}
+        data-ziplofy-kind="block"
+      >
+        <div style={imageBox}>{image}</div>
+        <h3 style={titleStyle}>{card.title}</h3>
+        <p style={metaStyle}>
+          {card.date}
+          {card.date && card.author ? ' | ' : ''}
+          {card.author}
+        </p>
+        {card.excerpt ? (
+          <ThemeEditorRichTextContent
+            html={card.excerpt}
+            style={{
+              ...excerptStyle,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          />
+        ) : null}
+      </article>
+    );
+  }
+
   return (
     <article
       data-blog-card
@@ -60,15 +108,7 @@ function BlogPostCardView({ card, blockNodeId, blockBase, scheme, fontBody }: Ca
     >
       <div style={imageBox}>
         <EditorField fieldPath={`${blockBase}.imageUrl`} label="Image" as="span">
-          {card.imageUrl ? (
-            <img
-              src={card.imageUrl}
-              alt=""
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-          ) : (
-            <BlogPostIllustration variant={card.illustrationVariant} />
-          )}
+          {image}
         </EditorField>
       </div>
       <EditorField fieldPath={`${blockBase}.title`} label="Title" as="h3" style={titleStyle}>
@@ -98,6 +138,9 @@ export function BlogPostsGrid({
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
+  const { fetchVisiblePostsByBlogUrlHandle } = useStorefrontBlogs();
+  const [livePosts, setLivePosts] = useState<StorefrontBlogPost[]>([]);
 
   const settingsBase =
     placement === 'template'
@@ -111,10 +154,39 @@ export function BlogPostsGrid({
 
   const style = useMemo(() => readBlogPostsGridLayout(config, settingsBase), [config, settingsBase]);
 
-  const cards = useMemo(
+  const placeholderCards = useMemo(
     () => readBlogPostCards(config, templateId, sectionId, placement, style.postCount),
     [config, templateId, sectionId, placement, style.postCount]
   );
+
+  const storeId = storeFrontMeta?.storeId ?? '';
+  const blogHandle = style.blogHandle;
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!storeId || !blogHandle) {
+      setLivePosts([]);
+      return;
+    }
+    fetchVisiblePostsByBlogUrlHandle(storeId, blogHandle, { page: 1, limit: 12 })
+      .then((posts: StorefrontBlogPost[]) => {
+        if (!cancelled) setLivePosts(posts);
+      })
+      .catch(() => {
+        if (!cancelled) setLivePosts([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [storeId, blogHandle, fetchVisiblePostsByBlogUrlHandle]);
+
+  const liveCards = useMemo(
+    () => mapBlogPostsToCards(livePosts, style.postCount),
+    [livePosts, style.postCount]
+  );
+
+  const usingLive = liveCards.length > 0;
+  const cards = usingLive ? liveCards : placeholderCards;
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
@@ -220,6 +292,7 @@ export function BlogPostsGrid({
                 blockBase={blockBaseFor(card.id)}
                 scheme={style.scheme}
                 fontBody={fontBody}
+                editable={!usingLive}
               />
             ))}
           </div>
@@ -237,6 +310,7 @@ export function BlogPostsGrid({
                     blockBase={blockBaseFor(card.id)}
                     scheme={style.scheme}
                     fontBody={fontBody}
+                    editable={!usingLive}
                   />
                 </div>
               ))}

@@ -11,6 +11,7 @@ import type { EditorSchemaDoc } from '../components/themes/theme-editor-sidebar/
 import {
   collectEditableFieldPaths,
   flattenSchemaFieldPaths,
+  setConfigAtPath,
 } from './theme-editor-config.utils';
 import {
   mergeTemplateSectionBlueprintsFromPack,
@@ -50,6 +51,7 @@ import {
   ensureThemeCartDefaults,
   seedThemeCartValues,
   withThemeCartSchema,
+  applyThemeCartToHeaderConfig,
 } from '../create-theme/settings/theme-cart.settings';
 import {
   ensureThemeDrawersDefaults,
@@ -110,7 +112,13 @@ import {
   ensureThemeTypographyDefaults,
   seedThemeTypographyValues,
   withThemeTypographySchema,
+  syncThemeTypographyFontFields,
+  THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH,
 } from '../create-theme/settings/theme-typography.settings';
+import { THEME_LOGO_DEFAULT_PATH } from '../create-theme/settings/theme-logo-favicon.settings';
 
 const PACK_MODULES: Record<
   string,
@@ -482,6 +490,99 @@ export function creatorGlobalSettingsValues(
     }
   }
   return values;
+}
+
+/** Seed form values for all global theme settings groups from config. */
+export function seedAllCreatorGlobalSettingsValues(
+  schema: EditorSchemaDoc,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  return seedThemeVariantPickersValues(
+    seedThemeSwatchesValues(
+      seedThemeSearchValues(
+        seedThemeProductCardsValues(
+          seedThemePricesValues(
+            seedThemePopoversModalsValues(
+              seedThemeInputFieldsValues(
+                seedThemeIconsValues(
+                  seedThemeProductMediaValues(
+                    seedThemeDrawersValues(
+                      seedThemeCartValues(
+                        seedThemeButtonsValues(
+                          seedThemeBadgesValues(
+                            seedThemeAnimationsValues(
+                              seedThemePageValues(
+                                seedThemeTypographyValues(
+                                  seedThemePaletteValues(
+                                    creatorGlobalSettingsValues(schema, config),
+                                    config
+                                  ),
+                                  config
+                                ),
+                                config
+                              ),
+                              config
+                            ),
+                            config
+                          ),
+                          config
+                        ),
+                        config
+                      ),
+                      config
+                    ),
+                    config
+                  ),
+                  config
+                ),
+                config
+              ),
+              config
+            ),
+            config
+          ),
+          config
+        ),
+        config
+      ),
+      config
+    ),
+    config
+  );
+}
+
+/** Reset global theme settings to pack defaults while preserving sections and templates. */
+export function resetCreatorThemeGlobalSettings(
+  config: Record<string, unknown>,
+  packDefault: Record<string, unknown>,
+  schema: EditorSchemaDoc
+): { config: Record<string, unknown>; values: Record<string, string | boolean> } {
+  const next = JSON.parse(JSON.stringify(config)) as Record<string, unknown>;
+  const settingsDraft = {
+    settings: JSON.parse(JSON.stringify(packDefault.settings ?? {})),
+  } as Record<string, unknown>;
+  normalizeCreatorThemeConfig(settingsDraft);
+  next.settings = settingsDraft.settings;
+  normalizeCreatorThemeConfig(next);
+  applyThemeCartToHeaderConfig(next);
+
+  let values = seedAllCreatorGlobalSettingsValues(schema, next);
+  values = {
+    ...values,
+    ...syncThemeTypographyFontFields({
+      body: values[THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH],
+      subheading: values[THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH],
+      heading: values[THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH],
+      accent: values[THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH],
+    }),
+  };
+
+  const logoUrl = values[THEME_LOGO_DEFAULT_PATH];
+  if (typeof logoUrl === 'string') {
+    setConfigAtPath(next, 'sections.header.settings.defaultLogoUrl', logoUrl);
+  }
+
+  return { config: next, values };
 }
 
 /** Blank page structure for Theme Creator — keeps global settings, no header/template/footer sections. */

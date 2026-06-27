@@ -128,6 +128,10 @@ import {
   isProductHighlightSectionType,
   isProductHighlightSettingsPanelFields,
   prepareProductHighlightSettingsNode,
+  productHighlightSettingsBaseFromNodeId,
+  productHighlightSidebarLabel,
+  readProductHighlightSettingValue,
+  resolveProductHighlightVariant,
 } from './theme-editor-product-highlight-panel.utils';
 import {
   isFeaturedProductSectionType,
@@ -301,6 +305,7 @@ import {
 import {
   isBlogPostsCarouselSectionType,
   isBlogPostsCarouselSettingsPanelFields,
+  isBlogPostsCarouselSectionNodeId,
   prepareBlogPostsCarouselSettingsNode,
 } from './theme-editor-blog-posts-carousel-panel.utils';
 import {
@@ -309,6 +314,7 @@ import {
   prepareBlogPostsEditorialSettingsNode,
 } from './theme-editor-blog-posts-editorial-panel.utils';
 import {
+  isBlogPostsGridSectionNodeId,
   isBlogPostsGridSectionType,
   isBlogPostsGridSettingsPanelFields,
   prepareBlogPostsGridSettingsNode,
@@ -458,6 +464,8 @@ import {
   isFeaturedCollectionGroupedPanelSectionType,
   isFeaturedCollectionSectionNodeId,
   prepareFeaturedCollectionSettingsNode,
+  readFeaturedCollectionCatalogVariant,
+  readFeaturedCollectionLayoutType,
 } from './theme-editor-featured-collection-panel.utils';
 import {
   findHeroSectionInTree,
@@ -1306,6 +1314,56 @@ function mapBlockNodes(
   return reorderSidebarChildren([...blockNodes, addBlock], blocksListKey, itemOrder);
 }
 
+function mapProductHotspotsBlockNodes(
+  prefix: string,
+  settingsBase: string,
+  blocksBase: string,
+  values: Record<string, string | boolean>,
+  config: Record<string, unknown> | null,
+  blockOrderPath: string[]
+): SidebarNode[] {
+  const headingField: EditorFieldDef = {
+    path: `${settingsBase}.heading`,
+    type: 'text',
+    label: 'Heading',
+  };
+  const headingNode: SidebarNode = {
+    id: `field:${headingField.path}`,
+    label: headingField.label,
+    kind: 'field',
+    icon: 'text' as const,
+    fields: [headingField],
+    preview: fieldPreview(headingField, values),
+  };
+  const addBlock: SidebarNode = { id: `${prefix}:add-block`, label: 'Add block', kind: 'add-block' };
+  const order = readConfigBlockOrder(config, blockOrderPath) ?? [];
+  const blocksObject = readConfigAtPath(config, blockOrderPath.slice(0, -1));
+  const blocksRecord =
+    blocksObject && typeof blocksObject === 'object' && !Array.isArray(blocksObject)
+      ? (blocksObject as Record<string, unknown>)
+      : {};
+  const ids = order.length ? order : Object.keys(blocksRecord);
+  const hotspotNodes: SidebarNode[] = ids.map((blockId) => {
+    const blockBase = `${blocksBase}.${blockId}.settings`;
+    return {
+      id: `${prefix}:block:${blockId}`,
+      label: 'Hotspot',
+      kind: 'block' as const,
+      icon: 'section',
+      fields: [
+        { path: `${blockBase}.productTitle`, type: 'text', label: 'Product title' },
+        { path: `${blockBase}.price`, type: 'text', label: 'Price' },
+        { path: `${blockBase}.positionX`, type: 'number', label: 'Horizontal position' },
+        { path: `${blockBase}.positionY`, type: 'number', label: 'Vertical position' },
+      ],
+      showVisibilityToggle: true,
+      showDeleteButton: true,
+    };
+  });
+
+  return [headingNode, addBlock, ...hotspotNodes];
+}
+
 function layoutCatalogVariantFromValues(
   values: Record<string, string | boolean>,
   instanceId: string
@@ -1346,6 +1404,7 @@ function layoutSectionNode(
   const isContactFormLayout = layoutBlueprintKey(instanceId) === 'contact_form';
   const isEmailSignupLayout = layoutBlueprintKey(instanceId) === 'email_signup';
   const layoutCatalogVariant = layoutCatalogVariantFromValues(values, instanceId);
+  const isProductHotspotsLayout = isProductHotspotsSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListBentoLayout = isCollectionListBentoSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListCarouselLayout = isCollectionListCarouselSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListEditorialLayout = isCollectionListEditorialSectionType(sec.type, layoutCatalogVariant);
@@ -1383,6 +1442,7 @@ function layoutSectionNode(
     isTextMarqueeLayout ||
     isContactFormLayout ||
     isEmailSignupLayout ||
+    isProductHotspotsLayout ||
     isCollectionListBentoLayout ||
     isCollectionListCarouselLayout ||
     isCollectionListEditorialLayout ||
@@ -1461,6 +1521,15 @@ function layoutSectionNode(
     blockNodes = mapEmailSignupBlockNodes(id, values, itemOrder, layoutChildrenKey);
   } else if (isImageCompareLayout) {
     blockNodes = mapImageCompareBlockNodes(id, values, itemOrder, layoutChildrenKey);
+  } else if (isProductHotspotsLayout) {
+    blockNodes = mapProductHotspotsBlockNodes(
+      id,
+      `sections.${instanceId}.settings`,
+      `sections.${instanceId}.blocks`,
+      values,
+      config,
+      ['sections', instanceId, 'block_order']
+    );
   } else if (
     isCollectionListBentoLayout ||
     isCollectionListCarouselLayout ||
@@ -1530,6 +1599,7 @@ function layoutSectionNode(
       isStorytellingVideoLayout ||
       isContactFormLayout ||
       isEmailSignupLayout ||
+      isProductHotspotsLayout ||
       isImageCompareLayout ||
       isCollectionListBentoLayout ||
       isCollectionListCarouselLayout ||
@@ -1551,10 +1621,18 @@ function layoutSectionNode(
           ? 'Divider'
           : isHeader
             ? 'Header'
-            : isFeaturedProductSectionType(sec.type, productHighlightCatalogVariant)
-              ? 'Featured product'
-              : isProductHighlightLayout
-                ? 'Product highlight'
+            : isRecommendedProductsSectionType(sec.type, layoutCatalogVariant)
+              ? 'Recommended products'
+              : isProductHotspotsSectionType(sec.type, layoutCatalogVariant)
+                ? 'Product hotspots'
+                : isFeaturedProductSectionType(sec.type, productHighlightCatalogVariant)
+                  ? 'Featured product'
+              : isProductHighlightLayout ||
+                  isProductHighlightSectionType(sec.type, productHighlightCatalogVariant)
+                ? productHighlightSidebarLabel(
+                    productHighlightCatalogVariant,
+                    'Product highlight'
+                  )
                 : isEditorialLayout
               ? 'Editorial'
               : isEditorialJumboLayout
@@ -1583,6 +1661,8 @@ function layoutSectionNode(
                                       ? 'Contact form'
                                     : isEmailSignupLayout
                                       ? 'Email signup'
+                                    : isProductHotspotsLayout
+                                      ? 'Product hotspots'
                                     : isCollectionListBentoLayout
                                       ? 'Collection list: Bento'
                                     : isCollectionListCarouselLayout
@@ -1694,6 +1774,12 @@ function sectionToNode(
   const blocksBase = `templates.${tplId}.sections.${secId}.blocks`;
   const catalogVariantEarly = readCatalogVariant(config, settingsBase);
   const isFeaturedCollection = sec.type === 'featured-collection';
+  const featuredCollectionLayoutType = isFeaturedCollection
+    ? readFeaturedCollectionLayoutType(config, settingsBase)
+    : '';
+  const featuredCollectionCatalogVariant = isFeaturedCollection
+    ? readFeaturedCollectionCatalogVariant(config, settingsBase)
+    : '';
   const isFeaturedCollectionGrouped = isFeaturedCollectionGroupedPanelSectionType(
     sec.type,
     catalogVariantEarly
@@ -1927,6 +2013,15 @@ function sectionToNode(
         ? mapEmailSignupBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isImageCompare
         ? mapImageCompareBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isProductHotspots
+        ? mapProductHotspotsBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.settings`,
+            `templates.${tplId}.sections.${secId}.blocks`,
+            values,
+            config,
+            ['templates', tplId, 'sections', secId, 'block_order']
+          )
       : isCollectionListBento ||
           isCollectionListCarousel ||
           isCollectionListEditorial ||
@@ -1963,6 +2058,7 @@ function sectionToNode(
       isContactForm ||
       isEmailSignup ||
       isImageCompare ||
+      isProductHotspots ||
       isCollectionLinksSpotlight ||
       isCollectionListBento ||
       isCollectionListCarousel ||
@@ -1989,10 +2085,14 @@ function sectionToNode(
             ? 'Custom section'
             : isDividerSectionType(sec.type, catalogVariant)
               ? 'Divider'
-              : isFeaturedProductSectionType(sec.type, catalogVariant)
-                ? 'Featured product'
-                : isProductHighlightSectionType(sec.type, catalogVariant)
-                  ? 'Product highlight'
+              : isRecommendedProductsSectionType(sec.type, catalogVariant)
+                ? 'Recommended products'
+                : isProductHotspotsSectionType(sec.type, catalogVariant)
+                  ? 'Product hotspots'
+                  : isFeaturedProductSectionType(sec.type, catalogVariant)
+                    ? 'Featured product'
+                    : isProductHighlightSectionType(sec.type, catalogVariant)
+                  ? productHighlightSidebarLabel(catalogVariant, 'Product highlight')
                   : isEditorialSectionType(sec.type, catalogVariant)
                   ? 'Editorial'
                   : isEditorialJumboSectionType(sec.type, catalogVariant)
@@ -2023,11 +2123,7 @@ function sectionToNode(
                                             ? 'Blog posts: Editorial'
                                             : isBlogPostsGridSectionType(sec.type, catalogVariant)
                                               ? 'Blog posts: Grid'
-                                              : isProductHotspotsSectionType(sec.type, catalogVariant)
-                                                ? 'Product hotspots'
-                                                : isRecommendedProductsSectionType(sec.type, catalogVariant)
-                                                  ? 'Recommended products'
-                                                  : isCollectionLinksSpotlightSectionType(
+                                              : isCollectionLinksSpotlightSectionType(
                                                         sec.type,
                                                         catalogVariant
                                                       )
@@ -2069,13 +2165,12 @@ function sectionToNode(
                                                           catalogVariant
                                                         )
                                                       ? 'Slideshow: Inset'
-                                                    : isFeaturedCollectionGroupedPanelSectionType(
-                                                    sec.type,
-                                                    catalogVariant
-                                                  )
+                                                    : isFeaturedCollection
                                                 ? featuredCollectionSidebarLabel(
-                                                    catalogVariant,
-                                                    sec.label ?? 'Featured collection'
+                                                    featuredCollectionCatalogVariant ||
+                                                      catalogVariantEarly,
+                                                    sec.label ?? 'Featured collection',
+                                                    featuredCollectionLayoutType
                                                   )
                                                 : sec.label ?? blueprintId,
     kind: 'section',
@@ -2426,10 +2521,54 @@ const SECTION_PANEL_BY_LABEL: Record<string, (node: SidebarNode) => SidebarNode>
   'Hero: Marquee': prepareHeroMarqueeSettingsNode,
 };
 
+function prepareSectionPanelNode(
+  node: SidebarNode,
+  values?: Record<string, unknown>,
+  config?: Record<string, unknown> | null
+): SidebarNode | null {
+  if (isFeaturedCollectionSectionNodeId(node.id)) {
+    return prepareFeaturedCollectionSettingsNode(node, values, config);
+  }
+  const productHighlightSettingsBase = productHighlightSettingsBaseFromNodeId(node.id);
+  if (productHighlightSettingsBase) {
+    const catalogVariant = readProductHighlightSettingValue(
+      values,
+      config,
+      productHighlightSettingsBase,
+      'catalogVariant'
+    );
+    const variant = resolveProductHighlightVariant({
+      label: node.label,
+      catalogVariant,
+      fields: node.fields,
+    });
+    if (variant === 'product-highlight') {
+      return prepareProductHighlightSettingsNode(node, values, config);
+    }
+    if (variant === 'featured-product') {
+      return prepareFeaturedProductSettingsNode(node, values, config);
+    }
+  }
+  const prepareByLabel = SECTION_PANEL_BY_LABEL[node.label ?? ''];
+  if (!prepareByLabel) return null;
+  if (prepareByLabel === prepareFeaturedCollectionSettingsNode) {
+    return prepareFeaturedCollectionSettingsNode(node, values, config);
+  }
+  if (prepareByLabel === prepareProductHighlightSettingsNode) {
+    return prepareProductHighlightSettingsNode(node, values, config);
+  }
+  if (prepareByLabel === prepareFeaturedProductSettingsNode) {
+    return prepareFeaturedProductSettingsNode(node, values, config);
+  }
+  return prepareByLabel(node);
+}
+
 export function settingsNodeForSelection(
   selectedNode: SidebarNode | null,
   tree: SidebarNode[] = [],
-  editorSchema?: EditorSchemaDoc | null
+  editorSchema?: EditorSchemaDoc | null,
+  values?: Record<string, unknown>,
+  config?: Record<string, unknown> | null
 ): SidebarNode | null {
   if (!selectedNode) return null;
   if (selectedNode.kind === 'add-block' || selectedNode.kind === 'add-section') return null;
@@ -2870,12 +3009,47 @@ export function settingsNodeForSelection(
     }
   }
 
-  if (node.fields?.length && isFeaturedProductSettingsPanelFields(node.fields)) {
-    return prepareFeaturedProductSettingsNode(node);
+  if (node.fields?.length) {
+    const productHighlightSettingsBase = productHighlightSettingsBaseFromNodeId(node.id);
+    if (productHighlightSettingsBase) {
+      const catalogVariant = readProductHighlightSettingValue(
+        values,
+        config,
+        productHighlightSettingsBase,
+        'catalogVariant'
+      );
+      const variant = resolveProductHighlightVariant({
+        label: node.label,
+        catalogVariant,
+        fields: node.fields,
+      });
+      if (variant === 'product-highlight') {
+        return prepareProductHighlightSettingsNode(node, values, config);
+      }
+      if (variant === 'featured-product') {
+        return prepareFeaturedProductSettingsNode(node, values, config);
+      }
+    }
+  }
+
+  if (node.fields?.length && isProductHotspotsSettingsPanelFields(node.fields)) {
+    return prepareProductHotspotsSettingsNode(node);
+  }
+  if (node.fields?.length && isRecommendedProductsSettingsPanelFields(node.fields)) {
+    return prepareRecommendedProductsSettingsNode(node);
+  }
+
+  if (
+    node.fields?.length &&
+    !isRecommendedProductsSettingsPanelFields(node.fields) &&
+    !isProductHotspotsSettingsPanelFields(node.fields) &&
+    isFeaturedProductSettingsPanelFields(node.fields)
+  ) {
+    return prepareFeaturedProductSettingsNode(node, values, config);
   }
 
   if (node.fields?.length && isProductHighlightSettingsPanelFields(node.fields)) {
-    return prepareProductHighlightSettingsNode(node);
+    return prepareProductHighlightSettingsNode(node, values, config);
   }
 
   if (node.fields?.length && isEditorialSettingsPanelFields(node.fields)) {
@@ -3014,6 +3188,12 @@ export function settingsNodeForSelection(
   if (node.fields?.length && isTextMarqueeSettingsPanelFields(node.fields)) {
     return prepareTextMarqueeSettingsNode(node);
   }
+  if (isBlogPostsCarouselSectionNodeId(node.id)) {
+    return prepareBlogPostsCarouselSettingsNode(node);
+  }
+  if (isBlogPostsGridSectionNodeId(node.id)) {
+    return prepareBlogPostsGridSettingsNode(node);
+  }
   if (node.fields?.length && isBlogPostsCarouselSettingsPanelFields(node.fields)) {
     return prepareBlogPostsCarouselSettingsNode(node);
   }
@@ -3022,12 +3202,6 @@ export function settingsNodeForSelection(
   }
   if (node.fields?.length && isBlogPostsGridSettingsPanelFields(node.fields)) {
     return prepareBlogPostsGridSettingsNode(node);
-  }
-  if (node.fields?.length && isProductHotspotsSettingsPanelFields(node.fields)) {
-    return prepareProductHotspotsSettingsNode(node);
-  }
-  if (node.fields?.length && isRecommendedProductsSettingsPanelFields(node.fields)) {
-    return prepareRecommendedProductsSettingsNode(node);
   }
   if (node.kind === 'field' && isCollectionLinkTitleFieldNodeId(node.id)) {
     let fields = editorSchema ? collectionLinkTitleFieldDefsFromSchema(editorSchema, node.id) : [];
@@ -3084,11 +3258,8 @@ export function settingsNodeForSelection(
       : findHeroSectionInTree(node.id, tree);
 
   if (node.kind === 'section' && node.fields?.length) {
-    const prepareByLabel = SECTION_PANEL_BY_LABEL[node.label ?? ''];
-    if (prepareByLabel) {
-      const prepared = prepareByLabel(node);
-      if (prepared.fields?.length) return prepared;
-    }
+    const prepared = prepareSectionPanelNode(node, values, config);
+    if (prepared?.fields?.length) return prepared;
     return node;
   }
   if (node.fields?.length) return node;
@@ -3109,11 +3280,8 @@ export function settingsNodeForSelection(
       fields = sectionSettingsFieldsFromSchema(editorSchema, node.id);
       if (fields.length) node = { ...node, fields };
     }
-    const prepareByLabel = SECTION_PANEL_BY_LABEL[node.label ?? ''];
-    if (prepareByLabel) {
-      const prepared = prepareByLabel(node);
-      if (prepared.fields?.length) return prepared;
-    }
+    const prepared = prepareSectionPanelNode(node, values, config);
+    if (prepared?.fields?.length) return prepared;
     const visible = fields.filter(
       (f) => f.sidebar !== false && isSectionSettingsFieldPath(f.path ?? '')
     );

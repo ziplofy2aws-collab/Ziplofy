@@ -1,5 +1,6 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
+import { isFeaturedProductSettingsPanelFields } from './theme-editor-featured-product-panel.utils';
 
 /** Shopify-style Product highlight settings sheet order. */
 export const PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER = [
@@ -30,6 +31,97 @@ function fieldSortKey(path: string): number {
 export function isProductHighlightSectionType(secType: string | undefined, catalogVariant: string): boolean {
   if (catalogVariant === 'featured-product') return false;
   return secType === 'product-highlight' || catalogVariant === 'product-highlight';
+}
+
+export function isProductHighlightSectionNodeId(nodeId: string): boolean {
+  return /^(?:template:[^:]+|layout):product_highlight(?:_\d+)?$/.test(nodeId);
+}
+
+export function productHighlightSettingsBaseFromNodeId(nodeId: string): string | null {
+  const templateMatch = nodeId.match(/^template:([^:]+):(product_highlight(?:_\d+)?)$/);
+  if (templateMatch) {
+    return `templates.${templateMatch[1]}.sections.${templateMatch[2]}.settings`;
+  }
+  const layoutMatch = nodeId.match(/^layout:(product_highlight(?:_\d+)?)$/);
+  if (layoutMatch) {
+    return `sections.${layoutMatch[1]}.settings`;
+  }
+  return null;
+}
+
+function readSettingString(
+  config: Record<string, unknown> | null | undefined,
+  settingsBase: string,
+  key: string
+): string {
+  if (!config) return '';
+  const parts = `${settingsBase}.${key}`.split('.');
+  let cur: unknown = config;
+  for (const p of parts) {
+    if (cur == null || typeof cur !== 'object') return '';
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return typeof cur === 'string' ? cur : '';
+}
+
+function readFlatValueString(
+  values: Record<string, unknown> | undefined,
+  path: string
+): string {
+  if (!values) return '';
+  const value = values[path];
+  if (typeof value === 'string') return value;
+  if (value == null) return '';
+  return String(value);
+}
+
+export function readProductHighlightSettingValue(
+  values: Record<string, unknown> | undefined,
+  config: Record<string, unknown> | null | undefined,
+  settingsBase: string,
+  key: 'catalogVariant'
+): string {
+  const flat = readFlatValueString(values, `${settingsBase}.${key}`);
+  if (flat) return flat;
+  return readSettingString(config, settingsBase, key);
+}
+
+export type ProductHighlightVariant = 'product-highlight' | 'featured-product';
+
+export function productHighlightVariantLabel(variant: ProductHighlightVariant): string {
+  return variant === 'featured-product' ? 'Featured product' : 'Product highlight';
+}
+
+export function resolveProductHighlightVariant(opts: {
+  label?: string;
+  catalogVariant?: string;
+  fields?: EditorFieldDef[];
+}): ProductHighlightVariant {
+  const label = opts.label ?? '';
+  if (label === 'Product highlight') return 'product-highlight';
+  if (label === 'Featured product') return 'featured-product';
+
+  const catalogVariant = opts.catalogVariant ?? '';
+  if (catalogVariant === 'featured-product') return 'featured-product';
+  if (catalogVariant === 'product-highlight') return 'product-highlight';
+
+  const fields = opts.fields ?? [];
+  const isHighlight = isProductHighlightSettingsPanelFields(fields);
+  const isFeatured = isFeaturedProductSettingsPanelFields(fields);
+  if (isHighlight && !isFeatured) return 'product-highlight';
+  if (isFeatured && !isHighlight) return 'featured-product';
+  if (isHighlight) return 'product-highlight';
+
+  return 'product-highlight';
+}
+
+export function productHighlightSidebarLabel(
+  catalogVariant: string,
+  fallback: string
+): string {
+  if (catalogVariant === 'featured-product') return 'Featured product';
+  if (catalogVariant === 'product-highlight') return 'Product highlight';
+  return fallback;
 }
 
 export function isProductHighlightPanelField(field: EditorFieldDef): boolean {
@@ -73,7 +165,11 @@ export function isProductHighlightSettingsPanelFields(fields: EditorFieldDef[]):
   return keys.has('productId') && keys.has('mediaPosition');
 }
 
-export function prepareProductHighlightSettingsNode(node: SidebarNode): SidebarNode {
+export function prepareProductHighlightSettingsNode(
+  node: SidebarNode,
+  values?: Record<string, unknown>,
+  config?: Record<string, unknown> | null
+): SidebarNode {
   const fields = sortProductHighlightPanelFields(
     filterSidebarSectionPanelFields(node.fields ?? [], isProductHighlightPanelField)
   );

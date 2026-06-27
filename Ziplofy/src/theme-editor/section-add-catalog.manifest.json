@@ -65,7 +65,6 @@
         "layout": {
           "label": "Layout",
           "itemIds": [
-            "custom-liquid",
             "custom-section",
             "divider"
           ]
@@ -142,7 +141,6 @@
         "layout": {
           "label": "Layout",
           "itemIds": [
-            "custom-liquid",
             "custom-section",
             "divider"
           ]

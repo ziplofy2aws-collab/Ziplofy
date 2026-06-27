@@ -22,6 +22,7 @@ function ProductHighlightDefault({
 }: SectionRuntimeProps) {
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
+  const { maxWidth } = useThemeLayout();
   const { storeFrontMeta } = useStorefront();
   const { products, fetchProductsByStoreId, fetchProductById, productDetail } = useStorefrontProducts();
 

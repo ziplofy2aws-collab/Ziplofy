@@ -97,10 +97,9 @@ export function applyHeroMarqueePreset(section: Record<string, unknown>, blocksP
   settings.marqueeText = HERO_MARQUEE_TEXT;
   settings.subtitle = HERO_MARQUEE_TEXT;
   settings.media1Type = 'image';
+  // Leave media empty by default so the landscape illustration backdrop renders.
   settings.media1ImageUrl =
-    typeof settings.media1ImageUrl === 'string' && settings.media1ImageUrl.trim()
-      ? settings.media1ImageUrl
-      : HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE;
+    typeof settings.media1ImageUrl === 'string' ? settings.media1ImageUrl : '';
   settings.direction = 'vertical';
   settings.layoutAlignment = 'center';
   settings.position = 'space-between';
@@ -181,9 +180,9 @@ export function applySplitShowcasePreset(section: Record<string, unknown>, block
   settings.title = 'New arrivals';
   settings.splitRightTitle = 'Bestsellers';
   settings.media1Type = 'image';
-  settings.media1ImageUrl = SPLIT_SHOWCASE_IMAGE_LEFT;
+  settings.media1ImageUrl = '';
   settings.media2Type = 'image';
-  settings.media2ImageUrl = SPLIT_SHOWCASE_IMAGE_RIGHT;
+  settings.media2ImageUrl = '';
   settings.direction = 'horizontal';
   settings.verticalOnMobile = true;
   settings.layoutAlignment = 'left';

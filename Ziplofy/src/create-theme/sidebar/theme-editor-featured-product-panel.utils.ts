@@ -29,9 +29,15 @@ function fieldSortKey(path: string): number {
 }
 
 export function isFeaturedProductSectionType(
-  _secType: string | undefined,
+  secType: string | undefined,
   catalogVariant: string
 ): boolean {
+  if (secType === 'recommended-products' || catalogVariant === 'recommended-products') {
+    return false;
+  }
+  if (secType === 'product-hotspots' || catalogVariant === 'product-hotspots') {
+    return false;
+  }
   return catalogVariant === 'featured-product';
 }
 
@@ -72,6 +78,9 @@ export function groupFeaturedProductPanelFields(
 export function isFeaturedProductSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  if (keys.has('recommendationType') || keys.has('cardStyle') || keys.has('hotspotColor')) {
+    return false;
+  }
   return (
     keys.has('productId') &&
     (keys.has('sectionWidth') || keys.has('equalColumns') || keys.has('layoutGap'))
@@ -94,7 +103,11 @@ export function sortFeaturedProductPanelFields(fields: EditorFieldDef[]): Editor
   });
 }
 
-export function prepareFeaturedProductSettingsNode(node: SidebarNode): SidebarNode {
+export function prepareFeaturedProductSettingsNode(
+  node: SidebarNode,
+  _values?: Record<string, unknown>,
+  _config?: Record<string, unknown> | null
+): SidebarNode {
   const fields = sortFeaturedProductPanelFields(
     filterSidebarSectionPanelFields(node.fields ?? [], isFeaturedProductPanelField).map((f) => {
       const key = f.path.split('.').pop() ?? '';

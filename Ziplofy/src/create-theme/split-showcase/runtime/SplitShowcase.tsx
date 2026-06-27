@@ -4,13 +4,10 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { useThemeColors } from '../../runtime/shared/tokens';
-import {
-  SPLIT_SHOWCASE_IMAGE_LEFT,
-  SPLIT_SHOWCASE_IMAGE_RIGHT,
-} from '../../../utils/hero-banner-variants.util';
 import { readHeroHeadingText } from '../../hero/runtime/heroHeadingStyles';
 import { readHeroStyle, scopedHeroCss } from '../../hero/runtime/heroStyles';
 import { splitShowcaseResponsiveCss } from './splitShowcaseStyles';
+import { LayeredSlideshowSlideMedia } from '../../layered-slideshow/runtime/LayeredSlideshowArt';
 
 type Props = {
   sectionId: string;
@@ -45,7 +42,7 @@ function blockNodeId(
 
 function SplitShowcaseTile({
   imageUrl,
-  fallbackUrl,
+  peekVariant,
   title,
   titleFieldPath,
   titleBlockNodeId,
@@ -58,7 +55,7 @@ function SplitShowcaseTile({
   fontBody,
 }: {
   imageUrl: string;
-  fallbackUrl: string;
+  peekVariant: 'figure' | 'landscape';
   title: string;
   titleFieldPath: string;
   titleBlockNodeId: string;
@@ -75,6 +72,10 @@ function SplitShowcaseTile({
   const label = cfgString(config, `${buttonBase}.label`, 'Shop now');
   const href = cfgString(config, `${buttonBase}.href`, '/products');
 
+  const hasImage = imageUrl.trim().length > 0;
+  /** Dark text reads cleanly on the light illustration; white text suits a photo + overlay. */
+  const onDarkMedia = hasImage && showOverlay;
+
   const tileStyle: CSSProperties = {
     position: 'relative',
     flex: '1 1 50%',
@@ -83,71 +84,73 @@ function SplitShowcaseTile({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    background: '#f3efe6',
   };
 
-  const bgUrl = imageUrl.trim() || fallbackUrl;
+  const headingColor = onDarkMedia ? '#ffffff' : '#111827';
 
   const headingStyle: CSSProperties = {
     margin: 0,
     fontFamily: fontHeading,
-    fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)',
+    fontSize: 'clamp(1.5rem, 2.45vw, 2rem)',
     fontWeight: 700,
-    lineHeight: 1.15,
+    lineHeight: 1.05,
     letterSpacing: '-0.02em',
-    color: '#ffffff',
+    color: headingColor,
     textAlign: 'center',
-    textShadow: '0 2px 16px rgba(0, 0, 0, 0.35)',
+    textShadow: onDarkMedia ? '0 2px 16px rgba(0, 0, 0, 0.35)' : 'none',
   };
 
   const linkStyle: CSSProperties = {
     fontFamily: fontBody,
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 500,
-    color: '#ffffff',
-    textDecoration: 'underline',
-    textUnderlineOffset: 3,
-    textDecorationColor: 'rgba(255, 255, 255, 0.9)',
+    color: headingColor,
+    textDecoration: 'none',
   };
 
   return (
     <div className="split-showcase-tile" style={tileStyle}>
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${bgUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
+      <LayeredSlideshowSlideMedia
+        imageUrl={hasImage ? imageUrl : undefined}
+        peekVariant={peekVariant}
+        figureWidth={peekVariant === 'figure' ? '118%' : '80%'}
+        figureHeight={peekVariant === 'figure' ? '158%' : '112%'}
+        figureMaxWidth={peekVariant === 'figure' ? 900 : 520}
       />
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: showOverlay ? 'rgba(0, 0, 0, 0.35)' : 'rgba(0, 0, 0, 0.25)',
-        }}
-      />
+      {onDarkMedia ? (
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.35)',
+          }}
+        />
+      ) : null}
       <div
         style={{
           position: 'relative',
           zIndex: 2,
-          display: 'flex',
-          flexDirection: 'column',
           flex: 1,
           width: '100%',
-          padding: '32px 24px',
+          height: '100%',
+          padding: 0,
           boxSizing: 'border-box',
         }}
       >
         <div
           style={{
-            flex: 1,
+            position: 'absolute',
+            top: '50%',
+            left: 0,
+            right: 0,
+            transform: 'translateY(-50%)',
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'center',
             width: '100%',
+            padding: '0 24px',
+            boxSizing: 'border-box',
           }}
         >
           {title.trim() ? (
@@ -159,7 +162,16 @@ function SplitShowcaseTile({
           ) : null}
         </div>
         {label.trim() ? (
-          <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: 8 }}>
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: '8%',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
             <EditorBlock
               nodeId={`${sectionNodePrefix}:block:${buttonBlockId}`}
               label="Button"
@@ -194,7 +206,8 @@ export function SplitShowcase({
     [config, settingsPath, background, text]
   );
 
-  const leftTitle = readHeroHeadingText(config, settingsPath, blocksPath, 'heading');
+  const leftTitle =
+    readHeroHeadingText(config, settingsPath, blocksPath, 'heading') || 'New arrivals';
   const rightTitle =
     cfgString(config, `${blocksPath}.text_right.settings.text`, '') ||
     cfgString(config, `${settingsPath}.splitRightTitle`, 'Bestsellers');
@@ -229,8 +242,8 @@ export function SplitShowcase({
           className="split-showcase-grid"
           style={{
             display: 'flex',
-            flexDirection: hero.contentDirection === 'row' ? 'row' : 'column',
-            gap: hero.gap,
+            flexDirection: 'row',
+            gap: 0,
             width: '100%',
             minHeight:
               typeof sectionMinHeight === 'number'
@@ -240,7 +253,7 @@ export function SplitShowcase({
         >
           <SplitShowcaseTile
             imageUrl={hero.media1Url}
-            fallbackUrl={SPLIT_SHOWCASE_IMAGE_LEFT}
+            peekVariant="figure"
             title={leftTitle}
             titleFieldPath={`${settingsPath}.title`}
             titleBlockNodeId={blockNodeId(sectionId, placement, templateId, 'heading')}
@@ -254,7 +267,7 @@ export function SplitShowcase({
           />
           <SplitShowcaseTile
             imageUrl={hero.media2Url}
-            fallbackUrl={SPLIT_SHOWCASE_IMAGE_RIGHT}
+            peekVariant="landscape"
             title={rightTitle}
             titleFieldPath={`${blocksPath}.text_right.settings.text`}
             titleBlockNodeId={blockNodeId(sectionId, placement, templateId, 'text_right')}

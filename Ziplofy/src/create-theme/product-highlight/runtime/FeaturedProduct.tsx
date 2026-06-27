@@ -654,24 +654,43 @@ export function FeaturedProduct({
     [config, headerSettingsBase]
   );
 
+  const titleRowStyle: CSSProperties = { ...titleStyle, margin: 0, flex: '1 1 auto', minWidth: 0 };
+  const priceRowStyle: CSSProperties = {
+    ...priceStyle,
+    margin: 0,
+    flex: '0 0 auto',
+    whiteSpace: 'nowrap',
+    textAlign: 'right',
+  };
+
   const headerInner = (
     <>
-      <EditorField
-        fieldPath={`${titleSettingsBase}.typographyPreset`}
-        label="Product title"
-        as="h2"
-        style={titleStyle}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          gap: 16,
+          width: '100%',
+        }}
       >
-        {productTitle}
-      </EditorField>
-      <EditorField
-        fieldPath={`${priceSettingsBase}.typographyPreset`}
-        label="Price"
-        as="p"
-        style={priceStyle}
-      >
-        {price}
-      </EditorField>
+        <EditorField
+          fieldPath={`${titleSettingsBase}.typographyPreset`}
+          label="Product title"
+          as="h2"
+          style={titleRowStyle}
+        >
+          {productTitle}
+        </EditorField>
+        <EditorField
+          fieldPath={`${priceSettingsBase}.typographyPreset`}
+          label="Price"
+          as="p"
+          style={priceRowStyle}
+        >
+          {price}
+        </EditorField>
+      </div>
       {priceBlockStyle.showInstallments ? (
         <p style={installmentsStyle}>Pay in installments</p>
       ) : null}

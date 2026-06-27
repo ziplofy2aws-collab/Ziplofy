@@ -947,7 +947,11 @@ function SidebarRow({
           icon={node.icon ?? (node.kind === 'section' ? 'section' : 'default')}
           muted={isSelected}
         />
-        <span className="shrink-0 text-[13px] font-medium">{node.label}</span>
+        <span
+          className={`min-w-0 truncate text-[13px] font-medium ${node.preview ? 'shrink-0' : ''}`}
+        >
+          {node.label}
+        </span>
         {node.preview ? (
           <span
             className={`min-w-0 flex-1 truncate text-xs font-normal italic ${
@@ -1023,6 +1027,7 @@ export type CreateThemeEditorSidebarProps = {
   checkoutThemeSettingsNav?: React.ReactNode;
   themeSettingsNav?: React.ReactNode;
   settingsValues?: Record<string, string | boolean>;
+  themeConfig?: Record<string, unknown> | null;
   onSettingsFieldChange?: (
     path: string,
     type: ThemeEditorFieldType,
@@ -1060,6 +1065,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   checkoutThemeSettingsNav,
   themeSettingsNav,
   settingsValues = {},
+  themeConfig = null,
   onSettingsFieldChange,
   onCollectionLinksApply,
   onStoreMenuSelect,
@@ -1216,6 +1222,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
           <ThemeSectionSettingsPanel
             node={settingsNode}
             values={settingsValues}
+            themeConfig={themeConfig}
             onFieldChange={onSettingsFieldChange!}
             onCollectionLinksApply={onCollectionLinksApply}
             onStoreMenuSelect={onStoreMenuSelect}

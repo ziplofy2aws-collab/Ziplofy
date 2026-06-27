@@ -62,11 +62,58 @@ export function isFeaturedCollectionCatalogVariant(catalogVariant: string): bool
   );
 }
 
-export function featuredCollectionSidebarLabel(catalogVariant: string, fallback: string): string {
-  if (catalogVariant === 'featured-collection-carousel') return 'Featured collection: Carousel';
-  if (catalogVariant === 'featured-collection-editorial') return 'Featured collection: Editorial';
-  if (catalogVariant === 'featured-collection-grid') return 'Featured collection: Grid';
-  return fallback;
+export function featuredCollectionSettingsBaseFromNodeId(nodeId: string): string | null {
+  const sectionMatch = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?)$/);
+  if (sectionMatch) {
+    return `templates.${sectionMatch[1]}.sections.${sectionMatch[2]}.settings`;
+  }
+  const childMatch = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
+  if (childMatch) {
+    return `templates.${childMatch[1]}.sections.${childMatch[2]}.settings`;
+  }
+  return null;
+}
+
+function readSettingString(
+  config: Record<string, unknown> | null,
+  settingsBase: string,
+  key: string
+): string {
+  if (!config) return '';
+  const parts = `${settingsBase}.${key}`.split('.');
+  let cur: unknown = config;
+  for (const p of parts) {
+    if (cur == null || typeof cur !== 'object') return '';
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return typeof cur === 'string' ? cur : '';
+}
+
+function readFlatValueString(
+  values: Record<string, unknown> | undefined,
+  path: string
+): string {
+  if (!values) return '';
+  const value = values[path];
+  if (typeof value === 'string') return value;
+  if (value == null) return '';
+  return String(value);
+}
+
+/** Read `settings.layoutType` for a featured collection section from the merged config. */
+export function readFeaturedCollectionLayoutType(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): string {
+  return readSettingString(config, settingsBase, 'layoutType');
+}
+
+/** Read `settings.catalogVariant` for a featured collection section from the merged config. */
+export function readFeaturedCollectionCatalogVariant(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): string {
+  return readSettingString(config, settingsBase, 'catalogVariant');
 }
 
 export function groupFeaturedCollectionPanelFields(
@@ -134,6 +181,65 @@ export function isFeaturedCollectionCarouselSettingsPanelFields(
   return keys.has('collectionHandle') && keys.has('productsToShow') && keys.has('navIcon');
 }
 
+export type FeaturedCollectionVariant = 'carousel' | 'editorial' | 'grid' | 'default';
+
+export function featuredCollectionVariantLabel(
+  variant: FeaturedCollectionVariant
+): string {
+  if (variant === 'carousel') return 'Featured collection: Carousel';
+  if (variant === 'editorial') return 'Featured collection: Editorial';
+  if (variant === 'grid') return 'Featured collection: Grid';
+  return 'Featured collection';
+}
+
+export function resolveFeaturedCollectionVariant(opts: {
+  label?: string;
+  layoutType?: string;
+  catalogVariant?: string;
+  fields?: EditorFieldDef[];
+}): FeaturedCollectionVariant {
+  const label = opts.label ?? '';
+  if (label.includes('Carousel')) return 'carousel';
+  if (label.includes('Editorial')) return 'editorial';
+  if (label.includes('Grid')) return 'grid';
+
+  const layoutType = opts.layoutType ?? '';
+  // Non-grid layout types reflect an explicit user layout change.
+  if (layoutType === 'carousel' || layoutType === 'editorial') return layoutType;
+
+  const catalogVariant = opts.catalogVariant ?? '';
+  if (catalogVariant === 'featured-collection-carousel') return 'carousel';
+  if (catalogVariant === 'featured-collection-editorial') return 'editorial';
+  if (catalogVariant === 'featured-collection-grid') return 'grid';
+
+  if (layoutType === 'grid') return 'grid';
+
+  const raw = opts.fields ?? [];
+  if (isFeaturedCollectionCarouselSettingsPanelFields(raw)) return 'carousel';
+  if (isFeaturedCollectionEditorialSettingsPanelFields(raw)) return 'editorial';
+  if (isFeaturedCollectionGridSettingsPanelFields(raw)) return 'grid';
+  return 'default';
+}
+
+export function resolveFeaturedCollectionLabel(opts: {
+  label?: string;
+  layoutType?: string;
+  catalogVariant?: string;
+  fields?: EditorFieldDef[];
+}): string {
+  return featuredCollectionVariantLabel(resolveFeaturedCollectionVariant(opts));
+}
+
+export function featuredCollectionSidebarLabel(
+  catalogVariant: string,
+  fallback: string,
+  layoutType?: string
+): string {
+  const variant = resolveFeaturedCollectionVariant({ catalogVariant, layoutType });
+  if (variant !== 'default') return featuredCollectionVariantLabel(variant);
+  return fallback;
+}
+
 export function filterFeaturedCollectionPanelFieldsForVariant(
   fields: EditorFieldDef[],
   variant: 'carousel' | 'editorial' | 'grid' | 'default'
@@ -170,35 +276,40 @@ export function sortFeaturedCollectionPanelFields(fields: EditorFieldDef[]): Edi
   });
 }
 
-export function prepareFeaturedCollectionSettingsNode(node: SidebarNode): SidebarNode {
+export function readFeaturedCollectionSettingValue(
+  values: Record<string, unknown> | undefined,
+  config: Record<string, unknown> | null | undefined,
+  settingsBase: string,
+  key: 'layoutType' | 'catalogVariant'
+): string {
+  const flat = readFlatValueString(values, `${settingsBase}.${key}`);
+  if (flat) return flat;
+  return readSettingString(config ?? null, settingsBase, key);
+}
+
+export function prepareFeaturedCollectionSettingsNode(
+  node: SidebarNode,
+  values?: Record<string, unknown>,
+  config?: Record<string, unknown> | null
+): SidebarNode {
   const raw = sortFeaturedCollectionPanelFields(
     (node.fields ?? []).filter(isFeaturedCollectionPanelField)
   );
-  const labelText = node.label ?? '';
-  const isGrid =
-    labelText.includes('Grid') || isFeaturedCollectionGridSettingsPanelFields(raw);
-  const isEditorial =
-    !isGrid &&
-    (labelText.includes('Editorial') || isFeaturedCollectionEditorialSettingsPanelFields(raw));
-  const isCarousel =
-    !isGrid &&
-    !isEditorial &&
-    (labelText.includes('Carousel') || isFeaturedCollectionCarouselSettingsPanelFields(raw));
-  const variant: 'carousel' | 'editorial' | 'grid' | 'default' = isGrid
-    ? 'grid'
-    : isEditorial
-      ? 'editorial'
-      : isCarousel
-        ? 'carousel'
-        : 'default';
+  const settingsBase = featuredCollectionSettingsBaseFromNodeId(node.id);
+  const layoutType = settingsBase
+    ? readFeaturedCollectionSettingValue(values, config, settingsBase, 'layoutType')
+    : '';
+  const catalogVariant = settingsBase
+    ? readFeaturedCollectionSettingValue(values, config, settingsBase, 'catalogVariant')
+    : '';
+  const variant = resolveFeaturedCollectionVariant({
+    label: node.label,
+    layoutType,
+    catalogVariant,
+    fields: raw,
+  });
   const fields = filterFeaturedCollectionPanelFieldsForVariant(raw, variant);
-  const label = isGrid
-    ? 'Featured collection: Grid'
-    : isEditorial
-      ? 'Featured collection: Editorial'
-      : isCarousel
-        ? 'Featured collection: Carousel'
-        : 'Featured collection';
+  const label = featuredCollectionVariantLabel(variant);
   return { ...node, label, kind: 'section', fields };
 }
 

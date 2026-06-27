@@ -442,6 +442,7 @@ export function CollectionListGridLayoutView({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      ...(cardImageStyle.imageRatio === 'adapt' ? { aspectRatio: '1 / 1' } : {}),
                       ...collectionListCardShellStyle(cardStyle),
                     }}
                   >
@@ -627,6 +628,7 @@ export function CollectionListCarouselLayoutView({
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginBottom: cardStyle.placement === 'below_image' ? 0 : 10,
+                        ...(cardImageStyle.imageRatio === 'adapt' ? { aspectRatio: '1 / 1' } : {}),
                         ...collectionListCardShellStyle(cardStyle),
                       }}
                     >

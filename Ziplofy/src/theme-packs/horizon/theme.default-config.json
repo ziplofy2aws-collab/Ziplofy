@@ -4,11 +4,12 @@
   "themeName": "Horizon",
   "settings": {
     "colors": {
-      "primary": "#be185d",
-      "background": "#fff7f3",
-      "text": "#431407",
-      "accent": "#be185d",
-      "surface": "#fff7f3",
+      "palette": ["#ffffff", "#111827"],
+      "primary": "#111827",
+      "background": "#ffffff",
+      "text": "#111827",
+      "accent": "#111827",
+      "surface": "#ffffff",
       "muted": "#6b7280",
       "border": "#e5e7eb"
     },

@@ -74,6 +74,7 @@ function HeroButton({
   colors,
   onImageHero,
   marqueeFilled,
+  marqueeOnLight,
 }: {
   blockId: string;
   fallbackVariant: 'primary' | 'secondary';
@@ -82,6 +83,7 @@ function HeroButton({
   colors: { primary: string; background: string; text: string; line: string };
   onImageHero?: boolean;
   marqueeFilled?: boolean;
+  marqueeOnLight?: boolean;
 }) {
   const config = useThemeConfig();
   const base = `${blocksBase}.${blockId}.settings`;
@@ -89,8 +91,12 @@ function HeroButton({
   const href = cfgString(config, `${base}.href`, '/');
   const btnStyle = useMemo(
     () =>
-      readHeroButtonStyle(config, base, fallbackVariant, colors, { onImageHero, marqueeFilled }),
-    [config, base, fallbackVariant, colors, onImageHero, marqueeFilled]
+      readHeroButtonStyle(config, base, fallbackVariant, colors, {
+        onImageHero,
+        marqueeFilled,
+        marqueeOnLight,
+      }),
+    [config, base, fallbackVariant, colors, onImageHero, marqueeFilled, marqueeOnLight]
   );
 
   if (!label.trim()) return null;
@@ -246,12 +252,14 @@ export function Hero({
         ? `${sectionNodePrefix}:block:content_group:nested:text_body`
         : `${sectionNodePrefix}:block:content_group:nested:heading_group:nested:${blockId}`;
 
+    const bottomHasMedia = Boolean(media1Url || media2Url);
     const sectionMinHeight = hero.minHeight;
     const sidePad = Math.max(hero.paddingX, 40);
     const bottomPad = Math.max(hero.paddingBottom, 48);
     const topPad = hero.paddingTop > 0 ? hero.paddingTop : 0;
-    const bottomOverlay = hero.mediaOverlay ? overlayBackground : undefined;
-    const textColor = '#ffffff';
+    /** Landscape illustration backdrop reads on light copy; photo backdrops keep white copy + overlay. */
+    const bottomOverlay = bottomHasMedia && hero.mediaOverlay ? overlayBackground : undefined;
+    const textColor = bottomHasMedia ? '#ffffff' : '#1f2937';
     const rowMaxWidth = typeof hero.maxWidth === 'number' ? hero.maxWidth : 1400;
 
     const bottomRow = (
@@ -405,11 +413,15 @@ export function Hero({
             boxSizing: 'border-box',
           }}
         >
-          <HeroMediaBackground
-            media1Url={media1Url}
-            media2Url={media2Url}
-            fallbackUrl={HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE}
-          />
+          {bottomHasMedia ? (
+            <HeroMediaBackground
+              media1Url={media1Url}
+              media2Url={media2Url}
+              fallbackUrl={HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE}
+            />
+          ) : (
+            <HeroLandscapeBackdrop />
+          )}
           {bottomOverlay ? (
             <div
               aria-hidden
@@ -434,9 +446,13 @@ export function Hero({
       `${settingsBase}.marqueeText`,
       cfgString(config, `${settingsBase}.subtitle`, HERO_MARQUEE_TEXT)
     );
+    const marqueeHasMedia = Boolean(media1Url || media2Url);
     const sectionMinHeight = hero.minHeight;
     const bottomPad = Math.max(hero.paddingBottom, 48);
-    const marqueeOverlay = hero.mediaOverlay ? overlayBackground : undefined;
+    /** Photo backdrops keep the dark overlay; the landscape illustration shows none. */
+    const marqueeOverlay = marqueeHasMedia && hero.mediaOverlay ? overlayBackground : undefined;
+    const marqueeTextColor = marqueeHasMedia ? '#ffffff' : '#1f2937';
+    const marqueeTextShadow = marqueeHasMedia ? '0 2px 24px rgba(0,0,0,0.25)' : 'none';
     const marqueeAnimId = `ziplofy-hero-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
     const primaryButton = (
@@ -446,7 +462,8 @@ export function Hero({
         blocksBase={blocksBase}
         sectionNodePrefix={sectionNodePrefix}
         colors={buttonColors}
-        marqueeFilled
+        marqueeFilled={marqueeHasMedia}
+        marqueeOnLight={!marqueeHasMedia}
       />
     );
 
@@ -481,8 +498,8 @@ export function Hero({
               fontWeight: 700,
               lineHeight: 1.05,
               letterSpacing: '-0.02em',
-              color: '#ffffff',
-              textShadow: '0 2px 24px rgba(0,0,0,0.25)',
+              color: marqueeTextColor,
+              textShadow: marqueeTextShadow,
               animation: `${marqueeAnimId} 22s linear infinite`,
             }}
           >
@@ -555,11 +572,15 @@ export function Hero({
             boxSizing: 'border-box',
           }}
         >
-          <HeroMediaBackground
-            media1Url={media1Url}
-            media2Url={media2Url}
-            fallbackUrl={HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE}
-          />
+          {marqueeHasMedia ? (
+            <HeroMediaBackground
+              media1Url={media1Url}
+              media2Url={media2Url}
+              fallbackUrl={HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE}
+            />
+          ) : (
+            <HeroLandscapeBackdrop />
+          )}
           {marqueeOverlay ? (
             <div
               aria-hidden
@@ -591,6 +612,10 @@ export function Hero({
     const classicOverlay = hero.mediaOverlay ? overlayBackground : undefined;
     /** Full-bleed backdrop for image heroes; direction controls block flow inside content only. */
     const useFullBleedBackdrop = hasMedia;
+    /** Both image and landscape backdrops centre the content over a full-bleed background. */
+    const useBackdropLayout = useFullBleedBackdrop || !hasMedia;
+    /** Default heading copy when none is set, so the landscape hero is never blank. */
+    const landscapeHeadingFallback = !hasMedia ? 'Browse our latest products' : '';
     const useRowMediaLayout = hasMedia && !useFullBleedBackdrop && hero.contentDirection === 'row';
 
     const contentColumnAlign =
@@ -636,7 +661,8 @@ export function Hero({
     const renderClassicBlock = (blockId: string): ReactNode => {
       if (blockId === 'heading' || blockId.startsWith('heading_')) {
         const headingFieldPath = `${blocksBase}.${blockId}.settings.heading`;
-        const headingText = readHeroHeadingText(config, settingsBase, blocksBase, blockId);
+        const rawHeadingText = readHeroHeadingText(config, settingsBase, blocksBase, blockId);
+        const headingText = rawHeadingText.trim() ? rawHeadingText : landscapeHeadingFallback;
         if (!headingText.trim()) return null;
         const headingTag = richTextHasBlockMarkup(headingText) ? 'div' : 'h1';
         return (
@@ -791,9 +817,9 @@ export function Hero({
           zIndex: 2,
           display: 'flex',
           flex: 1,
-          flexDirection: useFullBleedBackdrop ? 'column' : hero.contentDirection,
-          alignItems: useFullBleedBackdrop ? 'stretch' : hero.contentAlign,
-          justifyContent: useFullBleedBackdrop ? hero.sectionOuterJustify : hero.contentJustify,
+          flexDirection: useBackdropLayout ? 'column' : hero.contentDirection,
+          alignItems: useBackdropLayout ? 'stretch' : hero.contentAlign,
+          justifyContent: useBackdropLayout ? hero.sectionOuterJustify : hero.contentJustify,
           gap: hero.gap,
           minHeight: hero.minHeight,
           width: '100%',
