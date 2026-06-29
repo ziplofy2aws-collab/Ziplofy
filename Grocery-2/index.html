@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshHaat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="fh-header" role="banner">
+
+    <!-- Top promo bar -->
+    <div class="fh-topbar">
+      <div class="fh-topbar__inner">
+        <p class="fh-topbar__text">
+          <span class="fh-topbar__ribbon" aria-hidden="true">&#127880;</span>
+          Super Saver Sale LIVE | Flat 25% OFF on Selected Products | Order Faster with our App
+        </p>
+        <a href="#" class="fh-topbar__btn">Download The App</a>
+      </div>
+    </div>
+
+    <!-- Main row -->
+    <div class="fh-main">
+      <div class="fh-main__inner">
+
+        <button type="button" class="fh-burger" data-fh-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="fh-mobile-nav">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <a href="index.html" class="fh-logo" aria-label="FreshHaat home">
+          <img src="assets/img/logo.png" alt="FreshHaat" width="170" height="56" decoding="async" />
+        </a>
+
+        <button type="button" class="fh-pincode" aria-label="Select your pincode">
+          <i class="fa-solid fa-location-dot fh-pincode__pin" aria-hidden="true"></i>
+          <span class="fh-pincode__label">Pincode</span>
+          <i class="fa-solid fa-chevron-down fh-pincode__caret" aria-hidden="true"></i>
+        </button>
+
+        <form class="fh-search" role="search" action="#" method="get">
+          <i class="fa-solid fa-magnifying-glass fh-search__icon" aria-hidden="true"></i>
+          <input type="search" class="fh-search__input" name="q" placeholder="Search..."
+            aria-label="Search FreshHaat" />
+        </form>
+
+        <nav class="fh-actions" aria-label="Account utilities">
+          <a href="#" class="fh-actions__item" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="fh-actions__item" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="fh-actions__item fh-actions__cart" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Navigation row -->
+    <div class="fh-nav">
+      <div class="fh-nav__inner">
+        <ul class="fh-nav__list" id="fh-mobile-nav">
+          <li><a href="#" class="fh-nav__link">New</a></li>
+          <li><a href="shop.html" class="fh-nav__link">Groceries</a></li>
+          <li><a href="#" class="fh-nav__link">Healthy Snacks</a></li>
+          <li><a href="#" class="fh-nav__link">Herbal Drinks &amp; Juices</a></li>
+          <li><a href="#" class="fh-nav__link">Beauty &amp; Hygiene</a></li>
+          <li><a href="#" class="fh-nav__link">Ayurveda</a></li>
+          <li><a href="#" class="fh-nav__link">Home Care</a></li>
+          <li><a href="#" class="fh-nav__link">Incense &amp; Mask</a></li>
+        </ul>
+        <a href="#" class="fh-nav__buyagain">
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+          Buy Again
+        </a>
+      </div>
+    </div>
+
+  </header>
+
+  <!-- Hero slider -->
+  <section class="fh-hero" aria-label="Featured offers" aria-roledescription="carousel">
+    <div class="fh-hero__inner">
+      <div class="fh-hero__viewport">
+        <div class="fh-hero__track" data-fh-track>
+          <div class="fh-hero__slide" aria-roledescription="slide" aria-label="1 of 4">
+            <a href="#">
+              <picture>
+                <source media="(max-width: 600px)" srcset="assets/img/mobile-hero-1.png" />
+                <img src="assets/img/hero-banner-1.png"
+                  alt="Juice that loves you back — fresh cold-pressed juices" />
+              </picture>
+            </a>
+          </div>
+          <div class="fh-hero__slide" aria-roledescription="slide" aria-label="2 of 4">
+            <a href="#">
+              <picture>
+                <source media="(max-width: 600px)" srcset="assets/img/mobile-hero-2.png" />
+                <img src="assets/img/hero-banner-2.png" alt="Whole spices sourced from origin, 100% pure" />
+              </picture>
+            </a>
+          </div>
+          <div class="fh-hero__slide" aria-roledescription="slide" aria-label="3 of 4">
+            <a href="#">
+              <picture>
+                <source media="(max-width: 600px)" srcset="assets/img/mobile-hero-3.png" />
+                <img src="assets/img/hero-banner-3.png" alt="Guilt free snacking — up to 20% off" />
+              </picture>
+            </a>
+          </div>
+          <div class="fh-hero__slide" aria-roledescription="slide" aria-label="4 of 4">
+            <a href="#">
+              <picture>
+                <source media="(max-width: 600px)" srcset="assets/img/mobile-hero-4.png" />
+                <img src="assets/img/hero-banner-4.png" alt="No sugar, no preservatives — just berries" />
+              </picture>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="fh-hero__arrow fh-hero__arrow--prev" data-fh-prev aria-label="Previous slide">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="fh-hero__arrow fh-hero__arrow--next" data-fh-next aria-label="Next slide">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+
+      <div class="fh-hero__dots" role="tablist" aria-label="Choose slide" data-fh-dots></div>
+    </div>
+  </section>
+
+  <!-- Shop by category -->
+  <section class="fh-cat" aria-labelledby="fh-cat-title">
+    <div class="fh-cat__inner">
+      <div class="fh-cat__head">
+        <span class="fh-cat__head-line" aria-hidden="true"></span>
+        <h2 class="fh-cat__title" id="fh-cat-title">Shop By Category</h2>
+        <span class="fh-cat__head-line" aria-hidden="true"></span>
+      </div>
+
+      <div class="fh-cat__grid is-collapsed" data-fh-cat-grid>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Fruits</span>
+          <span class="fh-cat__media"><img src="assets/img/REd_Apple.png" alt="Fruits" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Vegetables</span>
+          <span class="fh-cat__media"><img src="assets/img/Tomato.png" alt="Vegetables" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Dairy &amp; Eggs</span>
+          <span class="fh-cat__media"><img src="assets/img/Milk.png" alt="Dairy and Eggs" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Everyday gourmet bakery</span>
+          <span class="fh-cat__media"><img src="assets/img/Bread.png" alt="Everyday gourmet bakery"
+              loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">From the freezer</span>
+          <span class="fh-cat__media"><img src="assets/img/Frozen.png" alt="From the freezer" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Freshly made health salads</span>
+          <span class="fh-cat__media"><img src="assets/img/health_salads.png" alt="Freshly made health salads"
+              loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">For the pantry</span>
+          <span class="fh-cat__media"><img src="assets/img/atta.jpg" alt="For the pantry" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Beverages</span>
+          <span class="fh-cat__media"><img src="assets/img/Juice.png" alt="Beverages" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Nuts</span>
+          <span class="fh-cat__media"><img src="assets/img/Walnut.png" alt="Nuts" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Gourmet Delights</span>
+          <span class="fh-cat__media"><img src="assets/img/Gormet_Grocery.png" alt="Gourmet Delights"
+              loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Gifts</span>
+          <span class="fh-cat__media"><img src="assets/img/basket_aa_copy.png" alt="Gifts" loading="lazy" /></span>
+        </a>
+        <a href="#" class="fh-cat__card">
+          <span class="fh-cat__name">Others</span>
+          <span class="fh-cat__media"><img src="assets/img/Others.png" alt="Others" loading="lazy" /></span>
+        </a>
+
+        <button type="button" class="fh-cat__more" data-fh-cat-toggle aria-expanded="false">
+          <span class="fh-cat__more-text">View More</span>
+          <i class="fa-solid fa-angles-down fh-cat__more-icon" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Flash deals -->
+  <section class="fh-deals" aria-labelledby="fh-deals-title">
+    <div class="fh-deals__inner">
+
+      <div class="fh-deals__head">
+        <div>
+          <span class="fh-deals__eyebrow"><i class="fa-solid fa-circle" aria-hidden="true"></i> Flash Deals · Ending
+            Soon</span>
+          <h2 class="fh-deals__title" id="fh-deals-title">Unbeatable <em>deals</em></h2>
+        </div>
+        <a href="#" class="fh-deals__seeall">See all deals <i class="fa-solid fa-arrow-right"
+            aria-hidden="true"></i></a>
+      </div>
+
+      <div class="fh-deals__panel">
+        <div class="fh-deals__panel-top">
+          <div class="fh-deals__copy">
+            <span class="fh-deals__limited">Limited Time Only</span>
+            <h3 class="fh-deals__save">Save <em>up to 50%</em> on today's picks</h3>
+            <p class="fh-deals__sub">Hand-picked savings on Frugivore favourites, refreshed daily.</p>
+          </div>
+          <div class="fh-deals__timer" data-fh-countdown aria-label="Offer countdown">
+            <div class="fh-deals__time"><strong data-fh-days>00</strong><small>Days</small></div>
+            <div class="fh-deals__time"><strong data-fh-hours>00</strong><small>Hours</small></div>
+            <div class="fh-deals__time"><strong data-fh-mins>00</strong><small>Mins</small></div>
+            <div class="fh-deals__time"><strong data-fh-secs>00</strong><small>Secs</small></div>
+          </div>
+        </div>
+
+        <div class="fh-deals__slider">
+          <button type="button" class="fh-deals__arrow fh-deals__arrow--prev" data-fh-deals-prev
+            aria-label="Previous deals">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="fh-deals__track" data-fh-deals-track>
+
+            <article class="fh-deal-card" data-fh-product="valencia-orange">
+              <div class="fh-deal-card__media" style="background:#f4c01a">
+                <img src="assets/img/VALENCIA_ORANGE.jpg" alt="Orange Valencia (Malta)" loading="lazy" />
+              </div>
+              <div class="fh-deal-card__body">
+                <span class="fh-deal-card__brand">Frugivore</span>
+                <h4 class="fh-deal-card__name">Orange Valencia (Malta)</h4>
+                <span class="fh-deal-card__qty">1 Pcs</span>
+                <div class="fh-deal-card__foot">
+                  <div class="fh-deal-card__pricing">
+                    <span class="fh-deal-card__mrp">MRP: 53</span>
+                    <span class="fh-deal-card__price">Rs. 42</span>
+                  </div>
+                  <button type="button" class="fh-deal-card__add">ADD</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="fh-deal-card" data-fh-product="jamun">
+              <div class="fh-deal-card__media" style="background:#9a86a6">
+                <img src="assets/img/FRUGIVORE_JAMUN.jpg" alt="Jamun" loading="lazy" />
+              </div>
+              <div class="fh-deal-card__body">
+                <span class="fh-deal-card__brand">Frugivore</span>
+                <h4 class="fh-deal-card__name">Jamun</h4>
+                <span class="fh-deal-card__qty">250 Gm</span>
+                <div class="fh-deal-card__foot">
+                  <div class="fh-deal-card__pricing">
+                    <span class="fh-deal-card__mrp">MRP: 213</span>
+                    <span class="fh-deal-card__price">Rs. 149</span>
+                  </div>
+                  <button type="button" class="fh-deal-card__add">ADD</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="fh-deal-card" data-fh-product="baby-mandarin">
+              <div class="fh-deal-card__media" style="background:#f3ead6">
+                <img src="assets/img/BABY_MANDARIN.jpg" alt="Baby Mandarin" loading="lazy" />
+              </div>
+              <div class="fh-deal-card__body">
+                <span class="fh-deal-card__brand">Frugivore</span>
+                <h4 class="fh-deal-card__name">Baby Mandarin</h4>
+                <span class="fh-deal-card__qty">500 Gm</span>
+                <div class="fh-deal-card__foot">
+                  <div class="fh-deal-card__pricing">
+                    <span class="fh-deal-card__mrp">MRP: 241</span>
+                    <span class="fh-deal-card__price">Rs. 189</span>
+                  </div>
+                  <button type="button" class="fh-deal-card__add">ADD</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="fh-deal-card" data-fh-product="mushroom-portobello">
+              <div class="fh-deal-card__media" style="background:#d8b89a">
+                <img src="assets/img/MUSHROOMS_PORTOBELLO.jpg" alt="Mushroom Portobello" loading="lazy" />
+              </div>
+              <div class="fh-deal-card__body">
+                <span class="fh-deal-card__brand">Frugivore</span>
+                <h4 class="fh-deal-card__name">Mushroom Portobello</h4>
+                <span class="fh-deal-card__qty fh-deal-card__qty--active">200 Gm</span>
+                <div class="fh-deal-card__foot">
+                  <div class="fh-deal-card__pricing">
+                    <span class="fh-deal-card__mrp">MRP: 289</span>
+                    <span class="fh-deal-card__price">Rs. 275</span>
+                  </div>
+                  <button type="button" class="fh-deal-card__add">ADD</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="fh-deal-card" data-fh-product="kiwi-green">
+              <div class="fh-deal-card__media" style="background:#c4d566">
+                <img src="assets/img/green_kiwi.jpg" alt="Kiwi - Green" loading="lazy" />
+              </div>
+              <div class="fh-deal-card__body">
+                <span class="fh-deal-card__brand">Zespri</span>
+                <h4 class="fh-deal-card__name">Kiwi - Green</h4>
+                <span class="fh-deal-card__qty">4 Pcs</span>
+                <div class="fh-deal-card__foot">
+                  <div class="fh-deal-card__pricing">
+                    <span class="fh-deal-card__mrp">MRP: 498</span>
+                    <span class="fh-deal-card__price">Rs. 249</span>
+                  </div>
+                  <button type="button" class="fh-deal-card__add">ADD</button>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <button type="button" class="fh-deals__arrow fh-deals__arrow--next" data-fh-deals-next
+            aria-label="Next deals">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Food category grid -->
+  <section class="fh-food" aria-labelledby="fh-food-title">
+    <div class="fh-food__inner">
+      <div class="fh-food__head">
+        <span class="fh-food__icon" aria-hidden="true"><i class="fa-solid fa-utensils"></i></span>
+        <h2 class="fh-food__title" id="fh-food-title">FOOD</h2>
+      </div>
+
+      <div class="fh-food__grid">
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/23.jpg" alt="Pulses" loading="lazy" /></span>
+          <span class="fh-food__name">Pulses</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/dry-fruits.jpg" alt="Dry Fruits" loading="lazy" /></span>
+          <span class="fh-food__name">Dry Fruits</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/rice.jpg" alt="Rice" loading="lazy" /></span>
+          <span class="fh-food__name">Rice</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/spice-condiments.jpg" alt="Spices Condiments"
+              loading="lazy" /></span>
+          <span class="fh-food__name">Spices Condiments</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/atta.jpg" alt="Atta, Sooji, Besan" loading="lazy" /></span>
+          <span class="fh-food__name">Atta, Sooji, Besan</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/oil.jpg" alt="Cooking Oil Ghee" loading="lazy" /></span>
+          <span class="fh-food__name">Cooking Oil Ghee</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/organic-food.jpg" alt="Organic Food"
+              loading="lazy" /></span>
+          <span class="fh-food__name">Organic Food</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/salt.jpg" alt="Salt, Sugar & Gur" loading="lazy" /></span>
+          <span class="fh-food__name">Salt, Sugar &amp; Gur</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/cook.jpg" alt="Ready to Cook" loading="lazy" /></span>
+          <span class="fh-food__name">Ready to Cook</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/namkeen.jpg" alt="Namkeen & Quick Bites"
+              loading="lazy" /></span>
+          <span class="fh-food__name">Namkeen &amp; Quick Bites</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/rusks.jpg" alt="Biscuits & Rusks" loading="lazy" /></span>
+          <span class="fh-food__name">Biscuits &amp; Rusks</span>
+        </a>
+        <a href="#" class="fh-food__card">
+          <span class="fh-food__media"><img src="assets/img/chips.jpg" alt="Chips, Nachos & Makhana"
+              loading="lazy" /></span>
+          <span class="fh-food__name">Chips, Nachos &amp; Makhana</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promo banner -->
+  <section class="fh-banner" aria-label="Pick Guilt Free Snacking">
+    <div class="fh-banner__inner">
+      <a href="#" class="fh-banner__link">
+        <img src="assets/img/banner-1.png" alt="Pick your bar — Pick guilt free snacking. Buy now." loading="lazy" />
+      </a>
+    </div>
+  </section>
+
+  <!-- Best deals products -->
+  <section class="fh-prod" aria-labelledby="fh-prod-title">
+    <div class="fh-prod__inner">
+
+      <div class="fh-prod__head">
+        <span class="fh-prod__eyebrow"><i class="fa-solid fa-circle" aria-hidden="true"></i> Discover</span>
+        <h2 class="fh-prod__title" id="fh-prod-title">Uncover the <em>best deals</em></h2>
+      </div>
+
+      <div class="fh-prod__slider">
+        <button type="button" class="fh-prod__arrow fh-prod__arrow--prev" data-fh-prod-prev
+          aria-label="Previous products">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="fh-prod__track" data-fh-prod-track>
+
+          <article class="fh-prod-card" data-fh-product="brown-eggs">
+            <div class="fh-prod-card__media">
+              <span class="fh-prod-card__badge">16% OFF</span>
+              <img src="assets/img/egg-tray.png" alt="Farm Fresh Brown Eggs" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Frugivore</span>
+              <h4 class="fh-prod-card__name">Farm Fresh Brown Eggs</h4>
+              <div class="fh-prod-card__tags">
+                <span class="fh-prod-card__tag">Non GMO</span>
+                <span class="fh-prod-card__tag fh-prod-card__tag--time"><i class="fa-regular fa-clock"
+                    aria-hidden="true"></i> 2 hrs</span>
+              </div>
+              <div class="fh-prod-card__qtys">
+                <span class="fh-prod-card__qty">30 N</span>
+              </div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 379</span>
+                  <span class="fh-prod-card__mrp">Rs 450</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="white-eggs">
+            <div class="fh-prod-card__media">
+              <span class="fh-prod-card__badge">19% OFF</span>
+              <img src="assets/img/egg__10pcs_front.png" alt="Farm Fresh White Eggs" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Frugivore</span>
+              <h4 class="fh-prod-card__name">Farm Fresh White Eggs</h4>
+              <div class="fh-prod-card__tags">
+                <span class="fh-prod-card__tag fh-prod-card__tag--time"><i class="fa-regular fa-clock"
+                    aria-hidden="true"></i> 2 hrs</span>
+              </div>
+              <div class="fh-prod-card__qtys">
+                <span class="fh-prod-card__qty">10 N</span>
+              </div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 129</span>
+                  <span class="fh-prod-card__mrp">Rs 160</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="pomegranate-juice">
+            <div class="fh-prod-card__media">
+              <span class="fh-prod-card__badge">25% OFF</span>
+              <img src="assets/img/Anti_Ageing.jpg" alt="Anti-Ageing - Pomegranate Juice" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Frugivore</span>
+              <h4 class="fh-prod-card__name">Anti-Ageing - Pomegranate Juice</h4>
+              <div class="fh-prod-card__tags">
+                <span class="fh-prod-card__tag">No Added Preservatives</span>
+                <span class="fh-prod-card__tag fh-prod-card__tag--time"><i class="fa-regular fa-clock"
+                    aria-hidden="true"></i> 2 hrs</span>
+              </div>
+              <div class="fh-prod-card__qtys">
+                <span class="fh-prod-card__qty">350 Ml</span>
+                <span class="fh-prod-card__qty">200 Ml</span>
+              </div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 329</span>
+                  <span class="fh-prod-card__mrp">Rs 438</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="veg-burger-patty">
+            <div class="fh-prod-card__media">
+              <span class="fh-prod-card__badge">10% OFF</span>
+              <img src="assets/img/ITC_Veg_Burger_Patty.jpg" alt="Veg Burger Patty" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">ITC Master Chef</span>
+              <h4 class="fh-prod-card__name">Veg Burger Patty</h4>
+              <div class="fh-prod-card__tags">
+                <span class="fh-prod-card__tag fh-prod-card__tag--time"><i class="fa-regular fa-clock"
+                    aria-hidden="true"></i> 2 hrs</span>
+              </div>
+              <div class="fh-prod-card__qtys">
+                <span class="fh-prod-card__qty">500 Gm</span>
+              </div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 122</span>
+                  <span class="fh-prod-card__mrp">Rs 135</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="mexican-kale-salad">
+            <div class="fh-prod-card__media">
+              <img src="assets/img/mexican_kale_salad.jpg" alt="Mexican Kale Salad" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Frugivore</span>
+              <h4 class="fh-prod-card__name">Mexican Kale Salad</h4>
+              <div class="fh-prod-card__tags">
+                <span class="fh-prod-card__tag">No Artificial Flavours</span>
+                <span class="fh-prod-card__tag fh-prod-card__tag--time"><i class="fa-regular fa-clock"
+                    aria-hidden="true"></i> 2 hrs</span>
+              </div>
+              <div class="fh-prod-card__qtys">
+                <span class="fh-prod-card__qty">1 N</span>
+              </div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 249</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <button type="button" class="fh-prod__arrow fh-prod__arrow--next" data-fh-prod-next aria-label="Next products">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Ayurveda banner -->
+  <section class="fh-banner fh-banner--titled" aria-labelledby="fh-banner2-title">
+    <div class="fh-banner__inner">
+      <h2 class="fh-banner__title" id="fh-banner2-title">Ayurveda Products</h2>
+      <a href="#" class="fh-banner__link">
+        <img src="assets/img/banner-2.png" alt="SupaSupp Super Supplements — Shop now" loading="lazy" />
+      </a>
+    </div>
+  </section>
+
+  <!-- Blogs -->
+  <section class="fh-blog" aria-labelledby="fh-blog-title">
+    <div class="fh-blog__inner">
+
+      <div class="fh-blog__head">
+        <h2 class="fh-blog__title" id="fh-blog-title">Blogs</h2>
+      </div>
+
+      <div class="fh-blog__slider">
+        <button type="button" class="fh-blog__arrow fh-blog__arrow--prev" data-fh-blog-prev aria-label="Previous blogs">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="fh-blog__track" data-fh-blog-track>
+
+          <article class="fh-blog-card">
+            <div class="fh-blog-card__media">
+              <span class="fh-blog-card__date">Jan. 31,<br>2021</span>
+              <img src="assets/img/blog-1.jpg" alt="Striking the Balance with Exotics" loading="lazy" />
+            </div>
+            <div class="fh-blog-card__body">
+              <h3 class="fh-blog-card__title"><a href="#">Striking the Balance with Exotics!!!</a></h3>
+              <p class="fh-blog-card__author">By <strong>Jagsfresh</strong></p>
+              <p class="fh-blog-card__excerpt">Heve you ever thought how Broccoli is more preferred than Cauliflower
+                nowadays? &nb...</p>
+              <a href="#" class="fh-blog-card__more">Read more</a>
+            </div>
+          </article>
+
+          <article class="fh-blog-card">
+            <div class="fh-blog-card__media">
+              <span class="fh-blog-card__date">Jan. 19,<br>2021</span>
+              <img src="assets/img/blog-2.jpg" alt="Fats - Not Bad" loading="lazy" />
+            </div>
+            <div class="fh-blog-card__body">
+              <h3 class="fh-blog-card__title"><a href="#">Fats - Not Bad!!!</a></h3>
+              <p class="fh-blog-card__author">By <strong>Jagsfresh</strong></p>
+              <p class="fh-blog-card__excerpt">We have always been confused about eating fats, as we think eating fats
+                would lead to weight gai...</p>
+              <a href="#" class="fh-blog-card__more">Read more</a>
+            </div>
+          </article>
+
+          <article class="fh-blog-card">
+            <div class="fh-blog-card__media">
+              <span class="fh-blog-card__date">Jan. 6,<br>2021</span>
+              <img src="assets/img/blog-3.jpg" alt="Know Your Sugar Better" loading="lazy" />
+            </div>
+            <div class="fh-blog-card__body">
+              <h3 class="fh-blog-card__title"><a href="#">Know Your Sugar Better!</a></h3>
+              <p class="fh-blog-card__author">By <strong>Jagsfresh</strong></p>
+              <p class="fh-blog-card__excerpt">We came up with this topic because it is the basic step to start the
+                healthy journey which is th...</p>
+              <a href="#" class="fh-blog-card__more">Read more</a>
+            </div>
+          </article>
+
+          <article class="fh-blog-card">
+            <div class="fh-blog-card__media">
+              <span class="fh-blog-card__date">Dec. 28,<br>2020</span>
+              <img src="assets/img/blog-4.jpg" alt="The Power of Whole Grains" loading="lazy" />
+            </div>
+            <div class="fh-blog-card__body">
+              <h3 class="fh-blog-card__title"><a href="#">The Power of Whole Grains!</a></h3>
+              <p class="fh-blog-card__author">By <strong>Jagsfresh</strong></p>
+              <p class="fh-blog-card__excerpt">Whole grains are packed with nutrients and fibre that keep you full
+                longer and fuel your day...</p>
+              <a href="#" class="fh-blog-card__more">Read more</a>
+            </div>
+          </article>
+
+          <article class="fh-blog-card">
+            <div class="fh-blog-card__media">
+              <span class="fh-blog-card__date">Dec. 15,<br>2020</span>
+              <img src="assets/img/blog-5.jpg" alt="Seasonal Eating Made Easy" loading="lazy" />
+            </div>
+            <div class="fh-blog-card__body">
+              <h3 class="fh-blog-card__title"><a href="#">Seasonal Eating Made Easy!</a></h3>
+              <p class="fh-blog-card__author">By <strong>Jagsfresh</strong></p>
+              <p class="fh-blog-card__excerpt">Eating with the seasons is fresher, tastier and kinder to your wallet.
+                Here is how to start...</p>
+              <a href="#" class="fh-blog-card__more">Read more</a>
+            </div>
+          </article>
+
+          <article class="fh-blog-card">
+            <div class="fh-blog-card__media">
+              <span class="fh-blog-card__date">Dec. 2,<br>2020</span>
+              <img src="assets/img/blog-6.jpg" alt="Hydration Beyond Water" loading="lazy" />
+            </div>
+            <div class="fh-blog-card__body">
+              <h3 class="fh-blog-card__title"><a href="#">Hydration Beyond Water!</a></h3>
+              <p class="fh-blog-card__author">By <strong>Jagsfresh</strong></p>
+              <p class="fh-blog-card__excerpt">Staying hydrated is about more than plain water. Discover foods and
+                drinks that keep you fresh...</p>
+              <a href="#" class="fh-blog-card__more">Read more</a>
+            </div>
+          </article>
+
+        </div>
+
+        <button type="button" class="fh-blog__arrow fh-blog__arrow--next" data-fh-blog-next aria-label="Next blogs">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="fh-footer" role="contentinfo">
+    <div class="fh-footer__inner">
+
+      <div class="fh-footer__brand">
+        <a href="index.html" class="fh-footer__logo" aria-label="FreshHaat home">
+          <img src="assets/img/logo.png" alt="FreshHaat" loading="lazy" />
+        </a>
+        <p class="fh-footer__about">
+          Online supermarket in Delhi NCR. Sourced at 4 AM, delivered to your door — fresh produce,
+          premium pantry, and FreshHaat Originals.
+        </p>
+        <div class="fh-footer__social">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <nav class="fh-footer__col" aria-label="FreshHaat">
+        <h3 class="fh-footer__heading">FreshHaat</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Offers</a></li>
+          <li><a href="#">Engage / Blog</a></li>
+          <li><a href="#">Return &amp; Refund</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+        </ul>
+      </nav>
+
+      <nav class="fh-footer__col" aria-label="Help">
+        <h3 class="fh-footer__heading">Help</h3>
+        <ul>
+          <li><a href="#">General FAQs</a></li>
+          <li><a href="#">Wallet FAQs</a></li>
+          <li><a href="#">Refer &amp; Earn FAQs</a></li>
+          <li><a href="#">Business Enquiries</a></li>
+        </ul>
+      </nav>
+
+      <nav class="fh-footer__col" aria-label="We serve">
+        <h3 class="fh-footer__heading">We Serve</h3>
+        <ul>
+          <li><a href="#">Delhi</a></li>
+          <li><a href="#">Gurgaon</a></li>
+          <li><a href="#">Noida</a></li>
+          <li><a href="#">Ghaziabad</a></li>
+          <li><a href="#">Faridabad</a></li>
+        </ul>
+      </nav>
+
+      <div class="fh-footer__col fh-footer__app">
+        <h3 class="fh-footer__heading">Get The App</h3>
+        <a href="#" class="fh-footer__store">
+          <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+          <span><small>Get it on</small><strong>Google Play</strong></span>
+        </a>
+        <a href="#" class="fh-footer__store">
+          <i class="fa-brands fa-apple" aria-hidden="true"></i>
+          <span><small>Download on</small><strong>App Store</strong></span>
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+  <button type="button" class="fh-top" data-fh-top aria-label="Back to top">
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+
+</html>

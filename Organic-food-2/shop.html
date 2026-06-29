@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organic Shop | Prakrit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+</head>
+
+<body>
+
+  <header class="site-header" role="banner">
+
+    <div class="topbar">
+      <div class="topbar__inner">
+        <button class="topbar__arrow" type="button" aria-label="Previous announcement">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <p class="topbar__message">
+          Next Day Delivery Available* |
+          <a href="shop.html" class="topbar__link">Shop Now</a>
+        </p>
+        <button class="topbar__arrow" type="button" aria-label="Next announcement">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+        <ul class="topbar__social">
+          <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a></li>
+          <li><a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="navbar">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__page-back" aria-label="Back to home">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </a>
+        <button type="button" class="navbar__toggle" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
+          <span></span><span></span><span></span>
+        </button>
+        <a href="index.html" class="navbar__logo" aria-label="Prakrit home">
+          <img src="assets/img/logo.png" alt="Prakrit - Naturally Pure Living" width="150" height="56"
+            decoding="async" />
+        </a>
+        <nav class="navbar__nav" aria-label="Primary" data-menu>
+          <div class="navbar__drawer-head">
+            <button type="button" class="navbar__drawer-back" data-menu-close aria-label="Close menu">
+              <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+              Back
+            </button>
+          </div>
+          <ul class="navbar__menu">
+            <li class="navbar__item navbar__item--shop">
+              <a href="shop.html" class="navbar__link navbar__link--shop">
+                <i class="fa-solid fa-store" aria-hidden="true"></i>
+                Organic Shop
+              </a>
+            </li>
+            <li class="navbar__item navbar__item--has-dropdown">
+              <a href="shop.html" class="navbar__link">
+                Atta, Rice &amp; Dal
+                <i class="fa-solid fa-chevron-down navbar__caret" aria-hidden="true"></i>
+              </a>
+              <ul class="navbar__dropdown">
+                <li><a href="shop.html">Atta &amp; Flours</a></li>
+                <li><a href="shop.html">Rice &amp; Rice Products</a></li>
+                <li><a href="shop.html">Dal &amp; Pulses</a></li>
+              </ul>
+            </li>
+            <li class="navbar__item navbar__item--has-dropdown">
+              <a href="shop.html" class="navbar__link">
+                Masala, Oil &amp; More
+                <i class="fa-solid fa-chevron-down navbar__caret" aria-hidden="true"></i>
+              </a>
+              <ul class="navbar__dropdown">
+                <li><a href="shop.html">Spices &amp; Masala</a></li>
+                <li><a href="shop.html">Cooking Oils</a></li>
+                <li><a href="shop.html">Ghee &amp; More</a></li>
+              </ul>
+            </li>
+            <li class="navbar__item navbar__item--has-dropdown">
+              <a href="shop.html" class="navbar__link">
+                Tea, Coffee &amp; Healthy
+                <i class="fa-solid fa-chevron-down navbar__caret" aria-hidden="true"></i>
+              </a>
+              <ul class="navbar__dropdown">
+                <li><a href="shop.html">Tea</a></li>
+                <li><a href="shop.html">Coffee</a></li>
+                <li><a href="shop.html">Healthy Bites</a></li>
+              </ul>
+            </li>
+            <li class="navbar__item">
+              <a href="shop.html" class="navbar__link">Combo Deals</a>
+            </li>
+          </ul>
+        </nav>
+        <div class="navbar__actions">
+          <button type="button" class="navbar__icon" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+          <a href="#" class="navbar__icon" aria-label="My account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="navbar__icon navbar__icon--cart" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            <span class="navbar__cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </header>
+
+  <div class="navbar__overlay" data-menu-overlay hidden></div>
+
+  <!-- Page head -->
+  <section class="shop-head">
+    <div class="shop-head__inner">
+      <nav class="shop-crumbs" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="shop-crumbs__sep">/</span>
+        <span>Organic Shop</span>
+      </nav>
+      <h1 class="shop-head__title">Explore All Products</h1>
+      <p class="shop-head__sub">Certified organic essentials — fresh, honest, and delivered to your doorstep.</p>
+    </div>
+  </section>
+
+  <!-- Catalog -->
+  <section class="shop-catalog">
+    <div class="shop-catalog__inner">
+
+      <div class="shop-chips" role="tablist" aria-label="Categories">
+        <button type="button" class="shop-chip shop-chip--active">All Products</button>
+        <button type="button" class="shop-chip">Fresh Fruits</button>
+        <button type="button" class="shop-chip">Herbs &amp; Spices</button>
+        <button type="button" class="shop-chip">Tea &amp; Coffee</button>
+        <button type="button" class="shop-chip">Wellness</button>
+        <button type="button" class="shop-chip">Combo Deals</button>
+        <button type="button" class="shop-chip">Ghee &amp; Oils</button>
+      </div>
+
+      <div class="shop-toolbar">
+        <p class="shop-toolbar__count">Showing 12 products</p>
+        <div class="shop-toolbar__tools">
+          <button type="button" class="shop-toolbar__btn">
+            <i class="fa-solid fa-arrow-up-wide-short" aria-hidden="true"></i> Sort
+          </button>
+          <button type="button" class="shop-toolbar__btn">
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filter
+          </button>
+        </div>
+      </div>
+
+      <div class="shop-grid">
+
+        <article class="bs-card" data-product-id="bs-1">
+          <span class="bs-card__badge">28% OFF</span>
+          <a href="product.html?id=bs-1" class="bs-card__media">
+            <img src="assets/img/BS-1.png" alt="Organic Moringa Powder" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-1">Organic Moringa Powder</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 396</span>
+            <span class="bs-card__price-old">&#8377; 550</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>100 g x 2</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-2">
+          <span class="bs-card__badge">20% OFF</span>
+          <a href="product.html?id=bs-2" class="bs-card__media">
+            <img src="assets/img/BS-2.png" alt="Liver Kidney Care" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-2">Liver Kidney Care</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 232</span>
+            <span class="bs-card__price-old">&#8377; 290</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>60 Capsules</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-3">
+          <span class="bs-card__badge">26% OFF</span>
+          <a href="product.html?id=bs-3" class="bs-card__media">
+            <img src="assets/img/BS-3.png" alt="Psyllium Whole Husk Isabgol" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-3">Psyllium Whole Husk Isabgol</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 190</span>
+            <span class="bs-card__price-old">&#8377; 260</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>100 g</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-4">
+          <span class="bs-card__badge">29% OFF</span>
+          <a href="product.html?id=bs-4" class="bs-card__media">
+            <img src="assets/img/BS-4.png" alt="Cow Ghee" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-4">Cow Ghee</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 638</span>
+            <span class="bs-card__price-old">&#8377; 899</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>500 ml</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-5">
+          <span class="bs-card__badge">20% OFF</span>
+          <a href="product.html?id=bs-5" class="bs-card__media">
+            <img src="assets/img/BS-5.png" alt="Simply Chamomile" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-5">Simply Chamomile</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 220</span>
+            <span class="bs-card__price-old">&#8377; 275</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>25 Teabags</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="combo-1">
+          <span class="bs-card__badge">8% OFF</span>
+          <a href="product.html?id=combo-1" class="bs-card__media">
+            <img src="assets/img/combo-1.png" alt="Turmeric &amp; Coriander Combo" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=combo-1">Turmeric &amp; Coriander Combo</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 253</span>
+            <span class="bs-card__price-old">&#8377; 275</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>100g + 100g + 100g</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="combo-2">
+          <span class="bs-card__badge">15% OFF</span>
+          <a href="product.html?id=combo-2" class="bs-card__media">
+            <img src="assets/img/combo-2.png" alt="Gokshura + Ashwagandha Combo" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=combo-2">Gokshura + Ashwagandha Combo</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 431</span>
+            <span class="bs-card__price-old">&#8377; 513</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>60 Caps + 60 Caps</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-6">
+          <span class="bs-card__badge">22% OFF</span>
+          <a href="product.html?id=bs-6" class="bs-card__media">
+            <img src="assets/img/BS-6.png" alt="Tulsi Green Tea" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-6">Tulsi Green Tea</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 180</span>
+            <span class="bs-card__price-old">&#8377; 230</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>25 Teabags</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-7">
+          <span class="bs-card__badge">18% OFF</span>
+          <a href="product.html?id=bs-7" class="bs-card__media">
+            <img src="assets/img/BS-7.png" alt="Ashwagandha" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-7">Ashwagandha</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 275</span>
+            <span class="bs-card__price-old">&#8377; 335</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>60 Capsules</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-8">
+          <span class="bs-card__badge">24% OFF</span>
+          <a href="product.html?id=bs-8" class="bs-card__media">
+            <img src="assets/img/BS-8.png" alt="Wheat Grass Powder" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-8">Wheat Grass Powder</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 210</span>
+            <span class="bs-card__price-old">&#8377; 275</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>100 g</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-9">
+          <span class="bs-card__badge">20% OFF</span>
+          <a href="product.html?id=bs-9" class="bs-card__media">
+            <img src="assets/img/BS-9.png" alt="Triphala" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-9">Triphala</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 160</span>
+            <span class="bs-card__price-old">&#8377; 200</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>60 Capsules</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+        <article class="bs-card" data-product-id="bs-10">
+          <span class="bs-card__badge">15% OFF</span>
+          <a href="product.html?id=bs-10" class="bs-card__media">
+            <img src="assets/img/BS-10.png" alt="Organic Honey" loading="lazy" />
+          </a>
+          <h3 class="bs-card__name"><a href="product.html?id=bs-10">Organic Honey</a></h3>
+          <p class="bs-card__price">
+            <span class="bs-card__price-now">&#8377; 290</span>
+            <span class="bs-card__price-old">&#8377; 340</span>
+          </p>
+          <div class="bs-card__select">
+            <select aria-label="Select pack"><option>500 g</option></select>
+          </div>
+          <button type="button" class="bs-card__btn">Add to Cart</button>
+        </article>
+
+      </div>
+
+      <nav class="shop-pagination" aria-label="Pagination">
+        <button type="button" class="shop-pagination__btn shop-pagination__btn--active" aria-current="page">1</button>
+        <button type="button" class="shop-pagination__btn">2</button>
+        <button type="button" class="shop-pagination__btn" aria-label="Next page">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </nav>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer__banner">
+      <img src="assets/img/footer-bg2.webp" alt="" aria-hidden="true" loading="lazy" />
+    </div>
+    <div class="footer__main">
+      <div class="footer__inner">
+        <div class="footer__col footer__col--about">
+          <h3 class="footer__heading">About Prakrit</h3>
+          <p class="footer__about">
+            Prakrit is a trusted brand of certified organic food products cultivated and harvested in collaboration with
+            farmers who contribute to the goodness of people and the environment through sustainable farming practices.
+          </p>
+          <div class="footer__cert">
+            <span class="footer__fssai">fssai</span>
+            <div class="footer__cert-text">
+              <span>GSTIN: 33AARFD1040N1ZE</span>
+              <span>LIC NO: 10020042006896</span>
+            </div>
+          </div>
+          <ul class="footer__pay">
+            <li><span class="footer__pay-badge footer__pay-badge--rupay">RuPay&raquo;</span></li>
+            <li><i class="fa-brands fa-cc-visa" aria-label="Visa"></i></li>
+            <li><i class="fa-brands fa-cc-mastercard" aria-label="Mastercard"></i></li>
+            <li><span class="footer__pay-badge footer__pay-badge--upi">UPI</span></li>
+            <li><i class="fa-brands fa-cc-amex" aria-label="American Express"></i></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <ul class="footer__links">
+            <li><a href="#">Our Story</a></li>
+            <li><a href="shop.html">Organic Shop</a></li>
+            <li><a href="#">Login/Signup</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Receipes</a></li>
+          </ul>
+          <h4 class="footer__subheading">Newsletter</h4>
+          <form class="footer__newsletter" action="#" method="post">
+            <input type="email" class="footer__input" placeholder="E-mail address" aria-label="E-mail address" />
+            <button type="submit" class="footer__subscribe">SUBSCRIBE</button>
+          </form>
+        </div>
+        <div class="footer__col">
+          <ul class="footer__links">
+            <li><a href="#">Profit by Partnering</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms and Condition</a></li>
+            <li><a href="#">Returns and Refund</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+          <h4 class="footer__subheading">Follow Us</h4>
+          <ul class="footer__social">
+            <li><a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a></li>
+            <li><a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a></li>
+            <li><a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a></li>
+            <li><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h3 class="footer__heading">Visit Us</h3>
+          <p class="footer__brand">PRAKRIT ORGANIC</p>
+          <p class="footer__brand-sub">(A Pinnacle Group Company)</p>
+          <address class="footer__address">
+            79/99, Thiruvalluvar Street,<br />
+            Cotton City Estates,G.N. Mills,<br />
+            Coimbatore 641029<br />
+            Tamil Nadu, India
+          </address>
+          <ul class="footer__contact">
+            <li>
+              <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+              <a href="mailto:wecare@prakritorganic.com">wecare@prakritorganic.com</a>
+            </li>
+            <li>
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              <a href="tel:+919143977777">+91 9143977777</a>
+            </li>
+            <li>
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+              <a href="tel:+919153977777">+91 9153977777</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__copyright">
+        Prakrit&copy; Copyright 2026
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+
+</html>

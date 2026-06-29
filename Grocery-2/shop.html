@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — FreshHaat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+</head>
+
+<body>
+
+  <header class="fh-header" role="banner">
+
+    <!-- Top promo bar -->
+    <div class="fh-topbar">
+      <div class="fh-topbar__inner">
+        <p class="fh-topbar__text">
+          <span class="fh-topbar__ribbon" aria-hidden="true">&#127880;</span>
+          Super Saver Sale LIVE | Flat 25% OFF on Selected Products | Order Faster with our App
+        </p>
+        <a href="#" class="fh-topbar__btn">Download The App</a>
+      </div>
+    </div>
+
+    <!-- Main row -->
+    <div class="fh-main">
+      <div class="fh-main__inner">
+
+        <button type="button" class="fh-burger" data-fh-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="fh-mobile-nav">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <a href="index.html" class="fh-logo" aria-label="FreshHaat home">
+          <img src="assets/img/logo.png" alt="FreshHaat" width="170" height="56" decoding="async" />
+        </a>
+
+        <button type="button" class="fh-pincode" aria-label="Select your pincode">
+          <i class="fa-solid fa-location-dot fh-pincode__pin" aria-hidden="true"></i>
+          <span class="fh-pincode__label">Pincode</span>
+          <i class="fa-solid fa-chevron-down fh-pincode__caret" aria-hidden="true"></i>
+        </button>
+
+        <form class="fh-search" role="search" action="#" method="get">
+          <i class="fa-solid fa-magnifying-glass fh-search__icon" aria-hidden="true"></i>
+          <input type="search" class="fh-search__input" name="q" placeholder="Search..."
+            aria-label="Search FreshHaat" />
+        </form>
+
+        <nav class="fh-actions" aria-label="Account utilities">
+          <a href="#" class="fh-actions__item" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="fh-actions__item" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="fh-actions__item fh-actions__cart" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Navigation row -->
+    <div class="fh-nav">
+      <div class="fh-nav__inner">
+        <ul class="fh-nav__list" id="fh-mobile-nav">
+          <li><a href="#" class="fh-nav__link">New</a></li>
+          <li><a href="shop.html" class="fh-nav__link">Groceries</a></li>
+          <li><a href="#" class="fh-nav__link">Healthy Snacks</a></li>
+          <li><a href="#" class="fh-nav__link">Herbal Drinks &amp; Juices</a></li>
+          <li><a href="#" class="fh-nav__link">Beauty &amp; Hygiene</a></li>
+          <li><a href="#" class="fh-nav__link">Ayurveda</a></li>
+          <li><a href="#" class="fh-nav__link">Home Care</a></li>
+          <li><a href="#" class="fh-nav__link">Incense &amp; Mask</a></li>
+        </ul>
+        <a href="#" class="fh-nav__buyagain">
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+          Buy Again
+        </a>
+      </div>
+    </div>
+
+  </header>
+
+  <!-- Hero head -->
+  <section class="fh-hero-head">
+    <div class="fh-hero-head__inner">
+      <nav class="fh-crumbs" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="fh-crumbs__sep">/</span>
+        <a href="shop.html">Essentials</a>
+        <span class="fh-crumbs__sep">/</span>
+        <span>Salts &amp; Sugars</span>
+      </nav>
+
+      <div class="fh-hero-head__card">
+        <span class="fh-hero-head__leaf" aria-hidden="true"><i class="fa-solid fa-seedling"></i></span>
+        <span class="fh-hero-head__eyebrow"><i class="fa-solid fa-asterisk" aria-hidden="true"></i> Essentials</span>
+        <h1 class="fh-hero-head__title">Best of Salts &amp; Sugars</h1>
+        <p class="fh-hero-head__sub">Hand-picked, farm-fresh, and delivered to your door — the way produce was always
+          meant to be.</p>
+        <div class="fh-hero-head__badges">
+          <span class="fh-hero-head__badge"><i class="fa-solid fa-leaf" aria-hidden="true"></i> Sourced at 4am</span>
+          <span class="fh-hero-head__badge"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i> Same / next-day
+            delivery</span>
+          <span class="fh-hero-head__badge"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Quality
+            guaranteed</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shop grid -->
+  <section class="fh-catalog">
+    <div class="fh-catalog__inner">
+
+      <div class="fh-chips" role="tablist" aria-label="Categories">
+        <button type="button" class="fh-chip">Spices &amp; Herbs</button>
+        <button type="button" class="fh-chip">Ghee &amp; Oils</button>
+        <button type="button" class="fh-chip fh-chip--active">Salts &amp; Sugars</button>
+        <button type="button" class="fh-chip">Other Essentials</button>
+        <button type="button" class="fh-chip">Cereals</button>
+        <button type="button" class="fh-chip">Legumes &amp; Pulses</button>
+        <button type="button" class="fh-chip">Flour &amp; Rice</button>
+        <button type="button" class="fh-chip">Pasta &amp; Noodles</button>
+      </div>
+
+      <div class="fh-catalog__toolbar">
+        <p class="fh-catalog__count">Showing 20 products</p>
+        <div class="fh-catalog__tools">
+          <button type="button" class="fh-catalog__sort">
+            <i class="fa-solid fa-arrow-up-wide-short" aria-hidden="true"></i> Sort
+          </button>
+          <button type="button" class="fh-catalog__filters" data-fh-filter-open>
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filter
+          </button>
+        </div>
+      </div>
+
+      <div class="fh-catalog__grid">
+
+        <article class="fh-gcard" data-fh-product="sugar-organic-1kg">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/organic-food.jpg" alt="Sugar - Organic" loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">24 Mantra</span>
+            <h4 class="fh-gcard__name">Sugar <span>- Organic</span></h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">1 Kg</span>
+              <span class="fh-gcard__qty">500 Gm</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 145</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fh-gcard" data-fh-product="rock-salt-organic">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__badge">3% OFF</span>
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/Conscious_Food_Til_Organic_Hex81Yx.png" alt="Natural Rock Salt - Organic"
+              loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">Organic Tattva</span>
+            <h4 class="fh-gcard__name">Natural Rock Salt <span>- Organic</span></h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">500 Gm</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 57</span>
+                <span class="fh-gcard__mrp">Rs 60</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fh-gcard" data-fh-product="iodized-salt">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/salt.jpg" alt="Iodized Salt" loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">Tata Salt</span>
+            <h4 class="fh-gcard__name">Iodized Salt</h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">1 Kg</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 30</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fh-gcard" data-fh-product="lite-salt">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/health_salads.png" alt="Lite Salt" loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">Tata Salt</span>
+            <h4 class="fh-gcard__name">Lite Salt</h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">1 Kg</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 50</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fh-gcard" data-fh-product="brown-sugar-organic">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/Gormet_Grocery.png" alt="Brown Sugar - Organic" loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">Organic Tattva</span>
+            <h4 class="fh-gcard__name">Brown Sugar <span>Organic</span></h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">500 Gm</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 90</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fh-gcard" data-fh-product="sugar-organic-500gm">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/organic-food.jpg" alt="Sugar - Organic" loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">Organic Tattva</span>
+            <h4 class="fh-gcard__name">Sugar <span>Organic</span></h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">500 Gm</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 75</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fh-gcard" data-fh-product="sugar-organic-1kg-off">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__badge">3% OFF</span>
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/Conscious_Food_Til_Organic_Hex81Yx.png" alt="Sugar - Organic" loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">Organic Tattva</span>
+            <h4 class="fh-gcard__name">Sugar <span>Organic</span></h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">1 Kg</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 143</span>
+                <span class="fh-gcard__mrp">Rs 150</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="fh-gcard" data-fh-product="sugar-sulphurless">
+          <div class="fh-gcard__media">
+            <span class="fh-gcard__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            <img src="assets/img/atta.jpg" alt="Sugar - Sulphurless" loading="lazy" />
+          </div>
+          <div class="fh-gcard__body">
+            <span class="fh-gcard__brand">Fortune</span>
+            <h4 class="fh-gcard__name">Sugar <span>Sulphurless</span></h4>
+            <div class="fh-gcard__qtys">
+              <span class="fh-gcard__qty fh-gcard__qty--active">1 Kg</span>
+            </div>
+            <div class="fh-gcard__foot">
+              <div class="fh-gcard__pricing">
+                <span class="fh-gcard__price">Rs 75</span>
+              </div>
+              <button type="button" class="fh-gcard__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                ADD</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <nav class="fh-pagination" aria-label="Pagination">
+        <a href="#" class="fh-pagination__btn" aria-label="Previous"><i class="fa-solid fa-chevron-left"
+            aria-hidden="true"></i></a>
+        <a href="#" class="fh-pagination__btn fh-pagination__btn--active">1</a>
+        <a href="#" class="fh-pagination__btn">2</a>
+        <a href="#" class="fh-pagination__btn">3</a>
+        <a href="#" class="fh-pagination__btn" aria-label="Next"><i class="fa-solid fa-chevron-right"
+            aria-hidden="true"></i></a>
+      </nav>
+
+    </div>
+  </section>
+
+  <!-- Filter modal -->
+  <div class="fh-filter" data-fh-filter hidden>
+    <div class="fh-filter__sheet" role="dialog" aria-modal="true" aria-label="Filter products">
+
+      <header class="fh-filter__top">
+        <button type="button" class="fh-filter__back" data-fh-filter-close aria-label="Back">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <h2 class="fh-filter__title">Filter</h2>
+        <a href="index.html" class="fh-filter__home" aria-label="Home">
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+        </a>
+      </header>
+
+      <div class="fh-filter__bar">
+        <span class="fh-filter__avail">25 Products Available</span>
+        <button type="button" class="fh-filter__clear" data-fh-filter-clear>CLEAR ALL</button>
+      </div>
+
+      <div class="fh-filter__body">
+        <div class="fh-filter__tabs" role="tablist" aria-label="Filter groups">
+          <button type="button" class="fh-filter__tab fh-filter__tab--active" data-fh-filter-tab="categories">Categories</button>
+          <button type="button" class="fh-filter__tab" data-fh-filter-tab="subcategories">Subcategories</button>
+          <button type="button" class="fh-filter__tab" data-fh-filter-tab="brand">Brand</button>
+          <button type="button" class="fh-filter__tab" data-fh-filter-tab="price">Price</button>
+          <button type="button" class="fh-filter__tab" data-fh-filter-tab="discount">Discount</button>
+          <button type="button" class="fh-filter__tab" data-fh-filter-tab="vegnonveg">Veg/Non Veg</button>
+          <button type="button" class="fh-filter__tab" data-fh-filter-tab="availability">Availability</button>
+          <button type="button" class="fh-filter__tab" data-fh-filter-tab="foodtype">Food Type</button>
+        </div>
+
+        <div class="fh-filter__content">
+          <div class="fh-filter__pane fh-filter__pane--active" data-fh-filter-pane="categories">
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Essentials</span></label>
+          </div>
+
+          <div class="fh-filter__pane" data-fh-filter-pane="subcategories">
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Spices &amp; Herbs</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Ghee &amp; Oils</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Salts &amp; Sugars</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Flour &amp; Rice</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Legumes &amp; Pulses</span></label>
+          </div>
+
+          <div class="fh-filter__pane" data-fh-filter-pane="brand">
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>24 Mantra</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Organic Tattva</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Tata Salt</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Fortune</span></label>
+          </div>
+
+          <div class="fh-filter__pane" data-fh-filter-pane="price">
+            <label class="fh-filter__opt"><input type="radio" name="fh-price" /> <span>Under Rs 50</span></label>
+            <label class="fh-filter__opt"><input type="radio" name="fh-price" /> <span>Rs 50 - Rs 100</span></label>
+            <label class="fh-filter__opt"><input type="radio" name="fh-price" /> <span>Rs 100 - Rs 200</span></label>
+            <label class="fh-filter__opt"><input type="radio" name="fh-price" /> <span>Above Rs 200</span></label>
+          </div>
+
+          <div class="fh-filter__pane" data-fh-filter-pane="discount">
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>5% and above</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>10% and above</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>20% and above</span></label>
+          </div>
+
+          <div class="fh-filter__pane" data-fh-filter-pane="vegnonveg">
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Veg</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Non Veg</span></label>
+          </div>
+
+          <div class="fh-filter__pane" data-fh-filter-pane="availability">
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>In Stock</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Out of Stock</span></label>
+          </div>
+
+          <div class="fh-filter__pane" data-fh-filter-pane="foodtype">
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Organic</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Gluten Free</span></label>
+            <label class="fh-filter__opt"><input type="checkbox" /> <span>Sugar Free</span></label>
+          </div>
+        </div>
+      </div>
+
+      <footer class="fh-filter__foot">
+        <button type="button" class="fh-filter__apply" data-fh-filter-close>APPLY</button>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="fh-footer" role="contentinfo">
+    <div class="fh-footer__inner">
+
+      <div class="fh-footer__brand">
+        <a href="index.html" class="fh-footer__logo" aria-label="FreshHaat home">
+          <img src="assets/img/logo.png" alt="FreshHaat" loading="lazy" />
+        </a>
+        <p class="fh-footer__about">
+          Online supermarket in Delhi NCR. Sourced at 4 AM, delivered to your door — fresh produce,
+          premium pantry, and FreshHaat Originals.
+        </p>
+        <div class="fh-footer__social">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <nav class="fh-footer__col" aria-label="FreshHaat">
+        <h3 class="fh-footer__heading">FreshHaat</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Offers</a></li>
+          <li><a href="#">Engage / Blog</a></li>
+          <li><a href="#">Return &amp; Refund</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+        </ul>
+      </nav>
+
+      <nav class="fh-footer__col" aria-label="Help">
+        <h3 class="fh-footer__heading">Help</h3>
+        <ul>
+          <li><a href="#">General FAQs</a></li>
+          <li><a href="#">Wallet FAQs</a></li>
+          <li><a href="#">Refer &amp; Earn FAQs</a></li>
+          <li><a href="#">Business Enquiries</a></li>
+        </ul>
+      </nav>
+
+      <nav class="fh-footer__col" aria-label="We serve">
+        <h3 class="fh-footer__heading">We Serve</h3>
+        <ul>
+          <li><a href="#">Delhi</a></li>
+          <li><a href="#">Gurgaon</a></li>
+          <li><a href="#">Noida</a></li>
+          <li><a href="#">Ghaziabad</a></li>
+          <li><a href="#">Faridabad</a></li>
+        </ul>
+      </nav>
+
+      <div class="fh-footer__col fh-footer__app">
+        <h3 class="fh-footer__heading">Get The App</h3>
+        <a href="#" class="fh-footer__store">
+          <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+          <span><small>Get it on</small><strong>Google Play</strong></span>
+        </a>
+        <a href="#" class="fh-footer__store">
+          <i class="fa-brands fa-apple" aria-hidden="true"></i>
+          <span><small>Download on</small><strong>App Store</strong></span>
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+  <button type="button" class="fh-top" data-fh-top aria-label="Back to top">
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+
+</html>

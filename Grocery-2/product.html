@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange Valencia (Malta) — FreshHaat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500;1,600&family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="fh-header" role="banner">
+
+    <!-- Top promo bar -->
+    <div class="fh-topbar">
+      <div class="fh-topbar__inner">
+        <p class="fh-topbar__text">
+          <span class="fh-topbar__ribbon" aria-hidden="true">&#127880;</span>
+          Super Saver Sale LIVE | Flat 25% OFF on Selected Products | Order Faster with our App
+        </p>
+        <a href="#" class="fh-topbar__btn">Download The App</a>
+      </div>
+    </div>
+
+    <!-- Main row -->
+    <div class="fh-main">
+      <div class="fh-main__inner">
+
+        <button type="button" class="fh-burger" data-fh-toggle aria-label="Open menu" aria-expanded="false"
+          aria-controls="fh-mobile-nav">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+
+        <a href="index.html" class="fh-logo" aria-label="FreshHaat home">
+          <img src="assets/img/logo.png" alt="FreshHaat" width="170" height="56" decoding="async" />
+        </a>
+
+        <button type="button" class="fh-pincode" aria-label="Select your pincode">
+          <i class="fa-solid fa-location-dot fh-pincode__pin" aria-hidden="true"></i>
+          <span class="fh-pincode__label">Pincode</span>
+          <i class="fa-solid fa-chevron-down fh-pincode__caret" aria-hidden="true"></i>
+        </button>
+
+        <form class="fh-search" role="search" action="#" method="get">
+          <i class="fa-solid fa-magnifying-glass fh-search__icon" aria-hidden="true"></i>
+          <input type="search" class="fh-search__input" name="q" placeholder="Search..."
+            aria-label="Search FreshHaat" />
+        </form>
+
+        <nav class="fh-actions" aria-label="Account utilities">
+          <a href="#" class="fh-actions__item" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="fh-actions__item" aria-label="Wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="fh-actions__item fh-actions__cart" aria-label="Cart">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Navigation row -->
+    <div class="fh-nav">
+      <div class="fh-nav__inner">
+        <ul class="fh-nav__list" id="fh-mobile-nav">
+          <li><a href="#" class="fh-nav__link">New</a></li>
+          <li><a href="shop.html" class="fh-nav__link">Groceries</a></li>
+          <li><a href="#" class="fh-nav__link">Healthy Snacks</a></li>
+          <li><a href="#" class="fh-nav__link">Herbal Drinks &amp; Juices</a></li>
+          <li><a href="#" class="fh-nav__link">Beauty &amp; Hygiene</a></li>
+          <li><a href="#" class="fh-nav__link">Ayurveda</a></li>
+          <li><a href="#" class="fh-nav__link">Home Care</a></li>
+          <li><a href="#" class="fh-nav__link">Incense &amp; Mask</a></li>
+        </ul>
+        <a href="#" class="fh-nav__buyagain">
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
+          Buy Again
+        </a>
+      </div>
+    </div>
+
+  </header>
+
+  <!-- Breadcrumb -->
+  <section class="fh-page-head fh-page-head--compact">
+    <div class="fh-page-head__inner">
+      <nav class="fh-crumbs" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        <a href="shop.html">Shop</a>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        <span data-fh-crumb>Orange Valencia (Malta)</span>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Product detail -->
+  <section class="fh-pdp" data-fh-pdp>
+    <div class="fh-pdp__inner">
+
+      <!-- Gallery -->
+      <div class="fh-pdp__gallery">
+        <div class="fh-pdp__media">
+          <div class="fh-pdp__thumbs" data-fh-thumbs></div>
+          <div class="fh-pdp__stage">
+            <span class="fh-pdp__badge" data-fh-badge hidden>25% OFF</span>
+            <img src="assets/img/VALENCIA_ORANGE.jpg" alt="" data-fh-main-img />
+          </div>
+        </div>
+        <button type="button" class="fh-pdp__cart" data-fh-add>Add to Cart</button>
+      </div>
+
+      <!-- Info -->
+      <div class="fh-pdp__info">
+        <h1 class="fh-pdp__title" data-fh-title>Orange Valencia (Malta)</h1>
+
+        <div class="fh-pdp__rating">
+          <span class="fh-pdp__stars" aria-hidden="true">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+              class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </span>
+          <span class="fh-pdp__reviews"><strong data-fh-rating>(4.9)</strong> <span data-fh-reviews>209
+              reviews</span></span>
+        </div>
+
+        <div class="fh-pdp__price-block">
+          <p class="fh-pdp__mrp-line">MRP <strong data-fh-price>Rs. 1,500</strong></p>
+          <p class="fh-pdp__tax">Inclusive Of All Taxes</p>
+          <p class="fh-pdp__ship"><a href="#">Shipping</a> calculated at checkout.</p>
+        </div>
+
+        <div class="fh-pdp__questions">
+          <button type="button" class="fh-pdp__q">do I use it daily?</button>
+          <button type="button" class="fh-pdp__q"><i class="fa-solid fa-bolt" aria-hidden="true"></i> What health
+            benefits does it offer?</button>
+        </div>
+
+        <div class="fh-pdp__delivery">
+          <div class="fh-pdp__delivery-head">Check Your Delivery Date</div>
+          <div class="fh-pdp__delivery-body">
+            <span class="fh-pdp__delivery-label">Estimated Delivery</span>
+            <form class="fh-pdp__pin" action="#" method="get">
+              <input type="text" class="fh-pdp__pin-input" value="800001" aria-label="Pincode" />
+              <button type="submit" class="fh-pdp__pin-btn">Check</button>
+            </form>
+            <span class="fh-pdp__powered">Powered by <strong>Shiprocket</strong></span>
+          </div>
+        </div>
+
+        <p class="fh-pdp__gift">Make a special contribution towards <a href="#">GIFT A SMILE</a></p>
+
+        <div class="fh-pdp__accordion">
+          <div class="fh-pdp__acc fh-pdp__acc--open">
+            <button type="button" class="fh-pdp__acc-head">Description <i class="fa-solid fa-chevron-up"
+                aria-hidden="true"></i></button>
+            <div class="fh-pdp__acc-body" data-fh-desc></div>
+          </div>
+
+          <div class="fh-pdp__acc fh-pdp__acc--open">
+            <button type="button" class="fh-pdp__acc-head">Key Benefits <i class="fa-solid fa-chevron-up"
+                aria-hidden="true"></i></button>
+            <div class="fh-pdp__acc-body">
+              <ul data-fh-benefits></ul>
+            </div>
+          </div>
+
+          <div class="fh-pdp__acc fh-pdp__acc--open">
+            <button type="button" class="fh-pdp__acc-head">Key Ingredients <i class="fa-solid fa-chevron-up"
+                aria-hidden="true"></i></button>
+            <div class="fh-pdp__acc-body">
+              <ul data-fh-ingredients></ul>
+            </div>
+          </div>
+
+          <div class="fh-pdp__acc fh-pdp__acc--open">
+            <button type="button" class="fh-pdp__acc-head">Manufactured and Packed By <i class="fa-solid fa-chevron-up"
+                aria-hidden="true"></i></button>
+            <div class="fh-pdp__acc-body">
+              <ul class="fh-pdp__mfg" data-fh-mfg></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Introduction -->
+  <section class="fh-intro">
+    <div class="fh-intro__inner">
+      <h2 class="fh-intro__title">Introduction</h2>
+      <div class="fh-intro__text" data-fh-intro-text>
+        <p>
+          For centuries, cow ghee has held a sacred place in Indian culture and traditions. Made with care using
+          ancient methods, <a href="#">A2 cow ghee</a> is prized for its purity, health benefits and rich aroma.
+          Crafted from the milk of indigenous desi cows, it is naturally golden, deeply nourishing and free from
+          artificial additives.
+        </p>
+        <p>
+          Beyond its culinary uses, ghee is celebrated in Ayurveda for supporting digestion, immunity and overall
+          wellbeing. A spoonful added to your daily meals enhances both flavour and nutrition — a wholesome,
+          time-honoured superfood that has been passed down through generations.
+        </p>
+        <p>
+          At FreshHaat, every batch is prepared in small quantities to preserve its authentic taste and goodness.
+          Whether used in cooking, baking or as a daily supplement, our ghee brings the comfort of tradition and
+          the assurance of quality to your kitchen.
+        </p>
+      </div>
+      <div class="fh-intro__actions">
+        <button type="button" class="fh-intro__btn" data-fh-intro-toggle aria-expanded="false">See More</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="fh-rev">
+    <div class="fh-rev__inner">
+      <h2 class="fh-rev__title">Reviews</h2>
+
+      <div class="fh-rev__summary">
+        <div class="fh-rev__overall">
+          <span class="fh-rev__stars" aria-hidden="true">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+              class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </span>
+          <span class="fh-rev__based">Based on 209 reviews</span>
+        </div>
+
+        <div class="fh-rev__bars">
+          <div class="fh-rev__bar">
+            <span class="fh-rev__bar-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i></span>
+            <span class="fh-rev__bar-track"><span class="fh-rev__bar-fill" style="width:92%"></span></span>
+            <span class="fh-rev__bar-pct">92%</span>
+            <span class="fh-rev__bar-count">(192)</span>
+          </div>
+          <div class="fh-rev__bar">
+            <span class="fh-rev__bar-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-regular fa-star"></i></span>
+            <span class="fh-rev__bar-track"><span class="fh-rev__bar-fill" style="width:7%"></span></span>
+            <span class="fh-rev__bar-pct">7%</span>
+            <span class="fh-rev__bar-count">(15)</span>
+          </div>
+          <div class="fh-rev__bar">
+            <span class="fh-rev__bar-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i
+                class="fa-regular fa-star"></i></span>
+            <span class="fh-rev__bar-track"><span class="fh-rev__bar-fill" style="width:1%"></span></span>
+            <span class="fh-rev__bar-pct">1%</span>
+            <span class="fh-rev__bar-count">(2)</span>
+          </div>
+          <div class="fh-rev__bar">
+            <span class="fh-rev__bar-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i
+                class="fa-regular fa-star"></i></span>
+            <span class="fh-rev__bar-track"><span class="fh-rev__bar-fill" style="width:0%"></span></span>
+            <span class="fh-rev__bar-pct">0%</span>
+            <span class="fh-rev__bar-count">(0)</span>
+          </div>
+          <div class="fh-rev__bar">
+            <span class="fh-rev__bar-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i
+                class="fa-regular fa-star"></i></span>
+            <span class="fh-rev__bar-track"><span class="fh-rev__bar-fill" style="width:0%"></span></span>
+            <span class="fh-rev__bar-pct">0%</span>
+            <span class="fh-rev__bar-count">(0)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fh-rev__toolbar">
+        <label class="fh-rev__sort">
+          <select aria-label="Sort reviews">
+            <option>Highest Rating</option>
+            <option>Lowest Rating</option>
+            <option>Most Recent</option>
+            <option>Oldest</option>
+          </select>
+        </label>
+      </div>
+
+      <ul class="fh-rev__list">
+
+        <li class="fh-rev__item">
+          <div class="fh-rev__avatar">D</div>
+          <div class="fh-rev__content">
+            <div class="fh-rev__meta">
+              <span class="fh-rev__item-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i></span>
+              <span class="fh-rev__time">5 days ago</span>
+            </div>
+            <div class="fh-rev__author"><span class="fh-rev__verified"><i class="fa-solid fa-check"
+                  aria-hidden="true"></i> Verified</span> <strong>Digvijay Datta</strong></div>
+            <h4 class="fh-rev__item-title">A2 Cow Ghee of Bangalore Ashram</h4>
+            <p class="fh-rev__body">Sri Sri Tattva has listed 2 types of A2 cow ghee. One is Manufactured somewhere in
+              Northern / Western region India and the other one is A2 Cow ghee made at Ashram. Both have different
+              taste and texture. The Ashram one feels more authentically made which is only available on the Sri Sri
+              Tattva App.</p>
+          </div>
+        </li>
+
+        <li class="fh-rev__item">
+          <div class="fh-rev__avatar">I</div>
+          <div class="fh-rev__content">
+            <div class="fh-rev__meta">
+              <span class="fh-rev__item-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i></span>
+              <span class="fh-rev__time">4 weeks ago</span>
+            </div>
+            <div class="fh-rev__author"><span class="fh-rev__verified"><i class="fa-solid fa-check"
+                  aria-hidden="true"></i> Verified</span> <strong>Indira Rathore</strong></div>
+            <p class="fh-rev__body">A2 Cow Ghee, 500 ml</p>
+          </div>
+        </li>
+
+        <li class="fh-rev__item">
+          <div class="fh-rev__avatar">T</div>
+          <div class="fh-rev__content">
+            <div class="fh-rev__meta">
+              <span class="fh-rev__item-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i></span>
+              <span class="fh-rev__time">4 weeks ago</span>
+            </div>
+            <div class="fh-rev__author"><span class="fh-rev__verified"><i class="fa-solid fa-check"
+                  aria-hidden="true"></i> Verified</span> <strong>Tushar Gupta</strong></div>
+            <h4 class="fh-rev__item-title">Very good product</h4>
+            <p class="fh-rev__body">Good product</p>
+          </div>
+        </li>
+
+        <li class="fh-rev__item">
+          <div class="fh-rev__avatar">A</div>
+          <div class="fh-rev__content">
+            <div class="fh-rev__meta">
+              <span class="fh-rev__item-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i></span>
+              <span class="fh-rev__time">9 months ago</span>
+            </div>
+            <div class="fh-rev__author"><span class="fh-rev__verified"><i class="fa-solid fa-check"
+                  aria-hidden="true"></i> Verified</span> <strong>Amod Kumar</strong></div>
+            <h4 class="fh-rev__item-title">Pure Ghee</h4>
+            <p class="fh-rev__body">Pure cow ghee. Very nutritious and tasty.</p>
+          </div>
+        </li>
+
+        <li class="fh-rev__item">
+          <div class="fh-rev__avatar">P</div>
+          <div class="fh-rev__content">
+            <div class="fh-rev__meta">
+              <span class="fh-rev__item-stars" aria-hidden="true"><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i></span>
+              <span class="fh-rev__time">10 months ago</span>
+            </div>
+            <div class="fh-rev__author"><span class="fh-rev__verified"><i class="fa-solid fa-check"
+                  aria-hidden="true"></i> Verified</span> <strong>PRAVEENA GACHCHI Gachchi</strong></div>
+            <p class="fh-rev__body">Excellent product and highly soothing to the gut</p>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- Related products -->
+  <section class="fh-prod" aria-labelledby="fh-related-title">
+    <div class="fh-prod__inner">
+      <div class="fh-prod__head">
+        <span class="fh-prod__eyebrow"><i class="fa-solid fa-circle" aria-hidden="true"></i> You may also like</span>
+        <h2 class="fh-prod__title" id="fh-related-title">Related <em>picks</em></h2>
+      </div>
+
+      <div class="fh-prod__slider">
+        <button type="button" class="fh-prod__arrow fh-prod__arrow--prev" data-fh-prod-prev
+          aria-label="Previous products">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <div class="fh-prod__track" data-fh-prod-track>
+
+          <article class="fh-prod-card" data-fh-product="baby-mandarin">
+            <div class="fh-prod-card__media">
+              <img src="assets/img/BABY_MANDARIN.jpg" alt="Baby Mandarin" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Frugivore</span>
+              <h4 class="fh-prod-card__name">Baby Mandarin</h4>
+              <div class="fh-prod-card__qtys"><span class="fh-prod-card__qty">500 Gm</span></div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 189</span>
+                  <span class="fh-prod-card__mrp">Rs 241</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="kiwi-green">
+            <div class="fh-prod-card__media">
+              <img src="assets/img/green_kiwi.jpg" alt="Kiwi - Green" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Zespri</span>
+              <h4 class="fh-prod-card__name">Kiwi - Green</h4>
+              <div class="fh-prod-card__qtys"><span class="fh-prod-card__qty">4 Pcs</span></div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 249</span>
+                  <span class="fh-prod-card__mrp">Rs 498</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="red-apples">
+            <div class="fh-prod-card__media">
+              <img src="assets/img/REd_Apple.png" alt="Fresh Red Apples" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Frugivore</span>
+              <h4 class="fh-prod-card__name">Fresh Red Apples</h4>
+              <div class="fh-prod-card__qtys"><span class="fh-prod-card__qty">1 Kg</span></div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 189</span>
+                  <span class="fh-prod-card__mrp">Rs 225</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="pomegranate-juice">
+            <div class="fh-prod-card__media">
+              <img src="assets/img/Anti_Ageing.jpg" alt="Pomegranate Juice" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">Frugivore</span>
+              <h4 class="fh-prod-card__name">Pomegranate Juice</h4>
+              <div class="fh-prod-card__qtys"><span class="fh-prod-card__qty">350 Ml</span></div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 329</span>
+                  <span class="fh-prod-card__mrp">Rs 438</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="fh-prod-card" data-fh-product="premium-walnuts">
+            <div class="fh-prod-card__media">
+              <img src="assets/img/Walnut.png" alt="Premium Walnuts" loading="lazy" />
+              <span class="fh-prod-card__loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> India</span>
+            </div>
+            <div class="fh-prod-card__body">
+              <span class="fh-prod-card__brand">FreshHaat</span>
+              <h4 class="fh-prod-card__name">Premium Walnuts</h4>
+              <div class="fh-prod-card__qtys"><span class="fh-prod-card__qty">250 Gm</span></div>
+              <div class="fh-prod-card__foot">
+                <div class="fh-prod-card__pricing">
+                  <span class="fh-prod-card__price">Rs 320</span>
+                  <span class="fh-prod-card__mrp">Rs 399</span>
+                </div>
+                <button type="button" class="fh-prod-card__add"><i class="fa-solid fa-plus" aria-hidden="true"></i>
+                  ADD</button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <button type="button" class="fh-prod__arrow fh-prod__arrow--next" data-fh-prod-next aria-label="Next products">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="fh-footer" role="contentinfo">
+    <div class="fh-footer__inner">
+
+      <div class="fh-footer__brand">
+        <a href="index.html" class="fh-footer__logo" aria-label="FreshHaat home">
+          <img src="assets/img/logo.png" alt="FreshHaat" loading="lazy" />
+        </a>
+        <p class="fh-footer__about">
+          Online supermarket in Delhi NCR. Sourced at 4 AM, delivered to your door — fresh produce,
+          premium pantry, and FreshHaat Originals.
+        </p>
+        <div class="fh-footer__social">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <nav class="fh-footer__col" aria-label="FreshHaat">
+        <h3 class="fh-footer__heading">FreshHaat</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Offers</a></li>
+          <li><a href="#">Engage / Blog</a></li>
+          <li><a href="#">Return &amp; Refund</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+        </ul>
+      </nav>
+
+      <nav class="fh-footer__col" aria-label="Help">
+        <h3 class="fh-footer__heading">Help</h3>
+        <ul>
+          <li><a href="#">General FAQs</a></li>
+          <li><a href="#">Wallet FAQs</a></li>
+          <li><a href="#">Refer &amp; Earn FAQs</a></li>
+          <li><a href="#">Business Enquiries</a></li>
+        </ul>
+      </nav>
+
+      <nav class="fh-footer__col" aria-label="We serve">
+        <h3 class="fh-footer__heading">We Serve</h3>
+        <ul>
+          <li><a href="#">Delhi</a></li>
+          <li><a href="#">Gurgaon</a></li>
+          <li><a href="#">Noida</a></li>
+          <li><a href="#">Ghaziabad</a></li>
+          <li><a href="#">Faridabad</a></li>
+        </ul>
+      </nav>
+
+      <div class="fh-footer__col fh-footer__app">
+        <h3 class="fh-footer__heading">Get The App</h3>
+        <a href="#" class="fh-footer__store">
+          <i class="fa-brands fa-google-play" aria-hidden="true"></i>
+          <span><small>Get it on</small><strong>Google Play</strong></span>
+        </a>
+        <a href="#" class="fh-footer__store">
+          <i class="fa-brands fa-apple" aria-hidden="true"></i>
+          <span><small>Download on</small><strong>App Store</strong></span>
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+  <button type="button" class="fh-top" data-fh-top aria-label="Back to top">
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <script src="assets/js/products.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
+</body>
+
+</html>
