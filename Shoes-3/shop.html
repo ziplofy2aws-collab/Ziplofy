@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Kadam Footwear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/shop.css" />
+</head>
+
+<body>
+
+  <header class="sh3-header" role="banner">
+
+    <div class="sh3-header__announce" role="region" aria-label="Store announcement">
+      <div class="sh3-header__announce-inner">
+        <p class="sh3-header__announce-text">
+          &#128293; Velocity Pro Now Live &ndash; Premium Design | &#8377;3,999
+        </p>
+      </div>
+    </div>
+
+    <div class="sh3-header__main">
+      <div class="sh3-header__main-inner">
+
+        <div class="sh3-header__brand">
+          <button type="button" class="sh3-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-sh3-menu-toggle>
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+          <a href="index.html" class="sh3-header__logo" aria-label="Kadam home">
+            <img src="assets/img/logo.png" alt="Kadam" width="140" height="40" decoding="async" />
+          </a>
+        </div>
+
+        <nav class="sh3-header__nav" id="sh3-primary-nav" aria-label="Main navigation">
+          <button type="button" class="sh3-header__nav-close" data-sh3-menu-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+          <ul class="sh3-header__nav-list">
+            <li><a href="shop.html">Categories</a></li>
+            <li><a href="#">Support &amp; Warranty</a></li>
+            <li><a href="shop.html?cat=Running%20Shoes">Running Series</a></li>
+            <li><a href="#">Corporate Orders</a></li>
+            <li><a href="#">More</a></li>
+          </ul>
+        </nav>
+
+        <div class="sh3-header__utilities">
+          <form class="sh3-header__search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="sh3-header-search">Search products</label>
+            <i class="fa-solid fa-magnifying-glass sh3-header__search-icon" aria-hidden="true"></i>
+            <input id="sh3-header-search" type="search" name="q" placeholder="Search for Sneakers" autocomplete="off" />
+          </form>
+
+          <div class="sh3-header__actions">
+            <a href="#" class="sh3-header__action sh3-header__action--account" aria-label="Account">
+              <span class="sh3-header__action-icon" aria-hidden="true">
+                <i class="fa-regular fa-user"></i>
+                <i class="fa-solid fa-bolt sh3-header__bolt"></i>
+              </span>
+            </a>
+            <a href="#" class="sh3-header__action" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="sh3-header__overlay" data-sh3-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content" class="sh3-shop">
+    <div class="sh3-shop__container">
+      <nav class="sh3-shop__crumbs" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <span>Shop</span>
+      </nav>
+
+      <header class="sh3-shop__head">
+        <h1 class="sh3-shop__title" data-sh3-shop-title>All Shoes</h1>
+        <p class="sh3-shop__count" data-sh3-shop-count>11 Products</p>
+      </header>
+
+      <div class="sh3-shop__toolbar">
+        <div class="sh3-shop__filters" data-sh3-shop-filters aria-label="Category filters"></div>
+        <select class="sh3-shop__sort" data-sh3-shop-sort aria-label="Sort products">
+          <option value="recommended">Recommended</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="discount">Highest Discount</option>
+          <option value="rating">Most Reviewed</option>
+        </select>
+      </div>
+
+      <div class="sh3-shop__grid" data-sh3-shop-grid></div>
+    </div>
+  </main>
+
+  <footer class="sh3-footer" role="contentinfo">
+    <div class="sh3-footer__container">
+      <div class="sh3-footer__grid">
+        <div class="sh3-footer__col sh3-footer__col--brand">
+          <a href="index.html" class="sh3-footer__logo" aria-label="Kadam home">
+            <img src="assets/img/logo.png" alt="Kadam" width="140" height="40" loading="lazy" decoding="async" />
+          </a>
+          <h3 class="sh3-footer__heading">Stay in Touch!</h3>
+          <div class="sh3-footer__social">
+            <a href="#" class="sh3-footer__social-link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sh3-footer__social-link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sh3-footer__social-link" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sh3-footer__social-link" aria-label="TikTok">
+              <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="sh3-footer__col">
+          <h3 class="sh3-footer__heading">Quick Links</h3>
+          <ul class="sh3-footer__links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">All Shoes</a></li>
+            <li><a href="shop.html">New Arrivals</a></li>
+            <li><a href="shop.html">Best Sellers</a></li>
+            <li><a href="shop.html?cat=Running%20Shoes">Running Series</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Reviews</a></li>
+          </ul>
+        </div>
+
+        <div class="sh3-footer__col">
+          <h3 class="sh3-footer__heading">Customer Support</h3>
+          <ul class="sh3-footer__links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Where's my stuff?</a></li>
+            <li><a href="#">Affiliate Program</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Refund Policy</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sh3-footer__bottom">
+        <div class="sh3-footer__bottom-left">
+          <p class="sh3-footer__copyright">&copy; 2025, Kadam Footwear</p>
+          <ul class="sh3-footer__legal">
+            <li><a href="#">Accessibility</a></li>
+            <li><a href="#">Refund Policy</a></li>
+            <li><a href="#">Privacy policy</a></li>
+            <li><a href="#">Terms of service</a></li>
+            <li><a href="#">Shipping policy</a></li>
+            <li><a href="#">Contact information</a></li>
+            <li><a href="#">Cancellation policy</a></li>
+          </ul>
+        </div>
+        <div class="sh3-footer__bottom-right">
+          <p class="sh3-footer__disclaimer">*Prices, offers, and product availability are subject to change without
+            notice. Images are for illustration only. Kadam Footwear is not responsible for typographical errors on this
+            site.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <aside class="sh3-promo-tab" data-sh3-promo-tab role="complementary" aria-label="Special offer">
+    <a href="#" class="sh3-promo-tab__label">GET 10% OFF!</a>
+    <button type="button" class="sh3-promo-tab__close" data-sh3-promo-tab-close aria-label="Close offer">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </aside>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>

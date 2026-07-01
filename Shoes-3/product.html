@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — Kadam Footwear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="sh3-header" role="banner">
+
+    <div class="sh3-header__announce" role="region" aria-label="Store announcement">
+      <div class="sh3-header__announce-inner">
+        <p class="sh3-header__announce-text">
+          &#128293; Velocity Pro Now Live &ndash; Premium Design | &#8377;3,999
+        </p>
+      </div>
+    </div>
+
+    <div class="sh3-header__main">
+      <div class="sh3-header__main-inner">
+
+        <div class="sh3-header__brand">
+          <button type="button" class="sh3-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+            data-sh3-menu-toggle>
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+          <a href="index.html" class="sh3-header__logo" aria-label="Kadam home">
+            <img src="assets/img/logo.png" alt="Kadam" width="140" height="40" decoding="async" />
+          </a>
+        </div>
+
+        <nav class="sh3-header__nav" id="sh3-primary-nav" aria-label="Main navigation">
+          <button type="button" class="sh3-header__nav-close" data-sh3-menu-close aria-label="Close menu">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+          <ul class="sh3-header__nav-list">
+            <li><a href="shop.html">Categories</a></li>
+            <li><a href="#">Support &amp; Warranty</a></li>
+            <li><a href="shop.html?cat=Running%20Shoes">Running Series</a></li>
+            <li><a href="#">Corporate Orders</a></li>
+            <li><a href="#">More</a></li>
+          </ul>
+        </nav>
+
+        <div class="sh3-header__utilities">
+          <form class="sh3-header__search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="sh3-header-search">Search products</label>
+            <i class="fa-solid fa-magnifying-glass sh3-header__search-icon" aria-hidden="true"></i>
+            <input id="sh3-header-search" type="search" name="q" placeholder="Search for Sneakers" autocomplete="off" />
+          </form>
+
+          <div class="sh3-header__actions">
+            <a href="#" class="sh3-header__action sh3-header__action--account" aria-label="Account">
+              <span class="sh3-header__action-icon" aria-hidden="true">
+                <i class="fa-regular fa-user"></i>
+                <i class="fa-solid fa-bolt sh3-header__bolt"></i>
+              </span>
+            </a>
+            <a href="#" class="sh3-header__action" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="sh3-header__overlay" data-sh3-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content" class="sh3-pdp">
+    <div class="sh3-pdp__container">
+      <nav class="sh3-pdp__crumbs" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <a href="shop.html">Shop</a>
+        <span>/</span>
+        <a href="shop.html" data-sh3-pdp-crumb-cat>Running Shoes</a>
+        <span>/</span>
+        <span data-sh3-pdp-crumb>Product</span>
+      </nav>
+
+      <div class="sh3-pdp__layout">
+        <div class="sh3-pdp__gallery">
+          <div class="sh3-pdp__gallery-inner">
+            <div class="sh3-pdp__thumb-col">
+              <button type="button" class="sh3-pdp__thumb-nav sh3-pdp__thumb-nav--up" data-sh3-pdp-thumb-up
+                aria-label="Previous thumbnail" disabled>
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="sh3-pdp__thumb-track" data-sh3-pdp-thumbs></div>
+              <button type="button" class="sh3-pdp__thumb-nav sh3-pdp__thumb-nav--down" data-sh3-pdp-thumb-down
+                aria-label="Next thumbnail">
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="sh3-pdp__main-wrap">
+              <div class="sh3-pdp__rank-badge" aria-hidden="true">
+                <strong>#1</strong>
+                <span>Rated Shoe Brand of India</span>
+              </div>
+              <button type="button" class="sh3-pdp__gallery-arrow sh3-pdp__gallery-arrow--prev" data-sh3-pdp-prev
+                aria-label="Previous image">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <div class="sh3-pdp__main-media">
+                <img src="assets/img/Nike Pegasus 42.avif" alt="" width="640" height="640" decoding="async"
+                  data-sh3-pdp-main />
+              </div>
+              <button type="button" class="sh3-pdp__gallery-arrow sh3-pdp__gallery-arrow--next" data-sh3-pdp-next
+                aria-label="Next image">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="sh3-pdp__panel">
+          <div class="sh3-pdp__title-row">
+            <h1 class="sh3-pdp__title" data-sh3-pdp-title>Product Name</h1>
+            <div class="sh3-pdp__rating" data-sh3-pdp-rating aria-label="Product rating"></div>
+          </div>
+
+          <p class="sh3-pdp__desc" data-sh3-pdp-subtitle></p>
+
+          <div class="sh3-pdp__ship-badge">
+            <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+            Express Shipping
+          </div>
+
+          <div class="sh3-pdp__price-block">
+            <div class="sh3-pdp__prices">
+              <strong class="sh3-pdp__price" data-sh3-pdp-price></strong>
+              <del class="sh3-pdp__mrp" data-sh3-pdp-mrp></del>
+              <span class="sh3-pdp__tax">(Inclusive taxes)</span>
+              <span class="sh3-pdp__off" data-sh3-pdp-off></span>
+            </div>
+            <button type="button" class="sh3-pdp__info-pill" data-sh3-pdp-scroll-info>
+              Slide down for more info
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="sh3-pdp__emi-strip">
+            <div class="sh3-pdp__emi-strip-inner">
+              <span class="sh3-pdp__emi-new">NEW</span>
+              <p class="sh3-pdp__emi-text" data-sh3-pdp-emi-text></p>
+              <span class="sh3-pdp__emi-providers">0% EMI on <strong>Paytm</strong> • <strong>Bajaj</strong></span>
+            </div>
+            <button type="button" class="sh3-pdp__emi-chip">BUY ON EMI</button>
+          </div>
+
+          <div class="sh3-pdp__social-proof">
+            <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+            <span>1.8k People ordered this in the last 24 hours</span>
+          </div>
+
+          <div class="sh3-pdp__emi-card">
+            <p class="sh3-pdp__emi-card-label">3-MONTH INTEREST-FREE EMI</p>
+            <div class="sh3-pdp__emi-months" data-sh3-pdp-emi-months></div>
+            <p class="sh3-pdp__emi-note">0% Interest • No Hidden Charges</p>
+            <button type="button" class="sh3-pdp__emi-card-btn">Buy Now on EMI</button>
+          </div>
+
+          <div class="sh3-pdp__colors">
+            <p class="sh3-pdp__color-label">Color: <span data-sh3-pdp-color-name>Black/White</span></p>
+            <div class="sh3-pdp__color-swatches" data-sh3-pdp-colors></div>
+          </div>
+
+          <div class="sh3-pdp__delivery">
+            <h2 class="sh3-pdp__delivery-title">Check Delivery</h2>
+            <div class="sh3-pdp__pin-wrap">
+              <input class="sh3-pdp__pin-input" type="text" inputmode="numeric" maxlength="6"
+                placeholder="Enter Pincode" aria-label="Delivery pincode" />
+              <button type="button" class="sh3-pdp__pin-check">Check</button>
+            </div>
+          </div>
+
+          <div class="sh3-pdp__sizes-section">
+            <h2 class="sh3-pdp__section-title">Select Size (UK)</h2>
+            <div class="sh3-pdp__sizes" data-sh3-pdp-sizes></div>
+          </div>
+
+          <section class="sh3-pdp__offers" aria-label="Special offers">
+            <div class="sh3-pdp__offers-head">
+              <span class="sh3-pdp__offers-title">Special Offers</span>
+              <span class="sh3-pdp__offers-powered">Powered by <strong>Kadam</strong></span>
+            </div>
+            <div class="sh3-pdp__offers-viewport" data-sh3-pdp-offers-viewport>
+              <div class="sh3-pdp__offers-track" data-sh3-pdp-offers-track></div>
+            </div>
+            <div class="sh3-pdp__offers-progress" data-sh3-pdp-offers-progress aria-hidden="true">
+              <span class="is-active"></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </section>
+
+          <div class="sh3-pdp__perks">
+            <div class="sh3-pdp__perk">
+              <i class="fa-solid fa-truck" aria-hidden="true"></i>
+              <span>Free Shipping</span>
+            </div>
+            <div class="sh3-pdp__perk">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <span>1 Year Warranty</span>
+            </div>
+            <div class="sh3-pdp__perk">
+              <i class="fa-solid fa-file-invoice" aria-hidden="true"></i>
+              <span>GST Billing</span>
+            </div>
+            <div class="sh3-pdp__perk">
+              <i class="fa-solid fa-rotate" aria-hidden="true"></i>
+              <span>72 hrs replacement</span>
+            </div>
+          </div>
+
+          <div class="sh3-pdp__actions">
+            <button type="button" class="sh3-pdp__btn sh3-pdp__btn--cart">Add To Cart</button>
+            <button type="button" class="sh3-pdp__btn sh3-pdp__btn--buy">Buy Now</button>
+          </div>
+        </aside>
+      </div>
+
+      <section class="sh3-pdp__info" id="sh3-pdp-details" aria-label="Product information">
+        <div class="sh3-pdp__tabs" role="tablist" aria-label="Product details">
+          <button type="button" class="sh3-pdp__tab is-active" role="tab" id="sh3-pdp-tab-description"
+            aria-selected="true" aria-controls="sh3-pdp-panel-description" data-sh3-pdp-tab="description">
+            Description
+          </button>
+          <button type="button" class="sh3-pdp__tab" role="tab" id="sh3-pdp-tab-reviews" aria-selected="false"
+            aria-controls="sh3-pdp-panel-reviews" data-sh3-pdp-tab="reviews">
+            Reviews
+          </button>
+          <button type="button" class="sh3-pdp__tab" role="tab" id="sh3-pdp-tab-faq" aria-selected="false"
+            aria-controls="sh3-pdp-panel-faq" data-sh3-pdp-tab="faq">
+            FAQ
+          </button>
+        </div>
+
+        <div class="sh3-pdp__tab-panel is-active" id="sh3-pdp-panel-description" role="tabpanel"
+          aria-labelledby="sh3-pdp-tab-description" data-sh3-pdp-panel="description">
+          <article class="sh3-pdp__info-acc is-open" data-sh3-pdp-info-acc>
+            <button type="button" class="sh3-pdp__info-acc-toggle" data-sh3-pdp-info-acc-toggle aria-expanded="true">
+              Product USP
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sh3-pdp__info-acc-panel">
+              <ul class="sh3-pdp__usp-list" data-sh3-pdp-usp></ul>
+            </div>
+          </article>
+
+          <article class="sh3-pdp__info-acc" data-sh3-pdp-info-acc>
+            <button type="button" class="sh3-pdp__info-acc-toggle" data-sh3-pdp-info-acc-toggle aria-expanded="false">
+              Specifications
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="sh3-pdp__info-acc-panel">
+              <ul class="sh3-pdp__spec-table" data-sh3-pdp-specs></ul>
+            </div>
+          </article>
+        </div>
+
+        <div class="sh3-pdp__tab-panel" id="sh3-pdp-panel-reviews" role="tabpanel" aria-labelledby="sh3-pdp-tab-reviews"
+          data-sh3-pdp-panel="reviews" hidden>
+          <div class="sh3-pdp__reviews-summary">
+            <div class="sh3-pdp__reviews-score">
+              <strong data-sh3-pdp-review-score>4.8</strong>
+              <span class="sh3-pdp__rating-stars" aria-hidden="true">★★★★★</span>
+              <span data-sh3-pdp-review-count>Based on 248 reviews</span>
+            </div>
+          </div>
+          <div class="sh3-pdp__reviews-list" data-sh3-pdp-reviews></div>
+        </div>
+
+        <div class="sh3-pdp__tab-panel" id="sh3-pdp-panel-faq" role="tabpanel" aria-labelledby="sh3-pdp-tab-faq"
+          data-sh3-pdp-panel="faq" hidden>
+          <div class="sh3-pdp__faq-list" data-sh3-pdp-faq></div>
+        </div>
+      </section>
+
+      <section class="sh3-pdp__related" aria-labelledby="sh3-pdp-related-heading">
+        <h2 id="sh3-pdp-related-heading" class="sh3-pdp__related-title">You May Also Like</h2>
+        <div class="sh3-pdp__related-grid" data-sh3-pdp-related></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="sh3-footer" role="contentinfo">
+    <div class="sh3-footer__container">
+      <div class="sh3-footer__grid">
+        <div class="sh3-footer__col sh3-footer__col--brand">
+          <a href="index.html" class="sh3-footer__logo" aria-label="Kadam home">
+            <img src="assets/img/logo.png" alt="Kadam" width="140" height="40" loading="lazy" decoding="async" />
+          </a>
+          <h3 class="sh3-footer__heading">Stay in Touch!</h3>
+          <div class="sh3-footer__social">
+            <a href="#" class="sh3-footer__social-link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sh3-footer__social-link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sh3-footer__social-link" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="sh3-footer__social-link" aria-label="TikTok">
+              <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="sh3-footer__col">
+          <h3 class="sh3-footer__heading">Quick Links</h3>
+          <ul class="sh3-footer__links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">All Shoes</a></li>
+            <li><a href="shop.html">New Arrivals</a></li>
+            <li><a href="shop.html">Best Sellers</a></li>
+            <li><a href="shop.html?cat=Running%20Shoes">Running Series</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Reviews</a></li>
+          </ul>
+        </div>
+
+        <div class="sh3-footer__col">
+          <h3 class="sh3-footer__heading">Customer Support</h3>
+          <ul class="sh3-footer__links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Where's my stuff?</a></li>
+            <li><a href="#">Affiliate Program</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Refund Policy</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sh3-footer__bottom">
+        <div class="sh3-footer__bottom-left">
+          <p class="sh3-footer__copyright">&copy; 2025, Kadam Footwear</p>
+          <ul class="sh3-footer__legal">
+            <li><a href="#">Accessibility</a></li>
+            <li><a href="#">Refund Policy</a></li>
+            <li><a href="#">Privacy policy</a></li>
+            <li><a href="#">Terms of service</a></li>
+            <li><a href="#">Shipping policy</a></li>
+            <li><a href="#">Contact information</a></li>
+            <li><a href="#">Cancellation policy</a></li>
+          </ul>
+        </div>
+        <div class="sh3-footer__bottom-right">
+          <p class="sh3-footer__disclaimer">*Prices, offers, and product availability are subject to change without
+            notice. Images are for illustration only. Kadam Footwear is not responsible for typographical errors on this
+            site.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <aside class="sh3-promo-tab" data-sh3-promo-tab role="complementary" aria-label="Special offer">
+    <a href="#" class="sh3-promo-tab__label">GET 10% OFF!</a>
+    <button type="button" class="sh3-promo-tab__close" data-sh3-promo-tab-close aria-label="Close offer">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </aside>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/product-page.js"></script>
+</body>
+
+</html>
