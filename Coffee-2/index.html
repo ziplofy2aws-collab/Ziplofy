@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brewloom Coffee Co.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="cf2-header" role="banner" data-cf2-header>
+    <div class="cf2-header__inner">
+
+      <div class="cf2-header__brand">
+        <button type="button" class="cf2-header__menu-toggle" aria-label="Open menu" aria-expanded="false"
+          aria-controls="cf2-primary-nav" data-cf2-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+        <a href="index.html" class="cf2-header__logo" aria-label="Brewloom Coffee Co. home">
+          <img src="assets/img/logo.png" alt="Brewloom Coffee Co." width="150" height="56" decoding="async" />
+        </a>
+      </div>
+
+      <nav class="cf2-header__nav" id="cf2-primary-nav" aria-label="Main navigation">
+        <button type="button" class="cf2-header__nav-close" data-cf2-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+        <ul class="cf2-header__nav-list">
+          <li><a href="index.html" class="is-active" aria-current="page">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="cf2-header__actions">
+        <button type="button" class="cf2-header__action" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        </button>
+        <a href="#" class="cf2-header__action" aria-label="Account">
+          <i class="fa-regular fa-user" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="cf2-header__action cf2-header__action--cart" aria-label="Cart, 2 items">
+          <span class="cf2-header__cart-label">Cart</span>
+          <span class="cf2-header__cart-count" data-cf2-cart-count>2</span>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="cf2-header__overlay" data-cf2-menu-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="cf2-hero" aria-label="Featured coffee">
+      <img class="cf2-hero__bg" src="assets/img/hero-banner-1.png"
+        alt="Brewloom Signature Blend coffee bag beside a steaming cup and roasted beans" width="1024" height="512"
+        decoding="async" fetchpriority="high" />
+      <div class="cf2-hero__inner">
+        <div class="cf2-hero__content">
+          <p class="cf2-hero__eyebrow">Experience Premium</p>
+          <h1 class="cf2-hero__title">
+            Crafted for
+            <span class="cf2-hero__title-line">True <em>Coffee Lovers</em></span>
+          </h1>
+          <p class="cf2-hero__text">
+            Premium roasted coffee made<br />
+            from the world&rsquo;s finest beans.
+          </p>
+
+          <div class="cf2-hero__actions">
+            <a href="#" class="cf2-btn cf2-btn--gold">
+              Shop Coffee
+              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="cf2-btn cf2-btn--outline">
+              Explore Collection
+              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <div class="cf2-hero__rating">
+            <div class="cf2-hero__avatars" aria-hidden="true">
+              <img src="assets/img/insta-1.png" alt="" width="34" height="34" />
+              <img src="assets/img/insta-2.png" alt="" width="34" height="34" />
+              <img src="assets/img/insta-3.png" alt="" width="34" height="34" />
+              <img src="assets/img/insta-4.png" alt="" width="34" height="34" />
+            </div>
+            <div class="cf2-hero__stars" aria-hidden="true">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <p class="cf2-hero__rating-text">
+              <strong>4.9/5</strong>
+              <span>(25,000+ Happy Customers)</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cf2-features" aria-label="Why shop with us">
+      <div class="cf2-features__inner">
+        <div class="cf2-feature">
+          <span class="cf2-feature__icon" aria-hidden="true"><i class="fa-solid fa-mug-hot"></i></span>
+          <div class="cf2-feature__text">
+            <h3 class="cf2-feature__title">Freshly Roasted</h3>
+            <p class="cf2-feature__desc">Small batches for maximum freshness</p>
+          </div>
+        </div>
+
+        <div class="cf2-feature">
+          <span class="cf2-feature__icon" aria-hidden="true"><i class="fa-solid fa-leaf"></i></span>
+          <div class="cf2-feature__text">
+            <h3 class="cf2-feature__title">100% Arabica Beans</h3>
+            <p class="cf2-feature__desc">Sourced from the best coffee farms</p>
+          </div>
+        </div>
+
+        <div class="cf2-feature">
+          <span class="cf2-feature__icon" aria-hidden="true"><i class="fa-solid fa-truck"></i></span>
+          <div class="cf2-feature__text">
+            <h3 class="cf2-feature__title">Free Shipping</h3>
+            <p class="cf2-feature__desc">On all orders above &#8377;999</p>
+          </div>
+        </div>
+
+        <div class="cf2-feature">
+          <span class="cf2-feature__icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+          <div class="cf2-feature__text">
+            <h3 class="cf2-feature__title">Secure Payment</h3>
+            <p class="cf2-feature__desc">100% safe and secure checkout</p>
+          </div>
+        </div>
+
+        <div class="cf2-feature">
+          <span class="cf2-feature__icon" aria-hidden="true"><i class="fa-solid fa-seedling"></i></span>
+          <div class="cf2-feature__text">
+            <h3 class="cf2-feature__title">Eco Friendly</h3>
+            <p class="cf2-feature__desc">Sustainable packaging for a better tomorrow</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cf2-category" aria-labelledby="cf2-category-title">
+      <div class="cf2-category__inner">
+        <div class="cf2-section-head">
+          <span class="cf2-section-head__rule" aria-hidden="true"></span>
+          <h2 class="cf2-section-head__title" id="cf2-category-title">Shop by Category</h2>
+          <span class="cf2-section-head__rule" aria-hidden="true"></span>
+        </div>
+        <span class="cf2-section-head__diamond" aria-hidden="true"></span>
+
+        <div class="cf2-category__grid">
+          <a href="shop.html" class="cf2-category__card" aria-label="Coffee Beans">
+            <img src="assets/img/cat-1.png" alt="Coffee Beans" width="819" height="1024" decoding="async" />
+          </a>
+          <a href="shop.html" class="cf2-category__card" aria-label="Ground Coffee">
+            <img src="assets/img/cat-2.png" alt="Ground Coffee" width="819" height="1024" decoding="async" />
+          </a>
+          <a href="shop.html" class="cf2-category__card cf2-category__card--featured" aria-label="Coffee Machines">
+            <img src="assets/img/cat-3.png" alt="Coffee Machines" width="819" height="1024" decoding="async" />
+          </a>
+          <a href="shop.html" class="cf2-category__card" aria-label="Accessories">
+            <img src="assets/img/cat-4.png" alt="Accessories" width="819" height="1024" decoding="async" />
+          </a>
+          <a href="shop.html" class="cf2-category__card" aria-label="Gift Boxes">
+            <img src="assets/img/cat-5.png" alt="Gift Boxes" width="819" height="1024" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cf2-bs" aria-labelledby="cf2-bs-title" data-cf2-bs>
+      <div class="cf2-bs__inner">
+        <div class="cf2-bs__head">
+          <div class="cf2-section-head">
+            <span class="cf2-section-head__rule" aria-hidden="true"></span>
+            <h2 class="cf2-section-head__title" id="cf2-bs-title">Best Sellers</h2>
+            <span class="cf2-section-head__rule" aria-hidden="true"></span>
+          </div>
+          <a href="shop.html" class="cf2-bs__viewall">View All <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="cf2-bs__slider">
+          <button type="button" class="cf2-bs__nav cf2-bs__nav--prev" data-cf2-bs-prev aria-label="Previous products">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="cf2-bs__viewport" data-cf2-bs-viewport>
+            <ul class="cf2-bs__track" data-cf2-bs-track>
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-1.png" alt="Dark Roast whole bean coffee"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Dark Roast</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">Whole Bean</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;699</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Dark Roast to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-2.png" alt="Espresso Blend whole bean coffee"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Espresso Blend</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">Whole Bean</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;749</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Espresso Blend to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-3.png" alt="Medium Roast whole bean coffee"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Medium Roast</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">Whole Bean</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;699</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Medium Roast to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-4.png" alt="Cold Brew coffee bottle"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Cold Brew</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">250ml</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;349</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Cold Brew to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-5.png" alt="Arabica Gold whole bean coffee"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Arabica Gold</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">Whole Bean</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;799</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Arabica Gold to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-6.png" alt="Barista Series espresso machine"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Barista Machine</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">Espresso Series</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;12,999</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Barista Machine to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-7.png" alt="Coffee gift box with assorted blends"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Gift Box</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">Assorted Blends</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;1,499</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Gift Box to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+
+              <li class="cf2-bs__card">
+                <div class="cf2-bs__media"><img src="assets/img/BS-8.png" alt="Origin Gold whole bean coffee"
+                    loading="lazy" /></div>
+                <div class="cf2-bs__body">
+                  <div class="cf2-bs__row">
+                    <h3 class="cf2-bs__name">Origin Gold</h3>
+                    <div class="cf2-bs__stars" aria-label="Rated 5 out of 5"><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i></div>
+                  </div>
+                  <p class="cf2-bs__meta">Whole Bean</p>
+                  <div class="cf2-bs__row cf2-bs__row--foot">
+                    <span class="cf2-bs__price">&#8377;729</span>
+                    <button type="button" class="cf2-bs__cart" aria-label="Add Origin Gold to cart"><i
+                        class="fa-solid fa-cart-shopping" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <button type="button" class="cf2-bs__nav cf2-bs__nav--next" data-cf2-bs-next aria-label="Next products">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="cf2-story" aria-label="Our story">
+      <div class="cf2-story__top">
+        <div class="cf2-story__process">
+          <p class="cf2-story__eyebrow">Best Process</p>
+          <ol class="cf2-process">
+            <li class="cf2-process__step">
+              <span class="cf2-process__icon" aria-hidden="true"><i class="fa-solid fa-seedling"></i></span>
+              <div class="cf2-process__text">
+                <h3 class="cf2-process__title">Sourcing</h3>
+                <p class="cf2-process__desc">Ethically sourced from the best coffee farms</p>
+              </div>
+            </li>
+            <li class="cf2-process__step">
+              <span class="cf2-process__icon" aria-hidden="true"><i class="fa-solid fa-fire"></i></span>
+              <div class="cf2-process__text">
+                <h3 class="cf2-process__title">Roasting</h3>
+                <p class="cf2-process__desc">Small batch roasting to perfection</p>
+              </div>
+            </li>
+            <li class="cf2-process__step">
+              <span class="cf2-process__icon" aria-hidden="true"><i class="fa-solid fa-mortar-pestle"></i></span>
+              <div class="cf2-process__text">
+                <h3 class="cf2-process__title">Grinding</h3>
+                <p class="cf2-process__desc">Ground to perfection for maximum flavor</p>
+              </div>
+            </li>
+            <li class="cf2-process__step">
+              <span class="cf2-process__icon" aria-hidden="true"><i class="fa-solid fa-mug-hot"></i></span>
+              <div class="cf2-process__text">
+                <h3 class="cf2-process__title">Brewing</h3>
+                <p class="cf2-process__desc">Brewed to bring out rich aroma &amp; taste</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="cf2-story__media">
+          <!-- <video src="assets/img/promo-video.mp4" autoplay muted loop playsinline
+            aria-label="Barista pouring latte art"></video> -->
+          <img src="assets/img/story.png" alt="">
+        </div>
+
+        <div class="cf2-story__about">
+          <p class="cf2-story__eyebrow">Our Story</p>
+          <h2 class="cf2-story__title">Roasted with Passion.</h2>
+          <p class="cf2-story__text">
+            At Brewloom, every bean has a story. We source our coffee from ethical farms around the world and roast
+            in small batches to bring out the richest aroma and flavor in every cup.
+          </p>
+          <a href="#" class="cf2-btn cf2-btn--gold cf2-story__cta">
+            Read Our Story
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+
+          <div class="cf2-stats">
+            <div class="cf2-stat">
+              <span class="cf2-stat__icon" aria-hidden="true"><i class="fa-solid fa-mug-saucer"></i></span>
+              <span class="cf2-stat__num">25K+</span>
+              <span class="cf2-stat__label">Happy Customers</span>
+            </div>
+            <div class="cf2-stat">
+              <span class="cf2-stat__icon" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i></span>
+              <span class="cf2-stat__num">150+</span>
+              <span class="cf2-stat__label">Premium Products</span>
+            </div>
+            <div class="cf2-stat">
+              <span class="cf2-stat__icon" aria-hidden="true"><i class="fa-solid fa-earth-americas"></i></span>
+              <span class="cf2-stat__num">30+</span>
+              <span class="cf2-stat__label">Countries Served</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cf2-why">
+        <div class="cf2-why__inner">
+          <h2 class="cf2-why__title">Why Choose Brewloom?</h2>
+          <div class="cf2-why__grid">
+            <div class="cf2-why__item">
+              <span class="cf2-why__icon" aria-hidden="true"><i class="fa-solid fa-award"></i></span>
+              <h3 class="cf2-why__name">Premium Quality</h3>
+              <p class="cf2-why__desc">Carefully selected for the best experience</p>
+            </div>
+            <div class="cf2-why__item">
+              <span class="cf2-why__icon" aria-hidden="true"><i class="fa-solid fa-fire-burner"></i></span>
+              <h3 class="cf2-why__name">Small Batch Roasted</h3>
+              <p class="cf2-why__desc">Roasted in small batches for maximum flavor</p>
+            </div>
+            <div class="cf2-why__item">
+              <span class="cf2-why__icon" aria-hidden="true"><i class="fa-solid fa-mug-hot"></i></span>
+              <h3 class="cf2-why__name">Rich &amp; Aromatic</h3>
+              <p class="cf2-why__desc">Bold, rich and aromatic in every sip</p>
+            </div>
+            <div class="cf2-why__item">
+              <span class="cf2-why__icon" aria-hidden="true"><i class="fa-solid fa-heart"></i></span>
+              <h3 class="cf2-why__name">Customer First</h3>
+              <p class="cf2-why__desc">We ensure happiness in every order</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cf2-promo" aria-label="Experience coffee">
+      <video class="cf2-promo__video" src="assets/img/promo-video.mp4" autoplay muted loop playsinline
+        data-cf2-promo-video></video>
+      <div class="cf2-promo__overlay" aria-hidden="true"></div>
+
+      <div class="cf2-promo__inner">
+        <div class="cf2-promo__content">
+          <p class="cf2-promo__eyebrow">Beyond Just a Cup</p>
+          <h2 class="cf2-promo__title">Experience Coffee<br />Like Never Before.</h2>
+          <a href="#" class="cf2-btn cf2-btn--gold cf2-promo__cta">
+            Explore Collection
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <button type="button" class="cf2-promo__play" data-cf2-promo-toggle aria-label="Play video">
+        <i class="fa-solid fa-play" aria-hidden="true"></i>
+      </button>
+
+      <div class="cf2-promo__dots" role="tablist" aria-label="Slides">
+        <button type="button" class="cf2-promo__dot is-active" role="tab" aria-selected="true"
+          aria-label="Slide 1"></button>
+        <button type="button" class="cf2-promo__dot" role="tab" aria-selected="false" aria-label="Slide 2"></button>
+        <button type="button" class="cf2-promo__dot" role="tab" aria-selected="false" aria-label="Slide 3"></button>
+      </div>
+    </section>
+
+    <section class="cf2-reviews" aria-labelledby="cf2-reviews-title">
+      <div class="cf2-reviews__inner">
+        <div class="cf2-reviews__head">
+          <h2 class="cf2-reviews__title" id="cf2-reviews-title">What Our Lovers Say</h2>
+          <a href="shop.html" class="cf2-bs__viewall">View All <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="cf2-reviews__grid">
+          <figure class="cf2-review">
+            <div class="cf2-review__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <blockquote class="cf2-review__quote">
+              &ldquo;The aroma, the taste, the quality &ndash; everything is just perfect.&rdquo;
+            </blockquote>
+            <figcaption class="cf2-review__author">
+              <img src="assets/img/insta-1.png" alt="" width="40" height="40" loading="lazy" />
+              <span class="cf2-review__name">&ndash; Rahul Mehta</span>
+            </figcaption>
+          </figure>
+
+          <figure class="cf2-review">
+            <div class="cf2-review__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <blockquote class="cf2-review__quote">
+              &ldquo;Smooth, rich and absolutely worth every penny!&rdquo;
+            </blockquote>
+            <figcaption class="cf2-review__author">
+              <img src="assets/img/insta-2.png" alt="" width="40" height="40" loading="lazy" />
+              <span class="cf2-review__name">&ndash; Priya Sharma</span>
+            </figcaption>
+          </figure>
+
+          <figure class="cf2-review">
+            <div class="cf2-review__stars" aria-label="Rated 5 out of 5">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <blockquote class="cf2-review__quote">
+              &ldquo;Brewloom has become my morning essential.&rdquo;
+            </blockquote>
+            <figcaption class="cf2-review__author">
+              <img src="assets/img/insta-3.png" alt="" width="40" height="40" loading="lazy" />
+              <span class="cf2-review__name">&ndash; Ajay Verma</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="cf2-insta" aria-labelledby="cf2-insta-title">
+      <div class="cf2-insta__head">
+        <h2 class="cf2-insta__title" id="cf2-insta-title">Follow Our Journey</h2>
+        <a href="#" class="cf2-insta__handle">@brewloom.coffee</a>
+      </div>
+
+      <div class="cf2-insta__grid">
+        <a href="#" class="cf2-insta__item" aria-label="View post on Instagram">
+          <img src="assets/img/insta-1.png" alt="Brewloom coffee" loading="lazy" />
+          <span class="cf2-insta__overlay" aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+        </a>
+        <a href="#" class="cf2-insta__item" aria-label="View post on Instagram">
+          <img src="assets/img/insta-2.png" alt="Brewloom coffee" loading="lazy" />
+          <span class="cf2-insta__overlay" aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+        </a>
+        <a href="#" class="cf2-insta__item" aria-label="View post on Instagram">
+          <img src="assets/img/insta-3.png" alt="Brewloom coffee" loading="lazy" />
+          <span class="cf2-insta__overlay" aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+        </a>
+        <a href="#" class="cf2-insta__item" aria-label="View post on Instagram">
+          <img src="assets/img/insta-4.png" alt="Brewloom coffee" loading="lazy" />
+          <span class="cf2-insta__overlay" aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+        </a>
+        <a href="#" class="cf2-insta__item" aria-label="View post on Instagram">
+          <img src="assets/img/insta-5.png" alt="Brewloom coffee" loading="lazy" />
+          <span class="cf2-insta__overlay" aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+        </a>
+        <a href="#" class="cf2-insta__item" aria-label="View post on Instagram">
+          <img src="assets/img/insta-6.png" alt="Brewloom coffee" loading="lazy" />
+          <span class="cf2-insta__overlay" aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+        </a>
+        <a href="#" class="cf2-insta__item" aria-label="View post on Instagram">
+          <img src="assets/img/insta-7.png" alt="Brewloom coffee" loading="lazy" />
+          <span class="cf2-insta__overlay" aria-hidden="true"><i class="fa-brands fa-instagram"></i></span>
+        </a>
+      </div>
+    </section>
+
+    <section class="cf2-club" aria-labelledby="cf2-club-title">
+      <div class="cf2-club__inner">
+        <div class="cf2-club__text">
+          <h2 class="cf2-club__title" id="cf2-club-title">Join Our Coffee Club</h2>
+          <p class="cf2-club__sub">Be the first to know about new blends,<br />exclusive offers and brewing tips.</p>
+        </div>
+        <form class="cf2-club__form" action="#" method="post">
+          <label class="cf2-club__label" for="cf2-club-email">Email address</label>
+          <input class="cf2-club__input" id="cf2-club-email" type="email" name="email"
+            placeholder="Enter your email address" required autocomplete="email" />
+          <button class="cf2-club__btn" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="cf2-footer" role="contentinfo">
+    <div class="cf2-footer__inner">
+      <div class="cf2-footer__brand">
+        <img class="cf2-footer__logo" src="assets/img/logo.png" alt="Brewloom Coffee Co." width="150" height="56"
+          decoding="async" />
+        <p class="cf2-footer__tagline">Crafted for true coffee lovers. Premium beans, ethical sourcing and
+          unforgettable taste.</p>
+        <div class="cf2-footer__social">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <nav class="cf2-footer__col" aria-label="Quick links">
+        <h3 class="cf2-footer__heading">Quick Links</h3>
+        <ul class="cf2-footer__list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+
+      <nav class="cf2-footer__col" aria-label="Shop">
+        <h3 class="cf2-footer__heading">Shop</h3>
+        <ul class="cf2-footer__list">
+          <li><a href="shop.html">Coffee Beans</a></li>
+          <li><a href="shop.html">Ground Coffee</a></li>
+          <li><a href="shop.html">Cold Brew</a></li>
+          <li><a href="shop.html">Accessories</a></li>
+          <li><a href="shop.html">Gift Boxes</a></li>
+          <li><a href="shop.html">Machines</a></li>
+        </ul>
+      </nav>
+
+      <nav class="cf2-footer__col" aria-label="Help and support">
+        <h3 class="cf2-footer__heading">Help &amp; Support</h3>
+        <ul class="cf2-footer__list">
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Shipping &amp; Delivery</a></li>
+          <li><a href="#">Returns &amp; Refunds</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </nav>
+
+      <div class="cf2-footer__col">
+        <h3 class="cf2-footer__heading">Contact Us</h3>
+        <ul class="cf2-footer__contact">
+          <li>
+            <span class="cf2-footer__ci" aria-hidden="true"><i class="fa-regular fa-envelope"></i></span>
+            <a href="mailto:hello@brewloom.com">hello@brewloom.com</a>
+          </li>
+          <li>
+            <span class="cf2-footer__ci" aria-hidden="true"><i class="fa-solid fa-phone"></i></span>
+            <a href="tel:+919876543210">+91 98765 43210</a>
+          </li>
+          <li>
+            <span class="cf2-footer__ci" aria-hidden="true"><i class="fa-regular fa-clock"></i></span>
+            <span>Mon &ndash; Sat: 9AM &ndash; 7PM</span>
+          </li>
+          <li>
+            <span class="cf2-footer__ci" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></span>
+            <span>Bangalore, India</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cf2-footer__bottom">
+      <p class="cf2-footer__copy">&copy; 2024 Brewloom Coffee Co. All Rights Reserved.</p>
+      <button type="button" class="cf2-footer__top" data-cf2-to-top aria-label="Back to top">
+        <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+      </button>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js" defer></script>
+</body>
+
+</html>

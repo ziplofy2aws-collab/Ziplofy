@@ -1,0 +1,135 @@
+/* Brewloom Coffee Co. — Shop page styles */
+
+.cf2-shop {
+  background: var(--cf2-bg-deep);
+  padding: 40px 0 84px;
+}
+
+.cf2-shop__inner {
+  max-width: var(--cf2-max);
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.cf2-shop__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 34px;
+}
+
+.cf2-shop__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cf2-chip {
+  padding: 9px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cf2-muted);
+  background: var(--cf2-bg);
+  border: 1px solid var(--cf2-line);
+  border-radius: 999px;
+  transition: color 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.cf2-chip:hover {
+  color: var(--cf2-text);
+  border-color: rgba(201, 154, 75, 0.4);
+}
+
+.cf2-chip.is-active {
+  color: var(--cf2-bg-deep);
+  background: var(--cf2-gold);
+  border-color: var(--cf2-gold);
+}
+
+.cf2-shop__sortwrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cf2-shop__count {
+  font-size: 13px;
+  color: var(--cf2-muted);
+}
+
+.cf2-shop__sortlabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cf2-muted);
+}
+
+.cf2-shop__sort {
+  font: inherit;
+  font-size: 13px;
+  color: var(--cf2-text);
+  background: var(--cf2-bg);
+  border: 1px solid var(--cf2-line);
+  border-radius: 6px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+
+.cf2-shop__sort:focus-visible {
+  outline: none;
+  border-color: var(--cf2-gold);
+}
+
+.cf2-shop__empty {
+  margin: 40px 0 0;
+  text-align: center;
+  color: var(--cf2-muted);
+  font-size: 15px;
+}
+
+@media (max-width: 1024px) {
+.cf2-shop__inner {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+}
+
+@media (max-width: 560px) {
+.cf2-shop__inner {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+.cf2-shop__toolbar {
+    gap: 16px;
+  }
+
+.cf2-shop__filters {
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+
+.cf2-shop__filters::-webkit-scrollbar {
+    display: none;
+  }
+
+.cf2-chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+.cf2-shop__sortwrap {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
