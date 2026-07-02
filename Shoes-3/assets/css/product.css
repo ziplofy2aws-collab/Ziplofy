@@ -633,6 +633,7 @@
 }
 
 .sh3-pdp__offers-title {
+  font-family: var(--sh3-font-heading);
   font-size: 14px;
   font-weight: 700;
   color: #e85d04;

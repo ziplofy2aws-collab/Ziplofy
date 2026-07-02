@@ -1,7 +1,8 @@
 /* Kadam Shoes-3 — header */
 
 :root {
-  --sh3-font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sh3-font: "Inter", sans-serif;
+  --sh3-font-heading: "Plus Jakarta Sans";
   --sh3-black: #000000;
   --sh3-white: #ffffff;
   --sh3-grey-100: #f2f2f2;
@@ -26,6 +27,15 @@ body {
   color: var(--sh3-grey-900);
   background: var(--sh3-white);
   overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--sh3-font-heading);
 }
 
 a {
