@@ -142,10 +142,38 @@
           "sidebar": false
         },
         {
+          "path": "sections.announcement_bar.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "Appearance",
+          "widget": "color",
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.dividerThickness",
+          "type": "number",
+          "label": "Divider thickness",
+          "group": "Appearance",
+          "widget": "slider",
+          "min": 0,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "sidebar": false
+        },
+        {
+          "path": "sections.announcement_bar.settings.dividerColor",
+          "type": "color",
+          "label": "Divider color",
+          "group": "Appearance",
+          "widget": "color",
+          "sidebar": false
+        },
+        {
           "path": "sections.announcement_bar.settings.colorScheme",
           "type": "select",
           "label": "Color scheme",
-          "group": "Appearance",
+          "group": "Theme Settings",
           "widget": "color-scheme",
           "options": [
             {
@@ -165,18 +193,6 @@
               "label": "Scheme 4"
             }
           ],
-          "sidebar": false
-        },
-        {
-          "path": "sections.announcement_bar.settings.dividerThickness",
-          "type": "number",
-          "label": "Divider thickness",
-          "group": "Appearance",
-          "widget": "slider",
-          "min": 0,
-          "max": 20,
-          "step": 1,
-          "unit": "px",
           "sidebar": false
         },
         {
@@ -290,26 +306,23 @@
               "widget": "select",
               "sidebar": false,
               "options": [
-                {
-                  "value": "10px",
-                  "label": "10px"
-                },
-                {
-                  "value": "12px",
-                  "label": "12px"
-                },
-                {
-                  "value": "14px",
-                  "label": "14px"
-                },
-                {
-                  "value": "16px",
-                  "label": "16px"
-                },
-                {
-                  "value": "18px",
-                  "label": "18px"
-                }
+                { "value": "default", "label": "Default" },
+                { "value": "10px", "label": "10px" },
+                { "value": "12px", "label": "12px" },
+                { "value": "14px", "label": "14px" },
+                { "value": "16px", "label": "16px" },
+                { "value": "18px", "label": "18px" },
+                { "value": "20px", "label": "20px" },
+                { "value": "24px", "label": "24px" },
+                { "value": "32px", "label": "32px" },
+                { "value": "40px", "label": "40px" },
+                { "value": "48px", "label": "48px" },
+                { "value": "56px", "label": "56px" },
+                { "value": "72px", "label": "72px" },
+                { "value": "88px", "label": "88px" },
+                { "value": "120px", "label": "120px" },
+                { "value": "152px", "label": "152px" },
+                { "value": "184px", "label": "184px" }
               ]
             },
             {
@@ -320,30 +333,14 @@
               "widget": "select",
               "sidebar": false,
               "options": [
-                {
-                  "value": "default",
-                  "label": "Default"
-                },
-                {
-                  "value": "300",
-                  "label": "Light"
-                },
-                {
-                  "value": "400",
-                  "label": "Regular"
-                },
-                {
-                  "value": "500",
-                  "label": "Medium"
-                },
-                {
-                  "value": "600",
-                  "label": "Semibold"
-                },
-                {
-                  "value": "700",
-                  "label": "Bold"
-                }
+                { "value": "default", "label": "Default" },
+                { "value": "100", "label": "Thin" },
+                { "value": "300", "label": "Light" },
+                { "value": "400", "label": "Regular" },
+                { "value": "500", "label": "Medium" },
+                { "value": "600", "label": "Semibold" },
+                { "value": "700", "label": "Bold" },
+                { "value": "900", "label": "Black" }
               ]
             },
             {
@@ -385,6 +382,14 @@
                   "label": "Uppercase"
                 }
               ]
+            },
+            {
+              "path": "sections.announcement_bar.blocks.announcement.settings.textColor",
+              "type": "color",
+              "label": "Text color",
+              "group": "Appearance",
+              "widget": "color",
+              "sidebar": false
             }
           ]
         }
@@ -1738,29 +1743,19 @@
       "description": "A horizontal line to separate content.",
       "settingsFields": [
         {
-          "path": "sections.divider.settings.colorScheme",
-          "type": "select",
-          "label": "Color scheme",
+          "path": "sections.divider.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
           "group": "General",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
-            }
-          ],
+          "widget": "color",
+          "sidebar": false
+        },
+        {
+          "path": "sections.divider.settings.color",
+          "type": "color",
+          "label": "Color",
+          "group": "General",
+          "widget": "color",
           "sidebar": false
         },
         {
@@ -3678,8 +3673,8 @@
         {
           "path": "sections.faq_section.settings.borderStyle",
           "type": "select",
-          "label": "Borders",
-          "group": "Appearance",
+          "label": "Style",
+          "group": "Borders",
           "widget": "segmented",
           "sidebar": true,
           "options": [
@@ -3697,7 +3692,7 @@
           "path": "sections.faq_section.settings.cornerRadius",
           "type": "number",
           "label": "Corner radius",
-          "group": "Appearance",
+          "group": "Borders",
           "widget": "slider",
           "min": 0,
           "max": 40,
@@ -3749,7 +3744,361 @@
         {
           "id": "heading",
           "label": "Heading",
-          "settingsFields": []
+          "settingsFields": [
+            {
+              "path": "sections.faq_section.settings.title",
+              "type": "textarea",
+              "label": "Text",
+              "group": "Text",
+              "widget": "richtext",
+              "sidebar": false,
+              "description": "Hero heading text."
+            },
+            {
+              "path": "sections.faq_section.settings.headingWidth",
+              "type": "select",
+              "label": "Width",
+              "group": "Layout",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "fit",
+                  "label": "Fit"
+                },
+                {
+                  "value": "fill",
+                  "label": "Fill"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingMaxWidth",
+              "type": "select",
+              "label": "Max width",
+              "group": "Layout",
+              "widget": "select",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "narrow",
+                  "label": "Narrow"
+                },
+                {
+                  "value": "normal",
+                  "label": "Normal"
+                },
+                {
+                  "value": "none",
+                  "label": "None"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingTypographyPreset",
+              "type": "select",
+              "label": "Preset",
+              "group": "Typography",
+              "widget": "select",
+              "sidebar": false,
+              "description": "Edit presets in theme settings",
+              "options": [
+                {
+                  "value": "default",
+                  "label": "Default"
+                },
+                {
+                  "value": "paragraph",
+                  "label": "Paragraph"
+                },
+                {
+                  "value": "heading-1",
+                  "label": "Heading 1"
+                },
+                {
+                  "value": "heading-2",
+                  "label": "Heading 2"
+                },
+                {
+                  "value": "heading-3",
+                  "label": "Heading 3"
+                },
+                {
+                  "value": "heading-4",
+                  "label": "Heading 4"
+                },
+                {
+                  "value": "heading-5",
+                  "label": "Heading 5"
+                },
+                {
+                  "value": "heading-6",
+                  "label": "Heading 6"
+                },
+                {
+                  "value": "custom",
+                  "label": "Custom"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingFont",
+              "type": "select",
+              "label": "Font",
+              "group": "Typography",
+              "widget": "select",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "body",
+                  "label": "Body"
+                },
+                {
+                  "value": "subheading",
+                  "label": "Subheading"
+                },
+                {
+                  "value": "heading",
+                  "label": "Heading"
+                },
+                {
+                  "value": "accent",
+                  "label": "Accent"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingFontSize",
+              "type": "select",
+              "label": "Size",
+              "group": "Typography",
+              "widget": "select",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "10px",
+                  "label": "10px"
+                },
+                {
+                  "value": "12px",
+                  "label": "12px"
+                },
+                {
+                  "value": "14px",
+                  "label": "14px"
+                },
+                {
+                  "value": "16px",
+                  "label": "16px"
+                },
+                {
+                  "value": "18px",
+                  "label": "18px"
+                },
+                {
+                  "value": "20px",
+                  "label": "20px"
+                },
+                {
+                  "value": "24px",
+                  "label": "24px"
+                },
+                {
+                  "value": "28px",
+                  "label": "28px"
+                },
+                {
+                  "value": "32px",
+                  "label": "32px"
+                },
+                {
+                  "value": "36px",
+                  "label": "36px"
+                },
+                {
+                  "value": "40px",
+                  "label": "40px"
+                },
+                {
+                  "value": "48px",
+                  "label": "48px"
+                },
+                {
+                  "value": "56px",
+                  "label": "56px"
+                },
+                {
+                  "value": "64px",
+                  "label": "64px"
+                },
+                {
+                  "value": "72px",
+                  "label": "72px"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingLineHeight",
+              "type": "select",
+              "label": "Line height",
+              "group": "Typography",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "tight",
+                  "label": "Tight"
+                },
+                {
+                  "value": "normal",
+                  "label": "Normal"
+                },
+                {
+                  "value": "loose",
+                  "label": "Loose"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingLetterSpacing",
+              "type": "select",
+              "label": "Letter spacing",
+              "group": "Typography",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "tight",
+                  "label": "Tight"
+                },
+                {
+                  "value": "normal",
+                  "label": "Normal"
+                },
+                {
+                  "value": "loose",
+                  "label": "Loose"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingTextCase",
+              "type": "select",
+              "label": "Case",
+              "group": "Typography",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "default",
+                  "label": "Default"
+                },
+                {
+                  "value": "uppercase",
+                  "label": "Uppercase"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingWrap",
+              "type": "select",
+              "label": "Wrap",
+              "group": "Typography",
+              "widget": "select",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "pretty",
+                  "label": "Pretty"
+                },
+                {
+                  "value": "balance",
+                  "label": "Balance"
+                },
+                {
+                  "value": "nowrap",
+                  "label": "No wrap"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingColor",
+              "type": "select",
+              "label": "Text color",
+              "group": "Appearance",
+              "widget": "select",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "text",
+                  "label": "Text"
+                },
+                {
+                  "value": "heading",
+                  "label": "Heading"
+                },
+                {
+                  "value": "link",
+                  "label": "Link"
+                }
+              ]
+            },
+            {
+              "path": "sections.faq_section.settings.headingBackgroundEnabled",
+              "type": "boolean",
+              "label": "Background",
+              "group": "Appearance",
+              "sidebar": false
+            },
+            {
+              "path": "sections.faq_section.settings.headingPaddingTop",
+              "type": "number",
+              "label": "Top",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px",
+              "sidebar": false
+            },
+            {
+              "path": "sections.faq_section.settings.headingPaddingBottom",
+              "type": "number",
+              "label": "Bottom",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px",
+              "sidebar": false
+            },
+            {
+              "path": "sections.faq_section.settings.headingPaddingLeft",
+              "type": "number",
+              "label": "Left",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px",
+              "sidebar": false
+            },
+            {
+              "path": "sections.faq_section.settings.headingPaddingRight",
+              "type": "number",
+              "label": "Right",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px",
+              "sidebar": false
+            }
+          ]
         },
         {
           "id": "accordion",
@@ -3824,10 +4173,27 @@
               "sidebar": true
             },
             {
-              "path": "sections.faq_section.blocks.accordion.settings.inheritColorScheme",
-              "type": "boolean",
-              "label": "Inherit color scheme",
+              "path": "sections.faq_section.blocks.accordion.settings.dividerColor",
+              "type": "text",
+              "label": "Divider color",
               "group": "General",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
+              "path": "sections.faq_section.blocks.accordion.settings.backgroundColor",
+              "type": "text",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
+              "path": "sections.faq_section.blocks.accordion.settings.textColor",
+              "type": "text",
+              "label": "Text color",
+              "group": "Appearance",
+              "widget": "color",
               "sidebar": true
             },
             {
@@ -3846,6 +4212,38 @@
                   "label": "Solid"
                 }
               ],
+              "sidebar": true
+            },
+            {
+              "path": "sections.faq_section.blocks.accordion.settings.borderThickness",
+              "type": "number",
+              "label": "Thickness",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "unit": "px",
+              "sidebar": true
+            },
+            {
+              "path": "sections.faq_section.blocks.accordion.settings.borderOpacity",
+              "type": "number",
+              "label": "Opacity",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": true
+            },
+            {
+              "path": "sections.faq_section.blocks.accordion.settings.borderColor",
+              "type": "text",
+              "label": "Color",
+              "group": "Borders",
+              "widget": "color",
               "sidebar": true
             },
             {
@@ -3947,6 +4345,7 @@
                   "type": "text",
                   "label": "Image icon",
                   "group": "Icon",
+                  "widget": "image",
                   "sidebar": true
                 },
                 {
@@ -3956,7 +4355,7 @@
                   "group": "Icon",
                   "widget": "slider",
                   "min": 8,
-                  "max": 64,
+                  "max": 200,
                   "step": 1,
                   "unit": "px",
                   "sidebar": true
@@ -4085,14 +4484,94 @@
                         {
                           "value": "heading-6",
                           "label": "Heading 6"
+                        },
+                        {
+                          "value": "custom",
+                          "label": "Custom"
                         }
                       ]
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.font",
+                      "type": "select",
+                      "label": "Font",
+                      "group": "Typography",
+                      "widget": "select",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.fontSize",
+                      "type": "select",
+                      "label": "Size",
+                      "group": "Typography",
+                      "widget": "select",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.lineHeight",
+                      "type": "select",
+                      "label": "Line height",
+                      "group": "Typography",
+                      "widget": "segmented",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.letterSpacing",
+                      "type": "select",
+                      "label": "Letter spacing",
+                      "group": "Typography",
+                      "widget": "segmented",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.textCase",
+                      "type": "select",
+                      "label": "Case",
+                      "group": "Typography",
+                      "widget": "segmented",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.wrap",
+                      "type": "select",
+                      "label": "Wrap",
+                      "group": "Typography",
+                      "widget": "select",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.textColor",
+                      "type": "text",
+                      "label": "Text color",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": true
                     },
                     {
                       "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.backgroundEnabled",
                       "type": "boolean",
                       "label": "Background",
                       "group": "Appearance",
+                      "sidebar": true
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.backgroundColor",
+                      "type": "text",
+                      "label": "Background color",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": true
+                    },
+                    {
+                      "path": "sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.cornerRadius",
+                      "type": "number",
+                      "label": "Corner radius",
+                      "group": "Appearance",
+                      "widget": "slider",
+                      "min": 0,
+                      "max": 50,
+                      "step": 1,
+                      "unit": "px",
                       "sidebar": true
                     },
                     {
@@ -9777,7 +10256,7 @@
               "type": "select",
               "label": "Alignment",
               "group": "Layout",
-              "widget": "select",
+              "widget": "segmented",
               "sidebar": false,
               "options": [
                 {
@@ -9903,10 +10382,14 @@
             {
               "path": "templates.index.sections.hero_main.settings.colorScheme",
               "type": "select",
-              "label": "Color scheme",
+              "label": "Background color",
               "group": "Appearance",
               "widget": "color-scheme",
               "options": [
+                {
+                  "value": "transparent",
+                  "label": "Transparent"
+                },
                 {
                   "value": "scheme-1",
                   "label": "Scheme 1"
@@ -9967,12 +10450,42 @@
               ]
             },
             {
+              "path": "templates.index.sections.hero_main.settings.overlayGradientDirection",
+              "type": "select",
+              "label": "Gradient direction",
+              "group": "Appearance",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "up",
+                  "label": "Up"
+                },
+                {
+                  "value": "down",
+                  "label": "Down"
+                }
+              ]
+            },
+            {
               "path": "templates.index.sections.hero_main.settings.blurredReflection",
               "type": "boolean",
               "label": "Blurred reflection",
               "group": "Appearance",
               "sidebar": false,
               "description": "Applies to images only"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.reflectionOpacity",
+              "type": "number",
+              "label": "Reflection opacity",
+              "group": "Appearance",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": false
             },
             {
               "path": "templates.index.sections.hero_main.settings.paddingTop",
@@ -10303,8 +10816,8 @@
                 {
                   "path": "templates.index.sections.hero_main.settings.headingColor",
                   "type": "select",
-                  "label": "Color",
-                  "group": "Typography",
+                  "label": "Text color",
+                  "group": "Appearance",
                   "widget": "select",
                   "sidebar": false,
                   "options": [
@@ -10650,7 +11163,6 @@
               "type": "select",
               "label": "Type",
               "group": "Collection",
-              "widget": "segmented",
               "sidebar": false,
               "options": [
                 {
@@ -10660,6 +11172,10 @@
                 {
                   "value": "carousel",
                   "label": "Carousel"
+                },
+                {
+                  "value": "editorial",
+                  "label": "Editorial"
                 }
               ]
             },
@@ -10721,6 +11237,49 @@
               "step": 1,
               "unit": "px",
               "sidebar": false
+            },
+            {
+              "path": "templates.index.sections.featured_collection.settings.navIcon",
+              "type": "select",
+              "label": "Icon",
+              "group": "Carousel navigation",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "arrows",
+                  "label": "Arrows"
+                },
+                {
+                  "value": "chevron",
+                  "label": "Chevron"
+                },
+                {
+                  "value": "none",
+                  "label": "None"
+                }
+              ]
+            },
+            {
+              "path": "templates.index.sections.featured_collection.settings.navIconBackground",
+              "type": "select",
+              "label": "Icon background",
+              "group": "Carousel navigation",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "none",
+                  "label": "None"
+                },
+                {
+                  "value": "circle",
+                  "label": "Circle"
+                },
+                {
+                  "value": "square",
+                  "label": "Square"
+                }
+              ]
             },
             {
               "path": "templates.index.sections.featured_collection.settings.verticalGap",
@@ -10808,10 +11367,18 @@
               "sidebar": false
             },
             {
+              "path": "templates.index.sections.featured_collection.settings.backgroundColor",
+              "type": "text",
+              "label": "Background color",
+              "group": "Section layout",
+              "widget": "color",
+              "sidebar": false
+            },
+            {
               "path": "templates.index.sections.featured_collection.settings.colorScheme",
               "type": "select",
               "label": "Color scheme",
-              "group": "Section layout",
+              "group": "Theme settings",
               "widget": "color-scheme",
               "options": [
                 {
@@ -10938,6 +11505,14 @@
                       "description": "Edit presets in theme settings",
                       "options": [
                         {
+                          "value": "default",
+                          "label": "Default"
+                        },
+                        {
+                          "value": "paragraph",
+                          "label": "Paragraph"
+                        },
+                        {
                           "value": "heading-1",
                           "label": "Heading 1"
                         },
@@ -10954,8 +11529,200 @@
                           "label": "Heading 4"
                         },
                         {
+                          "value": "heading-5",
+                          "label": "Heading 5"
+                        },
+                        {
+                          "value": "heading-6",
+                          "label": "Heading 6"
+                        },
+                        {
+                          "value": "custom",
+                          "label": "Custom"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleFont",
+                      "type": "select",
+                      "label": "Font",
+                      "group": "Typography",
+                      "widget": "select",
+                      "sidebar": false,
+                      "options": [
+                        {
                           "value": "body",
                           "label": "Body"
+                        },
+                        {
+                          "value": "subheading",
+                          "label": "Subheading"
+                        },
+                        {
+                          "value": "heading",
+                          "label": "Heading"
+                        },
+                        {
+                          "value": "accent",
+                          "label": "Accent"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleFontSize",
+                      "type": "select",
+                      "label": "Size",
+                      "group": "Typography",
+                      "widget": "select",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "default",
+                          "label": "Default"
+                        },
+                        {
+                          "value": "10px",
+                          "label": "10px"
+                        },
+                        {
+                          "value": "12px",
+                          "label": "12px"
+                        },
+                        {
+                          "value": "14px",
+                          "label": "14px"
+                        },
+                        {
+                          "value": "16px",
+                          "label": "16px"
+                        },
+                        {
+                          "value": "18px",
+                          "label": "18px"
+                        },
+                        {
+                          "value": "20px",
+                          "label": "20px"
+                        },
+                        {
+                          "value": "24px",
+                          "label": "24px"
+                        },
+                        {
+                          "value": "28px",
+                          "label": "28px"
+                        },
+                        {
+                          "value": "32px",
+                          "label": "32px"
+                        },
+                        {
+                          "value": "36px",
+                          "label": "36px"
+                        },
+                        {
+                          "value": "40px",
+                          "label": "40px"
+                        },
+                        {
+                          "value": "48px",
+                          "label": "48px"
+                        },
+                        {
+                          "value": "56px",
+                          "label": "56px"
+                        },
+                        {
+                          "value": "64px",
+                          "label": "64px"
+                        },
+                        {
+                          "value": "72px",
+                          "label": "72px"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleLineHeight",
+                      "type": "select",
+                      "label": "Line height",
+                      "group": "Typography",
+                      "widget": "segmented",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "tight",
+                          "label": "Tight"
+                        },
+                        {
+                          "value": "normal",
+                          "label": "Normal"
+                        },
+                        {
+                          "value": "loose",
+                          "label": "Loose"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleLetterSpacing",
+                      "type": "select",
+                      "label": "Letter spacing",
+                      "group": "Typography",
+                      "widget": "segmented",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "tight",
+                          "label": "Tight"
+                        },
+                        {
+                          "value": "normal",
+                          "label": "Normal"
+                        },
+                        {
+                          "value": "loose",
+                          "label": "Loose"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleTextCase",
+                      "type": "select",
+                      "label": "Case",
+                      "group": "Typography",
+                      "widget": "segmented",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "default",
+                          "label": "Default"
+                        },
+                        {
+                          "value": "uppercase",
+                          "label": "Uppercase"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleWrap",
+                      "type": "select",
+                      "label": "Wrap",
+                      "group": "Typography",
+                      "widget": "select",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "pretty",
+                          "label": "Pretty"
+                        },
+                        {
+                          "value": "balance",
+                          "label": "Balance"
+                        },
+                        {
+                          "value": "nowrap",
+                          "label": "No wrap"
                         }
                       ]
                     },
@@ -10986,6 +11753,26 @@
                       "type": "boolean",
                       "label": "Background",
                       "group": "Appearance",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleBackgroundColor",
+                      "type": "text",
+                      "label": "Background color",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.titleCornerRadius",
+                      "type": "number",
+                      "label": "Corner radius",
+                      "group": "Appearance",
+                      "widget": "slider",
+                      "min": 0,
+                      "max": 50,
+                      "step": 1,
+                      "unit": "px",
                       "sidebar": false
                     },
                     {
@@ -11045,12 +11832,132 @@
                     {
                       "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllLabel",
                       "type": "text",
-                      "label": "Label"
+                      "label": "Label",
+                      "group": "Content",
+                      "sidebar": false
                     },
                     {
-                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllHref",
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllOpenInNewTab",
+                      "type": "boolean",
+                      "label": "Open link in new tab",
+                      "group": "Content",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllStyle",
+                      "type": "select",
+                      "label": "Style",
+                      "group": "Appearance",
+                      "widget": "select",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "primary",
+                          "label": "Primary"
+                        },
+                        {
+                          "value": "secondary",
+                          "label": "Secondary"
+                        },
+                        {
+                          "value": "link",
+                          "label": "Link"
+                        },
+                        {
+                          "value": "custom",
+                          "label": "Custom"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllLinkTextColor",
                       "type": "text",
-                      "label": "Link"
+                      "label": "Link text color",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllCustomBackgroundColor",
+                      "type": "text",
+                      "label": "Background",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllCustomTextColor",
+                      "type": "text",
+                      "label": "Text",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllCustomBorderColor",
+                      "type": "text",
+                      "label": "Borders",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": false
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllDesktopWidth",
+                      "type": "select",
+                      "label": "Desktop width",
+                      "group": "Size",
+                      "widget": "segmented",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "fit",
+                          "label": "Fit"
+                        },
+                        {
+                          "value": "custom",
+                          "label": "Custom"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllDesktopCustomWidth",
+                      "type": "number",
+                      "label": "Custom width",
+                      "group": "Size",
+                      "sidebar": false,
+                      "min": 1,
+                      "max": 100,
+                      "step": 1,
+                      "unit": "%"
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllMobileWidth",
+                      "type": "select",
+                      "label": "Mobile width",
+                      "group": "Size",
+                      "widget": "segmented",
+                      "sidebar": false,
+                      "options": [
+                        {
+                          "value": "fit",
+                          "label": "Fit"
+                        },
+                        {
+                          "value": "custom",
+                          "label": "Custom"
+                        }
+                      ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllMobileCustomWidth",
+                      "type": "number",
+                      "label": "Custom width",
+                      "group": "Size",
+                      "sidebar": false,
+                      "min": 1,
+                      "max": 100,
+                      "step": 1,
+                      "unit": "%"
                     }
                   ]
                 }
@@ -11076,6 +11983,129 @@
                   "label": "View all link",
                   "group": "Content",
                   "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllOpenInNewTab",
+                  "type": "boolean",
+                  "label": "Open link in new tab",
+                  "group": "Content",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllStyle",
+                  "type": "select",
+                  "label": "Style",
+                  "group": "Appearance",
+                  "widget": "select",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "primary",
+                      "label": "Primary"
+                    },
+                    {
+                      "value": "secondary",
+                      "label": "Secondary"
+                    },
+                    {
+                      "value": "link",
+                      "label": "Link"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllLinkTextColor",
+                  "type": "text",
+                  "label": "Link text color",
+                  "group": "Appearance",
+                  "widget": "color",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllCustomBackgroundColor",
+                  "type": "text",
+                  "label": "Background",
+                  "group": "Appearance",
+                  "widget": "color",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllCustomTextColor",
+                  "type": "text",
+                  "label": "Text",
+                  "group": "Appearance",
+                  "widget": "color",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllCustomBorderColor",
+                  "type": "text",
+                  "label": "Borders",
+                  "group": "Appearance",
+                  "widget": "color",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllDesktopWidth",
+                  "type": "select",
+                  "label": "Desktop width",
+                  "group": "Size",
+                  "widget": "segmented",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "fit",
+                      "label": "Fit"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllDesktopCustomWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "sidebar": false,
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllMobileWidth",
+                  "type": "select",
+                  "label": "Mobile width",
+                  "group": "Size",
+                  "widget": "segmented",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "fit",
+                      "label": "Fit"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.viewAllMobileCustomWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "sidebar": false,
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
                 },
                 {
                   "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.verticalOnMobile",
@@ -11240,6 +12270,42 @@
                   ]
                 },
                 {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.customWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "widget": "slider",
+                  "sidebar": false,
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.mobileCustomWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "widget": "slider",
+                  "sidebar": false,
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.customHeight",
+                  "type": "number",
+                  "label": "Custom height",
+                  "group": "Size",
+                  "widget": "slider",
+                  "sidebar": false,
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
+                },
+                {
                   "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.inheritColorScheme",
                   "type": "boolean",
                   "label": "Inherit color scheme",
@@ -11267,16 +12333,43 @@
                 {
                   "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.backgroundImageUrl",
                   "type": "text",
-                  "label": "Background image URL",
+                  "label": "Image",
                   "group": "Appearance",
+                  "widget": "image",
                   "sidebar": false,
                   "placeholder": "https://…"
                 },
                 {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.backgroundImagePosition",
+                  "type": "select",
+                  "label": "Image position",
+                  "group": "Appearance",
+                  "widget": "segmented",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "cover",
+                      "label": "Cover"
+                    },
+                    {
+                      "value": "fit",
+                      "label": "Fit"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.backgroundColor",
+                  "type": "text",
+                  "label": "Background color",
+                  "group": "Appearance",
+                  "widget": "color",
+                  "sidebar": false
+                },
+                {
                   "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.borderStyle",
                   "type": "select",
-                  "label": "Borders",
-                  "group": "Appearance",
+                  "label": "Style",
+                  "group": "Borders",
                   "widget": "segmented",
                   "sidebar": false,
                   "options": [
@@ -11291,10 +12384,42 @@
                   ]
                 },
                 {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.borderThickness",
+                  "type": "number",
+                  "label": "Thickness",
+                  "group": "Borders",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 10,
+                  "step": 1,
+                  "unit": "px",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.borderOpacity",
+                  "type": "number",
+                  "label": "Opacity",
+                  "group": "Borders",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.borderColor",
+                  "type": "text",
+                  "label": "Color",
+                  "group": "Borders",
+                  "widget": "color",
+                  "sidebar": false
+                },
+                {
                   "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.cornerRadius",
                   "type": "number",
                   "label": "Corner radius",
-                  "group": "Appearance",
+                  "group": "Borders",
                   "widget": "slider",
                   "min": 0,
                   "max": 40,
@@ -11530,28 +12655,6 @@
                       ]
                     },
                     {
-                      "path": "templates.index.sections.featured_collection.blocks.product_card.settings.productTitleAlignment",
-                      "type": "select",
-                      "label": "Alignment",
-                      "group": "Layout",
-                      "widget": "segmented",
-                      "sidebar": false,
-                      "options": [
-                        {
-                          "value": "left",
-                          "label": "Left"
-                        },
-                        {
-                          "value": "center",
-                          "label": "Center"
-                        },
-                        {
-                          "value": "right",
-                          "label": "Right"
-                        }
-                      ]
-                    },
-                    {
                       "path": "templates.index.sections.featured_collection.blocks.product_card.settings.productTitleTypographyPreset",
                       "type": "select",
                       "label": "Preset",
@@ -11585,6 +12688,14 @@
                           "label": "Body"
                         }
                       ]
+                    },
+                    {
+                      "path": "templates.index.sections.featured_collection.blocks.product_card.settings.productTitleColor",
+                      "type": "color",
+                      "label": "Text color",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": false
                     },
                     {
                       "path": "templates.index.sections.featured_collection.blocks.product_card.settings.productTitleBackgroundEnabled",
@@ -11748,29 +12859,11 @@
                     },
                     {
                       "path": "templates.index.sections.featured_collection.blocks.product_card.settings.priceColor",
-                      "type": "select",
-                      "label": "Color",
-                      "group": "Typography",
-                      "widget": "select",
-                      "sidebar": false,
-                      "options": [
-                        {
-                          "value": "text",
-                          "label": "Text"
-                        },
-                        {
-                          "value": "heading",
-                          "label": "Heading"
-                        },
-                        {
-                          "value": "accent",
-                          "label": "Accent"
-                        },
-                        {
-                          "value": "muted",
-                          "label": "Muted"
-                        }
-                      ]
+                      "type": "color",
+                      "label": "Text color",
+                      "group": "Appearance",
+                      "widget": "color",
+                      "sidebar": false
                     },
                     {
                       "path": "templates.index.sections.featured_collection.blocks.product_card.settings.pricePaddingTop",
@@ -16205,8 +17298,8 @@
             {
               "path": "templates.index.sections.faq_section.settings.borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "sidebar": true,
               "options": [
@@ -16224,7 +17317,7 @@
               "path": "templates.index.sections.faq_section.settings.cornerRadius",
               "type": "number",
               "label": "Corner radius",
-              "group": "Appearance",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
               "max": 40,
@@ -16276,7 +17369,361 @@
             {
               "id": "heading",
               "label": "Heading",
-              "settingsFields": []
+              "settingsFields": [
+                {
+                  "path": "templates.index.sections.faq_section.settings.title",
+                  "type": "textarea",
+                  "label": "Text",
+                  "group": "Text",
+                  "widget": "richtext",
+                  "sidebar": false,
+                  "description": "Hero heading text."
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingWidth",
+                  "type": "select",
+                  "label": "Width",
+                  "group": "Layout",
+                  "widget": "segmented",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "fit",
+                      "label": "Fit"
+                    },
+                    {
+                      "value": "fill",
+                      "label": "Fill"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingMaxWidth",
+                  "type": "select",
+                  "label": "Max width",
+                  "group": "Layout",
+                  "widget": "select",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "narrow",
+                      "label": "Narrow"
+                    },
+                    {
+                      "value": "normal",
+                      "label": "Normal"
+                    },
+                    {
+                      "value": "none",
+                      "label": "None"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingTypographyPreset",
+                  "type": "select",
+                  "label": "Preset",
+                  "group": "Typography",
+                  "widget": "select",
+                  "sidebar": false,
+                  "description": "Edit presets in theme settings",
+                  "options": [
+                    {
+                      "value": "default",
+                      "label": "Default"
+                    },
+                    {
+                      "value": "paragraph",
+                      "label": "Paragraph"
+                    },
+                    {
+                      "value": "heading-1",
+                      "label": "Heading 1"
+                    },
+                    {
+                      "value": "heading-2",
+                      "label": "Heading 2"
+                    },
+                    {
+                      "value": "heading-3",
+                      "label": "Heading 3"
+                    },
+                    {
+                      "value": "heading-4",
+                      "label": "Heading 4"
+                    },
+                    {
+                      "value": "heading-5",
+                      "label": "Heading 5"
+                    },
+                    {
+                      "value": "heading-6",
+                      "label": "Heading 6"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingFont",
+                  "type": "select",
+                  "label": "Font",
+                  "group": "Typography",
+                  "widget": "select",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "body",
+                      "label": "Body"
+                    },
+                    {
+                      "value": "subheading",
+                      "label": "Subheading"
+                    },
+                    {
+                      "value": "heading",
+                      "label": "Heading"
+                    },
+                    {
+                      "value": "accent",
+                      "label": "Accent"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingFontSize",
+                  "type": "select",
+                  "label": "Size",
+                  "group": "Typography",
+                  "widget": "select",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "10px",
+                      "label": "10px"
+                    },
+                    {
+                      "value": "12px",
+                      "label": "12px"
+                    },
+                    {
+                      "value": "14px",
+                      "label": "14px"
+                    },
+                    {
+                      "value": "16px",
+                      "label": "16px"
+                    },
+                    {
+                      "value": "18px",
+                      "label": "18px"
+                    },
+                    {
+                      "value": "20px",
+                      "label": "20px"
+                    },
+                    {
+                      "value": "24px",
+                      "label": "24px"
+                    },
+                    {
+                      "value": "28px",
+                      "label": "28px"
+                    },
+                    {
+                      "value": "32px",
+                      "label": "32px"
+                    },
+                    {
+                      "value": "36px",
+                      "label": "36px"
+                    },
+                    {
+                      "value": "40px",
+                      "label": "40px"
+                    },
+                    {
+                      "value": "48px",
+                      "label": "48px"
+                    },
+                    {
+                      "value": "56px",
+                      "label": "56px"
+                    },
+                    {
+                      "value": "64px",
+                      "label": "64px"
+                    },
+                    {
+                      "value": "72px",
+                      "label": "72px"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingLineHeight",
+                  "type": "select",
+                  "label": "Line height",
+                  "group": "Typography",
+                  "widget": "segmented",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "tight",
+                      "label": "Tight"
+                    },
+                    {
+                      "value": "normal",
+                      "label": "Normal"
+                    },
+                    {
+                      "value": "loose",
+                      "label": "Loose"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingLetterSpacing",
+                  "type": "select",
+                  "label": "Letter spacing",
+                  "group": "Typography",
+                  "widget": "segmented",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "tight",
+                      "label": "Tight"
+                    },
+                    {
+                      "value": "normal",
+                      "label": "Normal"
+                    },
+                    {
+                      "value": "loose",
+                      "label": "Loose"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingTextCase",
+                  "type": "select",
+                  "label": "Case",
+                  "group": "Typography",
+                  "widget": "segmented",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "default",
+                      "label": "Default"
+                    },
+                    {
+                      "value": "uppercase",
+                      "label": "Uppercase"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingWrap",
+                  "type": "select",
+                  "label": "Wrap",
+                  "group": "Typography",
+                  "widget": "select",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "pretty",
+                      "label": "Pretty"
+                    },
+                    {
+                      "value": "balance",
+                      "label": "Balance"
+                    },
+                    {
+                      "value": "nowrap",
+                      "label": "No wrap"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingColor",
+                  "type": "select",
+                  "label": "Text color",
+                  "group": "Appearance",
+                  "widget": "select",
+                  "sidebar": false,
+                  "options": [
+                    {
+                      "value": "text",
+                      "label": "Text"
+                    },
+                    {
+                      "value": "heading",
+                      "label": "Heading"
+                    },
+                    {
+                      "value": "link",
+                      "label": "Link"
+                    }
+                  ]
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingBackgroundEnabled",
+                  "type": "boolean",
+                  "label": "Background",
+                  "group": "Appearance",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingPaddingTop",
+                  "type": "number",
+                  "label": "Top",
+                  "group": "Padding",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 80,
+                  "step": 1,
+                  "unit": "px",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingPaddingBottom",
+                  "type": "number",
+                  "label": "Bottom",
+                  "group": "Padding",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 80,
+                  "step": 1,
+                  "unit": "px",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingPaddingLeft",
+                  "type": "number",
+                  "label": "Left",
+                  "group": "Padding",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 80,
+                  "step": 1,
+                  "unit": "px",
+                  "sidebar": false
+                },
+                {
+                  "path": "templates.index.sections.faq_section.settings.headingPaddingRight",
+                  "type": "number",
+                  "label": "Right",
+                  "group": "Padding",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 80,
+                  "step": 1,
+                  "unit": "px",
+                  "sidebar": false
+                }
+              ]
             },
             {
               "id": "accordion",
@@ -16350,13 +17797,30 @@
                   ],
                   "sidebar": true
                 },
-                {
-                  "path": "templates.index.sections.faq_section.blocks.accordion.settings.inheritColorScheme",
-                  "type": "boolean",
-                  "label": "Inherit color scheme",
-                  "group": "General",
-                  "sidebar": true
-                },
+                  {
+                    "path": "templates.index.sections.faq_section.blocks.accordion.settings.dividerColor",
+                    "type": "text",
+                    "label": "Divider color",
+                    "group": "General",
+                    "widget": "color",
+                    "sidebar": true
+                  },
+                  {
+                    "path": "templates.index.sections.faq_section.blocks.accordion.settings.backgroundColor",
+                    "type": "text",
+                    "label": "Background color",
+                    "group": "Appearance",
+                    "widget": "color",
+                    "sidebar": true
+                  },
+                  {
+                    "path": "templates.index.sections.faq_section.blocks.accordion.settings.textColor",
+                    "type": "text",
+                    "label": "Text color",
+                    "group": "Appearance",
+                    "widget": "color",
+                    "sidebar": true
+                  },
                 {
                   "path": "templates.index.sections.faq_section.blocks.accordion.settings.borderStyle",
                   "type": "select",
@@ -16373,6 +17837,38 @@
                       "label": "Solid"
                     }
                   ],
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.faq_section.blocks.accordion.settings.borderThickness",
+                  "type": "number",
+                  "label": "Thickness",
+                  "group": "Borders",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 10,
+                  "step": 1,
+                  "unit": "px",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.faq_section.blocks.accordion.settings.borderOpacity",
+                  "type": "number",
+                  "label": "Opacity",
+                  "group": "Borders",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.faq_section.blocks.accordion.settings.borderColor",
+                  "type": "text",
+                  "label": "Color",
+                  "group": "Borders",
+                  "widget": "color",
                   "sidebar": true
                 },
                 {
@@ -16474,6 +17970,7 @@
                       "type": "text",
                       "label": "Image icon",
                       "group": "Icon",
+                      "widget": "image",
                       "sidebar": true
                     },
                     {
@@ -16483,7 +17980,7 @@
                       "group": "Icon",
                       "widget": "slider",
                       "min": 8,
-                      "max": 64,
+                      "max": 200,
                       "step": 1,
                       "unit": "px",
                       "sidebar": true
@@ -16612,14 +18109,94 @@
                             {
                               "value": "heading-6",
                               "label": "Heading 6"
+                            },
+                            {
+                              "value": "custom",
+                              "label": "Custom"
                             }
                           ]
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.font",
+                          "type": "select",
+                          "label": "Font",
+                          "group": "Typography",
+                          "widget": "select",
+                          "sidebar": false
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.fontSize",
+                          "type": "select",
+                          "label": "Size",
+                          "group": "Typography",
+                          "widget": "select",
+                          "sidebar": false
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.lineHeight",
+                          "type": "select",
+                          "label": "Line height",
+                          "group": "Typography",
+                          "widget": "segmented",
+                          "sidebar": false
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.letterSpacing",
+                          "type": "select",
+                          "label": "Letter spacing",
+                          "group": "Typography",
+                          "widget": "segmented",
+                          "sidebar": false
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.textCase",
+                          "type": "select",
+                          "label": "Case",
+                          "group": "Typography",
+                          "widget": "segmented",
+                          "sidebar": false
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.wrap",
+                          "type": "select",
+                          "label": "Wrap",
+                          "group": "Typography",
+                          "widget": "select",
+                          "sidebar": false
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.textColor",
+                          "type": "text",
+                          "label": "Text color",
+                          "group": "Appearance",
+                          "widget": "color",
+                          "sidebar": true
                         },
                         {
                           "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.backgroundEnabled",
                           "type": "boolean",
                           "label": "Background",
                           "group": "Appearance",
+                          "sidebar": true
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.backgroundColor",
+                          "type": "text",
+                          "label": "Background color",
+                          "group": "Appearance",
+                          "widget": "color",
+                          "sidebar": true
+                        },
+                        {
+                          "path": "templates.index.sections.faq_section.blocks.accordion.blocks.accordion_row.blocks.text.settings.cornerRadius",
+                          "type": "number",
+                          "label": "Corner radius",
+                          "group": "Appearance",
+                          "widget": "slider",
+                          "min": 0,
+                          "max": 50,
+                          "step": 1,
+                          "unit": "px",
                           "sidebar": true
                         },
                         {

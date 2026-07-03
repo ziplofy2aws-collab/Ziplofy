@@ -239,6 +239,7 @@ import {
 } from './theme-editor-storytelling-video-block-panel.utils';
 import {
   isFaqSectionType,
+  isFaqSectionNodeId,
   isFaqSettingsPanelFields,
   isFaqBlockField,
   prepareFaqSettingsNode,
@@ -461,6 +462,9 @@ import {
 import {
   featuredCollectionSidebarLabel,
   findFeaturedCollectionSectionInTree,
+  isFeaturedCollectionCarouselSettingsPanelFields,
+  isFeaturedCollectionEditorialSettingsPanelFields,
+  isFeaturedCollectionGridSettingsPanelFields,
   isFeaturedCollectionGroupedPanelSectionType,
   isFeaturedCollectionSectionNodeId,
   prepareFeaturedCollectionSettingsNode,
@@ -495,11 +499,17 @@ import {
 } from './theme-editor-hero-text-block-panel.utils';
 import { textBlockFieldDefs } from './theme-editor-text-block-panel.utils';
 import {
+  headingBlockCanonicalFieldDefsForNodeId,
   headingBlockFieldDefsFromSchema,
   isHeadingBlockNodeId,
   isHeadingPanelField,
   prepareHeadingBlockSettingsNode,
 } from './theme-editor-heading-block-panel.utils';
+import {
+  isFaqHeadingCollectionTitlePanelNode,
+  isFaqSectionHeadingBlockNodeId,
+  mergeFaqHeadingBlockFieldDefs,
+} from './theme-editor-faq-heading-panel.utils';
 import {
   heroButtonFieldDefsFromSchema,
   isHeroButtonBlockNodeId,
@@ -508,15 +518,23 @@ import {
 } from './theme-editor-hero-button-panel.utils';
 import {
   isFeaturedCollectionHeaderBlockNodeId,
-  isFeaturedCollectionHeaderNestedNodeId,
-  prepareFeaturedCollectionHeaderNestedNode,
+  isFeaturedCollectionHeaderPanelField,
   prepareFeaturedCollectionHeaderSettingsNode,
+  fcHeaderFieldDefsFromSchema,
 } from './theme-editor-fc-header-panel.utils';
 import {
   collectionTitleFieldDefsFromSchema,
   isCollectionTitleNestedNodeId,
+  isCollectionTitlePanelField,
   prepareCollectionTitleSettingsNode,
 } from './theme-editor-fc-collection-title-panel.utils';
+import {
+  extendValuesForViewAllButtonBlock,
+  isViewAllButtonNestedNodeId,
+  isViewAllButtonPanelField,
+  prepareViewAllButtonSettingsNode,
+  viewAllButtonFieldDefsFromSchema,
+} from './theme-editor-fc-view-all-button-panel.utils';
 import {
   isProductCardBlockNodeId,
   prepareProductCardSettingsNode,
@@ -1680,9 +1698,11 @@ function layoutSectionNode(
         ? collectFooterPanelFieldDefs(sec, instanceId, remapFields)
         : isFooterUtilities
           ? collectFooterUtilitiesPanelFieldDefs(sec, instanceId, remapFields)
-          : remappedFields.length
-            ? remappedFields
-            : undefined,
+          : isFaqLayout
+            ? undefined
+            : remappedFields.length
+              ? remappedFields
+              : undefined,
     preview: previewField ? fieldPreview(previewField, values) : undefined,
     children: children.length ? children : undefined,
     childrenListKey: layoutChildrenKey,
@@ -2176,7 +2196,7 @@ function sectionToNode(
     kind: 'section',
     icon: isCollectionLinksSpotlight ? 'link' : 'section',
     fields:
-      isHero || isCollectionLinksSpotlight
+      isHero || isCollectionLinksSpotlight || isFaq
         ? undefined
         : remappedSectionFields.length
           ? remappedSectionFields
@@ -2451,9 +2471,22 @@ export function expandedIdsFromSidebarTree(
   return out;
 }
 
-/** Collapsed by default — matches Shopify editor (expand sections to see blocks). */
-export function defaultExpandedSidebar(_nodes: SidebarNode[]): Record<string, boolean> {
-  return {};
+/** Collapsed by default — FAQ opens with its accordion group visible (Shopify-style). */
+export function defaultExpandedSidebar(nodes: SidebarNode[]): Record<string, boolean> {
+  const out: Record<string, boolean> = {};
+  const walk = (list: SidebarNode[]) => {
+    for (const node of list) {
+      if (node.kind === 'section' && node.label === 'FAQ') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'block' && node.label === 'Accordion') {
+        out[node.id] = true;
+      }
+      if (node.children?.length) walk(node.children);
+    }
+  };
+  walk(nodes);
+  return out;
 }
 
 export function resolveAddBlockSectionLabel(nodeId: string, tree: SidebarNode[]): string {
@@ -2615,6 +2648,9 @@ export function settingsNodeForSelection(
       const catalogSection = resolveEditingPanelForNode(announcementSection.id);
       if (catalogSection?.fields.length) sectionFields = catalogSection.fields;
     }
+    if (!sectionFields.length && editorSchema) {
+      sectionFields = sectionSettingsFieldsFromSchema(editorSchema, announcementSection.id);
+    }
     if (sectionFields.length) {
       return prepareAnnouncementSettingsNode({ ...announcementSection, fields: sectionFields });
     }
@@ -2704,11 +2740,102 @@ export function settingsNodeForSelection(
   }
 
   if (isHeadingBlockNodeId(node.id)) {
+    const treeNode = findSidebarNode(tree, node.id);
+    if (treeNode) node = { ...treeNode, ...node, fields: node.fields ?? treeNode.fields };
     let fields = editorSchema ? headingBlockFieldDefsFromSchema(editorSchema, node.id) : [];
+    if (!fields.length) {
+      fields = headingBlockCanonicalFieldDefsForNodeId(node.id);
+    } else if (
+      node.headingPanel === 'collection-title' ||
+      isFaqSectionHeadingBlockNodeId(node.id)
+    ) {
+      fields = mergeFaqHeadingBlockFieldDefs(editorSchema, node.id, fields);
+    }
     if (!fields.length) {
       fields = (node.fields ?? []).filter(isHeadingPanelField);
     }
-    return prepareHeadingBlockSettingsNode({ ...node, fields });
+    const headingPanel =
+      node.headingPanel ??
+      (isFaqSectionHeadingBlockNodeId(node.id) ? ('collection-title' as const) : undefined);
+    return prepareHeadingBlockSettingsNode({ ...node, headingPanel, fields });
+  }
+
+  if (isCollectionTitleNestedNodeId(node.id)) {
+    let fields = editorSchema ? collectionTitleFieldDefsFromSchema(editorSchema, node.id) : [];
+    if (!fields.length) {
+      const catalogBlock = resolveEditingPanelForNode(node.id);
+      if (catalogBlock?.fields.length) fields = catalogBlock.fields;
+    }
+    if (!fields.length) {
+      fields = (node.fields ?? []).filter(isCollectionTitlePanelField);
+    }
+    if (fields.length) {
+      return prepareCollectionTitleSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isViewAllButtonNestedNodeId(node.id)) {
+    let fields = editorSchema ? viewAllButtonFieldDefsFromSchema(editorSchema, node.id) : [];
+    if (!fields.length) {
+      const catalogBlock = resolveEditingPanelForNode(node.id);
+      if (catalogBlock?.fields.length) fields = catalogBlock.fields;
+    }
+    if (!fields.length) {
+      fields = (node.fields ?? []).filter(isViewAllButtonPanelField);
+    }
+    if (fields.length) {
+      return prepareViewAllButtonSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isFeaturedCollectionHeaderBlockNodeId(node.id)) {
+    let fields = editorSchema ? fcHeaderFieldDefsFromSchema(editorSchema, node.id) : [];
+    if (!fields.length) {
+      fields = (node.fields ?? []).filter(isFeaturedCollectionHeaderPanelField);
+    }
+    if (fields.length) {
+      return prepareFeaturedCollectionHeaderSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductCardMediaNestedNodeId(node.id)) {
+    const catalogBlock = resolveEditingPanelForNode(node.id);
+    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
+    if (!fields.length && editorSchema) fields = productCardMediaFieldDefsFromSchema(editorSchema);
+    if (!fields.length) fields = node.fields ?? [];
+    if (fields.length) {
+      return prepareProductCardMediaSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductCardTitleNestedNodeId(node.id)) {
+    const catalogBlock = resolveEditingPanelForNode(node.id);
+    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
+    if (!fields.length && editorSchema) fields = productCardTitleFieldDefsFromSchema(editorSchema);
+    if (!fields.length) fields = node.fields ?? [];
+    if (fields.length) {
+      return prepareProductCardTitleSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductCardPriceNestedNodeId(node.id)) {
+    const catalogBlock = resolveEditingPanelForNode(node.id);
+    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
+    if (!fields.length && editorSchema) fields = productCardPriceFieldDefsFromSchema(editorSchema);
+    if (!fields.length) fields = node.fields ?? [];
+    if (fields.length) {
+      return prepareProductCardPriceSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductCardBlockNodeId(node.id)) {
+    const catalogBlock = resolveEditingPanelForNode(node.id);
+    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
+    if (!fields.length && editorSchema) fields = productCardFieldDefsFromSchema(editorSchema);
+    if (!fields.length) fields = node.fields ?? [];
+    if (fields.length) {
+      return prepareProductCardSettingsNode({ ...node, fields });
+    }
   }
 
   if (isHeroButtonBlockNodeId(node.id)) {
@@ -2758,6 +2885,14 @@ export function settingsNodeForSelection(
     if (heroFields.length) {
       return prepareHeroSectionSettingsForNode(heroSectionForPanel, heroFields);
     }
+  }
+
+  if (isFeaturedCollectionSectionNodeId(node.id)) {
+    return prepareFeaturedCollectionSettingsNode(node, values, config);
+  }
+
+  if (node.label === 'FAQ' || (node.kind === 'section' && isFaqSectionNodeId(node.id))) {
+    return prepareFaqSettingsNode(node);
   }
 
   const catalogNode = settingsNodeFromCatalog(node);
@@ -3193,6 +3328,15 @@ export function settingsNodeForSelection(
   }
   if (isBlogPostsGridSectionNodeId(node.id)) {
     return prepareBlogPostsGridSettingsNode(node);
+  }
+  if (node.fields?.length && isFeaturedCollectionCarouselSettingsPanelFields(node.fields)) {
+    return prepareFeaturedCollectionSettingsNode(node, values, config);
+  }
+  if (node.fields?.length && isFeaturedCollectionGridSettingsPanelFields(node.fields)) {
+    return prepareFeaturedCollectionSettingsNode(node, values, config);
+  }
+  if (node.fields?.length && isFeaturedCollectionEditorialSettingsPanelFields(node.fields)) {
+    return prepareFeaturedCollectionSettingsNode(node, values, config);
   }
   if (node.fields?.length && isBlogPostsCarouselSettingsPanelFields(node.fields)) {
     return prepareBlogPostsCarouselSettingsNode(node);

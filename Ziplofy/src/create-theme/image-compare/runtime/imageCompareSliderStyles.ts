@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { atMobileBreakpoint } from '../../runtime/shared/responsive';
 import type { ImageCompareScheme } from './imageCompareStyles';
 
 function clampPercent(value: number, fallback = 100): number {
@@ -116,5 +117,5 @@ export function readImageCompareSliderStyle(
 
 export function imageCompareSliderMobileCss(mobileClass: string, mobileWidthCss: string): string {
   if (!mobileClass || mobileWidthCss === 'auto') return '';
-  return `@media (max-width: 749px) { .${mobileClass} { width: ${mobileWidthCss} !important; max-width: 100% !important; } }`;
+  return atMobileBreakpoint(`.${mobileClass} { width: ${mobileWidthCss} !important; max-width: 100% !important; }`);
 }

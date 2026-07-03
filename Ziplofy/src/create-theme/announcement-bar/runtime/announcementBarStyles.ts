@@ -1,5 +1,8 @@
 import { cfgNumber, cfgString } from '../../runtime/shared/config';
-import { resolveThemePaletteSchemes } from '../../settings/theme-color-palette.settings';
+import {
+  resolveThemePaletteColorSetting,
+  resolveThemePaletteSchemes,
+} from '../../settings/theme-color-palette.settings';
 
 export type AnnouncementScheme = {
   background: string;
@@ -37,6 +40,27 @@ export function announcementPadding(config: Record<string, unknown> | null, sett
 
 export function announcementDividerPx(config: Record<string, unknown> | null, settingsBase: string): number {
   return Math.max(0, cfgNumber(config, `${settingsBase}.dividerThickness`, 0));
+}
+
+/** Background color: explicit palette/custom color overrides the color scheme background. */
+export function announcementBackground(
+  config: Record<string, unknown> | null,
+  settingsBase: string,
+  schemeBackground: string
+): string {
+  const raw = cfgString(config, `${settingsBase}.backgroundColor`, '').trim();
+  if (!raw) return schemeBackground;
+  return resolveThemePaletteColorSetting(config, raw, 0, schemeBackground);
+}
+
+/** Divider color: explicit palette/custom color overrides a subtle default. */
+export function announcementDividerColor(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): string {
+  const raw = cfgString(config, `${settingsBase}.dividerColor`, '').trim();
+  if (!raw) return 'rgba(0,0,0,0.15)';
+  return resolveThemePaletteColorSetting(config, raw, 1, 'rgba(0,0,0,0.15)');
 }
 
 export function announcementRotateSec(config: Record<string, unknown> | null, settingsBase: string): number {

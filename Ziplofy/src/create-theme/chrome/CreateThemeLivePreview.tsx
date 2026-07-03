@@ -42,6 +42,7 @@ export type CreateThemeLivePreviewProps = {
   cssUrl?: string | null;
   config: Record<string, unknown>;
   page?: ThemePreviewPage;
+  device?: 'desktop' | 'mobile';
   selectionHints?: ThemePreviewSelectionHint[];
   onPreviewSelect?: (payload: ThemePreviewSelectPayload) => void;
   /** Preview clicked empty canvas or cleared selection in iframe. */
@@ -110,6 +111,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
   cssUrl,
   config,
   page = 'index',
+  device = 'desktop',
   selectionHints = [],
   onPreviewSelect,
   onPreviewDeselect,
@@ -149,6 +151,8 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
   const highlightRafRef = useRef(0);
   const inspectorEnabledRef = useRef(inspectorEnabled);
   inspectorEnabledRef.current = inspectorEnabled;
+  const deviceRef = useRef(device);
+  deviceRef.current = device;
   /** Stable key so we only re-sync when config content changes, not object identity. */
   const configStableKey = useMemo(() => {
     try {
@@ -190,12 +194,26 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
           page,
           selectionHints: selectionHintsRef.current,
           inspectorEnabled: inspectorEnabledRef.current,
+          device: deviceRef.current,
         },
       },
       '*'
     );
     initSentRef.current = true;
   }, [storeId, storeName, jsUrl, cssUrl, page]);
+
+  const postPreviewDevice = useCallback((nextDevice: 'desktop' | 'mobile') => {
+    const frame = iframeRef.current?.contentWindow;
+    if (!frame || !initSentRef.current) return;
+    frame.postMessage(
+      {
+        source: EDITOR_SOURCE,
+        type: 'ZIPLOFY_PREVIEW_SET_DEVICE',
+        payload: { device: nextDevice },
+      },
+      '*'
+    );
+  }, []);
 
   const postInspectorState = useCallback((enabled: boolean) => {
     const frame = iframeRef.current?.contentWindow;
@@ -388,6 +406,11 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     if (!ready) return;
     postInspectorState(inspectorEnabled);
   }, [inspectorEnabled, ready, postInspectorState]);
+
+  useEffect(() => {
+    if (!ready) return;
+    postPreviewDevice(device);
+  }, [device, ready, postPreviewDevice]);
 
   useEffect(() => {
     if (!ready) return;

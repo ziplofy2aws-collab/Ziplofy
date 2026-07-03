@@ -1,16 +1,12 @@
-- use realistic images while creating theme
+elements  that are done
 
 
-- uploadinng of theme
-    - editing of that uploaded theme
-    - install
-    - apply (product inject bug)
-
-- theme creation flow
-    - elements pending (elements universe arhiteture)
-    - install
+annoucement bar ✅
+divider ✅
+header ✅
 
 
-- discuss with piyush
-    - commmon flow
-    
+faq
+
+
+featured collection: carousel

@@ -1,6 +1,10 @@
 import type { CSSProperties } from 'react';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import {
+  isThemePaletteColorSetting,
+  resolveThemePaletteColorSetting,
+} from '../../settings/theme-color-palette.settings';
+import {
   resolveThemeTypographyStyle,
   lineHeightMultiplier,
   letterSpacingCss,
@@ -95,8 +99,6 @@ function parseFontSizePx(raw: string, fallback: number): number {
 export type HeroHeadingStyle = {
   width: string;
   maxWidth: string | undefined;
-  marginLeft?: string;
-  marginRight?: string;
   textAlign?: 'left' | 'center' | 'right';
   fontFamily: string;
   fontSize: number;
@@ -139,31 +141,22 @@ export function readHeroHeadingStyle(
     alignRaw === 'right' ? 'right' : alignRaw === 'center' ? 'center' : 'left';
   const colorKey = cfgString(config, `${settingsBase}.headingColor`, 'heading');
   const color =
-    colorKey === 'heading'
-      ? colors.heading
-      : colorKey === 'link'
-        ? colors.link
-        : colorKey === 'accent'
-          ? colors.accent ?? colors.link
-          : colors.text;
+    isThemePaletteColorSetting(colorKey) || colorKey.startsWith('#')
+      ? resolveThemePaletteColorSetting(config, colorKey, 1, colors.text)
+      : colorKey === 'heading'
+        ? colors.heading
+        : colorKey === 'link'
+          ? colors.link
+          : colorKey === 'accent'
+            ? colors.accent ?? colors.link
+            : colors.text;
   const bgOn = cfgBool(config, `${settingsBase}.headingBackgroundEnabled`, false);
   const bgColor = cfgString(config, `${settingsBase}.headingBackgroundColor`, '#00000026');
   const cornerRadius = cfgNumber(config, `${settingsBase}.headingCornerRadius`, 0);
 
-  const marginLeft =
-    isFill && maxWidth && textAlign !== 'left'
-      ? textAlign === 'center' || textAlign === 'right'
-        ? 'auto'
-        : undefined
-      : undefined;
-  const marginRight =
-    isFill && maxWidth && textAlign === 'center' ? 'auto' : undefined;
-
   return {
     width: isFill ? '100%' : 'fit-content',
     maxWidth,
-    marginLeft,
-    marginRight,
     textAlign,
     fontFamily: customTypo?.fontFamily ?? presetTypo?.fontFamily ?? themeFonts.fontHeading,
     fontSize: customTypo?.fontSize ?? presetTypo?.fontSize ?? 32,

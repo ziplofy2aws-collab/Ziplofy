@@ -134,9 +134,19 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
+      "key": "overlayGradientDirection",
+      "label": "Gradient direction",
+      "type": "text"
+    },
+    {
       "key": "blurredReflection",
       "label": "Blurred reflection",
       "type": "boolean"
+    },
+    {
+      "key": "reflectionOpacity",
+      "label": "Reflection opacity",
+      "type": "number"
     },
     {
       "key": "paddingTop",

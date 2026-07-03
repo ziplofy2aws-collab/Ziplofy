@@ -2,6 +2,8 @@ import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-them
 
 const PANEL_GROUPS = new Set(['General', 'Borders', 'Padding']);
 
+export const PRODUCT_CARD_MEDIA_PANEL_GROUP_ORDER = ['General', 'Borders', 'Padding'] as const;
+
 const MEDIA_PANEL_KEYS = new Set([
   'mediaAspectRatio',
   'mediaBorderStyle',
@@ -51,6 +53,23 @@ export function sortProductCardMediaPanelFields(fields: EditorFieldDef[]): Edito
 export function prepareProductCardMediaSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortProductCardMediaPanelFields((node.fields ?? []).filter(isProductCardMediaPanelField));
   return { ...node, label: 'Media', kind: 'block', fields };
+}
+
+export function groupProductCardMediaPanelFields(
+  fields: EditorFieldDef[]
+): Map<string, EditorFieldDef[]> {
+  const grouped = new Map<string, EditorFieldDef[]>();
+  for (const field of sortProductCardMediaPanelFields(fields)) {
+    const group = field.group ?? 'General';
+    const list = grouped.get(group) ?? [];
+    list.push(field);
+    grouped.set(group, list);
+  }
+  return grouped;
+}
+
+export function isProductCardMediaPanelFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) => f.path.endsWith('mediaAspectRatio') || f.path.endsWith('mediaBorderStyle'));
 }
 
 export function productCardMediaFieldDefsFromSchema(editorSchema: EditorSchemaDoc): EditorFieldDef[] {

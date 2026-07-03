@@ -5,10 +5,12 @@ export const editing: CreateThemeEditing = {
   sectionSettingsOrder: [
     { key: 'timeToNext', label: 'Time to next announcement', type: 'number' },
     { key: 'sectionWidth', label: 'Section width', type: 'select' },
-    { key: 'colorScheme', label: 'Color scheme', type: 'select' },
+    { key: 'backgroundColor', label: 'Background color', type: 'text' },
     { key: 'dividerThickness', label: 'Divider thickness', type: 'number' },
+    { key: 'dividerColor', label: 'Divider color', type: 'text' },
     { key: 'paddingTop', label: 'Top', type: 'number' },
     { key: 'paddingBottom', label: 'Bottom', type: 'number' },
+    { key: 'colorScheme', label: 'Color scheme', type: 'select' },
     { key: 'customCss', label: 'Custom CSS', type: 'textarea' },
   ],
   blocks: [

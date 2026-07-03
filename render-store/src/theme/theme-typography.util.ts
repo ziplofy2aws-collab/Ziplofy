@@ -40,7 +40,11 @@ export function readThemeTypographyGoogleFonts(
 
 function googleFontStylesheetUrl(fontName: string): string {
   const family = encodeURIComponent(fontName).replace(/%20/g, '+');
-  return `https://fonts.googleapis.com/css2?family=${family}&display=swap`;
+  // Legacy v1 API: gracefully serves whatever of these weights the font supports
+  // (unlike css2, which 400s the whole request if any listed weight is missing),
+  // so all Weight options (Thin…Black) render when available.
+  const weights = '100,300,400,500,600,700,900';
+  return `https://fonts.googleapis.com/css?family=${family}:${weights}&display=swap`;
 }
 
 export function applyThemeTypographyFontsToDocument(

@@ -35,22 +35,6 @@ const DEFAULT_FAQ_ITEMS: { question: string; answer: string }[] = [
     answer:
       'We offer a 30-day return policy on most items. Products must be unused and in original packaging.',
   },
-  {
-    question: 'Are any purchases final sale?',
-    answer: 'Yes, items marked final sale cannot be returned or exchanged.',
-  },
-  {
-    question: 'When will I get my order?',
-    answer: 'Most orders ship within 2–3 business days. Delivery times vary by location.',
-  },
-  {
-    question: 'Where are your products manufactured?',
-    answer: 'Our products are designed in-house and manufactured with trusted partners worldwide.',
-  },
-  {
-    question: 'How much does shipping cost?',
-    answer: 'Shipping is calculated at checkout. Free shipping may apply on qualifying orders.',
-  },
 ];
 
 function faqHeadingBlockSettings(text = DEFAULT_FAQ_HEADING_TEXT): Record<string, string> {
@@ -200,12 +184,21 @@ export function applyFaqPreset(section: Record<string, unknown>): void {
   settings.layoutGap = settings.layoutGap ?? 32;
   settings.sectionWidth = settings.sectionWidth ?? 'page';
   settings.height = settings.height ?? 'auto';
+  settings.customHeight = settings.customHeight ?? 50;
   settings.colorScheme = settings.colorScheme ?? 'scheme-1';
   settings.backgroundMedia = settings.backgroundMedia ?? 'none';
   settings.backgroundImageUrl = settings.backgroundImageUrl ?? '';
+  settings.backgroundImagePosition = settings.backgroundImagePosition ?? 'cover';
+  settings.backgroundVideoUrl = settings.backgroundVideoUrl ?? '';
   settings.borderStyle = settings.borderStyle ?? 'none';
+  settings.borderThickness = settings.borderThickness ?? 1;
+  settings.borderOpacity = settings.borderOpacity ?? 100;
+  settings.borderColor = settings.borderColor ?? 'default';
   settings.cornerRadius = settings.cornerRadius ?? 0;
   settings.backgroundOverlay = settings.backgroundOverlay ?? false;
+  settings.overlayColor = settings.overlayColor ?? '#00000066';
+  settings.overlayStyle = settings.overlayStyle ?? 'solid';
+  settings.overlayGradientDirection = settings.overlayGradientDirection ?? 'up';
   settings.paddingTop = settings.paddingTop ?? 48;
   settings.paddingBottom = settings.paddingBottom ?? 48;
   settings.customCss = settings.customCss ?? '';
@@ -224,8 +217,49 @@ export function applyFaqPreset(section: Record<string, unknown>): void {
   }
 
   ensureFaqHeadingSettings(section);
+  ensureFaqAccordionStructure(section);
   ensureFaqAccordionSettings(section);
   ensureFaqAccordionRowBlocks(section);
+}
+
+/** Move accordion-row blocks from section level into the accordion group wrapper. */
+function ensureFaqAccordionStructure(section: Record<string, unknown>): void {
+  const blocks = (section.blocks ?? {}) as Record<string, Record<string, unknown>>;
+  const order = Array.isArray(section.block_order) ? [...section.block_order] : Object.keys(blocks);
+
+  const orphanRowIds = order.filter((id) => blocks[id]?.type === 'accordion-row');
+  if (!orphanRowIds.length) return;
+
+  const accordion = (blocks.accordion ?? {
+    type: 'group',
+    settings: faqAccordionDefaultSettings(),
+    blocks: {},
+    block_order: [],
+  }) as Record<string, unknown>;
+
+  const accordionBlocks = { ...((accordion.blocks ?? {}) as Record<string, unknown>) };
+  const accordionOrder = Array.isArray(accordion.block_order)
+    ? [...accordion.block_order]
+    : Object.keys(accordionBlocks);
+
+  for (const rowId of orphanRowIds) {
+    if (accordionBlocks[rowId]) continue;
+    accordionBlocks[rowId] = blocks[rowId]!;
+    accordionOrder.push(rowId);
+    delete blocks[rowId];
+  }
+
+  accordion.type = 'group';
+  accordion.blocks = accordionBlocks;
+  accordion.block_order = accordionOrder;
+  blocks.accordion = accordion;
+
+  const nextOrder = order.filter((id) => id !== 'accordion' && !orphanRowIds.includes(id));
+  if (!nextOrder.includes('heading')) nextOrder.unshift('heading');
+  if (!nextOrder.includes('accordion')) nextOrder.push('accordion');
+
+  section.blocks = blocks;
+  section.block_order = nextOrder;
 }
 
 function ensureFaqAccordionRowBlocks(section: Record<string, unknown>): void {

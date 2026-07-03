@@ -21,6 +21,7 @@ import {
   imageCompareSliderMobileCss,
   readImageCompareSliderStyle,
 } from './imageCompareSliderStyles';
+import { atMobileBreakpoint } from '../../runtime/shared/responsive';
 
 const buttonBase: CSSProperties = {
   display: 'inline-flex',
@@ -268,7 +269,7 @@ export function ImageCompare({
   const scopedCss = scopedImageCompareCss(sectionId, style.customCss);
   const mobileCss = [
     mobileStackClass
-      ? `@media (max-width: 749px) { .${mobileStackClass} { grid-template-columns: 1fr !important; grid-template-rows: auto auto !important; } }`
+      ? atMobileBreakpoint(`.${mobileStackClass} { grid-template-columns: 1fr !important; grid-template-rows: auto auto !important; }`)
       : '',
     imageCompareSliderMobileCss(sliderStyle.mobileClass, sliderStyle.mobileWidthCss),
     imageCompareContentMobileCss(contentStyle.mobileClass, contentStyle.mobileWidthCss),

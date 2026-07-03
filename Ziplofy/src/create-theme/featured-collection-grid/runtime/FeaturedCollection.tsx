@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
-import { useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
+import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeColors, useThemeLayout } from '../../runtime/shared/tokens';
 import { combineResponsiveCss, mobileMedia, sectionScopeClass } from '../../runtime/shared/responsive';
@@ -13,6 +14,15 @@ import {
 import { resolveThemeProductMediaBorderCss } from '../../runtime/shared/themeProductMediaRuntime';
 import { readThemeProductMediaSettings } from '../../settings/theme-product-media.settings';
 import { FeaturedProductShirtIllustration } from '../../product-highlight/runtime/FeaturedProductArt';
+import { readCollectionTitleStyle } from '../../runtime/shared/collectionTitleStyles';
+import {
+  collectionHeaderResponsiveCss,
+  readCollectionHeaderLayout,
+} from '../../runtime/shared/collectionHeaderStyles';
+import { readViewAllButtonStyle, viewAllButtonAnchorCss, viewAllButtonWrapperCss } from '../../runtime/shared/viewAllButtonStyles';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
+import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
+import { useFeaturedCollectionProducts } from '../../runtime/shared/useFeaturedCollectionProducts';
 import type { SectionRuntimeProps } from '../../runtime/types';
 
 type GridProduct = {
@@ -24,6 +34,17 @@ type GridProduct = {
   placeholder?: boolean;
 };
 
+const PRICE_TYPOGRAPHY_PRESETS: Record<
+  string,
+  { fontSize: number; fontWeight: number; lineHeight: number }
+> = {
+  default: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 },
+  'heading-6': { fontSize: 14, fontWeight: 600, lineHeight: 1.4 },
+  'heading-5': { fontSize: 16, fontWeight: 600, lineHeight: 1.35 },
+  'heading-4': { fontSize: 18, fontWeight: 600, lineHeight: 1.3 },
+  body: { fontSize: 14, fontWeight: 400, lineHeight: 1.5 },
+};
+
 export function FeaturedCollection({
   sectionId,
   templateId = 'index',
@@ -32,14 +53,13 @@ export function FeaturedCollection({
   const config = useThemeConfig();
   const { fontBody, fontHeading, background, text, muted, primary } = useThemeColors();
   const { maxWidth } = useThemeLayout();
-  const { storeFrontMeta } = useStorefront();
-  const { products, fetchProductsByStoreId } = useStorefrontProducts();
 
   const sectionBase =
     placement === 'template'
       ? `templates.${templateId}.sections.${sectionId}`
       : `sections.${sectionId}`;
   const settingsBase = `${sectionBase}.settings`;
+  const collectionHandle = cfgString(config, `${settingsBase}.collectionHandle`, '');
   const blocksBase = `${sectionBase}.blocks`;
   const headerBase = `${blocksBase}.collection_header.settings`;
   const editorNodeId =
@@ -62,11 +82,41 @@ export function FeaturedCollection({
   const isCarousel = layoutType === 'carousel';
   const navIcon = cfgString(config, `${settingsBase}.navIcon`, 'arrows');
   const navIconBackground = cfgString(config, `${settingsBase}.navIconBackground`, 'circle');
+  const sectionBackgroundRaw = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
+  const sectionBackground =
+    sectionBackgroundRaw === 'default' || !sectionBackgroundRaw.trim()
+      ? background
+      : resolveThemePaletteColorSetting(config, sectionBackgroundRaw, 0, background);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const title = cfgString(config, `${headerBase}.title`, 'Featured products');
+  const titleStyle = useMemo(
+    () =>
+      readCollectionTitleStyle(config, headerBase, { heading: fontHeading, body: fontBody }, {
+        text,
+        heading: text,
+        accent: primary,
+        background,
+      }),
+    [config, headerBase, fontHeading, fontBody, text, primary, background]
+  );
   const viewAllLabel = cfgString(config, `${headerBase}.viewAllLabel`, 'View all');
   const viewAllHref = cfgString(config, `${headerBase}.viewAllHref`, '#');
+  const viewAllStyle = useMemo(
+    () =>
+      readViewAllButtonStyle(config, headerBase, {
+        primary,
+        background,
+        text,
+        line: text,
+      }),
+    [config, headerBase, primary, background, text]
+  );
+  const headerLayout = useMemo(
+    () =>
+      readCollectionHeaderLayout(config, headerBase, { background, color: text }, muted),
+    [config, headerBase, background, text, muted]
+  );
   const emptyMessage = cfgString(config, `${settingsBase}.emptyMessage`, '');
   const showMedia = cfgBool(config, `${blocksBase}.product_card.settings.showMedia`, true);
   const showTitle = cfgBool(config, `${blocksBase}.product_card.settings.showTitle`, true);
@@ -89,6 +139,42 @@ export function FeaturedCollection({
     ['media', 'product_title', 'price']
   );
 
+  const priceStyle = useMemo(() => {
+    const base = `${blocksBase}.product_card.settings`;
+    const preset = cfgString(config, `${base}.priceTypographyPreset`, 'heading-6');
+    const typo = PRICE_TYPOGRAPHY_PRESETS[preset] ?? PRICE_TYPOGRAPHY_PRESETS['heading-6'];
+    const widthMode = cfgString(config, `${base}.priceWidth`, 'fill');
+    const align = cfgString(config, `${base}.priceAlignment`, 'left');
+    const colorKey = cfgString(config, `${base}.priceColor`, '');
+    const color =
+      colorKey === '' || colorKey === 'default' || colorKey === 'text'
+        ? text
+        : colorKey === 'heading'
+          ? text
+          : colorKey === 'accent'
+            ? primary
+            : colorKey === 'muted'
+              ? muted
+              : resolveThemePaletteColorSetting(config, colorKey, 1, text);
+    const textAlign: CSSProperties['textAlign'] =
+      align === 'center' ? 'center' : align === 'right' ? 'right' : 'left';
+    return {
+      width: widthMode === 'fit' ? 'fit-content' : '100%',
+      textAlign,
+      fontSize: typo.fontSize,
+      fontWeight: typo.fontWeight,
+      lineHeight: typo.lineHeight,
+      color,
+      paddingTop: cfgNumber(config, `${base}.pricePaddingTop`, 0),
+      paddingBottom: cfgNumber(config, `${base}.pricePaddingBottom`, 0),
+      paddingLeft: cfgNumber(config, `${base}.pricePaddingLeft`, 0),
+      paddingRight: cfgNumber(config, `${base}.pricePaddingRight`, 0),
+      showSaleFirst: cfgBool(config, `${base}.priceShowSaleFirst`, true),
+      showInstallments: cfgBool(config, `${base}.priceInstallments`, false),
+      showTaxInfo: cfgBool(config, `${base}.priceTaxInfo`, false),
+    };
+  }, [config, blocksBase, text, primary, muted]);
+
   const cardColors = useMemo(() => resolveThemeProductCardInlineStyle(config), [config]);
   const quickAddFlags = useMemo(() => readThemeProductCardsQuickAddFlags(config), [config]);
   const mediaBorder = useMemo(() => {
@@ -99,11 +185,7 @@ export function FeaturedCollection({
     };
   }, [config]);
 
-  const storeId = storeFrontMeta?.storeId ?? '';
-  useEffect(() => {
-    if (!storeId) return;
-    void fetchProductsByStoreId({ storeId, page: 1, limit });
-  }, [storeId, limit, fetchProductsByStoreId]);
+  const products = useFeaturedCollectionProducts({ collectionHandle, limit });
 
   const cards: GridProduct[] = useMemo(() => {
     const list = (products as GridProduct[]).slice(0, limit);
@@ -124,6 +206,12 @@ export function FeaturedCollection({
   const cardCount = cards.length;
 
   const responsiveCss = useMemo(() => {
+    const headerCss = collectionHeaderResponsiveCss(
+      sectionId,
+      headerLayout.mobileWidth,
+      headerLayout.mobileStack,
+      headerLayout.mobileCustomWidth
+    );
     const sharedCss = combineResponsiveCss(
       `.${scopeClass} .ziplofy-fc-media { aspect-ratio: 1 / 1; }`,
       `.${scopeClass} .ziplofy-fc-quick-add { opacity: 0; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }`,
@@ -154,7 +242,7 @@ export function FeaturedCollection({
             `.${scopeClass} .ziplofy-fc-nav { display: none !important; }`
         )
       );
-      return combineResponsiveCss(layoutCss, sharedCss);
+      return combineResponsiveCss(layoutCss, sharedCss, headerCss);
     }
 
     if (isEditorial) {
@@ -169,14 +257,14 @@ export function FeaturedCollection({
             `.${gridClass} > .ziplofy-fc-card { margin-top: 0 !important; }`
         )
       );
-      return combineResponsiveCss(layoutCss, sharedCss);
+      return combineResponsiveCss(layoutCss, sharedCss, headerCss);
     }
 
     const layoutCss = combineResponsiveCss(
       `.${gridClass} { display: grid; grid-template-columns: repeat(${columns}, minmax(0, 1fr)); column-gap: ${hGap}px; row-gap: ${vGap}px; }`,
       mobileMedia(`.${gridClass} { grid-template-columns: repeat(${mobileColumns}, minmax(0, 1fr)) !important; }`)
     );
-    return combineResponsiveCss(layoutCss, sharedCss);
+    return combineResponsiveCss(layoutCss, sharedCss, headerCss);
   }, [
     scopeClass,
     gridClass,
@@ -189,10 +277,14 @@ export function FeaturedCollection({
     vGap,
     sectionGap,
     quickAddFlags.mobileQuickAdd,
+    sectionId,
+    headerLayout.mobileWidth,
+    headerLayout.mobileStack,
+    headerLayout.mobileCustomWidth,
   ]);
 
   const shell: CSSProperties = {
-    background,
+    background: sectionBackground,
     color: text,
     fontFamily: fontBody,
     paddingTop,
@@ -259,26 +351,52 @@ export function FeaturedCollection({
 
   const renderHeaderNested = (nestedId: string): ReactNode => {
     if (nestedId === 'collection_title') {
+      const titleTag = richTextHasBlockMarkup(title) ? 'div' : 'h2';
       return (
         <EditorBlock
           key={nestedId}
           nodeId={`${editorNodeId}:block:collection_header:nested:collection_title`}
           label="Collection title"
+          style={{
+            flex: titleStyle.flex,
+            minWidth: titleStyle.flex ? 0 : undefined,
+          }}
         >
           <EditorField
             fieldPath={`${headerBase}.title`}
             label="Text"
-            as="h2"
+            as={titleTag}
             style={{
               margin: 0,
-              fontFamily: fontHeading,
-              fontSize: 30,
-              fontWeight: 600,
-              lineHeight: 1.2,
-              color: text,
+              width: titleStyle.width,
+              maxWidth: titleStyle.maxWidth,
+              textAlign: titleStyle.textAlign,
+              color: titleStyle.color,
+              background: titleStyle.background,
+              paddingTop: titleStyle.paddingTop,
+              paddingBottom: titleStyle.paddingBottom,
+              paddingLeft: titleStyle.paddingLeft,
+              paddingRight: titleStyle.paddingRight,
+              borderRadius: titleStyle.borderRadius,
+              boxSizing: 'border-box',
             }}
           >
-            {title}
+            <ThemeEditorRichTextContent
+              html={title}
+              style={{
+                fontFamily: titleStyle.fontFamily,
+                fontSize: titleStyle.fontSize,
+                fontWeight: titleStyle.fontWeight,
+                lineHeight: titleStyle.lineHeight,
+                color: titleStyle.color,
+                ...(titleStyle.fontStyle ? { fontStyle: titleStyle.fontStyle } : {}),
+                ...(titleStyle.letterSpacing ? { letterSpacing: titleStyle.letterSpacing } : {}),
+                ...(titleStyle.textTransform ? { textTransform: titleStyle.textTransform } : {}),
+                ...(titleStyle.textWrap
+                  ? { textWrap: titleStyle.textWrap as CSSProperties['textWrap'] }
+                  : {}),
+              }}
+            />
           </EditorField>
         </EditorBlock>
       );
@@ -289,17 +407,14 @@ export function FeaturedCollection({
           key={nestedId}
           nodeId={`${editorNodeId}:block:collection_header:nested:view_all_button`}
           label="View all button"
+          style={viewAllButtonWrapperCss(viewAllStyle)}
         >
           <EditorField fieldPath={`${headerBase}.viewAllLabel`} label="Label" as="span">
             <a
               href={viewAllHref}
-              style={{
-                color: primary,
-                fontWeight: 600,
-                textDecoration: 'none',
-                fontSize: 14,
-                whiteSpace: 'nowrap',
-              }}
+              target={viewAllStyle.openInNewTab ? '_blank' : undefined}
+              rel={viewAllStyle.openInNewTab ? 'noopener noreferrer' : undefined}
+              style={viewAllButtonAnchorCss(viewAllStyle)}
             >
               {viewAllLabel}
             </a>
@@ -315,16 +430,18 @@ export function FeaturedCollection({
       key="collection_header"
       nodeId={`${editorNodeId}:block:collection_header`}
       label="Header"
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 16,
-        marginBottom: 24,
-      }}
     >
-      {headerNestedOrder.map(renderHeaderNested)}
+      <div
+        style={
+          headerLayout.referenceMinHeight
+            ? { minHeight: headerLayout.referenceMinHeight, width: '100%' }
+            : undefined
+        }
+      >
+        <div data-fc-collection-header style={headerLayout.style}>
+          {headerNestedOrder.map(renderHeaderNested)}
+        </div>
+      </div>
     </EditorBlock>
   );
 
@@ -408,33 +525,65 @@ export function FeaturedCollection({
     }
     if (nestedId === 'price') {
       if (!showPrice) return null;
-      const priceLabel = formatThemePrice(config, product.price, 'productCards');
-      const compareLabel =
-        product.compareAtPrice && product.compareAtPrice > product.price
-          ? formatThemePrice(config, product.compareAtPrice, 'productCards')
-          : '';
+      const onSale = !!(product.compareAtPrice && product.compareAtPrice > product.price);
+      const currentLabel = formatThemePrice(config, product.price, 'productCards');
+      const compareRaw = onSale
+        ? formatThemePrice(config, product.compareAtPrice as number, 'productCards')
+        : '';
+      const primaryLabel = onSale && !priceStyle.showSaleFirst ? compareRaw : currentLabel;
+      const strikeLabel = onSale
+        ? priceStyle.showSaleFirst
+          ? compareRaw
+          : currentLabel
+        : '';
       return (
         <EditorBlock
           key={nestedId}
           nodeId={`${editorNodeId}:block:product_card:nested:price`}
           label="Price"
         >
-          <p
+          <div
             style={{
-              margin: 0,
-              padding: '4px 4px 12px',
-              fontFamily: fontBody,
-              fontSize: 13,
-              color: cardColors.color,
+              width: priceStyle.width,
+              textAlign: priceStyle.textAlign,
+              paddingTop: 4 + priceStyle.paddingTop,
+              paddingBottom: 12 + priceStyle.paddingBottom,
+              paddingLeft: 4 + priceStyle.paddingLeft,
+              paddingRight: 4 + priceStyle.paddingRight,
+              boxSizing: 'border-box',
             }}
           >
-            <span>{priceLabel}</span>
-            {compareLabel ? (
-              <span style={{ marginLeft: 8, color: muted, textDecoration: 'line-through' }}>
-                {compareLabel}
-              </span>
+            <p
+              style={{
+                margin: 0,
+                fontFamily: fontBody,
+                fontSize: priceStyle.fontSize,
+                fontWeight: priceStyle.fontWeight,
+                lineHeight: priceStyle.lineHeight,
+                color: priceStyle.color,
+              }}
+            >
+              <span>{primaryLabel}</span>
+              {strikeLabel ? (
+                <span
+                  style={{
+                    marginLeft: 8,
+                    fontWeight: 400,
+                    color: muted,
+                    textDecoration: 'line-through',
+                  }}
+                >
+                  {strikeLabel}
+                </span>
+              ) : null}
+            </p>
+            {priceStyle.showInstallments ? (
+              <p style={{ margin: '4px 0 0', fontSize: 12, color: muted }}>Pay in installments</p>
             ) : null}
-          </p>
+            {priceStyle.showTaxInfo ? (
+              <p style={{ margin: '2px 0 0', fontSize: 11, color: muted }}>Tax included</p>
+            ) : null}
+          </div>
         </EditorBlock>
       );
     }

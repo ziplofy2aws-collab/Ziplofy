@@ -1,6 +1,13 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 
-const PANEL_GROUPS = new Set(['General', 'Typography', 'Padding']);
+const PANEL_GROUPS = new Set(['General', 'Typography', 'Appearance', 'Padding']);
+
+export const PRODUCT_CARD_PRICE_PANEL_GROUP_ORDER = [
+  'General',
+  'Typography',
+  'Appearance',
+  'Padding',
+] as const;
 
 const PRICE_PANEL_KEYS = new Set([
   'priceShowSaleFirst',
@@ -47,13 +54,30 @@ export function isProductCardPricePanelField(field: EditorFieldDef): boolean {
 }
 
 export function sortProductCardPricePanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const groupRank: Record<string, number> = { General: 0, Typography: 1, Padding: 2 };
+  const groupRank: Record<string, number> = { General: 0, Typography: 1, Appearance: 2, Padding: 3 };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
     const gb = groupRank[b.group ?? ''] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
+}
+
+export function groupProductCardPricePanelFields(
+  fields: EditorFieldDef[]
+): Map<string, EditorFieldDef[]> {
+  const grouped = new Map<string, EditorFieldDef[]>();
+  for (const field of sortProductCardPricePanelFields(fields)) {
+    const group = field.group ?? 'General';
+    const list = grouped.get(group) ?? [];
+    list.push(field);
+    grouped.set(group, list);
+  }
+  return grouped;
+}
+
+export function isProductCardPricePanelFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) => /:?\.?blocks\.product_card\.settings\.price/.test(f.path) || f.path.endsWith('priceShowSaleFirst'));
 }
 
 export function prepareProductCardPriceSettingsNode(node: SidebarNode): SidebarNode {

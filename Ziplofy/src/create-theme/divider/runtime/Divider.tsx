@@ -31,8 +31,7 @@ export function Divider({ sectionId, placement = 'layout', templateId = 'index' 
   const lineThickness = Math.max(style.thickness, 1);
 
   const shell: CSSProperties = {
-    background: style.scheme.background,
-    color: style.scheme.color,
+    background: style.background,
     fontFamily: fontBody,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
@@ -64,7 +63,7 @@ export function Divider({ sectionId, placement = 'layout', templateId = 'index' 
             maxWidth: '100%',
             margin: 0,
             border: 'none',
-            borderTop: `${lineThickness}px solid ${style.scheme.border}`,
+            borderTop: `${lineThickness}px solid ${style.lineColor}`,
             flexShrink: 0,
           }}
         />

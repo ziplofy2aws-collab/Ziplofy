@@ -1,5 +1,35 @@
 import { cfgBool, cfgNumber, cfgString } from './config';
 
+function readPalette(config: Record<string, unknown> | null): string[] {
+  const palette = (config?.settings as Record<string, unknown> | undefined)?.colors as
+    | Record<string, unknown>
+    | undefined;
+  const raw = palette?.palette;
+  if (Array.isArray(raw) && raw.length >= 2) {
+    return raw.filter((c): c is string => typeof c === 'string' && c.trim().length > 0);
+  }
+  return ['#ffffff', '#111827'];
+}
+
+function resolvePriceColor(
+  config: Record<string, unknown> | null,
+  colorKey: string,
+  colors: { text: string; heading: string; accent: string; muted: string }
+): string {
+  if (colorKey === '' || colorKey === 'default' || colorKey === 'text') return colors.text;
+  if (colorKey.startsWith('#')) return colorKey;
+  if (colorKey === 'palette' || /^palette:\d+$/.test(colorKey)) {
+    const palette = readPalette(config);
+    const match = /^palette:(\d+)$/.exec(colorKey);
+    const index = match ? Number(match[1]) : 1;
+    return palette[index] ?? colors.text;
+  }
+  if (colorKey === 'heading') return colors.heading;
+  if (colorKey === 'accent') return colors.accent;
+  if (colorKey === 'muted') return colors.muted;
+  return colors.text;
+}
+
 const TYPOGRAPHY_PRESETS: Record<string, { fontSize: number; fontWeight: number; lineHeight: number }> = {
   default: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 },
   'heading-6': { fontSize: 14, fontWeight: 600, lineHeight: 1.4 },
@@ -35,15 +65,8 @@ export function readProductCardPriceStyle(
   const typo = TYPOGRAPHY_PRESETS[preset] ?? TYPOGRAPHY_PRESETS['heading-6'];
   const widthMode = cfgString(config, `${settingsBase}.priceWidth`, 'fill');
   const align = cfgString(config, `${settingsBase}.priceAlignment`, 'left');
-  const colorKey = cfgString(config, `${settingsBase}.priceColor`, 'text');
-  const color =
-    colorKey === 'heading'
-      ? colors.heading
-      : colorKey === 'accent'
-        ? colors.accent
-        : colorKey === 'muted'
-          ? colors.muted
-          : colors.text;
+  const colorKey = cfgString(config, `${settingsBase}.priceColor`, '');
+  const color = resolvePriceColor(config, colorKey, colors);
   const textAlign =
     align === 'center' ? 'center' : align === 'right' ? 'right' : 'left';
 

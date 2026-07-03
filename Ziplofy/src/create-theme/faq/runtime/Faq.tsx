@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import { useThemeConfig, usePreviewDevice } from '@render-store/sdk';
 import {
   heroHeadingTypographyCss,
   readHeroHeadingStyle,
@@ -7,7 +7,7 @@ import {
 import { useThemeIconStrokeWidth } from '../../runtime/shared/themeIconsRuntime';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
-import { useThemeColors } from '../../runtime/shared/tokens';
+import { useThemeColors, useThemeLayout } from '../../runtime/shared/tokens';
 import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
 import {
   combineResponsiveCss,
@@ -18,6 +18,7 @@ import {
 import {
   accordionQuestionTypography,
   readFaqAccordionStyle,
+  readFaqAccordionTextColors,
   readFaqHeading,
   isFaqAccordionBlockEnabled,
   isFaqHeadingBlockEnabled,
@@ -25,12 +26,16 @@ import {
   readFaqLayout,
   readFaqSectionBlockOrder,
   readFaqTextBlockStyle,
+  resolveFaqBorderCss,
   scopedFaqCss,
+  faqLayoutFlexValue,
+  faqPositionFlexValue,
+  faqOverlayBackground,
 } from './faqStyles';
+import { FaqAccordionRowIcon } from './FaqAccordionRowIcon';
 
 const LAYOUT = {
   padX: 24,
-  maxWidth: 1200,
 };
 
 function AccordionIcon({
@@ -102,6 +107,8 @@ function editorAttrs(
 
 export function Faq({ sectionId = 'faq_section', templateId = 'index', placement = 'template' }: SectionRuntimeProps) {
   const config = useThemeConfig();
+  const previewDevice = usePreviewDevice();
+  const { maxWidth: themePageMaxWidth } = useThemeLayout();
   const iconStroke = useThemeIconStrokeWidth();
   const { text: themeText, fontHeading, fontBody } = useThemeColors();
   const settingsBase =
@@ -169,10 +176,37 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
   }, [editorMode, items]);
 
   const scheme = style.scheme;
-  const questionColor = accordionStyle.inheritColorScheme ? scheme.color : themeText;
-  const answerColor = accordionStyle.inheritColorScheme ? scheme.muted : themeText;
-  const horizontalPad = style.sectionWidth === 'full' ? 24 : LAYOUT.padX;
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : LAYOUT.maxWidth;
+  const isHorizontal = style.direction === 'horizontal';
+  const stackOnMobile = isHorizontal && style.verticalOnMobile;
+  const isMobileLayout = previewDevice === 'mobile' ? stackOnMobile : false;
+  const textColors = useMemo(
+    () => readFaqAccordionTextColors(config, accordionSettingsBase, scheme, themeText),
+    [config, accordionSettingsBase, scheme, themeText]
+  );
+  const questionColor = textColors.question;
+  const answerColor = textColors.answer;
+  const dividerColor =
+    !accordionStyle.dividerColor || accordionStyle.dividerColor === 'default'
+      ? scheme.border
+      : accordionStyle.dividerColor;
+  const accordionBackground =
+    !accordionStyle.backgroundColor || accordionStyle.backgroundColor === 'default'
+      ? undefined
+      : accordionStyle.backgroundColor;
+  const accordionBorder = resolveFaqBorderCss(
+    accordionStyle.borderStyle,
+    accordionStyle.borderThickness,
+    accordionStyle.borderOpacity,
+    accordionStyle.borderColor,
+    scheme.border
+  );
+  const horizontalPad =
+    previewDevice === 'mobile'
+      ? 16
+      : style.sectionWidth === 'full'
+        ? 24
+        : LAYOUT.padX;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : themePageMaxWidth;
   const scopeClass = `ziplofy-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const shellClass = `${scopeClass}-shell`;
   const accordionScopeClass = `${scopeClass}-accordion`;
@@ -188,6 +222,8 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
 
   const shell: CSSProperties = {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
     background: scheme.background,
     color: scheme.color,
     paddingTop: style.paddingTop,
@@ -195,36 +231,49 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    minHeight: style.minHeightPx > 0 ? style.minHeightPx : undefined,
-    border: style.borderStyle === 'solid' ? `1px solid ${scheme.border}` : undefined,
+    minHeight: style.minHeight,
+    border: resolveFaqBorderCss(
+      style.borderStyle,
+      style.borderThickness,
+      style.borderOpacity,
+      style.borderColor,
+      scheme.border
+    ),
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: style.cornerRadius > 0 ? 'hidden' : undefined,
   };
 
   const bgImage =
     style.backgroundMedia === 'image' && style.backgroundImageUrl ? style.backgroundImageUrl : null;
+  const bgVideo =
+    style.backgroundMedia === 'video' && style.backgroundVideoUrl.trim()
+      ? style.backgroundVideoUrl.trim()
+      : null;
+  const hasBgMedia = Boolean(bgImage || bgVideo);
+  const bgImageSize = style.backgroundImagePosition === 'fit' ? 'contain' : 'cover';
 
+  const positionFlex = faqPositionFlexValue(style.position);
+  const alignmentFlex = faqLayoutFlexValue(style.layoutAlignment);
+  const useRow = isHorizontal && !isMobileLayout;
   const stage: CSSProperties = {
     maxWidth: innerMaxWidth,
     margin: '0 auto',
     width: '100%',
+    flex: style.minHeight ? '1 1 auto' : undefined,
     display: 'flex',
-    flexDirection: style.direction === 'horizontal' ? 'row' : 'column',
-    alignItems:
-      style.position === 'top'
-        ? 'flex-start'
-        : style.position === 'bottom'
-          ? 'flex-end'
-          : 'center',
+    flexDirection: useRow ? 'row' : 'column',
+    // Vertical: Alignment = cross axis (alignItems), Position = main axis (justifyContent).
+    // Horizontal: Position = cross axis (alignItems), Alignment = main axis (justifyContent).
+    alignItems: useRow ? positionFlex : isMobileLayout ? 'stretch' : alignmentFlex,
+    justifyContent: useRow ? alignmentFlex : positionFlex,
     gap: style.layoutGap,
   };
 
   const headingFillWidth = headingStyleTokens.width === '100%';
-  const headingTextAlign = headingStyleTokens.textAlign ?? style.layoutAlignment;
   const headingContentStyle: CSSProperties = {
     ...heroHeadingTypographyCss(headingStyleTokens),
     color: headingStyleTokens.color,
-    textAlign: headingTextAlign,
+    textAlign: headingStyleTokens.textAlign,
     background: headingStyleTokens.background,
     paddingTop: headingStyleTokens.paddingTop,
     paddingBottom: headingStyleTokens.paddingBottom,
@@ -234,21 +283,14 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
   };
   const headingStyle: CSSProperties = {
     margin: 0,
-    width: headingStyleTokens.width,
-    maxWidth: headingStyleTokens.maxWidth,
-    marginLeft: headingStyleTokens.marginLeft,
-    marginRight: headingStyleTokens.marginRight,
-    alignSelf: headingFillWidth
-      ? 'stretch'
-      : headingTextAlign === 'center'
-        ? 'center'
-        : headingTextAlign === 'right'
-          ? 'flex-end'
-          : 'flex-start',
+    width: isMobileLayout ? '100%' : isHorizontal ? '100%' : headingStyleTokens.width,
+    maxWidth: isMobileLayout ? '100%' : headingStyleTokens.maxWidth,
+    marginLeft: isMobileLayout ? undefined : headingStyleTokens.marginLeft,
+    marginRight: isMobileLayout ? undefined : headingStyleTokens.marginRight,
+    alignSelf: isMobileLayout ? 'stretch' : headingFillWidth ? 'stretch' : undefined,
     boxSizing: 'border-box',
-    textAlign: headingTextAlign,
-    marginBottom: style.direction === 'horizontal' ? 0 : style.layoutGap,
-    flex: style.direction === 'horizontal' ? '0 0 38%' : undefined,
+    marginBottom: isHorizontal && !isMobileLayout ? 0 : isMobileLayout ? 0 : style.layoutGap,
+    flex: isMobileLayout ? undefined : isHorizontal ? '0 0 38%' : undefined,
   };
 
   const toggle = (id: string) => {
@@ -262,9 +304,9 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
 
   const customCss = scopedFaqCss(sectionId, style.customCss);
   const responsiveCss = combineResponsiveCss(
-    scopedMobileHorizontalPadCss(shellClass),
-    style.direction === 'horizontal' ? scopedMobileFlexStackCss(scopeClass) : '',
-    scopedFaqAccordionMobileCss(accordionScopeClass)
+    previewDevice === 'mobile' ? '' : scopedMobileHorizontalPadCss(shellClass),
+    stackOnMobile ? scopedMobileFlexStackCss(scopeClass) : '',
+    scopedFaqAccordionMobileCss(accordionScopeClass),
   );
   const headingPath = `${settingsBase}.title`;
   const headingNodeId =
@@ -295,9 +337,9 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
       style={{
         flex: 1,
         width: '100%',
-        borderTop: accordionStyle.dividers ? `1px solid ${scheme.border}` : undefined,
-        border:
-          accordionStyle.borderStyle === 'solid' ? `1px solid ${scheme.border}` : undefined,
+        background: accordionBackground,
+        borderTop: accordionStyle.dividers ? `1px solid ${dividerColor}` : undefined,
+        border: accordionBorder,
         borderRadius: accordionStyle.cornerRadius > 0 ? accordionStyle.cornerRadius : undefined,
         overflow: accordionStyle.cornerRadius > 0 ? 'hidden' : undefined,
         paddingTop: accordionStyle.paddingTop,
@@ -318,7 +360,7 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
         const questionPath = `${sectionBase}.blocks.accordion.blocks.${item.id}.settings.heading`;
         const rowBorder =
           accordionStyle.dividers && index < items.length - 1
-            ? `1px solid ${scheme.border}`
+            ? `1px solid ${dividerColor}`
             : undefined;
 
         return (
@@ -361,11 +403,15 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
                     alt=""
                     style={{
                       width: item.rowIconWidth,
-                      height: item.rowIconWidth,
+                      height: 'auto',
+                      maxHeight: item.rowIconWidth,
                       objectFit: 'contain',
                       flexShrink: 0,
+                      display: 'block',
                     }}
                   />
+                ) : item.rowIcon && item.rowIcon !== 'none' ? (
+                  <FaqAccordionRowIcon icon={item.rowIcon} size={item.rowIconWidth} />
                 ) : null}
                 <span
                   style={{
@@ -443,19 +489,31 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
             position: 'absolute',
             inset: 0,
             backgroundImage: `url(${bgImage})`,
-            backgroundSize: 'cover',
+            backgroundSize: bgImageSize,
             backgroundPosition: 'center',
+            backgroundRepeat: style.backgroundImagePosition === 'fit' ? 'no-repeat' : undefined,
             zIndex: 0,
           }}
         />
       ) : null}
-      {style.backgroundOverlay && bgImage ? (
+      {bgVideo ? (
         <div
           aria-hidden
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(0,0,0,0.35)',
+            background: 'linear-gradient(135deg, #1f2937 0%, #374151 100%)',
+            zIndex: 0,
+          }}
+        />
+      ) : null}
+      {style.backgroundOverlay && hasBgMedia ? (
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: faqOverlayBackground(style),
             zIndex: 1,
           }}
         />

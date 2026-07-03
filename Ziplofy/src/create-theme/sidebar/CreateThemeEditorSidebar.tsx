@@ -1038,6 +1038,7 @@ export type CreateThemeEditorSidebarProps = {
   onCloseSettings?: () => void;
   onRemoveSettingsSection?: () => void;
   onRemoveSettingsBlock?: () => void;
+  themeColorPalette?: string[];
 };
 
 const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = ({
@@ -1072,6 +1073,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   onCloseSettings,
   onRemoveSettingsSection,
   onRemoveSettingsBlock,
+  themeColorPalette,
 }) => {
   const [dragState, setDragState] = useState<DragState>({
     listKey: null,
@@ -1223,6 +1225,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
             node={settingsNode}
             values={settingsValues}
             themeConfig={themeConfig}
+            colorPalette={themeColorPalette}
             onFieldChange={onSettingsFieldChange!}
             onCollectionLinksApply={onCollectionLinksApply}
             onStoreMenuSelect={onStoreMenuSelect}

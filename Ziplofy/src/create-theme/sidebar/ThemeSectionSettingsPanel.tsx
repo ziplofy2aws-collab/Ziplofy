@@ -16,11 +16,23 @@ import {
   fieldValueAsString,
   type ThemeEditorFieldType,
 } from './create-theme-field.utils';
-import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
+import { ThemePaletteColorField } from '../settings/ThemePaletteColorField';
+import { ThemeDefaultColorField } from '../settings/ThemeDefaultColorField';
+import { ThemeHexColorField } from '../settings/ThemeHexColorField';
+import { readThemeColorPalette } from '../settings/theme-color-palette.settings';
 import { useBlogs } from '../../contexts/blog.context';
+import { useCollections } from '../../contexts/collection.context';
 import { useStore } from '../../contexts/store.context';
+import toast from 'react-hot-toast';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { ThemeEditorRichTextField } from '../../components/theme-editor/ThemeEditorRichTextField';
+import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
 import { ThemeEditorImagePickerModal } from './ThemeEditorImagePickerModal';
+import { ThemeEditorCreateCollectionSheet } from './ThemeEditorCreateCollectionSheet';
+import {
+  CheckoutThemeColorField,
+} from '../checkout/settings/CheckoutThemeSettingsFields';
+import type { CheckoutColorSetting } from '../checkout/settings/checkout-settings.types';
 import {
   groupHeroPanelFields,
   HERO_PANEL_GROUP_ORDER,
@@ -33,11 +45,55 @@ import {
   groupHeadingPanelFields,
   HEADING_CUSTOM_TYPOGRAPHY_KEYS,
   HEADING_PANEL_GROUP_ORDER,
+  filterHeadingPanelFieldsForTypographyPreset,
+  inferHeadingPanelGroup,
   isHeadingBlockPanelFields,
   isHeadingBlockNodeId,
+  isHeadingTypographyCustomPreset,
   prepareHeadingBlockSettingsNode,
   resolveHeadingTypographyField,
 } from './theme-editor-heading-block-panel.utils';
+import {
+  COLLECTION_TITLE_CUSTOM_TYPOGRAPHY_KEYS,
+  COLLECTION_TITLE_PANEL_GROUP_ORDER,
+  filterCollectionTitlePanelFieldsForTypographyPreset,
+  groupCollectionTitlePanelFields,
+  groupCollectionTitleStylePanelFields,
+  isCollectionTitleNestedNodeId,
+  isCollectionTitlePanelFields,
+  isCollectionTitleTypographyCustomPreset,
+  prepareCollectionTitleSettingsNode,
+  prepareCollectionTitleStyleSettingsNode,
+  resolveCollectionTitleTypographyField,
+} from './theme-editor-fc-collection-title-panel.utils';
+import {
+  isFaqHeadingCollectionTitlePanelNode,
+  mapCollectionTitlePathToFaqHeadingPath,
+  mapFaqHeadingFieldsToCollectionTitleFields,
+  mapFaqHeadingValuesToCollectionTitleValues,
+} from './theme-editor-faq-heading-panel.utils';
+import {
+  isViewAllButtonNestedNodeId,
+  isViewAllButtonPanelFields,
+} from './theme-editor-fc-view-all-button-panel.utils';
+import { ViewAllButtonSettingsPanel } from './theme-editor-fc-view-all-button-settings-panel';
+import {
+  FC_HEADER_PANEL_GROUP_ORDER,
+  groupFeaturedCollectionHeaderPanelFields,
+  isFeaturedCollectionHeaderBlockNodeId,
+  isFeaturedCollectionHeaderPanelFields,
+  pickFeaturedCollectionHeaderField,
+  resolveFeaturedCollectionHeaderColorField,
+  resolveFeaturedCollectionHeaderBorderSliderField,
+  resolveFeaturedCollectionHeaderImageField,
+  resolveFeaturedCollectionHeaderImagePositionField,
+  resolveFeaturedCollectionHeaderCustomHeightField,
+  resolveFeaturedCollectionHeaderCustomWidthField,
+  featuredCollectionHeaderPercentValue,
+  featuredCollectionHeaderSettingsBase,
+  clampFeaturedCollectionHeaderPercent,
+  FC_HEADER_PERCENT_SLIDER_BOUNDS,
+} from './theme-editor-fc-header-panel.utils';
 import {
   isHeroButtonBlockNodeId,
   isHeroButtonPanelFields,
@@ -168,6 +224,24 @@ import {
   isFeaturedProductHeaderPricePanelFields,
 } from './theme-editor-featured-product-header-price-panel.utils';
 import {
+  PRODUCT_CARD_PRICE_PANEL_GROUP_ORDER,
+  groupProductCardPricePanelFields,
+  isProductCardPriceNestedNodeId,
+  isProductCardPricePanelFields,
+} from './theme-editor-product-card-price-panel.utils';
+import {
+  PRODUCT_CARD_TITLE_PANEL_GROUP_ORDER,
+  groupProductCardTitlePanelFields,
+  isProductCardTitleNestedNodeId,
+  isProductCardTitlePanelFields,
+} from './theme-editor-product-card-title-panel.utils';
+import {
+  PRODUCT_CARD_MEDIA_PANEL_GROUP_ORDER,
+  groupProductCardMediaPanelFields,
+  isProductCardMediaNestedNodeId,
+  isProductCardMediaPanelFields,
+} from './theme-editor-product-card-media-panel.utils';
+import {
   FEATURED_PRODUCT_HEADER_TITLE_PANEL_GROUP_ORDER,
   groupFeaturedProductHeaderTitlePanelFields,
   isFeaturedProductHeaderTitleNestedNodeId,
@@ -228,11 +302,15 @@ import {
   groupFaqPanelFields,
   FAQ_PANEL_GROUP_ORDER,
   FAQ_LAYOUT_FIELD_ORDER,
-  FAQ_APPEARANCE_FIELD_ORDER,
+  FAQ_PADDING_FIELD_ORDER,
   sortFaqGroupFields,
+  isFaqLayoutPanelFields,
+  isFaqSectionNodeId,
   isFaqSettingsPanelFields,
+  faqBackgroundColorForPicker,
 } from './theme-editor-faq-panel.utils';
 import {
+  FAQ_ACCORDION_APPEARANCE_FIELD_ORDER,
   FAQ_ACCORDION_GENERAL_FIELD_ORDER,
   FAQ_ACCORDION_HEADING_PRESET_OPTIONS,
   FAQ_ACCORDION_PADDING_FIELD_ORDER,
@@ -242,16 +320,24 @@ import {
   isFaqAccordionPanelFields,
 } from './theme-editor-faq-accordion-block-panel.utils';
 import {
+  FAQ_ACCORDION_ROW_CONTENT_FIELD_ORDER,
+  FAQ_ACCORDION_ROW_ICON_FIELD_ORDER,
   isFaqAccordionRowNestedNodeId,
   isFaqAccordionRowPanelFields,
 } from './theme-editor-faq-accordion-row-panel.utils';
+import { FAQ_ACCORDION_ROW_ICON_OPTIONS } from '../faq/runtime/faqAccordionRowIcons';
 import {
   groupTextBlockPanelFields,
   isFaqAccordionRowTextNestedNodeId,
   isTextBlockPanelFields,
+  isTextBlockTypographyCustomPreset,
+  filterTextBlockPanelFieldsForTypographyPreset,
+  resolveTextBlockTypographyField,
+  TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
   TEXT_BLOCK_PANEL_GROUP_ORDER,
   TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS,
 } from './theme-editor-faq-accordion-row-text-panel.utils';
+import { inferTextBlockPanelGroup } from './theme-editor-text-block-panel.utils';
 import {
   groupIconsWithTextPanelFields,
   ICONS_WITH_TEXT_PANEL_GROUP_ORDER,
@@ -438,10 +524,13 @@ function SectionIcon({ className }: { className?: string }) {
 }
 
 const SCHEME_SWATCHES: Record<string, { bg: string; fg: string; accent: string }> = {
+  transparent: { bg: 'transparent', fg: '#111827', accent: '#9ca3af' },
   'scheme-1': { bg: '#111827', fg: '#f9fafb', accent: '#60a5fa' },
   'scheme-2': { bg: '#1e3a5f', fg: '#eff6ff', accent: '#93c5fd' },
   'scheme-3': { bg: '#431407', fg: '#fff7ed', accent: '#fb923c' },
   'scheme-4': { bg: '#4c1d95', fg: '#f5f3ff', accent: '#c4b5fd' },
+  'scheme-5': { bg: '#ecfdf5', fg: '#064e3b', accent: '#047857' },
+  'scheme-6': { bg: '#1f2937', fg: '#f9fafb', accent: '#9ca3af' },
 };
 
 function numValue(values: Record<string, string | boolean>, field: EditorFieldDef, fallback: number): number {
@@ -573,7 +662,7 @@ function ImagePickerFieldRow({
               onClick={() => setPickerOpen(true)}
               className="rounded-lg border border-[#c9cccf] bg-white px-3 py-1.5 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
             >
-              Select
+              {hasImage ? 'Change' : 'Select'}
             </button>
             <button
               type="button"
@@ -584,13 +673,23 @@ function ImagePickerFieldRow({
               <CircleStackIcon className="h-4 w-4" />
             </button>
           </div>
-          <button
-            type="button"
-            className="mt-2 text-[12px] text-[#005bd3] hover:underline"
-            onClick={() => setPickerOpen(true)}
-          >
-            Explore free images
-          </button>
+          {hasImage ? (
+            <button
+              type="button"
+              className="mt-2 text-[12px] font-medium text-[#005bd3] hover:underline"
+              onClick={() => onFieldChange(field.path, 'text', '')}
+            >
+              Remove image
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="mt-2 text-[12px] text-[#005bd3] hover:underline"
+              onClick={() => setPickerOpen(true)}
+            >
+              Explore free images
+            </button>
+          )}
         </div>
       </div>
       <ThemeEditorImagePickerModal
@@ -733,6 +832,7 @@ function ColorSchemeFieldRow({
 }) {
   const current = fieldValueAsString(values, field) || 'scheme-4';
   const swatch = SCHEME_SWATCHES[current] ?? SCHEME_SWATCHES['scheme-4'];
+  const isTransparent = current === 'transparent';
 
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
@@ -742,11 +842,25 @@ function ColorSchemeFieldRow({
           className="pointer-events-none absolute left-2.5 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded border border-[#e1e1e1] bg-white px-1 py-0.5"
           aria-hidden
         >
-          <span className="text-[10px] font-semibold" style={{ color: swatch.fg }}>
-            Aa
-          </span>
-          <span className="h-3 w-3 rounded-sm" style={{ background: swatch.bg }} />
-          <span className="h-3 w-3 rounded-sm" style={{ background: swatch.accent }} />
+          {isTransparent ? (
+            <span
+              className="h-3 w-3 rounded-sm border border-[#c9cccf]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)',
+                backgroundSize: '6px 6px',
+                backgroundPosition: '0 0, 0 3px, 3px -3px, -3px 0',
+              }}
+            />
+          ) : (
+            <>
+              <span className="text-[10px] font-semibold" style={{ color: swatch.fg }}>
+                Aa
+              </span>
+              <span className="h-3 w-3 rounded-sm" style={{ background: swatch.bg }} />
+              <span className="h-3 w-3 rounded-sm" style={{ background: swatch.accent }} />
+            </>
+          )}
         </div>
         <select
           value={current}
@@ -769,10 +883,14 @@ function RichTextFieldRow({
   field,
   values,
   onFieldChange,
+  showDynamicSource = false,
+  hideLabel = false,
 }: {
   field: EditorFieldDef;
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  showDynamicSource?: boolean;
+  hideLabel?: boolean;
 }) {
   const id = fieldInputId(field.path);
   const value = fieldValueAsString(values, field);
@@ -780,9 +898,10 @@ function RichTextFieldRow({
   return (
     <ThemeEditorRichTextField
       id={id}
-      label={field.label}
+      label={hideLabel ? '' : field.label}
       value={value}
       placeholder={field.placeholder}
+      showDynamicSource={showDynamicSource}
       onChange={(html) => onFieldChange(field.path, 'textarea', html)}
     />
   );
@@ -797,43 +916,14 @@ function ColorPickerFieldRow({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const id = fieldInputId(field.path);
-  const raw = fieldValueAsString(values, field) || '#00000026';
-  const swatch = /^#[0-9a-fA-F]{6,8}$/.test(raw) ? raw.slice(0, 7) : '#000000';
-
   return (
-    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
-      <span className="text-[13px] text-gray-800">{field.label}</span>
-      <div className="flex items-center gap-1.5">
-        <label
-          htmlFor={`${id}-picker`}
-          className="h-8 w-8 shrink-0 cursor-pointer overflow-hidden rounded-full border border-[#c9cccf] shadow-sm"
-          style={{ background: swatch }}
-        >
-          <input
-            id={`${id}-picker`}
-            type="color"
-            value={swatch}
-            className="sr-only"
-            onChange={(e) => onFieldChange(field.path, 'color', e.target.value)}
-          />
-        </label>
-        <input
-          id={id}
-          type="text"
-          value={raw}
-          onChange={(e) => onFieldChange(field.path, 'color', e.target.value)}
-          className="w-[108px] rounded-lg border border-[#c9cccf] bg-white px-2 py-1.5 text-[12px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-        />
-        <button
-          type="button"
-          title="Connect dynamic source"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-500 shadow-sm hover:bg-gray-50"
-        >
-          <CircleStackIcon className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
+    <ThemeHexColorField
+      label={field.label}
+      path={field.path}
+      values={values}
+      defaultColor="#00000026"
+      onFieldChange={onFieldChange}
+    />
   );
 }
 
@@ -1111,6 +1201,9 @@ function HeroAppearanceSettingsGroup({
   const overlayOn = fields.some(
     (f) => f.path.endsWith('mediaOverlay') && Boolean(values[f.path])
   );
+  const reflectionOn = fields.some(
+    (f) => f.path.endsWith('blurredReflection') && Boolean(values[f.path])
+  );
   const overlayStyleField = fields.find((f) => f.path.endsWith('overlayStyle'));
   const isGradient =
     overlayStyleField &&
@@ -1120,6 +1213,7 @@ function HeroAppearanceSettingsGroup({
     const key = f.path.split('.').pop() ?? '';
     if (key === 'overlayColor' || key === 'overlayStyle') return overlayOn;
     if (key === 'overlayGradientDirection') return overlayOn && isGradient;
+    if (key === 'reflectionOpacity') return reflectionOn;
     return true;
   });
 
@@ -1131,6 +1225,7 @@ function HeroAppearanceSettingsGroup({
       overlayStyle: 3,
       overlayGradientDirection: 4,
       blurredReflection: 5,
+      reflectionOpacity: 6,
     };
     const ka = a.path.split('.').pop() ?? '';
     const kb = b.path.split('.').pop() ?? '';
@@ -1144,6 +1239,7 @@ function HeroAppearanceSettingsGroup({
         {ordered.map((field) => {
           const key = field.path.split('.').pop() ?? '';
           if (key === 'overlayGradientDirection' && !isGradient) return null;
+          if (key === 'reflectionOpacity' && !reflectionOn) return null;
           if (key === 'mediaOverlay' || key === 'blurredReflection') {
             return (
               <div key={field.path}>
@@ -1152,6 +1248,20 @@ function HeroAppearanceSettingsGroup({
                   <p className="pb-1 text-[12px] text-gray-500">{field.description}</p>
                 ) : null}
               </div>
+            );
+          }
+          if (key === 'colorScheme') {
+            const raw = fieldValueAsString(values, field);
+            const isHex = /^#[0-9a-fA-F]{3,8}$/.test(raw);
+            const legacy = SCHEME_SWATCHES[raw]?.bg;
+            const hex = isHex ? raw : legacy && legacy !== 'transparent' ? legacy : '#1f2937';
+            return (
+              <ColorPickerFieldRow
+                key={field.path}
+                field={field}
+                values={{ ...values, [field.path]: hex }}
+                onFieldChange={onFieldChange}
+              />
             );
           }
           if (field.widget === 'color-scheme') {
@@ -1219,6 +1329,105 @@ function HeroPaddingSettingsGroup({
 }
 
 const HEADING_LAYOUT_FIELD_ORDER = ['headingWidth', 'headingMaxWidth', 'headingAlignment'] as const;
+
+function ShopifySettingsSection({
+  title,
+  collapsible = false,
+  defaultOpen = false,
+  headerAction,
+  children,
+}: {
+  title: string;
+  collapsible?: boolean;
+  defaultOpen?: boolean;
+  headerAction?: React.ReactNode;
+  children?: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  if (collapsible) {
+    return (
+      <section className="border-t border-[#e1e3e5] first:border-t-0">
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="flex w-full items-center justify-between px-4 pb-2 pt-4 text-left"
+        >
+          <h3 className="text-[13px] font-semibold leading-none text-[#303030]">{title}</h3>
+          <ChevronDownIcon
+            className={`h-4 w-4 shrink-0 text-[#616161] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          />
+        </button>
+        {open && children ? <div className="space-y-0 px-4 pb-4">{children}</div> : null}
+      </section>
+    );
+  }
+
+  return (
+    <section className="border-t border-[#e1e3e5] first:border-t-0">
+      <div className="flex items-center justify-between gap-2 px-4 pb-2 pt-4">
+        <h3 className="text-[13px] font-semibold leading-none text-[#303030]">{title}</h3>
+        {headerAction}
+      </div>
+      {children ? <div className="space-y-0 px-4 pb-4">{children}</div> : null}
+    </section>
+  );
+}
+
+/** Shopify heading width options. */
+const HEADING_WIDTH_OPTIONS = [
+  { value: 'fit', label: 'Fit' },
+  { value: 'fill', label: 'Fill' },
+] as const;
+
+function HeadingTextSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const textField =
+    fields.find((f) => {
+      const key = f.path.split('.').pop() ?? '';
+      return key === 'title' || key === 'heading' || key === 'text';
+    }) ?? fields[0];
+  if (!textField) return null;
+
+  const useRichText =
+    textField.widget === 'richtext' ||
+    textField.path.endsWith('.title') ||
+    textField.path.endsWith('.heading') ||
+    textField.path.endsWith('.text');
+
+  return (
+    <ShopifySettingsSection
+      title="Text"
+      headerAction={
+        <button
+          type="button"
+          title="Connect dynamic source"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[#616161] hover:bg-[#f1f1f1]"
+        >
+          <CircleStackIcon className="h-4 w-4" />
+        </button>
+      }
+    >
+      {useRichText ? (
+        <RichTextFieldRow
+          field={{ ...textField, widget: 'richtext', type: 'textarea', label: 'Text' }}
+          values={values}
+          onFieldChange={onFieldChange}
+          hideLabel
+        />
+      ) : (
+        <SettingsFieldRow field={textField} values={values} onFieldChange={onFieldChange} />
+      )}
+    </ShopifySettingsSection>
+  );
+}
 
 /** Shopify heading max width options (Fit and Fill). */
 const HEADING_MAX_WIDTH_OPTIONS = [
@@ -1299,6 +1508,11 @@ function HeadingLayoutSettingsGroup({
     : 'fit';
   const isFill = widthMode === 'fill';
 
+  // Schema heading fields carry only a `type`, so inject the Fit/Fill segmented options.
+  const layoutWidthField = widthField
+    ? { ...widthField, widget: 'segmented' as const, options: [...HEADING_WIDTH_OPTIONS] }
+    : null;
+
   const handleLayoutFieldChange = (
     path: string,
     type: ThemeEditorFieldType,
@@ -1331,32 +1545,29 @@ function HeadingLayoutSettingsGroup({
       : values;
 
   return (
-    <div className="px-1 py-3">
-      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Layout</h3>
-      <div className="space-y-1">
-        {widthField ? (
-          <SegmentedFieldRow
-            field={widthField}
-            values={values}
-            onFieldChange={handleLayoutFieldChange}
-          />
-        ) : null}
-        {layoutMaxWidthField ? (
-          <InlineSelectFieldRow
-            field={layoutMaxWidthField}
-            values={maxWidthValues}
-            onFieldChange={onFieldChange}
-          />
-        ) : null}
-        {alignmentField ? (
-          <HeadingAlignmentFieldRow
-            field={alignmentField}
-            values={values}
-            onFieldChange={handleLayoutFieldChange}
-          />
-        ) : null}
-      </div>
-    </div>
+    <ShopifySettingsSection title="Layout">
+      {layoutWidthField ? (
+        <SegmentedFieldRow
+          field={layoutWidthField}
+          values={values}
+          onFieldChange={handleLayoutFieldChange}
+        />
+      ) : null}
+      {layoutMaxWidthField ? (
+        <InlineSelectFieldRow
+          field={layoutMaxWidthField}
+          values={maxWidthValues}
+          onFieldChange={onFieldChange}
+        />
+      ) : null}
+      {isFill && alignmentField ? (
+        <HeadingAlignmentFieldRow
+          field={alignmentField}
+          values={values}
+          onFieldChange={handleLayoutFieldChange}
+        />
+      ) : null}
+    </ShopifySettingsSection>
   );
 }
 
@@ -1376,60 +1587,167 @@ function HeadingPaddingSettingsGroup({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const ordered = [...fields].sort((a, b) => {
-    const ka = a.path.split('.').pop() ?? '';
-    const kb = b.path.split('.').pop() ?? '';
-    const ia = HEADING_PADDING_ORDER.indexOf(ka as (typeof HEADING_PADDING_ORDER)[number]);
-    const ib = HEADING_PADDING_ORDER.indexOf(kb as (typeof HEADING_PADDING_ORDER)[number]);
-    return (ia >= 0 ? ia : 99) - (ib >= 0 ? ib : 99);
+  const settingsBase =
+    fields.find((f) => f.path.endsWith('headingPaddingTop'))?.path.replace(/\.headingPaddingTop$/, '') ??
+    fields.find((f) => f.path.endsWith('titlePaddingTop'))?.path.replace(/\.titlePaddingTop$/, '') ??
+    fields.find((f) => f.path.endsWith('headingWidth'))?.path.replace(/\.headingWidth$/, '') ??
+    fields.find((f) => f.path.endsWith('titleWidth'))?.path.replace(/\.titleWidth$/, '') ??
+    fields.find((f) => f.path.endsWith('headingColor'))?.path.replace(/\.headingColor$/, '') ??
+    fields.find((f) => f.path.endsWith('titleColor'))?.path.replace(/\.titleColor$/, '') ??
+    '';
+
+  const paddingFallback = (key: string, label: string): EditorFieldDef => ({
+    path: `${settingsBase}.${key}`,
+    type: 'number',
+    label,
+    group: 'Padding',
+    widget: 'slider',
+    min: 0,
+    max: 80,
+    step: 1,
+    unit: 'px',
   });
+
+  const ordered = HEADING_PADDING_ORDER.map((key) => {
+    const titleKey = key.replace(/^heading/, 'title');
+    const found =
+      fields.find((f) => f.path.endsWith(key)) ??
+      fields.find((f) => f.path.endsWith(titleKey));
+    if (found) return found;
+    if (!settingsBase) return null;
+    const labels: Record<string, string> = {
+      headingPaddingTop: 'Top',
+      headingPaddingBottom: 'Bottom',
+      headingPaddingLeft: 'Left',
+      headingPaddingRight: 'Right',
+    };
+    return paddingFallback(key, labels[key] ?? key);
+  }).filter((f): f is EditorFieldDef => Boolean(f));
 
   return (
     <div className="px-1 py-3">
       <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Padding</h3>
       <div className="space-y-1">
         {ordered.map((field) => (
-          <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+          <SliderFieldRow
+            key={field.path}
+            field={{
+              ...field,
+              min: field.min ?? 0,
+              max: field.max ?? 80,
+              step: field.step ?? 1,
+              unit: field.unit ?? 'px',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ))}
       </div>
     </div>
   );
 }
 
+function headingColorEditorValue(raw: string): string {
+  if (raw === 'palette' || /^palette:\d+$/.test(raw) || raw.startsWith('#')) return raw;
+  if (raw === 'link' || raw === 'accent') return 'palette:2';
+  return 'palette:1';
+}
+
 function HeadingAppearanceSettingsGroup({
   fields,
   values,
   onFieldChange,
+  colorPalette,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
 }) {
-  const background = fields.find((f) => f.path.endsWith('headingBackgroundEnabled'));
-  const backgroundColor = fields.find((f) => f.path.endsWith('headingBackgroundColor'));
-  const cornerRadius = fields.find((f) => f.path.endsWith('headingCornerRadius'));
-  if (!background) return null;
+  const textColor = fields.find((f) => f.path.endsWith('headingColor'));
+  const settingsBase =
+    textColor?.path.replace(/\.headingColor$/, '') ??
+    fields.find((f) => f.path.endsWith('headingWidth'))?.path.replace(/\.headingWidth$/, '') ??
+    '';
+  const background =
+    fields.find((f) => f.path.endsWith('headingBackgroundEnabled')) ??
+    (settingsBase
+      ? {
+          path: `${settingsBase}.headingBackgroundEnabled`,
+          type: 'boolean' as const,
+          label: 'Background',
+          group: 'Appearance',
+          widget: 'toggle' as const,
+        }
+      : null);
+  const backgroundColor =
+    fields.find((f) => f.path.endsWith('headingBackgroundColor')) ??
+    (settingsBase
+      ? {
+          path: `${settingsBase}.headingBackgroundColor`,
+          type: 'text' as const,
+          label: 'Background color',
+          group: 'Appearance',
+          widget: 'color' as const,
+        }
+      : null);
+  const cornerRadius =
+    fields.find((f) => f.path.endsWith('headingCornerRadius')) ??
+    (settingsBase
+      ? {
+          path: `${settingsBase}.headingCornerRadius`,
+          type: 'number' as const,
+          label: 'Corner radius',
+          group: 'Appearance',
+          widget: 'slider' as const,
+          min: 0,
+          max: 50,
+          step: 1,
+          unit: 'px',
+        }
+      : null);
+  if (!textColor && !background) return null;
 
   const backgroundOn =
-    values[background.path] === true || values[background.path] === 'true';
+    background &&
+    (values[background.path] === true || values[background.path] === 'true');
+
+  const textColorValues = textColor
+    ? {
+        ...values,
+        [textColor.path]: headingColorEditorValue(fieldValueAsString(values, textColor)),
+      }
+    : values;
 
   return (
-    <div className="px-1 py-3">
-      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
-      <div className="space-y-1">
+    <ShopifySettingsSection title="Appearance">
+      {textColor ? (
+        <ThemePaletteColorField
+          label="Text color"
+          path={textColor.path}
+          values={textColorValues}
+          colorPalette={colorPalette}
+          defaultPaletteIndex={1}
+          fallbackColor="#111827"
+          onFieldChange={onFieldChange}
+        />
+      ) : null}
+      {background ? (
         <ToggleSwitchFieldRow field={background} values={values} onFieldChange={onFieldChange} />
-        {backgroundOn && backgroundColor ? (
-          <ColorPickerFieldRow
-            field={backgroundColor}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : null}
-        {backgroundOn && cornerRadius ? (
-          <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
-        ) : null}
-      </div>
-    </div>
+      ) : null}
+      {backgroundOn && backgroundColor ? (
+        <ThemeHexColorField
+          label={backgroundColor.label}
+          path={backgroundColor.path}
+          values={values}
+          defaultColor="#00000026"
+          onFieldChange={onFieldChange}
+        />
+      ) : null}
+      {backgroundOn && cornerRadius ? (
+        <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+      ) : null}
+    </ShopifySettingsSection>
   );
 }
 
@@ -1443,12 +1761,6 @@ const HEADING_TYPOGRAPHY_PRESET_OPTIONS = [
   { value: 'heading-5', label: 'Heading 5' },
   { value: 'heading-6', label: 'Heading 6' },
   { value: 'custom', label: 'Custom' },
-] as const;
-
-const HEADING_TYPOGRAPHY_COLOR_OPTIONS = [
-  { value: 'text', label: 'Text' },
-  { value: 'heading', label: 'Heading' },
-  { value: 'link', label: 'Link' },
 ] as const;
 
 function normalizeHeadingTypographyPresetValue(
@@ -1480,128 +1792,122 @@ function HeadingTypographySettingsGroup({
   const presetValues = presetField
     ? normalizeHeadingTypographyPresetValue(values, presetField.path)
     : values;
-  const presetValue = presetField
-    ? fieldValueAsString(presetValues, presetField) || 'default'
-    : 'default';
-  const isDefault = presetValue === 'default';
-  const isCustom = presetValue === 'custom';
+  const isCustom = presetField
+    ? isHeadingTypographyCustomPreset(presetValues, presetField.path)
+    : false;
   const settingsBase =
     presetField?.path.replace(/\.headingTypographyPreset$/, '') ?? '';
 
-  const colorField = settingsBase
-    ? {
-        ...resolveHeadingTypographyField('headingColor', settingsBase, fields),
-        options: [...HEADING_TYPOGRAPHY_COLOR_OPTIONS],
-        widget: isCustom ? ('segmented' as const) : ('select' as const),
-      }
-    : null;
-  const colorValues =
-    colorField && fieldValueAsString(values, colorField) === 'accent'
-      ? { ...values, [colorField.path]: 'link' }
-      : values;
-
   return (
-    <div className="px-1 py-3">
-      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
-      <div className="space-y-1">
-        {presetField ? (
-          <div>
-            <InlineSelectFieldRow
-              field={presetField}
-              values={presetValues}
-              onFieldChange={onFieldChange}
-            />
-            {presetField.description ? (
-              <p className="pb-1 text-[12px] text-gray-500">
-                Edit presets in{' '}
-                <a href="/settings/theme" className="text-[#005bd3] hover:underline">
-                  theme settings
-                </a>
-              </p>
-            ) : null}
-          </div>
-        ) : null}
-        {isCustom && settingsBase
-          ? HEADING_CUSTOM_TYPOGRAPHY_KEYS.map((key) => {
-              const field = resolveHeadingTypographyField(key, settingsBase, fields);
-              if (field.widget === 'segmented') {
-                return (
-                  <SegmentedFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                );
-              }
+    <ShopifySettingsSection title="Typography">
+      {presetField ? (
+        <div>
+          <InlineSelectFieldRow
+            field={presetField}
+            values={presetValues}
+            onFieldChange={onFieldChange}
+          />
+          {presetField.description ? (
+            <p className="mt-1 text-[12px] leading-4 text-[#616161]">
+              Edit presets in{' '}
+              <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                theme settings
+              </a>
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+      {isCustom && settingsBase
+        ? HEADING_CUSTOM_TYPOGRAPHY_KEYS.map((key) => {
+            const field = resolveHeadingTypographyField(key, settingsBase, fields);
+            if (field.widget === 'segmented') {
               return (
-                <InlineSelectFieldRow
+                <SegmentedFieldRow
                   key={field.path}
                   field={field}
                   values={values}
                   onFieldChange={onFieldChange}
                 />
               );
-            })
-          : null}
-        {colorField && !isDefault ? (
-          isCustom ? (
-            <SegmentedFieldRow field={colorField} values={colorValues} onFieldChange={onFieldChange} />
-          ) : (
-            <InlineSelectFieldRow field={colorField} values={colorValues} onFieldChange={onFieldChange} />
-          )
-        ) : null}
-      </div>
-    </div>
+            }
+            return (
+              <InlineSelectFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          })
+        : null}
+    </ShopifySettingsSection>
   );
 }
 
 /** Shopify-order heading block panel (Text → Layout → Typography → Appearance → Padding). */
 function HeadingBlockSettingsPanel({
+  nodeId,
+  nodeLabel,
   fields,
   values,
   onFieldChange,
+  colorPalette,
 }: {
+  nodeId: string;
+  nodeLabel: string;
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
 }) {
-  const prepared = prepareHeadingBlockSettingsNode({ id: '', label: 'Heading', kind: 'block', fields });
+  const prepared = useMemo(() => {
+    const filtered = filterHeadingPanelFieldsForTypographyPreset(fields, values);
+    return prepareHeadingBlockSettingsNode({ id: '', label: 'Heading', kind: 'block', fields: filtered });
+  }, [fields, values]);
   const grouped = useMemo(() => groupHeadingPanelFields(prepared.fields ?? []), [prepared.fields]);
 
+  if (isFaqHeadingCollectionTitlePanelNode({ id: nodeId, label: nodeLabel, kind: 'block', fields })) {
+    return (
+      <FaqHeadingCollectionTitleSettingsPanel
+        fields={fields}
+        values={values}
+        onFieldChange={onFieldChange}
+        colorPalette={colorPalette}
+      />
+    );
+  }
+
   return (
-    <div className="divide-y divide-[#e1e1e1]">
+    <div>
       {HEADING_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
+        if (label === 'Padding') {
+          const paddingFields = groupFields?.length
+            ? groupFields
+            : [
+                ...(grouped.get('Layout') ?? []),
+                ...(grouped.get('Appearance') ?? []),
+              ];
+          if (!paddingFields.length) return null;
+          return (
+            <HeadingPaddingSettingsGroup
+              key={label}
+              fields={paddingFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
         if (!groupFields?.length) return null;
 
         if (label === 'Text') {
           return (
-            <div key={label} className="px-1 py-3">
-              {groupFields.map((field) => {
-                const key = field.path.split('.').pop() ?? '';
-                const useRichText =
-                  field.widget === 'richtext' || key === 'title' || key === 'heading' || key === 'text';
-                if (useRichText) {
-                  return (
-                    <RichTextFieldRow
-                      key={field.path}
-                      field={{ ...field, widget: 'richtext', type: 'textarea' }}
-                      values={values}
-                      onFieldChange={onFieldChange}
-                    />
-                  );
-                }
-                return (
-                  <SettingsFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                );
-              })}
-            </div>
+            <HeadingTextSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
           );
         }
         if (label === 'Layout') {
@@ -1631,12 +1937,426 @@ function HeadingBlockSettingsPanel({
               fields={groupFields}
               values={values}
               onFieldChange={onFieldChange}
+              colorPalette={colorPalette}
             />
           );
         }
+        return null;
+      })}
+    </div>
+  );
+}
+
+const COLLECTION_TITLE_WIDTH_OPTIONS = [
+  { value: 'fit', label: 'Fit' },
+  { value: 'fill', label: 'Fill' },
+] as const;
+
+const COLLECTION_TITLE_MAX_WIDTH_OPTIONS = [
+  { value: 'narrow', label: 'Narrow' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'wide', label: 'Wide' },
+  { value: 'none', label: 'None' },
+] as const;
+
+function normalizeCollectionTitleTypographyPresetValue(
+  values: Record<string, string | boolean>,
+  path: string
+): Record<string, string | boolean> {
+  const raw = values[path];
+  if (raw === 'body') return { ...values, [path]: 'paragraph' };
+  return values;
+}
+
+function collectionTitleColorEditorValue(raw: string): string {
+  if (raw === 'palette' || /^palette:\d+$/.test(raw) || raw.startsWith('#')) return raw;
+  if (raw === 'accent') return 'palette:2';
+  if (raw === 'heading') return 'palette:0';
+  return 'palette:1';
+}
+
+function CollectionTitleTextSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const textField = fields.find((f) => f.path.endsWith('.title')) ?? fields[0];
+  if (!textField) return null;
+
+  return (
+    <div className="px-1 py-3">
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <h3 className="text-[13px] font-semibold text-gray-900">Text</h3>
+        <button
+          type="button"
+          title="Connect dynamic source"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100"
+        >
+          <CircleStackIcon className="h-4 w-4" />
+        </button>
+      </div>
+      <RichTextFieldRow
+        field={{ ...textField, widget: 'richtext', type: 'textarea', label: 'Text' }}
+        values={values}
+        onFieldChange={onFieldChange}
+        hideLabel
+      />
+    </div>
+  );
+}
+
+function CollectionTitleLayoutSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const widthField = fields.find((f) => f.path.endsWith('titleWidth'));
+  const maxWidthField = fields.find((f) => f.path.endsWith('titleMaxWidth'));
+  const alignmentField =
+    fields.find((f) => f.path.endsWith('titleAlignment')) ??
+    (widthField
+      ? {
+          path: `${widthField.path.replace(/\.titleWidth$/, '')}.titleAlignment`,
+          type: 'select' as const,
+          label: 'Alignment',
+          group: 'Layout',
+          widget: 'segmented' as const,
+          options: [
+            { value: 'left', label: 'Left' },
+            { value: 'center', label: 'Center' },
+            { value: 'right', label: 'Right' },
+          ],
+        }
+      : null);
+  const widthMode = widthField ? fieldValueAsString(values, widthField) || 'fit' : 'fit';
+  const isFill = widthMode === 'fill';
+  const layoutWidthField = widthField
+    ? { ...widthField, widget: 'segmented' as const, options: [...COLLECTION_TITLE_WIDTH_OPTIONS] }
+    : null;
+  const layoutMaxWidthField = maxWidthField
+    ? { ...maxWidthField, options: [...COLLECTION_TITLE_MAX_WIDTH_OPTIONS] }
+    : null;
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Layout</h3>
+      <div className="space-y-1">
+        {layoutWidthField ? (
+          <SegmentedFieldRow field={layoutWidthField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {layoutMaxWidthField ? (
+          <InlineSelectFieldRow field={layoutMaxWidthField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {isFill && alignmentField ? (
+          <HeadingAlignmentFieldRow
+            field={alignmentField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function CollectionTitleTypographySettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const preset = fields.find((f) => f.path.endsWith('titleTypographyPreset'));
+  const presetField = preset
+    ? {
+        ...preset,
+        options: [...HEADING_TYPOGRAPHY_PRESET_OPTIONS],
+        description: preset.description ?? 'Edit presets in theme settings',
+      }
+    : null;
+  const presetValues = presetField
+    ? normalizeCollectionTitleTypographyPresetValue(values, presetField.path)
+    : values;
+  const isCustom = presetField
+    ? isCollectionTitleTypographyCustomPreset(presetValues, presetField.path)
+    : false;
+  const settingsBase =
+    presetField?.path.replace(/\.titleTypographyPreset$/, '') ?? '';
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
+      <div className="space-y-1">
+        {presetField ? (
+          <div>
+            <InlineSelectFieldRow field={presetField} values={presetValues} onFieldChange={onFieldChange} />
+            <p className="pb-1 text-[12px] text-gray-500">
+              Edit presets in{' '}
+              <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                theme settings
+              </a>
+            </p>
+          </div>
+        ) : null}
+        {isCustom && settingsBase
+          ? COLLECTION_TITLE_CUSTOM_TYPOGRAPHY_KEYS.map((key) => {
+              const field = resolveCollectionTitleTypographyField(key, settingsBase, fields);
+              if (field.widget === 'segmented') {
+                return (
+                  <SegmentedFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                );
+              }
+              return (
+                <InlineSelectFieldRow
+                  key={field.path}
+                  field={field}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              );
+            })
+          : null}
+      </div>
+    </div>
+  );
+}
+
+function CollectionTitleAppearanceSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+  colorPalette,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
+}) {
+  const textColor = fields.find((f) => f.path.endsWith('titleColor'));
+  const settingsBase =
+    textColor?.path.replace(/\.titleColor$/, '') ??
+    fields.find((f) => f.path.endsWith('titleWidth'))?.path.replace(/\.titleWidth$/, '') ??
+    '';
+  const background =
+    fields.find((f) => f.path.endsWith('titleBackgroundEnabled')) ??
+    (settingsBase
+      ? {
+          path: `${settingsBase}.titleBackgroundEnabled`,
+          type: 'boolean' as const,
+          label: 'Background',
+          group: 'Appearance',
+          widget: 'toggle' as const,
+        }
+      : null);
+  const backgroundColor =
+    fields.find((f) => f.path.endsWith('titleBackgroundColor')) ??
+    (settingsBase
+      ? {
+          path: `${settingsBase}.titleBackgroundColor`,
+          type: 'text' as const,
+          label: 'Background color',
+          group: 'Appearance',
+          widget: 'color' as const,
+        }
+      : null);
+  const cornerRadius =
+    fields.find((f) => f.path.endsWith('titleCornerRadius')) ??
+    (settingsBase
+      ? {
+          path: `${settingsBase}.titleCornerRadius`,
+          type: 'number' as const,
+          label: 'Corner radius',
+          group: 'Appearance',
+          widget: 'slider' as const,
+          min: 0,
+          max: 50,
+          step: 1,
+          unit: 'px',
+        }
+      : null);
+  if (!textColor && !background) return null;
+
+  const backgroundOn =
+    background &&
+    (values[background.path] === true || values[background.path] === 'true');
+
+  const textColorValues = textColor
+    ? {
+        ...values,
+        [textColor.path]: collectionTitleColorEditorValue(fieldValueAsString(values, textColor)),
+      }
+    : values;
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+      <div className="space-y-1">
+        {textColor ? (
+          <ThemePaletteColorField
+            label="Text color"
+            path={textColor.path}
+            values={textColorValues}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={1}
+            fallbackColor="#111827"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {background ? (
+          <ToggleSwitchFieldRow field={background} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {backgroundOn && backgroundColor ? (
+          <ThemeHexColorField
+            label={backgroundColor.label}
+            path={backgroundColor.path}
+            values={values}
+            defaultColor="#00000026"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {backgroundOn && cornerRadius ? (
+          <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function CollectionTitlePaddingSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const settingsBase =
+    fields.find((f) => f.path.endsWith('titlePaddingTop'))?.path.replace(/\.titlePaddingTop$/, '') ??
+    fields.find((f) => f.path.endsWith('titleWidth'))?.path.replace(/\.titleWidth$/, '') ??
+    fields.find((f) => f.path.endsWith('titleColor'))?.path.replace(/\.titleColor$/, '') ??
+    '';
+
+  const paddingFallback = (key: string, label: string): EditorFieldDef => ({
+    path: `${settingsBase}.${key}`,
+    type: 'number',
+    label,
+    group: 'Padding',
+    widget: 'slider',
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: 'px',
+  });
+
+  const ordered = ['titlePaddingTop', 'titlePaddingBottom', 'titlePaddingLeft', 'titlePaddingRight']
+    .map((key) => {
+      const headingKey = key.replace(/^title/, 'heading');
+      const found =
+        fields.find((f) => f.path.endsWith(key)) ??
+        fields.find((f) => f.path.endsWith(headingKey));
+      if (found) return found;
+      if (!settingsBase) return null;
+      const labels: Record<string, string> = {
+        titlePaddingTop: 'Top',
+        titlePaddingBottom: 'Bottom',
+        titlePaddingLeft: 'Left',
+        titlePaddingRight: 'Right',
+      };
+      return paddingFallback(key, labels[key] ?? key);
+    })
+    .filter((f): f is EditorFieldDef => Boolean(f));
+
+  if (!ordered.length) return null;
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Padding</h3>
+      <div className="space-y-1">
+        {ordered.map((field) => (
+          <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Featured collection — Header → Collection title (Shopify order). */
+function CollectionTitleBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+  colorPalette,
+  styleFields = false,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
+  styleFields?: boolean;
+}) {
+  const prepared = useMemo(() => {
+    const filtered = filterCollectionTitlePanelFieldsForTypographyPreset(fields, values);
+    return styleFields
+      ? prepareCollectionTitleStyleSettingsNode({
+          id: '',
+          label: 'Collection title',
+          kind: 'block',
+          fields: filtered,
+        })
+      : prepareCollectionTitleSettingsNode({
+          id: '',
+          label: 'Collection title',
+          kind: 'block',
+          fields: filtered,
+        });
+  }, [fields, styleFields, values]);
+  const grouped = useMemo(
+    () =>
+      styleFields
+        ? groupCollectionTitleStylePanelFields(prepared.fields ?? [])
+        : groupCollectionTitlePanelFields(prepared.fields ?? []),
+    [prepared.fields, styleFields]
+  );
+  const typographyFields = grouped.get('Typography') ?? [];
+  const appearanceFields = [
+    ...(grouped.get('Appearance') ?? []),
+    ...typographyFields.filter((f) => f.path.endsWith('titleColor')),
+  ];
+  const typographyOnlyFields = typographyFields.filter((f) => !f.path.endsWith('titleColor'));
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      {COLLECTION_TITLE_PANEL_GROUP_ORDER.map((label) => {
         if (label === 'Padding') {
+          let groupFields =
+            grouped.get('Padding') ??
+            (styleFields ? (prepared.fields ?? []).filter((f) => f.group === 'Padding') : []);
+          if (!groupFields.length && styleFields) {
+            groupFields = [
+              ...(grouped.get('Text') ?? []),
+              ...(grouped.get('Layout') ?? []),
+              ...(grouped.get('Appearance') ?? []),
+            ];
+          }
+          if (!groupFields.length) return null;
           return (
-            <HeadingPaddingSettingsGroup
+            <CollectionTitlePaddingSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -1644,9 +2364,93 @@ function HeadingBlockSettingsPanel({
             />
           );
         }
+
+        if (label === 'Text') {
+          const groupFields = grouped.get('Text');
+          if (!groupFields?.length) return null;
+          return (
+            <CollectionTitleTextSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+        if (label === 'Layout') {
+          const groupFields = grouped.get('Layout');
+          if (!groupFields?.length) return null;
+          return (
+            <CollectionTitleLayoutSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+        if (label === 'Typography') {
+          if (!typographyOnlyFields.length) return null;
+          return (
+            <CollectionTitleTypographySettingsGroup
+              key={label}
+              fields={typographyOnlyFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+        if (label === 'Appearance') {
+          if (!appearanceFields.length) return null;
+          return (
+            <CollectionTitleAppearanceSettingsGroup
+              key={label}
+              fields={appearanceFields}
+              values={values}
+              onFieldChange={onFieldChange}
+              colorPalette={colorPalette}
+            />
+          );
+        }
         return null;
       })}
     </div>
+  );
+}
+
+/** FAQ heading block — same panel as featured collection collection title. */
+function FaqHeadingCollectionTitleSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+  colorPalette,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
+}) {
+  const mappedFields = useMemo(() => mapFaqHeadingFieldsToCollectionTitleFields(fields), [fields]);
+  const mappedValues = useMemo(
+    () => mapFaqHeadingValuesToCollectionTitleValues(values, fields),
+    [fields, values]
+  );
+  const handleFieldChange = (
+    path: string,
+    type: ThemeEditorFieldType,
+    value: string | boolean
+  ) => {
+    onFieldChange(mapCollectionTitlePathToFaqHeadingPath(path), type, value);
+  };
+
+  return (
+    <CollectionTitleBlockSettingsPanel
+      fields={mappedFields}
+      values={mappedValues}
+      onFieldChange={handleFieldChange}
+      colorPalette={colorPalette}
+      styleFields
+    />
   );
 }
 
@@ -1666,6 +2470,17 @@ function HeroGroupedSettingsPanel({
     <div className="divide-y divide-[#e1e1e1]">
       {HERO_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
+        if (label === 'Theme Settings') {
+          return (
+            <CollapsibleSettingsGroup
+              key={label}
+              label="Theme Settings"
+              fields={[]}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
         if (!groupFields?.length) return null;
 
         if (label === 'Media 1' || label === 'Media 2') {
@@ -2650,16 +3465,24 @@ function ContactFormGroupedSettingsPanel({
   );
 }
 
-const DIVIDER_STYLING_FIELD_ORDER = ['colorScheme', 'sectionWidth', 'thickness', 'length'] as const;
+const DIVIDER_STYLING_FIELD_ORDER = [
+  'backgroundColor',
+  'color',
+  'sectionWidth',
+  'thickness',
+  'length',
+] as const;
 
 /** Divider styling rows (no section heading — matches Shopify). */
 function DividerStylingSettingsGroup({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const rank = (path: string) => {
@@ -2673,6 +3496,19 @@ function DividerStylingSettingsGroup({
     <div className="space-y-1 px-1 py-3">
       {ordered.map((field) => {
         const key = field.path.split('.').pop() ?? '';
+        if (field.widget === 'color' || field.type === 'color' || key === 'backgroundColor' || key === 'color') {
+          return (
+            <ThemeDefaultColorField
+              key={field.path}
+              label={field.label}
+              path={field.path}
+              values={values}
+              colorPalette={colorPalette}
+              defaultPaletteIndex={key === 'backgroundColor' ? 0 : 1}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
         if (field.widget === 'color-scheme' || key === 'colorScheme') {
           return (
             <ColorSchemeFieldRow
@@ -2706,15 +3542,22 @@ function DividerStylingSettingsGroup({
   );
 }
 
-const ANNOUNCEMENT_APPEARANCE_FIELD_ORDER = ['sectionWidth', 'colorScheme', 'dividerThickness'] as const;
+const ANNOUNCEMENT_APPEARANCE_FIELD_ORDER = [
+  'sectionWidth',
+  'backgroundColor',
+  'dividerThickness',
+  'dividerColor',
+] as const;
 
 function AnnouncementAppearanceSettingsGroup({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const rank = (path: string) => {
@@ -2750,6 +3593,19 @@ function AnnouncementAppearanceSettingsGroup({
             />
           );
         }
+        if (field.widget === 'color' || field.type === 'color') {
+          return (
+            <ThemePaletteColorField
+              key={field.path}
+              label={field.label}
+              path={field.path}
+              values={values}
+              colorPalette={colorPalette}
+              defaultPaletteIndex={key === 'dividerColor' ? 1 : 0}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
         if (field.widget === 'slider' || key === 'dividerThickness') {
           return (
             <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
@@ -2767,10 +3623,12 @@ function AnnouncementAppearanceSettingsGroup({
 function AnnouncementBarGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupAnnouncementPanelFields(fields), [fields]);
@@ -2803,6 +3661,7 @@ function AnnouncementBarGroupedSettingsPanel({
               <AnnouncementAppearanceSettingsGroup
                 fields={groupFields}
                 values={values}
+                colorPalette={colorPalette}
                 onFieldChange={onFieldChange}
               />
             </div>
@@ -2813,6 +3672,18 @@ function AnnouncementBarGroupedSettingsPanel({
           return (
             <HeroPaddingSettingsGroup
               key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Theme Settings') {
+          return (
+            <CollapsibleSettingsGroup
+              key={label}
+              label="Theme Settings"
               fields={groupFields}
               values={values}
               onFieldChange={onFieldChange}
@@ -2844,10 +3715,12 @@ function AnnouncementBarGroupedSettingsPanel({
 function DividerGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupDividerPanelFields(fields), [fields]);
@@ -2864,6 +3737,7 @@ function DividerGroupedSettingsPanel({
               key={label}
               fields={groupFields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -3693,6 +4567,528 @@ function FeaturedProductHeaderGroupedSettingsPanel({
   );
 }
 
+/** Featured collection — Header block: layout, size, appearance, borders, and padding. */
+function FeaturedCollectionHeaderPercentSliderRow({
+  field,
+  values,
+  settingsBase,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  settingsBase: string;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const { min, max, step } = FC_HEADER_PERCENT_SLIDER_BOUNDS;
+  const current = featuredCollectionHeaderPercentValue(values, field, settingsBase);
+  const id = fieldInputId(field.path);
+
+  const commit = (raw: string) => {
+    onFieldChange(field.path, 'number', String(clampFeaturedCollectionHeaderPercent(raw)));
+  };
+
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
+      <label htmlFor={id} className="text-[13px] text-gray-800">
+        {field.label}
+      </label>
+      <div className="flex items-center gap-2">
+        <input
+          id={id}
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={current}
+          onChange={(e) => commit(e.target.value)}
+          onInput={(e) => commit((e.target as HTMLInputElement).value)}
+          className="h-1.5 w-[120px] cursor-pointer accent-gray-900"
+        />
+        <div className="flex items-center rounded-lg border border-[#c9cccf] bg-white shadow-sm">
+          <input
+            type="number"
+            min={min}
+            max={max}
+            step={step}
+            value={current}
+            onChange={(e) => commit(e.target.value)}
+            className="w-[3.25rem] border-0 bg-transparent px-1.5 py-1.5 text-center text-[13px] tabular-nums text-gray-900 focus:outline-none"
+            aria-label={field.label}
+          />
+          <span className="border-l border-[#e1e1e1] px-2 text-[12px] text-gray-500">%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FeaturedCollectionHeaderGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+  colorPalette,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
+}) {
+  const grouped = useMemo(() => groupFeaturedCollectionHeaderPanelFields(fields), [fields]);
+  const styleField = pickFeaturedCollectionHeaderField(fields, 'width');
+  const settingsBase =
+    styleField?.path.replace(/\.width$/, '') || featuredCollectionHeaderSettingsBase(fields);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      {FC_HEADER_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length && label !== 'Size' && label !== 'Appearance') return null;
+
+        if (label === 'Layout') {
+          const byKey = (key: string) => groupFields?.find((f) => f.path.endsWith(key));
+          const direction = byKey('direction');
+          const verticalOnMobile = byKey('verticalOnMobile');
+          const layoutAlignment = byKey('layoutAlignment');
+          const position = byKey('position');
+          const alignTextBaseline = byKey('alignTextBaseline');
+          const layoutGap = byKey('layoutGap');
+          const directionMode = direction ? fieldValueAsString(values, direction) || 'horizontal' : 'horizontal';
+          const isVertical = directionMode === 'vertical';
+
+          const handleDirectionChange = (
+            path: string,
+            type: ThemeEditorFieldType,
+            value: string | boolean
+          ) => {
+            onFieldChange(path, type, value);
+            if (!layoutAlignment || typeof value !== 'string') return;
+            if (value === 'vertical') {
+              const cur = fieldValueAsString(values, layoutAlignment) || '';
+              if (!['left', 'center', 'right'].includes(cur)) {
+                onFieldChange(layoutAlignment.path, 'text', 'left');
+              }
+            } else if (value === 'horizontal') {
+              const cur = fieldValueAsString(values, layoutAlignment) || '';
+              if (['left', 'center', 'right'].includes(cur)) {
+                onFieldChange(
+                  layoutAlignment.path,
+                  'text',
+                  cur === 'left' ? 'space-between' : cur === 'right' ? 'flex-end' : 'center'
+                );
+              }
+            }
+          };
+
+          const horizontalPositionField = position
+            ? { ...position, widget: 'segmented' as const }
+            : undefined;
+          const horizontalAlignmentField = layoutAlignment
+            ? { ...layoutAlignment, widget: 'select-inline' as const }
+            : undefined;
+
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {direction ? (
+                  <SegmentedFieldRow
+                    field={direction}
+                    values={values}
+                    onFieldChange={handleDirectionChange}
+                  />
+                ) : null}
+                {isVertical ? (
+                  <>
+                    {alignTextBaseline ? (
+                      <ToggleSwitchFieldRow
+                        field={alignTextBaseline}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                    {layoutAlignment ? (
+                      <HeadingAlignmentFieldRow
+                        field={layoutAlignment}
+                        values={{
+                          ...values,
+                          [layoutAlignment.path]: (() => {
+                            const raw = fieldValueAsString(values, layoutAlignment) || 'left';
+                            if (raw === 'flex-start') return 'left';
+                            if (raw === 'flex-end') return 'right';
+                            if (['left', 'center', 'right'].includes(raw)) return raw;
+                            return 'left';
+                          })(),
+                        }}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                    {position ? (
+                      <InlineSelectFieldRow
+                        field={position}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    {verticalOnMobile ? (
+                      <ToggleSwitchFieldRow
+                        field={verticalOnMobile}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                    {horizontalAlignmentField ? (
+                      <InlineSelectFieldRow
+                        field={horizontalAlignmentField}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                    {horizontalPositionField ? (
+                      <SegmentedFieldRow
+                        field={horizontalPositionField}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                    {alignTextBaseline ? (
+                      <ToggleSwitchFieldRow
+                        field={alignTextBaseline}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                  </>
+                )}
+                {layoutGap ? (
+                  <SliderFieldRow field={layoutGap} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Size') {
+          const width = pickFeaturedCollectionHeaderField(fields, 'width');
+          const mobileWidth = pickFeaturedCollectionHeaderField(fields, 'mobileWidth');
+          const height = pickFeaturedCollectionHeaderField(fields, 'height');
+          const widthCustom = resolveFeaturedCollectionHeaderCustomWidthField(fields, width, 'customWidth');
+          const mobileWidthCustom = resolveFeaturedCollectionHeaderCustomWidthField(
+            fields,
+            mobileWidth,
+            'mobileCustomWidth'
+          );
+          const heightCustom = resolveFeaturedCollectionHeaderCustomHeightField(fields, height);
+          const widthMode = width ? fieldValueAsString(values, width) || 'fit' : 'fit';
+          const mobileWidthMode = mobileWidth ? fieldValueAsString(values, mobileWidth) || 'fit' : 'fit';
+          const heightMode = height ? fieldValueAsString(values, height) || 'fit' : 'fit';
+          if (!width && !mobileWidth && !height) return null;
+
+          const seedCustomPercent = (customField: EditorFieldDef | null) => {
+            if (!customField) return;
+            const raw = values[customField.path];
+            if (raw === undefined || raw === '') {
+              onFieldChange(customField.path, 'number', '100');
+            }
+          };
+
+          const handleWidthModeChange = (
+            path: string,
+            type: ThemeEditorFieldType,
+            value: string | boolean
+          ) => {
+            onFieldChange(path, type, value);
+            if (value === 'custom') seedCustomPercent(widthCustom);
+          };
+
+          const handleMobileWidthModeChange = (
+            path: string,
+            type: ThemeEditorFieldType,
+            value: string | boolean
+          ) => {
+            onFieldChange(path, type, value);
+            if (value === 'custom') seedCustomPercent(mobileWidthCustom);
+          };
+
+          const handleHeightModeChange = (
+            path: string,
+            type: ThemeEditorFieldType,
+            value: string | boolean
+          ) => {
+            onFieldChange(path, type, value);
+            if (value === 'custom') seedCustomPercent(heightCustom);
+          };
+
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {width ? (
+                  <>
+                    <SegmentedFieldRow
+                      field={width}
+                      values={values}
+                      onFieldChange={handleWidthModeChange}
+                    />
+                    {widthMode === 'custom' && widthCustom ? (
+                      <FeaturedCollectionHeaderPercentSliderRow
+                        field={widthCustom}
+                        values={values}
+                        settingsBase={settingsBase}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                  </>
+                ) : null}
+                {mobileWidth ? (
+                  <>
+                    <SegmentedFieldRow
+                      field={mobileWidth}
+                      values={values}
+                      onFieldChange={handleMobileWidthModeChange}
+                    />
+                    {mobileWidthMode === 'custom' && mobileWidthCustom ? (
+                      <FeaturedCollectionHeaderPercentSliderRow
+                        field={mobileWidthCustom}
+                        values={values}
+                        settingsBase={settingsBase}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                  </>
+                ) : null}
+                {height ? (
+                  <>
+                    <SegmentedFieldRow
+                      field={height}
+                      values={values}
+                      onFieldChange={handleHeightModeChange}
+                    />
+                    {heightMode === 'custom' && heightCustom ? (
+                      <FeaturedCollectionHeaderPercentSliderRow
+                        field={heightCustom}
+                        values={values}
+                        settingsBase={settingsBase}
+                        onFieldChange={onFieldChange}
+                      />
+                    ) : null}
+                  </>
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Appearance') {
+          const bgMediaField = pickFeaturedCollectionHeaderField(fields, 'backgroundMedia');
+          const bgImageField = settingsBase
+            ? resolveFeaturedCollectionHeaderImageField(fields, settingsBase)
+            : pickFeaturedCollectionHeaderField(fields, 'backgroundImageUrl');
+          const bgImagePositionField = settingsBase
+            ? resolveFeaturedCollectionHeaderImagePositionField(fields, settingsBase)
+            : pickFeaturedCollectionHeaderField(fields, 'backgroundImagePosition');
+          const bgColorField = settingsBase
+            ? resolveFeaturedCollectionHeaderColorField(fields, settingsBase, 'backgroundColor', 'Background color')
+            : pickFeaturedCollectionHeaderField(fields, 'backgroundColor');
+          const bgMedia = bgMediaField ? fieldValueAsString(values, bgMediaField) || 'none' : 'none';
+          const bgColorRaw = bgColorField ? fieldValueAsString(values, bgColorField) || 'default' : 'default';
+          const bgColorIsDefault = bgColorRaw === 'default' || !bgColorRaw.trim();
+          if (!bgMediaField && !bgColorField) return null;
+
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {bgMediaField ? (
+                  <InlineSelectFieldRow
+                    field={bgMediaField}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {bgMedia === 'image' && bgImageField ? (
+                  <ImagePickerFieldRow
+                    field={bgImageField}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {bgMedia === 'image' && bgImagePositionField ? (
+                  <SegmentedFieldRow
+                    field={bgImagePositionField}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {bgMedia !== 'image' && bgColorField ? (
+                  bgColorIsDefault ? (
+                    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1.5">
+                      <span className="text-[13px] text-gray-800">Background color</span>
+                      <button
+                        type="button"
+                        onClick={() => onFieldChange(bgColorField.path, 'text', 'palette:0')}
+                        className="flex min-w-[148px] max-w-[180px] items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-2.5 py-2 text-left text-[13px] text-gray-900 shadow-sm hover:border-[#aeb4b9]"
+                      >
+                        <span
+                          className="relative h-5 w-5 shrink-0 overflow-hidden rounded-md border border-[#e1e3e5] bg-white"
+                          aria-hidden
+                        >
+                          <span className="absolute inset-0 bg-[linear-gradient(to_top_right,transparent_46%,#e11d48_46%,#e11d48_54%,transparent_54%)]" />
+                        </span>
+                        <span className="truncate">Default</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <ThemePaletteColorField
+                      label="Background color"
+                      path={bgColorField.path}
+                      values={{
+                        ...values,
+                        [bgColorField.path]:
+                          bgColorRaw === 'palette' ||
+                          /^palette:\d+$/.test(bgColorRaw) ||
+                          bgColorRaw.startsWith('#')
+                            ? bgColorRaw
+                            : 'palette:0',
+                      }}
+                      colorPalette={colorPalette}
+                      defaultPaletteIndex={0}
+                      fallbackColor="#ffffff"
+                      onFieldChange={onFieldChange}
+                    />
+                  )
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Borders') {
+          const borderStyle = groupFields?.find((f) => f.path.endsWith('borderStyle'));
+          const borderStyleMode = borderStyle ? fieldValueAsString(values, borderStyle) || 'none' : 'none';
+          const solidBorders = borderStyleMode === 'solid';
+          const borderThickness = settingsBase
+            ? resolveFeaturedCollectionHeaderBorderSliderField(
+                fields,
+                settingsBase,
+                'borderThickness',
+                'Thickness',
+                'px',
+                0,
+                10
+              )
+            : pickFeaturedCollectionHeaderField(fields, 'borderThickness');
+          const borderOpacity = settingsBase
+            ? resolveFeaturedCollectionHeaderBorderSliderField(
+                fields,
+                settingsBase,
+                'borderOpacity',
+                'Opacity',
+                '%',
+                0,
+                100
+              )
+            : pickFeaturedCollectionHeaderField(fields, 'borderOpacity');
+          const borderColorField = settingsBase
+            ? resolveFeaturedCollectionHeaderColorField(fields, settingsBase, 'borderColor', 'Color')
+            : pickFeaturedCollectionHeaderField(fields, 'borderColor');
+          const cornerRadius = groupFields?.find((f) => f.path.endsWith('cornerRadius'));
+          const borderColorRaw = borderColorField
+            ? fieldValueAsString(values, borderColorField) || 'default'
+            : 'default';
+          const borderColorIsDefault = borderColorRaw === 'default' || !borderColorRaw.trim();
+          if (!borderStyle && !cornerRadius) return null;
+
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {borderStyle ? (
+                  <SegmentedFieldRow
+                    field={{ ...borderStyle, label: 'Style' }}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {solidBorders && borderThickness ? (
+                  <SliderFieldRow field={borderThickness} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {solidBorders && borderOpacity ? (
+                  <SliderFieldRow field={borderOpacity} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {solidBorders && borderColorField ? (
+                  borderColorIsDefault ? (
+                    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1.5">
+                      <span className="text-[13px] text-gray-800">Color</span>
+                      <button
+                        type="button"
+                        onClick={() => onFieldChange(borderColorField.path, 'text', 'palette:1')}
+                        className="flex min-w-[148px] max-w-[180px] items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-2.5 py-2 text-left text-[13px] text-gray-900 shadow-sm hover:border-[#aeb4b9]"
+                      >
+                        <span
+                          className="relative h-5 w-5 shrink-0 overflow-hidden rounded-md border border-[#e1e3e5] bg-white"
+                          aria-hidden
+                        >
+                          <span className="absolute inset-0 bg-[linear-gradient(to_top_right,transparent_46%,#e11d48_46%,#e11d48_54%,transparent_54%)]" />
+                        </span>
+                        <span className="truncate">Default</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <ThemePaletteColorField
+                      label="Color"
+                      path={borderColorField.path}
+                      values={{
+                        ...values,
+                        [borderColorField.path]:
+                          borderColorRaw === 'palette' ||
+                          /^palette:\d+$/.test(borderColorRaw) ||
+                          borderColorRaw.startsWith('#')
+                            ? borderColorRaw
+                            : 'palette:1',
+                      }}
+                      colorPalette={colorPalette}
+                      defaultPaletteIndex={1}
+                      fallbackColor="#e5e7eb"
+                      onFieldChange={onFieldChange}
+                    />
+                  )
+                ) : null}
+                {cornerRadius ? (
+                  <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          if (!groupFields?.length) return null;
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <SliderFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
 /** Featured product — Header → Title: layout, typography, appearance, and padding. */
 function FeaturedProductHeaderTitleGroupedSettingsPanel({
   fields,
@@ -3868,6 +5264,318 @@ function FeaturedProductHeaderPriceGroupedSettingsPanel({
                 ) : null}
                 {color ? (
                   <InlineSelectFieldRow field={color} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <SliderFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
+/** Product card — Media block: aspect ratio, borders, and padding controls. */
+function ProductCardMediaGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupProductCardMediaPanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays media from parent product.</p>
+      {PRODUCT_CARD_MEDIA_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'General') {
+          const aspect = groupFields.find((f) => f.path.endsWith('mediaAspectRatio'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <div className="space-y-1">
+                {aspect ? (
+                  <div>
+                    <InlineSelectFieldRow field={aspect} values={values} onFieldChange={onFieldChange} />
+                    {aspect.description ? (
+                      <p className="pb-1 text-[12px] text-gray-500">{aspect.description}</p>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Borders') {
+          const style = groupFields.find((f) => f.path.endsWith('mediaBorderStyle'));
+          const radius = groupFields.find((f) => f.path.endsWith('mediaCornerRadius'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {style ? (
+                  <SegmentedFieldRow field={style} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {radius ? (
+                  <SliderFieldRow field={radius} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <SliderFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
+/** Product card — Product title block: layout, typography, color, background, padding. */
+function ProductCardTitleGroupedSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupProductCardTitlePanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays title from parent product.</p>
+      {PRODUCT_CARD_TITLE_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'Layout') {
+          const width = groupFields.find((f) => f.path.endsWith('productTitleWidth'));
+          const maxWidth = groupFields.find((f) => f.path.endsWith('productTitleMaxWidth'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {width ? (
+                  <SegmentedFieldRow field={width} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {maxWidth ? (
+                  <InlineSelectFieldRow field={maxWidth} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Typography') {
+          const preset = groupFields.find((f) => f.path.endsWith('productTitleTypographyPreset'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {preset ? (
+                  <div>
+                    <InlineSelectFieldRow field={preset} values={values} onFieldChange={onFieldChange} />
+                    <p className="pb-1 text-[12px] text-gray-500">
+                      Edit presets in{' '}
+                      <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                        theme settings
+                      </a>
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Appearance') {
+          const color = groupFields.find((f) => f.path.endsWith('productTitleColor'));
+          const background = groupFields.find((f) => f.path.endsWith('productTitleBackgroundEnabled'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {color ? (
+                  <ThemeDefaultColorField
+                    label={color.label}
+                    path={color.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={1}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {background ? (
+                  <ToggleSwitchFieldRow field={background} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <SliderFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
+/** Product card — Price block: sale/installments/tax toggles, typography, color, padding. */
+function ProductCardPriceGroupedSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupProductCardPricePanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays price from parent product.</p>
+      {PRODUCT_CARD_PRICE_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'General') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <p className="mb-2 text-[12px] text-gray-500">
+                Edit price formatting in{' '}
+                <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                  theme settings
+                </a>
+              </p>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <ToggleSwitchFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Typography') {
+          const preset = groupFields.find((f) => f.path.endsWith('priceTypographyPreset'));
+          const width = groupFields.find((f) => f.path.endsWith('priceWidth'));
+          const alignment = groupFields.find((f) => f.path.endsWith('priceAlignment'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {preset ? (
+                  <div>
+                    <InlineSelectFieldRow field={preset} values={values} onFieldChange={onFieldChange} />
+                    <p className="pb-1 text-[12px] text-gray-500">
+                      Edit presets in{' '}
+                      <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                        theme settings
+                      </a>
+                    </p>
+                  </div>
+                ) : null}
+                {width ? (
+                  <SegmentedFieldRow field={width} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {alignment ? (
+                  <HeadingAlignmentFieldRow
+                    field={alignment}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Appearance') {
+          const color = groupFields.find((f) => f.path.endsWith('priceColor'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {color ? (
+                  <ThemeDefaultColorField
+                    label={color.label}
+                    path={color.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={1}
+                    onFieldChange={onFieldChange}
+                  />
                 ) : null}
               </div>
             </div>
@@ -7605,6 +9313,8 @@ function BlogPostsGridGroupedSettingsPanel({
   );
 }
 
+const CREATE_COLLECTION_OPTION_VALUE = '__create_collection__';
+
 function CollectionSelectFieldRow({
   field,
   values,
@@ -7614,9 +9324,43 @@ function CollectionSelectFieldRow({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
+  const CREATE_COLLECTION_VALUE = CREATE_COLLECTION_OPTION_VALUE;
+  const { activeStoreId } = useStore();
+  const { collections, fetchCollectionsByStoreId, loading } = useCollections();
+  const [createSheetOpen, setCreateSheetOpen] = useState(false);
   const current = fieldValueAsString(values, field);
+
+  useEffect(() => {
+    if (!activeStoreId) return;
+    void fetchCollectionsByStoreId(activeStoreId);
+  }, [activeStoreId, fetchCollectionsByStoreId]);
+
+  const options = useMemo(() => {
+    const fromStore = collections.map((collection) => ({
+      value: collection.urlHandle,
+      label: collection.title,
+    }));
+    const hasCurrent = Boolean(current) && fromStore.some((opt) => opt.value === current);
+    const legacy =
+      current && !hasCurrent ? [{ value: current, label: current }] : [];
+    return [
+      { value: '', label: 'Select' },
+      ...legacy,
+      ...fromStore,
+      { value: CREATE_COLLECTION_VALUE, label: 'Create collection' },
+    ];
+  }, [collections, current]);
+
   const label =
-    field.options?.find((o) => o.value === current)?.label ?? (current ? current : 'Select');
+    options.find((opt) => opt.value === current)?.label ?? (current ? current : 'Select');
+
+  const openCreateSheet = () => {
+    if (!activeStoreId) {
+      toast.error('Select a store before creating a collection');
+      return;
+    }
+    setCreateSheetOpen(true);
+  };
 
   return (
     <div className="space-y-2 py-1">
@@ -7625,42 +9369,182 @@ function CollectionSelectFieldRow({
         <select
           id={fieldInputId(field.path)}
           value={current}
-          onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
-          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
+          onChange={(e) => {
+            const next = e.target.value;
+            if (next === CREATE_COLLECTION_VALUE) {
+              openCreateSheet();
+              return;
+            }
+            onFieldChange(field.path, 'text', next);
+          }}
+          disabled={loading && collections.length === 0}
+          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50 disabled:cursor-wait disabled:opacity-60"
         >
-          {(field.options ?? []).map((opt) => (
-            <option key={opt.value || '__empty'} value={opt.value}>
+          {options.map((opt) => (
+            <option
+              key={opt.value || '__empty'}
+              value={opt.value}
+              className={opt.value === CREATE_COLLECTION_VALUE ? 'font-medium text-[#2c6ecb]' : undefined}
+            >
               {opt.label}
             </option>
           ))}
         </select>
         <button
           type="button"
-          title="Connect collection"
+          title="Create collection"
+          onClick={openCreateSheet}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
-          aria-label="Connect collection"
+          aria-label="Create collection"
         >
           <CircleStackIcon className="h-4 w-4" />
         </button>
       </div>
       {current ? (
         <p className="truncate text-[12px] text-gray-600">{label}</p>
+      ) : loading ? (
+        <p className="text-[12px] text-gray-500">Loading collections…</p>
       ) : null}
+      <button
+        type="button"
+        onClick={openCreateSheet}
+        className="text-[13px] font-medium text-[#2c6ecb] hover:underline"
+      >
+        Create collection
+      </button>
+      <ThemeEditorCreateCollectionSheet
+        open={createSheetOpen}
+        onClose={() => setCreateSheetOpen(false)}
+        onCreated={(collection) => {
+          if (activeStoreId) {
+            void fetchCollectionsByStoreId(activeStoreId);
+          }
+          onFieldChange(field.path, 'text', collection.urlHandle);
+          setCreateSheetOpen(false);
+        }}
+      />
     </div>
   );
 }
 
 /** Featured collection: Collection → (Carousel navigation) → Section layout → Padding → Theme settings → Custom CSS. */
+function FeaturedCollectionSectionLayoutGroup({
+  fields,
+  values,
+  onFieldChange,
+  colorPalette,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
+}) {
+  const backgroundColorField = fields.find((f) => f.path.endsWith('.backgroundColor'));
+  const layoutFields = fields.filter((f) => !f.path.endsWith('.backgroundColor'));
+  const bgColorRaw = backgroundColorField
+    ? fieldValueAsString(values, backgroundColorField) || 'default'
+    : 'default';
+  const bgColorIsDefault = bgColorRaw === 'default' || !bgColorRaw.trim();
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Section layout</h3>
+      <div className="space-y-1">
+        {layoutFields.map((field) => {
+          if (field.widget === 'segmented') {
+            return (
+              <SegmentedFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'slider') {
+            return (
+              <SliderFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'color-scheme') {
+            return (
+              <ColorSchemeFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          return (
+            <DefaultFieldRow
+              key={field.path}
+              field={field}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        })}
+        {backgroundColorField ? (
+          bgColorIsDefault ? (
+            <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1.5">
+              <span className="text-[13px] text-gray-800">Background color</span>
+              <button
+                type="button"
+                onClick={() => onFieldChange(backgroundColorField.path, 'text', 'palette:0')}
+                className="flex min-w-[148px] max-w-[180px] items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-2.5 py-2 text-left text-[13px] text-gray-900 shadow-sm hover:border-[#aeb4b9]"
+              >
+                <span
+                  className="relative h-5 w-5 shrink-0 overflow-hidden rounded-md border border-[#e1e3e5] bg-white"
+                  aria-hidden
+                >
+                  <span className="absolute inset-0 bg-[linear-gradient(to_top_right,transparent_46%,#e11d48_46%,#e11d48_54%,transparent_54%)]" />
+                </span>
+                <span className="truncate">Default</span>
+              </button>
+            </div>
+          ) : (
+            <ThemePaletteColorField
+              label="Background color"
+              path={backgroundColorField.path}
+              values={{
+                ...values,
+                [backgroundColorField.path]:
+                  bgColorRaw === 'palette' ||
+                  /^palette:\d+$/.test(bgColorRaw) ||
+                  bgColorRaw.startsWith('#')
+                    ? bgColorRaw
+                    : 'palette:0',
+              }}
+              colorPalette={colorPalette}
+              defaultPaletteIndex={0}
+              fallbackColor="#ffffff"
+              onFieldChange={onFieldChange}
+            />
+          )
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function FeaturedCollectionGroupedSettingsPanel({
   fields,
   values,
   onFieldChange,
   variant = 'default',
+  colorPalette,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
   variant?: 'carousel' | 'editorial' | 'grid' | 'default';
+  colorPalette: string[];
 }) {
   const panelFields = useMemo(
     () => filterFeaturedCollectionPanelFieldsForVariant(fields, variant),
@@ -7676,15 +9560,25 @@ function FeaturedCollectionGroupedSettingsPanel({
       {FEATURED_COLLECTION_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
         if (!groupFields?.length) return null;
-        if (label === 'Carousel navigation' && (isEditorial || layoutType !== 'carousel')) return null;
+        if (label === 'Carousel navigation' && variant !== 'carousel' && (isEditorial || layoutType !== 'carousel')) return null;
 
         if (label === 'Collection') {
           return (
             <div key={label} className="px-1 py-3">
               {groupFields.map((field) => {
-                if (field.path.endsWith('collectionHandle')) {
+                if (field.path.endsWith('collectionHandle') || field.widget === 'collection') {
                   return (
                     <CollectionSelectFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                if (field.path.endsWith('layoutType')) {
+                  return (
+                    <InlineSelectFieldRow
                       key={field.path}
                       field={field}
                       values={values}
@@ -7764,11 +9658,12 @@ function FeaturedCollectionGroupedSettingsPanel({
 
         if (label === 'Section layout') {
           return (
-            <BlogPostsCarouselSectionLayoutGroup
+            <FeaturedCollectionSectionLayoutGroup
               key={label}
               fields={groupFields}
               values={values}
               onFieldChange={onFieldChange}
+              colorPalette={colorPalette}
             />
           );
         }
@@ -8214,6 +10109,13 @@ function IconsWithTextGroupedSettingsPanel({
   );
 }
 
+function faqLayoutField(
+  fields: EditorFieldDef[],
+  key: string
+): EditorFieldDef | undefined {
+  return fields.find((f) => f.path.split('.').pop() === key);
+}
+
 function FaqLayoutSettingsGroup({
   fields,
   values,
@@ -8223,16 +10125,48 @@ function FaqLayoutSettingsGroup({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const ordered = sortFaqGroupFields(fields, FAQ_LAYOUT_FIELD_ORDER);
+  const directionField = faqLayoutField(fields, 'direction');
+  const direction = directionField
+    ? fieldValueAsString(values, directionField) || 'vertical'
+    : 'vertical';
+  const isHorizontal = direction === 'horizontal';
+
+  const ordered = sortFaqGroupFields(
+    fields.filter((field) => {
+      const key = field.path.split('.').pop() ?? '';
+      return key !== 'verticalOnMobile' || isHorizontal;
+    }),
+    FAQ_LAYOUT_FIELD_ORDER
+  );
 
   return (
-    <div className="px-1 py-3">
-      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Layout</h3>
-      <div className="space-y-1">
+    <ShopifySettingsSection title="Layout">
+      <div className="space-y-0">
         {ordered.map((field) => {
+          const key = field.path.split('.').pop() ?? '';
+          if (key === 'layoutAlignment' || field.widget === 'select-inline') {
+            return (
+              <InlineSelectFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
           if (field.widget === 'segmented') {
             return (
               <SegmentedFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (field.widget === 'toggle' || key === 'verticalOnMobile') {
+            return (
+              <ToggleSwitchFieldRow
                 key={field.path}
                 field={field}
                 values={values}
@@ -8255,7 +10189,151 @@ function FaqLayoutSettingsGroup({
           );
         })}
       </div>
+    </ShopifySettingsSection>
+  );
+}
+
+function FaqBorderColorFieldRow({
+  field,
+  values,
+  onFieldChange,
+  defaultHex = '#e5e7eb',
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  defaultHex?: string;
+}) {
+  const raw = fieldValueAsString(values, field);
+  const colorValue: CheckoutColorSetting =
+    !raw || raw === 'default' ? 'default' : raw;
+
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
+      <span className="text-[13px] text-gray-800">{field.label}</span>
+      <div className="min-w-[148px] max-w-[196px]">
+        <CheckoutThemeColorField
+          value={colorValue}
+          defaultHex={defaultHex}
+          onChange={(next) => onFieldChange(field.path, 'text', next)}
+        />
+      </div>
     </div>
+  );
+}
+
+function FaqBordersSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const byKey = (key: string) => fields.find((f) => f.path.endsWith(key));
+  const borderStyleField = byKey('borderStyle');
+  const borderThickness = byKey('borderThickness');
+  const borderOpacity = byKey('borderOpacity');
+  const borderColor = byKey('borderColor');
+  const cornerRadius = byKey('cornerRadius');
+  const borderStyle = borderStyleField
+    ? fieldValueAsString(values, borderStyleField) || 'none'
+    : 'none';
+  const solidBorders = borderStyle === 'solid';
+
+  return (
+    <ShopifySettingsSection title="Borders">
+      <div className="space-y-0">
+        {borderStyleField ? (
+          <SegmentedFieldRow
+            field={borderStyleField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {solidBorders && borderThickness ? (
+          <SliderFieldRow field={borderThickness} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {solidBorders && borderOpacity ? (
+          <SliderFieldRow field={borderOpacity} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {solidBorders && borderColor ? (
+          <FaqBorderColorFieldRow
+            field={borderColor}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {cornerRadius ? (
+          <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </ShopifySettingsSection>
+  );
+}
+
+function FaqImagePickerRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const url = fieldValueAsString(values, field);
+  const hasImage = Boolean(url.trim());
+  let fileName = '';
+  try {
+    const path = url.split('?')[0].split('#')[0];
+    fileName = decodeURIComponent(path.split('/').pop() ?? '');
+  } catch {
+    fileName = url.split('/').pop() ?? '';
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-[1fr_auto] items-start gap-3 py-1">
+        <span className="pt-1 text-[13px] text-gray-800">{field.label}</span>
+        <div className="flex flex-col items-end gap-1">
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            className="relative h-[72px] w-[210px] overflow-hidden rounded-lg border border-[#e1e1e1] bg-[#f6f6f7] text-gray-400 transition-colors hover:border-[#c9cccf]"
+          >
+            {hasImage ? (
+              <img src={url} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <span className="flex h-full w-full items-center justify-center">
+                <PhotoIcon className="h-7 w-7" />
+              </span>
+            )}
+            {hasImage && fileName ? (
+              <span className="absolute bottom-0 left-0 max-w-full truncate bg-black/55 px-2 py-0.5 text-[11px] font-medium text-white">
+                {fileName}
+              </span>
+            ) : null}
+          </button>
+          {hasImage ? (
+            <button
+              type="button"
+              className="text-[12px] font-medium text-[#005bd3] hover:underline"
+              onClick={() => onFieldChange(field.path, 'text', '')}
+            >
+              Remove image
+            </button>
+          ) : null}
+        </div>
+      </div>
+      <ThemeEditorImagePickerModal
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        initialUrl={url}
+        onSelect={(nextUrl) => onFieldChange(field.path, 'text', nextUrl)}
+      />
+    </>
   );
 }
 
@@ -8270,76 +10348,165 @@ function FaqAppearanceSettingsGroup({
 }) {
   const bgMediaField = fields.find((f) => f.path.endsWith('backgroundMedia'));
   const bgImageField = fields.find((f) => f.path.endsWith('backgroundImageUrl'));
+  const bgImagePositionField = fields.find((f) => f.path.endsWith('backgroundImagePosition'));
+  const colorSchemeField = fields.find((f) => f.path.endsWith('colorScheme'));
   const bgMedia = bgMediaField ? fieldValueAsString(values, bgMediaField) || 'none' : 'none';
-  const ordered = sortFaqGroupFields(
-    fields.filter((f) => f.path.split('.').pop() !== 'backgroundImageUrl'),
-    FAQ_APPEARANCE_FIELD_ORDER
-  );
+  const overlayField = fields.find((f) => f.path.endsWith('backgroundOverlay'));
+  const overlayColorField = fields.find((f) => f.path.endsWith('overlayColor'));
+  const overlayStyleField = fields.find((f) => f.path.endsWith('overlayStyle'));
+  const overlayGradientDirectionField = fields.find((f) => f.path.endsWith('overlayGradientDirection'));
+  const overlayOn = overlayField ? Boolean(values[overlayField.path]) : false;
+  const isGradientOverlay =
+    overlayStyleField && (fieldValueAsString(values, overlayStyleField) || 'solid') === 'gradient';
 
   return (
-    <div className="px-1 py-3">
-      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
-      <div className="space-y-1">
-        {ordered.map((field) => {
-          const key = field.path.split('.').pop() ?? '';
-          if (key === 'backgroundOverlay') {
-            return (
-              <ToggleSwitchFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            );
-          }
-          if (field.widget === 'color-scheme') {
-            return (
-              <ColorSchemeFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            );
-          }
-          if (field.widget === 'segmented') {
-            return (
-              <SegmentedFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            );
-          }
-          if (field.widget === 'slider') {
-            return (
-              <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-            );
-          }
-          if (field.widget === 'select-inline') {
-            return (
-              <InlineSelectFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            );
-          }
-          return (
-            <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-          );
-        })}
+    <ShopifySettingsSection title="Appearance">
+      <div className="space-y-0">
+        {bgMediaField ? (
+          <InlineSelectFieldRow
+            field={bgMediaField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
         {bgMedia === 'image' && bgImageField ? (
-          <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
+          <FaqImagePickerRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {bgMedia === 'image' && bgImagePositionField ? (
+          <SegmentedFieldRow
+            field={bgImagePositionField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {colorSchemeField ? (
+          <ColorPickerFieldRow
+            field={{ ...colorSchemeField, label: 'Background color' }}
+            values={{
+              ...values,
+              [colorSchemeField.path]: faqBackgroundColorForPicker(
+                fieldValueAsString(values, colorSchemeField)
+              ),
+            }}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {overlayField ? (
+          <ToggleSwitchFieldRow
+            field={overlayField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {overlayOn && overlayColorField ? (
+          <ColorPickerFieldRow
+            field={overlayColorField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {overlayOn && overlayStyleField ? (
+          <SegmentedFieldRow
+            field={overlayStyleField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {overlayOn && isGradientOverlay && overlayGradientDirectionField ? (
+          <SegmentedFieldRow
+            field={overlayGradientDirectionField}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ) : null}
       </div>
-    </div>
+    </ShopifySettingsSection>
   );
 }
 
-/** FAQ: Layout → Size → Appearance → Padding → Custom CSS. */
+function FaqSizeSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const width = fields.find((f) => f.path.endsWith('sectionWidth'));
+  const height = fields.find((f) => f.path.endsWith('height'));
+  const customHeight = fields.find((f) => f.path.endsWith('customHeight'));
+  const heightMode = height ? fieldValueAsString(values, height) || 'auto' : 'auto';
+  const showCustomHeight = heightMode === 'custom';
+
+  return (
+    <ShopifySettingsSection title="Size">
+      <div className="space-y-0">
+        {width ? (
+          <SegmentedFieldRow field={width} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {height ? (
+          <InlineSelectFieldRow field={height} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {showCustomHeight && customHeight ? (
+          <SliderFieldRow field={customHeight} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </ShopifySettingsSection>
+  );
+}
+
+function FaqPaddingSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const ordered = sortFaqGroupFields(fields, FAQ_PADDING_FIELD_ORDER);
+
+  return (
+    <ShopifySettingsSection title="Padding">
+      <div className="space-y-0">
+        {ordered.map((field) => (
+          <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </div>
+    </ShopifySettingsSection>
+  );
+}
+
+function FaqCustomCssSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const field = fields[0];
+  if (!field) return null;
+  const id = fieldInputId(field.path);
+  const hasValue = Boolean(fieldValueAsString(values, field).trim());
+
+  return (
+    <ShopifySettingsSection title="Custom CSS" collapsible defaultOpen={hasValue}>
+      <textarea
+        id={id}
+        rows={4}
+        value={fieldValueAsString(values, field)}
+        onChange={(e) => onFieldChange(field.path, 'textarea', e.target.value)}
+        placeholder="/* Custom CSS */"
+        className="w-full resize-y rounded-lg border border-[#c9cccf] bg-white px-3 py-2 font-mono text-xs text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+      />
+    </ShopifySettingsSection>
+  );
+}
+
+/** FAQ: Layout → Size → Appearance → Borders → Padding → Custom CSS. */
 function FaqGroupedSettingsPanel({
   fields,
   values,
@@ -8352,7 +10519,7 @@ function FaqGroupedSettingsPanel({
   const grouped = useMemo(() => groupFaqPanelFields(fields), [fields]);
 
   return (
-    <div className="divide-y divide-[#e1e1e1]">
+    <div>
       {FAQ_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
         if (!groupFields?.length) return null;
@@ -8370,7 +10537,7 @@ function FaqGroupedSettingsPanel({
 
         if (label === 'Size') {
           return (
-            <LargeLogoSizeSettingsGroup
+            <FaqSizeSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -8390,9 +10557,20 @@ function FaqGroupedSettingsPanel({
           );
         }
 
+        if (label === 'Borders') {
+          return (
+            <FaqBordersSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
         if (label === 'Padding') {
           return (
-            <HeroPaddingSettingsGroup
+            <FaqPaddingSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -8403,16 +10581,12 @@ function FaqGroupedSettingsPanel({
 
         if (label === 'Custom CSS') {
           return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
+            <FaqCustomCssSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
           );
         }
 
@@ -8422,7 +10596,45 @@ function FaqGroupedSettingsPanel({
   );
 }
 
-/** FAQ Accordion block: Icon → Dividers → Heading preset → Inherit color scheme → Borders → Padding. */
+/** FAQ Accordion block: Icon → Dividers → Divider color → Heading preset → Appearance → Borders → Padding. */
+function FaqAccordionAppearanceSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+  schemeBackgroundHex = '#ffffff',
+  schemeTextHex = '#111827',
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  schemeBackgroundHex?: string;
+  schemeTextHex?: string;
+}) {
+  const byKey = (key: string) => fields.find((f) => f.path.endsWith(key));
+
+  return (
+    <ShopifySettingsSection title="Appearance">
+      <div className="space-y-0">
+        {FAQ_ACCORDION_APPEARANCE_FIELD_ORDER.map((key) => {
+          const field = byKey(key);
+          if (!field) return null;
+          const defaultHex =
+            key === 'backgroundColor' ? schemeBackgroundHex : schemeTextHex;
+          return (
+            <FaqBorderColorFieldRow
+              key={field.path}
+              field={field}
+              values={values}
+              onFieldChange={onFieldChange}
+              defaultHex={defaultHex}
+            />
+          );
+        })}
+      </div>
+    </ShopifySettingsSection>
+  );
+}
+
 function FaqAccordionSettingsPanel({
   fields,
   values,
@@ -8447,6 +10659,18 @@ function FaqAccordionSettingsPanel({
             <div key={label} className="px-1 py-3">
               <div className="space-y-1">
                 {FAQ_ACCORDION_GENERAL_FIELD_ORDER.map((key) => {
+                  if (key === 'dividerColor') {
+                    const field = byKey('dividerColor');
+                    if (!field) return null;
+                    return (
+                      <FaqBorderColorFieldRow
+                        key={field.path}
+                        field={field}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    );
+                  }
                   if (key === 'headingTypographyPreset') {
                     const preset = byKey('headingTypographyPreset');
                     if (!preset) return null;
@@ -8499,30 +10723,25 @@ function FaqAccordionSettingsPanel({
           );
         }
 
-        if (label === 'Borders') {
-          const byKey = (key: string) => groupFields.find((f) => f.path.endsWith(key));
-          const borderStyleField = byKey('borderStyle');
-          const cornerRadius = byKey('cornerRadius');
+        if (label === 'Appearance') {
           return (
-            <div key={label} className="px-1 py-3">
-              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Borders</h3>
-              <div className="space-y-1">
-                {borderStyleField ? (
-                  <SegmentedFieldRow
-                    field={borderStyleField}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
-                {cornerRadius ? (
-                  <SliderFieldRow
-                    field={cornerRadius}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
-              </div>
-            </div>
+            <FaqAccordionAppearanceSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Borders') {
+          return (
+            <FaqBordersSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
           );
         }
 
@@ -8531,9 +10750,8 @@ function FaqAccordionSettingsPanel({
             groupFields.find((f) => f.path.endsWith(key))
           ).filter((f): f is EditorFieldDef => Boolean(f));
           return (
-            <div key={label} className="px-1 py-3">
-              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Padding</h3>
-              <div className="space-y-1">
+            <ShopifySettingsSection key={label} title="Padding">
+              <div className="space-y-0">
                 {ordered.map((field) => (
                   <SliderFieldRow
                     key={field.path}
@@ -8543,7 +10761,7 @@ function FaqAccordionSettingsPanel({
                   />
                 ))}
               </div>
-            </div>
+            </ShopifySettingsSection>
           );
         }
 
@@ -8554,6 +10772,173 @@ function FaqAccordionSettingsPanel({
 }
 
 /** FAQ Accordion row: Heading → Open row by default → Icon group. */
+const ACCORDION_ROW_HEADING_DEBOUNCE_MS = 350;
+
+function AccordionRowHeadingFieldRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const id = fieldInputId(field.path);
+  const external = fieldValueAsString(values, field);
+  const [draft, setDraft] = useState(external);
+  const debouncedDraft = useDebouncedValue(draft, ACCORDION_ROW_HEADING_DEBOUNCE_MS);
+  const focusedRef = useRef(false);
+
+  useEffect(() => {
+    setDraft(external);
+    focusedRef.current = false;
+  }, [field.path]);
+
+  useEffect(() => {
+    if (!focusedRef.current) {
+      setDraft(external);
+    }
+  }, [external]);
+
+  useEffect(() => {
+    if (debouncedDraft === external) return;
+    onFieldChange(field.path, 'text', debouncedDraft);
+  }, [debouncedDraft, external, field.path, onFieldChange]);
+
+  const flushDraft = () => {
+    if (draft !== external) {
+      onFieldChange(field.path, 'text', draft);
+    }
+  };
+
+  return (
+    <div className="py-1">
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <label htmlFor={id} className="text-[13px] text-gray-800">
+          {field.label}
+        </label>
+        <button
+          type="button"
+          title="Connect dynamic source"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[#616161] hover:bg-[#f1f1f1]"
+        >
+          <CircleStackIcon className="h-4 w-4" />
+        </button>
+      </div>
+      <input
+        id={id}
+        type="text"
+        value={draft}
+        onFocus={() => {
+          focusedRef.current = true;
+        }}
+        onBlur={() => {
+          focusedRef.current = false;
+          flushDraft();
+        }}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            flushDraft();
+          }
+        }}
+        className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+      />
+    </div>
+  );
+}
+
+function accordionRowImageFileName(url: string): string {
+  if (!url.trim()) return '';
+  try {
+    const path = url.split('?')[0].split('#')[0];
+    return decodeURIComponent(path.split('/').pop() ?? '');
+  } catch {
+    return url.split('/').pop() ?? '';
+  }
+}
+
+/** Shopify-style image icon picker for FAQ accordion rows. */
+function AccordionRowImageIconFieldRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const url = fieldValueAsString(values, field);
+  const hasImage = Boolean(url.trim());
+  const fileName = accordionRowImageFileName(url);
+
+  return (
+    <>
+      <div className="space-y-2 py-1">
+        <span className="block text-[13px] font-medium text-gray-800">{field.label}</span>
+        <div className="rounded-lg border border-dashed border-[#c9cccf] bg-[#fafbfb] p-3">
+          <div className="relative mb-2 overflow-hidden rounded-md border border-[#e1e1e1] bg-white">
+            {hasImage ? (
+              <img src={url} alt="" className="mx-auto max-h-32 w-full object-contain p-2" />
+            ) : (
+              <div className="flex h-24 items-center justify-center text-gray-400">
+                <PhotoIcon className="h-8 w-8" />
+              </div>
+            )}
+            {hasImage && fileName ? (
+              <span className="block truncate border-t border-[#e1e1e1] bg-[#f6f6f7] px-2 py-1 text-center text-[11px] text-gray-600">
+                {fileName}
+              </span>
+            ) : null}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPickerOpen(true)}
+              className="rounded-lg border border-[#c9cccf] bg-white px-3 py-1.5 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
+            >
+              {hasImage ? 'Change' : 'Select'}
+            </button>
+            <button
+              type="button"
+              title="Browse library"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+              onClick={() => setPickerOpen(true)}
+            >
+              <CircleStackIcon className="h-4 w-4" />
+            </button>
+          </div>
+          {hasImage ? (
+            <button
+              type="button"
+              className="mt-2 text-[12px] font-medium text-[#005bd3] hover:underline"
+              onClick={() => onFieldChange(field.path, 'text', '')}
+            >
+              Remove image
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="mt-2 text-[12px] text-[#005bd3] hover:underline"
+              onClick={() => setPickerOpen(true)}
+            >
+              Explore free images
+            </button>
+          )}
+        </div>
+      </div>
+      <ThemeEditorImagePickerModal
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        initialUrl={url}
+        onSelect={(nextUrl) => onFieldChange(field.path, 'text', nextUrl)}
+      />
+    </>
+  );
+}
+
 function FaqAccordionRowSettingsPanel({
   fields,
   values,
@@ -8564,44 +10949,73 @@ function FaqAccordionRowSettingsPanel({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const byKey = (key: string) => fields.find((f) => f.path.endsWith(key));
-  const heading = byKey('heading');
-  const openByDefault = byKey('openByDefault');
-  const rowIcon = byKey('rowIcon');
-  const rowImageIconUrl = byKey('rowImageIconUrl');
-  const rowIconWidth = byKey('rowIconWidth');
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
-      <div className="space-y-1 px-1 py-3">
-        {heading ? (
-          <SettingsFieldRow field={heading} values={values} onFieldChange={onFieldChange} />
-        ) : null}
-        {openByDefault ? (
-          <ToggleSwitchFieldRow
-            field={openByDefault}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : null}
-      </div>
-      <div className="px-1 py-3">
-        <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Icon</h3>
-        <div className="space-y-1">
-          {rowIcon ? (
-            <InlineSelectFieldRow field={rowIcon} values={values} onFieldChange={onFieldChange} />
-          ) : null}
-          {rowImageIconUrl ? (
-            <ImagePickerFieldRow
-              field={{ ...rowImageIconUrl, widget: 'image' }}
+      <div className="space-y-0 px-1 py-3">
+        {FAQ_ACCORDION_ROW_CONTENT_FIELD_ORDER.map((key) => {
+          const field = byKey(key);
+          if (!field) return null;
+          if (key === 'heading') {
+            return (
+              <AccordionRowHeadingFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          return (
+            <ToggleSwitchFieldRow
+              key={field.path}
+              field={field}
               values={values}
               onFieldChange={onFieldChange}
             />
-          ) : null}
-          {rowIconWidth ? (
-            <SliderFieldRow field={rowIconWidth} values={values} onFieldChange={onFieldChange} />
-          ) : null}
-        </div>
+          );
+        })}
       </div>
+      <ShopifySettingsSection title="Icon">
+        <div className="space-y-0">
+          {FAQ_ACCORDION_ROW_ICON_FIELD_ORDER.map((key) => {
+            const field = byKey(key);
+            if (!field) return null;
+            if (key === 'rowImageIconUrl') {
+              return (
+                <AccordionRowImageIconFieldRow
+                  key={field.path}
+                  field={{ ...field, widget: 'image' }}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              );
+            }
+            if (key === 'rowIcon') {
+              const iconField = {
+                ...field,
+                options: [...FAQ_ACCORDION_ROW_ICON_OPTIONS],
+              };
+              return (
+                <SelectFieldRow
+                  key={field.path}
+                  field={iconField}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              );
+            }
+            return (
+              <SliderFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          })}
+        </div>
+      </ShopifySettingsSection>
     </div>
   );
 }
@@ -8721,6 +11135,123 @@ function TextBlockPaddingSettingsGroup({
   );
 }
 
+function TextBlockTypographySettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const preset = fields.find((f) => f.path.endsWith('.typographyPreset'));
+  const presetField = preset
+    ? {
+        ...preset,
+        options: [...TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS],
+        description: preset.description ?? 'Edit presets in theme settings',
+      }
+    : null;
+  const isCustom = presetField
+    ? isTextBlockTypographyCustomPreset(values, presetField.path)
+    : false;
+  const settingsBase = presetField?.path.replace(/\.typographyPreset$/, '') ?? '';
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
+      <div className="space-y-1">
+        {presetField ? (
+          <div>
+            <InlineSelectFieldRow field={presetField} values={values} onFieldChange={onFieldChange} />
+            <p className="pb-1 text-[12px] text-gray-500">
+              Edit presets in{' '}
+              <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                theme settings
+              </a>
+            </p>
+          </div>
+        ) : null}
+        {isCustom && settingsBase
+          ? TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS.map((key) => {
+              const field = resolveTextBlockTypographyField(key, settingsBase, fields);
+              if (field.widget === 'segmented') {
+                return (
+                  <SegmentedFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                );
+              }
+              return (
+                <InlineSelectFieldRow
+                  key={field.path}
+                  field={field}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              );
+            })
+          : null}
+      </div>
+    </div>
+  );
+}
+
+function TextBlockAppearanceSettingsGroup({
+  fields,
+  values,
+  onFieldChange,
+  defaultTextHex = '#111827',
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  defaultTextHex?: string;
+}) {
+  const byKey = (key: string) => fields.find((f) => f.path.endsWith(key));
+  const textColor = byKey('textColor');
+  const background = byKey('backgroundEnabled');
+  const backgroundColor = byKey('backgroundColor');
+  const cornerRadius = byKey('cornerRadius');
+  const backgroundOn =
+    background &&
+    (values[background.path] === true || values[background.path] === 'true');
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+      <div className="space-y-1">
+        {textColor ? (
+          <FaqBorderColorFieldRow
+            field={textColor}
+            values={values}
+            onFieldChange={onFieldChange}
+            defaultHex={defaultTextHex}
+          />
+        ) : null}
+        {background ? (
+          <ToggleSwitchFieldRow field={background} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {backgroundOn && backgroundColor ? (
+          <ThemeHexColorField
+            label={backgroundColor.label}
+            path={backgroundColor.path}
+            values={values}
+            defaultColor="#00000026"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {backgroundOn && cornerRadius ? (
+          <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 /** Shopify-order text block panel (Text → Layout → Typography → Appearance → Padding). */
 function TextBlockSettingsPanel({
   fields,
@@ -8731,7 +11262,11 @@ function TextBlockSettingsPanel({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const grouped = useMemo(() => groupTextBlockPanelFields(fields), [fields]);
+  const preparedFields = useMemo(
+    () => filterTextBlockPanelFieldsForTypographyPreset(fields, values),
+    [fields, values]
+  );
+  const grouped = useMemo(() => groupTextBlockPanelFields(preparedFields), [preparedFields]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -8748,6 +11283,7 @@ function TextBlockSettingsPanel({
                   field={{ ...field, widget: 'richtext', type: 'textarea' }}
                   values={values}
                   onFieldChange={onFieldChange}
+                  showDynamicSource
                 />
               ))}
             </div>
@@ -8766,47 +11302,24 @@ function TextBlockSettingsPanel({
         }
 
         if (label === 'Typography') {
-          const preset = groupFields.find((f) => f.path.endsWith('.typographyPreset'));
-          const presetField = preset
-            ? { ...preset, options: [...TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS] }
-            : null;
           return (
-            <div key={label} className="px-1 py-3">
-              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
-              {presetField ? (
-                <div>
-                  <InlineSelectFieldRow
-                    field={presetField}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                  <p className="pb-1 text-[12px] text-gray-500">
-                    Edit presets in{' '}
-                    <a href="/settings/theme" className="text-[#005bd3] hover:underline">
-                      theme settings
-                    </a>
-                  </p>
-                </div>
-              ) : null}
-            </div>
+            <TextBlockTypographySettingsGroup
+              key={label}
+              fields={fields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
           );
         }
 
         if (label === 'Appearance') {
           return (
-            <div key={label} className="px-1 py-3">
-              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
-              <div className="space-y-1">
-                {groupFields.map((field) => (
-                  <ToggleSwitchFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ))}
-              </div>
-            </div>
+            <TextBlockAppearanceSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
           );
         }
 
@@ -9609,17 +12122,17 @@ function CollapsibleSettingsGroup({
   const [open, setOpen] = useState(initialOpen);
 
   return (
-    <div className="border-t border-[#e1e1e1] px-1 py-1">
+    <section className="border-t border-[#e1e1e1]">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between py-2 text-left text-[13px] font-medium text-gray-800"
+        className="flex w-full items-center justify-between px-4 py-3.5 text-left"
       >
-        {label}
-        <ChevronDownIcon className={`h-4 w-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <h3 className="text-[13px] font-semibold leading-5 text-[#303030]">{label}</h3>
+        <ChevronDownIcon className={`h-4 w-4 shrink-0 text-[#616161] transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open ? (
-        <div className="space-y-1 pb-2">
+        <div className="space-y-1 px-4 pb-4">
           {fields.map((field) =>
             field.widget === 'image' ? (
               <ImagePickerFieldRow
@@ -9634,7 +12147,7 @@ function CollapsibleSettingsGroup({
           )}
         </div>
       ) : null}
-    </div>
+    </section>
   );
 }
 
@@ -9789,27 +12302,75 @@ function SettingsFieldRow({
   }
 }
 
+function inferEditorFieldGroup(field: EditorFieldDef): string {
+  const key = field.path.split('.').pop() ?? '';
+  const headingGroup = inferHeadingPanelGroup(key);
+  if (headingGroup) return headingGroup;
+  const textGroup = inferTextBlockPanelGroup(key);
+  if (textGroup) return textGroup;
+  if (field.group === 'Content' || field.group === 'General') {
+    if (key === 'heading' || key === 'title' || key === 'text' || key === 'question') return 'Text';
+  }
+  if (field.group) return field.group;
+  return 'Settings';
+}
+
+function isHeadingLayoutFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) =>
+    /heading(?:Width|MaxWidth|Alignment)$/.test(f.path.split('.').pop() ?? '')
+  );
+}
+
+function isHeadingTypographyFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) => f.path.endsWith('headingTypographyPreset'));
+}
+
+function isHeadingAppearanceFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) => {
+    const key = f.path.split('.').pop() ?? '';
+    return (
+      key === 'headingColor' ||
+      key === 'headingBackgroundEnabled' ||
+      key === 'headingBackgroundColor' ||
+      key === 'headingCornerRadius'
+    );
+  });
+}
+
+function isHeadingPaddingFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) => (f.path.split('.').pop() ?? '').startsWith('headingPadding'));
+}
+
 function GroupedSettingsFields({
+  nodeId,
+  nodeLabel,
   fields,
   values,
   onFieldChange,
+  colorPalette = [],
 }: {
+  nodeId: string;
+  nodeLabel: string;
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette?: string[];
 }) {
   const groups = useMemo(() => {
     const map = new Map<string, EditorFieldDef[]>();
-    const ungrouped: EditorFieldDef[] = [];
+    const infoLinks: EditorFieldDef[] = [];
+
     for (const field of fields) {
-      if (field.group) {
-        const list = map.get(field.group) ?? [];
-        list.push(field);
-        map.set(field.group, list);
-      } else {
-        ungrouped.push(field);
+      if (field.widget === 'info-link' && !inferHeadingPanelGroup(field.path.split('.').pop() ?? '')) {
+        infoLinks.push(field);
+        continue;
       }
+      const group = inferEditorFieldGroup(field);
+      const list = map.get(group) ?? [];
+      list.push({ ...field, group });
+      map.set(group, list);
     }
+
     const order = [
       'Collection',
       'Media 1',
@@ -9823,7 +12384,6 @@ function GroupedSettingsFields({
       'Customer account',
       'Search',
       'Localization',
-      'Content',
       'Typography',
       'General',
       'Heading',
@@ -9834,41 +12394,45 @@ function GroupedSettingsFields({
       'Size',
       'Section layout',
       'Layout',
-      'Size',
       'Utilities',
       'Colors',
       'Page backgrounds',
       'Theme settings',
       'Padding',
       'Custom CSS',
+      'Settings',
     ];
     const sorted: Array<{ label: string; fields: EditorFieldDef[] }> = [];
+    if (infoLinks.length) sorted.push({ label: '__info__', fields: infoLinks });
     for (const label of order) {
       const list = map.get(label);
       if (list?.length) sorted.push({ label, fields: list });
       map.delete(label);
     }
     for (const [label, list] of map) sorted.push({ label, fields: list });
-    if (ungrouped.length) {
-      const infoOnly = ungrouped.filter((f) => f.widget === 'info-link');
-      const rest = ungrouped.filter((f) => f.widget !== 'info-link');
-      if (infoOnly.length) sorted.unshift({ label: '__info__', fields: infoOnly });
-      if (rest.length) sorted.unshift({ label: 'Settings', fields: rest });
-    }
     return sorted;
   }, [fields]);
+
+  if (isFaqHeadingCollectionTitlePanelNode({ id: nodeId, label: nodeLabel, kind: 'block', fields })) {
+    return (
+      <FaqHeadingCollectionTitleSettingsPanel
+        fields={fields}
+        values={values}
+        onFieldChange={onFieldChange}
+        colorPalette={colorPalette}
+      />
+    );
+  }
 
   const flatOnly = groups.length === 1 && groups[0]?.label === 'Settings';
 
   if (flatOnly) {
     return (
-      <div className="px-1 py-2">
-        <div className="space-y-1">
-          {groups[0].fields.map((field) => (
-            <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-          ))}
-        </div>
-      </div>
+      <ShopifySettingsSection title="General">
+        {groups[0].fields.map((field) => (
+          <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </ShopifySettingsSection>
     );
   }
 
@@ -9876,13 +12440,13 @@ function GroupedSettingsFields({
     <div className="divide-y divide-[#e1e1e1]">
       {groups.map((group) =>
         group.label === '__info__' ? (
-          <div key={group.label} className="px-1 pb-2 pt-1">
+          <div key={group.label} className="px-4 pb-2 pt-3">
             {group.fields.map((field) => (
               <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
             ))}
           </div>
         ) : group.label === 'Custom CSS' ? (
-          <div key={group.label} className="px-1 py-1">
+          <div key={group.label} className="px-4 py-2">
             {group.fields.map((field) => (
               <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
             ))}
@@ -9895,49 +12459,47 @@ function GroupedSettingsFields({
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : group.label === 'Text' &&
+          group.fields.some((f) => {
+            const key = f.path.split('.').pop() ?? '';
+            return key === 'title' || key === 'heading';
+          }) ? (
+          <HeadingTextSettingsGroup
+            key={group.label}
+            fields={group.fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : group.label === 'Typography' && isHeadingTypographyFields(group.fields) ? (
+          <HeadingTypographySettingsGroup
+            key={group.label}
+            fields={group.fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ) : group.label === 'Typography' ? (
-          <div key={group.label} className="px-1 py-3">
-            <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{group.label}</h3>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-              {group.fields
-                .filter((f) => f.widget !== 'segmented')
-                .map((field) => (
-                  <SelectFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ))}
-            </div>
+          <ShopifySettingsSection key={group.label} title={group.label}>
+            {group.fields
+              .filter((f) => f.widget !== 'segmented')
+              .map((field) => (
+                <SelectFieldRow
+                  key={field.path}
+                  field={field}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              ))}
             {group.fields
               .filter((f) => f.widget === 'segmented')
               .map((field) => (
-                <div key={field.path} className="mt-3">
-                  <span className="mb-1.5 block text-[12px] text-gray-600">{field.label}</span>
-                  <div className="inline-flex w-full max-w-md rounded-lg border border-[#c9cccf] bg-[#f1f1f1] p-0.5">
-                    {(field.options ?? []).map((opt) => {
-                      const current =
-                        fieldValueAsString(values, field) || field.options?.[0]?.value || 'default';
-                      return (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => onFieldChange(field.path, 'text', opt.value)}
-                          className={`flex-1 rounded-md px-3 py-1.5 text-[12px] font-medium transition-colors ${
-                            current === opt.value
-                              ? 'bg-white text-gray-900 shadow-sm'
-                              : 'text-gray-600 hover:text-gray-900'
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                <SegmentedFieldRow
+                  key={field.path}
+                  field={field}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
               ))}
-          </div>
+          </ShopifySettingsSection>
         ) : group.label === 'Media 1' || group.label === 'Media 2' ? (
           <HeroMediaSettingsGroup
             key={group.label}
@@ -9961,6 +12523,20 @@ function GroupedSettingsFields({
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : group.label === 'Layout' && isFaqLayoutPanelFields(group.fields) ? (
+          <FaqLayoutSettingsGroup
+            key={group.label}
+            fields={group.fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : group.label === 'Layout' && isHeadingLayoutFields(group.fields) ? (
+          <HeadingLayoutSettingsGroup
+            key={group.label}
+            fields={group.fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ) : group.label === 'Layout' ? (
           <HeroLayoutSettingsGroup
             key={group.label}
@@ -9968,8 +12544,23 @@ function GroupedSettingsFields({
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : group.label === 'Appearance' && isHeadingAppearanceFields(group.fields) ? (
+          <HeadingAppearanceSettingsGroup
+            key={group.label}
+            fields={group.fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
         ) : group.label === 'Appearance' ? (
           <HeroAppearanceSettingsGroup
+            key={group.label}
+            fields={group.fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : group.label === 'Padding' && isHeadingPaddingFields(group.fields) ? (
+          <HeadingPaddingSettingsGroup
             key={group.label}
             fields={group.fields}
             values={values}
@@ -9983,14 +12574,14 @@ function GroupedSettingsFields({
             onFieldChange={onFieldChange}
           />
         ) : (
-          <div key={group.label} className="px-1 py-3">
-            <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{group.label}</h3>
-            <div className="space-y-1">
-              {group.fields.map((field) => (
-                <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-              ))}
-            </div>
-          </div>
+          <ShopifySettingsSection
+            key={group.label}
+            title={group.label === 'Settings' ? 'General' : group.label}
+          >
+            {group.fields.map((field) => (
+              <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+            ))}
+          </ShopifySettingsSection>
         )
       )}
     </div>
@@ -10001,6 +12592,7 @@ type ThemeSectionSettingsPanelProps = {
   node: SidebarNode;
   values: Record<string, string | boolean>;
   themeConfig?: Record<string, unknown> | null;
+  colorPalette?: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
   onCollectionLinksApply?: (settingsPath: string, collections: Collection[]) => void;
   onStoreMenuSelect?: (
@@ -10017,6 +12609,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   node,
   values,
   themeConfig = null,
+  colorPalette: colorPaletteProp,
   onFieldChange,
   onCollectionLinksApply,
   onStoreMenuSelect,
@@ -10025,6 +12618,10 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   onRemoveBlock,
 }) => {
   const fields = node.fields ?? [];
+  const colorPalette = useMemo(
+    () => colorPaletteProp ?? readThemeColorPalette(themeConfig),
+    [colorPaletteProp, themeConfig]
+  );
   const canRemoveSection = node.kind === 'section' && Boolean(onRemoveSection);
   const canRemoveBlock = node.kind === 'block' && Boolean(onRemoveBlock);
   const isLargeLogoPanel =
@@ -10036,7 +12633,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.label === 'Policies and links' ||
     node.label === 'Utilities' ||
     isFooterUtilitiesSettingsPanelFields(fields);
-  const isFaqPanel = node.label === 'FAQ' || isFaqSettingsPanelFields(fields);
+  const isFaqPanel =
+    node.label === 'FAQ' || isFaqSectionNodeId(node.id) || isFaqSettingsPanelFields(fields);
   const isContactFormBlockPanel =
     node.kind === 'block' &&
     (isContactFormBlockNodeId(node.id) ||
@@ -10117,14 +12715,22 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     isCollectionListSectionHeaderPanelFields(fields);
   const isFeaturedProductHeaderBlockPanel =
     isFeaturedProductHeaderBlockNodeId(node.id) || isFeaturedProductHeaderPanelFields(fields);
+  const isProductCardMediaPanel =
+    isProductCardMediaNestedNodeId(node.id) || isProductCardMediaPanelFields(fields);
+  const isProductCardTitlePanel =
+    isProductCardTitleNestedNodeId(node.id) || isProductCardTitlePanelFields(fields);
+  const isProductCardPricePanel =
+    isProductCardPriceNestedNodeId(node.id) || isProductCardPricePanelFields(fields);
   const isFeaturedProductHeaderTitleBlockPanel =
-    node.label === 'Title' ||
-    isFeaturedProductHeaderTitleNestedNodeId(node.id) ||
-    isFeaturedProductHeaderTitlePanelFields(fields);
+    !isProductCardTitlePanel &&
+    (node.label === 'Title' ||
+      isFeaturedProductHeaderTitleNestedNodeId(node.id) ||
+      isFeaturedProductHeaderTitlePanelFields(fields));
   const isFeaturedProductHeaderPriceBlockPanel =
-    node.label === 'Price' ||
-    isFeaturedProductHeaderPriceNestedNodeId(node.id) ||
-    isFeaturedProductHeaderPricePanelFields(fields);
+    !isProductCardPricePanel &&
+    (node.label === 'Price' ||
+      isFeaturedProductHeaderPriceNestedNodeId(node.id) ||
+      isFeaturedProductHeaderPricePanelFields(fields));
   const isFeaturedProductReviewStarsBlockPanel =
     node.label === 'Review stars' ||
     isFeaturedProductReviewStarsBlockNodeId(node.id) ||
@@ -10352,13 +12958,42 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.label === 'Carousel' || isStorytellingCarouselSettingsPanelFields(fields);
   const isDividerPanel =
     node.label === 'Divider' || isDividerSettingsPanelFields(fields);
+  const faqHeadingBlockPanel = isFaqHeadingCollectionTitlePanelNode(node);
   const isHeadingBlockPanel =
     !isRichTextBlockPanel &&
     !isStorytellingVideoBlockPanel &&
+    !faqHeadingBlockPanel &&
     node.kind === 'block' &&
     (node.label === 'Heading' ||
       isHeadingBlockNodeId(node.id) ||
       isHeadingBlockPanelFields(fields));
+  const isFaqHeadingCollectionTitlePanel = node.kind === 'block' && faqHeadingBlockPanel;
+  const isCollectionTitleBlockPanel =
+    !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
+    !isHeadingBlockPanel &&
+    node.kind === 'block' &&
+    (node.label === 'Collection title' ||
+      isCollectionTitleNestedNodeId(node.id) ||
+      isCollectionTitlePanelFields(fields));
+  const isViewAllButtonBlockPanel =
+    !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
+    !isHeadingBlockPanel &&
+    !isCollectionTitleBlockPanel &&
+    node.kind === 'block' &&
+    (node.label === 'View all button' ||
+      isViewAllButtonNestedNodeId(node.id) ||
+      isViewAllButtonPanelFields(fields));
+  const isFeaturedCollectionHeaderBlockPanel =
+    !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
+    !isHeadingBlockPanel &&
+    !isCollectionTitleBlockPanel &&
+    !isViewAllButtonBlockPanel &&
+    node.kind === 'block' &&
+    (isFeaturedCollectionHeaderBlockNodeId(node.id) ||
+      (node.label === 'Header' && isFeaturedCollectionHeaderPanelFields(fields)));
   const isFaqAccordionBlockPanel =
     node.kind === 'block' &&
     (node.label === 'Accordion' ||
@@ -10391,6 +13026,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isHeaderLogoBlockPanel &&
     !isHeaderMenuBlockPanel &&
     !isHeadingBlockPanel &&
+    !isCollectionTitleBlockPanel &&
+    !isViewAllButtonBlockPanel &&
     !isFaqAccordionBlockPanel &&
     !isFaqAccordionRowBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
@@ -10448,7 +13085,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isHeaderSectionPanel &&
     !isLargeLogoPanel &&
     !isSplitShowcasePanel &&
+    !faqHeadingBlockPanel &&
+    !isFaqHeadingCollectionTitlePanel &&
     !isHeadingBlockPanel &&
+    !isCollectionTitleBlockPanel &&
+    !isViewAllButtonBlockPanel &&
     !isFaqAccordionBlockPanel &&
     !isFaqAccordionRowBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
@@ -10533,8 +13174,19 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
         </button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-3">
-        {isHeaderLogoBlockPanel ? (
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        {isFaqAccordionBlockPanel ? (
+          <FaqAccordionSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isFaqAccordionRowBlockPanel ? (
+          <FaqAccordionRowSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isFaqHeadingCollectionTitlePanel ? (
+          <FaqHeadingCollectionTitleSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
+        ) : isHeaderLogoBlockPanel ? (
           <HeaderLogoBlockSettingsPanel
             fields={fields}
             values={values}
@@ -10544,6 +13196,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <HeaderMenuBlockSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
             onStoreMenuSelect={onStoreMenuSelect}
           />
@@ -10558,7 +13211,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
         ) : fields.length === 0 ? (
           <p className="text-[13px] text-gray-500">No settings for this item.</p>
         ) : isHeaderSectionPanel ? (
-          <HeaderSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+          <HeaderSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
         ) : isCopyrightBlockPanel ? (
           <div className="divide-y divide-[#e1e1e1]">
             {(() => {
@@ -10662,14 +13320,38 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : isHeadingBlockPanel ? (
+          <HeadingBlockSettingsPanel
+            nodeId={node.id}
+            nodeLabel={node.label}
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
         ) : isRichTextBlockPanel ? (
           <RichTextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isHeadingBlockPanel ? (
-          <HeadingBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isFaqAccordionBlockPanel ? (
-          <FaqAccordionSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isFaqAccordionRowBlockPanel ? (
-          <FaqAccordionRowSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isFeaturedCollectionHeaderBlockPanel ? (
+          <FeaturedCollectionHeaderGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
+        ) : isCollectionTitleBlockPanel ? (
+          <CollectionTitleBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
+        ) : isViewAllButtonBlockPanel ? (
+          <ViewAllButtonSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
         ) : isFaqAccordionRowTextBlockPanel ||
           isHeroTextBlockPanel ||
           isCollectionListHeaderTextPanel ? (
@@ -10680,12 +13362,15 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <MulticolumnBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isHeroButtonBlockPanel ? (
           <HeroButtonSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isFaqPanel ? (
+          <FaqGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isHeroPanel ? (
           <HeroGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isAnnouncementBlockPanel ? (
           <AnnouncementBlockSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isLargeLogoPanel ? (
@@ -10747,6 +13432,26 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <FeaturedProductHeaderTitleGroupedSettingsPanel
             fields={fields}
             values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductCardMediaPanel ? (
+          <ProductCardMediaGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductCardTitlePanel ? (
+          <ProductCardTitleGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductCardPricePanel ? (
+          <ProductCardPriceGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isFeaturedProductHeaderPriceBlockPanel ? (
@@ -10925,8 +13630,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
-        ) : isFaqPanel ? (
-          <FaqGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isIconsWithTextPanel ? (
           <IconsWithTextGroupedSettingsPanel
             fields={fields}
@@ -10963,6 +13666,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
             variant="grid"
+            colorPalette={colorPalette}
           />
         ) : isFeaturedCollectionEditorialPanel ? (
           <FeaturedCollectionGroupedSettingsPanel
@@ -10970,6 +13674,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
             variant="editorial"
+            colorPalette={colorPalette}
           />
         ) : isFeaturedCollectionCarouselPanel ? (
           <FeaturedCollectionGroupedSettingsPanel
@@ -10977,6 +13682,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
             variant="carousel"
+            colorPalette={colorPalette}
           />
         ) : isBlogPostsCarouselPanel ? (
           <BlogPostsCarouselGroupedSettingsPanel
@@ -11006,12 +13712,14 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <AnnouncementBarGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isDividerPanel ? (
           <DividerGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isFooterUtilitiesPanel ? (
@@ -11023,7 +13731,21 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
         ) : isFooterPanel ? (
           <FooterGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : useGrouped ? (
-          <GroupedSettingsFields fields={fields} values={values} onFieldChange={onFieldChange} />
+          <GroupedSettingsFields
+            nodeId={node.id}
+            nodeLabel={node.label}
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
+        ) : isFaqHeadingCollectionTitlePanel ? (
+          <FaqHeadingCollectionTitleSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
         ) : (
           <div className="space-y-4">
             {fields.map((field) => (

@@ -546,6 +546,41 @@
           ]
         },
         {
+          "key": "dividerThickness",
+          "type": "number",
+          "label": "Divider thickness",
+          "group": "Appearance",
+          "widget": "slider",
+          "min": 0,
+          "max": 12,
+          "step": 0.5,
+          "unit": "px"
+        },
+        {
+          "key": "dividerWidth",
+          "type": "select",
+          "label": "Divider width",
+          "group": "Appearance",
+          "widget": "segmented",
+          "options": [
+            {
+              "value": "page",
+              "label": "Page"
+            },
+            {
+              "value": "full",
+              "label": "Full"
+            }
+          ]
+        },
+        {
+          "key": "dividerColor",
+          "type": "color",
+          "label": "Divider color",
+          "group": "Appearance",
+          "widget": "color"
+        },
+        {
           "key": "borderThickness",
           "type": "number",
           "label": "Border thickness",
@@ -553,8 +588,15 @@
           "widget": "slider",
           "min": 0,
           "max": 12,
-          "step": 1,
+          "step": 0.5,
           "unit": "px"
+        },
+        {
+          "key": "bottomBorderColor",
+          "type": "color",
+          "label": "Bottom border color",
+          "group": "Appearance",
+          "widget": "color"
         },
         {
           "key": "menuStyle",
@@ -575,29 +617,104 @@
           "description": "Icons are always used on mobile"
         },
         {
-          "key": "colorScheme",
+          "key": "utilityTextSize",
           "type": "select",
-          "label": "Default",
+          "label": "Size",
+          "group": "Utilities",
+          "widget": "select",
+          "visibleWhen": { "menuStyle": "text" },
+          "options": [
+            { "value": "12px", "label": "12px" },
+            { "value": "14px", "label": "14px" },
+            { "value": "16px", "label": "16px" },
+            { "value": "18px", "label": "18px" }
+          ]
+        },
+        {
+          "key": "utilityTextFont",
+          "type": "select",
+          "label": "Font",
+          "group": "Utilities",
+          "widget": "select",
+          "visibleWhen": { "menuStyle": "text" },
+          "options": [
+            { "value": "body", "label": "Body" },
+            { "value": "heading", "label": "Heading" },
+            { "value": "subheading", "label": "Subheading" }
+          ]
+        },
+        {
+          "key": "utilityTextCase",
+          "type": "select",
+          "label": "Case",
+          "group": "Utilities",
+          "widget": "segmented",
+          "visibleWhen": { "menuStyle": "text" },
+          "options": [
+            { "value": "default", "label": "Default" },
+            { "value": "uppercase", "label": "Uppercase" }
+          ]
+        },
+        {
+          "key": "topRowBackground",
+          "type": "color",
+          "label": "Top row background",
           "group": "Colors",
-          "widget": "color-scheme",
+          "widget": "color"
+        },
+        {
+          "key": "topRowText",
+          "type": "color",
+          "label": "Top row text",
+          "group": "Colors",
+          "widget": "color"
+        },
+        {
+          "key": "bottomRowBackground",
+          "type": "color",
+          "label": "Bottom row background",
+          "group": "Colors",
+          "widget": "color"
+        },
+        {
+          "key": "bottomRowText",
+          "type": "color",
+          "label": "Bottom row text",
+          "group": "Colors",
+          "widget": "color"
+        },
+        {
+          "key": "cartBubbleStyle",
+          "type": "select",
+          "label": "Bubble style",
+          "group": "Cart bubble",
+          "widget": "segmented",
           "options": [
             {
-              "value": "scheme-1",
-              "label": "Scheme 1"
+              "value": "default",
+              "label": "Default"
             },
             {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
+              "value": "custom",
+              "label": "Custom"
             }
           ]
+        },
+        {
+          "key": "cartBubbleBackground",
+          "type": "color",
+          "label": "Background",
+          "group": "Cart bubble",
+          "widget": "hexColor",
+          "visibleWhen": { "cartBubbleStyle": "custom" }
+        },
+        {
+          "key": "cartBubbleText",
+          "type": "color",
+          "label": "Text",
+          "group": "Cart bubble",
+          "widget": "hexColor",
+          "visibleWhen": { "cartBubbleStyle": "custom" }
         },
         {
           "key": "homeTransparentBackground",
@@ -826,28 +943,18 @@
               ]
             },
             {
-              "key": "colorScheme",
-              "type": "select",
-              "label": "Color scheme",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ]
+              "key": "backgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color"
+            },
+            {
+              "key": "textColor",
+              "type": "color",
+              "label": "Text color",
+              "group": "Appearance",
+              "widget": "color"
             },
             {
               "key": "topLevelSize",
@@ -1104,7 +1211,8 @@
             "default": {
               "includeKeys": [
                 "menu",
-                "colorScheme",
+                "backgroundColor",
+                "textColor",
                 "topLevelSize",
                 "submenuSize",
                 "font",
@@ -1118,7 +1226,8 @@
               ],
               "fieldOrder": [
                 "menu",
-                "colorScheme",
+                "backgroundColor",
+                "textColor",
                 "topLevelSize",
                 "submenuSize",
                 "font",
@@ -1141,10 +1250,10 @@
             "Menu",
             "Customer account",
             "Search",
-            "Localization",
             "Appearance",
             "Utilities",
             "Colors",
+            "Cart bubble",
             "Page backgrounds",
             "Theme settings",
             "Custom CSS"
@@ -2063,29 +2172,18 @@
       "layoutBlueprint": "divider",
       "fields": [
         {
-          "key": "colorScheme",
-          "type": "select",
-          "label": "Color scheme",
+          "key": "backgroundColor",
+          "type": "color",
+          "label": "Background color",
           "group": "General",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
-            }
-          ]
+          "widget": "color"
+        },
+        {
+          "key": "color",
+          "type": "color",
+          "label": "Color",
+          "group": "General",
+          "widget": "color"
         },
         {
           "key": "sectionWidth",
@@ -2160,7 +2258,8 @@
       "panels": {
         "default": {
           "includeKeys": [
-            "colorScheme",
+            "backgroundColor",
+            "color",
             "sectionWidth",
             "thickness",
             "length",
@@ -2169,7 +2268,8 @@
             "customCss"
           ],
           "fieldOrder": [
-            "colorScheme",
+            "backgroundColor",
+            "color",
             "sectionWidth",
             "thickness",
             "length",
@@ -10371,31 +10471,16 @@
       "fields": [
         {
           "key": "collectionHandle",
-          "type": "select",
+          "type": "text",
           "label": "Collection",
           "group": "Collection",
-          "widget": "select",
-          "options": [
-            {
-              "value": "products",
-              "label": "Products"
-            },
-            {
-              "value": "all",
-              "label": "All products"
-            },
-            {
-              "value": "featured",
-              "label": "Featured"
-            }
-          ]
+          "widget": "collection"
         },
         {
           "key": "layoutType",
           "type": "select",
           "label": "Type",
           "group": "Collection",
-          "widget": "segmented",
           "options": [
             {
               "value": "grid",
@@ -10404,6 +10489,10 @@
             {
               "value": "carousel",
               "label": "Carousel"
+            },
+            {
+              "value": "editorial",
+              "label": "Editorial"
             }
           ]
         },
@@ -10460,6 +10549,29 @@
           "max": 48,
           "step": 1,
           "unit": "px"
+        },
+        {
+          "key": "navIcon",
+          "type": "select",
+          "label": "Icon",
+          "group": "Carousel navigation",
+          "options": [
+            { "value": "arrows", "label": "Arrows" },
+            { "value": "chevron", "label": "Chevron" },
+            { "value": "none", "label": "None" }
+          ]
+        },
+        {
+          "key": "navIconBackground",
+          "type": "select",
+          "label": "Icon background",
+          "group": "Carousel navigation",
+          "widget": "segmented",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "circle", "label": "Circle" },
+            { "value": "square", "label": "Square" }
+          ]
         },
         {
           "key": "verticalGap",
@@ -10540,10 +10652,17 @@
           "unit": "px"
         },
         {
+          "key": "backgroundColor",
+          "type": "text",
+          "label": "Background color",
+          "group": "Section layout",
+          "widget": "color"
+        },
+        {
           "key": "colorScheme",
           "type": "select",
           "label": "Color scheme",
-          "group": "Section layout",
+          "group": "Theme settings",
           "widget": "color-scheme",
           "options": [
             {
@@ -10594,6 +10713,9 @@
           "widget": "accordion"
         }
       ],
+      "panels": {
+        "default": {}
+      },
       "blocks": {
         "collection_header": {
           "label": "Header",
@@ -10770,6 +10892,39 @@
               ]
             },
             {
+              "key": "customWidth",
+              "type": "number",
+              "label": "Custom width",
+              "group": "Size",
+              "widget": "slider",
+              "min": 1,
+              "max": 100,
+              "step": 1,
+              "unit": "%"
+            },
+            {
+              "key": "mobileCustomWidth",
+              "type": "number",
+              "label": "Custom width",
+              "group": "Size",
+              "widget": "slider",
+              "min": 1,
+              "max": 100,
+              "step": 1,
+              "unit": "%"
+            },
+            {
+              "key": "customHeight",
+              "type": "number",
+              "label": "Custom height",
+              "group": "Size",
+              "widget": "slider",
+              "min": 1,
+              "max": 100,
+              "step": 1,
+              "unit": "%"
+            },
+            {
               "key": "inheritColorScheme",
               "type": "boolean",
               "label": "Inherit color scheme",
@@ -10795,15 +10950,34 @@
             {
               "key": "backgroundImageUrl",
               "type": "text",
-              "label": "Background image URL",
+              "label": "Image",
               "group": "Appearance",
+              "widget": "image",
               "placeholder": "https://…"
+            },
+            {
+              "key": "backgroundImagePosition",
+              "type": "select",
+              "label": "Image position",
+              "group": "Appearance",
+              "widget": "segmented",
+              "options": [
+                { "value": "cover", "label": "Cover" },
+                { "value": "fit", "label": "Fit" }
+              ]
+            },
+            {
+              "key": "backgroundColor",
+              "type": "text",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color"
             },
             {
               "key": "borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "options": [
                 {
@@ -10817,10 +10991,39 @@
               ]
             },
             {
+              "key": "borderThickness",
+              "type": "number",
+              "label": "Thickness",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "unit": "px"
+            },
+            {
+              "key": "borderOpacity",
+              "type": "number",
+              "label": "Opacity",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%"
+            },
+            {
+              "key": "borderColor",
+              "type": "text",
+              "label": "Color",
+              "group": "Borders",
+              "widget": "color"
+            },
+            {
               "key": "cornerRadius",
               "type": "number",
               "label": "Corner radius",
-              "group": "Appearance",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
               "max": 40,
@@ -10927,6 +11130,27 @@
                   ]
                 },
                 {
+                  "key": "titleAlignment",
+                  "type": "select",
+                  "label": "Alignment",
+                  "group": "Layout",
+                  "widget": "segmented",
+                  "options": [
+                    {
+                      "value": "left",
+                      "label": "Left"
+                    },
+                    {
+                      "value": "center",
+                      "label": "Center"
+                    },
+                    {
+                      "value": "right",
+                      "label": "Right"
+                    }
+                  ]
+                },
+                {
                   "key": "titleTypographyPreset",
                   "type": "select",
                   "label": "Preset",
@@ -10934,6 +11158,14 @@
                   "widget": "select",
                   "description": "Edit presets in theme settings",
                   "options": [
+                    {
+                      "value": "default",
+                      "label": "Default"
+                    },
+                    {
+                      "value": "paragraph",
+                      "label": "Paragraph"
+                    },
                     {
                       "value": "heading-1",
                       "label": "Heading 1"
@@ -10951,9 +11183,102 @@
                       "label": "Heading 4"
                     },
                     {
-                      "value": "body",
-                      "label": "Body"
+                      "value": "heading-5",
+                      "label": "Heading 5"
+                    },
+                    {
+                      "value": "heading-6",
+                      "label": "Heading 6"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
                     }
+                  ]
+                },
+                {
+                  "key": "titleFont",
+                  "type": "select",
+                  "label": "Font",
+                  "group": "Typography",
+                  "widget": "select",
+                  "options": [
+                    { "value": "body", "label": "Body" },
+                    { "value": "subheading", "label": "Subheading" },
+                    { "value": "heading", "label": "Heading" },
+                    { "value": "accent", "label": "Accent" }
+                  ]
+                },
+                {
+                  "key": "titleFontSize",
+                  "type": "select",
+                  "label": "Size",
+                  "group": "Typography",
+                  "widget": "select",
+                  "options": [
+                    { "value": "default", "label": "Default" },
+                    { "value": "10px", "label": "10px" },
+                    { "value": "12px", "label": "12px" },
+                    { "value": "14px", "label": "14px" },
+                    { "value": "16px", "label": "16px" },
+                    { "value": "18px", "label": "18px" },
+                    { "value": "20px", "label": "20px" },
+                    { "value": "24px", "label": "24px" },
+                    { "value": "28px", "label": "28px" },
+                    { "value": "32px", "label": "32px" },
+                    { "value": "36px", "label": "36px" },
+                    { "value": "40px", "label": "40px" },
+                    { "value": "48px", "label": "48px" },
+                    { "value": "56px", "label": "56px" },
+                    { "value": "64px", "label": "64px" },
+                    { "value": "72px", "label": "72px" }
+                  ]
+                },
+                {
+                  "key": "titleLineHeight",
+                  "type": "select",
+                  "label": "Line height",
+                  "group": "Typography",
+                  "widget": "segmented",
+                  "options": [
+                    { "value": "tight", "label": "Tight" },
+                    { "value": "normal", "label": "Normal" },
+                    { "value": "loose", "label": "Loose" }
+                  ]
+                },
+                {
+                  "key": "titleLetterSpacing",
+                  "type": "select",
+                  "label": "Letter spacing",
+                  "group": "Typography",
+                  "widget": "segmented",
+                  "options": [
+                    { "value": "tight", "label": "Tight" },
+                    { "value": "normal", "label": "Normal" },
+                    { "value": "loose", "label": "Loose" }
+                  ]
+                },
+                {
+                  "key": "titleTextCase",
+                  "type": "select",
+                  "label": "Case",
+                  "group": "Typography",
+                  "widget": "segmented",
+                  "options": [
+                    { "value": "default", "label": "Default" },
+                    { "value": "uppercase", "label": "Uppercase" }
+                  ]
+                },
+                {
+                  "key": "titleWrap",
+                  "type": "select",
+                  "label": "Wrap",
+                  "group": "Typography",
+                  "widget": "select",
+                  "options": [
+                    { "value": "pretty", "label": "Pretty" },
+                    { "value": "balance", "label": "Balance" },
+                    { "value": "nowrap", "label": "No wrap" }
                   ]
                 },
                 {
@@ -10982,6 +11307,24 @@
                   "type": "boolean",
                   "label": "Background",
                   "group": "Appearance"
+                },
+                {
+                  "key": "titleBackgroundColor",
+                  "type": "text",
+                  "label": "Background color",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "titleCornerRadius",
+                  "type": "number",
+                  "label": "Corner radius",
+                  "group": "Appearance",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 50,
+                  "step": 1,
+                  "unit": "px"
                 },
                 {
                   "key": "titlePaddingTop",
@@ -11045,6 +11388,8 @@
                     "titleTypographyPreset",
                     "titleColor",
                     "titleBackgroundEnabled",
+                    "titleBackgroundColor",
+                    "titleCornerRadius",
                     "titlePaddingTop",
                     "titlePaddingBottom",
                     "titlePaddingLeft",
@@ -11060,23 +11405,115 @@
                 {
                   "key": "viewAllLabel",
                   "type": "text",
-                  "label": "Label"
+                  "label": "Label",
+                  "group": "Content"
                 },
                 {
-                  "key": "viewAllHref",
+                  "key": "viewAllOpenInNewTab",
+                  "type": "boolean",
+                  "label": "Open link in new tab",
+                  "group": "Content"
+                },
+                {
+                  "key": "viewAllStyle",
+                  "type": "select",
+                  "label": "Style",
+                  "group": "Appearance",
+                  "widget": "select",
+                  "description": "Edit primary and secondary button styles in theme settings",
+                  "options": [
+                    { "value": "primary", "label": "Primary" },
+                    { "value": "secondary", "label": "Secondary" },
+                    { "value": "link", "label": "Link" },
+                    { "value": "custom", "label": "Custom" }
+                  ]
+                },
+                {
+                  "key": "viewAllLinkTextColor",
                   "type": "text",
-                  "label": "Link"
+                  "label": "Link text color",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllCustomBackgroundColor",
+                  "type": "text",
+                  "label": "Background",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllCustomTextColor",
+                  "type": "text",
+                  "label": "Text",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllCustomBorderColor",
+                  "type": "text",
+                  "label": "Borders",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllDesktopWidth",
+                  "type": "select",
+                  "label": "Desktop width",
+                  "group": "Size",
+                  "widget": "segmented",
+                  "options": [
+                    { "value": "fit", "label": "Fit" },
+                    { "value": "custom", "label": "Custom" }
+                  ]
+                },
+                {
+                  "key": "viewAllDesktopCustomWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
+                },
+                {
+                  "key": "viewAllMobileWidth",
+                  "type": "select",
+                  "label": "Mobile width",
+                  "group": "Size",
+                  "widget": "segmented",
+                  "options": [
+                    { "value": "fit", "label": "Fit" },
+                    { "value": "custom", "label": "Custom" }
+                  ]
+                },
+                {
+                  "key": "viewAllMobileCustomWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
                 }
               ],
               "panels": {
                 "default": {
-                  "includeKeys": [
-                    "viewAllLabel",
-                    "viewAllHref"
-                  ],
+                  "includeGroups": ["Content", "Appearance", "Size"],
                   "fieldOrder": [
                     "viewAllLabel",
-                    "viewAllHref"
+                    "viewAllOpenInNewTab",
+                    "viewAllStyle",
+                    "viewAllLinkTextColor",
+                    "viewAllCustomBackgroundColor",
+                    "viewAllCustomTextColor",
+                    "viewAllCustomBorderColor",
+                    "viewAllDesktopWidth",
+                    "viewAllDesktopCustomWidth",
+                    "viewAllMobileWidth",
+                    "viewAllMobileCustomWidth"
                   ]
                 }
               }
@@ -11102,7 +11539,17 @@
                 "titlePaddingLeft",
                 "titlePaddingRight",
                 "viewAllLabel",
-                "viewAllHref"
+                "viewAllHref",
+                "viewAllOpenInNewTab",
+                "viewAllStyle",
+                "viewAllLinkTextColor",
+                "viewAllCustomBackgroundColor",
+                "viewAllCustomTextColor",
+                "viewAllCustomBorderColor",
+                "viewAllDesktopWidth",
+                "viewAllDesktopCustomWidth",
+                "viewAllMobileWidth",
+                "viewAllMobileCustomWidth"
               ],
               "fieldOrder": [
                 "headerWidth",
@@ -11409,27 +11856,6 @@
                   ]
                 },
                 {
-                  "key": "productTitleAlignment",
-                  "type": "select",
-                  "label": "Alignment",
-                  "group": "Layout",
-                  "widget": "segmented",
-                  "options": [
-                    {
-                      "value": "left",
-                      "label": "Left"
-                    },
-                    {
-                      "value": "center",
-                      "label": "Center"
-                    },
-                    {
-                      "value": "right",
-                      "label": "Right"
-                    }
-                  ]
-                },
-                {
                   "key": "productTitleTypographyPreset",
                   "type": "select",
                   "label": "Preset",
@@ -11462,6 +11888,13 @@
                       "label": "Body"
                     }
                   ]
+                },
+                {
+                  "key": "productTitleColor",
+                  "type": "color",
+                  "label": "Text color",
+                  "group": "Appearance",
+                  "widget": "color"
                 },
                 {
                   "key": "productTitleBackgroundEnabled",
@@ -11524,8 +11957,8 @@
                   "includeKeys": [
                     "productTitleWidth",
                     "productTitleMaxWidth",
-                    "productTitleAlignment",
                     "productTitleTypographyPreset",
+                    "productTitleColor",
                     "productTitleBackgroundEnabled",
                     "productTitlePaddingTop",
                     "productTitlePaddingBottom",
@@ -11629,28 +12062,10 @@
                 },
                 {
                   "key": "priceColor",
-                  "type": "select",
-                  "label": "Color",
-                  "group": "Typography",
-                  "widget": "select",
-                  "options": [
-                    {
-                      "value": "text",
-                      "label": "Text"
-                    },
-                    {
-                      "value": "heading",
-                      "label": "Heading"
-                    },
-                    {
-                      "value": "accent",
-                      "label": "Accent"
-                    },
-                    {
-                      "value": "muted",
-                      "label": "Muted"
-                    }
-                  ]
+                  "type": "color",
+                  "label": "Text color",
+                  "group": "Appearance",
+                  "widget": "color"
                 },
                 {
                   "key": "pricePaddingTop",
@@ -11719,52 +12134,6 @@
                     "showPrice"
                   ],
                   "fieldOrder": []
-                }
-              }
-            },
-            "quick_view": {
-              "label": "Quick view",
-              "fields": [
-                {
-                  "key": "label",
-                  "type": "text",
-                  "label": "Button label"
-                },
-                {
-                  "key": "show",
-                  "type": "boolean",
-                  "label": "Show quick view"
-                }
-              ],
-              "panels": {
-                "default": {
-                  "includeKeys": [
-                    "label",
-                    "show"
-                  ]
-                }
-              }
-            },
-            "badge": {
-              "label": "Badge",
-              "fields": [
-                {
-                  "key": "saleLabel",
-                  "type": "text",
-                  "label": "Sale badge text"
-                },
-                {
-                  "key": "newLabel",
-                  "type": "text",
-                  "label": "New badge text"
-                }
-              ],
-              "panels": {
-                "default": {
-                  "includeKeys": [
-                    "saleLabel",
-                    "newLabel"
-                  ]
                 }
               }
             }
@@ -14257,12 +14626,6 @@
       "canonicalTemplateId": "index",
       "fields": [
         {
-          "key": "heading",
-          "type": "text",
-          "label": "Heading",
-          "group": "General"
-        },
-        {
           "key": "openFirstItem",
           "type": "boolean",
           "label": "Open first row",
@@ -14494,27 +14857,160 @@
         }
       ],
       "blocks": {
-        "faq_item": {
-          "label": "Question",
+        "heading": {
+          "label": "Heading",
           "fields": [
             {
-              "key": "question",
-              "type": "text",
-              "label": "Question",
-              "group": "Content"
+              "key": "title",
+              "type": "textarea",
+              "label": "Text",
+              "group": "Text",
+              "widget": "richtext"
             },
             {
-              "key": "answer",
-              "type": "textarea",
-              "label": "Answer",
-              "group": "Content"
+              "key": "headingWidth",
+              "type": "select",
+              "label": "Width",
+              "group": "Layout",
+              "widget": "segmented",
+              "options": [
+                { "value": "fit", "label": "Fit" },
+                { "value": "fill", "label": "Fill" }
+              ]
+            },
+            {
+              "key": "headingMaxWidth",
+              "type": "select",
+              "label": "Max width",
+              "group": "Layout",
+              "widget": "select",
+              "options": [
+                { "value": "narrow", "label": "Narrow" },
+                { "value": "normal", "label": "Normal" },
+                { "value": "wide", "label": "Wide" },
+                { "value": "none", "label": "None" }
+              ]
+            },
+            {
+              "key": "headingAlignment",
+              "type": "select",
+              "label": "Alignment",
+              "group": "Layout",
+              "widget": "segmented",
+              "options": [
+                { "value": "left", "label": "Left" },
+                { "value": "center", "label": "Center" },
+                { "value": "right", "label": "Right" }
+              ]
+            },
+            {
+              "key": "headingTypographyPreset",
+              "type": "select",
+              "label": "Preset",
+              "group": "Typography",
+              "widget": "select",
+              "description": "Edit presets in theme settings",
+              "options": [
+                { "value": "default", "label": "Default" },
+                { "value": "paragraph", "label": "Paragraph" },
+                { "value": "heading-1", "label": "Heading 1" },
+                { "value": "heading-2", "label": "Heading 2" },
+                { "value": "heading-3", "label": "Heading 3" },
+                { "value": "heading-4", "label": "Heading 4" },
+                { "value": "heading-5", "label": "Heading 5" },
+                { "value": "heading-6", "label": "Heading 6" },
+                { "value": "custom", "label": "Custom" }
+              ]
+            },
+            {
+              "key": "headingColor",
+              "type": "select",
+              "label": "Text color",
+              "group": "Appearance",
+              "widget": "select",
+              "options": [
+                { "value": "text", "label": "Text" },
+                { "value": "heading", "label": "Heading" },
+                { "value": "link", "label": "Link" }
+              ]
+            },
+            {
+              "key": "headingBackgroundEnabled",
+              "type": "boolean",
+              "label": "Background",
+              "group": "Appearance"
+            },
+            {
+              "key": "headingBackgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color"
+            },
+            {
+              "key": "headingCornerRadius",
+              "type": "number",
+              "label": "Corner radius",
+              "group": "Appearance",
+              "widget": "slider",
+              "min": 0,
+              "max": 40,
+              "step": 1,
+              "unit": "px"
+            },
+            {
+              "key": "headingPaddingTop",
+              "type": "number",
+              "label": "Top",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px"
+            },
+            {
+              "key": "headingPaddingBottom",
+              "type": "number",
+              "label": "Bottom",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px"
+            },
+            {
+              "key": "headingPaddingLeft",
+              "type": "number",
+              "label": "Left",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px"
+            },
+            {
+              "key": "headingPaddingRight",
+              "type": "number",
+              "label": "Right",
+              "group": "Padding",
+              "widget": "slider",
+              "min": 0,
+              "max": 80,
+              "step": 1,
+              "unit": "px"
             }
           ],
           "panels": {
             "default": {
-              "includeKeys": [
-                "question",
-                "answer"
+              "includeGroups": [
+                "Text",
+                "Layout",
+                "Typography",
+                "Appearance",
+                "Padding"
               ]
             }
           }
@@ -14523,7 +15019,6 @@
       "panels": {
         "default": {
           "includeKeys": [
-            "heading",
             "openFirstItem",
             "direction",
             "layoutAlignment",

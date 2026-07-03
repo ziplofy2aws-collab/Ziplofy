@@ -20,6 +20,7 @@ import { ProductOffersProvider } from '@/contexts/product-offers.context';
 import { StorefrontCollectionByUrlHandleLoader } from '@/components/StorefrontCollectionByUrlHandleLoader';
 import { PreviewCollectionsLoader } from './PreviewCollectionsLoader';
 import { PreviewStorefrontProvider } from './PreviewStorefrontProvider';
+import { PreviewDeviceProvider, type PreviewDevice } from '@/contexts/preview-device.context';
 
 type PreviewProvidersProps = {
   storeId: string;
@@ -27,6 +28,7 @@ type PreviewProvidersProps = {
   themeConfig: Record<string, unknown> | null;
   jsUrl?: string | null;
   cssUrl?: string | null;
+  previewDevice?: PreviewDevice;
   children: ReactNode;
 };
 
@@ -37,10 +39,12 @@ export function PreviewProviders({
   themeConfig,
   jsUrl,
   cssUrl,
+  previewDevice = 'desktop',
   children,
 }: PreviewProvidersProps) {
   return (
-    <PreviewStorefrontProvider
+    <PreviewDeviceProvider device={previewDevice}>
+      <PreviewStorefrontProvider
       storeId={storeId}
       storeName={storeName}
       themeConfig={themeConfig}
@@ -83,6 +87,7 @@ export function PreviewProviders({
           </StorefrontProductVariantProvider>
         </PaymentProvider>
       </StorefrontAuthProvider>
-    </PreviewStorefrontProvider>
+      </PreviewStorefrontProvider>
+    </PreviewDeviceProvider>
   );
 }

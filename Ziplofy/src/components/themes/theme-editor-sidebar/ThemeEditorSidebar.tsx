@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/24/outline';
 import type { SidebarIcon, SidebarNode, ThemeEditorSidebarTab } from './theme-editor-sidebar.types';
 import { isSortableSidebarNode } from './theme-editor-structure-order';
-import { ThemeSectionSettingsPanel } from './ThemeSectionSettingsPanel';
+import { ThemeSectionSettingsPanel } from '../../../create-theme/sidebar/ThemeSectionSettingsPanel';
 import { ThemeEditorSettingsSheet } from './ThemeEditorSettingsSheet';
 import { ThemeSettingsNav } from './ThemeSettingsNav';
 import { SectionInsertZone } from './SectionInsertZone';
@@ -657,6 +657,7 @@ export type ThemeEditorSidebarProps = {
   error?: string | null;
   settingsNode?: SidebarNode | null;
   settingsValues?: Record<string, string | boolean>;
+  themeConfig?: Record<string, unknown> | null;
   onSettingsFieldChange?: (path: string, type: import('./theme-editor-field.utils').ThemeEditorFieldType, value: string | boolean) => void;
   onCloseSettings?: () => void;
   onRemoveSettingsSection?: () => void;
@@ -684,6 +685,7 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
   error,
   settingsNode,
   settingsValues = {},
+  themeConfig = null,
   onSettingsFieldChange,
   onCloseSettings,
   onRemoveSettingsSection,
@@ -808,6 +810,7 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
           <ThemeSectionSettingsPanel
             node={settingsNode}
             values={settingsValues}
+            themeConfig={themeConfig}
             onFieldChange={onSettingsFieldChange!}
             onClose={onCloseSettings!}
             onRemoveSection={onRemoveSettingsSection}

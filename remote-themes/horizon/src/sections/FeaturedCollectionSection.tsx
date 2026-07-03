@@ -25,6 +25,7 @@ import {
 } from '../lib/featuredCollectionStyles';
 import { orderedIds, templateBlockOrder } from '../lib/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
+import { ThemeRichTextContent, richTextHasBlockMarkup } from '../lib/ThemeRichTextContent';
 import { layout, useThemeColors } from '../tokens';
 
 type Props = {
@@ -358,25 +359,27 @@ export function FeaturedCollectionSection({
       >
       {headerNestedOrder.map((nestedId) => {
         if (nestedId === 'collection_title') {
+          const titleTag = richTextHasBlockMarkup(title) ? 'div' : 'h2';
           return (
             <EditorBlock
               key={nestedId}
               nodeId={`${editorNodeId}:block:collection_header:nested:collection_title`}
               label="Collection title"
+              style={{
+                flex: titleStyle.flex,
+                minWidth: titleStyle.flex ? 0 : undefined,
+              }}
             >
               <EditorField
                 fieldPath={`${blocksBase}.collection_header.settings.title`}
                 nodeId={editorNodeId}
                 label="Text"
-                as="h2"
+                as={titleTag}
                 style={{
                   margin: 0,
                   width: titleStyle.width,
                   maxWidth: titleStyle.maxWidth,
-                  fontFamily: titleStyle.fontFamily,
-                  fontSize: titleStyle.fontSize,
-                  fontWeight: titleStyle.fontWeight,
-                  lineHeight: titleStyle.lineHeight,
+                  textAlign: titleStyle.textAlign,
                   color: titleStyle.color,
                   background: titleStyle.background,
                   paddingTop: titleStyle.paddingTop,
@@ -387,7 +390,16 @@ export function FeaturedCollectionSection({
                   boxSizing: 'border-box',
                 }}
               >
-                {title}
+                <ThemeRichTextContent
+                  html={title}
+                  style={{
+                    fontFamily: titleStyle.fontFamily,
+                    fontSize: titleStyle.fontSize,
+                    fontWeight: titleStyle.fontWeight,
+                    lineHeight: titleStyle.lineHeight,
+                    color: titleStyle.color,
+                  }}
+                />
               </EditorField>
             </EditorBlock>
           );

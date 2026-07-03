@@ -1,4 +1,5 @@
 import { cfgBool, cfgNumber, cfgString } from './config';
+import { resolveThemePaletteColorSetting } from '../../../../../create-theme/settings/theme-color-palette.settings';
 
 const TYPOGRAPHY_PRESETS: Record<string, { fontSize: number; fontWeight: number; lineHeight: number }> = {
   default: { fontSize: 18, fontWeight: 600, lineHeight: 1.3 },
@@ -46,6 +47,11 @@ export function readProductCardTitleStyle(
   const maxKey = cfgString(config, `${settingsBase}.productTitleMaxWidth`);
   const align = cfgString(config, `${settingsBase}.productTitleAlignment`, 'left');
   const bgOn = cfgBool(config, `${settingsBase}.productTitleBackgroundEnabled`, false);
+  const colorKey = cfgString(config, `${settingsBase}.productTitleColor`, '');
+  const resolvedColor =
+    colorKey === '' || colorKey === 'default'
+      ? color
+      : resolveThemePaletteColorSetting(config, colorKey, 1, color);
   const textAlign =
     align === 'center' ? 'center' : align === 'right' ? 'right' : 'left';
 
@@ -57,7 +63,7 @@ export function readProductCardTitleStyle(
     fontSize: typo.fontSize,
     fontWeight: typo.fontWeight,
     lineHeight: typo.lineHeight,
-    color,
+    color: resolvedColor,
     background: bgOn ? 'rgba(0,0,0,0.04)' : undefined,
     paddingTop: cfgNumber(config, `${settingsBase}.productTitlePaddingTop`, 0),
     paddingBottom: cfgNumber(config, `${settingsBase}.productTitlePaddingBottom`, 0),

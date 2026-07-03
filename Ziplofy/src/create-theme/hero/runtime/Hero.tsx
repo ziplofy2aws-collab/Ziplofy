@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
@@ -28,6 +28,7 @@ import {
 } from './heroStyles';
 import { HeroLandscapeBackdrop } from './HeroLandscapeBackdrop';
 import { HeroMediaBackground } from './HeroMediaBackground';
+import { HeroBlurredReflection } from './HeroBlurredReflection';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
 
@@ -610,13 +611,21 @@ export function Hero({
   if (isClassicHero) {
     const hasMedia = Boolean(media1Url || media2Url);
     const classicOverlay = hero.mediaOverlay ? overlayBackground : undefined;
+    /** Merchant picked a solid/transparent color → show it instead of the decorative landscape. */
+    const useSolidBackground = !hasMedia && hero.backgroundIsCustom;
+    /** Text/shadow tuned for the decorative or media backdrop; solid colors get adaptive text. */
+    const onDarkBackdrop = !useSolidBackground;
+    const classicTextColor = useSolidBackground ? hero.scheme.color : '#ffffff';
+    const classicTextShadow = onDarkBackdrop ? '0 2px 20px rgba(0, 0, 0, 0.35)' : 'none';
+    const classicBodyShadow = onDarkBackdrop ? '0 1px 12px rgba(0, 0, 0, 0.3)' : 'none';
     /** Full-bleed backdrop for image heroes; direction controls block flow inside content only. */
     const useFullBleedBackdrop = hasMedia;
     /** Both image and landscape backdrops centre the content over a full-bleed background. */
     const useBackdropLayout = useFullBleedBackdrop || !hasMedia;
-    /** Default heading copy when none is set, so the landscape hero is never blank. */
-    const landscapeHeadingFallback = !hasMedia ? 'Browse our latest products' : '';
+    /** Default heading copy when none is set, so the hero is never blank (with or without media). */
+    const landscapeHeadingFallback = 'Browse our latest products';
     const useRowMediaLayout = hasMedia && !useFullBleedBackdrop && hero.contentDirection === 'row';
+    const showBlurredReflection = hero.blurredReflection && hasMedia;
 
     const contentColumnAlign =
       hero.alignTextBaseline && hero.contentDirection === 'row'
@@ -624,24 +633,38 @@ export function Hero({
         : hero.contentAlign;
 
     const headingFillWidth = headingStyle.width === '100%';
-    const classicHeadingStyle = {
+    // Fill: heading spans 100% of the available content area. Fit: hugs content width.
+    const headingTextAlign = headingFillWidth
+      ? headingStyle.textAlign ?? hero.textAlign
+      : hero.textAlign;
+
+    const headingBlockStyle: CSSProperties | undefined = headingFillWidth
+      ? { width: '100%', alignSelf: 'stretch', boxSizing: 'border-box' }
+      : undefined;
+
+    const headingFieldStyle: CSSProperties = {
       margin: 0,
-      width: headingStyle.width,
-      maxWidth: headingStyle.maxWidth,
-      marginLeft: headingStyle.marginLeft,
-      marginRight: headingStyle.marginRight,
+      display: 'block',
+      width: headingFillWidth ? '100%' : 'fit-content',
+      maxWidth: headingFillWidth ? undefined : headingStyle.maxWidth,
       alignSelf: headingFillWidth ? 'stretch' : undefined,
-      boxSizing: 'border-box' as const,
+      textAlign: headingTextAlign,
+      boxSizing: 'border-box',
+    };
+
+    const classicHeadingStyle: CSSProperties = {
+      margin: 0,
       ...heroHeadingTypographyCss(headingStyle),
-      color: '#ffffff',
-      textAlign: headingStyle.textAlign ?? hero.textAlign,
-      textShadow: '0 2px 20px rgba(0, 0, 0, 0.35)',
+      color: classicTextColor,
+      textAlign: headingTextAlign,
+      textShadow: classicTextShadow,
       background: headingStyle.background,
       paddingTop: headingStyle.paddingTop,
       paddingBottom: headingStyle.paddingBottom,
       paddingLeft: headingStyle.paddingLeft,
       paddingRight: headingStyle.paddingRight,
       borderRadius: headingStyle.borderRadius,
+      ...(headingFillWidth ? { display: 'block', width: '100%' } : {}),
     };
 
     const mediaPanel = (url: string, className: string) =>
@@ -652,8 +675,6 @@ export function Hero({
             flex: 1,
             minHeight: useRowMediaLayout ? '100%' : 240,
             background: `center/cover url(${url}) no-repeat`,
-            filter: hero.blurredReflection ? 'blur(12px)' : undefined,
-            transform: hero.blurredReflection ? 'scale(1.05)' : undefined,
           }}
         />
       ) : null;
@@ -669,21 +690,13 @@ export function Hero({
           <EditorBlock
             nodeId={heroBlockNodeId(sectionId, placement, templateId, blockId)}
             label="Heading"
+            style={headingBlockStyle}
           >
             <EditorField
               fieldPath={headingFieldPath}
               label="Text"
               as={headingTag}
-              style={{
-                margin: 0,
-                width: classicHeadingStyle.width,
-                maxWidth: classicHeadingStyle.maxWidth,
-                alignSelf: classicHeadingStyle.alignSelf,
-                marginLeft: classicHeadingStyle.marginLeft,
-                marginRight: classicHeadingStyle.marginRight,
-                textAlign: classicHeadingStyle.textAlign,
-                boxSizing: classicHeadingStyle.boxSizing,
-              }}
+              style={headingFieldStyle}
             >
               <ThemeEditorRichTextContent html={headingText} style={classicHeadingStyle} />
             </EditorField>
@@ -725,9 +738,9 @@ export function Hero({
                 lineHeight: 1.55,
                 maxWidth: 620,
                 fontWeight: 400,
-                color: '#ffffff',
+                color: classicTextColor,
                 textAlign: hero.textAlign,
-                textShadow: '0 1px 12px rgba(0, 0, 0, 0.3)',
+                textShadow: classicBodyShadow,
               }}
             >
               {body}
@@ -898,7 +911,7 @@ export function Hero({
           label="Hero"
           style={{
             position: 'relative',
-            overflow: 'hidden',
+            overflow: showBlurredReflection ? 'visible' : 'hidden',
             display: 'flex',
             flexDirection: 'column',
             width: '100%',
@@ -906,16 +919,16 @@ export function Hero({
             padding: 0,
             background: useFullBleedBackdrop ? '#2d6478' : hero.scheme.background,
             fontFamily: fontBody,
-            color: '#ffffff',
+            color: classicTextColor,
             boxSizing: 'border-box',
           }}
         >
           {useFullBleedBackdrop ? (
             <HeroMediaBackground media1Url={media1Url} media2Url={media2Url} />
-          ) : !hasMedia ? (
+          ) : !hasMedia && !useSolidBackground ? (
             <HeroLandscapeBackdrop />
           ) : null}
-          {classicOverlay && useFullBleedBackdrop ? (
+          {classicOverlay ? (
             <div
               aria-hidden
               style={{
@@ -925,6 +938,14 @@ export function Hero({
                 zIndex: 1,
                 pointerEvents: 'none',
               }}
+            />
+          ) : null}
+          {showBlurredReflection ? (
+            <HeroBlurredReflection
+              media1Url={media1Url}
+              media2Url={media2Url}
+              reflectionOpacity={hero.reflectionOpacity}
+              overlayBackground={classicOverlay}
             />
           ) : null}
           {classicBody}

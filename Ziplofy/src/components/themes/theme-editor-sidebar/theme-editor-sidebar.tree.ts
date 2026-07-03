@@ -378,10 +378,11 @@ import {
 } from './theme-editor-hero-panel.utils';
 import {
   headingBlockFieldDefsFromSchema,
+  headingBlockCanonicalFieldDefsForNodeId,
   isHeadingBlockNodeId,
   isHeadingPanelField,
   prepareHeadingBlockSettingsNode,
-} from './theme-editor-heading-block-panel.utils';
+} from '../../../create-theme/sidebar/theme-editor-heading-block-panel.utils';
 import {
   heroButtonFieldDefsFromSchema,
   isHeroButtonBlockNodeId,
@@ -2164,6 +2165,9 @@ export function settingsNodeForSelection(
 
   if (isHeadingBlockNodeId(node.id)) {
     let fields = editorSchema ? headingBlockFieldDefsFromSchema(editorSchema, node.id) : [];
+    if (!fields.length) {
+      fields = headingBlockCanonicalFieldDefsForNodeId(node.id);
+    }
     if (!fields.length) {
       fields = (node.fields ?? []).filter(isHeadingPanelField);
     }

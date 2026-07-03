@@ -1896,7 +1896,7 @@
         {
           "path": "sections.custom_section.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": false,
           "placeholder": "Paste image URL or upload"
@@ -2820,7 +2820,7 @@
         {
           "path": "sections.image_compare.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -3109,7 +3109,7 @@
         {
           "path": "sections.image_with_text.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -3664,7 +3664,7 @@
         {
           "path": "sections.storytelling_video.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -3909,16 +3909,34 @@
         {
           "path": "sections.faq_section.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
         },
         {
+          "path": "sections.faq_section.settings.backgroundImagePosition",
+          "type": "select",
+          "label": "Image position",
+          "group": "Appearance",
+          "widget": "segmented",
+          "sidebar": true,
+          "options": [
+            {
+              "value": "cover",
+              "label": "Cover"
+            },
+            {
+              "value": "fit",
+              "label": "Fit"
+            }
+          ]
+        },
+        {
           "path": "sections.faq_section.settings.borderStyle",
           "type": "select",
-          "label": "Borders",
-          "group": "Appearance",
+          "label": "Style",
+          "group": "Borders",
           "widget": "segmented",
           "sidebar": true,
           "options": [
@@ -3933,10 +3951,42 @@
           ]
         },
         {
+          "path": "sections.faq_section.settings.borderThickness",
+          "type": "number",
+          "label": "Thickness",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "unit": "px",
+          "sidebar": true
+        },
+        {
+          "path": "sections.faq_section.settings.borderOpacity",
+          "type": "number",
+          "label": "Opacity",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "sidebar": true
+        },
+        {
+          "path": "sections.faq_section.settings.borderColor",
+          "type": "text",
+          "label": "Color",
+          "group": "Borders",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
           "path": "sections.faq_section.settings.cornerRadius",
           "type": "number",
           "label": "Corner radius",
-          "group": "Appearance",
+          "group": "Borders",
           "widget": "slider",
           "min": 0,
           "max": 40,
@@ -4577,7 +4627,7 @@
         {
           "path": "sections.icons_with_text.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -4904,7 +4954,7 @@
         {
           "path": "sections.multicolumn_section.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -5193,7 +5243,7 @@
         {
           "path": "sections.pull_quote_section.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -5467,7 +5517,7 @@
         {
           "path": "sections.rich_text_section.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -5754,7 +5804,7 @@
         {
           "path": "sections.contact_form.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -6020,7 +6070,7 @@
         {
           "path": "sections.email_signup.settings.backgroundImageUrl",
           "type": "text",
-          "label": "Background image",
+          "label": "Image",
           "group": "Appearance",
           "sidebar": true,
           "placeholder": "Paste image URL or upload"
@@ -10138,7 +10188,7 @@
               "type": "select",
               "label": "Alignment",
               "group": "Layout",
-              "widget": "select",
+              "widget": "segmented",
               "sidebar": false,
               "options": [
                 {
@@ -10264,10 +10314,14 @@
             {
               "path": "templates.index.sections.hero_main.settings.colorScheme",
               "type": "select",
-              "label": "Color scheme",
+              "label": "Background color",
               "group": "Appearance",
               "widget": "color-scheme",
               "options": [
+                {
+                  "value": "transparent",
+                  "label": "Transparent"
+                },
                 {
                   "value": "scheme-1",
                   "label": "Scheme 1"
@@ -10328,12 +10382,42 @@
               ]
             },
             {
+              "path": "templates.index.sections.hero_main.settings.overlayGradientDirection",
+              "type": "select",
+              "label": "Gradient direction",
+              "group": "Appearance",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "up",
+                  "label": "Up"
+                },
+                {
+                  "value": "down",
+                  "label": "Down"
+                }
+              ]
+            },
+            {
               "path": "templates.index.sections.hero_main.settings.blurredReflection",
               "type": "boolean",
               "label": "Blurred reflection",
               "group": "Appearance",
               "sidebar": false,
               "description": "Applies to images only"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.reflectionOpacity",
+              "type": "number",
+              "label": "Reflection opacity",
+              "group": "Appearance",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": false
             },
             {
               "path": "templates.index.sections.hero_main.settings.paddingTop",
@@ -10686,8 +10770,8 @@
                 {
                   "path": "templates.index.sections.hero_main.settings.headingColor",
                   "type": "select",
-                  "label": "Color",
-                  "group": "Typography",
+                  "label": "Text color",
+                  "group": "Appearance",
                   "widget": "select",
                   "sidebar": false,
                   "options": [
@@ -12597,7 +12681,7 @@
             {
               "path": "templates.index.sections.contact_form.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -12865,7 +12949,7 @@
             {
               "path": "templates.index.sections.email_signup.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -13112,7 +13196,7 @@
             {
               "path": "templates.index.sections.custom_section.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": false,
               "placeholder": "Paste image URL or upload"
@@ -15503,7 +15587,7 @@
             {
               "path": "templates.index.sections.image_compare.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -15794,7 +15878,7 @@
             {
               "path": "templates.index.sections.image_with_text.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -16353,7 +16437,7 @@
             {
               "path": "templates.index.sections.storytelling_video.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -16601,16 +16685,34 @@
             {
               "path": "templates.index.sections.faq_section.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
             },
             {
+              "path": "templates.index.sections.faq_section.settings.backgroundImagePosition",
+              "type": "select",
+              "label": "Image position",
+              "group": "Appearance",
+              "widget": "segmented",
+              "sidebar": true,
+              "options": [
+                {
+                  "value": "cover",
+                  "label": "Cover"
+                },
+                {
+                  "value": "fit",
+                  "label": "Fit"
+                }
+              ]
+            },
+            {
               "path": "templates.index.sections.faq_section.settings.borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "sidebar": true,
               "options": [
@@ -16625,10 +16727,42 @@
               ]
             },
             {
+              "path": "templates.index.sections.faq_section.settings.borderThickness",
+              "type": "number",
+              "label": "Thickness",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "unit": "px",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.faq_section.settings.borderOpacity",
+              "type": "number",
+              "label": "Opacity",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.faq_section.settings.borderColor",
+              "type": "text",
+              "label": "Color",
+              "group": "Borders",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.faq_section.settings.cornerRadius",
               "type": "number",
               "label": "Corner radius",
-              "group": "Appearance",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
               "max": 40,
@@ -17271,7 +17405,7 @@
             {
               "path": "templates.index.sections.icons_with_text.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -17600,7 +17734,7 @@
             {
               "path": "templates.index.sections.multicolumn_section.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -17891,7 +18025,7 @@
             {
               "path": "templates.index.sections.pull_quote_section.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"
@@ -18167,7 +18301,7 @@
             {
               "path": "templates.index.sections.rich_text_section.settings.backgroundImageUrl",
               "type": "text",
-              "label": "Background image",
+              "label": "Image",
               "group": "Appearance",
               "sidebar": true,
               "placeholder": "Paste image URL or upload"

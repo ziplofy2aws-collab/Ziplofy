@@ -1,6 +1,9 @@
+import { extendValuesForHeadingBlock } from '../create-theme/sidebar/theme-editor-heading-block-panel.utils';
 import { faqAccordionDefaultSettings } from '../create-theme/sidebar/theme-editor-faq-accordion-block-panel.utils';
 import { faqAccordionRowDefaultSettings } from '../create-theme/sidebar/theme-editor-faq-accordion-row-panel.utils';
 import { textBlockDefaultSettings } from '../create-theme/sidebar/theme-editor-text-block-panel.utils';
+import type { EditorSchemaDoc } from '../create-theme/sidebar/create-theme-sidebar.types';
+import { FAQ_HEADING_SECTION_STYLE_DEFAULTS } from './faq-preset.util';
 
 function getNested(obj: Record<string, unknown> | null, path: string[]): unknown {
   let cur: unknown = obj;
@@ -58,23 +61,40 @@ export function extendValuesForFaqSectionBlock(
   tplId: string | undefined,
   sectionInstanceId: string,
   blockInstanceId: string,
-  config: Record<string, unknown>
+  config: Record<string, unknown>,
+  editorSchema?: EditorSchemaDoc | null
 ): Record<string, string | boolean> {
-  const next = { ...values };
+  let next = { ...values };
   const sectionBase =
     scope === 'template' && tplId
       ? `templates.${tplId}.sections.${sectionInstanceId}`
       : `sections.${sectionInstanceId}`;
 
   if (blockInstanceId === 'heading') {
+    const nodeId =
+      scope === 'template' && tplId
+        ? `template:${tplId}:${sectionInstanceId}:block:heading`
+        : `layout:${sectionInstanceId}:block:heading`;
+    const settingsBase = `${sectionBase}.settings`;
+    for (const [key, fallback] of Object.entries(FAQ_HEADING_SECTION_STYLE_DEFAULTS)) {
+      const path = `${settingsBase}.${key}`;
+      if (next[path] !== undefined) continue;
+      const raw = getNested(config, path.split('.'));
+      if (raw !== undefined) {
+        next[path] =
+          typeof fallback === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);
+      } else {
+        next[path] = typeof fallback === 'boolean' ? fallback : String(fallback);
+      }
+    }
     const headingPath = `${sectionBase}.blocks.heading.settings.heading`;
-    const titlePath = `${sectionBase}.settings.title`;
+    const titlePath = `${settingsBase}.title`;
     const rawHeading = getNested(config, headingPath.split('.'));
     const rawTitle = getNested(config, titlePath.split('.'));
-    const text = String(rawHeading ?? rawTitle ?? 'Frequently asked questions');
+    const text = String(rawHeading ?? rawTitle ?? FAQ_HEADING_SECTION_STYLE_DEFAULTS.title);
     next[headingPath] = text;
     next[titlePath] = text;
-    return next;
+    return extendValuesForHeadingBlock(next, editorSchema ?? null, nodeId, config);
   }
 
   if (blockInstanceId === 'accordion') {

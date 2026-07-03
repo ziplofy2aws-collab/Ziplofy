@@ -7,6 +7,7 @@ import { PreviewSelectionLayer } from './PreviewSelectionLayer';
 import {
   isParentPreviewMessage,
   postToParent,
+  type PreviewDevice,
   type ThemePreviewInitPayload,
   type ThemePreviewPage,
   type ThemePreviewInsertHighlightPayload,
@@ -15,6 +16,11 @@ import {
 import { hintsMatchKey, hintsStructureKey } from './previewPerf';
 
 const PREVIEW_CONFIG_DEBOUNCE_MS = 180;
+const PREVIEW_MOBILE_CLASS = 'ziplofy-preview-mobile';
+
+function applyPreviewDeviceClass(device: PreviewDevice): void {
+  document.documentElement.classList.toggle(PREVIEW_MOBILE_CLASS, device === 'mobile');
+}
 
 function setNested(obj: Record<string, unknown>, path: string, value: unknown): void {
   const parts = path.split('.');
@@ -54,6 +60,7 @@ export function ThemePreviewApp() {
   const [selectionHints, setSelectionHints] = useState<ThemePreviewSelectionHint[]>([]);
   const [insertHighlight, setInsertHighlight] = useState<ThemePreviewInsertHighlightPayload>(null);
   const [inspectorEnabled, setInspectorEnabled] = useState(true);
+  const [previewDevice, setPreviewDevice] = useState<PreviewDevice>('desktop');
   const configDebounceRef = useRef<number | undefined>(undefined);
   const configRef = useRef<Record<string, unknown> | null>(null);
   const lastConfigJsonRef = useRef<string>('');
@@ -135,6 +142,14 @@ export function ThemePreviewApp() {
         setPage(payload.page ?? 'index');
         setSelectionHints(payload.selectionHints ?? []);
         setInspectorEnabled(payload.inspectorEnabled !== false);
+        setPreviewDevice(payload.device === 'mobile' ? 'mobile' : 'desktop');
+        applyPreviewDeviceClass(payload.device === 'mobile' ? 'mobile' : 'desktop');
+      }
+
+      if (msg.type === 'ZIPLOFY_PREVIEW_SET_DEVICE') {
+        const device = msg.payload.device === 'mobile' ? 'mobile' : 'desktop';
+        setPreviewDevice(device);
+        applyPreviewDeviceClass(device);
       }
 
       if (msg.type === 'ZIPLOFY_PREVIEW_INSPECTOR') {
@@ -202,6 +217,7 @@ export function ThemePreviewApp() {
       }
       window.removeEventListener('message', onMessage);
       document.documentElement.classList.remove('ziplofy-theme-preview-root');
+      document.documentElement.classList.remove(PREVIEW_MOBILE_CLASS);
     };
   }, [applyConfigImmediate, applyConfigDebounced, patchConfigField]);
 
@@ -230,6 +246,7 @@ export function ThemePreviewApp() {
       themeConfig={config}
       jsUrl={init.jsUrl}
       cssUrl={init.cssUrl}
+      previewDevice={previewDevice}
     >
       <PreviewErrorBoundary>
         {init.jsUrl ? (

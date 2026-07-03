@@ -55,6 +55,8 @@ export function CheckoutEditorHeader({
 
   return (
     <header className="relative grid h-14 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-gray-200 bg-white px-3">
+      
+      {/* this is important for theme editor */}
       <div className="flex min-w-0 items-center gap-2 justify-self-start">
         <span className="truncate text-sm font-semibold text-gray-900">{configurationName}</span>
         <span className="inline-flex shrink-0 items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
@@ -63,6 +65,7 @@ export function CheckoutEditorHeader({
       </div>
 
       <div className="justify-self-center">
+        {/* limit for optimization for the page picker */}
         <CheckoutEditorPagePicker
           value={previewPage}
           onChange={onPreviewPageChange}

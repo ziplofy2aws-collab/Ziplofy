@@ -12,6 +12,8 @@ const PANEL_GROUPS = new Set([
   'Media 1',
   'Media 2',
   'Mobile media',
+  'Mobile media 1',
+  'Mobile media 2',
   'Section link',
   'Layout',
   'Appearance',
@@ -27,21 +29,28 @@ const HERO_PANEL_KEYS = new Set([
   'mobileStackMedia',
   'mobileDifferentMedia',
   'mobileImageUrl',
+  'mobileMedia1Type',
+  'mobileMedia1ImageUrl',
+  'mobileMedia2Type',
+  'mobileMedia2ImageUrl',
   'sectionLink',
   'sectionLinkNewTab',
   'direction',
+  'verticalOnMobile',
   'alignTextBaseline',
   'layoutAlignment',
   'position',
   'layoutGap',
   'sectionWidth',
   'height',
+  'customHeight',
   'colorScheme',
   'mediaOverlay',
   'overlayColor',
   'overlayStyle',
   'overlayGradientDirection',
   'blurredReflection',
+  'reflectionOpacity',
   'paddingTop',
   'paddingBottom',
   'customCss',
@@ -55,6 +64,7 @@ export const HERO_PANEL_GROUP_ORDER = [
   'Layout',
   'Appearance',
   'Padding',
+  'Theme Settings',
   'Custom CSS',
 ] as const;
 
@@ -98,21 +108,28 @@ function fieldSortKey(path: string): number {
     mobileStackMedia: 20,
     mobileDifferentMedia: 21,
     mobileImageUrl: 22,
+    mobileMedia1Type: 23,
+    mobileMedia1ImageUrl: 24,
+    mobileMedia2Type: 25,
+    mobileMedia2ImageUrl: 26,
     sectionLink: 30,
     sectionLinkNewTab: 31,
     direction: 40,
-    alignTextBaseline: 41,
-    layoutAlignment: 42,
-    position: 43,
-    layoutGap: 44,
-    sectionWidth: 45,
-    height: 46,
+    verticalOnMobile: 41,
+    alignTextBaseline: 42,
+    layoutAlignment: 43,
+    position: 44,
+    layoutGap: 45,
+    sectionWidth: 46,
+    height: 47,
+    customHeight: 48,
     colorScheme: 50,
     mediaOverlay: 51,
     overlayColor: 52,
     overlayStyle: 53,
     overlayGradientDirection: 54,
     blurredReflection: 55,
+    reflectionOpacity: 56,
     paddingTop: 60,
     paddingBottom: 61,
     customCss: 70,
@@ -136,13 +153,20 @@ export function isHeroPanelField(field: EditorFieldDef): boolean {
 
 export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
   const key = field.path.split('.').pop() ?? '';
-  if (key === 'media1ImageUrl' || key === 'media2ImageUrl' || key === 'mobileImageUrl') {
-    return { ...field, widget: 'image', label: key === 'mobileImageUrl' ? 'Mobile image' : 'Image' };
+  if (
+    key === 'media1ImageUrl' ||
+    key === 'media2ImageUrl' ||
+    key === 'mobileImageUrl' ||
+    key === 'mobileMedia1ImageUrl' ||
+    key === 'mobileMedia2ImageUrl'
+  ) {
+    return { ...field, widget: 'image', label: 'Image' };
   }
   if (
     key === 'mobileStackMedia' ||
     key === 'mobileDifferentMedia' ||
     key === 'alignTextBaseline' ||
+    key === 'verticalOnMobile' ||
     key === 'sectionLinkNewTab' ||
     key === 'mediaOverlay' ||
     key === 'blurredReflection'
@@ -152,7 +176,19 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
   if (key === 'overlayColor') {
     return { ...field, widget: 'color' };
   }
-  if (key === 'media1Type' || key === 'media2Type' || key === 'overlayGradientDirection') {
+  if (key === 'reflectionOpacity' && !field.widget) {
+    return { ...field, widget: 'slider' };
+  }
+  if (key === 'colorScheme') {
+    return { ...field, label: 'Background color', widget: 'color' };
+  }
+  if (
+    key === 'media1Type' ||
+    key === 'media2Type' ||
+    key === 'mobileMedia1Type' ||
+    key === 'mobileMedia2Type' ||
+    key === 'overlayGradientDirection'
+  ) {
     return { ...field, widget: 'segmented' };
   }
   if (key === 'overlayStyle' && !field.widget) {
@@ -161,20 +197,67 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
   if (key === 'customCss') {
     return { ...field, widget: 'accordion' };
   }
-  if (
-    (key === 'direction' || key === 'layoutAlignment' || key === 'sectionWidth') &&
-    !field.widget
-  ) {
+  if ((key === 'direction' || key === 'sectionWidth') && !field.widget) {
+    return { ...field, widget: 'segmented' };
+  }
+  if (key === 'layoutAlignment' && !field.widget) {
     return { ...field, widget: 'segmented' };
   }
   if ((key === 'position' || key === 'height') && !field.widget) {
     return { ...field, widget: 'select-inline' };
+  }
+  if (key === 'verticalOnMobile') {
+    return { ...field, label: 'Vertical on mobile', widget: 'toggle' };
   }
   return field;
 }
 
 export function enrichHeroPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
   return fields.map(enrichHeroPanelField);
+}
+
+const MOBILE_MEDIA_TYPE_OPTIONS = [
+  { value: 'image', label: 'Image' },
+  { value: 'video', label: 'Video' },
+] as const;
+
+/** Fields for Mobile media 1 or 2 (Shopify-style), with legacy `mobileImageUrl` on slot 1. */
+export function pickHeroMobileMediaSlotFields(
+  allFields: EditorFieldDef[],
+  settingsBase: string,
+  slot: 1 | 2
+): EditorFieldDef[] {
+  const typeKey = slot === 1 ? 'mobileMedia1Type' : 'mobileMedia2Type';
+  const imageKey = slot === 1 ? 'mobileMedia1ImageUrl' : 'mobileMedia2ImageUrl';
+  const legacyImageKey = 'mobileImageUrl';
+
+  const typeField =
+    allFields.find((f) => f.path.endsWith(`.${typeKey}`)) ??
+    ({
+      path: `${settingsBase}.${typeKey}`,
+      label: 'Type',
+      type: 'select',
+      group: slot === 1 ? 'Mobile media 1' : 'Mobile media 2',
+      options: [...MOBILE_MEDIA_TYPE_OPTIONS],
+      widget: 'segmented',
+    } satisfies EditorFieldDef);
+
+  const imageFromSchema =
+    allFields.find((f) => f.path.endsWith(`.${imageKey}`)) ??
+    (slot === 1 ? allFields.find((f) => f.path.endsWith(`.${legacyImageKey}`)) : undefined);
+
+  const imageField =
+    imageFromSchema ??
+    ({
+      path: `${settingsBase}.${imageKey}`,
+      label: 'Image',
+      type: 'text',
+      group: slot === 1 ? 'Mobile media 1' : 'Mobile media 2',
+      placeholder: 'Paste image URL or upload',
+      widget: 'image',
+    } satisfies EditorFieldDef);
+
+  return [enrichHeroPanelField(typeField), enrichHeroPanelField(imageField)];
 }
 
 const CANON_HERO_TEMPLATE_ID = 'index';

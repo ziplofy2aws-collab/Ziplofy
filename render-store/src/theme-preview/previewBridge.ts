@@ -33,6 +33,8 @@ export type ThemePreviewSelectionHint = {
   fieldType?: 'text' | 'textarea' | 'color' | 'boolean' | 'number';
 };
 
+export type PreviewDevice = 'desktop' | 'mobile';
+
 export type ThemePreviewInitPayload = {
   storeId: string;
   storeName?: string;
@@ -44,6 +46,8 @@ export type ThemePreviewInitPayload = {
   selectionHints?: ThemePreviewSelectionHint[];
   /** When false, preview selection / inspector overlay is off (browse mode). */
   inspectorEnabled?: boolean;
+  /** Theme editor device toggle — drives mobile layout in preview iframe. */
+  device?: PreviewDevice;
 };
 
 export type ThemePreviewConfigPayload = {
@@ -108,6 +112,11 @@ export type ParentToPreviewMessage =
       source: typeof PREVIEW_MESSAGE_SOURCE;
       type: 'ZIPLOFY_PREVIEW_INSPECTOR';
       payload: { enabled: boolean };
+    }
+  | {
+      source: typeof PREVIEW_MESSAGE_SOURCE;
+      type: 'ZIPLOFY_PREVIEW_SET_DEVICE';
+      payload: { device: PreviewDevice };
     };
 
 export type ThemePreviewFieldChangePayload = {

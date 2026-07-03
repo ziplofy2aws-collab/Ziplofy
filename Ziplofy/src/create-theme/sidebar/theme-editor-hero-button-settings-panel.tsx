@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CircleStackIcon } from '@heroicons/react/24/outline';
 import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import type { EditorFieldDef } from './create-theme-sidebar.types';
 import {
   fieldInputId,
@@ -17,7 +18,9 @@ import {
   resolveHeroButtonCustomWidthField,
 } from './theme-editor-hero-button-panel.utils';
 
-function HeroButtonLabelFieldRow({
+const LABEL_FIELD_DEBOUNCE_MS = 350;
+
+export function HeroButtonLabelFieldRow({
   field,
   values,
   onFieldChange,
@@ -27,6 +30,32 @@ function HeroButtonLabelFieldRow({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const id = fieldInputId(field.path);
+  const external = fieldValueAsString(values, field);
+  const [draft, setDraft] = useState(external);
+  const debouncedDraft = useDebouncedValue(draft, LABEL_FIELD_DEBOUNCE_MS);
+  const focusedRef = useRef(false);
+
+  useEffect(() => {
+    setDraft(external);
+    focusedRef.current = false;
+  }, [field.path]);
+
+  useEffect(() => {
+    if (!focusedRef.current) {
+      setDraft(external);
+    }
+  }, [external]);
+
+  useEffect(() => {
+    if (debouncedDraft === external) return;
+    onFieldChange(field.path, 'text', debouncedDraft);
+  }, [debouncedDraft, external, field.path, onFieldChange]);
+
+  const flushDraft = () => {
+    if (draft !== external) {
+      onFieldChange(field.path, 'text', draft);
+    }
+  };
 
   return (
     <div className="space-y-1.5 py-1">
@@ -45,8 +74,21 @@ function HeroButtonLabelFieldRow({
       <input
         id={id}
         type="text"
-        value={fieldValueAsString(values, field)}
-        onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
+        value={draft}
+        onFocus={() => {
+          focusedRef.current = true;
+        }}
+        onBlur={() => {
+          focusedRef.current = false;
+          flushDraft();
+        }}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            flushDraft();
+          }
+        }}
         className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
       />
     </div>
@@ -75,7 +117,7 @@ function HeroButtonLinkFieldRow({
   );
 }
 
-function HeroButtonToggleFieldRow({
+export function HeroButtonToggleFieldRow({
   field,
   values,
   onFieldChange,
@@ -141,7 +183,7 @@ function HeroButtonStyleFieldRow({
   );
 }
 
-function HeroButtonWidthModeFieldRow({
+export function HeroButtonWidthModeFieldRow({
   field,
   values,
   onFieldChange,
@@ -201,7 +243,7 @@ function buttonPercentValue(
   return Math.min(max, Math.max(min, n));
 }
 
-function HeroButtonCustomWidthFieldRow({
+export function HeroButtonCustomWidthFieldRow({
   field,
   values,
   onFieldChange,

@@ -2,7 +2,7 @@ import { useMemo, useState, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../lib/config';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
-import { readFaqItems, readFaqLayout, scopedFaqCss } from '../lib/faqStyles';
+import { readFaqItems, readFaqLayout, scopedFaqCss, faqOverlayBackground } from '../lib/faqStyles';
 import { layout } from '../tokens';
 
 type Props = {
@@ -70,6 +70,8 @@ export function FaqSection({
 
   const shell: CSSProperties = {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
     background:
       style.backgroundMedia === 'image' && style.backgroundImageUrl
         ? scheme.background
@@ -80,7 +82,7 @@ export function FaqSection({
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    minHeight: style.minHeightPx > 0 ? style.minHeightPx : undefined,
+    minHeight: style.minHeight,
     border:
       style.borderStyle === 'solid' ? `1px solid ${scheme.border}` : undefined,
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
@@ -96,6 +98,7 @@ export function FaqSection({
     maxWidth: innerMaxWidth,
     margin: '0 auto',
     width: '100%',
+    flex: style.minHeight ? '1 1 auto' : undefined,
     display: 'flex',
     flexDirection: style.direction === 'horizontal' ? 'row' : 'column',
     alignItems:
@@ -156,7 +159,7 @@ export function FaqSection({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(0,0,0,0.35)',
+            background: faqOverlayBackground(style),
             zIndex: 1,
           }}
         />

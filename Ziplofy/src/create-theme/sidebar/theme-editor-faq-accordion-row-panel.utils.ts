@@ -1,5 +1,6 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import { remapTemplateSchemaPath } from '../../utils/theme-editor-insert-section';
+import { FAQ_ACCORDION_ROW_ICON_OPTIONS } from '../faq/runtime/faqAccordionRowIcons';
 
 export const FAQ_ACCORDION_ROW_PANEL_SETTING_KEYS = new Set([
   'heading',
@@ -9,7 +10,15 @@ export const FAQ_ACCORDION_ROW_PANEL_SETTING_KEYS = new Set([
   'rowIconWidth',
 ]);
 
-const ROW_ICON_OPTIONS = [{ value: 'none', label: 'None' }] as const;
+export const FAQ_ACCORDION_ROW_CONTENT_FIELD_ORDER = ['heading', 'openByDefault'] as const;
+
+export const FAQ_ACCORDION_ROW_ICON_FIELD_ORDER = [
+  'rowIcon',
+  'rowImageIconUrl',
+  'rowIconWidth',
+] as const;
+
+const ROW_ICON_OPTIONS = [...FAQ_ACCORDION_ROW_ICON_OPTIONS];
 
 export function faqAccordionRowDefaultSettings(
   heading = 'Accordion row'
@@ -19,7 +28,7 @@ export function faqAccordionRowDefaultSettings(
     openByDefault: false,
     rowIcon: 'none',
     rowImageIconUrl: '',
-    rowIconWidth: 8,
+    rowIconWidth: 20,
   };
 }
 
@@ -71,6 +80,7 @@ export function faqAccordionRowFieldDefs(blocksBase: string): EditorFieldDef[] {
       type: 'text',
       label: 'Image icon',
       group: 'Icon',
+      widget: 'image',
       sidebar: true,
     },
     {
@@ -80,7 +90,7 @@ export function faqAccordionRowFieldDefs(blocksBase: string): EditorFieldDef[] {
       group: 'Icon',
       widget: 'slider',
       min: 8,
-      max: 64,
+      max: 200,
       step: 1,
       unit: 'px',
       sidebar: true,
@@ -127,7 +137,42 @@ export function isFaqAccordionRowPanelFields(fields: EditorFieldDef[]): boolean 
 }
 
 export function prepareFaqAccordionRowSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = (node.fields ?? []).filter(isFaqAccordionRowField);
+  const canonical = faqAccordionRowFieldDefsFromNodeId(node.id);
+  const byKey = new Map<string, EditorFieldDef>();
+
+  for (const field of canonical) {
+    byKey.set(field.path.split('.').pop() ?? '', field);
+  }
+  for (const field of (node.fields ?? []).filter(isFaqAccordionRowField)) {
+    const key = field.path.split('.').pop() ?? '';
+    const base = byKey.get(key);
+    byKey.set(
+      key,
+      base
+        ? {
+            ...base,
+            ...field,
+            path: field.path,
+            group: field.group ?? base.group,
+            widget: field.widget ?? base.widget,
+            options:
+              key === 'rowIcon'
+                ? [...FAQ_ACCORDION_ROW_ICON_OPTIONS]
+                : field.options?.length
+                  ? field.options
+                  : base.options,
+          }
+        : field
+    );
+  }
+
+  const fields = FAQ_ACCORDION_ROW_CONTENT_FIELD_ORDER.map((key) => byKey.get(key))
+    .concat(FAQ_ACCORDION_ROW_ICON_FIELD_ORDER.map((key) => byKey.get(key)))
+    .filter((field): field is EditorFieldDef => Boolean(field));
+
+  if (!fields.length) {
+    return { ...node, label: 'Accordion row', kind: 'block', fields: canonical };
+  }
   return { ...node, label: 'Accordion row', kind: 'block', fields };
 }
 

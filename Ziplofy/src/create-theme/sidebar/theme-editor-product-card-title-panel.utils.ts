@@ -5,14 +5,21 @@ const PANEL_GROUPS = new Set(['Layout', 'Typography', 'Appearance', 'Padding']);
 const TITLE_PANEL_KEYS = new Set([
   'productTitleWidth',
   'productTitleMaxWidth',
-  'productTitleAlignment',
   'productTitleTypographyPreset',
+  'productTitleColor',
   'productTitleBackgroundEnabled',
   'productTitlePaddingTop',
   'productTitlePaddingBottom',
   'productTitlePaddingLeft',
   'productTitlePaddingRight',
 ]);
+
+export const PRODUCT_CARD_TITLE_PANEL_GROUP_ORDER = [
+  'Layout',
+  'Typography',
+  'Appearance',
+  'Padding',
+] as const;
 
 export function isProductCardTitleNestedNodeId(nodeId: string): boolean {
   return /:block:product_card:nested:product_title$/.test(nodeId);
@@ -23,8 +30,8 @@ function fieldSortKey(path: string): number {
   const rank: Record<string, number> = {
     productTitleWidth: 0,
     productTitleMaxWidth: 1,
-    productTitleAlignment: 2,
     productTitleTypographyPreset: 10,
+    productTitleColor: 19,
     productTitleBackgroundEnabled: 20,
     productTitlePaddingTop: 30,
     productTitlePaddingBottom: 31,
@@ -60,6 +67,23 @@ export function sortProductCardTitlePanelFields(fields: EditorFieldDef[]): Edito
 export function prepareProductCardTitleSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortProductCardTitlePanelFields((node.fields ?? []).filter(isProductCardTitlePanelField));
   return { ...node, label: 'Product title', kind: 'block', fields };
+}
+
+export function groupProductCardTitlePanelFields(
+  fields: EditorFieldDef[]
+): Map<string, EditorFieldDef[]> {
+  const grouped = new Map<string, EditorFieldDef[]>();
+  for (const field of sortProductCardTitlePanelFields(fields)) {
+    const group = field.group ?? 'Layout';
+    const list = grouped.get(group) ?? [];
+    list.push(field);
+    grouped.set(group, list);
+  }
+  return grouped;
+}
+
+export function isProductCardTitlePanelFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) => f.path.endsWith('productTitleWidth') || f.path.endsWith('productTitleTypographyPreset'));
 }
 
 export function productCardTitleFieldDefsFromSchema(editorSchema: EditorSchemaDoc): EditorFieldDef[] {

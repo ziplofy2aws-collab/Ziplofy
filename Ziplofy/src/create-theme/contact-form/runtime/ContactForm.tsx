@@ -139,7 +139,7 @@ export function ContactForm({
       ) : null}
       {style.backgroundOverlay && style.backgroundMedia === 'image' ? (
         <div
-          aria-hidden
+          aria-hidden131
           style={{
             position: 'absolute',
             inset: 0,

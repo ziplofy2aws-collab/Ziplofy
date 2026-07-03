@@ -1,4 +1,5 @@
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { atMobileBreakpoint } from '../../runtime/shared/responsive';
 
 export type HeroScheme = {
   background: string;
@@ -7,6 +8,7 @@ export type HeroScheme = {
 };
 
 const COLOR_SCHEMES: Record<string, HeroScheme> = {
+  transparent: { background: 'transparent', color: '#111827', muted: '#6b7280' },
   'scheme-1': { background: '#ffffff', color: '#111827', muted: '#6b7280' },
   'scheme-2': { background: '#f8fafc', color: '#0f172a', muted: '#64748b' },
   'scheme-3': { background: '#fff7ed', color: '#431407', muted: '#9a3412' },
@@ -25,6 +27,8 @@ const HEIGHT_PX: Record<string, number> = {
 
 export type HeroStyle = {
   scheme: HeroScheme;
+  /** True when the merchant explicitly picked a solid color (hex) or transparent for the background. */
+  backgroundIsCustom: boolean;
   minHeight: number | string;
   maxWidth: string | number;
   paddingTop: number;
@@ -65,10 +69,31 @@ export type HeroStyle = {
   overlayStyle: 'solid' | 'gradient';
   overlayGradientDirection: 'up' | 'down';
   blurredReflection: boolean;
+  reflectionOpacity: number;
   sectionLink: string;
   sectionLinkNewTab: boolean;
   customCss: string;
 };
+
+function resolveHeroBackground(value: string, fallback: HeroScheme): HeroScheme {
+  if (value === 'transparent') return COLOR_SCHEMES.transparent ?? fallback;
+  const hex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value) ? value : '';
+  if (hex) {
+    let h = hex.slice(1);
+    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+    const r = parseInt(h.slice(0, 2), 16);
+    const g = parseInt(h.slice(2, 4), 16);
+    const b = parseInt(h.slice(4, 6), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    const isLight = luminance > 0.6;
+    return {
+      background: hex,
+      color: isLight ? '#111827' : '#ffffff',
+      muted: isLight ? '#4b5563' : 'rgba(255,255,255,0.72)',
+    };
+  }
+  return COLOR_SCHEMES[value] ?? fallback;
+}
 
 export function readHeroStyle(
   config: Record<string, unknown> | null,
@@ -76,7 +101,10 @@ export function readHeroStyle(
   fallback: HeroScheme
 ): HeroStyle {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-6');
-  const scheme = COLOR_SCHEMES[schemeKey] ?? fallback;
+  const scheme = resolveHeroBackground(schemeKey, fallback);
+  const backgroundIsCustom =
+    schemeKey === 'transparent' ||
+    /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(schemeKey);
 
   const legacyAlign = cfgString(config, `${settingsBase}.textAlign`, '');
   const layoutAlignment = cfgString(
@@ -173,6 +201,7 @@ export function readHeroStyle(
 
   return {
     scheme,
+    backgroundIsCustom,
     minHeight,
     maxWidth: sectionWidth === 'full' ? '100%' : 1200,
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 56),
@@ -209,6 +238,7 @@ export function readHeroStyle(
     overlayGradientDirection:
       cfgString(config, `${settingsBase}.overlayGradientDirection`, 'up') === 'down' ? 'down' : 'up',
     blurredReflection: cfgBool(config, `${settingsBase}.blurredReflection`, false),
+    reflectionOpacity: cfgNumber(config, `${settingsBase}.reflectionOpacity`, 75),
     sectionLink: cfgString(config, `${settingsBase}.sectionLink`, ''),
     sectionLinkNewTab: cfgBool(config, `${settingsBase}.sectionLinkNewTab`, false),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
@@ -233,10 +263,12 @@ export function heroResponsiveCss(
   const sel = `[data-ziplofy-section="${sectionId}"] .hero-media-grid`;
   let css = '';
   if (stackMedia) {
-    css += `@media (max-width: 749px) { ${sel} { flex-direction: column !important; } }`;
+    css += atMobileBreakpoint(`${sel} { flex-direction: column !important; }`);
   }
   if (differentMobile) {
-    css += `@media (max-width: 749px) { ${sel} .hero-media-1 { display: none; } ${sel} .hero-media-2 { display: none; } ${sel} .hero-media-mobile { display: block !important; flex: 1; min-height: 200px; } }`;
+    css += atMobileBreakpoint(
+      `${sel} .hero-media-1 { display: none; } ${sel} .hero-media-2 { display: none; } ${sel} .hero-media-mobile { display: block !important; flex: 1; min-height: 200px; }`
+    );
   }
   return css;
 }
@@ -249,7 +281,7 @@ export function heroContentVerticalOnMobileCss(
 ): string {
   if (!isHorizontal || !verticalOnMobile) return '';
   const sel = `[data-ziplofy-section="${sectionId}"] .hero-content-blocks`;
-  return `@media (max-width: 749px) { ${sel} { flex-direction: column !important; align-items: stretch !important; } }`;
+  return atMobileBreakpoint(`${sel} { flex-direction: column !important; align-items: stretch !important; }`);
 }
 
 /** Stack dual hero media vertically on small screens when enabled in settings. */
@@ -257,5 +289,7 @@ export function heroDualMediaResponsiveCss(sectionId: string, stackOnMobile: boo
   if (!stackOnMobile) return '';
   const root = `[data-ziplofy-section="${sectionId}"] .hero-dual-media-backdrop`;
   const tile = `[data-ziplofy-section="${sectionId}"] .hero-dual-media-tile`;
-  return `@media (max-width: 749px) { ${root} { flex-direction: column !important; } ${tile} { flex: 1 1 50% !important; width: 100% !important; max-width: 100% !important; min-height: 50%; } }`;
+  return atMobileBreakpoint(
+    `${root} { flex-direction: column !important; } ${tile} { flex: 1 1 50% !important; width: 100% !important; max-width: 100% !important; min-height: 50%; }`
+  );
 }

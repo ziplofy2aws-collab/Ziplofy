@@ -6,6 +6,7 @@ import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { StackedTealShirtsIllustration } from '../../product-highlight/runtime/FeaturedProductArt';
+import { atMobileBreakpoint } from '../../runtime/shared/responsive';
 import {
   alignItemsForPosition,
   imageWithTextMinHeight,
@@ -188,7 +189,7 @@ export function ImageWithText({
     style.backgroundMedia === 'image' && style.backgroundImageUrl ? style.backgroundImageUrl : null;
   const scopedCss = scopedImageWithTextCss(sectionId, style.customCss);
   const mobileCss = mobileStackClass
-    ? `@media (max-width: 749px) { .${mobileStackClass} { grid-template-columns: 1fr !important; grid-template-rows: auto auto !important; } }`
+    ? atMobileBreakpoint(`.${mobileStackClass} { grid-template-columns: 1fr !important; grid-template-rows: auto auto !important; }`)
     : '';
 
   return (

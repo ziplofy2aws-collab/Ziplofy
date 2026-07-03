@@ -16,18 +16,49 @@ const SCHEMES: Record<string, FaqScheme> = {
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6', border: '#ddd6fe' },
 };
 
+function resolveFaqScheme(value: string): FaqScheme {
+  const fallback = SCHEMES['scheme-1']!;
+  const hex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value) ? value : '';
+  if (hex) {
+    let h = hex.slice(1);
+    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+    const r = parseInt(h.slice(0, 2), 16);
+    const g = parseInt(h.slice(2, 4), 16);
+    const b = parseInt(h.slice(4, 6), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    const isLight = luminance > 0.6;
+    return {
+      background: hex,
+      color: isLight ? '#111827' : '#ffffff',
+      muted: isLight ? '#4b5563' : 'rgba(255,255,255,0.72)',
+      border: isLight ? '#e5e7eb' : 'rgba(255,255,255,0.2)',
+    };
+  }
+  return SCHEMES[value] ?? fallback;
+}
+
 export type FaqItem = {
   id: string;
   question: string;
   answer: string;
 };
 
-const HEIGHT_PX: Record<string, number> = {
+const HEIGHT_VH: Record<string, number> = {
   auto: 0,
-  small: 260,
-  medium: 320,
-  large: 400,
+  small: 40,
+  medium: 60,
+  large: 80,
+  'full-screen': 100,
 };
+
+function resolveFaqMinHeight(heightKey: string, customHeightPercent: number): string | undefined {
+  if (heightKey === 'custom') {
+    const pct = Math.min(Math.max(customHeightPercent, 0), 100);
+    return pct > 0 ? `${pct}vh` : undefined;
+  }
+  const vh = HEIGHT_VH[heightKey] ?? 0;
+  return vh > 0 ? `${vh}vh` : undefined;
+}
 
 export type FaqLayout = {
   scheme: FaqScheme;
@@ -38,12 +69,16 @@ export type FaqLayout = {
   openFirstItem: boolean;
   sectionWidth: 'page' | 'full';
   height: string;
-  minHeightPx: number;
+  customHeight: number;
+  minHeight: string | undefined;
   backgroundMedia: string;
   backgroundImageUrl: string;
   borderStyle: string;
   cornerRadius: number;
   backgroundOverlay: boolean;
+  overlayColor: string;
+  overlayStyle: 'solid' | 'gradient';
+  overlayGradientDirection: 'up' | 'down';
   paddingTop: number;
   paddingBottom: number;
   customCss: string;
@@ -59,8 +94,9 @@ export function readFaqLayout(
     cfgString(config, `${settingsBase}.layoutAlignment`, '') ||
     cfgString(config, `${settingsBase}.headingAlignment`, 'left');
   const height = cfgString(config, `${settingsBase}.height`, 'auto');
+  const customHeight = cfgNumber(config, `${settingsBase}.customHeight`, 50);
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme: resolveFaqScheme(schemeKey),
     direction: dir === 'horizontal' ? 'horizontal' : 'vertical',
     layoutAlignment:
       alignRaw === 'center' || alignRaw === 'right' ? alignRaw : 'left',
@@ -69,16 +105,33 @@ export function readFaqLayout(
     openFirstItem: cfgBool(config, `${settingsBase}.openFirstItem`, false),
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
     height,
-    minHeightPx: HEIGHT_PX[height] ?? 0,
+    customHeight,
+    minHeight: resolveFaqMinHeight(height, customHeight),
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
     backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
+    overlayColor: cfgString(config, `${settingsBase}.overlayColor`, '#00000066'),
+    overlayStyle:
+      cfgString(config, `${settingsBase}.overlayStyle`, 'solid') === 'gradient' ? 'gradient' : 'solid',
+    overlayGradientDirection:
+      cfgString(config, `${settingsBase}.overlayGradientDirection`, 'up') === 'down' ? 'down' : 'up',
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 48),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 48),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
   };
+}
+
+export function faqOverlayBackground(
+  style: Pick<FaqLayout, 'overlayColor' | 'overlayStyle' | 'overlayGradientDirection'>
+): string {
+  if (style.overlayStyle === 'gradient') {
+    return style.overlayGradientDirection === 'down'
+      ? `linear-gradient(180deg, transparent 0%, ${style.overlayColor} 100%)`
+      : `linear-gradient(180deg, ${style.overlayColor} 0%, transparent 100%)`;
+  }
+  return style.overlayColor;
 }
 
 export function readFaqItems(

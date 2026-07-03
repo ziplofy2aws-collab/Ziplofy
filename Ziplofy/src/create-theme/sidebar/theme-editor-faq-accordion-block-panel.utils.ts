@@ -1,16 +1,21 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import { remapTemplateSchemaPath } from '../../utils/theme-editor-insert-section';
 
-export const FAQ_ACCORDION_PANEL_GROUP_ORDER = ['General', 'Borders', 'Padding'] as const;
+export const FAQ_ACCORDION_PANEL_GROUP_ORDER = ['General', 'Appearance', 'Borders', 'Padding'] as const;
 
 const PANEL_GROUPS = new Set<string>(FAQ_ACCORDION_PANEL_GROUP_ORDER);
 
 export const FAQ_ACCORDION_PANEL_SETTING_KEYS = new Set([
   'icon',
   'dividers',
+  'dividerColor',
   'headingTypographyPreset',
-  'inheritColorScheme',
+  'backgroundColor',
+  'textColor',
   'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
   'cornerRadius',
   'paddingTop',
   'paddingBottom',
@@ -21,9 +26,11 @@ export const FAQ_ACCORDION_PANEL_SETTING_KEYS = new Set([
 export const FAQ_ACCORDION_GENERAL_FIELD_ORDER = [
   'icon',
   'dividers',
+  'dividerColor',
   'headingTypographyPreset',
-  'inheritColorScheme',
 ] as const;
+
+export const FAQ_ACCORDION_APPEARANCE_FIELD_ORDER = ['backgroundColor', 'textColor'] as const;
 
 export const FAQ_ACCORDION_PADDING_FIELD_ORDER = [
   'paddingTop',
@@ -56,10 +63,15 @@ export const FAQ_ACCORDION_HEADING_PRESET_OPTIONS = [
 const FIELD_SORT: Record<string, number> = {
   icon: 0,
   dividers: 1,
-  headingTypographyPreset: 2,
-  inheritColorScheme: 3,
+  dividerColor: 2,
+  headingTypographyPreset: 3,
+  backgroundColor: 4,
+  textColor: 5,
   borderStyle: 10,
-  cornerRadius: 11,
+  borderThickness: 11,
+  borderOpacity: 12,
+  borderColor: 13,
+  cornerRadius: 14,
   paddingTop: 20,
   paddingBottom: 21,
   paddingLeft: 22,
@@ -85,9 +97,14 @@ export function faqAccordionDefaultSettings(): Record<string, string | number | 
   return {
     icon: 'caret',
     dividers: true,
+    dividerColor: 'default',
     headingTypographyPreset: 'heading-5',
-    inheritColorScheme: false,
+    backgroundColor: 'default',
+    textColor: 'default',
     borderStyle: 'none',
+    borderThickness: 1,
+    borderOpacity: 100,
+    borderColor: 'default',
     cornerRadius: 0,
     paddingTop: 0,
     paddingBottom: 0,
@@ -117,6 +134,14 @@ export function faqAccordionFieldDefs(blocksBase: string): EditorFieldDef[] {
       sidebar: true,
     },
     {
+      path: s('dividerColor'),
+      type: 'text',
+      label: 'Divider color',
+      group: 'General',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
       path: s('headingTypographyPreset'),
       type: 'select',
       label: 'Heading preset',
@@ -127,10 +152,19 @@ export function faqAccordionFieldDefs(blocksBase: string): EditorFieldDef[] {
       options: [...FAQ_ACCORDION_HEADING_PRESET_OPTIONS],
     },
     {
-      path: s('inheritColorScheme'),
-      type: 'boolean',
-      label: 'Inherit color scheme',
-      group: 'General',
+      path: s('backgroundColor'),
+      type: 'text',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s('textColor'),
+      type: 'text',
+      label: 'Text color',
+      group: 'Appearance',
+      widget: 'color',
       sidebar: true,
     },
     {
@@ -141,6 +175,38 @@ export function faqAccordionFieldDefs(blocksBase: string): EditorFieldDef[] {
       widget: 'segmented',
       sidebar: true,
       options: [...BORDER_STYLE_OPTIONS],
+    },
+    {
+      path: s('borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s('borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    },
+    {
+      path: s('borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: true,
     },
     {
       path: s('cornerRadius'),
@@ -251,7 +317,7 @@ export function isFaqAccordionPanelFields(fields: EditorFieldDef[]): boolean {
 }
 
 export function sortFaqAccordionPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const groupRank: Record<string, number> = { General: 0, Borders: 1, Padding: 2 };
+  const groupRank: Record<string, number> = { General: 0, Appearance: 1, Borders: 2, Padding: 3 };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
     const gb = groupRank[b.group ?? ''] ?? 9;
@@ -275,12 +341,33 @@ export function groupFaqAccordionPanelFields(fields: EditorFieldDef[]): Map<stri
 }
 
 export function prepareFaqAccordionSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortFaqAccordionPanelFields(
-    (node.fields ?? []).filter(isFaqAccordionPanelField)
-  );
+  const canonical = faqAccordionFieldDefsFromNodeId(node.id);
+  const byKey = new Map<string, EditorFieldDef>();
+
+  for (const field of canonical) {
+    byKey.set(field.path.split('.').pop() ?? '', field);
+  }
+  for (const field of (node.fields ?? []).filter(isFaqAccordionPanelField)) {
+    const key = field.path.split('.').pop() ?? '';
+    const base = byKey.get(key);
+    byKey.set(
+      key,
+      base
+        ? {
+            ...base,
+            ...field,
+            path: field.path,
+            group: field.group ?? base.group,
+            widget: field.widget ?? base.widget,
+            options: field.options?.length ? field.options : base.options,
+          }
+        : field
+    );
+  }
+
+  const fields = sortFaqAccordionPanelFields(Array.from(byKey.values()));
   if (!fields.length) {
-    const fromNode = faqAccordionFieldDefsFromNodeId(node.id);
-    return { ...node, label: 'Accordion', kind: 'block', fields: fromNode };
+    return { ...node, label: 'Accordion', kind: 'block', fields: canonical };
   }
   return { ...node, label: 'Accordion', kind: 'block', fields };
 }
@@ -308,7 +395,16 @@ export function extendValuesForFaqAccordionBlock(
   for (const field of defs) {
     if (next[field.path] !== undefined) continue;
     const raw = getNested(config, field.path.split('.'));
-    if (raw === undefined) continue;
+    if (raw === undefined) {
+      const key = field.path.split('.').pop() ?? '';
+      const defaults = faqAccordionDefaultSettings();
+      if (key in defaults) {
+        const fallback = defaults[key];
+        next[field.path] = field.type === 'boolean' ? Boolean(fallback) : String(fallback);
+        changed = true;
+      }
+      continue;
+    }
     if (field.type === 'boolean') {
       next[field.path] = Boolean(raw);
     } else {

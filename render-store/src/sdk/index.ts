@@ -15,6 +15,7 @@ export { useStorefrontProductVariants } from '@/contexts/product-variant.context
 export { formatINR } from '@/utils/currency';
 export { isThemeEditorPreview } from '@/utils/theme-editor-preview';
 export { useThemeEditorPreview } from '@/hooks/useThemeEditorPreview';
+export { usePreviewDevice, type PreviewDevice } from '@/contexts/preview-device.context';
 export {
   usePreviewHighlightNodeId,
   layoutBlockIdFromHighlightNodeId,

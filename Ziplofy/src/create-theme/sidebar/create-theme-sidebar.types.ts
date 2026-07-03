@@ -91,6 +91,8 @@ export type SidebarNode = {
   checkoutCategory?: boolean;
   /** Always expanded with no chevron (checkout Main sub-groups). */
   checkoutStatic?: boolean;
+  /** FAQ heading blocks use the featured-collection collection-title settings panel. */
+  headingPanel?: 'collection-title';
 };
 
 export type EditorSchemaDoc = {

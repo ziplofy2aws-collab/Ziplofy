@@ -12,6 +12,11 @@ import {
 export {
   groupTextBlockPanelFields,
   isTextBlockPanelFields,
+  isTextBlockTypographyCustomPreset,
+  filterTextBlockPanelFieldsForTypographyPreset,
+  resolveTextBlockTypographyField,
+  TEXT_BLOCK_APPEARANCE_FIELD_ORDER,
+  TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
   TEXT_BLOCK_PANEL_GROUP_ORDER,
   TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS,
 } from './theme-editor-text-block-panel.utils';
@@ -78,7 +83,75 @@ export function isFaqAccordionRowTextField(field: EditorFieldDef): boolean {
   return isTextBlockPanelField(field);
 }
 
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const part of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[part];
+  }
+  return cur;
+}
+
+/** Seed sidebar `values` for accordion row text block panel fields from merged config. */
+export function extendValuesForFaqAccordionRowText(
+  values: Record<string, string | boolean>,
+  editorSchema: EditorSchemaDoc,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const defs = faqAccordionRowTextFieldDefsFromSchema(editorSchema, nodeId);
+  if (!defs.length) return values;
+  const defaults = faqAccordionRowTextDefaultSettings();
+  const next = { ...values };
+  let changed = false;
+  for (const field of defs) {
+    if (next[field.path] !== undefined) continue;
+    const key = field.path.split('.').pop() ?? '';
+    const raw = getNested(config, field.path.split('.'));
+    if (raw !== undefined) {
+      next[field.path] = field.type === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);
+      changed = true;
+      continue;
+    }
+    const fallback = defaults[key];
+    if (fallback === undefined) continue;
+    next[field.path] = typeof fallback === 'boolean' ? fallback : String(fallback);
+    changed = true;
+  }
+  return changed ? next : values;
+}
+
 export function prepareFaqAccordionRowTextSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortTextBlockPanelFields((node.fields ?? []).filter(isTextBlockPanelField));
+  const canonical = faqAccordionRowTextFieldDefsFromNodeId(node.id);
+  const byKey = new Map<string, EditorFieldDef>();
+
+  for (const field of canonical) {
+    byKey.set(field.path.split('.').pop() ?? '', field);
+  }
+  for (const field of (node.fields ?? []).filter(isTextBlockPanelField)) {
+    const key = field.path.split('.').pop() ?? '';
+    const base = byKey.get(key);
+    byKey.set(
+      key,
+      base
+        ? {
+            ...base,
+            ...field,
+            path: field.path,
+            group: field.group ?? base.group,
+            widget: field.widget ?? base.widget,
+            options: field.options?.length ? field.options : base.options,
+          }
+        : field
+    );
+  }
+
+  const fields = sortTextBlockPanelFields(
+    Array.from(byKey.values()).filter(isTextBlockPanelField)
+  );
+
+  if (!fields.length) {
+    return { ...node, label: 'Text', kind: 'block', fields: canonical };
+  }
   return { ...node, label: 'Text', kind: 'block', fields };
 }

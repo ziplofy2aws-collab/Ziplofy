@@ -4,8 +4,20 @@
  */
 export const MOBILE_MAX_WIDTH_PX = 749;
 
+/** Applied on `<html>` when the theme editor mobile device toggle is active. */
+export const PREVIEW_MOBILE_ROOT_CLASS = 'ziplofy-preview-mobile';
+
+function scopeCssForPreviewMobile(css: string): string {
+  return css.replace(/(^|[\s,{])(\.[a-zA-Z_][\w-]*)/g, `$1.${PREVIEW_MOBILE_ROOT_CLASS} $2`);
+}
+
 export function mobileMedia(css: string): string {
-  return `@media (max-width: ${MOBILE_MAX_WIDTH_PX}px) { ${css} }`;
+  return `@media (max-width: ${MOBILE_MAX_WIDTH_PX}px) { ${css} }\n${scopeCssForPreviewMobile(css)}`;
+}
+
+/** Mobile breakpoint rules for inline CSS strings (not using mobileMedia helpers). */
+export function atMobileBreakpoint(rules: string): string {
+  return mobileMedia(rules);
 }
 
 export function desktopMedia(css: string): string {

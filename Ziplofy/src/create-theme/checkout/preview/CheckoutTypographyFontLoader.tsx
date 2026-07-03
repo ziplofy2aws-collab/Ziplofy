@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 
 function googleFontStylesheetUrl(fontName: string): string {
   const family = encodeURIComponent(fontName).replace(/%20/g, '+');
-  return `https://fonts.googleapis.com/css2?family=${family}&display=swap`;
+  // Legacy v1 API serves whatever of these weights the font supports (css2 would
+  // 400 the whole request if any listed weight is missing).
+  const weights = '100,300,400,500,600,700,900';
+  return `https://fonts.googleapis.com/css?family=${family}:${weights}&display=swap`;
 }
 
 export function CheckoutTypographyFontLoader({

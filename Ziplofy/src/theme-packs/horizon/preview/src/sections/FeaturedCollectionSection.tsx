@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   formatINR,
-  useStorefront,
-  useStorefrontProducts,
 } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../lib/config';
@@ -12,6 +10,7 @@ import {
   readCollectionHeaderLayout,
 } from '../lib/collectionHeaderStyles';
 import { readCollectionTitleStyle } from '../lib/collectionTitleStyles';
+import { readViewAllButtonStyle, viewAllButtonAnchorCss, viewAllButtonWrapperCss } from '../lib/viewAllButtonStyles';
 import { readProductCardMediaStyle } from '../lib/productCardMediaStyles';
 import { readProductCardStyle } from '../lib/productCardStyles';
 import { formatProductCardPrice, readProductCardPriceStyle } from '../lib/productCardPriceStyles';
@@ -24,11 +23,15 @@ import {
   featuredCollectionColorScheme,
   featuredCollectionGaps,
   featuredCollectionPadding,
+  featuredCollectionSectionBackground,
   featuredCollectionSectionWidth,
   scopedFeaturedCollectionCss,
 } from '../lib/featuredCollectionStyles';
 import { orderedIds, templateBlockOrder } from '../lib/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
+import { ThemeEditorRichTextContent } from '../../../../../create-theme/runtime/shared/ThemeEditorRichTextContent';
+import { useFeaturedCollectionProducts } from '../../../../../create-theme/runtime/shared/useFeaturedCollectionProducts';
+import { richTextHasBlockMarkup } from '../../../../../utils/theme-editor-rich-text.util';
 import { layout, useThemeColors } from '../tokens';
 
 type Props = {
@@ -95,8 +98,6 @@ export function FeaturedCollectionSection({
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
   const themeColors = useThemeColors();
   const { text, background, primary, fontHeading, fontBody } = themeColors;
-  const { storeFrontMeta } = useStorefront();
-  const { products, fetchProductsByStoreId } = useStorefrontProducts();
 
   const state = useMemo(() => {
     const scheme = featuredCollectionColorScheme(config, settingsBase, {
@@ -122,6 +123,7 @@ export function FeaturedCollectionSection({
         Math.min(2, Number(cfgString(config, `${settingsBase}.mobileColumns`, '2')) || 2)
       ),
       limit: Math.max(1, cfgNumber(config, `${settingsBase}.productsToShow`, 8)),
+      collectionHandle: cfgString(config, `${settingsBase}.collectionHandle`, ''),
       customCss: cfgString(config, `${settingsBase}.customCss`, ''),
       emptyMessage: cfgString(config, `${settingsBase}.emptyMessage`),
       subtitle: cfgString(config, `${settingsBase}.subtitle`, ''),
@@ -151,6 +153,7 @@ export function FeaturedCollectionSection({
     columns,
     mobileColumns,
     limit,
+    collectionHandle,
     customCss,
     emptyMessage,
     subtitle,
@@ -164,7 +167,8 @@ export function FeaturedCollectionSection({
     navIconBackground,
   } = state;
 
-  const { color, background: sectionBg } = scheme;
+  const { color, background: schemeBg } = scheme;
+  const sectionBg = featuredCollectionSectionBackground(config, settingsBase, schemeBg);
   const isCarousel = layoutType === 'carousel';
   const isEditorial = layoutType === 'editorial';
   const isGrid = layoutType === 'grid' && !isCarousel && !isEditorial;
@@ -258,11 +262,7 @@ export function FeaturedCollectionSection({
     el.scrollBy({ left: el.clientWidth * 0.85 * dir, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    if (!storeFrontMeta?.storeId) return;
-    void fetchProductsByStoreId({ storeId: storeFrontMeta.storeId, page: 1, limit });
-  }, [fetchProductsByStoreId, limit, storeFrontMeta?.storeId]);
-
+  const products = useFeaturedCollectionProducts({ collectionHandle, limit });
   const list = products.slice(0, limit);
   const showNav = isCarousel && navIcon !== 'none' && list.length > columns;
   const innerMaxWidth = widthMode === 'full' ? '100%' : layout.maxWidth;
@@ -298,6 +298,16 @@ export function FeaturedCollectionSection({
         { text: color, heading: color, accent: primary, background: sectionBg }
       ),
     [config, fontHeading, fontBody, color, primary, sectionBg]
+  );
+  const viewAllButtonStyle = useMemo(
+    () =>
+      readViewAllButtonStyle(config, headerBase, {
+        primary,
+        background: sectionBg,
+        text: color,
+        line: layout.line,
+      }),
+    [config, headerBase, primary, sectionBg, color, layout.line]
   );
   const productCardStyle = useMemo(
     () => readProductCardStyle(config, productCardBase, scheme, layout.line),
@@ -364,52 +374,63 @@ export function FeaturedCollectionSection({
       label="Header"
     >
       <div
-        data-fc-collection-header
-        style={{
-          display: 'flex',
-          flexDirection: headerLayout.flexDirection,
-          flexWrap: headerLayout.flexWrap,
-          justifyContent: headerLayout.justifyContent,
-          alignItems: headerLayout.alignItems,
-          gap: headerLayout.gap,
-          width: headerLayout.width,
-          minHeight: headerLayout.minHeight,
-          marginBottom: gaps.section,
-          paddingTop: headerLayout.paddingTop,
-          paddingBottom: headerLayout.paddingBottom,
-          paddingLeft: headerLayout.paddingLeft,
-          paddingRight: headerLayout.paddingRight,
-          borderRadius: headerLayout.borderRadius,
-          border: headerLayout.border,
-          background: headerLayout.background,
-          backgroundImage: headerLayout.backgroundImage,
-          backgroundSize: headerLayout.backgroundImage ? 'cover' : undefined,
-          backgroundPosition: headerLayout.backgroundImage ? 'center' : undefined,
-          color: headerLayout.color,
-          boxSizing: 'border-box',
-        }}
+        style={
+          headerLayout.referenceMinHeight
+            ? { minHeight: headerLayout.referenceMinHeight, width: '100%' }
+            : undefined
+        }
       >
+        <div
+          data-fc-collection-header
+          style={{
+            display: 'flex',
+            flexDirection: headerLayout.flexDirection,
+            flexWrap: headerLayout.flexWrap,
+            justifyContent: headerLayout.justifyContent,
+            alignItems: headerLayout.alignItems,
+            gap: headerLayout.gap,
+            width: headerLayout.width,
+            height: headerLayout.height,
+            minHeight: headerLayout.minHeight,
+            marginBottom: gaps.section,
+            paddingTop: headerLayout.paddingTop,
+            paddingBottom: headerLayout.paddingBottom,
+            paddingLeft: headerLayout.paddingLeft,
+            paddingRight: headerLayout.paddingRight,
+            borderRadius: headerLayout.borderRadius,
+            border: headerLayout.border,
+            background: headerLayout.background,
+            backgroundImage: headerLayout.backgroundImage,
+            backgroundSize: headerLayout.backgroundSize,
+            backgroundPosition: headerLayout.backgroundImage ? 'center' : undefined,
+            backgroundRepeat: headerLayout.backgroundRepeat,
+            color: headerLayout.color,
+            boxSizing: 'border-box',
+          }}
+        >
       {headerNestedOrder.map((nestedId) => {
         if (nestedId === 'collection_title') {
+          const titleTag = richTextHasBlockMarkup(title) ? 'div' : 'h2';
           return (
             <EditorBlock
               key={nestedId}
               nodeId={`${editorNodeId}:block:collection_header:nested:collection_title`}
               label="Collection title"
+              style={{
+                flex: titleStyle.flex,
+                minWidth: titleStyle.flex ? 0 : undefined,
+              }}
             >
               <EditorField
                 fieldPath={`${blocksBase}.collection_header.settings.title`}
                 nodeId={editorNodeId}
                 label="Text"
-                as="h2"
+                as={titleTag}
                 style={{
                   margin: 0,
                   width: titleStyle.width,
                   maxWidth: titleStyle.maxWidth,
-                  fontFamily: titleStyle.fontFamily,
-                  fontSize: titleStyle.fontSize,
-                  fontWeight: titleStyle.fontWeight,
-                  lineHeight: titleStyle.lineHeight,
+                  textAlign: titleStyle.textAlign,
                   color: titleStyle.color,
                   background: titleStyle.background,
                   paddingTop: titleStyle.paddingTop,
@@ -420,7 +441,22 @@ export function FeaturedCollectionSection({
                   boxSizing: 'border-box',
                 }}
               >
-                {title}
+                <ThemeEditorRichTextContent
+                  html={title}
+                  style={{
+                    fontFamily: titleStyle.fontFamily,
+                    fontSize: titleStyle.fontSize,
+                    fontWeight: titleStyle.fontWeight,
+                    lineHeight: titleStyle.lineHeight,
+                    color: titleStyle.color,
+                    ...(titleStyle.fontStyle ? { fontStyle: titleStyle.fontStyle } : {}),
+                    ...(titleStyle.letterSpacing ? { letterSpacing: titleStyle.letterSpacing } : {}),
+                    ...(titleStyle.textTransform ? { textTransform: titleStyle.textTransform } : {}),
+                    ...(titleStyle.textWrap
+                      ? { textWrap: titleStyle.textWrap as CSSProperties['textWrap'] }
+                      : {}),
+                  }}
+                />
               </EditorField>
             </EditorBlock>
           );
@@ -431,6 +467,7 @@ export function FeaturedCollectionSection({
               key={nestedId}
               nodeId={`${editorNodeId}:block:collection_header:nested:view_all_button`}
               label="View all button"
+              style={viewAllButtonWrapperCss(viewAllButtonStyle)}
             >
               <EditorField
                 fieldPath={`${blocksBase}.collection_header.settings.viewAllLabel`}
@@ -439,7 +476,9 @@ export function FeaturedCollectionSection({
               >
                 <Link
                   to={viewAllHref}
-                  style={{ color: themeColors.primary, fontWeight: 600, textDecoration: 'none', fontSize: 14 }}
+                  target={viewAllButtonStyle.openInNewTab ? '_blank' : undefined}
+                  rel={viewAllButtonStyle.openInNewTab ? 'noopener noreferrer' : undefined}
+                  style={viewAllButtonAnchorCss(viewAllButtonStyle)}
                 >
                   {viewAllLabel}
                 </Link>
@@ -450,6 +489,7 @@ export function FeaturedCollectionSection({
         return null;
       })}
       {subtitle ? <p style={{ margin: 0, fontSize: 14, color: scheme.muted, maxWidth: 480 }}>{subtitle}</p> : null}
+      </div>
       </div>
     </EditorBlock>
   );
@@ -551,7 +591,7 @@ export function FeaturedCollectionSection({
                       fontSize: Math.max(11, Math.round(productCardPriceStyle.fontSize * compactScale)),
                       fontWeight: productCardPriceStyle.fontWeight,
                       lineHeight: productCardPriceStyle.lineHeight,
-                      color: globalProductCard.text,
+                      color: productCardPriceStyle.color,
                     }}
                   >
                     {(() => {

@@ -184,9 +184,9 @@ function getBlockLabel(editor: Editor | null): string {
   return "Paragraph";
 }
 
-const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
-  value,
-  onChange,
+const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({ 
+  value, 
+  onChange, 
   placeholder = "Describe your product...",
   label = "Description",
   hideLabel = false,
@@ -447,7 +447,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
 
   const removeLink = () => {
     if (!editor) return;
-    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
     setIsLinkPopoverOpen(false);
   };
 
@@ -499,9 +499,9 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
   ) => {
     const active = editor ? getBlockLabel(editor) === label : false;
     return (
-      <button
+    <button
         key={label}
-        type="button"
+      type="button"
         onClick={() => setBlock(kind)}
         className={`group flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left transition-colors ${
           active ? "bg-gray-100/90" : "hover:bg-gray-50"
@@ -511,7 +511,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
           {kind === "blockquote" ? (
             <span className="inline-flex items-center gap-2">
               <span className="h-6 w-0.5 rounded bg-gray-300" />
-              {label}
+      {label}
             </span>
           ) : (
             label
@@ -525,8 +525,8 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
         >
           ✓
         </span>
-      </button>
-    );
+    </button>
+  );
   };
 
   const handleToggleHtmlMode = () => {
@@ -555,7 +555,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
       {!hideLabel ? (
         <label className="mb-2 block text-sm font-medium text-gray-700">
           {label}
-        </label>
+      </label>
       ) : null}
       <div className="relative overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="relative z-20 flex flex-wrap items-center gap-0.5 border-b border-gray-200/90 bg-gray-50/95 px-2 py-1.5">

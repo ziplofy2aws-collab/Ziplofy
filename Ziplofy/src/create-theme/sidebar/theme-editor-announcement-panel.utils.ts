@@ -6,6 +6,7 @@ export const ANNOUNCEMENT_PANEL_GROUP_ORDER = [
   'General',
   'Appearance',
   'Padding',
+  'Theme Settings',
   'Custom CSS',
 ] as const;
 
@@ -14,10 +15,12 @@ const PANEL_GROUPS = new Set<string>(ANNOUNCEMENT_PANEL_GROUP_ORDER);
 const FIELD_SORT_KEYS: Record<string, number> = {
   timeToNext: 0,
   sectionWidth: 10,
-  colorScheme: 11,
+  backgroundColor: 11,
   dividerThickness: 12,
+  dividerColor: 13,
   paddingTop: 20,
   paddingBottom: 21,
+  colorScheme: 25,
   customCss: 30,
 };
 
@@ -30,7 +33,7 @@ export function isAnnouncementSettingsPanelFields(fields: EditorFieldDef[]): boo
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   return (
-    fields.some((f) => /\.sections\.announcement_bar(?:_\d+)?\.settings\./.test(f.path)) &&
+    fields.some((f) => /(?:^|\.)sections\.announcement_bar(?:_\d+)?\.settings\./.test(f.path)) &&
     keys.has('timeToNext')
   );
 }
@@ -70,7 +73,8 @@ export function sortAnnouncementPanelFields(fields: EditorFieldDef[]): EditorFie
     General: 0,
     Appearance: 1,
     Padding: 2,
-    'Custom CSS': 3,
+    'Theme Settings': 3,
+    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

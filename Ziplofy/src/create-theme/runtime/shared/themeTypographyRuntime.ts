@@ -104,3 +104,56 @@ export function resolveThemeTypographyStyle(
     textTransform: preset.textCase === 'uppercase' ? 'uppercase' : 'none',
   };
 }
+
+function parseCustomFontSizePx(raw: string, fallback: number): number {
+  if (!raw || raw === 'default') return fallback;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function getSettingsAt(
+  config: Record<string, unknown> | null | undefined,
+  base: string
+): Record<string, unknown> {
+  if (!config) return {};
+  let cur: unknown = config;
+  for (const part of base.split('.')) {
+    if (cur == null || typeof cur !== 'object') return {};
+    cur = (cur as Record<string, unknown>)[part];
+  }
+  return cur && typeof cur === 'object' ? (cur as Record<string, unknown>) : {};
+}
+
+export function resolveTextBlockTypographyStyle(
+  config: Record<string, unknown> | null | undefined,
+  settingsBase: string,
+  presetKey: string,
+  fonts: ThemeFonts
+): ResolvedThemeTypographyStyle & { textWrap?: CSSProperties['textWrap'] } {
+  const normalized = presetKey === 'body' ? 'paragraph' : presetKey;
+  if (normalized !== 'custom') {
+    return resolveThemeTypographyStyle(config, normalized, fonts);
+  }
+
+  const presetFallback = resolveThemeTypographyStyle(config, 'default', fonts);
+  const settings = getSettingsAt(config, settingsBase);
+  const font = String(settings.font ?? 'body');
+  const fontSizeRaw = String(settings.fontSize ?? 'default');
+  const lineHeightKey = String(settings.lineHeight ?? 'normal');
+  const letterSpacingKey = String(settings.letterSpacing ?? 'normal');
+  const textCase = String(settings.textCase ?? 'default');
+  const wrap = String(settings.wrap ?? 'pretty');
+  const weightStyle = resolveThemeFontWeightAndStyle(font);
+
+  return {
+    fontFamily: resolveThemeFontFamily(font, fonts),
+    fontSize: parseCustomFontSizePx(fontSizeRaw, presetFallback.fontSize),
+    fontWeight: weightStyle.fontWeight ?? 400,
+    fontStyle: weightStyle.fontStyle,
+    lineHeight: lineHeightMultiplier(lineHeightKey),
+    letterSpacing: letterSpacingCss(letterSpacingKey),
+    textTransform: textCase === 'uppercase' ? 'uppercase' : 'none',
+    textWrap:
+      wrap === 'balance' ? 'balance' : wrap === 'nowrap' ? 'nowrap' : ('pretty' as const),
+  };
+}

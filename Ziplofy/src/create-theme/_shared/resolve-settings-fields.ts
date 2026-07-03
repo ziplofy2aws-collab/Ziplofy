@@ -12,13 +12,9 @@ function parseNodeId(nodeId: string): {
   templateId?: string;
 } | null {
   const layoutBlock = nodeId.match(/^layout:([^:]+):block:(.+)$/);
-  if (layoutBlock) {
-    return { scope: 'layout', instanceId: layoutBlock[1], blockId: layoutBlock[2] };
-  }
+  if (layoutBlock) return { scope: 'layout', instanceId: layoutBlock[1], blockId: layoutBlock[2] };
   const layoutSection = nodeId.match(/^layout:([^:]+)$/);
-  if (layoutSection) {
-    return { scope: 'layout', instanceId: layoutSection[1], blockId: null };
-  }
+  if (layoutSection) return { scope: 'layout', instanceId: layoutSection[1], blockId: null };
   const tplBlock = nodeId.match(/^template:([^:]+):([^:]+):block:(.+)$/);
   if (tplBlock) {
     return {

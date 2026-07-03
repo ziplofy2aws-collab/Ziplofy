@@ -5,8 +5,10 @@ import {
   useRef,
   useState,
   type ComponentType,
+  type CSSProperties,
   type RefObject,
 } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArrowLeftIcon,
   ChevronRightIcon,
@@ -114,6 +116,7 @@ export function ThemeEditorLinkPickerDropdown({
   storeId: storeIdProp,
   placement = 'below',
   boundaryRef,
+  anchorRef,
 }: {
   open: boolean;
   searchQuery: string;
@@ -124,11 +127,18 @@ export function ThemeEditorLinkPickerDropdown({
   placement?: 'below' | 'above';
   /** Clicks inside this element do not close the picker (e.g. the trigger field). */
   boundaryRef?: RefObject<HTMLElement | null>;
+  /**
+   * When provided, the picker renders in a fixed-position portal anchored to this
+   * element, flipping above/below based on available space and clamping its height
+   * to the viewport. Use inside scroll/overflow-clipped containers (e.g. modals).
+   */
+  anchorRef?: RefObject<HTMLElement | null>;
 }) {
   const { activeStoreId } = useStore();
   const storeId = storeIdProp ?? activeStoreId;
 
   const panelRef = useRef<HTMLDivElement>(null);
+  const [portalStyle, setPortalStyle] = useState<CSSProperties | null>(null);
   const { collections, loading: collectionsLoading, fetchCollectionsByStoreId } = useCollections();
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
   const { blogs, loading: blogsLoading, fetchBlogsByStoreId } = useBlogs();
@@ -150,6 +160,40 @@ export function ThemeEditorLinkPickerDropdown({
     document.addEventListener('mousedown', onDocClick);
     return () => document.removeEventListener('mousedown', onDocClick);
   }, [open, onClose, boundaryRef]);
+
+  useEffect(() => {
+    if (!open || !anchorRef) {
+      setPortalStyle(null);
+      return;
+    }
+    const update = () => {
+      const el = anchorRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const gap = 6;
+      const viewportH = window.innerHeight;
+      const spaceBelow = viewportH - rect.bottom - gap;
+      const spaceAbove = rect.top - gap;
+      const useAbove =
+        placement === 'above' ? spaceAbove >= spaceBelow : spaceBelow < 200 && spaceAbove > spaceBelow;
+      const avail = useAbove ? spaceAbove : spaceBelow;
+      const maxHeight = Math.max(160, Math.min(320, avail));
+      setPortalStyle({
+        position: 'fixed',
+        left: rect.left,
+        width: rect.width,
+        maxHeight,
+        ...(useAbove ? { bottom: viewportH - rect.top + gap } : { top: rect.bottom + gap }),
+      });
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [open, anchorRef, placement, view]);
 
   const filteredCollections = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -303,15 +347,21 @@ export function ThemeEditorLinkPickerDropdown({
                 searchQuery
               ).length;
 
-  const positionClass =
-    placement === 'above'
+  const usePortal = Boolean(anchorRef);
+  const positionClass = usePortal
+    ? 'z-[10065]'
+    : placement === 'above'
       ? 'absolute left-0 right-0 bottom-full z-[10065] mb-1'
       : 'absolute left-0 right-0 top-full z-30 mt-1';
+  const heightClass = usePortal ? '' : 'max-h-[min(320px,50vh)]';
 
-  return (
+  if (usePortal && !portalStyle) return null;
+
+  const panel = (
     <div
       ref={panelRef}
-      className={`${positionClass} max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-[#e1e1e1] bg-white py-1 shadow-lg ring-1 ring-black/5`}
+      style={usePortal ? portalStyle ?? undefined : undefined}
+      className={`${positionClass} ${heightClass} overflow-y-auto rounded-xl border border-[#e1e1e1] bg-white py-1 shadow-lg ring-1 ring-black/5`}
     >
       {isDrillDown ? (
         <>
@@ -546,4 +596,9 @@ export function ThemeEditorLinkPickerDropdown({
       )}
     </div>
   );
+
+  if (usePortal && typeof document !== 'undefined') {
+    return createPortal(panel, document.body);
+  }
+  return panel;
 }

@@ -115,6 +115,18 @@ import {
   expandedIdsForPreviewNode,
 } from './utils/selection-hints';
 import {
+  extendValuesForCollectionTitleBlock,
+  isCollectionTitleNestedNodeId,
+} from './sidebar/theme-editor-fc-collection-title-panel.utils';
+import {
+  extendValuesForViewAllButtonBlock,
+  isViewAllButtonNestedNodeId,
+} from './sidebar/theme-editor-fc-view-all-button-panel.utils';
+import {
+  extendValuesForFeaturedCollectionHeaderBlock,
+  isFeaturedCollectionHeaderBlockNodeId,
+} from './sidebar/theme-editor-fc-header-panel.utils';
+import {
   isHeadingBlockNodeId,
   extendValuesForHeadingBlock,
   mirrorHeadingTextInValues,
@@ -128,6 +140,10 @@ import {
   extendValuesForFaqAccordionRow,
   isFaqAccordionRowNestedNodeId,
 } from './sidebar/theme-editor-faq-accordion-row-panel.utils';
+import {
+  extendValuesForFaqAccordionRowText,
+  isFaqAccordionRowTextNestedNodeId,
+} from './sidebar/theme-editor-faq-accordion-row-text-panel.utils';
 import {
   extendValuesForLargeLogoBlock,
   isHeroLargeLogoBlockNodeId,
@@ -833,6 +849,56 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     });
   }, [selectedNodeId, editorSchema, defaultConfig]);
 
+  /** Seed featured collection Collection title block panel values from merged config. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isCollectionTitleNestedNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForCollectionTitleBlock(prev, editorSchema, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed featured collection View all button panel values from merged config. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isViewAllButtonNestedNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForViewAllButtonBlock(prev, editorSchema, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed featured collection Header block panel values from merged config. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isFeaturedCollectionHeaderBlockNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForFeaturedCollectionHeaderBlock(
+        prev,
+        editorSchema,
+        selectedNodeId,
+        merged
+      );
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
   /** Seed large-logo Logo block panel values from merged config. */
   useEffect(() => {
     if (!editorSchema || !defaultConfig || !isHeroLargeLogoBlockNodeId(selectedNodeId)) return;
@@ -885,6 +951,21 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     setValues((prev) => {
       const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
       const next = extendValuesForFaqAccordionRow(prev, editorSchema, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed accordion row text block panel values from merged config when opening the panel. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isFaqAccordionRowTextNestedNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForFaqAccordionRowText(prev, editorSchema, selectedNodeId, merged);
       if (next === prev) return prev;
       for (const key of Object.keys(next)) {
         if (next[key] !== prev[key]) return next;
@@ -1518,7 +1599,10 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       const value = type === 'boolean' ? Boolean(raw) : String(raw);
       startTransition(() => {
         setValues((prev) => {
-          let next = mirrorHeadingTextInValues(prev, path, value);
+          let next: Record<string, string | boolean> = { ...prev, [path]: value };
+          if (path.endsWith('.settings.title') || /\.blocks\.[^.]+\.settings\.heading$/.test(path)) {
+            next = mirrorHeadingTextInValues(prev, path, value);
+          }
           next = mirrorCollectionListHeadingTextInValues(next, path, value);
           if (isCollectionListCardsLayoutTypePath(path)) {
             const settingsBase = path.replace(/\.cardsLayoutType$/, '');
@@ -1735,7 +1819,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               result.templateId,
               result.sectionInstanceId,
               result.blockInstanceId,
-              result.config
+              result.config,
+              editorSchema
             );
           }
           if (hero) {
@@ -1791,7 +1876,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               undefined,
               result.sectionInstanceId,
               result.blockInstanceId,
-              result.config
+              result.config,
+              editorSchema
             );
           }
           return extendValuesForLayoutBlock(
@@ -2501,6 +2587,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           onCloseSettings={closeSettings}
           onRemoveSettingsSection={handleRemoveSettingsSection}
           onRemoveSettingsBlock={handleRemoveSettingsBlock}
+          themeColorPalette={themeColorPalette}
         />
 
       <div className="relative z-0 flex min-h-0 min-w-0 flex-1 overflow-hidden">
@@ -2536,6 +2623,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             <CreateThemeLivePreview
               key={themeRuntime.jsUrl ?? 'composer'}
               className="h-full min-h-0 w-full flex-1"
+              device={device}
               storeId={previewStoreId}
               storeName={activeStoreName}
               jsUrl={themeRuntime.jsUrl}

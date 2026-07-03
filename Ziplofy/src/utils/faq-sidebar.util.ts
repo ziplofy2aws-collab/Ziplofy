@@ -1,5 +1,7 @@
 import type { SidebarIcon, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
 import { faqAccordionFieldDefs } from '../create-theme/sidebar/theme-editor-faq-accordion-block-panel.utils';
+import { faqAccordionRowFieldDefs } from '../create-theme/sidebar/theme-editor-faq-accordion-row-panel.utils';
+import { faqAccordionRowTextFieldDefs } from '../create-theme/sidebar/theme-editor-faq-accordion-row-text-panel.utils';
 
 function listKeyBlockChildren(blockPrefix: string): string {
   return `fields:${blockPrefix}`;
@@ -151,6 +153,9 @@ function accordionRowNode(
       label: 'Text',
       kind: 'block' as const,
       icon: 'text' as const,
+      fields: faqAccordionRowTextFieldDefs(
+        `${blocksBase}.accordion.blocks.${rowId}.blocks.${childId}`
+      ),
       preview: previewFromValues(values, textPath),
       showVisibilityToggle: true,
       showDeleteButton: true,
@@ -165,6 +170,7 @@ function accordionRowNode(
     label: 'Accordion row',
     kind: 'block',
     icon: 'section',
+    fields: faqAccordionRowFieldDefs(`${blocksBase}.accordion.blocks.${rowId}`),
     preview,
     showVisibilityToggle: true,
     showDeleteButton: true,
@@ -221,14 +227,18 @@ function headingBlockNode(
   blocksBase: string,
   values: Record<string, string | boolean>
 ): SidebarNode {
-  const titlePath = `${blocksBase.replace(/\.blocks$/, '.settings')}.title`;
+  const settingsBase = blocksBase.replace(/\.blocks$/, '.settings');
+  const preview =
+    previewFromValues(values, `${settingsBase}.title`) ??
+    previewFromValues(values, `${blocksBase}.heading.settings.heading`);
   return {
     id: `${prefix}:block:heading`,
     label: 'Heading',
     kind: 'block',
     icon: 'text',
     fields: [],
-    preview: previewFromValues(values, titlePath),
+    preview,
+    headingPanel: 'collection-title',
     showVisibilityToggle: true,
     showDeleteButton: true,
   };

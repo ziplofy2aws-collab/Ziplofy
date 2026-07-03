@@ -3648,8 +3648,8 @@
         {
           "path": "sections.faq_section.settings.borderStyle",
           "type": "select",
-          "label": "Borders",
-          "group": "Appearance",
+          "label": "Style",
+          "group": "Borders",
           "widget": "segmented",
           "sidebar": true,
           "options": [
@@ -3667,7 +3667,7 @@
           "path": "sections.faq_section.settings.cornerRadius",
           "type": "number",
           "label": "Corner radius",
-          "group": "Appearance",
+          "group": "Borders",
           "widget": "slider",
           "min": 0,
           "max": 40,
@@ -9161,10 +9161,14 @@
             {
               "path": "templates.index.sections.hero_main.settings.colorScheme",
               "type": "select",
-              "label": "Color scheme",
+              "label": "Background color",
               "group": "Appearance",
               "widget": "color-scheme",
               "options": [
+                {
+                  "value": "transparent",
+                  "label": "Transparent"
+                },
                 {
                   "value": "scheme-1",
                   "label": "Scheme 1"
@@ -9225,12 +9229,42 @@
               ]
             },
             {
+              "path": "templates.index.sections.hero_main.settings.overlayGradientDirection",
+              "type": "select",
+              "label": "Gradient direction",
+              "group": "Appearance",
+              "widget": "segmented",
+              "sidebar": false,
+              "options": [
+                {
+                  "value": "up",
+                  "label": "Up"
+                },
+                {
+                  "value": "down",
+                  "label": "Down"
+                }
+              ]
+            },
+            {
               "path": "templates.index.sections.hero_main.settings.blurredReflection",
               "type": "boolean",
               "label": "Blurred reflection",
               "group": "Appearance",
               "sidebar": false,
               "description": "Applies to images only"
+            },
+            {
+              "path": "templates.index.sections.hero_main.settings.reflectionOpacity",
+              "type": "number",
+              "label": "Reflection opacity",
+              "group": "Appearance",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": false
             },
             {
               "path": "templates.index.sections.hero_main.settings.paddingTop",
@@ -9369,8 +9403,8 @@
                 {
                   "path": "templates.index.sections.hero_main.settings.headingColor",
                   "type": "select",
-                  "label": "Color",
-                  "group": "Typography",
+                  "label": "Text color",
+                  "group": "Appearance",
                   "widget": "select",
                   "sidebar": false,
                   "options": [
@@ -13725,8 +13759,8 @@
             {
               "path": "templates.index.sections.faq_section.settings.borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "sidebar": true,
               "options": [
@@ -13744,7 +13778,7 @@
               "path": "templates.index.sections.faq_section.settings.cornerRadius",
               "type": "number",
               "label": "Corner radius",
-              "group": "Appearance",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
               "max": 40,

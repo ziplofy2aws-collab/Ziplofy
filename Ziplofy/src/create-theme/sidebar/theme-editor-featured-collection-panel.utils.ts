@@ -1,4 +1,6 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
+import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
+import { resolveEditingPanelForNode } from '../../theme-editor/section-editing-support.util';
 
 const PANEL_GROUPS = new Set([
   'Collection',
@@ -23,7 +25,8 @@ const FIELD_SORT: Record<string, number> = {
   sectionWidth: 10,
   alignment: 11,
   sectionGap: 12,
-  colorScheme: 13,
+  backgroundColor: 13,
+  colorScheme: 14,
   paddingTop: 20,
   paddingBottom: 21,
   customCss: 30,
@@ -72,6 +75,217 @@ export function featuredCollectionSettingsBaseFromNodeId(nodeId: string): string
     return `templates.${childMatch[1]}.sections.${childMatch[2]}.settings`;
   }
   return null;
+}
+
+function s(settingsBase: string, key: string): string {
+  return `${settingsBase}.${key}`;
+}
+
+/** Canonical Shopify-order field defs for featured collection section settings. */
+export function featuredCollectionFieldDefs(settingsBase: string): EditorFieldDef[] {
+  return [
+    {
+      path: s(settingsBase, 'collectionHandle'),
+      type: 'text',
+      label: 'Collection',
+      group: 'Collection',
+      widget: 'collection',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'layoutType'),
+      type: 'select',
+      label: 'Type',
+      group: 'Collection',
+      sidebar: true,
+      options: [
+        { value: 'grid', label: 'Grid' },
+        { value: 'carousel', label: 'Carousel' },
+        { value: 'editorial', label: 'Editorial' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'carouselOnMobile'),
+      type: 'boolean',
+      label: 'Carousel on mobile',
+      group: 'Collection',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'productsToShow'),
+      type: 'number',
+      label: 'Product count',
+      group: 'Collection',
+      widget: 'slider',
+      min: 1,
+      max: 24,
+      step: 1,
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'columns'),
+      type: 'number',
+      label: 'Columns',
+      group: 'Collection',
+      widget: 'slider',
+      min: 1,
+      max: 6,
+      step: 1,
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'mobileColumns'),
+      type: 'select',
+      label: 'Mobile columns',
+      group: 'Collection',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: '1', label: '1' },
+        { value: '2', label: '2' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'horizontalGap'),
+      type: 'number',
+      label: 'Horizontal gap',
+      group: 'Collection',
+      widget: 'slider',
+      min: 0,
+      max: 48,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'verticalGap'),
+      type: 'number',
+      label: 'Vertical gap',
+      group: 'Collection',
+      widget: 'slider',
+      min: 0,
+      max: 48,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'navIcon'),
+      type: 'select',
+      label: 'Icon',
+      group: 'Carousel navigation',
+      sidebar: true,
+      options: [
+        { value: 'arrows', label: 'Arrows' },
+        { value: 'chevron', label: 'Chevron' },
+        { value: 'none', label: 'None' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'navIconBackground'),
+      type: 'select',
+      label: 'Icon background',
+      group: 'Carousel navigation',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'circle', label: 'Circle' },
+        { value: 'square', label: 'Square' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'sectionWidth'),
+      type: 'select',
+      label: 'Width',
+      group: 'Section layout',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'page', label: 'Page' },
+        { value: 'full', label: 'Full' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'alignment'),
+      type: 'select',
+      label: 'Alignment',
+      group: 'Section layout',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'left', label: 'Left' },
+        { value: 'center', label: 'Center' },
+        { value: 'right', label: 'Right' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'sectionGap'),
+      type: 'number',
+      label: 'Gap',
+      group: 'Section layout',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'backgroundColor'),
+      type: 'text',
+      label: 'Background color',
+      group: 'Section layout',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'colorScheme'),
+      type: 'select',
+      label: 'Color scheme',
+      group: 'Theme settings',
+      widget: 'color-scheme',
+      sidebar: true,
+      options: [
+        { value: 'scheme-1', label: 'Scheme 1' },
+        { value: 'scheme-2', label: 'Scheme 2' },
+        { value: 'scheme-3', label: 'Scheme 3' },
+        { value: 'scheme-4', label: 'Scheme 4' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'paddingTop'),
+      type: 'number',
+      label: 'Top',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 120,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'paddingBottom'),
+      type: 'number',
+      label: 'Bottom',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 120,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'customCss'),
+      type: 'textarea',
+      label: 'Custom CSS',
+      group: 'Custom CSS',
+      widget: 'accordion',
+      sidebar: true,
+    },
+  ];
 }
 
 function readSettingString(
@@ -143,6 +357,14 @@ const EDITORIAL_COLLECTION_FIELD_KEYS = new Set([
   'layoutType',
   'carouselOnMobile',
   'productsToShow',
+]);
+
+const CAROUSEL_HIDDEN_COLLECTION_FIELD_KEYS = new Set([
+  'verticalGap',
+  'carouselOnMobile',
+  'subtitle',
+  'showRating',
+  'emptyMessage',
 ]);
 
 export function isFeaturedCollectionGridSettingsPanelFields(
@@ -244,7 +466,13 @@ export function filterFeaturedCollectionPanelFieldsForVariant(
   fields: EditorFieldDef[],
   variant: 'carousel' | 'editorial' | 'grid' | 'default'
 ): EditorFieldDef[] {
-  if (variant === 'carousel') return fields;
+  if (variant === 'carousel') {
+    return fields.filter((f) => {
+      if (f.group !== 'Collection') return true;
+      const key = f.path.split('.').pop() ?? '';
+      return !CAROUSEL_HIDDEN_COLLECTION_FIELD_KEYS.has(key);
+    });
+  }
   if (variant === 'editorial') {
     return fields
       .filter((f) => !f.path.endsWith('.navIcon') && !f.path.endsWith('.navIconBackground'))
@@ -292,10 +520,17 @@ export function prepareFeaturedCollectionSettingsNode(
   values?: Record<string, unknown>,
   config?: Record<string, unknown> | null
 ): SidebarNode {
-  const raw = sortFeaturedCollectionPanelFields(
-    (node.fields ?? []).filter(isFeaturedCollectionPanelField)
-  );
   const settingsBase = featuredCollectionSettingsBaseFromNodeId(node.id);
+  const catalog = resolveEditingPanelForNode(node.id);
+  const canonical = settingsBase ? featuredCollectionFieldDefs(settingsBase) : [];
+  const source = canonical.length
+    ? canonical
+    : catalog?.fields.length
+      ? catalog.fields
+      : (node.fields ?? []);
+  const raw = sortFeaturedCollectionPanelFields(
+    filterSidebarSectionPanelFields(source, isFeaturedCollectionPanelField)
+  );
   const layoutType = settingsBase
     ? readFeaturedCollectionSettingValue(values, config, settingsBase, 'layoutType')
     : '';
