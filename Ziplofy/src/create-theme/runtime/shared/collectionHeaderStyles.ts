@@ -190,17 +190,30 @@ export function collectionHeaderResponsiveCss(
   verticalOnMobile: boolean,
   mobileCustomWidth?: number
 ): string {
-  const sel = `[data-ziplofy-section="${sectionId}"] [data-fc-collection-header]`;
+  return collectionHeaderResponsiveCssForSelector(
+    `[data-ziplofy-section="${sectionId}"] [data-fc-collection-header]`,
+    mobileWidth,
+    verticalOnMobile,
+    mobileCustomWidth
+  );
+}
+
+export function collectionHeaderResponsiveCssForSelector(
+  selector: string,
+  mobileWidth: string,
+  verticalOnMobile: boolean,
+  mobileCustomWidth?: number
+): string {
   let css = '';
   if (verticalOnMobile) {
-    css += `@media (max-width: 749px) { ${sel} { flex-direction: column !important; align-items: stretch !important; } }`;
+    css += `@media (max-width: 749px) { ${selector} { flex-direction: column !important; align-items: stretch !important; } }`;
   }
   if (mobileWidth === 'fit') {
-    css += `@media (max-width: 749px) { ${sel} { width: fit-content !important; max-width: 100%; } }`;
+    css += `@media (max-width: 749px) { ${selector} { width: fit-content !important; max-width: 100%; } }`;
   } else if (mobileWidth === 'fill') {
-    css += `@media (max-width: 749px) { ${sel} { width: 100% !important; } }`;
+    css += `@media (max-width: 749px) { ${selector} { width: 100% !important; } }`;
   } else if (mobileWidth === 'custom' && mobileCustomWidth != null && mobileCustomWidth > 0) {
-    css += `@media (max-width: 749px) { ${sel} { width: ${mobileCustomWidth}% !important; max-width: 100%; } }`;
+    css += `@media (max-width: 749px) { ${selector} { width: ${mobileCustomWidth}% !important; max-width: 100%; } }`;
   }
   return css;
 }

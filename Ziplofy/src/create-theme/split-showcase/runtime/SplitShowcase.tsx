@@ -1,13 +1,15 @@
 import { useMemo, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
-import { cfgString } from '../../runtime/shared/config';
+import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { useThemeColors } from '../../runtime/shared/tokens';
 import { readHeroHeadingText } from '../../hero/runtime/heroHeadingStyles';
 import { readHeroStyle, scopedHeroCss } from '../../hero/runtime/heroStyles';
 import { splitShowcaseResponsiveCss } from './splitShowcaseStyles';
 import { LayeredSlideshowSlideMedia } from '../../layered-slideshow/runtime/LayeredSlideshowArt';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 
 type Props = {
   sectionId: string;
@@ -31,19 +33,27 @@ function sectionNodeId(sectionId: string, placement: 'layout' | 'template', temp
   return placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
 }
 
-function blockNodeId(
-  sectionId: string,
-  placement: 'layout' | 'template',
-  templateId: string,
-  blockId: string
-): string {
-  return `${sectionNodeId(sectionId, placement, templateId)}:block:${blockId}`;
-}
+const SPLIT_TEXT_PRESETS: Record<
+  string,
+  { fontSize: string; fontWeight: number; lineHeight: number }
+> = {
+  default: { fontSize: 'clamp(1.5rem, 2.45vw, 2rem)', fontWeight: 700, lineHeight: 1.1 },
+  paragraph: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.55 },
+  body: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.55 },
+  'heading-1': { fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: 700, lineHeight: 1.1 },
+  'heading-2': { fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, lineHeight: 1.15 },
+  'heading-3': { fontSize: 'clamp(1.5rem, 3.2vw, 2rem)', fontWeight: 700, lineHeight: 1.2 },
+  'heading-4': { fontSize: 'clamp(1.25rem, 2.6vw, 1.625rem)', fontWeight: 600, lineHeight: 1.25 },
+  'heading-5': { fontSize: '1.375rem', fontWeight: 600, lineHeight: 1.3 },
+  'heading-6': { fontSize: '1.125rem', fontWeight: 600, lineHeight: 1.4 },
+};
 
 function SplitShowcaseTile({
   imageUrl,
   peekVariant,
   title,
+  textBase,
+  groupBase,
   titleFieldPath,
   titleBlockNodeId,
   titleBlockLabel,
@@ -57,6 +67,8 @@ function SplitShowcaseTile({
   imageUrl: string;
   peekVariant: 'figure' | 'landscape';
   title: string;
+  textBase: string;
+  groupBase: string;
   titleFieldPath: string;
   titleBlockNodeId: string;
   titleBlockLabel: string;
@@ -71,10 +83,20 @@ function SplitShowcaseTile({
   const buttonBase = `${blocksBase}.${buttonBlockId}.settings`;
   const label = cfgString(config, `${buttonBase}.label`, 'Shop now');
   const href = cfgString(config, `${buttonBase}.href`, '/products');
+  const buttonStyleMode = cfgString(config, `${buttonBase}.buttonStyle`, 'primary');
+  const linkTextColorRaw = cfgString(config, `${buttonBase}.linkTextColor`, '');
+
+  const groupBgMedia = cfgString(config, `${groupBase}.backgroundMedia`, 'none');
+  const groupBgImage = cfgString(config, `${groupBase}.backgroundImageUrl`, '');
+  const groupBgImagePosition = cfgString(config, `${groupBase}.backgroundImagePosition`, 'cover');
+  const groupBgOverlay = cfgBool(config, `${groupBase}.backgroundOverlay`, false);
+  const groupBorderStyle = cfgString(config, `${groupBase}.borderStyle`, 'none');
+  const groupCornerRadius = cfgNumber(config, `${groupBase}.cornerRadius`, 0);
+  const hasGroupImage = groupBgMedia === 'image' && groupBgImage.trim().length > 0;
 
   const hasImage = imageUrl.trim().length > 0;
   /** Dark text reads cleanly on the light illustration; white text suits a photo + overlay. */
-  const onDarkMedia = hasImage && showOverlay;
+  const onDarkMedia = (hasImage && showOverlay) || (hasGroupImage && groupBgOverlay);
 
   const tileStyle: CSSProperties = {
     position: 'relative',
@@ -84,29 +106,64 @@ function SplitShowcaseTile({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    background: '#f3efe6',
+    background: hasGroupImage ? undefined : '#f3efe6',
+    backgroundImage: hasGroupImage ? `url(${groupBgImage})` : undefined,
+    backgroundSize: hasGroupImage ? (groupBgImagePosition === 'fit' ? 'contain' : 'cover') : undefined,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    border: groupBorderStyle === 'solid' ? '1px solid rgba(0, 0, 0, 0.12)' : undefined,
+    borderRadius: groupCornerRadius > 0 ? groupCornerRadius : undefined,
   };
 
-  const headingColor = onDarkMedia ? '#ffffff' : '#111827';
+  const preset = cfgString(config, `${textBase}.typographyPreset`, 'default');
+  const presetStyle = SPLIT_TEXT_PRESETS[preset] ?? SPLIT_TEXT_PRESETS.default;
+  const widthMode = cfgString(config, `${textBase}.width`, 'fit');
+  const textColorRaw = cfgString(config, `${textBase}.textColor`, '');
+  const bgEnabled = cfgBool(config, `${textBase}.backgroundEnabled`, false);
+  const cornerRadius = cfgNumber(config, `${textBase}.cornerRadius`, 0);
+  const padTop = cfgNumber(config, `${textBase}.paddingTop`, 0);
+  const padBottom = cfgNumber(config, `${textBase}.paddingBottom`, 0);
+  const padLeft = cfgNumber(config, `${textBase}.paddingLeft`, 0);
+  const padRight = cfgNumber(config, `${textBase}.paddingRight`, 0);
+
+  const defaultHeadingColor = onDarkMedia ? '#ffffff' : '#111827';
+  const headingColor =
+    textColorRaw === '' || textColorRaw === 'default'
+      ? defaultHeadingColor
+      : resolveThemePaletteColorSetting(config, textColorRaw, 1, defaultHeadingColor);
 
   const headingStyle: CSSProperties = {
     margin: 0,
     fontFamily: fontHeading,
-    fontSize: 'clamp(1.5rem, 2.45vw, 2rem)',
-    fontWeight: 700,
-    lineHeight: 1.05,
+    fontSize: presetStyle.fontSize,
+    fontWeight: presetStyle.fontWeight,
+    lineHeight: presetStyle.lineHeight,
     letterSpacing: '-0.02em',
     color: headingColor,
     textAlign: 'center',
     textShadow: onDarkMedia ? '0 2px 16px rgba(0, 0, 0, 0.35)' : 'none',
+    width: widthMode === 'fill' ? '100%' : 'fit-content',
+    paddingTop: padTop || undefined,
+    paddingBottom: padBottom || undefined,
+    paddingLeft: padLeft || undefined,
+    paddingRight: padRight || undefined,
+    background: bgEnabled ? 'rgba(0, 0, 0, 0.04)' : undefined,
+    borderRadius: bgEnabled && cornerRadius > 0 ? cornerRadius : bgEnabled ? 8 : undefined,
+    boxSizing: 'border-box',
   };
+
+  const linkColor =
+    buttonStyleMode === 'link' && linkTextColorRaw && linkTextColorRaw !== 'default'
+      ? resolveThemePaletteColorSetting(config, linkTextColorRaw, 1, defaultHeadingColor)
+      : defaultHeadingColor;
 
   const linkStyle: CSSProperties = {
     fontFamily: fontBody,
     fontSize: 13,
     fontWeight: 500,
-    color: headingColor,
-    textDecoration: 'none',
+    color: linkColor,
+    textDecoration: buttonStyleMode === 'link' ? 'underline' : 'none',
+    textUnderlineOffset: 4,
   };
 
   return (
@@ -156,7 +213,7 @@ function SplitShowcaseTile({
           {title.trim() ? (
             <EditorBlock nodeId={titleBlockNodeId} label={titleBlockLabel}>
               <EditorField fieldPath={titleFieldPath} label="Text" as="h2" style={headingStyle}>
-                {title}
+                <ThemeEditorRichTextContent html={title} />
               </EditorField>
             </EditorBlock>
           ) : null}
@@ -206,11 +263,28 @@ export function SplitShowcase({
     [config, settingsPath, background, text]
   );
 
+  const leftTextBase = `${settingsPath}.group1Text.settings`;
+  const rightTextBase = `${settingsPath}.group2Text.settings`;
   const leftTitle =
-    readHeroHeadingText(config, settingsPath, blocksPath, 'heading') || 'New arrivals';
+    cfgString(config, `${leftTextBase}.text`, '') ||
+    readHeroHeadingText(config, settingsPath, blocksPath, 'heading') ||
+    'New arrivals';
   const rightTitle =
+    cfgString(config, `${rightTextBase}.text`, '') ||
     cfgString(config, `${blocksPath}.text_right.settings.text`, '') ||
-    cfgString(config, `${settingsPath}.splitRightTitle`, 'Bestsellers');
+    'Bestsellers';
+
+  const backgroundColorSetting = cfgString(config, `${settingsPath}.backgroundColor`, '');
+  const sectionBackground =
+    backgroundColorSetting && backgroundColorSetting !== 'default'
+      ? resolveThemePaletteColorSetting(config, backgroundColorSetting, 0, hero.scheme.background)
+      : hero.scheme.background;
+
+  const borderStyle = cfgString(config, `${settingsPath}.borderStyle`, 'none');
+  const cornerRadiusRaw = Number(cfgString(config, `${settingsPath}.cornerRadius`, '0'));
+  const cornerRadius = Number.isFinite(cornerRadiusRaw) ? cornerRadiusRaw : 0;
+  const sectionBorder =
+    borderStyle === 'solid' ? '1px solid rgba(0, 0, 0, 0.12)' : undefined;
 
   const scopedCss = scopedHeroCss(sectionId, hero.customCss);
   const responsiveCss = splitShowcaseResponsiveCss(sectionId, hero.verticalOnMobile);
@@ -233,7 +307,9 @@ export function SplitShowcase({
           minHeight: sectionMinHeight,
           paddingTop: hero.paddingTop,
           paddingBottom: hero.paddingBottom,
-          background: hero.scheme.background,
+          background: sectionBackground,
+          border: sectionBorder,
+          borderRadius: cornerRadius > 0 ? cornerRadius : undefined,
           fontFamily: fontBody,
           boxSizing: 'border-box',
         }}
@@ -255,9 +331,11 @@ export function SplitShowcase({
             imageUrl={hero.media1Url}
             peekVariant="figure"
             title={leftTitle}
-            titleFieldPath={`${settingsPath}.title`}
-            titleBlockNodeId={blockNodeId(sectionId, placement, templateId, 'heading')}
-            titleBlockLabel="Heading"
+            textBase={leftTextBase}
+            groupBase={`${settingsPath}.group1Group`}
+            titleFieldPath={`${leftTextBase}.text`}
+            titleBlockNodeId={`${sectionNodePrefix}:group:group1:text`}
+            titleBlockLabel="Text"
             buttonBlockId="primary_button"
             blocksBase={blocksPath}
             sectionNodePrefix={sectionNodePrefix}
@@ -269,8 +347,10 @@ export function SplitShowcase({
             imageUrl={hero.media2Url}
             peekVariant="landscape"
             title={rightTitle}
-            titleFieldPath={`${blocksPath}.text_right.settings.text`}
-            titleBlockNodeId={blockNodeId(sectionId, placement, templateId, 'text_right')}
+            textBase={rightTextBase}
+            groupBase={`${settingsPath}.group2Group`}
+            titleFieldPath={`${rightTextBase}.text`}
+            titleBlockNodeId={`${sectionNodePrefix}:group:group2:text`}
             titleBlockLabel="Text"
             buttonBlockId="secondary_button"
             blocksBase={blocksPath}

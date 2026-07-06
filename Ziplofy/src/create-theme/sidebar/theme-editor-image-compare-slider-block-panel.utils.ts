@@ -19,7 +19,8 @@ export const COMPARISON_SLIDER_FIELD_KEYS = new Set([
   'sliderDesktopCustomWidth',
   'sliderMobileWidth',
   'sliderMobileCustomWidth',
-  'sliderInheritColorScheme',
+  'sliderColor',
+  'sliderInnerColor',
   'sliderBorderStyle',
   'sliderCornerRadius',
   'sliderPaddingTop',
@@ -38,9 +39,10 @@ const FIELD_SORT: Record<string, number> = {
   sliderDesktopCustomWidth: 12,
   sliderMobileWidth: 13,
   sliderMobileCustomWidth: 14,
-  sliderInheritColorScheme: 20,
-  sliderBorderStyle: 21,
-  sliderCornerRadius: 22,
+  sliderColor: 20,
+  sliderInnerColor: 21,
+  sliderBorderStyle: 22,
+  sliderCornerRadius: 23,
   sliderPaddingTop: 30,
   sliderPaddingBottom: 31,
   sliderPaddingLeft: 32,
@@ -62,7 +64,8 @@ export function comparisonSliderDefaultSettings(): Record<string, string | numbe
     sliderDesktopCustomWidth: 65,
     sliderMobileWidth: 'fill',
     sliderMobileCustomWidth: 100,
-    sliderInheritColorScheme: false,
+    sliderColor: 'default',
+    sliderInnerColor: 'default',
     sliderBorderStyle: 'none',
     sliderCornerRadius: 0,
     sliderPaddingTop: 0,
@@ -175,11 +178,20 @@ export function comparisonSliderBlockFieldDefs(sectionBase: string): EditorField
       sidebar: true,
     },
     {
-      path: s('sliderInheritColorScheme'),
-      type: 'boolean',
-      label: 'Inherit color scheme',
+      path: s('sliderColor'),
+      type: 'text',
+      label: 'Slider color',
       group: 'Appearance',
-      sidebar: true,
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('sliderInnerColor'),
+      type: 'text',
+      label: 'Slider inner color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
     },
     {
       path: s('sliderBorderStyle'),
@@ -187,7 +199,7 @@ export function comparisonSliderBlockFieldDefs(sectionBase: string): EditorField
       label: 'Border',
       group: 'Appearance',
       widget: 'segmented',
-      sidebar: true,
+      sidebar: false,
       options: [
         { value: 'none', label: 'None' },
         { value: 'solid', label: 'Solid' },
@@ -203,7 +215,7 @@ export function comparisonSliderBlockFieldDefs(sectionBase: string): EditorField
       max: 40,
       step: 1,
       unit: 'px',
-      sidebar: true,
+      sidebar: false,
     },
     {
       path: s('sliderPaddingTop'),
@@ -215,7 +227,7 @@ export function comparisonSliderBlockFieldDefs(sectionBase: string): EditorField
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: true,
+      sidebar: false,
     },
     {
       path: s('sliderPaddingBottom'),
@@ -227,7 +239,7 @@ export function comparisonSliderBlockFieldDefs(sectionBase: string): EditorField
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: true,
+      sidebar: false,
     },
     {
       path: s('sliderPaddingLeft'),
@@ -239,7 +251,7 @@ export function comparisonSliderBlockFieldDefs(sectionBase: string): EditorField
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: true,
+      sidebar: false,
     },
     {
       path: s('sliderPaddingRight'),
@@ -251,9 +263,57 @@ export function comparisonSliderBlockFieldDefs(sectionBase: string): EditorField
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: true,
+      sidebar: false,
     },
   ];
+}
+
+export function comparisonSliderBlockFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
+  const layout = nodeId.match(/^layout:([^:]+):block:comparison_slider$/);
+  if (layout) {
+    return comparisonSliderBlockFieldDefs(`sections.${layout[1]}`);
+  }
+  const tpl = nodeId.match(/^template:([^:]+):([^:]+):block:comparison_slider$/);
+  if (tpl) {
+    return comparisonSliderBlockFieldDefs(`templates.${tpl[1]}.sections.${tpl[2]}`);
+  }
+  return [];
+}
+
+export const COMPARISON_SLIDER_DEFAULTS: Record<string, string | boolean> = Object.fromEntries(
+  Object.entries(comparisonSliderDefaultSettings()).map(([k, v]) => [
+    k,
+    typeof v === 'boolean' ? v : String(v),
+  ])
+) as Record<string, string | boolean>;
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+export function extendComparisonSliderBlockValues(
+  values: Record<string, string | boolean>,
+  fields: EditorFieldDef[],
+  config: Record<string, unknown> | null
+): Record<string, string | boolean> {
+  const next = { ...values };
+  for (const field of fields) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw !== undefined && raw !== null) {
+      next[field.path] = field.type === 'boolean' ? Boolean(raw) : String(raw);
+      continue;
+    }
+    const key = field.path.split('.').pop() ?? '';
+    const fallback = COMPARISON_SLIDER_DEFAULTS[key];
+    if (fallback !== undefined) next[field.path] = fallback;
+  }
+  return next;
 }
 
 export function isImageCompareSliderBlockField(field: EditorFieldDef): boolean {
@@ -264,25 +324,9 @@ export function isImageCompareSliderBlockField(field: EditorFieldDef): boolean {
 
 export function isImageCompareSliderBlockFieldsOnly(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
-  return fields.every(isImageCompareSliderBlockField);
-}
-
-export function isImageCompareContentBlockField(field: EditorFieldDef): boolean {
-  const key = field.path.split('.').pop() ?? '';
-  if (!/image_compare/.test(field.path) || field.path.includes('.blocks.')) return false;
-  return (
-    key === 'heading' ||
-    key === 'subheading' ||
-    key === 'button1Label' ||
-    key === 'button1Url' ||
-    key === 'button2Label' ||
-    key === 'button2Url'
-  );
-}
-
-export function isImageCompareContentBlockFieldsOnly(fields: EditorFieldDef[]): boolean {
-  if (!fields.length) return false;
-  return fields.every(isImageCompareContentBlockField);
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  const path = fields[0]?.path ?? '';
+  return keys.has('imageBeforeUrl') && keys.has('sliderAspectRatio') && path.includes('image_compare');
 }
 
 function fieldSortKey(path: string): number {
@@ -325,6 +369,9 @@ export function pickComparisonSliderField(
 }
 
 export function prepareComparisonSliderBlockSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortComparisonSliderPanelFields(node.fields ?? []);
+  const built = comparisonSliderBlockFieldDefsFromNodeId(node.id);
+  const fields = sortComparisonSliderPanelFields(
+    built.length > 0 ? built : (node.fields ?? []).filter(isImageCompareSliderBlockField)
+  );
   return { ...node, label: 'Comparison slider', kind: 'block', fields };
 }

@@ -14,7 +14,7 @@ export interface SecureUserInfo {
   role: string;
   name: string;
   accessToken: string;
-  assignedSupportDeveloperId: string;
+  assignedSupportDeveloperId: any;
   assignedSupportDeveloperDetails?:{
     name:string
     email:string

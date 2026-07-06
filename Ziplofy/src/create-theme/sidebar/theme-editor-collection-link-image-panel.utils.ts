@@ -46,6 +46,58 @@ export function sortCollectionLinkImagePanelFields(fields: EditorFieldDef[]): Ed
   );
 }
 
+const IMAGE_HEIGHT_OPTIONS = [
+  { value: 'small', label: 'Small' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'large', label: 'Large' },
+] as const;
+
+const IMAGE_RATIO_OPTIONS = [
+  { value: 'square', label: 'Square' },
+  { value: 'portrait', label: 'Portrait' },
+  { value: 'landscape', label: 'Landscape' },
+] as const;
+
+/** Build Image panel fields from a block settings base (fallback when schema lookup misses). */
+function collectionLinkImageFieldDefsFromSettingsBase(settingsBase: string): EditorFieldDef[] {
+  return sortCollectionLinkImagePanelFields([
+    {
+      path: `${settingsBase}.imageHeight`,
+      type: 'select',
+      label: 'Height',
+      widget: 'select',
+      options: [...IMAGE_HEIGHT_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.imageRatio`,
+      type: 'select',
+      label: 'Ratio',
+      widget: 'select',
+      options: [...IMAGE_RATIO_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.imageCornerRadius`,
+      type: 'number',
+      label: 'Corner radius',
+      widget: 'slider',
+      min: 0,
+      max: 40,
+      step: 1,
+      unit: 'px',
+    },
+  ]);
+}
+
+function settingsBaseFromImageFieldPath(path: string): string | null {
+  const tpl = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.blocks\.[^.]+\.settings\.imageUrl$/
+  );
+  if (tpl) return path.replace(/\.imageUrl$/, '');
+  const layout = path.match(/^sections\.[^.]+\.blocks\.[^.]+\.settings\.imageUrl$/);
+  if (layout) return path.replace(/\.imageUrl$/, '');
+  return null;
+}
+
 export function collectionLinkImageFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   fieldNodeId: string
@@ -64,18 +116,19 @@ export function collectionLinkImageFieldDefsFromSchema(
       'template',
       tplId
     );
-    if (!settingsFields.length) return [];
-    return sortCollectionLinkImagePanelFields(
-      settingsFields
-        .filter((f) => IMAGE_KEY_SET.has(f.path.split('.').pop() ?? ''))
-        .map((f) => ({
-          ...f,
-          path: remapTemplateSchemaPath(f.path, tplId, secId).replace(
-            /\.blocks\.collection_link\./,
-            `.blocks.${blockId}.`
-          ),
-        }))
-    );
+    if (settingsFields.length) {
+      return sortCollectionLinkImagePanelFields(
+        settingsFields
+          .filter((f) => IMAGE_KEY_SET.has(f.path.split('.').pop() ?? ''))
+          .map((f) => ({
+            ...f,
+            path: remapTemplateSchemaPath(f.path, tplId, secId).replace(
+              /\.blocks\.collection_link\./,
+              `.blocks.${blockId}.`
+            ),
+          }))
+      );
+    }
   }
 
   const layoutMatch = path.match(/^sections\.([^.]+)\.blocks\.([^.]+)\.settings\.imageUrl$/);
@@ -83,18 +136,22 @@ export function collectionLinkImageFieldDefsFromSchema(
     const [, secId, blockId] = layoutMatch;
     const blueprint = layoutBlueprintKey(secId);
     const settingsFields = collectionLinkBlueprintSettingsFields(editorSchema, blueprint, 'layout');
-    if (!settingsFields.length) return [];
-    return sortCollectionLinkImagePanelFields(
-      settingsFields
-        .filter((f) => IMAGE_KEY_SET.has(f.path.split('.').pop() ?? ''))
-        .map((f) => ({
-          ...f,
-          path: f.path
-            .replace(/^sections\.[^.]+\./, `sections.${secId}.`)
-            .replace(/\.blocks\.collection_link\./, `.blocks.${blockId}.`),
-        }))
-    );
+    if (settingsFields.length) {
+      return sortCollectionLinkImagePanelFields(
+        settingsFields
+          .filter((f) => IMAGE_KEY_SET.has(f.path.split('.').pop() ?? ''))
+          .map((f) => ({
+            ...f,
+            path: f.path
+              .replace(/^sections\.[^.]+\./, `sections.${secId}.`)
+              .replace(/\.blocks\.collection_link\./, `.blocks.${blockId}.`),
+          }))
+      );
+    }
   }
+
+  const settingsBase = settingsBaseFromImageFieldPath(path);
+  if (settingsBase) return collectionLinkImageFieldDefsFromSettingsBase(settingsBase);
 
   return [];
 }

@@ -6,6 +6,8 @@ import {
 import {
   contactFormBlockFieldDefs,
   contactFormBlockFieldDefsFromNodeId,
+  contactFormFormGroupFieldDefs,
+  contactFormFormGroupFieldDefsFromNodeId,
   isContactFormFormGroupNodeId,
   isContactFormSectionInstanceId,
 } from '../sidebar/theme-editor-contact-form-block-panel.utils';
@@ -63,6 +65,7 @@ export function mapContactFormBlockNodes(
     label: 'Contact form',
     kind: 'block',
     icon: 'group',
+    fields: contactFormFormGroupFieldDefs(sectionBase),
     children: formChildren,
     childrenListKey: listKeyBlockChildren(formPrefix),
   };
@@ -159,7 +162,8 @@ export function contactFormSubmitButtonSidebarNode(nodeId: string): SidebarNode 
 
 export function contactFormFormGroupSidebarNode(nodeId: string): SidebarNode | null {
   if (!isContactFormFormGroupNodeId(nodeId)) return null;
-  return { id: nodeId, label: 'Contact form', kind: 'block', icon: 'group' };
+  const fields = contactFormFormGroupFieldDefsFromNodeId(nodeId);
+  return { id: nodeId, label: 'Contact form', kind: 'block', icon: 'group', fields };
 }
 
 export function syntheticContactFormSidebarNode(

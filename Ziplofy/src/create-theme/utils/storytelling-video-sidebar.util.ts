@@ -12,6 +12,7 @@ import {
   storytellingVideoBlockFieldDefs,
   storytellingVideoBlockFieldDefsFromNodeId,
 } from '../sidebar/theme-editor-storytelling-video-block-panel.utils';
+import { prepareStorytellingVideoCaptionGroupSettingsNode } from '../sidebar/theme-editor-storytelling-video-caption-panel.utils';
 
 export const STORYTELLING_VIDEO_SECTION_BLOCK_ORDER = ['video', 'caption'] as const;
 export const STORYTELLING_VIDEO_CAPTION_CHILD_ORDER = ['caption_text', 'caption_button'] as const;
@@ -79,6 +80,8 @@ export function mapStorytellingVideoBlockNodes(
 
   const captionTextFields = storytellingVideoBlockFieldDefs(sectionBase, 'caption_text');
   const captionPreviewField = captionTextFields.find((f) => f.path.endsWith('.caption'));
+  const captionButtonFields = storytellingVideoBlockFieldDefs(sectionBase, 'caption_button');
+  const buttonPreviewField = captionButtonFields.find((f) => f.path.endsWith('.linkLabel'));
 
   const captionChildren = reorderSidebarChildren(
     [
@@ -96,7 +99,8 @@ export function mapStorytellingVideoBlockNodes(
         label: 'Button',
         kind: 'block',
         icon: 'button',
-        fields: storytellingVideoBlockFieldDefs(sectionBase, 'caption_button'),
+        preview: buttonPreviewField ? fieldPreview(buttonPreviewField, values) : undefined,
+        fields: captionButtonFields,
       },
     ],
     listKeyBlockChildren(captionPrefix),
@@ -116,7 +120,7 @@ export function mapStorytellingVideoBlockNodes(
     id: videoPrefix,
     label: 'Video',
     kind: 'block',
-    icon: 'section',
+    icon: 'image',
     fields: storytellingVideoBlockFieldDefs(sectionBase, 'video'),
   };
 
@@ -159,12 +163,49 @@ export function storytellingVideoLayoutStructureOrder(
 
 const CONTENT_FIELD_TO_BLOCK: Record<string, string> = {
   videoSource: 'video',
+  uploadedVideoUrl: 'video',
   videoUrl: 'video',
   coverImageUrl: 'video',
+  videoAutoplay: 'video',
+  videoLoop: 'video',
+  videoWidth: 'video',
+  videoMobileWidth: 'video',
+  videoBorderStyle: 'video',
+  videoCornerRadius: 'video',
+  videoPaddingTop: 'video',
+  videoPaddingBottom: 'video',
+  videoPaddingLeft: 'video',
+  videoPaddingRight: 'video',
   caption: 'caption_text',
+  captionWidth: 'caption_text',
+  captionMaxWidth: 'caption_text',
+  captionTypographyPreset: 'caption_text',
+  captionColor: 'caption_text',
+  captionBackgroundEnabled: 'caption_text',
+  captionPaddingTop: 'caption_text',
+  captionPaddingBottom: 'caption_text',
+  captionPaddingLeft: 'caption_text',
+  captionPaddingRight: 'caption_text',
   linkLabel: 'caption_button',
   linkUrl: 'caption_button',
+  linkOpenInNewTab: 'caption_button',
+  buttonStyle: 'caption_button',
+  buttonLinkTextColor: 'caption_button',
+  buttonCustomBackground: 'caption_button',
+  buttonCustomText: 'caption_button',
+  buttonDesktopWidth: 'caption_button',
+  buttonDesktopCustomWidth: 'caption_button',
+  buttonMobileWidth: 'caption_button',
+  buttonMobileCustomWidth: 'caption_button',
 };
+
+function storytellingVideoCaptionGroupSidebarNodeId(settingsBase: string): string | null {
+  const tpl = settingsBase.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings$/);
+  if (tpl) return `template:${tpl[1]}:${tpl[2]}:block:caption`;
+  const layout = settingsBase.match(/^sections\.([^.]+)\.settings$/);
+  if (layout) return `layout:${layout[1]}:block:caption`;
+  return null;
+}
 
 function storytellingVideoFieldSidebarNodeId(settingsBase: string, fieldKey: string): string | null {
   const blockSuffix = CONTENT_FIELD_TO_BLOCK[fieldKey];
@@ -187,6 +228,7 @@ function storytellingVideoFieldSidebarNodeId(settingsBase: string, fieldKey: str
 }
 
 export function isStorytellingVideoContentFieldPath(path: string): boolean {
+  if (/\.settings\.captionGroup\./.test(path) && /storytelling_video/.test(path)) return true;
   const key = path.split('.').pop() ?? '';
   return key in CONTENT_FIELD_TO_BLOCK && /storytelling_video/.test(path);
 }
@@ -194,6 +236,11 @@ export function isStorytellingVideoContentFieldPath(path: string): boolean {
 export function storytellingVideoSidebarSelectionId(nodeId: string): string {
   if (!nodeId.startsWith('field:')) return nodeId;
   const path = nodeId.slice('field:'.length);
+  if (/\.settings\.captionGroup\./.test(path) && /storytelling_video/.test(path)) {
+    const settingsBase = path.replace(/\.captionGroup\.[^.]+$/, '');
+    const mapped = storytellingVideoCaptionGroupSidebarNodeId(settingsBase);
+    if (mapped) return mapped;
+  }
   if (!isStorytellingVideoContentFieldPath(path)) return nodeId;
   const settingsBase = path.replace(/\.[^.]+$/, '');
   const fieldKey = path.split('.').pop() ?? '';
@@ -216,12 +263,17 @@ export function storytellingVideoCaptionButtonSidebarNode(nodeId: string): Sideb
 export function storytellingVideoMediaSidebarNode(nodeId: string): SidebarNode | null {
   if (!isStorytellingVideoMediaBlockNodeId(nodeId)) return null;
   const fields = storytellingVideoBlockFieldDefsFromNodeId(nodeId);
-  return { id: nodeId, label: 'Video', kind: 'block', icon: 'section', fields };
+  return { id: nodeId, label: 'Video', kind: 'block', icon: 'image', fields };
 }
 
 export function storytellingVideoCaptionGroupSidebarNode(nodeId: string): SidebarNode | null {
   if (!isStorytellingVideoCaptionGroupNodeId(nodeId)) return null;
-  return { id: nodeId, label: 'Caption', kind: 'block', icon: 'group' };
+  return prepareStorytellingVideoCaptionGroupSettingsNode({
+    id: nodeId,
+    label: 'Caption',
+    kind: 'block',
+    icon: 'group',
+  });
 }
 
 export function syntheticStorytellingVideoSidebarNode(

@@ -6,7 +6,9 @@ export const EMAIL_SIGNUP_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
+  'Theme Settings',
   'Custom CSS',
 ] as const;
 
@@ -19,14 +21,15 @@ const FIELD_SORT: Record<string, number> = {
   layoutGap: 3,
   sectionWidth: 10,
   height: 11,
-  colorScheme: 20,
   backgroundMedia: 21,
-  backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
-  backgroundOverlay: 25,
+  backgroundColor: 22,
+  backgroundImageUrl: 23,
+  backgroundOverlay: 24,
+  borderStyle: 26,
+  cornerRadius: 27,
   paddingTop: 30,
   paddingBottom: 31,
+  colorScheme: 35,
   customCss: 40,
 };
 
@@ -41,6 +44,8 @@ export function isEmailSignupSectionType(secType: string | undefined, catalogVar
 export function isEmailSignupPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   if (field.sidebar === false) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key.startsWith('heading') || key.startsWith('text') || key.startsWith('signup')) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -49,8 +54,10 @@ export function sortEmailSignupPanelFields(fields: EditorFieldDef[]): EditorFiel
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
+    'Theme Settings': 5,
+    'Custom CSS': 6,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

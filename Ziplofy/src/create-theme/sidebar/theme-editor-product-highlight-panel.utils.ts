@@ -7,18 +7,18 @@ export const PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER = [
   'General',
   'Layout',
   'Padding',
-  'Theme settings',
+  'Theme Settings',
   'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER);
 
-const PRODUCT_HIGHLIGHT_LAYOUT_KEYS = new Set(['mediaPosition', 'colorScheme']);
+const PRODUCT_HIGHLIGHT_LAYOUT_KEYS = new Set(['mediaPosition', 'backgroundColor']);
 
 const FIELD_SORT: Record<string, number> = {
   productId: 0,
   mediaPosition: 1,
-  colorScheme: 2,
+  backgroundColor: 2,
   paddingTop: 20,
   paddingBottom: 21,
   customCss: 40,
@@ -128,21 +128,32 @@ export function isProductHighlightPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
   if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
   const key = field.path.split('.').pop() ?? '';
+  if (key === 'productId') return field.group === 'Product' || field.group === 'General';
   if (field.group === 'Layout') return PRODUCT_HIGHLIGHT_LAYOUT_KEYS.has(key);
+  if (field.group === 'Product') return key === 'productId';
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;
+}
+
+function panelGroupForField(field: EditorFieldDef): string {
+  if (field.path.endsWith('.productId') || field.group === 'Product') return 'General';
+  if (field.group === 'Layout') return 'Layout';
+  if (field.group === 'Theme settings') return 'Theme Settings';
+  if (field.group && PANEL_GROUPS.has(field.group)) return field.group;
+  return 'General';
 }
 
 export function sortProductHighlightPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
   const groupRank: Record<string, number> = {
     General: 0,
-    Padding: 1,
-    'Theme settings': 2,
-    'Custom CSS': 3,
+    Layout: 1,
+    Padding: 2,
+    'Theme Settings': 3,
+    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[a.group ?? ''] ?? 9;
-    const gb = groupRank[b.group ?? ''] ?? 9;
+    const ga = groupRank[panelGroupForField(a)] ?? 9;
+    const gb = groupRank[panelGroupForField(b)] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -151,7 +162,7 @@ export function sortProductHighlightPanelFields(fields: EditorFieldDef[]): Edito
 export function groupProductHighlightPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'General';
+    const group = panelGroupForField(field);
     const list = map.get(group) ?? [];
     list.push(field);
     map.set(group, list);

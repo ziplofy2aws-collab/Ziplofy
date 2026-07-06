@@ -1,6 +1,10 @@
 import type { ThemePreviewPage } from '../ThemeLivePreviewFrame';
 import { collectionLinkBlockPaths } from '../../../utils/collection-links-spotlight-sidebar.util';
 import { bottomAlignedHeroStructureOrder } from '../../../utils/hero-bottom-aligned.util';
+import {
+  storytellingVideoLayoutStructureOrder,
+  storytellingVideoStructureOrder,
+} from '../../../create-theme/utils/storytelling-video-sidebar.util';
 
 function collectionLinksSpotlightStructureOrder(
   prefix: string,
@@ -220,6 +224,13 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    const isStorytellingVideo =
+      (sec as { type?: string }).type === 'storytelling-video' || catalogVariant === 'video';
+    if (isStorytellingVideo) {
+      Object.assign(out, storytellingVideoStructureOrder(`template:${tplId}:${secId}`, listKey));
+      continue;
+    }
+
     const ids: string[] = [];
     if (isHero) {
       ids.push(`template:${tplId}:${secId}:add-block`);
@@ -266,6 +277,16 @@ export function readStructureOrderFromConfig(
       Object.assign(
         out,
         bottomAlignedHeroStructureOrder(`layout:${layoutKey}`, secListKey, listKeyBlockChildren)
+      );
+      continue;
+    }
+
+    const isStorytellingVideo =
+      secType === 'storytelling-video' || catalogVariant === 'video';
+    if (isStorytellingVideo) {
+      Object.assign(
+        out,
+        storytellingVideoLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
       );
       continue;
     }

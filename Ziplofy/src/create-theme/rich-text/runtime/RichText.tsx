@@ -1,8 +1,13 @@
 import { useMemo, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
-import { cfgString } from '../../runtime/shared/config';
-import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import {
+  resolveThemeButtonVariantStyle,
+  themeButtonInlineStyle,
+} from '../../runtime/shared/themeButtonRuntime';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
@@ -44,8 +49,53 @@ export function RichText({
   const text = cfgString(config, `${settingsBase}.text`, DEFAULT_TEXT) || DEFAULT_TEXT;
   const buttonLabel = cfgString(config, `${settingsBase}.buttonLabel`, 'Shop now');
   const buttonUrl = cfgString(config, `${settingsBase}.buttonUrl`, '/collections');
+  const buttonOpenInNewTab = cfgBool(config, `${settingsBase}.buttonOpenInNewTab`, false);
+  const buttonStyleMode = cfgString(config, `${settingsBase}.buttonStyle`, 'primary');
+  const buttonVariant = buttonStyleMode === 'secondary' ? 'secondary' : 'primary';
+  const buttonCustomBackground = cfgString(config, `${settingsBase}.buttonCustomBackground`, '#111827');
+  const buttonCustomText = cfgString(config, `${settingsBase}.buttonCustomText`, '#ffffff');
+  const buttonDesktopWidthMode = cfgString(config, `${settingsBase}.buttonDesktopWidth`, 'fit');
+  const buttonMobileWidthMode = cfgString(config, `${settingsBase}.buttonMobileWidth`, 'fit');
+  const clampPercent = (n: number) => Math.min(100, Math.max(1, Number.isFinite(n) ? n : 100));
+  const desktopBtnWidth =
+    buttonDesktopWidthMode === 'custom'
+      ? `${clampPercent(cfgNumber(config, `${settingsBase}.buttonDesktopCustomWidth`, 100))}%`
+      : 'fit-content';
+  const mobileBtnWidth =
+    buttonMobileWidthMode === 'custom'
+      ? `${clampPercent(cfgNumber(config, `${settingsBase}.buttonMobileCustomWidth`, 100))}%`
+      : 'fit-content';
+  const themeButtonStyle = useMemo(
+    () => resolveThemeButtonVariantStyle(config, buttonVariant),
+    [config, buttonVariant]
+  );
+
+  const textWidthMode = cfgString(config, `${settingsBase}.textWidth`, 'fit');
+  const textMaxWidthMode = cfgString(config, `${settingsBase}.textMaxWidth`, 'normal');
+  const textPreset = cfgString(config, `${settingsBase}.textTypographyPreset`, 'default');
+  const textColorRaw = cfgString(config, `${settingsBase}.textColor`, '');
+  const textBackgroundEnabled = cfgBool(config, `${settingsBase}.textBackgroundEnabled`, false);
+  const textPaddingTop = cfgNumber(config, `${settingsBase}.textPaddingTop`, 0);
+  const textPaddingBottom = cfgNumber(config, `${settingsBase}.textPaddingBottom`, 0);
+  const textPaddingLeft = cfgNumber(config, `${settingsBase}.textPaddingLeft`, 0);
+  const textPaddingRight = cfgNumber(config, `${settingsBase}.textPaddingRight`, 0);
+
+  const headingWidthMode = cfgString(config, `${settingsBase}.headingWidth`, 'fit');
+  const headingMaxWidthMode = cfgString(config, `${settingsBase}.headingMaxWidth`, 'normal');
+  const headingPreset = cfgString(config, `${settingsBase}.headingTypographyPreset`, 'default');
+  const headingColorRaw = cfgString(config, `${settingsBase}.headingColor`, '');
+  const headingBackgroundEnabled = cfgBool(config, `${settingsBase}.headingBackgroundEnabled`, false);
+  const headingPaddingTop = cfgNumber(config, `${settingsBase}.headingPaddingTop`, 0);
+  const headingPaddingBottom = cfgNumber(config, `${settingsBase}.headingPaddingBottom`, 0);
+  const headingPaddingLeft = cfgNumber(config, `${settingsBase}.headingPaddingLeft`, 0);
+  const headingPaddingRight = cfgNumber(config, `${settingsBase}.headingPaddingRight`, 0);
 
   const scheme = style.scheme;
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+  const sectionBackground =
+    backgroundColorRaw === '' || backgroundColorRaw === 'default'
+      ? scheme.background
+      : resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background);
   const textAlign = richTextContentAlign(style.layoutAlignment);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
@@ -55,7 +105,7 @@ export function RichText({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: scheme.background,
+    background: sectionBackground,
     color: scheme.color,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
@@ -102,40 +152,113 @@ export function RichText({
     zIndex: 2,
   };
 
+  const HEADING_PRESETS: Record<string, { fontSize: string; fontWeight: number; lineHeight: number }> = {
+    default: { fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, lineHeight: 1.15 },
+    'heading-1': { fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: 700, lineHeight: 1.1 },
+    'heading-2': { fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, lineHeight: 1.15 },
+    'heading-3': { fontSize: 'clamp(1.5rem, 3.2vw, 2rem)', fontWeight: 700, lineHeight: 1.2 },
+    'heading-4': { fontSize: 'clamp(1.25rem, 2.6vw, 1.625rem)', fontWeight: 600, lineHeight: 1.25 },
+  };
+  const headingPresetStyle = HEADING_PRESETS[headingPreset] ?? HEADING_PRESETS.default;
+  const headingMaxWidthPx =
+    headingMaxWidthMode === 'narrow' ? 360 : headingMaxWidthMode === 'wide' ? 760 : 520;
+  const headingColor =
+    headingColorRaw === '' || headingColorRaw === 'default'
+      ? scheme.color
+      : resolveThemePaletteColorSetting(config, headingColorRaw, 1, scheme.color);
+
   const headingStyle: CSSProperties = {
     margin: 0,
     fontFamily: fontHeading,
-    fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
-    fontWeight: 700,
-    lineHeight: 1.15,
+    fontSize: headingPresetStyle.fontSize,
+    fontWeight: headingPresetStyle.fontWeight,
+    lineHeight: headingPresetStyle.lineHeight,
     letterSpacing: '-0.02em',
-    color: scheme.color,
+    width: headingWidthMode === 'fill' ? '100%' : 'fit-content',
+    maxWidth: headingMaxWidthPx,
+    color: headingColor,
+    paddingTop: headingPaddingTop || undefined,
+    paddingBottom: headingPaddingBottom || undefined,
+    paddingLeft: headingPaddingLeft || undefined,
+    paddingRight: headingPaddingRight || undefined,
+    background: headingBackgroundEnabled ? 'rgba(0, 0, 0, 0.04)' : undefined,
+    borderRadius: headingBackgroundEnabled ? 8 : undefined,
+    boxSizing: 'border-box',
   };
+
+  const TEXT_PRESETS: Record<string, { fontSize: string; fontWeight: number; lineHeight: number }> = {
+    default: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.55 },
+    body: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.55 },
+    'heading-6': { fontSize: '1.125rem', fontWeight: 600, lineHeight: 1.4 },
+    'heading-5': { fontSize: '1.375rem', fontWeight: 600, lineHeight: 1.3 },
+    'heading-4': { fontSize: '1.75rem', fontWeight: 700, lineHeight: 1.25 },
+  };
+  const textPresetStyle = TEXT_PRESETS[textPreset] ?? TEXT_PRESETS.default;
+  const textMaxWidthPx =
+    textMaxWidthMode === 'narrow' ? 360 : textMaxWidthMode === 'wide' ? 760 : 520;
+  const bodyColor =
+    textColorRaw === '' || textColorRaw === 'default'
+      ? scheme.muted
+      : resolveThemePaletteColorSetting(config, textColorRaw, 1, scheme.muted);
 
   const bodyStyle: CSSProperties = {
     margin: 0,
     fontFamily: fontBody,
-    fontSize: '1rem',
-    lineHeight: 1.55,
-    maxWidth: 520,
-    color: scheme.muted,
+    fontSize: textPresetStyle.fontSize,
+    fontWeight: textPresetStyle.fontWeight,
+    lineHeight: textPresetStyle.lineHeight,
+    width: textWidthMode === 'fill' ? '100%' : 'fit-content',
+    maxWidth: textMaxWidthPx,
+    color: bodyColor,
+    paddingTop: textPaddingTop || undefined,
+    paddingBottom: textPaddingBottom || undefined,
+    paddingLeft: textPaddingLeft || undefined,
+    paddingRight: textPaddingRight || undefined,
+    background: textBackgroundEnabled ? 'rgba(0, 0, 0, 0.04)' : undefined,
+    borderRadius: textBackgroundEnabled ? 8 : undefined,
+    boxSizing: 'border-box',
   };
 
+  const btnScopeClass = `${scopeClass}-btn`;
+  const buttonAppearance: CSSProperties =
+    buttonStyleMode === 'link'
+      ? {
+          background: 'transparent',
+          color: scheme.color,
+          border: 'none',
+          borderRadius: 0,
+          fontFamily: fontBody,
+          fontWeight: 600,
+          textUnderlineOffset: 4,
+        }
+      : buttonStyleMode === 'custom'
+        ? {
+            background: buttonCustomBackground,
+            color: buttonCustomText,
+            border: 'none',
+            borderRadius: themeButtonStyle.borderRadius,
+            fontFamily: themeButtonStyle.fontFamily,
+            fontWeight: themeButtonStyle.fontWeight,
+            textTransform: themeButtonStyle.textTransform,
+          }
+        : themeButtonInlineStyle(themeButtonStyle);
   const buttonStyle: CSSProperties = {
+    ...buttonAppearance,
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '12px 28px',
-    borderRadius: 8,
-    background: '#000000',
-    color: '#ffffff',
+    width: buttonStyleMode === 'link' ? 'fit-content' : desktopBtnWidth,
+    maxWidth: '100%',
+    padding: buttonStyleMode === 'link' ? '4px 0' : '12px 28px',
     fontSize: '0.9375rem',
-    fontWeight: 500,
-    fontFamily: fontBody,
-    textDecoration: 'none',
-    border: 'none',
+    textDecoration: buttonStyleMode === 'link' ? 'underline' : 'none',
     cursor: 'pointer',
+    boxSizing: 'border-box',
   };
+  const buttonResponsiveCss =
+    buttonStyleMode !== 'link' && desktopBtnWidth !== mobileBtnWidth
+      ? `@media (max-width: 749px) { .${btnScopeClass} { width: ${mobileBtnWidth} !important; } }`
+      : '';
 
   const customCss = scopedRichTextCss(sectionId, style.customCss);
   const responsiveCss = combineResponsiveCss(
@@ -185,11 +308,29 @@ export function RichText({
           {text}
         </EditorField>
         {buttonLabel ? (
-          <EditorField fieldPath={`${settingsBase}.buttonLabel`} label="Button label" as="span">
-            <Link to={buttonUrl || '#'} style={buttonStyle}>
-              {buttonLabel}
+          <EditorBlock
+            nodeId={`${editorNodeId}:block:button`}
+            label="Button"
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent:
+                textAlign === 'center' ? 'center' : textAlign === 'right' ? 'flex-end' : 'flex-start',
+            }}
+          >
+            {buttonResponsiveCss ? <style>{buttonResponsiveCss}</style> : null}
+            <Link
+              to={buttonUrl || '#'}
+              target={buttonOpenInNewTab ? '_blank' : undefined}
+              rel={buttonOpenInNewTab ? 'noopener noreferrer' : undefined}
+              className={btnScopeClass}
+              style={buttonStyle}
+            >
+              <EditorField fieldPath={`${settingsBase}.buttonLabel`} label="Label" as="span">
+                {buttonLabel}
+              </EditorField>
             </Link>
-          </EditorField>
+          </EditorBlock>
         ) : null}
       </div>
     </EditorSection>

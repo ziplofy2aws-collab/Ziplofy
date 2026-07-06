@@ -115,7 +115,7 @@ export function readCollectionTitleStyle(
   fonts: { heading: string; body: string },
   colors: { text: string; heading: string; accent: string; background: string }
 ): CollectionTitleStyle {
-  const presetRaw = cfgString(config, `${settingsBase}.titleTypographyPreset`, 'heading-3');
+  const presetRaw = cfgString(config, `${settingsBase}.titleTypographyPreset`, 'default');
   const presetKey = TYPOGRAPHY_PRESETS[presetRaw] ?? presetRaw;
   const themeFonts = themeFontsFromConfig(config);
   const mergedFonts: ThemeFonts = {
@@ -137,15 +137,17 @@ export function readCollectionTitleStyle(
   const alignRaw = cfgString(config, `${settingsBase}.titleAlignment`, 'left');
   const textAlign: CSSProperties['textAlign'] =
     alignRaw === 'right' ? 'right' : alignRaw === 'center' ? 'center' : 'left';
-  const colorKey = cfgString(config, `${settingsBase}.titleColor`, 'text');
+  const colorKey = cfgString(config, `${settingsBase}.titleColor`, 'default');
   const color =
-    isThemePaletteColorSetting(colorKey) || colorKey.startsWith('#')
-      ? resolveThemePaletteColorSetting(config, colorKey, 1, colors.text)
-      : colorKey === 'heading'
-        ? colors.heading
-        : colorKey === 'accent'
-          ? colors.accent
-          : colors.text;
+    colorKey === 'default' || colorKey === '' || colorKey === 'text'
+      ? colors.text
+      : isThemePaletteColorSetting(colorKey) || colorKey.startsWith('#')
+        ? resolveThemePaletteColorSetting(config, colorKey, 1, colors.text)
+        : colorKey === 'heading'
+          ? colors.heading
+          : colorKey === 'accent'
+            ? colors.accent
+            : colors.text;
   const bgOn = cfgBool(config, `${settingsBase}.titleBackgroundEnabled`, false);
   const bgColor = cfgString(config, `${settingsBase}.titleBackgroundColor`, '#00000026');
   const cornerRadius = cfgNumber(config, `${settingsBase}.titleCornerRadius`, 0);

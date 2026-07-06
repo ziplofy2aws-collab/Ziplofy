@@ -72,6 +72,7 @@ export type EmailSignupLayout = {
   colorScheme: EmailSignupScheme;
   backgroundMedia: 'none' | 'image';
   backgroundImageUrl: string;
+  backgroundColor: string;
   borderStyle: 'none' | 'solid';
   cornerRadius: number;
   backgroundOverlay: boolean;
@@ -102,12 +103,137 @@ export function readEmailSignupLayout(
     backgroundMedia:
       cfgString(config, `${settingsBase}.backgroundMedia`, 'none') === 'image' ? 'image' : 'none',
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
+    backgroundColor: cfgString(config, `${settingsBase}.backgroundColor`, ''),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none') === 'solid' ? 'solid' : 'none',
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
     backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 40),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 40),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
+  };
+}
+
+export type EmailSignupHeadingSettings = {
+  width: 'fit' | 'fill';
+  maxWidth: string;
+  alignment: 'left' | 'center' | 'right';
+  preset: string;
+  font: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textCase: string;
+  wrap: string;
+  color: string;
+  backgroundEnabled: boolean;
+  backgroundColor: string;
+  cornerRadius: number;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
+export function readEmailSignupHeading(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): EmailSignupHeadingSettings {
+  const width = cfgString(config, `${settingsBase}.headingWidth`, 'fill');
+  const alignment = cfgString(config, `${settingsBase}.headingAlignment`, 'center');
+  return {
+    width: width === 'fit' ? 'fit' : 'fill',
+    maxWidth: cfgString(config, `${settingsBase}.headingMaxWidth`, 'normal'),
+    alignment: alignment === 'left' || alignment === 'right' ? alignment : 'center',
+    preset: cfgString(config, `${settingsBase}.headingTypographyPreset`, 'default'),
+    font: cfgString(config, `${settingsBase}.headingFont`, 'heading'),
+    fontSize: cfgString(config, `${settingsBase}.headingFontSize`, 'default'),
+    lineHeight: cfgString(config, `${settingsBase}.headingLineHeight`, 'normal'),
+    letterSpacing: cfgString(config, `${settingsBase}.headingLetterSpacing`, 'normal'),
+    textCase: cfgString(config, `${settingsBase}.headingTextCase`, 'default'),
+    wrap: cfgString(config, `${settingsBase}.headingWrap`, 'pretty'),
+    color: cfgString(config, `${settingsBase}.headingColor`, ''),
+    backgroundEnabled: cfgBool(config, `${settingsBase}.headingBackgroundEnabled`, false),
+    backgroundColor: cfgString(config, `${settingsBase}.headingBackgroundColor`, ''),
+    cornerRadius: cfgNumber(config, `${settingsBase}.headingCornerRadius`, 0),
+    paddingTop: cfgNumber(config, `${settingsBase}.headingPaddingTop`, 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.headingPaddingBottom`, 0),
+    paddingLeft: cfgNumber(config, `${settingsBase}.headingPaddingLeft`, 0),
+    paddingRight: cfgNumber(config, `${settingsBase}.headingPaddingRight`, 0),
+  };
+}
+
+export function readEmailSignupText(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): EmailSignupHeadingSettings {
+  const width = cfgString(config, `${settingsBase}.textWidth`, 'fill');
+  const alignment = cfgString(config, `${settingsBase}.textAlignment`, 'center');
+  return {
+    width: width === 'fit' ? 'fit' : 'fill',
+    maxWidth: cfgString(config, `${settingsBase}.textMaxWidth`, 'normal'),
+    alignment: alignment === 'left' || alignment === 'right' ? alignment : 'center',
+    preset: cfgString(config, `${settingsBase}.textTypographyPreset`, 'paragraph'),
+    font: cfgString(config, `${settingsBase}.textFont`, 'body'),
+    fontSize: cfgString(config, `${settingsBase}.textFontSize`, 'default'),
+    lineHeight: cfgString(config, `${settingsBase}.textLineHeight`, 'normal'),
+    letterSpacing: cfgString(config, `${settingsBase}.textLetterSpacing`, 'normal'),
+    textCase: cfgString(config, `${settingsBase}.textTextCase`, 'default'),
+    wrap: cfgString(config, `${settingsBase}.textWrap`, 'pretty'),
+    color: cfgString(config, `${settingsBase}.textColor`, ''),
+    backgroundEnabled: cfgBool(config, `${settingsBase}.textBackgroundEnabled`, false),
+    backgroundColor: cfgString(config, `${settingsBase}.textBackgroundColor`, ''),
+    cornerRadius: cfgNumber(config, `${settingsBase}.textCornerRadius`, 0),
+    paddingTop: cfgNumber(config, `${settingsBase}.textPaddingTop`, 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.textPaddingBottom`, 0),
+    paddingLeft: cfgNumber(config, `${settingsBase}.textPaddingLeft`, 0),
+    paddingRight: cfgNumber(config, `${settingsBase}.textPaddingRight`, 0),
+  };
+}
+
+export type EmailSignupFormSettings = {
+  width: 'fill' | 'custom';
+  customWidth: number;
+  headingText: string;
+  headingColor: string;
+  headingPreset: string;
+  inputBorder: 'all' | 'bottom' | 'none';
+  inputStyle: 'default' | 'custom';
+  submitStyle: 'primary' | 'secondary' | 'link';
+  submitLinkColor: string;
+  submitDisplay: 'text' | 'arrow';
+  integratedButton: boolean;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
+export function readEmailSignupForm(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): EmailSignupFormSettings {
+  const width = cfgString(config, `${settingsBase}.signupWidth`, 'fill');
+  const inputBorder = cfgString(config, `${settingsBase}.signupInputBorder`, 'all');
+  const submitStyle = cfgString(config, `${settingsBase}.signupSubmitStyle`, 'link');
+  const submitDisplay = cfgString(config, `${settingsBase}.signupSubmitDisplay`, 'arrow');
+  const inputStyle = cfgString(config, `${settingsBase}.signupInputStyle`, 'default');
+  return {
+    width: width === 'custom' ? 'custom' : 'fill',
+    customWidth: cfgNumber(config, `${settingsBase}.signupCustomWidth`, 50),
+    headingText: cfgString(config, `${settingsBase}.signupHeadingText`, ''),
+    headingColor: cfgString(config, `${settingsBase}.signupHeadingColor`, ''),
+    headingPreset: cfgString(config, `${settingsBase}.signupHeadingPreset`, 'heading-3'),
+    inputBorder: inputBorder === 'bottom' ? 'bottom' : inputBorder === 'none' ? 'none' : 'all',
+    inputStyle: inputStyle === 'custom' ? 'custom' : 'default',
+    submitStyle:
+      submitStyle === 'primary' ? 'primary' : submitStyle === 'secondary' ? 'secondary' : 'link',
+    submitLinkColor: cfgString(config, `${settingsBase}.signupSubmitLinkColor`, ''),
+    submitDisplay: submitDisplay === 'text' ? 'text' : 'arrow',
+    integratedButton: cfgBool(config, `${settingsBase}.signupIntegratedButton`, true),
+    paddingTop: cfgNumber(config, `${settingsBase}.signupPaddingTop`, 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.signupPaddingBottom`, 0),
+    paddingLeft: cfgNumber(config, `${settingsBase}.signupPaddingLeft`, 0),
+    paddingRight: cfgNumber(config, `${settingsBase}.signupPaddingRight`, 0),
   };
 }
 

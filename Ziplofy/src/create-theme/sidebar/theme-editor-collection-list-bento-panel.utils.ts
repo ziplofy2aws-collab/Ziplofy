@@ -7,6 +7,7 @@ export const COLLECTION_LIST_BENTO_PANEL_GROUP_ORDER = [
   'Cards layout',
   'Section layout',
   'Padding',
+  'Theme settings',
   'Custom CSS',
 ] as const;
 
@@ -19,7 +20,8 @@ const FIELD_SORT: Record<string, number> = {
   cardsGap: 2,
   sectionWidth: 0,
   layoutGap: 1,
-  colorScheme: 2,
+  backgroundColor: 2,
+  colorScheme: 0,
   paddingTop: 0,
   paddingBottom: 1,
   customCss: 0,
@@ -48,7 +50,8 @@ export function sortCollectionListBentoPanelFields(fields: EditorFieldDef[]): Ed
     'Cards layout': 1,
     'Section layout': 2,
     Padding: 3,
-    'Custom CSS': 4,
+    'Theme settings': 4,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

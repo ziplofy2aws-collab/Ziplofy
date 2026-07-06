@@ -98,6 +98,9 @@ import {
   contactFormBlockFieldDefsFromNodeId,
   isContactFormBlockNodeId,
   prepareContactFormBlockSettingsNode,
+  contactFormFormGroupFieldDefsFromNodeId,
+  isContactFormFormGroupNodeId,
+  prepareContactFormFormGroupSettingsNode,
 } from './theme-editor-contact-form-block-panel.utils';
 import {
   emailSignupBlockFieldDefsFromNodeId,
@@ -106,14 +109,24 @@ import {
 } from './theme-editor-email-signup-block-panel.utils';
 import {
   imageCompareBlockFieldDefsFromNodeId,
+  isImageCompareButtonsGroupNodeId,
   isImageCompareContentGroupNodeId,
   isImageCompareSectionBlockNodeId,
+  isImageCompareTextGroupNodeId,
   prepareImageCompareSectionBlockSettingsNode,
 } from './theme-editor-image-compare-block-panel.utils';
 import {
   imageCompareContentGroupFieldDefsFromNodeId,
   prepareImageCompareContentGroupSettingsNode,
 } from './theme-editor-image-compare-content-group-panel.utils';
+import {
+  imageCompareButtonsGroupFieldDefsFromNodeId,
+  prepareImageCompareButtonsGroupSettingsNode,
+} from './theme-editor-image-compare-buttons-group-panel.utils';
+import {
+  imageCompareTextGroupFieldDefsFromNodeId,
+  prepareImageCompareTextGroupSettingsNode,
+} from './theme-editor-image-compare-text-group-panel.utils';
 import {
   isCustomSectionSettingsPanelFields,
   isCustomSectionType,
@@ -163,6 +176,8 @@ import {
   prepareFeaturedProductAcceleratedCheckoutSettingsNode,
 } from './theme-editor-featured-product-accelerated-checkout-panel.utils';
 import {
+  featuredProductQuantityFieldDefsFromNodeId,
+  featuredProductQuantityFieldDefsFromSchema,
   isFeaturedProductQuantityNestedNodeId,
   prepareFeaturedProductQuantitySettingsNode,
 } from './theme-editor-featured-product-quantity-panel.utils';
@@ -203,6 +218,26 @@ import {
   prepareFeaturedProductHeaderTitleSettingsNode,
 } from './theme-editor-featured-product-header-title-panel.utils';
 import {
+  isProductHighlightProductImageNestedNodeId,
+  isProductHighlightProductPriceNestedNodeId,
+  isProductHighlightProductSwatchesNestedNodeId,
+  isProductHighlightProductTitleNestedNodeId,
+  prepareProductHighlightProductImageSettingsNode,
+  prepareProductHighlightProductPriceSettingsNode,
+  prepareProductHighlightProductSwatchesSettingsNode,
+  prepareProductHighlightProductTitleSettingsNode,
+  productHighlightProductBlockFieldDefsFromNodeId,
+  productHighlightProductBlockFieldDefsFromSchema,
+} from './theme-editor-product-highlight-product-block-panel.utils';
+import {
+  isProductHighlightMediaPanelFields,
+  prepareProductHighlightMediaSettingsNode,
+  prepareProductHighlightProductSettingsNode,
+  productHighlightMediaFieldDefsFromNodeId,
+  productHighlightMediaFieldDefsFromSchema,
+  isProductHighlightProductBlockNodeId,
+} from './theme-editor-product-highlight-media-block-panel.utils';
+import {
   isEditorialSectionType,
   isEditorialSettingsPanelFields,
   prepareEditorialSettingsNode,
@@ -223,6 +258,13 @@ import {
   prepareImageWithTextSettingsNode,
 } from './theme-editor-image-with-text-panel.utils';
 import {
+  isImageWithTextBlockNodeId,
+  isImageWithTextGroupNodeId,
+  prepareImageWithTextBlockSettingsNode,
+  prepareImageWithTextGroupSettingsNode,
+  imageWithTextBlockFieldDefsFromNodeId,
+} from './theme-editor-image-with-text-block-panel.utils';
+import {
   isStorytellingLogoSectionType,
   isStorytellingLogoSettingsPanelFields,
   prepareStorytellingLogoSettingsNode,
@@ -234,9 +276,11 @@ import {
 } from './theme-editor-storytelling-video-panel.utils';
 import {
   isStorytellingVideoBlockNodeId,
+  isStorytellingVideoCaptionGroupNodeId,
   prepareStorytellingVideoBlockSettingsNode,
   storytellingVideoBlockFieldDefsFromNodeId,
 } from './theme-editor-storytelling-video-block-panel.utils';
+import { prepareStorytellingVideoCaptionGroupSettingsNode } from './theme-editor-storytelling-video-caption-panel.utils';
 import {
   isFaqSectionType,
   isFaqSectionNodeId,
@@ -279,12 +323,26 @@ import {
   isMulticolumnBlockField,
   isMulticolumnBlockFieldsOnly,
   isMulticolumnBlockNodeId,
+  isMulticolumnColumnNodeId,
+  isMulticolumnNestedHeadingNodeId,
+  isMulticolumnNestedDescriptionNodeId,
   multicolumnBlockFieldDefsFromNodeId,
+  multicolumnColumnBlockFieldDefsFromNodeId,
+  multicolumnHeadingBlockFieldDefsFromNodeId,
+  multicolumnDescriptionBlockFieldDefsFromNodeId,
   prepareMulticolumnSettingsNode,
   prepareMulticolumnBlockSettingsNode,
+  prepareMulticolumnColumnBlockSettingsNode,
+  prepareMulticolumnDescriptionBlockSettingsNode,
 } from './theme-editor-multicolumn-panel.utils';
 import { mapMulticolumnBlockNodes } from '../../utils/multicolumn-sidebar.util';
 import { mapRichTextBlockNodes } from '../../utils/rich-text-sidebar.util';
+import { mapPullQuoteBlockNodes } from '../../utils/pull-quote-sidebar.util';
+import {
+  mapTextMarqueeBlockNodes,
+  isTextMarqueeTextBlockNodeId,
+  prepareTextMarqueeTextBlockSettingsNode,
+} from '../../utils/text-marquee-sidebar.util';
 import {
   isPullQuoteSectionType,
   isPullQuoteSettingsPanelFields,
@@ -322,14 +380,30 @@ import {
 } from './theme-editor-blog-posts-grid-panel.utils';
 import {
   isProductHotspotsSectionType,
+import {
   isProductHotspotsSettingsPanelFields,
   prepareProductHotspotsSettingsNode,
 } from './theme-editor-product-hotspots-panel.utils';
+import {
+  isProductHotspotsHeadingFieldNodeId,
+  productHotspotsHeadingFieldDefsFromNodeId,
+  prepareProductHotspotsHeadingSettingsNode,
+} from './theme-editor-product-hotspots-heading-panel.utils';
+import {
+  isProductHotspotsHotspotBlockNodeId,
+  productHotspotsHotspotFieldDefsFromNodeId,
+  prepareProductHotspotsHotspotSettingsNode,
+} from './theme-editor-product-hotspots-block-panel.utils';
 import {
   isRecommendedProductsSectionType,
   isRecommendedProductsSettingsPanelFields,
   prepareRecommendedProductsSettingsNode,
 } from './theme-editor-recommended-products-panel.utils';
+import {
+  isRecommendedProductsHeaderNodeId,
+  recommendedProductsHeaderFieldDefsFromNodeId,
+  prepareRecommendedProductsHeaderSettingsNode,
+} from './theme-editor-recommended-products-header-panel.utils';
 import {
   isCollectionLinksSpotlightSectionType,
   isCollectionLinksSpotlightSettingsPanelFields,
@@ -375,7 +449,10 @@ import {
   prepareSlideshowSlideBlockSettingsNode,
 } from './theme-editor-slideshow-slide-block-panel.utils';
 import {
+  collectionLinkBlockFieldDefsFromSchema,
+  isCollectionLinkBlockField,
   isCollectionLinkBlockFieldsOnly,
+  isCollectionLinkBlockNodeId,
   prepareCollectionLinkBlockSettingsNode,
 } from './theme-editor-collection-link-block-panel.utils';
 import {
@@ -392,11 +469,19 @@ import {
 } from './theme-editor-collection-link-image-panel.utils';
 import { mapCollectionLinksSpotlightBlockNodes } from '../../utils/collection-links-spotlight-sidebar.util';
 import { mapCollectionListBlockNodes } from '../utils/collection-list-sidebar.util';
+import { mapFeaturedCollectionBlockNodes } from '../utils/featured-collection-sidebar.util';
 import { mapContactFormBlockNodes } from '../utils/contact-form-sidebar.util';
 import { mapEmailSignupBlockNodes } from '../utils/email-signup-sidebar.util';
 import { mapImageCompareBlockNodes } from '../utils/image-compare-sidebar.util';
+import { mapEditorialJumboBlockNodes } from '../utils/editorial-jumbo-sidebar.util';
+import { mapEditorialBlockNodes } from '../utils/editorial-sidebar.util';
+import { mapStorytellingCarouselBlockNodes } from '../utils/storytelling-carousel-sidebar.util';
+import { mapImageWithTextBlockNodes } from '../utils/image-with-text-sidebar.util';
 import { mapStorytellingVideoBlockNodes } from '../utils/storytelling-video-sidebar.util';
 import { mapFeaturedProductBlockNodes } from '../../utils/featured-product-sidebar.util';
+import { mapProductHighlightBlockNodes } from '../../utils/product-highlight-sidebar.util';
+import { mapProductHotspotsBlockNodes } from '../../utils/product-hotspots-sidebar.util';
+import { mapRecommendedProductsBlockNodes } from '../../utils/recommended-products-sidebar.util';
 import { mapFaqBlockNodes } from '../../utils/faq-sidebar.util';
 import { mapIconsWithTextBlockNodes } from '../../utils/icons-with-text-sidebar.util';
 import {
@@ -433,6 +518,22 @@ import {
   isStorytellingCarouselSettingsPanelFields,
   prepareStorytellingCarouselSettingsNode,
 } from './theme-editor-storytelling-carousel-panel.utils';
+import {
+  isStorytellingCarouselCardBlockNodeId,
+  isStorytellingCarouselHeaderBlockNodeId,
+  storytellingCarouselBlockFieldDefsFromNodeId,
+} from './theme-editor-storytelling-carousel-block-panel.utils';
+import {
+  isStorytellingCarouselCardPanelFields,
+  prepareStorytellingCarouselCardSettingsNode,
+  storytellingCarouselCardFieldDefsFromNodeId,
+} from './theme-editor-storytelling-carousel-card-panel.utils';
+import {
+  isStorytellingCarouselContentGroupBlockNodeId,
+  isStorytellingCarouselContentGroupPanelFields,
+  prepareStorytellingCarouselContentGroupSettingsNode,
+  storytellingCarouselContentGroupFieldDefsFromNodeId,
+} from './theme-editor-storytelling-carousel-content-group-panel.utils';
 import {
   isDividerSectionType,
   isDividerSettingsPanelFields,
@@ -520,10 +621,14 @@ import {
   isFeaturedCollectionHeaderBlockNodeId,
   isFeaturedCollectionHeaderPanelField,
   prepareFeaturedCollectionHeaderSettingsNode,
+  fcHeaderFieldDefs,
   fcHeaderFieldDefsFromSchema,
+  fcHeaderSettingsBaseFromNodeId,
 } from './theme-editor-fc-header-panel.utils';
 import {
+  collectionTitleFieldDefs,
   collectionTitleFieldDefsFromSchema,
+  collectionTitleSettingsBaseFromNodeId,
   isCollectionTitleNestedNodeId,
   isCollectionTitlePanelField,
   prepareCollectionTitleSettingsNode,
@@ -533,27 +638,37 @@ import {
   isViewAllButtonNestedNodeId,
   isViewAllButtonPanelField,
   prepareViewAllButtonSettingsNode,
+  viewAllButtonFieldDefs,
   viewAllButtonFieldDefsFromSchema,
+  viewAllButtonSettingsBaseFromNodeId,
 } from './theme-editor-fc-view-all-button-panel.utils';
 import {
   isProductCardBlockNodeId,
   prepareProductCardSettingsNode,
+  productCardFieldDefs,
   productCardFieldDefsFromSchema,
+  productCardSettingsBaseFromNodeId,
 } from './theme-editor-product-card-panel.utils';
 import {
   isProductCardPriceNestedNodeId,
   prepareProductCardPriceSettingsNode,
+  productCardPriceFieldDefs,
   productCardPriceFieldDefsFromSchema,
+  productCardPriceSettingsBaseFromNodeId,
 } from './theme-editor-product-card-price-panel.utils';
 import {
   isProductCardMediaNestedNodeId,
   prepareProductCardMediaSettingsNode,
+  productCardMediaFieldDefs,
   productCardMediaFieldDefsFromSchema,
+  productCardMediaSettingsBaseFromNodeId,
 } from './theme-editor-product-card-media-panel.utils';
 import {
   isProductCardTitleNestedNodeId,
   prepareProductCardTitleSettingsNode,
+  productCardTitleFieldDefs,
   productCardTitleFieldDefsFromSchema,
+  productCardTitleSettingsBaseFromNodeId,
 } from './theme-editor-product-card-title-panel.utils';
 import { resolveEditingPanelForNode } from '../../theme-editor/section-editing-support.util';
 import {
@@ -630,6 +745,11 @@ function mapBottomAlignedHeroSidebarNodes(
   const paths = heroBottomAlignedPaths(blocksBase);
   const contentPrefix = `${prefix}:block:content_group`;
   const headingGroupPrefix = `${contentPrefix}:nested:heading_group`;
+  const contentGroupSettingsBase = `${blocksBase}.content_group.settings`;
+  const headingGroupSettingsBase = `${blocksBase}.content_group.blocks.heading_group.settings`;
+  const textIntroBase = `${blocksBase}.content_group.blocks.heading_group.blocks.text_intro`;
+  const headingMainBase = `${blocksBase}.content_group.blocks.heading_group.blocks.heading_main`;
+  const textBodyBase = `${blocksBase}.content_group.blocks.text_body`;
 
   const textField = (path: string, label: string): EditorFieldDef => ({
     path,
@@ -637,12 +757,229 @@ function mapBottomAlignedHeroSidebarNodes(
     label,
   });
 
+  /** Shopify-style "Group" block editor fields (Layout → Size → Appearance → Borders → Block link → Padding). */
+  const groupBlockFields = (settingsBase: string): EditorFieldDef[] => {
+    const s = (key: string) => `${settingsBase}.${key}`;
+    const fitFillCustom = [
+      { value: 'fit', label: 'Fit' },
+      { value: 'fill', label: 'Fill' },
+      { value: 'custom', label: 'Custom' },
+    ];
+    const pctSlider = (key: string, label: string): EditorFieldDef => ({
+      path: s(key),
+      type: 'number',
+      label,
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    });
+    const padSlider = (key: string, label: string): EditorFieldDef => ({
+      path: s(key),
+      type: 'number',
+      label,
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    });
+    return [
+      {
+        path: s('direction'),
+        type: 'select',
+        label: 'Direction',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'vertical', label: 'Vertical' },
+          { value: 'horizontal', label: 'Horizontal' },
+        ],
+      },
+      {
+        path: s('verticalOnMobile'),
+        type: 'boolean',
+        label: 'Vertical on mobile',
+        group: 'Layout',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: s('layoutAlignment'),
+        type: 'select',
+        label: 'Alignment',
+        group: 'Layout',
+        widget: 'select-inline',
+        sidebar: true,
+        options: [
+          { value: 'left', label: 'Left' },
+          { value: 'center', label: 'Center' },
+          { value: 'right', label: 'Right' },
+        ],
+      },
+      {
+        path: s('position'),
+        type: 'select',
+        label: 'Position',
+        group: 'Layout',
+        widget: 'select-inline',
+        sidebar: true,
+        options: [
+          { value: 'top', label: 'Top' },
+          { value: 'center', label: 'Center' },
+          { value: 'bottom', label: 'Bottom' },
+          { value: 'space-between', label: 'Space between' },
+          { value: 'space-around', label: 'Space around' },
+        ],
+      },
+      {
+        path: s('alignTextBaseline'),
+        type: 'boolean',
+        label: 'Align text baseline',
+        group: 'Layout',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: s('layoutGap'),
+        type: 'number',
+        label: 'Gap',
+        group: 'Layout',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('width'),
+        type: 'select',
+        label: 'Width',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: fitFillCustom,
+      },
+      pctSlider('customWidth', 'Custom width'),
+      {
+        path: s('mobileWidth'),
+        type: 'select',
+        label: 'Mobile width',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: fitFillCustom,
+      },
+      pctSlider('mobileCustomWidth', 'Custom width'),
+      {
+        path: s('height'),
+        type: 'select',
+        label: 'Height',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: fitFillCustom,
+      },
+      pctSlider('customHeight', 'Custom height'),
+      {
+        path: s('backgroundMedia'),
+        type: 'select',
+        label: 'Background media',
+        group: 'Appearance',
+        widget: 'select-inline',
+        sidebar: true,
+        options: [
+          { value: 'none', label: 'None' },
+          { value: 'image', label: 'Image' },
+        ],
+      },
+      {
+        path: s('backgroundImageUrl'),
+        type: 'text',
+        label: 'Background image',
+        group: 'Appearance',
+        widget: 'image',
+        sidebar: true,
+        placeholder: 'Paste image URL or upload',
+      },
+      {
+        path: s('backgroundColor'),
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: s('backgroundOverlay'),
+        type: 'boolean',
+        label: 'Background overlay',
+        group: 'Appearance',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: s('borderStyle'),
+        type: 'select',
+        label: 'Style',
+        group: 'Borders',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'none', label: 'None' },
+          { value: 'solid', label: 'Solid' },
+        ],
+      },
+      {
+        path: s('cornerRadius'),
+        type: 'number',
+        label: 'Corner radius',
+        group: 'Borders',
+        widget: 'slider',
+        min: 0,
+        max: 40,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('link'),
+        type: 'text',
+        label: 'Link',
+        group: 'Block link',
+        widget: 'link',
+        sidebar: true,
+        placeholder: 'Paste a link or search',
+      },
+      {
+        path: s('linkOpenInNewTab'),
+        type: 'boolean',
+        label: 'Open link in new tab',
+        group: 'Block link',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      padSlider('paddingTop', 'Top'),
+      padSlider('paddingBottom', 'Bottom'),
+      padSlider('paddingLeft', 'Left'),
+      padSlider('paddingRight', 'Right'),
+    ];
+  };
+
   const headingGroupNode: SidebarNode = {
     id: headingGroupPrefix,
     label: 'Group',
     kind: 'block',
     icon: 'group',
     childrenListKey: listKeyBlockChildren(headingGroupPrefix),
+    fields: groupBlockFields(headingGroupSettingsBase),
     children: reorderSidebarChildren(
       [
         { id: `${headingGroupPrefix}:inner-add-block`, label: 'Add block', kind: 'add-block' },
@@ -652,7 +989,7 @@ function mapBottomAlignedHeroSidebarNodes(
           kind: 'block',
           icon: 'text',
           preview: fieldPreview(textField(paths.textIntro, 'Text'), values),
-          fields: [textField(paths.textIntro, 'Text')],
+          fields: textBlockFieldDefs(textIntroBase),
         },
         {
           id: `${headingGroupPrefix}:nested:heading_main`,
@@ -660,9 +997,8 @@ function mapBottomAlignedHeroSidebarNodes(
           kind: 'block',
           icon: 'text',
           preview: fieldPreview(textField(paths.headingMain, 'Text'), values),
-          fields: [textField(paths.headingMain, 'Text')],
+          fields: textBlockFieldDefs(headingMainBase),
         },
-        { id: `${headingGroupPrefix}:inner-add-block`, label: 'Add block', kind: 'add-block' },
       ],
       listKeyBlockChildren(headingGroupPrefix),
       itemOrder
@@ -675,6 +1011,7 @@ function mapBottomAlignedHeroSidebarNodes(
     kind: 'block',
     icon: 'group',
     childrenListKey: listKeyBlockChildren(contentPrefix),
+    fields: groupBlockFields(contentGroupSettingsBase),
     children: reorderSidebarChildren(
       [
         { id: `${contentPrefix}:inner-add-block`, label: 'Add block', kind: 'add-block' },
@@ -685,9 +1022,8 @@ function mapBottomAlignedHeroSidebarNodes(
           kind: 'block',
           icon: 'text',
           preview: fieldPreview(textField(paths.textBody, 'Text'), values),
-          fields: [textField(paths.textBody, 'Text')],
+          fields: textBlockFieldDefs(textBodyBase),
         },
-        { id: `${contentPrefix}:inner-add-block`, label: 'Add block', kind: 'add-block' },
       ],
       listKeyBlockChildren(contentPrefix),
       itemOrder
@@ -702,7 +1038,8 @@ function mapBottomAlignedHeroSidebarNodes(
 }
 
 function heroBlockSidebarLabel(blockId: string, blockLabel: string): string {
-  if (blockId === 'heading') return 'Heading';
+  // Shopify's Hero lists both the title and body as generic "Text" blocks.
+  if (blockId === 'heading' || blockId.startsWith('heading_')) return 'Text';
   if (blockId === 'logo') return 'Logo';
   if (blockId.startsWith('text')) return 'Text';
   if (blockId === 'primary_button' || blockId === 'secondary_button' || blockLabel.toLowerCase().includes('button')) {
@@ -1119,6 +1456,609 @@ function mapHeroBlockNodes(
   return reorderSidebarChildren([addBlock, ...blockNodes], blocksListKey, itemOrder);
 }
 
+function splitShowcaseSettingsBaseFromPrefix(prefix: string): string {
+  const layout = prefix.match(/^layout:(.+)$/);
+  if (layout) return `sections.${layout[1]}.settings`;
+  const tpl = prefix.match(/^template:([^:]+):(.+)$/);
+  if (tpl) return `templates.${tpl[1]}.sections.${tpl[2]}.settings`;
+  return `${prefix}.settings`;
+}
+
+/**
+ * Split showcase → Add block + two "Group" folders (left/right tile), each holding
+ * an inner Add block, a Spacer, a Text block and a Button block.
+ */
+function mapSplitShowcaseGroupNodes(
+  blocks: BlockDef[],
+  prefix: string,
+  sectionAddBlockId: string,
+  values: Record<string, string | boolean>,
+  itemOrder: Record<string, string[]>,
+  blocksListKey: string
+): SidebarNode[] {
+  const flat = mapHeroBlockNodes(blocks, prefix, sectionAddBlockId, values, itemOrder, blocksListKey);
+  const sectionAddBlock =
+    flat.find((n) => n.kind === 'add-block') ??
+    ({ id: sectionAddBlockId, label: 'Add block', kind: 'add-block' } as SidebarNode);
+  const byId = new Map(flat.filter((n) => n.kind === 'block').map((n) => [n.id, n]));
+  const settingsBase = splitShowcaseSettingsBaseFromPrefix(prefix);
+
+  const asButton = (node: SidebarNode | undefined): SidebarNode | undefined =>
+    node ? { ...node, label: 'Button', icon: 'button' as SidebarIcon } : undefined;
+
+  /** Dedicated rich-text "Text" block backed by a per-tile settings namespace. */
+  const textNode = (groupKey: string): SidebarNode => {
+    const nodeId = `${prefix}:group:${groupKey}:text`;
+    const base = `${settingsBase}.${groupKey}Text`;
+    const fields = textBlockFieldDefs(base).filter((f) => !f.path.endsWith('.alignment'));
+    return {
+      id: nodeId,
+      label: 'Text',
+      kind: 'block',
+      icon: 'text',
+      childrenListKey: listKeyBlockChildren(nodeId),
+      fields,
+    };
+  };
+
+  const spacerNode = (groupKey: string): SidebarNode => {
+    const nodeId = `${prefix}:group:${groupKey}:spacer`;
+    return {
+      id: nodeId,
+      label: 'Spacer',
+      kind: 'block',
+      icon: 'default',
+      childrenListKey: listKeyBlockChildren(nodeId),
+      fields: [
+        {
+          path: `${settingsBase}.${groupKey}SpacerUnit`,
+          type: 'string',
+          label: 'Unit',
+          group: 'Spacer',
+          widget: 'segmented',
+          options: [
+            { value: 'pixel', label: 'Pixel' },
+            { value: 'percent', label: 'Percent' },
+          ],
+          sidebar: true,
+        },
+        {
+          path: `${settingsBase}.${groupKey}SpacerHeight`,
+          type: 'number',
+          label: 'Size',
+          group: 'Spacer',
+          widget: 'slider',
+          min: 0,
+          max: 200,
+          step: 1,
+          unit: 'px',
+          sidebar: true,
+        },
+        {
+          path: `${settingsBase}.${groupKey}SpacerCustomMobile`,
+          type: 'boolean',
+          label: 'Custom mobile size',
+          group: 'Spacer',
+          widget: 'toggle',
+          sidebar: true,
+        },
+        {
+          path: `${settingsBase}.${groupKey}SpacerMobileHeight`,
+          type: 'number',
+          label: 'Mobile size',
+          group: 'Spacer',
+          widget: 'slider',
+          min: 0,
+          max: 200,
+          step: 1,
+          unit: 'px',
+          sidebar: true,
+        },
+      ],
+    };
+  };
+
+  const groupBlockFields = (groupKey: string): EditorFieldDef[] => {
+    const fitFillCustom = [
+      { value: 'fit', label: 'Fit' },
+      { value: 'fill', label: 'Fill' },
+      { value: 'custom', label: 'Custom' },
+    ];
+    const s = (key: string) => `${settingsBase}.${groupKey}Group.${key}`;
+    return [
+      {
+        path: s('direction'),
+        type: 'select',
+        label: 'Direction',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'vertical', label: 'Vertical' },
+          { value: 'horizontal', label: 'Horizontal' },
+        ],
+      },
+      {
+        path: s('layoutAlignment'),
+        type: 'select',
+        label: 'Alignment',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'left', label: 'Left' },
+          { value: 'center', label: 'Center' },
+          { value: 'right', label: 'Right' },
+        ],
+      },
+      {
+        path: s('position'),
+        type: 'select',
+        label: 'Position',
+        group: 'Layout',
+        widget: 'select-inline',
+        sidebar: true,
+        options: [
+          { value: 'top', label: 'Top' },
+          { value: 'center', label: 'Center' },
+          { value: 'bottom', label: 'Bottom' },
+          { value: 'space-between', label: 'Space between' },
+          { value: 'space-around', label: 'Space around' },
+        ],
+      },
+      {
+        path: s('layoutGap'),
+        type: 'number',
+        label: 'Gap',
+        group: 'Layout',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('width'),
+        type: 'select',
+        label: 'Width',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: fitFillCustom,
+      },
+      {
+        path: s('customWidth'),
+        type: 'number',
+        label: 'Custom width',
+        group: 'Size',
+        widget: 'slider',
+        min: 1,
+        max: 100,
+        step: 1,
+        unit: '%',
+        sidebar: true,
+      },
+      {
+        path: s('mobileWidth'),
+        type: 'select',
+        label: 'Mobile width',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: fitFillCustom,
+      },
+      {
+        path: s('mobileCustomWidth'),
+        type: 'number',
+        label: 'Custom width',
+        group: 'Size',
+        widget: 'slider',
+        min: 1,
+        max: 100,
+        step: 1,
+        unit: '%',
+        sidebar: true,
+      },
+      {
+        path: s('height'),
+        type: 'select',
+        label: 'Height',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: fitFillCustom,
+      },
+      {
+        path: s('customHeight'),
+        type: 'number',
+        label: 'Custom height',
+        group: 'Size',
+        widget: 'slider',
+        min: 1,
+        max: 100,
+        step: 1,
+        unit: '%',
+        sidebar: true,
+      },
+      {
+        path: s('backgroundMedia'),
+        type: 'select',
+        label: 'Background media',
+        group: 'Appearance',
+        widget: 'select-inline',
+        sidebar: true,
+        options: [
+          { value: 'none', label: 'None' },
+          { value: 'image', label: 'Image' },
+        ],
+      },
+      {
+        path: s('backgroundImageUrl'),
+        type: 'text',
+        label: 'Image',
+        group: 'Appearance',
+        widget: 'image',
+        sidebar: true,
+        placeholder: 'Paste image URL or upload',
+      },
+      {
+        path: s('backgroundImagePosition'),
+        type: 'select',
+        label: 'Image position',
+        group: 'Appearance',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'cover', label: 'Cover' },
+          { value: 'fit', label: 'Fit' },
+        ],
+      },
+      {
+        path: s('backgroundOverlay'),
+        type: 'boolean',
+        label: 'Background overlay',
+        group: 'Appearance',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: s('borderStyle'),
+        type: 'select',
+        label: 'Style',
+        group: 'Borders',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'none', label: 'None' },
+          { value: 'solid', label: 'Solid' },
+        ],
+      },
+      {
+        path: s('cornerRadius'),
+        type: 'number',
+        label: 'Corner radius',
+        group: 'Borders',
+        widget: 'slider',
+        min: 0,
+        max: 40,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('link'),
+        type: 'text',
+        label: 'Link',
+        group: 'Block link',
+        widget: 'link',
+        sidebar: true,
+        placeholder: 'Paste a link or search',
+      },
+      {
+        path: s('linkOpenInNewTab'),
+        type: 'boolean',
+        label: 'Open link in new tab',
+        group: 'Block link',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: s('paddingTop'),
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('paddingBottom'),
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('paddingLeft'),
+        type: 'number',
+        label: 'Left',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('paddingRight'),
+        type: 'number',
+        label: 'Right',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+    ];
+  };
+
+  const buildGroup = (
+    groupKey: string,
+    buttonNode: SidebarNode | undefined
+  ): SidebarNode => {
+    const groupId = `${prefix}:group:${groupKey}`;
+    const childrenListKey = listKeyBlockChildren(groupId);
+    const innerAddBlock: SidebarNode = {
+      id: `${groupId}:inner-add-block`,
+      label: 'Add block',
+      kind: 'add-block',
+    };
+    const children = reorderSidebarChildren(
+      [innerAddBlock, spacerNode(groupKey), textNode(groupKey), buttonNode].filter(
+        (n): n is SidebarNode => Boolean(n)
+      ),
+      childrenListKey,
+      itemOrder
+    );
+    return {
+      id: groupId,
+      label: 'Group',
+      kind: 'block',
+      icon: 'group',
+      children,
+      childrenListKey,
+      fields: groupBlockFields(groupKey),
+    };
+  };
+
+  const group1 = buildGroup('group1', asButton(byId.get(`${prefix}:block:primary_button`)));
+  const group2 = buildGroup('group2', asButton(byId.get(`${prefix}:block:secondary_button`)));
+
+  return reorderSidebarChildren([sectionAddBlock, group1, group2], blocksListKey, itemOrder);
+}
+
+function readConfigStringAtPath(
+  config: Record<string, unknown> | null | undefined,
+  path: string
+): string {
+  let cur: unknown = config;
+  for (const part of path.split('.')) {
+    if (cur == null || typeof cur !== 'object') return '';
+    cur = (cur as Record<string, unknown>)[part];
+  }
+  return typeof cur === 'string' ? cur : '';
+}
+
+/**
+ * Hero: Marquee → Add block + Spacer + "Marquee" folder (Add block + Text) + Button.
+ * Spacer/Text are settings-backed virtual blocks; Button reuses the real primary_button.
+ */
+function mapHeroMarqueeGroupNodes(
+  blocks: BlockDef[],
+  prefix: string,
+  sectionAddBlockId: string,
+  values: Record<string, string | boolean>,
+  itemOrder: Record<string, string[]>,
+  blocksListKey: string,
+  config: Record<string, unknown> | null
+): SidebarNode[] {
+  const flat = mapHeroBlockNodes(blocks, prefix, sectionAddBlockId, values, itemOrder, blocksListKey);
+  const sectionAddBlock =
+    flat.find((n) => n.kind === 'add-block') ??
+    ({ id: sectionAddBlockId, label: 'Add block', kind: 'add-block' } as SidebarNode);
+  const byId = new Map(flat.filter((n) => n.kind === 'block').map((n) => [n.id, n]));
+  const settingsBase = splitShowcaseSettingsBaseFromPrefix(prefix);
+
+  const spacerId = `${prefix}:group:spacer:spacer`;
+  const spacerNode: SidebarNode = {
+    id: spacerId,
+    label: 'Spacer',
+    kind: 'block',
+    icon: 'default',
+    childrenListKey: listKeyBlockChildren(spacerId),
+    showVisibilityToggle: false,
+    showDeleteButton: false,
+    fields: [
+      {
+        path: `${settingsBase}.marqueeSpacerUnit`,
+        type: 'select',
+        label: 'Unit',
+        group: 'Spacer',
+        widget: 'segmented',
+        options: [
+          { value: 'pixel', label: 'Pixel' },
+          { value: 'percent', label: 'Percent' },
+        ],
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.marqueeSpacerHeight`,
+        type: 'number',
+        label: 'Size',
+        group: 'Spacer',
+        widget: 'slider',
+        min: 0,
+        max: 200,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.marqueeSpacerCustomMobile`,
+        type: 'boolean',
+        label: 'Custom mobile size',
+        group: 'Spacer',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.marqueeSpacerMobileHeight`,
+        type: 'number',
+        label: 'Mobile size',
+        group: 'Spacer',
+        widget: 'slider',
+        min: 0,
+        max: 200,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+    ],
+  };
+
+  const textId = `${prefix}:group:marquee:text`;
+  const textBase = `${settingsBase}.marqueeTextBlock`;
+  const textPreview =
+    readConfigStringAtPath(config, `${textBase}.settings.text`) ||
+    readConfigStringAtPath(config, `${settingsBase}.marqueeText`) ||
+    readConfigStringAtPath(config, `${settingsBase}.subtitle`);
+  const textNode: SidebarNode = {
+    id: textId,
+    label: 'Text',
+    kind: 'block',
+    icon: 'text',
+    childrenListKey: listKeyBlockChildren(textId),
+    showVisibilityToggle: false,
+    showDeleteButton: false,
+    fields: textBlockFieldDefs(textBase).filter((f) => !f.path.endsWith('.alignment')),
+    preview: textPreview
+      ? (() => {
+          const plain = textPreview.replace(/<[^>]*>/g, '').trim();
+          return plain.length > 28 ? `${plain.slice(0, 28)}…` : plain;
+        })()
+      : undefined,
+  };
+
+  const marqueeId = `${prefix}:marquee`;
+  const marqueeChildrenListKey = listKeyBlockChildren(marqueeId);
+  const innerAddBlock: SidebarNode = {
+    id: `${marqueeId}:inner-add-block`,
+    label: 'Add block',
+    kind: 'add-block',
+  };
+  const marqueeFolder: SidebarNode = {
+    id: marqueeId,
+    label: 'Marquee',
+    kind: 'block',
+    icon: 'default',
+    childrenListKey: marqueeChildrenListKey,
+    showVisibilityToggle: false,
+    showDeleteButton: false,
+    children: reorderSidebarChildren([innerAddBlock, textNode], marqueeChildrenListKey, itemOrder),
+    fields: [
+      {
+        path: `${settingsBase}.marqueeMotionDirection`,
+        type: 'select',
+        label: 'Motion direction',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'forward', label: 'Forward' },
+          { value: 'reverse', label: 'Reverse' },
+        ],
+      },
+      {
+        path: `${settingsBase}.marqueeBackgroundColor`,
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.marqueeTransparentBg`,
+        type: 'boolean',
+        label: 'Transparent background',
+        group: 'Appearance',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.marqueePaddingTop`,
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.marqueePaddingBottom`,
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.marqueeGap`,
+        type: 'number',
+        label: 'Gap',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+    ],
+  };
+
+  const buttonRaw = byId.get(`${prefix}:block:primary_button`);
+  const buttonNode = buttonRaw
+    ? { ...buttonRaw, label: 'Button', icon: 'button' as SidebarIcon }
+    : undefined;
+
+  return reorderSidebarChildren(
+    [sectionAddBlock, spacerNode, marqueeFolder, buttonNode].filter(
+      (n): n is SidebarNode => Boolean(n)
+    ),
+    blocksListKey,
+    itemOrder
+  );
+}
+
 function fieldPreview(field: EditorFieldDef, values: Record<string, string | boolean>): string | undefined {
   const raw = values[field.path];
   if (raw === undefined || raw === null || raw === '') return undefined;
@@ -1332,54 +2272,613 @@ function mapBlockNodes(
   return reorderSidebarChildren([...blockNodes, addBlock], blocksListKey, itemOrder);
 }
 
-function mapProductHotspotsBlockNodes(
+/**
+ * Slideshow: Inset — Add block → Slide (folder) → Add block / Heading / Text / Button.
+ * Config-driven so every slide instance (slide_1, slide_2, …) becomes its own folder,
+ * with the heading/body/button surfaced as nested blocks (Shopify-style).
+ */
+function mapSlideshowInsetBlockNodes(
   prefix: string,
-  settingsBase: string,
   blocksBase: string,
   values: Record<string, string | boolean>,
+  itemOrder: Record<string, string[]>,
+  sectionChildrenListKey: string,
   config: Record<string, unknown> | null,
-  blockOrderPath: string[]
+  blockOrderPath: string[],
+  layoutGroupLabel: string = 'Layout'
 ): SidebarNode[] {
-  const headingField: EditorFieldDef = {
-    path: `${settingsBase}.heading`,
-    type: 'text',
-    label: 'Heading',
+  const sectionAddBlock: SidebarNode = {
+    id: `${prefix}:add-block`,
+    label: 'Add block',
+    kind: 'add-block',
   };
-  const headingNode: SidebarNode = {
-    id: `field:${headingField.path}`,
-    label: headingField.label,
-    kind: 'field',
-    icon: 'text' as const,
-    fields: [headingField],
-    preview: fieldPreview(headingField, values),
-  };
-  const addBlock: SidebarNode = { id: `${prefix}:add-block`, label: 'Add block', kind: 'add-block' };
+
   const order = readConfigBlockOrder(config, blockOrderPath) ?? [];
-  const blocksObject = readConfigAtPath(config, blockOrderPath.slice(0, -1));
+  const blocksObject = readConfigAtPath(config, [...blockOrderPath.slice(0, -1), 'blocks']);
   const blocksRecord =
     blocksObject && typeof blocksObject === 'object' && !Array.isArray(blocksObject)
       ? (blocksObject as Record<string, unknown>)
       : {};
-  const ids = order.length ? order : Object.keys(blocksRecord);
-  const hotspotNodes: SidebarNode[] = ids.map((blockId) => {
-    const blockBase = `${blocksBase}.${blockId}.settings`;
+  const ids = (order.length ? order : Object.keys(blocksRecord)).filter((id) => {
+    const block = blocksRecord[id] as { type?: string } | undefined;
+    return !block?.type || block.type === 'slideshow-slide';
+  });
+
+  const slideNodes: SidebarNode[] = ids.map((slideId) => {
+    const slideNodeId = `${prefix}:block:${slideId}`;
+    const settingsBase = `${blocksBase}.${slideId}.settings`;
+    const childrenListKey = listKeyBlockChildren(slideNodeId);
+
+    const titleField: EditorFieldDef = {
+      path: `${settingsBase}.title`,
+      type: 'text',
+      label: 'Heading',
+      sidebar: true,
+    };
+    const bodyField: EditorFieldDef = {
+      path: `${settingsBase}.body`,
+      type: 'textarea',
+      label: 'Text',
+      sidebar: true,
+    };
+    const buttonLabelField: EditorFieldDef = {
+      path: `${settingsBase}.buttonLabel`,
+      type: 'text',
+      label: 'Label',
+      sidebar: true,
+    };
+    const buttonHrefField: EditorFieldDef = {
+      path: `${settingsBase}.buttonHref`,
+      type: 'text',
+      label: 'Link',
+      sidebar: true,
+    };
+
+    const slideOwnFields: EditorFieldDef[] = [
+      {
+        path: `${settingsBase}.mediaType`,
+        type: 'select',
+        label: 'Type',
+        group: 'Media',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'image', label: 'Image' },
+          { value: 'video', label: 'Video' },
+        ],
+      },
+      {
+        path: `${settingsBase}.imageUrl`,
+        type: 'text',
+        label: 'Image',
+        group: 'Media',
+        widget: 'image',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.videoUrl`,
+        type: 'text',
+        label: 'Video URL',
+        group: 'Media',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.direction`,
+        type: 'select',
+        label: 'Direction',
+        group: layoutGroupLabel,
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'vertical', label: 'Vertical' },
+          { value: 'horizontal', label: 'Horizontal' },
+        ],
+      },
+      {
+        path: `${settingsBase}.alignment`,
+        type: 'select',
+        label: 'Alignment',
+        group: layoutGroupLabel,
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'left', label: 'Left' },
+          { value: 'center', label: 'Center' },
+          { value: 'right', label: 'Right' },
+        ],
+      },
+      {
+        path: `${settingsBase}.position`,
+        type: 'select',
+        label: 'Position',
+        group: layoutGroupLabel,
+        widget: 'select-inline',
+        sidebar: true,
+        options: [
+          { value: 'top', label: 'Top' },
+          { value: 'center', label: 'Center' },
+          { value: 'bottom', label: 'Bottom' },
+        ],
+      },
+      {
+        path: `${settingsBase}.gap`,
+        type: 'number',
+        label: 'Gap',
+        group: layoutGroupLabel,
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.backgroundColor`,
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.mediaOverlay`,
+        type: 'boolean',
+        label: 'Media overlay',
+        group: 'Appearance',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.paddingTop`,
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.paddingBottom`,
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.paddingLeft`,
+        type: 'number',
+        label: 'Left',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.paddingRight`,
+        type: 'number',
+        label: 'Right',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+    ];
+
+    const innerAddBlock: SidebarNode = {
+      id: `${slideNodeId}:inner-add-block`,
+      label: 'Add block',
+      kind: 'add-block',
+    };
+    const headingFields: EditorFieldDef[] = [
+      {
+        path: `${settingsBase}.title`,
+        type: 'textarea',
+        label: 'Text',
+        group: 'Text',
+        widget: 'richtext',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingWidth`,
+        type: 'select',
+        label: 'Width',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'fit', label: 'Fit' },
+          { value: 'fill', label: 'Fill' },
+        ],
+      },
+      {
+        path: `${settingsBase}.headingMaxWidth`,
+        type: 'select',
+        label: 'Max width',
+        group: 'Layout',
+        widget: 'select',
+        sidebar: true,
+        options: [
+          { value: 'narrow', label: 'Narrow' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'none', label: 'None' },
+        ],
+      },
+      {
+        path: `${settingsBase}.headingAlignment`,
+        type: 'select',
+        label: 'Alignment',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'left', label: 'Left' },
+          { value: 'center', label: 'Center' },
+          { value: 'right', label: 'Right' },
+        ],
+      },
+      {
+        path: `${settingsBase}.headingTypographyPreset`,
+        type: 'select',
+        label: 'Preset',
+        group: 'Typography',
+        widget: 'select',
+        description: 'Edit presets in theme settings',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingColor`,
+        type: 'select',
+        label: 'Text color',
+        group: 'Appearance',
+        widget: 'select',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingBackgroundEnabled`,
+        type: 'boolean',
+        label: 'Background',
+        group: 'Appearance',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingBackgroundColor`,
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingCornerRadius`,
+        type: 'number',
+        label: 'Corner radius',
+        group: 'Appearance',
+        widget: 'slider',
+        min: 0,
+        max: 40,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingPaddingTop`,
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingPaddingBottom`,
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingPaddingLeft`,
+        type: 'number',
+        label: 'Left',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.headingPaddingRight`,
+        type: 'number',
+        label: 'Right',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+    ];
+    const headingNode: SidebarNode = {
+      id: `${slideNodeId}:nested:slide_heading`,
+      label: 'Heading',
+      kind: 'block',
+      icon: 'text',
+      preview: fieldPreview(titleField, values),
+      fields: headingFields,
+    };
+    const textFields: EditorFieldDef[] = [
+      {
+        path: `${settingsBase}.body`,
+        type: 'textarea',
+        label: 'Text',
+        group: 'Text',
+        widget: 'richtext',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyWidth`,
+        type: 'select',
+        label: 'Width',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'fit', label: 'Fit' },
+          { value: 'fill', label: 'Fill' },
+        ],
+      },
+      {
+        path: `${settingsBase}.bodyMaxWidth`,
+        type: 'select',
+        label: 'Max width',
+        group: 'Layout',
+        widget: 'select',
+        sidebar: true,
+        options: [
+          { value: 'narrow', label: 'Narrow' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'none', label: 'None' },
+        ],
+      },
+      {
+        path: `${settingsBase}.bodyTypographyPreset`,
+        type: 'select',
+        label: 'Preset',
+        group: 'Typography',
+        widget: 'select',
+        description: 'Edit presets in theme settings',
+        sidebar: true,
+        options: [
+          { value: 'default', label: 'Default' },
+          { value: 'paragraph', label: 'Paragraph' },
+          { value: 'heading-1', label: 'Heading 1' },
+          { value: 'heading-2', label: 'Heading 2' },
+          { value: 'heading-3', label: 'Heading 3' },
+          { value: 'heading-4', label: 'Heading 4' },
+          { value: 'heading-5', label: 'Heading 5' },
+          { value: 'heading-6', label: 'Heading 6' },
+          { value: 'custom', label: 'Custom' },
+        ],
+      },
+      {
+        path: `${settingsBase}.bodyColor`,
+        type: 'color',
+        label: 'Text color',
+        group: 'Appearance',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyBackgroundEnabled`,
+        type: 'boolean',
+        label: 'Background',
+        group: 'Appearance',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyPaddingTop`,
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyPaddingBottom`,
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyPaddingLeft`,
+        type: 'number',
+        label: 'Left',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyPaddingRight`,
+        type: 'number',
+        label: 'Right',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 80,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+    ];
+    const textNode: SidebarNode = {
+      id: `${slideNodeId}:nested:slide_text`,
+      label: 'Text',
+      kind: 'block',
+      icon: 'text',
+      preview: fieldPreview(bodyField, values),
+      fields: textFields,
+    };
+    const buttonFields: EditorFieldDef[] = [
+      buttonLabelField,
+      { ...buttonHrefField, widget: 'link' },
+      {
+        path: `${settingsBase}.buttonOpenInNewTab`,
+        type: 'boolean',
+        label: 'Open link in new tab',
+        widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.buttonStyle`,
+        type: 'select',
+        label: 'Style',
+        widget: 'select',
+        sidebar: true,
+        options: [
+          { value: 'primary', label: 'Primary' },
+          { value: 'secondary', label: 'Secondary' },
+          { value: 'link', label: 'Link' },
+          { value: 'custom', label: 'Custom' },
+        ],
+      },
+      {
+        path: `${settingsBase}.buttonLinkTextColor`,
+        type: 'color',
+        label: 'Link text color',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.buttonCustomBackground`,
+        type: 'color',
+        label: 'Background',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.buttonCustomText`,
+        type: 'color',
+        label: 'Text',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.buttonDesktopWidth`,
+        type: 'select',
+        label: 'Desktop width',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'fit', label: 'Fit' },
+          { value: 'custom', label: 'Custom' },
+        ],
+      },
+      {
+        path: `${settingsBase}.buttonDesktopCustomWidth`,
+        type: 'number',
+        label: 'Width',
+        group: 'Size',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: '%',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.buttonMobileWidth`,
+        type: 'select',
+        label: 'Mobile width',
+        group: 'Size',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'fit', label: 'Fit' },
+          { value: 'custom', label: 'Custom' },
+        ],
+      },
+      {
+        path: `${settingsBase}.buttonMobileCustomWidth`,
+        type: 'number',
+        label: 'Width',
+        group: 'Size',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: '%',
+        sidebar: true,
+      },
+    ];
+    const buttonNode: SidebarNode = {
+      id: `${slideNodeId}:nested:slide_button`,
+      label: 'Button',
+      kind: 'block',
+      icon: 'button',
+      fields: buttonFields,
+    };
+    const children = reorderSidebarChildren(
+      [innerAddBlock, headingNode, textNode, buttonNode],
+      childrenListKey,
+      itemOrder
+    );
+
     return {
-      id: `${prefix}:block:${blockId}`,
-      label: 'Hotspot',
+      id: slideNodeId,
+      label: 'Slide',
       kind: 'block' as const,
-      icon: 'section',
-      fields: [
-        { path: `${blockBase}.productTitle`, type: 'text', label: 'Product title' },
-        { path: `${blockBase}.price`, type: 'text', label: 'Price' },
-        { path: `${blockBase}.positionX`, type: 'number', label: 'Horizontal position' },
-        { path: `${blockBase}.positionY`, type: 'number', label: 'Vertical position' },
-      ],
+      icon: 'image' as const,
+      fields: slideOwnFields,
+      children,
+      childrenListKey,
       showVisibilityToggle: true,
       showDeleteButton: true,
     };
   });
 
-  return [headingNode, addBlock, ...hotspotNodes];
+  return reorderSidebarChildren([sectionAddBlock, ...slideNodes], sectionChildrenListKey, itemOrder);
 }
 
 function layoutCatalogVariantFromValues(
@@ -1408,6 +2907,7 @@ function layoutSectionNode(
   const isCustomSectionLayout = layoutBlueprintKey(instanceId) === 'custom_section';
   const isProductHighlightLayout = layoutBlueprintKey(instanceId) === 'product_highlight';
   const isEditorialLayout = layoutBlueprintKey(instanceId) === 'editorial';
+  const isStorytellingCarouselLayout = layoutBlueprintKey(instanceId) === 'storytelling_carousel';
   const isEditorialJumboLayout = layoutBlueprintKey(instanceId) === 'editorial_jumbo';
   const isImageCompareLayout = layoutBlueprintKey(instanceId) === 'image_compare';
   const isImageWithTextLayout = layoutBlueprintKey(instanceId) === 'image_with_text';
@@ -1423,6 +2923,7 @@ function layoutSectionNode(
   const isEmailSignupLayout = layoutBlueprintKey(instanceId) === 'email_signup';
   const layoutCatalogVariant = layoutCatalogVariantFromValues(values, instanceId);
   const isProductHotspotsLayout = isProductHotspotsSectionType(sec.type, layoutCatalogVariant);
+  const isRecommendedProductsLayout = isRecommendedProductsSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListBentoLayout = isCollectionListBentoSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListCarouselLayout = isCollectionListCarouselSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListEditorialLayout = isCollectionListEditorialSectionType(sec.type, layoutCatalogVariant);
@@ -1447,6 +2948,7 @@ function layoutSectionNode(
     isCustomSectionLayout ||
     isProductHighlightLayout ||
     isEditorialLayout ||
+    isStorytellingCarouselLayout ||
     isEditorialJumboLayout ||
     isImageCompareLayout ||
     isImageWithTextLayout ||
@@ -1461,6 +2963,7 @@ function layoutSectionNode(
     isContactFormLayout ||
     isEmailSignupLayout ||
     isProductHotspotsLayout ||
+    isRecommendedProductsLayout ||
     isCollectionListBentoLayout ||
     isCollectionListCarouselLayout ||
     isCollectionListEditorialLayout ||
@@ -1531,6 +3034,22 @@ function layoutSectionNode(
       itemOrder,
       layoutChildrenKey
     );
+  } else if (isTextMarqueeLayout) {
+    blockNodes = mapTextMarqueeBlockNodes(
+      id,
+      `sections.${instanceId}`,
+      values,
+      itemOrder,
+      layoutChildrenKey
+    );
+  } else if (isPullQuoteLayout) {
+    blockNodes = mapPullQuoteBlockNodes(
+      id,
+      `sections.${instanceId}`,
+      values,
+      itemOrder,
+      layoutChildrenKey
+    );
   } else if (isStorytellingVideoLayout) {
     blockNodes = mapStorytellingVideoBlockNodes(id, values, itemOrder, layoutChildrenKey);
   } else if (isContactFormLayout) {
@@ -1539,6 +3058,22 @@ function layoutSectionNode(
     blockNodes = mapEmailSignupBlockNodes(id, values, itemOrder, layoutChildrenKey);
   } else if (isImageCompareLayout) {
     blockNodes = mapImageCompareBlockNodes(id, values, itemOrder, layoutChildrenKey);
+  } else if (isEditorialJumboLayout) {
+    blockNodes = mapEditorialJumboBlockNodes(id, values, itemOrder, layoutChildrenKey);
+  } else if (isEditorialLayout) {
+    blockNodes = mapEditorialBlockNodes(id, values, itemOrder, layoutChildrenKey);
+  } else if (isStorytellingCarouselLayout) {
+    blockNodes = mapStorytellingCarouselBlockNodes(
+      id,
+      `sections.${instanceId}.blocks`,
+      values,
+      itemOrder,
+      layoutChildrenKey,
+      config,
+      ['sections', instanceId, 'block_order']
+    );
+  } else if (isImageWithTextLayout) {
+    blockNodes = mapImageWithTextBlockNodes(id, values, itemOrder, layoutChildrenKey);
   } else if (isProductHotspotsLayout) {
     blockNodes = mapProductHotspotsBlockNodes(
       id,
@@ -1547,6 +3082,14 @@ function layoutSectionNode(
       values,
       config,
       ['sections', instanceId, 'block_order']
+    );
+  } else if (isRecommendedProductsLayout) {
+    blockNodes = mapRecommendedProductsBlockNodes(
+      id,
+      `sections.${instanceId}.settings`,
+      values,
+      itemOrder,
+      layoutChildrenKey
     );
   } else if (
     isCollectionListBentoLayout ||
@@ -1614,11 +3157,18 @@ function layoutSectionNode(
       isIconsWithTextLayout ||
       isMulticolumnLayout ||
       isRichTextLayout ||
+      isTextMarqueeLayout ||
+      isPullQuoteLayout ||
       isStorytellingVideoLayout ||
       isContactFormLayout ||
       isEmailSignupLayout ||
       isProductHotspotsLayout ||
+      isRecommendedProductsLayout ||
       isImageCompareLayout ||
+      isEditorialJumboLayout ||
+      isEditorialLayout ||
+      isStorytellingCarouselLayout ||
+      isImageWithTextLayout ||
       isCollectionListBentoLayout ||
       isCollectionListCarouselLayout ||
       isCollectionListEditorialLayout ||
@@ -1651,11 +3201,13 @@ function layoutSectionNode(
                     productHighlightCatalogVariant,
                     'Product highlight'
                   )
-                : isEditorialLayout
-              ? 'Editorial'
-              : isEditorialJumboLayout
-                ? 'Editorial: Jumbo text'
-                : isImageCompareLayout
+                  : isEditorialLayout
+                    ? 'Editorial'
+                    : isStorytellingCarouselLayout
+                      ? 'Carousel'
+                      : isEditorialJumboLayout
+                        ? 'Editorial: Jumbo text'
+                        : isImageCompareLayout
                   ? 'Image compare'
                   : isImageWithTextLayout
                     ? 'Image with text'
@@ -1760,7 +3312,9 @@ function layoutHeroSectionNode(
     : [];
 
   const blockNodes = visibleBlocks.length
-    ? mapHeroBlockNodes(visibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
+    ? catalogVariant === 'split-showcase'
+      ? mapSplitShowcaseGroupNodes(visibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
+      : mapHeroBlockNodes(visibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
     : [];
 
   const children = reorderSidebarChildren(blockNodes, childrenListKey, itemOrder);
@@ -1784,7 +3338,8 @@ function sectionToNode(
   values: Record<string, string | boolean>,
   itemOrder: Record<string, string[]>,
   instanceId?: string,
-  config: Record<string, unknown> | null = null
+  config: Record<string, unknown> | null = null,
+  editorSchema?: EditorSchemaDoc | null
 ): SidebarNode {
   const blueprintId = sec.id ?? 'section';
   const secId = instanceId ?? blueprintId;
@@ -1907,9 +3462,12 @@ function sectionToNode(
         blocksBase
       )
     : sec.blocks?.map((b) => remapTemplateBlockDef(b, tplId, secId)) ?? [];
-  const catalogBlocks = isFeaturedCollection
-    ? catalogSidebarBlocksForSectionType('featured-collection')
-    : [];
+  const catalogBlocks =
+    isFeaturedCollection && editorSchema
+      ? []
+      : isFeaturedCollection
+        ? catalogSidebarBlocksForSectionType('featured-collection')
+        : [];
   const sectionBlocks = catalogBlocks.length ? catalogBlocks : remappedBlocks;
   const heroVisibleBlocks =
     isHero && sectionBlocks.length
@@ -1954,7 +3512,8 @@ function sectionToNode(
     isCollectionListGrid ||
     isLayeredSlideshow ||
     isSlideshowFullFrame ||
-    isSlideshowInset
+    isSlideshowInset ||
+    isStorytellingCarousel
       ? []
       : mapFieldNodes(remappedSectionFields, values);
   const blockNodes = isCollectionLinksSpotlight
@@ -1969,6 +3528,17 @@ function sectionToNode(
         secId,
         catalogVariant
       )
+    : isProductHighlight
+      ? mapProductHighlightBlockNodes(
+          prefix,
+          blocksBase,
+          values,
+          itemOrder,
+          childrenListKey,
+          config,
+          tplId,
+          secId
+        )
     : isFeaturedProduct
       ? mapFeaturedProductBlockNodes(
           prefix,
@@ -2025,6 +3595,22 @@ function sectionToNode(
             itemOrder,
             childrenListKey
           )
+      : isTextMarquee
+        ? mapTextMarqueeBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}`,
+            values,
+            itemOrder,
+            childrenListKey
+          )
+      : isPullQuote
+        ? mapPullQuoteBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}`,
+            values,
+            itemOrder,
+            childrenListKey
+          )
       : isStorytellingVideo
         ? mapStorytellingVideoBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isContactForm
@@ -2033,6 +3619,22 @@ function sectionToNode(
         ? mapEmailSignupBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isImageCompare
         ? mapImageCompareBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isEditorialJumbo
+        ? mapEditorialJumboBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isEditorial
+        ? mapEditorialBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isStorytellingCarousel
+        ? mapStorytellingCarouselBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.blocks`,
+            values,
+            itemOrder,
+            childrenListKey,
+            config,
+            ['templates', tplId, 'sections', secId, 'block_order']
+          )
+      : isImageWithText
+        ? mapImageWithTextBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isProductHotspots
         ? mapProductHotspotsBlockNodes(
             prefix,
@@ -2041,6 +3643,14 @@ function sectionToNode(
             values,
             config,
             ['templates', tplId, 'sections', secId, 'block_order']
+          )
+      : isRecommendedProducts
+        ? mapRecommendedProductsBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.settings`,
+            values,
+            itemOrder,
+            childrenListKey
           )
       : isCollectionListBento ||
           isCollectionListCarousel ||
@@ -2054,9 +3664,32 @@ function sectionToNode(
             itemOrder,
             childrenListKey
           )
+      : isFeaturedCollection && editorSchema
+        ? mapFeaturedCollectionBlockNodes(
+            prefix,
+            editorSchema,
+            values,
+            itemOrder,
+            childrenListKey
+          )
+      : isSlideshowInset || isSlideshowFullFrame || isLayeredSlideshow
+        ? mapSlideshowInsetBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.blocks`,
+            values,
+            itemOrder,
+            childrenListKey,
+            config,
+            ['templates', tplId, 'sections', secId, 'block_order'],
+            isLayeredSlideshow ? 'Content layout' : 'Layout'
+          )
       : heroVisibleBlocks.length
       ? isHero
-        ? mapHeroBlockNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
+        ? catalogVariant === 'split-showcase'
+          ? mapSplitShowcaseGroupNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
+          : catalogVariant === 'hero-marquee'
+            ? mapHeroMarqueeGroupNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey, config)
+            : mapHeroBlockNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
         : mapBlockNodes(
             heroVisibleBlocks,
             prefix,
@@ -2074,17 +3707,23 @@ function sectionToNode(
       isIconsWithText ||
       isMulticolumn ||
       isRichText ||
+      isTextMarquee ||
+      isPullQuote ||
       isStorytellingVideo ||
       isContactForm ||
       isEmailSignup ||
       isImageCompare ||
+      isImageWithText ||
       isProductHotspots ||
+      isRecommendedProducts ||
       isCollectionLinksSpotlight ||
       isCollectionListBento ||
       isCollectionListCarousel ||
       isCollectionListEditorial ||
       isCollectionListGrid ||
-      isFeaturedProduct
+      isFeaturedCollection ||
+      isFeaturedProduct ||
+      isProductHighlight
       ? blockNodes
       : [...sectionFields, ...blockNodes],
     childrenListKey,
@@ -2114,10 +3753,12 @@ function sectionToNode(
                     : isProductHighlightSectionType(sec.type, catalogVariant)
                   ? productHighlightSidebarLabel(catalogVariant, 'Product highlight')
                   : isEditorialSectionType(sec.type, catalogVariant)
-                  ? 'Editorial'
-                  : isEditorialJumboSectionType(sec.type, catalogVariant)
-                    ? 'Editorial: Jumbo text'
-                    : isImageCompareSectionType(sec.type, catalogVariant)
+                    ? 'Editorial'
+                    : isStorytellingCarouselSectionType(sec.type, catalogVariant)
+                      ? 'Carousel'
+                      : isEditorialJumboSectionType(sec.type, catalogVariant)
+                        ? 'Editorial: Jumbo text'
+                        : isImageCompareSectionType(sec.type, catalogVariant)
                       ? 'Image compare'
                       : isImageWithTextSectionType(sec.type, catalogVariant)
                         ? 'Image with text'
@@ -2339,7 +3980,7 @@ export function buildShopifySidebarTree(
       const blueprintId = templateBlueprintKey(instanceId);
       const sec = tpl.sections.find((s) => (s.id ?? '') === blueprintId);
       if (!sec) continue;
-      templateSectionNodes.push(sectionToNode(sec, tpl.id, values, itemOrder, instanceId, config));
+      templateSectionNodes.push(sectionToNode(sec, tpl.id, values, itemOrder, instanceId, config, schema));
     }
     tree.push({
       id: 'group:template',
@@ -2471,18 +4112,87 @@ export function expandedIdsFromSidebarTree(
   return out;
 }
 
+function isImageCompareGroupNode(node: SidebarNode): boolean {
+  if (!/:image_compare/.test(node.id)) return false;
+  return (
+    (node.label === 'Content' || node.label === 'Text' || node.label === 'Buttons') &&
+    node.kind === 'block' &&
+    Boolean(node.children?.length)
+  );
+}
+
+function isStorytellingCarouselGroupNode(node: SidebarNode): boolean {
+  if (!/storytelling_carousel/.test(node.id)) return false;
+  return (
+    (node.label === 'Header' || node.label === 'Carousel content' || node.label === 'Card') &&
+    node.kind === 'block' &&
+    Boolean(node.children?.length)
+  );
+}
+
+function isEditorialJumboGroupNode(node: SidebarNode): boolean {
+  if (!/:editorial_jumbo/.test(node.id)) return false;
+  return node.label === 'Content' && node.kind === 'block' && Boolean(node.children?.length);
+}
+
+function isEditorialGroupNode(node: SidebarNode): boolean {
+  if (/editorial_jumbo/.test(node.id)) return false;
+  if (/blog_posts_editorial|collection_list_editorial/.test(node.id)) return false;
+  if (!/:block:content/.test(node.id) && !/:nested:group$/.test(node.id)) return false;
+  if (!/editorial/.test(node.id)) return false;
+  return (
+    (node.label === 'Content' || node.label === 'Group') &&
+    node.kind === 'block' &&
+    Boolean(node.children?.length)
+  );
+}
+
 /** Collapsed by default — FAQ opens with its accordion group visible (Shopify-style). */
 export function defaultExpandedSidebar(nodes: SidebarNode[]): Record<string, boolean> {
   const out: Record<string, boolean> = {};
-  const walk = (list: SidebarNode[]) => {
+  const walk = (list: SidebarNode[], parent?: SidebarNode) => {
     for (const node of list) {
       if (node.kind === 'section' && node.label === 'FAQ') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'section' && node.label === 'Image compare') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'section' && node.label === 'Editorial: Jumbo text') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'section' && node.label === 'Editorial') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'section' && node.label === 'Carousel') {
+        out[node.id] = true;
+      }
+      if (isStorytellingCarouselGroupNode(node)) {
+        out[node.id] = true;
+      }
+      if (isImageCompareGroupNode(node)) {
+        out[node.id] = true;
+      }
+      if (isEditorialJumboGroupNode(node)) {
+        out[node.id] = true;
+      }
+      if (isEditorialGroupNode(node)) {
+        out[node.id] = true;
+      }
+      if (node.kind === 'section' && node.label?.startsWith('Collection list:')) {
         out[node.id] = true;
       }
       if (node.kind === 'block' && node.label === 'Accordion') {
         out[node.id] = true;
       }
-      if (node.children?.length) walk(node.children);
+      if (
+        parent?.label?.startsWith('Collection list:') &&
+        node.kind === 'block' &&
+        (node.label === 'Header' || node.label === 'Collection card')
+      ) {
+        out[node.id] = true;
+      }
+      if (node.children?.length) walk(node.children, node);
     }
   };
   walk(nodes);
@@ -2704,10 +4414,32 @@ export function settingsNodeForSelection(
     }
   }
 
+  if (isImageWithTextGroupNodeId(node.id)) {
+    return prepareImageWithTextGroupSettingsNode(node);
+  }
+
+  if (isImageWithTextBlockNodeId(node.id)) {
+    const fields = imageWithTextBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageWithTextBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isStorytellingVideoCaptionGroupNodeId(node.id)) {
+    return prepareStorytellingVideoCaptionGroupSettingsNode(node);
+  }
+
   if (isStorytellingVideoBlockNodeId(node.id)) {
     const fields = storytellingVideoBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareStorytellingVideoBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isContactFormFormGroupNodeId(node.id)) {
+    const fields = contactFormFormGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareContactFormFormGroupSettingsNode({ ...node, fields });
     }
   }
 
@@ -2739,6 +4471,20 @@ export function settingsNodeForSelection(
     }
   }
 
+  if (isImageCompareTextGroupNodeId(node.id)) {
+    const fields = imageCompareTextGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareTextGroupSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isImageCompareButtonsGroupNodeId(node.id)) {
+    const fields = imageCompareButtonsGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareButtonsGroupSettingsNode({ ...node, fields });
+    }
+  }
+
   if (isHeadingBlockNodeId(node.id)) {
     const treeNode = findSidebarNode(tree, node.id);
     if (treeNode) node = { ...treeNode, ...node, fields: node.fields ?? treeNode.fields };
@@ -2761,11 +4507,11 @@ export function settingsNodeForSelection(
   }
 
   if (isCollectionTitleNestedNodeId(node.id)) {
-    let fields = editorSchema ? collectionTitleFieldDefsFromSchema(editorSchema, node.id) : [];
-    if (!fields.length) {
-      const catalogBlock = resolveEditingPanelForNode(node.id);
-      if (catalogBlock?.fields.length) fields = catalogBlock.fields;
-    }
+    const catalogBlock = resolveEditingPanelForNode(node.id);
+    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
+    const settingsBase = collectionTitleSettingsBaseFromNodeId(node.id);
+    if (!fields.length && settingsBase) fields = collectionTitleFieldDefs(settingsBase);
+    if (!fields.length && editorSchema) fields = collectionTitleFieldDefsFromSchema(editorSchema, node.id);
     if (!fields.length) {
       fields = (node.fields ?? []).filter(isCollectionTitlePanelField);
     }
@@ -2775,11 +4521,11 @@ export function settingsNodeForSelection(
   }
 
   if (isViewAllButtonNestedNodeId(node.id)) {
-    let fields = editorSchema ? viewAllButtonFieldDefsFromSchema(editorSchema, node.id) : [];
-    if (!fields.length) {
-      const catalogBlock = resolveEditingPanelForNode(node.id);
-      if (catalogBlock?.fields.length) fields = catalogBlock.fields;
-    }
+    const catalogBlock = resolveEditingPanelForNode(node.id);
+    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
+    const settingsBase = viewAllButtonSettingsBaseFromNodeId(node.id);
+    if (!fields.length && settingsBase) fields = viewAllButtonFieldDefs(settingsBase);
+    if (!fields.length && editorSchema) fields = viewAllButtonFieldDefsFromSchema(editorSchema, node.id);
     if (!fields.length) {
       fields = (node.fields ?? []).filter(isViewAllButtonPanelField);
     }
@@ -2789,7 +4535,11 @@ export function settingsNodeForSelection(
   }
 
   if (isFeaturedCollectionHeaderBlockNodeId(node.id)) {
-    let fields = editorSchema ? fcHeaderFieldDefsFromSchema(editorSchema, node.id) : [];
+    const catalogBlock = resolveEditingPanelForNode(node.id);
+    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
+    const settingsBase = fcHeaderSettingsBaseFromNodeId(node.id);
+    if (!fields.length && settingsBase) fields = fcHeaderFieldDefs(settingsBase);
+    if (!fields.length && editorSchema) fields = fcHeaderFieldDefsFromSchema(editorSchema, node.id);
     if (!fields.length) {
       fields = (node.fields ?? []).filter(isFeaturedCollectionHeaderPanelField);
     }
@@ -2801,7 +4551,9 @@ export function settingsNodeForSelection(
   if (isProductCardMediaNestedNodeId(node.id)) {
     const catalogBlock = resolveEditingPanelForNode(node.id);
     let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
-    if (!fields.length && editorSchema) fields = productCardMediaFieldDefsFromSchema(editorSchema);
+    const settingsBase = productCardMediaSettingsBaseFromNodeId(node.id);
+    if (!fields.length && settingsBase) fields = productCardMediaFieldDefs(settingsBase);
+    if (!fields.length && editorSchema) fields = productCardMediaFieldDefsFromSchema(editorSchema, node.id);
     if (!fields.length) fields = node.fields ?? [];
     if (fields.length) {
       return prepareProductCardMediaSettingsNode({ ...node, fields });
@@ -2811,7 +4563,9 @@ export function settingsNodeForSelection(
   if (isProductCardTitleNestedNodeId(node.id)) {
     const catalogBlock = resolveEditingPanelForNode(node.id);
     let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
-    if (!fields.length && editorSchema) fields = productCardTitleFieldDefsFromSchema(editorSchema);
+    const settingsBase = productCardTitleSettingsBaseFromNodeId(node.id);
+    if (!fields.length && settingsBase) fields = productCardTitleFieldDefs(settingsBase);
+    if (!fields.length && editorSchema) fields = productCardTitleFieldDefsFromSchema(editorSchema, node.id);
     if (!fields.length) fields = node.fields ?? [];
     if (fields.length) {
       return prepareProductCardTitleSettingsNode({ ...node, fields });
@@ -2821,7 +4575,9 @@ export function settingsNodeForSelection(
   if (isProductCardPriceNestedNodeId(node.id)) {
     const catalogBlock = resolveEditingPanelForNode(node.id);
     let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
-    if (!fields.length && editorSchema) fields = productCardPriceFieldDefsFromSchema(editorSchema);
+    const settingsBase = productCardPriceSettingsBaseFromNodeId(node.id);
+    if (!fields.length && settingsBase) fields = productCardPriceFieldDefs(settingsBase);
+    if (!fields.length && editorSchema) fields = productCardPriceFieldDefsFromSchema(editorSchema, node.id);
     if (!fields.length) fields = node.fields ?? [];
     if (fields.length) {
       return prepareProductCardPriceSettingsNode({ ...node, fields });
@@ -2831,7 +4587,9 @@ export function settingsNodeForSelection(
   if (isProductCardBlockNodeId(node.id)) {
     const catalogBlock = resolveEditingPanelForNode(node.id);
     let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
-    if (!fields.length && editorSchema) fields = productCardFieldDefsFromSchema(editorSchema);
+    const settingsBase = productCardSettingsBaseFromNodeId(node.id);
+    if (!fields.length && settingsBase) fields = productCardFieldDefs(settingsBase);
+    if (!fields.length && editorSchema) fields = productCardFieldDefsFromSchema(editorSchema, node.id);
     if (!fields.length) fields = node.fields ?? [];
     if (fields.length) {
       return prepareProductCardSettingsNode({ ...node, fields });
@@ -2971,6 +4729,15 @@ export function settingsNodeForSelection(
     return prepareFooterUtilitiesSettingsNode(footerUtilitiesSection);
   }
 
+  // Rich text shares the generic Layout/Size fields that FAQ detection keys on,
+  // so it must be resolved before the FAQ fallback to avoid a "FAQ" mislabel.
+  if (
+    node.label === 'Rich text' ||
+    (node.fields?.length && isRichTextSettingsPanelFields(node.fields))
+  ) {
+    return prepareRichTextSettingsNode(node);
+  }
+
   if (node.fields?.length && isFaqSettingsPanelFields(node.fields)) {
     return prepareFaqSettingsNode(node);
   }
@@ -3008,6 +4775,26 @@ export function settingsNodeForSelection(
   }
 
   if (isFeaturedProductMediaBlockNodeId(node.id)) {
+    const productHighlightSettingsBase = productHighlightSettingsBaseFromNodeId(node.id);
+    if (productHighlightSettingsBase) {
+      const catalogVariant = readProductHighlightSettingValue(
+        values,
+        config,
+        productHighlightSettingsBase,
+        'catalogVariant'
+      );
+      if (catalogVariant === 'product-highlight') {
+        const fields =
+          node.fields?.length && isProductHighlightMediaPanelFields(node.fields)
+            ? node.fields
+            : editorSchema
+              ? productHighlightMediaFieldDefsFromSchema(editorSchema, node.id)
+              : productHighlightMediaFieldDefsFromNodeId(node.id);
+        if (fields.length) {
+          return prepareProductHighlightMediaSettingsNode({ ...node, fields });
+        }
+      }
+    }
     const fields =
       node.fields?.length && isFeaturedProductMediaPanelFields(node.fields)
         ? node.fields
@@ -3017,6 +4804,10 @@ export function settingsNodeForSelection(
     if (fields.length) {
       return prepareFeaturedProductMediaSettingsNode({ ...node, fields });
     }
+  }
+
+  if (isProductHighlightProductBlockNodeId(node.id)) {
+    return prepareProductHighlightProductSettingsNode(node);
   }
 
   if (isFeaturedProductHeaderBlockNodeId(node.id)) {
@@ -3117,7 +4908,12 @@ export function settingsNodeForSelection(
   }
 
   if (isFeaturedProductQuantityNestedNodeId(node.id)) {
-    return prepareFeaturedProductQuantitySettingsNode(node);
+    const fields = editorSchema
+      ? featuredProductQuantityFieldDefsFromSchema(editorSchema, node.id)
+      : featuredProductQuantityFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareFeaturedProductQuantitySettingsNode({ ...node, fields });
+    }
   }
 
   if (isFeaturedProductAcceleratedCheckoutNestedNodeId(node.id)) {
@@ -3130,6 +4926,42 @@ export function settingsNodeForSelection(
       : featuredProductBuyButtonsFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareFeaturedProductBuyButtonsSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductHighlightProductTitleNestedNodeId(node.id)) {
+    const fields = editorSchema
+      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
+      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareProductHighlightProductTitleSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductHighlightProductPriceNestedNodeId(node.id)) {
+    const fields = editorSchema
+      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
+      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareProductHighlightProductPriceSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductHighlightProductImageNestedNodeId(node.id)) {
+    const fields = editorSchema
+      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
+      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareProductHighlightProductImageSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isProductHighlightProductSwatchesNestedNodeId(node.id)) {
+    const fields = editorSchema
+      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
+      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareProductHighlightProductSwatchesSettingsNode({ ...node, fields });
     }
   }
 
@@ -3169,6 +5001,24 @@ export function settingsNodeForSelection(
 
   if (node.fields?.length && isProductHotspotsSettingsPanelFields(node.fields)) {
     return prepareProductHotspotsSettingsNode(node);
+  }
+  if (node.kind === 'field' && isProductHotspotsHeadingFieldNodeId(node.id)) {
+    const fields = productHotspotsHeadingFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareProductHotspotsHeadingSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.kind === 'block' && isProductHotspotsHotspotBlockNodeId(node.id)) {
+    const fields = productHotspotsHotspotFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareProductHotspotsHotspotSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.kind === 'block' && isRecommendedProductsHeaderNodeId(node.id)) {
+    const fields = recommendedProductsHeaderFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareRecommendedProductsHeaderSettingsNode({ ...node, fields });
+    }
   }
   if (node.fields?.length && isRecommendedProductsSettingsPanelFields(node.fields)) {
     return prepareRecommendedProductsSettingsNode(node);
@@ -3241,6 +5091,31 @@ export function settingsNodeForSelection(
     }
   }
 
+  if (isTextMarqueeTextBlockNodeId(node.id) && node.fields?.length) {
+    return prepareTextMarqueeTextBlockSettingsNode(node);
+  }
+
+  if (isMulticolumnNestedHeadingNodeId(node.id)) {
+    const fields = multicolumnHeadingBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareHeadingBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isMulticolumnNestedDescriptionNodeId(node.id)) {
+    const fields = multicolumnDescriptionBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareMulticolumnDescriptionBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isMulticolumnColumnNodeId(node.id)) {
+    const fields = multicolumnColumnBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareMulticolumnColumnBlockSettingsNode({ ...node, fields });
+    }
+  }
+
   if (isMulticolumnBlockNodeId(node.id)) {
     const fields = multicolumnBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
@@ -3255,10 +5130,32 @@ export function settingsNodeForSelection(
     }
   }
 
+  if (isImageWithTextGroupNodeId(node.id)) {
+    return prepareImageWithTextGroupSettingsNode(node);
+  }
+
+  if (isImageWithTextBlockNodeId(node.id)) {
+    const fields = imageWithTextBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageWithTextBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isStorytellingVideoCaptionGroupNodeId(node.id)) {
+    return prepareStorytellingVideoCaptionGroupSettingsNode(node);
+  }
+
   if (isStorytellingVideoBlockNodeId(node.id)) {
     const fields = storytellingVideoBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareStorytellingVideoBlockSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isContactFormFormGroupNodeId(node.id)) {
+    const fields = contactFormFormGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareContactFormFormGroupSettingsNode({ ...node, fields });
     }
   }
 
@@ -3287,6 +5184,20 @@ export function settingsNodeForSelection(
     const fields = imageCompareContentGroupFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareImageCompareContentGroupSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isImageCompareTextGroupNodeId(node.id)) {
+    const fields = imageCompareTextGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareTextGroupSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isImageCompareButtonsGroupNodeId(node.id)) {
+    const fields = imageCompareButtonsGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareImageCompareButtonsGroupSettingsNode({ ...node, fields });
     }
   }
 
@@ -3362,6 +5273,13 @@ export function settingsNodeForSelection(
     return prepareCollectionLinkImageSettingsNode({ ...node, fields });
   }
 
+  if (node.kind === 'block' && isCollectionLinkBlockNodeId(node.id)) {
+    const fields = editorSchema
+      ? collectionLinkBlockFieldDefsFromSchema(editorSchema, node.id)
+      : (node.fields ?? []).filter(isCollectionLinkBlockField);
+    return prepareCollectionLinkBlockSettingsNode({ ...node, fields });
+  }
+
   if (node.fields?.length && isCollectionLinkBlockFieldsOnly(node.fields)) {
     return prepareCollectionLinkBlockSettingsNode(node);
   }
@@ -3386,11 +5304,40 @@ export function settingsNodeForSelection(
   if (node.fields?.length && isSlideshowInsetSettingsPanelFields(node.fields)) {
     return prepareSlideshowInsetSettingsNode(node);
   }
+  if (
+    node.kind === 'block' &&
+    node.fields?.length &&
+    /:block:[^:]+:nested:slide_(heading|text|button)$/.test(node.id)
+  ) {
+    return node;
+  }
   if (node.fields?.length && isSlideshowSlideBlockFieldsOnly(node.fields)) {
     return prepareSlideshowSlideBlockSettingsNode(node);
   }
   if (node.fields?.length && isCollectionTileBlockFieldsOnly(node.fields)) {
     return prepareCollectionTileBlockSettingsNode(node);
+  }
+  if (isStorytellingCarouselCardBlockNodeId(node.id)) {
+    const fields = storytellingCarouselCardFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareStorytellingCarouselCardSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isStorytellingCarouselCardPanelFields(node.fields)) {
+    return prepareStorytellingCarouselCardSettingsNode(node);
+  }
+  if (isStorytellingCarouselContentGroupBlockNodeId(node.id)) {
+    const fields = storytellingCarouselContentGroupFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareStorytellingCarouselContentGroupSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isStorytellingCarouselContentGroupPanelFields(node.fields)) {
+    return prepareStorytellingCarouselContentGroupSettingsNode(node);
+  }
+  if (isStorytellingCarouselHeaderBlockNodeId(node.id)) {
+    const fields = storytellingCarouselBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) return { ...node, fields };
   }
   if (node.fields?.length && isStorytellingCarouselSettingsPanelFields(node.fields)) {
     return prepareStorytellingCarouselSettingsNode(node);

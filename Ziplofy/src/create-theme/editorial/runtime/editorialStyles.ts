@@ -1,5 +1,39 @@
 import { cfgNumber, cfgString } from '../../runtime/shared/config';
 
+function mapContentGroupAlignment(value: string): string {
+  if (value === 'center') return 'center';
+  if (value === 'right') return 'flex-end';
+  return 'flex-start';
+}
+
+function mapContentGroupPosition(value: string): string {
+  if (value === 'top') return 'flex-start';
+  if (value === 'bottom') return 'flex-end';
+  if (value === 'space-between') return 'space-between';
+  if (value === 'space-around') return 'space-around';
+  return 'center';
+}
+
+export type EditorialContentGroupLayout = {
+  alignItems: string;
+  justifyContent: string;
+  gap: number;
+};
+
+export function readEditorialContentGroupLayout(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): EditorialContentGroupLayout {
+  const groupBase = `${settingsBase}.contentGroup`;
+  const layoutAlignment = cfgString(config, `${groupBase}.layoutAlignment`, 'left');
+  const position = cfgString(config, `${groupBase}.position`, 'space-between');
+  return {
+    alignItems: mapContentGroupAlignment(layoutAlignment),
+    justifyContent: mapContentGroupPosition(position),
+    gap: cfgNumber(config, `${groupBase}.layoutGap`, 24),
+  };
+}
+
 export type EditorialScheme = {
   background: string;
   color: string;
@@ -76,7 +110,7 @@ export function readEditorialLayout(
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-4'],
     sectionWidth:
-      cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
+      cfgString(config, `${settingsBase}.sectionWidth`, 'full') === 'page' ? 'page' : 'full',
     mediaWidth,
     mediaHeight,
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),

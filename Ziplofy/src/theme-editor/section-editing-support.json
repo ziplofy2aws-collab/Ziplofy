@@ -11582,6 +11582,13 @@
               "group": "General"
             },
             {
+              "key": "backgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color"
+            },
+            {
               "key": "borderStyle",
               "type": "select",
               "label": "Style",
@@ -11884,6 +11891,10 @@
                       "label": "Heading 4"
                     },
                     {
+                      "value": "paragraph",
+                      "label": "Paragraph"
+                    },
+                    {
                       "value": "body",
                       "label": "Body"
                     }
@@ -12142,12 +12153,13 @@
             "default": {
               "includeGroups": [
                 "General",
+                "Appearance",
                 "Borders",
                 "Padding"
               ],
               "fieldOrder": [
                 "verticalGap",
-                "inheritColorScheme",
+                "backgroundColor",
                 "borderStyle",
                 "cornerRadius",
                 "paddingTop",

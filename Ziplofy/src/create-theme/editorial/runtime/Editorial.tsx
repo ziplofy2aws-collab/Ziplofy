@@ -9,6 +9,7 @@ import { TealFoldedShirtIllustration } from './EditorialArt';
 import {
   editorialGridColumns,
   editorialMinHeight,
+  readEditorialContentGroupLayout,
   readEditorialLayout,
   scopedEditorialCss,
 } from './editorialStyles';
@@ -31,6 +32,10 @@ export function Editorial({
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
 
   const style = useMemo(() => readEditorialLayout(config, settingsBase), [config, settingsBase]);
+  const contentGroup = useMemo(
+    () => readEditorialContentGroupLayout(config, settingsBase),
+    [config, settingsBase]
+  );
 
   const imageUrl = cfgString(config, `${settingsBase}.imageUrl`, '');
   const subheading = cfgString(config, `${settingsBase}.subheading`, 'Bestseller');
@@ -85,9 +90,15 @@ export function Editorial({
     background: scheme.contentPanel,
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    textAlign: 'left',
+    justifyContent: contentGroup.justifyContent,
+    alignItems: contentGroup.alignItems,
+    textAlign:
+      contentGroup.alignItems === 'center'
+        ? 'center'
+        : contentGroup.alignItems === 'flex-end'
+          ? 'right'
+          : 'left',
+    gap: contentGroup.gap,
     padding: '40px 48px',
     minHeight: panelMinHeight,
   };

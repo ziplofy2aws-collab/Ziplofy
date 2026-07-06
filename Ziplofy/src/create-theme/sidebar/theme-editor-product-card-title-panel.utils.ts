@@ -25,6 +25,27 @@ export function isProductCardTitleNestedNodeId(nodeId: string): boolean {
   return /:block:product_card:nested:product_title$/.test(nodeId);
 }
 
+export function productCardTitleDefaultSettings(): Record<string, string | number | boolean> {
+  return {
+    productTitleWidth: 'fit',
+    productTitleMaxWidth: 'normal',
+    productTitleTypographyPreset: 'paragraph',
+    productTitleColor: 'default',
+    productTitleBackgroundEnabled: false,
+    productTitlePaddingTop: 4,
+    productTitlePaddingBottom: 0,
+    productTitlePaddingLeft: 0,
+    productTitlePaddingRight: 0,
+  };
+}
+
+export const PRODUCT_CARD_TITLE_DEFAULTS: Record<string, string | boolean> = Object.fromEntries(
+  Object.entries(productCardTitleDefaultSettings()).map(([k, v]) => [
+    k,
+    typeof v === 'boolean' ? v : String(v),
+  ])
+) as Record<string, string | boolean>;
+
 function fieldSortKey(path: string): number {
   const key = path.split('.').pop() ?? '';
   const rank: Record<string, number> = {
@@ -86,10 +107,200 @@ export function isProductCardTitlePanelFields(fields: EditorFieldDef[]): boolean
   return fields.some((f) => f.path.endsWith('productTitleWidth') || f.path.endsWith('productTitleTypographyPreset'));
 }
 
-export function productCardTitleFieldDefsFromSchema(editorSchema: EditorSchemaDoc): EditorFieldDef[] {
+export function productCardTitleSettingsBaseFromNodeId(nodeId: string): string | null {
+  const match = nodeId.match(
+    /^template:([^:]+):((?:featured_collection|recommended_products)(?:_\d+)?):block:product_card/
+  );
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.product_card.settings`;
+}
+
+export function productCardTitleSettingsBaseFromPrefix(prefix: string): string | null {
+  const match = prefix.match(/^template:([^:]+):((?:featured_collection|recommended_products)(?:_\d+)?)$/);
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.product_card.settings`;
+}
+
+export function productCardTitleFieldDefs(settingsBase: string): EditorFieldDef[] {
+  const s = (key: string) => `${settingsBase}.${key}`;
+  return [
+    {
+      path: s('productTitleWidth'),
+      type: 'select',
+      label: 'Width',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'fill', label: 'Fill' },
+      ],
+    },
+    {
+      path: s('productTitleMaxWidth'),
+      type: 'select',
+      label: 'Max width',
+      group: 'Layout',
+      widget: 'select',
+      sidebar: false,
+      options: [
+        { value: 'narrow', label: 'Narrow' },
+        { value: 'normal', label: 'Normal' },
+        { value: 'wide', label: 'Wide' },
+        { value: 'none', label: 'None' },
+      ],
+    },
+    {
+      path: s('productTitleTypographyPreset'),
+      type: 'select',
+      label: 'Preset',
+      group: 'Typography',
+      widget: 'select',
+      sidebar: false,
+      description: 'Edit presets in theme settings',
+      options: [
+        { value: 'default', label: 'Default' },
+        { value: 'heading-1', label: 'Heading 1' },
+        { value: 'heading-2', label: 'Heading 2' },
+        { value: 'heading-3', label: 'Heading 3' },
+        { value: 'heading-4', label: 'Heading 4' },
+        { value: 'paragraph', label: 'Paragraph' },
+        { value: 'body', label: 'Body' },
+      ],
+    },
+    {
+      path: s('productTitleColor'),
+      type: 'text',
+      label: 'Text color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('productTitleBackgroundEnabled'),
+      type: 'boolean',
+      label: 'Background',
+      group: 'Appearance',
+      sidebar: false,
+    },
+    {
+      path: s('productTitlePaddingTop'),
+      type: 'number',
+      label: 'Top',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('productTitlePaddingBottom'),
+      type: 'number',
+      label: 'Bottom',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('productTitlePaddingLeft'),
+      type: 'number',
+      label: 'Left',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('productTitlePaddingRight'),
+      type: 'number',
+      label: 'Right',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+  ];
+}
+
+function productCardTitleSchemaFields(editorSchema: EditorSchemaDoc): EditorFieldDef[] {
   const tpl = editorSchema.templates?.find((t) => t.id === 'index');
-  const sec = tpl?.sections?.find((s) => s.id === 'featured_collection');
-  const productCard = sec?.blocks?.find((b) => b.id === 'product_card');
-  const title = productCard?.blocks?.find((b) => b.id === 'product_title');
-  return title?.settingsFields ?? [];
+  for (const sectionId of ['featured_collection', 'recommended_products'] as const) {
+    const sec = tpl?.sections?.find((s) => s.id === sectionId);
+    const productCard = sec?.blocks?.find((b) => b.id === 'product_card');
+    const titleBlock = productCard?.blocks?.find((b) => b.id === 'product_title');
+    const fields = titleBlock?.settingsFields?.filter((f) => {
+      const key = f.path.split('.').pop() ?? '';
+      return TITLE_PANEL_KEYS.has(key);
+    });
+    if (fields?.length) return fields;
+  }
+  return [];
+}
+
+export function productCardTitleFieldDefsFromSchema(
+  editorSchema: EditorSchemaDoc,
+  nodeId?: string
+): EditorFieldDef[] {
+  const canon = productCardTitleSchemaFields(editorSchema);
+  const settingsBase = nodeId ? productCardTitleSettingsBaseFromNodeId(nodeId) : null;
+  if (settingsBase) {
+    if (canon.length) {
+      return canon.map((field) => {
+        const key = field.path.split('.').pop() ?? '';
+        return { ...field, path: `${settingsBase}.${key}` };
+      });
+    }
+    return productCardTitleFieldDefs(settingsBase);
+  }
+  return canon;
+}
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+export function extendValuesForProductCardTitleBlock(
+  values: Record<string, string | boolean>,
+  editorSchema: EditorSchemaDoc,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const defs = productCardTitleFieldDefsFromSchema(editorSchema, nodeId);
+  const next = { ...values };
+  let changed = false;
+
+  for (const field of defs) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw !== undefined && raw !== null) {
+      next[field.path] = field.type === 'boolean' ? Boolean(raw) : String(raw);
+      changed = true;
+      continue;
+    }
+    const key = field.path.split('.').pop() ?? '';
+    const fallback = PRODUCT_CARD_TITLE_DEFAULTS[key];
+    if (fallback !== undefined) {
+      next[field.path] = fallback;
+      changed = true;
+    }
+  }
+
+  return changed ? next : values;
 }

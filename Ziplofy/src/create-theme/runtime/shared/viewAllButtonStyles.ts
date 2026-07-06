@@ -47,7 +47,7 @@ function resolveViewAllColor(
 ): string {
   const raw = cfgString(config, `${settingsBase}.${key}`, `palette:${paletteIndex}`);
   if (raw === 'default' || !raw.trim()) {
-    return paletteIndex === 0 ? colors.text : colors.background;
+    return fallback;
   }
   if (isThemePaletteColorSetting(raw) || raw.startsWith('#')) {
     return resolveThemePaletteColorSetting(config, raw, paletteIndex, fallback);

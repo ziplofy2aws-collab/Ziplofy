@@ -209,6 +209,119 @@ export function resolveViewAllButtonCustomWidthField(
   };
 }
 
+export function viewAllButtonSettingsBaseFromNodeId(nodeId: string): string | null {
+  const match = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?):block:collection_header/);
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.collection_header.settings`;
+}
+
+export function viewAllButtonSettingsBaseFromPrefix(prefix: string): string | null {
+  const match = prefix.match(/^template:([^:]+):(featured_collection(?:_\d+)?)$/);
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.collection_header.settings`;
+}
+
+export function viewAllButtonFieldDefs(settingsBase: string): EditorFieldDef[] {
+  const s = (key: string) => `${settingsBase}.${key}`;
+  return [
+    {
+      path: s('viewAllLabel'),
+      type: 'text',
+      label: 'Label',
+      group: 'Content',
+      sidebar: false,
+    },
+    {
+      path: s('viewAllOpenInNewTab'),
+      type: 'boolean',
+      label: 'Open link in new tab',
+      group: 'Content',
+      sidebar: false,
+    },
+    {
+      path: s('viewAllStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Appearance',
+      widget: 'select',
+      sidebar: false,
+      options: [...VIEW_ALL_STYLE_OPTIONS],
+    },
+    {
+      path: s('viewAllLinkTextColor'),
+      type: 'text',
+      label: 'Link text color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('viewAllCustomBackgroundColor'),
+      type: 'text',
+      label: 'Background',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('viewAllCustomTextColor'),
+      type: 'text',
+      label: 'Text',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('viewAllCustomBorderColor'),
+      type: 'text',
+      label: 'Borders',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('viewAllDesktopWidth'),
+      type: 'select',
+      label: 'Desktop width',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: false,
+      options: [...VIEW_ALL_WIDTH_MODE_OPTIONS],
+    },
+    {
+      path: s('viewAllDesktopCustomWidth'),
+      type: 'number',
+      label: 'Custom width',
+      group: 'Size',
+      sidebar: false,
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+    },
+    {
+      path: s('viewAllMobileWidth'),
+      type: 'select',
+      label: 'Mobile width',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: false,
+      options: [...VIEW_ALL_WIDTH_MODE_OPTIONS],
+    },
+    {
+      path: s('viewAllMobileCustomWidth'),
+      type: 'number',
+      label: 'Custom width',
+      group: 'Size',
+      sidebar: false,
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+    },
+  ];
+}
+
 function canonicalViewAllButtonFieldsFromSchema(editorSchema: EditorSchemaDoc): EditorFieldDef[] {
   const tpl = editorSchema.templates?.find((t) => t.id === 'index');
   const sec = tpl?.sections?.find((s) => s.id === 'featured_collection');
@@ -221,14 +334,29 @@ export function viewAllButtonFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   nodeId?: string
 ): EditorFieldDef[] {
-  const match = nodeId?.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
-  const canon = canonicalViewAllButtonFieldsFromSchema(editorSchema);
-  if (!match || !canon.length) return canon;
-  const [, templateId, sectionInstanceId] = match;
-  return canon.map((field) => ({
-    ...field,
-    path: remapTemplateSchemaPath(field.path, templateId!, sectionInstanceId!),
-  }));
+  const canon = canonicalViewAllButtonFieldsFromSchema(editorSchema).filter((field) => {
+    const key = field.path.split('.').pop() ?? '';
+    return VIEW_ALL_BUTTON_PANEL_KEYS.has(key);
+  });
+  const settingsBase = nodeId ? viewAllButtonSettingsBaseFromNodeId(nodeId) : null;
+  if (settingsBase) {
+    if (canon.length) {
+      const match = nodeId?.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
+      const schemaKeys = new Set(canon.map((field) => field.path.split('.').pop() ?? ''));
+      const fromSchema = match
+        ? canon.map((field) => ({
+            ...field,
+            path: remapTemplateSchemaPath(field.path, match[1]!, match[2]!),
+          }))
+        : canon;
+      const fromBuilt = viewAllButtonFieldDefs(settingsBase).filter(
+        (field) => !schemaKeys.has(field.path.split('.').pop() ?? '')
+      );
+      return [...fromSchema, ...fromBuilt];
+    }
+    return viewAllButtonFieldDefs(settingsBase);
+  }
+  return canon;
 }
 
 function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
@@ -268,6 +396,7 @@ export function extendValuesForViewAllButtonBlock(
 
   if (settingsBase) {
     const defaults: Record<string, string | boolean> = {
+      [`${settingsBase}.viewAllLabel`]: 'View all',
       [`${settingsBase}.viewAllOpenInNewTab`]: false,
       [`${settingsBase}.viewAllStyle`]: 'link',
       [`${settingsBase}.viewAllLinkTextColor`]: 'default',

@@ -13,10 +13,23 @@ import {
 } from '../sidebar/theme-editor-image-compare-block-panel.utils';
 import { COMPARISON_SLIDER_FIELD_KEYS } from '../sidebar/theme-editor-image-compare-slider-block-panel.utils';
 import {
-  IMAGE_COMPARE_CONTENT_GROUP_FIELD_KEYS,
   imageCompareContentGroupFieldDefs,
   imageCompareContentGroupFieldDefsFromNodeId,
 } from '../sidebar/theme-editor-image-compare-content-group-panel.utils';
+import {
+  imageCompareButtonsGroupFieldDefs,
+  imageCompareButtonsGroupFieldDefsFromNodeId,
+} from '../sidebar/theme-editor-image-compare-buttons-group-panel.utils';
+import {
+  imageCompareTextGroupFieldDefs,
+  imageCompareTextGroupFieldDefsFromNodeId,
+} from '../sidebar/theme-editor-image-compare-text-group-panel.utils';
+import {
+  IMAGE_COMPARE_BUTTON_1_FIELD_KEYS,
+  IMAGE_COMPARE_BUTTON_2_FIELD_KEYS,
+  IMAGE_COMPARE_HEADING_FIELD_KEYS,
+  IMAGE_COMPARE_SUBHEADING_FIELD_KEYS,
+} from '../sidebar/theme-editor-image-compare-block-panel.utils';
 
 function fieldPreview(
   field: EditorFieldDef,
@@ -87,6 +100,7 @@ export function mapImageCompareBlockNodes(
     label: 'Text',
     kind: 'block',
     icon: 'group',
+    fields: imageCompareTextGroupFieldDefs(sectionBase),
     children: textChildren,
     childrenListKey: listKeyBlockChildren(textPrefix),
   };
@@ -123,6 +137,7 @@ export function mapImageCompareBlockNodes(
     label: 'Buttons',
     kind: 'block',
     icon: 'group',
+    fields: imageCompareButtonsGroupFieldDefs(sectionBase),
     children: buttonsChildren,
     childrenListKey: listKeyBlockChildren(buttonsPrefix),
   };
@@ -151,7 +166,7 @@ export function mapImageCompareBlockNodes(
     id: `${prefix}:block:comparison_slider`,
     label: 'Comparison slider',
     kind: 'block',
-    icon: 'section',
+    icon: 'image',
     fields: imageCompareBlockFieldDefs(sectionBase, 'comparison_slider'),
   };
 
@@ -205,19 +220,16 @@ export function imageCompareLayoutStructureOrder(
 }
 
 const CONTENT_FIELD_TO_BLOCK: Record<string, string> = {
-  heading: 'content:nested:text:nested:heading',
-  subheading: 'content:nested:text:nested:subheading',
-  button1Label: 'content:nested:buttons:nested:button_1',
-  button1Url: 'content:nested:buttons:nested:button_1',
-  button2Label: 'content:nested:buttons:nested:button_2',
-  button2Url: 'content:nested:buttons:nested:button_2',
+  ...Object.fromEntries([...IMAGE_COMPARE_HEADING_FIELD_KEYS].map((key) => [key, 'content:nested:text:nested:heading'])),
+  ...Object.fromEntries(
+    [...IMAGE_COMPARE_SUBHEADING_FIELD_KEYS].map((key) => [key, 'content:nested:text:nested:subheading'])
+  ),
+  ...Object.fromEntries([...IMAGE_COMPARE_BUTTON_1_FIELD_KEYS].map((key) => [key, 'content:nested:buttons:nested:button_1'])),
+  ...Object.fromEntries([...IMAGE_COMPARE_BUTTON_2_FIELD_KEYS].map((key) => [key, 'content:nested:buttons:nested:button_2'])),
   ...Object.fromEntries([...COMPARISON_SLIDER_FIELD_KEYS].map((key) => [key, 'comparison_slider'])),
-  ...Object.fromEntries([...IMAGE_COMPARE_CONTENT_GROUP_FIELD_KEYS].map((key) => [key, 'content'])),
 };
 
-function imageCompareFieldSidebarNodeId(settingsBase: string, fieldKey: string): string | null {
-  const blockSuffix = CONTENT_FIELD_TO_BLOCK[fieldKey];
-  if (!blockSuffix) return null;
+function imageCompareFieldSidebarNodeId(settingsBase: string, blockSuffix: string): string | null {
   const tpl = settingsBase.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings$/);
   if (tpl) {
     return `template:${tpl[1]}:${tpl[2]}:block:${blockSuffix}`;
@@ -229,18 +241,57 @@ function imageCompareFieldSidebarNodeId(settingsBase: string, fieldKey: string):
   return null;
 }
 
+function imageCompareSettingsBaseFromFieldPath(path: string): string | null {
+  const tpl = path.match(/^(templates\.[^.]+\.sections\.[^.]+\.settings)/);
+  if (tpl) return tpl[1]!;
+  const layout = path.match(/^(sections\.[^.]+\.settings)/);
+  if (layout) return layout[1]!;
+  return null;
+}
+
 export function isImageCompareContentFieldPath(path: string): boolean {
+  if (!/image_compare/.test(path) || path.includes('.blocks.')) return false;
+  if (/\.settings\.buttonsGroup\./.test(path)) return true;
+  if (/\.settings\.textGroup\./.test(path)) return true;
+  if (/\.settings\.contentGroup\./.test(path)) return true;
   const key = path.split('.').pop() ?? '';
-  return key in CONTENT_FIELD_TO_BLOCK && /image_compare/.test(path) && !path.includes('.blocks.');
+  return key in CONTENT_FIELD_TO_BLOCK;
 }
 
 export function imageCompareSidebarSelectionId(nodeId: string): string {
   if (!nodeId.startsWith('field:')) return nodeId;
   const path = nodeId.slice('field:'.length);
   if (!isImageCompareContentFieldPath(path)) return nodeId;
+
+  if (/\.settings\.buttonsGroup\./.test(path)) {
+    const settingsBase = imageCompareSettingsBaseFromFieldPath(path);
+    if (settingsBase) {
+      const mapped = imageCompareFieldSidebarNodeId(settingsBase, 'content:nested:buttons');
+      if (mapped) return mapped;
+    }
+  }
+
+  if (/\.settings\.textGroup\./.test(path)) {
+    const settingsBase = imageCompareSettingsBaseFromFieldPath(path);
+    if (settingsBase) {
+      const mapped = imageCompareFieldSidebarNodeId(settingsBase, 'content:nested:text');
+      if (mapped) return mapped;
+    }
+  }
+
+  if (/\.settings\.contentGroup\./.test(path)) {
+    const settingsBase = imageCompareSettingsBaseFromFieldPath(path);
+    if (settingsBase) {
+      const mapped = imageCompareFieldSidebarNodeId(settingsBase, 'content');
+      if (mapped) return mapped;
+    }
+  }
+
   const settingsBase = path.replace(/\.[^.]+$/, '');
   const fieldKey = path.split('.').pop() ?? '';
-  const mapped = imageCompareFieldSidebarNodeId(settingsBase, fieldKey);
+  const blockSuffix = CONTENT_FIELD_TO_BLOCK[fieldKey];
+  if (!blockSuffix) return nodeId;
+  const mapped = imageCompareFieldSidebarNodeId(settingsBase, blockSuffix);
   return mapped ?? nodeId;
 }
 
@@ -259,10 +310,12 @@ export function syntheticImageCompareSidebarNode(
     return { id: nodeId, label: 'Content', kind: 'block', icon: 'group', fields };
   }
   if (isImageCompareTextGroupNodeId(nodeId)) {
-    return { id: nodeId, label: 'Text', kind: 'block', icon: 'group' };
+    const fields = imageCompareTextGroupFieldDefsFromNodeId(nodeId);
+    return { id: nodeId, label: 'Text', kind: 'block', icon: 'group', fields };
   }
   if (isImageCompareButtonsGroupNodeId(nodeId)) {
-    return { id: nodeId, label: 'Buttons', kind: 'block', icon: 'group' };
+    const fields = imageCompareButtonsGroupFieldDefsFromNodeId(nodeId);
+    return { id: nodeId, label: 'Buttons', kind: 'block', icon: 'group', fields };
   }
 
   const heading = imageCompareBlockSidebarNode(nodeId, 'Heading', 'text');
@@ -274,7 +327,7 @@ export function syntheticImageCompareSidebarNode(
   const button = imageCompareBlockSidebarNode(nodeId, 'Button', 'button');
   if (button && /:nested:button_[12]$/.test(nodeId)) return button;
 
-  const slider = imageCompareBlockSidebarNode(nodeId, 'Comparison slider', 'section');
+  const slider = imageCompareBlockSidebarNode(nodeId, 'Comparison slider', 'image');
   if (slider && /:comparison_slider$/.test(nodeId)) return slider;
 
   if (nodeId.startsWith('field:') && isImageCompareContentFieldPath(nodeId.slice('field:'.length))) {

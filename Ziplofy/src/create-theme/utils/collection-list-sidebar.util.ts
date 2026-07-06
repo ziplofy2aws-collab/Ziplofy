@@ -12,6 +12,74 @@ import {
   reorderSidebarChildren,
 } from '../sidebar/create-theme-structure-order';
 
+export function isCollectionListSectionType(
+  secType: string | undefined,
+  catalogVariant: string
+): boolean {
+  return (
+    secType === 'collection-list-bento' ||
+    secType === 'collection-list-carousel' ||
+    secType === 'collection-list-editorial' ||
+    secType === 'collection-list-grid' ||
+    catalogVariant === 'collection-list-bento' ||
+    catalogVariant === 'collection-list-carousel' ||
+    catalogVariant === 'collection-list-editorial' ||
+    catalogVariant === 'collection-list-grid'
+  );
+}
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+/** True when config stores a collection list section (sidebar uses synthetic Header / Collection card nodes). */
+export function isCollectionListSectionInConfig(
+  config: Record<string, unknown> | null,
+  opts: { tplId?: string; secId: string; layout?: boolean }
+): boolean {
+  if (!config) return false;
+  const { secId, tplId, layout } = opts;
+  const sec = layout
+    ? (getNested(config, ['sections', secId]) as
+        | { type?: string; settings?: { catalogVariant?: string } }
+        | undefined)
+    : tplId
+      ? (getNested(config, ['templates', tplId, 'sections', secId]) as
+          | { type?: string; settings?: { catalogVariant?: string } }
+          | undefined)
+      : undefined;
+  if (!sec) return false;
+  const catalogVariant =
+    typeof sec.settings?.catalogVariant === 'string' ? sec.settings.catalogVariant : '';
+  return isCollectionListSectionType(sec.type, catalogVariant);
+}
+
+/** Shopify Collection list sidebar — Add block → Header → Text; Collection card → Image → Collection title. */
+export function collectionListStructureOrder(
+  prefix: string,
+  sectionChildrenListKey: string
+): Record<string, string[]> {
+  const headerPrefix = `${prefix}:block:section_header`;
+  const cardPrefix = `${prefix}:block:collection_card`;
+  return {
+    [sectionChildrenListKey]: [`${prefix}:add-block`, headerPrefix, cardPrefix],
+    [listKeyBlockChildren(headerPrefix)]: [
+      `${headerPrefix}:inner-add-block`,
+      `${headerPrefix}:nested:heading_text`,
+    ],
+    [listKeyBlockChildren(cardPrefix)]: [
+      `${cardPrefix}:nested:card_image`,
+      `${cardPrefix}:inner-add-block`,
+      `${cardPrefix}:nested:collection_title`,
+    ],
+  };
+}
+
 function fieldPreview(
   field: EditorFieldDef,
   values: Record<string, string | boolean>
@@ -100,6 +168,14 @@ export function mapCollectionListBlockNodes(
 
   const headingTextFields = collectionListHeaderTextFieldDefs(settingsBase);
   const headingPreviewField = headingTextFields.find((f) => f.path.endsWith('.settings.text'));
+  const headingFallbackField: EditorFieldDef = {
+    path: `${settingsBase}.heading`,
+    type: 'text',
+    label: 'Text',
+  };
+  const headingPreview =
+    (headingPreviewField ? fieldPreview(headingPreviewField, values) : undefined) ??
+    fieldPreview(headingFallbackField, values);
 
   const cardImageFields = collectionListCardImageFieldDefs(settingsBase);
 
@@ -118,7 +194,7 @@ export function mapCollectionListBlockNodes(
         label: 'Text',
         kind: 'block',
         icon: 'text',
-        preview: headingPreviewField ? fieldPreview(headingPreviewField, values) : undefined,
+        preview: headingPreview,
         fields: headingTextFields,
       },
     ],

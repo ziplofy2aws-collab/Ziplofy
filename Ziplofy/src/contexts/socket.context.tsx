@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { io, Socket } from "socket.io-client";
 import { frontendEnv } from "../config/env";
 import { SocketEventType } from "../types/event.types";
+import { useUserContext } from "./user.context";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -37,6 +38,7 @@ export const useSocket = (): SocketContextType => {
 export const SocketProvider = ({children}: {children: ReactNode}) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const { fetchLoggedInUser } = useUserContext();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -67,6 +69,7 @@ export const SocketProvider = ({children}: {children: ReactNode}) => {
 
     newSocket.on(SocketEventType.DeveloperAssigned, (data: AssignedSupportDeveloperEventData) => {
       toast.success(data.message);
+      fetchLoggedInUser();
     });
 
     setSocket(newSocket);
@@ -74,7 +77,7 @@ export const SocketProvider = ({children}: {children: ReactNode}) => {
     return () => {
       newSocket.close();
     };
-  }, []);
+  }, [fetchLoggedInUser]);
 
 
   const getSocket = (): Socket | null => {

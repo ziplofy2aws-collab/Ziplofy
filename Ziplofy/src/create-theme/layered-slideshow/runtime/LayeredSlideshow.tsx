@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
+import { cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeColors, useThemeLayout } from '../../runtime/shared/tokens';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import {
   LayeredSlideshowBackdrop,
   LayeredSlideshowFigure,
@@ -52,6 +55,10 @@ export function LayeredSlideshow({
   const scopeClass = `ziplofy-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedLayeredSlideshowCss(sectionId, layoutStyle.customCss);
   const minHeight = slideshowMinHeight(layoutStyle.height);
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+  const sectionBackground = backgroundColorRaw
+    ? resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, layoutStyle.scheme.background)
+    : layoutStyle.scheme.background;
 
   const goTo = useCallback((i: number) => setActiveIndex(i), []);
 
@@ -66,7 +73,7 @@ export function LayeredSlideshow({
   const outerStyle: CSSProperties = {
     paddingTop: layoutStyle.paddingTop,
     paddingBottom: layoutStyle.paddingBottom,
-    background: layoutStyle.scheme.background,
+    background: sectionBackground,
     color: layoutStyle.scheme.color,
     fontFamily: fontBody,
     boxSizing: 'border-box',
@@ -86,7 +93,7 @@ export function LayeredSlideshow({
       ? `${layoutStyle.borderThickness}px solid rgba(0,0,0,0.08)`
       : 'none',
     boxShadow: layoutStyle.dropShadow ? '0 8px 28px rgba(0,0,0,0.12)' : undefined,
-    background: layoutStyle.scheme.background,
+    background: sectionBackground,
   };
 
   return (
@@ -150,7 +157,7 @@ export function LayeredSlideshow({
                         color: layoutStyle.scheme.color,
                       }}
                     >
-                      {slide.title}
+                      <ThemeEditorRichTextContent html={slide.title} />
                     </EditorField>
                   ) : null}
                   {slide.body.trim() ? (
@@ -166,7 +173,7 @@ export function LayeredSlideshow({
                         maxWidth: 360,
                       }}
                     >
-                      {slide.body}
+                      <ThemeEditorRichTextContent html={slide.body} />
                     </EditorField>
                   ) : null}
                   {slide.buttonLabel.trim() ? (

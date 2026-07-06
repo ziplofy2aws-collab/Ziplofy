@@ -18,14 +18,27 @@ function alignSelfFromTextAlignment(alignment: string): CSSProperties['alignSelf
   return 'flex-start';
 }
 
+export type TextBlockStyleDefaults = {
+  width?: string;
+  maxWidth?: string;
+  alignment?: string;
+  typographyPreset?: string;
+  backgroundEnabled?: boolean;
+  paddingTop?: number;
+  paddingBottom?: number;
+  paddingLeft?: number;
+  paddingRight?: number;
+};
+
 /** Positions the text block within a flex parent (width, max width, alignment). */
 export function readTextBlockLayoutStyle(
   config: Record<string, unknown> | null,
-  settingsBase: string
+  settingsBase: string,
+  defaults?: TextBlockStyleDefaults
 ): CSSProperties {
-  const widthMode = cfgString(config, `${settingsBase}.width`, 'fill');
-  const maxKey = cfgString(config, `${settingsBase}.maxWidth`, 'normal');
-  const alignment = cfgString(config, `${settingsBase}.alignment`, 'left');
+  const widthMode = cfgString(config, `${settingsBase}.width`, defaults?.width ?? 'fill');
+  const maxKey = cfgString(config, `${settingsBase}.maxWidth`, defaults?.maxWidth ?? 'normal');
+  const alignment = cfgString(config, `${settingsBase}.alignment`, defaults?.alignment ?? 'left');
   const maxWidth = TEXT_MAX_WIDTH[maxKey];
 
   if (widthMode === 'fit') {
@@ -49,14 +62,23 @@ export function readTextBlockStyle(
   config: Record<string, unknown> | null,
   settingsBase: string,
   themeFonts: ThemeFonts,
-  color: string
+  color: string,
+  defaults?: TextBlockStyleDefaults
 ): CSSProperties {
-  const preset = cfgString(config, `${settingsBase}.typographyPreset`, 'default');
+  const preset = cfgString(
+    config,
+    `${settingsBase}.typographyPreset`,
+    defaults?.typographyPreset ?? 'default'
+  );
   const typo = resolveThemeTypographyStyle(config, preset, themeFonts);
-  const widthMode = cfgString(config, `${settingsBase}.width`, 'fill');
-  const maxKey = cfgString(config, `${settingsBase}.maxWidth`, 'normal');
-  const alignment = cfgString(config, `${settingsBase}.alignment`, 'left');
-  const bgOn = cfgBool(config, `${settingsBase}.backgroundEnabled`, false);
+  const widthMode = cfgString(config, `${settingsBase}.width`, defaults?.width ?? 'fill');
+  const maxKey = cfgString(config, `${settingsBase}.maxWidth`, defaults?.maxWidth ?? 'normal');
+  const alignment = cfgString(config, `${settingsBase}.alignment`, defaults?.alignment ?? 'left');
+  const bgOn = cfgBool(
+    config,
+    `${settingsBase}.backgroundEnabled`,
+    defaults?.backgroundEnabled ?? false
+  );
 
   return {
     width: widthMode === 'fill' ? '100%' : 'fit-content',
@@ -71,10 +93,10 @@ export function readTextBlockStyle(
     textTransform: typo.textTransform,
     color,
     background: bgOn ? 'rgba(0,0,0,0.04)' : undefined,
-    paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),
-    paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 0),
-    paddingLeft: cfgNumber(config, `${settingsBase}.paddingLeft`, 0),
-    paddingRight: cfgNumber(config, `${settingsBase}.paddingRight`, 0),
+    paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, defaults?.paddingTop ?? 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, defaults?.paddingBottom ?? 0),
+    paddingLeft: cfgNumber(config, `${settingsBase}.paddingLeft`, defaults?.paddingLeft ?? 0),
+    paddingRight: cfgNumber(config, `${settingsBase}.paddingRight`, defaults?.paddingRight ?? 0),
     borderRadius: bgOn ? 6 : 0,
     boxSizing: 'border-box',
   };

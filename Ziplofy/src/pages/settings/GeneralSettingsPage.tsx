@@ -16,12 +16,22 @@ import { useStoreContactInfo } from '../../contexts/store-contact-info.context';
 import { useStore } from '../../contexts/store.context';
 import { useStoreBillingAddress } from '../../contexts/storeBillingAddress.context';
 import { useUserContext } from '../../contexts/user.context';
+import { useSocket } from '../../contexts/socket.context';
 import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
 
 
 const GeneralSettingsPage: React.FC = () => {
   const { stores, activeStoreId, setStores } = useStore();
   const { loggedInUser } = useUserContext();
+  const { socket } = useSocket();
+
+  const handleHireDeveloper = useCallback(() => {
+    if (socket && socket.connected) {
+      socket.emit('hireDeveloper');
+    } else {
+      toast.error('Socket not connected');
+    }
+  }, [socket]);
   const { addresses, fetchByStoreId } = useStoreBillingAddress();
   const { info, getByStoreId } = useStoreContactInfo();
   const {
@@ -623,7 +633,10 @@ const GeneralSettingsPage: React.FC = () => {
       <StoreAssetsSection />
 
       {/* Resources section ✅ */}
-      <ResourcesSection onOpenShortcutsModal={handleOpenShortcutsModal} />
+      <ResourcesSection
+        onOpenShortcutsModal={handleOpenShortcutsModal}
+        onHireDeveloper={handleHireDeveloper}
+      />
 
       {/* Bottom note and Save button */}
       <GeneralSettingsFooter

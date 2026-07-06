@@ -5,6 +5,7 @@ export const LARGE_LOGO_BLOCK_PANEL_GROUP_ORDER = ['Typography', 'Size', 'Paddin
 
 const PANEL_KEYS = new Set([
   'logoFont',
+  'logoColor',
   'sizeUnit',
   'pixelHeight',
   'percentWidth',
@@ -43,6 +44,14 @@ export function largeLogoBlockFieldDefs(blocksBase: string): EditorFieldDef[] {
       widget: 'select',
       sidebar: true,
       options: [...FONT_OPTIONS],
+    },
+    {
+      path: s('logoColor'),
+      type: 'color',
+      label: 'Color',
+      group: 'Typography',
+      widget: 'color',
+      sidebar: true,
     },
     {
       path: s('sizeUnit'),
@@ -215,6 +224,7 @@ export function isLargeLogoBlockPanelFields(fields: EditorFieldDef[]): boolean {
 function fieldSortKey(path: string): number {
   const rank: Record<string, number> = {
     logoFont: 0,
+    logoColor: 1,
     sizeUnit: 10,
     pixelHeight: 11,
     percentWidth: 12,

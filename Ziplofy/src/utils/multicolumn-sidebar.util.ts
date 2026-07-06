@@ -1,5 +1,15 @@
 import type { EditorFieldDef, SidebarIcon, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
-import { multicolumnBlockFieldDefs } from '../create-theme/sidebar/theme-editor-multicolumn-panel.utils';
+import {
+  multicolumnBlockFieldDefs,
+  multicolumnColumnBlockFieldDefs,
+  multicolumnHeadingBlockFieldDefs,
+  multicolumnDescriptionBlockFieldDefs,
+} from '../create-theme/sidebar/theme-editor-multicolumn-panel.utils';
+
+/** Mirror of create-theme-structure-order.listKeyBlockChildren (inlined to avoid a circular import). */
+function listKeyBlockChildren(blockPrefix: string): string {
+  return `fields:${blockPrefix}`;
+}
 
 function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
   let cur: unknown = obj;
@@ -88,17 +98,65 @@ export function mapMulticolumnBlockNodes(
       : readLayoutBlockOrder(config, secId);
 
   const blockNodes: SidebarNode[] = blockOrder.map((blockId) => {
+    const blockPrefix = `${prefix}:block:${blockId}`;
     const headingPath = `${blocksBase}.blocks.${blockId}.settings.heading`;
-    const preview = previewFromValues(values, headingPath);
+    const textPath = `${blocksBase}.blocks.${blockId}.settings.text`;
+    const contentDefs = multicolumnBlockFieldDefs(blocksBase, blockId);
+    const columnDefs = multicolumnColumnBlockFieldDefs(blocksBase, blockId);
+    const headingDefs = multicolumnHeadingBlockFieldDefs(blocksBase, blockId);
+    const descriptionDefs = multicolumnDescriptionBlockFieldDefs(blocksBase, blockId);
+    const textDef = contentDefs.find((f) => f.path.endsWith('.text'));
+    const headingPreview = previewFromValues(values, headingPath);
+    const textPreview = previewFromValues(values, textPath);
+
+    const nestedNodes: SidebarNode[] = [];
+    if (headingDefs.length) {
+      const headingNodeId = `${blockPrefix}:nested:heading`;
+      nestedNodes.push({
+        id: headingNodeId,
+        label: 'Heading',
+        kind: 'block' as const,
+        icon: blockIcon(),
+        fields: headingDefs,
+        preview: headingPreview,
+        childrenListKey: listKeyBlockChildren(headingNodeId),
+      });
+    }
+    if (textDef) {
+      const textNodeId = `${blockPrefix}:nested:text`;
+      nestedNodes.push({
+        id: textNodeId,
+        label: 'Description',
+        kind: 'block' as const,
+        icon: blockIcon(),
+        fields: descriptionDefs.length ? descriptionDefs : [textDef],
+        preview: textPreview,
+        childrenListKey: listKeyBlockChildren(textNodeId),
+      });
+    }
+
+    const innerAddBlock: SidebarNode = {
+      id: `${blockPrefix}:inner-add-block`,
+      label: 'Add block',
+      kind: 'add-block' as const,
+    };
+    const childrenListKey = listKeyBlockChildren(blockPrefix);
+    const children = reorderSidebarChildren(
+      [innerAddBlock, ...nestedNodes],
+      childrenListKey,
+      itemOrder
+    );
+
     return {
-      id: `${prefix}:block:${blockId}`,
-      label: preview ?? 'Column',
+      id: blockPrefix,
+      label: 'Column',
       kind: 'block' as const,
-      icon: blockIcon(),
-      fields: multicolumnBlockFieldDefs(blocksBase, blockId),
-      preview,
+      icon: 'group' as SidebarIcon,
+      fields: columnDefs,
       showVisibilityToggle: true,
       showDeleteButton: true,
+      children,
+      childrenListKey,
     };
   });
 

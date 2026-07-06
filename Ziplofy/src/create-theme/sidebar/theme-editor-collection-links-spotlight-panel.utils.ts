@@ -84,10 +84,26 @@ export function isCollectionLinksSpotlightSettingsPanelFields(fields: EditorFiel
   return keys.has('collectionsPicker') && keys.has('alignment') && keys.has('layoutMode');
 }
 
+export function isCollectionLinksTextSectionFromFields(fields: EditorFieldDef[]): boolean {
+  return fields.some((f) => f.path.includes('.collection_links_text.'));
+}
+
+function normalizeCollectionLinksSpotlightPanelField(field: EditorFieldDef): EditorFieldDef {
+  const key = field.path.split('.').pop() ?? '';
+  if (key !== 'colorScheme') return field;
+
+  const options = (field.options ?? [])
+    .filter((opt) => opt.value !== 'scheme-1' && opt.value !== 'default' && opt.value !== 'transparent')
+    .map((opt) => opt);
+  options.unshift({ value: 'transparent', label: 'Default' });
+
+  return { ...field, label: 'Background color', options };
+}
+
 export function prepareCollectionLinksSpotlightSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortCollectionLinksSpotlightPanelFields(
     filterSidebarSectionPanelFields(node.fields ?? [], isCollectionLinksSpotlightPanelField)
-  );
+  ).map(normalizeCollectionLinksSpotlightPanelField);
   const isTextSection =
     node.label === 'Collection links: Text' ||
     node.id.includes('collection_links_text');

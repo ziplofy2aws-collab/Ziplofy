@@ -4,6 +4,8 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgString, cfgNumber } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeColors, useThemeLayout } from '../../runtime/shared/tokens';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { LayeredSlideshowSlideMedia } from '../../layered-slideshow/runtime/LayeredSlideshowArt';
 import {
   readLayeredSlideshowSlides,
@@ -72,6 +74,10 @@ export function SlideshowInset({
 
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   const scheme = SCHEMES[schemeKey] ?? SCHEMES['scheme-1'];
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+  const sectionBackground = backgroundColorRaw
+    ? resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background)
+    : scheme.background;
   const mediaHeight = cfgString(config, `${settingsBase}.mediaHeight`, 'medium');
   const navBackground = cfgString(config, `${settingsBase}.navigationIconBackground`, 'none');
   const pagination = cfgString(config, `${settingsBase}.pagination`, 'none');
@@ -193,66 +199,103 @@ export function SlideshowInset({
     </div>
   );
 
-  const renderContent = (slide: LayeredSlideshowSlide) => (
+  const ALIGN_MAP: Record<string, { items: CSSProperties['alignItems']; text: CSSProperties['textAlign'] }> = {
+    left: { items: 'flex-start', text: 'left' },
+    center: { items: 'center', text: 'center' },
+    right: { items: 'flex-end', text: 'right' },
+  };
+
+  const readSlideSettings = (id: string) => {
+    const base = `${blocksBase}.${id}.settings`;
+    const alignment = cfgString(config, `${base}.alignment`, 'center');
+    const align = ALIGN_MAP[alignment] ?? ALIGN_MAP.center;
+    const bgRaw = cfgString(config, `${base}.backgroundColor`, '');
+    return {
+      align,
+      gap: cfgNumber(config, `${base}.gap`, 12),
+      paddingTop: cfgNumber(config, `${base}.paddingTop`, 48),
+      paddingBottom: cfgNumber(config, `${base}.paddingBottom`, 48),
+      paddingLeft: cfgNumber(config, `${base}.paddingLeft`, 48),
+      paddingRight: cfgNumber(config, `${base}.paddingRight`, 48),
+      background: bgRaw ? resolveThemePaletteColorSetting(config, bgRaw, 0, '') : undefined,
+    };
+  };
+
+  const renderContent = (
+    slide: LayeredSlideshowSlide,
+    slideStyle: ReturnType<typeof readSlideSettings>
+  ) => (
     <EditorBlock nodeId={`${editorNodeId}:block:${slide.id}`} label="Slide">
-      {slide.title.trim() ? (
-        <EditorField
-          fieldPath={`${blocksBase}.${slide.id}.settings.title`}
-          label="Heading"
-          as="h2"
-          style={{
-            margin: 0,
-            fontFamily: fontHeading,
-            fontSize: 'clamp(1.75rem, 3.4vw, 2.5rem)',
-            fontWeight: 700,
-            lineHeight: 1.1,
-            letterSpacing: '-0.02em',
-            color: scheme.color,
-          }}
-        >
-          {slide.title}
-        </EditorField>
-      ) : null}
-      {slide.body.trim() ? (
-        <EditorField
-          fieldPath={`${blocksBase}.${slide.id}.settings.body`}
-          label="Text"
-          as="p"
-          style={{
-            margin: '12px auto 0',
-            fontSize: '0.95rem',
-            lineHeight: 1.5,
-            color: scheme.muted,
-            maxWidth: 420,
-          }}
-        >
-          {slide.body}
-        </EditorField>
-      ) : null}
-      {slide.buttonLabel.trim() ? (
-        <EditorField
-          fieldPath={`${blocksBase}.${slide.id}.settings.buttonLabel`}
-          label="Button label"
-          as="span"
-          style={{ display: 'inline-flex', marginTop: 20 }}
-        >
-          <Link
-            to={slide.buttonHref || '#'}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: slideStyle.align.items,
+          gap: slideStyle.gap,
+          width: '100%',
+        }}
+      >
+        {slide.title.trim() ? (
+          <EditorField
+            fieldPath={`${blocksBase}.${slide.id}.settings.title`}
+            label="Heading"
+            as="h2"
             style={{
-              display: 'inline-flex',
-              padding: '12px 26px',
-              borderRadius: 999,
-              background: '#111827',
-              color: '#fff',
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              textDecoration: 'none',
+              margin: 0,
+              fontFamily: fontHeading,
+              fontSize: 'clamp(1.75rem, 3.4vw, 2.5rem)',
+              fontWeight: 700,
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+              color: scheme.color,
+              textAlign: slideStyle.align.text,
             }}
           >
-            {slide.buttonLabel}
-          </Link>
-        </EditorField>
-      ) : null}
+            <ThemeEditorRichTextContent html={slide.title} />
+          </EditorField>
+        ) : null}
+        {slide.body.trim() ? (
+          <EditorField
+            fieldPath={`${blocksBase}.${slide.id}.settings.body`}
+            label="Text"
+            as="p"
+            style={{
+              margin: 0,
+              fontSize: '0.95rem',
+              lineHeight: 1.5,
+              color: scheme.muted,
+              maxWidth: 420,
+              textAlign: slideStyle.align.text,
+            }}
+          >
+            <ThemeEditorRichTextContent html={slide.body} />
+          </EditorField>
+        ) : null}
+        {slide.buttonLabel.trim() ? (
+          <EditorField
+            fieldPath={`${blocksBase}.${slide.id}.settings.buttonLabel`}
+            label="Button label"
+            as="span"
+            style={{ display: 'inline-flex' }}
+          >
+            <Link
+              to={slide.buttonHref || '#'}
+              style={{
+                display: 'inline-flex',
+                padding: '12px 26px',
+                borderRadius: 999,
+                background: '#111827',
+                color: '#fff',
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              {slide.buttonLabel}
+            </Link>
+          </EditorField>
+        ) : null}
+      </div>
     </EditorBlock>
   );
 
@@ -269,7 +312,7 @@ export function SlideshowInset({
       <EditorSection sectionId={sectionId} editorNodeId={editorNodeId} label="Slideshow: Inset">
         <div
           className={scopeClass}
-          style={{ paddingTop, paddingBottom, background: scheme.background, boxSizing: 'border-box' }}
+          style={{ paddingTop, paddingBottom, background: sectionBackground, boxSizing: 'border-box' }}
         >
           <div style={innerStyle}>
             {mediaCard}
@@ -285,24 +328,31 @@ export function SlideshowInset({
                   alignItems: 'flex-start',
                 }}
               >
-                {slides.map((s) => (
-                  <div
-                    key={s.id}
-                    style={{
-                      flex: '0 0 100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      textAlign: 'center',
-                      padding: '28px 24px 8px',
-                      boxSizing: 'border-box',
-                      color: scheme.color,
-                      fontFamily: fontBody,
-                    }}
-                  >
-                    {renderContent(s)}
-                  </div>
-                ))}
+                {slides.map((s) => {
+                  const slideStyle = readSlideSettings(s.id);
+                  return (
+                    <div
+                      key={s.id}
+                      style={{
+                        flex: '0 0 100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: slideStyle.align.items,
+                        textAlign: slideStyle.align.text,
+                        paddingTop: slideStyle.paddingTop,
+                        paddingBottom: slideStyle.paddingBottom,
+                        paddingLeft: slideStyle.paddingLeft,
+                        paddingRight: slideStyle.paddingRight,
+                        boxSizing: 'border-box',
+                        color: scheme.color,
+                        fontFamily: fontBody,
+                        background: slideStyle.background,
+                      }}
+                    >
+                      {renderContent(s, slideStyle)}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

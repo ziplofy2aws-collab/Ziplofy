@@ -16,11 +16,176 @@ const SCHEMES: Record<string, MulticolumnScheme> = {
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6' },
 };
 
+export type MulticolumnItemSettings = {
+  direction: 'vertical' | 'horizontal';
+  layoutAlignment: 'left' | 'center' | 'right';
+  position: string;
+  layoutGap: number;
+  width: string;
+  customWidth: number;
+  mobileWidth: string;
+  mobileCustomWidth: number;
+  height: string;
+  customHeight: number;
+  backgroundMedia: string;
+  backgroundImageUrl: string;
+  backgroundColor: string;
+  backgroundOverlay: boolean;
+  borderStyle: string;
+  cornerRadius: number;
+  link: string;
+  linkOpenInNewTab: boolean;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
+export type MulticolumnHeadingSettings = {
+  width: string;
+  maxWidth: string;
+  alignment: string;
+  preset: string;
+  color: string;
+  backgroundEnabled: boolean;
+  backgroundColor: string;
+  cornerRadius: number;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
+export type MulticolumnDescriptionSettings = {
+  width: string;
+  maxWidth: string;
+  alignment: string;
+  preset: string;
+  font: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textCase: string;
+  wrap: string;
+  color: string;
+  backgroundEnabled: boolean;
+  backgroundColor: string;
+  cornerRadius: number;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
 export type MulticolumnItem = {
   id: string;
   heading: string;
   text: string;
+  settings: MulticolumnItemSettings;
+  headingSettings: MulticolumnHeadingSettings;
+  descriptionSettings: MulticolumnDescriptionSettings;
 };
+
+function readHeadingSettings(settings: Record<string, unknown>): MulticolumnHeadingSettings {
+  const str = (key: string, fallback: string) => {
+    const v = settings[key];
+    return typeof v === 'string' && v !== '' ? v : fallback;
+  };
+  const num = (key: string, fallback: number) => {
+    const v = settings[key];
+    return typeof v === 'number' ? v : typeof v === 'string' && v !== '' ? Number(v) || fallback : fallback;
+  };
+  return {
+    width: str('headingWidth', 'fill'),
+    maxWidth: str('headingMaxWidth', 'normal'),
+    alignment: str('headingAlignment', 'center'),
+    preset: str('headingTypographyPreset', 'heading-4'),
+    color: typeof settings.headingColor === 'string' ? settings.headingColor : '',
+    backgroundEnabled: settings.headingBackgroundEnabled === true,
+    backgroundColor:
+      typeof settings.headingBackgroundColor === 'string' ? settings.headingBackgroundColor : '',
+    cornerRadius: num('headingCornerRadius', 0),
+    paddingTop: num('headingPaddingTop', 0),
+    paddingBottom: num('headingPaddingBottom', 0),
+    paddingLeft: num('headingPaddingLeft', 0),
+    paddingRight: num('headingPaddingRight', 0),
+  };
+}
+
+function readDescriptionSettings(
+  settings: Record<string, unknown>
+): MulticolumnDescriptionSettings {
+  const str = (key: string, fallback: string) => {
+    const v = settings[key];
+    return typeof v === 'string' && v !== '' ? v : fallback;
+  };
+  const num = (key: string, fallback: number) => {
+    const v = settings[key];
+    return typeof v === 'number' ? v : typeof v === 'string' && v !== '' ? Number(v) || fallback : fallback;
+  };
+  return {
+    width: str('descWidth', 'fill'),
+    maxWidth: str('descMaxWidth', 'normal'),
+    alignment: str('descAlignment', 'center'),
+    preset: str('descTypographyPreset', 'default'),
+    font: str('descFont', 'body'),
+    fontSize: str('descFontSize', 'default'),
+    lineHeight: str('descLineHeight', 'normal'),
+    letterSpacing: str('descLetterSpacing', 'normal'),
+    textCase: str('descTextCase', 'default'),
+    wrap: str('descWrap', 'pretty'),
+    color: typeof settings.descColor === 'string' ? settings.descColor : '',
+    backgroundEnabled: settings.descBackgroundEnabled === true,
+    backgroundColor:
+      typeof settings.descBackgroundColor === 'string' ? settings.descBackgroundColor : '',
+    cornerRadius: num('descCornerRadius', 0),
+    paddingTop: num('descPaddingTop', 0),
+    paddingBottom: num('descPaddingBottom', 0),
+    paddingLeft: num('descPaddingLeft', 0),
+    paddingRight: num('descPaddingRight', 0),
+  };
+}
+
+function readColumnSettings(settings: Record<string, unknown>): MulticolumnItemSettings {
+  const str = (key: string, fallback: string) => {
+    const v = settings[key];
+    return typeof v === 'string' && v !== '' ? v : fallback;
+  };
+  const num = (key: string, fallback: number) => {
+    const v = settings[key];
+    return typeof v === 'number' ? v : typeof v === 'string' && v !== '' ? Number(v) || fallback : fallback;
+  };
+  const bool = (key: string, fallback: boolean) => {
+    const v = settings[key];
+    return typeof v === 'boolean' ? v : fallback;
+  };
+  const dir = str('direction', 'vertical');
+  const align = str('layoutAlignment', 'left');
+  return {
+    direction: dir === 'horizontal' ? 'horizontal' : 'vertical',
+    layoutAlignment: align === 'center' || align === 'right' ? align : 'left',
+    position: str('position', 'top'),
+    layoutGap: num('layoutGap', 8),
+    width: str('width', 'fill'),
+    customWidth: num('customWidth', 100),
+    mobileWidth: str('mobileWidth', 'fill'),
+    mobileCustomWidth: num('mobileCustomWidth', 100),
+    height: str('height', 'fit'),
+    customHeight: num('customHeight', 100),
+    backgroundMedia: str('backgroundMedia', 'none'),
+    backgroundImageUrl: typeof settings.backgroundImageUrl === 'string' ? settings.backgroundImageUrl : '',
+    backgroundColor: typeof settings.backgroundColor === 'string' ? settings.backgroundColor : '',
+    backgroundOverlay: bool('backgroundOverlay', false),
+    borderStyle: str('borderStyle', 'none'),
+    cornerRadius: num('cornerRadius', 0),
+    link: typeof settings.link === 'string' ? settings.link : '',
+    linkOpenInNewTab: bool('linkOpenInNewTab', false),
+    paddingTop: num('paddingTop', 10),
+    paddingBottom: num('paddingBottom', 0),
+    paddingLeft: num('paddingLeft', 0),
+    paddingRight: num('paddingRight', 0),
+  };
+}
 
 export type MulticolumnLayout = {
   scheme: MulticolumnScheme;
@@ -113,6 +278,9 @@ export function readMulticolumnItems(
         id,
         heading,
         text: String(settings.text ?? ''),
+        settings: readColumnSettings(settings),
+        headingSettings: readHeadingSettings(settings),
+        descriptionSettings: readDescriptionSettings(settings),
       };
     })
     .filter((x): x is MulticolumnItem => x != null);

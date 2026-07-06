@@ -6,7 +6,9 @@ export const IMAGE_COMPARE_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
+  'Theme Settings',
   'Custom CSS',
 ] as const;
 
@@ -28,14 +30,15 @@ const FIELD_SORT: Record<string, number> = {
   layoutGap: 4,
   sectionWidth: 10,
   height: 11,
-  colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
-  backgroundOverlay: 25,
+  backgroundColor: 23,
+  backgroundOverlay: 24,
+  borderStyle: 26,
+  cornerRadius: 27,
   paddingTop: 30,
   paddingBottom: 31,
+  colorScheme: 35,
   customCss: 40,
 };
 
@@ -67,7 +70,7 @@ function remapImageCompareField(field: EditorFieldDef): EditorFieldDef {
     next = { ...next, widget: 'select-inline', group: 'Layout' };
   }
   if (key === 'position') {
-    next = { ...next, widget: 'segmented', group: 'Layout' };
+    next = { ...next, widget: 'select-inline', group: 'Layout' };
   }
   if (key === 'layoutGap') {
     next = { ...next, widget: 'slider', group: 'Layout' };
@@ -79,7 +82,7 @@ function remapImageCompareField(field: EditorFieldDef): EditorFieldDef {
     next = { ...next, widget: 'select-inline', group: 'Size' };
   }
   if (key === 'colorScheme') {
-    next = { ...next, widget: 'color-scheme', group: 'Appearance' };
+    next = { ...next, widget: 'color-scheme', group: 'Theme Settings' };
   }
   if (key === 'backgroundMedia') {
     next = { ...next, group: 'Appearance', widget: 'select-inline' };
@@ -87,11 +90,14 @@ function remapImageCompareField(field: EditorFieldDef): EditorFieldDef {
   if (key === 'backgroundImageUrl') {
     next = { ...next, group: 'Appearance', widget: 'image' };
   }
+  if (key === 'backgroundColor') {
+    next = { ...next, group: 'Appearance', widget: 'color', type: 'color' };
+  }
   if (key === 'borderStyle') {
-    next = { ...next, group: 'Appearance', widget: 'segmented' };
+    next = { ...next, label: 'Style', group: 'Borders', widget: 'segmented' };
   }
   if (key === 'cornerRadius') {
-    next = { ...next, group: 'Appearance', widget: 'slider' };
+    next = { ...next, group: 'Borders', widget: 'slider' };
   }
   if (key === 'backgroundOverlay') {
     next = { ...next, group: 'Appearance', widget: 'toggle' };
@@ -111,8 +117,10 @@ export function sortImageComparePanelFields(fields: EditorFieldDef[]): EditorFie
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
+    'Theme Settings': 5,
+    'Custom CSS': 6,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -138,7 +146,7 @@ export function isImageCompareSettingsPanelFields(fields: EditorFieldDef[]): boo
   const path = fields[0]?.path ?? '';
   if (!path.includes('image_compare')) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('direction') && keys.has('layoutGap') && keys.has('height') && keys.has('colorScheme');
+  return keys.has('direction') && keys.has('layoutGap') && keys.has('height') && keys.has('sectionWidth');
 }
 
 export function prepareImageCompareSettingsNode(node: SidebarNode): SidebarNode {

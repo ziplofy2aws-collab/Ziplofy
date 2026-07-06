@@ -240,14 +240,14 @@ export function FeaturedProduct({
   const configSoldOut = cfgBool(config, `${settingsBase}.soldOut`, true);
 
   const mediaCornerRadius = cfgNumber(config, `${mediaSettingsBase}.cornerRadius`, 0);
-  const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'contain');
+  const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'cover');
   const mediaAspectRatio = cfgString(config, `${mediaSettingsBase}.aspectRatio`, 'auto');
   const mediaPaddingTop = cfgNumber(config, `${mediaSettingsBase}.paddingTop`, 0);
   const mediaPaddingBottom = cfgNumber(config, `${mediaSettingsBase}.paddingBottom`, 0);
   const mediaPaddingLeft = cfgNumber(config, `${mediaSettingsBase}.paddingLeft`, 0);
   const mediaPaddingRight = cfgNumber(config, `${mediaSettingsBase}.paddingRight`, 0);
 
-  const detailsGap = cfgNumber(config, `${detailsSettingsBase}.layoutGap`, 31);
+  const detailsGap = cfgNumber(config, `${detailsSettingsBase}.layoutGap`, 28);
   const detailsHeight = cfgString(config, `${detailsSettingsBase}.height`, 'fit');
   const detailsPosition = cfgString(config, `${detailsSettingsBase}.position`, 'top');
   const detailsHeightFill = detailsHeight === 'fill';
@@ -272,6 +272,7 @@ export function FeaturedProduct({
       ? `@media (max-width: 749px) { [data-fp-details="${detailsWidthScopeId}"] { width: ${detailsMobileWidth} !important; } }`
       : '';
   const detailsBgMedia = cfgString(config, `${detailsSettingsBase}.backgroundMedia`, 'none');
+  const detailsBgColor = cfgString(config, `${detailsSettingsBase}.backgroundColor`, 'default');
   const detailsBgImageUrl = cfgString(config, `${detailsSettingsBase}.backgroundImageUrl`, '');
   const detailsBgImagePosition = cfgString(config, `${detailsSettingsBase}.backgroundImagePosition`, 'cover');
   const detailsShowBgImage = detailsBgMedia === 'image' && Boolean(detailsBgImageUrl.trim());
@@ -394,6 +395,10 @@ export function FeaturedProduct({
   }, [adding, canPurchase, createCartEntry, navigate, quantity, selectedVariant, storeId]);
 
   const scheme = style.scheme;
+  const detailsResolvedBackground =
+    detailsShowBgImage || !detailsBgColor || detailsBgColor === 'default'
+      ? scheme.panelRight
+      : detailsBgColor;
   const mediaOnLeft = mediaPosition !== 'right';
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
@@ -406,7 +411,10 @@ export function FeaturedProduct({
   );
 
   const shell: CSSProperties = {
-    background: scheme.background,
+    background:
+      !style.backgroundColor || style.backgroundColor === 'default'
+        ? scheme.background
+        : style.backgroundColor,
     color: scheme.color,
     fontFamily: fontBody,
     paddingTop: style.paddingTop,
@@ -462,7 +470,7 @@ export function FeaturedProduct({
         : 'start';
 
   const detailsPanelShell: CSSProperties = {
-    background: scheme.panelRight,
+    background: detailsResolvedBackground,
     position: detailsSticky ? 'sticky' : 'relative',
     top: detailsSticky ? 24 : undefined,
     order: mediaOnLeft ? 1 : 0,
@@ -473,12 +481,20 @@ export function FeaturedProduct({
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
-    borderRadius: detailsBorderStyle === 'solid' ? detailsCornerRadius : undefined,
+    borderRadius:
+      detailsBorderStyle === 'solid'
+        ? detailsCornerRadius
+        : detailsCornerRadius > 0
+          ? detailsCornerRadius
+          : undefined,
     border:
       detailsBorderStyle === 'solid'
         ? `${detailsBorderThickness}px solid rgba(0,0,0,${Math.min(100, Math.max(0, detailsBorderOpacity)) / 100})`
         : undefined,
-    overflow: detailsBorderStyle === 'solid' && detailsCornerRadius > 0 ? 'hidden' : undefined,
+    overflow:
+      (detailsBorderStyle === 'solid' || detailsShowBgImage) && detailsCornerRadius > 0
+        ? 'hidden'
+        : undefined,
     minHeight: !detailsHeightFill && detailsShowBgImage ? 360 : undefined,
   };
 
@@ -516,8 +532,8 @@ export function FeaturedProduct({
   };
 
   const reviewStarsStyle = useMemo(
-    () => readFeaturedProductReviewStarsStyle(config, reviewStarsSettingsBase),
-    [config, reviewStarsSettingsBase]
+    () => readFeaturedProductReviewStarsStyle(config, reviewStarsSettingsBase, scheme.color, themeAccent),
+    [config, reviewStarsSettingsBase, scheme.color, themeAccent]
   );
 
   const reviewStarsTypographyStyle = useMemo(
@@ -887,7 +903,7 @@ export function FeaturedProduct({
                   rating={rating}
                   reviewCount={reviewCount}
                   starColor={reviewStarsStyle.style === 'shaded' ? '#111827' : scheme.color}
-                  countColor={reviewStarsStyle.color === 'link' ? themeAccent : scheme.color}
+                  countColor={reviewStarsStyle.textColor}
                   shaded={reviewStarsStyle.style === 'shaded'}
                   showReviewCount={reviewStarsStyle.reviewCount}
                   typography={reviewStarsTypographyStyle}

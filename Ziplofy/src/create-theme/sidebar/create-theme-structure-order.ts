@@ -3,6 +3,12 @@ import {
   collectionLinkBlockPaths,
 } from '../../utils/collection-links-spotlight-sidebar.util';
 import { featuredProductStructureOrder } from '../../utils/featured-product-sidebar.util';
+import { productHighlightStructureOrder } from '../../utils/product-highlight-sidebar.util';
+import { productHotspotsStructureOrder } from '../../utils/product-hotspots-sidebar.util';
+import {
+  recommendedProductsLayoutStructureOrder,
+  recommendedProductsTemplateStructureOrder,
+} from '../../utils/recommended-products-sidebar.util';
 import { faqLayoutStructureOrder, faqStructureOrder } from '../../utils/faq-sidebar.util';
 import {
   iconsWithTextLayoutStructureOrder,
@@ -17,6 +23,10 @@ import {
   richTextStructureOrder,
 } from '../../utils/rich-text-sidebar.util';
 import {
+  textMarqueeLayoutStructureOrder,
+  textMarqueeStructureOrder,
+} from '../../utils/text-marquee-sidebar.util';
+import {
   contactFormLayoutStructureOrder,
   contactFormStructureOrder,
 } from '../utils/contact-form-sidebar.util';
@@ -25,14 +35,39 @@ import {
   emailSignupStructureOrder,
 } from '../utils/email-signup-sidebar.util';
 import {
+  editorialJumboLayoutStructureOrder,
+  editorialJumboStructureOrder,
+} from '../utils/editorial-jumbo-sidebar.util';
+import {
+  editorialLayoutStructureOrder,
+  editorialStructureOrder,
+} from '../utils/editorial-sidebar.util';
+import {
+  storytellingCarouselLayoutStructureOrder,
+  storytellingCarouselStructureOrder,
+} from '../utils/storytelling-carousel-sidebar.util';
+import {
   imageCompareLayoutStructureOrder,
   imageCompareStructureOrder,
 } from '../utils/image-compare-sidebar.util';
+import {
+  imageWithTextLayoutStructureOrder,
+  imageWithTextStructureOrder,
+} from '../utils/image-with-text-sidebar.util';
 import {
   storytellingVideoLayoutStructureOrder,
   storytellingVideoStructureOrder,
 } from '../utils/storytelling-video-sidebar.util';
 import { bottomAlignedHeroStructureOrder } from '../../utils/hero-bottom-aligned.util';
+import {
+  collectionListStructureOrder,
+  isCollectionListSectionInConfig,
+  isCollectionListSectionType,
+} from '../utils/collection-list-sidebar.util';
+import {
+  featuredCollectionStructureOrder,
+  isFeaturedCollectionSectionType,
+} from '../utils/featured-collection-sidebar.util';
 
 function collectionLinksSpotlightStructureOrder(
   prefix: string,
@@ -278,6 +313,21 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    if (isHero && catalogVariant === 'hero-marquee') {
+      const prefix = `template:${tplId}:${secId}`;
+      out[listKey] = [
+        `${prefix}:add-block`,
+        `${prefix}:group:spacer:spacer`,
+        `${prefix}:marquee`,
+        `${prefix}:block:primary_button`,
+      ];
+      out[listKeyBlockChildren(`${prefix}:marquee`)] = [
+        `${prefix}:marquee:inner-add-block`,
+        `${prefix}:group:marquee:text`,
+      ];
+      continue;
+    }
+
     const isCollectionLinks =
       (sec as { type?: string }).type === 'collection-links-spotlight' ||
       catalogVariant === 'collection-links-spotlight' ||
@@ -298,12 +348,71 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    const isCollectionList =
+      isCollectionListSectionType((sec as { type?: string }).type, catalogVariant ?? '');
+    if (isCollectionList) {
+      Object.assign(out, collectionListStructureOrder(`template:${tplId}:${secId}`, listKey));
+      continue;
+    }
+
+    const isFeaturedCollection = isFeaturedCollectionSectionType(
+      (sec as { type?: string }).type,
+      catalogVariant ?? ''
+    );
+    if (isFeaturedCollection) {
+      Object.assign(
+        out,
+        featuredCollectionStructureOrder(`template:${tplId}:${secId}`, listKey)
+      );
+      continue;
+    }
+
     const isFeaturedProduct = catalogVariant === 'featured-product';
     if (isFeaturedProduct) {
       const sectionPrefix = `template:${tplId}:${secId}`;
       Object.assign(
         out,
         featuredProductStructureOrder(sectionPrefix, listKey, config, tplId, secId)
+      );
+      continue;
+    }
+
+    const isProductHighlight = catalogVariant === 'product-highlight';
+    if (isProductHighlight) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(
+        out,
+        productHighlightStructureOrder(sectionPrefix, listKey, config, tplId, secId)
+      );
+      continue;
+    }
+
+    const isProductHotspots =
+      (sec as { type?: string }).type === 'product-hotspots' ||
+      catalogVariant === 'product-hotspots';
+    if (isProductHotspots) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(
+        out,
+        productHotspotsStructureOrder(
+          sectionPrefix,
+          listKey,
+          `templates.${tplId}.sections.${secId}.settings`,
+          config,
+          ['templates', tplId, 'sections', secId, 'block_order']
+        )
+      );
+      continue;
+    }
+
+    const isRecommendedProducts =
+      (sec as { type?: string }).type === 'recommended-products' ||
+      catalogVariant === 'recommended-products';
+    if (isRecommendedProducts) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(
+        out,
+        recommendedProductsTemplateStructureOrder(sectionPrefix, listKey, tplId, secId)
       );
       continue;
     }
@@ -339,6 +448,14 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    const isTextMarquee =
+      (sec as { type?: string }).type === 'text-marquee' || catalogVariant === 'text-marquee';
+    if (isTextMarquee) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, textMarqueeStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
     const isStorytellingVideo =
       (sec as { type?: string }).type === 'storytelling-video' || catalogVariant === 'video';
     if (isStorytellingVideo) {
@@ -368,6 +485,47 @@ export function readStructureOrderFromConfig(
     if (isImageCompare) {
       const sectionPrefix = `template:${tplId}:${secId}`;
       Object.assign(out, imageCompareStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isEditorialJumbo =
+      (sec as { type?: string }).type === 'editorial-jumbo' || catalogVariant === 'editorial-jumbo';
+    if (isEditorialJumbo) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, editorialJumboStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isEditorial = (sec as { type?: string }).type === 'editorial' || catalogVariant === 'editorial';
+    if (isEditorial) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, editorialStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isStorytellingCarousel =
+      (sec as { type?: string }).type === 'storytelling-carousel' ||
+      catalogVariant === 'storytelling-carousel';
+    if (isStorytellingCarousel) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(
+        out,
+        storytellingCarouselStructureOrder(
+          sectionPrefix,
+          listKey,
+          config,
+          ['templates', tplId, 'sections', secId, 'blocks'],
+          ['templates', tplId, 'sections', secId, 'block_order']
+        )
+      );
+      continue;
+    }
+
+    const isImageWithText =
+      (sec as { type?: string }).type === 'image-with-text' || catalogVariant === 'image-with-text';
+    if (isImageWithText) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, imageWithTextStructureOrder(sectionPrefix, listKey));
       continue;
     }
 
@@ -457,6 +615,15 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    const isTextMarquee = secType === 'text-marquee' || catalogVariant === 'text-marquee';
+    if (isTextMarquee) {
+      Object.assign(
+        out,
+        textMarqueeLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+      );
+      continue;
+    }
+
     const isStorytellingVideo = secType === 'storytelling-video' || catalogVariant === 'video';
     if (isStorytellingVideo) {
       Object.assign(
@@ -490,6 +657,78 @@ export function readStructureOrderFromConfig(
         out,
         imageCompareLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
       );
+      continue;
+    }
+
+    const isEditorialJumbo = secType === 'editorial-jumbo' || catalogVariant === 'editorial-jumbo';
+    if (isEditorialJumbo) {
+      Object.assign(
+        out,
+        editorialJumboLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+      );
+      continue;
+    }
+
+    const isEditorial = secType === 'editorial' || catalogVariant === 'editorial';
+    if (isEditorial) {
+      Object.assign(out, editorialLayoutStructureOrder(`layout:${layoutKey}`, secListKey));
+      continue;
+    }
+
+    const isStorytellingCarousel =
+      secType === 'storytelling-carousel' || catalogVariant === 'storytelling-carousel';
+    if (isStorytellingCarousel) {
+      Object.assign(
+        out,
+        storytellingCarouselLayoutStructureOrder(
+          `layout:${layoutKey}`,
+          secListKey,
+          config,
+          layoutKey
+        )
+      );
+      continue;
+    }
+
+    const isImageWithText = secType === 'image-with-text' || catalogVariant === 'image-with-text';
+    if (isImageWithText) {
+      Object.assign(
+        out,
+        imageWithTextLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+      );
+      continue;
+    }
+
+    const isProductHotspots =
+      secType === 'product-hotspots' || catalogVariant === 'product-hotspots';
+    if (isProductHotspots) {
+      Object.assign(
+        out,
+        productHotspotsStructureOrder(
+          `layout:${layoutKey}`,
+          secListKey,
+          `sections.${layoutKey}.settings`,
+          config,
+          ['sections', layoutKey, 'block_order']
+        )
+      );
+      continue;
+    }
+
+    const isRecommendedProducts =
+      secType === 'recommended-products' || catalogVariant === 'recommended-products';
+    if (isRecommendedProducts) {
+      Object.assign(
+        out,
+        recommendedProductsLayoutStructureOrder(`layout:${layoutKey}`, secListKey, layoutKey)
+      );
+      continue;
+    }
+
+    const layoutCatalogVariant =
+      typeof catalogVariant === 'string' ? catalogVariant : '';
+    if (isCollectionListSectionType(secType, layoutCatalogVariant)) {
+      Object.assign(out, collectionListStructureOrder(`layout:${layoutKey}`, secListKey));
       continue;
     }
 
@@ -622,7 +861,10 @@ export function applyStructureOrderToConfig(
     if (fieldPaths.length) {
       setNested(config, ['templates', tpl, 'sections', secId, 'settings_field_order'], fieldPaths);
     }
-    if (blockIds.length) {
+    if (
+      blockIds.length &&
+      !isCollectionListSectionInConfig(config, { tplId: tpl, secId, layout: false })
+    ) {
       setNested(config, ['templates', tpl, 'sections', secId, 'block_order'], blockIds);
     }
     return;
@@ -640,7 +882,10 @@ export function applyStructureOrderToConfig(
     if (fieldPaths.length) {
       setNested(config, ['sections', layoutKey, 'settings_field_order'], fieldPaths);
     }
-    if (blockIds.length) {
+    if (
+      blockIds.length &&
+      !isCollectionListSectionInConfig(config, { secId: layoutKey, layout: true })
+    ) {
       setNested(config, ['sections', layoutKey, 'block_order'], blockIds);
     }
     return;
@@ -649,6 +894,9 @@ export function applyStructureOrderToConfig(
   const layoutMatch = listKey.match(/^blocks:layout:(.+)$/);
   if (layoutMatch) {
     const layoutKey = layoutMatch[1];
+    if (isCollectionListSectionInConfig(config, { secId: layoutKey, layout: true })) {
+      return;
+    }
     const blockIds = orderedNodeIds
       .map(blockIdFromNodeId)
       .filter((id): id is string => Boolean(id));
@@ -669,24 +917,31 @@ export function reorderSidebarChildren(
   const order = itemOrder[listKey];
   if (!order?.length) return children;
 
-  const pinned = children.filter((c) => c.kind === 'add-block' || c.kind === 'add-section');
-  const sortable = children.filter((c) => isSortableSidebarNode(c));
-  const byId = new Map(sortable.map((n) => [n.id, n]));
+  const byId = new Map(children.map((n) => [n.id, n]));
   const sorted: SidebarNode[] = [];
+  const seen = new Set<string>();
 
   for (const id of order) {
     const node = byId.get(id);
     if (node) {
       sorted.push(node);
-      byId.delete(id);
+      seen.add(id);
     }
   }
-  for (const node of byId.values()) sorted.push(node);
 
-  const pinnedStart = pinned.filter((p) => p.label === 'Add block' && p.id.includes('inner-add-block'));
-  const pinnedEnd = pinned.filter((p) => !pinnedStart.includes(p));
+  const remaining = children.filter((c) => !seen.has(c.id));
+  const orderIncludesAddBlock = order.some((id) => byId.get(id)?.kind === 'add-block');
 
-  return [...pinnedStart, ...sorted, ...pinnedEnd];
+  if (orderIncludesAddBlock) {
+    return [...sorted, ...remaining];
+  }
+
+  const pinned = remaining.filter((c) => c.kind === 'add-block' || c.kind === 'add-section');
+  const pinnedStart = pinned.filter((p) => p.id.includes('inner-add-block'));
+  const pinnedEnd = pinned.filter((p) => !p.id.includes('inner-add-block'));
+  const sortableRemainder = remaining.filter((c) => !pinned.includes(c));
+
+  return [...pinnedStart, ...sorted, ...sortableRemainder, ...pinnedEnd];
 }
 
 export function mergeItemOrder(

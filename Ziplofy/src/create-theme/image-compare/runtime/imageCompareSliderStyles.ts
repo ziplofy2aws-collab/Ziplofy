@@ -21,6 +21,11 @@ const ASPECT_RATIOS: Record<string, string | undefined> = {
   adapt: undefined,
 };
 
+function resolveColorSetting(raw: string, fallback: string): string {
+  if (!raw || raw === 'default') return fallback;
+  return raw;
+}
+
 export type ImageCompareSliderStyle = {
   beforeUrl: string;
   afterUrl: string;
@@ -29,7 +34,8 @@ export type ImageCompareSliderStyle = {
   aspectRatio: string | undefined;
   desktopWidth: string;
   mobileWidthCss: string;
-  inheritColorScheme: boolean;
+  sliderColor: string;
+  sliderInnerColor: string;
   panelBackground: string;
   borderStyle: string;
   borderColor: string;
@@ -63,7 +69,11 @@ export function readImageCompareSliderStyle(
   const mobileWidthMode = cfgString(config, `${settingsBase}.sliderMobileWidth`, 'fill');
   const mobileCustom = cfgNumber(config, `${settingsBase}.sliderMobileCustomWidth`, 100);
 
-  const inheritColorScheme = cfgBool(config, `${settingsBase}.sliderInheritColorScheme`, false);
+  const sliderColorRaw = cfgString(config, `${settingsBase}.sliderColor`, 'default');
+  const sliderInnerColorRaw = cfgString(config, `${settingsBase}.sliderInnerColor`, 'default');
+  const legacyInherit = cfgBool(config, `${settingsBase}.sliderInheritColorScheme`, false);
+  const sliderColor = resolveColorSetting(sliderColorRaw, '#ffffff');
+  const sliderInnerColor = resolveColorSetting(sliderInnerColorRaw, '#ffffff');
   const borderStyle = cfgString(config, `${settingsBase}.sliderBorderStyle`, 'none');
   const cornerRadius = cfgNumber(config, `${settingsBase}.sliderCornerRadius`, 0);
   const paddingTop = cfgNumber(config, `${settingsBase}.sliderPaddingTop`, 0);
@@ -71,7 +81,7 @@ export function readImageCompareSliderStyle(
   const paddingLeft = cfgNumber(config, `${settingsBase}.sliderPaddingLeft`, 0);
   const paddingRight = cfgNumber(config, `${settingsBase}.sliderPaddingRight`, 0);
 
-  const panelBackground = inheritColorScheme ? sectionScheme.comparePanel : '#f4f4f4';
+  const panelBackground = legacyInherit ? sectionScheme.comparePanel : '#f4f4f4';
   const desktopWidth = widthCss(desktopWidthMode, desktopCustom);
   const mobileWidthCss = widthCss(mobileWidthMode, mobileCustom);
   const safeId = sectionId.replace(/[^a-z0-9_-]/gi, '-');
@@ -101,7 +111,8 @@ export function readImageCompareSliderStyle(
     aspectRatio,
     desktopWidth,
     mobileWidthCss,
-    inheritColorScheme,
+    sliderColor,
+    sliderInnerColor,
     panelBackground,
     borderStyle,
     borderColor: `${sectionScheme.muted}33`,

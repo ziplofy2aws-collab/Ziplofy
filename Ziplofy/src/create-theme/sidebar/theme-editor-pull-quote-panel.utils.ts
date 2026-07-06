@@ -5,6 +5,7 @@ export const PULL_QUOTE_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
   'Custom CSS',
 ] as const;
@@ -21,9 +22,10 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
-  backgroundOverlay: 25,
+  backgroundColor: 23,
+  backgroundOverlay: 24,
+  borderStyle: 26,
+  cornerRadius: 27,
   paddingTop: 30,
   paddingBottom: 31,
   customCss: 40,
@@ -47,8 +49,9 @@ export function sortPullQuotePanelFields(fields: EditorFieldDef[]): EditorFieldD
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

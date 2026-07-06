@@ -5,6 +5,7 @@ export const RICH_TEXT_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
   'Custom CSS',
 ] as const;
@@ -21,9 +22,10 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
-  backgroundOverlay: 25,
+  backgroundColor: 23,
+  backgroundOverlay: 24,
+  borderStyle: 26,
+  cornerRadius: 27,
   paddingTop: 30,
   paddingBottom: 31,
   customCss: 40,
@@ -47,8 +49,9 @@ export function sortRichTextPanelFields(fields: EditorFieldDef[]): EditorFieldDe
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -117,7 +120,11 @@ export function isRichTextBlockField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
   if (!field.path.includes('rich_text') || field.path.includes('.blocks.')) return false;
   if (key === 'heading' || key === 'text') return true;
-  return key === 'buttonLabel' || key === 'buttonUrl';
+  return (
+    RICH_TEXT_BUTTON_KEYS.has(key) ||
+    RICH_TEXT_TEXT_KEYS.has(key) ||
+    RICH_TEXT_HEADING_KEYS.has(key)
+  );
 }
 
 export function isRichTextBlockFieldsOnly(fields: EditorFieldDef[]): boolean {
@@ -140,6 +147,101 @@ export function richTextBlockFieldDefs(
         group: 'Content',
         sidebar: true,
       },
+      {
+        path: s('headingWidth'),
+        type: 'select',
+        label: 'Width',
+        group: 'Layout',
+        widget: 'segmented',
+        options: [
+          { value: 'fit', label: 'Fit' },
+          { value: 'fill', label: 'Fill' },
+        ],
+      },
+      {
+        path: s('headingMaxWidth'),
+        type: 'select',
+        label: 'Max width',
+        group: 'Layout',
+        widget: 'select-inline',
+        options: [
+          { value: 'narrow', label: 'Narrow' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'wide', label: 'Wide' },
+        ],
+      },
+      {
+        path: s('headingTypographyPreset'),
+        type: 'select',
+        label: 'Preset',
+        group: 'Typography',
+        widget: 'select-inline',
+        description: 'Edit presets in theme settings',
+        options: [
+          { value: 'default', label: 'Default' },
+          { value: 'heading-1', label: 'Heading 1' },
+          { value: 'heading-2', label: 'Heading 2' },
+          { value: 'heading-3', label: 'Heading 3' },
+          { value: 'heading-4', label: 'Heading 4' },
+        ],
+      },
+      {
+        path: s('headingColor'),
+        type: 'color',
+        label: 'Text color',
+        group: 'Appearance',
+        widget: 'color',
+      },
+      {
+        path: s('headingBackgroundEnabled'),
+        type: 'boolean',
+        label: 'Background',
+        group: 'Appearance',
+      },
+      {
+        path: s('headingPaddingTop'),
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+      },
+      {
+        path: s('headingPaddingBottom'),
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+      },
+      {
+        path: s('headingPaddingLeft'),
+        type: 'number',
+        label: 'Left',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+      },
+      {
+        path: s('headingPaddingRight'),
+        type: 'number',
+        label: 'Right',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+      },
     ];
   }
   if (blockKind === 'text') {
@@ -151,6 +253,101 @@ export function richTextBlockFieldDefs(
         widget: 'richtext',
         group: 'Content',
         sidebar: true,
+      },
+      {
+        path: s('textWidth'),
+        type: 'select',
+        label: 'Width',
+        group: 'Layout',
+        widget: 'segmented',
+        options: [
+          { value: 'fit', label: 'Fit' },
+          { value: 'fill', label: 'Fill' },
+        ],
+      },
+      {
+        path: s('textMaxWidth'),
+        type: 'select',
+        label: 'Max width',
+        group: 'Layout',
+        widget: 'select-inline',
+        options: [
+          { value: 'narrow', label: 'Narrow' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'wide', label: 'Wide' },
+        ],
+      },
+      {
+        path: s('textTypographyPreset'),
+        type: 'select',
+        label: 'Preset',
+        group: 'Typography',
+        widget: 'select-inline',
+        description: 'Edit presets in theme settings',
+        options: [
+          { value: 'default', label: 'Default' },
+          { value: 'body', label: 'Body' },
+          { value: 'heading-6', label: 'Heading 6' },
+          { value: 'heading-5', label: 'Heading 5' },
+          { value: 'heading-4', label: 'Heading 4' },
+        ],
+      },
+      {
+        path: s('textColor'),
+        type: 'color',
+        label: 'Text color',
+        group: 'Appearance',
+        widget: 'color',
+      },
+      {
+        path: s('textBackgroundEnabled'),
+        type: 'boolean',
+        label: 'Background',
+        group: 'Appearance',
+      },
+      {
+        path: s('textPaddingTop'),
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+      },
+      {
+        path: s('textPaddingBottom'),
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+      },
+      {
+        path: s('textPaddingLeft'),
+        type: 'number',
+        label: 'Left',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+      },
+      {
+        path: s('textPaddingRight'),
+        type: 'number',
+        label: 'Right',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
       },
     ];
   }
@@ -170,7 +367,139 @@ export function richTextBlockFieldDefs(
       sidebar: true,
       placeholder: 'Paste a link or search',
     },
+    {
+      path: s('buttonOpenInNewTab'),
+      type: 'boolean',
+      label: 'Open link in new tab',
+      group: 'Content',
+    },
+    {
+      path: s('buttonStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Appearance',
+      widget: 'select-inline',
+      options: [
+        { value: 'primary', label: 'Primary' },
+        { value: 'secondary', label: 'Secondary' },
+        { value: 'link', label: 'Link' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    },
+    {
+      path: s('buttonCustomBackground'),
+      type: 'color',
+      label: 'Background',
+      group: 'Appearance',
+      widget: 'color',
+    },
+    {
+      path: s('buttonCustomText'),
+      type: 'color',
+      label: 'Text color',
+      group: 'Appearance',
+      widget: 'color',
+    },
+    {
+      path: s('buttonDesktopWidth'),
+      type: 'select',
+      label: 'Desktop width',
+      group: 'Size',
+      widget: 'segmented',
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    },
+    {
+      path: s('buttonDesktopCustomWidth'),
+      type: 'number',
+      label: 'Custom width',
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+    },
+    {
+      path: s('buttonMobileWidth'),
+      type: 'select',
+      label: 'Mobile width',
+      group: 'Size',
+      widget: 'segmented',
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    },
+    {
+      path: s('buttonMobileCustomWidth'),
+      type: 'number',
+      label: 'Custom width',
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+    },
   ];
+}
+
+const RICH_TEXT_BUTTON_KEYS = new Set([
+  'buttonLabel',
+  'buttonUrl',
+  'buttonOpenInNewTab',
+  'buttonStyle',
+  'buttonCustomBackground',
+  'buttonCustomText',
+  'buttonDesktopWidth',
+  'buttonDesktopCustomWidth',
+  'buttonMobileWidth',
+  'buttonMobileCustomWidth',
+]);
+
+export function isRichTextButtonPanelFields(fields: EditorFieldDef[]): boolean {
+  if (!fields.length) return false;
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  return keys.has('buttonLabel') && keys.has('buttonUrl');
+}
+
+const RICH_TEXT_TEXT_KEYS = new Set([
+  'textWidth',
+  'textMaxWidth',
+  'textTypographyPreset',
+  'textColor',
+  'textBackgroundEnabled',
+  'textPaddingTop',
+  'textPaddingBottom',
+  'textPaddingLeft',
+  'textPaddingRight',
+]);
+
+export function isRichTextTextPanelFields(fields: EditorFieldDef[]): boolean {
+  if (!fields.length) return false;
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  return keys.has('text') && keys.has('textWidth');
+}
+
+const RICH_TEXT_HEADING_KEYS = new Set([
+  'headingWidth',
+  'headingMaxWidth',
+  'headingTypographyPreset',
+  'headingColor',
+  'headingBackgroundEnabled',
+  'headingPaddingTop',
+  'headingPaddingBottom',
+  'headingPaddingLeft',
+  'headingPaddingRight',
+]);
+
+export function isRichTextHeadingPanelFields(fields: EditorFieldDef[]): boolean {
+  if (!fields.length) return false;
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  return keys.has('heading') && keys.has('headingWidth');
 }
 
 export function richTextBlockFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {

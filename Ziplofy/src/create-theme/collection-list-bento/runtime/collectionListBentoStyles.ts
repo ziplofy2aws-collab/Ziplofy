@@ -1,5 +1,6 @@
 import { getThemeConfigValue } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/structureOrder';
 import type { CollectionIllustrationVariant } from './CollectionBentoIllustrations';
 
@@ -26,6 +27,7 @@ export type CollectionTileData = {
 
 export type CollectionListBentoLayout = {
   scheme: CollectionListBentoScheme;
+  sectionBackground: string;
   heading: string;
   cardsLayoutType: 'bento' | 'carousel' | 'editorial' | 'grid';
   carouselOnMobile: boolean;
@@ -89,11 +91,17 @@ export function readCollectionListBentoLayout(
   settingsBase: string
 ): CollectionListBentoLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  const scheme = SCHEMES[schemeKey] ?? SCHEMES['scheme-1'];
   const cardsLayout = cfgString(config, `${settingsBase}.cardsLayoutType`);
   const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'page');
+  const backgroundRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
 
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme,
+    sectionBackground:
+      !backgroundRaw.trim() || backgroundRaw === 'default'
+        ? scheme.background
+        : resolveThemePaletteColorSetting(config, backgroundRaw, 0, scheme.background),
     heading: cfgString(config, `${settingsBase}.heading`, 'Shop by collection'),
     cardsLayoutType:
       cardsLayout === 'carousel' || cardsLayout === 'editorial' || cardsLayout === 'grid'

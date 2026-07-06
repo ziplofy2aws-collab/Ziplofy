@@ -96,6 +96,42 @@ export function applyHeroMarqueePreset(section: Record<string, unknown>, blocksP
   settings.catalogVariant = 'hero-marquee';
   settings.marqueeText = HERO_MARQUEE_TEXT;
   settings.subtitle = HERO_MARQUEE_TEXT;
+  // Settings-backed "Text" block inside the Marquee folder (sidebar hierarchy).
+  settings.marqueeTextBlock = {
+    settings: {
+      text: HERO_MARQUEE_TEXT,
+      width: 'fit',
+      maxWidth: 'normal',
+      alignment: 'left',
+      typographyPreset: 'heading-1',
+      font: 'body',
+      fontSize: 'default',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+      textCase: 'default',
+      wrap: 'pretty',
+      textColor: 'default',
+      backgroundEnabled: false,
+      backgroundColor: '#00000026',
+      cornerRadius: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  };
+  // Section-level "Spacer" block defaults.
+  settings.marqueeSpacerUnit = 'pixel';
+  settings.marqueeSpacerHeight = 24;
+  settings.marqueeSpacerCustomMobile = false;
+  settings.marqueeSpacerMobileHeight = 24;
+  // "Marquee" folder block defaults (Motion direction, Background, Padding).
+  settings.marqueeMotionDirection = 'forward';
+  settings.marqueeBackgroundColor = '';
+  settings.marqueeTransparentBg = true;
+  settings.marqueePaddingTop = 24;
+  settings.marqueePaddingBottom = 24;
+  settings.marqueeGap = 24;
   settings.media1Type = 'image';
   // Leave media empty by default so the landscape illustration backdrop renders.
   settings.media1ImageUrl =
@@ -151,6 +187,7 @@ export function applyLargeLogoPreset(section: Record<string, unknown>, blocksPat
   settings.mediaOverlay = false;
   settings.colorScheme = 'scheme-large-logo';
   settings.backgroundMedia = 'none';
+  settings.backgroundColor = '';
   settings.backgroundImageUrl = '';
   settings.borderStyle = 'none';
   settings.cornerRadius = 0;
@@ -259,6 +296,6 @@ export function defaultHeroBlockOrder(catalogVariant: string): string[] {
     case 'hero-bottom-aligned':
       return ['content_group'];
     default:
-      return ['heading', 'primary_button'];
+      return ['text_1', 'text_2', 'primary_button'];
   }
 }

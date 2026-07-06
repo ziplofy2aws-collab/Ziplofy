@@ -92,7 +92,8 @@ export function applyFeaturedCollectionCatalogPreset(
   header.titleBackgroundEnabled = header.titleBackgroundEnabled ?? false;
   header.titleBackgroundColor = header.titleBackgroundColor ?? '#00000026';
   header.titleCornerRadius = header.titleCornerRadius ?? 0;
-  header.titleTypographyPreset = header.titleTypographyPreset ?? 'heading-2';
+  header.titleTypographyPreset = header.titleTypographyPreset ?? 'heading-3';
+  header.titleColor = header.titleColor ?? 'default';
   header.viewAllOpenInNewTab = header.viewAllOpenInNewTab ?? false;
   header.viewAllStyle = header.viewAllStyle ?? 'link';
   header.viewAllLinkTextColor = header.viewAllLinkTextColor ?? 'default';
@@ -111,9 +112,10 @@ export function applyFeaturedCollectionCatalogPreset(
   }
 
   const card = (blocks.product_card?.settings ?? {}) as Record<string, unknown>;
-  card.mediaAspectRatio = card.mediaAspectRatio ?? '1/1';
-  card.productTitleTypographyPreset = card.productTitleTypographyPreset ?? 'body';
-  card.priceTypographyPreset = card.priceTypographyPreset ?? 'body';
+  card.mediaAspectRatio = card.mediaAspectRatio ?? 'auto';
+  card.productTitleWidth = card.productTitleWidth ?? 'fit';
+  card.productTitleTypographyPreset = card.productTitleTypographyPreset ?? 'paragraph';
+  card.priceTypographyPreset = card.priceTypographyPreset ?? 'heading-6';
   if (blocks.product_card) {
     blocks.product_card.settings = card;
   }

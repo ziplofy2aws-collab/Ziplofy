@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { EditorBlock, EditorField } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
-import { readTextBlockLayoutStyle, readTextBlockStyle } from '../../runtime/shared/textBlockStyles';
+import { readTextBlockLayoutStyle, readTextBlockStyle, type TextBlockStyleDefaults } from '../../runtime/shared/textBlockStyles';
+import {
+  collectionHeaderResponsiveCssForSelector,
+  readCollectionHeaderLayout,
+} from '../../runtime/shared/collectionHeaderStyles';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
-import { cfgString } from '../../runtime/shared/config';
+import { cfgBool, cfgString } from '../../runtime/shared/config';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import {
   CollectionTileIllustration,
@@ -47,46 +51,121 @@ type LayoutProps = SectionRuntimeProps & {
 
 const TILE_BG = '#ececec';
 
-function CollectionListSectionHeading({
+const COLLECTION_LIST_HEADING_TEXT_DEFAULTS: TextBlockStyleDefaults = {
+  width: 'fit',
+  paddingBottom: 16,
+};
+
+const COLLECTION_LIST_HEADING_TEXT_FALLBACK = '<strong>Shop by collection</strong>';
+
+function CollectionListHeaderBlock({
   config,
   settingsBase,
-  layoutGap,
+  editorNodeId,
+  sectionLayoutGap,
   color,
   fontHeading,
   fontBody,
+  scopeClass,
 }: {
   config: Record<string, unknown> | null;
   settingsBase: string;
-  layoutGap: number;
+  editorNodeId: string;
+  sectionLayoutGap: number;
   color: string;
   fontHeading: string;
   fontBody: string;
+  scopeClass: string;
 }) {
+  const headerSettingsBase = `${settingsBase}.headerGroup`;
+  const headerLayout = useMemo(
+    () =>
+      readCollectionHeaderLayout(
+        config,
+        headerSettingsBase,
+        { background: 'transparent', color },
+        color
+      ),
+    [config, headerSettingsBase, color]
+  );
+  const linkUrl = cfgString(config, `${headerSettingsBase}.linkUrl`, '');
+  const openInNewTab = cfgBool(config, `${headerSettingsBase}.openLinkInNewTab`, false);
+  const responsiveCss = useMemo(
+    () =>
+      collectionHeaderResponsiveCssForSelector(
+        `.${scopeClass} [data-cl-header]`,
+        headerLayout.mobileWidth,
+        headerLayout.mobileStack,
+        headerLayout.mobileCustomWidth
+      ),
+    [
+      scopeClass,
+      headerLayout.mobileWidth,
+      headerLayout.mobileStack,
+      headerLayout.mobileCustomWidth,
+    ]
+  );
   const headingTextBase = `${settingsBase}.headingText.settings`;
   const headingHtml =
     cfgString(config, `${headingTextBase}.text`, '') ||
-    cfgString(config, `${settingsBase}.heading`, 'Shop by collection');
+    cfgString(config, `${settingsBase}.heading`, COLLECTION_LIST_HEADING_TEXT_FALLBACK);
   const textStyle = useMemo(
-    () => readTextBlockStyle(config, headingTextBase, { fontHeading, fontBody }, color),
+    () =>
+      readTextBlockStyle(
+        config,
+        headingTextBase,
+        { fontHeading, fontBody },
+        color,
+        COLLECTION_LIST_HEADING_TEXT_DEFAULTS
+      ),
     [config, headingTextBase, fontHeading, fontBody, color]
   );
   const layoutStyle = useMemo(
-    () => readTextBlockLayoutStyle(config, headingTextBase),
+    () => readTextBlockLayoutStyle(config, headingTextBase, COLLECTION_LIST_HEADING_TEXT_DEFAULTS),
     [config, headingTextBase]
   );
 
-  return (
+  const headerNodeId = `${editorNodeId}:block:section_header`;
+  const inner = (
     <EditorField
       fieldPath={`${settingsBase}.heading`}
       label="Text"
       as="div"
-      style={{ margin: `0 0 ${layoutGap}px`, display: 'flex', flexDirection: 'column' }}
+      style={{ display: 'flex', flexDirection: 'column' }}
     >
       <ThemeEditorRichTextContent
         html={headingHtml}
         style={{ ...textStyle, ...layoutStyle, margin: 0 }}
       />
     </EditorField>
+  );
+
+  return (
+    <>
+      {responsiveCss ? <style>{responsiveCss}</style> : null}
+      <EditorBlock nodeId={headerNodeId} label="Header">
+        <div
+          data-cl-header=""
+          style={{
+            ...(headerLayout.style as CSSProperties),
+            marginBottom: sectionLayoutGap,
+          }}
+        >
+          {linkUrl.trim() ? (
+            <a
+              href={linkUrl}
+              target={openInNewTab ? '_blank' : undefined}
+              rel={openInNewTab ? 'noopener noreferrer' : undefined}
+              style={{ color: 'inherit', textDecoration: 'none', display: 'contents' }}
+            >
+              {inner}
+            </a>
+          ) : (
+            inner
+          )}
+        </div>
+      </EditorBlock>
+    </>
   );
 }
 
@@ -185,7 +264,7 @@ function BentoTile({
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
-    ...collectionListCardShellStyle(cardStyle),
+    ...collectionListCardShellStyle(cardStyle, config),
     background: TILE_BG,
   };
 
@@ -254,6 +333,7 @@ export function CollectionListBentoLayoutView({
   templateId = 'index',
   placement = 'template',
   settingsBase,
+  editorNodeId,
 }: LayoutProps) {
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
@@ -294,13 +374,15 @@ export function CollectionListBentoLayoutView({
       {collectionListBentoMobileCarouselCss(sectionId, layoutStyle.carouselOnMobile) ? (
         <style>{collectionListBentoMobileCarouselCss(sectionId, layoutStyle.carouselOnMobile)}</style>
       ) : null}
-      <CollectionListSectionHeading
+      <CollectionListHeaderBlock
         config={config}
         settingsBase={settingsBase}
-        layoutGap={layoutStyle.layoutGap}
+        editorNodeId={editorNodeId}
+        sectionLayoutGap={layoutStyle.layoutGap}
         color={layoutStyle.scheme.color}
         fontHeading={fontHeading}
         fontBody={fontBody}
+        scopeClass={scopeClass}
       />
       <div
         className="ziplofy-bento-grid"
@@ -345,6 +427,7 @@ export function CollectionListGridLayoutView({
   templateId = 'index',
   placement = 'template',
   settingsBase,
+  editorNodeId,
 }: LayoutProps) {
   const config = useThemeConfig();
   const { maxWidth } = useThemeLayout();
@@ -401,13 +484,15 @@ export function CollectionListGridLayoutView({
           ${scopedCollectionListGridCss(sectionId, style.customCss)}
         `}
       </style>
-      <CollectionListSectionHeading
+      <CollectionListHeaderBlock
         config={config}
         settingsBase={settingsBase}
-        layoutGap={style.layoutGap}
+        editorNodeId={editorNodeId}
+        sectionLayoutGap={style.layoutGap}
         color={style.scheme.color}
         fontHeading={fontHeading}
         fontBody={fontBody}
+        scopeClass={scopeClass}
       />
       <div
         data-grid-track
@@ -443,7 +528,7 @@ export function CollectionListGridLayoutView({
                       alignItems: 'center',
                       justifyContent: 'center',
                       ...(cardImageStyle.imageRatio === 'adapt' ? { aspectRatio: '1 / 1' } : {}),
-                      ...collectionListCardShellStyle(cardStyle),
+                      ...collectionListCardShellStyle(cardStyle, config),
                     }}
                   >
                     {cardStyle.placement === 'on_image' ? (
@@ -522,6 +607,7 @@ export function CollectionListCarouselLayoutView({
   templateId = 'index',
   placement = 'template',
   settingsBase,
+  editorNodeId,
 }: LayoutProps) {
   const config = useThemeConfig();
   const { maxWidth } = useThemeLayout();
@@ -569,13 +655,15 @@ export function CollectionListCarouselLayoutView({
           ${scopedCollectionListCarouselCss(sectionId, style.customCss)}
         `}
       </style>
-      <CollectionListSectionHeading
+      <CollectionListHeaderBlock
         config={config}
         settingsBase={settingsBase}
-        layoutGap={style.layoutGap}
+        editorNodeId={editorNodeId}
+        sectionLayoutGap={style.layoutGap}
         color={style.scheme.color}
         fontHeading={fontHeading}
         fontBody={fontBody}
+        scopeClass={scopeClass}
       />
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         {showNav ? (
@@ -629,7 +717,7 @@ export function CollectionListCarouselLayoutView({
                         justifyContent: 'center',
                         marginBottom: cardStyle.placement === 'below_image' ? 0 : 10,
                         ...(cardImageStyle.imageRatio === 'adapt' ? { aspectRatio: '1 / 1' } : {}),
-                        ...collectionListCardShellStyle(cardStyle),
+                        ...collectionListCardShellStyle(cardStyle, config),
                       }}
                     >
                       {cardStyle.placement === 'on_image' ? (
@@ -679,6 +767,7 @@ export function CollectionListEditorialLayoutView({
   templateId = 'index',
   placement = 'template',
   settingsBase,
+  editorNodeId,
 }: LayoutProps) {
   const config = useThemeConfig();
   const { maxWidth } = useThemeLayout();
@@ -739,13 +828,15 @@ export function CollectionListEditorialLayoutView({
           ${scopedCollectionListEditorialCss(sectionId, layoutStyle.customCss)}
         `}
       </style>
-      <CollectionListSectionHeading
+      <CollectionListHeaderBlock
         config={config}
         settingsBase={settingsBase}
-        layoutGap={Math.min(layoutStyle.layoutGap, 48)}
+        editorNodeId={editorNodeId}
+        sectionLayoutGap={Math.min(layoutStyle.layoutGap, 48)}
         color={layoutStyle.scheme.color}
         fontHeading={fontHeading}
         fontBody={fontBody}
+        scopeClass={scopeClass}
       />
       <div
         data-editorial-grid

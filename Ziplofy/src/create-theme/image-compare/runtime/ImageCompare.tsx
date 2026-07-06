@@ -181,31 +181,51 @@ export function ImageCompare({
         />
       ) : null}
       <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
-        <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
-          {heading}
-        </EditorField>
-        <EditorField fieldPath={`${settingsBase}.subheading`} label="Subheading" as="p" style={subheadingStyle}>
-          {subheading}
-        </EditorField>
+        <EditorBlock
+          nodeId={`${editorNodeId}:block:content:nested:text:nested:heading`}
+          label="Heading"
+        >
+          <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
+            {heading}
+          </EditorField>
+        </EditorBlock>
+        <EditorBlock
+          nodeId={`${editorNodeId}:block:content:nested:text:nested:subheading`}
+          label="Subheading"
+        >
+          <EditorField fieldPath={`${settingsBase}.subheading`} label="Subheading" as="p" style={subheadingStyle}>
+            {subheading}
+          </EditorField>
+        </EditorBlock>
         <div style={buttonsRow}>
-          <EditorField fieldPath={`${settingsBase}.button1Label`} label="Button" as="span">
-            {button1Url ? (
-              <Link to={button1Url} style={buttonBase}>
-                {button1Label}
-              </Link>
-            ) : (
-              <span style={buttonBase}>{button1Label}</span>
-            )}
-          </EditorField>
-          <EditorField fieldPath={`${settingsBase}.button2Label`} label="Button" as="span">
-            {button2Url ? (
-              <Link to={button2Url} style={buttonBase}>
-                {button2Label}
-              </Link>
-            ) : (
-              <span style={buttonBase}>{button2Label}</span>
-            )}
-          </EditorField>
+          <EditorBlock
+            nodeId={`${editorNodeId}:block:content:nested:buttons:nested:button_1`}
+            label="Button"
+          >
+            <EditorField fieldPath={`${settingsBase}.button1Label`} label="Button" as="span">
+              {button1Url ? (
+                <Link to={button1Url} style={buttonBase}>
+                  {button1Label}
+                </Link>
+              ) : (
+                <span style={buttonBase}>{button1Label}</span>
+              )}
+            </EditorField>
+          </EditorBlock>
+          <EditorBlock
+            nodeId={`${editorNodeId}:block:content:nested:buttons:nested:button_2`}
+            label="Button"
+          >
+            <EditorField fieldPath={`${settingsBase}.button2Label`} label="Button" as="span">
+              {button2Url ? (
+                <Link to={button2Url} style={buttonBase}>
+                  {button2Label}
+                </Link>
+              ) : (
+                <span style={buttonBase}>{button2Label}</span>
+              )}
+            </EditorField>
+          </EditorBlock>
         </div>
       </div>
     </>
@@ -237,7 +257,7 @@ export function ImageCompare({
     );
 
   const comparePanel: CSSProperties = {
-    background: sliderStyle.inheritColorScheme ? scheme.comparePanel : 'transparent',
+    background: 'transparent',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -253,6 +273,8 @@ export function ImageCompare({
         afterUrl={sliderStyle.afterUrl || undefined}
         direction={sliderStyle.direction}
         textOnImages={sliderStyle.textOnImages}
+        sliderColor={sliderStyle.sliderColor}
+        sliderInnerColor={sliderStyle.sliderInnerColor}
         wrapStyle={sliderStyle.wrap}
         mobileClass={sliderStyle.mobileClass}
         paddingTop={0}

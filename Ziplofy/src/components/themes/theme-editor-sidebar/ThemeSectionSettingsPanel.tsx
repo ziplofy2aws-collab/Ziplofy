@@ -89,6 +89,30 @@ import {
   productHighlightSiblingPath,
 } from './theme-editor-product-highlight-panel.utils';
 import {
+  PRODUCT_HIGHLIGHT_IMAGE_PANEL_GROUP_ORDER,
+  PRODUCT_HIGHLIGHT_PRICE_PANEL_GROUP_ORDER,
+  PRODUCT_HIGHLIGHT_SWATCHES_PANEL_GROUP_ORDER,
+  PRODUCT_HIGHLIGHT_TITLE_PANEL_GROUP_ORDER,
+  groupProductHighlightProductImagePanelFields,
+  groupProductHighlightProductPricePanelFields,
+  groupProductHighlightProductSwatchesPanelFields,
+  groupProductHighlightProductTitlePanelFields,
+  isProductHighlightProductImageNestedNodeId,
+  isProductHighlightProductImagePanelFields,
+  isProductHighlightProductPriceNestedNodeId,
+  isProductHighlightProductPricePanelFields,
+  isProductHighlightProductSwatchesNestedNodeId,
+  isProductHighlightProductSwatchesPanelFields,
+  isProductHighlightProductTitleNestedNodeId,
+  isProductHighlightProductTitlePanelFields,
+} from './theme-editor-product-highlight-product-block-panel.utils';
+import {
+  isProductHighlightMediaBlockNodeId,
+  isProductHighlightMediaPanelFields,
+  isProductHighlightProductBlockNodeId,
+} from './theme-editor-product-highlight-media-block-panel.utils';
+import {
+  FEATURED_PRODUCT_LAYOUT_FIELD_ORDER,
   FEATURED_PRODUCT_PANEL_GROUP_ORDER,
   groupFeaturedProductPanelFields,
   isFeaturedProductSettingsPanelFields,
@@ -3395,7 +3419,7 @@ function FeaturedProductMediaGroupedSettingsPanel({
                 }
                 if (field.type === 'boolean') {
                   return (
-                    <DefaultFieldRow
+                    <ToggleSwitchFieldRow
                       key={field.path}
                       field={field}
                       values={values}
@@ -3458,26 +3482,63 @@ function FeaturedProductMediaGroupedSettingsPanel({
   );
 }
 
-/** Featured product: Product → Layout → Padding → Custom CSS. */
+/** Featured product: Product → Layout → Padding → Theme Settings → Custom CSS. */
 function FeaturedProductGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupFeaturedProductPanelFields(fields), [fields]);
+
+  const renderLayoutField = (field: EditorFieldDef) => {
+    const key = field.path.split('.').pop() ?? '';
+    if (field.widget === 'segmented') {
+      return (
+        <SegmentedFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+      );
+    }
+    if (field.widget === 'slider') {
+      return (
+        <SliderFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+      );
+    }
+    if (field.type === 'boolean') {
+      return (
+        <ToggleSwitchFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+      );
+    }
+    if (key === 'backgroundColor' || field.widget === 'color') {
+      return (
+        <ThemeDefaultColorField
+          key={field.path}
+          label="Background color"
+          path={field.path}
+          values={values}
+          colorPalette={colorPalette}
+          defaultPaletteIndex={0}
+          onFieldChange={onFieldChange}
+        />
+      );
+    }
+    return (
+      <InlineSelectFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+    );
+  };
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {FEATURED_PRODUCT_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        if (!groupFields?.length && label !== 'Theme Settings') return null;
 
         if (label === 'Product') {
-          const productField = groupFields.find((f) => f.path.endsWith('.productId'));
+          const productField = (groupFields ?? []).find((f) => f.path.endsWith('.productId'));
           return (
             <div key={label} className="space-y-1 px-1 py-3">
               {productField ? (
@@ -3488,60 +3549,22 @@ function FeaturedProductGroupedSettingsPanel({
         }
 
         if (label === 'Layout') {
+          const layoutFields = groupFields ?? [];
+          const byKey = (key: string) => layoutFields.find((f) => f.path.endsWith(key));
+          const ordered = FEATURED_PRODUCT_LAYOUT_FIELD_ORDER.map((key) => byKey(key)).filter(
+            (field): field is EditorFieldDef => Boolean(field)
+          );
+          const extras = layoutFields.filter(
+            (f) => !FEATURED_PRODUCT_LAYOUT_FIELD_ORDER.includes(
+              (f.path.split('.').pop() ?? '') as (typeof FEATURED_PRODUCT_LAYOUT_FIELD_ORDER)[number]
+            )
+          );
+
           return (
             <div key={label} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
               <div className="space-y-1">
-                {groupFields.map((field) => {
-                  if (field.widget === 'segmented') {
-                    return (
-                      <SegmentedFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  if (field.widget === 'slider') {
-                    return (
-                      <SliderFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  if (field.type === 'boolean') {
-                    return (
-                      <DefaultFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  if (field.widget === 'color-scheme') {
-                    return (
-                      <ColorSchemeFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  return (
-                    <InlineSelectFieldRow
-                      key={field.path}
-                      field={field}
-                      values={values}
-                      onFieldChange={onFieldChange}
-                    />
-                  );
-                })}
+                {[...ordered, ...extras].map((field) => renderLayoutField(field))}
               </div>
             </div>
           );
@@ -3551,7 +3574,19 @@ function FeaturedProductGroupedSettingsPanel({
           return (
             <HeroPaddingSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Theme Settings') {
+          return (
+            <CollapsibleSettingsGroup
+              key={label}
+              label="Theme Settings"
+              fields={groupFields ?? []}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -3561,7 +3596,7 @@ function FeaturedProductGroupedSettingsPanel({
         if (label === 'Custom CSS') {
           return (
             <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
+              {(groupFields ?? []).map((field) => (
                 <AccordionFieldRow
                   key={field.path}
                   field={field}
@@ -5045,8 +5080,8 @@ function RecommendedProductsGroupedSettingsPanel({
   );
 }
 
-/** Product highlight: Product → Media position → Color scheme → Padding → Theme settings → Custom CSS. */
-function ProductHighlightGroupedSettingsPanel({
+/** Product highlight — Product media: type, image, link, and image position. */
+function ProductHighlightMediaGroupedSettingsPanel({
   fields,
   values,
   onFieldChange,
@@ -5055,13 +5090,338 @@ function ProductHighlightGroupedSettingsPanel({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
+  const pick = (key: string) => fields.find((f) => f.path.endsWith(`.${key}`));
+  const mediaType = pick('mediaType');
+  const imageUrl = pick('imageUrl');
+  const videoUrl = pick('videoUrl');
+  const link = pick('link');
+  const imagePosition = pick('imagePosition');
+  const mediaMode = mediaType ? fieldValueAsString(values, mediaType) || 'image' : 'image';
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <div className="space-y-1 px-1 py-3">
+        {mediaType ? (
+          <SegmentedFieldRow field={mediaType} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {mediaMode === 'video'
+          ? videoUrl
+            ? <DefaultFieldRow field={videoUrl} values={values} onFieldChange={onFieldChange} />
+            : null
+          : imageUrl
+            ? <ImagePickerFieldRow field={imageUrl} values={values} onFieldChange={onFieldChange} />
+            : null}
+        {link ? <LinkFieldRow field={link} values={values} onFieldChange={onFieldChange} /> : null}
+        {imagePosition ? (
+          <SegmentedFieldRow field={imagePosition} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Product highlight — Product group: informational panel only. */
+function ProductHighlightProductGroupedSettingsPanel() {
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays product from parent section.</p>
+    </div>
+  );
+}
+
+/** Product highlight — Product → Title: layout, typography, appearance, and padding. */
+function ProductHighlightProductTitleGroupedSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupProductHighlightProductTitlePanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays title from parent product.</p>
+      {PRODUCT_HIGHLIGHT_TITLE_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'Layout') {
+          const width = groupFields.find((f) => f.path.endsWith('.width'));
+          const maxWidth = groupFields.find((f) => f.path.endsWith('.maxWidth'));
+          const alignment = groupFields.find((f) => f.path.endsWith('.alignment'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {width ? (
+                  <SegmentedFieldRow field={width} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {maxWidth ? (
+                  <InlineSelectFieldRow field={maxWidth} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {alignment ? (
+                  <HeadingAlignmentFieldRow
+                    field={alignment}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Typography') {
+          const preset = groupFields.find((f) => f.path.endsWith('.typographyPreset'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {preset ? (
+                  <div>
+                    <InlineSelectFieldRow field={preset} values={values} onFieldChange={onFieldChange} />
+                    <p className="pb-1 text-[12px] text-gray-500">
+                      Edit presets in{' '}
+                      <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                        theme settings
+                      </a>
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Appearance') {
+          const textColor = groupFields.find((f) => f.path.endsWith('.textColor'));
+          const background = groupFields.find((f) => f.path.endsWith('.backgroundEnabled'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {textColor ? (
+                  <ThemeDefaultColorField
+                    label="Text color"
+                    path={textColor.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={0}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {background ? (
+                  <ToggleSwitchFieldRow
+                    field={background}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <SliderFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
+/** Product highlight — Product → Price: general and typography. */
+function ProductHighlightProductPriceGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupProductHighlightProductPricePanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays price from parent product.</p>
+      {PRODUCT_HIGHLIGHT_PRICE_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'General') {
+          return (
+            <div key={label} className="px-1 py-3">
+              <p className="mb-2 text-[12px] text-gray-500">
+                Edit price formatting in{' '}
+                <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                  theme settings
+                </a>
+              </p>
+              <div className="space-y-1">
+                {groupFields.map((field) => (
+                  <ToggleSwitchFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Typography') {
+          const preset = groupFields.find((f) => f.path.endsWith('.typographyPreset'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {preset ? (
+                  <div>
+                    <InlineSelectFieldRow field={preset} values={values} onFieldChange={onFieldChange} />
+                    <p className="pb-1 text-[12px] text-gray-500">
+                      Edit presets in{' '}
+                      <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                        theme settings
+                      </a>
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
+/** Product highlight — Product → Image: aspect ratio and constrain height. */
+function ProductHighlightProductImageGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupProductHighlightProductImagePanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays media from parent product.</p>
+      {PRODUCT_HIGHLIGHT_IMAGE_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        return (
+          <div key={label} className="space-y-1 px-1 py-3">
+            {groupFields.map((field) => (
+              <InlineSelectFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Product highlight — Product → Swatches: alignment controls. */
+function ProductHighlightProductSwatchesGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupProductHighlightProductSwatchesPanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <FeaturedProductConditionalVisibilityNote />
+      <p className="px-1 py-3 text-[13px] text-gray-600">Displays swatches from parent product.</p>
+      {PRODUCT_HIGHLIGHT_SWATCHES_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        return (
+          <div key={label} className="space-y-1 px-1 py-3">
+            {groupFields.map((field) =>
+              field.widget === 'segmented' ? (
+                <SegmentedFieldRow
+                  key={field.path}
+                  field={field}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              ) : (
+                <InlineSelectFieldRow
+                  key={field.path}
+                  field={field}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              )
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Product highlight: Product → Media position → Background color → Padding → Theme Settings → Custom CSS. */
+function ProductHighlightGroupedSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
   const grouped = useMemo(() => groupProductHighlightPanelFields(fields), [fields]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length && label !== 'Theme settings') return null;
+        if (!groupFields?.length && label !== 'Theme Settings') return null;
 
         if (label === 'General') {
           const productField = groupFields?.find((f) => f.path.endsWith('.productId'));
@@ -5075,25 +5435,27 @@ function ProductHighlightGroupedSettingsPanel({
         }
 
         if (label === 'Layout') {
+          const mediaPosition = groupFields?.find((f) => f.path.endsWith('.mediaPosition'));
+          const backgroundColor = groupFields?.find((f) => f.path.endsWith('.backgroundColor'));
           return (
             <div key={label} className="space-y-1 px-1 py-3">
-              {(groupFields ?? []).map((field) =>
-                field.widget === 'segmented' ? (
-                  <SegmentedFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : field.widget === 'color-scheme' ? (
-                  <ColorSchemeFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null
-              )}
+              {mediaPosition ? (
+                <SegmentedFieldRow
+                  field={mediaPosition}
+                  values={values}
+                  onFieldChange={onFieldChange}
+                />
+              ) : null}
+              {backgroundColor ? (
+                <ThemeDefaultColorField
+                  label="Background color"
+                  path={backgroundColor.path}
+                  values={values}
+                  colorPalette={colorPalette}
+                  defaultPaletteIndex={0}
+                  onFieldChange={onFieldChange}
+                />
+              ) : null}
             </div>
           );
         }
@@ -5109,11 +5471,11 @@ function ProductHighlightGroupedSettingsPanel({
           );
         }
 
-        if (label === 'Theme settings') {
+        if (label === 'Theme Settings') {
           return (
             <CollapsibleSettingsGroup
               key={label}
-              label="Theme settings"
+              label="Theme Settings"
               fields={groupFields ?? []}
               values={values}
               onFieldChange={onFieldChange}
@@ -5412,10 +5774,12 @@ function StorytellingLogoGroupedSettingsPanel({
 function StorytellingVideoGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupStorytellingVideoPanelFields(fields), [fields]);
@@ -5450,7 +5814,19 @@ function StorytellingVideoGroupedSettingsPanel({
 
         if (label === 'Appearance') {
           return (
-            <ContactFormAppearanceSettingsGroup
+            <RichTextAppearanceSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              colorPalette={colorPalette}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Borders') {
+          return (
+            <RichTextBordersSettingsGroup
               key={label}
               fields={groupFields}
               values={values}
@@ -8536,24 +8912,44 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     (node.label === 'Custom section' || isCustomSectionSettingsPanelFields(fields));
   const isFeaturedProductPanel =
     node.label === 'Featured product' || isFeaturedProductSettingsPanelFields(fields);
+  const isProductHighlightMediaBlockPanel =
+    node.label === 'Product media' &&
+    (isProductHighlightMediaBlockNodeId(node.id) || isProductHighlightMediaPanelFields(fields));
+  const isProductHighlightProductBlockPanel =
+    node.label === 'Product' && isProductHighlightProductBlockNodeId(node.id);
   const isFeaturedProductMediaBlockPanel =
-    node.label === 'Product media' ||
-    isFeaturedProductMediaBlockNodeId(node.id) ||
-    isFeaturedProductMediaPanelFields(fields);
+    !isProductHighlightMediaBlockPanel &&
+    (node.label === 'Product media' ||
+      isFeaturedProductMediaBlockNodeId(node.id) ||
+      isFeaturedProductMediaPanelFields(fields));
   const isFeaturedProductDetailsBlockPanel =
     node.label === 'Details' ||
     isFeaturedProductDetailsBlockNodeId(node.id) ||
     isFeaturedProductDetailsPanelFields(fields);
   const isFeaturedProductHeaderBlockPanel =
     isFeaturedProductHeaderBlockNodeId(node.id) || isFeaturedProductHeaderPanelFields(fields);
+  const isProductHighlightProductTitleBlockPanel =
+    isProductHighlightProductTitleNestedNodeId(node.id) ||
+    isProductHighlightProductTitlePanelFields(fields);
+  const isProductHighlightProductPriceBlockPanel =
+    isProductHighlightProductPriceNestedNodeId(node.id) ||
+    isProductHighlightProductPricePanelFields(fields);
+  const isProductHighlightProductImageBlockPanel =
+    isProductHighlightProductImageNestedNodeId(node.id) ||
+    isProductHighlightProductImagePanelFields(fields);
+  const isProductHighlightProductSwatchesBlockPanel =
+    isProductHighlightProductSwatchesNestedNodeId(node.id) ||
+    isProductHighlightProductSwatchesPanelFields(fields);
   const isFeaturedProductHeaderTitleBlockPanel =
-    node.label === 'Title' ||
-    isFeaturedProductHeaderTitleNestedNodeId(node.id) ||
-    isFeaturedProductHeaderTitlePanelFields(fields);
+    !isProductHighlightProductTitleBlockPanel &&
+    (node.label === 'Title' ||
+      isFeaturedProductHeaderTitleNestedNodeId(node.id) ||
+      isFeaturedProductHeaderTitlePanelFields(fields));
   const isFeaturedProductHeaderPriceBlockPanel =
-    node.label === 'Price' ||
-    isFeaturedProductHeaderPriceNestedNodeId(node.id) ||
-    isFeaturedProductHeaderPricePanelFields(fields);
+    !isProductHighlightProductPriceBlockPanel &&
+    (node.label === 'Price' ||
+      isFeaturedProductHeaderPriceNestedNodeId(node.id) ||
+      isFeaturedProductHeaderPricePanelFields(fields));
   const isFeaturedProductReviewStarsBlockPanel =
     node.label === 'Review stars' ||
     isFeaturedProductReviewStarsBlockNodeId(node.id) ||
@@ -8588,6 +8984,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isFeaturedProductAddToCartBlockPanel &&
     !isFeaturedProductQuantityBlockPanel &&
     !isFeaturedProductAcceleratedCheckoutBlockPanel &&
+    !isProductHighlightMediaBlockPanel &&
+    !isProductHighlightProductBlockPanel &&
+    !isProductHighlightProductTitleBlockPanel &&
+    !isProductHighlightProductPriceBlockPanel &&
+    !isProductHighlightProductImageBlockPanel &&
+    !isProductHighlightProductSwatchesBlockPanel &&
     (node.label === 'Product highlight' || isProductHighlightSettingsPanelFields(fields));
   const isEditorialPanel = node.label === 'Editorial' || isEditorialSettingsPanelFields(fields);
   const isEditorialJumboPanel =
@@ -8997,6 +9399,14 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : isProductHighlightMediaBlockPanel ? (
+          <ProductHighlightMediaGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductHighlightProductBlockPanel ? (
+          <ProductHighlightProductGroupedSettingsPanel />
         ) : isFeaturedProductDetailsBlockPanel ? (
           <FeaturedProductDetailsGroupedSettingsPanel
             fields={fields}
@@ -9043,12 +9453,39 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <FeaturedProductGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductHighlightProductTitleBlockPanel ? (
+          <ProductHighlightProductTitleGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductHighlightProductPriceBlockPanel ? (
+          <ProductHighlightProductPriceGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductHighlightProductImageBlockPanel ? (
+          <ProductHighlightProductImageGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isProductHighlightProductSwatchesBlockPanel ? (
+          <ProductHighlightProductSwatchesGroupedSettingsPanel
+            fields={fields}
+            values={values}
             onFieldChange={onFieldChange}
           />
         ) : isProductHighlightPanel ? (
           <ProductHighlightGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isProductHotspotsPanel ? (
@@ -9163,6 +9600,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <StorytellingVideoGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isFaqPanel ? (

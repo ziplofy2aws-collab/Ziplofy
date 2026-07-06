@@ -5,6 +5,7 @@ export const FEATURED_PRODUCT_DETAILS_PANEL_GROUP_ORDER = [
   'Size',
   'Layout',
   'Appearance',
+  'Borders',
   'Padding',
 ] as const;
 
@@ -30,6 +31,7 @@ const DETAILS_FIELD_KEYS = new Set([
   'stickyOnDesktop',
   'inheritColorScheme',
   'backgroundMedia',
+  'backgroundColor',
   'backgroundImageUrl',
   'backgroundImagePosition',
   'borderStyle',
@@ -102,11 +104,12 @@ export function featuredProductDetailsDefaultSettings(): Record<string, string |
     mobileWidth: 'fill',
     mobileCustomWidth: 100,
     height: 'fit',
-    layoutGap: 31,
+    layoutGap: 28,
     position: 'top',
     stickyOnDesktop: false,
-    inheritColorScheme: true,
+    inheritColorScheme: false,
     backgroundMedia: 'none',
+    backgroundColor: 'default',
     backgroundImageUrl: '',
     backgroundImagePosition: 'cover',
     borderStyle: 'none',
@@ -223,10 +226,18 @@ export function featuredProductDetailsFieldDefs(blocksBase: string): EditorField
       ],
     },
     {
+      path: s('backgroundColor'),
+      type: 'text',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
       path: s('borderStyle'),
       type: 'select',
-      label: 'Borders',
-      group: 'Appearance',
+      label: 'Style',
+      group: 'Borders',
       widget: 'segmented',
       sidebar: false,
       options: [
@@ -237,8 +248,8 @@ export function featuredProductDetailsFieldDefs(blocksBase: string): EditorField
     {
       path: s('borderThickness'),
       type: 'number',
-      label: 'Border thickness',
-      group: 'Appearance',
+      label: 'Thickness',
+      group: 'Borders',
       widget: 'slider',
       min: 0,
       max: 10,
@@ -249,8 +260,8 @@ export function featuredProductDetailsFieldDefs(blocksBase: string): EditorField
     {
       path: s('borderOpacity'),
       type: 'number',
-      label: 'Border opacity',
-      group: 'Appearance',
+      label: 'Opacity',
+      group: 'Borders',
       widget: 'slider',
       min: 0,
       max: 100,
@@ -262,7 +273,7 @@ export function featuredProductDetailsFieldDefs(blocksBase: string): EditorField
       path: s('cornerRadius'),
       type: 'number',
       label: 'Corner radius',
-      group: 'Appearance',
+      group: 'Borders',
       widget: 'slider',
       min: 0,
       max: 100,
@@ -340,15 +351,39 @@ export function featuredProductDetailsFieldDefsFromSchema(
   const blocksBase = blocksBaseFromNodeId(nodeId);
   const schemaFields = block?.settingsFields ?? [];
   if (schemaFields.length) {
-    const remapped = schemaFields.map((f) => ({
-      ...f,
-      path: remapTemplateSchemaPath(f.path, tplId, secId),
-    }));
-    const hasCustom = remapped.some((f) => f.path.endsWith('.customWidth'));
+    const remapped = schemaFields.map((f) => {
+      const key = f.path.split('.').pop() ?? '';
+      let group = f.group;
+      if (
+        key === 'borderStyle' ||
+        key === 'borderThickness' ||
+        key === 'borderOpacity' ||
+        key === 'cornerRadius'
+      ) {
+        group = 'Borders';
+      }
+      if (key === 'borderStyle') {
+        return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group, label: 'Style' };
+      }
+      if (key === 'borderThickness') {
+        return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group, label: 'Thickness' };
+      }
+      if (key === 'borderOpacity') {
+        return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group, label: 'Opacity' };
+      }
+      return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group };
+    });
+    const built = blocksBase ? featuredProductDetailsFieldDefs(blocksBase) : [];
+    const schemaKeys = new Set(remapped.map((f) => f.path.split('.').pop() ?? ''));
+    const merged = [
+      ...remapped,
+      ...built.filter((f) => !schemaKeys.has(f.path.split('.').pop() ?? '')),
+    ];
+    const hasCustom = merged.some((f) => f.path.endsWith('.customWidth'));
     if (!hasCustom && blocksBase) {
-      return [...remapped, ...featuredProductDetailsCustomWidthFieldDefs(blocksBase)];
+      return [...merged, ...featuredProductDetailsCustomWidthFieldDefs(blocksBase)];
     }
-    return remapped;
+    return merged;
   }
   return blocksBase
     ? [
@@ -422,22 +457,24 @@ function fieldSortKey(path: string): number {
     stickyOnDesktop: 11,
     inheritColorScheme: 20,
     backgroundMedia: 21,
-    backgroundImageUrl: 22,
-    backgroundImagePosition: 23,
-    borderStyle: 24,
-    borderThickness: 25,
-    borderOpacity: 26,
-    cornerRadius: 27,
-    paddingTop: 30,
-    paddingBottom: 31,
-    paddingLeft: 32,
-    paddingRight: 33,
+    backgroundColor: 22,
+    backgroundImageUrl: 23,
+    backgroundImagePosition: 24,
+    borderStyle: 30,
+    borderThickness: 31,
+    borderOpacity: 32,
+    cornerRadius: 33,
+    paddingTop: 40,
+    paddingBottom: 41,
+    paddingLeft: 42,
+    paddingRight: 43,
   };
   return rank[key] ?? 50;
 }
 
 export function isFeaturedProductDetailsPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
+  if (key === 'inheritColorScheme' || key === 'position') return false;
   if (!DETAILS_FIELD_KEYS.has(key)) return false;
   if (!/\.blocks\.details\.settings\./.test(field.path)) return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;

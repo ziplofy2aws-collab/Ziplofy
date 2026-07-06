@@ -20,6 +20,7 @@ import {
   readCollectionHeaderLayout,
 } from '../../runtime/shared/collectionHeaderStyles';
 import { readViewAllButtonStyle, viewAllButtonAnchorCss, viewAllButtonWrapperCss } from '../../runtime/shared/viewAllButtonStyles';
+import { resolveThemeTypographyStyle } from '../../runtime/shared/themeTypographyRuntime';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
 import { useFeaturedCollectionProducts } from '../../runtime/shared/useFeaturedCollectionProducts';
@@ -176,6 +177,60 @@ export function FeaturedCollection({
   }, [config, blocksBase, text, primary, muted]);
 
   const cardColors = useMemo(() => resolveThemeProductCardInlineStyle(config), [config]);
+
+  const productCardBlockStyle = useMemo(() => {
+    const base = `${blocksBase}.product_card.settings`;
+    const bgKey = cfgString(config, `${base}.backgroundColor`, 'default');
+    const background =
+      bgKey === '' || bgKey === 'default'
+        ? cardColors.background
+        : resolveThemePaletteColorSetting(config, bgKey, 0, cardColors.background);
+    const borderStyle = cfgString(config, `${base}.borderStyle`, 'none');
+    return {
+      background,
+      color: cardColors.color,
+      border: borderStyle === 'solid' ? `1px solid ${muted}` : 'none',
+      borderRadius: cfgNumber(config, `${base}.cornerRadius`, 0),
+      gap: cfgNumber(config, `${base}.verticalGap`, 4),
+      paddingTop: cfgNumber(config, `${base}.paddingTop`, 0),
+      paddingBottom: cfgNumber(config, `${base}.paddingBottom`, 0),
+      paddingLeft: cfgNumber(config, `${base}.paddingLeft`, 0),
+      paddingRight: cfgNumber(config, `${base}.paddingRight`, 0),
+    };
+  }, [config, blocksBase, cardColors, muted]);
+
+  const productTitleStyle = useMemo(() => {
+    const base = `${blocksBase}.product_card.settings`;
+    const preset = cfgString(config, `${base}.productTitleTypographyPreset`, 'paragraph');
+    const typo = resolveThemeTypographyStyle(config, preset, { fontHeading, fontBody });
+    const widthMode = cfgString(config, `${base}.productTitleWidth`, 'fit');
+    const colorKey = cfgString(config, `${base}.productTitleColor`, '');
+    const color =
+      colorKey === '' || colorKey === 'default' || colorKey === 'text'
+        ? text
+        : resolveThemePaletteColorSetting(config, colorKey, 1, text);
+    const bgOn = cfgBool(config, `${base}.productTitleBackgroundEnabled`, false);
+    return {
+      width: widthMode === 'fit' ? 'fit-content' : '100%',
+      maxWidth: '100%',
+      margin: 0,
+      fontFamily: typo.fontFamily,
+      fontSize: typo.fontSize,
+      fontWeight: typo.fontWeight,
+      fontStyle: typo.fontStyle,
+      lineHeight: typo.lineHeight,
+      letterSpacing: typo.letterSpacing,
+      color,
+      background: bgOn ? 'rgba(0,0,0,0.04)' : undefined,
+      paddingTop: cfgNumber(config, `${base}.productTitlePaddingTop`, 4),
+      paddingBottom: cfgNumber(config, `${base}.productTitlePaddingBottom`, 0),
+      paddingLeft: cfgNumber(config, `${base}.productTitlePaddingLeft`, 0),
+      paddingRight: cfgNumber(config, `${base}.productTitlePaddingRight`, 0),
+      borderRadius: bgOn ? 6 : 0,
+      boxSizing: 'border-box' as const,
+    };
+  }, [config, blocksBase, fontHeading, fontBody, text]);
+
   const quickAddFlags = useMemo(() => readThemeProductCardsQuickAddFlags(config), [config]);
   const mediaBorder = useMemo(() => {
     const media = readThemeProductMediaSettings(config);
@@ -507,19 +562,7 @@ export function FeaturedCollection({
           nodeId={`${editorNodeId}:block:product_card:nested:product_title`}
           label="Product title"
         >
-          <h3
-            style={{
-              margin: 0,
-              padding: '12px 4px 0',
-              fontFamily: fontHeading,
-              fontSize: 14,
-              fontWeight: 500,
-              lineHeight: 1.3,
-              color: cardColors.color,
-            }}
-          >
-            {product.title}
-          </h3>
+          <h3 style={productTitleStyle}>{product.title}</h3>
         </EditorBlock>
       );
     }
@@ -610,9 +653,15 @@ export function FeaturedCollection({
                   display: 'flex',
                   flexDirection: 'column',
                   overflow: 'hidden',
-                  borderRadius: 8,
-                  background: cardColors.background,
-                  color: cardColors.color,
+                  gap: productCardBlockStyle.gap,
+                  border: productCardBlockStyle.border,
+                  borderRadius: productCardBlockStyle.borderRadius,
+                  background: productCardBlockStyle.background,
+                  color: productCardBlockStyle.color,
+                  paddingTop: productCardBlockStyle.paddingTop,
+                  paddingBottom: productCardBlockStyle.paddingBottom,
+                  paddingLeft: productCardBlockStyle.paddingLeft,
+                  paddingRight: productCardBlockStyle.paddingRight,
                   boxSizing: 'border-box',
                 }}
               >
@@ -638,9 +687,15 @@ export function FeaturedCollection({
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
-                borderRadius: 8,
-                background: cardColors.background,
-                color: cardColors.color,
+                gap: productCardBlockStyle.gap,
+                border: productCardBlockStyle.border,
+                borderRadius: productCardBlockStyle.borderRadius,
+                background: productCardBlockStyle.background,
+                color: productCardBlockStyle.color,
+                paddingTop: productCardBlockStyle.paddingTop,
+                paddingBottom: productCardBlockStyle.paddingBottom,
+                paddingLeft: productCardBlockStyle.paddingLeft,
+                paddingRight: productCardBlockStyle.paddingRight,
                 boxSizing: 'border-box',
               }}
             >

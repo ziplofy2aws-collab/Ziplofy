@@ -33,22 +33,23 @@ export function readCollectionListCarouselLayout(
 ): CollectionListCarouselLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   const navIcon = cfgString(config, `${settingsBase}.navigationIcon`, 'arrows');
-  const navBg = cfgString(config, `${settingsBase}.navigationIconBackground`, 'none');
+  const navBg = cfgString(config, `${settingsBase}.navigationIconBackground`, 'circle');
   const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'page');
   const mobileCols = cfgString(config, `${settingsBase}.mobileColumns`, '1');
 
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
     heading: cfgString(config, `${settingsBase}.heading`, 'Shop by collection'),
-    columns: Math.min(6, Math.max(1, cfgNumber(config, `${settingsBase}.columns`, 4))),
+    columns: Math.min(6, Math.max(1, cfgNumber(config, `${settingsBase}.columns`, 3))),
     mobileColumns: mobileCols === '2' ? 2 : 1,
     horizontalGap: cfgNumber(config, `${settingsBase}.horizontalGap`, 8),
     navigationIcon: navIcon === 'chevron' || navIcon === 'none' ? navIcon : 'arrows',
-    navigationIconBackground: navBg === 'square' || navBg === 'circle' ? navBg : 'none',
+    navigationIconBackground:
+      navBg === 'square' ? 'square' : navBg === 'none' ? 'none' : 'circle',
     sectionWidth: sectionWidth === 'full' ? 'full' : 'page',
     layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 12),
-    paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 24),
-    paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 24),
+    paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 48),
+    paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 48),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
   };
 }

@@ -23,7 +23,9 @@ export function collectionListHeaderTextBlocksBase(settingsBase: string): string
 }
 
 export function collectionListHeaderTextFieldDefs(settingsBase: string): EditorFieldDef[] {
-  return textBlockFieldDefs(collectionListHeaderTextBlocksBase(settingsBase));
+  return textBlockFieldDefs(collectionListHeaderTextBlocksBase(settingsBase)).filter(
+    (f) => !f.path.endsWith('.alignment')
+  );
 }
 
 export function collectionListHeaderTextFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
@@ -32,7 +34,7 @@ export function collectionListHeaderTextFieldDefsFromNodeId(nodeId: string): Edi
 }
 
 export function collectionListHeaderTextDefaultSettings(
-  text = 'Shop by collection'
+  text = '<strong>Shop by collection</strong>'
 ): Record<string, string | number | boolean> {
   return {
     ...textBlockDefaultSettings(text),

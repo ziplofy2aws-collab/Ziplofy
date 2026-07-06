@@ -6,6 +6,8 @@ type Props = {
   afterUrl?: string;
   direction?: 'horizontal' | 'vertical';
   textOnImages?: boolean;
+  sliderColor?: string;
+  sliderInnerColor?: string;
   wrapStyle?: CSSProperties;
   mobileClass?: string;
   paddingTop?: number;
@@ -34,6 +36,8 @@ export function ImageCompareSlider({
   afterUrl,
   direction = 'horizontal',
   textOnImages = false,
+  sliderColor = '#ffffff',
+  sliderInnerColor = '#ffffff',
   wrapStyle,
   mobileClass,
   paddingTop = 0,
@@ -117,7 +121,7 @@ export function ImageCompareSlider({
         transform: 'translateY(-50%)',
         height: 3,
         width: '100%',
-        background: '#ffffff',
+        background: sliderColor,
         boxShadow: '0 0 0 1px rgba(0,0,0,0.08)',
         zIndex: 4,
         cursor: 'ns-resize',
@@ -129,7 +133,7 @@ export function ImageCompareSlider({
         left: `${position}%`,
         transform: 'translateX(-50%)',
         width: 3,
-        background: '#ffffff',
+        background: sliderColor,
         boxShadow: '0 0 0 1px rgba(0,0,0,0.08)',
         zIndex: 4,
         cursor: 'ew-resize',
@@ -143,7 +147,7 @@ export function ImageCompareSlider({
     width: 36,
     height: 36,
     borderRadius: '50%',
-    background: '#ffffff',
+    background: sliderInnerColor,
     boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
     display: 'flex',
     alignItems: 'center',
@@ -162,7 +166,7 @@ export function ImageCompareSlider({
         transform: 'translateX(-50%)',
         width: 8,
         height: 14,
-        background: '#ffffff',
+        background: sliderColor,
         borderRadius: '0 0 2px 2px',
       }
     : {
@@ -172,7 +176,7 @@ export function ImageCompareSlider({
         transform: 'translateX(-50%)',
         width: 14,
         height: 8,
-        background: '#ffffff',
+        background: sliderColor,
         borderRadius: '0 0 2px 2px',
       };
 

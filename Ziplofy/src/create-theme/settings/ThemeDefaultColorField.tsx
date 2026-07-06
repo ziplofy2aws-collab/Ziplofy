@@ -15,6 +15,8 @@ type Props = {
   /** Palette index used when the picker opens from an empty ("Default") state. */
   defaultPaletteIndex?: number;
   fallbackColor?: string;
+  /** Label shown for the empty/unset state (defaults to "Default"). */
+  emptyLabel?: string;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 };
 
@@ -39,6 +41,7 @@ export function ThemeDefaultColorField({
   colorPalette,
   defaultPaletteIndex = 1,
   fallbackColor = '#111827',
+  emptyLabel = 'Default',
   onFieldChange,
 }: Props) {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -46,7 +49,7 @@ export function ThemeDefaultColorField({
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
 
   const raw = typeof values[path] === 'string' ? String(values[path]).trim() : '';
-  const isDefault = raw === '';
+  const isDefault = raw === '' || raw === 'default';
   const parsed = parseThemePaletteColorSetting(raw, defaultPaletteIndex);
   const isPaletteLinked = !isDefault && parsed.kind === 'palette';
   const displayColor = isDefault
@@ -55,7 +58,7 @@ export function ThemeDefaultColorField({
       ? getThemePaletteColor(colorPalette, parsed.index, fallbackColor)
       : parsed.hex;
   const activePaletteIndex = isPaletteLinked ? parsed.index : null;
-  const labelText = isDefault ? 'Default' : isPaletteLinked ? 'Palette color' : displayColor.toUpperCase();
+  const labelText = isDefault ? emptyLabel : isPaletteLinked ? 'Palette color' : displayColor.toUpperCase();
 
   const openPicker = () => {
     const el = buttonRef.current;

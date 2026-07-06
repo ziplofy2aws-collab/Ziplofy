@@ -255,11 +255,13 @@ export function CollectionLinksSpotlight({
               <EditorField fieldPath={`${blockBase}.title`} label="Title">
                 {link.title}
               </EditorField>
-              <sup style={countStyle}>
-                <EditorField fieldPath={`${blockBase}.productCount`} label="Product count">
-                  {link.productCount}
-                </EditorField>
-              </sup>
+              {link.showCount ? (
+                <sup style={countStyle}>
+                  <EditorField fieldPath={`${blockBase}.productCount`} label="Product count">
+                    {link.productCount}
+                  </EditorField>
+                </sup>
+              ) : null}
             </Link>
           </EditorBlock>
         );

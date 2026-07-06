@@ -12,6 +12,7 @@ import {
 } from '../../runtime/shared/textBlockStyles';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import {
   largeLogoImageStyle,
   largeLogoMarkStyle,
@@ -115,6 +116,14 @@ export function LargeLogo({
     () => readLargeLogoBlockLayout(config, logoSettingsBase),
     [config, logoSettingsBase]
   );
+  const logoColor = logoBlockLayout.logoColor
+    ? resolveThemePaletteColorSetting(config, logoBlockLayout.logoColor, 1, hero.scheme.color)
+    : hero.scheme.color;
+
+  const sectionBackgroundRaw = cfgString(config, `${settingsPath}.backgroundColor`, '');
+  const sectionBackground = sectionBackgroundRaw
+    ? resolveThemePaletteColorSetting(config, sectionBackgroundRaw, 0, hero.scheme.background)
+    : hero.scheme.background;
 
   const scopedCss = scopedHeroCss(sectionId, hero.customCss);
   const responsiveCss = [
@@ -240,7 +249,7 @@ export function LargeLogo({
               style={largeLogoMarkStyle(
                 logoBlockLayout,
                 { fontHeading, fontBody },
-                hero.scheme.color,
+                logoColor,
                 titleAlign
               )}
             >
@@ -279,7 +288,7 @@ export function LargeLogo({
           width: '100%',
           minHeight: sectionMinHeight,
           padding: 0,
-          background: hero.scheme.background,
+          background: sectionBackground,
           fontFamily: fontBody,
           color: hero.scheme.color,
           boxSizing: 'border-box',

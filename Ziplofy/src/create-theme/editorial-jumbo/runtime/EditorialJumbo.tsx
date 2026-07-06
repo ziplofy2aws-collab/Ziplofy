@@ -28,6 +28,17 @@ function readMediaPosition(config: Record<string, unknown> | null, settingsBase:
   return textPosition === 'left' ? 'right' : 'left';
 }
 
+function tightnessCss(
+  value: string,
+  tight: string,
+  normal: string,
+  loose: string
+): string {
+  if (value === 'tight') return tight;
+  if (value === 'loose') return loose;
+  return normal;
+}
+
 export function EditorialJumbo({
   sectionId = 'editorial_jumbo',
   templateId = 'index',
@@ -52,6 +63,12 @@ export function EditorialJumbo({
 
   const headline = cfgString(config, `${settingsBase}.headline`, 'UP THE ANTE');
   const imageUrl = cfgString(config, `${settingsBase}.imageUrl`, '');
+  const imageFit = cfgString(config, `${settingsBase}.imagePosition`, 'cover');
+  const headlineAlignment = cfgString(config, `${settingsBase}.headlineAlignment`, 'right');
+  const headlineLineHeight = cfgString(config, `${settingsBase}.headlineLineHeight`, 'tight');
+  const headlineLetterSpacing = cfgString(config, `${settingsBase}.headlineLetterSpacing`, 'tight');
+  const headlineCase = cfgString(config, `${settingsBase}.headlineCase`, 'uppercase');
+  const headlineFont = cfgString(config, `${settingsBase}.headlineFont`, 'heading');
   const mediaPosition = readMediaPosition(config, settingsBase);
 
   const lines = headlineLines(headline);
@@ -110,13 +127,16 @@ export function EditorialJumbo({
 
   const headlineStyle: CSSProperties = {
     margin: 0,
-    fontFamily: fontHeading,
+    fontFamily: headlineFont === 'body' ? fontBody : fontHeading,
     fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
     fontWeight: 700,
-    lineHeight: 0.95,
-    letterSpacing: '-0.02em',
-    textAlign: 'right',
-    textTransform: 'uppercase',
+    lineHeight: tightnessCss(headlineLineHeight, '0.95', '1.05', '1.2'),
+    letterSpacing: tightnessCss(headlineLetterSpacing, '-0.02em', '0', '0.04em'),
+    textAlign:
+      headlineAlignment === 'left' || headlineAlignment === 'center' || headlineAlignment === 'right'
+        ? headlineAlignment
+        : 'right',
+    textTransform: headlineCase === 'uppercase' ? 'uppercase' : 'none',
     color: scheme.color,
     maxWidth: '100%',
   };
@@ -143,7 +163,7 @@ export function EditorialJumbo({
             style={{
               maxWidth: '100%',
               maxHeight: panelMinHeight - 64,
-              objectFit: 'contain',
+              objectFit: imageFit === 'contain' ? 'contain' : 'cover',
               display: 'block',
             }}
           />

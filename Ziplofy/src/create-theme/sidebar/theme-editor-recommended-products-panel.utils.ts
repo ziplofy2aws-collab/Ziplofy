@@ -6,6 +6,7 @@ export const RECOMMENDED_PRODUCTS_PANEL_GROUP_ORDER = [
   'Cards layout',
   'Section layout',
   'Padding',
+  'Theme Settings',
   'Custom CSS',
 ] as const;
 
@@ -23,14 +24,23 @@ const FIELD_SORT: Record<string, number> = {
   verticalGap: 6,
   sectionWidth: 0,
   layoutGap: 1,
-  colorScheme: 2,
+  backgroundColor: 2,
   paddingTop: 0,
   paddingBottom: 1,
+  colorScheme: 0,
   customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
   return FIELD_SORT[path.split('.').pop() ?? ''] ?? 50;
+}
+
+function panelGroupForField(field: EditorFieldDef): string {
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'colorScheme' || field.group === 'Theme settings') return 'Theme Settings';
+  if (key === 'backgroundColor') return 'Section layout';
+  if (field.group && PANEL_GROUPS.has(field.group)) return field.group;
+  return 'Product';
 }
 
 export function isRecommendedProductsSectionType(
@@ -42,8 +52,45 @@ export function isRecommendedProductsSectionType(
 
 export function isRecommendedProductsPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
+  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'heading' || key.startsWith('heading')) return false;
+  if (key === 'colorScheme' || key === 'backgroundColor') return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return /\.sections\.[^.]+\.settings\./.test(field.path);
+  return true;
+}
+
+export function augmentRecommendedProductsPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
+  const settingsBase =
+    fields.find((f) => f.path.endsWith('.productId'))?.path.replace(/\.productId$/, '') ??
+    fields.find((f) => f.path.endsWith('.recommendationType'))?.path.replace(/\.recommendationType$/, '') ??
+    '';
+  if (!settingsBase) return fields;
+
+  const byKey = new Map<string, EditorFieldDef>();
+  for (const field of fields) {
+    byKey.set(field.path.split('.').pop() ?? '', field);
+  }
+
+  if (!byKey.has('backgroundColor')) {
+    byKey.set('backgroundColor', {
+      path: `${settingsBase}.backgroundColor`,
+      type: 'text',
+      label: 'Background color',
+      group: 'Section layout',
+      widget: 'default-color',
+      sidebar: true,
+    });
+  }
+
+  for (const field of byKey.values()) {
+    const key = field.path.split('.').pop() ?? '';
+    if (key === 'colorScheme') {
+      byKey.set(key, { ...field, group: 'Theme settings', sidebar: true });
+    }
+  }
+
+  return Array.from(byKey.values());
 }
 
 export function sortRecommendedProductsPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -52,11 +99,12 @@ export function sortRecommendedProductsPanelFields(fields: EditorFieldDef[]): Ed
     'Cards layout': 1,
     'Section layout': 2,
     Padding: 3,
-    'Custom CSS': 4,
+    'Theme Settings': 4,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[a.group ?? ''] ?? 9;
-    const gb = groupRank[b.group ?? ''] ?? 9;
+    const ga = groupRank[panelGroupForField(a)] ?? 9;
+    const gb = groupRank[panelGroupForField(b)] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -67,7 +115,7 @@ export function groupRecommendedProductsPanelFields(
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Product';
+    const group = panelGroupForField(field);
     const list = map.get(group) ?? [];
     list.push(field);
     map.set(group, list);
@@ -82,8 +130,7 @@ export function isRecommendedProductsSettingsPanelFields(fields: EditorFieldDef[
 }
 
 export function prepareRecommendedProductsSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortRecommendedProductsPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isRecommendedProductsPanelField)
-  );
+  const filtered = filterSidebarSectionPanelFields(node.fields ?? [], isRecommendedProductsPanelField);
+  const fields = sortRecommendedProductsPanelFields(augmentRecommendedProductsPanelFields(filtered));
   return { ...node, label: 'Recommended products', kind: 'section', fields };
 }

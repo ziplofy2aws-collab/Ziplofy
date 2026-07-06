@@ -1025,6 +1025,329 @@ function resolveFaqSectionSettingType(
   return undefined;
 }
 
+const COLLECTION_CARD_TITLE_SETTING_TYPES: Record<string, string> = {
+  width: 'select',
+  maxWidth: 'select',
+  typographyPreset: 'select',
+  textColor: 'text',
+  backgroundEnabled: 'boolean',
+  backgroundColor: 'text',
+  cornerRadius: 'number',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  paddingLeft: 'number',
+  paddingRight: 'number',
+};
+
+function resolveCollectionCardTitleSettingType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.([^.]+)\.sections\.([^.]+)\.settings\.collectionCardTitle\.([^.]+)$/
+  );
+  if (tpl) return COLLECTION_CARD_TITLE_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.collectionCardTitle\.([^.]+)$/);
+  if (layout) return COLLECTION_CARD_TITLE_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+const COLLECTION_CARD_IMAGE_SETTING_TYPES: Record<string, string> = {
+  imageRatio: 'select',
+  mediaOverlay: 'boolean',
+  borderStyle: 'select',
+  cornerRadius: 'number',
+};
+
+function resolveCollectionCardImageSettingType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.([^.]+)\.sections\.([^.]+)\.settings\.collectionCardImage\.([^.]+)$/
+  );
+  if (tpl) return COLLECTION_CARD_IMAGE_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.collectionCardImage\.([^.]+)$/);
+  if (layout) return COLLECTION_CARD_IMAGE_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+const COLLECTION_CARD_SETTING_TYPES: Record<string, string> = {
+  placement: 'select',
+  horizontalAlignment: 'select',
+  verticalAlignment: 'select',
+  verticalGap: 'number',
+  backgroundColor: 'text',
+  borderStyle: 'select',
+  cornerRadius: 'number',
+};
+
+const PRODUCT_CARD_BLOCK_SETTING_TYPES: Record<string, string> = {
+  verticalGap: 'number',
+  inheritColorScheme: 'boolean',
+  backgroundColor: 'text',
+  borderStyle: 'select',
+  cornerRadius: 'number',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  paddingLeft: 'number',
+  paddingRight: 'number',
+  mediaAspectRatio: 'select',
+  mediaBorderStyle: 'select',
+  mediaCornerRadius: 'number',
+  mediaPaddingTop: 'number',
+  mediaPaddingBottom: 'number',
+  mediaPaddingLeft: 'number',
+  mediaPaddingRight: 'number',
+  productTitleWidth: 'select',
+  productTitleMaxWidth: 'select',
+  productTitleAlignment: 'select',
+  productTitleTypographyPreset: 'select',
+  productTitleColor: 'text',
+  productTitleBackgroundEnabled: 'boolean',
+  productTitlePaddingTop: 'number',
+  productTitlePaddingBottom: 'number',
+  productTitlePaddingLeft: 'number',
+  productTitlePaddingRight: 'number',
+  priceShowSaleFirst: 'boolean',
+  priceInstallments: 'boolean',
+  priceTaxInfo: 'boolean',
+  priceTypographyPreset: 'select',
+  priceWidth: 'select',
+  priceAlignment: 'select',
+  priceColor: 'text',
+  pricePaddingTop: 'number',
+  pricePaddingBottom: 'number',
+  pricePaddingLeft: 'number',
+  pricePaddingRight: 'number',
+  showMedia: 'boolean',
+  showTitle: 'boolean',
+  showPrice: 'boolean',
+};
+
+function resolveProductCardBlockSettingType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.([^.]+)\.sections\.([^.]+)\.blocks\.product_card\.settings\.([^.]+)$/
+  );
+  if (tpl) return PRODUCT_CARD_BLOCK_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.blocks\.product_card\.settings\.([^.]+)$/);
+  if (layout) return PRODUCT_CARD_BLOCK_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+function resolveCollectionCardSettingType(path: string): string | undefined {
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.collectionCard\.([^.]+)$/);
+  if (tpl) return COLLECTION_CARD_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.collectionCard\.([^.]+)$/);
+  if (layout) return COLLECTION_CARD_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+const COLLECTION_LIST_HEADING_TEXT_SETTING_TYPES: Record<string, string> = {
+  text: 'textarea',
+  width: 'select',
+  maxWidth: 'select',
+  alignment: 'select',
+  typographyPreset: 'select',
+  font: 'select',
+  fontSize: 'select',
+  lineHeight: 'select',
+  letterSpacing: 'select',
+  textCase: 'select',
+  wrap: 'select',
+  textColor: 'text',
+  backgroundEnabled: 'boolean',
+  backgroundColor: 'text',
+  cornerRadius: 'number',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  paddingLeft: 'number',
+  paddingRight: 'number',
+};
+
+function resolveCollectionListHeadingTextFieldType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.([^.]+)\.sections\.([^.]+)\.settings\.headingText\.settings\.([^.]+)$/
+  );
+  if (tpl) return COLLECTION_LIST_HEADING_TEXT_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.headingText\.settings\.([^.]+)$/);
+  if (layout) return COLLECTION_LIST_HEADING_TEXT_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+const COLLECTION_LIST_HEADER_GROUP_SETTING_TYPES: Record<string, string> = {
+  direction: 'select',
+  verticalOnMobile: 'boolean',
+  layoutAlignment: 'select',
+  position: 'select',
+  alignTextBaseline: 'boolean',
+  layoutGap: 'number',
+  width: 'select',
+  customWidth: 'number',
+  mobileWidth: 'select',
+  mobileCustomWidth: 'number',
+  height: 'select',
+  customHeight: 'number',
+  backgroundMedia: 'select',
+  backgroundImageUrl: 'text',
+  backgroundImagePosition: 'select',
+  backgroundColor: 'text',
+  borderStyle: 'select',
+  borderThickness: 'number',
+  borderOpacity: 'number',
+  cornerRadius: 'number',
+  backgroundOverlay: 'boolean',
+  linkUrl: 'text',
+  openLinkInNewTab: 'boolean',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  paddingLeft: 'number',
+  paddingRight: 'number',
+};
+
+const IMAGE_WITH_TEXT_IMAGE_SETTING_TYPES: Record<string, string> = {
+  imageUrl: 'text',
+  imageLinkUrl: 'text',
+  imageAspectRatio: 'select',
+  imageDesktopWidth: 'select',
+  imageDesktopCustomWidth: 'number',
+  imageMobileWidth: 'select',
+  imageMobileCustomWidth: 'number',
+  imageBorderStyle: 'select',
+  imageCornerRadius: 'number',
+  imagePaddingTop: 'number',
+  imagePaddingBottom: 'number',
+  imagePaddingLeft: 'number',
+  imagePaddingRight: 'number',
+};
+
+function resolveImageWithTextImageBlockSettingType(path: string): string | undefined {
+  if (!/image_with_text/.test(path)) return undefined;
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) return IMAGE_WITH_TEXT_IMAGE_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) return IMAGE_WITH_TEXT_IMAGE_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+const COMPARISON_SLIDER_SETTING_TYPES: Record<string, string> = {
+  imageBeforeUrl: 'text',
+  imageAfterUrl: 'text',
+  sliderDirection: 'select',
+  sliderTextOnImages: 'boolean',
+  sliderAspectRatio: 'select',
+  sliderDesktopWidth: 'select',
+  sliderDesktopCustomWidth: 'number',
+  sliderMobileWidth: 'select',
+  sliderMobileCustomWidth: 'number',
+  sliderColor: 'text',
+  sliderInnerColor: 'text',
+  sliderBorderStyle: 'select',
+  sliderCornerRadius: 'number',
+  sliderPaddingTop: 'number',
+  sliderPaddingBottom: 'number',
+  sliderPaddingLeft: 'number',
+  sliderPaddingRight: 'number',
+};
+
+function resolveComparisonSliderBlockSettingType(path: string): string | undefined {
+  if (!/image_compare/.test(path)) return undefined;
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) return COMPARISON_SLIDER_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) return COMPARISON_SLIDER_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+const IMAGE_COMPARE_BUTTON_SETTING_TYPES: Record<string, string> = {
+  button1Label: 'text',
+  button1Url: 'text',
+  button1OpenInNewTab: 'boolean',
+  button1Style: 'select',
+  button1DesktopWidth: 'select',
+  button1DesktopCustomWidth: 'number',
+  button1MobileWidth: 'select',
+  button1MobileCustomWidth: 'number',
+  button2Label: 'text',
+  button2Url: 'text',
+  button2OpenInNewTab: 'boolean',
+  button2Style: 'select',
+  button2DesktopWidth: 'select',
+  button2DesktopCustomWidth: 'number',
+  button2MobileWidth: 'select',
+  button2MobileCustomWidth: 'number',
+};
+
+const IMAGE_COMPARE_HEADING_SETTING_TYPES: Record<string, string> = {
+  heading: 'textarea',
+  headingWidth: 'select',
+  headingMaxWidth: 'select',
+  headingTypographyPreset: 'select',
+  headingColor: 'text',
+  headingBackgroundEnabled: 'boolean',
+  headingPaddingTop: 'number',
+  headingPaddingBottom: 'number',
+  headingPaddingLeft: 'number',
+  headingPaddingRight: 'number',
+};
+
+const IMAGE_COMPARE_SUBHEADING_SETTING_TYPES: Record<string, string> = {
+  subheading: 'textarea',
+  subheadingWidth: 'select',
+  subheadingMaxWidth: 'select',
+  subheadingTypographyPreset: 'select',
+  subheadingColor: 'text',
+  subheadingBackgroundEnabled: 'boolean',
+  subheadingPaddingTop: 'number',
+  subheadingPaddingBottom: 'number',
+  subheadingPaddingLeft: 'number',
+  subheadingPaddingRight: 'number',
+};
+
+function resolveImageCompareButtonBlockSettingType(path: string): string | undefined {
+  if (!/image_compare/.test(path)) return undefined;
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) return IMAGE_COMPARE_BUTTON_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) return IMAGE_COMPARE_BUTTON_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+function resolveImageCompareHeadingBlockSettingType(path: string): string | undefined {
+  if (!/image_compare/.test(path)) return undefined;
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) return IMAGE_COMPARE_HEADING_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) return IMAGE_COMPARE_HEADING_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+function resolveImageCompareSubheadingBlockSettingType(path: string): string | undefined {
+  if (!/image_compare/.test(path)) return undefined;
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) return IMAGE_COMPARE_SUBHEADING_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) return IMAGE_COMPARE_SUBHEADING_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+function resolveCollectionListHeaderGroupSettingType(path: string): string | undefined {
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.headerGroup\.([^.]+)$/);
+  if (tpl) return COLLECTION_LIST_HEADER_GROUP_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.headerGroup\.([^.]+)$/);
+  if (layout) return COLLECTION_LIST_HEADER_GROUP_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+function resolveNestedSectionGroupSettingType(
+  path: string,
+  groupKey: 'captionGroup' | 'contentGroup' | 'buttonsGroup' | 'textGroup'
+): string | undefined {
+  const tpl = path.match(
+    new RegExp(`^templates\\.([^.]+)\\.sections\\.([^.]+)\\.settings\\.${groupKey}\\.([^.]+)$`)
+  );
+  if (tpl) return COLLECTION_LIST_HEADER_GROUP_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(
+    new RegExp(`^sections\\.([^.]+)\\.settings\\.${groupKey}\\.([^.]+)$`)
+  );
+  if (layout) return COLLECTION_LIST_HEADER_GROUP_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
 function resolveFieldTypeForPath(
   path: string,
   typeByPath: Map<string, string>
@@ -1040,6 +1363,51 @@ function resolveFieldTypeForPath(
 
   const faqSection = resolveFaqSectionSettingType(path, typeByPath);
   if (faqSection) return faqSection;
+
+  const collectionCardTitle = resolveCollectionCardTitleSettingType(path);
+  if (collectionCardTitle) return collectionCardTitle;
+
+  const collectionCardImage = resolveCollectionCardImageSettingType(path);
+  if (collectionCardImage) return collectionCardImage;
+
+  const collectionCard = resolveCollectionCardSettingType(path);
+  if (collectionCard) return collectionCard;
+
+  const productCardBlock = resolveProductCardBlockSettingType(path);
+  if (productCardBlock) return productCardBlock;
+
+  const collectionListHeadingText = resolveCollectionListHeadingTextFieldType(path);
+  if (collectionListHeadingText) return collectionListHeadingText;
+
+  const collectionListHeaderGroup = resolveCollectionListHeaderGroupSettingType(path);
+  if (collectionListHeaderGroup) return collectionListHeaderGroup;
+
+  const storytellingCaptionGroup = resolveNestedSectionGroupSettingType(path, 'captionGroup');
+  if (storytellingCaptionGroup) return storytellingCaptionGroup;
+
+  const imageWithTextContentGroup = resolveNestedSectionGroupSettingType(path, 'contentGroup');
+  if (imageWithTextContentGroup) return imageWithTextContentGroup;
+
+  const imageCompareButtonsGroup = resolveNestedSectionGroupSettingType(path, 'buttonsGroup');
+  if (imageCompareButtonsGroup) return imageCompareButtonsGroup;
+
+  const imageCompareTextGroup = resolveNestedSectionGroupSettingType(path, 'textGroup');
+  if (imageCompareTextGroup) return imageCompareTextGroup;
+
+  const imageWithTextImageBlock = resolveImageWithTextImageBlockSettingType(path);
+  if (imageWithTextImageBlock) return imageWithTextImageBlock;
+
+  const comparisonSliderBlock = resolveComparisonSliderBlockSettingType(path);
+  if (comparisonSliderBlock) return comparisonSliderBlock;
+
+  const imageCompareButtonBlock = resolveImageCompareButtonBlockSettingType(path);
+  if (imageCompareButtonBlock) return imageCompareButtonBlock;
+
+  const imageCompareHeadingBlock = resolveImageCompareHeadingBlockSettingType(path);
+  if (imageCompareHeadingBlock) return imageCompareHeadingBlock;
+
+  const imageCompareSubheadingBlock = resolveImageCompareSubheadingBlockSettingType(path);
+  if (imageCompareSubheadingBlock) return imageCompareSubheadingBlock;
 
   const menuSetting = path.match(/^sections\.[^.]+\.blocks\.menu\.settings\.([^.]+)$/);
   if (menuSetting) {

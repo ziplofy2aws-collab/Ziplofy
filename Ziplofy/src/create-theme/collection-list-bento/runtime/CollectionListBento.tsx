@@ -59,7 +59,7 @@ export function CollectionListBento({
   const outerStyle: CSSProperties = {
     paddingTop: layoutStyle.paddingTop,
     paddingBottom: layoutStyle.paddingBottom,
-    background: layoutStyle.scheme.background,
+    background: layoutStyle.sectionBackground,
     color: layoutStyle.scheme.color,
     fontFamily: fontBody,
     boxSizing: 'border-box',

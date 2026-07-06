@@ -6,6 +6,7 @@ export const CONTACT_FORM_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
   'Custom CSS',
 ] as const;
@@ -41,6 +42,8 @@ export function isContactFormSectionType(secType: string | undefined, catalogVar
 export function isContactFormPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   if (field.sidebar === false) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key.startsWith('heading') || key.startsWith('form') || key.startsWith('submit')) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -49,8 +52,9 @@ export function sortContactFormPanelFields(fields: EditorFieldDef[]): EditorFiel
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

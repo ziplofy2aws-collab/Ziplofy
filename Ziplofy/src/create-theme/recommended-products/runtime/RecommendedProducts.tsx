@@ -98,20 +98,38 @@ export function RecommendedProducts({
       | null
       | undefined;
     if (!blocksMap || typeof blocksMap !== 'object') return [];
-    const ids = blockOrder.length ? blockOrder : Object.keys(blocksMap);
-    return ids
-      .filter((id) => blocksMap[id])
-      .slice(0, productCount)
-      .map((id) => {
-        const s = blocksMap[id]?.settings ?? {};
-        return {
-          id,
-          shirtColor: String(s.shirtColor ?? '#d45454'),
-          withSun: Boolean(s.withSun),
-          productTitle: String(s.productTitle ?? 'Product title'),
-          price: String(s.price ?? ''),
-        };
-      });
+
+    const legacyIds = blockOrder.filter(
+      (id) => id.startsWith('product_') && blocksMap[id] && id !== 'product_card'
+    );
+    if (legacyIds.length) {
+      return legacyIds
+        .slice(0, productCount)
+        .map((id) => {
+          const s = blocksMap[id]?.settings ?? {};
+          return {
+            id,
+            shirtColor: String(s.shirtColor ?? '#d45454'),
+            withSun: Boolean(s.withSun),
+            productTitle: String(s.productTitle ?? 'Product title'),
+            price: String(s.price ?? ''),
+          };
+        });
+    }
+
+    const demoColors = [
+      { shirtColor: '#d45454', withSun: false },
+      { shirtColor: '#5a9a6a', withSun: false },
+      { shirtColor: '#4b5563', withSun: true },
+      { shirtColor: '#d45454', withSun: false },
+    ];
+    return Array.from({ length: productCount }, (_, index) => ({
+      id: `demo_${index + 1}`,
+      shirtColor: demoColors[index % demoColors.length]!.shirtColor,
+      withSun: demoColors[index % demoColors.length]!.withSun,
+      productTitle: 'Product title',
+      price: 'Rs. 19.99',
+    }));
   }, [config, blocksBase, blockOrder, productCount]);
 
   const scopeClass = sectionScopeClass('recommended-products', sectionId);

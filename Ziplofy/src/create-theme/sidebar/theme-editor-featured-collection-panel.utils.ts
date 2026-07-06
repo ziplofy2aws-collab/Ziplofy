@@ -186,7 +186,6 @@ export function featuredCollectionFieldDefs(settingsBase: string): EditorFieldDe
       type: 'select',
       label: 'Icon background',
       group: 'Carousel navigation',
-      widget: 'segmented',
       sidebar: true,
       options: [
         { value: 'none', label: 'None' },
@@ -570,4 +569,106 @@ export function findFeaturedCollectionSectionInTree(
   const m = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?)/);
   if (!m) return null;
   return findSidebarNodeById(tree, `template:${m[1]}:${m[2]}`);
+}
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+export function featuredCollectionDefaultsForVariant(
+  variant: FeaturedCollectionVariant
+): Record<string, string | number | boolean> {
+  const shared = {
+    collectionHandle: 'products',
+    sectionWidth: 'page',
+    alignment: 'left',
+    sectionGap: 28,
+    backgroundColor: 'default',
+    colorScheme: 'scheme-1',
+    paddingTop: 48,
+    paddingBottom: 48,
+    customCss: '',
+  };
+  if (variant === 'carousel') {
+    return {
+      ...shared,
+      layoutType: 'carousel',
+      catalogVariant: 'featured-collection-carousel',
+      productsToShow: 6,
+      columns: 4,
+      mobileColumns: '1',
+      horizontalGap: 8,
+      navIcon: 'arrows',
+      navIconBackground: 'circle',
+    };
+  }
+  if (variant === 'editorial') {
+    return {
+      ...shared,
+      layoutType: 'editorial',
+      catalogVariant: 'featured-collection-editorial',
+      carouselOnMobile: false,
+      productsToShow: 4,
+      columns: 2,
+      mobileColumns: '1',
+      horizontalGap: 24,
+      verticalGap: 24,
+      sectionGap: 64,
+    };
+  }
+  if (variant === 'grid') {
+    return {
+      ...shared,
+      layoutType: 'grid',
+      catalogVariant: 'featured-collection-grid',
+      carouselOnMobile: false,
+      productsToShow: 8,
+      columns: 4,
+      mobileColumns: '2',
+      horizontalGap: 8,
+      verticalGap: 24,
+    };
+  }
+  return {
+    ...shared,
+    layoutType: 'grid',
+    catalogVariant: 'featured-collection',
+    carouselOnMobile: false,
+    productsToShow: 4,
+    columns: 4,
+    mobileColumns: '2',
+    horizontalGap: 16,
+    verticalGap: 24,
+    navIcon: 'arrows',
+    navIconBackground: 'circle',
+  };
+}
+
+export function extendFeaturedCollectionSectionValues(
+  values: Record<string, string | boolean>,
+  fields: EditorFieldDef[],
+  config: Record<string, unknown> | null,
+  variant: FeaturedCollectionVariant
+): Record<string, string | boolean> {
+  const defaults = featuredCollectionDefaultsForVariant(variant);
+  const next = { ...values };
+  for (const field of fields) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw !== undefined && raw !== null) {
+      next[field.path] = field.type === 'boolean' ? Boolean(raw) : String(raw);
+      continue;
+    }
+    const key = field.path.split('.').pop() ?? '';
+    const fallback = defaults[key];
+    if (fallback !== undefined) {
+      next[field.path] = field.type === 'boolean' ? Boolean(fallback) : String(fallback);
+    }
+  }
+  return next;
 }

@@ -1,7 +1,7 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { collectionListSidebarPathsFromNodeId } from '../utils/collection-list-sidebar.util';
 
-export const COLLECTION_LIST_CARD_PANEL_GROUP_ORDER = ['Text', 'Appearance'] as const;
+export const COLLECTION_LIST_CARD_PANEL_GROUP_ORDER = ['Text', 'Appearance', 'Borders'] as const;
 
 const PANEL_GROUPS = new Set<string>(COLLECTION_LIST_CARD_PANEL_GROUP_ORDER);
 
@@ -10,7 +10,7 @@ const CARD_FIELD_KEYS = new Set([
   'horizontalAlignment',
   'verticalAlignment',
   'verticalGap',
-  'inheritColorScheme',
+  'backgroundColor',
   'borderStyle',
   'cornerRadius',
 ]);
@@ -48,7 +48,7 @@ function fieldSortKey(path: string): number {
     horizontalAlignment: 1,
     verticalAlignment: 2,
     verticalGap: 3,
-    inheritColorScheme: 10,
+    backgroundColor: 10,
     borderStyle: 11,
     cornerRadius: 12,
   };
@@ -59,9 +59,9 @@ export function collectionListCardDefaultSettings(): Record<string, string | num
   return {
     placement: 'on_image',
     horizontalAlignment: 'flex-start',
-    verticalAlignment: 'flex-end',
+    verticalAlignment: 'flex-start',
     verticalGap: 8,
-    inheritColorScheme: false,
+    backgroundColor: '',
     borderStyle: 'none',
     cornerRadius: 0,
   };
@@ -117,17 +117,18 @@ export function collectionListCardFieldDefs(settingsBase: string): EditorFieldDe
       sidebar: true,
     },
     {
-      path: s('inheritColorScheme'),
-      type: 'boolean',
-      label: 'Inherit color scheme',
+      path: s('backgroundColor'),
+      type: 'text',
+      label: 'Background color',
       group: 'Appearance',
+      widget: 'color',
       sidebar: true,
     },
     {
       path: s('borderStyle'),
       type: 'select',
-      label: 'Borders',
-      group: 'Appearance',
+      label: 'Style',
+      group: 'Borders',
       widget: 'segmented',
       sidebar: true,
       options: [...BORDER_OPTIONS],
@@ -136,7 +137,7 @@ export function collectionListCardFieldDefs(settingsBase: string): EditorFieldDe
       path: s('cornerRadius'),
       type: 'number',
       label: 'Corner radius',
-      group: 'Appearance',
+      group: 'Borders',
       widget: 'slider',
       min: 0,
       max: 100,
@@ -166,7 +167,7 @@ export function isCollectionListCardPanelFields(fields: EditorFieldDef[]): boole
 }
 
 export function sortCollectionListCardPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const groupRank: Record<string, number> = { Text: 0, Appearance: 1 };
+  const groupRank: Record<string, number> = { Text: 0, Appearance: 1, Borders: 2 };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
     const gb = groupRank[b.group ?? ''] ?? 9;

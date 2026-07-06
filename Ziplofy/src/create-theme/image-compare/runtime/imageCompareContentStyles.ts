@@ -14,6 +14,62 @@ function sizeCss(mode: string, percent: number): string {
   return 'auto';
 }
 
+function groupBase(settingsBase: string): string {
+  return `${settingsBase}.contentGroup`;
+}
+
+function hasNested(config: Record<string, unknown> | null, path: string): boolean {
+  if (!config) return false;
+  let cur: unknown = config;
+  for (const p of path.split('.')) {
+    if (cur == null || typeof cur !== 'object' || !(p in (cur as object))) return false;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return true;
+}
+
+function readGroupString(
+  config: Record<string, unknown> | null,
+  settingsBase: string,
+  key: string,
+  legacyKey: string,
+  fallback: string
+): string {
+  const nestedPath = `${groupBase(settingsBase)}.${key}`;
+  if (hasNested(config, nestedPath)) {
+    return cfgString(config, nestedPath, fallback);
+  }
+  return cfgString(config, `${settingsBase}.${legacyKey}`, fallback);
+}
+
+function readGroupNumber(
+  config: Record<string, unknown> | null,
+  settingsBase: string,
+  key: string,
+  legacyKey: string,
+  fallback: number
+): number {
+  const nestedPath = `${groupBase(settingsBase)}.${key}`;
+  if (hasNested(config, nestedPath)) {
+    return cfgNumber(config, nestedPath, fallback);
+  }
+  return cfgNumber(config, `${settingsBase}.${legacyKey}`, fallback);
+}
+
+function readGroupBool(
+  config: Record<string, unknown> | null,
+  settingsBase: string,
+  key: string,
+  legacyKey: string,
+  fallback: boolean
+): boolean {
+  const nestedPath = `${groupBase(settingsBase)}.${key}`;
+  if (hasNested(config, nestedPath)) {
+    return cfgBool(config, nestedPath, fallback);
+  }
+  return cfgBool(config, `${settingsBase}.${legacyKey}`, fallback);
+}
+
 export type ImageCompareContentStyle = {
   shell: CSSProperties;
   mobileWidthCss: string;
@@ -32,30 +88,65 @@ export function readImageCompareContentStyle(
   panelMinHeight: number,
   isSectionHorizontal: boolean
 ): ImageCompareContentStyle {
-  const direction = cfgString(config, `${settingsBase}.contentDirection`, 'vertical');
-  const alignment = cfgString(config, `${settingsBase}.contentAlignment`, 'center');
-  const position = cfgString(config, `${settingsBase}.contentPosition`, 'center');
-  const gap = cfgNumber(config, `${settingsBase}.contentGap`, 30);
+  const direction = readGroupString(config, settingsBase, 'direction', 'contentDirection', 'vertical');
+  const alignment = readGroupString(
+    config,
+    settingsBase,
+    'layoutAlignment',
+    'contentAlignment',
+    'center'
+  );
+  const position = readGroupString(config, settingsBase, 'position', 'contentPosition', 'center');
+  const gap = readGroupNumber(config, settingsBase, 'layoutGap', 'contentGap', 30);
 
-  const widthMode = cfgString(config, `${settingsBase}.contentWidth`, 'fit');
-  const mobileWidthMode = cfgString(config, `${settingsBase}.contentMobileWidth`, 'fill');
-  const heightMode = cfgString(config, `${settingsBase}.contentHeight`, 'fit');
-  const customWidth = cfgNumber(config, `${settingsBase}.contentCustomWidth`, 100);
-  const mobileCustomWidth = cfgNumber(config, `${settingsBase}.contentMobileCustomWidth`, 100);
-  const customHeight = cfgNumber(config, `${settingsBase}.contentCustomHeight`, 100);
+  const widthMode = readGroupString(config, settingsBase, 'width', 'contentWidth', 'fit');
+  const mobileWidthMode = readGroupString(
+    config,
+    settingsBase,
+    'mobileWidth',
+    'contentMobileWidth',
+    'fill'
+  );
+  const heightMode = readGroupString(config, settingsBase, 'height', 'contentHeight', 'fit');
+  const customWidth = readGroupNumber(config, settingsBase, 'customWidth', 'contentCustomWidth', 100);
+  const mobileCustomWidth = readGroupNumber(
+    config,
+    settingsBase,
+    'mobileCustomWidth',
+    'contentMobileCustomWidth',
+    100
+  );
+  const customHeight = readGroupNumber(config, settingsBase, 'customHeight', 'contentCustomHeight', 100);
 
-  const inheritColorScheme = cfgBool(config, `${settingsBase}.contentInheritColorScheme`, true);
-  const bgMedia = cfgString(config, `${settingsBase}.contentBackgroundMedia`, 'none');
-  const bgImageUrl = cfgString(config, `${settingsBase}.contentBackgroundImageUrl`, '');
-  const borderStyle = cfgString(config, `${settingsBase}.contentBorderStyle`, 'none');
-  const cornerRadius = cfgNumber(config, `${settingsBase}.contentCornerRadius`, 0);
-  const backgroundOverlay = cfgBool(config, `${settingsBase}.contentBackgroundOverlay`, false);
-  const paddingTop = cfgNumber(config, `${settingsBase}.contentPaddingTop`, 0);
-  const paddingBottom = cfgNumber(config, `${settingsBase}.contentPaddingBottom`, 0);
-  const paddingLeft = cfgNumber(config, `${settingsBase}.contentPaddingLeft`, 0);
-  const paddingRight = cfgNumber(config, `${settingsBase}.contentPaddingRight`, 0);
-  const linkUrl = cfgString(config, `${settingsBase}.contentLinkUrl`, '');
-  const openInNewTab = cfgBool(config, `${settingsBase}.contentOpenInNewTab`, false);
+  const bgMedia = readGroupString(config, settingsBase, 'backgroundMedia', 'contentBackgroundMedia', 'none');
+  const bgImageUrl = readGroupString(
+    config,
+    settingsBase,
+    'backgroundImageUrl',
+    'contentBackgroundImageUrl',
+    ''
+  );
+  const borderStyle = readGroupString(config, settingsBase, 'borderStyle', 'contentBorderStyle', 'none');
+  const cornerRadius = readGroupNumber(config, settingsBase, 'cornerRadius', 'contentCornerRadius', 0);
+  const backgroundOverlay = readGroupBool(
+    config,
+    settingsBase,
+    'backgroundOverlay',
+    'contentBackgroundOverlay',
+    false
+  );
+  const paddingTop = readGroupNumber(config, settingsBase, 'paddingTop', 'contentPaddingTop', 0);
+  const paddingBottom = readGroupNumber(config, settingsBase, 'paddingBottom', 'contentPaddingBottom', 0);
+  const paddingLeft = readGroupNumber(config, settingsBase, 'paddingLeft', 'contentPaddingLeft', 0);
+  const paddingRight = readGroupNumber(config, settingsBase, 'paddingRight', 'contentPaddingRight', 0);
+  const linkUrl = readGroupString(config, settingsBase, 'linkUrl', 'contentLinkUrl', '');
+  const openInNewTab = readGroupBool(
+    config,
+    settingsBase,
+    'openLinkInNewTab',
+    'contentOpenInNewTab',
+    false
+  );
 
   const alignItems =
     alignment === 'center' ? 'center' : alignment === 'right' ? 'flex-end' : 'flex-start';
@@ -91,8 +182,8 @@ export function readImageCompareContentStyle(
     paddingBottom,
     paddingLeft,
     paddingRight,
-    background: inheritColorScheme ? sectionScheme.contentPanel : '#ffffff',
-    color: inheritColorScheme ? sectionScheme.color : '#111827',
+    background: sectionScheme.contentPanel,
+    color: sectionScheme.color,
     textAlign,
     minHeight: isSectionHorizontal ? panelMinHeight : undefined,
     border: borderStyle === 'solid' ? `1px solid ${sectionScheme.muted}33` : undefined,

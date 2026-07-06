@@ -106,6 +106,8 @@ export function featuredCollectionHeaderDefaultSettings(): Record<string, string
   };
 }
 
+const FC_HEADER_PANEL_KEYS = new Set(Object.keys(featuredCollectionHeaderDefaultSettings()));
+
 export function isFeaturedCollectionHeaderBlockNodeId(nodeId: string): boolean {
   return /^template:[^:]+:featured_collection(?:_\d+)?:block:collection_header$/.test(nodeId);
 }
@@ -358,6 +360,310 @@ export function prepareFeaturedCollectionHeaderSettingsNode(node: SidebarNode): 
   return { ...node, label: 'Header', kind: 'block', fields };
 }
 
+export function fcHeaderSettingsBaseFromNodeId(nodeId: string): string | null {
+  const match = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?):block:collection_header$/);
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.collection_header.settings`;
+}
+
+export function fcHeaderSettingsBaseFromPrefix(prefix: string): string | null {
+  const match = prefix.match(/^template:([^:]+):(featured_collection(?:_\d+)?)$/);
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.collection_header.settings`;
+}
+
+export function fcHeaderFieldDefs(settingsBase: string): EditorFieldDef[] {
+  const s = (key: string) => `${settingsBase}.${key}`;
+  return [
+    {
+      path: s('direction'),
+      type: 'select',
+      label: 'Direction',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'vertical', label: 'Vertical' },
+        { value: 'horizontal', label: 'Horizontal' },
+      ],
+    },
+    {
+      path: s('verticalOnMobile'),
+      type: 'boolean',
+      label: 'Vertical on mobile',
+      group: 'Layout',
+      sidebar: false,
+    },
+    {
+      path: s('layoutAlignment'),
+      type: 'select',
+      label: 'Alignment',
+      group: 'Layout',
+      widget: 'select',
+      sidebar: false,
+      options: [
+        { value: 'space-between', label: 'Space between' },
+        { value: 'flex-start', label: 'Start' },
+        { value: 'center', label: 'Center' },
+        { value: 'flex-end', label: 'End' },
+        { value: 'space-around', label: 'Space around' },
+      ],
+    },
+    {
+      path: s('position'),
+      type: 'select',
+      label: 'Position',
+      group: 'Layout',
+      widget: 'select',
+      sidebar: false,
+      options: [
+        { value: 'top', label: 'Top' },
+        { value: 'center', label: 'Center' },
+        { value: 'bottom', label: 'Bottom' },
+      ],
+    },
+    {
+      path: s('alignTextBaseline'),
+      type: 'boolean',
+      label: 'Align text baseline',
+      group: 'Layout',
+      sidebar: false,
+    },
+    {
+      path: s('layoutGap'),
+      type: 'number',
+      label: 'Gap',
+      group: 'Layout',
+      widget: 'slider',
+      min: 0,
+      max: 48,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('width'),
+      type: 'select',
+      label: 'Width',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'fill', label: 'Fill' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    },
+    {
+      path: s('customWidth'),
+      type: 'number',
+      label: 'Custom width',
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: false,
+    },
+    {
+      path: s('mobileWidth'),
+      type: 'select',
+      label: 'Mobile width',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'fill', label: 'Fill' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    },
+    {
+      path: s('mobileCustomWidth'),
+      type: 'number',
+      label: 'Custom width',
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: false,
+    },
+    {
+      path: s('height'),
+      type: 'select',
+      label: 'Height',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'fill', label: 'Fill' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    },
+    {
+      path: s('customHeight'),
+      type: 'number',
+      label: 'Custom height',
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: false,
+    },
+    {
+      path: s('backgroundMedia'),
+      type: 'select',
+      label: 'Background media',
+      group: 'Appearance',
+      widget: 'select',
+      sidebar: false,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'image', label: 'Image' },
+      ],
+    },
+    {
+      path: s('backgroundImageUrl'),
+      type: 'text',
+      label: 'Image',
+      group: 'Appearance',
+      widget: 'image',
+      sidebar: false,
+      placeholder: 'https://…',
+    },
+    {
+      path: s('backgroundImagePosition'),
+      type: 'select',
+      label: 'Image position',
+      group: 'Appearance',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'cover', label: 'Cover' },
+        { value: 'fit', label: 'Fit' },
+      ],
+    },
+    {
+      path: s('backgroundColor'),
+      type: 'text',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('borderStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Borders',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'solid', label: 'Solid' },
+      ],
+    },
+    {
+      path: s('borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: false,
+    },
+    {
+      path: s('borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('cornerRadius'),
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 50,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('paddingTop'),
+      type: 'number',
+      label: 'Top',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('paddingBottom'),
+      type: 'number',
+      label: 'Bottom',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('paddingLeft'),
+      type: 'number',
+      label: 'Left',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('paddingRight'),
+      type: 'number',
+      label: 'Right',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+  ];
+}
+
 function canonicalFcHeaderFieldsFromSchema(editorSchema: EditorSchemaDoc): EditorFieldDef[] {
   const tpl = editorSchema.templates?.find((t) => t.id === 'index');
   const sec = tpl?.sections?.find((s) => s.id === 'featured_collection');
@@ -369,14 +675,29 @@ export function fcHeaderFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   nodeId?: string
 ): EditorFieldDef[] {
-  const match = nodeId?.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
-  const canon = canonicalFcHeaderFieldsFromSchema(editorSchema);
-  if (!match || !canon.length) return canon;
-  const [, templateId, sectionInstanceId] = match;
-  return canon.map((field) => ({
-    ...field,
-    path: remapTemplateSchemaPath(field.path, templateId!, sectionInstanceId!),
-  }));
+  const canon = canonicalFcHeaderFieldsFromSchema(editorSchema).filter((field) => {
+    const key = field.path.split('.').pop() ?? '';
+    return FC_HEADER_PANEL_KEYS.has(key);
+  });
+  const settingsBase = nodeId ? fcHeaderSettingsBaseFromNodeId(nodeId) : null;
+  if (settingsBase) {
+    if (canon.length) {
+      const match = nodeId?.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
+      const schemaKeys = new Set(canon.map((field) => field.path.split('.').pop() ?? ''));
+      const fromSchema = match
+        ? canon.map((field) => ({
+            ...field,
+            path: remapTemplateSchemaPath(field.path, match[1]!, match[2]!),
+          }))
+        : canon;
+      const fromBuilt = fcHeaderFieldDefs(settingsBase).filter(
+        (field) => !schemaKeys.has(field.path.split('.').pop() ?? '')
+      );
+      return [...fromSchema, ...fromBuilt];
+    }
+    return fcHeaderFieldDefs(settingsBase);
+  }
+  return canon;
 }
 
 function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {

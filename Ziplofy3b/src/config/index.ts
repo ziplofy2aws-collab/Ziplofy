@@ -14,6 +14,7 @@ if (NODE_ENV === 'development') {
             "http://admin.localhost:5173",
             "http://localhost:5173",
             "http://localhost:5174",
+            "http://localhost:5175",
             // Allow any subdomain of localhost:5173 (e.g., admin.localhost:5173)
             /^http:\/\/([a-z0-9-]+\.)*localhost:5173$/i,
             // If you also run https locally via proxy/certs

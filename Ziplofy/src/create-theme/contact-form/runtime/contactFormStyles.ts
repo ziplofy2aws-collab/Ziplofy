@@ -65,6 +65,7 @@ export type ContactFormLayout = {
   height: string;
   minHeight?: number;
   colorScheme: ContactFormScheme;
+  backgroundColor: string;
   backgroundMedia: 'none' | 'image';
   backgroundImageUrl: string;
   borderStyle: 'none' | 'solid';
@@ -94,6 +95,7 @@ export function readContactFormLayout(
     height,
     minHeight: HEIGHT_MIN[height],
     colorScheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    backgroundColor: cfgString(config, `${settingsBase}.backgroundColor`, ''),
     backgroundMedia:
       cfgString(config, `${settingsBase}.backgroundMedia`, 'none') === 'image' ? 'image' : 'none',
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
@@ -103,6 +105,113 @@ export function readContactFormLayout(
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 32),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 32),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
+  };
+}
+
+export type ContactFormHeadingSettings = {
+  width: 'fit' | 'fill';
+  maxWidth: string;
+  alignment: 'left' | 'center' | 'right';
+  preset: string;
+  font: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textCase: string;
+  wrap: string;
+  color: string;
+  backgroundEnabled: boolean;
+  backgroundColor: string;
+  cornerRadius: number;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
+export function readContactFormHeading(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): ContactFormHeadingSettings {
+  const width = cfgString(config, `${settingsBase}.headingWidth`, 'fill');
+  const alignment = cfgString(config, `${settingsBase}.headingAlignment`, 'center');
+  return {
+    width: width === 'fit' ? 'fit' : 'fill',
+    maxWidth: cfgString(config, `${settingsBase}.headingMaxWidth`, 'normal'),
+    alignment: alignment === 'left' || alignment === 'right' ? alignment : 'center',
+    preset: cfgString(config, `${settingsBase}.headingTypographyPreset`, 'default'),
+    font: cfgString(config, `${settingsBase}.headingFont`, 'heading'),
+    fontSize: cfgString(config, `${settingsBase}.headingFontSize`, 'default'),
+    lineHeight: cfgString(config, `${settingsBase}.headingLineHeight`, 'normal'),
+    letterSpacing: cfgString(config, `${settingsBase}.headingLetterSpacing`, 'normal'),
+    textCase: cfgString(config, `${settingsBase}.headingTextCase`, 'default'),
+    wrap: cfgString(config, `${settingsBase}.headingWrap`, 'pretty'),
+    color: cfgString(config, `${settingsBase}.headingColor`, ''),
+    backgroundEnabled: cfgBool(config, `${settingsBase}.headingBackgroundEnabled`, false),
+    backgroundColor: cfgString(config, `${settingsBase}.headingBackgroundColor`, ''),
+    cornerRadius: cfgNumber(config, `${settingsBase}.headingCornerRadius`, 0),
+    paddingTop: cfgNumber(config, `${settingsBase}.headingPaddingTop`, 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.headingPaddingBottom`, 0),
+    paddingLeft: cfgNumber(config, `${settingsBase}.headingPaddingLeft`, 0),
+    paddingRight: cfgNumber(config, `${settingsBase}.headingPaddingRight`, 0),
+  };
+}
+
+export type ContactFormFormGroupSettings = {
+  desktopWidth: 'fit' | 'custom';
+  desktopCustomWidth: number;
+  mobileWidth: 'fit' | 'custom';
+  mobileCustomWidth: number;
+  backgroundColor: string;
+  inputStyle: 'default' | 'custom';
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
+export function readContactFormFormGroup(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): ContactFormFormGroupSettings {
+  const desktopWidth = cfgString(config, `${settingsBase}.formDesktopWidth`, 'fit');
+  const mobileWidth = cfgString(config, `${settingsBase}.formMobileWidth`, 'fit');
+  const inputStyle = cfgString(config, `${settingsBase}.formInputStyle`, 'default');
+  return {
+    desktopWidth: desktopWidth === 'custom' ? 'custom' : 'fit',
+    desktopCustomWidth: cfgNumber(config, `${settingsBase}.formDesktopCustomWidth`, 50),
+    mobileWidth: mobileWidth === 'custom' ? 'custom' : 'fit',
+    mobileCustomWidth: cfgNumber(config, `${settingsBase}.formMobileCustomWidth`, 100),
+    backgroundColor: cfgString(config, `${settingsBase}.formBackgroundColor`, ''),
+    inputStyle: inputStyle === 'custom' ? 'custom' : 'default',
+    paddingTop: cfgNumber(config, `${settingsBase}.formPaddingTop`, 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.formPaddingBottom`, 0),
+    paddingLeft: cfgNumber(config, `${settingsBase}.formPaddingLeft`, 0),
+    paddingRight: cfgNumber(config, `${settingsBase}.formPaddingRight`, 0),
+  };
+}
+
+export type ContactFormSubmitButtonSettings = {
+  style: 'primary' | 'secondary';
+  desktopWidth: 'fit' | 'custom';
+  desktopCustomWidth: number;
+  mobileWidth: 'fit' | 'custom';
+  mobileCustomWidth: number;
+};
+
+export function readContactFormSubmitButton(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): ContactFormSubmitButtonSettings {
+  const style = cfgString(config, `${settingsBase}.submitStyle`, 'primary');
+  const desktopWidth = cfgString(config, `${settingsBase}.submitDesktopWidth`, 'fit');
+  const mobileWidth = cfgString(config, `${settingsBase}.submitMobileWidth`, 'fit');
+  return {
+    style: style === 'secondary' ? 'secondary' : 'primary',
+    desktopWidth: desktopWidth === 'custom' ? 'custom' : 'fit',
+    desktopCustomWidth: cfgNumber(config, `${settingsBase}.submitDesktopCustomWidth`, 50),
+    mobileWidth: mobileWidth === 'custom' ? 'custom' : 'fit',
+    mobileCustomWidth: cfgNumber(config, `${settingsBase}.submitMobileCustomWidth`, 100),
   };
 }
 

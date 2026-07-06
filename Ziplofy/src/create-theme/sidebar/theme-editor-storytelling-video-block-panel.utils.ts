@@ -1,4 +1,9 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
+import {
+  STORYTELLING_VIDEO_MEDIA_FIELD_KEYS,
+  isStorytellingVideoMediaPanelFields,
+  storytellingVideoMediaFieldDefs,
+} from './theme-editor-storytelling-video-media-panel.utils';
 
 export type StorytellingVideoBlockKind = 'video' | 'caption_text' | 'caption_button';
 
@@ -57,37 +62,7 @@ export function storytellingVideoBlockFieldDefs(
 ): EditorFieldDef[] {
   const s = (key: string) => `${sectionBase}.settings.${key}`;
   if (blockKind === 'video') {
-    return [
-      {
-        path: s('videoSource'),
-        type: 'select',
-        label: 'Source',
-        widget: 'segmented',
-        group: 'Media',
-        sidebar: true,
-        options: [
-          { value: 'uploaded', label: 'Uploaded' },
-          { value: 'url', label: 'URL' },
-        ],
-      },
-      {
-        path: s('videoUrl'),
-        type: 'text',
-        label: 'Video URL',
-        widget: 'link',
-        group: 'Media',
-        sidebar: true,
-        placeholder: 'YouTube or Vimeo URL',
-      },
-      {
-        path: s('coverImageUrl'),
-        type: 'text',
-        label: 'Cover image',
-        widget: 'image',
-        group: 'Media',
-        sidebar: true,
-      },
-    ];
+    return storytellingVideoMediaFieldDefs(sectionBase);
   }
   if (blockKind === 'caption_text') {
     return [
@@ -95,7 +70,112 @@ export function storytellingVideoBlockFieldDefs(
         path: s('caption'),
         type: 'textarea',
         label: 'Text',
+        widget: 'richtext',
         group: 'Content',
+        sidebar: true,
+      },
+      {
+        path: s('captionWidth'),
+        type: 'select',
+        label: 'Width',
+        group: 'Layout',
+        widget: 'segmented',
+        options: [
+          { value: 'fit', label: 'Fit' },
+          { value: 'fill', label: 'Fill' },
+        ],
+        sidebar: true,
+      },
+      {
+        path: s('captionMaxWidth'),
+        type: 'select',
+        label: 'Max width',
+        group: 'Layout',
+        widget: 'select-inline',
+        options: [
+          { value: 'narrow', label: 'Narrow' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'wide', label: 'Wide' },
+        ],
+        sidebar: true,
+      },
+      {
+        path: s('captionTypographyPreset'),
+        type: 'select',
+        label: 'Preset',
+        group: 'Typography',
+        widget: 'select-inline',
+        description: 'Edit presets in theme settings',
+        options: [
+          { value: 'default', label: 'Default' },
+          { value: 'heading-1', label: 'Heading 1' },
+          { value: 'heading-2', label: 'Heading 2' },
+          { value: 'heading-3', label: 'Heading 3' },
+          { value: 'heading-4', label: 'Heading 4' },
+        ],
+        sidebar: true,
+      },
+      {
+        path: s('captionColor'),
+        type: 'color',
+        label: 'Text color',
+        group: 'Appearance',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: s('captionBackgroundEnabled'),
+        type: 'boolean',
+        label: 'Background',
+        group: 'Appearance',
+        sidebar: true,
+      },
+      {
+        path: s('captionPaddingTop'),
+        type: 'number',
+        label: 'Top',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('captionPaddingBottom'),
+        type: 'number',
+        label: 'Bottom',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('captionPaddingLeft'),
+        type: 'number',
+        label: 'Left',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
+        path: s('captionPaddingRight'),
+        type: 'number',
+        label: 'Right',
+        group: 'Padding',
+        widget: 'slider',
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: 'px',
         sidebar: true,
       },
     ];
@@ -117,8 +197,128 @@ export function storytellingVideoBlockFieldDefs(
       sidebar: true,
       placeholder: 'Paste a link or search',
     },
+    {
+      path: s('linkOpenInNewTab'),
+      type: 'boolean',
+      label: 'Open link in new tab',
+      group: 'Content',
+      sidebar: true,
+    },
+    {
+      path: s('buttonStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Content',
+      widget: 'select',
+      options: [
+        { value: 'primary', label: 'Primary' },
+        { value: 'secondary', label: 'Secondary' },
+        { value: 'link', label: 'Link' },
+        { value: 'custom', label: 'Custom' },
+      ],
+      sidebar: true,
+    },
+    {
+      path: s('buttonLinkTextColor'),
+      type: 'color',
+      label: 'Link text color',
+      group: 'Content',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s('buttonCustomBackground'),
+      type: 'color',
+      label: 'Background',
+      group: 'Content',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s('buttonCustomText'),
+      type: 'color',
+      label: 'Text color',
+      group: 'Content',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s('buttonDesktopWidth'),
+      type: 'select',
+      label: 'Desktop width',
+      group: 'Size',
+      widget: 'segmented',
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'custom', label: 'Custom' },
+      ],
+      sidebar: true,
+    },
+    {
+      path: s('buttonDesktopCustomWidth'),
+      type: 'number',
+      label: 'Desktop custom width',
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    },
+    {
+      path: s('buttonMobileWidth'),
+      type: 'select',
+      label: 'Mobile width',
+      group: 'Size',
+      widget: 'segmented',
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'custom', label: 'Custom' },
+      ],
+      sidebar: true,
+    },
+    {
+      path: s('buttonMobileCustomWidth'),
+      type: 'number',
+      label: 'Mobile custom width',
+      group: 'Size',
+      widget: 'slider',
+      min: 1,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    },
   ];
 }
+
+const STORYTELLING_VIDEO_TEXT_FIELD_KEYS = new Set([
+  'caption',
+  'captionWidth',
+  'captionMaxWidth',
+  'captionTypographyPreset',
+  'captionColor',
+  'captionBackgroundEnabled',
+  'captionPaddingTop',
+  'captionPaddingBottom',
+  'captionPaddingLeft',
+  'captionPaddingRight',
+]);
+
+const STORYTELLING_VIDEO_BUTTON_FIELD_KEYS = new Set([
+  'linkLabel',
+  'linkUrl',
+  'linkOpenInNewTab',
+  'buttonStyle',
+  'buttonLinkTextColor',
+  'buttonCustomBackground',
+  'buttonCustomText',
+  'buttonDesktopWidth',
+  'buttonDesktopCustomWidth',
+  'buttonMobileWidth',
+  'buttonMobileCustomWidth',
+]);
 
 export function storytellingVideoBlockFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
   const sectionBase = storytellingVideoSectionBaseFromNodeId(nodeId);
@@ -130,13 +330,30 @@ export function storytellingVideoBlockFieldDefsFromNodeId(nodeId: string): Edito
 export function isStorytellingVideoBlockField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
   if (!/storytelling_video/.test(field.path) || field.path.includes('.blocks.')) return false;
-  if (key === 'videoSource' || key === 'videoUrl' || key === 'coverImageUrl') return true;
-  if (key === 'caption') return true;
-  return key === 'linkLabel' || key === 'linkUrl';
+  if (STORYTELLING_VIDEO_MEDIA_FIELD_KEYS.has(key)) return true;
+  if (STORYTELLING_VIDEO_TEXT_FIELD_KEYS.has(key)) return true;
+  return STORYTELLING_VIDEO_BUTTON_FIELD_KEYS.has(key);
+}
+
+export function isStorytellingVideoCaptionTextPanelFields(fields: EditorFieldDef[]): boolean {
+  if (!fields.length) return false;
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  const path = fields[0]?.path ?? '';
+  return keys.has('caption') && keys.has('captionWidth') && path.includes('storytelling_video');
+}
+
+export function isStorytellingVideoCaptionButtonPanelFields(fields: EditorFieldDef[]): boolean {
+  if (!fields.length) return false;
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  const path = fields[0]?.path ?? '';
+  return keys.has('linkLabel') && keys.has('buttonStyle') && path.includes('storytelling_video');
 }
 
 export function isStorytellingVideoBlockFieldsOnly(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
+  if (isStorytellingVideoMediaPanelFields(fields)) return false;
+  if (isStorytellingVideoCaptionTextPanelFields(fields)) return false;
+  if (isStorytellingVideoCaptionButtonPanelFields(fields)) return false;
   return fields.every(isStorytellingVideoBlockField);
 }
 

@@ -239,10 +239,11 @@ export function ThemeEditorLinkPickerDropdown({
     });
   }, [blogPosts, blogs, searchQuery]);
 
-  const filteredRootOptions = useMemo(
-    () => filterOptions(THEME_LINK_ROOT_OPTIONS, searchQuery),
-    [searchQuery]
-  );
+  // The top-level category list always shows every category (Shopify-style).
+  // `searchQuery` (the current field value/link) only filters items inside a
+  // drill-down view — never the category list — otherwise an already-set link
+  // like "/collections" would hide the other categories.
+  const filteredRootOptions = THEME_LINK_ROOT_OPTIONS;
 
   const openCollectionsPicker = useCallback(async () => {
     if (!storeId) {

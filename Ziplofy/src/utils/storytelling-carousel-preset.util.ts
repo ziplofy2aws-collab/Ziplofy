@@ -1,25 +1,39 @@
 /** Defaults for Storytelling carousel sections. */
 
+import {
+  storytellingCarouselCardImageDefaultSettings,
+  storytellingCarouselCardHeadingDefaultSettings,
+  storytellingCarouselCardTextDefaultSettings,
+  storytellingCarouselHeaderDefaultSettings,
+} from '../create-theme/sidebar/theme-editor-storytelling-carousel-block-panel.utils';
+import { seedStorytellingCarouselCardGroupInSettings } from '../create-theme/sidebar/theme-editor-storytelling-carousel-card-panel.utils';
+import { seedStorytellingCarouselContentGroupInSettings } from '../create-theme/sidebar/theme-editor-storytelling-carousel-content-group-panel.utils';
+
 const SLIDE_TITLES = ['Artistry in action', 'Uncompromising quality', 'Made to last'] as const;
-const DEFAULT_DESC = 'Made with care and unconditionally loved by our customers.';
 
 function makeSlide(title: string) {
   return {
     type: 'carousel-slide',
-    settings: {
+    settings: seedStorytellingCarouselCardGroupInSettings({
+      ...storytellingCarouselCardImageDefaultSettings(),
+      ...storytellingCarouselCardHeadingDefaultSettings(),
+      ...storytellingCarouselCardTextDefaultSettings(),
       title,
-      description: DEFAULT_DESC,
-      imageUrl: '',
-    },
+    } as Record<string, unknown>),
   };
 }
 
 export function applyStorytellingCarouselPreset(section: Record<string, unknown>): void {
   if (section.type !== 'storytelling-carousel') return;
 
-  const settings = (section.settings ?? {}) as Record<string, unknown>;
+  const settings = seedStorytellingCarouselContentGroupInSettings(
+    (section.settings ?? {}) as Record<string, unknown>
+  );
   settings.catalogVariant = settings.catalogVariant ?? 'storytelling-carousel';
-  settings.heading = settings.heading ?? 'Discover elevated design';
+  const headerDefaults = storytellingCarouselHeaderDefaultSettings();
+  for (const [key, value] of Object.entries(headerDefaults)) {
+    if (settings[key] === undefined) settings[key] = value;
+  }
   settings.columns = settings.columns ?? 3;
   settings.mobileColumns = settings.mobileColumns ?? '1';
   settings.sectionWidth = settings.sectionWidth ?? 'page';
@@ -50,4 +64,26 @@ export function applyStorytellingCarouselPreset(section: Record<string, unknown>
 
   section.blocks = blocks;
   section.block_order = order;
+
+  const imageDefaults = storytellingCarouselCardImageDefaultSettings();
+  const textDefaults = storytellingCarouselCardTextDefaultSettings();
+  const headingDefaults = storytellingCarouselCardHeadingDefaultSettings();
+  for (const slideId of order) {
+    const block = blocks[slideId];
+    if (!block || typeof block !== 'object') continue;
+    const settings = (block.settings ?? {}) as Record<string, unknown>;
+    for (const [key, value] of Object.entries(imageDefaults)) {
+      if (settings[key] === undefined) settings[key] = value;
+    }
+    for (const [key, value] of Object.entries(headingDefaults)) {
+      if (key === 'title') continue;
+      if (settings[key] === undefined) settings[key] = value;
+    }
+    for (const [key, value] of Object.entries(textDefaults)) {
+      if (settings[key] === undefined) settings[key] = value;
+    }
+    block.settings = seedStorytellingCarouselCardGroupInSettings(settings);
+    blocks[slideId] = block;
+  }
+  section.blocks = blocks;
 }

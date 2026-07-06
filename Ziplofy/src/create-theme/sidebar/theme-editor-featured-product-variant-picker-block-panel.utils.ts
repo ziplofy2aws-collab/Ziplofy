@@ -1,13 +1,20 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
 
-export const FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER = ['General', 'Padding'] as const;
+export const FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER = [
+  'Type',
+  'Appearance',
+  'Padding',
+] as const;
 
 const PANEL_GROUPS = new Set<string>(FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER);
 
 const VARIANT_PICKER_FIELD_KEYS = new Set([
   'style',
   'swatches',
+  'textColor',
+  'variantStyle',
+  'selectedVariantStyle',
   'alignment',
   'paddingTop',
   'paddingBottom',
@@ -18,6 +25,11 @@ const VARIANT_PICKER_FIELD_KEYS = new Set([
 const STYLE_OPTIONS = [
   { value: 'buttons', label: 'Buttons' },
   { value: 'dropdown', label: 'Dropdown' },
+] as const;
+
+const DEFAULT_CUSTOM_STYLE_OPTIONS = [
+  { value: 'default', label: 'Default' },
+  { value: 'custom', label: 'Custom' },
 ] as const;
 
 const ALIGNMENT_OPTIONS = [
@@ -39,7 +51,10 @@ function blocksBaseFromNodeId(nodeId: string): string | null {
 export function featuredProductVariantPickerDefaultSettings(): Record<string, string | number | boolean> {
   return {
     style: 'buttons',
-    swatches: false,
+    swatches: true,
+    textColor: 'default',
+    variantStyle: 'default',
+    selectedVariantStyle: 'default',
     alignment: 'left',
     paddingTop: 0,
     paddingBottom: 8,
@@ -55,7 +70,7 @@ export function featuredProductVariantPickerFieldDefs(blocksBase: string): Edito
       path: s('style'),
       type: 'select',
       label: 'Style',
-      group: 'General',
+      group: 'Type',
       widget: 'select',
       sidebar: false,
       options: [...STYLE_OPTIONS],
@@ -64,14 +79,40 @@ export function featuredProductVariantPickerFieldDefs(blocksBase: string): Edito
       path: s('swatches'),
       type: 'boolean',
       label: 'Swatches',
-      group: 'General',
+      group: 'Type',
       sidebar: false,
+    },
+    {
+      path: s('textColor'),
+      type: 'text',
+      label: 'Text color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('variantStyle'),
+      type: 'select',
+      label: 'Variant style',
+      group: 'Appearance',
+      widget: 'segmented',
+      sidebar: false,
+      options: [...DEFAULT_CUSTOM_STYLE_OPTIONS],
+    },
+    {
+      path: s('selectedVariantStyle'),
+      type: 'select',
+      label: 'Selected variant style',
+      group: 'Appearance',
+      widget: 'segmented',
+      sidebar: false,
+      options: [...DEFAULT_CUSTOM_STYLE_OPTIONS],
     },
     {
       path: s('alignment'),
       type: 'select',
       label: 'Alignment',
-      group: 'General',
+      group: 'Appearance',
       widget: 'segmented',
       sidebar: false,
       options: [...ALIGNMENT_OPTIONS],
@@ -132,6 +173,14 @@ export function featuredProductVariantPickerFieldDefsFromNodeId(nodeId: string):
   return base ? featuredProductVariantPickerFieldDefs(base) : [];
 }
 
+function mergeVariantPickerFieldDefs(
+  schemaFields: EditorFieldDef[],
+  built: EditorFieldDef[]
+): EditorFieldDef[] {
+  const schemaKeys = new Set(schemaFields.map((f) => f.path.split('.').pop() ?? ''));
+  return [...schemaFields, ...built.filter((f) => !schemaKeys.has(f.path.split('.').pop() ?? ''))];
+}
+
 export function featuredProductVariantPickerFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   nodeId: string
@@ -145,14 +194,16 @@ export function featuredProductVariantPickerFieldDefsFromSchema(
   const details = sec?.blocks?.find((b) => b.id === 'details');
   const variantPicker = details?.blocks?.find((b) => b.id === 'variant_picker');
   const blocksBase = blocksBaseFromNodeId(nodeId);
+  const built = blocksBase ? featuredProductVariantPickerFieldDefs(blocksBase) : [];
   const schemaFields = variantPicker?.settingsFields ?? [];
   if (schemaFields.length) {
-    return schemaFields.map((f) => ({
+    const remapped = schemaFields.map((f) => ({
       ...f,
       path: remapTemplateSchemaPath(f.path, tplId, secId),
     }));
+    return mergeVariantPickerFieldDefs(remapped, built);
   }
-  return blocksBase ? featuredProductVariantPickerFieldDefs(blocksBase) : [];
+  return built;
 }
 
 export const FEATURED_PRODUCT_VARIANT_PICKER_DEFAULTS: Record<string, string | boolean> =
@@ -168,7 +219,10 @@ function fieldSortKey(path: string): number {
   const rank: Record<string, number> = {
     style: 0,
     swatches: 1,
-    alignment: 2,
+    textColor: 0,
+    variantStyle: 1,
+    selectedVariantStyle: 2,
+    alignment: 3,
     paddingTop: 10,
     paddingBottom: 11,
     paddingLeft: 12,
@@ -195,7 +249,7 @@ export function groupFeaturedProductVariantPickerPanelFields(
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields.filter(isFeaturedProductVariantPickerPanelField)) {
-    const group = field.group ?? 'General';
+    const group = field.group ?? 'Type';
     const list = map.get(group) ?? [];
     list.push(field);
     map.set(group, list);
@@ -245,10 +299,10 @@ export function prepareFeaturedProductVariantPickerSettingsNode(node: SidebarNod
     .filter(isFeaturedProductVariantPickerPanelField)
     .sort((a, b) => {
       const ga = FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER.indexOf(
-        (a.group ?? 'General') as (typeof FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER)[number]
+        (a.group ?? 'Type') as (typeof FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER)[number]
       );
       const gb = FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER.indexOf(
-        (b.group ?? 'General') as (typeof FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER)[number]
+        (b.group ?? 'Type') as (typeof FEATURED_PRODUCT_VARIANT_PICKER_PANEL_GROUP_ORDER)[number]
       );
       if (ga !== gb) return ga - gb;
       return fieldSortKey(a.path) - fieldSortKey(b.path);

@@ -36,7 +36,8 @@ export function heroLargeLogoTextDefaultSettings(text: string): Record<string, s
 }
 
 export function heroTextBlockFieldDefs(blocksBase: string): EditorFieldDef[] {
-  return textBlockFieldDefs(blocksBase);
+  // Large logo's Text block exposes only Width + Max width in Layout (no Alignment).
+  return textBlockFieldDefs(blocksBase).filter((f) => !f.path.endsWith('.alignment'));
 }
 
 export function heroTextBlockFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
@@ -105,6 +106,149 @@ export function extendValuesForHeroTextBlock(
     const fields = heroTextBlockFieldDefsFromNode(nodeId, match[1]!, match[2]!);
     return seedTextBlockValues(values, fields, config);
   }
+  return seedTextBlockValues(values, defs, config);
+}
+
+function heroMarqueeSettingsBaseFromNodeId(nodeId: string): string | null {
+  const m = nodeId.match(
+    /^(template:[^:]+:hero_main(?:_\d+)?|layout:hero_main(?:_\d+)?):(?:group:(?:marquee:text|spacer:spacer)|marquee(?::.*)?)$/
+  );
+  if (!m) return null;
+  const prefix = m[1]!;
+  const layout = prefix.match(/^layout:(.+)$/);
+  if (layout) return `sections.${layout[1]}.settings`;
+  const tpl = prefix.match(/^template:([^:]+):(.+)$/);
+  if (tpl) return `templates.${tpl[1]}.sections.${tpl[2]}.settings`;
+  return `${prefix}.settings`;
+}
+
+/** Seed sidebar `values` for Hero: Marquee Spacer/Text virtual block fields from config. */
+export function extendValuesForHeroMarquee(
+  values: Record<string, string | boolean>,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const settingsBase = heroMarqueeSettingsBaseFromNodeId(nodeId);
+  if (!settingsBase) return values;
+  const defs: EditorFieldDef[] = [
+    ...textBlockFieldDefs(`${settingsBase}.marqueeTextBlock`).filter(
+      (f) => !f.path.endsWith('.alignment')
+    ),
+    { path: `${settingsBase}.marqueeSpacerUnit`, type: 'select', label: 'Unit' },
+    { path: `${settingsBase}.marqueeSpacerHeight`, type: 'number', label: 'Size' },
+    { path: `${settingsBase}.marqueeSpacerCustomMobile`, type: 'boolean', label: 'Custom mobile size' },
+    { path: `${settingsBase}.marqueeSpacerMobileHeight`, type: 'number', label: 'Mobile size' },
+    { path: `${settingsBase}.marqueeMotionDirection`, type: 'select', label: 'Motion direction' },
+    { path: `${settingsBase}.marqueeBackgroundColor`, type: 'color', label: 'Background color' },
+    { path: `${settingsBase}.marqueeTransparentBg`, type: 'boolean', label: 'Transparent background' },
+    { path: `${settingsBase}.marqueePaddingTop`, type: 'number', label: 'Top' },
+    { path: `${settingsBase}.marqueePaddingBottom`, type: 'number', label: 'Bottom' },
+    { path: `${settingsBase}.marqueeGap`, type: 'number', label: 'Gap' },
+  ];
+  return seedTextBlockValues(values, defs, config);
+}
+
+/** Settings base for a Hero: Bottom aligned "Group" block node (content_group / heading_group). */
+function heroBottomGroupSettingsBaseFromNodeId(nodeId: string): string | null {
+  const m = nodeId.match(
+    /^(template:[^:]+:hero_main(?:_\d+)?|layout:hero_main(?:_\d+)?):block:content_group(:nested:heading_group)?$/
+  );
+  if (!m) return null;
+  const prefix = m[1]!;
+  const nested = Boolean(m[2]);
+  const layout = prefix.match(/^layout:(.+)$/);
+  const blocksBase = layout
+    ? `sections.${layout[1]}.blocks`
+    : (() => {
+        const tpl = prefix.match(/^template:([^:]+):(.+)$/);
+        return tpl ? `templates.${tpl[1]}.sections.${tpl[2]}.blocks` : null;
+      })();
+  if (!blocksBase) return null;
+  return nested
+    ? `${blocksBase}.content_group.blocks.heading_group.settings`
+    : `${blocksBase}.content_group.settings`;
+}
+
+const HERO_GROUP_BLOCK_BOOLEAN_KEYS = new Set([
+  'verticalOnMobile',
+  'alignTextBaseline',
+  'backgroundOverlay',
+  'linkOpenInNewTab',
+]);
+
+const HERO_GROUP_BLOCK_KEYS = [
+  'direction',
+  'verticalOnMobile',
+  'layoutAlignment',
+  'position',
+  'alignTextBaseline',
+  'layoutGap',
+  'width',
+  'customWidth',
+  'mobileWidth',
+  'mobileCustomWidth',
+  'height',
+  'customHeight',
+  'backgroundMedia',
+  'backgroundImageUrl',
+  'backgroundColor',
+  'backgroundOverlay',
+  'borderStyle',
+  'cornerRadius',
+  'link',
+  'linkOpenInNewTab',
+  'paddingTop',
+  'paddingBottom',
+  'paddingLeft',
+  'paddingRight',
+];
+
+/** Settings base for a Hero: Bottom aligned nested Text/Heading block node. */
+function heroBottomTextBlockBaseFromNodeId(nodeId: string): string | null {
+  const m = nodeId.match(
+    /^(template:[^:]+:hero_main(?:_\d+)?|layout:hero_main(?:_\d+)?):block:content_group(:nested:heading_group)?:nested:(text_intro|heading_main|text_body)$/
+  );
+  if (!m) return null;
+  const prefix = m[1]!;
+  const nested = Boolean(m[2]);
+  const blockId = m[3]!;
+  const layout = prefix.match(/^layout:(.+)$/);
+  const blocksBase = layout
+    ? `sections.${layout[1]}.blocks`
+    : (() => {
+        const tpl = prefix.match(/^template:([^:]+):(.+)$/);
+        return tpl ? `templates.${tpl[1]}.sections.${tpl[2]}.blocks` : null;
+      })();
+  if (!blocksBase) return null;
+  return nested
+    ? `${blocksBase}.content_group.blocks.heading_group.blocks.${blockId}`
+    : `${blocksBase}.content_group.blocks.${blockId}`;
+}
+
+/** Seed sidebar `values` for a Hero: Bottom aligned nested Text/Heading block panel from config. */
+export function extendValuesForHeroBottomText(
+  values: Record<string, string | boolean>,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const base = heroBottomTextBlockBaseFromNodeId(nodeId);
+  if (!base) return values;
+  return seedTextBlockValues(values, textBlockFieldDefs(base), config);
+}
+
+/** Seed sidebar `values` for a Hero: Bottom aligned "Group" block panel from merged config. */
+export function extendValuesForHeroBottomGroup(
+  values: Record<string, string | boolean>,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const settingsBase = heroBottomGroupSettingsBaseFromNodeId(nodeId);
+  if (!settingsBase) return values;
+  const defs: EditorFieldDef[] = HERO_GROUP_BLOCK_KEYS.map((key) => ({
+    path: `${settingsBase}.${key}`,
+    type: HERO_GROUP_BLOCK_BOOLEAN_KEYS.has(key) ? 'boolean' : 'text',
+    label: key,
+  }));
   return seedTextBlockValues(values, defs, config);
 }
 

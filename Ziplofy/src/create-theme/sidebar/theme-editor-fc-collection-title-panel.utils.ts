@@ -262,6 +262,182 @@ export function prepareCollectionTitleStyleSettingsNode(node: SidebarNode): Side
   return { ...node, label: node.label, kind: 'block', fields };
 }
 
+export function collectionTitleSettingsBaseFromNodeId(nodeId: string): string | null {
+  const match = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?):block:collection_header/);
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.collection_header.settings`;
+}
+
+export function collectionTitleSettingsBaseFromPrefix(prefix: string): string | null {
+  const match = prefix.match(/^template:([^:]+):(featured_collection(?:_\d+)?)$/);
+  if (!match) return null;
+  return `templates.${match[1]}.sections.${match[2]}.blocks.collection_header.settings`;
+}
+
+export function collectionTitleFieldDefs(settingsBase: string): EditorFieldDef[] {
+  const s = (key: string) => `${settingsBase}.${key}`;
+  const fields: EditorFieldDef[] = [
+    {
+      path: s('title'),
+      type: 'textarea',
+      label: 'Text',
+      group: 'Text',
+      widget: 'richtext',
+      sidebar: false,
+      description: 'Collection title shown in the header.',
+    },
+    {
+      path: s('titleWidth'),
+      type: 'select',
+      label: 'Width',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'fill', label: 'Fill' },
+      ],
+    },
+    {
+      path: s('titleMaxWidth'),
+      type: 'select',
+      label: 'Max width',
+      group: 'Layout',
+      widget: 'select',
+      sidebar: false,
+      options: [
+        { value: 'narrow', label: 'Narrow' },
+        { value: 'normal', label: 'Normal' },
+        { value: 'wide', label: 'Wide' },
+        { value: 'none', label: 'None' },
+      ],
+    },
+    {
+      path: s('titleAlignment'),
+      type: 'select',
+      label: 'Alignment',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: false,
+      options: [
+        { value: 'left', label: 'Left' },
+        { value: 'center', label: 'Center' },
+        { value: 'right', label: 'Right' },
+      ],
+    },
+    {
+      path: s('titleTypographyPreset'),
+      type: 'select',
+      label: 'Preset',
+      group: 'Typography',
+      widget: 'select',
+      sidebar: false,
+      description: 'Edit presets in theme settings',
+      options: [
+        { value: 'default', label: 'Default' },
+        { value: 'paragraph', label: 'Paragraph' },
+        { value: 'heading-1', label: 'Heading 1' },
+        { value: 'heading-2', label: 'Heading 2' },
+        { value: 'heading-3', label: 'Heading 3' },
+        { value: 'heading-4', label: 'Heading 4' },
+        { value: 'heading-5', label: 'Heading 5' },
+        { value: 'heading-6', label: 'Heading 6' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    },
+    {
+      path: s('titleColor'),
+      type: 'text',
+      label: 'Text color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('titleBackgroundEnabled'),
+      type: 'boolean',
+      label: 'Background',
+      group: 'Appearance',
+      widget: 'toggle',
+      sidebar: false,
+    },
+    {
+      path: s('titleBackgroundColor'),
+      type: 'text',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
+    },
+    {
+      path: s('titleCornerRadius'),
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Appearance',
+      widget: 'slider',
+      min: 0,
+      max: 50,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('titlePaddingTop'),
+      type: 'number',
+      label: 'Top',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('titlePaddingBottom'),
+      type: 'number',
+      label: 'Bottom',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('titlePaddingLeft'),
+      type: 'number',
+      label: 'Left',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('titlePaddingRight'),
+      type: 'number',
+      label: 'Right',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+  ];
+
+  for (const key of COLLECTION_TITLE_CUSTOM_TYPOGRAPHY_KEYS) {
+    fields.push(resolveCollectionTitleTypographyField(key, settingsBase, fields));
+  }
+
+  return fields;
+}
+
 function canonicalCollectionTitleFieldsFromSchema(editorSchema: EditorSchemaDoc): EditorFieldDef[] {
   const tpl = editorSchema.templates?.find((t) => t.id === 'index');
   const sec = tpl?.sections?.find((s) => s.id === 'featured_collection');
@@ -281,14 +457,29 @@ export function collectionTitleFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   nodeId?: string
 ): EditorFieldDef[] {
-  const match = nodeId?.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
-  const canon = canonicalCollectionTitleFieldsFromSchema(editorSchema);
-  if (!match || !canon.length) return canon;
-  const [, templateId, sectionInstanceId] = match;
-  return canon.map((field) => ({
-    ...field,
-    path: remapTemplateSchemaPath(field.path, templateId!, sectionInstanceId!),
-  }));
+  const canon = canonicalCollectionTitleFieldsFromSchema(editorSchema).filter((field) => {
+    const key = field.path.split('.').pop() ?? '';
+    return TITLE_PANEL_KEYS.has(key);
+  });
+  const settingsBase = nodeId ? collectionTitleSettingsBaseFromNodeId(nodeId) : null;
+  if (settingsBase) {
+    if (canon.length) {
+      const match = nodeId?.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
+      const schemaKeys = new Set(canon.map((field) => field.path.split('.').pop() ?? ''));
+      const fromSchema = match
+        ? canon.map((field) => ({
+            ...field,
+            path: remapTemplateSchemaPath(field.path, match[1]!, match[2]!),
+          }))
+        : canon;
+      const fromBuilt = collectionTitleFieldDefs(settingsBase).filter(
+        (field) => !schemaKeys.has(field.path.split('.').pop() ?? '')
+      );
+      return [...fromSchema, ...fromBuilt];
+    }
+    return collectionTitleFieldDefs(settingsBase);
+  }
+  return canon;
 }
 
 function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
@@ -327,6 +518,29 @@ export function extendValuesForCollectionTitleBlock(
   }
 
     if (settingsBase) {
+      const styleDefaults: Record<string, string | boolean> = {
+        [`${settingsBase}.titleWidth`]: 'fit',
+        [`${settingsBase}.titleMaxWidth`]: 'normal',
+        [`${settingsBase}.titleTypographyPreset`]: 'default',
+        [`${settingsBase}.titleColor`]: 'default',
+        [`${settingsBase}.titleBackgroundEnabled`]: false,
+        [`${settingsBase}.titlePaddingTop`]: 0,
+        [`${settingsBase}.titlePaddingBottom`]: 0,
+        [`${settingsBase}.titlePaddingLeft`]: 0,
+        [`${settingsBase}.titlePaddingRight`]: 0,
+      };
+      for (const [path, fallback] of Object.entries(styleDefaults)) {
+        if (next[path] !== undefined) continue;
+        const fromConfig = getNested(config, path.split('.'));
+        if (fromConfig !== undefined && fromConfig !== null && fromConfig !== '') {
+          next[path] =
+            typeof fallback === 'boolean' ? Boolean(fromConfig) : String(fromConfig);
+        } else {
+          next[path] = fallback;
+        }
+        changed = true;
+      }
+
       const presetPath = `${settingsBase}.titleTypographyPreset`;
       const presetRaw = next[presetPath];
       const preset =

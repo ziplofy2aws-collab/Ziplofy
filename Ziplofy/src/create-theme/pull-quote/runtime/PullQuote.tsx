@@ -1,8 +1,13 @@
 import { useMemo, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
-import { cfgString } from '../../runtime/shared/config';
-import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import {
+  resolveThemeButtonVariantStyle,
+  themeButtonInlineStyle,
+} from '../../runtime/shared/themeButtonRuntime';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
@@ -43,8 +48,45 @@ export function PullQuote({
     cfgString(config, `${settingsBase}.quote`, DEFAULT_QUOTE) || DEFAULT_QUOTE;
   const linkLabel = cfgString(config, `${settingsBase}.linkLabel`, 'Shop now');
   const linkUrl = cfgString(config, `${settingsBase}.linkUrl`, '/collections');
+  const linkOpenInNewTab = cfgBool(config, `${settingsBase}.linkOpenInNewTab`, false);
+  const buttonStyleMode = cfgString(config, `${settingsBase}.buttonStyle`, 'link');
+  const buttonVariant = buttonStyleMode === 'secondary' ? 'secondary' : 'primary';
+  const buttonCustomBackground = cfgString(config, `${settingsBase}.buttonCustomBackground`, '#111827');
+  const buttonCustomText = cfgString(config, `${settingsBase}.buttonCustomText`, '#ffffff');
+  const buttonLinkTextColorRaw = cfgString(config, `${settingsBase}.buttonLinkTextColor`, '');
+  const buttonDesktopWidthMode = cfgString(config, `${settingsBase}.buttonDesktopWidth`, 'fit');
+  const buttonMobileWidthMode = cfgString(config, `${settingsBase}.buttonMobileWidth`, 'fit');
+  const clampPercent = (n: number) => Math.min(100, Math.max(1, Number.isFinite(n) ? n : 100));
+  const desktopBtnWidth =
+    buttonDesktopWidthMode === 'custom'
+      ? `${clampPercent(cfgNumber(config, `${settingsBase}.buttonDesktopCustomWidth`, 100))}%`
+      : 'fit-content';
+  const mobileBtnWidth =
+    buttonMobileWidthMode === 'custom'
+      ? `${clampPercent(cfgNumber(config, `${settingsBase}.buttonMobileCustomWidth`, 100))}%`
+      : 'fit-content';
+  const themeButtonStyle = useMemo(
+    () => resolveThemeButtonVariantStyle(config, buttonVariant),
+    [config, buttonVariant]
+  );
+
+  const quoteWidthMode = cfgString(config, `${settingsBase}.quoteWidth`, 'fill');
+  const quoteMaxWidthMode = cfgString(config, `${settingsBase}.quoteMaxWidth`, 'wide');
+  const quoteAlignment = cfgString(config, `${settingsBase}.quoteAlignment`, '');
+  const quotePreset = cfgString(config, `${settingsBase}.quoteTypographyPreset`, 'default');
+  const quoteColorRaw = cfgString(config, `${settingsBase}.quoteColor`, '');
+  const quoteBackgroundEnabled = cfgBool(config, `${settingsBase}.quoteBackgroundEnabled`, false);
+  const quotePaddingTop = cfgNumber(config, `${settingsBase}.quotePaddingTop`, 0);
+  const quotePaddingBottom = cfgNumber(config, `${settingsBase}.quotePaddingBottom`, 0);
+  const quotePaddingLeft = cfgNumber(config, `${settingsBase}.quotePaddingLeft`, 0);
+  const quotePaddingRight = cfgNumber(config, `${settingsBase}.quotePaddingRight`, 0);
 
   const scheme = style.scheme;
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+  const sectionBackground =
+    backgroundColorRaw === '' || backgroundColorRaw === 'default'
+      ? scheme.background
+      : resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background);
   const textAlign = pullQuoteContentAlign(style.layoutAlignment);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
@@ -53,7 +95,7 @@ export function PullQuote({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: scheme.background,
+    background: sectionBackground,
     color: scheme.color,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
@@ -103,23 +145,92 @@ export function PullQuote({
     zIndex: 2,
   };
 
+  const QUOTE_PRESETS: Record<string, { fontSize: string; fontWeight: number; lineHeight: number }> = {
+    default: { fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)', fontWeight: 700, lineHeight: 1.25 },
+    'heading-1': { fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: 700, lineHeight: 1.1 },
+    'heading-2': { fontSize: 'clamp(1.875rem, 4.2vw, 2.75rem)', fontWeight: 700, lineHeight: 1.15 },
+    'heading-3': { fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)', fontWeight: 700, lineHeight: 1.25 },
+    'heading-4': { fontSize: 'clamp(1.25rem, 2.8vw, 1.75rem)', fontWeight: 600, lineHeight: 1.3 },
+  };
+  const quotePresetStyle = QUOTE_PRESETS[quotePreset] ?? QUOTE_PRESETS.default;
+  const quoteMaxWidthPx =
+    quoteMaxWidthMode === 'narrow' ? 420 : quoteMaxWidthMode === 'normal' ? 560 : 720;
+  const quoteColor =
+    quoteColorRaw === '' || quoteColorRaw === 'default'
+      ? scheme.color
+      : resolveThemePaletteColorSetting(config, quoteColorRaw, 1, scheme.color);
+  const quoteTextAlign: CSSProperties['textAlign'] =
+    quoteAlignment === 'left'
+      ? 'left'
+      : quoteAlignment === 'right'
+        ? 'right'
+        : quoteAlignment === 'center'
+          ? 'center'
+          : undefined;
+
   const quoteStyle: CSSProperties = {
     margin: 0,
     fontFamily: fontHeading,
-    fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)',
-    fontWeight: 700,
-    lineHeight: 1.25,
+    fontSize: quotePresetStyle.fontSize,
+    fontWeight: quotePresetStyle.fontWeight,
+    lineHeight: quotePresetStyle.lineHeight,
     letterSpacing: '-0.02em',
-    maxWidth: 720,
+    width: quoteWidthMode === 'fill' ? '100%' : 'fit-content',
+    maxWidth: quoteMaxWidthPx,
+    color: quoteColor,
+    textAlign: quoteTextAlign,
+    paddingTop: quotePaddingTop || undefined,
+    paddingBottom: quotePaddingBottom || undefined,
+    paddingLeft: quotePaddingLeft || undefined,
+    paddingRight: quotePaddingRight || undefined,
+    background: quoteBackgroundEnabled ? 'rgba(0, 0, 0, 0.04)' : undefined,
+    borderRadius: quoteBackgroundEnabled ? 8 : undefined,
+    boxSizing: 'border-box',
   };
 
+  const linkTextColor =
+    buttonLinkTextColorRaw === '' || buttonLinkTextColorRaw === 'default'
+      ? scheme.color
+      : resolveThemePaletteColorSetting(config, buttonLinkTextColorRaw, 1, scheme.color);
+  const btnScopeClass = `${scopeClass}-btn`;
+  const buttonAppearance: CSSProperties =
+    buttonStyleMode === 'link'
+      ? {
+          background: 'transparent',
+          color: linkTextColor,
+          border: 'none',
+          borderRadius: 0,
+          fontWeight: 400,
+          textUnderlineOffset: 3,
+        }
+      : buttonStyleMode === 'custom'
+        ? {
+            background: buttonCustomBackground,
+            color: buttonCustomText,
+            border: 'none',
+            borderRadius: themeButtonStyle.borderRadius,
+            fontFamily: themeButtonStyle.fontFamily,
+            fontWeight: themeButtonStyle.fontWeight,
+            textTransform: themeButtonStyle.textTransform,
+          }
+        : themeButtonInlineStyle(themeButtonStyle);
   const linkStyle: CSSProperties = {
+    ...buttonAppearance,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: buttonStyleMode === 'link' ? 'fit-content' : desktopBtnWidth,
+    maxWidth: '100%',
+    padding: buttonStyleMode === 'link' ? '4px 0' : '12px 28px',
     fontSize: '1rem',
-    fontWeight: 400,
-    color: 'inherit',
-    textDecoration: 'underline',
-    textUnderlineOffset: 3,
+    textDecoration: buttonStyleMode === 'link' ? 'underline' : 'none',
+    cursor: 'pointer',
+    boxSizing: 'border-box',
   };
+  const buttonResponsiveCss =
+    buttonStyleMode !== 'link' && desktopBtnWidth !== mobileBtnWidth
+      ? `@media (max-width: 749px) { .${btnScopeClass} { width: ${mobileBtnWidth} !important; } }`
+      : '';
 
   const customCss = scopedPullQuoteCss(sectionId, style.customCss);
   const responsiveCss = combineResponsiveCss(
@@ -166,11 +277,29 @@ export function PullQuote({
           {quote}
         </EditorField>
         {linkLabel ? (
-          <EditorField fieldPath={`${settingsBase}.linkLabel`} label="Link label" as="span">
-            <Link to={linkUrl || '#'} style={linkStyle}>
-              {linkLabel}
+          <EditorBlock
+            nodeId={`${editorNodeId}:block:button`}
+            label="Button"
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent:
+                textAlign === 'center' ? 'center' : textAlign === 'right' ? 'flex-end' : 'flex-start',
+            }}
+          >
+            {buttonResponsiveCss ? <style>{buttonResponsiveCss}</style> : null}
+            <Link
+              to={linkUrl || '#'}
+              target={linkOpenInNewTab ? '_blank' : undefined}
+              rel={linkOpenInNewTab ? 'noopener noreferrer' : undefined}
+              className={btnScopeClass}
+              style={linkStyle}
+            >
+              <EditorField fieldPath={`${settingsBase}.linkLabel`} label="Label" as="span">
+                {linkLabel}
+              </EditorField>
             </Link>
-          </EditorField>
+          </EditorBlock>
         ) : null}
       </div>
     </EditorSection>

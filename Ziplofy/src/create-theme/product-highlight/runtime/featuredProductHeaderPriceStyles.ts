@@ -37,15 +37,21 @@ export function readFeaturedProductHeaderPriceStyle(
   const typo = TYPOGRAPHY_PRESETS[preset] ?? TYPOGRAPHY_PRESETS.default;
   const widthMode = cfgString(config, `${settingsBase}.width`, 'fit');
   const align = cfgString(config, `${settingsBase}.alignment`, 'left');
-  const colorKey = cfgString(config, `${settingsBase}.color`, 'text');
+  const colorKey = cfgString(config, `${settingsBase}.textColor`, '');
+  const legacyColorKey = cfgString(config, `${settingsBase}.color`, 'text');
+  const resolvedColorKey = colorKey && colorKey !== 'default' ? colorKey : legacyColorKey;
   const color =
-    colorKey === 'heading'
+    resolvedColorKey === 'heading'
       ? colors.heading
-      : colorKey === 'accent'
+      : resolvedColorKey === 'accent'
         ? colors.accent
-        : colorKey === 'muted'
+        : resolvedColorKey === 'muted'
           ? colors.muted
-          : colors.text;
+          : resolvedColorKey !== 'text' &&
+              resolvedColorKey !== 'default' &&
+              resolvedColorKey.startsWith('#')
+            ? resolvedColorKey
+            : colors.text;
   const textAlign =
     align === 'center' ? 'center' : align === 'right' ? 'right' : 'left';
 

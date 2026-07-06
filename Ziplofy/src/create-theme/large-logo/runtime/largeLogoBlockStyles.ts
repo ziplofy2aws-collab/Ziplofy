@@ -4,6 +4,7 @@ import { mobileMedia } from '../../runtime/shared/responsive';
 
 export type LargeLogoBlockLayout = {
   logoFont: 'body' | 'subheading' | 'heading' | 'accent';
+  logoColor: string;
   sizeUnit: 'pixel' | 'percent';
   pixelHeight: number;
   percentWidth: number;
@@ -26,6 +27,7 @@ export function readLargeLogoBlockLayout(
   return {
     logoFont:
       fontRaw === 'body' || fontRaw === 'subheading' || fontRaw === 'accent' ? fontRaw : 'heading',
+    logoColor: cfgString(config, `${settingsBase}.logoColor`, ''),
     sizeUnit: sizeRaw === 'pixel' ? 'pixel' : 'percent',
     pixelHeight: cfgNumber(config, `${settingsBase}.pixelHeight`, 120),
     percentWidth: cfgNumber(config, `${settingsBase}.percentWidth`, 100),

@@ -1,7 +1,9 @@
 import { useMemo, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
-import { cfgString } from '../../runtime/shared/config';
+import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveTextBlockTypographyStyle } from '../../runtime/shared/themeTypographyRuntime';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/structureOrder';
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
@@ -197,7 +199,7 @@ export function Hero({
     ? ['primary_button']
     : isBottomAligned
       ? []
-      : ['heading', 'primary_button'];
+      : ['text_1', 'text_2', 'primary_button'];
 
   const blockOrder =
     placement === 'layout'
@@ -253,6 +255,123 @@ export function Hero({
         ? `${sectionNodePrefix}:block:content_group:nested:text_body`
         : `${sectionNodePrefix}:block:content_group:nested:heading_group:nested:${blockId}`;
 
+    // Section-level Appearance → "Background color" (palette); "Default" keeps the base tone.
+    const bottomSectionBgRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+    const bottomSectionBackground = bottomSectionBgRaw
+      ? resolveThemePaletteColorSetting(config, bottomSectionBgRaw, 0, '#2d6478')
+      : '#2d6478';
+
+    /** "Group" block settings → box styling (Appearance/Borders/Padding) applied to the group container. */
+    const groupBoxStyle = (base: string): CSSProperties => {
+      const bgMedia = cfgString(config, `${base}.backgroundMedia`, 'none');
+      const bgImage = cfgString(config, `${base}.backgroundImageUrl`, '');
+      const bgColorRaw = cfgString(config, `${base}.backgroundColor`, '');
+      const overlayOn = cfgBool(config, `${base}.backgroundOverlay`, false);
+      const borderStyle = cfgString(config, `${base}.borderStyle`, 'none');
+      const cornerRadius = cfgNumber(config, `${base}.cornerRadius`, 0);
+      const alignment = cfgString(config, `${base}.layoutAlignment`, 'left');
+      const textAlign =
+        alignment === 'center' ? 'center' : alignment === 'right' ? 'right' : 'left';
+      const bgColor =
+        bgColorRaw && bgColorRaw.trim()
+          ? resolveThemePaletteColorSetting(config, bgColorRaw, 0, 'transparent')
+          : undefined;
+      const useImage = bgMedia === 'image' && bgImage.trim();
+      const style: CSSProperties = {
+        paddingTop: cfgNumber(config, `${base}.paddingTop`, 0),
+        paddingBottom: cfgNumber(config, `${base}.paddingBottom`, 0),
+        paddingLeft: cfgNumber(config, `${base}.paddingLeft`, 0),
+        paddingRight: cfgNumber(config, `${base}.paddingRight`, 0),
+        textAlign,
+        borderRadius: cornerRadius || undefined,
+        border: borderStyle === 'solid' ? '1px solid rgba(255,255,255,0.35)' : undefined,
+      };
+      if (useImage) {
+        style.backgroundImage = overlayOn
+          ? `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url(${bgImage.trim()})`
+          : `url(${bgImage.trim()})`;
+        style.backgroundSize = 'cover';
+        style.backgroundPosition = 'center';
+      } else if (bgColor) {
+        style.background = bgColor;
+      }
+      return style;
+    };
+
+    const contentGroupBase = `${blocksBase}.content_group.settings`;
+    const headingGroupBase = `${blocksBase}.content_group.blocks.heading_group.settings`;
+    const textIntroBase = `${blocksBase}.content_group.blocks.heading_group.blocks.text_intro`;
+    const headingMainBase = `${blocksBase}.content_group.blocks.heading_group.blocks.heading_main`;
+    const textBodyBase = `${blocksBase}.content_group.blocks.text_body`;
+    const contentGroupGap = cfgNumber(config, `${contentGroupBase}.layoutGap`, Math.max(hero.gap, 32));
+    const contentGroupDirection = cfgString(config, `${contentGroupBase}.direction`, 'horizontal');
+    const contentGroupBox = groupBoxStyle(contentGroupBase);
+    const headingGroupBox = groupBoxStyle(headingGroupBase);
+
+    /** Nested Text/Heading block settings → typography, color, background and padding. */
+    const textBlockStyle = (blockBase: string, fallback: CSSProperties): CSSProperties => {
+      const base = `${blockBase}.settings`;
+      const preset = cfgString(config, `${base}.typographyPreset`, 'default');
+      const typo = resolveTextBlockTypographyStyle(config, base, preset, themeFonts);
+      const colorRaw = cfgString(config, `${base}.textColor`, 'default');
+      const resolvedColor =
+        colorRaw && colorRaw !== 'default'
+          ? resolveThemePaletteColorSetting(config, colorRaw, 1, String(fallback.color ?? textColor))
+          : fallback.color;
+      const bgOn = cfgBool(config, `${base}.backgroundEnabled`, false);
+      const align = cfgString(config, `${base}.alignment`, '');
+      return {
+        ...fallback,
+        fontFamily: typo.fontFamily ?? fallback.fontFamily,
+        fontSize: typo.fontSize ?? fallback.fontSize,
+        fontWeight: typo.fontWeight ?? fallback.fontWeight,
+        fontStyle: typo.fontStyle ?? fallback.fontStyle,
+        lineHeight: typo.lineHeight ?? fallback.lineHeight,
+        letterSpacing: typo.letterSpacing ?? fallback.letterSpacing,
+        textTransform: typo.textTransform ?? fallback.textTransform,
+        textAlign: align === 'center' ? 'center' : align === 'right' ? 'right' : fallback.textAlign,
+        color: resolvedColor,
+        paddingTop: cfgNumber(config, `${base}.paddingTop`, 0) || undefined,
+        paddingBottom: cfgNumber(config, `${base}.paddingBottom`, 0) || undefined,
+        paddingLeft: cfgNumber(config, `${base}.paddingLeft`, 0) || undefined,
+        paddingRight: cfgNumber(config, `${base}.paddingRight`, 0) || undefined,
+        background: bgOn
+          ? resolveThemePaletteColorSetting(
+              config,
+              cfgString(config, `${base}.backgroundColor`, '#00000026'),
+              0,
+              '#00000026'
+            )
+          : undefined,
+        borderRadius: bgOn ? cfgNumber(config, `${base}.cornerRadius`, 0) || undefined : undefined,
+      };
+    };
+
+    const introStyle = textBlockStyle(textIntroBase, {
+      margin: 0,
+      fontSize: 14,
+      fontStyle: 'italic',
+      fontWeight: 400,
+      letterSpacing: '0.02em',
+      lineHeight: 1.4,
+      color: textColor,
+    });
+    const headingStyle = textBlockStyle(headingMainBase, {
+      margin: bottomIntro.trim() ? '8px 0 0' : 0,
+      fontFamily: fontHeading,
+      fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+      fontWeight: 600,
+      lineHeight: 1.05,
+      letterSpacing: '-0.02em',
+      color: textColor,
+    });
+    const bodyStyle = textBlockStyle(textBodyBase, {
+      margin: 0,
+      fontSize: 16,
+      lineHeight: 1.55,
+      color: textColor,
+    });
+
     const bottomHasMedia = Boolean(media1Url || media2Url);
     const sectionMinHeight = hero.minHeight;
     const sidePad = Math.max(hero.paddingX, 40);
@@ -268,31 +387,25 @@ export function Hero({
         className="hero-bottom-aligned-row"
         style={{
           display: 'flex',
+          flexDirection: contentGroupDirection === 'vertical' ? 'column' : 'row',
           alignItems: 'flex-end',
           justifyContent: 'space-between',
-          gap: Math.max(hero.gap, 32),
+          gap: contentGroupGap,
           width: '100%',
           maxWidth: rowMaxWidth,
           margin: '0 auto',
           boxSizing: 'border-box',
+          ...contentGroupBox,
         }}
       >
-        <div style={{ flex: '1 1 50%', minWidth: 0, textAlign: 'left' }}>
+        <div style={{ flex: '1 1 50%', minWidth: 0, ...headingGroupBox }}>
           {bottomIntro.trim() ? (
             <EditorBlock nodeId={bottomBlockNode('text_intro')} label="Text">
               <EditorField
                 fieldPath={bottomPaths.textIntro}
                 label="Text"
                 as="p"
-                style={{
-                  margin: 0,
-                  fontSize: 14,
-                  fontStyle: 'italic',
-                  fontWeight: 400,
-                  letterSpacing: '0.02em',
-                  lineHeight: 1.4,
-                  color: textColor,
-                }}
+                style={introStyle}
               >
                 {bottomIntro}
               </EditorField>
@@ -304,15 +417,7 @@ export function Hero({
                 fieldPath={bottomPaths.headingMain}
                 label="Text"
                 as="h1"
-                style={{
-                  margin: bottomIntro.trim() ? '8px 0 0' : 0,
-                  fontFamily: fontHeading,
-                  fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                  fontWeight: 600,
-                  lineHeight: 1.05,
-                  letterSpacing: '-0.02em',
-                  color: textColor,
-                }}
+                style={headingStyle}
               >
                 {bottomTitle}
               </EditorField>
@@ -334,12 +439,7 @@ export function Hero({
                 fieldPath={bottomPaths.textBody}
                 label="Text"
                 as="p"
-                style={{
-                  margin: 0,
-                  fontSize: 16,
-                  lineHeight: 1.55,
-                  color: textColor,
-                }}
+                style={bodyStyle}
               >
                 {bottomBodyText}
               </EditorField>
@@ -408,7 +508,7 @@ export function Hero({
             width: '100%',
             minHeight: sectionMinHeight,
             padding: 0,
-            background: '#2d6478',
+            background: bottomSectionBackground,
             fontFamily: fontBody,
             color: textColor,
             boxSizing: 'border-box',
@@ -442,10 +542,15 @@ export function Hero({
   }
 
   if (isMarquee) {
+    const marqueeTextPath = `${settingsBase}.marqueeTextBlock.settings.text`;
     const marqueeText = cfgString(
       config,
-      `${settingsBase}.marqueeText`,
-      cfgString(config, `${settingsBase}.subtitle`, HERO_MARQUEE_TEXT)
+      marqueeTextPath,
+      cfgString(
+        config,
+        `${settingsBase}.marqueeText`,
+        cfgString(config, `${settingsBase}.subtitle`, HERO_MARQUEE_TEXT)
+      )
     );
     const marqueeHasMedia = Boolean(media1Url || media2Url);
     const sectionMinHeight = hero.minHeight;
@@ -455,6 +560,70 @@ export function Hero({
     const marqueeTextColor = marqueeHasMedia ? '#ffffff' : '#1f2937';
     const marqueeTextShadow = marqueeHasMedia ? '0 2px 24px rgba(0,0,0,0.25)' : 'none';
     const marqueeAnimId = `ziplofy-hero-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+
+    // "Text" block (inside the Marquee folder) drives typography, color and padding.
+    const marqueeTextBase = `${settingsBase}.marqueeTextBlock.settings`;
+    const marqueeTypo = resolveTextBlockTypographyStyle(
+      config,
+      marqueeTextBase,
+      cfgString(config, `${marqueeTextBase}.typographyPreset`, 'heading-1'),
+      themeFonts
+    );
+    const marqueeTextColorRaw = cfgString(config, `${marqueeTextBase}.textColor`, 'default');
+    const marqueeResolvedColor =
+      marqueeTextColorRaw && marqueeTextColorRaw !== 'default'
+        ? resolveThemePaletteColorSetting(config, marqueeTextColorRaw, 1, marqueeTextColor)
+        : marqueeTextColor;
+    const marqueeBgOn = cfgBool(config, `${marqueeTextBase}.backgroundEnabled`, false);
+    const marqueeTextStyle: CSSProperties = {
+      fontFamily: marqueeTypo.fontFamily,
+      fontSize: marqueeTypo.fontSize,
+      fontWeight: marqueeTypo.fontWeight,
+      fontStyle: marqueeTypo.fontStyle,
+      lineHeight: marqueeTypo.lineHeight,
+      letterSpacing: marqueeTypo.letterSpacing,
+      textTransform: marqueeTypo.textTransform,
+      color: marqueeResolvedColor,
+      textShadow: marqueeTextShadow,
+      paddingTop: cfgNumber(config, `${marqueeTextBase}.paddingTop`, 0),
+      paddingBottom: cfgNumber(config, `${marqueeTextBase}.paddingBottom`, 0),
+      paddingLeft: cfgNumber(config, `${marqueeTextBase}.paddingLeft`, 0),
+      paddingRight: cfgNumber(config, `${marqueeTextBase}.paddingRight`, 0),
+      background: marqueeBgOn
+        ? resolveThemePaletteColorSetting(
+            config,
+            cfgString(config, `${marqueeTextBase}.backgroundColor`, '#00000026'),
+            0,
+            '#00000026'
+          )
+        : undefined,
+      borderRadius: marqueeBgOn
+        ? cfgNumber(config, `${marqueeTextBase}.cornerRadius`, 0)
+        : undefined,
+    };
+
+    // "Marquee" folder settings (motion direction, background, padding, gap).
+    const marqueeMotion = cfgString(config, `${settingsBase}.marqueeMotionDirection`, 'forward');
+    const marqueeTransparent = cfgBool(config, `${settingsBase}.marqueeTransparentBg`, true);
+    const marqueeBandBgRaw = cfgString(config, `${settingsBase}.marqueeBackgroundColor`, '');
+    const marqueeBandBackground =
+      !marqueeTransparent && marqueeBandBgRaw
+        ? resolveThemePaletteColorSetting(config, marqueeBandBgRaw, 0, 'transparent')
+        : 'transparent';
+    const marqueeBandPadTop = cfgNumber(config, `${settingsBase}.marqueePaddingTop`, 24);
+    const marqueeBandPadBottom = cfgNumber(config, `${settingsBase}.marqueePaddingBottom`, 24);
+    const marqueeGap = cfgNumber(config, `${settingsBase}.marqueeGap`, 24);
+
+    // Section-level "Spacer" block → vertical space above the marquee content.
+    const spacerUnit = cfgString(config, `${settingsBase}.marqueeSpacerUnit`, 'pixel');
+    const spacerSize = cfgNumber(config, `${settingsBase}.marqueeSpacerHeight`, 24);
+    const spacerHeightCss = spacerUnit === 'percent' ? `${spacerSize}%` : `${spacerSize}px`;
+
+    // Section-level Appearance → "Background color" (palette); "Default" keeps the base tone.
+    const marqueeSectionBgRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+    const marqueeSectionBackground = marqueeSectionBgRaw
+      ? resolveThemePaletteColorSetting(config, marqueeSectionBgRaw, 0, '#2d6478')
+      : '#2d6478';
 
     const primaryButton = (
       <HeroButton
@@ -487,6 +656,10 @@ export function Hero({
             alignItems: 'center',
             overflow: 'hidden',
             pointerEvents: 'none',
+            background: marqueeBandBackground,
+            paddingTop: marqueeBandPadTop,
+            paddingBottom: marqueeBandPadBottom,
+            boxSizing: 'border-box',
           }}
         >
           <div
@@ -494,25 +667,20 @@ export function Hero({
               display: 'flex',
               width: 'max-content',
               whiteSpace: 'nowrap',
-              fontFamily: fontHeading,
-              fontSize: 'clamp(2.25rem, 6vw, 4.25rem)',
-              fontWeight: 700,
-              lineHeight: 1.05,
-              letterSpacing: '-0.02em',
-              color: marqueeTextColor,
-              textShadow: marqueeTextShadow,
               animation: `${marqueeAnimId} 22s linear infinite`,
+              animationDirection: marqueeMotion === 'reverse' ? 'reverse' : 'normal',
+              ...marqueeTextStyle,
             }}
           >
             <EditorField
-              fieldPath={`${settingsBase}.marqueeText`}
+              fieldPath={marqueeTextPath}
               label="Marquee"
               as="span"
-              style={{ padding: '0 0.35em', display: 'inline' }}
+              style={{ padding: `0 ${marqueeGap / 2}px`, display: 'inline' }}
             >
               {marqueeText}&nbsp;
             </EditorField>
-            <span style={{ padding: '0 0.35em' }} aria-hidden>
+            <span style={{ padding: `0 ${marqueeGap / 2}px` }} aria-hidden>
               {marqueeText}&nbsp;
             </span>
           </div>
@@ -567,7 +735,7 @@ export function Hero({
             width: '100%',
             minHeight: sectionMinHeight,
             padding: 0,
-            background: '#2d6478',
+            background: marqueeSectionBackground,
             fontFamily: fontBody,
             color: '#ffffff',
             boxSizing: 'border-box',
@@ -594,6 +762,12 @@ export function Hero({
               }}
             />
           ) : null}
+          {spacerSize > 0 ? (
+            <div
+              aria-hidden
+              style={{ position: 'relative', zIndex: 2, width: '100%', height: spacerHeightCss }}
+            />
+          ) : null}
           {marqueeLinkedBody}
         </EditorSection>
       </>
@@ -611,8 +785,14 @@ export function Hero({
   if (isClassicHero) {
     const hasMedia = Boolean(media1Url || media2Url);
     const classicOverlay = hero.mediaOverlay ? overlayBackground : undefined;
+    // Appearance → "Background color" (palette). "Default"/empty keeps the scheme/decorative backdrop.
+    const classicBgRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+    const classicCustomBg =
+      classicBgRaw && classicBgRaw !== 'default'
+        ? resolveThemePaletteColorSetting(config, classicBgRaw, 1, hero.scheme.background)
+        : '';
     /** Merchant picked a solid/transparent color → show it instead of the decorative landscape. */
-    const useSolidBackground = !hasMedia && hero.backgroundIsCustom;
+    const useSolidBackground = !hasMedia && (hero.backgroundIsCustom || Boolean(classicCustomBg));
     /** Text/shadow tuned for the decorative or media backdrop; solid colors get adaptive text. */
     const onDarkBackdrop = !useSolidBackground;
     const classicTextColor = useSolidBackground ? hero.scheme.color : '#ffffff';
@@ -718,32 +898,79 @@ export function Hero({
           />
         );
       }
-      if (blockId === 'text_2' || (blockId.startsWith('text_') && blockId !== 'heading')) {
+      if (blockId.startsWith('text') && blockId !== 'heading') {
+        const textSettingsBase = `${blocksBase}.${blockId}.settings`;
         const body =
-          cfgString(config, `${blocksBase}.${blockId}.settings.text`, '') ||
+          cfgString(config, `${textSettingsBase}.text`, '') ||
           (blockId === 'text_2' ? subtitle : '');
         if (!body.trim()) return null;
+
+        // Each Text block carries its own Typography preset (heading-* renders prominently).
+        const preset = cfgString(config, `${textSettingsBase}.typographyPreset`, 'default');
+        const typo = resolveTextBlockTypographyStyle(config, textSettingsBase, preset, themeFonts);
+        const headingLike = preset.startsWith('heading');
+
+        const widthFill = cfgString(config, `${textSettingsBase}.width`, 'fit') === 'fill';
+        const maxWidthKey = cfgString(config, `${textSettingsBase}.maxWidth`, 'normal');
+        const maxWidthPx =
+          maxWidthKey === 'narrow' ? 480 : maxWidthKey === 'none' ? undefined : 640;
+
+        const bgOn = cfgBool(config, `${textSettingsBase}.backgroundEnabled`, false);
+        const bgColor = cfgString(config, `${textSettingsBase}.backgroundColor`, '#00000026');
+        const cornerRadius = cfgNumber(config, `${textSettingsBase}.cornerRadius`, 0);
+        const textColorKey = cfgString(config, `${textSettingsBase}.textColor`, 'default');
+        const resolvedColor =
+          textColorKey && textColorKey !== 'default'
+            ? resolveThemePaletteColorSetting(config, textColorKey, 1, classicTextColor)
+            : classicTextColor;
+
+        const pTop = cfgNumber(config, `${textSettingsBase}.paddingTop`, 0);
+        const pBottom = cfgNumber(config, `${textSettingsBase}.paddingBottom`, 0);
+        const pLeft = cfgNumber(config, `${textSettingsBase}.paddingLeft`, 0);
+        const pRight = cfgNumber(config, `${textSettingsBase}.paddingRight`, 0);
+        const hasPadding = Boolean(pTop || pBottom || pLeft || pRight);
+
+        const textContentStyle: CSSProperties = {
+          margin: 0,
+          fontFamily: typo.fontFamily,
+          fontSize: typo.fontSize,
+          fontWeight: typo.fontWeight,
+          ...(typo.fontStyle ? { fontStyle: typo.fontStyle } : {}),
+          lineHeight: typo.lineHeight,
+          ...(typo.letterSpacing ? { letterSpacing: typo.letterSpacing } : {}),
+          ...(typo.textTransform ? { textTransform: typo.textTransform } : {}),
+          ...(typo.textWrap ? { textWrap: typo.textWrap } : {}),
+          color: resolvedColor,
+          textAlign: hero.textAlign,
+          textShadow: headingLike ? classicTextShadow : classicBodyShadow,
+          background: bgOn ? bgColor : undefined,
+          borderRadius: bgOn ? cornerRadius : undefined,
+          padding: hasPadding ? `${pTop}px ${pRight}px ${pBottom}px ${pLeft}px` : undefined,
+        };
+
+        const fieldStyle: CSSProperties = {
+          margin: 0,
+          display: 'block',
+          width: widthFill ? '100%' : 'fit-content',
+          maxWidth: widthFill ? undefined : maxWidthPx,
+          alignSelf: widthFill ? 'stretch' : undefined,
+          textAlign: hero.textAlign,
+          boxSizing: 'border-box',
+        };
+
+        const textTag = richTextHasBlockMarkup(body) ? 'div' : headingLike ? 'h2' : 'p';
         return (
           <EditorBlock
             nodeId={heroBlockNodeId(sectionId, placement, templateId, blockId)}
             label="Text"
           >
             <EditorField
-              fieldPath={`${blocksBase}.${blockId}.settings.text`}
+              fieldPath={`${textSettingsBase}.text`}
               label="Text"
-              as="p"
-              style={{
-                margin: 0,
-                fontSize: 'clamp(1rem, 2vw, 1.125rem)',
-                lineHeight: 1.55,
-                maxWidth: 620,
-                fontWeight: 400,
-                color: classicTextColor,
-                textAlign: hero.textAlign,
-                textShadow: classicBodyShadow,
-              }}
+              as={textTag}
+              style={fieldStyle}
             >
-              {body}
+              <ThemeEditorRichTextContent html={body} style={textContentStyle} />
             </EditorField>
           </EditorBlock>
         );
@@ -917,7 +1144,9 @@ export function Hero({
             width: '100%',
             minHeight: hero.minHeight,
             padding: 0,
-            background: useFullBleedBackdrop ? '#2d6478' : hero.scheme.background,
+            background: useFullBleedBackdrop
+              ? '#2d6478'
+              : classicCustomBg || hero.scheme.background,
             fontFamily: fontBody,
             color: classicTextColor,
             boxSizing: 'border-box',

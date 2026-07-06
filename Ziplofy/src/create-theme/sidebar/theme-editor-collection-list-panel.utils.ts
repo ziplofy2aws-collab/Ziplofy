@@ -10,6 +10,7 @@ export const COLLECTION_LIST_PANEL_GROUP_ORDER = [
   'Carousel navigation',
   'Section layout',
   'Padding',
+  'Theme settings',
   'Custom CSS',
 ] as const;
 
@@ -29,7 +30,8 @@ const FIELD_SORT: Record<string, number> = {
   navigationIconBackground: 1,
   sectionWidth: 0,
   layoutGap: 1,
-  colorScheme: 2,
+  backgroundColor: 2,
+  colorScheme: 0,
   paddingTop: 0,
   paddingBottom: 1,
   customCss: 0,
@@ -153,7 +155,7 @@ export function buildCollectionListPanelFieldDefs(settingsBase: string): EditorF
       type: 'select',
       label: 'Icon background',
       group: 'Carousel navigation',
-      widget: 'segmented',
+      widget: 'select-inline',
       options: [
         { value: 'none', label: 'None' },
         { value: 'circle', label: 'Circle' },
@@ -177,10 +179,16 @@ export function buildCollectionListPanelFieldDefs(settingsBase: string): EditorF
       step: 1,
       unit: 'px',
     }),
+    fieldDef(settingsBase, 'backgroundColor', {
+      type: 'text',
+      label: 'Background color',
+      group: 'Section layout',
+      widget: 'color',
+    }),
     fieldDef(settingsBase, 'colorScheme', {
       type: 'select',
       label: 'Color scheme',
-      group: 'Section layout',
+      group: 'Theme settings',
       widget: 'color-scheme',
       options: [...SCHEME_OPTIONS],
     }),
@@ -260,6 +268,7 @@ const LAYOUT_VISIBLE_KEYS: Record<CollectionListCardsLayoutType, Set<string>> = 
 const SHARED_KEYS = new Set([
   'sectionWidth',
   'layoutGap',
+  'backgroundColor',
   'colorScheme',
   'paddingTop',
   'paddingBottom',
@@ -301,7 +310,8 @@ export function sortCollectionListPanelFields(fields: EditorFieldDef[]): EditorF
     'Carousel navigation': 2,
     'Section layout': 3,
     Padding: 4,
-    'Custom CSS': 5,
+    'Theme settings': 5,
+    'Custom CSS': 6,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
