@@ -8,6 +8,7 @@ import {
 } from '../create-theme/sidebar/theme-editor-storytelling-carousel-block-panel.utils';
 import { seedStorytellingCarouselCardGroupInSettings } from '../create-theme/sidebar/theme-editor-storytelling-carousel-card-panel.utils';
 import { seedStorytellingCarouselContentGroupInSettings } from '../create-theme/sidebar/theme-editor-storytelling-carousel-content-group-panel.utils';
+import { seedStorytellingCarouselHeaderGroupInSettings } from '../create-theme/sidebar/theme-editor-storytelling-carousel-header-panel.utils';
 
 const SLIDE_TITLES = ['Artistry in action', 'Uncompromising quality', 'Made to last'] as const;
 
@@ -26,8 +27,10 @@ function makeSlide(title: string) {
 export function applyStorytellingCarouselPreset(section: Record<string, unknown>): void {
   if (section.type !== 'storytelling-carousel') return;
 
-  const settings = seedStorytellingCarouselContentGroupInSettings(
-    (section.settings ?? {}) as Record<string, unknown>
+  const settings = seedStorytellingCarouselHeaderGroupInSettings(
+    seedStorytellingCarouselContentGroupInSettings(
+      (section.settings ?? {}) as Record<string, unknown>
+    )
   );
   settings.catalogVariant = settings.catalogVariant ?? 'storytelling-carousel';
   const headerDefaults = storytellingCarouselHeaderDefaultSettings();

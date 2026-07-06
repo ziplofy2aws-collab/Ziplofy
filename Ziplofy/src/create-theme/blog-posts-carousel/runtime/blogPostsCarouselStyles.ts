@@ -15,6 +15,7 @@ const SCHEMES: Record<string, BlogPostsCarouselScheme> = {
 
 export type BlogPostsCarouselLayout = {
   scheme: BlogPostsCarouselScheme;
+  sectionBackground: string;
   heading: string;
   blogHandle: string;
   postCount: number;
@@ -35,13 +36,20 @@ export function readBlogPostsCarouselLayout(
   settingsBase: string
 ): BlogPostsCarouselLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  const scheme = SCHEMES[schemeKey] ?? SCHEMES['scheme-1'];
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
+  const sectionBackground =
+    backgroundColorRaw && backgroundColorRaw !== 'default' && backgroundColorRaw !== ''
+      ? backgroundColorRaw
+      : scheme.background;
   const navIcon = cfgString(config, `${settingsBase}.navIcon`, 'arrows');
   const navBg = cfgString(config, `${settingsBase}.navIconBackground`, 'circle');
   const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'page');
   const mobile = cfgString(config, `${settingsBase}.mobileCardSize`, '1');
 
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme,
+    sectionBackground,
     heading: cfgString(config, `${settingsBase}.heading`, 'Blog posts'),
     blogHandle: cfgString(config, `${settingsBase}.blogHandle`, ''),
     postCount: cfgNumber(config, `${settingsBase}.postCount`, 5),

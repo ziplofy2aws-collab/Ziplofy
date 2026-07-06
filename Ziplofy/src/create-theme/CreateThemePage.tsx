@@ -242,6 +242,18 @@ import {
   syntheticStorytellingCarouselSidebarNode,
 } from './utils/storytelling-carousel-sidebar.util';
 import {
+  blogPostsGridSidebarSelectionId,
+  syntheticBlogPostsGridSidebarNode,
+} from './utils/blog-posts-grid-sidebar.util';
+import {
+  blogPostsEditorialSidebarSelectionId,
+  syntheticBlogPostsEditorialSidebarNode,
+} from './utils/blog-posts-editorial-sidebar.util';
+import {
+  blogPostsCarouselSidebarSelectionId,
+  syntheticBlogPostsCarouselSidebarNode,
+} from './utils/blog-posts-carousel-sidebar.util';
+import {
   editorialSidebarSelectionId,
   syntheticEditorialSidebarNode,
 } from './utils/editorial-sidebar.util';
@@ -324,6 +336,21 @@ import {
   isStorytellingCarouselContentGroupBlockNodeId,
   storytellingCarouselContentGroupFieldDefsFromNodeId,
 } from './sidebar/theme-editor-storytelling-carousel-content-group-panel.utils';
+import {
+  extendStorytellingCarouselHeaderGroupValues,
+  isStorytellingCarouselHeaderGroupBlockNodeId,
+  storytellingCarouselHeaderFieldDefsFromNodeId,
+} from './sidebar/theme-editor-storytelling-carousel-header-panel.utils';
+import {
+  blogPostsGridBlockFieldDefsFromNodeId,
+  blogPostsGridBlockKindFromNodeId,
+  extendBlogPostsGridBlockValues,
+} from './sidebar/theme-editor-blog-posts-grid-block-panel.utils';
+import {
+  blogPostsGridCardFieldDefsFromNodeId,
+  extendBlogPostsGridCardValues,
+  isBlogPostsGridCardGroupBlockNodeId,
+} from './sidebar/theme-editor-blog-posts-grid-card-panel.utils';
 import {
   extendEditorialJumboContentGroupValues,
   editorialJumboContentGroupFieldDefsFromNodeId,
@@ -987,6 +1014,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       syntheticEditorialJumboSidebarNode(selectedNodeId, editorSchema) ??
       syntheticEditorialSidebarNode(selectedNodeId, editorSchema) ??
       syntheticStorytellingCarouselSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticBlogPostsGridSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticBlogPostsEditorialSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticBlogPostsCarouselSidebarNode(selectedNodeId, editorSchema) ??
       syntheticImageWithTextSidebarNode(selectedNodeId, editorSchema) ??
       syntheticStorytellingVideoSidebarNode(selectedNodeId, editorSchema)
     );
@@ -1639,6 +1669,59 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         ? applyValuesToThemeConfig(draft, prev, editorSchema)
         : draft;
       return extendStorytellingCarouselContentGroupValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Carousel Header group field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isStorytellingCarouselHeaderGroupBlockNodeId(selectedNodeId)) return;
+    const defs = storytellingCarouselHeaderFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendStorytellingCarouselHeaderGroupValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Blog posts grid block field paths. */
+  useEffect(() => {
+    if (!defaultConfig) return;
+    const blockKind = blogPostsGridBlockKindFromNodeId(selectedNodeId);
+    if (!blockKind) return;
+    const defs = blogPostsGridBlockFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendBlogPostsGridBlockValues(prev, defs, config, blockKind);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Blog posts grid card group field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isBlogPostsGridCardGroupBlockNodeId(selectedNodeId)) return;
+    const defs = blogPostsGridCardFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendBlogPostsGridCardValues(prev, defs, config);
     });
   }, [selectedNodeId, editorSchema, defaultConfig]);
 
@@ -2490,6 +2573,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         editorialJumboSidebarSelectionId(nodeId) ??
         editorialSidebarSelectionId(nodeId) ??
         storytellingCarouselSidebarSelectionId(nodeId) ??
+        blogPostsGridSidebarSelectionId(nodeId) ??
+        blogPostsEditorialSidebarSelectionId(nodeId) ??
+        blogPostsCarouselSidebarSelectionId(nodeId) ??
         imageWithTextSidebarSelectionId(nodeId) ??
         storytellingVideoSidebarSelectionId(nodeId) ??
         nodeId;

@@ -11563,7 +11563,7 @@
         {
           "path": "sections.storytelling_carousel.settings.colorScheme",
           "type": "select",
-          "label": "Color scheme",
+          "label": "Background color",
           "group": "Layout",
           "widget": "color-scheme",
           "sidebar": true,
@@ -11591,6 +11591,7 @@
           "type": "select",
           "label": "Icon",
           "group": "Navigation",
+          "widget": "select-inline",
           "sidebar": true,
           "options": [
             {
@@ -11612,7 +11613,7 @@
           "type": "select",
           "label": "Icon background",
           "group": "Navigation",
-          "widget": "segmented",
+          "widget": "select-inline",
           "sidebar": true,
           "options": [
             {
@@ -28309,7 +28310,7 @@
             {
               "path": "templates.index.sections.storytelling_carousel.settings.colorScheme",
               "type": "select",
-              "label": "Color scheme",
+              "label": "Background color",
               "group": "Layout",
               "widget": "color-scheme",
               "sidebar": true,
@@ -28337,6 +28338,7 @@
               "type": "select",
               "label": "Icon",
               "group": "Navigation",
+              "widget": "select-inline",
               "sidebar": true,
               "options": [
                 {
@@ -28358,7 +28360,7 @@
               "type": "select",
               "label": "Icon background",
               "group": "Navigation",
-              "widget": "segmented",
+              "widget": "select-inline",
               "sidebar": true,
               "options": [
                 {

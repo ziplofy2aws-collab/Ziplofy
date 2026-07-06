@@ -369,6 +369,7 @@ import {
 } from './theme-editor-blog-posts-carousel-panel.utils';
 import {
   isBlogPostsEditorialSectionType,
+  isBlogPostsEditorialSectionNodeId,
   isBlogPostsEditorialSettingsPanelFields,
   prepareBlogPostsEditorialSettingsNode,
 } from './theme-editor-blog-posts-editorial-panel.utils';
@@ -476,6 +477,23 @@ import { mapImageCompareBlockNodes } from '../utils/image-compare-sidebar.util';
 import { mapEditorialJumboBlockNodes } from '../utils/editorial-jumbo-sidebar.util';
 import { mapEditorialBlockNodes } from '../utils/editorial-sidebar.util';
 import { mapStorytellingCarouselBlockNodes } from '../utils/storytelling-carousel-sidebar.util';
+import { mapBlogPostsGridBlockNodes } from '../utils/blog-posts-grid-sidebar.util';
+import { mapBlogPostsEditorialBlockNodes } from '../utils/blog-posts-editorial-sidebar.util';
+import { mapBlogPostsCarouselBlockNodes } from '../utils/blog-posts-carousel-sidebar.util';
+import {
+  blogPostsGridBlockFieldDefsFromNodeId,
+  isBlogPostsGridCardDetailsBlockNodeId,
+  isBlogPostsGridCardExcerptBlockNodeId,
+  isBlogPostsGridCardImageBlockNodeId,
+  isBlogPostsGridCardTitleBlockNodeId,
+  isBlogPostsGridTitleBlockNodeId,
+} from './theme-editor-blog-posts-grid-block-panel.utils';
+import {
+  blogPostsGridCardFieldDefsFromNodeId,
+  isBlogPostsGridCardGroupBlockNodeId,
+  isBlogPostsGridCardPanelFields,
+  prepareBlogPostsGridCardSettingsNode,
+} from './theme-editor-blog-posts-grid-card-panel.utils';
 import { mapImageWithTextBlockNodes } from '../utils/image-with-text-sidebar.util';
 import { mapStorytellingVideoBlockNodes } from '../utils/storytelling-video-sidebar.util';
 import { mapFeaturedProductBlockNodes } from '../../utils/featured-product-sidebar.util';
@@ -534,6 +552,12 @@ import {
   prepareStorytellingCarouselContentGroupSettingsNode,
   storytellingCarouselContentGroupFieldDefsFromNodeId,
 } from './theme-editor-storytelling-carousel-content-group-panel.utils';
+import {
+  isStorytellingCarouselHeaderGroupBlockNodeId,
+  isStorytellingCarouselHeaderGroupPanelFields,
+  prepareStorytellingCarouselHeaderGroupSettingsNode,
+  storytellingCarouselHeaderFieldDefsFromNodeId,
+} from './theme-editor-storytelling-carousel-header-panel.utils';
 import {
   isDividerSectionType,
   isDividerSettingsPanelFields,
@@ -2908,6 +2932,9 @@ function layoutSectionNode(
   const isProductHighlightLayout = layoutBlueprintKey(instanceId) === 'product_highlight';
   const isEditorialLayout = layoutBlueprintKey(instanceId) === 'editorial';
   const isStorytellingCarouselLayout = layoutBlueprintKey(instanceId) === 'storytelling_carousel';
+  const isBlogPostsGridLayout = layoutBlueprintKey(instanceId) === 'blog_posts_grid';
+  const isBlogPostsEditorialLayout = layoutBlueprintKey(instanceId) === 'blog_posts_editorial';
+  const isBlogPostsCarouselLayout = layoutBlueprintKey(instanceId) === 'blog_posts_carousel';
   const isEditorialJumboLayout = layoutBlueprintKey(instanceId) === 'editorial_jumbo';
   const isImageCompareLayout = layoutBlueprintKey(instanceId) === 'image_compare';
   const isImageWithTextLayout = layoutBlueprintKey(instanceId) === 'image_with_text';
@@ -2949,6 +2976,9 @@ function layoutSectionNode(
     isProductHighlightLayout ||
     isEditorialLayout ||
     isStorytellingCarouselLayout ||
+    isBlogPostsGridLayout ||
+    isBlogPostsEditorialLayout ||
+    isBlogPostsCarouselLayout ||
     isEditorialJumboLayout ||
     isImageCompareLayout ||
     isImageWithTextLayout ||
@@ -3072,6 +3102,36 @@ function layoutSectionNode(
       config,
       ['sections', instanceId, 'block_order']
     );
+  } else if (isBlogPostsGridLayout) {
+    blockNodes = mapBlogPostsGridBlockNodes(
+      id,
+      `sections.${instanceId}.blocks`,
+      values,
+      itemOrder,
+      layoutChildrenKey,
+      config,
+      ['sections', instanceId, 'block_order']
+    );
+  } else if (isBlogPostsEditorialLayout) {
+    blockNodes = mapBlogPostsEditorialBlockNodes(
+      id,
+      `sections.${instanceId}.blocks`,
+      values,
+      itemOrder,
+      layoutChildrenKey,
+      config,
+      ['sections', instanceId, 'block_order']
+    );
+  } else if (isBlogPostsCarouselLayout) {
+    blockNodes = mapBlogPostsCarouselBlockNodes(
+      id,
+      `sections.${instanceId}.blocks`,
+      values,
+      itemOrder,
+      layoutChildrenKey,
+      config,
+      ['sections', instanceId, 'block_order']
+    );
   } else if (isImageWithTextLayout) {
     blockNodes = mapImageWithTextBlockNodes(id, values, itemOrder, layoutChildrenKey);
   } else if (isProductHotspotsLayout) {
@@ -3168,6 +3228,9 @@ function layoutSectionNode(
       isEditorialJumboLayout ||
       isEditorialLayout ||
       isStorytellingCarouselLayout ||
+    isBlogPostsGridLayout ||
+    isBlogPostsEditorialLayout ||
+    isBlogPostsCarouselLayout ||
       isImageWithTextLayout ||
       isCollectionListBentoLayout ||
       isCollectionListCarouselLayout ||
@@ -3205,6 +3268,12 @@ function layoutSectionNode(
                     ? 'Editorial'
                     : isStorytellingCarouselLayout
                       ? 'Carousel'
+                      : isBlogPostsGridLayout
+                        ? 'Blog posts: Grid'
+                      : isBlogPostsEditorialLayout
+                        ? 'Blog posts: Editorial'
+                      : isBlogPostsCarouselLayout
+                        ? 'Blog posts: Carousel'
                       : isEditorialJumboLayout
                         ? 'Editorial: Jumbo text'
                         : isImageCompareLayout
@@ -3633,6 +3702,36 @@ function sectionToNode(
             config,
             ['templates', tplId, 'sections', secId, 'block_order']
           )
+      : isBlogPostsGrid
+        ? mapBlogPostsGridBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.blocks`,
+            values,
+            itemOrder,
+            childrenListKey,
+            config,
+            ['templates', tplId, 'sections', secId, 'block_order']
+          )
+      : isBlogPostsEditorial
+        ? mapBlogPostsEditorialBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.blocks`,
+            values,
+            itemOrder,
+            childrenListKey,
+            config,
+            ['templates', tplId, 'sections', secId, 'block_order']
+          )
+      : isBlogPostsCarousel
+        ? mapBlogPostsCarouselBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.blocks`,
+            values,
+            itemOrder,
+            childrenListKey,
+            config,
+            ['templates', tplId, 'sections', secId, 'block_order']
+          )
       : isImageWithText
         ? mapImageWithTextBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isProductHotspots
@@ -3714,6 +3813,10 @@ function sectionToNode(
       isEmailSignup ||
       isImageCompare ||
       isImageWithText ||
+      isStorytellingCarousel ||
+      isBlogPostsGrid ||
+      isBlogPostsEditorial ||
+      isBlogPostsCarousel ||
       isProductHotspots ||
       isRecommendedProducts ||
       isCollectionLinksSpotlight ||
@@ -4121,6 +4224,21 @@ function isImageCompareGroupNode(node: SidebarNode): boolean {
   );
 }
 
+function isBlogPostsGridGroupNode(node: SidebarNode): boolean {
+  if (!/blog_posts_grid/.test(node.id)) return false;
+  return node.label === 'Blog card' && node.kind === 'block' && Boolean(node.children?.length);
+}
+
+function isBlogPostsEditorialGroupNode(node: SidebarNode): boolean {
+  if (!/blog_posts_editorial/.test(node.id)) return false;
+  return node.label === 'Blog card' && node.kind === 'block' && Boolean(node.children?.length);
+}
+
+function isBlogPostsCarouselGroupNode(node: SidebarNode): boolean {
+  if (!/blog_posts_carousel/.test(node.id)) return false;
+  return node.label === 'Blog card' && node.kind === 'block' && Boolean(node.children?.length);
+}
+
 function isStorytellingCarouselGroupNode(node: SidebarNode): boolean {
   if (!/storytelling_carousel/.test(node.id)) return false;
   return (
@@ -4137,7 +4255,7 @@ function isEditorialJumboGroupNode(node: SidebarNode): boolean {
 
 function isEditorialGroupNode(node: SidebarNode): boolean {
   if (/editorial_jumbo/.test(node.id)) return false;
-  if (/blog_posts_editorial|collection_list_editorial/.test(node.id)) return false;
+  if (/blog_posts_editorial|blog_posts_carousel|collection_list_editorial/.test(node.id)) return false;
   if (!/:block:content/.test(node.id) && !/:nested:group$/.test(node.id)) return false;
   if (!/editorial/.test(node.id)) return false;
   return (
@@ -4167,7 +4285,25 @@ export function defaultExpandedSidebar(nodes: SidebarNode[]): Record<string, boo
       if (node.kind === 'section' && node.label === 'Carousel') {
         out[node.id] = true;
       }
+      if (node.kind === 'section' && node.label === 'Blog posts: Grid') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'section' && node.label === 'Blog posts: Editorial') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'section' && node.label === 'Blog posts: Carousel') {
+        out[node.id] = true;
+      }
       if (isStorytellingCarouselGroupNode(node)) {
+        out[node.id] = true;
+      }
+      if (isBlogPostsGridGroupNode(node)) {
+        out[node.id] = true;
+      }
+      if (isBlogPostsEditorialGroupNode(node)) {
+        out[node.id] = true;
+      }
+      if (isBlogPostsCarouselGroupNode(node)) {
         out[node.id] = true;
       }
       if (isImageCompareGroupNode(node)) {
@@ -4183,6 +4319,27 @@ export function defaultExpandedSidebar(nodes: SidebarNode[]): Record<string, boo
         out[node.id] = true;
       }
       if (node.kind === 'block' && node.label === 'Accordion') {
+        out[node.id] = true;
+      }
+      if (
+        parent?.label === 'Blog posts: Grid' &&
+        node.kind === 'block' &&
+        node.label === 'Blog card'
+      ) {
+        out[node.id] = true;
+      }
+      if (
+        parent?.label === 'Blog posts: Editorial' &&
+        node.kind === 'block' &&
+        node.label === 'Blog card'
+      ) {
+        out[node.id] = true;
+      }
+      if (
+        parent?.label === 'Blog posts: Carousel' &&
+        node.kind === 'block' &&
+        node.label === 'Blog card'
+      ) {
         out[node.id] = true;
       }
       if (
@@ -5237,6 +5394,9 @@ export function settingsNodeForSelection(
   if (isBlogPostsCarouselSectionNodeId(node.id)) {
     return prepareBlogPostsCarouselSettingsNode(node);
   }
+  if (isBlogPostsEditorialSectionNodeId(node.id)) {
+    return prepareBlogPostsEditorialSettingsNode(node);
+  }
   if (isBlogPostsGridSectionNodeId(node.id)) {
     return prepareBlogPostsGridSettingsNode(node);
   }
@@ -5317,6 +5477,28 @@ export function settingsNodeForSelection(
   if (node.fields?.length && isCollectionTileBlockFieldsOnly(node.fields)) {
     return prepareCollectionTileBlockSettingsNode(node);
   }
+  if (isBlogPostsGridTitleBlockNodeId(node.id)) {
+    const fields = blogPostsGridBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) return { ...node, fields };
+  }
+  if (isBlogPostsGridCardGroupBlockNodeId(node.id)) {
+    const fields = blogPostsGridCardFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareBlogPostsGridCardSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isBlogPostsGridCardPanelFields(node.fields)) {
+    return prepareBlogPostsGridCardSettingsNode(node);
+  }
+  if (
+    isBlogPostsGridCardImageBlockNodeId(node.id) ||
+    isBlogPostsGridCardTitleBlockNodeId(node.id) ||
+    isBlogPostsGridCardDetailsBlockNodeId(node.id) ||
+    isBlogPostsGridCardExcerptBlockNodeId(node.id)
+  ) {
+    const fields = blogPostsGridBlockFieldDefsFromNodeId(node.id);
+    if (fields.length) return { ...node, fields };
+  }
   if (isStorytellingCarouselCardBlockNodeId(node.id)) {
     const fields = storytellingCarouselCardFieldDefsFromNodeId(node.id);
     if (fields.length) {
@@ -5334,6 +5516,15 @@ export function settingsNodeForSelection(
   }
   if (node.fields?.length && isStorytellingCarouselContentGroupPanelFields(node.fields)) {
     return prepareStorytellingCarouselContentGroupSettingsNode(node);
+  }
+  if (isStorytellingCarouselHeaderGroupBlockNodeId(node.id)) {
+    const fields = storytellingCarouselHeaderFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareStorytellingCarouselHeaderGroupSettingsNode({ ...node, fields });
+    }
+  }
+  if (node.fields?.length && isStorytellingCarouselHeaderGroupPanelFields(node.fields)) {
+    return prepareStorytellingCarouselHeaderGroupSettingsNode(node);
   }
   if (isStorytellingCarouselHeaderBlockNodeId(node.id)) {
     const fields = storytellingCarouselBlockFieldDefsFromNodeId(node.id);

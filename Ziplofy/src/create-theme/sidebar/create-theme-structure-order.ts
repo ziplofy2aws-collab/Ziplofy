@@ -47,6 +47,18 @@ import {
   storytellingCarouselStructureOrder,
 } from '../utils/storytelling-carousel-sidebar.util';
 import {
+  blogPostsGridLayoutStructureOrder,
+  blogPostsGridStructureOrder,
+} from '../utils/blog-posts-grid-sidebar.util';
+import {
+  blogPostsEditorialLayoutStructureOrder,
+  blogPostsEditorialStructureOrder,
+} from '../utils/blog-posts-editorial-sidebar.util';
+import {
+  blogPostsCarouselLayoutStructureOrder,
+  blogPostsCarouselStructureOrder,
+} from '../utils/blog-posts-carousel-sidebar.util';
+import {
   imageCompareLayoutStructureOrder,
   imageCompareStructureOrder,
 } from '../utils/image-compare-sidebar.util';
@@ -521,6 +533,33 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
+    const isBlogPostsGrid =
+      (sec as { type?: string }).type === 'blog-posts-grid' ||
+      catalogVariant === 'blog-posts-grid';
+    if (isBlogPostsGrid) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, blogPostsGridStructureOrder(sectionPrefix, listKey, {}));
+      continue;
+    }
+
+    const isBlogPostsEditorial =
+      (sec as { type?: string }).type === 'blog-posts-editorial' ||
+      catalogVariant === 'blog-posts-editorial';
+    if (isBlogPostsEditorial) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, blogPostsEditorialStructureOrder(sectionPrefix, listKey, {}));
+      continue;
+    }
+
+    const isBlogPostsCarousel =
+      (sec as { type?: string }).type === 'blog-posts-carousel' ||
+      catalogVariant === 'blog-posts-carousel';
+    if (isBlogPostsCarousel) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, blogPostsCarouselStructureOrder(sectionPrefix, listKey, {}));
+      continue;
+    }
+
     const isImageWithText =
       (sec as { type?: string }).type === 'image-with-text' || catalogVariant === 'image-with-text';
     if (isImageWithText) {
@@ -686,6 +725,35 @@ export function readStructureOrderFromConfig(
           config,
           layoutKey
         )
+      );
+      continue;
+    }
+
+    const isBlogPostsGrid = secType === 'blog-posts-grid' || catalogVariant === 'blog-posts-grid';
+    if (isBlogPostsGrid) {
+      Object.assign(
+        out,
+        blogPostsGridLayoutStructureOrder(`layout:${layoutKey}`, secListKey, {})
+      );
+      continue;
+    }
+
+    const isBlogPostsEditorial =
+      secType === 'blog-posts-editorial' || catalogVariant === 'blog-posts-editorial';
+    if (isBlogPostsEditorial) {
+      Object.assign(
+        out,
+        blogPostsEditorialLayoutStructureOrder(`layout:${layoutKey}`, secListKey, {})
+      );
+      continue;
+    }
+
+    const isBlogPostsCarousel =
+      secType === 'blog-posts-carousel' || catalogVariant === 'blog-posts-carousel';
+    if (isBlogPostsCarousel) {
+      Object.assign(
+        out,
+        blogPostsCarouselLayoutStructureOrder(`layout:${layoutKey}`, secListKey, {})
       );
       continue;
     }

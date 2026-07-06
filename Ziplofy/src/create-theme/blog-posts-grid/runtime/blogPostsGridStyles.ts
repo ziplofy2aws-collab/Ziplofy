@@ -15,6 +15,7 @@ const SCHEMES: Record<string, BlogPostsGridScheme> = {
 
 export type BlogPostsGridLayout = {
   scheme: BlogPostsGridScheme;
+  sectionBackground: string;
   heading: string;
   blogHandle: string;
   postCount: number;
@@ -35,11 +36,18 @@ export function readBlogPostsGridLayout(
   settingsBase: string
 ): BlogPostsGridLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  const scheme = SCHEMES[schemeKey] ?? SCHEMES['scheme-1'];
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
+  const sectionBackground =
+    backgroundColorRaw && backgroundColorRaw !== 'default' && backgroundColorRaw !== ''
+      ? backgroundColorRaw
+      : scheme.background;
   const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'page');
   const mobile = cfgString(config, `${settingsBase}.mobileColumns`, '2');
 
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme,
+    sectionBackground,
     heading: cfgString(config, `${settingsBase}.heading`, 'Blog posts'),
     blogHandle: cfgString(config, `${settingsBase}.blogHandle`, ''),
     postCount: cfgNumber(config, `${settingsBase}.postCount`, 3),

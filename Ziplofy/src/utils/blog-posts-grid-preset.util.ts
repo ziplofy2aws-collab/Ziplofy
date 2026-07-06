@@ -1,18 +1,26 @@
 /** Defaults for Blog posts grid sections. */
 
+import { seedBlogPostsGridCardGroupInSettings } from '../create-theme/sidebar/theme-editor-blog-posts-grid-card-panel.utils';
+import {
+  blogPostsGridCardDetailsDefaultSettings,
+  blogPostsGridCardExcerptDefaultSettings,
+  blogPostsGridCardImageDefaultSettings,
+  blogPostsGridCardTitleDefaultSettings,
+  blogPostsGridSectionTitleDefaultSettings,
+} from '../create-theme/sidebar/theme-editor-blog-posts-grid-block-panel.utils';
+
 const POST_VARIANTS = ['sewing', 'thread', 'boxes'] as const;
 
 function makePost(variant: string) {
   return {
     type: 'blog-post-card',
-    settings: {
+    settings: seedBlogPostsGridCardGroupInSettings({
       illustrationVariant: variant,
-      title: 'Title',
-      date: 'Jan 12',
-      author: 'Author',
-      excerpt: "An excerpt of your blog post's content",
-      imageUrl: '',
-    },
+      ...blogPostsGridCardImageDefaultSettings(),
+      ...blogPostsGridCardTitleDefaultSettings(),
+      ...blogPostsGridCardDetailsDefaultSettings(),
+      ...blogPostsGridCardExcerptDefaultSettings(),
+    }),
   };
 }
 
@@ -32,10 +40,13 @@ export function applyBlogPostsGridPreset(section: Record<string, unknown>): void
   settings.verticalGap = settings.verticalGap ?? 8;
   settings.sectionWidth = settings.sectionWidth ?? 'page';
   settings.layoutGap = settings.layoutGap ?? 12;
-  settings.colorScheme = settings.colorScheme ?? 'scheme-1';
+  settings.backgroundColor = settings.backgroundColor ?? 'default';
   settings.paddingTop = settings.paddingTop ?? 48;
   settings.paddingBottom = settings.paddingBottom ?? 48;
   settings.customCss = settings.customCss ?? '';
+  for (const [key, value] of Object.entries(blogPostsGridSectionTitleDefaultSettings())) {
+    if (settings[key] === undefined) settings[key] = value;
+  }
   section.settings = settings;
 
   const blocks = (section.blocks ?? {}) as Record<string, Record<string, unknown>>;
@@ -62,6 +73,19 @@ export function applyBlogPostsGridPreset(section: Record<string, unknown>): void
       blocks[id] = makePost(POST_VARIANTS[i % POST_VARIANTS.length]);
     }
     (section.block_order as string[]).push(id);
+  }
+  for (const id of section.block_order as string[]) {
+    const block = blocks[id];
+    if (!block || typeof block !== 'object') continue;
+    const blockSettings = (block.settings ?? {}) as Record<string, unknown>;
+    block.settings = seedBlogPostsGridCardGroupInSettings({
+      ...blogPostsGridCardImageDefaultSettings(),
+      ...blogPostsGridCardTitleDefaultSettings(),
+      ...blogPostsGridCardDetailsDefaultSettings(),
+      ...blogPostsGridCardExcerptDefaultSettings(),
+      ...blockSettings,
+    });
+    blocks[id] = block;
   }
   section.blocks = blocks;
 }

@@ -574,6 +574,7 @@ import {
   groupBlogPostsCarouselPanelFields,
   BLOG_POSTS_CAROUSEL_PANEL_GROUP_ORDER,
   isBlogPostsCarouselSettingsPanelFields,
+  pickBlogPostsCarouselSectionField,
 } from './theme-editor-blog-posts-carousel-panel.utils';
 import {
   groupBlogPostsEditorialPanelFields,
@@ -584,11 +585,33 @@ import {
   groupBlogPostsGridPanelFields,
   BLOG_POSTS_GRID_PANEL_GROUP_ORDER,
   isBlogPostsGridSettingsPanelFields,
+  pickBlogPostsGridSectionField,
 } from './theme-editor-blog-posts-grid-panel.utils';
+import {
+  BLOG_POSTS_GRID_CARD_PANEL_GROUP_ORDER,
+  groupBlogPostsGridCardPanelFields,
+  isBlogPostsGridCardGroupBlockNodeId,
+  isBlogPostsGridCardPanelFields,
+  pickBlogPostsGridCardField,
+} from './theme-editor-blog-posts-grid-card-panel.utils';
+import {
+  isBlogPostsGridTitleBlockNodeId,
+  isBlogPostsGridCardImageBlockNodeId,
+  isBlogPostsGridCardImagePanelFields,
+  isBlogPostsGridCardTitleBlockNodeId,
+  isBlogPostsGridCardTitlePanelFields,
+  isBlogPostsGridCardDetailsBlockNodeId,
+  isBlogPostsGridCardDetailsPanelFields,
+  isBlogPostsGridCardExcerptBlockNodeId,
+  isBlogPostsGridCardExcerptPanelFields,
+  isBlogPostsGridSectionTitlePanelFields,
+  pickBlogPostsGridBlockField,
+} from './theme-editor-blog-posts-grid-block-panel.utils';
 import {
   groupStorytellingCarouselPanelFields,
   STORYTELLING_CAROUSEL_PANEL_GROUP_ORDER,
   isStorytellingCarouselSettingsPanelFields,
+  pickStorytellingCarouselSectionField,
 } from './theme-editor-storytelling-carousel-panel.utils';
 import {
   isStorytellingCarouselCardImageBlockNodeId,
@@ -615,6 +638,15 @@ import {
   isStorytellingCarouselContentGroupPanelFields,
   pickStorytellingCarouselContentGroupField,
 } from './theme-editor-storytelling-carousel-content-group-panel.utils';
+import {
+  STORYTELLING_CAROUSEL_HEADER_PANEL_GROUP_ORDER,
+  groupStorytellingCarouselHeaderPanelFields,
+  isStorytellingCarouselHeaderGroupBlockNodeId,
+  isStorytellingCarouselHeaderGroupPanelFields,
+  pickStorytellingCarouselHeaderField,
+  resolveStorytellingCarouselHeaderCustomHeightField,
+  resolveStorytellingCarouselHeaderCustomWidthField,
+} from './theme-editor-storytelling-carousel-header-panel.utils';
 import {
   augmentProductHotspotsPanelFields,
   groupProductHotspotsPanelFields,
@@ -6418,6 +6450,33 @@ function StorytellingCarouselContentGroupGroupedSettingsPanel({
         return null;
       })}
     </div>
+  );
+}
+
+/** Storytelling carousel — Header group block: layout, size, appearance, borders, block link, padding. */
+function StorytellingCarouselHeaderGroupedSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+  colorPalette,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  colorPalette: string[];
+}) {
+  return (
+    <BlockGroupLayoutSettingsPanel
+      fields={fields}
+      values={values}
+      colorPalette={colorPalette}
+      onFieldChange={onFieldChange}
+      groupOrder={STORYTELLING_CAROUSEL_HEADER_PANEL_GROUP_ORDER}
+      groupPanelFields={groupStorytellingCarouselHeaderPanelFields}
+      pickField={pickStorytellingCarouselHeaderField}
+      resolveCustomWidth={resolveStorytellingCarouselHeaderCustomWidthField}
+      resolveCustomHeight={resolveStorytellingCarouselHeaderCustomHeightField}
+    />
   );
 }
 
@@ -12690,56 +12749,39 @@ function BlogSelectFieldRow({
 function BlogPostsCarouselSectionLayoutGroup({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
+  const sectionWidth = pickBlogPostsCarouselSectionField(fields, 'sectionWidth');
+  const layoutGap = pickBlogPostsCarouselSectionField(fields, 'layoutGap');
+  const backgroundColor = pickBlogPostsCarouselSectionField(fields, 'backgroundColor');
+
   return (
     <div className="px-1 py-3">
       <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Section layout</h3>
       <div className="space-y-1">
-        {fields.map((field) => {
-          if (field.widget === 'segmented') {
-            return (
-              <SegmentedFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            );
-          }
-          if (field.widget === 'slider') {
-            return (
-              <SliderFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            );
-          }
-          if (field.widget === 'color-scheme') {
-            return (
-              <ColorSchemeFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            );
-          }
-          return (
-            <DefaultFieldRow
-              key={field.path}
-              field={field}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
-          );
-        })}
+        {sectionWidth ? (
+          <SegmentedFieldRow field={sectionWidth} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {layoutGap ? (
+          <SliderFieldRow field={layoutGap} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {backgroundColor ? (
+          <ThemeDefaultColorField
+            label="Background color"
+            path={backgroundColor.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={0}
+            fallbackColor="#ffffff"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -12749,10 +12791,12 @@ function BlogPostsCarouselSectionLayoutGroup({
 function BlogPostsEditorialGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupBlogPostsEditorialPanelFields(fields), [fields]);
@@ -12829,10 +12873,11 @@ function BlogPostsEditorialGroupedSettingsPanel({
 
         if (label === 'Section layout') {
           return (
-            <BlogPostsCarouselSectionLayoutGroup
+            <BlogPostsGridSectionLayoutGroup
               key={label}
               fields={groupFields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -12889,49 +12934,46 @@ function StorytellingCarouselGroupedSettingsPanel({
         if (!groupFields?.length) return null;
 
         if (label === 'Layout') {
+          const columns = pickStorytellingCarouselSectionField(fields, 'columns');
+          const mobileColumns = pickStorytellingCarouselSectionField(fields, 'mobileColumns');
+          const sectionWidth = pickStorytellingCarouselSectionField(fields, 'sectionWidth');
+          const horizontalGap = pickStorytellingCarouselSectionField(fields, 'horizontalGap');
+          const colorScheme = pickStorytellingCarouselSectionField(fields, 'colorScheme');
+
           return (
             <div key={label} className="px-1 py-3">
               <div className="space-y-1">
-                {groupFields.map((field) => {
-                  if (field.widget === 'segmented') {
-                    return (
-                      <SegmentedFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  if (field.widget === 'slider') {
-                    return (
-                      <SliderFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  if (field.widget === 'color-scheme') {
-                    return (
-                      <ColorSchemeFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  return (
-                    <DefaultFieldRow
-                      key={field.path}
-                      field={field}
-                      values={values}
-                      onFieldChange={onFieldChange}
-                    />
-                  );
-                })}
+                {columns ? (
+                  <SliderFieldRow field={columns} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {mobileColumns ? (
+                  <SegmentedFieldRow
+                    field={mobileColumns}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {sectionWidth ? (
+                  <SegmentedFieldRow
+                    field={sectionWidth}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {horizontalGap ? (
+                  <SliderFieldRow
+                    field={horizontalGap}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {colorScheme ? (
+                  <ColorSchemeFieldRow
+                    field={{ ...colorScheme, label: 'Background color' }}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
               </div>
             </div>
           );
@@ -12942,23 +12984,14 @@ function StorytellingCarouselGroupedSettingsPanel({
             <div key={label} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
               <div className="space-y-1">
-                {groupFields.map((field) =>
-                  field.widget === 'segmented' ? (
-                    <SegmentedFieldRow
-                      key={field.path}
-                      field={field}
-                      values={values}
-                      onFieldChange={onFieldChange}
-                    />
-                  ) : (
-                    <InlineSelectFieldRow
-                      key={field.path}
-                      field={field}
-                      values={values}
-                      onFieldChange={onFieldChange}
-                    />
-                  )
-                )}
+                {groupFields.map((field) => (
+                  <InlineSelectFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ))}
               </div>
             </div>
           );
@@ -12997,13 +13030,57 @@ function StorytellingCarouselGroupedSettingsPanel({
 }
 
 /** Blog posts grid: General → Cards layout → Section layout → Padding → Custom CSS. */
-function BlogPostsGridGroupedSettingsPanel({
+function BlogPostsGridSectionLayoutGroup({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const sectionWidth = pickBlogPostsGridSectionField(fields, 'sectionWidth');
+  const layoutGap = pickBlogPostsGridSectionField(fields, 'layoutGap');
+  const backgroundColor = pickBlogPostsGridSectionField(fields, 'backgroundColor');
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Section layout</h3>
+      <div className="space-y-1">
+        {sectionWidth ? (
+          <SegmentedFieldRow field={sectionWidth} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {layoutGap ? (
+          <SliderFieldRow field={layoutGap} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {backgroundColor ? (
+          <ThemeDefaultColorField
+            label="Background color"
+            path={backgroundColor.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={0}
+            fallbackColor="#ffffff"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Blog posts grid: General → Cards layout → Section layout → Padding → Custom CSS. */
+function BlogPostsGridGroupedSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupBlogPostsGridPanelFields(fields), [fields]);
@@ -13090,10 +13167,11 @@ function BlogPostsGridGroupedSettingsPanel({
 
         if (label === 'Section layout') {
           return (
-            <BlogPostsCarouselSectionLayoutGroup
+            <BlogPostsGridSectionLayoutGroup
               key={label}
               fields={groupFields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -13127,6 +13205,332 @@ function BlogPostsGridGroupedSettingsPanel({
 
         return null;
       })}
+    </div>
+  );
+}
+
+/** Blog posts grid — Blog card group. */
+function BlogPostsGridCardGroupedSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const grouped = useMemo(() => groupBlogPostsGridCardPanelFields(fields), [fields]);
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      {BLOG_POSTS_GRID_CARD_PANEL_GROUP_ORDER.map((label) => {
+        const groupFields = grouped.get(label);
+        if (!groupFields?.length) return null;
+
+        if (label === 'Text') {
+          const alignment = pickBlogPostsGridCardField(fields, 'layoutAlignment');
+          const layoutGap = pickBlogPostsGridCardField(fields, 'layoutGap');
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {alignment ? (
+                  <SegmentedFieldRow field={alignment} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {layoutGap ? (
+                  <SliderFieldRow field={layoutGap} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Appearance') {
+          const backgroundColor = pickBlogPostsGridCardField(fields, 'backgroundColor');
+          const borderStyle = pickBlogPostsGridCardField(fields, 'borderStyle');
+          const cornerRadius = pickBlogPostsGridCardField(fields, 'cornerRadius');
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {backgroundColor ? (
+                  <ThemeDefaultColorField
+                    label="Background color"
+                    path={backgroundColor.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={0}
+                    fallbackColor="#ffffff"
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {borderStyle ? (
+                  <SegmentedFieldRow field={borderStyle} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {cornerRadius ? (
+                  <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
+        if (label === 'Padding') {
+          return (
+            <HeroPaddingSettingsGroup
+              key={label}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        return null;
+      })}
+    </div>
+  );
+}
+
+/** Blog posts grid — card Image block. */
+function BlogPostsGridImageBlockSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const aspectRatio = pickBlogPostsGridBlockField(fields, 'imageAspectRatio');
+  const borderStyle = pickBlogPostsGridBlockField(fields, 'imageBorderStyle');
+  const cornerRadius = pickBlogPostsGridBlockField(fields, 'imageCornerRadius');
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <div className="space-y-1 px-1 py-3">
+        {aspectRatio ? (
+          <>
+            <InlineSelectFieldRow field={aspectRatio} values={values} onFieldChange={onFieldChange} />
+            <p className="text-[12px] text-gray-500">Adjusted in some layouts</p>
+          </>
+        ) : null}
+      </div>
+      <div className="px-1 py-3">
+        <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Borders</h3>
+        <div className="space-y-1">
+          {borderStyle ? (
+            <SegmentedFieldRow field={borderStyle} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {cornerRadius ? (
+            <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Blog posts grid — card Title block. */
+function BlogPostsGridCardTitleSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const preset = pickBlogPostsGridBlockField(fields, 'titleTypographyPreset');
+  const text = pickBlogPostsGridBlockField(fields, 'title');
+  const color = pickBlogPostsGridBlockField(fields, 'titleColor');
+  const paddingFields = fields.filter((f) => f.group === 'Padding');
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      {preset ? (
+        <div className="px-1 py-3">
+          <InlineSelectFieldRow field={preset} values={values} onFieldChange={onFieldChange} />
+          {preset.description ? (
+            <p className="mt-1 text-right text-[12px] text-gray-500">
+              Edit presets in{' '}
+              <button
+                type="button"
+                className="text-[#005bd3] underline underline-offset-2 hover:text-[#004299]"
+                onClick={() => window.open('/settings/theme', '_blank', 'noopener,noreferrer')}
+              >
+                theme settings
+              </button>
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+      {text ? (
+        <div className="space-y-1 px-1 py-3">
+          <RichTextFieldRow
+            field={{ ...text, widget: 'richtext', type: 'textarea' }}
+            values={values}
+            onFieldChange={onFieldChange}
+            showDynamicSource
+          />
+        </div>
+      ) : null}
+      {color ? (
+        <div className="px-1 py-3">
+          <ThemeDefaultColorField
+            label="Text color"
+            path={color.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={0}
+            fallbackColor="#111827"
+            onFieldChange={onFieldChange}
+          />
+        </div>
+      ) : null}
+      {paddingFields.length ? (
+        <HeroPaddingSettingsGroup
+          fields={paddingFields}
+          values={values}
+          onFieldChange={onFieldChange}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** Blog posts grid — card Details block. */
+function BlogPostsGridDetailsBlockSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const dateEnabled = pickBlogPostsGridBlockField(fields, 'detailsDateEnabled');
+  const authorEnabled = pickBlogPostsGridBlockField(fields, 'detailsAuthorEnabled');
+  const preset = pickBlogPostsGridBlockField(fields, 'detailsTypographyPreset');
+  const color = pickBlogPostsGridBlockField(fields, 'detailsColor');
+  const paddingFields = fields.filter((f) => f.group === 'Padding');
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      <div className="space-y-1 px-1 py-3">
+        {dateEnabled ? (
+          <ToggleSwitchFieldRow field={dateEnabled} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {authorEnabled ? (
+          <ToggleSwitchFieldRow field={authorEnabled} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+      {preset ? (
+        <div className="px-1 py-3">
+          <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
+          <InlineSelectFieldRow field={preset} values={values} onFieldChange={onFieldChange} />
+          {preset.description ? (
+            <p className="mt-1 text-right text-[12px] text-gray-500">
+              Edit presets in{' '}
+              <button
+                type="button"
+                className="text-[#005bd3] underline underline-offset-2 hover:text-[#004299]"
+                onClick={() => window.open('/settings/theme', '_blank', 'noopener,noreferrer')}
+              >
+                theme settings
+              </button>
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+      {color ? (
+        <div className="px-1 py-3">
+          <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+          <ThemeDefaultColorField
+            label="Text color"
+            path={color.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={0}
+            fallbackColor="#111827"
+            onFieldChange={onFieldChange}
+          />
+        </div>
+      ) : null}
+      {paddingFields.length ? (
+        <HeroPaddingSettingsGroup
+          fields={paddingFields}
+          values={values}
+          onFieldChange={onFieldChange}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** Blog posts grid — card Excerpt block. */
+function BlogPostsGridExcerptBlockSettingsPanel({
+  fields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const preset = pickBlogPostsGridBlockField(fields, 'excerptTypographyPreset');
+  const color = pickBlogPostsGridBlockField(fields, 'excerptColor');
+  const paddingFields = fields.filter((f) => f.group === 'Padding');
+
+  return (
+    <div className="divide-y divide-[#e1e1e1]">
+      {preset ? (
+        <div className="px-1 py-3">
+          <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
+          <InlineSelectFieldRow field={preset} values={values} onFieldChange={onFieldChange} />
+          {preset.description ? (
+            <p className="mt-1 text-right text-[12px] text-gray-500">
+              Edit presets in{' '}
+              <button
+                type="button"
+                className="text-[#005bd3] underline underline-offset-2 hover:text-[#004299]"
+                onClick={() => window.open('/settings/theme', '_blank', 'noopener,noreferrer')}
+              >
+                theme settings
+              </button>
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+      {color ? (
+        <div className="px-1 py-3">
+          <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+          <ThemeDefaultColorField
+            label="Text color"
+            path={color.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={0}
+            fallbackColor="#111827"
+            onFieldChange={onFieldChange}
+          />
+        </div>
+      ) : null}
+      {paddingFields.length ? (
+        <HeroPaddingSettingsGroup
+          fields={paddingFields}
+          values={values}
+          onFieldChange={onFieldChange}
+        />
+      ) : null}
     </div>
   );
 }
@@ -13525,10 +13929,12 @@ function FeaturedCollectionGroupedSettingsPanel({
 function BlogPostsCarouselGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupBlogPostsCarouselPanelFields(fields), [fields]);
@@ -13609,6 +14015,7 @@ function BlogPostsCarouselGroupedSettingsPanel({
               key={label}
               fields={groupFields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -17377,6 +17784,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isFeaturedProductHeaderTitleBlockPanel =
     !isProductCardTitlePanel &&
     !isProductHighlightProductTitleBlockPanel &&
+    !isBlogPostsGridTitleBlockNodeId(node.id) &&
+    !isBlogPostsGridCardTitleBlockNodeId(node.id) &&
     (node.label === 'Title' ||
       isFeaturedProductHeaderTitleNestedNodeId(node.id) ||
       isFeaturedProductHeaderTitlePanelFields(fields));
@@ -17673,11 +18082,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isFeaturedCollectionCarouselPanel =
     isFeaturedCollectionSectionPanel && featuredCollectionVariant === 'carousel';
   const isBlogPostsCarouselPanel =
-    node.label === 'Blog posts: Carousel' || isBlogPostsCarouselSettingsPanelFields(fields);
-  const isBlogPostsEditorialPanel =
-    node.label === 'Blog posts: Editorial' || isBlogPostsEditorialSettingsPanelFields(fields);
-  const isBlogPostsGridPanel =
-    node.label === 'Blog posts: Grid' || isBlogPostsGridSettingsPanelFields(fields);
+    !isBlogPostsGridSectionTitleBlockPanel &&
+    !isBlogPostsGridCardGroupPanel &&
+    !isBlogPostsGridCardImageBlockPanel &&
+    !isBlogPostsGridCardTitleBlockPanel &&
+    !isBlogPostsGridCardDetailsBlockPanel &&
+    !isBlogPostsGridCardExcerptBlockPanel &&
+    (node.label === 'Blog posts: Carousel' || isBlogPostsCarouselSettingsPanelFields(fields));
   const isProductHotspotsPanel =
     node.label === 'Product hotspots' || isProductHotspotsSettingsPanelFields(fields);
   const isProductHotspotsHeadingPanel =
@@ -17718,9 +18129,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     /(slideshow_(inset|full_frame)|layered_slideshow)[^:]*:block:[^:]+$/.test(node.id);
   const isCollectionLinkTitlePanel =
     node.label === 'Title' &&
+    !isBlogPostsGridTitleBlockNodeId(node.id) &&
+    !isBlogPostsGridCardTitleBlockNodeId(node.id) &&
     (isCollectionLinkTitleFieldNodeId(node.id) || isCollectionLinkTitlePanelFields(fields));
   const isCollectionLinkImagePanel =
     node.label === 'Image' &&
+    !isBlogPostsGridCardImageBlockNodeId(node.id) &&
     (isCollectionLinkImageFieldNodeId(node.id) || isCollectionLinkImagePanelFields(fields));
   const isCollectionListHeaderTextPanel = isCollectionListHeaderTextPanelNode(node, fields);
   const isCollectionListCardPanel = isCollectionListCardPanelNode(node, fields);
@@ -17743,8 +18157,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' &&
     (isStorytellingCarouselCardTextBlockNodeId(node.id) ||
       isStorytellingCarouselCardTextPanelFields(fields));
+  const isStorytellingCarouselHeaderGroupPanel =
+    node.kind === 'block' &&
+    (isStorytellingCarouselHeaderGroupBlockNodeId(node.id) ||
+      isStorytellingCarouselHeaderGroupPanelFields(fields));
   const isStorytellingCarouselHeaderBlockPanel =
     node.kind === 'block' &&
+    !isStorytellingCarouselHeaderGroupPanel &&
     (isStorytellingCarouselHeaderBlockNodeId(node.id) ||
       isStorytellingCarouselHeaderPanelFields(fields));
   const isStorytellingCarouselContentGroupPanel =
@@ -17765,14 +18184,53 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       isStorytellingCarouselCardHeadingPanelFields(fields));
   const isStorytellingCarouselPanel =
     !isStorytellingCarouselContentGroupPanel &&
+    !isStorytellingCarouselHeaderGroupPanel &&
     !isStorytellingCarouselHeaderBlockPanel &&
     !isStorytellingCarouselCardBlockPanel &&
     !isStorytellingCarouselCardImageBlockPanel &&
     !isStorytellingCarouselCardTextBlockPanel &&
     !isStorytellingCarouselCardHeadingBlockPanel &&
     (node.label === 'Carousel' || isStorytellingCarouselSettingsPanelFields(fields));
-  const isDividerPanel =
-    node.label === 'Divider' || isDividerSettingsPanelFields(fields);
+  const isBlogPostsGridSectionTitleBlockPanel =
+    node.kind === 'block' &&
+    (isBlogPostsGridTitleBlockNodeId(node.id) ||
+      isBlogPostsGridSectionTitlePanelFields(fields));
+  const isBlogPostsGridCardGroupPanel =
+    node.kind === 'block' &&
+    (isBlogPostsGridCardGroupBlockNodeId(node.id) ||
+      isBlogPostsGridCardPanelFields(fields));
+  const isBlogPostsGridCardImageBlockPanel =
+    node.kind === 'block' &&
+    (isBlogPostsGridCardImageBlockNodeId(node.id) ||
+      isBlogPostsGridCardImagePanelFields(fields));
+  const isBlogPostsGridCardTitleBlockPanel =
+    node.kind === 'block' &&
+    (isBlogPostsGridCardTitleBlockNodeId(node.id) ||
+      isBlogPostsGridCardTitlePanelFields(fields));
+  const isBlogPostsGridCardDetailsBlockPanel =
+    node.kind === 'block' &&
+    (isBlogPostsGridCardDetailsBlockNodeId(node.id) ||
+      isBlogPostsGridCardDetailsPanelFields(fields));
+  const isBlogPostsGridCardExcerptBlockPanel =
+    node.kind === 'block' &&
+    (isBlogPostsGridCardExcerptBlockNodeId(node.id) ||
+      isBlogPostsGridCardExcerptPanelFields(fields));
+  const isBlogPostsGridPanel =
+    !isBlogPostsGridSectionTitleBlockPanel &&
+    !isBlogPostsGridCardGroupPanel &&
+    !isBlogPostsGridCardImageBlockPanel &&
+    !isBlogPostsGridCardTitleBlockPanel &&
+    !isBlogPostsGridCardDetailsBlockPanel &&
+    !isBlogPostsGridCardExcerptBlockPanel &&
+    (node.label === 'Blog posts: Grid' || isBlogPostsGridSettingsPanelFields(fields));
+  const isBlogPostsEditorialPanel =
+    !isBlogPostsGridSectionTitleBlockPanel &&
+    !isBlogPostsGridCardGroupPanel &&
+    !isBlogPostsGridCardImageBlockPanel &&
+    !isBlogPostsGridCardTitleBlockPanel &&
+    !isBlogPostsGridCardDetailsBlockPanel &&
+    !isBlogPostsGridCardExcerptBlockPanel &&
+    (node.label === 'Blog posts: Editorial' || isBlogPostsEditorialSettingsPanelFields(fields));
   const faqHeadingBlockPanel = isFaqHeadingCollectionTitlePanelNode(node);
   const isHeadingBlockPanel =
     !isRichTextBlockPanel &&
@@ -17893,6 +18351,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isBlogPostsCarouselPanel &&
     !isBlogPostsEditorialPanel &&
     !isBlogPostsGridPanel &&
+    !isBlogPostsGridSectionTitleBlockPanel &&
+    !isBlogPostsGridCardGroupPanel &&
+    !isBlogPostsGridCardImageBlockPanel &&
+    !isBlogPostsGridCardTitleBlockPanel &&
+    !isBlogPostsGridCardDetailsBlockPanel &&
+    !isBlogPostsGridCardExcerptBlockPanel &&
     !isProductHotspotsPanel &&
     !isProductHotspotsHeadingPanel &&
     !isProductHotspotsHotspotBlockPanel &&
@@ -17964,6 +18428,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isBlogPostsCarouselPanel &&
     !isBlogPostsEditorialPanel &&
     !isBlogPostsGridPanel &&
+    !isBlogPostsGridSectionTitleBlockPanel &&
+    !isBlogPostsGridCardGroupPanel &&
+    !isBlogPostsGridCardImageBlockPanel &&
+    !isBlogPostsGridCardTitleBlockPanel &&
+    !isBlogPostsGridCardDetailsBlockPanel &&
+    !isBlogPostsGridCardExcerptBlockPanel &&
     !isProductHotspotsPanel &&
     !isProductHotspotsHeadingPanel &&
     !isProductHotspotsHotspotBlockPanel &&
@@ -18453,6 +18923,14 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
+        ) : isBlogPostsGridSectionTitleBlockPanel ? (
+          <RichTextTypographyBlockSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            contentKey="heading"
+            onFieldChange={onFieldChange}
+          />
         ) : isFeaturedProductHeaderTitleBlockPanel ? (
           <FeaturedProductHeaderTitleGroupedSettingsPanel
             fields={fields}
@@ -18813,6 +19291,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
+        ) : isStorytellingCarouselHeaderGroupPanel ? (
+          <StorytellingCarouselHeaderGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
         ) : isStorytellingCarouselHeaderBlockPanel ? (
           <RichTextTypographyBlockSettingsPanel
             fields={fields}
@@ -18839,6 +19324,40 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <StorytellingCarouselImageBlockSettingsPanel
             fields={fields}
             values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isBlogPostsGridCardGroupPanel ? (
+          <BlogPostsGridCardGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isBlogPostsGridCardImageBlockPanel ? (
+          <BlogPostsGridImageBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isBlogPostsGridCardTitleBlockPanel ? (
+          <BlogPostsGridCardTitleSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isBlogPostsGridCardDetailsBlockPanel ? (
+          <BlogPostsGridDetailsBlockSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isBlogPostsGridCardExcerptBlockPanel ? (
+          <BlogPostsGridExcerptBlockSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isImageWithTextHeadingBlockPanel ? (
@@ -19007,18 +19526,21 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <BlogPostsCarouselGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isBlogPostsEditorialPanel ? (
           <BlogPostsEditorialGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isBlogPostsGridPanel ? (
           <BlogPostsGridGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isStorytellingCarouselPanel ? (

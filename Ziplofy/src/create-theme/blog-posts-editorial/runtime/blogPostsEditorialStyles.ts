@@ -15,6 +15,7 @@ const SCHEMES: Record<string, BlogPostsEditorialScheme> = {
 
 export type BlogPostsEditorialLayout = {
   scheme: BlogPostsEditorialScheme;
+  sectionBackground: string;
   heading: string;
   blogHandle: string;
   postCount: number;
@@ -31,10 +32,17 @@ export function readBlogPostsEditorialLayout(
   settingsBase: string
 ): BlogPostsEditorialLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  const scheme = SCHEMES[schemeKey] ?? SCHEMES['scheme-1'];
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
+  const sectionBackground =
+    backgroundColorRaw && backgroundColorRaw !== 'default' && backgroundColorRaw !== ''
+      ? backgroundColorRaw
+      : scheme.background;
   const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'page');
 
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme,
+    sectionBackground,
     heading: cfgString(config, `${settingsBase}.heading`, 'Blog posts'),
     blogHandle: cfgString(config, `${settingsBase}.blogHandle`, ''),
     postCount: cfgNumber(config, `${settingsBase}.postCount`, 3),

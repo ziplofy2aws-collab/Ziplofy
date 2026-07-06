@@ -54,8 +54,8 @@ export const editing: CreateThemeEditing = {
       "type": "number"
     },
     {
-      "key": "colorScheme",
-      "label": "Color scheme",
+      "key": "backgroundColor",
+      "label": "Background color",
       "type": "text"
     },
     {

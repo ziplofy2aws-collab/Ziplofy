@@ -24,6 +24,11 @@ import {
   storytellingCarouselContentGroupFieldDefs,
   storytellingCarouselContentGroupFieldDefsFromNodeId,
 } from '../sidebar/theme-editor-storytelling-carousel-content-group-panel.utils';
+import {
+  storytellingCarouselHeaderCustomSizeFieldDefs,
+  storytellingCarouselHeaderFieldDefs,
+  storytellingCarouselHeaderFieldDefsFromNodeId,
+} from '../sidebar/theme-editor-storytelling-carousel-header-panel.utils';
 
 export const STORYTELLING_CAROUSEL_SECTION_BLOCK_ORDER = ['header', 'content'] as const;
 export const STORYTELLING_CAROUSEL_HEADER_CHILD_ORDER = ['heading'] as const;
@@ -165,6 +170,11 @@ export function mapStorytellingCarouselBlockNodes(
   const headerFields = storytellingCarouselBlockFieldDefs(`${sectionBase}.settings`, 'header');
   const headingPreviewField = headerFields.find((f) => f.path.endsWith('.heading'));
 
+  const headerGroupFields = [
+    ...storytellingCarouselHeaderFieldDefs(`${sectionBase}.settings`),
+    ...storytellingCarouselHeaderCustomSizeFieldDefs(`${sectionBase}.settings`),
+  ];
+
   const headerChildren = reorderSidebarChildren(
     [
       { id: `${headerPrefix}:inner-add-block`, label: 'Add block', kind: 'add-block' },
@@ -186,6 +196,7 @@ export function mapStorytellingCarouselBlockNodes(
     label: 'Header',
     kind: 'block',
     icon: 'group',
+    fields: headerGroupFields,
     children: headerChildren,
     childrenListKey: listKeyBlockChildren(headerPrefix),
   };
@@ -346,7 +357,8 @@ export function syntheticStorytellingCarouselSidebarNode(
   _editorSchema?: EditorSchemaDoc | null
 ): SidebarNode | null {
   if (isStorytellingCarouselHeaderGroupNodeId(nodeId)) {
-    return { id: nodeId, label: 'Header', kind: 'block', icon: 'group' };
+    const fields = storytellingCarouselHeaderFieldDefsFromNodeId(nodeId);
+    return { id: nodeId, label: 'Header', kind: 'block', icon: 'group', fields };
   }
 
   if (isStorytellingCarouselContentGroupNodeId(nodeId)) {

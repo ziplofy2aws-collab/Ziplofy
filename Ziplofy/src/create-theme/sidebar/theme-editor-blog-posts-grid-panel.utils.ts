@@ -22,7 +22,7 @@ const FIELD_SORT: Record<string, number> = {
   verticalGap: 6,
   sectionWidth: 0,
   layoutGap: 1,
-  colorScheme: 2,
+  backgroundColor: 2,
   paddingTop: 0,
   paddingBottom: 1,
   customCss: 0,
@@ -183,18 +183,12 @@ export function blogPostsGridFieldDefs(settingsBase: string): EditorFieldDef[] {
       sidebar: true,
     },
     {
-      path: s(settingsBase, 'colorScheme'),
-      type: 'select',
-      label: 'Color scheme',
+      path: s(settingsBase, 'backgroundColor'),
+      type: 'color',
+      label: 'Background color',
       group: 'Section layout',
-      widget: 'color-scheme',
+      widget: 'color',
       sidebar: true,
-      options: [
-        { value: 'scheme-1', label: 'Scheme 1' },
-        { value: 'scheme-2', label: 'Scheme 2' },
-        { value: 'scheme-3', label: 'Scheme 3' },
-        { value: 'scheme-4', label: 'Scheme 4' },
-      ],
     },
     {
       path: s(settingsBase, 'paddingTop'),
@@ -272,6 +266,13 @@ export function isBlogPostsGridSettingsPanelFields(fields: EditorFieldDef[]): bo
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   return keys.has('mobileColumns') && keys.has('verticalGap') && keys.has('columns');
+}
+
+export function pickBlogPostsGridSectionField(
+  fields: EditorFieldDef[],
+  key: string
+): EditorFieldDef | undefined {
+  return fields.find((f) => f.path.split('.').pop() === key);
 }
 
 export function prepareBlogPostsGridSettingsNode(node: SidebarNode): SidebarNode {

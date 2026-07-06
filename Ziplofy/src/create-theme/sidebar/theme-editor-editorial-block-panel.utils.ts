@@ -136,6 +136,7 @@ export function editorialButtonDefaultSettings(): Record<string, string | boolea
 export function isEditorialSectionInstanceId(secId: string): boolean {
   if (secId.includes('editorial_jumbo')) return false;
   if (secId.includes('blog_posts_editorial')) return false;
+  if (secId.includes('blog_posts_carousel')) return false;
   if (secId.includes('collection_list_editorial')) return false;
   return secId === 'editorial' || secId.startsWith('editorial_');
 }

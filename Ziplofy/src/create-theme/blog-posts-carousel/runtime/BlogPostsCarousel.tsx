@@ -262,7 +262,7 @@ export function BlogPostsCarousel({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: style.scheme.background,
+    background: style.sectionBackground,
     color: style.scheme.color,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
