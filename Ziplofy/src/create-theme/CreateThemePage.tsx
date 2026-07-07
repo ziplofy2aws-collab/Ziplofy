@@ -104,8 +104,13 @@ import {
   THEME_PAGE_WIDTH_PATH,
   normalizeThemePageWidth,
 } from './settings/theme-page.settings';
-import { buildThemeEditorPageMenu, findPageMenuItemByPreview } from './utils/page-menu';
+import { buildThemeEditorPageMenu, findPageMenuItemByPreviewWithConfig } from './utils/page-menu';
 import { ensureRegistryTemplatesInConfig } from './utils/theme-page-registry';
+import {
+  alternateTemplateCreatedToastMessage,
+  alternateTemplateSavedToastLabel,
+  ensureAllAlternateTemplateRegistries,
+} from './utils/alternate-template-registry.util';
 import {
   extendValuesForSeededTemplate,
   seedTemplateFromPackIfEmpty,
@@ -786,6 +791,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           if (saved?.themeConfig && typeof saved.themeConfig === 'object') {
             config = JSON.parse(JSON.stringify(saved.themeConfig)) as Record<string, unknown>;
             normalizeCreatorThemeConfig(config);
+            ensureAllAlternateTemplateRegistries(config);
             nextValues = creatorConfigHasSections(config)
               ? {
                   ...formValuesFromEditorConfig(schema, config),
@@ -861,6 +867,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           config
         );
         ensureRegistryTemplatesInConfig(config);
+        ensureAllAlternateTemplateRegistries(config);
 
         setEditorSchema(schema);
         setDefaultConfig(config);
@@ -1001,7 +1008,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
   const pageLabel = isCheckoutProfile
     ? findCheckoutEditorPageLabel(checkoutPreviewPage)
-    : findPageMenuItemByPreview(pageMenuItems, previewPage)?.label ?? 'Home page';
+    : findPageMenuItemByPreviewWithConfig(pageMenuItems, previewPage, defaultConfig)?.label ??
+      'Home page';
 
   const selectedNode = useMemo(() => {
     const found = findSidebarNode(activeTree, selectedNodeId);
@@ -2244,6 +2252,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         values,
         editorSchema
       );
+      ensureAllAlternateTemplateRegistries(themeConfig);
 
       if (opts.isCreate) {
         const created = await createStoreCustomTheme({
@@ -2429,6 +2438,55 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     createCheckoutConfiguration,
     getCheckoutConfigurationByStoreId,
   ]);
+
+  const handleThemeConfigFromPicker = useCallback(
+    (next: Record<string, unknown>, nextPreviewPage?: ThemePreviewPage) => {
+      normalizeCreatorThemeConfig(next);
+      ensureAllAlternateTemplateRegistries(next);
+      setDefaultConfig(next);
+
+      const page = nextPreviewPage ?? previewPage;
+      if (nextPreviewPage && nextPreviewPage !== previewPage) {
+        setPreviewPage(nextPreviewPage);
+        setSelectedNodeId('');
+        setAddSectionTarget(null);
+        setAddBlockTarget(null);
+        setInsertHoverHighlight(null);
+        treeInitRef.current = false;
+      }
+
+      const tplId = templateIdForPage(page);
+      let mergedValues = values;
+      if (editorSchema) {
+        mergedValues = extendValuesForSeededTemplate(values, editorSchema, tplId, next);
+        setValues(mergedValues);
+      }
+      setItemOrder(readStructureOrderFromConfig(next, page));
+      setStructureSyncKey((k) => k + 1);
+
+      if (nextPreviewPage && savedThemeId && editorSchema) {
+        const themeConfig = mergedConfigFromFormValues(
+          { ...next, themeName },
+          mergedValues,
+          editorSchema
+        );
+        ensureAllAlternateTemplateRegistries(themeConfig);
+        void updateStoreCustomTheme(savedThemeId, {
+          themeName: themeName.trim() || 'Untitled theme',
+          themeConfig,
+        })
+          .then(() => toast.success(alternateTemplateSavedToastLabel(nextPreviewPage)))
+          .catch((err: unknown) => {
+            toast.error((err as Error)?.message ?? 'Failed to save template');
+          });
+      } else if (nextPreviewPage) {
+        toast(alternateTemplateCreatedToastMessage(nextPreviewPage), {
+          icon: 'ℹ️',
+        });
+      }
+    },
+    [previewPage, editorSchema, values, savedThemeId, themeName, updateStoreCustomTheme]
+  );
 
   const handlePreviewPageChange = useCallback(
     (page: ThemePreviewPage) => {
@@ -3347,6 +3405,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         onOpenCheckoutEditor={handleOpenCheckoutEditor}
         manifest={manifest}
         editorSchema={editorSchema}
+        themeConfig={defaultConfig}
+        onThemeConfigChange={handleThemeConfigFromPicker}
         device={device}
         onDeviceChange={setDevice}
         onViewJson={() => setShowViewTheme(true)}

@@ -16,6 +16,8 @@ type Props = {
   onOpenCheckoutEditor?: () => void;
   manifest: Record<string, unknown> | null;
   editorSchema: EditorSchemaDoc | null;
+  themeConfig?: Record<string, unknown> | null;
+  onThemeConfigChange?: (config: Record<string, unknown>, previewPage?: ThemePreviewPage) => void;
   device: 'desktop' | 'mobile';
   onDeviceChange: (device: 'desktop' | 'mobile') => void;
   onViewJson?: () => void;
@@ -38,6 +40,8 @@ export function CreateThemeHeader({
   onOpenCheckoutEditor,
   manifest,
   editorSchema,
+  themeConfig,
+  onThemeConfigChange,
   device,
   onDeviceChange,
   onViewJson,
@@ -86,6 +90,8 @@ export function CreateThemeHeader({
           }}
           manifest={manifest}
           editorSchema={editorSchema}
+          themeConfig={themeConfig}
+          onThemeConfigChange={onThemeConfigChange}
         />
       </div>
 

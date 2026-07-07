@@ -1,11 +1,17 @@
 import type { EditorFieldDef, EditorSchemaDoc } from '../components/themes/theme-editor-sidebar/theme-editor-sidebar.types';
 import { fieldTypeFromSchema } from '../components/themes/theme-editor-sidebar/theme-editor-field.utils';
+import { schemaTemplateIdForConfigKey } from '../create-theme/utils/product-templates.util';
 import {
   layoutBlueprintKey,
   remapLayoutSchemaPath,
   remapTemplateSchemaPath,
   templateBlueprintKey,
 } from './theme-editor-insert-section';
+
+function findSchemaTemplate(schema: EditorSchemaDoc, configTemplateId: string) {
+  const schemaId = schemaTemplateIdForConfigKey(configTemplateId);
+  return schema.templates?.find((t) => t.id === schemaId);
+}
 
 export type SchemaFieldPath = { path: string; type: string; label: string };
 
@@ -238,7 +244,7 @@ export function collectEditableFieldPaths(
     | Record<string, { sections?: Record<string, unknown> }>
     | undefined;
   for (const [tplId, tpl] of Object.entries(templates ?? {})) {
-    const template = schema.templates?.find((t) => t.id === tplId);
+    const template = findSchemaTemplate(schema, tplId);
     if (!template?.sections?.length) continue;
     for (const instanceId of Object.keys(tpl.sections ?? {})) {
       const blueprint = templateBlueprintKey(instanceId);
@@ -258,7 +264,7 @@ export function collectEditableFieldPaths(
   }
 
   for (const [tplId, tpl] of Object.entries(templates ?? {})) {
-    const template = schema.templates?.find((t) => t.id === tplId);
+    const template = findSchemaTemplate(schema, tplId);
     if (!template?.sections?.length) continue;
     for (const [instanceId, sectionData] of Object.entries(tpl.sections ?? {})) {
       const blueprint = templateBlueprintKey(instanceId);
@@ -672,7 +678,7 @@ function pushSharedHeadingBlockEditablePaths(
     | Record<string, { sections?: Record<string, unknown> }>
     | undefined;
   for (const [tplId, tpl] of Object.entries(templates ?? {})) {
-    const template = schema.templates?.find((t) => t.id === tplId);
+    const template = findSchemaTemplate(schema, tplId);
     for (const instanceId of Object.keys(tpl.sections ?? {})) {
       const blueprint = templateBlueprintKey(instanceId);
       if (blueprint === instanceId) continue;

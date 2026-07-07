@@ -381,7 +381,6 @@ import {
 } from './theme-editor-blog-posts-grid-panel.utils';
 import {
   isProductHotspotsSectionType,
-import {
   isProductHotspotsSettingsPanelFields,
   prepareProductHotspotsSettingsNode,
 } from './theme-editor-product-hotspots-panel.utils';
@@ -700,6 +699,7 @@ import {
   settingsNodeFromCatalog,
 } from '../../theme-editor/catalog-sidebar.util';
 import { previewPageToTemplateId } from '../../utils/preview-page-template';
+import { schemaTemplateIdForConfigKey } from '../utils/product-templates.util';
 
 type LayoutSectionDef = NonNullable<EditorSchemaDoc['layout']>[string];
 type BlockDef = NonNullable<LayoutSectionDef['blocks']>[number];
@@ -4035,6 +4035,8 @@ export function buildShopifySidebarTree(
   const layout = schema.layout ?? {};
   const cfg = config ?? {};
 
+  const schemaTemplateId = schemaTemplateIdForConfigKey(templateId);
+
   if (config) {
     const cfgClone = JSON.parse(JSON.stringify(config)) as Record<string, unknown>;
     ensureLayoutOrder(cfgClone);
@@ -4064,7 +4066,7 @@ export function buildShopifySidebarTree(
     childrenListKey: listKeyHeaderSections(),
   });
 
-  const tpl = schema.templates?.find((t) => t.id === templateId) ?? schema.templates?.[0];
+  const tpl = schema.templates?.find((t) => t.id === schemaTemplateId) ?? schema.templates?.[0];
   const tplSectionsListKey = listKeyTemplateSections(templateId);
   const tplConfig = config
     ? ((cfg.templates as Record<string, Record<string, unknown>> | undefined)?.[templateId] as
@@ -4083,7 +4085,7 @@ export function buildShopifySidebarTree(
       const blueprintId = templateBlueprintKey(instanceId);
       const sec = tpl.sections.find((s) => (s.id ?? '') === blueprintId);
       if (!sec) continue;
-      templateSectionNodes.push(sectionToNode(sec, tpl.id, values, itemOrder, instanceId, config, schema));
+      templateSectionNodes.push(sectionToNode(sec, templateId, values, itemOrder, instanceId, config, schema));
     }
     tree.push({
       id: 'group:template',

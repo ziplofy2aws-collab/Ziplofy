@@ -6,27 +6,46 @@ import {
 } from '../../utils/theme-editor-insert-section';
 
 /** Page types that get a one-time in-memory starter from the theme pack when the template bucket is empty. */
-export const PACK_STARTER_TEMPLATE_IDS = new Set(['product', 'cart']);
+export const PACK_STARTER_TEMPLATE_IDS = new Set(['product', 'collection', 'cart']);
+
+function packKeyForTemplateId(templateId: string): string {
+  if (templateId.startsWith('product.')) return 'product';
+  if (templateId.startsWith('collection.')) return 'collection';
+  return templateId;
+}
 
 export function seedTemplateFromPackIfEmpty(
   config: Record<string, unknown>,
   templateId: string,
   packDefault: Record<string, unknown>
 ): boolean {
-  if (!PACK_STARTER_TEMPLATE_IDS.has(templateId)) return false;
+  const packKey = packKeyForTemplateId(templateId);
+  if (!PACK_STARTER_TEMPLATE_IDS.has(packKey)) return false;
   if (creatorTemplateHasSections(config, templateId)) return false;
 
   const packTemplates = packDefault.templates as
     | Record<string, Record<string, unknown>>
     | undefined;
-  const defTpl = packTemplates?.[templateId];
+  const defTpl = packTemplates?.[packKey];
   if (!defTpl || typeof defTpl !== 'object') return false;
 
   if (!config.templates || typeof config.templates !== 'object') {
     config.templates = {};
   }
   const templates = config.templates as Record<string, Record<string, unknown>>;
-  templates[templateId] = JSON.parse(JSON.stringify(defTpl)) as Record<string, unknown>;
+  const seeded = JSON.parse(JSON.stringify(defTpl)) as Record<string, unknown>;
+  if (templateId.startsWith('product.')) {
+    const existing = templates[templateId];
+    seeded.name = existing?.name ?? templateId.replace(/^product\./, '');
+    seeded.basedOn = existing?.basedOn ?? 'product';
+    seeded.assignedProductCount = existing?.assignedProductCount ?? 0;
+  } else if (templateId.startsWith('collection.')) {
+    const existing = templates[templateId];
+    seeded.name = existing?.name ?? templateId.replace(/^collection\./, '');
+    seeded.basedOn = existing?.basedOn ?? 'collection';
+    seeded.assignedCollectionCount = existing?.assignedCollectionCount ?? 0;
+  }
+  templates[templateId] = seeded;
   const tpl = templates[templateId];
   if (!tpl.sections || typeof tpl.sections !== 'object') tpl.sections = {};
   if (!Array.isArray(tpl.section_order)) tpl.section_order = [];

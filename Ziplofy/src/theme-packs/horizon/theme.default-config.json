@@ -5223,7 +5223,7 @@
       ]
     },
     "product": {
-      "name": "Product",
+      "name": "Default product",
       "sections": {
         "product_main": {
           "type": "product-main",

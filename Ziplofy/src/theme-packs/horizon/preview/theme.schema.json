@@ -30518,7 +30518,7 @@
     },
     {
       "id": "product",
-      "label": "Product page",
+      "label": "Default product",
       "sections": [
         {
           "id": "product_main",

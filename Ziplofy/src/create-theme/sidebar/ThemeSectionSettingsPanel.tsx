@@ -18081,14 +18081,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     isFeaturedCollectionSectionPanel && featuredCollectionVariant === 'editorial';
   const isFeaturedCollectionCarouselPanel =
     isFeaturedCollectionSectionPanel && featuredCollectionVariant === 'carousel';
-  const isBlogPostsCarouselPanel =
-    !isBlogPostsGridSectionTitleBlockPanel &&
-    !isBlogPostsGridCardGroupPanel &&
-    !isBlogPostsGridCardImageBlockPanel &&
-    !isBlogPostsGridCardTitleBlockPanel &&
-    !isBlogPostsGridCardDetailsBlockPanel &&
-    !isBlogPostsGridCardExcerptBlockPanel &&
-    (node.label === 'Blog posts: Carousel' || isBlogPostsCarouselSettingsPanelFields(fields));
   const isProductHotspotsPanel =
     node.label === 'Product hotspots' || isProductHotspotsSettingsPanelFields(fields);
   const isProductHotspotsHeadingPanel =
@@ -18215,6 +18207,14 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' &&
     (isBlogPostsGridCardExcerptBlockNodeId(node.id) ||
       isBlogPostsGridCardExcerptPanelFields(fields));
+  const isBlogPostsCarouselPanel =
+    !isBlogPostsGridSectionTitleBlockPanel &&
+    !isBlogPostsGridCardGroupPanel &&
+    !isBlogPostsGridCardImageBlockPanel &&
+    !isBlogPostsGridCardTitleBlockPanel &&
+    !isBlogPostsGridCardDetailsBlockPanel &&
+    !isBlogPostsGridCardExcerptBlockPanel &&
+    (node.label === 'Blog posts: Carousel' || isBlogPostsCarouselSettingsPanelFields(fields));
   const isBlogPostsGridPanel =
     !isBlogPostsGridSectionTitleBlockPanel &&
     !isBlogPostsGridCardGroupPanel &&
