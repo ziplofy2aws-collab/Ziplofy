@@ -50,9 +50,11 @@ import {
   prepareAnnouncementBlockSettingsNode,
 } from './theme-editor-announcement-block-panel.utils';
 import {
+  collectAnnouncementPanelFieldDefs,
   findAnnouncementSectionInTree,
   isAnnouncementLayoutNodeId,
   prepareAnnouncementSettingsNode,
+  resolveAnnouncementSectionPanelFields,
 } from './theme-editor-announcement-panel.utils';
 import {
   collectHeaderPanelFieldDefs,
@@ -399,6 +401,8 @@ import {
   isRecommendedProductsSettingsPanelFields,
   prepareRecommendedProductsSettingsNode,
 } from './theme-editor-recommended-products-panel.utils';
+import { isCollectionHeadingSectionType } from './theme-editor-collection-heading-panel.utils';
+import { isMainCollectionSectionType } from './theme-editor-main-collection-panel.utils';
 import {
   isRecommendedProductsHeaderNodeId,
   recommendedProductsHeaderFieldDefsFromNodeId,
@@ -429,6 +433,7 @@ import {
   isCollectionListGridSettingsPanelFields,
   prepareCollectionListGridSettingsNode,
 } from './theme-editor-collection-list-grid-panel.utils';
+import { isCollectionListUnifiedSettingsPanelFields, prepareCollectionListSettingsNode } from './theme-editor-collection-list-panel.utils';
 import {
   isLayeredSlideshowSectionType,
   isLayeredSlideshowSettingsPanelFields,
@@ -499,6 +504,10 @@ import { mapFeaturedProductBlockNodes } from '../../utils/featured-product-sideb
 import { mapProductHighlightBlockNodes } from '../../utils/product-highlight-sidebar.util';
 import { mapProductHotspotsBlockNodes } from '../../utils/product-hotspots-sidebar.util';
 import { mapRecommendedProductsBlockNodes } from '../../utils/recommended-products-sidebar.util';
+import {
+  mapCollectionHeadingBlockNodes,
+  mapMainCollectionBlockNodes,
+} from '../../utils/collection-page-sidebar.util';
 import { mapFaqBlockNodes } from '../../utils/faq-sidebar.util';
 import { mapIconsWithTextBlockNodes } from '../../utils/icons-with-text-sidebar.util';
 import {
@@ -3315,6 +3324,8 @@ function layoutSectionNode(
     icon: 'section',
     fields: isHeader
       ? collectHeaderPanelFieldDefs(sec, instanceId, remapFields)
+      : isAnnouncement
+        ? collectAnnouncementPanelFieldDefs(sec, instanceId)
       : isFooter
         ? collectFooterPanelFieldDefs(sec, instanceId, remapFields)
         : isFooterUtilities
@@ -3453,6 +3464,8 @@ function sectionToNode(
   const isBlogPostsGrid = isBlogPostsGridSectionType(sec.type, catalogVariantEarly);
   const isProductHotspots = isProductHotspotsSectionType(sec.type, catalogVariantEarly);
   const isRecommendedProducts = isRecommendedProductsSectionType(sec.type, catalogVariantEarly);
+  const isCollectionHeading = isCollectionHeadingSectionType(sec.type);
+  const isMainCollection = isMainCollectionSectionType(sec.type);
   const isCollectionLinksSpotlight = isCollectionLinksSpotlightSectionType(
     sec.type,
     catalogVariantEarly
@@ -3512,6 +3525,8 @@ function sectionToNode(
     isBlogPostsGrid ||
     isProductHotspots ||
     isRecommendedProducts ||
+    isCollectionHeading ||
+    isMainCollection ||
     isCollectionLinksSpotlight ||
     isCollectionListBento ||
     isCollectionListCarousel ||
@@ -3574,6 +3589,8 @@ function sectionToNode(
     isBlogPostsGrid ||
     isProductHotspots ||
     isRecommendedProducts ||
+    isCollectionHeading ||
+    isMainCollection ||
     isCollectionLinksSpotlight ||
     isCollectionListBento ||
     isCollectionListCarousel ||
@@ -3751,6 +3768,16 @@ function sectionToNode(
             itemOrder,
             childrenListKey
           )
+      : isCollectionHeading
+        ? mapCollectionHeadingBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isMainCollection
+        ? mapMainCollectionBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.settings`,
+            values,
+            itemOrder,
+            childrenListKey
+          )
       : isCollectionListBento ||
           isCollectionListCarousel ||
           isCollectionListEditorial ||
@@ -3819,6 +3846,8 @@ function sectionToNode(
       isBlogPostsCarousel ||
       isProductHotspots ||
       isRecommendedProducts ||
+      isCollectionHeading ||
+      isMainCollection ||
       isCollectionLinksSpotlight ||
       isCollectionListBento ||
       isCollectionListCarousel ||
@@ -3849,7 +3878,11 @@ function sectionToNode(
               ? 'Divider'
               : isRecommendedProductsSectionType(sec.type, catalogVariant)
                 ? 'Recommended products'
-                : isProductHotspotsSectionType(sec.type, catalogVariant)
+                : isCollectionHeadingSectionType(sec.type)
+                  ? 'Collection heading'
+                  : isMainCollectionSectionType(sec.type)
+                    ? 'Collection'
+                    : isProductHotspotsSectionType(sec.type, catalogVariant)
                   ? 'Product hotspots'
                   : isFeaturedProductSectionType(sec.type, catalogVariant)
                     ? 'Featured product'
@@ -3975,6 +4008,8 @@ function sectionToNode(
         isBlogPostsGrid ||
         isProductHotspots ||
         isRecommendedProducts ||
+        isCollectionHeading ||
+        isMainCollection ||
         isCollectionLinksSpotlight ||
         isCollectionListBento ||
         isCollectionListCarousel ||
@@ -4414,6 +4449,7 @@ const SECTION_PANEL_BY_LABEL: Record<string, (node: SidebarNode) => SidebarNode>
   'Slideshow: Full frame': prepareSlideshowFullFrameSettingsNode,
   'Slideshow: Inset': prepareSlideshowInsetSettingsNode,
   Divider: prepareDividerSettingsNode,
+  'Announcement bar': prepareAnnouncementSettingsNode,
   'Contact form': prepareContactFormSettingsNode,
   'Email signup': prepareEmailSignupSettingsNode,
   'Custom section': prepareCustomSectionSettingsNode,
@@ -4511,18 +4547,13 @@ export function settingsNodeForSelection(
     node.kind === 'section' && isAnnouncementLayoutNodeId(node.id)
       ? node
       : findAnnouncementSectionInTree(node.id, tree);
-  if (announcementSection && node.kind === 'section') {
-    let sectionFields = announcementSection.fields ?? [];
-    if (!sectionFields.length) {
-      const catalogSection = resolveEditingPanelForNode(announcementSection.id);
-      if (catalogSection?.fields.length) sectionFields = catalogSection.fields;
-    }
-    if (!sectionFields.length && editorSchema) {
-      sectionFields = sectionSettingsFieldsFromSchema(editorSchema, announcementSection.id);
-    }
-    if (sectionFields.length) {
-      return prepareAnnouncementSettingsNode({ ...announcementSection, fields: sectionFields });
-    }
+  if (announcementSection && (node.kind === 'section' || isAnnouncementLayoutNodeId(node.id))) {
+    const sectionFields = resolveAnnouncementSectionPanelFields(
+      announcementSection.id,
+      editorSchema,
+      announcementSection.fields
+    );
+    return prepareAnnouncementSettingsNode({ ...announcementSection, fields: sectionFields });
   }
 
   if (isHeaderLogoBlockNodeId(node.id)) {
@@ -5417,6 +5448,21 @@ export function settingsNodeForSelection(
   if (node.fields?.length && isBlogPostsEditorialSettingsPanelFields(node.fields)) {
     return prepareBlogPostsEditorialSettingsNode(node);
   }
+  if (node.fields?.length && isCollectionListBentoSettingsPanelFields(node.fields)) {
+    return prepareCollectionListBentoSettingsNode(node);
+  }
+  if (node.fields?.length && isCollectionListCarouselSettingsPanelFields(node.fields)) {
+    return prepareCollectionListCarouselSettingsNode(node);
+  }
+  if (node.fields?.length && isCollectionListEditorialSettingsPanelFields(node.fields)) {
+    return prepareCollectionListEditorialSettingsNode(node);
+  }
+  if (node.fields?.length && isCollectionListGridSettingsPanelFields(node.fields)) {
+    return prepareCollectionListGridSettingsNode(node);
+  }
+  if (node.fields?.length && isCollectionListUnifiedSettingsPanelFields(node.fields)) {
+    return prepareCollectionListSettingsNode(node);
+  }
   if (node.fields?.length && isBlogPostsGridSettingsPanelFields(node.fields)) {
     return prepareBlogPostsGridSettingsNode(node);
   }
@@ -5444,18 +5490,6 @@ export function settingsNodeForSelection(
 
   if (node.fields?.length && isCollectionLinkBlockFieldsOnly(node.fields)) {
     return prepareCollectionLinkBlockSettingsNode(node);
-  }
-  if (node.fields?.length && isCollectionListBentoSettingsPanelFields(node.fields)) {
-    return prepareCollectionListBentoSettingsNode(node);
-  }
-  if (node.fields?.length && isCollectionListCarouselSettingsPanelFields(node.fields)) {
-    return prepareCollectionListCarouselSettingsNode(node);
-  }
-  if (node.fields?.length && isCollectionListEditorialSettingsPanelFields(node.fields)) {
-    return prepareCollectionListEditorialSettingsNode(node);
-  }
-  if (node.fields?.length && isCollectionListGridSettingsPanelFields(node.fields)) {
-    return prepareCollectionListGridSettingsNode(node);
   }
   if (node.fields?.length && isLayeredSlideshowSettingsPanelFields(node.fields)) {
     return prepareLayeredSlideshowSettingsNode(node);

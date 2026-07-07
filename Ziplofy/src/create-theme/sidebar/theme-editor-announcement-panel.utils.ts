@@ -1,5 +1,7 @@
-import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
-import { layoutBlueprintKey } from '../../utils/theme-editor-insert-section';
+import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
+import { ANNOUNCEMENT_BAR_SETTINGS_FIELDS } from '../../config/theme-editor-announcement-schema';
+import { layoutBlueprintKey, remapLayoutSchemaPath } from '../../utils/theme-editor-insert-section';
+import { resolveEditingPanelForNode } from '../../theme-editor/section-editing-support.util';
 
 /** Groups shown in the bottom "Announcement bar" settings sheet (Shopify-style). */
 export const ANNOUNCEMENT_PANEL_GROUP_ORDER = [
@@ -91,7 +93,56 @@ export function prepareAnnouncementSettingsNode(
   const fields = node.fields ?? [];
   const panelFields = sortAnnouncementPanelFields(filterAnnouncementPanelFields(fields));
   const merged = [...prependFields, ...(panelFields.length ? panelFields : fields)];
-  return { ...node, fields: merged };
+  return { ...node, label: 'Announcement bar', kind: 'section', fields: merged };
+}
+
+function remapAnnouncementSchemaFields(
+  fields: EditorFieldDef[] | undefined,
+  instanceId: string
+): EditorFieldDef[] {
+  const source = fields?.length ? fields : ANNOUNCEMENT_BAR_SETTINGS_FIELDS;
+  const blueprint = layoutBlueprintKey(instanceId);
+  if (blueprint === instanceId) return source;
+  return source.map((field) => ({
+    ...field,
+    path: remapLayoutSchemaPath(field.path, instanceId),
+  }));
+}
+
+/** Section settings for the bottom sheet (excludes sidebar tree rows). */
+export function collectAnnouncementPanelFieldDefs(
+  sec: { settingsFields?: EditorFieldDef[] },
+  instanceId: string
+): EditorFieldDef[] {
+  const remapped = remapAnnouncementSchemaFields(sec.settingsFields, instanceId);
+  const panelFields = sortAnnouncementPanelFields(filterAnnouncementPanelFields(remapped));
+  return panelFields.length ? panelFields : remapped;
+}
+
+/** Resolve announcement bar section panel fields from tree, schema, catalog, or defaults. */
+export function resolveAnnouncementSectionPanelFields(
+  sectionNodeId: string,
+  editorSchema?: EditorSchemaDoc | null,
+  existingFields?: EditorFieldDef[]
+): EditorFieldDef[] {
+  let fields = existingFields ?? [];
+  if (!fields.length) {
+    const catalog = resolveEditingPanelForNode(sectionNodeId);
+    if (catalog?.fields.length) fields = catalog.fields;
+  }
+  if (!fields.length && editorSchema) {
+    const instanceId = sectionNodeId.replace(/^layout:/, '');
+    const blueprint = layoutBlueprintKey(instanceId);
+    const sec = editorSchema.layout?.[blueprint];
+    if (sec) {
+      fields = collectAnnouncementPanelFieldDefs(sec, instanceId);
+    }
+  }
+  if (!fields.length) {
+    const instanceId = sectionNodeId.replace(/^layout:/, '');
+    fields = collectAnnouncementPanelFieldDefs({ settingsFields: [] }, instanceId);
+  }
+  return fields;
 }
 
 /** Find the layout announcement section node when a child row is selected. */

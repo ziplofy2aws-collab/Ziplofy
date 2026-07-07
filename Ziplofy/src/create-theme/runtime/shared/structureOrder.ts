@@ -29,22 +29,22 @@ export function templateSectionOrder(
       ? new Set(Object.keys(sections as Record<string, unknown>))
       : new Set<string>();
 
+  if (sectionKeys.size === 0) {
+    return [...fallback];
+  }
+
   const orderRaw = getThemeConfigValue(config, `templates.${templateId}.section_order`);
-  if (Array.isArray(orderRaw)) {
-    return orderRaw.map((id) => String(id)).filter((id) => sectionKeys.has(id));
+  if (Array.isArray(orderRaw) && orderRaw.length > 0) {
+    const fromOrder = orderRaw.map((id) => String(id)).filter((id) => sectionKeys.has(id));
+    if (fromOrder.length > 0) return fromOrder;
   }
 
-  if (sectionKeys.size > 0) {
-    const raw = orderedIds(
-      config,
-      `templates.${templateId}.section_order`,
-      `templates.${templateId}.sections`,
-      fallback
-    );
-    return raw.filter((id) => sectionKeys.has(id));
-  }
-
-  return fallback.filter((id) => sectionKeys.has(id));
+  return orderedIds(
+    config,
+    `templates.${templateId}.section_order`,
+    `templates.${templateId}.sections`,
+    fallback
+  ).filter((id) => sectionKeys.has(id));
 }
 
 export function layoutBlockOrder(

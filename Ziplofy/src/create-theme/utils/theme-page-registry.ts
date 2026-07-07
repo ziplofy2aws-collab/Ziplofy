@@ -100,9 +100,14 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'collection',
     label: 'Default collection',
     icon: 'collection',
-    previewPath: '/collection',
+    previewPath: '/collections/preview',
     routes: [
-      { path: '/collection', templateId: 'collection' },
+      {
+        path: '/collections/preview',
+        templateId: 'collection',
+        withCollectionLoader: true,
+        loadCollectionUrlHandle: 'preview',
+      },
       {
         path: '/collections/:urlHandle',
         templateId: 'collection',
@@ -115,7 +120,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'collections',
     label: 'Collections',
     icon: 'collection',
-    previewPath: '/collection',
+    previewPath: '/collections/preview',
     routes: [],
   },
   {
@@ -322,7 +327,10 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     label: 'Collections',
     icon: 'collection',
     hasSubmenu: true,
-    children: [{ previewPage: 'collections-list', label: 'Collections list', icon: 'collection' }],
+    children: [
+      { previewPage: 'collection', label: 'Default collection', icon: 'collection' },
+      { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
+    ],
   },
   { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
   { previewPage: 'gift-card', label: 'Gift card', icon: 'gift' },

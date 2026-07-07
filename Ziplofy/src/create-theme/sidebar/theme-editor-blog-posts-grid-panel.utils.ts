@@ -265,6 +265,7 @@ export function groupBlogPostsGridPanelFields(fields: EditorFieldDef[]): Map<str
 export function isBlogPostsGridSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  if (keys.has('collectionsPicker') || keys.has('carouselOnMobile')) return false;
   return keys.has('mobileColumns') && keys.has('verticalGap') && keys.has('columns');
 }
 

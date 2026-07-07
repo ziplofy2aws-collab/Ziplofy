@@ -18,11 +18,11 @@ import {
 import {
   collectionListBentoMobileCarouselCss,
   readCollectionListBentoLayout,
-  readCollectionTiles,
   scopedCollectionListBentoCss,
   sectionScopeClass,
   type CollectionTileData,
 } from './collectionListBentoStyles';
+import { useCollectionListTiles } from '../../runtime/shared/useCollectionListTiles';
 import { readCollectionListGridLayout, scopedCollectionListGridCss } from './collectionListGridStyles';
 import {
   readCollectionListCarouselLayout,
@@ -342,10 +342,7 @@ export function CollectionListBentoLayoutView({
     () => readCollectionListBentoLayout(config, settingsBase),
     [config, settingsBase]
   );
-  const tiles = useMemo(
-    () => readCollectionTiles(config, templateId, sectionId, placement),
-    [config, templateId, sectionId, placement]
-  );
+  const tiles = useCollectionListTiles(templateId, sectionId, placement, settingsBase);
   const cardStyle = useMemo(
     () => readCollectionListCardStyle(config, settingsBase),
     [config, settingsBase]
@@ -433,10 +430,7 @@ export function CollectionListGridLayoutView({
   const { maxWidth } = useThemeLayout();
   const { fontBody, fontHeading } = useThemeColors();
   const style = useMemo(() => readCollectionListGridLayout(config, settingsBase), [config, settingsBase]);
-  const tiles = useMemo(
-    () => readCollectionTiles(config, templateId, sectionId, placement),
-    [config, templateId, sectionId, placement]
-  );
+  const tiles = useCollectionListTiles(templateId, sectionId, placement, settingsBase);
   const cardStyle = useMemo(
     () => readCollectionListCardStyle(config, settingsBase),
     [config, settingsBase]
@@ -617,10 +611,7 @@ export function CollectionListCarouselLayoutView({
     () => readCollectionListCarouselLayout(config, settingsBase),
     [config, settingsBase]
   );
-  const tiles = useMemo(
-    () => readCollectionTiles(config, templateId, sectionId, placement),
-    [config, templateId, sectionId, placement]
-  );
+  const tiles = useCollectionListTiles(templateId, sectionId, placement, settingsBase);
   const cardStyle = useMemo(
     () => readCollectionListCardStyle(config, settingsBase),
     [config, settingsBase]

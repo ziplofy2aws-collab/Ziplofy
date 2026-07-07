@@ -18183,6 +18183,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isStorytellingCarouselCardTextBlockPanel &&
     !isStorytellingCarouselCardHeadingBlockPanel &&
     (node.label === 'Carousel' || isStorytellingCarouselSettingsPanelFields(fields));
+  const isDividerPanel =
+    node.label === 'Divider' || isDividerSettingsPanelFields(fields);
   const isBlogPostsGridSectionTitleBlockPanel =
     node.kind === 'block' &&
     (isBlogPostsGridTitleBlockNodeId(node.id) ||
@@ -18222,6 +18224,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isBlogPostsGridCardTitleBlockPanel &&
     !isBlogPostsGridCardDetailsBlockPanel &&
     !isBlogPostsGridCardExcerptBlockPanel &&
+    !(node.label?.startsWith('Collection list:') ?? false) &&
+    !isCollectionListGridSettingsPanelFields(fields) &&
+    !isCollectionListUnifiedSettingsPanelFields(fields) &&
     (node.label === 'Blog posts: Grid' || isBlogPostsGridSettingsPanelFields(fields));
   const isBlogPostsEditorialPanel =
     !isBlogPostsGridSectionTitleBlockPanel &&

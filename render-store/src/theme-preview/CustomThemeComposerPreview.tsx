@@ -9,15 +9,19 @@ import { renderThemePageRoutes, renderCheckoutAuthRoutes, renderCheckoutProfileR
 type Props = {
   page: ThemePreviewPage;
   pageRevision: number;
+  previewRoute?: string;
 };
 
-export function CustomThemeComposerPreview({ page, pageRevision }: Props) {
+export function CustomThemeComposerPreview({ page, pageRevision, previewRoute }: Props) {
   useEffect(() => {
     postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_LOADED' });
-  }, [page, pageRevision]);
+  }, [page, pageRevision, previewRoute]);
 
-  const routeKey = `${page}-${pageRevision}`;
-  const initialEntry = useMemo(() => previewPageToRoute(page), [page]);
+  const routeKey = `${page}-${previewRoute ?? ''}-${pageRevision}`;
+  const initialEntry = useMemo(
+    () => previewRoute ?? previewPageToRoute(page),
+    [page, previewRoute]
+  );
   const fallbackTemplateId = previewPageToTemplateId(page);
 
   return (

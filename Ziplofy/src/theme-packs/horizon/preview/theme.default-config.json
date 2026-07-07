@@ -2833,12 +2833,23 @@
             },
             "group": {
               "type": "image-with-text-group",
-              "block_order": ["heading", "text", "button"],
-              "nested_block_order": ["heading", "text", "button"],
+              "block_order": [
+                "heading",
+                "text",
+                "button"
+              ],
+              "nested_block_order": [
+                "heading",
+                "text",
+                "button"
+              ],
               "blocks": {}
             }
           },
-          "block_order": ["image", "group"]
+          "block_order": [
+            "image",
+            "group"
+          ]
         },
         "divider": {
           "type": "divider",
@@ -5997,6 +6008,190 @@
       },
       "section_order": [
         "preferences_main"
+      ]
+    },
+    "collections-list": {
+      "name": "Collection list",
+      "sections": {
+        "collection_list_grid": {
+          "type": "collection-list-grid",
+          "enabled": true,
+          "settings": {
+            "catalogVariant": "collection-list-grid",
+            "heading": "<strong>Collections</strong>",
+            "headingText": {
+              "settings": {
+                "text": "<strong>Collections</strong>",
+                "width": "fit",
+                "maxWidth": "normal",
+                "typographyPreset": "default",
+                "textColor": "default",
+                "backgroundEnabled": false,
+                "paddingTop": 0,
+                "paddingBottom": 16,
+                "paddingLeft": 0,
+                "paddingRight": 0
+              }
+            },
+            "collectionsPicker": "",
+            "cardsLayoutType": "grid",
+            "carouselOnMobile": false,
+            "columns": 3,
+            "mobileColumns": "2",
+            "horizontalGap": 8,
+            "verticalGap": 8,
+            "sectionWidth": "page",
+            "layoutGap": 12,
+            "colorScheme": "scheme-1",
+            "paddingTop": 48,
+            "paddingBottom": 48,
+            "customCss": ""
+          },
+          "blocks": {
+            "tile_1": {
+              "type": "collection-tile",
+              "settings": {
+                "title": "Collection title",
+                "collectionHandle": "",
+                "href": "/collections/all",
+                "illustrationVariant": "folded-shirts",
+                "imageUrl": ""
+              }
+            },
+            "tile_2": {
+              "type": "collection-tile",
+              "settings": {
+                "title": "Collection title",
+                "collectionHandle": "",
+                "href": "/collections/all",
+                "illustrationVariant": "hanger-shirts",
+                "imageUrl": ""
+              }
+            },
+            "tile_3": {
+              "type": "collection-tile",
+              "settings": {
+                "title": "Collection title",
+                "collectionHandle": "",
+                "href": "/collections/all",
+                "illustrationVariant": "hanging-sweaters",
+                "imageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "tile_1",
+            "tile_2",
+            "tile_3"
+          ]
+        }
+      },
+      "section_order": [
+        "collection_list_grid"
+      ]
+    },
+    "collection": {
+      "name": "Default collection",
+      "sections": {
+        "collection_heading": {
+          "type": "collection-heading",
+          "enabled": true,
+          "settings": {},
+          "blocks": {
+            "title": {
+              "type": "collection-heading-title",
+              "settings": {
+                "text": "Collection title",
+                "width": "fit",
+                "maxWidth": "normal",
+                "typographyPreset": "heading-1",
+                "textColor": "default",
+                "backgroundEnabled": false,
+                "paddingTop": 0,
+                "paddingBottom": 8,
+                "paddingLeft": 0,
+                "paddingRight": 0
+              }
+            },
+            "description": {
+              "type": "collection-heading-description",
+              "settings": {
+                "text": "",
+                "width": "fit",
+                "maxWidth": "normal",
+                "typographyPreset": "paragraph",
+                "textColor": "default",
+                "backgroundEnabled": false,
+                "paddingTop": 0,
+                "paddingBottom": 16,
+                "paddingLeft": 0,
+                "paddingRight": 0
+              }
+            }
+          },
+          "block_order": [
+            "title",
+            "description"
+          ]
+        },
+        "main_collection": {
+          "type": "main-collection",
+          "enabled": true,
+          "settings": {
+            "columns": 4,
+            "mobileColumns": "2",
+            "productsPerPage": 16,
+            "horizontalGap": 12,
+            "verticalGap": 24,
+            "sectionWidth": "page",
+            "paddingTop": 24,
+            "paddingBottom": 48
+          },
+          "blocks": {
+            "filtering_and_sorting": {
+              "type": "filtering-and-sorting",
+              "settings": {
+                "enableFiltering": true,
+                "enableSorting": true
+              }
+            },
+            "product_card": {
+              "type": "product-card",
+              "settings": {
+                "verticalGap": 8,
+                "backgroundColor": "default",
+                "mediaAspectRatio": "auto",
+                "mediaBorderStyle": "none",
+                "mediaCornerRadius": 0,
+                "showMedia": true,
+                "showTitle": true,
+                "showPrice": true,
+                "productTitleWidth": "fit",
+                "productTitleMaxWidth": "normal",
+                "priceWidth": "fit"
+              },
+              "block_order": [
+                "media",
+                "product_title",
+                "price"
+              ],
+              "nested_block_order": [
+                "media",
+                "product_title",
+                "price"
+              ],
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "filtering_and_sorting",
+            "product_card"
+          ]
+        }
+      },
+      "section_order": [
+        "collection_heading",
+        "main_collection"
       ]
     }
   }

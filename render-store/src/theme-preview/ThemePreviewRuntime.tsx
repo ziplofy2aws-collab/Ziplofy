@@ -14,6 +14,7 @@ type ThemePreviewRuntimeProps = {
   jsUrl: string;
   cssUrl?: string | null;
   page: ThemePreviewPage;
+  previewRoute?: string;
   /** Bumped only when preview page changes — config updates use context + window event. */
   pageRevision: number;
 };
@@ -40,7 +41,7 @@ function resolveAssetUrl(href: string): string {
   return `${window.location.origin}${path}`;
 }
 
-export function ThemePreviewRuntime({ jsUrl, cssUrl, page, pageRevision }: ThemePreviewRuntimeProps) {
+export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRevision }: ThemePreviewRuntimeProps) {
   const [contract, setContract] = useState<ThemeContract | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,8 +110,11 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, pageRevision }: Theme
     return () => link.remove();
   }, [contract, cssHref]);
 
-  const routeKey = `${page}-${pageRevision}`;
-  const initialEntry = useMemo(() => previewPageToRoute(page), [page]);
+  const routeKey = `${page}-${previewRoute ?? ''}-${pageRevision}`;
+  const initialEntry = useMemo(
+    () => previewRoute ?? previewPageToRoute(page),
+    [page, previewRoute]
+  );
 
   if (loading && !contract) {
     return (
@@ -148,6 +152,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, pageRevision }: Theme
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Home />} />
         <Route path="/products/:id" element={<Product />} />
+        <Route path="/collections/preview" element={<Home />} />
         <Route path="/collection" element={<Home />} />
         <Route path="/collections/all" element={<Home />} />
         <Route path="/collections" element={<Home />} />

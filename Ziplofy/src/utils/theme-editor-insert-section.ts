@@ -377,6 +377,8 @@ export function templateBlueprintKey(sectionId: string): string {
     sectionId === 'collection_list_carousel' ||
     sectionId === 'collection_list_editorial' ||
     sectionId === 'collection_list_grid' ||
+    sectionId === 'collection_heading' ||
+    sectionId === 'main_collection' ||
     sectionId === 'layered_slideshow' ||
     sectionId === 'slideshow_full_frame'
   ) {

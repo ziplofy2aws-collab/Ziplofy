@@ -1,5 +1,5 @@
 import { getThemeConfigValue } from '@render-store/sdk';
-import { blueprintIdFromInstanceId } from '../registry';
+import { blueprintIdFromInstanceId, resolveRuntimeForSectionType } from '../registry';
 
 export function readLayoutSection(
   config: Record<string, unknown> | null,
@@ -12,6 +12,12 @@ export function readLayoutSection(
   return null;
 }
 
+function syntheticTemplateSection(instanceId: string): Record<string, unknown> | null {
+  const sectionType = sectionTypeFromRecord(instanceId, null);
+  if (!resolveRuntimeForSectionType(sectionType)) return null;
+  return { type: sectionType, enabled: true, settings: {} };
+}
+
 export function readTemplateSection(
   config: Record<string, unknown> | null,
   templateId: string,
@@ -21,7 +27,7 @@ export function readTemplateSection(
   if (sec != null && typeof sec === 'object' && !Array.isArray(sec)) {
     return sec as Record<string, unknown>;
   }
-  return null;
+  return syntheticTemplateSection(instanceId);
 }
 
 export function sectionTypeFromRecord(instanceId: string, record: Record<string, unknown> | null): string {

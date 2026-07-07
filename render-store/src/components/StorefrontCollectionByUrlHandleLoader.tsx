@@ -17,8 +17,10 @@ export function StorefrontCollectionByUrlHandleLoader({ urlHandleOverride }: Pro
   const urlHandle = urlHandleOverride ?? paramHandle;
   const { storeFrontMeta } = useStorefront();
   const {
+    collections,
     getCollectionDetailsByUrlHandle,
     fetchProductsInCollectionByUrlHandle,
+    fetchCollectionsByStoreId,
     clearActiveCollection,
   } = useStorefrontCollections();
 
@@ -34,6 +36,21 @@ export function StorefrontCollectionByUrlHandleLoader({ urlHandleOverride }: Pro
 
     void (async () => {
       try {
+        if (handle === 'preview') {
+          let list = collections;
+          if (!list.length) {
+            list = await fetchCollectionsByStoreId(storeId);
+          }
+          const first =
+            list.find((c) => c.urlHandle?.trim() && c.urlHandle.trim().toLowerCase() !== 'all') ??
+            list[0];
+          if (!first?.urlHandle?.trim()) return;
+          const resolved = first.urlHandle.trim().toLowerCase();
+          await getCollectionDetailsByUrlHandle(storeId, resolved);
+          await fetchProductsInCollectionByUrlHandle(storeId, resolved);
+          return;
+        }
+
         if (handle !== 'all') {
           await getCollectionDetailsByUrlHandle(storeId, handle);
         }
@@ -51,6 +68,8 @@ export function StorefrontCollectionByUrlHandleLoader({ urlHandleOverride }: Pro
     urlHandle,
     getCollectionDetailsByUrlHandle,
     fetchProductsInCollectionByUrlHandle,
+    fetchCollectionsByStoreId,
+    collections,
     clearActiveCollection,
   ]);
 

@@ -55,6 +55,7 @@ export function ThemePreviewApp() {
   const [init, setInit] = useState<ThemePreviewInitPayload | null>(null);
   const [config, setConfig] = useState<Record<string, unknown> | null>(null);
   const [page, setPage] = useState<ThemePreviewPage>('index');
+  const [previewRoute, setPreviewRoute] = useState<string | undefined>(undefined);
   /** Only bumps on page change — NOT on every config keystroke (avoids full route remount). */
   const [pageRevision, setPageRevision] = useState(0);
   const [selectionHints, setSelectionHints] = useState<ThemePreviewSelectionHint[]>([]);
@@ -140,6 +141,7 @@ export function ThemePreviewApp() {
         });
         applyConfigImmediate(payload.config);
         setPage(payload.page ?? 'index');
+        setPreviewRoute(payload.previewRoute);
         setSelectionHints(payload.selectionHints ?? []);
         setInspectorEnabled(payload.inspectorEnabled !== false);
         setPreviewDevice(payload.device === 'mobile' ? 'mobile' : 'desktop');
@@ -190,6 +192,7 @@ export function ThemePreviewApp() {
 
       if (msg.type === 'ZIPLOFY_PREVIEW_SET_PAGE') {
         setPage(msg.payload.page);
+        setPreviewRoute(msg.payload.previewRoute);
         setPageRevision((n) => n + 1);
         window.setTimeout(() => {
           postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_LOADED' });
@@ -254,10 +257,15 @@ export function ThemePreviewApp() {
             jsUrl={init.jsUrl}
             cssUrl={init.cssUrl}
             page={page}
+            previewRoute={previewRoute}
             pageRevision={pageRevision}
           />
         ) : (
-          <CustomThemeComposerPreview page={page} pageRevision={pageRevision} />
+          <CustomThemeComposerPreview
+            page={page}
+            previewRoute={previewRoute}
+            pageRevision={pageRevision}
+          />
         )}
         <PreviewSelectionLayer
           hints={selectionHints}

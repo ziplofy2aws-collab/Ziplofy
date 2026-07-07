@@ -1039,6 +1039,7 @@ export type CreateThemeEditorSidebarProps = {
   onRemoveSettingsSection?: () => void;
   onRemoveSettingsBlock?: () => void;
   themeColorPalette?: string[];
+  sectionsHeaderSlot?: React.ReactNode;
 };
 
 const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = ({
@@ -1074,6 +1075,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   onRemoveSettingsSection,
   onRemoveSettingsBlock,
   themeColorPalette,
+  sectionsHeaderSlot,
 }) => {
   const [dragState, setDragState] = useState<DragState>({
     listKey: null,
@@ -1148,6 +1150,8 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
           title
         )}
       </h2>
+
+      {sidebarTab === 'sections' && sectionsHeaderSlot ? sectionsHeaderSlot : null}
 
       <div className="create-theme-sidebar-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {loading ? <p className="p-4 text-sm text-gray-500">Loading theme…</p> : null}

@@ -43,6 +43,8 @@ export type ThemePreviewInitPayload = {
   cssUrl?: string | null;
   config: Record<string, unknown>;
   page?: ThemePreviewPage;
+  /** Optional storefront path override (e.g. /collections/demo-collection). */
+  previewRoute?: string;
   selectionHints?: ThemePreviewSelectionHint[];
   /** When false, preview selection / inspector overlay is off (browse mode). */
   inspectorEnabled?: boolean;
@@ -91,7 +93,7 @@ export type ThemePreviewInsertHighlightPayload = {
 export type ParentToPreviewMessage =
   | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_INIT'; payload: ThemePreviewInitPayload }
   | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_CONFIG'; payload: ThemePreviewConfigPayload }
-  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_SET_PAGE'; payload: { page: ThemePreviewPage } }
+  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_SET_PAGE'; payload: { page: ThemePreviewPage; previewRoute?: string } }
   | {
       source: typeof PREVIEW_MESSAGE_SOURCE;
       type: 'ZIPLOFY_PREVIEW_HIGHLIGHT';

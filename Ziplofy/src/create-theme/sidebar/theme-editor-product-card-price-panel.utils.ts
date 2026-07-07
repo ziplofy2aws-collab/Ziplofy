@@ -105,14 +105,14 @@ export function isProductCardPricePanelFields(fields: EditorFieldDef[]): boolean
 
 export function productCardPriceSettingsBaseFromNodeId(nodeId: string): string | null {
   const match = nodeId.match(
-    /^template:([^:]+):((?:featured_collection|recommended_products)(?:_\d+)?):block:product_card/
+    /^template:([^:]+):((?:featured_collection|recommended_products|main_collection)(?:_\d+)?):block:product_card/
   );
   if (!match) return null;
   return `templates.${match[1]}.sections.${match[2]}.blocks.product_card.settings`;
 }
 
 export function productCardPriceSettingsBaseFromPrefix(prefix: string): string | null {
-  const match = prefix.match(/^template:([^:]+):((?:featured_collection|recommended_products)(?:_\d+)?)$/);
+  const match = prefix.match(/^template:([^:]+):((?:featured_collection|recommended_products|main_collection)(?:_\d+)?)$/);
   if (!match) return null;
   return `templates.${match[1]}.sections.${match[2]}.blocks.product_card.settings`;
 }

@@ -1,4 +1,5 @@
 import type { EditorSchemaDoc } from '../../components/themes/theme-editor-sidebar/theme-editor-sidebar.types';
+import { ensureCollectionPageTemplateBlocks, ensureAllProductsPageTemplateBlocks } from '../../utils/collection-page-preset.util';
 import { creatorTemplateHasSections } from '../../utils/theme-editor-static-pack';
 import {
   extendValuesForTemplateInstance,
@@ -6,7 +7,13 @@ import {
 } from '../../utils/theme-editor-insert-section';
 
 /** Page types that get a one-time in-memory starter from the theme pack when the template bucket is empty. */
-export const PACK_STARTER_TEMPLATE_IDS = new Set(['product', 'collection', 'cart']);
+export const PACK_STARTER_TEMPLATE_IDS = new Set([
+  'product',
+  'collection',
+  'products',
+  'cart',
+  'collections-list',
+]);
 
 function packKeyForTemplateId(templateId: string): string {
   if (templateId.startsWith('product.')) return 'product';
@@ -27,7 +34,28 @@ export function seedTemplateFromPackIfEmpty(
     | Record<string, Record<string, unknown>>
     | undefined;
   const defTpl = packTemplates?.[packKey];
-  if (!defTpl || typeof defTpl !== 'object') return false;
+  if (!defTpl || typeof defTpl !== 'object') {
+    if (packKey === 'products' && packTemplates?.collection) {
+      if (!config.templates || typeof config.templates !== 'object') {
+        config.templates = {};
+      }
+      const templates = config.templates as Record<string, Record<string, unknown>>;
+      const seeded = JSON.parse(JSON.stringify(packTemplates.collection)) as Record<string, unknown>;
+      seeded.name = 'All products';
+      const titleBlock = (
+        (seeded.sections as Record<string, { blocks?: Record<string, { settings?: { text?: string } }> }> | undefined)
+          ?.collection_heading?.blocks?.title
+      );
+      if (titleBlock?.settings) {
+        titleBlock.settings.text = 'All products';
+      }
+      templates[templateId] = seeded;
+      return true;
+    }
+    if (packKey === 'collection') return ensureCollectionPageTemplateBlocks(config);
+    if (packKey === 'products') return ensureAllProductsPageTemplateBlocks(config);
+    return false;
+  }
 
   if (!config.templates || typeof config.templates !== 'object') {
     config.templates = {};

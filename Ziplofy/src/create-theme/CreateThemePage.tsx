@@ -105,7 +105,7 @@ import {
   normalizeThemePageWidth,
 } from './settings/theme-page.settings';
 import { buildThemeEditorPageMenu, findPageMenuItemByPreviewWithConfig } from './utils/page-menu';
-import { ensureRegistryTemplatesInConfig } from './utils/theme-page-registry';
+import { ensureRegistryTemplatesInConfig, registryLabel, allRegistryPageIds } from './utils/theme-page-registry';
 import {
   alternateTemplateCreatedToastMessage,
   alternateTemplateSavedToastLabel,
@@ -186,6 +186,7 @@ import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
 import { openThemeCreatorForActiveStore } from '../utils/theme-creator-navigation';
 import type { Collection } from '../contexts/collection.context';
+import { useCollections } from '../contexts/collection.context';
 import type { StoreMenu, StoreMenuItem } from '../contexts/store-menu.context';
 import {
   applyCollectionLinksSelectionToConfig,
@@ -194,6 +195,8 @@ import {
 } from './utils/collection-links-collections.util';
 import {
   applyCollectionListTilesSelectionToConfig,
+  collectionListPickerPathsWithEmptySelection,
+  collectionListSyncSignature,
   isCollectionListTileSectionType,
   pruneCollectionTileBlockValues,
   sectionTypeFromCollectionsPickerPath,
@@ -437,6 +440,15 @@ import {
   resetCreatorThemeGlobalSettings,
 } from '../utils/theme-editor-static-pack';
 import { setConfigAtPath } from '../utils/theme-editor-config.utils';
+import { ensureCollectionsListTemplateBlocks } from '../utils/collections-list-preset.util';
+import {
+  ensureCollectionPageTemplateBlocks,
+  ensureAllProductsPageTemplateBlocks,
+  ALL_PRODUCTS_TEMPLATE_ID,
+} from '../utils/collection-page-preset.util';
+import { resolveCollectionTemplatePreviewRoute } from './utils/collection-page-preview.util';
+import { isCollectionTemplatePreviewPage } from './utils/collection-templates.util';
+import { CollectionTemplatePreviewCard } from './sidebar/CollectionTemplatePreviewCard';
 import { ensureFeaturedProductSectionBlocks } from '../utils/featured-product-preset.util';
 import { ensureProductHighlightSectionBlocks } from '../utils/product-highlight-preset.util';
 import { ensureProductHotspotsSectionBlocks } from '../utils/product-hotspots-preset.util';
@@ -575,6 +587,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const [searchParams] = useSearchParams();
   const editThemeId = searchParams.get('id');
   const { activeStoreId, stores } = useStore();
+  const { collections, fetchCollectionsByStoreId } = useCollections();
   const { storeSubdomain, getByStoreId: fetchStoreSubdomain } = useStoreSubdomain();
   const {
     create: createStoreCustomTheme,
@@ -654,6 +667,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const [previewPage, setPreviewPage] = useState<ThemePreviewPage>(
     isCheckoutProfile ? 'checkout' : 'index'
   );
+  const [previewCollectionHandle, setPreviewCollectionHandle] = useState<string | null>(null);
   const [checkoutPreviewPage, setCheckoutPreviewPage] = useState<CheckoutEditorPage>('checkout');
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [inspectorEnabled, setInspectorEnabled] = useState(true);
@@ -808,6 +822,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
         normalizeCreatorThemeConfig(config);
         if (
+          ensureCollectionsListTemplateBlocks(config) ||
+          ensureCollectionPageTemplateBlocks(config) ||
+          ensureAllProductsPageTemplateBlocks(config) ||
           ensureFeaturedProductSectionBlocks(config) ||
           ensureProductHighlightSectionBlocks(config) ||
           ensureProductHotspotsSectionBlocks(config) ||
@@ -1008,8 +1025,10 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
   const pageLabel = isCheckoutProfile
     ? findCheckoutEditorPageLabel(checkoutPreviewPage)
-    : findPageMenuItemByPreviewWithConfig(pageMenuItems, previewPage, defaultConfig)?.label ??
-      'Home page';
+    : allRegistryPageIds().has(previewPage)
+      ? registryLabel(previewPage)
+      : findPageMenuItemByPreviewWithConfig(pageMenuItems, previewPage, defaultConfig)?.label ??
+        'Home page';
 
   const selectedNode = useMemo(() => {
     const found = findSidebarNode(activeTree, selectedNodeId);
@@ -2220,6 +2239,11 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     [editorSchema, debouncedConfigForHints, previewPage, structureSyncKey]
   );
 
+  const collectionPreviewRoute = useMemo(
+    () => resolveCollectionTemplatePreviewRoute(previewPage, previewCollectionHandle),
+    [previewPage, previewCollectionHandle]
+  );
+
   const schemaFieldTypes = useMemo(() => {
     if (!editorSchema || !defaultConfig) return new Map<string, string>();
     return new Map(
@@ -2502,7 +2526,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       const tplId = templateIdForPage(page);
       if (defaultConfig && pack) {
         const next = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
-        const seeded = seedTemplateFromPackIfEmpty(next, tplId, pack);
+        let seeded = false;
+        if (tplId === ALL_PRODUCTS_TEMPLATE_ID) {
+          seeded = ensureAllProductsPageTemplateBlocks(next);
+        }
+        if (!seeded) {
+          seeded = seedTemplateFromPackIfEmpty(next, tplId, pack);
+        }
         if (seeded) {
           normalizeCreatorThemeConfig(next);
           setDefaultConfig(next);
@@ -2605,6 +2635,24 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     },
     [commitPreviewNow]
   );
+
+  const collectionListAutoSyncRef = useRef<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    if (!previewStoreId) return;
+    void fetchCollectionsByStoreId(previewStoreId);
+  }, [previewStoreId, fetchCollectionsByStoreId]);
+
+  useEffect(() => {
+    if (!defaultConfig || !collections.length) return;
+    const paths = collectionListPickerPathsWithEmptySelection(defaultConfig);
+    for (const path of paths) {
+      const signature = collectionListSyncSignature(path, collections);
+      if (collectionListAutoSyncRef.current.get(path) === signature) continue;
+      collectionListAutoSyncRef.current.set(path, signature);
+      handleCollectionLinksApply(path, collections);
+    }
+  }, [defaultConfig, collections, handleCollectionLinksApply]);
 
   const handleReorder = useCallback(
     (listKey: string, orderedIds: string[]) => {
@@ -3439,6 +3487,14 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         <CreateThemeEditorSidebar
           pageLabel={pageLabel}
           sidebarTitleMode={isCheckoutProfile ? 'plain' : 'editing'}
+          sectionsHeaderSlot={
+            !isCheckoutProfile && isCollectionTemplatePreviewPage(previewPage) ? (
+              <CollectionTemplatePreviewCard
+                previewCollectionHandle={previewCollectionHandle}
+                onPreviewCollectionHandleChange={setPreviewCollectionHandle}
+              />
+            ) : null
+          }
           sidebarTab={sidebarTab}
           onSidebarTabChange={(tab) => {
             setSidebarTab(tab);
@@ -3572,6 +3628,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               config={livePreviewConfig}
               structureSyncKey={structureSyncKey}
               page={previewPage}
+              previewRoute={collectionPreviewRoute}
               selectionHints={selectionHints}
               highlightNodeId={inspectorEnabled ? selectedNodeId || null : null}
               inspectorEnabled={inspectorEnabled}

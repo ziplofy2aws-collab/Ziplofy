@@ -1,6 +1,7 @@
 import type { Collection } from '../../contexts/collection.context';
 import { setConfigAtPath } from '../../utils/theme-editor-config.utils';
 import {
+  parseCollectionLinksPicker,
   sectionBaseFromCollectionsPickerPath,
   serializeCollectionLinksPicker,
 } from './collection-links-collections.util';
@@ -144,6 +145,48 @@ export function pruneCollectionTileBlockValues(
     if (keepBlockIds.has(blockId)) next[path] = val;
   }
   return next;
+}
+
+export function collectionListPickerPathsWithEmptySelection(
+  config: Record<string, unknown>
+): string[] {
+  const paths: string[] = [];
+
+  const scanSection = (sectionBase: string, section: Record<string, unknown> | undefined) => {
+    if (!section || typeof section !== 'object') return;
+    if (!isCollectionListTileSectionType(section.type as string | undefined)) return;
+    const settings = section.settings as Record<string, unknown> | undefined;
+    const picker = String(settings?.collectionsPicker ?? '');
+    if (parseCollectionLinksPicker(picker).length) return;
+    paths.push(`${sectionBase}.settings.collectionsPicker`);
+  };
+
+  const templates = config.templates as Record<string, Record<string, unknown>> | undefined;
+  if (templates) {
+    for (const [tplId, tpl] of Object.entries(templates)) {
+      const sections = tpl?.sections as Record<string, Record<string, unknown>> | undefined;
+      if (!sections) continue;
+      for (const [secId, section] of Object.entries(sections)) {
+        scanSection(`templates.${tplId}.sections.${secId}`, section);
+      }
+    }
+  }
+
+  const layoutSections = config.sections as Record<string, Record<string, unknown>> | undefined;
+  if (layoutSections) {
+    for (const [secId, section] of Object.entries(layoutSections)) {
+      scanSection(`sections.${secId}`, section);
+    }
+  }
+
+  return paths;
+}
+
+export function collectionListSyncSignature(
+  pickerPath: string,
+  collections: Pick<Collection, 'urlHandle'>[]
+): string {
+  return `${pickerPath}:${collections.map((c) => c.urlHandle).join(',')}`;
 }
 
 export function applyCollectionListTilesSelectionToConfig(

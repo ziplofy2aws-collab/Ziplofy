@@ -190,6 +190,12 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     return 'collections list'.includes(q);
   }, [query]);
 
+  const showAllProductsRow = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return true;
+    return 'all products'.includes(q) || 'products'.includes(q);
+  }, [query]);
+
   const current = useMemo(
     () =>
       findPageMenuItemByPreviewWithConfig(allItems, value, themeConfig ?? null) ?? {
@@ -459,7 +465,26 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
                     productTemplatePreviewPage,
                     productAssignmentLabel,
                     handleSelectProductTemplate,
-                    'product'
+                    'product',
+                    showAllProductsRow ? (
+                      <div className="px-1.5 pb-1">
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={value === 'products'}
+                          className={`flex w-full items-center gap-2 rounded-[8px] px-2.5 py-2.5 text-left text-[13px] transition-colors ${
+                            value === 'products'
+                              ? 'bg-[#ebebeb] font-semibold text-gray-900'
+                              : 'text-gray-800 hover:bg-[#f1f1f1]'
+                          }`}
+                          onClick={() => selectPage('products')}
+                        >
+                          <RectangleStackIcon className="h-[18px] w-[18px] shrink-0 text-gray-700" />
+                          <span>All products</span>
+                        </button>
+                        <div className="mx-2.5 my-1 border-t border-[#e8e8e8]" role="separator" />
+                      </div>
+                    ) : null
                   )
                 : pickerView === 'collections'
                   ? renderTemplateDrillDown(
