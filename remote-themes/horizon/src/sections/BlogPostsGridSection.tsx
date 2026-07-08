@@ -1,7 +1,9 @@
 import { useMemo, type CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { BlogPostIllustration } from '../lib/BlogPostIllustration';
-import { readBlogPostCards } from '../lib/blogPostsCarouselStyles';
+import type { BlogPostCardData } from '../lib/blogPostCards';
+import { useBlogPostCards } from '../lib/useBlogPostCards';
 import { readBlogPostsGridLayout, scopedBlogPostsGridCss } from '../lib/blogPostsGridStyles';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
 import { layout, useThemeColors } from '../tokens';
@@ -13,7 +15,7 @@ type Props = {
 };
 
 type CardProps = {
-  card: ReturnType<typeof readBlogPostCards>[number];
+  card: BlogPostCardData;
   editorNodeId: string;
   blockBase: string;
   scheme: { color: string; muted: string };
@@ -32,8 +34,8 @@ function BlogPostCardView({ card, editorNodeId, blockBase, scheme, fontBody }: C
     marginBottom: 12,
   };
 
-  return (
-    <article data-blog-card>
+  const body = (
+    <>
       <div style={imageBox}>
         {card.imageUrl ? (
           <img
@@ -81,6 +83,18 @@ function BlogPostCardView({ card, editorNodeId, blockBase, scheme, fontBody }: C
           {card.excerpt}
         </EditorField>
       </p>
+    </>
+  );
+
+  return (
+    <article data-blog-card>
+      {card.href ? (
+        <Link to={card.href} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+          {body}
+        </Link>
+      ) : (
+        body
+      )}
     </article>
   );
 }
@@ -103,14 +117,11 @@ export function BlogPostsGridSection({
 
   const style = useMemo(() => readBlogPostsGridLayout(config, settingsBase), [config, settingsBase]);
 
-  const cards = useMemo(
-    () => readBlogPostCards(config, templateId, sectionId, placement, style.postCount),
-    [config, templateId, sectionId, placement, style.postCount]
-  );
+  const { cards } = useBlogPostCards(templateId, sectionId, placement, settingsBase, style.postCount);
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cols = Math.max(1, Math.min(4, style.columns));
 
   const shell: CSSProperties = {

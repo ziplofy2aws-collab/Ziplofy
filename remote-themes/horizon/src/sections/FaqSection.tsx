@@ -65,7 +65,7 @@ export function FaqSection({
   const scheme = style.scheme;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const headingAlign = style.layoutAlignment;
 
   const shell: CSSProperties = {
@@ -189,9 +189,9 @@ export function FaqSection({
               <div
                 key={item.id}
                 role="listitem"
-                data-ziplofy-node={blockNodeId}
-                data-ziplofy-label={item.question}
-                data-ziplofy-kind="block"
+                data-codiic-node={blockNodeId}
+                data-codiic-label={item.question}
+                data-codiic-kind="block"
                 style={{ borderBottom: `1px solid ${scheme.border}` }}
               >
                 <button

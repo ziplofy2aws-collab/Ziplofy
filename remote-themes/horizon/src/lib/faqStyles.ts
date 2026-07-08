@@ -170,7 +170,7 @@ export function readFaqItems(
 }
 
 export function scopedFaqCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

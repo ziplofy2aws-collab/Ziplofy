@@ -55,7 +55,7 @@ export function readBlogPostsGridLayout(
 }
 
 export function scopedBlogPostsGridCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

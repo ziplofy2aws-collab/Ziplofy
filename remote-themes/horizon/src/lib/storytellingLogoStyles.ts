@@ -105,7 +105,7 @@ export function storytellingLogoSizeVars(style: StorytellingLogoLayout): CSSProp
 type CSSPropertiesLike = Record<string, string>;
 
 export function scopedStorytellingLogoCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-storytelling-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-storytelling-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

@@ -118,12 +118,12 @@ export function readMulticolumnItems(
 }
 
 export function scopedMulticolumnCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-multicolumn-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-multicolumn-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }
 
 export function multicolumnMobileStackCss(sectionId: string): string {
-  const scope = `.ziplofy-multicolumn-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-multicolumn-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   return `@media (max-width: 749px) { ${scope} { grid-template-columns: 1fr !important; } }`;
 }

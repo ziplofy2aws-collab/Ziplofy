@@ -105,7 +105,7 @@ export function readLayeredSlideshowSlides(
 }
 
 export function scopedLayeredSlideshowCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

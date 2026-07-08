@@ -100,5 +100,5 @@ export function jumboMinHeight(mediaHeight: EditorialJumboLayout['mediaHeight'])
 export function scopedEditorialJumboCss(sectionId: string, css: string): string {
   const trimmed = css.trim();
   if (!trimmed) return '';
-  return trimmed.replace(/:root/g, `[data-ziplofy-section="${sectionId}"]`);
+  return trimmed.replace(/:root/g, `[data-codiic-section="${sectionId}"]`);
 }

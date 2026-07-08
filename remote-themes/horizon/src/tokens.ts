@@ -3,29 +3,31 @@ import { getThemeConfigValue, useThemeConfig } from '@render-store/sdk';
 
 export function useThemeColors() {
   const config = useThemeConfig();
-  const primary = String(getThemeConfigValue(config, 'settings.colors.primary') ?? '#111827');
-  const background = String(getThemeConfigValue(config, 'settings.colors.background') ?? '#ffffff');
-  const text = String(getThemeConfigValue(config, 'settings.colors.text') ?? '#111827');
+  const primary = String(getThemeConfigValue(config, 'settings.colors.primary') ?? '#141414');
+  const background = String(getThemeConfigValue(config, 'settings.colors.background') ?? '#faf9f7');
+  const text = String(getThemeConfigValue(config, 'settings.colors.text') ?? '#141414');
+  const muted = 'rgba(20, 20, 20, 0.58)';
+  const surface = '#f0eeea';
   const fontHeading = String(
-    getThemeConfigValue(config, 'settings.typography.fontFamily') ?? "Georgia, serif"
+    getThemeConfigValue(config, 'settings.typography.fontFamily') ?? "'Cormorant Garamond', Georgia, serif"
   );
   const fontBody = String(
-    getThemeConfigValue(config, 'settings.typography.fontFamilyBody') ?? 'system-ui, sans-serif'
+    getThemeConfigValue(config, 'settings.typography.fontFamilyBody') ?? "'DM Sans', system-ui, sans-serif"
   );
-  return { primary, background, text, fontHeading, fontBody };
+  return { primary, background, text, muted, surface, fontHeading, fontBody };
 }
 
 export const layout = {
-  maxWidth: 1200,
+  maxWidth: 1280,
   padX: 24,
-  line: 'rgba(17, 24, 39, 0.12)',
+  line: 'rgba(20, 20, 20, 0.1)',
 } as const;
 
 export const inputStyle: CSSProperties = {
   fontSize: 15,
   padding: '12px 14px',
   border: `1px solid ${layout.line}`,
-  borderRadius: 8,
+  borderRadius: 2,
   width: '100%',
   boxSizing: 'border-box',
 };

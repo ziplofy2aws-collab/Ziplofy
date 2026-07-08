@@ -30,9 +30,9 @@ export function TextMarqueeSection({
   const style = useMemo(() => readTextMarqueeLayout(config, settingsBase), [config, settingsBase]);
 
   const text = cfgString(config, `${settingsBase}.text`);
-  const scopeClass = `ziplofy-text-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-text-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const animName =
-    style.motionDirection === 'reverse' ? 'ziplofy-marquee-reverse' : 'ziplofy-marquee-forward';
+    style.motionDirection === 'reverse' ? 'codiic-marquee-reverse' : 'codiic-marquee-forward';
 
   const shell: CSSProperties = {
     position: 'relative',
@@ -76,11 +76,11 @@ export function TextMarqueeSection({
       <section className={scopeClass} style={shell} data-section-type="text-marquee">
         <style>
           {`
-            @keyframes ziplofy-marquee-forward {
+            @keyframes codiic-marquee-forward {
               from { transform: translateX(0); }
               to { transform: translateX(-50%); }
             }
-            @keyframes ziplofy-marquee-reverse {
+            @keyframes codiic-marquee-reverse {
               from { transform: translateX(-50%); }
               to { transform: translateX(0); }
             }

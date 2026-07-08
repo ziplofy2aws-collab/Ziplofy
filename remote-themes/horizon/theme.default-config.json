@@ -44,7 +44,7 @@
         "enabled": true,
         "message": "Free shipping on orders over ₹999 — Shop the new collection",
         "linkLabel": "Shop now",
-        "linkHref": "/products",
+        "linkHref": "/collections/all",
         "timeToNext": 5,
         "sectionWidth": "page",
         "colorScheme": "scheme-4",
@@ -104,7 +104,7 @@
         "defaultLogoUrl": "",
         "cartType": "drawer",
         "productTitleCase": "default",
-        "emptyCartLink": "/products",
+        "emptyCartLink": "/collections/all",
         "cartDrawerAutoOpen": false,
         "cartLabel": "Cart",
         "customCss": ""
@@ -145,7 +145,7 @@
               },
               {
                 "label": "Catalog",
-                "href": "/products"
+                "href": "/collections/all"
               },
               {
                 "label": "Contact",
@@ -216,7 +216,7 @@
           "type": "copyright",
           "settings": {
             "showPoweredBy": true,
-            "poweredByLabel": "Powered by Ziplofy",
+            "poweredByLabel": "Powered by codiic",
             "fontSize": "12px",
             "textCase": "default",
             "text": "© 2026 My Store"
@@ -1350,7 +1350,7 @@
               "type": "button",
               "settings": {
                 "label": "Shop all",
-                "href": "/products",
+                "href": "/collections/all",
                 "openInNewTab": false,
                 "buttonStyle": "primary",
                 "desktopWidth": "fit",
@@ -1447,7 +1447,7 @@
                 "titlePaddingLeft": 0,
                 "titlePaddingRight": 0,
                 "viewAllLabel": "",
-                "viewAllHref": "/products",
+                "viewAllHref": "/collections/all",
                 "subtitle": ""
               },
               "nested_block_order": [
@@ -1613,7 +1613,7 @@
             "heading": "Our signature product",
             "description": "Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.",
             "linkLabel": "Shop now",
-            "linkUrl": "/products",
+            "linkUrl": "/collections/all",
             "mediaPosition": "left",
             "mediaWidth": "medium",
             "mediaHeight": "medium",
@@ -1651,7 +1651,7 @@
             "button1Label": "View all",
             "button1Url": "/collections",
             "button2Label": "Shop now",
-            "button2Url": "/products",
+            "button2Url": "/collections/all",
             "imageBeforeUrl": "",
             "imageAfterUrl": "",
             "direction": "horizontal",
@@ -1681,7 +1681,7 @@
             "heading": "Our signature product",
             "description": "Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.",
             "buttonLabel": "Shop now",
-            "buttonUrl": "/products",
+            "buttonUrl": "/collections/all",
             "direction": "horizontal",
             "verticalOnMobile": false,
             "layoutAlignment": "left",
@@ -3593,7 +3593,7 @@
               "settings": {
                 "message": "No orders yet.",
                 "ctaLabel": "Start shopping",
-                "ctaHref": "/products"
+                "ctaHref": "/collections/all"
               }
             },
             "order_card": {
@@ -3748,6 +3748,64 @@
       "section_order": [
         "preferences_main"
       ]
+    },
+    "collection": {
+      "name": "Default collection",
+      "sections": {
+        "collection_heading": {
+          "type": "collection-heading",
+          "enabled": true,
+          "settings": {},
+          "blocks": {
+            "title": {
+              "type": "collection-heading-title",
+              "settings": {
+                "text": "Collection title"
+              }
+            },
+            "description": {
+              "type": "collection-heading-description",
+              "settings": {
+                "text": ""
+              }
+            }
+          },
+          "block_order": ["title", "description"]
+        },
+        "main_collection": {
+          "type": "main-collection",
+          "enabled": true,
+          "settings": {
+            "columns": 4,
+            "mobileColumns": "2",
+            "productsPerPage": 16,
+            "horizontalGap": 12,
+            "verticalGap": 24,
+            "sectionWidth": "page",
+            "paddingTop": 24,
+            "paddingBottom": 48
+          },
+          "blocks": {
+            "filtering_and_sorting": {
+              "type": "filtering-and-sorting",
+              "settings": {
+                "enableFiltering": true,
+                "enableSorting": true
+              }
+            },
+            "product_card": {
+              "type": "product-card",
+              "settings": {
+                "showMedia": true,
+                "showTitle": true,
+                "showPrice": true
+              }
+            }
+          },
+          "block_order": ["filtering_and_sorting", "product_card"]
+        }
+      },
+      "section_order": ["collection_heading", "main_collection"]
     }
   }
 }

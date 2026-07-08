@@ -1,7 +1,8 @@
 import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { BlogPostIllustration } from '../lib/BlogPostIllustration';
-import { readBlogPostCards } from '../lib/blogPostsCarouselStyles';
+import type { BlogPostCardData } from '../lib/blogPostCards';
+import { useBlogPostCards } from '../lib/useBlogPostCards';
 import {
   readBlogPostsEditorialLayout,
   scopedBlogPostsEditorialCss,
@@ -16,7 +17,7 @@ type Props = {
 };
 
 type CardProps = {
-  card: ReturnType<typeof readBlogPostCards>[number];
+  card: BlogPostCardData;
   featured?: boolean;
   editorNodeId: string;
   blockBase: string;
@@ -124,14 +125,11 @@ export function BlogPostsEditorialSection({
     [config, settingsBase]
   );
 
-  const cards = useMemo(
-    () => readBlogPostCards(config, templateId, sectionId, placement, style.postCount),
-    [config, templateId, sectionId, placement, style.postCount]
-  );
+  const { cards } = useBlogPostCards(templateId, sectionId, placement, settingsBase, style.postCount);
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const gap = style.layoutGap;
 
   const gridPair = cards.length >= 2 ? cards.slice(0, 2) : cards.length === 1 ? [] : [];

@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { isTemplateSectionEnabled } from '../lib/sectionEnabled';
 import { templateSectionOrder } from '../lib/structureOrder';
@@ -36,6 +37,9 @@ import { SlideshowInsetSection } from '../sections/SlideshowInsetSection';
 import { DividerSection } from '../sections/DividerSection';
 import { FeaturedCollectionSection } from '../sections/FeaturedCollectionSection';
 import { HeroSection } from '../sections/HeroSection';
+import { AllCollectionsSection } from '../sections/AllCollectionsSection';
+import { CollectionHeadingSection } from '../sections/CollectionHeadingSection';
+import { MainCollectionSection } from '../sections/MainCollectionSection';
 
 const INDEX_SECTION_COMPONENTS: Record<string, ComponentType<{ sectionId?: string; templateId?: string }>> = {
   hero_main: HeroSection,
@@ -74,54 +78,101 @@ const INDEX_SECTION_COMPONENTS: Record<string, ComponentType<{ sectionId?: strin
   slideshow_inset: SlideshowInsetSection,
 };
 
+const COLLECTION_SECTION_COMPONENTS: Record<string, ComponentType<{ sectionId?: string; templateId?: string }>> = {
+  collection_heading: CollectionHeadingSection,
+  main_collection: MainCollectionSection,
+};
+
 const INDEX_SECTION_FALLBACK = ['hero_main', 'featured_collection'];
+const COLLECTION_SECTION_FALLBACK = ['collection_heading', 'main_collection'];
+
+function resolveBlueprint(sectionId: string, templateId: string): string | null {
+  if (templateId === 'collection') {
+    if (sectionId.startsWith('collection_heading')) return 'collection_heading';
+    if (sectionId.startsWith('main_collection')) return 'main_collection';
+    return COLLECTION_SECTION_COMPONENTS[sectionId] ? sectionId : null;
+  }
+
+  if (sectionId.startsWith('divider')) return 'divider';
+  if (sectionId.startsWith('contact_form')) return 'contact_form';
+  if (sectionId.startsWith('email_signup')) return 'email_signup';
+  if (sectionId.startsWith('custom_section')) return 'custom_section';
+  if (sectionId.startsWith('product_highlight')) return 'product_highlight';
+  if (sectionId.startsWith('storytelling_video')) return 'storytelling_video';
+  if (sectionId.startsWith('faq_section')) return 'faq_section';
+  if (sectionId.startsWith('icons_with_text')) return 'icons_with_text';
+  if (sectionId.startsWith('multicolumn_section')) return 'multicolumn_section';
+  if (sectionId.startsWith('pull_quote_section')) return 'pull_quote_section';
+  if (sectionId.startsWith('rich_text_section')) return 'rich_text_section';
+  if (sectionId.startsWith('text_marquee_section')) return 'text_marquee_section';
+  if (sectionId.startsWith('blog_posts_carousel')) return 'blog_posts_carousel';
+  if (sectionId.startsWith('blog_posts_editorial')) return 'blog_posts_editorial';
+  if (sectionId.startsWith('blog_posts_grid')) return 'blog_posts_grid';
+  if (sectionId.startsWith('storytelling_carousel')) return 'storytelling_carousel';
+  if (sectionId.startsWith('product_hotspots')) return 'product_hotspots';
+  if (sectionId.startsWith('recommended_products')) return 'recommended_products';
+  if (sectionId.startsWith('collection_links_spotlight')) return 'collection_links_spotlight';
+  if (sectionId.startsWith('collection_links_text')) return 'collection_links_text';
+  if (sectionId.startsWith('collection_list_bento')) return 'collection_list_bento';
+  if (sectionId.startsWith('collection_list_carousel')) return 'collection_list_carousel';
+  if (sectionId.startsWith('collection_list_editorial')) return 'collection_list_editorial';
+  if (sectionId.startsWith('collection_list_grid')) return 'collection_list_grid';
+  if (sectionId.startsWith('layered_slideshow')) return 'layered_slideshow';
+  if (sectionId.startsWith('slideshow_full_frame')) return 'slideshow_full_frame';
+  if (sectionId.startsWith('slideshow_inset')) return 'slideshow_inset';
+  if (sectionId.startsWith('storytelling_logo')) return 'storytelling_logo';
+  if (sectionId.startsWith('image_with_text')) return 'image_with_text';
+  if (sectionId.startsWith('image_compare')) return 'image_compare';
+  if (sectionId.startsWith('editorial_jumbo')) return 'editorial_jumbo';
+  if (sectionId.startsWith('editorial')) return 'editorial';
+  if (sectionId.startsWith('featured_collection')) return 'featured_collection';
+  if (sectionId.startsWith('hero_main')) return 'hero_main';
+  return INDEX_SECTION_COMPONENTS[sectionId] ? sectionId : null;
+}
+
+function TemplatePage({ templateId }: { templateId: string }) {
+  const config = useThemeConfig();
+  const fallback =
+    templateId === 'collection' ? COLLECTION_SECTION_FALLBACK : INDEX_SECTION_FALLBACK;
+  const registry =
+    templateId === 'collection' ? COLLECTION_SECTION_COMPONENTS : INDEX_SECTION_COMPONENTS;
+  const order = templateSectionOrder(config, templateId, fallback);
+
+  return (
+    <>
+      {order.map((sectionId) => {
+        if (!isTemplateSectionEnabled(config, templateId, sectionId)) return null;
+        const blueprint = resolveBlueprint(sectionId, templateId);
+        if (!blueprint) return null;
+        const Section = registry[blueprint];
+        if (!Section) return null;
+        return <Section key={sectionId} sectionId={sectionId} templateId={templateId} />;
+      })}
+    </>
+  );
+}
 
 export function HomePage() {
-  const config = useThemeConfig();
-  const order = templateSectionOrder(config, 'index', INDEX_SECTION_FALLBACK);
+  const { pathname } = useLocation();
+
+  if (pathname === '/collections') {
+    return (
+      <PageShell>
+        <AllCollectionsSection />
+      </PageShell>
+    );
+  }
+
+  const templateId =
+    pathname === '/collections/all' ||
+    pathname.startsWith('/collection/') ||
+    (pathname.startsWith('/collections/') && pathname !== '/collections')
+      ? 'collection'
+      : 'index';
 
   return (
     <PageShell>
-      {order.map((sectionId) => {
-        if (!isTemplateSectionEnabled(config, 'index', sectionId)) return null;
-        let blueprint = sectionId;
-        if (sectionId.startsWith('divider')) blueprint = 'divider';
-        else if (sectionId.startsWith('contact_form')) blueprint = 'contact_form';
-        else if (sectionId.startsWith('email_signup')) blueprint = 'email_signup';
-        else if (sectionId.startsWith('custom_section')) blueprint = 'custom_section';
-        else if (sectionId.startsWith('product_highlight')) blueprint = 'product_highlight';
-        else if (sectionId.startsWith('storytelling_video')) blueprint = 'storytelling_video';
-        else if (sectionId.startsWith('faq_section')) blueprint = 'faq_section';
-        else if (sectionId.startsWith('icons_with_text')) blueprint = 'icons_with_text';
-        else if (sectionId.startsWith('multicolumn_section')) blueprint = 'multicolumn_section';
-        else if (sectionId.startsWith('pull_quote_section')) blueprint = 'pull_quote_section';
-        else if (sectionId.startsWith('rich_text_section')) blueprint = 'rich_text_section';
-        else if (sectionId.startsWith('text_marquee_section')) blueprint = 'text_marquee_section';
-        else if (sectionId.startsWith('blog_posts_carousel')) blueprint = 'blog_posts_carousel';
-        else if (sectionId.startsWith('blog_posts_editorial')) blueprint = 'blog_posts_editorial';
-        else if (sectionId.startsWith('blog_posts_grid')) blueprint = 'blog_posts_grid';
-        else if (sectionId.startsWith('storytelling_carousel')) blueprint = 'storytelling_carousel';
-        else if (sectionId.startsWith('product_hotspots')) blueprint = 'product_hotspots';
-        else if (sectionId.startsWith('recommended_products')) blueprint = 'recommended_products';
-        else if (sectionId.startsWith('collection_links_spotlight')) blueprint = 'collection_links_spotlight';
-        else if (sectionId.startsWith('collection_links_text')) blueprint = 'collection_links_text';
-        else if (sectionId.startsWith('collection_list_bento')) blueprint = 'collection_list_bento';
-        else if (sectionId.startsWith('collection_list_carousel')) blueprint = 'collection_list_carousel';
-        else if (sectionId.startsWith('collection_list_editorial')) blueprint = 'collection_list_editorial';
-        else if (sectionId.startsWith('collection_list_grid')) blueprint = 'collection_list_grid';
-        else if (sectionId.startsWith('layered_slideshow')) blueprint = 'layered_slideshow';
-        else if (sectionId.startsWith('slideshow_full_frame')) blueprint = 'slideshow_full_frame';
-        else if (sectionId.startsWith('slideshow_inset')) blueprint = 'slideshow_inset';
-        else if (sectionId.startsWith('storytelling_logo')) blueprint = 'storytelling_logo';
-        else if (sectionId.startsWith('image_with_text')) blueprint = 'image_with_text';
-        else if (sectionId.startsWith('image_compare')) blueprint = 'image_compare';
-        else if (sectionId.startsWith('editorial_jumbo')) blueprint = 'editorial_jumbo';
-        else if (sectionId.startsWith('editorial')) blueprint = 'editorial';
-        else if (sectionId.startsWith('featured_collection')) blueprint = 'featured_collection';
-        const Section = INDEX_SECTION_COMPONENTS[blueprint];
-        if (!Section) return null;
-        return <Section key={sectionId} sectionId={sectionId} templateId="index" />;
-      })}
+      <TemplatePage templateId={templateId} />
     </PageShell>
   );
 }

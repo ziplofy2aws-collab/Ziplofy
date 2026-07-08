@@ -106,7 +106,7 @@ export function readProductHotspots(
 }
 
 export function scopedProductHotspotsCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-product-hotspots-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-product-hotspots-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

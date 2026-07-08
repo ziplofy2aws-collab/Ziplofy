@@ -49,7 +49,7 @@ export function LayeredSlideshowSection({
   const slide = slides[index] ?? slides[0];
   const peekSlide = slides[(index + 1) % slideCount] ?? slide;
 
-  const scopeClass = `ziplofy-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedLayeredSlideshowCss(sectionId, layoutStyle.customCss);
   const minHeight = slideshowMinHeight(layoutStyle.height);
 
@@ -92,7 +92,7 @@ export function LayeredSlideshowSection({
   return (
     <EditorSection nodeId={editorNodeId} label="Layered slideshow">
       {customCss ? <style>{customCss}</style> : null}
-      <section data-ziplofy-section={sectionId} className={scopeClass} style={outerStyle}>
+      <section data-codiic-section={sectionId} className={scopeClass} style={outerStyle}>
         <div style={innerStyle}>
           <div style={cardStyle}>
             <div

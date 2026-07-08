@@ -101,7 +101,7 @@ export function SlideshowInsetSection({
   const goNext = useCallback(() => setActiveIndex((i) => (i + 1) % slideCount), [slideCount]);
   const goTo = useCallback((i: number) => setActiveIndex(i), []);
 
-  const scopeClass = `ziplofy-slideshow-inset-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-slideshow-inset-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedSlideshowInsetCss(sectionId, layoutStyle.customCss);
   const mediaHeight = slideshowInsetMediaHeight(layoutStyle.mediaHeight);
   const belowMedia = layoutStyle.contentPosition === 'below-media';
@@ -224,7 +224,7 @@ export function SlideshowInsetSection({
   return (
     <EditorSection nodeId={editorNodeId} label="Slideshow: Inset">
       {customCss ? <style>{customCss}</style> : null}
-      <section data-ziplofy-section={sectionId} className={scopeClass} style={outerStyle}>
+      <section data-codiic-section={sectionId} className={scopeClass} style={outerStyle}>
         <div style={innerStyle}>
           <div style={cardStyle}>
             <div style={mediaWrapStyle}>

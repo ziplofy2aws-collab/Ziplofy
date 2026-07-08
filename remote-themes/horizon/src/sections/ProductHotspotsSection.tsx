@@ -131,7 +131,7 @@ export function ProductHotspotsSection({
     [config, templateId, sectionId, placement]
   );
 
-  const scopeClass = `ziplofy-product-hotspots-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-product-hotspots-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedProductHotspotsCss(sectionId, layoutStyle.customCss);
   const minH = sceneMinHeight(layoutStyle.sectionHeight);
 

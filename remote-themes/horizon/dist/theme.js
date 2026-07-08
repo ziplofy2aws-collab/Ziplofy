@@ -1,178 +1,179 @@
-import { jsx as o, jsxs as m, Fragment as ne } from "react/jsx-runtime";
-import { useState as Z, useMemo as F, useEffect as ue, useRef as ot, useCallback as qe } from "react";
-import { getThemeConfigValue as K, useThemeConfig as j, useStorefrontAuth as Ze, useStorefrontCart as xt, useStorefront as it, useStorefrontProducts as ht, formatINR as Ye, useThemeEditorPreview as rt, usePreviewHighlightNodeId as fi, layoutBlockIdFromHighlightNodeId as bi, useStorefrontOrder as yi, useStorefrontProductVariants as xi } from "@render-store/sdk";
-import { useLocation as $i, Link as I, useNavigate as $t, useParams as ki } from "react-router-dom";
-function l(e, t, i = "") {
-  const n = K(e, t);
-  return n == null || n === "" ? i : String(n);
-}
-function U(e, t, i = !1) {
-  const n = K(e, t);
-  return n == null ? i : !!n;
-}
-function y(e, t, i) {
-  const n = K(e, t);
-  if (n == null || n === "") return i;
-  const s = Number(n);
-  return Number.isFinite(s) ? s : i;
-}
-function vi(e, t) {
+import { jsx as o, jsxs as m, Fragment as Z } from "react/jsx-runtime";
+import { useState as te, useMemo as M, useCallback as Me, useLayoutEffect as Rn, useEffect as le, useRef as Ke } from "react";
+import { getThemeConfigValue as K, useThemeConfig as j, useStorefront as De, useStorefrontAuth as tt, useStorefrontCart as $t, useStorefrontProducts as lt, formatINR as Ge, useStorefrontPolicies as Mn, StorefrontPolicyLinks as Fn, useThemeEditorPreview as kt, usePreviewHighlightNodeId as An, layoutBlockIdFromHighlightNodeId as Nn, useStorefrontBlogs as En, useStorefrontCollections as at, useStorefrontProductVariants as Un } from "@render-store/sdk";
+import { Link as D, useLocation as Io, useParams as On } from "react-router-dom";
+import { createPortal as Gn } from "react-dom";
+function r(e, t, n = "") {
   const i = K(e, t);
-  return Array.isArray(i) ? i.filter((n) => n != null && typeof n == "object").map((n) => ({
-    label: String(n.label ?? ""),
-    href: String(n.href ?? "/")
-  })).filter((n) => n.label) : [];
+  return i == null || i === "" ? n : String(i);
 }
-const Si = {
+function E(e, t, n = !1) {
+  const i = K(e, t);
+  return i == null ? n : !!i;
+}
+function x(e, t, n) {
+  const i = K(e, t);
+  if (i == null || i === "") return n;
+  const c = Number(i);
+  return Number.isFinite(c) ? c : n;
+}
+function Dn(e, t) {
+  const n = K(e, t);
+  return Array.isArray(n) ? n.filter((i) => i != null && typeof i == "object").map((i) => ({
+    label: String(i.label ?? ""),
+    href: String(i.href ?? "/")
+  })).filter((i) => i.label) : [];
+}
+const jn = {
   "scheme-1": { background: "#ffffff", color: "#111827", border: "#e5e7eb" },
   "scheme-2": { background: "#f8fafc", color: "#0f172a", border: "#e2e8f0" },
   "scheme-3": { background: "#fff7ed", color: "#431407", border: "#fed7aa" },
   "scheme-4": { background: "#f5f3ff", color: "#4c1d95", border: "#ddd6fe" }
 };
-function wi(e, t, i) {
-  const n = l(e, `${t}.colorScheme`, "scheme-1");
-  return Si[n] ?? i;
+function Bn(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-1");
+  return jn[i] ?? n;
 }
-function jo(e, t) {
-  return l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
+function Vo(e, t) {
+  return r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
 }
-function _i(e, t) {
-  return Math.max(0, y(e, `${t}.gap`, 20));
+function qn(e, t) {
+  return Math.max(0, x(e, `${t}.gap`, 20));
 }
-function Ci(e, t) {
+function Xn(e, t) {
   return {
-    paddingTop: y(e, `${t}.paddingTop`, 30),
-    paddingBottom: y(e, `${t}.paddingBottom`, 30)
+    paddingTop: x(e, `${t}.paddingTop`, 30),
+    paddingBottom: x(e, `${t}.paddingBottom`, 30)
   };
 }
-function Do(e, t) {
-  const i = t.trim();
-  if (!i) return "";
-  const n = `[data-ziplofy-section="${e}"]`;
-  return i.replace(/:root/g, n).replace(/&/g, n);
+function Ko(e, t) {
+  const n = t.trim();
+  if (!n) return "";
+  const i = `[data-codiic-section="${e}"]`;
+  return n.replace(/:root/g, i).replace(/&/g, i);
 }
-const bt = {
+const mt = {
   "heading-1": { fontSize: 40, fontWeight: 700, lineHeight: 1.15 },
   "heading-2": { fontSize: 32, fontWeight: 600, lineHeight: 1.2 },
   "heading-3": { fontSize: 24, fontWeight: 600, lineHeight: 1.25 },
   "heading-4": { fontSize: 20, fontWeight: 600, lineHeight: 1.3 },
   body: { fontSize: 16, fontWeight: 400, lineHeight: 1.5 }
-}, Pt = {
-  ...bt,
+}, Tt = {
+  ...mt,
   paragraph: { fontSize: 15, fontWeight: 400, lineHeight: 1.5 }
 };
-function zi(e, t, i, n, s) {
-  const u = U(e, `${t}.inheritColorScheme`, !0), d = u ? i : {
-    background: s.background,
-    color: s.text,
+function In(e, t, n, i, c) {
+  const s = E(e, `${t}.inheritColorScheme`, !0), l = s ? n : {
+    background: c.background,
+    color: c.text,
     border: "rgba(17, 24, 39, 0.12)"
-  }, a = l(e, `${t}.headingTypographyPreset`, "heading-3"), r = bt[a] ?? bt["heading-3"], p = l(e, `${t}.inputTypographyPreset`, "paragraph"), c = Pt[p] ?? Pt.paragraph, h = l(e, `${t}.inputBorder`, "all"), g = Math.max(0, y(e, `${t}.inputBorderThickness`, 1)), $ = Math.max(0, y(e, `${t}.inputCornerRadius`, 100));
+  }, a = r(e, `${t}.headingTypographyPreset`, "heading-3"), d = mt[a] ?? mt["heading-3"], h = r(e, `${t}.inputTypographyPreset`, "paragraph"), u = Tt[h] ?? Tt.paragraph, p = r(e, `${t}.inputBorder`, "all"), g = Math.max(0, x(e, `${t}.inputBorderThickness`, 1)), k = Math.max(0, x(e, `${t}.inputCornerRadius`, 100));
   return {
-    blockWidth: l(e, `${t}.blockWidth`, "fill") === "custom" ? "custom" : "fill",
-    inheritColorScheme: u,
-    colors: d,
+    blockWidth: r(e, `${t}.blockWidth`, "fill") === "custom" ? "custom" : "fill",
+    inheritColorScheme: s,
+    colors: l,
     heading: {
-      fontFamily: n.fontHeading,
-      fontSize: r.fontSize,
-      fontWeight: r.fontWeight,
-      lineHeight: r.lineHeight,
-      color: d.color,
+      fontFamily: i.fontHeading,
+      fontSize: d.fontSize,
+      fontWeight: d.fontWeight,
+      lineHeight: d.lineHeight,
+      color: l.color,
       margin: "0 0 16px"
     },
     input: {
-      fontFamily: n.fontBody,
-      fontSize: c.fontSize,
-      fontWeight: c.fontWeight,
-      lineHeight: c.lineHeight,
-      color: d.color,
-      background: d.background,
-      borderStyle: h === "none" ? "none" : "all",
+      fontFamily: i.fontBody,
+      fontSize: u.fontSize,
+      fontWeight: u.fontWeight,
+      lineHeight: u.lineHeight,
+      color: l.color,
+      background: l.background,
+      borderStyle: p === "none" ? "none" : "all",
       borderWidth: g,
-      borderColor: d.border,
-      borderRadius: $
+      borderColor: l.border,
+      borderRadius: k
     },
     submit: {
-      style: l(e, `${t}.submitStyle`, "link") === "button" ? "button" : "link",
-      display: l(e, `${t}.submitDisplay`) === "text" ? "text" : "arrow",
-      integrated: U(e, `${t}.submitIntegratedButton`, !0)
+      style: r(e, `${t}.submitStyle`, "link") === "button" ? "button" : "link",
+      display: r(e, `${t}.submitDisplay`) === "text" ? "text" : "arrow",
+      integrated: E(e, `${t}.submitIntegratedButton`, !0)
     },
     padding: {
-      top: y(e, `${t}.paddingTop`, 0),
-      right: y(e, `${t}.paddingRight`, 0),
-      bottom: y(e, `${t}.paddingBottom`, 0),
-      left: y(e, `${t}.paddingLeft`, 0)
+      top: x(e, `${t}.paddingTop`, 0),
+      right: x(e, `${t}.paddingRight`, 0),
+      bottom: x(e, `${t}.paddingBottom`, 0),
+      left: x(e, `${t}.paddingLeft`, 0)
     }
   };
 }
-function G({ sectionId: e, label: t, style: i, children: n, editorNodeId: s }) {
-  const u = s ?? `layout:${e}`;
+function B({ sectionId: e, label: t, style: n, children: i, editorNodeId: c }) {
+  const s = c ?? `layout:${e}`;
   return /* @__PURE__ */ o(
     "section",
     {
-      "data-ziplofy-section": e,
+      "data-codiic-section": e,
       "data-section-id": e,
-      "data-ziplofy-node": u,
-      "data-ziplofy-label": t ?? e,
-      "data-ziplofy-kind": "section",
-      style: i,
-      children: n
+      "data-codiic-node": s,
+      "data-codiic-label": t ?? e,
+      "data-codiic-kind": "section",
+      style: n,
+      children: i
     }
   );
 }
-function E({ nodeId: e, label: t, style: i, children: n }) {
+function N({ nodeId: e, label: t, style: n, children: i }) {
   return /* @__PURE__ */ o(
     "div",
     {
-      "data-ziplofy-node": e,
-      "data-ziplofy-label": t,
-      "data-ziplofy-kind": "block",
-      style: i,
-      children: n
-    }
-  );
-}
-function k({ fieldPath: e, label: t, as: i = "span", style: n, children: s }) {
-  return /* @__PURE__ */ o(
-    i,
-    {
-      "data-ziplofy-node": `field:${e}`,
-      "data-ziplofy-label": t,
-      "data-ziplofy-kind": "field",
+      "data-codiic-node": e,
+      "data-codiic-label": t,
+      "data-codiic-kind": "block",
       style: n,
-      children: s
+      children: i
     }
   );
 }
-function X() {
-  const e = j(), t = String(K(e, "settings.colors.primary") ?? "#111827"), i = String(K(e, "settings.colors.background") ?? "#ffffff"), n = String(K(e, "settings.colors.text") ?? "#111827"), s = String(
-    K(e, "settings.typography.fontFamily") ?? "Georgia, serif"
-  ), u = String(
-    K(e, "settings.typography.fontFamilyBody") ?? "system-ui, sans-serif"
+function S({ fieldPath: e, label: t, as: n = "span", style: i, children: c }) {
+  return /* @__PURE__ */ o(
+    n,
+    {
+      "data-codiic-node": `field:${e}`,
+      "data-codiic-label": t,
+      "data-codiic-kind": "field",
+      style: i,
+      children: c
+    }
   );
-  return { primary: t, background: i, text: n, fontHeading: s, fontBody: u };
 }
-const L = {
-  maxWidth: 1200,
+function q() {
+  const e = j(), t = String(K(e, "settings.colors.primary") ?? "#141414"), n = String(K(e, "settings.colors.background") ?? "#faf9f7"), i = String(K(e, "settings.colors.text") ?? "#141414"), c = "rgba(20, 20, 20, 0.58)", s = "#f0eeea", l = String(
+    K(e, "settings.typography.fontFamily") ?? "'Cormorant Garamond', Georgia, serif"
+  ), a = String(
+    K(e, "settings.typography.fontFamilyBody") ?? "'DM Sans', system-ui, sans-serif"
+  );
+  return { primary: t, background: n, text: i, muted: c, surface: s, fontHeading: l, fontBody: a };
+}
+const R = {
+  maxWidth: 1280,
   padX: 24,
-  line: "rgba(17, 24, 39, 0.12)"
-}, We = {
+  line: "rgba(20, 20, 20, 0.1)"
+}, vt = {
   fontSize: 15,
   padding: "12px 14px",
-  border: `1px solid ${L.line}`,
-  borderRadius: 8,
+  border: `1px solid ${R.line}`,
+  borderRadius: 2,
   width: "100%",
   boxSizing: "border-box"
 };
-function Tt({
+function Lt({
   label: e,
   display: t,
-  style: i,
-  colors: n,
-  fontFamily: s,
-  borderRadius: u
+  style: n,
+  colors: i,
+  fontFamily: c,
+  borderRadius: s
 }) {
-  const d = t === "arrow" ? "→" : e;
-  return i === "link" ? /* @__PURE__ */ o(
+  const l = t === "arrow" ? "→" : e;
+  return n === "link" ? /* @__PURE__ */ o(
     "button",
     {
       type: "submit",
@@ -181,8 +182,8 @@ function Tt({
         flexShrink: 0,
         border: "none",
         background: "transparent",
-        color: n.color,
-        fontFamily: s,
+        color: i.color,
+        fontFamily: c,
         fontSize: t === "arrow" ? 20 : 15,
         fontWeight: 600,
         cursor: "pointer",
@@ -190,7 +191,7 @@ function Tt({
         textDecoration: t === "text" ? "underline" : "none",
         lineHeight: 1
       },
-      children: d
+      children: l
     }
   ) : /* @__PURE__ */ o(
     "button",
@@ -200,10 +201,10 @@ function Tt({
       style: {
         flexShrink: 0,
         border: "none",
-        borderRadius: u,
-        background: n.color,
-        color: n.background,
-        fontFamily: s,
+        borderRadius: s,
+        background: i.color,
+        color: i.background,
+        fontFamily: c,
         fontSize: 15,
         fontWeight: 600,
         cursor: "pointer",
@@ -211,37 +212,37 @@ function Tt({
         lineHeight: 1,
         whiteSpace: "nowrap"
       },
-      children: d
+      children: l
     }
   );
 }
-function Bo({ sectionId: e = "footer" }) {
-  const t = j(), { fontHeading: i, fontBody: n, text: s, background: u, primary: d } = X(), [a, r] = Z(""), p = `sections.${e}.settings`, c = `sections.${e}.blocks.newsletter.settings`, h = F(() => {
-    const O = wi(t, p, {
+function Yo({ sectionId: e = "footer" }) {
+  const t = j(), { fontHeading: n, fontBody: i, text: c, background: s, primary: l } = q(), [a, d] = te(""), h = `sections.${e}.settings`, u = `sections.${e}.blocks.newsletter.settings`, p = M(() => {
+    const U = Bn(t, h, {
       background: "#f6f6f7",
       color: "#111827",
       border: "#e5e7eb"
-    }), N = jo(t, p), D = _i(t, p), { paddingTop: V, paddingBottom: te } = Ci(t, p), B = l(t, `${p}.customCss`, "");
+    }), X = Vo(t, h), O = qn(t, h), { paddingTop: Y, paddingBottom: J } = Xn(t, h), I = r(t, `${h}.customCss`, "");
     return {
-      scheme: O,
-      widthMode: N,
-      gap: D,
-      paddingTop: V,
-      paddingBottom: te,
-      customCss: B
+      scheme: U,
+      widthMode: X,
+      gap: O,
+      paddingTop: Y,
+      paddingBottom: J,
+      customCss: I
     };
-  }, [t, p]), g = F(
-    () => zi(
+  }, [t, h]), g = M(
+    () => In(
       t,
-      c,
-      h.scheme,
-      { fontHeading: i, fontBody: n },
-      { text: s, background: u }
+      u,
+      p.scheme,
+      { fontHeading: n, fontBody: i },
+      { text: c, background: s }
     ),
-    [t, c, h.scheme, i, n, s, u, d]
-  ), $ = l(t, `${c}.title`), b = l(t, `${c}.subtitle`), v = l(t, `${c}.placeholder`), x = l(t, `${c}.buttonLabel`), z = (O) => {
-    O.preventDefault(), r("");
-  }, S = h.widthMode === "full" ? "100%" : L.maxWidth, _ = h.widthMode === "full" ? 24 : L.padX, H = g.input.borderRadius, w = "rgba(55, 65, 81, 0.9)", R = {
+    [t, u, p.scheme, n, i, c, s, l]
+  ), k = r(t, `${u}.title`), y = r(t, `${u}.subtitle`), v = r(t, `${u}.placeholder`), b = r(t, `${u}.buttonLabel`), _ = (U) => {
+    U.preventDefault(), d("");
+  }, $ = p.widthMode === "full" ? "100%" : R.maxWidth, w = p.widthMode === "full" ? 24 : R.padX, P = g.input.borderRadius, z = "rgba(55, 65, 81, 0.9)", L = {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
@@ -249,7 +250,7 @@ function Bo({ sectionId: e = "footer" }) {
     gap: 32,
     width: "100%",
     flexWrap: "wrap"
-  }, T = {
+  }, H = {
     flex: "1 1 260px",
     minWidth: 0
   }, W = {
@@ -260,7 +261,7 @@ function Bo({ sectionId: e = "footer" }) {
     minWidth: 280,
     width: "100%",
     maxWidth: 440
-  }, P = {
+  }, T = {
     flex: 1,
     minWidth: 0,
     fontFamily: g.input.fontFamily,
@@ -281,50 +282,50 @@ function Bo({ sectionId: e = "footer" }) {
     alignItems: "center",
     overflow: "hidden",
     border: g.input.borderStyle === "none" ? "none" : `${g.input.borderWidth}px solid ${g.input.borderColor}`,
-    borderRadius: H,
+    borderRadius: P,
     background: "#ffffff"
-  }, M = {
+  }, F = {
     display: "flex",
     alignItems: "center",
     width: "100%",
     overflow: "hidden",
     border: g.input.borderStyle === "none" ? "none" : `${g.input.borderWidth}px solid ${g.input.borderColor}`,
-    borderRadius: H,
+    borderRadius: P,
     background: "#ffffff"
-  }, f = !!($.trim() || b.trim());
+  }, f = !!(k.trim() || y.trim());
   return /* @__PURE__ */ m(
-    G,
+    B,
     {
       sectionId: e,
       label: "Footer",
       style: {
         marginTop: 64,
-        background: h.scheme.background || "#f6f6f7",
-        color: h.scheme.color,
-        borderTop: `1px solid ${h.scheme.border}`,
-        fontFamily: n,
-        paddingTop: h.paddingTop,
-        paddingBottom: h.paddingBottom,
-        paddingLeft: _,
-        paddingRight: _,
+        background: p.scheme.background || "#f6f6f7",
+        color: p.scheme.color,
+        borderTop: `1px solid ${p.scheme.border}`,
+        fontFamily: i,
+        paddingTop: p.paddingTop,
+        paddingBottom: p.paddingBottom,
+        paddingLeft: w,
+        paddingRight: w,
         boxSizing: "border-box"
       },
       children: [
-        h.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Do(e, h.customCss) } }) : null,
+        p.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Ko(e, p.customCss) } }) : null,
         /* @__PURE__ */ o(
           "div",
           {
             style: {
-              maxWidth: S,
+              maxWidth: $,
               margin: "0 auto",
               width: "100%"
             },
-            children: /* @__PURE__ */ o(E, { nodeId: `layout:${e}:block:newsletter`, label: "Email signup", children: /* @__PURE__ */ m("div", { style: R, children: [
-              f ? /* @__PURE__ */ m("div", { style: T, children: [
-                $.trim() ? /* @__PURE__ */ o(
-                  k,
+            children: /* @__PURE__ */ o(N, { nodeId: `layout:${e}:block:newsletter`, label: "Email signup", children: /* @__PURE__ */ m("div", { style: L, children: [
+              f ? /* @__PURE__ */ m("div", { style: H, children: [
+                k.trim() ? /* @__PURE__ */ o(
+                  S,
                   {
-                    fieldPath: `${c}.title`,
+                    fieldPath: `${u}.title`,
                     label: "Heading",
                     as: "h2",
                     style: {
@@ -335,84 +336,84 @@ function Bo({ sectionId: e = "footer" }) {
                       lineHeight: g.heading.lineHeight,
                       color: g.heading.color
                     },
-                    children: $
+                    children: k
                   }
                 ) : null,
-                b.trim() ? /* @__PURE__ */ o(
-                  k,
+                y.trim() ? /* @__PURE__ */ o(
+                  S,
                   {
-                    fieldPath: `${c}.subtitle`,
+                    fieldPath: `${u}.subtitle`,
                     label: "Subtext",
                     as: "p",
                     style: {
-                      margin: $.trim() ? "8px 0 0" : 0,
-                      fontFamily: n,
+                      margin: k.trim() ? "8px 0 0" : 0,
+                      fontFamily: i,
                       fontSize: 15,
                       fontWeight: 400,
                       lineHeight: 1.5,
-                      color: w,
+                      color: z,
                       maxWidth: 360
                     },
-                    children: b
+                    children: y
                   }
                 ) : null
               ] }) : null,
               /* @__PURE__ */ o(
                 "form",
                 {
-                  onSubmit: z,
+                  onSubmit: _,
                   style: {
                     ...W,
                     ...f ? {} : { flex: "1 1 100%", maxWidth: "100%" }
                   },
-                  children: g.submit.integrated ? /* @__PURE__ */ o(k, { fieldPath: `${c}.placeholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ m("div", { style: M, children: [
+                  children: g.submit.integrated ? /* @__PURE__ */ o(S, { fieldPath: `${u}.placeholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ m("div", { style: F, children: [
                     /* @__PURE__ */ o(
                       "input",
                       {
                         type: "email",
                         value: a,
-                        onChange: (O) => r(O.target.value),
+                        onChange: (U) => d(U.target.value),
                         placeholder: v,
-                        style: P,
+                        style: T,
                         "aria-label": v
                       }
                     ),
-                    /* @__PURE__ */ o(k, { fieldPath: `${c}.buttonLabel`, label: "Button label", children: /* @__PURE__ */ o(
-                      Tt,
+                    /* @__PURE__ */ o(S, { fieldPath: `${u}.buttonLabel`, label: "Button label", children: /* @__PURE__ */ o(
+                      Lt,
                       {
-                        label: x,
+                        label: b,
                         display: g.submit.display,
                         style: g.submit.style,
                         colors: g.colors,
-                        fontFamily: n,
-                        borderRadius: H
+                        fontFamily: i,
+                        borderRadius: P
                       }
                     ) })
-                  ] }) }) : /* @__PURE__ */ m(ne, { children: [
-                    /* @__PURE__ */ o(k, { fieldPath: `${c}.placeholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ o("div", { style: C, children: /* @__PURE__ */ o(
+                  ] }) }) : /* @__PURE__ */ m(Z, { children: [
+                    /* @__PURE__ */ o(S, { fieldPath: `${u}.placeholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ o("div", { style: C, children: /* @__PURE__ */ o(
                       "input",
                       {
                         type: "email",
                         value: a,
-                        onChange: (O) => r(O.target.value),
+                        onChange: (U) => d(U.target.value),
                         placeholder: v,
-                        style: P,
+                        style: T,
                         "aria-label": v
                       }
                     ) }) }),
-                    /* @__PURE__ */ o(k, { fieldPath: `${c}.buttonLabel`, label: "Button label", children: /* @__PURE__ */ o(
-                      Tt,
+                    /* @__PURE__ */ o(S, { fieldPath: `${u}.buttonLabel`, label: "Button label", children: /* @__PURE__ */ o(
+                      Lt,
                       {
-                        label: x,
+                        label: b,
                         display: g.submit.display,
                         style: g.submit.style,
                         colors: {
                           color: "#111827",
                           background: "#ffffff",
-                          border: h.scheme.border
+                          border: p.scheme.border
                         },
-                        fontFamily: n,
-                        borderRadius: H
+                        fontFamily: i,
+                        borderRadius: P
                       }
                     ) })
                   ] })
@@ -425,332 +426,574 @@ function Bo({ sectionId: e = "footer" }) {
     }
   );
 }
-const Wi = {
+const Qo = {
   "scheme-1": { background: "#ffffff", color: "#111827", border: "#e5e7eb" },
   "scheme-2": { background: "#1e3a5f", color: "#eff6ff", border: "#334155" },
   "scheme-3": { background: "#431407", color: "#fff7ed", border: "#7c2d12" },
   "scheme-4": { background: "#4c1d95", color: "#f5f3ff", border: "#6d28d9" }
 };
-function Pi(e, t, i) {
-  const n = l(e, `${t}.colorScheme`, "scheme-1");
-  return Wi[n] ?? i;
+function Vn(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-1");
+  return Qo[i] ?? n;
 }
-function Ti(e, t) {
-  return l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
+function Kn(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-1");
+  return Qo[i] ?? n;
 }
-function Hi(e, t) {
-  return l(e, `${t}.headerHeight`) === "compact" ? { paddingY: 10, minHeight: 52 } : { paddingY: 16, minHeight: 64 };
+function Yn(e, t) {
+  return r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
 }
-function Ri(e, t) {
-  return Math.max(0, y(e, `${t}.borderThickness`, 0));
+function Qn(e, t) {
+  return r(e, `${t}.headerHeight`) === "compact" ? { paddingY: 10, minHeight: 52 } : { paddingY: 16, minHeight: 64 };
 }
-function Li(e, t) {
-  const i = l(e, `${t}.stickyMode`, "");
-  return i === "always" || i === "on-scroll-up" || i === "never" ? i : U(e, `${t}.sticky`, !1) ? "always" : "never";
+function Zn(e, t) {
+  return Math.max(0, x(e, `${t}.borderThickness`, 0));
 }
-function Mi(e, t) {
-  return U(e, `${t}.searchIcon`, !1) ? !0 : U(e, `${t}.showSearch`, !1);
+function Jn(e, t) {
+  const n = r(e, `${t}.stickyMode`, "");
+  return n === "always" || n === "on-scroll-up" || n === "never" ? n : E(e, `${t}.sticky`, !1) ? "always" : "never";
 }
-function Fi(e, t) {
-  const i = t.trim();
-  if (!i) return "";
-  const n = `[data-ziplofy-section="${e}"]`;
-  return i.replace(/:root/g, n).replace(/&/g, n);
+function ei(e, t) {
+  return E(e, `${t}.searchIcon`, !1) ? !0 : E(e, `${t}.showSearch`, !1);
 }
-function et(e) {
-  return e === "center" ? "center" : e === "right" ? "flex-end" : "flex-start";
+function ti(e, t) {
+  const n = t.trim();
+  if (!n) return "";
+  const i = `[data-codiic-section="${e}"]`;
+  return n.replace(/:root/g, i).replace(/&/g, i);
 }
-function lt(e, t, i, n) {
-  const s = K(e, t);
-  if (Array.isArray(s) && s.length > 0)
-    return s.map((d) => String(d));
-  const u = K(e, i);
-  return u != null && typeof u == "object" && !Array.isArray(u) ? Object.keys(u) : n;
+const gt = 360;
+function oi(e) {
+  if (!e) return null;
+  const t = e.getBoundingClientRect(), n = Math.min(Math.max(12, t.right - gt), window.innerWidth - gt - 12);
+  return { top: t.bottom + 10, left: n };
 }
-function Ei(e, t, i) {
-  const n = K(e, `templates.${t}.sections`), s = n != null && typeof n == "object" && !Array.isArray(n) ? new Set(Object.keys(n)) : /* @__PURE__ */ new Set(), u = K(e, `templates.${t}.section_order`);
-  return Array.isArray(u) ? u.map((d) => String(d)).filter((d) => s.has(d)) : s.size > 0 ? lt(
-    e,
-    `templates.${t}.section_order`,
-    `templates.${t}.sections`,
-    i
-  ).filter((a) => s.has(a)) : i.filter((d) => s.has(d));
-}
-function Pe(e, t, i) {
-  const n = lt(
-    e,
-    `sections.${t}.block_order`,
-    `sections.${t}.blocks`,
-    i
-  ), s = K(e, `sections.${t}.blocks`), u = s != null && typeof s == "object" && !Array.isArray(s) ? s : {};
-  return n.filter((d) => u[d]?.enabled !== !1);
-}
-function Le(e, t, i, n) {
-  const s = lt(
-    e,
-    `templates.${t}.sections.${i}.block_order`,
-    `templates.${t}.sections.${i}.blocks`,
-    n
-  ), u = K(e, `templates.${t}.sections.${i}.blocks`), d = u != null && typeof u == "object" && !Array.isArray(u) ? u : {};
-  return s.filter((a) => d[a]?.enabled !== !1);
-}
-function Xo({ sectionId: e = "header" }) {
-  const t = j(), { pathname: i } = $i(), n = X(), { fontHeading: s, fontBody: u, primary: d, background: a } = n, { user: r, logout: p } = Ze(), { getAllItems: c } = xt(), h = c().reduce((se, Ne) => se + Ne.quantity, 0), g = `sections.${e}`, $ = `${g}.settings`, b = `${g}.blocks.logo.settings`, v = `${g}.blocks.menu.settings`, x = F(() => ({
-    scheme: Pi(t, $, {
-      background: a,
-      color: n.text,
-      border: L.line
-    }),
-    widthMode: Ti(t, $),
-    height: Hi(t, $),
-    borderPx: Ri(t, $),
-    stickyMode: Li(t, $),
-    customCss: l(t, `${$}.customCss`, ""),
-    logoText: l(t, `${b}.text`),
-    tagline: l(t, `${b}.tagline`, ""),
-    logoUrl: l(t, `${$}.defaultLogoUrl`, "").trim(),
-    logoPosition: l(t, `${b}.position`, "left"),
-    hideLogoOnHomePage: U(t, `${b}.hideLogoOnHomePage`, !1),
-    logoPaddingTop: Math.max(0, y(t, `${b}.paddingTop`, 0)),
-    logoPaddingBottom: Math.max(0, y(t, `${b}.paddingBottom`, 0)),
-    menuPosition: l(t, `${v}.position`, "left"),
-    menuRow: l(t, `${v}.row`, "top"),
-    menuItems: vi(t, `${v}.items`),
-    menuStyle: l(t, `${$}.menuStyle`, "icons"),
-    searchOn: Mi(t, $),
-    searchPosition: l(t, `${$}.searchPosition`, "right"),
-    searchRow: l(t, `${$}.searchRow`, "top"),
-    searchPlaceholder: l(t, `${$}.searchPlaceholder`),
-    cartLabel: l(t, `${$}.cartLabel`),
-    showAccount: l(t, `${$}.customerAccountMenu`, "customer-account") !== "none",
-    showCountry: U(t, `${$}.countryRegionEnabled`, !1),
-    showFlag: U(t, `${$}.showFlag`, !1),
-    showLanguage: U(t, `${$}.languageSelectorEnabled`, !1),
-    locFont: l(t, `${$}.localizationFont`, "heading"),
-    locSize: l(t, `${$}.localizationSize`, "14px"),
-    countryRegionLabel: l(t, `${$}.countryRegionLabel`),
-    languageLabel: l(t, `${$}.languageLabel`)
-  }), [t, e, $, b, v, a, n.text]), {
-    scheme: z,
-    widthMode: S,
-    height: { paddingY: _, minHeight: H },
-    borderPx: w,
-    stickyMode: R,
-    customCss: T,
-    logoText: W,
-    tagline: P,
-    logoUrl: C,
-    logoPosition: M,
-    hideLogoOnHomePage: f,
-    logoPaddingTop: O,
-    logoPaddingBottom: N,
-    menuPosition: D,
-    menuRow: V,
-    menuItems: te,
-    menuStyle: B,
-    searchOn: de,
-    searchPosition: ce,
-    searchRow: ye,
-    searchPlaceholder: Oe,
-    cartLabel: Ue,
-    showAccount: je,
-    showCountry: xe,
-    showFlag: Me,
-    showLanguage: ke,
-    locFont: Fe,
-    locSize: Ie,
-    countryRegionLabel: ge,
-    languageLabel: Te
-  } = x, { text: He, background: Ve, border: Qe } = z, A = Fi(e, T), [J, Q] = Z(!1);
-  ue(() => {
-    if (R !== "on-scroll-up") return;
-    const se = () => Q(window.scrollY > 8);
-    return se(), window.addEventListener("scroll", se, { passive: !0 }), () => window.removeEventListener("scroll", se);
-  }, [R]);
-  const q = R === "always" || R === "on-scroll-up" && J, ve = f && (i === "/" || i === "") && !q, Y = {
-    fontSize: Ie,
-    fontFamily: Fe === "heading" ? s : u,
-    opacity: 0.85
-  }, Se = {
-    logo: ve ? null : /* @__PURE__ */ o(E, { nodeId: `layout:${e}:block:logo`, label: "Logo", children: /* @__PURE__ */ m(
+const ut = {
+  flex: 1,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  padding: "12px 14px",
+  borderRadius: 10,
+  border: "1px solid #dedede",
+  background: "#ffffff",
+  color: "#121212",
+  fontSize: 14,
+  fontWeight: 500,
+  textDecoration: "none",
+  cursor: "pointer"
+}, Rt = {
+  width: "100%",
+  boxSizing: "border-box",
+  padding: "13px 14px",
+  borderRadius: 10,
+  border: "1px solid #dedede",
+  background: "#ffffff",
+  fontSize: 15,
+  color: "#121212",
+  outline: "none"
+};
+function ni({ open: e, anchorRef: t, onClose: n, user: i, onSignOut: c }) {
+  const { storeFrontMeta: s } = De(), { login: l, loading: a } = tt(), [d, h] = te(""), [u, p] = te(""), [g, k] = te(null), y = Me(() => {
+    k(oi(t.current));
+  }, [t]);
+  Rn(() => {
+    e && y();
+  }, [e, y]), le(() => {
+    if (!e) return;
+    const $ = () => y();
+    return window.addEventListener("resize", $), window.addEventListener("scroll", $, !0), () => {
+      window.removeEventListener("resize", $), window.removeEventListener("scroll", $, !0);
+    };
+  }, [e, y]), le(() => {
+    if (!e) return;
+    const $ = (w) => {
+      w.key === "Escape" && n();
+    };
+    return window.addEventListener("keydown", $), () => window.removeEventListener("keydown", $);
+  }, [e, n]), le(() => {
+    if (!e) return;
+    const $ = (w) => {
+      const P = w.target;
+      t.current?.contains(P) || document.getElementById("codiic-header-account-panel")?.contains(P) || n();
+    };
+    return document.addEventListener("mousedown", $), () => document.removeEventListener("mousedown", $);
+  }, [e, t, n]);
+  const v = Me(
+    async ($) => {
+      if ($.preventDefault(), !(!s?.storeId || !d.trim() || !u))
+        try {
+          await l({
+            storeId: s.storeId,
+            email: d.trim(),
+            password: u
+          }), n();
+        } catch {
+        }
+    },
+    [d, l, n, u, s?.storeId]
+  );
+  if (!e || !g) return null;
+  const b = {
+    position: "fixed",
+    top: g.top,
+    left: g.left,
+    width: gt,
+    maxWidth: "calc(100vw - 24px)",
+    zIndex: 6e3,
+    fontFamily: "inherit",
+    background: "#fff",
+    borderRadius: 12,
+    boxShadow: "0 12px 40px rgba(0,0,0,0.15)",
+    border: "1px solid rgba(0,0,0,0.08)"
+  }, _ = /* @__PURE__ */ m("div", { style: { display: "flex", gap: 10, marginTop: 20 }, children: [
+    /* @__PURE__ */ o(D, { to: "/my-orders", style: ut, onClick: n, children: "Orders" }),
+    /* @__PURE__ */ o(D, { to: "/profile", style: ut, onClick: n, children: "Profile" }),
+    /* @__PURE__ */ o(D, { to: "/preferences", style: ut, onClick: n, children: "Preferences" })
+  ] });
+  return Gn(
+    /* @__PURE__ */ o(
       "div",
       {
-        style: {
-          display: "flex",
-          flexDirection: "column",
-          alignItems: et(M),
-          gap: 2,
-          flex: M === "center" ? 1 : void 0,
-          paddingTop: O,
-          paddingBottom: N
-        },
-        children: [
-          C ? /* @__PURE__ */ o(I, { to: "/", style: { textDecoration: "none" }, children: /* @__PURE__ */ o("img", { src: C, alt: W, style: { maxHeight: 40, display: "block" } }) }) : /* @__PURE__ */ o(I, { to: "/", style: { textDecoration: "none", color: He }, children: /* @__PURE__ */ o(
-            k,
-            {
-              fieldPath: `${b}.text`,
-              label: "Store name",
-              as: "span",
-              style: { fontFamily: s, fontSize: 26, fontWeight: 600, display: "inline-block" },
-              children: W
-            }
-          ) }),
-          P && !C ? /* @__PURE__ */ o(
-            k,
-            {
-              fieldPath: `${b}.tagline`,
-              label: "Tagline",
-              as: "span",
-              style: { display: "block", fontSize: 11, opacity: 0.65, lineHeight: 1.3 },
-              children: P
-            }
-          ) : null
-        ]
+        id: "codiic-header-account-panel",
+        role: "dialog",
+        "aria-label": i ? "Account menu" : "Sign in or create account",
+        style: b,
+        children: /* @__PURE__ */ m("div", { style: { padding: "20px 20px 18px" }, children: [
+          /* @__PURE__ */ m("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, marginBottom: 16 }, children: [
+            /* @__PURE__ */ o("h2", { style: { margin: 0, fontSize: 18, fontWeight: 600 }, children: i ? "Account" : "Sign in or create account" }),
+            /* @__PURE__ */ o("button", { type: "button", onClick: n, "aria-label": "Close", style: { border: "none", background: "#f1f1f1", borderRadius: 999, width: 32, height: 32, cursor: "pointer" }, children: "×" })
+          ] }),
+          i ? /* @__PURE__ */ m(Z, { children: [
+            /* @__PURE__ */ m("p", { style: { margin: "0 0 8px", fontSize: 14, color: "#707070" }, children: [
+              "Signed in as ",
+              /* @__PURE__ */ o("strong", { children: i.email || "your account" })
+            ] }),
+            c ? /* @__PURE__ */ o("button", { type: "button", onClick: () => {
+              n(), c();
+            }, style: { border: "none", background: "transparent", color: "#005bd3", cursor: "pointer", textDecoration: "underline", padding: 0 }, children: "Sign out" }) : null,
+            _
+          ] }) : /* @__PURE__ */ m(Z, { children: [
+            /* @__PURE__ */ m("form", { onSubmit: ($) => {
+              v($);
+            }, children: [
+              /* @__PURE__ */ m("div", { style: { display: "grid", gap: 12 }, children: [
+                /* @__PURE__ */ o("input", { type: "email", value: d, onChange: ($) => h($.target.value), placeholder: "Email", required: !0, style: Rt }),
+                /* @__PURE__ */ o("input", { type: "password", value: u, onChange: ($) => p($.target.value), placeholder: "Password", required: !0, style: Rt })
+              ] }),
+              /* @__PURE__ */ o("button", { type: "submit", disabled: a, style: { width: "100%", marginTop: 14, padding: "13px 16px", borderRadius: 10, border: "none", background: "#005bd3", color: "#fff", fontWeight: 600, cursor: "pointer" }, children: a ? "Signing in…" : "Sign in" }),
+              /* @__PURE__ */ o("p", { style: { margin: "14px 0 0", textAlign: "center", fontSize: 14 }, children: /* @__PURE__ */ o(D, { to: "/auth/signup", onClick: n, children: "Create account" }) })
+            ] }),
+            _
+          ] })
+        ] })
       }
-    ) }),
-    menu: /* @__PURE__ */ o(
-      E,
+    ),
+    document.body
+  );
+}
+const Ze = 1.75;
+function ii({ color: e }) {
+  return /* @__PURE__ */ m("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", "aria-hidden": !0, children: [
+    /* @__PURE__ */ o("circle", { cx: "11", cy: "11", r: "6", stroke: e, strokeWidth: Ze }),
+    /* @__PURE__ */ o("path", { d: "M16 16l4 4", stroke: e, strokeWidth: Ze, strokeLinecap: "round" })
+  ] });
+}
+function Mt({ color: e }) {
+  return /* @__PURE__ */ m("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", "aria-hidden": !0, children: [
+    /* @__PURE__ */ o("circle", { cx: "12", cy: "8", r: "3.5", stroke: e, strokeWidth: Ze }),
+    /* @__PURE__ */ o(
+      "path",
       {
-        nodeId: `layout:${e}:block:menu`,
-        label: "Menu",
-        style: {
-          display: "flex",
-          flexDirection: V === "bottom" ? "column-reverse" : "column",
-          alignItems: et(D),
-          gap: 8,
-          flex: D === "center" ? 1 : void 0
-        },
-        children: /* @__PURE__ */ o("nav", { style: { display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center", justifyContent: et(D) }, children: te.map((se, Ne) => {
-          const Ke = ["link_shop", "link_collections", "link_about", "link_account"][Ne] ?? `link_${Ne}`, ie = `${v}.items.${Ne}.label`, pe = `${v}.items.${Ne}.href`;
-          return /* @__PURE__ */ o(
-            E,
-            {
-              nodeId: `layout:${e}:block:menu:nested:${Ke}`,
-              label: se.label,
-              children: /* @__PURE__ */ o(k, { fieldPath: ie, label: "Label", children: /* @__PURE__ */ o(I, { to: se.href, style: { color: He, textDecoration: "none", fontSize: 14 }, children: se.label }) })
-            },
-            pe
-          );
-        }) })
+        d: "M6 19c0-3.3 2.7-6 6-6s6 2.7 6 6",
+        stroke: e,
+        strokeWidth: Ze,
+        strokeLinecap: "round"
       }
     )
-  }, le = S === "full" ? "100%" : L.maxWidth, he = de ? /* @__PURE__ */ o("span", { style: { ...Y, fontSize: 16 }, title: Oe, "aria-hidden": !0, children: "⌕" }) : null, oe = {
+  ] });
+}
+function ri({ color: e }) {
+  return /* @__PURE__ */ m("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", "aria-hidden": !0, children: [
+    /* @__PURE__ */ o(
+      "path",
+      {
+        d: "M8 8V6a4 4 0 118 0v2",
+        stroke: e,
+        strokeWidth: Ze,
+        strokeLinecap: "round"
+      }
+    ),
+    /* @__PURE__ */ o(
+      "path",
+      {
+        d: "M6 8h12l-1 12H7L6 8z",
+        stroke: e,
+        strokeWidth: Ze,
+        strokeLinejoin: "round"
+      }
+    )
+  ] });
+}
+function Zo({ sectionId: e = "header" }) {
+  const t = j(), { pathname: n } = Io(), i = q(), { fontHeading: c, fontBody: s, primary: l, background: a } = i, { user: d, logout: h } = tt(), { getAllItems: u } = $t(), p = u().reduce((we, Qe) => we + Qe.quantity, 0), g = Ke(null), [k, y] = te(!1), v = `sections.${e}`, b = `${v}.settings`, _ = `${v}.blocks.logo.settings`, $ = `${v}.blocks.menu.settings`, w = M(() => ({
+    scheme: Vn(t, b, {
+      background: a,
+      color: i.text,
+      border: R.line
+    }),
+    widthMode: Yn(t, b),
+    height: Qn(t, b),
+    borderPx: Zn(t, b),
+    stickyMode: Jn(t, b),
+    customCss: r(t, `${b}.customCss`, ""),
+    logoText: r(t, `${_}.text`, "My Store"),
+    tagline: r(t, `${_}.tagline`, ""),
+    logoUrl: r(t, `${b}.defaultLogoUrl`, "").trim(),
+    hideLogoOnHomePage: E(t, `${_}.hideLogoOnHomePage`, !1),
+    logoPaddingTop: Math.max(0, x(t, `${_}.paddingTop`, 0)),
+    logoPaddingBottom: Math.max(0, x(t, `${_}.paddingBottom`, 0)),
+    menuRow: r(t, `${$}.row`, ""),
+    menuItems: Dn(t, `${$}.items`),
+    menuScheme: Kn(t, $, {
+      background: a,
+      color: i.text,
+      border: R.line
+    }),
+    topLevelSize: r(t, `${$}.topLevelSize`, "14px"),
+    menuFont: r(t, `${$}.font`, "body"),
+    menuTextCase: r(t, `${$}.textCase`, "default"),
+    menuStyle: r(t, `${b}.menuStyle`, "icons"),
+    searchOn: ei(t, b),
+    searchPlaceholder: r(t, `${b}.searchPlaceholder`),
+    cartLabel: r(t, `${b}.cartLabel`, "Cart"),
+    showAccount: r(t, `${b}.customerAccountMenu`, "customer-account") !== "none",
+    showCountry: E(t, `${b}.countryRegionEnabled`, !1),
+    showFlag: E(t, `${b}.showFlag`, !1),
+    showLanguage: E(t, `${b}.languageSelectorEnabled`, !1),
+    locFont: r(t, `${b}.localizationFont`, "heading"),
+    locSize: r(t, `${b}.localizationSize`, "14px"),
+    countryRegionLabel: r(t, `${b}.countryRegionLabel`),
+    languageLabel: r(t, `${b}.languageLabel`)
+  }), [t, e, b, _, $, a, i.text, i]), {
+    scheme: P,
+    widthMode: z,
+    height: { paddingY: L, minHeight: H },
+    borderPx: W,
+    stickyMode: T,
+    customCss: C,
+    logoText: F,
+    tagline: f,
+    logoUrl: U,
+    hideLogoOnHomePage: X,
+    logoPaddingTop: O,
+    logoPaddingBottom: Y,
+    menuRow: J,
+    menuItems: I,
+    menuScheme: ce,
+    topLevelSize: pe,
+    menuFont: be,
+    menuTextCase: ve,
+    menuStyle: Fe,
+    searchOn: ge,
+    searchPlaceholder: Ae,
+    cartLabel: ue,
+    showAccount: Se,
+    showCountry: je,
+    showFlag: ye,
+    showLanguage: We,
+    locFont: xe,
+    locSize: Be,
+    countryRegionLabel: qe,
+    languageLabel: Xe
+  } = w, { text: A, background: oe, border: ee } = P, V = ce.color, G = A, me = ti(e, C), re = {
+    color: V || "#4b5563",
+    textDecoration: "none",
+    fontSize: pe,
+    fontFamily: be === "heading" ? c : s,
+    fontWeight: 400,
+    textTransform: ve === "uppercase" ? "uppercase" : void 0,
+    letterSpacing: ve === "uppercase" ? "0.06em" : void 0,
+    whiteSpace: "nowrap"
+  }, [de, ie] = te(!1);
+  le(() => {
+    if (T !== "on-scroll-up") return;
+    const we = () => ie(window.scrollY > 8);
+    return we(), window.addEventListener("scroll", we, { passive: !0 }), () => window.removeEventListener("scroll", we);
+  }, [T]);
+  const ze = T === "always" || T === "on-scroll-up" && de, Pe = X && (n === "/" || n === "") && !ze, Le = {
+    fontSize: Be,
+    fontFamily: xe === "heading" ? c : s,
+    color: A,
+    opacity: 0.85
+  }, Ne = Pe ? null : /* @__PURE__ */ o(N, { nodeId: `layout:${e}:block:logo`, label: "Logo", children: /* @__PURE__ */ m(
+    "div",
+    {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        paddingTop: O,
+        paddingBottom: Y
+      },
+      children: [
+        U ? /* @__PURE__ */ o(D, { to: "/", style: { textDecoration: "none", display: "flex" }, children: /* @__PURE__ */ o("img", { src: U, alt: F, style: { maxHeight: 36, display: "block" } }) }) : /* @__PURE__ */ o(D, { to: "/", style: { textDecoration: "none", color: A }, children: /* @__PURE__ */ o(
+          S,
+          {
+            fieldPath: `${_}.text`,
+            label: "Store name",
+            as: "span",
+            style: {
+              fontFamily: c,
+              fontSize: 18,
+              fontWeight: 700,
+              lineHeight: 1,
+              letterSpacing: "-0.02em",
+              color: A || "#111827",
+              display: "inline-block"
+            },
+            children: F
+          }
+        ) }),
+        f && !U ? /* @__PURE__ */ o(
+          S,
+          {
+            fieldPath: `${_}.tagline`,
+            label: "Tagline",
+            as: "span",
+            style: { marginLeft: 8, fontSize: 12, opacity: 0.65 },
+            children: f
+          }
+        ) : null
+      ]
+    }
+  ) }), Ye = /* @__PURE__ */ o(N, { nodeId: `layout:${e}:block:menu`, label: "Menu", children: /* @__PURE__ */ o(
+    "nav",
+    {
+      style: {
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: 24,
+        margin: 0,
+        padding: 0
+      },
+      "aria-label": "Main",
+      children: I.map((we, Qe) => {
+        const Hn = ["link_shop", "link_collections", "link_about", "link_account"][Qe] ?? `link_${Qe}`, Tn = `${$}.items.${Qe}.label`, Ln = `${$}.items.${Qe}.href`;
+        return /* @__PURE__ */ o(
+          N,
+          {
+            nodeId: `layout:${e}:block:menu:nested:${Hn}`,
+            label: we.label,
+            children: /* @__PURE__ */ o(S, { fieldPath: Tn, label: "Label", children: /* @__PURE__ */ o(D, { to: we.href, style: re, children: we.label }) })
+          },
+          Ln
+        );
+      })
+    }
+  ) }), Q = Fe !== "text", ae = /* @__PURE__ */ m(
+    "div",
+    {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: Q ? 20 : 12,
+        flexShrink: 0
+      },
+      children: [
+        je && qe ? /* @__PURE__ */ m("span", { style: Le, children: [
+          ye ? "🇮🇳 " : "",
+          qe
+        ] }) : null,
+        We && Xe ? /* @__PURE__ */ o("span", { style: Le, children: Xe }) : null,
+        ge ? /* @__PURE__ */ o(
+          D,
+          {
+            to: "/search",
+            title: Ae,
+            style: {
+              display: "flex",
+              alignItems: "center",
+              color: G,
+              textDecoration: "none",
+              opacity: 0.9
+            },
+            "aria-label": Ae || "Search",
+            children: Q ? /* @__PURE__ */ o(ii, { color: G }) : /* @__PURE__ */ o("span", { style: { fontSize: 14 }, children: "Search" })
+          }
+        ) : null,
+        Se ? d ? /* @__PURE__ */ o(
+          "button",
+          {
+            ref: g,
+            type: "button",
+            onClick: () => y((we) => !we),
+            title: "Account",
+            style: {
+              display: "flex",
+              alignItems: "center",
+              border: "none",
+              background: "transparent",
+              padding: 0,
+              cursor: "pointer",
+              color: G
+            },
+            "aria-label": "Account menu",
+            children: Q ? /* @__PURE__ */ o(Mt, { color: G }) : /* @__PURE__ */ o("span", { style: { fontSize: 14, color: l }, children: "Account" })
+          }
+        ) : /* @__PURE__ */ o(
+          "button",
+          {
+            ref: g,
+            type: "button",
+            onClick: () => y(!0),
+            title: "Account",
+            style: {
+              display: "flex",
+              alignItems: "center",
+              border: "none",
+              background: "transparent",
+              padding: 0,
+              cursor: "pointer",
+              color: G,
+              textDecoration: "none"
+            },
+            "aria-label": "Account",
+            children: Q ? /* @__PURE__ */ o(Mt, { color: G }) : /* @__PURE__ */ o("span", { style: { fontSize: 14, fontWeight: 600, color: l }, children: "Sign in" })
+          }
+        ) : null,
+        /* @__PURE__ */ m(
+          D,
+          {
+            to: "/cart",
+            title: ue,
+            style: {
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              color: G,
+              textDecoration: "none",
+              position: "relative"
+            },
+            "aria-label": ue,
+            children: [
+              Q ? /* @__PURE__ */ o(ri, { color: G }) : /* @__PURE__ */ m("span", { style: { fontSize: 13 }, children: [
+                ue,
+                " (",
+                p,
+                ")"
+              ] }),
+              Q && p > 0 ? /* @__PURE__ */ o(
+                "span",
+                {
+                  style: {
+                    position: "absolute",
+                    top: -4,
+                    right: -6,
+                    minWidth: 14,
+                    height: 14,
+                    borderRadius: 7,
+                    background: l,
+                    color: a,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "0 3px"
+                  },
+                  children: p > 9 ? "9+" : p
+                }
+              ) : null
+            ]
+          }
+        )
+      ]
+    }
+  ), Ue = /* @__PURE__ */ m(
+    "div",
+    {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: 40,
+        flex: "0 1 auto",
+        minWidth: 0,
+        flexWrap: "wrap"
+      },
+      children: [
+        Ne,
+        Ye
+      ]
+    }
+  ), Ee = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 24,
-    flexWrap: "wrap",
+    gap: 32,
     width: "100%"
-  }, re = {
-    display: "flex",
-    flex: M === "center" ? "1 1 100%" : "0 0 auto",
-    justifyContent: M === "center" ? "center" : M === "right" ? "flex-end" : "flex-start",
-    order: M === "right" ? 2 : 0,
-    width: M === "center" ? "100%" : void 0
-  }, ae = {
-    display: "flex",
-    flex: 1,
-    justifyContent: et(D),
-    order: 1,
-    minWidth: 0
-  }, Ge = /* @__PURE__ */ m("div", { style: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    flexWrap: "wrap",
-    marginLeft: "auto",
-    order: 3
-  }, children: [
-    ye === "top" && ce === "left" ? he : null,
-    xe && ge ? /* @__PURE__ */ m("span", { style: Y, children: [
-      Me ? "🇮🇳 " : "",
-      ge
-    ] }) : null,
-    ke && Te ? /* @__PURE__ */ o("span", { style: Y, children: Te }) : null,
-    ye === "top" && ce === "right" ? he : null,
-    ye !== "top" && ce === "left" ? he : null,
+  }, Re = z === "full" ? "100%" : R.maxWidth, se = J === "bottom", Pn = W > 0 ? `${W}px solid ${ee}` : `1px solid ${R.line}`;
+  return /* @__PURE__ */ m(Z, { children: [
+    me ? /* @__PURE__ */ o("style", { children: me }) : null,
     /* @__PURE__ */ o(
-      I,
-      {
-        to: "/cart",
-        style: {
-          fontSize: 13,
-          padding: "8px 12px",
-          borderRadius: 8,
-          border: `1px solid ${Qe}`,
-          textDecoration: "none",
-          color: He
-        },
-        children: B === "text" ? `${Ue} (${h})` : `🛒 ${h}`
-      }
-    ),
-    je ? r ? /* @__PURE__ */ o(
-      "button",
-      {
-        type: "button",
-        onClick: () => {
-          p();
-        },
-        style: {
-          fontSize: 13,
-          padding: "8px 14px",
-          borderRadius: 8,
-          border: "none",
-          background: d,
-          color: a,
-          cursor: "pointer"
-        },
-        children: B === "text" ? "Sign out" : "⎋"
-      }
-    ) : /* @__PURE__ */ o(I, { to: "/auth/login", style: { color: d, fontWeight: 600, fontSize: 14, textDecoration: "none" }, children: B === "text" ? "Sign in" : "👤" }) : null,
-    ye !== "top" && ce === "right" ? he : null
-  ] });
-  return /* @__PURE__ */ m(ne, { children: [
-    A ? /* @__PURE__ */ o("style", { children: A }) : null,
-    /* @__PURE__ */ o(
-      G,
+      B,
       {
         sectionId: e,
         label: "Header",
         style: {
-          position: q ? "sticky" : "relative",
-          top: q ? 0 : void 0,
+          position: ze ? "sticky" : "relative",
+          top: ze ? 0 : void 0,
           zIndex: 50,
-          background: Ve,
-          borderBottom: w > 0 ? `${w}px solid ${Qe}` : void 0,
-          fontFamily: u,
-          color: He,
+          background: oe || "#ffffff",
+          borderBottom: Pn,
+          fontFamily: s,
+          color: A,
           minHeight: H
         },
         children: /* @__PURE__ */ m(
           "div",
           {
             style: {
-              maxWidth: le,
+              maxWidth: Re,
               margin: "0 auto",
-              padding: `${_}px ${L.padX}px`,
+              padding: `${L}px ${Math.max(20, R.padX)}px`,
               display: "flex",
               flexDirection: "column",
-              gap: 10
+              gap: se ? 12 : 0
             },
             children: [
-              V === "top" ? /* @__PURE__ */ o("div", { style: { ...oe, justifyContent: et(D) }, children: Se.menu }) : null,
-              /* @__PURE__ */ m("div", { style: oe, children: [
-                /* @__PURE__ */ o("div", { style: re, children: Se.logo }),
-                V !== "top" && V !== "bottom" ? /* @__PURE__ */ o("div", { style: ae, children: Se.menu }) : null,
-                Ge
-              ] }),
-              V === "bottom" ? /* @__PURE__ */ o("div", { style: { ...oe, justifyContent: et(D) }, children: Se.menu }) : null
+              null,
+              /* @__PURE__ */ o("div", { style: Ee, children: se ? /* @__PURE__ */ m(Z, { children: [
+                /* @__PURE__ */ o("div", { style: { display: "flex", flex: 1, minWidth: 0 }, children: Ne }),
+                ae
+              ] }) : /* @__PURE__ */ m(Z, { children: [
+                Ue,
+                ae
+              ] }) }),
+              se ? /* @__PURE__ */ o("div", { style: { ...Ee, justifyContent: "flex-start" }, children: Ye }) : null
             ]
           }
         )
       }
+    ),
+    /* @__PURE__ */ o(
+      ni,
+      {
+        open: k,
+        anchorRef: g,
+        onClose: () => y(!1),
+        user: d,
+        onSignOut: () => {
+          h();
+        }
+      }
     )
   ] });
 }
-const tt = "preview-store", Ce = "2026-01-15T12:00:00.000Z", Xe = {
+const ft = "preview-store", Je = "2026-01-15T12:00:00.000Z", Ve = {
   _id: "preview-customer",
-  storeId: tt,
+  storeId: ft,
   firstName: "Alex",
   lastName: "Morgan",
   language: "en",
@@ -761,135 +1004,76 @@ const tt = "preview-store", Ce = "2026-01-15T12:00:00.000Z", Xe = {
   agreedToSmsMarketing: !1,
   collectTax: "collect",
   tagIds: [],
-  createdAt: Ce,
-  updatedAt: Ce
-}, Ht = (e, t, i) => ({
+  createdAt: Je,
+  updatedAt: Je
+}, Ft = (e, t, n) => ({
   _id: e,
   productId: "preview-product",
   optionValues: { Size: "M" },
   sku: t,
   barcode: null,
-  price: i,
+  price: n,
   chargeTax: !0,
   images: [],
-  createdAt: Ce,
-  updatedAt: Ce
-}), Ai = [
+  createdAt: Je,
+  updatedAt: Je
+}), li = [
   {
     _id: "preview_cart_1",
-    storeId: tt,
-    productVariantId: Ht("preview-variant-1", "Bloom Serum — 30ml", 1299),
+    storeId: ft,
+    productVariantId: Ft("preview-variant-1", "Bloom Serum — 30ml", 1299),
     quantity: 1,
-    createdAt: Ce
+    createdAt: Je
   },
   {
     _id: "preview_cart_2",
-    storeId: tt,
-    productVariantId: Ht("preview-variant-2", "Velvet Lip Tint — Rose", 899),
+    storeId: ft,
+    productVariantId: Ft("preview-variant-2", "Velvet Lip Tint — Rose", 899),
     quantity: 2,
-    createdAt: Ce
-  }
-], Rt = {
-  _id: Xe._id,
-  storeId: tt,
-  firstName: Xe.firstName,
-  lastName: Xe.lastName,
-  language: "en",
-  email: Xe.email,
-  phoneNumber: Xe.phoneNumber,
-  agreedToMarketingEmails: !0,
-  agreedToSmsMarketing: !1,
-  collectTax: "collect",
-  tagIds: [],
-  createdAt: Ce,
-  updatedAt: Ce
-}, Lt = {
-  _id: "preview-address",
-  customerId: Xe._id,
-  country: "United States",
-  firstName: "Alex",
-  lastName: "Morgan",
-  address: "128 Bloom Street",
-  city: "San Francisco",
-  state: "CA",
-  pinCode: "94102",
-  phoneNumber: "+1 555 010 2244",
-  addressType: "shipping",
-  createdAt: Ce,
-  updatedAt: Ce
-}, Ui = [
-  {
-    _id: "preview-order-2401",
-    storeId: tt,
-    customerId: Rt,
-    shippingAddressId: Lt,
-    orderDate: "2026-01-10",
-    status: "delivered",
-    paymentStatus: "paid",
-    subtotal: 3497,
-    tax: 280,
-    shippingCost: 0,
-    total: 3777,
-    createdAt: Ce,
-    updatedAt: Ce,
-    items: []
-  },
-  {
-    _id: "preview-order-2398",
-    storeId: tt,
-    customerId: Rt,
-    shippingAddressId: Lt,
-    orderDate: "2025-12-28",
-    status: "shipped",
-    paymentStatus: "paid",
-    subtotal: 1299,
-    tax: 104,
-    shippingCost: 99,
-    total: 1502,
-    createdAt: Ce,
-    updatedAt: Ce,
-    items: []
+    createdAt: Je
   }
 ];
-function qo(e) {
+Ve._id, Ve.firstName, Ve.lastName, Ve.email, Ve.phoneNumber;
+Ve._id;
+function Jo(e) {
   const t = e?.sections;
   return new Set(t ? Object.keys(t) : []);
 }
-function Ni(e) {
-  const t = qo(e), i = K(e, "layout_order.header");
-  if (Array.isArray(i))
-    return i.map((u) => String(u)).filter((u) => t.has(u));
+function ai(e) {
+  const t = Jo(e), n = K(e, "layout_order.header");
+  if (Array.isArray(n))
+    return n.map((s) => String(s)).filter((s) => t.has(s));
   if (!t.size) return ["announcement_bar", "header"];
-  const n = [...t].filter((u) => u === "announcement_bar" || u.startsWith("announcement_bar_")), s = t.has("header") ? ["header"] : [...t].filter((u) => u === "header" || u.startsWith("header_"));
-  return [...n, ...s];
+  const i = [...t].filter((s) => s === "announcement_bar" || s.startsWith("announcement_bar_")), c = t.has("header") ? ["header"] : [...t].filter((s) => s === "header" || s.startsWith("header_"));
+  return [...i, ...c];
 }
-function Oi(e) {
-  const t = qo(e), i = K(e, "layout_order.footer");
-  if (Array.isArray(i))
-    return i.map((s) => String(s)).filter((s) => t.has(s));
+function di(e) {
+  const t = Jo(e), n = K(e, "layout_order.footer");
+  if (Array.isArray(n))
+    return n.map((c) => String(c)).filter((c) => t.has(c));
   if (!t.size) return ["footer", "footer_utilities"];
-  const n = [];
-  return t.has("footer") && n.push("footer"), t.has("footer_utilities") && n.push("footer_utilities"), n.length ? n : ["footer"];
+  const i = [];
+  return t.has("footer") && i.push("footer"), t.has("footer_utilities") && i.push("footer_utilities"), i.length ? i : ["footer"];
 }
-function Mt(e, t) {
+function At(e, t) {
   if (!e) return !0;
   if (t === "announcement_bar" || t.startsWith("announcement_bar_"))
     return K(e, `sections.${t}.settings.enabled`) !== !1;
-  const i = K(e, `sections.${t}.enabled`);
-  return i == null ? !0 : i !== !1;
-}
-function Gi(e, t, i) {
-  if (!e) return !0;
-  const n = K(
-    e,
-    `templates.${t}.sections.${i}.enabled`
-  );
+  const n = K(e, `sections.${t}.enabled`);
   return n == null ? !0 : n !== !1;
 }
-function ji(e, t, i, n, s) {
-  const d = l(e, `${t}.buttonStyle`, i) === "primary" ? "primary" : "secondary", a = l(e, `${t}.desktopWidth`, "fit"), r = d === "primary";
-  return !!s?.onImageHero && r ? {
-    variant: d,
+function ci(e, t, n) {
+  if (!e) return !0;
+  const i = K(
+    e,
+    `templates.${t}.sections.${n}.enabled`
+  );
+  return i == null ? !0 : i !== !1;
+}
+function si(e, t, n, i, c) {
+  const l = r(e, `${t}.buttonStyle`, n) === "primary" ? "primary" : "secondary", a = r(e, `${t}.desktopWidth`, "fit"), d = l === "primary";
+  return !!c?.onImageHero && d ? {
+    variant: l,
     width: a === "custom" ? "auto" : "fit-content",
     minWidth: a === "custom" ? "140px" : void 0,
     padding: "12px 28px",
@@ -899,22 +1083,22 @@ function ji(e, t, i, n, s) {
     background: "transparent",
     color: "#ffffff",
     border: "1px solid rgba(255,255,255,0.85)",
-    openInNewTab: U(e, `${t}.openInNewTab`, !1)
+    openInNewTab: E(e, `${t}.openInNewTab`, !1)
   } : {
-    variant: d,
+    variant: l,
     width: a === "custom" ? "auto" : "fit-content",
     minWidth: a === "custom" ? "140px" : void 0,
-    padding: r ? "14px 28px" : "14px 24px",
+    padding: d ? "14px 28px" : "14px 24px",
     borderRadius: 8,
     fontSize: 14,
     fontWeight: 600,
-    background: r ? n.primary : "transparent",
-    color: r ? n.background : n.text,
-    border: r ? "none" : `1px solid ${n.line}`,
-    openInNewTab: U(e, `${t}.openInNewTab`, !1)
+    background: d ? i.primary : "transparent",
+    color: d ? i.background : i.text,
+    border: d ? "none" : `1px solid ${i.line}`,
+    openInNewTab: E(e, `${t}.openInNewTab`, !1)
   };
 }
-const Ft = {
+const Nt = {
   "heading-1": { fontSize: 40, fontWeight: 700, lineHeight: 1.15 },
   "heading-2": { fontSize: 32, fontWeight: 600, lineHeight: 1.2 },
   "heading-3": { fontSize: 24, fontWeight: 600, lineHeight: 1.25 },
@@ -926,93 +1110,143 @@ const Ft = {
   wide: "960px",
   none: void 0
 };
-function Di(e, t, i, n) {
-  const s = l(e, `${t}.headingTypographyPreset`, "heading-2"), u = Ft[s] ?? Ft["heading-2"], d = l(e, `${t}.headingWidth`, "fit"), a = l(e, `${t}.headingMaxWidth`), r = l(e, `${t}.headingColor`, "heading"), p = r === "heading" ? n.heading : r === "accent" ? n.accent : n.text, c = U(e, `${t}.headingBackgroundEnabled`, !1);
+function ui(e, t, n, i) {
+  const c = r(e, `${t}.headingTypographyPreset`, "heading-2"), s = Nt[c] ?? Nt["heading-2"], l = r(e, `${t}.headingWidth`, "fit"), a = r(e, `${t}.headingMaxWidth`), d = r(e, `${t}.headingColor`, "heading"), h = d === "heading" ? i.heading : d === "accent" ? i.accent : i.text, u = E(e, `${t}.headingBackgroundEnabled`, !1);
   return {
-    width: d === "fill" ? "100%" : "fit-content",
+    width: l === "fill" ? "100%" : "fit-content",
     maxWidth: Et[a] ?? Et.normal,
-    fontFamily: i,
-    fontSize: u.fontSize,
-    fontWeight: u.fontWeight,
-    lineHeight: u.lineHeight,
-    color: p,
-    background: c ? "rgba(255,255,255,0.08)" : void 0,
-    paddingTop: y(e, `${t}.headingPaddingTop`, 0),
-    paddingBottom: y(e, `${t}.headingPaddingBottom`, 0),
-    paddingLeft: y(e, `${t}.headingPaddingLeft`, 0),
-    paddingRight: y(e, `${t}.headingPaddingRight`, 0),
-    borderRadius: c ? 6 : 0
+    fontFamily: n,
+    fontSize: s.fontSize,
+    fontWeight: s.fontWeight,
+    lineHeight: s.lineHeight,
+    color: h,
+    background: u ? "rgba(255,255,255,0.08)" : void 0,
+    paddingTop: x(e, `${t}.headingPaddingTop`, 0),
+    paddingBottom: x(e, `${t}.headingPaddingBottom`, 0),
+    paddingLeft: x(e, `${t}.headingPaddingLeft`, 0),
+    paddingRight: x(e, `${t}.headingPaddingRight`, 0),
+    borderRadius: u ? 6 : 0
   };
 }
-const Bi = {
+const hi = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f8fafc", color: "#0f172a", muted: "#64748b" },
   "scheme-3": { background: "#fff7ed", color: "#431407", muted: "#9a3412" },
   "scheme-4": { background: "#f5f3ff", color: "#4c1d95", muted: "#6d28d9" },
   "scheme-5": { background: "#ecfdf5", color: "#064e3b", muted: "#047857" },
   "scheme-6": { background: "#1f2937", color: "#f9fafb", muted: "#9ca3af" }
-}, At = {
+}, Ut = {
   small: 400,
   medium: 520,
   large: 680,
   full: 900
 };
-function Xi(e, t, i) {
-  const n = l(e, `${t}.colorScheme`, "scheme-6"), s = Bi[n] ?? i, u = l(e, `${t}.textAlign`, ""), d = l(
+function pi(e, t) {
+  if (e === "transparent")
+    return { background: "transparent", color: "#111827", muted: "#6b7280" };
+  const n = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(e) ? e : "";
+  if (n) {
+    let i = n.slice(1);
+    i.length === 3 && (i = i.split("").map((h) => h + h).join(""));
+    const c = parseInt(i.slice(0, 2), 16), s = parseInt(i.slice(2, 4), 16), l = parseInt(i.slice(4, 6), 16), d = (0.299 * c + 0.587 * s + 0.114 * l) / 255 > 0.6;
+    return {
+      background: n,
+      color: d ? "#111827" : "#ffffff",
+      muted: d ? "#4b5563" : "rgba(255,255,255,0.72)"
+    };
+  }
+  return hi[e] ?? t;
+}
+function mi(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-6"), c = pi(i, n), s = r(e, `${t}.textAlign`, ""), l = r(
     e,
     `${t}.layoutAlignment`,
-    u || "center"
-  ), a = d === "left" ? "left" : d === "right" ? "right" : "center", r = U(e, `${t}.fullWidth`, !1), p = l(
+    s || "center"
+  ), a = l === "left" ? "left" : l === "right" ? "right" : "center", d = E(e, `${t}.fullWidth`, !1), h = r(
     e,
     `${t}.sectionWidth`,
-    r ? "full" : "page"
-  ), c = l(e, `${t}.height`, ""), h = y(e, `${t}.minHeight`, 0), g = At[c] ?? (h > 0 ? h : At.medium), $ = l(e, `${t}.position`, "bottom"), b = $ === "top" ? "flex-start" : $ === "center" || $ === "space-between" ? "center" : "flex-end", v = a === "left" ? "flex-start" : a === "right" ? "flex-end" : "center", z = l(e, `${t}.direction`, "vertical") === "horizontal" ? "row" : "column";
+    d ? "full" : "page"
+  ), u = r(e, `${t}.height`, ""), p = x(e, `${t}.minHeight`, 0), g = Ut[u] ?? (p > 0 ? p : Ut.medium), k = r(e, `${t}.position`, "bottom"), y = k === "top" ? "flex-start" : k === "center" || k === "space-between" ? "center" : "flex-end", v = a === "left" ? "flex-start" : a === "right" ? "flex-end" : "center", _ = r(e, `${t}.direction`, "vertical") === "horizontal" ? "row" : "column";
   return {
-    scheme: s,
+    scheme: c,
     minHeight: g,
-    maxWidth: p === "full" ? "100%" : 1200,
-    paddingTop: y(e, `${t}.paddingTop`, 100),
-    paddingBottom: y(e, `${t}.paddingBottom`, 72),
+    maxWidth: h === "full" ? "100%" : 1200,
+    paddingTop: x(e, `${t}.paddingTop`, 100),
+    paddingBottom: x(e, `${t}.paddingBottom`, 72),
     paddingX: 24,
-    direction: z,
-    alignItems: b,
+    direction: _,
+    alignItems: y,
     justifyContent: v,
     textAlign: a,
-    gap: y(e, `${t}.layoutGap`, 24),
-    media1Url: l(e, `${t}.media1ImageUrl`, ""),
-    media2Url: l(e, `${t}.media2ImageUrl`, ""),
-    mobileImageUrl: l(e, `${t}.mobileImageUrl`, ""),
-    mobileStackMedia: U(e, `${t}.mobileStackMedia`, !1),
-    mobileDifferentMedia: U(e, `${t}.mobileDifferentMedia`, !1),
-    mediaOverlay: U(e, `${t}.mediaOverlay`, !0),
-    overlayColor: l(e, `${t}.overlayColor`, "#12121266"),
-    overlayStyle: l(e, `${t}.overlayStyle`, "solid") === "gradient" ? "gradient" : "solid",
-    overlayGradientDirection: l(e, `${t}.overlayGradientDirection`, "up") === "down" ? "down" : "up",
-    blurredReflection: U(e, `${t}.blurredReflection`, !1),
-    sectionLink: l(e, `${t}.sectionLink`, ""),
-    sectionLinkNewTab: U(e, `${t}.sectionLinkNewTab`, !1),
-    customCss: l(e, `${t}.customCss`, "")
+    gap: x(e, `${t}.layoutGap`, 24),
+    media1Url: r(e, `${t}.media1ImageUrl`, ""),
+    media2Url: r(e, `${t}.media2ImageUrl`, ""),
+    mobileImageUrl: r(e, `${t}.mobileImageUrl`, ""),
+    mobileStackMedia: E(e, `${t}.mobileStackMedia`, !1),
+    mobileDifferentMedia: E(e, `${t}.mobileDifferentMedia`, !1),
+    mediaOverlay: E(e, `${t}.mediaOverlay`, !0),
+    overlayColor: r(e, `${t}.overlayColor`, "#12121266"),
+    overlayStyle: r(e, `${t}.overlayStyle`, "solid") === "gradient" ? "gradient" : "solid",
+    overlayGradientDirection: r(e, `${t}.overlayGradientDirection`, "up") === "down" ? "down" : "up",
+    blurredReflection: E(e, `${t}.blurredReflection`, !1),
+    sectionLink: r(e, `${t}.sectionLink`, ""),
+    sectionLinkNewTab: E(e, `${t}.sectionLinkNewTab`, !1),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function qi(e, t) {
-  const i = t.trim();
-  return i ? i.split(`
-`).map((n) => `[data-ziplofy-section="${e}"] ${n}`).join(`
+function gi(e, t) {
+  const n = t.trim();
+  return n ? n.split(`
+`).map((i) => `[data-codiic-section="${e}"] ${i}`).join(`
 `) : "";
 }
-function Ii(e, t) {
+function fi(e, t) {
   if (!t) return "";
-  const i = `[data-ziplofy-section="${e}"] .split-showcase-grid`, n = `[data-ziplofy-section="${e}"] .split-showcase-tile`;
-  return `@media (max-width: 749px) { ${i} { flex-direction: column !important; } ${n} { flex: 1 1 auto !important; width: 100% !important; min-height: 320px; } }`;
+  const n = `[data-codiic-section="${e}"] .split-showcase-grid`, i = `[data-codiic-section="${e}"] .split-showcase-tile`;
+  return `@media (max-width: 749px) { ${n} { flex-direction: column !important; } ${i} { flex: 1 1 auto !important; width: 100% !important; min-height: 320px; } }`;
 }
-function Vi(e, t, i) {
-  if (!t && !i) return "";
-  const n = `[data-ziplofy-section="${e}"] .hero-media-grid`;
-  let s = "";
-  return t && (s += `@media (max-width: 749px) { ${n} { flex-direction: column !important; } }`), i && (s += `@media (max-width: 749px) { ${n} .hero-media-1 { display: none; } ${n} .hero-media-2 { display: none; } ${n} .hero-media-mobile { display: block !important; flex: 1; min-height: 200px; } }`), s;
+function bi(e, t, n) {
+  if (!t && !n) return "";
+  const i = `[data-codiic-section="${e}"] .hero-media-grid`;
+  let c = "";
+  return t && (c += `@media (max-width: 749px) { ${i} { flex-direction: column !important; } }`), n && (c += `@media (max-width: 749px) { ${i} .hero-media-1 { display: none; } ${i} .hero-media-2 { display: none; } ${i} .hero-media-mobile { display: block !important; flex: 1; min-height: 200px; } }`), c;
 }
-const Ki = "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?auto=format&fit=crop&w=1600&q=85", Yi = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=85";
-function dt() {
+const yi = "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?auto=format&fit=crop&w=1600&q=85", xi = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=85";
+function et(e, t, n, i) {
+  const c = K(e, t);
+  if (Array.isArray(c) && c.length > 0)
+    return c.map((l) => String(l));
+  const s = K(e, n);
+  return s != null && typeof s == "object" && !Array.isArray(s) ? Object.keys(s) : i;
+}
+function $i(e, t, n) {
+  const i = K(e, `templates.${t}.sections`), c = i != null && typeof i == "object" && !Array.isArray(i) ? new Set(Object.keys(i)) : /* @__PURE__ */ new Set(), s = K(e, `templates.${t}.section_order`);
+  return Array.isArray(s) ? s.map((l) => String(l)).filter((l) => c.has(l)) : c.size > 0 ? et(
+    e,
+    `templates.${t}.section_order`,
+    `templates.${t}.sections`,
+    n
+  ).filter((a) => c.has(a)) : n.filter((l) => c.has(l));
+}
+function ke(e, t, n) {
+  const i = et(
+    e,
+    `sections.${t}.block_order`,
+    `sections.${t}.blocks`,
+    n
+  ), c = K(e, `sections.${t}.blocks`), s = c != null && typeof c == "object" && !Array.isArray(c) ? c : {};
+  return i.filter((l) => s[l]?.enabled !== !1);
+}
+function _e(e, t, n, i) {
+  const c = et(
+    e,
+    `templates.${t}.sections.${n}.block_order`,
+    `templates.${t}.sections.${n}.blocks`,
+    i
+  ), s = K(e, `templates.${t}.sections.${n}.blocks`), l = s != null && typeof s == "object" && !Array.isArray(s) ? s : {};
+  return c.filter((a) => l[a]?.enabled !== !1);
+}
+function ot() {
   return /* @__PURE__ */ o(
     "div",
     {
@@ -1059,66 +1293,66 @@ function dt() {
     }
   );
 }
-function Zi(e, t, i) {
-  return t === "layout" ? `sections.${e}.settings` : `templates.${i}.sections.${e}.settings`;
+function ki(e, t, n) {
+  return t === "layout" ? `sections.${e}.settings` : `templates.${n}.sections.${e}.settings`;
 }
-function Qi(e, t, i) {
-  return t === "layout" ? `sections.${e}.blocks` : `templates.${i}.sections.${e}.blocks`;
+function vi(e, t, n) {
+  return t === "layout" ? `sections.${e}.blocks` : `templates.${n}.sections.${e}.blocks`;
 }
-function Io(e, t, i) {
-  return t === "layout" ? `layout:${e}` : `template:${i}:${e}`;
+function en(e, t, n) {
+  return t === "layout" ? `layout:${e}` : `template:${n}:${e}`;
 }
-function Be(e, t, i, n) {
-  return `${Io(e, t, i)}:block:${n}`;
+function Oe(e, t, n, i) {
+  return `${en(e, t, n)}:block:${i}`;
 }
-function ft({
+function ht({
   blockId: e,
   fallbackVariant: t,
-  colors: i,
-  blocksBase: n,
-  sectionNodePrefix: s,
-  onImageHero: u = !1
+  colors: n,
+  blocksBase: i,
+  sectionNodePrefix: c,
+  onImageHero: s = !1
 }) {
-  const d = j(), a = `${n}.${e}.settings`, r = l(d, `${a}.label`, ""), p = l(d, `${a}.href`, "/"), c = F(
-    () => ji(d, a, t, i, { onImageHero: u }),
-    [d, a, t, i, u]
+  const l = j(), a = `${i}.${e}.settings`, d = r(l, `${a}.label`, ""), h = r(l, `${a}.href`, "/"), u = M(
+    () => si(l, a, t, n, { onImageHero: s }),
+    [l, a, t, n, s]
   );
-  return r.trim() ? /* @__PURE__ */ o(E, { nodeId: `${s}:block:${e}`, label: "Button", children: /* @__PURE__ */ o(
-    I,
+  return d.trim() ? /* @__PURE__ */ o(N, { nodeId: `${c}:block:${e}`, label: "Button", children: /* @__PURE__ */ o(
+    D,
     {
-      to: p,
-      target: c.openInNewTab ? "_blank" : void 0,
-      rel: c.openInNewTab ? "noopener noreferrer" : void 0,
+      to: h,
+      target: u.openInNewTab ? "_blank" : void 0,
+      rel: u.openInNewTab ? "noopener noreferrer" : void 0,
       style: {
         display: "inline-block",
-        width: c.width,
-        minWidth: c.minWidth,
-        padding: c.padding,
-        borderRadius: c.borderRadius,
-        background: c.background,
-        color: c.color,
-        border: c.border,
+        width: u.width,
+        minWidth: u.minWidth,
+        padding: u.padding,
+        borderRadius: u.borderRadius,
+        background: u.background,
+        color: u.color,
+        border: u.border,
         textDecoration: "none",
-        fontWeight: c.fontWeight,
-        fontSize: c.fontSize,
+        fontWeight: u.fontWeight,
+        fontSize: u.fontSize,
         boxSizing: "border-box"
       },
-      children: /* @__PURE__ */ o(k, { fieldPath: `${a}.label`, label: "Label", children: r })
+      children: /* @__PURE__ */ o(S, { fieldPath: `${a}.label`, label: "Label", children: d })
     }
   ) }) : null;
 }
-function Ji({
+function Si({
   blockId: e,
   blocksBase: t,
-  sectionNodePrefix: i
+  sectionNodePrefix: n
 }) {
-  const n = j(), s = `${t}.${e}.settings`, u = l(n, `${s}.label`, ""), d = l(n, `${s}.href`);
-  return u.trim() ? /* @__PURE__ */ o(E, { nodeId: `${i}:block:${e}`, label: "Button", children: /* @__PURE__ */ o(
-    I,
+  const i = j(), c = `${t}.${e}.settings`, s = r(i, `${c}.label`, ""), l = r(i, `${c}.href`);
+  return s.trim() ? /* @__PURE__ */ o(N, { nodeId: `${n}:block:${e}`, label: "Button", children: /* @__PURE__ */ o(
+    D,
     {
-      to: d,
-      target: U(n, `${s}.openInNewTab`, !1) ? "_blank" : void 0,
-      rel: U(n, `${s}.openInNewTab`, !1) ? "noopener noreferrer" : void 0,
+      to: l,
+      target: E(i, `${c}.openInNewTab`, !1) ? "_blank" : void 0,
+      rel: E(i, `${c}.openInNewTab`, !1) ? "noopener noreferrer" : void 0,
       style: {
         color: "#ffffff",
         fontSize: 15,
@@ -1127,98 +1361,98 @@ function Ji({
         textUnderlineOffset: "3px",
         textDecorationColor: "rgba(255,255,255,0.9)"
       },
-      children: /* @__PURE__ */ o(k, { fieldPath: `${s}.label`, label: "Label", children: u })
+      children: /* @__PURE__ */ o(S, { fieldPath: `${c}.label`, label: "Label", children: s })
     }
   ) }) : null;
 }
-function kt({
+function St({
   sectionId: e = "hero_main",
   placement: t = "template",
-  templateId: i = "index"
+  templateId: n = "index"
 }) {
-  const n = j(), s = X(), { text: u, background: d, primary: a, fontHeading: r, fontBody: p } = s, c = Zi(e, t, i), h = Qi(e, t, i), g = Io(e, t, i), $ = l(n, `${c}.catalogVariant`, ""), b = $ === "hero-bottom-aligned", v = $ === "hero-marquee", x = $ === "large-logo", z = $ === "split-showcase", S = b || v || x || z, _ = !S && !b, H = l(
-    n,
-    `${c}.marqueeText`,
-    l(n, `${c}.subtitle`)
-  ), w = l(
-    n,
-    `${h}.text_right.settings.text`,
-    l(n, `${c}.splitRightTitle`)
-  ), R = b ? {
-    textIntro: `${h}.content_group.blocks.heading_group.blocks.text_intro.settings.text`,
-    headingMain: `${h}.content_group.blocks.heading_group.blocks.heading_main.settings.text`,
-    textBody: `${h}.content_group.blocks.text_body.settings.text`
-  } : null, T = l(
-    n,
-    R?.textIntro ?? `${c}.eyebrow`,
+  const i = j(), c = q(), { text: s, background: l, primary: a, fontHeading: d, fontBody: h } = c, u = ki(e, t, n), p = vi(e, t, n), g = en(e, t, n), k = r(i, `${u}.catalogVariant`, ""), y = k === "hero-bottom-aligned", v = k === "hero-marquee", b = k === "large-logo", _ = k === "split-showcase", $ = y || v || b || _, w = !$ && !y, P = r(
+    i,
+    `${u}.marqueeText`,
+    r(i, `${u}.subtitle`)
+  ), z = r(
+    i,
+    `${p}.text_right.settings.text`,
+    r(i, `${u}.splitRightTitle`)
+  ), L = y ? {
+    textIntro: `${p}.content_group.blocks.heading_group.blocks.text_intro.settings.text`,
+    headingMain: `${p}.content_group.blocks.heading_group.blocks.heading_main.settings.text`,
+    textBody: `${p}.content_group.blocks.text_body.settings.text`
+  } : null, H = r(
+    i,
+    L?.textIntro ?? `${u}.eyebrow`,
     ""
-  ), W = l(
-    n,
-    R?.headingMain ?? `${c}.title`,
+  ), W = r(
+    i,
+    L?.headingMain ?? `${u}.title`,
     "Welcome"
-  ), P = l(n, `${c}.subtitle`, ""), C = l(
-    n,
-    R?.textBody ?? `${h}.text_2.settings.text`,
+  ), T = r(i, `${u}.subtitle`, ""), C = r(
+    i,
+    L?.textBody ?? `${p}.text_2.settings.text`,
     ""
-  ) || P, M = (A) => A === "text_body" ? `${g}:block:content_group:nested:text_body` : `${g}:block:content_group:nested:heading_group:nested:${A}`, f = F(
-    () => Xi(n, c, {
-      background: d,
-      color: u,
+  ) || T, F = (A) => A === "text_body" ? `${g}:block:content_group:nested:text_body` : `${g}:block:content_group:nested:heading_group:nested:${A}`, f = M(
+    () => mi(i, u, {
+      background: l,
+      color: s,
       muted: "#9ca3af"
     }),
-    [n, c, d, u]
-  ), O = F(
-    () => Di(n, c, r, {
+    [i, u, l, s]
+  ), U = M(
+    () => ui(i, u, d, {
       text: f.scheme.color,
       heading: f.scheme.color,
       accent: a
     }),
-    [n, c, r, f.scheme.color, a]
-  ), N = F(
+    [i, u, d, f.scheme.color, a]
+  ), X = M(
     () => ({
       primary: a,
-      background: d,
+      background: l,
       text: f.scheme.color,
-      line: L.line
+      line: R.line
     }),
-    [a, d, f.scheme.color]
-  ), D = b ? ["content_group"] : v ? ["primary_button"] : x ? ["text_2"] : z ? ["heading", "text_right", "primary_button", "secondary_button"] : ["heading", "primary_button"], V = t === "layout" ? Pe(n, e, D) : Le(n, i, e, D), te = qi(e, f.customCss), B = Vi(e, f.mobileStackMedia, f.mobileDifferentMedia), de = f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor, ce = !!(f.media1Url || f.media2Url), ye = {
+    [a, l, f.scheme.color]
+  ), O = y ? ["content_group"] : v ? ["primary_button"] : b ? ["text_2"] : _ ? ["heading", "text_right", "primary_button", "secondary_button"] : ["heading", "primary_button"], Y = t === "layout" ? ke(i, e, O) : _e(i, n, e, O), J = gi(e, f.customCss), I = bi(e, f.mobileStackMedia, f.mobileDifferentMedia), ce = f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor, pe = !!(f.media1Url || f.media2Url), be = {
     primary_button: /* @__PURE__ */ o(
-      ft,
+      ht,
       {
         blockId: "primary_button",
         fallbackVariant: "primary",
-        colors: N,
-        blocksBase: h,
+        colors: X,
+        blocksBase: p,
         sectionNodePrefix: g,
-        onImageHero: _ || v
+        onImageHero: w || v
       }
     ),
     secondary_button: /* @__PURE__ */ o(
-      ft,
+      ht,
       {
         blockId: "secondary_button",
         fallbackVariant: "secondary",
-        colors: N,
-        blocksBase: h,
+        colors: X,
+        blocksBase: p,
         sectionNodePrefix: g,
-        onImageHero: _
+        onImageHero: w
       }
     )
-  }, Oe = (A, J = !1) => {
+  }, ve = (A, oe = !1) => {
     if (A === "heading" || A.startsWith("heading_")) {
-      const q = `${h}.${A}.settings.heading`, ee = l(n, q, A === "heading" ? W : "");
-      return ee.trim() ? /* @__PURE__ */ o(E, { nodeId: Be(e, t, i, A), label: "Heading", children: /* @__PURE__ */ o(
-        k,
+      const V = `${p}.${A}.settings.heading`, G = r(i, V, A === "heading" ? W : "");
+      return G.trim() ? /* @__PURE__ */ o(N, { nodeId: Oe(e, t, n, A), label: "Heading", children: /* @__PURE__ */ o(
+        S,
         {
-          fieldPath: q,
+          fieldPath: V,
           label: "Text",
           as: "h1",
-          style: J ? {
+          style: oe ? {
             margin: 0,
             width: "100%",
             maxWidth: 720,
-            fontFamily: r,
+            fontFamily: d,
             fontSize: "clamp(2.4rem, 5.2vw, 3.5rem)",
             fontWeight: 700,
             lineHeight: 1.05,
@@ -1227,34 +1461,34 @@ function kt({
             textAlign: "center"
           } : {
             margin: 0,
-            width: O.width,
-            maxWidth: O.maxWidth,
-            fontFamily: O.fontFamily,
-            fontSize: O.fontSize,
-            fontWeight: O.fontWeight,
-            lineHeight: O.lineHeight,
-            color: O.color,
-            background: O.background,
-            paddingTop: O.paddingTop,
-            paddingBottom: O.paddingBottom,
-            paddingLeft: O.paddingLeft,
-            paddingRight: O.paddingRight,
-            borderRadius: O.borderRadius,
+            width: U.width,
+            maxWidth: U.maxWidth,
+            fontFamily: U.fontFamily,
+            fontSize: U.fontSize,
+            fontWeight: U.fontWeight,
+            lineHeight: U.lineHeight,
+            color: U.color,
+            background: U.background,
+            paddingTop: U.paddingTop,
+            paddingBottom: U.paddingBottom,
+            paddingLeft: U.paddingLeft,
+            paddingRight: U.paddingRight,
+            borderRadius: U.borderRadius,
             boxSizing: "border-box"
           },
-          children: ee
+          children: G
         }
       ) }) : null;
     }
     if (A === "text_2" || A.startsWith("text_") && A !== "heading") {
-      const q = l(n, `${h}.${A}.settings.text`, "") || (A === "text_2" ? P : "");
-      return q.trim() ? /* @__PURE__ */ o(E, { nodeId: Be(e, t, i, A), label: "Text", children: /* @__PURE__ */ o(
-        k,
+      const V = r(i, `${p}.${A}.settings.text`, "") || (A === "text_2" ? T : "");
+      return V.trim() ? /* @__PURE__ */ o(N, { nodeId: Oe(e, t, n, A), label: "Text", children: /* @__PURE__ */ o(
+        S,
         {
-          fieldPath: `${h}.${A}.settings.text`,
+          fieldPath: `${p}.${A}.settings.text`,
           label: "Text",
           as: "p",
-          style: J ? {
+          style: oe ? {
             margin: 0,
             fontSize: "clamp(1rem, 2vw, 1.125rem)",
             lineHeight: 1.55,
@@ -1270,58 +1504,58 @@ function kt({
             opacity: 0.85,
             color: f.scheme.color
           },
-          children: q
+          children: V
         }
       ) }) : null;
     }
     if (A === "primary_button" || A === "secondary_button") {
-      const q = ye[A];
-      return q ? /* @__PURE__ */ o("span", { children: q }, A) : null;
+      const V = be[A];
+      return V ? /* @__PURE__ */ o("span", { children: V }, A) : null;
     }
-    const Q = l(n, `${h}.${A}.type`, "");
-    if (Q === "image" || Q === "video") {
-      const q = l(n, `${h}.${A}.settings.url`, "").trim();
-      if (!q) return null;
-      const ee = Q === "video";
-      return /* @__PURE__ */ o(E, { nodeId: Be(e, t, i, A), label: ee ? "Video" : "Image", children: ee ? /* @__PURE__ */ o(
+    const ee = r(i, `${p}.${A}.type`, "");
+    if (ee === "image" || ee === "video") {
+      const V = r(i, `${p}.${A}.settings.url`, "").trim();
+      if (!V) return null;
+      const G = ee === "video";
+      return /* @__PURE__ */ o(N, { nodeId: Oe(e, t, n, A), label: G ? "Video" : "Image", children: G ? /* @__PURE__ */ o(
         "video",
         {
-          src: q,
+          src: V,
           controls: !0,
-          muted: U(n, `${h}.${A}.settings.muted`, !0),
-          autoPlay: U(n, `${h}.${A}.settings.autoplay`, !1),
+          muted: E(i, `${p}.${A}.settings.muted`, !0),
+          autoPlay: E(i, `${p}.${A}.settings.autoplay`, !1),
           style: { width: "100%", maxWidth: 520, borderRadius: 10 }
         }
-      ) : /* @__PURE__ */ o("img", { src: q, alt: "", style: { width: "100%", maxWidth: 520, borderRadius: 10, display: "block" } }) });
+      ) : /* @__PURE__ */ o("img", { src: V, alt: "", style: { width: "100%", maxWidth: 520, borderRadius: 10, display: "block" } }) });
     }
-    if (Q === "logo") {
-      const q = l(n, `${h}.${A}.settings.imageUrl`, "").trim(), ee = l(n, `${h}.${A}.settings.text`, "").trim();
-      return !q && !ee ? null : /* @__PURE__ */ o(E, { nodeId: Be(e, t, i, A), label: "Logo", children: q ? /* @__PURE__ */ o("img", { src: q, alt: ee || "Logo", style: { maxHeight: 72, width: "auto", display: "block" } }) : /* @__PURE__ */ o("p", { style: { margin: 0, fontSize: 20, fontWeight: 700, color: f.scheme.color }, children: ee }) });
+    if (ee === "logo") {
+      const V = r(i, `${p}.${A}.settings.imageUrl`, "").trim(), G = r(i, `${p}.${A}.settings.text`, "").trim();
+      return !V && !G ? null : /* @__PURE__ */ o(N, { nodeId: Oe(e, t, n, A), label: "Logo", children: V ? /* @__PURE__ */ o("img", { src: V, alt: G || "Logo", style: { maxHeight: 72, width: "auto", display: "block" } }) : /* @__PURE__ */ o("p", { style: { margin: 0, fontSize: 20, fontWeight: 700, color: f.scheme.color }, children: G }) });
     }
-    if (Q === "icon") {
-      const q = l(n, `${h}.${A}.settings.icon`, "star").trim(), ee = l(n, `${h}.${A}.settings.label`, "").trim();
-      return /* @__PURE__ */ o(E, { nodeId: Be(e, t, i, A), label: "Icon", children: /* @__PURE__ */ m("div", { style: { display: "inline-flex", alignItems: "center", gap: 8, color: f.scheme.color }, children: [
-        /* @__PURE__ */ o("span", { style: { fontSize: 20, lineHeight: 1 }, children: q === "heart" ? "♥" : q === "check" ? "✓" : "★" }),
-        ee ? /* @__PURE__ */ o("span", { style: { fontSize: 14 }, children: ee }) : null
+    if (ee === "icon") {
+      const V = r(i, `${p}.${A}.settings.icon`, "star").trim(), G = r(i, `${p}.${A}.settings.label`, "").trim();
+      return /* @__PURE__ */ o(N, { nodeId: Oe(e, t, n, A), label: "Icon", children: /* @__PURE__ */ m("div", { style: { display: "inline-flex", alignItems: "center", gap: 8, color: f.scheme.color }, children: [
+        /* @__PURE__ */ o("span", { style: { fontSize: 20, lineHeight: 1 }, children: V === "heart" ? "♥" : V === "check" ? "✓" : "★" }),
+        G ? /* @__PURE__ */ o("span", { style: { fontSize: 14 }, children: G }) : null
       ] }) });
     }
-    if (Q === "page") {
-      const q = l(n, `${h}.${A}.settings.title`, "").trim(), ee = l(n, `${h}.${A}.settings.href`, "/").trim();
-      return q ? /* @__PURE__ */ o(E, { nodeId: Be(e, t, i, A), label: "Page", children: /* @__PURE__ */ o(I, { to: ee, style: { color: f.scheme.color, textDecoration: "underline", textUnderlineOffset: 3 }, children: q }) }) : null;
+    if (ee === "page") {
+      const V = r(i, `${p}.${A}.settings.title`, "").trim(), G = r(i, `${p}.${A}.settings.href`, "/").trim();
+      return V ? /* @__PURE__ */ o(N, { nodeId: Oe(e, t, n, A), label: "Page", children: /* @__PURE__ */ o(D, { to: G, style: { color: f.scheme.color, textDecoration: "underline", textUnderlineOffset: 3 }, children: V }) }) : null;
     }
-    return Q === "button" || A.endsWith("_button") ? /* @__PURE__ */ o("span", { children: /* @__PURE__ */ o(
-      ft,
+    return ee === "button" || A.endsWith("_button") ? /* @__PURE__ */ o("span", { children: /* @__PURE__ */ o(
+      ht,
       {
         blockId: A,
         fallbackVariant: A === "secondary_button" ? "secondary" : "primary",
-        colors: N,
-        blocksBase: h,
+        colors: X,
+        blocksBase: p,
         sectionNodePrefix: g,
-        onImageHero: _ || v
+        onImageHero: w || v
       }
     ) }, A) : null;
-  }, Ue = (A = !1) => V.map((J) => /* @__PURE__ */ o("span", { style: { display: "contents" }, children: Oe(J, A) }, J)), je = Math.max(200, f.minHeight - f.paddingTop - f.paddingBottom), xe = typeof f.maxWidth == "number" ? f.maxWidth : f.maxWidth === "100%" ? "100%" : 1200, Me = "#ffffff", ke = () => {
-    if (!R) return null;
+  }, Fe = (A = !1) => Y.map((oe) => /* @__PURE__ */ o("span", { style: { display: "contents" }, children: ve(oe, A) }, oe)), ge = Math.max(200, f.minHeight - f.paddingTop - f.paddingBottom), Ae = typeof f.maxWidth == "number" ? f.maxWidth : f.maxWidth === "100%" ? "100%" : 1200, ue = "#ffffff", Se = () => {
+    if (!L) return null;
     const A = typeof f.maxWidth == "number" ? f.maxWidth : 1400;
     return /* @__PURE__ */ m(
       "div",
@@ -1338,10 +1572,10 @@ function kt({
         },
         children: [
           /* @__PURE__ */ m("div", { style: { flex: "1 1 50%", minWidth: 0, textAlign: "left" }, children: [
-            T.trim() ? /* @__PURE__ */ o(E, { nodeId: M("text_intro"), label: "Text", children: /* @__PURE__ */ o(
-              k,
+            H.trim() ? /* @__PURE__ */ o(N, { nodeId: F("text_intro"), label: "Text", children: /* @__PURE__ */ o(
+              S,
               {
-                fieldPath: R.textIntro,
+                fieldPath: L.textIntro,
                 label: "Text",
                 as: "p",
                 style: {
@@ -1351,25 +1585,25 @@ function kt({
                   fontWeight: 400,
                   letterSpacing: "0.02em",
                   lineHeight: 1.4,
-                  color: Me
+                  color: ue
                 },
-                children: T
+                children: H
               }
             ) }) : null,
-            W.trim() ? /* @__PURE__ */ o(E, { nodeId: M("heading_main"), label: "Heading", children: /* @__PURE__ */ o(
-              k,
+            W.trim() ? /* @__PURE__ */ o(N, { nodeId: F("heading_main"), label: "Heading", children: /* @__PURE__ */ o(
+              S,
               {
-                fieldPath: R.headingMain,
+                fieldPath: L.headingMain,
                 label: "Text",
                 as: "h1",
                 style: {
-                  margin: T.trim() ? "8px 0 0" : 0,
-                  fontFamily: r,
+                  margin: H.trim() ? "8px 0 0" : 0,
+                  fontFamily: d,
                   fontSize: "clamp(2.25rem, 4.5vw, 3.5rem)",
                   fontWeight: 400,
                   lineHeight: 1.08,
                   letterSpacing: "-0.02em",
-                  color: Me
+                  color: ue
                 },
                 children: W
               }
@@ -1384,17 +1618,17 @@ function kt({
                 textAlign: "right",
                 alignSelf: "flex-end"
               },
-              children: /* @__PURE__ */ o(E, { nodeId: M("text_body"), label: "Text", children: /* @__PURE__ */ o(
-                k,
+              children: /* @__PURE__ */ o(N, { nodeId: F("text_body"), label: "Text", children: /* @__PURE__ */ o(
+                S,
                 {
-                  fieldPath: R.textBody,
+                  fieldPath: L.textBody,
                   label: "Text",
                   as: "p",
                   style: {
                     margin: 0,
                     fontSize: 16,
                     lineHeight: 1.55,
-                    color: Me
+                    color: ue
                   },
                   children: C
                 }
@@ -1404,14 +1638,14 @@ function kt({
         ]
       }
     );
-  }, Fe = /* @__PURE__ */ m(
+  }, je = /* @__PURE__ */ m(
     "div",
     {
       style: {
         position: "relative",
         zIndex: 2,
         flex: f.direction === "row" ? "0 0 42%" : void 0,
-        maxWidth: f.direction === "column" ? xe : void 0,
+        maxWidth: f.direction === "column" ? Ae : void 0,
         width: f.direction === "column" ? "100%" : void 0,
         margin: f.direction === "column" ? "0 auto" : void 0,
         textAlign: f.textAlign,
@@ -1421,10 +1655,10 @@ function kt({
         gap: f.gap
       },
       children: [
-        T ? /* @__PURE__ */ o(
-          k,
+        H ? /* @__PURE__ */ o(
+          S,
           {
-            fieldPath: `${c}.eyebrow`,
+            fieldPath: `${u}.eyebrow`,
             label: "Eyebrow",
             as: "p",
             style: {
@@ -1435,13 +1669,13 @@ function kt({
               opacity: 0.7,
               color: f.scheme.color
             },
-            children: T
+            children: H
           }
         ) : null,
-        Ue()
+        Fe()
       ]
     }
-  ), Ie = () => /* @__PURE__ */ o(
+  ), ye = () => /* @__PURE__ */ o(
     "div",
     {
       "aria-hidden": !0,
@@ -1462,7 +1696,7 @@ function kt({
             display: "flex",
             width: "max-content",
             whiteSpace: "nowrap",
-            fontFamily: r,
+            fontFamily: d,
             fontSize: "clamp(2.25rem, 6vw, 4.25rem)",
             fontWeight: 700,
             lineHeight: 1.05,
@@ -1473,49 +1707,49 @@ function kt({
           },
           children: [
             /* @__PURE__ */ m(
-              k,
+              S,
               {
-                fieldPath: `${c}.marqueeText`,
+                fieldPath: `${u}.marqueeText`,
                 label: "Marquee",
                 as: "span",
                 style: { padding: "0 0.35em", display: "inline" },
                 children: [
-                  H,
+                  P,
                   " "
                 ]
               }
             ),
             /* @__PURE__ */ m("span", { style: { padding: "0 0.35em" }, "aria-hidden": !0, children: [
-              H,
+              P,
               " "
             ] })
           ]
         }
       )
     }
-  ), ge = b ? ke() : Fe, Te = (A, J, Q) => A ? /* @__PURE__ */ o(
+  ), We = y ? Se() : je, xe = (A, oe, ee) => A ? /* @__PURE__ */ o(
     "div",
     {
-      className: J,
+      className: oe,
       style: {
         flex: 1,
         minHeight: f.direction === "row" ? "100%" : 240,
         background: `center/cover url(${A}) no-repeat`,
-        filter: Q ? "blur(12px)" : void 0,
-        transform: Q ? "scale(1.05)" : void 0
+        filter: ee ? "blur(12px)" : void 0,
+        transform: ee ? "scale(1.05)" : void 0
       }
     }
   ) : /* @__PURE__ */ o(
     "div",
     {
-      className: J,
+      className: oe,
       style: {
         flex: 1,
         minHeight: f.direction === "row" ? "100%" : 200,
         background: `linear-gradient(135deg, ${f.scheme.muted}33, ${f.scheme.background})`
       }
     }
-  ), He = !ce, Ve = /* @__PURE__ */ o(
+  ), Be = !pe, qe = /* @__PURE__ */ o(
     "div",
     {
       className: "hero-media-grid",
@@ -1523,25 +1757,25 @@ function kt({
         position: "relative",
         zIndex: 1,
         display: "flex",
-        flexDirection: S && !z ? "column" : f.direction,
-        alignItems: b || z ? "stretch" : f.alignItems,
-        justifyContent: b ? "flex-end" : v ? "center" : f.justifyContent,
+        flexDirection: $ && !_ ? "column" : f.direction,
+        alignItems: y || _ ? "stretch" : f.alignItems,
+        justifyContent: y ? "flex-end" : v ? "center" : f.justifyContent,
         gap: f.gap,
-        minHeight: je,
+        minHeight: ge,
         width: "100%",
         maxWidth: typeof f.maxWidth == "number" ? f.maxWidth : void 0,
         margin: "0 auto",
-        padding: S ? 0 : `0 ${f.paddingX}px`,
+        padding: $ ? 0 : `0 ${f.paddingX}px`,
         boxSizing: "border-box"
       },
-      children: v ? ge : ce && f.direction === "row" ? /* @__PURE__ */ m(ne, { children: [
-        Te(f.media1Url, "hero-media-1", f.blurredReflection),
-        ge,
-        f.media2Url ? Te(f.media2Url, "hero-media-2", f.blurredReflection) : null
-      ] }) : /* @__PURE__ */ m(ne, { children: [
-        ce ? /* @__PURE__ */ m("div", { style: { display: "flex", gap: f.gap, width: "100%" }, children: [
-          Te(f.media1Url, "hero-media-1", f.blurredReflection),
-          f.media2Url ? Te(f.media2Url, "hero-media-2", f.blurredReflection) : null,
+      children: v ? We : pe && f.direction === "row" ? /* @__PURE__ */ m(Z, { children: [
+        xe(f.media1Url, "hero-media-1", f.blurredReflection),
+        We,
+        f.media2Url ? xe(f.media2Url, "hero-media-2", f.blurredReflection) : null
+      ] }) : /* @__PURE__ */ m(Z, { children: [
+        pe ? /* @__PURE__ */ m("div", { style: { display: "flex", gap: f.gap, width: "100%" }, children: [
+          xe(f.media1Url, "hero-media-1", f.blurredReflection),
+          f.media2Url ? xe(f.media2Url, "hero-media-2", f.blurredReflection) : null,
           f.mobileDifferentMedia && f.mobileImageUrl ? /* @__PURE__ */ o(
             "div",
             {
@@ -1555,21 +1789,21 @@ function kt({
             }
           ) : null
         ] }) : null,
-        ge
+        We
       ] })
     }
-  ), Qe = f.sectionLink ? /* @__PURE__ */ o(
-    I,
+  ), Xe = f.sectionLink ? /* @__PURE__ */ o(
+    D,
     {
       to: f.sectionLink,
       target: f.sectionLinkNewTab ? "_blank" : void 0,
       rel: f.sectionLinkNewTab ? "noopener noreferrer" : void 0,
       style: { textDecoration: "none", color: "inherit", display: "block" },
-      children: Ve
+      children: qe
     }
-  ) : Ve;
-  if (b) {
-    const A = f.media1Url.trim(), J = f.minHeight, Q = Math.max(f.paddingX, 40), q = Math.max(f.paddingBottom, 48), ee = f.paddingTop > 0 ? f.paddingTop : 0, ve = f.mediaOverlay && (A || !ce) ? de : void 0, Y = /* @__PURE__ */ o(
+  ) : qe;
+  if (y) {
+    const A = f.media1Url.trim(), oe = f.minHeight, ee = Math.max(f.paddingX, 40), V = Math.max(f.paddingBottom, 48), G = f.paddingTop > 0 ? f.paddingTop : 0, me = f.mediaOverlay && (A || !pe) ? ce : void 0, ne = /* @__PURE__ */ o(
       "div",
       {
         style: {
@@ -1578,28 +1812,28 @@ function kt({
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
-          minHeight: J,
+          minHeight: oe,
           width: "100%",
-          padding: `${ee}px ${Q}px ${q}px`,
+          padding: `${G}px ${ee}px ${V}px`,
           boxSizing: "border-box"
         },
-        children: ke()
+        children: Se()
       }
-    ), Se = f.sectionLink ? /* @__PURE__ */ o(
-      I,
+    ), he = f.sectionLink ? /* @__PURE__ */ o(
+      D,
       {
         to: f.sectionLink,
         target: f.sectionLinkNewTab ? "_blank" : void 0,
         rel: f.sectionLinkNewTab ? "noopener noreferrer" : void 0,
         style: { textDecoration: "none", color: "inherit", display: "block", width: "100%" },
-        children: Y
+        children: ne
       }
-    ) : Y;
-    return /* @__PURE__ */ m(ne, { children: [
-      te ? /* @__PURE__ */ o("style", { children: te }) : null,
-      B ? /* @__PURE__ */ o("style", { children: B }) : null,
+    ) : ne;
+    return /* @__PURE__ */ m(Z, { children: [
+      J ? /* @__PURE__ */ o("style", { children: J }) : null,
+      I ? /* @__PURE__ */ o("style", { children: I }) : null,
       /* @__PURE__ */ m(
-        G,
+        B,
         {
           sectionId: e,
           editorNodeId: g,
@@ -1608,11 +1842,11 @@ function kt({
             position: "relative",
             overflow: "hidden",
             width: "100%",
-            minHeight: J,
+            minHeight: oe,
             padding: 0,
             background: "#2d6478",
-            fontFamily: p,
-            color: Me,
+            fontFamily: h,
+            color: ue,
             boxSizing: "border-box"
           },
           children: [
@@ -1626,38 +1860,38 @@ function kt({
                   background: `center/cover url(${A}) no-repeat`
                 }
               }
-            ) : /* @__PURE__ */ o(dt, {}),
-            ve ? /* @__PURE__ */ o(
+            ) : /* @__PURE__ */ o(ot, {}),
+            me ? /* @__PURE__ */ o(
               "div",
               {
                 "aria-hidden": !0,
                 style: {
                   position: "absolute",
                   inset: 0,
-                  background: ve,
+                  background: me,
                   zIndex: 1,
                   pointerEvents: "none"
                 }
               }
             ) : null,
-            Se
+            he
           ]
         }
       )
     ] });
   }
   if (v) {
-    const A = f.media1Url.trim(), J = f.minHeight, Q = Math.max(f.paddingBottom, 48), q = f.mediaOverlay && (A || !ce) ? de : void 0, ee = /* @__PURE__ */ m(
+    const A = f.media1Url.trim(), oe = f.minHeight, ee = Math.max(f.paddingBottom, 48), V = f.mediaOverlay && (A || !pe) ? ce : void 0, G = /* @__PURE__ */ m(
       "div",
       {
         style: {
           position: "relative",
-          minHeight: J,
+          minHeight: oe,
           width: "100%",
           boxSizing: "border-box"
         },
         children: [
-          Ie(),
+          ye(),
           /* @__PURE__ */ o(
             "div",
             {
@@ -1665,13 +1899,13 @@ function kt({
                 position: "absolute",
                 left: 0,
                 right: 0,
-                bottom: Q,
+                bottom: ee,
                 zIndex: 4,
                 display: "flex",
                 justifyContent: "center",
                 pointerEvents: "auto"
               },
-              children: ye.primary_button ? /* @__PURE__ */ o("span", { style: { display: "inline-flex" }, children: ye.primary_button }) : null
+              children: be.primary_button ? /* @__PURE__ */ o("span", { style: { display: "inline-flex" }, children: be.primary_button }) : null
             }
           ),
           /* @__PURE__ */ o("style", { children: `
@@ -1682,21 +1916,21 @@ function kt({
         ` })
         ]
       }
-    ), ve = f.sectionLink ? /* @__PURE__ */ o(
-      I,
+    ), me = f.sectionLink ? /* @__PURE__ */ o(
+      D,
       {
         to: f.sectionLink,
         target: f.sectionLinkNewTab ? "_blank" : void 0,
         rel: f.sectionLinkNewTab ? "noopener noreferrer" : void 0,
         style: { textDecoration: "none", color: "inherit", display: "block", width: "100%" },
-        children: ee
+        children: G
       }
-    ) : ee;
-    return /* @__PURE__ */ m(ne, { children: [
-      te ? /* @__PURE__ */ o("style", { children: te }) : null,
-      B ? /* @__PURE__ */ o("style", { children: B }) : null,
+    ) : G;
+    return /* @__PURE__ */ m(Z, { children: [
+      J ? /* @__PURE__ */ o("style", { children: J }) : null,
+      I ? /* @__PURE__ */ o("style", { children: I }) : null,
       /* @__PURE__ */ m(
-        G,
+        B,
         {
           sectionId: e,
           editorNodeId: g,
@@ -1705,10 +1939,10 @@ function kt({
             position: "relative",
             overflow: "hidden",
             width: "100%",
-            minHeight: J,
+            minHeight: oe,
             padding: 0,
             background: "#2d6478",
-            fontFamily: p,
+            fontFamily: h,
             color: "#ffffff",
             boxSizing: "border-box"
           },
@@ -1723,28 +1957,28 @@ function kt({
                   background: `center/cover url(${A}) no-repeat`
                 }
               }
-            ) : /* @__PURE__ */ o(dt, {}),
-            q ? /* @__PURE__ */ o(
+            ) : /* @__PURE__ */ o(ot, {}),
+            V ? /* @__PURE__ */ o(
               "div",
               {
                 "aria-hidden": !0,
                 style: {
                   position: "absolute",
                   inset: 0,
-                  background: q,
+                  background: V,
                   zIndex: 1,
                   pointerEvents: "none"
                 }
               }
             ) : null,
-            ve
+            me
           ]
         }
       )
     ] });
   }
-  if (x) {
-    const A = l(n, `${h}.text_2.settings.text`, "") || P || C, J = W.trim() || "My Store", Q = Math.max(f.paddingTop, 40), q = Math.max(f.paddingBottom, 48), ee = 40, ve = f.minHeight, Y = l(n, `${c}.backgroundMedia`, "none"), Se = l(n, `${c}.backgroundImageUrl`, ""), le = Y === "image" && !!Se.trim(), he = l(n, `${c}.borderStyle`, "none"), oe = y(n, `${c}.cornerRadius`, 0), re = l(n, `${c}.defaultLogoUrl`, ""), ae = he === "solid" ? `1px solid ${f.scheme.muted}55` : void 0, De = f.mediaOverlay && le ? f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor : void 0, Ge = /* @__PURE__ */ m(
+  if (b) {
+    const A = r(i, `${p}.text_2.settings.text`, "") || T || C, oe = W.trim() || "My Store", ee = Math.max(f.paddingTop, 40), V = Math.max(f.paddingBottom, 48), G = 40, me = f.minHeight, ne = r(i, `${u}.backgroundMedia`, "none"), he = r(i, `${u}.backgroundImageUrl`, ""), re = ne === "image" && !!he.trim(), de = r(i, `${u}.borderStyle`, "none"), ie = x(i, `${u}.cornerRadius`, 0), ze = r(i, `${u}.defaultLogoUrl`, ""), Ie = de === "solid" ? `1px solid ${f.scheme.muted}55` : void 0, Pe = f.mediaOverlay && re ? f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor : void 0, Le = /* @__PURE__ */ m(
       "div",
       {
         style: {
@@ -1753,20 +1987,20 @@ function kt({
           width: "100%",
           maxWidth: typeof f.maxWidth == "number" ? f.maxWidth : void 0,
           margin: "0 auto",
-          minHeight: ve,
-          padding: `${Q}px ${ee}px ${q}px`,
+          minHeight: me,
+          padding: `${ee}px ${G}px ${V}px`,
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          borderRadius: oe > 0 ? oe : void 0,
-          border: ae,
-          overflow: oe > 0 ? "hidden" : void 0
+          borderRadius: ie > 0 ? ie : void 0,
+          border: Ie,
+          overflow: ie > 0 ? "hidden" : void 0
         },
         children: [
-          A.trim() ? /* @__PURE__ */ o(E, { nodeId: Be(e, t, i, "text_2"), label: "Text", children: /* @__PURE__ */ o(
-            k,
+          A.trim() ? /* @__PURE__ */ o(N, { nodeId: Oe(e, t, n, "text_2"), label: "Text", children: /* @__PURE__ */ o(
+            S,
             {
-              fieldPath: `${h}.text_2.settings.text`,
+              fieldPath: `${p}.text_2.settings.text`,
               label: "Text",
               as: "p",
               style: {
@@ -1793,11 +2027,11 @@ function kt({
                 minHeight: 280,
                 width: "100%"
               },
-              children: re.trim() ? /* @__PURE__ */ o(k, { fieldPath: `${c}.defaultLogoUrl`, label: "Default logo", as: "div", children: /* @__PURE__ */ o(
+              children: ze.trim() ? /* @__PURE__ */ o(S, { fieldPath: `${u}.defaultLogoUrl`, label: "Default logo", as: "div", children: /* @__PURE__ */ o(
                 "img",
                 {
-                  src: re,
-                  alt: J,
+                  src: ze,
+                  alt: oe,
                   style: {
                     display: "block",
                     maxWidth: "min(92%, 1200px)",
@@ -1809,14 +2043,14 @@ function kt({
                   }
                 }
               ) }) : /* @__PURE__ */ o(
-                k,
+                S,
                 {
-                  fieldPath: `${c}.title`,
+                  fieldPath: `${u}.title`,
                   label: "Text",
                   as: "h1",
                   style: {
                     margin: 0,
-                    fontFamily: r,
+                    fontFamily: d,
                     fontSize: "clamp(4rem, 18vw, 11rem)",
                     fontWeight: 800,
                     lineHeight: 0.95,
@@ -1824,28 +2058,28 @@ function kt({
                     color: "#000000",
                     textAlign: "center"
                   },
-                  children: J
+                  children: oe
                 }
               )
             }
           )
         ]
       }
-    ), se = f.sectionLink ? /* @__PURE__ */ o(
-      I,
+    ), Ne = f.sectionLink ? /* @__PURE__ */ o(
+      D,
       {
         to: f.sectionLink,
         target: f.sectionLinkNewTab ? "_blank" : void 0,
         rel: f.sectionLinkNewTab ? "noopener noreferrer" : void 0,
         style: { textDecoration: "none", color: "inherit", display: "block", width: "100%" },
-        children: Ge
+        children: Le
       }
-    ) : Ge;
-    return /* @__PURE__ */ m(ne, { children: [
-      te ? /* @__PURE__ */ o("style", { children: te }) : null,
-      B ? /* @__PURE__ */ o("style", { children: B }) : null,
+    ) : Le;
+    return /* @__PURE__ */ m(Z, { children: [
+      J ? /* @__PURE__ */ o("style", { children: J }) : null,
+      I ? /* @__PURE__ */ o("style", { children: I }) : null,
       /* @__PURE__ */ m(
-        G,
+        B,
         {
           sectionId: e,
           editorNodeId: g,
@@ -1854,62 +2088,62 @@ function kt({
             position: "relative",
             overflow: "hidden",
             width: "100%",
-            minHeight: ve,
+            minHeight: me,
             padding: 0,
-            background: le ? f.scheme.background : f.scheme.background || "#f0f1ed",
-            fontFamily: p,
+            background: re ? f.scheme.background : f.scheme.background || "#f0f1ed",
+            fontFamily: h,
             color: "#111827",
             boxSizing: "border-box"
           },
           children: [
-            le ? /* @__PURE__ */ o(
+            re ? /* @__PURE__ */ o(
               "div",
               {
                 "aria-hidden": !0,
                 style: {
                   position: "absolute",
                   inset: 0,
-                  background: `center/cover url(${Se}) no-repeat`
+                  background: `center/cover url(${he}) no-repeat`
                 }
               }
             ) : null,
-            De ? /* @__PURE__ */ o(
+            Pe ? /* @__PURE__ */ o(
               "div",
               {
                 "aria-hidden": !0,
                 style: {
                   position: "absolute",
                   inset: 0,
-                  background: De,
+                  background: Pe,
                   zIndex: 1,
                   pointerEvents: "none"
                 }
               }
             ) : null,
-            se
+            Ne
           ]
         }
       )
     ] });
   }
-  if (z) {
-    const A = f.media1Url.trim() || Ki, J = f.media2Url.trim() || Yi, Q = f.minHeight, q = U(n, `${c}.verticalOnMobile`, !0), ee = l(n, `${c}.backgroundMedia`, "none"), ve = l(n, `${c}.backgroundImageUrl`, ""), Y = ee === "image" && !!ve.trim(), Se = l(n, `${c}.borderStyle`, "none"), le = y(n, `${c}.cornerRadius`, 0), he = Se === "solid" ? `1px solid ${f.scheme.muted}55` : void 0, oe = Ii(e, q), re = f.mediaOverlay && A ? f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor : void 0, ae = f.mediaOverlay && Y ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : void 0, De = {
+  if (_) {
+    const A = f.media1Url.trim() || yi, oe = f.media2Url.trim() || xi, ee = f.minHeight, V = E(i, `${u}.verticalOnMobile`, !0), G = r(i, `${u}.backgroundMedia`, "none"), me = r(i, `${u}.backgroundImageUrl`, ""), ne = G === "image" && !!me.trim(), he = r(i, `${u}.borderStyle`, "none"), re = x(i, `${u}.cornerRadius`, 0), de = he === "solid" ? `1px solid ${f.scheme.muted}55` : void 0, ie = fi(e, V), ze = f.mediaOverlay && A ? f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor : void 0, Ie = f.mediaOverlay && ne ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : void 0, Pe = {
       margin: 0,
-      fontFamily: r,
+      fontFamily: d,
       fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)",
       fontWeight: 700,
       lineHeight: 1.1,
       color: "#ffffff",
       textAlign: "center",
       textShadow: "0 2px 16px rgba(0,0,0,0.35)"
-    }, Ge = (at, Ke, ie, pe, nt) => /* @__PURE__ */ m(
+    }, Le = (Q, ae, Ue, Ee, Re) => /* @__PURE__ */ m(
       "div",
       {
         className: "split-showcase-tile",
         style: {
           flex: "1 1 50%",
           position: "relative",
-          minHeight: Q,
+          minHeight: ee,
           overflow: "hidden"
         },
         children: [
@@ -1920,18 +2154,18 @@ function kt({
               style: {
                 position: "absolute",
                 inset: 0,
-                background: `center/cover url(${at}) no-repeat`
+                background: `center/cover url(${Q}) no-repeat`
               }
             }
           ),
-          re ? /* @__PURE__ */ o(
+          ze ? /* @__PURE__ */ o(
             "div",
             {
               "aria-hidden": !0,
               style: {
                 position: "absolute",
                 inset: 0,
-                background: re,
+                background: ze,
                 zIndex: 1,
                 pointerEvents: "none"
               }
@@ -1946,7 +2180,7 @@ function kt({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                minHeight: Q,
+                minHeight: ee,
                 padding: "48px 28px 40px",
                 boxSizing: "border-box",
                 textAlign: "center"
@@ -1962,21 +2196,21 @@ function kt({
                       justifyContent: "center",
                       width: "100%"
                     },
-                    children: Ke.trim() ? pe ? /* @__PURE__ */ o(
-                      E,
+                    children: ae.trim() ? Ee ? /* @__PURE__ */ o(
+                      N,
                       {
-                        nodeId: Be(e, t, i, pe),
+                        nodeId: Oe(e, t, n, Ee),
                         label: "Text",
-                        children: /* @__PURE__ */ o(k, { fieldPath: ie, label: "Text", as: "h2", style: De, children: Ke })
+                        children: /* @__PURE__ */ o(S, { fieldPath: Ue, label: "Text", as: "h2", style: Pe, children: ae })
                       }
-                    ) : /* @__PURE__ */ o(k, { fieldPath: ie, label: "Text", as: "h2", style: De, children: Ke }) : null
+                    ) : /* @__PURE__ */ o(S, { fieldPath: Ue, label: "Text", as: "h2", style: Pe, children: ae }) : null
                   }
                 ),
                 /* @__PURE__ */ o("div", { style: { flexShrink: 0, paddingTop: 8 }, children: /* @__PURE__ */ o(
-                  Ji,
+                  Si,
                   {
-                    blockId: nt,
-                    blocksBase: h,
+                    blockId: Re,
+                    blocksBase: p,
                     sectionNodePrefix: g
                   }
                 ) })
@@ -1985,7 +2219,7 @@ function kt({
           )
         ]
       }
-    ), se = /* @__PURE__ */ m(
+    ), Ne = /* @__PURE__ */ m(
       "div",
       {
         className: "split-showcase-grid",
@@ -1994,41 +2228,41 @@ function kt({
           flexDirection: f.direction,
           gap: f.gap,
           width: "100%",
-          minHeight: Q,
+          minHeight: ee,
           boxSizing: "border-box"
         },
         children: [
-          Ge(
+          Le(
             A,
             W,
-            `${c}.title`,
+            `${u}.title`,
             "heading",
             "primary_button"
           ),
-          Ge(
-            J,
-            w,
-            `${h}.text_right.settings.text`,
+          Le(
+            oe,
+            z,
+            `${p}.text_right.settings.text`,
             "text_right",
             "secondary_button"
           )
         ]
       }
-    ), Ne = f.sectionLink ? /* @__PURE__ */ o(
-      I,
+    ), Ye = f.sectionLink ? /* @__PURE__ */ o(
+      D,
       {
         to: f.sectionLink,
         target: f.sectionLinkNewTab ? "_blank" : void 0,
         rel: f.sectionLinkNewTab ? "noopener noreferrer" : void 0,
         style: { textDecoration: "none", color: "inherit", display: "block", width: "100%" },
-        children: se
+        children: Ne
       }
-    ) : se;
-    return /* @__PURE__ */ m(ne, { children: [
-      te ? /* @__PURE__ */ o("style", { children: te }) : null,
-      oe ? /* @__PURE__ */ o("style", { children: oe }) : null,
+    ) : Ne;
+    return /* @__PURE__ */ m(Z, { children: [
+      J ? /* @__PURE__ */ o("style", { children: J }) : null,
+      ie ? /* @__PURE__ */ o("style", { children: ie }) : null,
       /* @__PURE__ */ m(
-        G,
+        B,
         {
           sectionId: e,
           editorNodeId: g,
@@ -2039,49 +2273,49 @@ function kt({
             width: "100%",
             maxWidth: typeof f.maxWidth == "number" ? f.maxWidth : void 0,
             margin: "0 auto",
-            minHeight: Q,
+            minHeight: ee,
             paddingTop: f.paddingTop,
             paddingBottom: f.paddingBottom,
             background: f.scheme.background,
-            borderRadius: le > 0 ? le : void 0,
-            border: he,
-            fontFamily: p,
+            borderRadius: re > 0 ? re : void 0,
+            border: de,
+            fontFamily: h,
             color: "#ffffff",
             boxSizing: "border-box"
           },
           children: [
-            Y ? /* @__PURE__ */ o(
+            ne ? /* @__PURE__ */ o(
               "div",
               {
                 "aria-hidden": !0,
                 style: {
                   position: "absolute",
                   inset: 0,
-                  background: `center/cover url(${ve}) no-repeat`
+                  background: `center/cover url(${me}) no-repeat`
                 }
               }
             ) : null,
-            ae ? /* @__PURE__ */ o(
+            Ie ? /* @__PURE__ */ o(
               "div",
               {
                 "aria-hidden": !0,
                 style: {
                   position: "absolute",
                   inset: 0,
-                  background: ae,
+                  background: Ie,
                   zIndex: 1,
                   pointerEvents: "none"
                 }
               }
             ) : null,
-            /* @__PURE__ */ o("div", { style: { position: "relative", zIndex: 2 }, children: Ne })
+            /* @__PURE__ */ o("div", { style: { position: "relative", zIndex: 2 }, children: Ye })
           ]
         }
       )
     ] });
   }
-  if (_) {
-    const A = f.media1Url.trim(), J = f.minHeight, Q = f.mediaOverlay ? f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor : void 0, q = /* @__PURE__ */ o(
+  if (w) {
+    const A = f.media1Url.trim(), oe = f.minHeight, ee = f.mediaOverlay ? f.overlayStyle === "gradient" ? f.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${f.overlayColor} 100%)` : `linear-gradient(180deg, ${f.overlayColor} 0%, transparent 100%)` : f.overlayColor : void 0, V = /* @__PURE__ */ o(
       "div",
       {
         style: {
@@ -2092,29 +2326,29 @@ function kt({
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          minHeight: J,
+          minHeight: oe,
           width: "100%",
           padding: `${f.paddingTop}px 24px ${f.paddingBottom}px`,
           boxSizing: "border-box",
           gap: Math.min(f.gap, 20)
         },
-        children: Ue(!0)
+        children: Fe(!0)
       }
-    ), ee = f.sectionLink ? /* @__PURE__ */ o(
-      I,
+    ), G = f.sectionLink ? /* @__PURE__ */ o(
+      D,
       {
         to: f.sectionLink,
         target: f.sectionLinkNewTab ? "_blank" : void 0,
         rel: f.sectionLinkNewTab ? "noopener noreferrer" : void 0,
         style: { textDecoration: "none", color: "inherit", display: "block", width: "100%" },
-        children: q
+        children: V
       }
-    ) : q;
-    return /* @__PURE__ */ m(ne, { children: [
-      te ? /* @__PURE__ */ o("style", { children: te }) : null,
-      B ? /* @__PURE__ */ o("style", { children: B }) : null,
+    ) : V;
+    return /* @__PURE__ */ m(Z, { children: [
+      J ? /* @__PURE__ */ o("style", { children: J }) : null,
+      I ? /* @__PURE__ */ o("style", { children: I }) : null,
       /* @__PURE__ */ m(
-        G,
+        B,
         {
           sectionId: e,
           editorNodeId: g,
@@ -2123,10 +2357,10 @@ function kt({
             position: "relative",
             overflow: "hidden",
             width: "100%",
-            minHeight: J,
+            minHeight: oe,
             padding: 0,
             background: "#1a3a4a",
-            fontFamily: p,
+            fontFamily: h,
             color: "#ffffff",
             boxSizing: "border-box"
           },
@@ -2141,49 +2375,49 @@ function kt({
                   background: `center/cover url(${A}) no-repeat`
                 }
               }
-            ) : /* @__PURE__ */ o(dt, {}),
-            Q ? /* @__PURE__ */ o(
+            ) : /* @__PURE__ */ o(ot, {}),
+            ee ? /* @__PURE__ */ o(
               "div",
               {
                 "aria-hidden": !0,
                 style: {
                   position: "absolute",
                   inset: 0,
-                  background: Q,
+                  background: ee,
                   zIndex: 1,
                   pointerEvents: "none"
                 }
               }
             ) : null,
-            ee
+            G
           ]
         }
       )
     ] });
   }
-  return /* @__PURE__ */ m(ne, { children: [
-    te ? /* @__PURE__ */ o("style", { children: te }) : null,
-    B ? /* @__PURE__ */ o("style", { children: B }) : null,
+  return /* @__PURE__ */ m(Z, { children: [
+    J ? /* @__PURE__ */ o("style", { children: J }) : null,
+    I ? /* @__PURE__ */ o("style", { children: I }) : null,
     /* @__PURE__ */ m(
-      G,
+      B,
       {
         sectionId: e,
         editorNodeId: g,
-        label: b ? "Hero: Bottom aligned" : v ? "Hero: Marquee" : x ? "Large logo" : z ? "Split showcase" : "Hero",
+        label: y ? "Hero: Bottom aligned" : v ? "Hero: Marquee" : b ? "Large logo" : _ ? "Split showcase" : "Hero",
         style: {
           position: "relative",
           overflow: "hidden",
           minHeight: f.minHeight,
-          paddingTop: x ? 0 : f.paddingTop,
-          paddingBottom: x ? 0 : f.paddingBottom,
-          background: x ? "#f3f0ea" : ce ? void 0 : f.scheme.background,
-          fontFamily: p,
+          paddingTop: b ? 0 : f.paddingTop,
+          paddingBottom: b ? 0 : f.paddingBottom,
+          background: b ? "#f3f0ea" : pe ? void 0 : f.scheme.background,
+          fontFamily: h,
           color: f.scheme.color,
           boxSizing: "border-box"
         },
         children: [
-          He && !x ? /* @__PURE__ */ o(dt, {}) : null,
-          (!ce || f.direction === "column") && f.media1Url ? /* @__PURE__ */ o(
+          Be && !b ? /* @__PURE__ */ o(ot, {}) : null,
+          (!pe || f.direction === "column") && f.media1Url ? /* @__PURE__ */ o(
             "div",
             {
               "aria-hidden": !0,
@@ -2196,26 +2430,26 @@ function kt({
               }
             }
           ) : null,
-          f.mediaOverlay && (ce || He) ? /* @__PURE__ */ o(
+          f.mediaOverlay && (pe || Be) ? /* @__PURE__ */ o(
             "div",
             {
               "aria-hidden": !0,
               style: {
                 position: "absolute",
                 inset: 0,
-                background: de,
+                background: ce,
                 zIndex: 1,
                 pointerEvents: "none"
               }
             }
           ) : null,
-          Qe
+          Xe
         ]
       }
     )
   ] });
 }
-const Ut = {
+const Ot = {
   "scheme-1": {
     background: "#f0f4f8",
     color: "#111827",
@@ -2252,105 +2486,105 @@ const Ut = {
     buttonBg: "#4c1d95",
     buttonColor: "#ffffff"
   }
-}, en = {
+}, wi = {
   auto: void 0,
   small: 320,
   medium: 480,
   large: 640
 };
-function tn(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.height`, "auto"), s = l(e, `${t}.direction`, "vertical"), u = l(e, `${t}.layoutAlignment`, "center");
+function Ci(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.height`, "auto"), c = r(e, `${t}.direction`, "vertical"), s = r(e, `${t}.layoutAlignment`, "center");
   return {
-    direction: s === "horizontal" ? "horizontal" : "vertical",
-    alignment: u === "left" || u === "right" ? u : "center",
-    position: ["top", "bottom"].includes(l(e, `${t}.position`, "center")) ? l(e, `${t}.position`, "center") : "center",
-    gap: y(e, `${t}.layoutGap`, 32),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: n,
-    minHeight: en[n],
-    colorScheme: Ut[i] ?? Ut["scheme-1"],
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none") === "image" ? "image" : "none",
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none") === "solid" ? "solid" : "none",
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 32),
-    paddingBottom: y(e, `${t}.paddingBottom`, 32),
-    customCss: l(e, `${t}.customCss`, "")
+    direction: c === "horizontal" ? "horizontal" : "vertical",
+    alignment: s === "left" || s === "right" ? s : "center",
+    position: ["top", "bottom"].includes(r(e, `${t}.position`, "center")) ? r(e, `${t}.position`, "center") : "center",
+    gap: x(e, `${t}.layoutGap`, 32),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: i,
+    minHeight: wi[i],
+    colorScheme: Ot[n] ?? Ot["scheme-1"],
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none") === "image" ? "image" : "none",
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none") === "solid" ? "solid" : "none",
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 32),
+    paddingBottom: x(e, `${t}.paddingBottom`, 32),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function on(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function _i(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-function Vo({
+function tn({
   sectionId: e = "contact_form",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), [d, a] = Z(""), [r, p] = Z(""), [c, h] = Z(""), [g, $] = Z(""), b = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, v = i === "template" ? `template:${t}:${e}` : `layout:${e}`, x = F(() => tn(n, b), [n, b]), z = l(n, `${b}.title`), S = l(n, `${b}.namePlaceholder`), _ = l(n, `${b}.emailPlaceholder`), H = l(n, `${b}.phonePlaceholder`), w = l(n, `${b}.commentPlaceholder`), R = l(n, `${b}.submitLabel`), T = x.colorScheme, W = x.sectionWidth === "full" ? "100%" : L.maxWidth, P = x.sectionWidth === "full" ? 24 : L.padX, C = x.alignment === "left" ? "left" : x.alignment === "right" ? "right" : "center", M = x.position === "top" ? "flex-start" : x.position === "bottom" ? "flex-end" : "center", f = Math.max(x.cornerRadius > 0 ? x.cornerRadius : 8, 0), O = {
+  const i = j(), { fontBody: c, fontHeading: s } = q(), [l, a] = te(""), [d, h] = te(""), [u, p] = te(""), [g, k] = te(""), y = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, v = n === "template" ? `template:${t}:${e}` : `layout:${e}`, b = M(() => Ci(i, y), [i, y]), _ = r(i, `${y}.title`), $ = r(i, `${y}.namePlaceholder`), w = r(i, `${y}.emailPlaceholder`), P = r(i, `${y}.phonePlaceholder`), z = r(i, `${y}.commentPlaceholder`), L = r(i, `${y}.submitLabel`), H = b.colorScheme, W = b.sectionWidth === "full" ? "100%" : R.maxWidth, T = b.sectionWidth === "full" ? 24 : R.padX, C = b.alignment === "left" ? "left" : b.alignment === "right" ? "right" : "center", F = b.position === "top" ? "flex-start" : b.position === "bottom" ? "flex-end" : "center", f = Math.max(b.cornerRadius > 0 ? b.cornerRadius : 8, 0), U = {
     width: "100%",
     boxSizing: "border-box",
-    fontFamily: s,
+    fontFamily: c,
     fontSize: 15,
     lineHeight: 1.4,
-    color: T.color,
-    background: T.inputBg,
-    border: `1px solid ${T.inputBorder}`,
+    color: H.color,
+    background: H.inputBg,
+    border: `1px solid ${H.inputBorder}`,
     borderRadius: f,
     padding: "12px 14px",
     outline: "none"
-  }, N = (B) => {
-    B.preventDefault(), a(""), p(""), h(""), $("");
-  }, D = {
+  }, X = (I) => {
+    I.preventDefault(), a(""), h(""), p(""), k("");
+  }, O = {
     position: "relative",
-    background: T.background,
-    color: T.color,
-    fontFamily: s,
-    paddingTop: x.paddingTop,
-    paddingBottom: x.paddingBottom,
-    paddingLeft: P,
-    paddingRight: P,
+    background: H.background,
+    color: H.color,
+    fontFamily: c,
+    paddingTop: b.paddingTop,
+    paddingBottom: b.paddingBottom,
+    paddingLeft: T,
+    paddingRight: T,
     boxSizing: "border-box",
-    border: x.borderStyle === "solid" ? `1px solid ${T.border}` : void 0,
-    borderRadius: x.cornerRadius > 0 ? x.cornerRadius : void 0,
+    border: b.borderStyle === "solid" ? `1px solid ${H.border}` : void 0,
+    borderRadius: b.cornerRadius > 0 ? b.cornerRadius : void 0,
     overflow: "hidden",
-    ...x.minHeight != null ? { minHeight: x.minHeight } : {}
-  }, V = {
+    ...b.minHeight != null ? { minHeight: b.minHeight } : {}
+  }, Y = {
     maxWidth: W,
     margin: "0 auto",
     width: "100%",
-    minHeight: x.minHeight != null ? x.minHeight - x.paddingTop - x.paddingBottom : void 0,
+    minHeight: b.minHeight != null ? b.minHeight - b.paddingTop - b.paddingBottom : void 0,
     display: "flex",
-    flexDirection: x.direction === "horizontal" ? "row" : "column",
-    alignItems: x.direction === "horizontal" ? "center" : void 0,
-    justifyContent: M,
-    gap: x.gap,
+    flexDirection: b.direction === "horizontal" ? "row" : "column",
+    alignItems: b.direction === "horizontal" ? "center" : void 0,
+    justifyContent: F,
+    gap: b.gap,
     textAlign: C
-  }, te = {
+  }, J = {
     maxWidth: 520,
     width: "100%",
-    margin: x.alignment === "center" ? "0 auto" : void 0,
-    marginLeft: x.alignment === "right" ? "auto" : void 0,
-    marginRight: x.alignment === "left" ? "auto" : void 0,
-    flex: x.direction === "horizontal" ? "1 1 320px" : void 0
+    margin: b.alignment === "center" ? "0 auto" : void 0,
+    marginLeft: b.alignment === "right" ? "auto" : void 0,
+    marginRight: b.alignment === "left" ? "auto" : void 0,
+    flex: b.direction === "horizontal" ? "1 1 320px" : void 0
   };
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: v, label: "Contact form", style: D, children: [
-    x.backgroundMedia === "image" && x.backgroundImageUrl ? /* @__PURE__ */ o(
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: v, label: "Contact form", style: O, children: [
+    b.backgroundMedia === "image" && b.backgroundImageUrl ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${x.backgroundImageUrl})`,
+          backgroundImage: `url(${b.backgroundImageUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 0
         }
       }
     ) : null,
-    x.backgroundOverlay && x.backgroundMedia === "image" ? /* @__PURE__ */ o(
+    b.backgroundOverlay && b.backgroundMedia === "image" ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
@@ -2362,28 +2596,28 @@ function Vo({
         }
       }
     ) : null,
-    x.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: on(e, x.customCss) } }) : null,
-    /* @__PURE__ */ m("div", { style: { ...V, position: "relative", zIndex: 2 }, children: [
+    b.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: _i(e, b.customCss) } }) : null,
+    /* @__PURE__ */ m("div", { style: { ...Y, position: "relative", zIndex: 2 }, children: [
       /* @__PURE__ */ o(
-        k,
+        S,
         {
-          fieldPath: `${b}.title`,
+          fieldPath: `${y}.title`,
           label: "Heading",
           as: "h2",
           style: {
             margin: 0,
-            flex: x.direction === "horizontal" ? "0 0 auto" : void 0,
-            fontFamily: u,
+            flex: b.direction === "horizontal" ? "0 0 auto" : void 0,
+            fontFamily: s,
             fontSize: 32,
             fontWeight: 700,
             lineHeight: 1.2,
-            color: T.color,
+            color: H.color,
             textAlign: C
           },
-          children: z
+          children: _
         }
       ),
-      /* @__PURE__ */ m("form", { onSubmit: N, style: te, children: [
+      /* @__PURE__ */ m("form", { onSubmit: X, style: J, children: [
         /* @__PURE__ */ m(
           "div",
           {
@@ -2394,77 +2628,77 @@ function Vo({
               marginBottom: 12
             },
             children: [
-              /* @__PURE__ */ o(k, { fieldPath: `${b}.namePlaceholder`, label: "Name placeholder", as: "span", children: /* @__PURE__ */ o(
+              /* @__PURE__ */ o(S, { fieldPath: `${y}.namePlaceholder`, label: "Name placeholder", as: "span", children: /* @__PURE__ */ o(
                 "input",
                 {
                   type: "text",
-                  value: d,
-                  onChange: (B) => a(B.target.value),
-                  placeholder: S,
-                  style: O,
-                  "aria-label": S
+                  value: l,
+                  onChange: (I) => a(I.target.value),
+                  placeholder: $,
+                  style: U,
+                  "aria-label": $
                 }
               ) }),
-              /* @__PURE__ */ o(k, { fieldPath: `${b}.emailPlaceholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ o(
+              /* @__PURE__ */ o(S, { fieldPath: `${y}.emailPlaceholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ o(
                 "input",
                 {
                   type: "email",
-                  value: r,
-                  onChange: (B) => p(B.target.value),
-                  placeholder: _,
-                  style: O,
-                  "aria-label": _
+                  value: d,
+                  onChange: (I) => h(I.target.value),
+                  placeholder: w,
+                  style: U,
+                  "aria-label": w
                 }
               ) })
             ]
           }
         ),
-        /* @__PURE__ */ o("div", { style: { marginBottom: 12 }, children: /* @__PURE__ */ o(k, { fieldPath: `${b}.phonePlaceholder`, label: "Phone placeholder", as: "span", children: /* @__PURE__ */ o(
+        /* @__PURE__ */ o("div", { style: { marginBottom: 12 }, children: /* @__PURE__ */ o(S, { fieldPath: `${y}.phonePlaceholder`, label: "Phone placeholder", as: "span", children: /* @__PURE__ */ o(
           "input",
           {
             type: "tel",
-            value: c,
-            onChange: (B) => h(B.target.value),
-            placeholder: H,
-            style: O,
-            "aria-label": H
+            value: u,
+            onChange: (I) => p(I.target.value),
+            placeholder: P,
+            style: U,
+            "aria-label": P
           }
         ) }) }),
-        /* @__PURE__ */ o("div", { style: { marginBottom: 16 }, children: /* @__PURE__ */ o(k, { fieldPath: `${b}.commentPlaceholder`, label: "Comment placeholder", as: "span", children: /* @__PURE__ */ o(
+        /* @__PURE__ */ o("div", { style: { marginBottom: 16 }, children: /* @__PURE__ */ o(S, { fieldPath: `${y}.commentPlaceholder`, label: "Comment placeholder", as: "span", children: /* @__PURE__ */ o(
           "textarea",
           {
             value: g,
-            onChange: (B) => $(B.target.value),
-            placeholder: w,
+            onChange: (I) => k(I.target.value),
+            placeholder: z,
             rows: 5,
-            style: { ...O, resize: "vertical", minHeight: 120 },
-            "aria-label": w
+            style: { ...U, resize: "vertical", minHeight: 120 },
+            "aria-label": z
           }
         ) }) }),
-        /* @__PURE__ */ o(k, { fieldPath: `${b}.submitLabel`, label: "Submit button", children: /* @__PURE__ */ o(
+        /* @__PURE__ */ o(S, { fieldPath: `${y}.submitLabel`, label: "Submit button", children: /* @__PURE__ */ o(
           "button",
           {
             type: "submit",
             style: {
-              fontFamily: s,
+              fontFamily: c,
               fontSize: 15,
               fontWeight: 600,
               lineHeight: 1,
-              color: T.buttonColor,
-              background: T.buttonBg,
+              color: H.buttonColor,
+              background: H.buttonBg,
               border: "none",
               borderRadius: 9999,
               padding: "14px 28px",
               cursor: "pointer"
             },
-            children: R
+            children: L
           }
         ) })
       ] })
     ] })
   ] });
 }
-const Nt = {
+const Gt = {
   "scheme-1": {
     background: "#f6f6f7",
     color: "#111827",
@@ -2501,120 +2735,120 @@ const Nt = {
     inputBorder: "#c4b5fd",
     buttonColor: "#4c1d95"
   }
-}, nn = {
+}, Wi = {
   auto: void 0,
   small: 280,
   medium: 400,
   large: 520
 };
-function ln(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.height`, "auto"), s = l(e, `${t}.direction`, "vertical"), u = l(e, `${t}.layoutAlignment`, "center");
+function zi(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.height`, "auto"), c = r(e, `${t}.direction`, "vertical"), s = r(e, `${t}.layoutAlignment`, "center");
   return {
-    direction: s === "horizontal" ? "horizontal" : "vertical",
-    alignment: u === "left" || u === "right" ? u : "center",
-    position: ["top", "bottom"].includes(l(e, `${t}.position`, "center")) ? l(e, `${t}.position`, "center") : "center",
-    gap: y(e, `${t}.layoutGap`, 16),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: n,
-    minHeight: nn[n],
-    colorScheme: Nt[i] ?? Nt["scheme-1"],
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none") === "image" ? "image" : "none",
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none") === "solid" ? "solid" : "none",
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 40),
-    paddingBottom: y(e, `${t}.paddingBottom`, 40),
-    customCss: l(e, `${t}.customCss`, "")
+    direction: c === "horizontal" ? "horizontal" : "vertical",
+    alignment: s === "left" || s === "right" ? s : "center",
+    position: ["top", "bottom"].includes(r(e, `${t}.position`, "center")) ? r(e, `${t}.position`, "center") : "center",
+    gap: x(e, `${t}.layoutGap`, 16),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: i,
+    minHeight: Wi[i],
+    colorScheme: Gt[n] ?? Gt["scheme-1"],
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none") === "image" ? "image" : "none",
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none") === "solid" ? "solid" : "none",
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 40),
+    paddingBottom: x(e, `${t}.paddingBottom`, 40),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function rn(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function Pi(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-function Ko({
+function on({
   sectionId: e = "email_signup",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), [d, a] = Z(""), r = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, p = i === "template" ? `template:${t}:${e}` : `layout:${e}`, c = F(() => ln(n, r), [n, r]), h = l(n, `${r}.title`), g = l(n, `${r}.subtitle`), $ = l(n, `${r}.placeholder`), b = l(n, `${r}.buttonLabel`), v = c.colorScheme, x = c.sectionWidth === "full" ? "100%" : L.maxWidth, z = c.sectionWidth === "full" ? 24 : L.padX, S = c.alignment === "left" ? "left" : c.alignment === "right" ? "right" : "center", _ = c.position === "top" ? "flex-start" : c.position === "bottom" ? "flex-end" : "center", H = 100, w = (f) => {
+  const i = j(), { fontBody: c, fontHeading: s } = q(), [l, a] = te(""), d = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, h = n === "template" ? `template:${t}:${e}` : `layout:${e}`, u = M(() => zi(i, d), [i, d]), p = r(i, `${d}.title`), g = r(i, `${d}.subtitle`), k = r(i, `${d}.placeholder`), y = r(i, `${d}.buttonLabel`), v = u.colorScheme, b = u.sectionWidth === "full" ? "100%" : R.maxWidth, _ = u.sectionWidth === "full" ? 24 : R.padX, $ = u.alignment === "left" ? "left" : u.alignment === "right" ? "right" : "center", w = u.position === "top" ? "flex-start" : u.position === "bottom" ? "flex-end" : "center", P = 100, z = (f) => {
     f.preventDefault(), a("");
-  }, R = {
+  }, L = {
     position: "relative",
     background: v.background,
     color: v.color,
-    fontFamily: s,
-    paddingTop: c.paddingTop,
-    paddingBottom: c.paddingBottom,
-    paddingLeft: z,
-    paddingRight: z,
+    fontFamily: c,
+    paddingTop: u.paddingTop,
+    paddingBottom: u.paddingBottom,
+    paddingLeft: _,
+    paddingRight: _,
     boxSizing: "border-box",
-    border: c.borderStyle === "solid" ? `1px solid ${v.border}` : void 0,
-    borderRadius: c.cornerRadius > 0 ? c.cornerRadius : void 0,
+    border: u.borderStyle === "solid" ? `1px solid ${v.border}` : void 0,
+    borderRadius: u.cornerRadius > 0 ? u.cornerRadius : void 0,
     overflow: "hidden",
-    ...c.minHeight != null ? { minHeight: c.minHeight } : {}
-  }, T = {
-    maxWidth: x,
+    ...u.minHeight != null ? { minHeight: u.minHeight } : {}
+  }, H = {
+    maxWidth: b,
     margin: "0 auto",
     width: "100%",
-    minHeight: c.minHeight != null ? c.minHeight - c.paddingTop - c.paddingBottom : void 0,
+    minHeight: u.minHeight != null ? u.minHeight - u.paddingTop - u.paddingBottom : void 0,
     display: "flex",
-    flexDirection: c.direction === "horizontal" ? "row" : "column",
-    alignItems: c.direction === "horizontal" ? "center" : void 0,
-    justifyContent: _,
-    gap: c.gap,
-    textAlign: S
+    flexDirection: u.direction === "horizontal" ? "row" : "column",
+    alignItems: u.direction === "horizontal" ? "center" : void 0,
+    justifyContent: w,
+    gap: u.gap,
+    textAlign: $
   }, W = {
-    flex: c.direction === "horizontal" ? "1 1 280px" : void 0,
+    flex: u.direction === "horizontal" ? "1 1 280px" : void 0,
     minWidth: 0,
-    marginLeft: c.alignment === "right" && c.direction === "vertical" ? "auto" : void 0,
-    marginRight: c.alignment === "left" && c.direction === "vertical" ? "auto" : void 0,
-    maxWidth: c.direction === "vertical" ? 520 : void 0,
-    width: c.direction === "vertical" ? "100%" : void 0
-  }, P = {
-    flex: c.direction === "horizontal" ? "1 1 320px" : void 0,
+    marginLeft: u.alignment === "right" && u.direction === "vertical" ? "auto" : void 0,
+    marginRight: u.alignment === "left" && u.direction === "vertical" ? "auto" : void 0,
+    maxWidth: u.direction === "vertical" ? 520 : void 0,
+    width: u.direction === "vertical" ? "100%" : void 0
+  }, T = {
+    flex: u.direction === "horizontal" ? "1 1 320px" : void 0,
     minWidth: 0,
-    width: c.direction === "vertical" ? "100%" : void 0,
+    width: u.direction === "vertical" ? "100%" : void 0,
     maxWidth: 420,
-    marginLeft: c.direction === "vertical" && c.alignment === "center" || c.direction === "vertical" && c.alignment === "right" ? "auto" : void 0,
-    marginRight: c.direction === "vertical" && c.alignment === "center" || c.direction === "vertical" && c.alignment === "left" ? "auto" : void 0
+    marginLeft: u.direction === "vertical" && u.alignment === "center" || u.direction === "vertical" && u.alignment === "right" ? "auto" : void 0,
+    marginRight: u.direction === "vertical" && u.alignment === "center" || u.direction === "vertical" && u.alignment === "left" ? "auto" : void 0
   }, C = {
     display: "flex",
     alignItems: "stretch",
     width: "100%",
     overflow: "hidden",
     border: `1px solid ${v.inputBorder}`,
-    borderRadius: H,
+    borderRadius: P,
     background: v.inputBg
-  }, M = {
+  }, F = {
     flex: 1,
     minWidth: 0,
     border: "none",
     outline: "none",
     background: "transparent",
-    fontFamily: s,
+    fontFamily: c,
     fontSize: 15,
     lineHeight: 1.4,
     color: v.color,
     padding: "12px 16px",
     boxSizing: "border-box"
   };
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: p, label: "Email signup", style: R, children: [
-    c.backgroundMedia === "image" && c.backgroundImageUrl ? /* @__PURE__ */ o(
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: h, label: "Email signup", style: L, children: [
+    u.backgroundMedia === "image" && u.backgroundImageUrl ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${c.backgroundImageUrl})`,
+          backgroundImage: `url(${u.backgroundImageUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 0
         }
       }
     ) : null,
-    c.backgroundOverlay && c.backgroundMedia === "image" ? /* @__PURE__ */ o(
+    u.backgroundOverlay && u.backgroundMedia === "image" ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
@@ -2626,67 +2860,67 @@ function Ko({
         }
       }
     ) : null,
-    c.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: rn(e, c.customCss) } }) : null,
-    /* @__PURE__ */ m("div", { style: { ...T, position: "relative", zIndex: 2 }, children: [
-      h.trim() || g.trim() ? /* @__PURE__ */ m("div", { style: W, children: [
-        h.trim() ? /* @__PURE__ */ o(
-          k,
+    u.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Pi(e, u.customCss) } }) : null,
+    /* @__PURE__ */ m("div", { style: { ...H, position: "relative", zIndex: 2 }, children: [
+      p.trim() || g.trim() ? /* @__PURE__ */ m("div", { style: W, children: [
+        p.trim() ? /* @__PURE__ */ o(
+          S,
           {
-            fieldPath: `${r}.title`,
+            fieldPath: `${d}.title`,
             label: "Heading",
             as: "h2",
             style: {
-              margin: c.direction === "horizontal" ? 0 : "0 0 12px",
-              fontFamily: u,
+              margin: u.direction === "horizontal" ? 0 : "0 0 12px",
+              fontFamily: s,
               fontSize: 32,
               fontWeight: 700,
               lineHeight: 1.2,
               color: v.color,
-              textAlign: S
+              textAlign: $
             },
-            children: h
+            children: p
           }
         ) : null,
         g.trim() ? /* @__PURE__ */ o(
-          k,
+          S,
           {
-            fieldPath: `${r}.subtitle`,
+            fieldPath: `${d}.subtitle`,
             label: "Subtext",
             as: "p",
             style: {
-              margin: c.direction === "horizontal" ? 0 : "0 0 28px",
+              margin: u.direction === "horizontal" ? 0 : "0 0 28px",
               fontSize: 15,
               lineHeight: 1.5,
               color: v.muted,
-              textAlign: S
+              textAlign: $
             },
             children: g
           }
         ) : null
       ] }) : null,
-      /* @__PURE__ */ o("form", { onSubmit: w, style: P, children: /* @__PURE__ */ o(k, { fieldPath: `${r}.placeholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ m("div", { style: C, children: [
+      /* @__PURE__ */ o("form", { onSubmit: z, style: T, children: /* @__PURE__ */ o(S, { fieldPath: `${d}.placeholder`, label: "Email placeholder", as: "span", children: /* @__PURE__ */ m("div", { style: C, children: [
         /* @__PURE__ */ o(
           "input",
           {
             type: "email",
-            value: d,
+            value: l,
             onChange: (f) => a(f.target.value),
-            placeholder: $,
-            style: M,
-            "aria-label": $
+            placeholder: k,
+            style: F,
+            "aria-label": k
           }
         ),
         /* @__PURE__ */ o(
           "button",
           {
             type: "submit",
-            "aria-label": b || $ || "Submit",
+            "aria-label": y || k || "Submit",
             style: {
               flexShrink: 0,
               border: "none",
               background: "transparent",
               color: v.buttonColor,
-              fontFamily: s,
+              fontFamily: c,
               fontSize: 20,
               fontWeight: 600,
               cursor: "pointer",
@@ -2700,59 +2934,59 @@ function Ko({
     ] })
   ] });
 }
-const Ot = {
+const Dt = {
   "scheme-1": { background: "#ffffff", color: "#111827", border: "#d1d5db" },
   "scheme-2": { background: "#f8fafc", color: "#0f172a", border: "#93c5fd" },
   "scheme-3": { background: "#fff7ed", color: "#431407", border: "#fdba74" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", border: "#c4b5fd" }
-}, Gt = {
+}, jt = {
   auto: 120,
   small: 280,
   medium: 480,
   large: 640
 };
-function an(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.height`, "small"), s = l(e, `${t}.direction`, "vertical"), u = l(e, `${t}.layoutAlignment`, "left"), d = y(e, `${t}.minHeight`, 0), a = Gt[n];
+function Hi(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.height`, "small"), c = r(e, `${t}.direction`, "vertical"), s = r(e, `${t}.layoutAlignment`, "left"), l = x(e, `${t}.minHeight`, 0), a = jt[i];
   return {
-    direction: s === "horizontal" ? "horizontal" : "vertical",
-    alignment: u === "left" || u === "right" ? u : "center",
-    position: ["top", "bottom"].includes(l(e, `${t}.position`, "center")) ? l(e, `${t}.position`, "center") : "center",
-    gap: y(e, `${t}.layoutGap`, 12),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: n,
-    minHeight: a ?? (d > 0 ? d : Gt.small),
-    colorScheme: Ot[i] ?? Ot["scheme-1"],
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none") === "image" ? "image" : "none",
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none") === "solid" ? "solid" : "none",
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    customCss: l(e, `${t}.customCss`, "")
+    direction: c === "horizontal" ? "horizontal" : "vertical",
+    alignment: s === "left" || s === "right" ? s : "center",
+    position: ["top", "bottom"].includes(r(e, `${t}.position`, "center")) ? r(e, `${t}.position`, "center") : "center",
+    gap: x(e, `${t}.layoutGap`, 12),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: i,
+    minHeight: a ?? (l > 0 ? l : jt.small),
+    colorScheme: Dt[n] ?? Dt["scheme-1"],
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none") === "image" ? "image" : "none",
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none") === "solid" ? "solid" : "none",
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function dn(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function Ti(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-function vt({ sectionId: e, placement: t = "template", templateId: i = "index" }) {
-  const n = j(), { fontBody: s } = X(), u = t === "template" ? `templates.${i}.sections.${e}.settings` : `sections.${e}.settings`, d = t === "template" ? `template:${i}:${e}` : `layout:${e}`, a = F(() => an(n, u), [n, u]), r = a.colorScheme, p = a.sectionWidth === "full" ? "100%" : L.maxWidth, c = a.sectionWidth === "full" ? 24 : L.padX, h = a.alignment === "left" ? "left" : a.alignment === "right" ? "right" : "center", g = a.position === "top" ? "flex-start" : a.position === "bottom" ? "flex-end" : "center", $ = {
+function wt({ sectionId: e, placement: t = "template", templateId: n = "index" }) {
+  const i = j(), { fontBody: c } = q(), s = t === "template" ? `templates.${n}.sections.${e}.settings` : `sections.${e}.settings`, l = t === "template" ? `template:${n}:${e}` : `layout:${e}`, a = M(() => Hi(i, s), [i, s]), d = a.colorScheme, h = a.sectionWidth === "full" ? "100%" : R.maxWidth, u = a.sectionWidth === "full" ? 24 : R.padX, p = a.alignment === "left" ? "left" : a.alignment === "right" ? "right" : "center", g = a.position === "top" ? "flex-start" : a.position === "bottom" ? "flex-end" : "center", k = {
     position: "relative",
-    background: r.background,
-    color: r.color,
-    fontFamily: s,
+    background: d.background,
+    color: d.color,
+    fontFamily: c,
     paddingTop: a.paddingTop,
     paddingBottom: a.paddingBottom,
-    paddingLeft: c,
-    paddingRight: c,
+    paddingLeft: u,
+    paddingRight: u,
     boxSizing: "border-box",
-    border: a.borderStyle === "solid" ? `1px solid ${r.border}` : void 0,
+    border: a.borderStyle === "solid" ? `1px solid ${d.border}` : void 0,
     borderRadius: a.cornerRadius > 0 ? a.cornerRadius : void 0,
     overflow: "hidden",
     minHeight: a.minHeight
-  }, b = {
-    maxWidth: p,
+  }, y = {
+    maxWidth: h,
     margin: "0 auto",
     width: "100%",
     minHeight: Math.max(a.minHeight - a.paddingTop - a.paddingBottom, 80),
@@ -2761,7 +2995,7 @@ function vt({ sectionId: e, placement: t = "template", templateId: i = "index" }
     alignItems: a.direction === "horizontal" ? "center" : void 0,
     justifyContent: g,
     gap: a.gap,
-    textAlign: h
+    textAlign: p
   }, v = {
     flex: 1,
     width: "100%",
@@ -2770,7 +3004,7 @@ function vt({ sectionId: e, placement: t = "template", templateId: i = "index" }
     marginRight: a.alignment === "left" ? "auto" : void 0,
     maxWidth: a.alignment === "center" ? "100%" : void 0
   };
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: d, label: "Custom section", style: $, children: [
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: l, label: "Custom section", style: k, children: [
     a.backgroundMedia === "image" && a.backgroundImageUrl ? /* @__PURE__ */ o(
       "div",
       {
@@ -2797,11 +3031,11 @@ function vt({ sectionId: e, placement: t = "template", templateId: i = "index" }
         }
       }
     ) : null,
-    a.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: dn(e, a.customCss) } }) : null,
-    /* @__PURE__ */ o("div", { style: { ...b, position: "relative", zIndex: 2 }, children: /* @__PURE__ */ o("div", { style: v, "aria-hidden": !0 }) })
+    a.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Ti(e, a.customCss) } }) : null,
+    /* @__PURE__ */ o("div", { style: { ...y, position: "relative", zIndex: 2 }, children: /* @__PURE__ */ o("div", { style: v, "aria-hidden": !0 }) })
   ] });
 }
-function St() {
+function Ct() {
   return /* @__PURE__ */ m("div", { className: "relative mx-auto h-[120px] w-[140px]", "aria-hidden": !0, children: [
     [0, 1, 2].map((e) => /* @__PURE__ */ o(
       "div",
@@ -2839,7 +3073,7 @@ function St() {
     )
   ] });
 }
-function Yo() {
+function nn() {
   return /* @__PURE__ */ o(
     "div",
     {
@@ -2916,7 +3150,7 @@ function Yo() {
     }
   );
 }
-const jt = {
+const Bt = {
   "scheme-1": {
     background: "#ffffff",
     color: "#111827",
@@ -2946,200 +3180,200 @@ const jt = {
     panelRight: "#f5f3ff"
   }
 };
-function Zo(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1");
+function rn(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1");
   return {
-    scheme: jt[i] ?? jt["scheme-1"],
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    layoutGap: y(e, `${t}.layoutGap`, 48),
-    equalColumns: U(e, `${t}.equalColumns`, !0),
-    limitProductDetailsWidth: U(e, `${t}.limitProductDetailsWidth`, !1),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: Bt[n] ?? Bt["scheme-1"],
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    layoutGap: x(e, `${t}.layoutGap`, 48),
+    equalColumns: E(e, `${t}.equalColumns`, !0),
+    limitProductDetailsWidth: E(e, `${t}.limitProductDetailsWidth`, !1),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function Qo(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function ln(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-function cn({ rating: e, reviewCount: t, color: i, muted: n }) {
-  const s = Math.floor(e), u = e - s >= 0.5, d = [];
+function Li({ rating: e, reviewCount: t, color: n, muted: i }) {
+  const c = Math.floor(e), s = e - c >= 0.5, l = [];
   for (let a = 0; a < 5; a += 1)
-    a < s ? d.push("★") : a === s && u ? d.push("⯨") : d.push("☆");
+    a < c ? l.push("★") : a === c && s ? l.push("⯨") : l.push("☆");
   return /* @__PURE__ */ m("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 12 }, children: [
-    /* @__PURE__ */ o("span", { style: { color: "#111827", fontSize: 14, letterSpacing: 1 }, "aria-hidden": !0, children: d.join("") }),
-    /* @__PURE__ */ m("span", { style: { fontSize: 13, color: n }, children: [
+    /* @__PURE__ */ o("span", { style: { color: "#111827", fontSize: 14, letterSpacing: 1 }, "aria-hidden": !0, children: l.join("") }),
+    /* @__PURE__ */ m("span", { style: { fontSize: 13, color: i }, children: [
       t,
       " ",
       t === 1 ? "review" : "reviews"
     ] })
   ] });
 }
-function sn({
+function Ri({
   sectionId: e = "product_highlight",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), { storeFrontMeta: d } = it(), { products: a, fetchProductsByStoreId: r, fetchProductById: p, productDetail: c } = ht(), h = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, g = i === "template" ? `template:${t}:${e}` : `layout:${e}`, $ = F(() => Zo(n, h), [n, h]), b = l(n, `${h}.productId`, ""), v = l(n, `${h}.productTitle`), x = l(n, `${h}.price`), z = l(n, `${h}.productImageUrl`, ""), S = l(n, `${h}.mediaPosition`, "left"), _ = U(n, `${h}.showRating`, !0), H = y(n, `${h}.rating`, 4.5), w = y(n, `${h}.reviewCount`, 3), R = U(n, `${h}.showTaxNote`, !0), T = l(n, `${h}.taxNote`), W = l(n, `${h}.buttonLabel`), P = U(n, `${h}.soldOut`, !0), C = d?.storeId ?? "";
-  ue(() => {
-    C && r({ storeId: C, page: 1, limit: 24 });
-  }, [C, r]), ue(() => {
-    if (!b) return;
-    a.some((Te) => Te._id === b) || p(b);
-  }, [b, a, p]);
-  const M = F(() => b ? c?._id === b ? c : a.find((ge) => ge._id === b) ?? null : null, [b, c, a]), f = M?.title ?? v, O = M ? Ye(M.price) : x, N = M?.imageUrls?.[0] ?? z, D = $.scheme, V = S !== "right", te = $.sectionWidth === "full" ? "100%" : L.maxWidth, B = $.sectionWidth === "full" ? 24 : L.padX, de = $.equalColumns ? "1fr 1fr" : "1.05fr 0.95fr", ce = {
-    background: D.background,
-    color: D.color,
-    fontFamily: s,
-    paddingTop: $.paddingTop,
-    paddingBottom: $.paddingBottom,
-    paddingLeft: B,
-    paddingRight: B,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), { storeFrontMeta: l } = De(), { products: a, fetchProductsByStoreId: d, fetchProductById: h, productDetail: u } = lt(), p = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, g = n === "template" ? `template:${t}:${e}` : `layout:${e}`, k = M(() => rn(i, p), [i, p]), y = r(i, `${p}.productId`, ""), v = r(i, `${p}.productTitle`), b = r(i, `${p}.price`), _ = r(i, `${p}.productImageUrl`, ""), $ = r(i, `${p}.mediaPosition`, "left"), w = E(i, `${p}.showRating`, !0), P = x(i, `${p}.rating`, 4.5), z = x(i, `${p}.reviewCount`, 3), L = E(i, `${p}.showTaxNote`, !0), H = r(i, `${p}.taxNote`), W = r(i, `${p}.buttonLabel`), T = E(i, `${p}.soldOut`, !0), C = l?.storeId ?? "";
+  le(() => {
+    C && d({ storeId: C, page: 1, limit: 24 });
+  }, [C, d]), le(() => {
+    if (!y) return;
+    a.some((xe) => xe._id === y) || h(y);
+  }, [y, a, h]);
+  const F = M(() => y ? u?._id === y ? u : a.find((We) => We._id === y) ?? null : null, [y, u, a]), f = F?.title ?? v, U = F ? Ge(F.price) : b, X = F?.imageUrls?.[0] ?? _, O = k.scheme, Y = $ !== "right", J = k.sectionWidth === "full" ? "100%" : R.maxWidth, I = k.sectionWidth === "full" ? 24 : R.padX, ce = k.equalColumns ? "1fr 1fr" : "1.05fr 0.95fr", pe = {
+    background: O.background,
+    color: O.color,
+    fontFamily: c,
+    paddingTop: k.paddingTop,
+    paddingBottom: k.paddingBottom,
+    paddingLeft: I,
+    paddingRight: I,
     boxSizing: "border-box"
-  }, ye = {
-    maxWidth: te,
+  }, be = {
+    maxWidth: J,
     margin: "0 auto",
     width: "100%"
-  }, Oe = {
+  }, ve = {
     display: "grid",
-    gridTemplateColumns: de,
-    gap: $.layoutGap,
+    gridTemplateColumns: ce,
+    gap: k.layoutGap,
     alignItems: "stretch",
     width: "100%"
-  }, Ue = {
-    background: D.panelLeft,
+  }, Fe = {
+    background: O.panelLeft,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     minHeight: 360,
     padding: "40px 32px",
-    order: V ? 0 : 1,
+    order: Y ? 0 : 1,
     borderRadius: 0
-  }, je = {
-    background: D.panelRight,
+  }, ge = {
+    background: O.panelRight,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     padding: "40px 48px",
-    order: V ? 1 : 0,
-    maxWidth: $.limitProductDetailsWidth ? 420 : void 0,
+    order: Y ? 1 : 0,
+    maxWidth: k.limitProductDetailsWidth ? 420 : void 0,
     width: "100%",
     boxSizing: "border-box"
-  }, xe = {
+  }, Ae = {
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 16,
     width: "100%"
-  }, Me = {
+  }, ue = {
     margin: 0,
-    fontFamily: u,
+    fontFamily: s,
     fontSize: 28,
     fontWeight: 400,
     lineHeight: 1.25,
-    color: D.color,
+    color: O.color,
     flex: 1,
     minWidth: 0
-  }, ke = {
+  }, Se = {
     margin: 0,
     fontSize: 16,
     fontWeight: 400,
-    color: D.color,
+    color: O.color,
     whiteSpace: "nowrap"
-  }, Fe = {
+  }, je = {
     margin: "6px 0 0",
     fontSize: 13,
-    color: D.muted
-  }, Ie = {
+    color: O.muted
+  }, ye = {
     marginTop: 24,
     width: "100%",
     maxWidth: 360,
     padding: "14px 24px",
     border: "none",
     borderRadius: 999,
-    background: P ? "#6b7280" : "#111827",
+    background: T ? "#6b7280" : "#111827",
     color: "#ffffff",
     fontSize: 15,
     fontWeight: 500,
-    cursor: P ? "not-allowed" : "pointer",
-    fontFamily: s
+    cursor: T ? "not-allowed" : "pointer",
+    fontFamily: c
   };
-  return /* @__PURE__ */ m(G, { nodeId: g, label: "Featured product", style: ce, children: [
-    $.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Qo(e, $.customCss) } }) : null,
-    /* @__PURE__ */ o("div", { style: ye, "data-ziplofy-section": e, children: /* @__PURE__ */ m("div", { style: Oe, children: [
-      /* @__PURE__ */ o("div", { style: Ue, children: N ? /* @__PURE__ */ o(
+  return /* @__PURE__ */ m(B, { nodeId: g, label: "Featured product", style: pe, children: [
+    k.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: ln(e, k.customCss) } }) : null,
+    /* @__PURE__ */ o("div", { style: be, "data-codiic-section": e, children: /* @__PURE__ */ m("div", { style: ve, children: [
+      /* @__PURE__ */ o("div", { style: Fe, children: X ? /* @__PURE__ */ o(
         "img",
         {
-          src: N,
+          src: X,
           alt: "",
           style: { maxWidth: "100%", maxHeight: 320, objectFit: "contain", display: "block" }
         }
-      ) : /* @__PURE__ */ o(Yo, {}) }),
-      /* @__PURE__ */ m("div", { style: je, children: [
-        /* @__PURE__ */ m("div", { style: xe, children: [
+      ) : /* @__PURE__ */ o(nn, {}) }),
+      /* @__PURE__ */ m("div", { style: ge, children: [
+        /* @__PURE__ */ m("div", { style: Ae, children: [
           /* @__PURE__ */ o(
-            k,
+            S,
             {
               nodeId: g,
-              fieldPath: `${h}.productTitle`,
+              fieldPath: `${p}.productTitle`,
               label: "Product title",
               as: "h2",
-              style: Me,
+              style: ue,
               children: f
             }
           ),
           /* @__PURE__ */ o(
-            k,
+            S,
             {
               nodeId: g,
-              fieldPath: `${h}.price`,
+              fieldPath: `${p}.price`,
               label: "Price",
               as: "span",
-              style: ke,
-              children: O
+              style: Se,
+              children: U
             }
           )
         ] }),
-        R ? /* @__PURE__ */ o(k, { nodeId: g, fieldPath: `${h}.taxNote`, label: "Tax note", as: "p", style: Fe, children: T }) : null,
-        _ ? /* @__PURE__ */ o(cn, { rating: H, reviewCount: w, color: D.color, muted: D.muted }) : null,
-        /* @__PURE__ */ o(k, { nodeId: g, fieldPath: `${h}.buttonLabel`, label: "Button", as: "span", children: /* @__PURE__ */ o("button", { type: "button", disabled: P, style: Ie, children: W }) })
+        L ? /* @__PURE__ */ o(S, { nodeId: g, fieldPath: `${p}.taxNote`, label: "Tax note", as: "p", style: je, children: H }) : null,
+        w ? /* @__PURE__ */ o(Li, { rating: P, reviewCount: z, color: O.color, muted: O.muted }) : null,
+        /* @__PURE__ */ o(S, { nodeId: g, fieldPath: `${p}.buttonLabel`, label: "Button", as: "span", children: /* @__PURE__ */ o("button", { type: "button", disabled: T, style: ye, children: W }) })
       ] })
     ] }) })
   ] });
 }
-function Jo({
+function an({
   sectionId: e = "product_highlight",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), { storeFrontMeta: d } = it(), { products: a, fetchProductsByStoreId: r, fetchProductById: p, productDetail: c } = ht(), h = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, g = i === "template" ? `template:${t}:${e}` : `layout:${e}`;
-  if (l(n, `${h}.catalogVariant`, "") === "featured-product")
+  const i = j(), { fontBody: c, fontHeading: s } = q(), { storeFrontMeta: l } = De(), { products: a, fetchProductsByStoreId: d, fetchProductById: h, productDetail: u } = lt(), p = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, g = n === "template" ? `template:${t}:${e}` : `layout:${e}`;
+  if (r(i, `${p}.catalogVariant`, "") === "featured-product")
     return /* @__PURE__ */ o(
-      sn,
+      Ri,
       {
         sectionId: e,
         templateId: t,
-        placement: i
+        placement: n
       }
     );
-  const b = F(() => Zo(n, h), [n, h]), v = l(n, `${h}.productId`, ""), x = l(n, `${h}.productTitle`), z = l(n, `${h}.price`), S = l(n, `${h}.productImageUrl`, ""), _ = l(n, `${h}.mediaPosition`, "left"), H = d?.storeId ?? "";
-  ue(() => {
-    H && r({ storeId: H, page: 1, limit: 24 });
-  }, [H, r]), ue(() => {
+  const y = M(() => rn(i, p), [i, p]), v = r(i, `${p}.productId`, ""), b = r(i, `${p}.productTitle`), _ = r(i, `${p}.price`), $ = r(i, `${p}.productImageUrl`, ""), w = r(i, `${p}.mediaPosition`, "left"), P = l?.storeId ?? "";
+  le(() => {
+    P && d({ storeId: P, page: 1, limit: 24 });
+  }, [P, d]), le(() => {
     if (!v) return;
-    a.some((Oe) => Oe._id === v) || p(v);
-  }, [v, a, p]);
-  const w = F(() => v ? c?._id === v ? c : a.find((ye) => ye._id === v) ?? null : null, [v, c, a]), R = w?.title ?? x, T = w ? Ye(w.price) : z, W = w?.imageUrls?.[0] ?? S, P = b.scheme, C = L.maxWidth, M = L.padX, f = _ !== "right", O = {
-    background: P.background,
-    color: P.color,
-    fontFamily: s,
-    paddingTop: b.paddingTop,
-    paddingBottom: b.paddingBottom,
-    paddingLeft: M,
-    paddingRight: M,
+    a.some((ve) => ve._id === v) || h(v);
+  }, [v, a, h]);
+  const z = M(() => v ? u?._id === v ? u : a.find((be) => be._id === v) ?? null : null, [v, u, a]), L = z?.title ?? b, H = z ? Ge(z.price) : _, W = z?.imageUrls?.[0] ?? $, T = y.scheme, C = R.maxWidth, F = R.padX, f = w !== "right", U = {
+    background: T.background,
+    color: T.color,
+    fontFamily: c,
+    paddingTop: y.paddingTop,
+    paddingBottom: y.paddingBottom,
+    paddingLeft: F,
+    paddingRight: F,
     boxSizing: "border-box"
-  }, N = {
+  }, X = {
     maxWidth: C,
     margin: "0 auto",
     display: "grid",
@@ -3147,74 +3381,74 @@ function Jo({
     minHeight: 320,
     width: "100%",
     overflow: "hidden"
-  }, D = {
-    background: P.panelLeft,
+  }, O = {
+    background: T.panelLeft,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "32px 24px",
     minHeight: 280,
     order: f ? 0 : 1
-  }, V = {
-    background: P.panelRight,
+  }, Y = {
+    background: T.panelRight,
     display: "flex",
     flexDirection: "column",
     padding: "28px 32px",
     minHeight: 280,
     position: "relative",
     order: f ? 1 : 0
-  }, te = {
+  }, J = {
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 16,
     width: "100%"
-  }, B = {
+  }, I = {
     flex: 1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 16,
     paddingBottom: 8
-  }, de = /* @__PURE__ */ o("div", { style: D, children: /* @__PURE__ */ o(St, {}) }), ce = /* @__PURE__ */ m("div", { style: V, children: [
-    /* @__PURE__ */ m("div", { style: te, children: [
+  }, ce = /* @__PURE__ */ o("div", { style: O, children: /* @__PURE__ */ o(Ct, {}) }), pe = /* @__PURE__ */ m("div", { style: Y, children: [
+    /* @__PURE__ */ m("div", { style: J, children: [
       /* @__PURE__ */ o(
-        k,
+        S,
         {
-          fieldPath: `${h}.productTitle`,
+          fieldPath: `${p}.productTitle`,
           label: "Product title",
           as: "h2",
           style: {
             margin: 0,
-            fontFamily: u,
+            fontFamily: s,
             fontSize: 22,
             fontWeight: 400,
             lineHeight: 1.3,
-            color: P.color,
+            color: T.color,
             flex: 1,
             minWidth: 0
           },
-          children: R
+          children: L
         }
       ),
       /* @__PURE__ */ o(
-        k,
+        S,
         {
-          fieldPath: `${h}.price`,
+          fieldPath: `${p}.price`,
           label: "Price",
           as: "span",
           style: {
             margin: 0,
             fontSize: 16,
             fontWeight: 400,
-            color: P.color,
+            color: T.color,
             whiteSpace: "nowrap"
           },
-          children: T
+          children: H
         }
       )
     ] }),
-    /* @__PURE__ */ o("div", { style: B, children: /* @__PURE__ */ o(k, { fieldPath: `${h}.productImageUrl`, label: "Product image", as: "span", children: W ? /* @__PURE__ */ o(
+    /* @__PURE__ */ o("div", { style: I, children: /* @__PURE__ */ o(S, { fieldPath: `${p}.productImageUrl`, label: "Product image", as: "span", children: W ? /* @__PURE__ */ o(
       "img",
       {
         src: W,
@@ -3226,20 +3460,20 @@ function Jo({
           display: "block"
         }
       }
-    ) : /* @__PURE__ */ o(Yo, {}) }) })
+    ) : /* @__PURE__ */ o(nn, {}) }) })
   ] });
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: g, label: "Product highlight", style: O, children: [
-    b.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Qo(e, b.customCss) } }) : null,
-    /* @__PURE__ */ m("div", { style: N, children: [
-      de,
-      ce
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: g, label: "Product highlight", style: U, children: [
+    y.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: ln(e, y.customCss) } }) : null,
+    /* @__PURE__ */ m("div", { style: X, children: [
+      ce,
+      pe
     ] })
   ] });
 }
-function un({ sectionId: e }) {
-  return /* @__PURE__ */ o(Jo, { sectionId: e, placement: "layout" });
+function Mi({ sectionId: e }) {
+  return /* @__PURE__ */ o(an, { sectionId: e, placement: "layout" });
 }
-function hn() {
+function Fi() {
   return /* @__PURE__ */ m(
     "div",
     {
@@ -3286,7 +3520,7 @@ function hn() {
     }
   );
 }
-const Dt = {
+const qt = {
   "scheme-1": {
     background: "#ffffff",
     color: "#111827",
@@ -3315,138 +3549,138 @@ const Dt = {
     mediaPanel: "#ede9fe",
     contentPanel: "#f5f3ff"
   }
-}, Bt = {
+}, Xt = {
   small: ["2fr", "3fr"],
   medium: ["1fr", "1fr"],
   large: ["3fr", "2fr"]
-}, Xt = {
+}, It = {
   small: 240,
   medium: 320,
   large: 400
 };
-function pn(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-4"), n = l(e, `${t}.mediaWidth`, "medium"), s = l(e, `${t}.mediaHeight`, "medium"), u = n === "small" || n === "large" ? n : "medium", d = s === "small" || s === "large" ? s : "medium";
+function Ai(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-4"), i = r(e, `${t}.mediaWidth`, "medium"), c = r(e, `${t}.mediaHeight`, "medium"), s = i === "small" || i === "large" ? i : "medium", l = c === "small" || c === "large" ? c : "medium";
   return {
-    scheme: Dt[i] ?? Dt["scheme-4"],
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    mediaWidth: u,
-    mediaHeight: d,
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: qt[n] ?? qt["scheme-4"],
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    mediaWidth: s,
+    mediaHeight: l,
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function mn(e) {
-  const [t, i] = Bt[e] ?? Bt.medium;
-  return `${t} ${i}`;
+function Ni(e) {
+  const [t, n] = Xt[e] ?? Xt.medium;
+  return `${t} ${n}`;
 }
-function gn(e) {
-  return Xt[e] ?? Xt.medium;
+function Ei(e) {
+  return It[e] ?? It.medium;
 }
-function fn(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function Ui(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-function ei({
+function dn({
   sectionId: e = "editorial",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(() => pn(n, d), [n, d]), p = l(n, `${d}.imageUrl`, ""), c = l(n, `${d}.subheading`), h = l(n, `${d}.heading`), g = l(
-    n,
-    `${d}.description`,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(() => Ai(i, l), [i, l]), h = r(i, `${l}.imageUrl`, ""), u = r(i, `${l}.subheading`), p = r(i, `${l}.heading`), g = r(
+    i,
+    `${l}.description`,
     "Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations."
-  ), $ = l(n, `${d}.linkLabel`), b = l(n, `${d}.linkUrl`), v = l(n, `${d}.mediaPosition`, "left"), x = r.scheme, z = v !== "right", S = gn(r.mediaHeight), _ = r.sectionWidth === "full" ? 24 : L.padX, H = r.sectionWidth === "full" ? "100%" : L.maxWidth;
-  let w = mn(r.mediaWidth);
-  if (!z) {
-    const V = w.split(" ");
-    V.length === 2 && (w = `${V[1]} ${V[0]}`);
+  ), k = r(i, `${l}.linkLabel`), y = r(i, `${l}.linkUrl`), v = r(i, `${l}.mediaPosition`, "left"), b = d.scheme, _ = v !== "right", $ = Ei(d.mediaHeight), w = d.sectionWidth === "full" ? 24 : R.padX, P = d.sectionWidth === "full" ? "100%" : R.maxWidth;
+  let z = Ni(d.mediaWidth);
+  if (!_) {
+    const Y = z.split(" ");
+    Y.length === 2 && (z = `${Y[1]} ${Y[0]}`);
   }
-  const R = {
-    background: x.background,
-    color: x.color,
-    fontFamily: s,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    paddingLeft: _,
-    paddingRight: _,
+  const L = {
+    background: b.background,
+    color: b.color,
+    fontFamily: c,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    paddingLeft: w,
+    paddingRight: w,
     boxSizing: "border-box"
-  }, T = {
-    maxWidth: H,
+  }, H = {
+    maxWidth: P,
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: w,
-    minHeight: S,
+    gridTemplateColumns: z,
+    minHeight: $,
     width: "100%",
     overflow: "hidden"
   }, W = {
-    background: x.mediaPanel,
+    background: b.mediaPanel,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "40px 32px",
-    minHeight: S
-  }, P = {
-    background: x.contentPanel,
+    minHeight: $
+  }, T = {
+    background: b.contentPanel,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
     textAlign: "left",
     padding: "40px 48px",
-    minHeight: S
+    minHeight: $
   }, C = {
     margin: 0,
     fontSize: 13,
     fontWeight: 500,
     letterSpacing: "0.02em",
-    color: x.muted,
+    color: b.muted,
     textTransform: "none"
-  }, M = {
+  }, F = {
     margin: "12px 0 0",
-    fontFamily: u,
+    fontFamily: s,
     fontSize: 32,
     fontWeight: 700,
     lineHeight: 1.15,
-    color: x.color
+    color: b.color
   }, f = {
     margin: "16px 0 0",
     fontSize: 15,
     lineHeight: 1.55,
-    color: x.muted,
+    color: b.muted,
     maxWidth: 420
-  }, O = {
+  }, U = {
     marginTop: 24,
     fontSize: 15,
     fontWeight: 500,
-    color: x.color,
+    color: b.color,
     textDecoration: "underline",
     textUnderlineOffset: 3
-  }, N = /* @__PURE__ */ o("div", { style: W, children: /* @__PURE__ */ o(k, { fieldPath: `${d}.imageUrl`, label: "Image", as: "span", children: p ? /* @__PURE__ */ o(
+  }, X = /* @__PURE__ */ o("div", { style: W, children: /* @__PURE__ */ o(S, { fieldPath: `${l}.imageUrl`, label: "Image", as: "span", children: h ? /* @__PURE__ */ o(
     "img",
     {
-      src: p,
+      src: h,
       alt: "",
       style: { maxWidth: "100%", maxHeight: 280, objectFit: "contain", display: "block" }
     }
-  ) : /* @__PURE__ */ o(hn, {}) }) }), D = /* @__PURE__ */ m("div", { style: P, children: [
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.subheading`, label: "Subheading", as: "p", style: C, children: c }),
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.heading`, label: "Heading", as: "h2", style: M, children: h }),
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.description`, label: "Description", as: "p", style: f, children: g }),
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.linkLabel`, label: "Link label", as: "span", children: b ? /* @__PURE__ */ o(I, { to: b, style: O, children: $ }) : /* @__PURE__ */ o("span", { style: O, children: $ }) })
+  ) : /* @__PURE__ */ o(Fi, {}) }) }), O = /* @__PURE__ */ m("div", { style: T, children: [
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.subheading`, label: "Subheading", as: "p", style: C, children: u }),
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.heading`, label: "Heading", as: "h2", style: F, children: p }),
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.description`, label: "Description", as: "p", style: f, children: g }),
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.linkLabel`, label: "Link label", as: "span", children: y ? /* @__PURE__ */ o(D, { to: y, style: U, children: k }) : /* @__PURE__ */ o("span", { style: U, children: k }) })
   ] });
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: a, label: "Editorial", style: R, children: [
-    r.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: fn(e, r.customCss) } }) : null,
-    /* @__PURE__ */ m("div", { style: T, children: [
-      N,
-      D
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: a, label: "Editorial", style: L, children: [
+    d.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Ui(e, d.customCss) } }) : null,
+    /* @__PURE__ */ m("div", { style: H, children: [
+      X,
+      O
     ] })
   ] });
 }
-function bn({ sectionId: e }) {
-  return /* @__PURE__ */ o(ei, { sectionId: e, placement: "layout" });
+function Oi({ sectionId: e }) {
+  return /* @__PURE__ */ o(dn, { sectionId: e, placement: "layout" });
 }
-const qt = {
+const Vt = {
   "scheme-1": {
     background: "#ffffff",
     color: "#111827",
@@ -3471,133 +3705,133 @@ const qt = {
     textPanel: "#fafafa",
     mediaPanel: "#ececec"
   }
-}, It = {
+}, Kt = {
   small: ["2fr", "3fr"],
   medium: ["12fr", "13fr"],
   large: ["2fr", "3fr"]
-}, Vt = {
+}, Yt = {
   small: 200,
   medium: 280,
   large: 360
 };
-function yn(e, t) {
-  const i = l(e, `${t}.mediaWidth`, "");
-  if (i === "small" || i === "large") return i;
-  if (i === "medium") return "medium";
-  const n = l(e, `${t}.textWidth`, "medium");
-  return n === "small" || n === "large" ? n : "medium";
+function Gi(e, t) {
+  const n = r(e, `${t}.mediaWidth`, "");
+  if (n === "small" || n === "large") return n;
+  if (n === "medium") return "medium";
+  const i = r(e, `${t}.textWidth`, "medium");
+  return i === "small" || i === "large" ? i : "medium";
 }
-function xn(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-4"), n = l(e, `${t}.mediaHeight`, "medium"), s = n === "small" || n === "large" ? n : "medium";
+function Di(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-4"), i = r(e, `${t}.mediaHeight`, "medium"), c = i === "small" || i === "large" ? i : "medium";
   return {
-    scheme: qt[i] ?? qt["scheme-4"],
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    mediaWidth: yn(e, t),
-    mediaHeight: s,
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: Vt[n] ?? Vt["scheme-4"],
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    mediaWidth: Gi(e, t),
+    mediaHeight: c,
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function $n(e) {
-  const [t, i] = It[e] ?? It.medium;
-  return `${t} ${i}`;
+function ji(e) {
+  const [t, n] = Kt[e] ?? Kt.medium;
+  return `${t} ${n}`;
 }
-function kn(e) {
-  return Vt[e] ?? Vt.medium;
+function Bi(e) {
+  return Yt[e] ?? Yt.medium;
 }
-function vn(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function qi(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-function Sn(e) {
+function Xi(e) {
   const t = e.trim();
   return t ? t.includes(`
 `) ? t.split(`
-`).map((i) => i.trim()).filter(Boolean) : t.split(/\s+/).filter(Boolean) : ["UP", "THE", "ANTE"];
+`).map((n) => n.trim()).filter(Boolean) : t.split(/\s+/).filter(Boolean) : ["UP", "THE", "ANTE"];
 }
-function wn(e, t) {
-  const i = l(e, `${t}.mediaPosition`, "");
-  return i === "left" || i === "right" ? i : l(e, `${t}.textPosition`, "left") === "left" ? "right" : "left";
+function Ii(e, t) {
+  const n = r(e, `${t}.mediaPosition`, "");
+  return n === "left" || n === "right" ? n : r(e, `${t}.textPosition`, "left") === "left" ? "right" : "left";
 }
-function ti({
+function cn({
   sectionId: e = "editorial_jumbo",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(() => xn(n, d), [n, d]), p = l(n, `${d}.headline`), c = l(n, `${d}.imageUrl`, ""), h = wn(n, d), g = Sn(p), $ = r.scheme, b = h !== "right", v = kn(r.mediaHeight), x = r.sectionWidth === "full" ? 24 : L.padX, z = r.sectionWidth === "full" ? "100%" : L.maxWidth;
-  let S = $n(r.mediaWidth);
-  if (!b) {
-    const C = S.split(" ");
-    C.length === 2 && (S = `${C[1]} ${C[0]}`);
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(() => Di(i, l), [i, l]), h = r(i, `${l}.headline`), u = r(i, `${l}.imageUrl`, ""), p = Ii(i, l), g = Xi(h), k = d.scheme, y = p !== "right", v = Bi(d.mediaHeight), b = d.sectionWidth === "full" ? 24 : R.padX, _ = d.sectionWidth === "full" ? "100%" : R.maxWidth;
+  let $ = ji(d.mediaWidth);
+  if (!y) {
+    const C = $.split(" ");
+    C.length === 2 && ($ = `${C[1]} ${C[0]}`);
   }
-  const _ = {
-    background: $.background,
-    color: $.color,
-    fontFamily: s,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    paddingLeft: x,
-    paddingRight: x,
+  const w = {
+    background: k.background,
+    color: k.color,
+    fontFamily: c,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    paddingLeft: b,
+    paddingRight: b,
     boxSizing: "border-box"
-  }, H = {
-    maxWidth: z,
+  }, P = {
+    maxWidth: _,
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: S,
+    gridTemplateColumns: $,
     minHeight: v,
     width: "100%",
     overflow: "hidden"
-  }, w = {
-    background: $.textPanel,
+  }, z = {
+    background: k.textPanel,
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
     padding: "32px 40px 32px 32px",
     minHeight: v,
     boxSizing: "border-box"
-  }, R = {
-    background: $.mediaPanel,
+  }, L = {
+    background: k.mediaPanel,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "32px 24px",
     minHeight: v,
     boxSizing: "border-box"
-  }, T = {
+  }, H = {
     margin: 0,
-    fontFamily: u,
+    fontFamily: s,
     fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
     fontWeight: 700,
     lineHeight: 0.95,
     letterSpacing: "-0.02em",
     textAlign: "right",
     textTransform: "uppercase",
-    color: $.color,
+    color: k.color,
     maxWidth: "100%"
-  }, W = /* @__PURE__ */ o("div", { style: w, children: /* @__PURE__ */ o(k, { fieldPath: `${d}.headline`, label: "Headline", as: "div", style: T, children: g.map((C, M) => /* @__PURE__ */ o("span", { style: { display: "block" }, children: C }, `${C}-${M}`)) }) }), P = /* @__PURE__ */ o("div", { style: R, children: /* @__PURE__ */ o(k, { fieldPath: `${d}.imageUrl`, label: "Image", as: "span", children: c ? /* @__PURE__ */ o(
+  }, W = /* @__PURE__ */ o("div", { style: z, children: /* @__PURE__ */ o(S, { fieldPath: `${l}.headline`, label: "Headline", as: "div", style: H, children: g.map((C, F) => /* @__PURE__ */ o("span", { style: { display: "block" }, children: C }, `${C}-${F}`)) }) }), T = /* @__PURE__ */ o("div", { style: L, children: /* @__PURE__ */ o(S, { fieldPath: `${l}.imageUrl`, label: "Image", as: "span", children: u ? /* @__PURE__ */ o(
     "img",
     {
-      src: c,
+      src: u,
       alt: "",
       style: { maxWidth: "100%", maxHeight: v - 64, objectFit: "contain", display: "block" }
     }
-  ) : /* @__PURE__ */ o(St, {}) }) });
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: a, label: "Editorial: Jumbo text", style: _, children: [
-    r.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: vn(e, r.customCss) } }) : null,
-    /* @__PURE__ */ o("div", { style: H, children: b ? /* @__PURE__ */ m(ne, { children: [
-      P,
+  ) : /* @__PURE__ */ o(Ct, {}) }) });
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: a, label: "Editorial: Jumbo text", style: w, children: [
+    d.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: qi(e, d.customCss) } }) : null,
+    /* @__PURE__ */ o("div", { style: P, children: y ? /* @__PURE__ */ m(Z, { children: [
+      T,
       W
-    ] }) : /* @__PURE__ */ m(ne, { children: [
+    ] }) : /* @__PURE__ */ m(Z, { children: [
       W,
-      P
+      T
     ] }) })
   ] });
 }
-function _n({ sectionId: e }) {
-  return /* @__PURE__ */ o(ti, { sectionId: e, placement: "layout" });
+function Vi({ sectionId: e }) {
+  return /* @__PURE__ */ o(cn, { sectionId: e, placement: "layout" });
 }
-function Cn() {
+function Ki() {
   return /* @__PURE__ */ m("svg", { viewBox: "0 0 200 240", width: "100%", height: "100%", "aria-hidden": !0, style: { display: "block" }, children: [
     /* @__PURE__ */ o("rect", { x: "0", y: "0", width: "200", height: "240", fill: "#f4f4f4" }),
     /* @__PURE__ */ o(
@@ -3614,7 +3848,7 @@ function Cn() {
     /* @__PURE__ */ o("path", { d: "M62 95 L138 95", stroke: "#c45a3f", strokeWidth: "1.5", opacity: "0.35" })
   ] });
 }
-function zn() {
+function Yi() {
   return /* @__PURE__ */ m("svg", { viewBox: "0 0 200 240", width: "100%", height: "100%", "aria-hidden": !0, style: { display: "block" }, children: [
     /* @__PURE__ */ o("rect", { x: "0", y: "0", width: "200", height: "240", fill: "#f4f4f4" }),
     /* @__PURE__ */ o(
@@ -3633,30 +3867,30 @@ function zn() {
     /* @__PURE__ */ o("ellipse", { cx: "100", cy: "72", rx: "28", ry: "10", fill: "#1f5252" })
   ] });
 }
-function Wn({ beforeUrl: e, afterUrl: t, minHeight: i = 320 }) {
-  const [n, s] = Z(50), u = ot(null), d = qe((x) => {
-    const z = u.current;
-    if (!z) return;
-    const S = z.getBoundingClientRect(), _ = Math.min(Math.max(x - S.left, 0), S.width);
-    s(_ / S.width * 100);
-  }, []), a = (x) => {
-    x.currentTarget.setPointerCapture(x.pointerId), d(x.clientX);
-  }, r = (x) => {
-    x.currentTarget.hasPointerCapture(x.pointerId) && d(x.clientX);
-  }, p = (x) => {
-    x.currentTarget.releasePointerCapture(x.pointerId);
-  }, c = {
+function Qi({ beforeUrl: e, afterUrl: t, minHeight: n = 320 }) {
+  const [i, c] = te(50), s = Ke(null), l = Me((b) => {
+    const _ = s.current;
+    if (!_) return;
+    const $ = _.getBoundingClientRect(), w = Math.min(Math.max(b - $.left, 0), $.width);
+    c(w / $.width * 100);
+  }, []), a = (b) => {
+    b.currentTarget.setPointerCapture(b.pointerId), l(b.clientX);
+  }, d = (b) => {
+    b.currentTarget.hasPointerCapture(b.pointerId) && l(b.clientX);
+  }, h = (b) => {
+    b.currentTarget.releasePointerCapture(b.pointerId);
+  }, u = {
     position: "relative",
     width: "100%",
     maxWidth: 520,
     margin: "0 auto",
-    minHeight: i,
+    minHeight: n,
     borderRadius: 4,
     overflow: "hidden",
     background: "#f4f4f4",
     touchAction: "none",
     userSelect: "none"
-  }, h = {
+  }, p = {
     position: "absolute",
     inset: 0,
     display: "flex",
@@ -3668,19 +3902,19 @@ function Wn({ beforeUrl: e, afterUrl: t, minHeight: i = 320 }) {
     width: "100%",
     maxWidth: 280,
     height: "100%",
-    maxHeight: i - 48
-  }, $ = {
+    maxHeight: n - 48
+  }, k = {
     position: "absolute",
     top: 0,
     bottom: 0,
-    left: `${n}%`,
+    left: `${i}%`,
     transform: "translateX(-50%)",
     width: 3,
     background: "#ffffff",
     boxShadow: "0 0 0 1px rgba(0,0,0,0.08)",
     zIndex: 4,
     cursor: "ew-resize"
-  }, b = {
+  }, y = {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -3710,39 +3944,39 @@ function Wn({ beforeUrl: e, afterUrl: t, minHeight: i = 320 }) {
   return /* @__PURE__ */ m(
     "div",
     {
-      ref: u,
-      style: c,
+      ref: s,
+      style: u,
       onPointerDown: a,
-      onPointerMove: r,
-      onPointerUp: p,
-      onPointerCancel: p,
+      onPointerMove: d,
+      onPointerUp: h,
+      onPointerCancel: h,
       role: "slider",
-      "aria-valuenow": Math.round(n),
+      "aria-valuenow": Math.round(i),
       "aria-valuemin": 0,
       "aria-valuemax": 100,
       "aria-label": "Compare images",
       children: [
-        /* @__PURE__ */ o("div", { style: h, children: /* @__PURE__ */ o("div", { style: g, children: t ? /* @__PURE__ */ o("img", { src: t, alt: "", style: { width: "100%", height: "100%", objectFit: "contain" } }) : /* @__PURE__ */ o(zn, {}) }) }),
+        /* @__PURE__ */ o("div", { style: p, children: /* @__PURE__ */ o("div", { style: g, children: t ? /* @__PURE__ */ o("img", { src: t, alt: "", style: { width: "100%", height: "100%", objectFit: "contain" } }) : /* @__PURE__ */ o(Yi, {}) }) }),
         /* @__PURE__ */ o(
           "div",
           {
             style: {
-              ...h,
-              clipPath: `inset(0 ${100 - n}% 0 0)`,
+              ...p,
+              clipPath: `inset(0 ${100 - i}% 0 0)`,
               zIndex: 2
             },
-            children: /* @__PURE__ */ o("div", { style: g, children: e ? /* @__PURE__ */ o("img", { src: e, alt: "", style: { width: "100%", height: "100%", objectFit: "contain" } }) : /* @__PURE__ */ o(Cn, {}) })
+            children: /* @__PURE__ */ o("div", { style: g, children: e ? /* @__PURE__ */ o("img", { src: e, alt: "", style: { width: "100%", height: "100%", objectFit: "contain" } }) : /* @__PURE__ */ o(Ki, {}) })
           }
         ),
-        /* @__PURE__ */ m("div", { style: $, children: [
+        /* @__PURE__ */ m("div", { style: k, children: [
           /* @__PURE__ */ o("div", { style: v }),
-          /* @__PURE__ */ o("div", { style: b, children: /* @__PURE__ */ o("span", { "aria-hidden": !0, children: "‹›" }) })
+          /* @__PURE__ */ o("div", { style: y, children: /* @__PURE__ */ o("span", { "aria-hidden": !0, children: "‹›" }) })
         ] })
       ]
     }
   );
 }
-const Kt = {
+const Qt = {
   "scheme-1": {
     background: "#ffffff",
     color: "#111827",
@@ -3771,57 +4005,57 @@ const Kt = {
     contentPanel: "#f5f3ff",
     comparePanel: "#ececec"
   }
-}, Yt = {
+}, Zt = {
   auto: 280,
   small: 260,
   medium: 320,
   large: 400
 };
-function Pn(e, t) {
-  const i = l(e, `${t}.height`, "");
-  if (i === "auto" || i === "small" || i === "medium" || i === "large") return i;
-  const n = l(e, `${t}.mediaHeight`, "small");
-  return n === "auto" || n === "medium" || n === "large" ? n : "small";
+function Zi(e, t) {
+  const n = r(e, `${t}.height`, "");
+  if (n === "auto" || n === "small" || n === "medium" || n === "large") return n;
+  const i = r(e, `${t}.mediaHeight`, "small");
+  return i === "auto" || i === "medium" || i === "large" ? i : "small";
 }
-function Tn(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.direction`, ""), s = n === "vertical" ? "vertical" : "horizontal";
-  let u = !1;
-  n || (u = l(e, `${t}.mediaPosition`, "right") === "left");
-  const d = l(e, `${t}.verticalOnMobile`, "false") === "true", a = l(e, `${t}.layoutAlignment`, "space-between"), r = l(e, `${t}.position`, "center"), p = y(e, `${t}.layoutGap`, 46);
+function Ji(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.direction`, ""), c = i === "vertical" ? "vertical" : "horizontal";
+  let s = !1;
+  i || (s = r(e, `${t}.mediaPosition`, "right") === "left");
+  const l = r(e, `${t}.verticalOnMobile`, "false") === "true", a = r(e, `${t}.layoutAlignment`, "space-between"), d = r(e, `${t}.position`, "center"), h = x(e, `${t}.layoutGap`, 46);
   return {
-    scheme: Kt[i] ?? Kt["scheme-1"],
-    direction: s,
-    verticalOnMobile: d,
+    scheme: Qt[n] ?? Qt["scheme-1"],
+    direction: c,
+    verticalOnMobile: l,
     layoutAlignment: a,
-    position: r,
-    layoutGap: p,
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: Pn(e, t),
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: l(e, `${t}.backgroundOverlay`, "false") === "true",
-    paddingTop: y(e, `${t}.paddingTop`, 40),
-    paddingBottom: y(e, `${t}.paddingBottom`, 40),
-    customCss: l(e, `${t}.customCss`, ""),
-    compareFirst: u
+    position: d,
+    layoutGap: h,
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: Zi(e, t),
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: r(e, `${t}.backgroundOverlay`, "false") === "true",
+    paddingTop: x(e, `${t}.paddingTop`, 40),
+    paddingBottom: x(e, `${t}.paddingBottom`, 40),
+    customCss: r(e, `${t}.customCss`, ""),
+    compareFirst: s
   };
 }
-function Hn(e) {
-  return Yt[e] ?? Yt.small;
+function er(e) {
+  return Zt[e] ?? Zt.small;
 }
-function Rn(e) {
+function tr(e) {
   return e === "top" ? "flex-start" : e === "bottom" ? "flex-end" : "center";
 }
-function Ln(e) {
+function or(e) {
   return e === "space-between" ? "space-between" : e === "right" ? "flex-end" : e === "center" ? "center" : "flex-start";
 }
-function Mn(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function nr(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-const ct = {
+const nt = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
@@ -3836,95 +4070,95 @@ const ct = {
   cursor: "pointer",
   whiteSpace: "nowrap"
 };
-function oi({
+function sn({
   sectionId: e = "image_compare",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(() => Tn(n, d), [n, d]), p = l(n, `${d}.heading`), c = l(n, `${d}.subheading`), h = l(n, `${d}.button1Label`), g = l(n, `${d}.button1Url`), $ = l(n, `${d}.button2Label`), b = l(n, `${d}.button2Url`), v = l(n, `${d}.imageBeforeUrl`, ""), x = l(n, `${d}.imageAfterUrl`, ""), z = r.scheme, S = Hn(r.height), _ = r.sectionWidth === "full" ? 24 : L.padX, H = r.sectionWidth === "full" ? "100%" : L.maxWidth, w = r.direction === "horizontal", R = {
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(() => Ji(i, l), [i, l]), h = r(i, `${l}.heading`), u = r(i, `${l}.subheading`), p = r(i, `${l}.button1Label`), g = r(i, `${l}.button1Url`), k = r(i, `${l}.button2Label`), y = r(i, `${l}.button2Url`), v = r(i, `${l}.imageBeforeUrl`, ""), b = r(i, `${l}.imageAfterUrl`, ""), _ = d.scheme, $ = er(d.height), w = d.sectionWidth === "full" ? 24 : R.padX, P = d.sectionWidth === "full" ? "100%" : R.maxWidth, z = d.direction === "horizontal", L = {
     position: "relative",
-    background: z.background,
-    color: z.color,
-    fontFamily: s,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    paddingLeft: _,
-    paddingRight: _,
+    background: _.background,
+    color: _.color,
+    fontFamily: c,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    paddingLeft: w,
+    paddingRight: w,
     boxSizing: "border-box",
-    border: r.borderStyle === "solid" ? `1px solid ${z.muted}33` : void 0,
-    borderRadius: r.cornerRadius > 0 ? r.cornerRadius : void 0,
+    border: d.borderStyle === "solid" ? `1px solid ${_.muted}33` : void 0,
+    borderRadius: d.cornerRadius > 0 ? d.cornerRadius : void 0,
     overflow: "hidden"
-  }, T = {
-    maxWidth: H,
+  }, H = {
+    maxWidth: P,
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: w ? "1fr 1fr" : "1fr",
-    gridTemplateRows: w ? void 0 : "auto auto",
-    gap: r.layoutGap,
-    minHeight: S,
+    gridTemplateColumns: z ? "1fr 1fr" : "1fr",
+    gridTemplateRows: z ? void 0 : "auto auto",
+    gap: d.layoutGap,
+    minHeight: $,
     width: "100%",
-    alignItems: Rn(r.position),
-    justifyContent: Ln(r.layoutAlignment)
-  }, W = r.verticalOnMobile && w ? `ziplofy-image-compare-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", P = {
-    background: z.contentPanel,
+    alignItems: tr(d.position),
+    justifyContent: or(d.layoutAlignment)
+  }, W = d.verticalOnMobile && z ? `codiic-image-compare-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", T = {
+    background: _.contentPanel,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
     textAlign: "left",
     padding: "48px 56px",
-    minHeight: w ? S : void 0,
+    minHeight: z ? $ : void 0,
     boxSizing: "border-box"
   }, C = {
-    background: z.comparePanel,
+    background: _.comparePanel,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "32px 24px",
-    minHeight: w ? S : 280,
+    minHeight: z ? $ : 280,
     boxSizing: "border-box"
-  }, M = {
+  }, F = {
     margin: 0,
-    fontFamily: u,
+    fontFamily: s,
     fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)",
     fontWeight: 700,
     lineHeight: 1.15,
-    color: z.color
+    color: _.color
   }, f = {
     margin: "14px 0 0",
     fontSize: 16,
     lineHeight: 1.5,
-    color: z.muted,
+    color: _.muted,
     maxWidth: 400
-  }, O = {
+  }, U = {
     display: "flex",
     flexWrap: "wrap",
     gap: 12,
     marginTop: 28
-  }, N = /* @__PURE__ */ m("div", { style: P, children: [
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.heading`, label: "Heading", as: "h2", style: M, children: p }),
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.subheading`, label: "Subheading", as: "p", style: f, children: c }),
-    /* @__PURE__ */ m("div", { style: O, children: [
-      /* @__PURE__ */ o(k, { fieldPath: `${d}.button1Label`, label: "Button", as: "span", children: g ? /* @__PURE__ */ o(I, { to: g, style: ct, children: h }) : /* @__PURE__ */ o("span", { style: ct, children: h }) }),
-      /* @__PURE__ */ o(k, { fieldPath: `${d}.button2Label`, label: "Button", as: "span", children: b ? /* @__PURE__ */ o(I, { to: b, style: ct, children: $ }) : /* @__PURE__ */ o("span", { style: ct, children: $ }) })
+  }, X = /* @__PURE__ */ m("div", { style: T, children: [
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.heading`, label: "Heading", as: "h2", style: F, children: h }),
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.subheading`, label: "Subheading", as: "p", style: f, children: u }),
+    /* @__PURE__ */ m("div", { style: U, children: [
+      /* @__PURE__ */ o(S, { fieldPath: `${l}.button1Label`, label: "Button", as: "span", children: g ? /* @__PURE__ */ o(D, { to: g, style: nt, children: p }) : /* @__PURE__ */ o("span", { style: nt, children: p }) }),
+      /* @__PURE__ */ o(S, { fieldPath: `${l}.button2Label`, label: "Button", as: "span", children: y ? /* @__PURE__ */ o(D, { to: y, style: nt, children: k }) : /* @__PURE__ */ o("span", { style: nt, children: k }) })
     ] })
-  ] }), D = /* @__PURE__ */ o("div", { style: C, children: /* @__PURE__ */ o("div", { style: { width: "100%" }, children: /* @__PURE__ */ o(
-    Wn,
+  ] }), O = /* @__PURE__ */ o("div", { style: C, children: /* @__PURE__ */ o("div", { style: { width: "100%" }, children: /* @__PURE__ */ o(
+    Qi,
     {
       beforeUrl: v || void 0,
-      afterUrl: x || void 0,
-      minHeight: S - 64
+      afterUrl: b || void 0,
+      minHeight: $ - 64
     }
-  ) }) }), V = r.backgroundMedia === "image" && r.backgroundImageUrl ? r.backgroundImageUrl : null;
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: a, label: "Image compare", style: R, children: [
-    V ? /* @__PURE__ */ o(
+  ) }) }), Y = d.backgroundMedia === "image" && d.backgroundImageUrl ? d.backgroundImageUrl : null;
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: a, label: "Image compare", style: L, children: [
+    Y ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${V})`,
+          backgroundImage: `url(${Y})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           opacity: 0.35,
@@ -3932,7 +4166,7 @@ function oi({
         }
       }
     ) : null,
-    r.backgroundOverlay ? /* @__PURE__ */ o(
+    d.backgroundOverlay ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
@@ -3944,7 +4178,7 @@ function oi({
         }
       }
     ) : null,
-    r.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Mn(e, r.customCss) } }) : null,
+    d.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: nr(e, d.customCss) } }) : null,
     W ? /* @__PURE__ */ o("style", { children: `
           @media (max-width: 749px) {
             .${W} {
@@ -3953,19 +4187,19 @@ function oi({
             }
           }
         ` }) : null,
-    /* @__PURE__ */ o("div", { className: W || void 0, style: { ...T, position: "relative", zIndex: 1 }, children: r.compareFirst ? /* @__PURE__ */ m(ne, { children: [
-      D,
-      N
-    ] }) : /* @__PURE__ */ m(ne, { children: [
-      N,
-      D
+    /* @__PURE__ */ o("div", { className: W || void 0, style: { ...H, position: "relative", zIndex: 1 }, children: d.compareFirst ? /* @__PURE__ */ m(Z, { children: [
+      O,
+      X
+    ] }) : /* @__PURE__ */ m(Z, { children: [
+      X,
+      O
     ] }) })
   ] });
 }
-function Fn({ sectionId: e }) {
-  return /* @__PURE__ */ o(oi, { sectionId: e, placement: "layout" });
+function ir({ sectionId: e }) {
+  return /* @__PURE__ */ o(sn, { sectionId: e, placement: "layout" });
 }
-const Zt = {
+const Jt = {
   "scheme-1": {
     background: "#ffffff",
     color: "#111827",
@@ -3994,58 +4228,58 @@ const Zt = {
     imagePanel: "#ede9fe",
     contentPanel: "#f5f3ff"
   }
-}, En = {
+}, rr = {
   auto: 0,
   small: 260,
   medium: 320,
   large: 400
 };
-function An(e, t) {
-  const i = l(e, `${t}.height`, "");
-  if (i === "auto" || i === "small" || i === "medium" || i === "large") return i;
-  const n = l(e, `${t}.mediaHeight`, "medium");
-  return n === "auto" || n === "small" || n === "large" ? n : "medium";
+function lr(e, t) {
+  const n = r(e, `${t}.height`, "");
+  if (n === "auto" || n === "small" || n === "medium" || n === "large") return n;
+  const i = r(e, `${t}.mediaHeight`, "medium");
+  return i === "auto" || i === "small" || i === "large" ? i : "medium";
 }
-function Un(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.direction`, ""), s = n === "vertical" ? "vertical" : "horizontal";
-  let u = !0;
-  n || (u = l(e, `${t}.mediaPosition`, "left") !== "right");
-  const d = l(e, `${t}.verticalOnMobile`, "false") === "true", a = l(e, `${t}.layoutAlignment`, "left"), r = l(e, `${t}.position`, "center"), p = y(e, `${t}.layoutGap`, 32);
+function ar(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.direction`, ""), c = i === "vertical" ? "vertical" : "horizontal";
+  let s = !0;
+  i || (s = r(e, `${t}.mediaPosition`, "left") !== "right");
+  const l = r(e, `${t}.verticalOnMobile`, "false") === "true", a = r(e, `${t}.layoutAlignment`, "left"), d = r(e, `${t}.position`, "center"), h = x(e, `${t}.layoutGap`, 32);
   return {
-    scheme: Zt[i] ?? Zt["scheme-1"],
-    direction: s,
-    verticalOnMobile: d,
+    scheme: Jt[n] ?? Jt["scheme-1"],
+    direction: c,
+    verticalOnMobile: l,
     layoutAlignment: a,
-    position: r,
-    layoutGap: p,
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: An(e, t),
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: l(e, `${t}.backgroundOverlay`, "false") === "true",
-    paddingTop: y(e, `${t}.paddingTop`, 40),
-    paddingBottom: y(e, `${t}.paddingBottom`, 40),
-    customCss: l(e, `${t}.customCss`, ""),
-    imageFirst: u
+    position: d,
+    layoutGap: h,
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: lr(e, t),
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: r(e, `${t}.backgroundOverlay`, "false") === "true",
+    paddingTop: x(e, `${t}.paddingTop`, 40),
+    paddingBottom: x(e, `${t}.paddingBottom`, 40),
+    customCss: r(e, `${t}.customCss`, ""),
+    imageFirst: s
   };
 }
-function Nn(e) {
-  const t = En[e];
+function dr(e) {
+  const t = rr[e];
   return t && t > 0 ? t : void 0;
 }
-function On(e) {
+function cr(e) {
   return e === "top" ? "flex-start" : e === "bottom" ? "flex-end" : "center";
 }
-function Gn(e) {
+function sr(e) {
   return e === "right" ? "flex-end" : e === "center" ? "center" : "flex-start";
 }
-function jn(e, t) {
-  const i = t.trim();
-  return i ? i.replace(/:root/g, `[data-ziplofy-section="${e}"]`) : "";
+function ur(e, t) {
+  const n = t.trim();
+  return n ? n.replace(/:root/g, `[data-codiic-section="${e}"]`) : "";
 }
-const Qt = {
+const eo = {
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
@@ -4060,91 +4294,91 @@ const Qt = {
   cursor: "pointer",
   marginTop: 28
 };
-function ii({
+function un({
   sectionId: e = "image_with_text",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(() => Un(n, d), [n, d]), p = l(n, `${d}.imageUrl`, ""), c = l(n, `${d}.heading`), h = l(
-    n,
-    `${d}.description`,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(() => ar(i, l), [i, l]), h = r(i, `${l}.imageUrl`, ""), u = r(i, `${l}.heading`), p = r(
+    i,
+    `${l}.description`,
     "Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations."
-  ), g = l(
-    n,
-    `${d}.buttonLabel`,
-    l(n, `${d}.linkLabel`)
-  ), $ = l(
-    n,
-    `${d}.buttonUrl`,
-    l(n, `${d}.linkUrl`)
-  ), b = r.scheme, v = Nn(r.height), x = r.sectionWidth === "full" ? 24 : L.padX, z = r.sectionWidth === "full" ? "100%" : L.maxWidth, S = r.direction === "horizontal", _ = {
+  ), g = r(
+    i,
+    `${l}.buttonLabel`,
+    r(i, `${l}.linkLabel`)
+  ), k = r(
+    i,
+    `${l}.buttonUrl`,
+    r(i, `${l}.linkUrl`)
+  ), y = d.scheme, v = dr(d.height), b = d.sectionWidth === "full" ? 24 : R.padX, _ = d.sectionWidth === "full" ? "100%" : R.maxWidth, $ = d.direction === "horizontal", w = {
     position: "relative",
-    background: b.background,
-    color: b.color,
-    fontFamily: s,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    paddingLeft: x,
-    paddingRight: x,
+    background: y.background,
+    color: y.color,
+    fontFamily: c,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    paddingLeft: b,
+    paddingRight: b,
     boxSizing: "border-box",
-    border: r.borderStyle === "solid" ? `1px solid ${b.muted}33` : void 0,
-    borderRadius: r.cornerRadius > 0 ? r.cornerRadius : void 0,
+    border: d.borderStyle === "solid" ? `1px solid ${y.muted}33` : void 0,
+    borderRadius: d.cornerRadius > 0 ? d.cornerRadius : void 0,
     overflow: "hidden"
-  }, H = {
-    maxWidth: z,
+  }, P = {
+    maxWidth: _,
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: S ? "1fr 1fr" : "1fr",
-    gridTemplateRows: S ? void 0 : "auto auto",
-    gap: r.layoutGap,
+    gridTemplateColumns: $ ? "1fr 1fr" : "1fr",
+    gridTemplateRows: $ ? void 0 : "auto auto",
+    gap: d.layoutGap,
     minHeight: v,
     width: "100%",
-    alignItems: On(r.position),
-    justifyContent: Gn(r.layoutAlignment)
-  }, w = r.verticalOnMobile && S ? `ziplofy-image-with-text-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", R = {
-    background: b.imagePanel,
+    alignItems: cr(d.position),
+    justifyContent: sr(d.layoutAlignment)
+  }, z = d.verticalOnMobile && $ ? `codiic-image-with-text-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", L = {
+    background: y.imagePanel,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "40px 32px",
-    minHeight: S ? v : 280,
+    minHeight: $ ? v : 280,
     boxSizing: "border-box"
-  }, T = {
-    background: b.contentPanel,
+  }, H = {
+    background: y.contentPanel,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
     textAlign: "left",
     padding: "48px 56px",
-    minHeight: S ? v : void 0,
+    minHeight: $ ? v : void 0,
     boxSizing: "border-box"
   }, W = {
     margin: 0,
-    fontFamily: u,
+    fontFamily: s,
     fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
     fontWeight: 700,
     lineHeight: 1.15,
-    color: b.color
-  }, P = {
+    color: y.color
+  }, T = {
     margin: "16px 0 0",
     fontSize: 15,
     lineHeight: 1.55,
-    color: b.muted,
+    color: y.muted,
     maxWidth: 420
-  }, C = /* @__PURE__ */ o("div", { style: R, children: /* @__PURE__ */ o(k, { fieldPath: `${d}.imageUrl`, label: "Image", as: "span", children: p ? /* @__PURE__ */ o(
+  }, C = /* @__PURE__ */ o("div", { style: L, children: /* @__PURE__ */ o(S, { fieldPath: `${l}.imageUrl`, label: "Image", as: "span", children: h ? /* @__PURE__ */ o(
     "img",
     {
-      src: p,
+      src: h,
       alt: "",
       style: { maxWidth: "100%", maxHeight: 300, objectFit: "contain", display: "block" }
     }
-  ) : /* @__PURE__ */ o(St, {}) }) }), M = /* @__PURE__ */ m("div", { style: T, children: [
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.heading`, label: "Heading", as: "h2", style: W, children: c }),
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.description`, label: "Description", as: "p", style: P, children: h }),
-    /* @__PURE__ */ o(k, { fieldPath: `${d}.buttonLabel`, label: "Button", as: "span", children: $ ? /* @__PURE__ */ o(I, { to: $, style: Qt, children: g }) : /* @__PURE__ */ o("span", { style: Qt, children: g }) })
-  ] }), f = r.backgroundMedia === "image" && r.backgroundImageUrl ? r.backgroundImageUrl : null;
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: a, label: "Image with text", style: _, children: [
+  ) : /* @__PURE__ */ o(Ct, {}) }) }), F = /* @__PURE__ */ m("div", { style: H, children: [
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.heading`, label: "Heading", as: "h2", style: W, children: u }),
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.description`, label: "Description", as: "p", style: T, children: p }),
+    /* @__PURE__ */ o(S, { fieldPath: `${l}.buttonLabel`, label: "Button", as: "span", children: k ? /* @__PURE__ */ o(D, { to: k, style: eo, children: g }) : /* @__PURE__ */ o("span", { style: eo, children: g }) })
+  ] }), f = d.backgroundMedia === "image" && d.backgroundImageUrl ? d.backgroundImageUrl : null;
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: a, label: "Image with text", style: w, children: [
     f ? /* @__PURE__ */ o(
       "div",
       {
@@ -4160,7 +4394,7 @@ function ii({
         }
       }
     ) : null,
-    r.backgroundOverlay ? /* @__PURE__ */ o(
+    d.backgroundOverlay ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
@@ -4172,69 +4406,69 @@ function ii({
         }
       }
     ) : null,
-    r.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: jn(e, r.customCss) } }) : null,
-    w ? /* @__PURE__ */ o("style", { children: `
+    d.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: ur(e, d.customCss) } }) : null,
+    z ? /* @__PURE__ */ o("style", { children: `
           @media (max-width: 749px) {
-            .${w} {
+            .${z} {
               grid-template-columns: 1fr !important;
               grid-template-rows: auto auto !important;
             }
           }
         ` }) : null,
-    /* @__PURE__ */ o("div", { className: w || void 0, style: { ...H, position: "relative", zIndex: 1 }, children: r.imageFirst ? /* @__PURE__ */ m(ne, { children: [
+    /* @__PURE__ */ o("div", { className: z || void 0, style: { ...P, position: "relative", zIndex: 1 }, children: d.imageFirst ? /* @__PURE__ */ m(Z, { children: [
       C,
-      M
-    ] }) : /* @__PURE__ */ m(ne, { children: [
-      M,
+      F
+    ] }) : /* @__PURE__ */ m(Z, { children: [
+      F,
       C
     ] }) })
   ] });
 }
-function Dn({ sectionId: e }) {
-  return /* @__PURE__ */ o(ii, { sectionId: e, placement: "layout" });
+function hr({ sectionId: e }) {
+  return /* @__PURE__ */ o(un, { sectionId: e, placement: "layout" });
 }
-const Jt = {
+const to = {
   "scheme-1": { background: "#f6f6f7", color: "#111827", border: "#d1d5db" },
   "scheme-2": { background: "#f8fafc", color: "#0f172a", border: "#cbd5e1" },
   "scheme-3": { background: "#fff7ed", color: "#431407", border: "#fdba74" },
   "scheme-4": { background: "#f5f3ff", color: "#4c1d95", border: "#c4b5fd" }
 };
-function Bn(e, t, i) {
-  const n = l(e, `${t}.colorScheme`, "scheme-1");
+function pr(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-1");
   return {
-    scheme: Jt[n] ?? Jt["scheme-1"],
-    widthMode: jo(e, t),
-    thickness: Math.max(0, y(e, `${t}.thickness`, 1)),
-    lengthPercent: Math.min(100, Math.max(10, y(e, `${t}.length`, 100))),
-    paddingTop: y(e, `${t}.paddingTop`, 16),
-    paddingBottom: y(e, `${t}.paddingBottom`, 16),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: to[i] ?? to["scheme-1"],
+    widthMode: Vo(e, t),
+    thickness: Math.max(0, x(e, `${t}.thickness`, 1)),
+    lengthPercent: Math.min(100, Math.max(10, x(e, `${t}.length`, 100))),
+    paddingTop: x(e, `${t}.paddingTop`, 16),
+    paddingBottom: x(e, `${t}.paddingBottom`, 16),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function Xn(e, t) {
-  return Do(e, t);
+function mr(e, t) {
+  return Ko(e, t);
 }
-function wt({ sectionId: e, placement: t = "layout", templateId: i = "index" }) {
-  const n = j(), { fontBody: s } = X(), u = t === "template" ? `templates.${i}.sections.${e}.settings` : `sections.${e}.settings`, d = t === "template" ? `template:${i}:${e}` : `layout:${e}`, a = F(() => Bn(n, u), [n, u]), r = a.widthMode === "full" ? "100%" : L.maxWidth, p = a.widthMode === "full" ? 24 : L.padX, c = Math.max(a.thickness, 1), h = {
+function _t({ sectionId: e, placement: t = "layout", templateId: n = "index" }) {
+  const i = j(), { fontBody: c } = q(), s = t === "template" ? `templates.${n}.sections.${e}.settings` : `sections.${e}.settings`, l = t === "template" ? `template:${n}:${e}` : `layout:${e}`, a = M(() => pr(i, s), [i, s]), d = a.widthMode === "full" ? "100%" : R.maxWidth, h = a.widthMode === "full" ? 24 : R.padX, u = Math.max(a.thickness, 1), p = {
     background: a.scheme.background,
     color: a.scheme.color,
-    fontFamily: s,
+    fontFamily: c,
     paddingTop: a.paddingTop,
     paddingBottom: a.paddingBottom,
-    paddingLeft: p,
-    paddingRight: p,
+    paddingLeft: h,
+    paddingRight: h,
     boxSizing: "border-box"
   }, g = {
-    maxWidth: r,
+    maxWidth: d,
     margin: "0 auto",
     width: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: c
+    minHeight: u
   };
-  return /* @__PURE__ */ m(G, { sectionId: e, editorNodeId: d, label: "Divider", style: h, children: [
-    a.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Xn(e, a.customCss) } }) : null,
+  return /* @__PURE__ */ m(B, { sectionId: e, editorNodeId: l, label: "Divider", style: p, children: [
+    a.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: mr(e, a.customCss) } }) : null,
     /* @__PURE__ */ o("div", { style: g, children: /* @__PURE__ */ o(
       "hr",
       {
@@ -4244,64 +4478,96 @@ function wt({ sectionId: e, placement: t = "layout", templateId: i = "index" }) 
           maxWidth: "100%",
           margin: 0,
           border: "none",
-          borderTop: `${c}px solid ${a.scheme.border}`,
+          borderTop: `${u}px solid ${a.scheme.border}`,
           flexShrink: 0
         }
       }
     ) })
   ] });
 }
-const eo = {
+const oo = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#4b5563", border: "#e5e7eb" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#4b5563", border: "#e5e7eb" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#475569", border: "#cbd5e1" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#5b21b6", border: "#ddd6fe" }
-}, qn = {
-  auto: 0,
-  small: 260,
-  medium: 320,
-  large: 400
 };
-function In(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.direction`, "vertical"), s = l(e, `${t}.layoutAlignment`, "") || l(e, `${t}.headingAlignment`, "left"), u = l(e, `${t}.height`, "auto");
+function gr(e) {
+  const t = oo["scheme-1"], n = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(e) ? e : "";
+  if (n) {
+    let i = n.slice(1);
+    i.length === 3 && (i = i.split("").map((h) => h + h).join(""));
+    const c = parseInt(i.slice(0, 2), 16), s = parseInt(i.slice(2, 4), 16), l = parseInt(i.slice(4, 6), 16), d = (0.299 * c + 0.587 * s + 0.114 * l) / 255 > 0.6;
+    return {
+      background: n,
+      color: d ? "#111827" : "#ffffff",
+      muted: d ? "#4b5563" : "rgba(255,255,255,0.72)",
+      border: d ? "#e5e7eb" : "rgba(255,255,255,0.2)"
+    };
+  }
+  return oo[e] ?? t;
+}
+const fr = {
+  auto: 0,
+  small: 40,
+  medium: 60,
+  large: 80,
+  "full-screen": 100
+};
+function br(e, t) {
+  if (e === "custom") {
+    const i = Math.min(Math.max(t, 0), 100);
+    return i > 0 ? `${i}vh` : void 0;
+  }
+  const n = fr[e] ?? 0;
+  return n > 0 ? `${n}vh` : void 0;
+}
+function yr(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.direction`, "vertical"), c = r(e, `${t}.layoutAlignment`, "") || r(e, `${t}.headingAlignment`, "left"), s = r(e, `${t}.height`, "auto"), l = x(e, `${t}.customHeight`, 50);
   return {
-    scheme: eo[i] ?? eo["scheme-1"],
-    direction: n === "horizontal" ? "horizontal" : "vertical",
-    layoutAlignment: s === "center" || s === "right" ? s : "left",
-    position: l(e, `${t}.position`, "center"),
-    layoutGap: y(e, `${t}.layoutGap`, 32),
-    openFirstItem: U(e, `${t}.openFirstItem`, !1),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: u,
-    minHeightPx: qn[u] ?? 0,
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: gr(n),
+    direction: i === "horizontal" ? "horizontal" : "vertical",
+    layoutAlignment: c === "center" || c === "right" ? c : "left",
+    position: r(e, `${t}.position`, "center"),
+    layoutGap: x(e, `${t}.layoutGap`, 32),
+    openFirstItem: E(e, `${t}.openFirstItem`, !1),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: s,
+    customHeight: l,
+    minHeight: br(s, l),
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    overlayColor: r(e, `${t}.overlayColor`, "#00000066"),
+    overlayStyle: r(e, `${t}.overlayStyle`, "solid") === "gradient" ? "gradient" : "solid",
+    overlayGradientDirection: r(e, `${t}.overlayGradientDirection`, "up") === "down" ? "down" : "up",
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function Vn(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
-  return !a || typeof a != "object" ? [] : (d.length ? d : Object.keys(a)).map((p) => {
-    const c = a[p];
-    if (!c) return null;
-    const h = c.settings ?? {}, g = String(h.question ?? "").trim();
+function xr(e) {
+  return e.overlayStyle === "gradient" ? e.overlayGradientDirection === "down" ? `linear-gradient(180deg, transparent 0%, ${e.overlayColor} 100%)` : `linear-gradient(180deg, ${e.overlayColor} 0%, transparent 100%)` : e.overlayColor;
+}
+function $r(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
+  return !a || typeof a != "object" ? [] : (l.length ? l : Object.keys(a)).map((h) => {
+    const u = a[h];
+    if (!u) return null;
+    const p = u.settings ?? {}, g = String(p.question ?? "").trim();
     return g ? {
-      id: p,
+      id: h,
       question: g,
-      answer: String(h.answer ?? "")
+      answer: String(p.answer ?? "")
     } : null;
-  }).filter((p) => p != null);
+  }).filter((h) => h != null);
 }
-function Kn(e, t) {
-  const i = `.ziplofy-faq-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function kr(e, t) {
+  const n = `.codiic-faq-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function Yn({ open: e }) {
+function vr({ open: e }) {
   return /* @__PURE__ */ o(
     "svg",
     {
@@ -4328,107 +4594,110 @@ function Yn({ open: e }) {
     }
   );
 }
-function ni({
+function hn({
   sectionId: e = "faq_section",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), s = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, u = i === "template" ? `template:${t}:${e}` : `layout:${e}`, d = F(() => In(n, s), [n, s]), a = F(
-    () => Vn(n, t, e, i),
-    [n, t, e, i]
-  ), r = l(n, `${s}.heading`), [p, c] = Z(() => d.openFirstItem && a[0] ? /* @__PURE__ */ new Set([a[0].id]) : /* @__PURE__ */ new Set()), h = d.scheme, g = d.sectionWidth === "full" ? 24 : L.padX, $ = d.sectionWidth === "full" ? "100%" : L.maxWidth, b = `ziplofy-faq-${e.replace(/[^a-z0-9_-]/gi, "-")}`, v = d.layoutAlignment, x = {
+  const i = j(), c = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, s = n === "template" ? `template:${t}:${e}` : `layout:${e}`, l = M(() => yr(i, c), [i, c]), a = M(
+    () => $r(i, t, e, n),
+    [i, t, e, n]
+  ), d = r(i, `${c}.heading`), [h, u] = te(() => l.openFirstItem && a[0] ? /* @__PURE__ */ new Set([a[0].id]) : /* @__PURE__ */ new Set()), p = l.scheme, g = l.sectionWidth === "full" ? 24 : R.padX, k = l.sectionWidth === "full" ? "100%" : R.maxWidth, y = `codiic-faq-${e.replace(/[^a-z0-9_-]/gi, "-")}`, v = l.layoutAlignment, b = {
     position: "relative",
-    background: (d.backgroundMedia === "image" && d.backgroundImageUrl, h.background),
-    color: h.color,
-    paddingTop: d.paddingTop,
-    paddingBottom: d.paddingBottom,
+    display: "flex",
+    flexDirection: "column",
+    background: (l.backgroundMedia === "image" && l.backgroundImageUrl, p.background),
+    color: p.color,
+    paddingTop: l.paddingTop,
+    paddingBottom: l.paddingBottom,
     paddingLeft: g,
     paddingRight: g,
     boxSizing: "border-box",
-    minHeight: d.minHeightPx > 0 ? d.minHeightPx : void 0,
-    border: d.borderStyle === "solid" ? `1px solid ${h.border}` : void 0,
-    borderRadius: d.cornerRadius > 0 ? d.cornerRadius : void 0,
-    overflow: d.cornerRadius > 0 ? "hidden" : void 0
-  }, z = d.backgroundMedia === "image" && d.backgroundImageUrl ? d.backgroundImageUrl : null, S = {
-    maxWidth: $,
+    minHeight: l.minHeight,
+    border: l.borderStyle === "solid" ? `1px solid ${p.border}` : void 0,
+    borderRadius: l.cornerRadius > 0 ? l.cornerRadius : void 0,
+    overflow: l.cornerRadius > 0 ? "hidden" : void 0
+  }, _ = l.backgroundMedia === "image" && l.backgroundImageUrl ? l.backgroundImageUrl : null, $ = {
+    maxWidth: k,
     margin: "0 auto",
     width: "100%",
+    flex: l.minHeight ? "1 1 auto" : void 0,
     display: "flex",
-    flexDirection: d.direction === "horizontal" ? "row" : "column",
-    alignItems: d.position === "top" ? "flex-start" : d.position === "bottom" ? "flex-end" : "center",
-    gap: d.layoutGap
-  }, _ = {
+    flexDirection: l.direction === "horizontal" ? "row" : "column",
+    alignItems: l.position === "top" ? "flex-start" : l.position === "bottom" ? "flex-end" : "center",
+    gap: l.layoutGap
+  }, w = {
     margin: 0,
     fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
     fontWeight: 700,
     lineHeight: 1.15,
     letterSpacing: "-0.02em",
     textAlign: v,
-    marginBottom: d.direction === "horizontal" ? 0 : d.layoutGap,
-    flex: d.direction === "horizontal" ? "0 0 38%" : void 0
-  }, H = {
+    marginBottom: l.direction === "horizontal" ? 0 : l.layoutGap,
+    flex: l.direction === "horizontal" ? "0 0 38%" : void 0
+  }, P = {
     flex: 1,
     width: "100%"
-  }, w = (T) => {
-    c((W) => {
-      const P = new Set(W);
-      return P.has(T) ? P.delete(T) : P.add(T), P;
+  }, z = (H) => {
+    u((W) => {
+      const T = new Set(W);
+      return T.has(H) ? T.delete(H) : T.add(H), T;
     });
-  }, R = Kn(e, d.customCss);
-  return /* @__PURE__ */ m(G, { sectionId: e, label: "FAQ", editorNodeId: u, style: x, children: [
-    R ? /* @__PURE__ */ o("style", { children: R }) : null,
-    z ? /* @__PURE__ */ o(
+  }, L = kr(e, l.customCss);
+  return /* @__PURE__ */ m(B, { sectionId: e, label: "FAQ", editorNodeId: s, style: b, children: [
+    L ? /* @__PURE__ */ o("style", { children: L }) : null,
+    _ ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${z})`,
+          backgroundImage: `url(${_})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 0
         }
       }
     ) : null,
-    d.backgroundOverlay && z ? /* @__PURE__ */ o(
+    l.backgroundOverlay && _ ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          background: "rgba(0,0,0,0.35)",
+          background: xr(l),
           zIndex: 1
         }
       }
     ) : null,
-    /* @__PURE__ */ m("div", { className: b, style: { ...S, position: "relative", zIndex: 2 }, children: [
-      /* @__PURE__ */ o(k, { fieldPath: `${s}.heading`, label: "Heading", as: "h2", style: _, children: r }),
+    /* @__PURE__ */ m("div", { className: y, style: { ...$, position: "relative", zIndex: 2 }, children: [
+      /* @__PURE__ */ o(S, { fieldPath: `${c}.heading`, label: "Heading", as: "h2", style: w, children: d }),
       /* @__PURE__ */ o(
         "div",
         {
           role: "list",
           style: {
-            ...H,
-            borderTop: `1px solid ${h.border}`
+            ...P,
+            borderTop: `1px solid ${p.border}`
           },
-          children: a.map((T) => {
-            const W = p.has(T.id), P = i === "template" ? `template:${t}:${e}:block:${T.id}` : `layout:${e}:block:${T.id}`, C = `${s.replace(/\.settings$/, "")}.blocks.${T.id}.settings.question`, M = `${s.replace(/\.settings$/, "")}.blocks.${T.id}.settings.answer`;
+          children: a.map((H) => {
+            const W = h.has(H.id), T = n === "template" ? `template:${t}:${e}:block:${H.id}` : `layout:${e}:block:${H.id}`, C = `${c.replace(/\.settings$/, "")}.blocks.${H.id}.settings.question`, F = `${c.replace(/\.settings$/, "")}.blocks.${H.id}.settings.answer`;
             return /* @__PURE__ */ m(
               "div",
               {
                 role: "listitem",
-                "data-ziplofy-node": P,
-                "data-ziplofy-label": T.question,
-                "data-ziplofy-kind": "block",
-                style: { borderBottom: `1px solid ${h.border}` },
+                "data-codiic-node": T,
+                "data-codiic-label": H.question,
+                "data-codiic-kind": "block",
+                style: { borderBottom: `1px solid ${p.border}` },
                 children: [
                   /* @__PURE__ */ m(
                     "button",
                     {
                       type: "button",
-                      onClick: () => w(T.id),
+                      onClick: () => z(H.id),
                       "aria-expanded": W,
                       style: {
                         display: "flex",
@@ -4446,7 +4715,7 @@ function ni({
                       },
                       children: [
                         /* @__PURE__ */ o(
-                          k,
+                          S,
                           {
                             fieldPath: C,
                             label: "Question",
@@ -4457,10 +4726,10 @@ function ni({
                               lineHeight: 1.4,
                               flex: 1
                             },
-                            children: T.question
+                            children: H.question
                           }
                         ),
-                        /* @__PURE__ */ o(Yn, { open: W })
+                        /* @__PURE__ */ o(vr, { open: W })
                       ]
                     }
                   ),
@@ -4470,16 +4739,16 @@ function ni({
                       style: {
                         paddingBottom: 20,
                         paddingRight: 32,
-                        color: h.muted,
+                        color: p.muted,
                         fontSize: "0.9375rem",
                         lineHeight: 1.6
                       },
-                      children: /* @__PURE__ */ o(k, { fieldPath: M, label: "Answer", as: "div", children: T.answer || "Add an answer in the sidebar." })
+                      children: /* @__PURE__ */ o(S, { fieldPath: F, label: "Answer", as: "div", children: H.answer || "Add an answer in the sidebar." })
                     }
                   ) : null
                 ]
               },
-              T.id
+              H.id
             );
           })
         }
@@ -4487,19 +4756,19 @@ function ni({
     ] })
   ] });
 }
-function Zn({ icon: e, style: t, className: i }) {
-  const n = {
+function Sr({ icon: e, style: t, className: n }) {
+  const i = {
     width: 28,
     height: 28,
     viewBox: "0 0 24 24",
     fill: "none",
     "aria-hidden": !0,
     style: t,
-    className: i
+    className: n
   };
   switch (e) {
     case "heart":
-      return /* @__PURE__ */ o("svg", { ...n, children: /* @__PURE__ */ o(
+      return /* @__PURE__ */ o("svg", { ...i, children: /* @__PURE__ */ o(
         "path",
         {
           d: "M12 20.5s-7-4.5-7-9.5a4.5 4.5 0 0 1 7.5-3.3A4.5 4.5 0 0 1 19 11c0 5-7 9.5-7 9.5Z",
@@ -4509,7 +4778,7 @@ function Zn({ icon: e, style: t, className: i }) {
         }
       ) });
     case "person":
-      return /* @__PURE__ */ m("svg", { ...n, children: [
+      return /* @__PURE__ */ m("svg", { ...i, children: [
         /* @__PURE__ */ o("circle", { cx: "12", cy: "8", r: "3.5", stroke: "currentColor", strokeWidth: "1.5" }),
         /* @__PURE__ */ o(
           "path",
@@ -4522,7 +4791,7 @@ function Zn({ icon: e, style: t, className: i }) {
         )
       ] });
     case "leaf":
-      return /* @__PURE__ */ m("svg", { ...n, children: [
+      return /* @__PURE__ */ m("svg", { ...i, children: [
         /* @__PURE__ */ o(
           "path",
           {
@@ -4535,7 +4804,7 @@ function Zn({ icon: e, style: t, className: i }) {
         /* @__PURE__ */ o("path", { d: "M12 3v18", stroke: "currentColor", strokeWidth: "1.5" })
       ] });
     case "truck":
-      return /* @__PURE__ */ m("svg", { ...n, children: [
+      return /* @__PURE__ */ m("svg", { ...i, children: [
         /* @__PURE__ */ o(
           "path",
           {
@@ -4549,7 +4818,7 @@ function Zn({ icon: e, style: t, className: i }) {
         /* @__PURE__ */ o("circle", { cx: "17", cy: "17", r: "1.5", fill: "currentColor" })
       ] });
     case "shield":
-      return /* @__PURE__ */ o("svg", { ...n, children: /* @__PURE__ */ o(
+      return /* @__PURE__ */ o("svg", { ...i, children: /* @__PURE__ */ o(
         "path",
         {
           d: "M12 3 5 6v6c0 4.5 3.5 7.5 7 9 3.5-1.5 7-4.5 7-9V6l-7-3Z",
@@ -4559,7 +4828,7 @@ function Zn({ icon: e, style: t, className: i }) {
         }
       ) });
     case "star":
-      return /* @__PURE__ */ o("svg", { ...n, children: /* @__PURE__ */ o(
+      return /* @__PURE__ */ o("svg", { ...i, children: /* @__PURE__ */ o(
         "path",
         {
           d: "M12 4l2.2 5 5.5.5-4.2 3.5 1.3 5.5-4.8-3-4.8 3 1.3-5.5-4.2-3.5 5.5-.5L12 4Z",
@@ -4569,12 +4838,12 @@ function Zn({ icon: e, style: t, className: i }) {
         }
       ) });
     case "gift":
-      return /* @__PURE__ */ m("svg", { ...n, children: [
+      return /* @__PURE__ */ m("svg", { ...i, children: [
         /* @__PURE__ */ o("rect", { x: "4", y: "10", width: "16", height: "10", rx: "1", stroke: "currentColor", strokeWidth: "1.5" }),
         /* @__PURE__ */ o("path", { d: "M12 10V20M4 10h16M8 10c0-2 1.5-4 4-4s4 2 4 4", stroke: "currentColor", strokeWidth: "1.5" })
       ] });
     default:
-      return /* @__PURE__ */ m("svg", { ...n, children: [
+      return /* @__PURE__ */ m("svg", { ...i, children: [
         /* @__PURE__ */ o(
           "path",
           {
@@ -4588,129 +4857,129 @@ function Zn({ icon: e, style: t, className: i }) {
       ] });
   }
 }
-const to = {
+const no = {
   "scheme-1": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#475569" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#5b21b6" }
 };
-function Qn(e) {
+function wr(e) {
   return e === "right" ? "end" : e === "center" ? "center" : "start";
 }
-function Jn(e) {
+function Cr(e) {
   return e === "top" ? "start" : e === "bottom" ? "end" : "center";
 }
-function el(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.direction`, "horizontal"), s = l(e, `${t}.layoutAlignment`, "left"), u = y(e, `${t}.columns`, 3);
+function _r(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.direction`, "horizontal"), c = r(e, `${t}.layoutAlignment`, "left"), s = x(e, `${t}.columns`, 3);
   return {
-    scheme: to[i] ?? to["scheme-1"],
-    direction: n === "vertical" ? "vertical" : "horizontal",
-    verticalOnMobile: U(e, `${t}.verticalOnMobile`, !1),
-    layoutAlignment: s === "left" || s === "right" ? s : "center",
-    position: l(e, `${t}.position`, "center"),
-    columns: Math.min(4, Math.max(2, u)),
-    layoutGap: y(e, `${t}.layoutGap`, 16),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: l(e, `${t}.height`, "auto"),
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: no[n] ?? no["scheme-1"],
+    direction: i === "vertical" ? "vertical" : "horizontal",
+    verticalOnMobile: E(e, `${t}.verticalOnMobile`, !1),
+    layoutAlignment: c === "left" || c === "right" ? c : "center",
+    position: r(e, `${t}.position`, "center"),
+    columns: Math.min(4, Math.max(2, s)),
+    layoutGap: x(e, `${t}.layoutGap`, 16),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: r(e, `${t}.height`, "auto"),
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function tl(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
-  return !a || typeof a != "object" ? [] : (d.length ? d : Object.keys(a)).map((p) => {
-    const c = a[p];
-    if (!c) return null;
-    const h = c.settings ?? {}, g = String(h.heading ?? h.title ?? "").trim();
+function Wr(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
+  return !a || typeof a != "object" ? [] : (l.length ? l : Object.keys(a)).map((h) => {
+    const u = a[h];
+    if (!u) return null;
+    const p = u.settings ?? {}, g = String(p.heading ?? p.title ?? "").trim();
     return g ? {
-      id: p,
-      icon: String(h.icon ?? "eye"),
+      id: h,
+      icon: String(p.icon ?? "eye"),
       heading: g,
-      text: String(h.text ?? "")
+      text: String(p.text ?? "")
     } : null;
-  }).filter((p) => p != null);
+  }).filter((h) => h != null);
 }
-function ol(e, t) {
-  const i = `.ziplofy-icons-with-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function zr(e, t) {
+  const n = `.codiic-icons-with-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function il(e) {
-  return `@media (max-width: 749px) { ${`.ziplofy-icons-with-text-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}`} { grid-template-columns: 1fr !important; } }`;
+function Pr(e) {
+  return `@media (max-width: 749px) { ${`.codiic-icons-with-text-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}`} { grid-template-columns: 1fr !important; } }`;
 }
-function li({
+function pn({
   sectionId: e = "icons_with_text",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), s = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, u = i === "template" ? `template:${t}:${e}` : `layout:${e}`, d = F(
-    () => el(n, s),
-    [n, s]
-  ), a = F(
-    () => tl(n, t, e, i),
-    [n, t, e, i]
-  ), r = d.scheme, p = d.sectionWidth === "full" ? 24 : L.padX, c = d.sectionWidth === "full" ? "100%" : L.maxWidth, h = `ziplofy-icons-with-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = Math.max(a.length, d.columns), $ = d.direction === "horizontal", b = d.verticalOnMobile && $ ? `ziplofy-icons-with-text-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", v = {
+  const i = j(), c = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, s = n === "template" ? `template:${t}:${e}` : `layout:${e}`, l = M(
+    () => _r(i, c),
+    [i, c]
+  ), a = M(
+    () => Wr(i, t, e, n),
+    [i, t, e, n]
+  ), d = l.scheme, h = l.sectionWidth === "full" ? 24 : R.padX, u = l.sectionWidth === "full" ? "100%" : R.maxWidth, p = `codiic-icons-with-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = Math.max(a.length, l.columns), k = l.direction === "horizontal", y = l.verticalOnMobile && k ? `codiic-icons-with-text-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", v = {
     position: "relative",
-    background: r.background,
-    color: r.color,
-    paddingTop: d.paddingTop,
-    paddingBottom: d.paddingBottom,
-    paddingLeft: p,
-    paddingRight: p,
+    background: d.background,
+    color: d.color,
+    paddingTop: l.paddingTop,
+    paddingBottom: l.paddingBottom,
+    paddingLeft: h,
+    paddingRight: h,
     boxSizing: "border-box",
-    border: d.borderStyle === "solid" ? `1px solid ${r.muted}33` : void 0,
-    borderRadius: d.cornerRadius > 0 ? d.cornerRadius : void 0,
-    overflow: d.cornerRadius > 0 ? "hidden" : void 0
-  }, x = d.backgroundMedia === "image" && d.backgroundImageUrl ? d.backgroundImageUrl : null, z = {
+    border: l.borderStyle === "solid" ? `1px solid ${d.muted}33` : void 0,
+    borderRadius: l.cornerRadius > 0 ? l.cornerRadius : void 0,
+    overflow: l.cornerRadius > 0 ? "hidden" : void 0
+  }, b = l.backgroundMedia === "image" && l.backgroundImageUrl ? l.backgroundImageUrl : null, _ = {
     display: "grid",
-    gridTemplateColumns: $ ? `repeat(${g}, minmax(0, 1fr))` : "1fr",
-    gap: d.layoutGap,
+    gridTemplateColumns: k ? `repeat(${g}, minmax(0, 1fr))` : "1fr",
+    gap: l.layoutGap,
     width: "100%",
-    justifyItems: Qn(d.layoutAlignment),
-    alignContent: Jn(d.position),
+    justifyItems: wr(l.layoutAlignment),
+    alignContent: Cr(l.position),
     minHeight: void 0
-  }, S = {
+  }, $ = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     textAlign: "center",
     gap: 12
-  }, _ = {
+  }, w = {
     margin: 0,
     fontSize: "1.0625rem",
     fontWeight: 700,
     lineHeight: 1.3,
     letterSpacing: "-0.01em"
-  }, H = {
+  }, P = {
     margin: 0,
     fontSize: "0.9375rem",
     lineHeight: 1.5,
-    color: r.muted,
+    color: d.muted,
     maxWidth: 280
-  }, w = ol(e, d.customCss), R = b ? il(e) : "", T = s.replace(/\.settings$/, "");
-  return /* @__PURE__ */ m(G, { sectionId: e, label: "Icons with text", editorNodeId: u, style: v, children: [
-    w ? /* @__PURE__ */ o("style", { children: w }) : null,
-    R ? /* @__PURE__ */ o("style", { children: R }) : null,
-    x ? /* @__PURE__ */ o(
+  }, z = zr(e, l.customCss), L = y ? Pr(e) : "", H = c.replace(/\.settings$/, "");
+  return /* @__PURE__ */ m(B, { sectionId: e, label: "Icons with text", editorNodeId: s, style: v, children: [
+    z ? /* @__PURE__ */ o("style", { children: z }) : null,
+    L ? /* @__PURE__ */ o("style", { children: L }) : null,
+    b ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${x})`,
+          backgroundImage: `url(${b})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 0
         }
       }
     ) : null,
-    d.backgroundOverlay && x ? /* @__PURE__ */ o(
+    l.backgroundOverlay && b ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
@@ -4725,221 +4994,42 @@ function li({
     /* @__PURE__ */ o(
       "div",
       {
-        className: h,
+        className: p,
         style: {
-          maxWidth: c,
+          maxWidth: u,
           margin: "0 auto",
           width: "100%",
           position: "relative",
           zIndex: 2
         },
-        children: /* @__PURE__ */ o("div", { className: b || void 0, style: z, children: a.map((W) => {
-          const P = i === "template" ? `template:${t}:${e}:block:${W.id}` : `layout:${e}:block:${W.id}`;
+        children: /* @__PURE__ */ o("div", { className: y || void 0, style: _, children: a.map((W) => {
+          const T = n === "template" ? `template:${t}:${e}:block:${W.id}` : `layout:${e}:block:${W.id}`;
           return /* @__PURE__ */ m(
             "div",
             {
-              "data-ziplofy-node": P,
-              "data-ziplofy-label": W.heading,
-              "data-ziplofy-kind": "block",
-              style: S,
+              "data-codiic-node": T,
+              "data-codiic-label": W.heading,
+              "data-codiic-kind": "block",
+              style: $,
               children: [
-                /* @__PURE__ */ o(Zn, { icon: W.icon, style: { color: "inherit" } }),
+                /* @__PURE__ */ o(Sr, { icon: W.icon, style: { color: "inherit" } }),
                 /* @__PURE__ */ o(
-                  k,
+                  S,
                   {
-                    fieldPath: `${T}.blocks.${W.id}.settings.heading`,
+                    fieldPath: `${H}.blocks.${W.id}.settings.heading`,
                     label: "Heading",
                     as: "h3",
-                    style: _,
+                    style: w,
                     children: W.heading
                   }
                 ),
                 /* @__PURE__ */ o(
-                  k,
+                  S,
                   {
-                    fieldPath: `${T}.blocks.${W.id}.settings.text`,
+                    fieldPath: `${H}.blocks.${W.id}.settings.text`,
                     label: "Description",
                     as: "p",
-                    style: H,
-                    children: W.text || "Add a description in the sidebar."
-                  }
-                )
-              ]
-            },
-            W.id
-          );
-        }) })
-      }
-    )
-  ] });
-}
-const oo = {
-  "scheme-1": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
-  "scheme-2": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
-  "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#475569" },
-  "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#5b21b6" }
-};
-function nl(e) {
-  return e === "right" ? "end" : e === "center" ? "center" : "start";
-}
-function ll(e) {
-  return e === "top" ? "start" : e === "bottom" ? "end" : "center";
-}
-function rl(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.direction`, "horizontal"), s = l(e, `${t}.layoutAlignment`, "left"), u = y(e, `${t}.columns`, 3);
-  return {
-    scheme: oo[i] ?? oo["scheme-1"],
-    direction: n === "vertical" ? "vertical" : "horizontal",
-    verticalOnMobile: U(e, `${t}.verticalOnMobile`, !0),
-    layoutAlignment: s === "left" || s === "right" ? s : "center",
-    position: l(e, `${t}.position`, "top"),
-    columns: Math.min(4, Math.max(2, u)),
-    layoutGap: y(e, `${t}.layoutGap`, 16),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: l(e, `${t}.height`, "auto"),
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
-  };
-}
-function al(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
-  return !a || typeof a != "object" ? [] : (d.length ? d : Object.keys(a)).map((p) => {
-    const c = a[p];
-    if (!c) return null;
-    const h = c.settings ?? {}, g = String(h.heading ?? h.title ?? "").trim();
-    return g ? {
-      id: p,
-      heading: g,
-      text: String(h.text ?? "")
-    } : null;
-  }).filter((p) => p != null);
-}
-function dl(e, t) {
-  const i = `.ziplofy-multicolumn-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
-}
-function cl(e) {
-  return `@media (max-width: 749px) { ${`.ziplofy-multicolumn-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}`} { grid-template-columns: 1fr !important; } }`;
-}
-function ri({
-  sectionId: e = "multicolumn_section",
-  templateId: t = "index",
-  placement: i = "template"
-}) {
-  const n = j(), s = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, u = i === "template" ? `template:${t}:${e}` : `layout:${e}`, d = F(() => rl(n, s), [n, s]), a = F(
-    () => al(n, t, e, i),
-    [n, t, e, i]
-  ), r = d.scheme, p = d.sectionWidth === "full" ? 24 : L.padX, c = d.sectionWidth === "full" ? "100%" : L.maxWidth, h = `ziplofy-multicolumn-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = Math.max(a.length, d.columns), $ = d.direction === "horizontal", b = d.verticalOnMobile && $ ? `ziplofy-multicolumn-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", v = {
-    position: "relative",
-    background: r.background,
-    color: r.color,
-    paddingTop: d.paddingTop,
-    paddingBottom: d.paddingBottom,
-    paddingLeft: p,
-    paddingRight: p,
-    boxSizing: "border-box",
-    border: d.borderStyle === "solid" ? `1px solid ${r.muted}33` : void 0,
-    borderRadius: d.cornerRadius > 0 ? d.cornerRadius : void 0,
-    overflow: d.cornerRadius > 0 ? "hidden" : void 0
-  }, x = d.backgroundMedia === "image" && d.backgroundImageUrl ? d.backgroundImageUrl : null, z = {
-    display: "grid",
-    gridTemplateColumns: $ ? `repeat(${g}, minmax(0, 1fr))` : "1fr",
-    gap: d.layoutGap,
-    width: "100%",
-    justifyItems: nl(d.layoutAlignment),
-    alignContent: ll(d.position)
-  }, S = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    textAlign: "center",
-    gap: 16
-  }, _ = {
-    margin: 0,
-    fontSize: "1.0625rem",
-    fontWeight: 700,
-    lineHeight: 1.3,
-    letterSpacing: "-0.01em"
-  }, H = {
-    margin: 0,
-    fontSize: "0.9375rem",
-    lineHeight: 1.55,
-    color: r.muted,
-    maxWidth: 320
-  }, w = dl(e, d.customCss), R = b ? cl(e) : "", T = s.replace(/\.settings$/, "");
-  return /* @__PURE__ */ m(G, { sectionId: e, label: "Multicolumn", editorNodeId: u, style: v, children: [
-    w ? /* @__PURE__ */ o("style", { children: w }) : null,
-    R ? /* @__PURE__ */ o("style", { children: R }) : null,
-    x ? /* @__PURE__ */ o(
-      "div",
-      {
-        "aria-hidden": !0,
-        style: {
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `url(${x})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          zIndex: 0
-        }
-      }
-    ) : null,
-    d.backgroundOverlay && x ? /* @__PURE__ */ o(
-      "div",
-      {
-        "aria-hidden": !0,
-        style: {
-          position: "absolute",
-          inset: 0,
-          background: "rgba(0,0,0,0.35)",
-          zIndex: 1
-        }
-      }
-    ) : null,
-    /* @__PURE__ */ o(
-      "div",
-      {
-        className: h,
-        style: {
-          maxWidth: c,
-          margin: "0 auto",
-          width: "100%",
-          position: "relative",
-          zIndex: 2
-        },
-        children: /* @__PURE__ */ o("div", { className: b || void 0, style: z, children: a.map((W) => {
-          const P = i === "template" ? `template:${t}:${e}:block:${W.id}` : `layout:${e}:block:${W.id}`;
-          return /* @__PURE__ */ m(
-            "div",
-            {
-              "data-ziplofy-node": P,
-              "data-ziplofy-label": W.heading,
-              "data-ziplofy-kind": "block",
-              style: S,
-              children: [
-                /* @__PURE__ */ o(
-                  k,
-                  {
-                    fieldPath: `${T}.blocks.${W.id}.settings.heading`,
-                    label: "Heading",
-                    as: "h3",
-                    style: _,
-                    children: W.heading
-                  }
-                ),
-                /* @__PURE__ */ o(
-                  k,
-                  {
-                    fieldPath: `${T}.blocks.${W.id}.settings.text`,
-                    label: "Description",
-                    as: "p",
-                    style: H,
+                    style: P,
                     children: W.text || "Add a description in the sidebar."
                   }
                 )
@@ -4953,111 +5043,123 @@ function ri({
   ] });
 }
 const io = {
-  "scheme-1": { background: "#f6f6f7", color: "#111827", muted: "#4b5563" },
-  "scheme-2": { background: "#ffffff", color: "#111827", muted: "#4b5563" },
+  "scheme-1": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
+  "scheme-2": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#475569" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#5b21b6" }
-}, sl = {
-  auto: 0,
-  small: 200,
-  medium: 280,
-  large: 360
 };
-function ul(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.layoutAlignment`, "center"), s = l(e, `${t}.height`, "auto"), u = l(e, `${t}.direction`, "vertical");
+function Hr(e) {
+  return e === "right" ? "end" : e === "center" ? "center" : "start";
+}
+function Tr(e) {
+  return e === "top" ? "start" : e === "bottom" ? "end" : "center";
+}
+function Lr(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.direction`, "horizontal"), c = r(e, `${t}.layoutAlignment`, "left"), s = x(e, `${t}.columns`, 3);
   return {
-    scheme: io[i] ?? io["scheme-1"],
-    direction: u === "horizontal" ? "horizontal" : "vertical",
-    layoutAlignment: n === "left" || n === "right" ? n : "center",
-    position: l(e, `${t}.position`, "center"),
-    layoutGap: y(e, `${t}.layoutGap`, 16),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: s,
-    minHeightPx: sl[s] ?? 0,
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 64),
-    paddingBottom: y(e, `${t}.paddingBottom`, 64),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: io[n] ?? io["scheme-1"],
+    direction: i === "vertical" ? "vertical" : "horizontal",
+    verticalOnMobile: E(e, `${t}.verticalOnMobile`, !0),
+    layoutAlignment: c === "left" || c === "right" ? c : "center",
+    position: r(e, `${t}.position`, "top"),
+    columns: Math.min(4, Math.max(2, s)),
+    layoutGap: x(e, `${t}.layoutGap`, 16),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: r(e, `${t}.height`, "auto"),
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function hl(e, t) {
-  const i = `.ziplofy-pull-quote-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Rr(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
+  return !a || typeof a != "object" ? [] : (l.length ? l : Object.keys(a)).map((h) => {
+    const u = a[h];
+    if (!u) return null;
+    const p = u.settings ?? {}, g = String(p.heading ?? p.title ?? "").trim();
+    return g ? {
+      id: h,
+      heading: g,
+      text: String(p.text ?? "")
+    } : null;
+  }).filter((h) => h != null);
 }
-function _t(e) {
-  return e === "left" ? "left" : e === "right" ? "right" : "center";
+function Mr(e, t) {
+  const n = `.codiic-multicolumn-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function ut(e) {
-  return e === "top" ? "flex-start" : e === "bottom" ? "flex-end" : "center";
+function Fr(e) {
+  return `@media (max-width: 749px) { ${`.codiic-multicolumn-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}`} { grid-template-columns: 1fr !important; } }`;
 }
-function ai({
-  sectionId: e = "pull_quote_section",
+function mn({
+  sectionId: e = "multicolumn_section",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontHeading: s } = X(), u = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = i === "template" ? `template:${t}:${e}` : `layout:${e}`, a = F(() => ul(n, u), [n, u]), r = l(n, `${u}.quote`), p = l(n, `${u}.linkLabel`), c = l(n, `${u}.linkUrl`), h = a.scheme, g = _t(a.layoutAlignment), $ = a.sectionWidth === "full" ? 24 : L.padX, b = a.sectionWidth === "full" ? "100%" : L.maxWidth, v = `ziplofy-pull-quote-${e.replace(/[^a-z0-9_-]/gi, "-")}`, x = {
+  const i = j(), c = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, s = n === "template" ? `template:${t}:${e}` : `layout:${e}`, l = M(() => Lr(i, c), [i, c]), a = M(
+    () => Rr(i, t, e, n),
+    [i, t, e, n]
+  ), d = l.scheme, h = l.sectionWidth === "full" ? 24 : R.padX, u = l.sectionWidth === "full" ? "100%" : R.maxWidth, p = `codiic-multicolumn-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = Math.max(a.length, l.columns), k = l.direction === "horizontal", y = l.verticalOnMobile && k ? `codiic-multicolumn-stack-${e.replace(/[^a-z0-9_-]/gi, "-")}` : "", v = {
     position: "relative",
-    background: h.background,
-    color: h.color,
-    paddingTop: a.paddingTop,
-    paddingBottom: a.paddingBottom,
-    paddingLeft: $,
-    paddingRight: $,
+    background: d.background,
+    color: d.color,
+    paddingTop: l.paddingTop,
+    paddingBottom: l.paddingBottom,
+    paddingLeft: h,
+    paddingRight: h,
     boxSizing: "border-box",
-    minHeight: a.minHeightPx > 0 ? a.minHeightPx : void 0,
-    border: a.borderStyle === "solid" ? `1px solid ${h.muted}33` : void 0,
-    borderRadius: a.cornerRadius > 0 ? a.cornerRadius : void 0,
-    overflow: a.cornerRadius > 0 ? "hidden" : void 0
-  }, z = a.backgroundMedia === "image" && a.backgroundImageUrl ? a.backgroundImageUrl : null, S = a.direction === "horizontal", _ = {
-    maxWidth: b,
-    margin: "0 auto",
+    border: l.borderStyle === "solid" ? `1px solid ${d.muted}33` : void 0,
+    borderRadius: l.cornerRadius > 0 ? l.cornerRadius : void 0,
+    overflow: l.cornerRadius > 0 ? "hidden" : void 0
+  }, b = l.backgroundMedia === "image" && l.backgroundImageUrl ? l.backgroundImageUrl : null, _ = {
+    display: "grid",
+    gridTemplateColumns: k ? `repeat(${g}, minmax(0, 1fr))` : "1fr",
+    gap: l.layoutGap,
     width: "100%",
-    minHeight: a.minHeightPx > 0 ? a.minHeightPx - a.paddingTop - a.paddingBottom : void 0,
+    justifyItems: Hr(l.layoutAlignment),
+    alignContent: Tr(l.position)
+  }, $ = {
     display: "flex",
-    flexDirection: S ? "row" : "column",
-    flexWrap: S ? "wrap" : void 0,
-    alignItems: S ? ut(a.position) : g === "center" ? "center" : g === "right" ? "flex-end" : "flex-start",
-    justifyContent: S ? g === "center" ? "center" : g === "right" ? "flex-end" : "flex-start" : ut(a.position),
-    gap: a.layoutGap,
-    textAlign: g,
-    position: "relative",
-    zIndex: 2
-  }, H = {
-    margin: 0,
-    fontFamily: s,
-    fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)",
-    fontWeight: 700,
-    lineHeight: 1.25,
-    letterSpacing: "-0.02em",
-    maxWidth: 720
+    flexDirection: "column",
+    alignItems: "center",
+    textAlign: "center",
+    gap: 16
   }, w = {
-    fontSize: "1rem",
-    fontWeight: 500,
-    color: "inherit",
-    textDecoration: "underline",
-    textUnderlineOffset: 3
-  }, R = hl(e, a.customCss);
-  return /* @__PURE__ */ m(G, { sectionId: e, label: "Pull quote", editorNodeId: d, style: x, children: [
-    R ? /* @__PURE__ */ o("style", { children: R }) : null,
-    z ? /* @__PURE__ */ o(
+    margin: 0,
+    fontSize: "1.0625rem",
+    fontWeight: 700,
+    lineHeight: 1.3,
+    letterSpacing: "-0.01em"
+  }, P = {
+    margin: 0,
+    fontSize: "0.9375rem",
+    lineHeight: 1.55,
+    color: d.muted,
+    maxWidth: 320
+  }, z = Mr(e, l.customCss), L = y ? Fr(e) : "", H = c.replace(/\.settings$/, "");
+  return /* @__PURE__ */ m(B, { sectionId: e, label: "Multicolumn", editorNodeId: s, style: v, children: [
+    z ? /* @__PURE__ */ o("style", { children: z }) : null,
+    L ? /* @__PURE__ */ o("style", { children: L }) : null,
+    b ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${z})`,
+          backgroundImage: `url(${b})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 0
         }
       }
     ) : null,
-    a.backgroundOverlay && z ? /* @__PURE__ */ o(
+    l.backgroundOverlay && b ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
@@ -5069,94 +5171,261 @@ function ai({
         }
       }
     ) : null,
-    /* @__PURE__ */ m("div", { className: v, style: _, children: [
-      /* @__PURE__ */ o(k, { fieldPath: `${u}.quote`, label: "Quote", as: "p", style: H, children: r }),
-      p ? /* @__PURE__ */ o(k, { fieldPath: `${u}.linkLabel`, label: "Link label", as: "span", children: /* @__PURE__ */ o(I, { to: c || "#", style: w, children: p }) }) : null
-    ] })
+    /* @__PURE__ */ o(
+      "div",
+      {
+        className: p,
+        style: {
+          maxWidth: u,
+          margin: "0 auto",
+          width: "100%",
+          position: "relative",
+          zIndex: 2
+        },
+        children: /* @__PURE__ */ o("div", { className: y || void 0, style: _, children: a.map((W) => {
+          const T = n === "template" ? `template:${t}:${e}:block:${W.id}` : `layout:${e}:block:${W.id}`;
+          return /* @__PURE__ */ m(
+            "div",
+            {
+              "data-codiic-node": T,
+              "data-codiic-label": W.heading,
+              "data-codiic-kind": "block",
+              style: $,
+              children: [
+                /* @__PURE__ */ o(
+                  S,
+                  {
+                    fieldPath: `${H}.blocks.${W.id}.settings.heading`,
+                    label: "Heading",
+                    as: "h3",
+                    style: w,
+                    children: W.heading
+                  }
+                ),
+                /* @__PURE__ */ o(
+                  S,
+                  {
+                    fieldPath: `${H}.blocks.${W.id}.settings.text`,
+                    label: "Description",
+                    as: "p",
+                    style: P,
+                    children: W.text || "Add a description in the sidebar."
+                  }
+                )
+              ]
+            },
+            W.id
+          );
+        }) })
+      }
+    )
   ] });
 }
-const no = {
+const ro = {
   "scheme-1": { background: "#f6f6f7", color: "#111827", muted: "#4b5563" },
   "scheme-2": { background: "#ffffff", color: "#111827", muted: "#4b5563" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#475569" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#5b21b6" }
-}, pl = {
+}, Ar = {
   auto: 0,
   small: 200,
   medium: 280,
   large: 360
 };
-function ml(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.layoutAlignment`, "center"), s = l(e, `${t}.height`, "auto"), u = l(e, `${t}.direction`, "vertical");
+function Nr(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.layoutAlignment`, "center"), c = r(e, `${t}.height`, "auto"), s = r(e, `${t}.direction`, "vertical");
   return {
-    scheme: no[i] ?? no["scheme-1"],
-    direction: u === "horizontal" ? "horizontal" : "vertical",
-    layoutAlignment: _t(n),
-    position: l(e, `${t}.position`, "center"),
-    layoutGap: y(e, `${t}.layoutGap`, 16),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: s,
-    minHeightPx: pl[s] ?? 0,
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: ro[n] ?? ro["scheme-1"],
+    direction: s === "horizontal" ? "horizontal" : "vertical",
+    layoutAlignment: i === "left" || i === "right" ? i : "center",
+    position: r(e, `${t}.position`, "center"),
+    layoutGap: x(e, `${t}.layoutGap`, 16),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: c,
+    minHeightPx: Ar[c] ?? 0,
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 64),
+    paddingBottom: x(e, `${t}.paddingBottom`, 64),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function gl(e, t) {
-  const i = `.ziplofy-rich-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Er(e, t) {
+  const n = `.codiic-pull-quote-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function di({
+function Wt(e) {
+  return e === "left" ? "left" : e === "right" ? "right" : "center";
+}
+function rt(e) {
+  return e === "top" ? "flex-start" : e === "bottom" ? "flex-end" : "center";
+}
+function gn({
+  sectionId: e = "pull_quote_section",
+  templateId: t = "index",
+  placement: n = "template"
+}) {
+  const i = j(), { fontHeading: c } = q(), s = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, l = n === "template" ? `template:${t}:${e}` : `layout:${e}`, a = M(() => Nr(i, s), [i, s]), d = r(i, `${s}.quote`), h = r(i, `${s}.linkLabel`), u = r(i, `${s}.linkUrl`), p = a.scheme, g = Wt(a.layoutAlignment), k = a.sectionWidth === "full" ? 24 : R.padX, y = a.sectionWidth === "full" ? "100%" : R.maxWidth, v = `codiic-pull-quote-${e.replace(/[^a-z0-9_-]/gi, "-")}`, b = {
+    position: "relative",
+    background: p.background,
+    color: p.color,
+    paddingTop: a.paddingTop,
+    paddingBottom: a.paddingBottom,
+    paddingLeft: k,
+    paddingRight: k,
+    boxSizing: "border-box",
+    minHeight: a.minHeightPx > 0 ? a.minHeightPx : void 0,
+    border: a.borderStyle === "solid" ? `1px solid ${p.muted}33` : void 0,
+    borderRadius: a.cornerRadius > 0 ? a.cornerRadius : void 0,
+    overflow: a.cornerRadius > 0 ? "hidden" : void 0
+  }, _ = a.backgroundMedia === "image" && a.backgroundImageUrl ? a.backgroundImageUrl : null, $ = a.direction === "horizontal", w = {
+    maxWidth: y,
+    margin: "0 auto",
+    width: "100%",
+    minHeight: a.minHeightPx > 0 ? a.minHeightPx - a.paddingTop - a.paddingBottom : void 0,
+    display: "flex",
+    flexDirection: $ ? "row" : "column",
+    flexWrap: $ ? "wrap" : void 0,
+    alignItems: $ ? rt(a.position) : g === "center" ? "center" : g === "right" ? "flex-end" : "flex-start",
+    justifyContent: $ ? g === "center" ? "center" : g === "right" ? "flex-end" : "flex-start" : rt(a.position),
+    gap: a.layoutGap,
+    textAlign: g,
+    position: "relative",
+    zIndex: 2
+  }, P = {
+    margin: 0,
+    fontFamily: c,
+    fontSize: "clamp(1.5rem, 3.5vw, 2.25rem)",
+    fontWeight: 700,
+    lineHeight: 1.25,
+    letterSpacing: "-0.02em",
+    maxWidth: 720
+  }, z = {
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "inherit",
+    textDecoration: "underline",
+    textUnderlineOffset: 3
+  }, L = Er(e, a.customCss);
+  return /* @__PURE__ */ m(B, { sectionId: e, label: "Pull quote", editorNodeId: l, style: b, children: [
+    L ? /* @__PURE__ */ o("style", { children: L }) : null,
+    _ ? /* @__PURE__ */ o(
+      "div",
+      {
+        "aria-hidden": !0,
+        style: {
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url(${_})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: 0
+        }
+      }
+    ) : null,
+    a.backgroundOverlay && _ ? /* @__PURE__ */ o(
+      "div",
+      {
+        "aria-hidden": !0,
+        style: {
+          position: "absolute",
+          inset: 0,
+          background: "rgba(0,0,0,0.35)",
+          zIndex: 1
+        }
+      }
+    ) : null,
+    /* @__PURE__ */ m("div", { className: v, style: w, children: [
+      /* @__PURE__ */ o(S, { fieldPath: `${s}.quote`, label: "Quote", as: "p", style: P, children: d }),
+      h ? /* @__PURE__ */ o(S, { fieldPath: `${s}.linkLabel`, label: "Link label", as: "span", children: /* @__PURE__ */ o(D, { to: u || "#", style: z, children: h }) }) : null
+    ] })
+  ] });
+}
+const lo = {
+  "scheme-1": { background: "#f6f6f7", color: "#111827", muted: "#4b5563" },
+  "scheme-2": { background: "#ffffff", color: "#111827", muted: "#4b5563" },
+  "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#475569" },
+  "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#5b21b6" }
+}, Ur = {
+  auto: 0,
+  small: 200,
+  medium: 280,
+  large: 360
+};
+function Or(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.layoutAlignment`, "center"), c = r(e, `${t}.height`, "auto"), s = r(e, `${t}.direction`, "vertical");
+  return {
+    scheme: lo[n] ?? lo["scheme-1"],
+    direction: s === "horizontal" ? "horizontal" : "vertical",
+    layoutAlignment: Wt(i),
+    position: r(e, `${t}.position`, "center"),
+    layoutGap: x(e, `${t}.layoutGap`, 16),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: c,
+    minHeightPx: Ur[c] ?? 0,
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
+  };
+}
+function Gr(e, t) {
+  const n = `.codiic-rich-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
+}
+function fn({
   sectionId: e = "rich_text_section",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontHeading: s, fontBody: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(() => ml(n, d), [n, d]), p = l(n, `${d}.heading`), c = l(n, `${d}.text`), h = l(n, `${d}.buttonLabel`), g = l(n, `${d}.buttonUrl`), $ = r.scheme, b = _t(r.layoutAlignment), v = r.sectionWidth === "full" ? 24 : L.padX, x = r.sectionWidth === "full" ? "100%" : L.maxWidth, z = `ziplofy-rich-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`, S = r.direction === "horizontal", _ = {
+  const i = j(), { fontHeading: c, fontBody: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(() => Or(i, l), [i, l]), h = r(i, `${l}.heading`), u = r(i, `${l}.text`), p = r(i, `${l}.buttonLabel`), g = r(i, `${l}.buttonUrl`), k = d.scheme, y = Wt(d.layoutAlignment), v = d.sectionWidth === "full" ? 24 : R.padX, b = d.sectionWidth === "full" ? "100%" : R.maxWidth, _ = `codiic-rich-text-${e.replace(/[^a-z0-9_-]/gi, "-")}`, $ = d.direction === "horizontal", w = {
     position: "relative",
-    background: $.background,
-    color: $.color,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
+    background: k.background,
+    color: k.color,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
     paddingLeft: v,
     paddingRight: v,
     boxSizing: "border-box",
-    minHeight: r.minHeightPx > 0 ? r.minHeightPx : void 0,
-    border: r.borderStyle === "solid" ? `1px solid ${$.muted}33` : void 0,
-    borderRadius: r.cornerRadius > 0 ? r.cornerRadius : void 0,
-    overflow: r.cornerRadius > 0 ? "hidden" : void 0
-  }, H = r.backgroundMedia === "image" && r.backgroundImageUrl ? r.backgroundImageUrl : null, w = {
-    maxWidth: x,
+    minHeight: d.minHeightPx > 0 ? d.minHeightPx : void 0,
+    border: d.borderStyle === "solid" ? `1px solid ${k.muted}33` : void 0,
+    borderRadius: d.cornerRadius > 0 ? d.cornerRadius : void 0,
+    overflow: d.cornerRadius > 0 ? "hidden" : void 0
+  }, P = d.backgroundMedia === "image" && d.backgroundImageUrl ? d.backgroundImageUrl : null, z = {
+    maxWidth: b,
     margin: "0 auto",
     width: "100%",
-    minHeight: r.minHeightPx > 0 ? r.minHeightPx - r.paddingTop - r.paddingBottom : void 0,
+    minHeight: d.minHeightPx > 0 ? d.minHeightPx - d.paddingTop - d.paddingBottom : void 0,
     display: "flex",
-    flexDirection: S ? "row" : "column",
-    flexWrap: S ? "wrap" : void 0,
-    alignItems: S ? ut(r.position) : b === "center" ? "center" : b === "right" ? "flex-end" : "flex-start",
-    justifyContent: S ? b === "center" ? "center" : b === "right" ? "flex-end" : "flex-start" : ut(r.position),
-    gap: r.layoutGap,
-    textAlign: b,
+    flexDirection: $ ? "row" : "column",
+    flexWrap: $ ? "wrap" : void 0,
+    alignItems: $ ? rt(d.position) : y === "center" ? "center" : y === "right" ? "flex-end" : "flex-start",
+    justifyContent: $ ? y === "center" ? "center" : y === "right" ? "flex-end" : "flex-start" : rt(d.position),
+    gap: d.layoutGap,
+    textAlign: y,
     position: "relative",
     zIndex: 2
-  }, R = {
+  }, L = {
     margin: 0,
-    fontFamily: s,
+    fontFamily: c,
     fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
     fontWeight: 700,
     lineHeight: 1.15,
     letterSpacing: "-0.02em"
-  }, T = {
+  }, H = {
     margin: 0,
-    fontFamily: u,
+    fontFamily: s,
     fontSize: "1rem",
     lineHeight: 1.55,
     maxWidth: 520,
-    color: $.muted
+    color: k.muted
   }, W = {
     display: "inline-flex",
     alignItems: "center",
@@ -5170,24 +5439,24 @@ function di({
     textDecoration: "none",
     border: "none",
     cursor: "pointer"
-  }, P = gl(e, r.customCss);
-  return /* @__PURE__ */ m(G, { sectionId: e, label: "Rich text", editorNodeId: a, style: _, children: [
-    P ? /* @__PURE__ */ o("style", { children: P }) : null,
-    H ? /* @__PURE__ */ o(
+  }, T = Gr(e, d.customCss);
+  return /* @__PURE__ */ m(B, { sectionId: e, label: "Rich text", editorNodeId: a, style: w, children: [
+    T ? /* @__PURE__ */ o("style", { children: T }) : null,
+    P ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
         style: {
           position: "absolute",
           inset: 0,
-          backgroundImage: `url(${H})`,
+          backgroundImage: `url(${P})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 0
         }
       }
     ) : null,
-    r.backgroundOverlay && H ? /* @__PURE__ */ o(
+    d.backgroundOverlay && P ? /* @__PURE__ */ o(
       "div",
       {
         "aria-hidden": !0,
@@ -5199,193 +5468,193 @@ function di({
         }
       }
     ) : null,
-    /* @__PURE__ */ m("div", { className: z, style: w, children: [
-      p ? /* @__PURE__ */ o(k, { fieldPath: `${d}.heading`, label: "Heading", as: "h2", style: R, children: p }) : null,
-      c ? /* @__PURE__ */ o(k, { fieldPath: `${d}.text`, label: "Text", as: "p", style: T, children: c }) : null,
-      h ? /* @__PURE__ */ o(k, { fieldPath: `${d}.buttonLabel`, label: "Button label", as: "span", children: /* @__PURE__ */ o(I, { to: g || "#", style: W, children: h }) }) : null
+    /* @__PURE__ */ m("div", { className: _, style: z, children: [
+      h ? /* @__PURE__ */ o(S, { fieldPath: `${l}.heading`, label: "Heading", as: "h2", style: L, children: h }) : null,
+      u ? /* @__PURE__ */ o(S, { fieldPath: `${l}.text`, label: "Text", as: "p", style: H, children: u }) : null,
+      p ? /* @__PURE__ */ o(S, { fieldPath: `${l}.buttonLabel`, label: "Button label", as: "span", children: /* @__PURE__ */ o(D, { to: g || "#", style: W, children: p }) }) : null
     ] })
   ] });
 }
-const lo = {
+const ao = {
   "scheme-1": { background: "#f6f6f7", color: "#111827" },
   "scheme-2": { background: "#ffffff", color: "#111827" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b" }
 };
-function fl(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.motionDirection`, "forward");
+function Dr(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.motionDirection`, "forward");
   return {
-    scheme: lo[i] ?? lo["scheme-1"],
-    motionDirection: n === "reverse" ? "reverse" : "forward",
-    paddingTop: y(e, `${t}.paddingTop`, 24),
-    paddingBottom: y(e, `${t}.paddingBottom`, 24),
-    layoutGap: y(e, `${t}.layoutGap`, 24),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: ao[n] ?? ao["scheme-1"],
+    motionDirection: i === "reverse" ? "reverse" : "forward",
+    paddingTop: x(e, `${t}.paddingTop`, 24),
+    paddingBottom: x(e, `${t}.paddingBottom`, 24),
+    layoutGap: x(e, `${t}.layoutGap`, 24),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function bl(e, t) {
-  const i = `.ziplofy-text-marquee-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function jr(e, t) {
+  const n = `.codiic-text-marquee-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function ci({
+function bn({
   sectionId: e = "text_marquee_section",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s } = X(), u = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = i === "template" ? `template:${t}:${e}` : `layout:${e}`, a = F(() => fl(n, u), [n, u]), r = l(n, `${u}.text`), p = `ziplofy-text-marquee-${e.replace(/[^a-z0-9_-]/gi, "-")}`, c = a.motionDirection === "reverse" ? "ziplofy-marquee-reverse" : "ziplofy-marquee-forward", h = {
+  const i = j(), { fontBody: c } = q(), s = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, l = n === "template" ? `template:${t}:${e}` : `layout:${e}`, a = M(() => Dr(i, s), [i, s]), d = r(i, `${s}.text`), h = `codiic-text-marquee-${e.replace(/[^a-z0-9_-]/gi, "-")}`, u = a.motionDirection === "reverse" ? "codiic-marquee-reverse" : "codiic-marquee-forward", p = {
     position: "relative",
     background: a.scheme.background,
     color: a.scheme.color,
     paddingTop: a.paddingTop,
     paddingBottom: a.paddingBottom,
-    paddingLeft: L.padX,
-    paddingRight: L.padX,
+    paddingLeft: R.padX,
+    paddingRight: R.padX,
     boxSizing: "border-box",
     overflow: "hidden"
   }, g = {
     display: "flex",
     width: "max-content",
-    animation: `${c} 28s linear infinite`,
+    animation: `${u} 28s linear infinite`,
     gap: a.layoutGap,
-    fontFamily: s,
+    fontFamily: c,
     fontSize: "1.125rem",
     fontWeight: 500,
     letterSpacing: "-0.01em",
     whiteSpace: "nowrap"
-  }, $ = {
+  }, k = {
     flexShrink: 0,
     paddingRight: a.layoutGap
-  }, b = /* @__PURE__ */ o("span", { style: $, children: /* @__PURE__ */ o(k, { nodeId: d, fieldPath: `${u}.text`, label: "Text", children: r }) });
-  return /* @__PURE__ */ o(G, { nodeId: d, label: "Marquee", children: /* @__PURE__ */ m("section", { className: p, style: h, "data-section-type": "text-marquee", children: [
+  }, y = /* @__PURE__ */ o("span", { style: k, children: /* @__PURE__ */ o(S, { nodeId: l, fieldPath: `${s}.text`, label: "Text", children: d }) });
+  return /* @__PURE__ */ o(B, { nodeId: l, label: "Marquee", children: /* @__PURE__ */ m("section", { className: h, style: p, "data-section-type": "text-marquee", children: [
     /* @__PURE__ */ o("style", { children: `
-            @keyframes ziplofy-marquee-forward {
+            @keyframes codiic-marquee-forward {
               from { transform: translateX(0); }
               to { transform: translateX(-50%); }
             }
-            @keyframes ziplofy-marquee-reverse {
+            @keyframes codiic-marquee-reverse {
               from { transform: translateX(-50%); }
               to { transform: translateX(0); }
             }
-            ${bl(e, a.customCss)}
+            ${jr(e, a.customCss)}
           ` }),
-    /* @__PURE__ */ o("div", { className: `${p}__viewport`, style: { overflow: "hidden", width: "100%" }, children: /* @__PURE__ */ m("div", { className: `${p}__track`, style: g, children: [
-      b,
-      /* @__PURE__ */ o("span", { style: $, "aria-hidden": !0, children: r })
+    /* @__PURE__ */ o("div", { className: `${h}__viewport`, style: { overflow: "hidden", width: "100%" }, children: /* @__PURE__ */ m("div", { className: `${h}__track`, style: g, children: [
+      y,
+      /* @__PURE__ */ o("span", { style: k, "aria-hidden": !0, children: d })
     ] }) })
   ] }) });
 }
-const ro = {
+const co = {
   "scheme-1": { background: "#ffffff", color: "#111827" },
   "scheme-2": { background: "#f6f6f7", color: "#111827" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b" }
 };
-function yl(e, t) {
-  const i = l(e, `${t}.sizeUnit`, "");
-  return i === "pixel" || i === "percent" ? i : "pixel";
+function Br(e, t) {
+  const n = r(e, `${t}.sizeUnit`, "");
+  return n === "pixel" || n === "percent" ? n : "pixel";
 }
-function xl(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = ro[i] ?? ro["scheme-1"], s = l(e, `${t}.sectionWidth`, "page"), u = l(e, `${t}.layoutAlignment`, "center"), d = l(e, `${t}.logoFont`, "heading");
-  let a = y(e, `${t}.pixelHeight`, 0);
+function qr(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = co[n] ?? co["scheme-1"], c = r(e, `${t}.sectionWidth`, "page"), s = r(e, `${t}.layoutAlignment`, "center"), l = r(e, `${t}.logoFont`, "heading");
+  let a = x(e, `${t}.pixelHeight`, 0);
   if (a <= 0) {
-    const r = l(e, `${t}.height`, "");
-    a = r === "small" ? 32 : r === "large" ? 64 : r === "auto" ? 40 : 48;
+    const d = r(e, `${t}.height`, "");
+    a = d === "small" ? 32 : d === "large" ? 64 : d === "auto" ? 40 : 48;
   }
   return {
-    scheme: n,
-    logoFont: d === "body" || d === "subheading" || d === "accent" ? d : "heading",
-    sizeUnit: yl(e, t),
+    scheme: i,
+    logoFont: l === "body" || l === "subheading" || l === "accent" ? l : "heading",
+    sizeUnit: Br(e, t),
     pixelHeight: a,
-    percentWidth: y(e, `${t}.percentWidth`, 100),
-    customMobileSize: U(e, `${t}.customMobileSize`, !1),
-    mobileSizeUnit: l(e, `${t}.mobileSizeUnit`) === "pixel" ? "pixel" : "percent",
-    mobilePixelHeight: y(e, `${t}.mobilePixelHeight`, 120),
-    mobilePercentWidth: y(e, `${t}.mobilePercentWidth`, 100),
-    sectionWidth: s === "full" ? "full" : "page",
-    layoutAlignment: u === "left" || u === "right" ? u : "center",
-    paddingTop: y(e, `${t}.paddingTop`, 32),
-    paddingBottom: y(e, `${t}.paddingBottom`, 32),
-    customCss: l(e, `${t}.customCss`, "")
+    percentWidth: x(e, `${t}.percentWidth`, 100),
+    customMobileSize: E(e, `${t}.customMobileSize`, !1),
+    mobileSizeUnit: r(e, `${t}.mobileSizeUnit`) === "pixel" ? "pixel" : "percent",
+    mobilePixelHeight: x(e, `${t}.mobilePixelHeight`, 120),
+    mobilePercentWidth: x(e, `${t}.mobilePercentWidth`, 100),
+    sectionWidth: c === "full" ? "full" : "page",
+    layoutAlignment: s === "left" || s === "right" ? s : "center",
+    paddingTop: x(e, `${t}.paddingTop`, 32),
+    paddingBottom: x(e, `${t}.paddingBottom`, 32),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function $l(e) {
+function Xr(e) {
   return e === "left" ? "flex-start" : e === "right" ? "flex-end" : "center";
 }
-function kl(e) {
-  const t = e.sizeUnit === "pixel" ? `${e.pixelHeight}px` : void 0, i = e.sizeUnit === "percent" ? `${e.percentWidth}%` : void 0, n = e.customMobileSize ? e.mobileSizeUnit === "pixel" ? `${e.mobilePixelHeight}px` : void 0 : t, s = e.customMobileSize && e.mobileSizeUnit === "percent" ? `${e.mobilePercentWidth}%` : i;
+function Ir(e) {
+  const t = e.sizeUnit === "pixel" ? `${e.pixelHeight}px` : void 0, n = e.sizeUnit === "percent" ? `${e.percentWidth}%` : void 0, i = e.customMobileSize ? e.mobileSizeUnit === "pixel" ? `${e.mobilePixelHeight}px` : void 0 : t, c = e.customMobileSize && e.mobileSizeUnit === "percent" ? `${e.mobilePercentWidth}%` : n;
   return {
     ...t ? { "--logo-height": t } : {},
-    ...i ? { "--logo-width": i } : {},
-    ...n ? { "--logo-height-mobile": n } : {},
-    ...s ? { "--logo-width-mobile": s } : {}
+    ...n ? { "--logo-width": n } : {},
+    ...i ? { "--logo-height-mobile": i } : {},
+    ...c ? { "--logo-width-mobile": c } : {}
   };
 }
-function vl(e, t) {
-  const i = `.ziplofy-storytelling-logo-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Vr(e, t) {
+  const n = `.codiic-storytelling-logo-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function Sl(e, t) {
+function Kr(e, t) {
   return e === "body" || e === "subheading" ? t.fontBody : t.fontHeading;
 }
-function wl(e) {
+function Yr(e) {
   return e === "accent" ? { fontStyle: "italic" } : e === "subheading" ? { fontWeight: 600 } : e === "body" ? { fontWeight: 400 } : { fontWeight: 700 };
 }
-function si({
+function yn({
   sectionId: e = "storytelling_logo",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontHeading: s, fontBody: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(
-    () => xl(n, d),
-    [n, d]
-  ), p = l(n, `${d}.logoText`), c = l(n, `${d}.logoImageUrl`, ""), h = l(n, `${d}.logoLinkUrl`, "/"), g = r.scheme, $ = r.sectionWidth === "full" ? 24 : L.padX, b = r.sectionWidth === "full" ? "100%" : L.maxWidth, v = `ziplofy-storytelling-logo-${e.replace(/[^a-z0-9_-]/gi, "-")}`, x = kl(r), z = $l(r.layoutAlignment), S = {
+  const i = j(), { fontHeading: c, fontBody: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(
+    () => qr(i, l),
+    [i, l]
+  ), h = r(i, `${l}.logoText`), u = r(i, `${l}.logoImageUrl`, ""), p = r(i, `${l}.logoLinkUrl`, "/"), g = d.scheme, k = d.sectionWidth === "full" ? 24 : R.padX, y = d.sectionWidth === "full" ? "100%" : R.maxWidth, v = `codiic-storytelling-logo-${e.replace(/[^a-z0-9_-]/gi, "-")}`, b = Ir(d), _ = Xr(d.layoutAlignment), $ = {
     position: "relative",
     background: g.background,
     color: g.color,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    paddingLeft: $,
-    paddingRight: $,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    paddingLeft: k,
+    paddingRight: k,
     boxSizing: "border-box",
-    ...x
-  }, _ = {
-    maxWidth: b,
+    ...b
+  }, w = {
+    maxWidth: y,
     margin: "0 auto",
     width: "100%",
     display: "flex",
     alignItems: "center",
-    justifyContent: z,
-    textAlign: r.layoutAlignment,
+    justifyContent: _,
+    textAlign: d.layoutAlignment,
     boxSizing: "border-box"
-  }, H = {
-    width: r.sizeUnit === "percent" ? `var(--logo-width, ${r.percentWidth}%)` : "auto",
+  }, P = {
+    width: d.sizeUnit === "percent" ? `var(--logo-width, ${d.percentWidth}%)` : "auto",
     maxWidth: "100%",
-    maxHeight: r.sizeUnit === "pixel" ? `calc(var(--logo-height, ${r.pixelHeight}px) + 0px)` : void 0,
-    fontSize: r.sizeUnit === "pixel" ? `var(--logo-height, ${r.pixelHeight}px)` : void 0,
+    maxHeight: d.sizeUnit === "pixel" ? `calc(var(--logo-height, ${d.pixelHeight}px) + 0px)` : void 0,
+    fontSize: d.sizeUnit === "pixel" ? `var(--logo-height, ${d.pixelHeight}px)` : void 0,
     lineHeight: 1.05,
-    fontFamily: Sl(r.logoFont, { fontHeading: s, fontBody: u }),
-    ...wl(r.logoFont),
+    fontFamily: Kr(d.logoFont, { fontHeading: c, fontBody: s }),
+    ...Yr(d.logoFont),
     color: g.color
-  }, w = c ? /* @__PURE__ */ o(k, { fieldPath: `${d}.logoImageUrl`, label: "Logo image", as: "span", style: H, children: /* @__PURE__ */ o(
+  }, z = u ? /* @__PURE__ */ o(S, { fieldPath: `${l}.logoImageUrl`, label: "Logo image", as: "span", style: P, children: /* @__PURE__ */ o(
     "img",
     {
-      src: c,
-      alt: p || "Store logo",
+      src: u,
+      alt: h || "Store logo",
       style: {
         display: "block",
-        width: r.sizeUnit === "percent" ? "100%" : "auto",
+        width: d.sizeUnit === "percent" ? "100%" : "auto",
         maxWidth: "100%",
-        maxHeight: r.sizeUnit === "pixel" ? r.pixelHeight : 120,
+        maxHeight: d.sizeUnit === "pixel" ? d.pixelHeight : 120,
         objectFit: "contain"
       }
     }
-  ) }) : /* @__PURE__ */ o(k, { fieldPath: `${d}.logoText`, label: "Logo text", as: "span", style: H, children: p }), R = h && h !== "#" ? /* @__PURE__ */ o(I, { to: h, style: { display: "inline-flex", textDecoration: "none", color: "inherit" }, children: w }) : w, T = vl(e, r.customCss);
-  return /* @__PURE__ */ o(G, { nodeId: a, label: "Logo", children: /* @__PURE__ */ m("section", { className: v, style: S, "data-section-type": "storytelling-logo", children: [
-    T ? /* @__PURE__ */ o("style", { children: T }) : null,
-    /* @__PURE__ */ o("div", { style: _, children: R })
+  ) }) : /* @__PURE__ */ o(S, { fieldPath: `${l}.logoText`, label: "Logo text", as: "span", style: P, children: h }), L = p && p !== "#" ? /* @__PURE__ */ o(D, { to: p, style: { display: "inline-flex", textDecoration: "none", color: "inherit" }, children: z }) : z, H = Vr(e, d.customCss);
+  return /* @__PURE__ */ o(B, { nodeId: a, label: "Logo", children: /* @__PURE__ */ m("section", { className: v, style: $, "data-section-type": "storytelling-logo", children: [
+    H ? /* @__PURE__ */ o("style", { children: H }) : null,
+    /* @__PURE__ */ o("div", { style: w, children: L })
   ] }) });
 }
-function _l() {
+function Qr() {
   return /* @__PURE__ */ m("div", { className: "flex items-end justify-center gap-3", "aria-hidden": !0, children: [
     /* @__PURE__ */ o(
       "div",
@@ -5442,71 +5711,71 @@ function _l() {
     )
   ] });
 }
-const ao = {
+const so = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#4b5563", mediaPanel: "#f0f0f0" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#4b5563", mediaPanel: "#ececec" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#475569", mediaPanel: "#e8eef2" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#5b21b6", mediaPanel: "#ede9fe" }
-}, Cl = {
+}, Zr = {
   auto: 0,
   small: 320,
   medium: 420,
   large: 520
 };
-function zl(e, t) {
-  const i = l(e, `${t}.height`, "");
-  return i === "auto" || i === "small" || i === "medium" || i === "large" ? i : "auto";
+function Jr(e, t) {
+  const n = r(e, `${t}.height`, "");
+  return n === "auto" || n === "small" || n === "medium" || n === "large" ? n : "auto";
 }
-function Wl(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.direction`, ""), s = n === "horizontal" ? "horizontal" : "vertical";
-  let u = !0;
-  return n ? s === "horizontal" && (u = l(e, `${t}.layoutAlignment`, "left") === "right") : u = l(e, `${t}.mediaPosition`, "right") !== "left", {
-    scheme: ao[i] ?? ao["scheme-1"],
-    direction: s,
-    layoutAlignment: l(e, `${t}.layoutAlignment`, "left"),
-    position: l(e, `${t}.position`, "center"),
-    layoutGap: y(e, `${t}.layoutGap`, 16),
-    sectionWidth: l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
-    height: zl(e, t),
-    backgroundMedia: l(e, `${t}.backgroundMedia`, "none"),
-    backgroundImageUrl: l(e, `${t}.backgroundImageUrl`, ""),
-    borderStyle: l(e, `${t}.borderStyle`, "none"),
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    backgroundOverlay: U(e, `${t}.backgroundOverlay`, !1),
-    paddingTop: y(e, `${t}.paddingTop`, 32),
-    paddingBottom: y(e, `${t}.paddingBottom`, 32),
-    customCss: l(e, `${t}.customCss`, ""),
-    videoOnRight: u
+function el(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.direction`, ""), c = i === "horizontal" ? "horizontal" : "vertical";
+  let s = !0;
+  return i ? c === "horizontal" && (s = r(e, `${t}.layoutAlignment`, "left") === "right") : s = r(e, `${t}.mediaPosition`, "right") !== "left", {
+    scheme: so[n] ?? so["scheme-1"],
+    direction: c,
+    layoutAlignment: r(e, `${t}.layoutAlignment`, "left"),
+    position: r(e, `${t}.position`, "center"),
+    layoutGap: x(e, `${t}.layoutGap`, 16),
+    sectionWidth: r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page",
+    height: Jr(e, t),
+    backgroundMedia: r(e, `${t}.backgroundMedia`, "none"),
+    backgroundImageUrl: r(e, `${t}.backgroundImageUrl`, ""),
+    borderStyle: r(e, `${t}.borderStyle`, "none"),
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    backgroundOverlay: E(e, `${t}.backgroundOverlay`, !1),
+    paddingTop: x(e, `${t}.paddingTop`, 32),
+    paddingBottom: x(e, `${t}.paddingBottom`, 32),
+    customCss: r(e, `${t}.customCss`, ""),
+    videoOnRight: s
   };
 }
-function Pl(e) {
-  const t = Cl[e] ?? 0;
+function tl(e) {
+  const t = Zr[e] ?? 0;
   return t > 0 ? t : void 0;
 }
-function co(e) {
+function uo(e) {
   return e === "top" ? "flex-start" : e === "bottom" ? "flex-end" : "center";
 }
-function Tl(e) {
+function ol(e) {
   return e === "right" ? "flex-end" : e === "center" ? "center" : "flex-start";
 }
-function Hl(e, t) {
-  const i = `.ziplofy-storytelling-video-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function nl(e, t) {
+  const n = `.codiic-storytelling-video-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-const so = {
+const ho = {
   fontSize: 15,
   fontWeight: 500,
   color: "inherit",
   textDecoration: "none",
   whiteSpace: "nowrap"
-}, Rl = {
+}, il = {
   margin: 0,
   fontSize: 15,
   lineHeight: 1.45,
   color: "inherit",
   maxWidth: "min(100%, 520px)"
 };
-function Ll() {
+function rl() {
   return /* @__PURE__ */ o(
     "span",
     {
@@ -5538,100 +5807,100 @@ function Ll() {
     }
   );
 }
-function ui({
+function xn({
   sectionId: e = "storytelling_video",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s } = X(), u = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = i === "template" ? `template:${t}:${e}` : `layout:${e}`, a = F(
-    () => Wl(n, u),
-    [n, u]
-  ), r = l(n, `${u}.videoSource`, "url"), p = l(n, `${u}.videoUrl`, ""), c = l(n, `${u}.coverImageUrl`, ""), h = l(
-    n,
-    `${u}.caption`,
+  const i = j(), { fontBody: c } = q(), s = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, l = n === "template" ? `template:${t}:${e}` : `layout:${e}`, a = M(
+    () => el(i, s),
+    [i, s]
+  ), d = r(i, `${s}.videoSource`, "url"), h = r(i, `${s}.videoUrl`, ""), u = r(i, `${s}.coverImageUrl`, ""), p = r(
+    i,
+    `${s}.caption`,
     "Take a look behind the scenes of our latest product launch."
-  ), g = l(n, `${u}.linkLabel`), $ = l(n, `${u}.linkUrl`), b = a.scheme, v = Pl(a.height), x = a.sectionWidth === "full" ? 24 : L.padX, z = a.sectionWidth === "full" ? "100%" : L.maxWidth, S = a.videoOnRight, _ = a.direction === "horizontal", H = `ziplofy-storytelling-video-${e.replace(/[^a-z0-9_-]/gi, "-")}`, w = {
+  ), g = r(i, `${s}.linkLabel`), k = r(i, `${s}.linkUrl`), y = a.scheme, v = tl(a.height), b = a.sectionWidth === "full" ? 24 : R.padX, _ = a.sectionWidth === "full" ? "100%" : R.maxWidth, $ = a.videoOnRight, w = a.direction === "horizontal", P = `codiic-storytelling-video-${e.replace(/[^a-z0-9_-]/gi, "-")}`, z = {
     position: "relative",
-    background: b.background,
-    color: b.color,
-    fontFamily: s,
+    background: y.background,
+    color: y.color,
+    fontFamily: c,
     paddingTop: a.paddingTop,
     paddingBottom: a.paddingBottom,
-    paddingLeft: x,
-    paddingRight: x,
+    paddingLeft: b,
+    paddingRight: b,
     boxSizing: "border-box",
     overflow: "hidden",
-    border: a.borderStyle === "solid" ? `1px solid ${b.muted}33` : void 0,
+    border: a.borderStyle === "solid" ? `1px solid ${y.muted}33` : void 0,
     borderRadius: a.cornerRadius > 0 ? a.cornerRadius : void 0
-  }, R = {
-    maxWidth: z,
+  }, L = {
+    maxWidth: _,
     margin: "0 auto",
     width: "100%",
-    minHeight: v ?? (_ ? 360 : 400),
+    minHeight: v ?? (w ? 360 : 400),
     display: "flex",
-    flexDirection: _ ? "row" : "column",
+    flexDirection: w ? "row" : "column",
     gap: a.layoutGap,
-    alignItems: _ ? co(a.position) : "stretch",
-    justifyContent: _ ? Tl(a.layoutAlignment) : "flex-start",
+    alignItems: w ? uo(a.position) : "stretch",
+    justifyContent: w ? ol(a.layoutAlignment) : "flex-start",
     boxSizing: "border-box",
     position: "relative"
-  }, T = {
+  }, H = {
     position: "relative",
-    flex: _ ? "1 1 66%" : "1 1 auto",
-    minHeight: _ ? void 0 : Math.max((v ?? 400) - 88, 260),
-    width: _ ? void 0 : "100%",
-    order: _ && !S ? 0 : _ ? 1 : 0
+    flex: w ? "1 1 66%" : "1 1 auto",
+    minHeight: w ? void 0 : Math.max((v ?? 400) - 88, 260),
+    width: w ? void 0 : "100%",
+    order: w && !$ ? 0 : w ? 1 : 0
   }, W = {
     position: "absolute",
     top: 0,
     bottom: 0,
-    width: _ ? "100%" : "66%",
-    ...S || _ ? { right: 0 } : { left: 0 },
-    background: b.mediaPanel,
+    width: w ? "100%" : "66%",
+    ...$ || w ? { right: 0 } : { left: 0 },
+    background: y.mediaPanel,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
-    clipPath: S || _ ? "polygon(14% 0, 100% 0, 100% 100%, 0 100%)" : "polygon(0 0, 100% 0, 86% 100%, 0 100%)"
-  }, P = {
+    clipPath: $ || w ? "polygon(14% 0, 100% 0, 100% 100%, 0 100%)" : "polygon(0 0, 100% 0, 86% 100%, 0 100%)"
+  }, T = {
     position: "absolute",
     top: "50%",
     transform: "translateY(-50%)",
     zIndex: 2,
-    ...S || _ ? { left: "12%" } : { right: "12%" }
+    ...$ || w ? { left: "12%" } : { right: "12%" }
   }, C = {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "space-between",
     gap: 24,
-    paddingTop: _ ? 0 : 24,
+    paddingTop: w ? 0 : 24,
     paddingBottom: 4,
     width: "100%",
-    flex: _ ? "0 0 auto" : void 0,
-    alignSelf: _ ? co(a.position) : void 0,
+    flex: w ? "0 0 auto" : void 0,
+    alignSelf: w ? uo(a.position) : void 0,
     boxSizing: "border-box",
     position: "relative",
     zIndex: 3,
-    order: _ && !S ? 1 : _ ? 0 : 1,
-    maxWidth: _ ? "34%" : "100%"
-  }, M = c && r !== "uploaded" ? /* @__PURE__ */ o(
+    order: w && !$ ? 1 : w ? 0 : 1,
+    maxWidth: w ? "34%" : "100%"
+  }, F = u && d !== "uploaded" ? /* @__PURE__ */ o(
     "img",
     {
-      src: c,
+      src: u,
       alt: "",
       style: { width: "100%", height: "100%", objectFit: "cover", display: "block" }
     }
-  ) : p ? /* @__PURE__ */ o(
+  ) : h ? /* @__PURE__ */ o(
     "div",
     {
       style: {
         width: "100%",
         height: "100%",
-        background: `linear-gradient(135deg, ${b.mediaPanel} 0%, #d8d8d8 100%)`
+        background: `linear-gradient(135deg, ${y.mediaPanel} 0%, #d8d8d8 100%)`
       }
     }
-  ) : /* @__PURE__ */ o(_l, {}), f = Hl(e, a.customCss);
-  return /* @__PURE__ */ o(G, { nodeId: d, label: "Video", children: /* @__PURE__ */ m("section", { className: H, style: w, "data-section-type": "storytelling-video", children: [
+  ) : /* @__PURE__ */ o(Qr, {}), f = nl(e, a.customCss);
+  return /* @__PURE__ */ o(B, { nodeId: l, label: "Video", children: /* @__PURE__ */ m("section", { className: P, style: z, "data-section-type": "storytelling-video", children: [
     a.backgroundOverlay ? /* @__PURE__ */ o(
       "div",
       {
@@ -5646,73 +5915,73 @@ function ui({
       }
     ) : null,
     f ? /* @__PURE__ */ o("style", { children: f }) : null,
-    /* @__PURE__ */ m("div", { style: R, children: [
-      /* @__PURE__ */ o("div", { style: T, children: /* @__PURE__ */ m(k, { fieldPath: `${u}.coverImageUrl`, label: "Cover image", as: "div", style: W, children: [
-        M,
-        /* @__PURE__ */ o("div", { style: P, children: /* @__PURE__ */ o(Ll, {}) })
+    /* @__PURE__ */ m("div", { style: L, children: [
+      /* @__PURE__ */ o("div", { style: H, children: /* @__PURE__ */ m(S, { fieldPath: `${s}.coverImageUrl`, label: "Cover image", as: "div", style: W, children: [
+        F,
+        /* @__PURE__ */ o("div", { style: T, children: /* @__PURE__ */ o(rl, {}) })
       ] }) }),
       /* @__PURE__ */ m("div", { style: C, children: [
-        /* @__PURE__ */ o(k, { fieldPath: `${u}.caption`, label: "Caption", as: "p", style: Rl, children: h }),
-        /* @__PURE__ */ o(k, { fieldPath: `${u}.linkLabel`, label: "Link", as: "span", children: $ ? /* @__PURE__ */ o(I, { to: $, style: so, children: g }) : /* @__PURE__ */ o("span", { style: so, children: g }) })
+        /* @__PURE__ */ o(S, { fieldPath: `${s}.caption`, label: "Caption", as: "p", style: il, children: p }),
+        /* @__PURE__ */ o(S, { fieldPath: `${s}.linkLabel`, label: "Link", as: "span", children: k ? /* @__PURE__ */ o(D, { to: k, style: ho, children: g }) : /* @__PURE__ */ o("span", { style: ho, children: g }) })
       ] })
     ] })
   ] }) });
 }
-function hi(e, t) {
-  const i = l(e, `${t}.textCase`, "default");
+function $n(e, t) {
+  const n = r(e, `${t}.textCase`, "default");
   return {
-    fontSize: l(e, `${t}.fontSize`, "12px"),
-    textTransform: i === "uppercase" ? "uppercase" : "none"
+    fontSize: r(e, `${t}.fontSize`, "12px"),
+    textTransform: n === "uppercase" ? "uppercase" : "none"
   };
 }
-function Ml(e, t) {
-  const n = l(e, `${t}.text`, "").replace(/^©\s*\d{4}\s*/i, "").replace(/\s*\.\s*All rights reserved\.?$/i, "").trim();
+function ll(e, t) {
+  const i = r(e, `${t}.text`, "").replace(/^©\s*\d{4}\s*/i, "").replace(/\s*\.\s*All rights reserved\.?$/i, "").trim();
   return {
-    ...hi(e, t),
-    showPoweredBy: U(e, `${t}.showPoweredBy`, !1),
-    poweredByLabel: l(e, `${t}.poweredByLabel`),
-    storeLabel: n
+    ...$n(e, t),
+    showPoweredBy: E(e, `${t}.showPoweredBy`, !1),
+    poweredByLabel: r(e, `${t}.poweredByLabel`),
+    storeLabel: i
   };
 }
-function Fl(e, t = (/* @__PURE__ */ new Date()).getFullYear()) {
-  const i = e.storeLabel ? `© ${t} ${e.storeLabel}` : `© ${t}`;
-  return !e.showPoweredBy || !e.poweredByLabel.trim() ? i : `${i}, ${e.poweredByLabel.trim()}`;
+function al(e, t = (/* @__PURE__ */ new Date()).getFullYear()) {
+  const n = e.storeLabel ? `© ${t} ${e.storeLabel}` : `© ${t}`;
+  return !e.showPoweredBy || !e.poweredByLabel.trim() ? n : `${n}, ${e.poweredByLabel.trim()}`;
 }
-const El = {
+const dl = {
   "scheme-1": { background: "#f3f4f6", color: "#111827", muted: "#6b7280", border: "#e5e7eb" },
   "scheme-2": { background: "#f8fafc", color: "#0f172a", muted: "#64748b", border: "#e2e8f0" },
   "scheme-3": { background: "#fff7ed", color: "#431407", muted: "#9a3412", border: "#fed7aa" },
   "scheme-4": { background: "#f5f3ff", color: "#4c1d95", muted: "#6d28d9", border: "#ddd6fe" }
 };
-function Al(e, t, i) {
-  const n = l(e, `${t}.colorScheme`, "scheme-1");
-  return El[n] ?? i;
+function cl(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-1");
+  return dl[i] ?? n;
 }
-function Ul(e, t) {
-  return l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
+function sl(e, t) {
+  return r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
 }
-function Nl(e, t) {
-  return Math.max(0, y(e, `${t}.gap`, 24));
+function ul(e, t) {
+  return Math.max(0, x(e, `${t}.gap`, 24));
 }
-function Ol(e, t) {
-  return Math.max(0, y(e, `${t}.dividerThickness`, 0));
+function hl(e, t) {
+  return Math.max(0, x(e, `${t}.dividerThickness`, 0));
 }
-function Gl(e, t) {
+function pl(e, t) {
   return {
-    paddingTop: y(e, `${t}.paddingTop`, 20),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48)
+    paddingTop: x(e, `${t}.paddingTop`, 20),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48)
   };
 }
-function jl(e, t) {
-  return U(e, `${t}.paymentIcons`, !1);
+function ml(e, t) {
+  return E(e, `${t}.paymentIcons`, !1);
 }
-function Dl(e, t) {
-  const i = t.trim();
-  if (!i) return "";
-  const n = `[data-ziplofy-section="${e}"]`;
-  return i.replace(/:root/g, n).replace(/&/g, n);
+function gl(e, t) {
+  const n = t.trim();
+  if (!n) return "";
+  const i = `[data-codiic-section="${e}"]`;
+  return n.replace(/:root/g, i).replace(/&/g, i);
 }
-const Bl = [
+const fl = [
   { id: "facebook", label: "Facebook", settingKey: "facebookUrl" },
   { id: "instagram", label: "Instagram", settingKey: "instagramUrl" },
   { id: "youtube", label: "YouTube", settingKey: "youtubeUrl" },
@@ -5727,146 +5996,137 @@ const Bl = [
   { id: "vimeo", label: "Vimeo", settingKey: "vimeoUrl" },
   { id: "custom", label: "Custom link", settingKey: "customUrl" }
 ];
-function Xl(e, t, i, n) {
-  const s = l(e, `${t}.${i}`, "").trim();
-  return s || (n ? l(e, `${t}.${n}`, "").trim() : "");
+function bl(e, t, n, i) {
+  const c = r(e, `${t}.${n}`, "").trim();
+  return c || (i ? r(e, `${t}.${i}`, "").trim() : "");
 }
-function ql(e, t) {
-  return l(e, `${t}.catalogVariant`, "");
+function yl(e, t) {
+  return r(e, `${t}.catalogVariant`, "");
 }
-function Il({ sectionId: e = "footer_utilities" }) {
-  const t = j(), { text: i, fontBody: n } = X(), s = `sections.${e}.settings`, u = `sections.${e}.blocks`, a = ql(t, s) === "policies-links", r = F(() => ({
-    scheme: Al(t, s, {
+function xl({ sectionId: e = "footer_utilities" }) {
+  const t = j(), { text: n, fontBody: i } = q(), { storeFrontMeta: c } = De(), { fetchByStoreId: s } = Mn();
+  le(() => {
+    c?.storeId && s(c.storeId);
+  }, [s, c?.storeId]);
+  const l = `sections.${e}.settings`, a = `sections.${e}.blocks`, h = yl(t, l) === "policies-links", u = M(() => ({
+    scheme: cl(t, l, {
       background: "#f3f4f6",
-      color: i,
+      color: n,
       muted: "#6b7280",
-      border: L.line
+      border: R.line
     }),
-    widthMode: Ul(t, s),
-    gap: Nl(t, s),
-    dividerPx: Ol(t, s),
-    ...Gl(t, s),
-    showPaymentIcons: jl(t, s),
-    customCss: l(t, `${s}.customCss`, "")
-  }), [t, s, i]), p = `${u}.copyright.settings`, c = `${u}.policy_links.settings`, h = F(() => Ml(t, p), [t, p]), g = F(() => Fl(h), [h]), $ = F(
-    () => hi(t, c),
-    [t, c]
-  ), b = l(t, `${c}.privacyLabel`), v = l(t, `${c}.privacyHref`, "#"), x = l(t, `${c}.termsLabel`), z = l(t, `${c}.termsHref`, "#"), S = {
-    color: r.scheme.muted,
-    textDecoration: "underline",
-    fontSize: $.fontSize,
-    textTransform: $.textTransform
-  }, _ = `${u}.social.settings`, w = Pe(t, e, a ? ["copyright", "policy_links"] : ["copyright", "policy_links", "social"]), R = {
-    copyright: /* @__PURE__ */ o(E, { nodeId: `layout:${e}:block:copyright`, label: "Copyright", children: /* @__PURE__ */ o(k, { fieldPath: `${p}.showPoweredBy`, label: 'Show "Powered by" badge', children: /* @__PURE__ */ o(
+    widthMode: sl(t, l),
+    gap: ul(t, l),
+    dividerPx: hl(t, l),
+    ...pl(t, l),
+    showPaymentIcons: ml(t, l),
+    customCss: r(t, `${l}.customCss`, "")
+  }), [t, l, n]), p = `${a}.copyright.settings`, g = `${a}.policy_links.settings`, k = M(() => ll(t, p), [t, p]), y = M(() => al(k), [k]), v = M(
+    () => $n(t, g),
+    [t, g]
+  ), b = r(t, `${g}.privacyLabel`), _ = r(t, `${g}.privacyHref`, "#"), $ = r(t, `${g}.termsLabel`), w = r(t, `${g}.termsHref`, "#");
+  u.scheme.muted, v.fontSize, v.textTransform;
+  const P = `${a}.social.settings`, L = ke(t, e, h ? ["copyright", "policy_links"] : ["copyright", "policy_links", "social"]), H = {
+    copyright: /* @__PURE__ */ o(N, { nodeId: `layout:${e}:block:copyright`, label: "Copyright", children: /* @__PURE__ */ o(S, { fieldPath: `${p}.showPoweredBy`, label: 'Show "Powered by" badge', children: /* @__PURE__ */ o(
       "span",
       {
         style: {
-          color: r.scheme.muted,
-          fontSize: h.fontSize,
-          textTransform: h.textTransform
+          color: u.scheme.muted,
+          fontSize: k.fontSize,
+          textTransform: k.textTransform
         },
-        children: g
+        children: y
       }
     ) }) }),
     policy_links: /* @__PURE__ */ m(
-      E,
+      N,
       {
         nodeId: `layout:${e}:block:policy_links`,
         label: "Policy links",
-        style: { display: "flex", gap: 16 },
+        style: { display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" },
         children: [
-          /* @__PURE__ */ o(k, { fieldPath: `${c}.fontSize`, label: "Size", children: /* @__PURE__ */ o(I, { to: v, style: S, children: b }) }),
           /* @__PURE__ */ o(
-            "span",
+            Fn,
             {
-              "data-ziplofy-node": `field:${c}.privacyHref`,
-              "data-ziplofy-label": "Privacy link",
-              "data-ziplofy-kind": "field",
-              hidden: !0,
-              children: v
+              storeId: c?.storeId,
+              linkClassName: "",
+              className: ""
             }
           ),
-          /* @__PURE__ */ o(k, { fieldPath: `${c}.termsLabel`, label: "Terms", children: /* @__PURE__ */ o(I, { to: z, style: S, children: x }) }),
-          /* @__PURE__ */ o(
-            "span",
-            {
-              "data-ziplofy-node": `field:${c}.termsHref`,
-              "data-ziplofy-label": "Terms link",
-              "data-ziplofy-kind": "field",
-              hidden: !0,
-              children: z
-            }
-          )
+          /* @__PURE__ */ m("span", { style: { display: "none" }, "aria-hidden": !0, children: [
+            /* @__PURE__ */ o(D, { to: _, children: b }),
+            /* @__PURE__ */ o(D, { to: w, children: $ })
+          ] })
         ]
       }
     ),
     social: /* @__PURE__ */ o(
-      E,
+      N,
       {
         nodeId: `layout:${e}:block:social`,
         label: "Social media links",
         style: { display: "flex", flexWrap: "wrap", gap: 12 },
-        children: Bl.map((P) => {
-          const C = Xl(t, _, P.settingKey, P.id === "instagram" || P.id === "facebook" ? P.id : void 0);
+        children: fl.map((C) => {
+          const F = bl(t, P, C.settingKey, C.id === "instagram" || C.id === "facebook" ? C.id : void 0);
           return /* @__PURE__ */ o(
-            k,
+            S,
             {
-              fieldPath: `${_}.${P.settingKey}`,
-              label: P.label,
-              children: C ? /* @__PURE__ */ o(
+              fieldPath: `${P}.${C.settingKey}`,
+              label: C.label,
+              children: F ? /* @__PURE__ */ o(
                 "a",
                 {
-                  href: C,
+                  href: F,
                   target: "_blank",
                   rel: "noreferrer",
-                  style: { color: r.scheme.muted, textDecoration: "underline", fontSize: 13 },
-                  children: P.label
+                  style: { color: u.scheme.muted, textDecoration: "underline", fontSize: 13 },
+                  children: C.label
                 }
-              ) : /* @__PURE__ */ o("span", { style: { color: r.scheme.muted, opacity: 0.45, fontSize: 13 }, children: P.label })
+              ) : /* @__PURE__ */ o("span", { style: { color: u.scheme.muted, opacity: 0.45, fontSize: 13 }, children: C.label })
             },
-            P.id
+            C.id
           );
         })
       }
     )
-  }, T = r.widthMode === "full" ? "100%" : L.maxWidth, W = r.widthMode === "full" ? 0 : L.padX;
+  }, W = u.widthMode === "full" ? "100%" : R.maxWidth, T = u.widthMode === "full" ? 0 : R.padX;
   return /* @__PURE__ */ m(
-    G,
+    B,
     {
       sectionId: e,
-      label: a ? "Policies and links" : "Utilities",
+      label: h ? "Policies and links" : "Utilities",
       style: {
-        background: r.scheme.background,
-        borderTop: a ? `1px solid ${r.scheme.border}` : `${r.dividerPx}px solid ${r.scheme.border}`,
-        fontFamily: n,
+        background: u.scheme.background,
+        borderTop: h ? `1px solid ${u.scheme.border}` : `${u.dividerPx}px solid ${u.scheme.border}`,
+        fontFamily: i,
         fontSize: 13,
-        color: r.scheme.color,
-        paddingTop: r.paddingTop,
-        paddingBottom: r.paddingBottom,
-        paddingLeft: W,
-        paddingRight: W,
+        color: u.scheme.color,
+        paddingTop: u.paddingTop,
+        paddingBottom: u.paddingBottom,
+        paddingLeft: T,
+        paddingRight: T,
         boxSizing: "border-box"
       },
       children: [
-        r.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: Dl(e, r.customCss) } }) : null,
+        u.customCss ? /* @__PURE__ */ o("style", { dangerouslySetInnerHTML: { __html: gl(e, u.customCss) } }) : null,
         /* @__PURE__ */ m(
           "div",
           {
             style: {
-              maxWidth: T,
+              maxWidth: W,
               margin: "0 auto",
               display: "flex",
               flexWrap: "wrap",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: r.gap
+              gap: u.gap
             },
             children: [
-              w.map((P) => {
-                const C = R[P];
-                return C ? /* @__PURE__ */ o("span", { children: C }, P) : null;
+              L.map((C) => {
+                const F = H[C];
+                return F ? /* @__PURE__ */ o("span", { children: F }, C) : null;
               }),
-              !a && r.showPaymentIcons ? /* @__PURE__ */ o(
+              !h && u.showPaymentIcons ? /* @__PURE__ */ o(
                 "span",
                 {
                   style: {
@@ -5887,58 +6147,58 @@ function Il({ sectionId: e = "footer_utilities" }) {
     }
   );
 }
-function pi(e) {
+function kn(e) {
   return e === "footer_utilities" || /^footer_utilities_\d+$/.test(e);
 }
-function Vl(e) {
-  return pi(e) ? !1 : e === "footer" || /^footer_\d+$/.test(e);
+function $l(e) {
+  return kn(e) ? !1 : e === "footer" || /^footer_\d+$/.test(e);
 }
-function Kl({ sectionId: e }) {
-  return pi(e) ? /* @__PURE__ */ o(Il, { sectionId: e }) : Vl(e) ? /* @__PURE__ */ o(Bo, { sectionId: e }) : e === "divider" || e.startsWith("divider_") ? /* @__PURE__ */ o(wt, { sectionId: e, placement: "layout" }) : e === "custom_section" || e.startsWith("custom_section_") ? /* @__PURE__ */ o(vt, { sectionId: e, placement: "layout" }) : e === "hero_main" || e.startsWith("hero_main_") ? /* @__PURE__ */ o(kt, { sectionId: e, placement: "layout" }) : e === "product_highlight" || e.startsWith("product_highlight_") ? /* @__PURE__ */ o(un, { sectionId: e }) : e === "image_compare" || e.startsWith("image_compare_") ? /* @__PURE__ */ o(Fn, { sectionId: e }) : e === "image_with_text" || e.startsWith("image_with_text_") ? /* @__PURE__ */ o(Dn, { sectionId: e }) : e === "editorial_jumbo" || e.startsWith("editorial_jumbo_") ? /* @__PURE__ */ o(_n, { sectionId: e }) : e === "editorial" || e.startsWith("editorial_") ? /* @__PURE__ */ o(bn, { sectionId: e }) : e === "faq_section" || e.startsWith("faq_section_") ? /* @__PURE__ */ o(ni, { sectionId: e, placement: "layout" }) : e === "icons_with_text" || e.startsWith("icons_with_text_") ? /* @__PURE__ */ o(li, { sectionId: e, placement: "layout" }) : e === "multicolumn_section" || e.startsWith("multicolumn_section_") ? /* @__PURE__ */ o(ri, { sectionId: e, placement: "layout" }) : e === "pull_quote_section" || e.startsWith("pull_quote_section_") ? /* @__PURE__ */ o(ai, { sectionId: e, placement: "layout" }) : e === "rich_text_section" || e.startsWith("rich_text_section_") ? /* @__PURE__ */ o(di, { sectionId: e, placement: "layout" }) : e === "text_marquee_section" || e.startsWith("text_marquee_section") ? /* @__PURE__ */ o(ci, { sectionId: e, placement: "layout" }) : e === "contact_form" || e.startsWith("contact_form") ? /* @__PURE__ */ o(Vo, { sectionId: e, placement: "layout" }) : e === "email_signup" || e.startsWith("email_signup") ? /* @__PURE__ */ o(Ko, { sectionId: e, placement: "layout" }) : e === "storytelling_logo" || e.startsWith("storytelling_logo") ? /* @__PURE__ */ o(si, { sectionId: e, placement: "layout" }) : e === "storytelling_video" || e.startsWith("storytelling_video") ? /* @__PURE__ */ o(ui, { sectionId: e, placement: "layout" }) : null;
+function kl({ sectionId: e }) {
+  return kn(e) ? /* @__PURE__ */ o(xl, { sectionId: e }) : $l(e) ? /* @__PURE__ */ o(Yo, { sectionId: e }) : e === "divider" || e.startsWith("divider_") ? /* @__PURE__ */ o(_t, { sectionId: e, placement: "layout" }) : e === "custom_section" || e.startsWith("custom_section_") ? /* @__PURE__ */ o(wt, { sectionId: e, placement: "layout" }) : e === "hero_main" || e.startsWith("hero_main_") ? /* @__PURE__ */ o(St, { sectionId: e, placement: "layout" }) : e === "product_highlight" || e.startsWith("product_highlight_") ? /* @__PURE__ */ o(Mi, { sectionId: e }) : e === "image_compare" || e.startsWith("image_compare_") ? /* @__PURE__ */ o(ir, { sectionId: e }) : e === "image_with_text" || e.startsWith("image_with_text_") ? /* @__PURE__ */ o(hr, { sectionId: e }) : e === "editorial_jumbo" || e.startsWith("editorial_jumbo_") ? /* @__PURE__ */ o(Vi, { sectionId: e }) : e === "editorial" || e.startsWith("editorial_") ? /* @__PURE__ */ o(Oi, { sectionId: e }) : e === "faq_section" || e.startsWith("faq_section_") ? /* @__PURE__ */ o(hn, { sectionId: e, placement: "layout" }) : e === "icons_with_text" || e.startsWith("icons_with_text_") ? /* @__PURE__ */ o(pn, { sectionId: e, placement: "layout" }) : e === "multicolumn_section" || e.startsWith("multicolumn_section_") ? /* @__PURE__ */ o(mn, { sectionId: e, placement: "layout" }) : e === "pull_quote_section" || e.startsWith("pull_quote_section_") ? /* @__PURE__ */ o(gn, { sectionId: e, placement: "layout" }) : e === "rich_text_section" || e.startsWith("rich_text_section_") ? /* @__PURE__ */ o(fn, { sectionId: e, placement: "layout" }) : e === "text_marquee_section" || e.startsWith("text_marquee_section") ? /* @__PURE__ */ o(bn, { sectionId: e, placement: "layout" }) : e === "contact_form" || e.startsWith("contact_form") ? /* @__PURE__ */ o(tn, { sectionId: e, placement: "layout" }) : e === "email_signup" || e.startsWith("email_signup") ? /* @__PURE__ */ o(on, { sectionId: e, placement: "layout" }) : e === "storytelling_logo" || e.startsWith("storytelling_logo") ? /* @__PURE__ */ o(yn, { sectionId: e, placement: "layout" }) : e === "storytelling_video" || e.startsWith("storytelling_video") ? /* @__PURE__ */ o(xn, { sectionId: e, placement: "layout" }) : null;
 }
-const Yl = {
+const vl = {
   "scheme-1": { background: "#111827", color: "#f9fafb", linkColor: "#93c5fd" },
   "scheme-2": { background: "#1e3a5f", color: "#eff6ff", linkColor: "#bfdbfe" },
   "scheme-3": { background: "#431407", color: "#fff7ed", linkColor: "#fdba74" },
   "scheme-4": { background: "#4c1d95", color: "#f5f3ff", linkColor: "#ddd6fe" }
 };
-function Zl(e, t, i) {
-  const n = l(e, `${t}.colorScheme`, "scheme-4");
-  return Yl[n] ?? i;
+function Sl(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-4");
+  return vl[i] ?? n;
 }
-function Ql(e, t) {
-  return l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
+function wl(e, t) {
+  return r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
 }
-function Jl(e, t) {
+function Cl(e, t) {
   return {
-    paddingTop: y(e, `${t}.paddingTop`, 15),
-    paddingBottom: y(e, `${t}.paddingBottom`, 15)
+    paddingTop: x(e, `${t}.paddingTop`, 15),
+    paddingBottom: x(e, `${t}.paddingBottom`, 15)
   };
 }
-function er(e, t) {
-  return Math.max(0, y(e, `${t}.dividerThickness`, 0));
+function _l(e, t) {
+  return Math.max(0, x(e, `${t}.dividerThickness`, 0));
 }
-function tr(e, t) {
-  const i = y(e, `${t}.timeToNext`, 5);
-  return !Number.isFinite(i) || i <= 0 ? 0 : i;
+function Wl(e, t) {
+  const n = x(e, `${t}.timeToNext`, 5);
+  return !Number.isFinite(n) || n <= 0 ? 0 : n;
 }
-function or(e, t) {
-  const i = t.trim();
-  if (!i) return "";
-  const n = `[data-ziplofy-section="${e}"]`;
-  return i.replace(/:root/g, n).replace(/&/g, n);
+function zl(e, t) {
+  const n = t.trim();
+  if (!n) return "";
+  const i = `[data-codiic-section="${e}"]`;
+  return n.replace(/:root/g, i).replace(/&/g, i);
 }
-function uo(e, t, i) {
-  const n = l(e, `${t}.font`, "subheading"), s = l(e, `${t}.fontSize`, "12px"), u = l(e, `${t}.fontWeight`, "default"), d = l(e, `${t}.letterSpacing`), a = l(e, `${t}.textCase`, "default"), r = n === "heading" ? i.fontHeading : i.fontBody, p = d === "tight" ? "-0.02em" : d === "wide" ? "0.08em" : "normal", c = u === "default" ? void 0 : Number.isFinite(Number(u)) ? Number(u) : void 0;
+function po(e, t, n) {
+  const i = r(e, `${t}.font`, "subheading"), c = r(e, `${t}.fontSize`, "12px"), s = r(e, `${t}.fontWeight`, "default"), l = r(e, `${t}.letterSpacing`), a = r(e, `${t}.textCase`, "default"), d = i === "heading" ? n.fontHeading : n.fontBody, h = l === "tight" ? "-0.02em" : l === "wide" ? "0.08em" : "normal", u = s === "default" ? void 0 : Number.isFinite(Number(s)) ? Number(s) : void 0;
   return {
-    fontFamily: r,
-    fontSize: s,
-    fontWeight: c,
-    letterSpacing: p,
+    fontFamily: d,
+    fontSize: c,
+    fontWeight: u,
+    letterSpacing: h,
     textTransform: a === "uppercase" ? "uppercase" : "none"
   };
 }
-function ir(e) {
+function Pl(e) {
   return {
     fontFamily: e.fontFamily,
     fontSize: e.fontSize,
@@ -5947,174 +6207,200 @@ function ir(e) {
     textTransform: e.textTransform
   };
 }
-function nr(e, t, i, n) {
-  const s = [];
-  for (const u of i) {
-    const d = `${t}.blocks.${u}.settings`, a = l(e, `${d}.text`, "").trim();
-    a && s.push({
-      blockId: u,
+function Hl(e, t, n, i) {
+  const c = [];
+  for (const s of n) {
+    const l = `${t}.blocks.${s}.settings`, a = r(e, `${l}.text`, "").trim();
+    a && c.push({
+      blockId: s,
       text: a,
-      link: l(e, `${d}.link`, "").trim(),
-      typography: uo(e, d, n)
+      link: r(e, `${l}.link`, "").trim(),
+      typography: po(e, l, i)
     });
   }
-  if (!s.length) {
-    const u = l(e, `${t}.settings.message`, "").trim();
-    u && s.push({
+  if (!c.length) {
+    const s = r(e, `${t}.settings.message`, "").trim();
+    s && c.push({
       blockId: "announcement",
-      text: u,
-      link: l(e, `${t}.settings.linkHref`, "").trim(),
-      typography: uo(
+      text: s,
+      link: r(e, `${t}.settings.linkHref`, "").trim(),
+      typography: po(
         e,
         `${t}.blocks.announcement.settings`,
-        n
+        i
       )
     });
   }
-  return s;
+  return c;
 }
-function lr({ sectionId: e = "announcement_bar" }) {
-  const t = j(), i = X(), n = rt(), s = fi(), u = bi(s, e), d = {
-    background: i.primary,
-    color: i.background,
-    linkColor: i.background
-  }, a = `sections.${e}`, r = `${a}.settings`, p = U(t, `${r}.enabled`, !0), c = Pe(t, e, ["announcement"]), h = F(
-    () => nr(t, a, c, {
-      fontHeading: i.fontHeading,
-      fontBody: i.fontBody
+function Tl({ sectionId: e = "announcement_bar" }) {
+  const t = j(), n = q(), i = kt(), c = An(), s = Nn(c, e), l = {
+    background: n.primary,
+    color: n.background,
+    linkColor: n.background
+  }, a = `sections.${e}`, d = `${a}.settings`, h = E(t, `${d}.enabled`, !0), u = ke(t, e, ["announcement"]), p = M(
+    () => Hl(t, a, u, {
+      fontHeading: n.fontHeading,
+      fontBody: n.fontBody
     }),
-    [t, a, c, i.fontHeading, i.fontBody]
-  ), [g, $] = Z(0), b = tr(t, r);
-  ue(() => {
-    $(0);
-  }, [e, h.map((C) => `${C.blockId}\0${C.text}`).join("")]), ue(() => {
-    if (!u || !h.length) return;
-    const C = h.findIndex((M) => M.blockId === u);
-    C >= 0 && $(C);
-  }, [u, h]), ue(() => {
-    if (n || h.length <= 1 || b <= 0) return;
+    [t, a, u, n.fontHeading, n.fontBody]
+  ), [g, k] = te(0), y = Wl(t, d);
+  le(() => {
+    k(0);
+  }, [e, p.map((C) => `${C.blockId}\0${C.text}`).join("")]), le(() => {
+    if (!s || !p.length) return;
+    const C = p.findIndex((F) => F.blockId === s);
+    C >= 0 && k(C);
+  }, [s, p]), le(() => {
+    if (i || p.length <= 1 || y <= 0) return;
     const C = window.setInterval(() => {
-      $((M) => (M + 1) % h.length);
-    }, b * 1e3);
+      k((F) => (F + 1) % p.length);
+    }, y * 1e3);
     return () => window.clearInterval(C);
-  }, [n, h.length, b]);
-  const v = F(() => {
-    if (u) {
-      const C = h.findIndex((M) => M.blockId === u);
+  }, [i, p.length, y]);
+  const v = M(() => {
+    if (s) {
+      const C = p.findIndex((F) => F.blockId === s);
       if (C >= 0) return C;
     }
     return g;
-  }, [u, h, g]), x = h[v] ?? h[0];
-  if (!p || !h.length || !x?.text) return null;
-  const z = Zl(t, r, d), S = Ql(t, r), { paddingTop: _, paddingBottom: H } = Jl(t, r), w = er(t, r), R = l(t, `${r}.customCss`, ""), T = or(e, R), W = (C, M) => {
-    const f = ir(C.typography), O = `${a}.blocks.${C.blockId}.settings.text`, N = `${a}.blocks.${C.blockId}.settings.link`, D = /* @__PURE__ */ o(k, { fieldPath: O, label: "Text", children: /* @__PURE__ */ o("span", { style: f, children: C.text }) }), V = C.link && C.link.startsWith("/") ? /* @__PURE__ */ m(I, { to: C.link, style: { color: z.color, textDecoration: "none" }, children: [
-      D,
+  }, [s, p, g]), b = p[v] ?? p[0];
+  if (!h || !p.length || !b?.text) return null;
+  const _ = Sl(t, d, l), $ = wl(t, d), { paddingTop: w, paddingBottom: P } = Cl(t, d), z = _l(t, d), L = r(t, `${d}.customCss`, ""), H = zl(e, L), W = (C, F) => {
+    const f = Pl(C.typography), U = `${a}.blocks.${C.blockId}.settings.text`, X = `${a}.blocks.${C.blockId}.settings.link`, O = /* @__PURE__ */ o(S, { fieldPath: U, label: "Text", children: /* @__PURE__ */ o("span", { style: f, children: C.text }) }), Y = C.link && C.link.startsWith("/") ? /* @__PURE__ */ m(D, { to: C.link, style: { color: _.color, textDecoration: "none" }, children: [
+      O,
       /* @__PURE__ */ o(
         "span",
         {
-          "data-ziplofy-node": `field:${N}`,
-          "data-ziplofy-label": "Link",
-          "data-ziplofy-kind": "field",
+          "data-codiic-node": `field:${X}`,
+          "data-codiic-label": "Link",
+          "data-codiic-kind": "field",
           hidden: !0,
           children: C.link
         }
       )
-    ] }) : C.link ? /* @__PURE__ */ o("a", { href: C.link, style: { color: z.color, textDecoration: "none" }, children: D }) : D;
+    ] }) : C.link ? /* @__PURE__ */ o("a", { href: C.link, style: { color: _.color, textDecoration: "none" }, children: O }) : O;
     return /* @__PURE__ */ o(
       "div",
       {
         style: {
-          display: M ? "block" : "none"
+          display: F ? "block" : "none"
         },
-        "aria-hidden": !M,
-        children: c.includes(C.blockId) ? /* @__PURE__ */ o(E, { nodeId: `layout:${e}:block:${C.blockId}`, label: "Announcement", children: V }) : /* @__PURE__ */ o(k, { fieldPath: `${r}.message`, label: "Announcement text", children: /* @__PURE__ */ o("span", { style: f, children: C.text }) })
+        "aria-hidden": !F,
+        children: u.includes(C.blockId) ? /* @__PURE__ */ o(N, { nodeId: `layout:${e}:block:${C.blockId}`, label: "Announcement", children: Y }) : /* @__PURE__ */ o(S, { fieldPath: `${d}.message`, label: "Announcement text", children: /* @__PURE__ */ o("span", { style: f, children: C.text }) })
       },
       C.blockId
     );
-  }, P = n && h.length > 1;
+  }, T = i && p.length > 1;
   return /* @__PURE__ */ m(
-    G,
+    B,
     {
       sectionId: e,
       label: "Announcement bar",
       style: {
-        background: z.background,
-        color: z.color,
-        fontFamily: i.fontBody,
+        background: _.background,
+        color: _.color,
+        fontFamily: n.fontBody,
         fontSize: 13,
         textAlign: "center",
-        paddingTop: _,
-        paddingBottom: H,
-        borderBottom: w > 0 ? `${w}px solid rgba(0,0,0,0.15)` : void 0,
+        paddingTop: w,
+        paddingBottom: P,
+        borderBottom: z > 0 ? `${z}px solid rgba(0,0,0,0.15)` : void 0,
         width: "100%",
         boxSizing: "border-box"
       },
       children: [
-        T ? /* @__PURE__ */ o("style", { children: T }) : null,
+        H ? /* @__PURE__ */ o("style", { children: H }) : null,
         /* @__PURE__ */ o(
           "div",
           {
-            style: S === "page" ? { maxWidth: 1200, margin: "0 auto", paddingLeft: 16, paddingRight: 16 } : { width: "100%", paddingLeft: 16, paddingRight: 16, boxSizing: "border-box" },
-            children: P ? h.map(
-              (C, M) => W(C, u ? C.blockId === u : M === v)
-            ) : W(x, !0)
+            style: $ === "page" ? { maxWidth: 1200, margin: "0 auto", paddingLeft: 16, paddingRight: 16 } : { width: "100%", paddingLeft: 16, paddingRight: 16, boxSizing: "border-box" },
+            children: T ? p.map(
+              (C, F) => W(C, s ? C.blockId === s : F === v)
+            ) : W(b, !0)
           }
         )
       ]
     }
   );
 }
-function rr({ sectionId: e }) {
-  return e === "header" || e.startsWith("header_") ? /* @__PURE__ */ o(Xo, { sectionId: e }) : e === "announcement_bar" || e.startsWith("announcement_bar_") ? /* @__PURE__ */ o(lr, { sectionId: e }) : e === "divider" || e.startsWith("divider_") ? /* @__PURE__ */ o(wt, { sectionId: e, placement: "layout" }) : e === "custom_section" || e.startsWith("custom_section_") ? /* @__PURE__ */ o(vt, { sectionId: e, placement: "layout" }) : null;
+function Ll({ sectionId: e }) {
+  return e === "header" || e.startsWith("header_") ? /* @__PURE__ */ o(Zo, { sectionId: e }) : e === "announcement_bar" || e.startsWith("announcement_bar_") ? /* @__PURE__ */ o(Tl, { sectionId: e }) : e === "divider" || e.startsWith("divider_") ? /* @__PURE__ */ o(_t, { sectionId: e, placement: "layout" }) : e === "custom_section" || e.startsWith("custom_section_") ? /* @__PURE__ */ o(wt, { sectionId: e, placement: "layout" }) : null;
 }
-function Ae({ children: e }) {
-  const t = j(), { background: i, text: n } = X(), s = Ni(t), u = Oi(t);
-  return /* @__PURE__ */ m("div", { style: { minHeight: "100vh", background: i, color: n }, children: [
-    s.map(
-      (d) => Mt(t, d) ? /* @__PURE__ */ o(rr, { sectionId: d }, d) : null
-    ),
-    /* @__PURE__ */ o("main", { children: e }),
-    u.map(
-      (d) => Mt(t, d) ? /* @__PURE__ */ o(Kl, { sectionId: d }, d) : null
-    )
-  ] });
+function Te({ children: e }) {
+  const t = j(), { background: n, text: i, primary: c } = q(), s = ai(t), l = di(t);
+  return /* @__PURE__ */ m(
+    "div",
+    {
+      className: "hz-storefront",
+      style: {
+        minHeight: "100vh",
+        background: n,
+        color: i,
+        "--hz-bg": n,
+        "--hz-text": i,
+        "--hz-primary": c,
+        "--hz-on-primary": n
+      },
+      children: [
+        s.map(
+          (a) => At(t, a) ? /* @__PURE__ */ o(Ll, { sectionId: a }, a) : null
+        ),
+        /* @__PURE__ */ o("main", { children: e }),
+        l.map(
+          (a) => At(t, a) ? /* @__PURE__ */ o(kl, { sectionId: a }, a) : null
+        )
+      ]
+    }
+  );
 }
-const Re = "templates.cart.sections.cart_main";
-function ho(e) {
+const dt = {
+  allProducts: "/collections/all"
+};
+function vn(e) {
+  const t = e.trim();
+  return t ? `/product/${encodeURIComponent(t)}` : dt.allProducts;
+}
+function Sn(e) {
+  const t = e.trim().toLowerCase();
+  return !t || t === "all" ? dt.allProducts : `/collection/${encodeURIComponent(t)}`;
+}
+const Ce = "templates.cart.sections.cart_main";
+function mo(e) {
   const t = e.productVariantId;
   return typeof t == "object" && t !== null && "_id" in t ? t : null;
 }
-function ar() {
-  const e = j(), t = rt(), { text: i, background: n, primary: s, fontHeading: u, fontBody: d } = X(), { user: a, checkAuth: r } = Ze(), { getAllItems: p, getCartByCustomerId: c, updateCartEntry: h, deleteCartEntry: g, loading: $ } = xt(), [b, v] = Z({}), x = l(e, `${Re}.settings.title`), z = l(e, `${Re}.blocks.empty_state.blocks.empty_message.settings.emptyTitle`), S = l(e, `${Re}.blocks.empty_state.blocks.continue_link.settings.label`), _ = l(e, `${Re}.blocks.empty_state.blocks.continue_link.settings.href`), H = l(e, `${Re}.blocks.line_items.blocks.item_actions.settings.removeLabel`), w = l(e, `${Re}.blocks.line_items.blocks.item_actions.settings.loadingLabel`), R = l(e, `${Re}.blocks.cart_summary.blocks.subtotal.settings.label`);
-  ue(() => {
-    t || r();
-  }, [r, t]), ue(() => {
-    t || !a?._id || c(a._id);
-  }, [c, t, a?._id]);
-  const T = p(), W = F(() => T.length > 0 ? T : t ? Ai : [], [T, t]), P = F(() => {
+function Rl() {
+  const e = j(), t = kt(), { text: n, background: i, primary: c, fontHeading: s, fontBody: l } = q(), { user: a, checkAuth: d } = tt(), { getAllItems: h, getCartByCustomerId: u, updateCartEntry: p, deleteCartEntry: g, loading: k } = $t(), [y, v] = te({}), b = r(e, `${Ce}.settings.title`), _ = r(e, `${Ce}.blocks.empty_state.blocks.empty_message.settings.emptyTitle`), $ = r(e, `${Ce}.blocks.empty_state.blocks.continue_link.settings.label`), w = r(e, `${Ce}.blocks.empty_state.blocks.continue_link.settings.href`), P = r(e, `${Ce}.blocks.line_items.blocks.item_actions.settings.removeLabel`), z = r(e, `${Ce}.blocks.line_items.blocks.item_actions.settings.loadingLabel`), L = r(e, `${Ce}.blocks.cart_summary.blocks.subtotal.settings.label`);
+  le(() => {
+    t || d();
+  }, [d, t]), le(() => {
+    t || !a?._id || u(a._id);
+  }, [u, t, a?._id]);
+  const H = h(), W = M(() => H.length > 0 ? H : t ? li : [], [H, t]), T = M(() => {
     let f = 0;
-    for (const O of W) {
-      const N = ho(O);
-      N && (f += N.price * O.quantity);
+    for (const U of W) {
+      const X = mo(U);
+      X && (f += X.price * U.quantity);
     }
     return f;
-  }, [W]), C = !t && $ && W.length === 0, M = !C && W.length === 0;
-  return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "cart_main", label: "Cart", style: { padding: `40px ${L.padX}px 64px`, fontFamily: d, color: i }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 880, margin: "0 auto" }, children: [
-    /* @__PURE__ */ o(k, { fieldPath: `${Re}.settings.title`, label: "Page title", as: "h1", style: { fontFamily: u, fontSize: 32, marginTop: 0 }, children: x }),
-    C ? /* @__PURE__ */ o(E, { nodeId: "template:cart:cart_main:block:line_items", label: "Line items", children: /* @__PURE__ */ o("p", { style: { opacity: 0.7 }, children: w }) }) : null,
-    M ? /* @__PURE__ */ o(E, { nodeId: "template:cart:cart_main:block:empty_state", label: "Empty cart", children: /* @__PURE__ */ m("p", { style: { opacity: 0.7 }, children: [
-      /* @__PURE__ */ o(k, { fieldPath: `${Re}.blocks.empty_state.blocks.empty_message.settings.emptyTitle`, label: "Empty cart text", as: "span", children: z }),
+  }, [W]), C = !t && k && W.length === 0, F = !C && W.length === 0;
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o(B, { sectionId: "cart_main", label: "Cart", style: { padding: `clamp(48px, 6vw, 80px) ${R.padX}px`, fontFamily: l, color: n }, children: /* @__PURE__ */ m("div", { className: "hz-cart", children: [
+    /* @__PURE__ */ o(S, { fieldPath: `${Ce}.settings.title`, label: "Page title", as: "h1", style: { fontFamily: s, fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 400, margin: "0 0 32px", letterSpacing: "-0.03em" }, children: b }),
+    C ? /* @__PURE__ */ o(N, { nodeId: "template:cart:cart_main:block:line_items", label: "Line items", children: /* @__PURE__ */ o("p", { style: { opacity: 0.7 }, children: z }) }) : null,
+    F ? /* @__PURE__ */ o(N, { nodeId: "template:cart:cart_main:block:empty_state", label: "Empty cart", children: /* @__PURE__ */ m("p", { style: { opacity: 0.7 }, children: [
+      /* @__PURE__ */ o(S, { fieldPath: `${Ce}.blocks.empty_state.blocks.empty_message.settings.emptyTitle`, label: "Empty cart text", as: "span", children: _ }),
       " ",
-      /* @__PURE__ */ o(I, { to: _, style: { color: s }, children: /* @__PURE__ */ o(k, { fieldPath: `${Re}.blocks.empty_state.blocks.continue_link.settings.label`, label: "Link label", as: "span", children: S }) })
+      /* @__PURE__ */ o(D, { to: w, style: { color: c }, children: /* @__PURE__ */ o(S, { fieldPath: `${Ce}.blocks.empty_state.blocks.continue_link.settings.label`, label: "Link label", as: "span", children: $ }) })
     ] }) }) : null,
-    W.length > 0 ? /* @__PURE__ */ m(ne, { children: [
-      /* @__PURE__ */ o(E, { nodeId: "template:cart:cart_main:block:line_items", label: "Line items", children: /* @__PURE__ */ o("div", { style: { display: "grid", gap: 12, marginTop: 24 }, children: W.map((f) => {
-        const O = ho(f);
-        return /* @__PURE__ */ o("article", { style: { border: `1px solid ${L.line}`, borderRadius: 10, padding: 16, background: n }, children: /* @__PURE__ */ m("div", { style: { display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }, children: [
+    W.length > 0 ? /* @__PURE__ */ m(Z, { children: [
+      /* @__PURE__ */ o(N, { nodeId: "template:cart:cart_main:block:line_items", label: "Line items", children: /* @__PURE__ */ o("div", { style: { display: "grid", gap: 12, marginTop: 24 }, children: W.map((f) => {
+        const U = mo(f);
+        return /* @__PURE__ */ o("article", { className: "hz-cart__line", children: /* @__PURE__ */ m("div", { style: { display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }, children: [
           /* @__PURE__ */ m("div", { children: [
-            O ? /* @__PURE__ */ o(I, { to: `/products/${O.productId}`, style: { color: i, fontWeight: 600 }, onClick: (N) => t && N.preventDefault(), children: O.sku }) : /* @__PURE__ */ o("span", { children: "Item" }),
+            U ? /* @__PURE__ */ o(D, { to: vn(String(U.productId)), style: { color: n, fontWeight: 500 }, onClick: (X) => t && X.preventDefault(), children: U.sku }) : /* @__PURE__ */ o("span", { children: "Item" }),
             /* @__PURE__ */ m("p", { style: { margin: "8px 0 0" }, children: [
-              O ? Ye(O.price) : "—",
+              U ? Ge(U.price) : "—",
               " each"
             ] })
           ] }),
@@ -6124,43 +6410,55 @@ function ar() {
               {
                 type: "number",
                 min: 1,
-                value: b[f._id] ?? String(f.quantity),
+                value: y[f._id] ?? String(f.quantity),
                 readOnly: t,
-                onChange: (N) => v((D) => ({ ...D, [f._id]: N.target.value })),
+                onChange: (X) => v((O) => ({ ...O, [f._id]: X.target.value })),
                 onBlur: () => {
                   if (t) return;
-                  const N = Math.max(1, Math.floor(Number(b[f._id]) || f.quantity));
-                  N !== f.quantity && h({ id: f._id, quantity: N });
+                  const X = Math.max(1, Math.floor(Number(y[f._id]) || f.quantity));
+                  X !== f.quantity && p({ id: f._id, quantity: X });
                 },
-                style: { ...We, width: 72, fontFamily: d }
+                style: { ...vt, width: 72, fontFamily: l }
               }
             ),
-            /* @__PURE__ */ o(E, { nodeId: "template:cart:cart_main:block:line_items:block:item_actions", label: "Item actions", children: /* @__PURE__ */ o(
+            /* @__PURE__ */ o(N, { nodeId: "template:cart:cart_main:block:line_items:block:item_actions", label: "Item actions", children: /* @__PURE__ */ o(
               "button",
               {
                 type: "button",
                 onClick: () => {
                   t || g(f._id);
                 },
-                style: { background: "none", border: "none", color: s, cursor: t ? "default" : "pointer" },
-                children: /* @__PURE__ */ o(k, { fieldPath: `${Re}.blocks.line_items.blocks.item_actions.settings.removeLabel`, label: "Remove button", as: "span", children: H })
+                style: { background: "none", border: "none", color: c, cursor: t ? "default" : "pointer" },
+                children: /* @__PURE__ */ o(S, { fieldPath: `${Ce}.blocks.line_items.blocks.item_actions.settings.removeLabel`, label: "Remove button", as: "span", children: P })
               }
             ) })
           ] })
         ] }) }, f._id);
       }) }) }),
-      /* @__PURE__ */ o(E, { nodeId: "template:cart:cart_main:block:cart_summary", label: "Summary", children: /* @__PURE__ */ m("p", { style: { marginTop: 24, fontSize: 20, fontWeight: 600 }, children: [
-        /* @__PURE__ */ o(k, { fieldPath: `${Re}.blocks.cart_summary.blocks.subtotal.settings.label`, label: "Subtotal prefix", as: "span", children: R }),
-        " ",
-        Ye(P)
+      /* @__PURE__ */ o(N, { nodeId: "template:cart:cart_main:block:cart_summary", label: "Summary", children: /* @__PURE__ */ m("div", { className: "hz-cart__summary", children: [
+        /* @__PURE__ */ m("p", { style: { fontSize: 20, fontWeight: 500, letterSpacing: "-0.02em" }, children: [
+          /* @__PURE__ */ o(S, { fieldPath: `${Ce}.blocks.cart_summary.blocks.subtotal.settings.label`, label: "Subtotal prefix", as: "span", children: L }),
+          " ",
+          Ge(T)
+        ] }),
+        /* @__PURE__ */ o(
+          D,
+          {
+            to: "/checkout",
+            onClick: (f) => t && f.preventDefault(),
+            className: "hz-btn hz-btn--primary",
+            style: { marginTop: 20, textDecoration: "none", display: "inline-flex" },
+            children: "Proceed to checkout"
+          }
+        )
       ] }) })
     ] }) : null
   ] }) }) });
 }
-function dr({ sectionId: e = "custom_section", templateId: t = "index" }) {
-  return /* @__PURE__ */ o(vt, { sectionId: e, placement: "template", templateId: t });
+function Ml({ sectionId: e = "custom_section", templateId: t = "index" }) {
+  return /* @__PURE__ */ o(wt, { sectionId: e, placement: "template", templateId: t });
 }
-function Ct({ variant: e }) {
+function zt({ variant: e }) {
   return e === "thread" ? /* @__PURE__ */ m("div", { className: "flex items-end justify-center gap-1.5", "aria-hidden": !0, children: [
     /* @__PURE__ */ o("div", { style: { height: 40, width: 12, borderRadius: 999, background: "#e8c547" } }),
     /* @__PURE__ */ o("div", { style: { height: 48, width: 14, borderRadius: 999, background: "#d45454" } }),
@@ -6255,133 +6553,173 @@ function Ct({ variant: e }) {
     )
   ] });
 }
-const po = {
+const go = ["sewing", "thread", "boxes"];
+function Fl(e) {
+  return e === "thread" || e === "boxes" ? e : "sewing";
+}
+function Al(e) {
+  if (!e) return "";
+  const t = new Date(e);
+  return Number.isNaN(t.getTime()) ? "" : t.toLocaleDateString(void 0, { month: "short", day: "numeric" });
+}
+function Nl(e, t, n) {
+  return e.slice(0, Math.max(1, t)).map((i, c) => ({
+    id: i._id || `post-${c}`,
+    illustrationVariant: go[c % go.length],
+    title: i.title || "Untitled",
+    date: Al(i.createdAt),
+    author: i.author || "",
+    excerpt: i.excerpt || "",
+    imageUrl: i.featuredImageUrl || "",
+    href: n && i.urlHandle ? `/blogs/${n}/${i.urlHandle}` : void 0
+  }));
+}
+function El(e, t, n, i, c) {
+  const l = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, a = i === "template" ? _e(e, t, n, []) : ke(e, n, []), d = K(e, l);
+  if (!d || typeof d != "object") return [];
+  const h = a.length ? a : Object.keys(d), u = Math.max(1, Math.min(12, c));
+  return h.slice(0, u).map((p) => {
+    const g = d[p]?.settings ?? {};
+    return {
+      id: p,
+      illustrationVariant: Fl(String(g.illustrationVariant ?? "sewing")),
+      title: String(g.title ?? "Title"),
+      date: String(g.date ?? "Jan 12"),
+      author: String(g.author ?? "Author"),
+      excerpt: String(g.excerpt ?? "An excerpt of your blog post's content"),
+      imageUrl: String(g.imageUrl ?? "")
+    };
+  });
+}
+function Pt(e, t, n, i, c) {
+  const s = j(), { storeFrontMeta: l } = De(), { fetchVisiblePostsByBlogUrlHandle: a } = En(), [d, h] = te([]), u = r(s, `${i}.blogHandle`, "").trim(), p = l?.storeId ?? "", g = M(
+    () => El(s, e, t, n, c),
+    [s, e, t, n, c]
+  );
+  le(() => {
+    let v = !1;
+    if (!p || !u) {
+      h([]);
+      return;
+    }
+    return a(p, u, { page: 1, limit: 12 }).then((b) => {
+      v || h(b);
+    }).catch(() => {
+      v || h([]);
+    }), () => {
+      v = !0;
+    };
+  }, [p, u, a]);
+  const k = M(
+    () => Nl(d, c, u),
+    [d, c, u]
+  ), y = k.length > 0;
+  return { cards: y ? k : g, usingLive: y };
+}
+const fo = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function cr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.navIcon`, "arrows"), s = l(e, `${t}.navIconBackground`, "circle"), u = l(e, `${t}.sectionWidth`, "page"), d = l(e, `${t}.mobileCardSize`, "1");
+function Ul(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.navIcon`, "arrows"), c = r(e, `${t}.navIconBackground`, "circle"), s = r(e, `${t}.sectionWidth`, "page"), l = r(e, `${t}.mobileCardSize`, "1");
   return {
-    scheme: po[i] ?? po["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    postCount: y(e, `${t}.postCount`, 5),
-    columns: y(e, `${t}.columns`, 3),
-    mobileCardSize: d === "2" ? 2 : 1,
-    horizontalGap: y(e, `${t}.horizontalGap`, 8),
-    navIcon: n === "chevron" ? "chevron" : n === "none" ? "none" : "arrows",
-    navIconBackground: s === "square" ? "square" : s === "none" ? "none" : "circle",
-    sectionWidth: u === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 12),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: fo[n] ?? fo["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    postCount: x(e, `${t}.postCount`, 5),
+    columns: x(e, `${t}.columns`, 3),
+    mobileCardSize: l === "2" ? 2 : 1,
+    horizontalGap: x(e, `${t}.horizontalGap`, 8),
+    navIcon: i === "chevron" ? "chevron" : i === "none" ? "none" : "arrows",
+    navIconBackground: c === "square" ? "square" : c === "none" ? "none" : "circle",
+    sectionWidth: s === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 12),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function sr(e) {
-  return e === "thread" || e === "boxes" ? e : "sewing";
+function Ol(e, t) {
+  const n = `.codiic-blog-posts-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function zt(e, t, i, n, s) {
-  const d = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, a = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), r = K(e, d);
-  if (!r || typeof r != "object") return [];
-  const p = a.length ? a : Object.keys(r), c = Math.max(1, Math.min(12, s));
-  return p.slice(0, c).map((h) => {
-    const g = r[h]?.settings ?? {};
-    return {
-      id: h,
-      illustrationVariant: sr(String(g.illustrationVariant ?? "sewing")),
-      title: String(g.title ?? ""),
-      date: String(g.date ?? ""),
-      author: String(g.author ?? ""),
-      excerpt: String(g.excerpt ?? ""),
-      imageUrl: String(g.imageUrl ?? "")
-    };
-  });
-}
-function ur(e, t) {
-  const i = `.ziplofy-blog-posts-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
-}
-function mo({
+function bo({
   label: e,
   onClick: t,
-  background: i,
-  shape: n
+  background: n,
+  shape: i
 }) {
   return /* @__PURE__ */ o("button", { type: "button", "aria-label": e, onClick: t, style: {
     flexShrink: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: i === "none" ? 32 : 36,
-    height: i === "none" ? 32 : 36,
+    width: n === "none" ? 32 : 36,
+    height: n === "none" ? 32 : 36,
     border: "none",
     cursor: "pointer",
-    background: i === "circle" || i === "square" ? "rgba(255,255,255,0.95)" : "transparent",
-    borderRadius: i === "circle" ? "50%" : i === "square" ? 6 : 0,
-    boxShadow: i !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
+    background: n === "circle" || n === "square" ? "rgba(255,255,255,0.95)" : "transparent",
+    borderRadius: n === "circle" ? "50%" : n === "square" ? 6 : 0,
+    boxShadow: n !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
     color: "#111827",
-    fontSize: n === "chevron" ? 18 : 20,
+    fontSize: i === "chevron" ? 18 : 20,
     lineHeight: 1
-  }, children: n === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→" });
+  }, children: i === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→" });
 }
-function hr({
+function Gl({
   sectionId: e = "blog_posts_carousel",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s } = X(), u = ot(null), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(
-    () => cr(n, d),
-    [n, d]
-  ), p = F(
-    () => zt(n, t, e, i, r.postCount),
-    [n, t, e, i, r.postCount]
-  ), c = r.sectionWidth === "full" ? 24 : L.padX, h = r.sectionWidth === "full" ? "100%" : L.maxWidth, g = `ziplofy-blog-posts-${e.replace(/[^a-z0-9_-]/gi, "-")}`, $ = r.columns > 0 ? `calc((100% - ${(r.columns - 1) * r.horizontalGap}px) / ${r.columns})` : "280px", b = (C) => {
-    const M = u.current;
-    if (!M) return;
-    const f = M.clientWidth * 0.85 * C;
-    M.scrollBy({ left: f, behavior: "smooth" });
+  const i = j(), { fontBody: c } = q(), s = Ke(null), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(
+    () => Ul(i, l),
+    [i, l]
+  ), { cards: h } = Pt(t, e, n, l, d.postCount), u = d.sectionWidth === "full" ? 24 : R.padX, p = d.sectionWidth === "full" ? "100%" : R.maxWidth, g = `codiic-blog-posts-${e.replace(/[^a-z0-9_-]/gi, "-")}`, k = d.columns > 0 ? `calc((100% - ${(d.columns - 1) * d.horizontalGap}px) / ${d.columns})` : "280px", y = (C) => {
+    const F = s.current;
+    if (!F) return;
+    const f = F.clientWidth * 0.85 * C;
+    F.scrollBy({ left: f, behavior: "smooth" });
   }, v = {
     position: "relative",
-    background: r.scheme.background,
-    color: r.scheme.color,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    paddingLeft: c,
-    paddingRight: c,
+    background: d.scheme.background,
+    color: d.scheme.color,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    paddingLeft: u,
+    paddingRight: u,
     boxSizing: "border-box",
-    fontFamily: s
-  }, x = {
-    maxWidth: h,
+    fontFamily: c
+  }, b = {
+    maxWidth: p,
     margin: "0 auto",
     width: "100%"
-  }, z = {
+  }, _ = {
     margin: 0,
-    marginBottom: r.layoutGap,
+    marginBottom: d.layoutGap,
     fontSize: "1.5rem",
     fontWeight: 700,
     letterSpacing: "-0.02em",
     lineHeight: 1.2
-  }, S = {
+  }, $ = {
     position: "relative",
     display: "flex",
     alignItems: "center",
     gap: 8
-  }, _ = {
+  }, w = {
     display: "flex",
-    gap: r.horizontalGap,
+    gap: d.horizontalGap,
     overflowX: "auto",
     scrollSnapType: "x mandatory",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
     flex: 1,
     paddingBottom: 4
-  }, H = {
-    flex: `0 0 ${$}`,
+  }, P = {
+    flex: `0 0 ${k}`,
     minWidth: 0,
     scrollSnapAlign: "start"
-  }, w = {
+  }, z = {
     aspectRatio: "4 / 3",
     borderRadius: 8,
     background: "#f0f0f0",
@@ -6390,28 +6728,28 @@ function hr({
     justifyContent: "center",
     overflow: "hidden",
     marginBottom: 12
-  }, R = {
+  }, L = {
     margin: 0,
     fontSize: "1rem",
     fontWeight: 700,
     lineHeight: 1.3
-  }, T = {
+  }, H = {
     margin: "4px 0 0",
     fontSize: "0.8125rem",
-    color: r.scheme.muted
+    color: d.scheme.muted
   }, W = {
     margin: "8px 0 0",
     fontSize: "0.875rem",
     lineHeight: 1.45,
-    color: r.scheme.color
-  }, P = r.navIcon !== "none" && p.length > r.columns;
-  return /* @__PURE__ */ o(G, { nodeId: a, label: "Blog posts: Carousel", children: /* @__PURE__ */ m(
+    color: d.scheme.color
+  }, T = d.navIcon !== "none" && h.length > d.columns;
+  return /* @__PURE__ */ o(B, { nodeId: a, label: "Blog posts: Carousel", children: /* @__PURE__ */ m(
     "section",
     {
       className: g,
       style: v,
       "data-section-type": "blog-posts-carousel",
-      "data-mobile-cards": r.mobileCardSize,
+      "data-mobile-cards": d.mobileCardSize,
       children: [
         /* @__PURE__ */ o("style", { children: `
             .${g} [data-carousel-track]::-webkit-scrollbar { display: none; }
@@ -6420,90 +6758,90 @@ function hr({
                 flex: 0 0 calc(100% - 8px);
               }
               .${g}[data-mobile-cards="2"] [data-blog-card] {
-                flex: 0 0 calc(50% - ${r.horizontalGap / 2}px);
+                flex: 0 0 calc(50% - ${d.horizontalGap / 2}px);
               }
             }
-            ${ur(e, r.customCss)}
+            ${Ol(e, d.customCss)}
           ` }),
-        /* @__PURE__ */ m("div", { style: x, children: [
-          /* @__PURE__ */ o("h2", { style: z, children: /* @__PURE__ */ o(
-            k,
+        /* @__PURE__ */ m("div", { style: b, children: [
+          /* @__PURE__ */ o("h2", { style: _, children: /* @__PURE__ */ o(
+            S,
             {
               nodeId: a,
-              fieldPath: `${d}.heading`,
+              fieldPath: `${l}.heading`,
               label: "Heading",
-              children: r.heading
+              children: d.heading
             }
           ) }),
-          /* @__PURE__ */ m("div", { style: S, children: [
-            P ? /* @__PURE__ */ o(
-              mo,
+          /* @__PURE__ */ m("div", { style: $, children: [
+            T ? /* @__PURE__ */ o(
+              bo,
               {
                 label: "Previous",
-                onClick: () => b(-1),
-                background: r.navIconBackground,
-                shape: r.navIcon
+                onClick: () => y(-1),
+                background: d.navIconBackground,
+                shape: d.navIcon
               }
             ) : null,
-            /* @__PURE__ */ o("div", { ref: u, "data-carousel-track": !0, style: _, children: p.map((C) => {
-              const M = i === "template" ? `templates.${t}.sections.${e}.blocks.${C.id}.settings` : `sections.${e}.blocks.${C.id}.settings`;
-              return /* @__PURE__ */ m("article", { "data-blog-card": !0, style: H, children: [
-                /* @__PURE__ */ o("div", { style: w, children: C.imageUrl ? /* @__PURE__ */ o(
+            /* @__PURE__ */ o("div", { ref: s, "data-carousel-track": !0, style: w, children: h.map((C) => {
+              const F = n === "template" ? `templates.${t}.sections.${e}.blocks.${C.id}.settings` : `sections.${e}.blocks.${C.id}.settings`;
+              return /* @__PURE__ */ m("article", { "data-blog-card": !0, style: P, children: [
+                /* @__PURE__ */ o("div", { style: z, children: C.imageUrl ? /* @__PURE__ */ o(
                   "img",
                   {
                     src: C.imageUrl,
                     alt: "",
                     style: { width: "100%", height: "100%", objectFit: "cover" }
                   }
-                ) : /* @__PURE__ */ o(Ct, { variant: C.illustrationVariant }) }),
-                /* @__PURE__ */ o("h3", { style: R, children: /* @__PURE__ */ o(
-                  k,
+                ) : /* @__PURE__ */ o(zt, { variant: C.illustrationVariant }) }),
+                /* @__PURE__ */ o("h3", { style: L, children: /* @__PURE__ */ o(
+                  S,
                   {
                     nodeId: `${a}:block:${C.id}`,
-                    fieldPath: `${M}.title`,
+                    fieldPath: `${F}.title`,
                     label: "Title",
                     children: C.title
                   }
                 ) }),
-                /* @__PURE__ */ m("p", { style: T, children: [
+                /* @__PURE__ */ m("p", { style: H, children: [
                   /* @__PURE__ */ o(
-                    k,
+                    S,
                     {
                       nodeId: `${a}:block:${C.id}`,
-                      fieldPath: `${M}.date`,
+                      fieldPath: `${F}.date`,
                       label: "Date",
                       children: C.date
                     }
                   ),
                   " | ",
                   /* @__PURE__ */ o(
-                    k,
+                    S,
                     {
                       nodeId: `${a}:block:${C.id}`,
-                      fieldPath: `${M}.author`,
+                      fieldPath: `${F}.author`,
                       label: "Author",
                       children: C.author
                     }
                   )
                 ] }),
                 /* @__PURE__ */ o("p", { style: W, children: /* @__PURE__ */ o(
-                  k,
+                  S,
                   {
                     nodeId: `${a}:block:${C.id}`,
-                    fieldPath: `${M}.excerpt`,
+                    fieldPath: `${F}.excerpt`,
                     label: "Excerpt",
                     children: C.excerpt
                   }
                 ) })
               ] }, C.id);
             }) }),
-            P ? /* @__PURE__ */ o(
-              mo,
+            T ? /* @__PURE__ */ o(
+              bo,
               {
                 label: "Next",
-                onClick: () => b(1),
-                background: r.navIconBackground,
-                shape: r.navIcon
+                onClick: () => y(1),
+                background: d.navIconBackground,
+                shape: d.navIcon
               }
             ) : null
           ] })
@@ -6512,39 +6850,39 @@ function hr({
     }
   ) });
 }
-const go = {
+const yo = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function pr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.sectionWidth`, "page");
+function Dl(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.sectionWidth`, "page");
   return {
-    scheme: go[i] ?? go["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    postCount: y(e, `${t}.postCount`, 3),
-    carouselOnMobile: U(e, `${t}.carouselOnMobile`, !1),
-    sectionWidth: n === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 64),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: yo[n] ?? yo["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    postCount: x(e, `${t}.postCount`, 3),
+    carouselOnMobile: E(e, `${t}.carouselOnMobile`, !1),
+    sectionWidth: i === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 64),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function mr(e, t) {
-  const i = `.ziplofy-blog-posts-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function jl(e, t) {
+  const n = `.codiic-blog-posts-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function st({
+function it({
   card: e,
   featured: t = !1,
-  editorNodeId: i,
-  blockBase: n,
-  scheme: s,
-  fontBody: u
+  editorNodeId: n,
+  blockBase: i,
+  scheme: c,
+  fontBody: s
 }) {
-  const d = {
+  const l = {
     aspectRatio: t ? "16 / 9" : "4 / 3",
     borderRadius: 8,
     background: "#f0f0f0",
@@ -6555,202 +6893,199 @@ function st({
     marginBottom: t ? 16 : 12
   }, a = {
     margin: 0,
-    fontFamily: u,
+    fontFamily: s,
     fontSize: t ? "1.125rem" : "1rem",
     fontWeight: 700,
     lineHeight: 1.3,
-    color: s.color
-  }, r = {
+    color: c.color
+  }, d = {
     margin: "4px 0 0",
-    fontFamily: u,
+    fontFamily: s,
     fontSize: "0.8125rem",
-    color: s.muted
-  }, p = {
+    color: c.muted
+  }, h = {
     margin: "8px 0 0",
-    fontFamily: u,
+    fontFamily: s,
     fontSize: "0.875rem",
     lineHeight: 1.45,
-    color: s.color
+    color: c.color
   };
   return /* @__PURE__ */ m("article", { "data-blog-card": !0, "data-featured": t ? "true" : "false", children: [
-    /* @__PURE__ */ o("div", { style: d, children: e.imageUrl ? /* @__PURE__ */ o(
+    /* @__PURE__ */ o("div", { style: l, children: e.imageUrl ? /* @__PURE__ */ o(
       "img",
       {
         src: e.imageUrl,
         alt: "",
         style: { width: "100%", height: "100%", objectFit: "cover" }
       }
-    ) : /* @__PURE__ */ o(Ct, { variant: e.illustrationVariant }) }),
-    /* @__PURE__ */ o("h3", { style: a, children: /* @__PURE__ */ o(k, { nodeId: `${i}:block:${e.id}`, fieldPath: `${n}.title`, label: "Title", children: e.title }) }),
-    /* @__PURE__ */ m("p", { style: r, children: [
-      /* @__PURE__ */ o(k, { nodeId: `${i}:block:${e.id}`, fieldPath: `${n}.date`, label: "Date", children: e.date }),
+    ) : /* @__PURE__ */ o(zt, { variant: e.illustrationVariant }) }),
+    /* @__PURE__ */ o("h3", { style: a, children: /* @__PURE__ */ o(S, { nodeId: `${n}:block:${e.id}`, fieldPath: `${i}.title`, label: "Title", children: e.title }) }),
+    /* @__PURE__ */ m("p", { style: d, children: [
+      /* @__PURE__ */ o(S, { nodeId: `${n}:block:${e.id}`, fieldPath: `${i}.date`, label: "Date", children: e.date }),
       " | ",
-      /* @__PURE__ */ o(k, { nodeId: `${i}:block:${e.id}`, fieldPath: `${n}.author`, label: "Author", children: e.author })
+      /* @__PURE__ */ o(S, { nodeId: `${n}:block:${e.id}`, fieldPath: `${i}.author`, label: "Author", children: e.author })
     ] }),
-    /* @__PURE__ */ o("p", { style: p, children: /* @__PURE__ */ o(k, { nodeId: `${i}:block:${e.id}`, fieldPath: `${n}.excerpt`, label: "Excerpt", children: e.excerpt }) })
+    /* @__PURE__ */ o("p", { style: h, children: /* @__PURE__ */ o(S, { nodeId: `${n}:block:${e.id}`, fieldPath: `${i}.excerpt`, label: "Excerpt", children: e.excerpt }) })
   ] });
 }
-function gr({
+function Bl({
   sectionId: e = "blog_posts_editorial",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s } = X(), u = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = i === "template" ? `template:${t}:${e}` : `layout:${e}`, a = F(
-    () => pr(n, u),
-    [n, u]
-  ), r = F(
-    () => zt(n, t, e, i, a.postCount),
-    [n, t, e, i, a.postCount]
-  ), p = a.sectionWidth === "full" ? 24 : L.padX, c = a.sectionWidth === "full" ? "100%" : L.maxWidth, h = `ziplofy-blog-posts-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = a.layoutGap, $ = r.length >= 2 ? r.slice(0, 2) : r.length === 1 ? [] : [], b = r.length >= 3 ? r[2] : r.length === 1 ? r[0] : null, v = r.length > 3 ? r.slice(3) : [], x = {
+  const i = j(), { fontBody: c } = q(), s = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, l = n === "template" ? `template:${t}:${e}` : `layout:${e}`, a = M(
+    () => Dl(i, s),
+    [i, s]
+  ), { cards: d } = Pt(t, e, n, s, a.postCount), h = a.sectionWidth === "full" ? 24 : R.padX, u = a.sectionWidth === "full" ? "100%" : R.maxWidth, p = `codiic-blog-posts-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = a.layoutGap, k = d.length >= 2 ? d.slice(0, 2) : d.length === 1 ? [] : [], y = d.length >= 3 ? d[2] : d.length === 1 ? d[0] : null, v = d.length > 3 ? d.slice(3) : [], b = {
     position: "relative",
     background: a.scheme.background,
     color: a.scheme.color,
     paddingTop: a.paddingTop,
     paddingBottom: a.paddingBottom,
-    paddingLeft: p,
-    paddingRight: p,
+    paddingLeft: h,
+    paddingRight: h,
     boxSizing: "border-box",
-    fontFamily: s
-  }, z = {
-    maxWidth: c,
+    fontFamily: c
+  }, _ = {
+    maxWidth: u,
     margin: "0 auto",
     width: "100%"
-  }, S = {
+  }, $ = {
     margin: 0,
     marginBottom: g,
     fontSize: "1.5rem",
     fontWeight: 700,
     letterSpacing: "-0.02em",
     lineHeight: 1.2
-  }, _ = {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-    gap: g,
-    marginBottom: b || v.length ? g : 0
-  }, H = {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-    gap: g,
-    marginTop: b ? g : 0
   }, w = {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: g,
+    marginBottom: y || v.length ? g : 0
+  }, P = {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: g,
+    marginTop: y ? g : 0
+  }, z = {
     display: "flex",
     gap: 16,
     overflowX: "auto",
     scrollSnapType: "x mandatory",
     scrollbarWidth: "none",
     msOverflowStyle: "none"
-  }, R = {
+  }, L = {
     flex: "0 0 min(85%, 320px)",
     scrollSnapAlign: "start"
-  }, T = (P) => i === "template" ? `templates.${t}.sections.${e}.blocks.${P}.settings` : `sections.${e}.blocks.${P}.settings`, W = /* @__PURE__ */ m(ne, { children: [
-    $.length > 0 ? /* @__PURE__ */ o("div", { style: _, children: $.map((P) => /* @__PURE__ */ o(
-      st,
+  }, H = (T) => n === "template" ? `templates.${t}.sections.${e}.blocks.${T}.settings` : `sections.${e}.blocks.${T}.settings`, W = /* @__PURE__ */ m(Z, { children: [
+    k.length > 0 ? /* @__PURE__ */ o("div", { style: w, children: k.map((T) => /* @__PURE__ */ o(
+      it,
       {
-        card: P,
-        editorNodeId: d,
-        blockBase: T(P.id),
+        card: T,
+        editorNodeId: l,
+        blockBase: H(T.id),
         scheme: a.scheme,
-        fontBody: s
+        fontBody: c
       },
-      P.id
+      T.id
     )) }) : null,
-    b ? /* @__PURE__ */ o(
-      st,
+    y ? /* @__PURE__ */ o(
+      it,
       {
-        card: b,
+        card: y,
         featured: !0,
-        editorNodeId: d,
-        blockBase: T(b.id),
+        editorNodeId: l,
+        blockBase: H(y.id),
         scheme: a.scheme,
-        fontBody: s
+        fontBody: c
       }
     ) : null,
-    v.length > 0 ? /* @__PURE__ */ o("div", { style: H, children: v.map((P) => /* @__PURE__ */ o(
-      st,
+    v.length > 0 ? /* @__PURE__ */ o("div", { style: P, children: v.map((T) => /* @__PURE__ */ o(
+      it,
       {
-        card: P,
-        editorNodeId: d,
-        blockBase: T(P.id),
+        card: T,
+        editorNodeId: l,
+        blockBase: H(T.id),
         scheme: a.scheme,
-        fontBody: s
+        fontBody: c
       },
-      P.id
+      T.id
     )) }) : null
   ] });
-  return /* @__PURE__ */ o(G, { nodeId: d, label: "Blog posts: Editorial", children: /* @__PURE__ */ m(
+  return /* @__PURE__ */ o(B, { nodeId: l, label: "Blog posts: Editorial", children: /* @__PURE__ */ m(
     "section",
     {
-      className: h,
-      style: x,
+      className: p,
+      style: b,
       "data-section-type": "blog-posts-editorial",
       "data-carousel-mobile": a.carouselOnMobile ? "true" : "false",
       children: [
         /* @__PURE__ */ o("style", { children: `
-            .${h} [data-mobile-track]::-webkit-scrollbar { display: none; }
+            .${p} [data-mobile-track]::-webkit-scrollbar { display: none; }
             @media (max-width: 749px) {
-              .${h}[data-carousel-mobile="true"] [data-desktop-layout] { display: none !important; }
-              .${h}[data-carousel-mobile="true"] [data-mobile-layout] { display: block !important; }
-              .${h}[data-carousel-mobile="false"] [data-mobile-layout] { display: none !important; }
-              .${h}[data-carousel-mobile="false"] [data-desktop-layout] {
+              .${p}[data-carousel-mobile="true"] [data-desktop-layout] { display: none !important; }
+              .${p}[data-carousel-mobile="true"] [data-mobile-layout] { display: block !important; }
+              .${p}[data-carousel-mobile="false"] [data-mobile-layout] { display: none !important; }
+              .${p}[data-carousel-mobile="false"] [data-desktop-layout] {
                 display: block !important;
               }
-              .${h}[data-carousel-mobile="false"] [data-desktop-layout] > div:first-child {
+              .${p}[data-carousel-mobile="false"] [data-desktop-layout] > div:first-child {
                 grid-template-columns: 1fr !important;
               }
             }
             @media (min-width: 750px) {
-              .${h} [data-mobile-layout] { display: none !important; }
+              .${p} [data-mobile-layout] { display: none !important; }
             }
-            ${mr(e, a.customCss)}
+            ${jl(e, a.customCss)}
           ` }),
-        /* @__PURE__ */ m("div", { style: z, children: [
-          /* @__PURE__ */ o("h2", { style: S, children: /* @__PURE__ */ o(k, { nodeId: d, fieldPath: `${u}.heading`, label: "Heading", children: a.heading }) }),
+        /* @__PURE__ */ m("div", { style: _, children: [
+          /* @__PURE__ */ o("h2", { style: $, children: /* @__PURE__ */ o(S, { nodeId: l, fieldPath: `${s}.heading`, label: "Heading", children: a.heading }) }),
           /* @__PURE__ */ o("div", { "data-desktop-layout": !0, children: W }),
-          /* @__PURE__ */ o("div", { "data-mobile-layout": !0, style: { display: "none" }, children: /* @__PURE__ */ o("div", { "data-mobile-track": !0, style: w, children: r.map((P) => /* @__PURE__ */ o("div", { style: R, children: /* @__PURE__ */ o(
-            st,
+          /* @__PURE__ */ o("div", { "data-mobile-layout": !0, style: { display: "none" }, children: /* @__PURE__ */ o("div", { "data-mobile-track": !0, style: z, children: d.map((T) => /* @__PURE__ */ o("div", { style: L, children: /* @__PURE__ */ o(
+            it,
             {
-              card: P,
-              editorNodeId: d,
-              blockBase: T(P.id),
+              card: T,
+              editorNodeId: l,
+              blockBase: H(T.id),
               scheme: a.scheme,
-              fontBody: s
+              fontBody: c
             }
-          ) }, P.id)) }) })
+          ) }, T.id)) }) })
         ] })
       ]
     }
   ) });
 }
-const fo = {
+const xo = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function fr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.sectionWidth`, "page"), s = l(e, `${t}.mobileColumns`, "2");
+function ql(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.sectionWidth`, "page"), c = r(e, `${t}.mobileColumns`, "2");
   return {
-    scheme: fo[i] ?? fo["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    postCount: y(e, `${t}.postCount`, 3),
-    columns: y(e, `${t}.columns`, 3),
-    mobileColumns: s === "1" ? 1 : 2,
-    horizontalGap: y(e, `${t}.horizontalGap`, 8),
-    verticalGap: y(e, `${t}.verticalGap`, 8),
-    carouselOnMobile: U(e, `${t}.carouselOnMobile`, !1),
-    sectionWidth: n === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 12),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: xo[n] ?? xo["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    postCount: x(e, `${t}.postCount`, 3),
+    columns: x(e, `${t}.columns`, 3),
+    mobileColumns: c === "1" ? 1 : 2,
+    horizontalGap: x(e, `${t}.horizontalGap`, 8),
+    verticalGap: x(e, `${t}.verticalGap`, 8),
+    carouselOnMobile: E(e, `${t}.carouselOnMobile`, !1),
+    sectionWidth: i === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 12),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function br(e, t) {
-  const i = `.ziplofy-blog-posts-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Xl(e, t) {
+  const n = `.codiic-blog-posts-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function bo({ card: e, editorNodeId: t, blockBase: i, scheme: n, fontBody: s }) {
-  return /* @__PURE__ */ m("article", { "data-blog-card": !0, children: [
+function $o({ card: e, editorNodeId: t, blockBase: n, scheme: i, fontBody: c }) {
+  const l = /* @__PURE__ */ m(Z, { children: [
     /* @__PURE__ */ o("div", { style: {
       aspectRatio: "4 / 3",
       borderRadius: 8,
@@ -6767,102 +7102,100 @@ function bo({ card: e, editorNodeId: t, blockBase: i, scheme: n, fontBody: s }) 
         alt: "",
         style: { width: "100%", height: "100%", objectFit: "cover" }
       }
-    ) : /* @__PURE__ */ o(Ct, { variant: e.illustrationVariant }) }),
+    ) : /* @__PURE__ */ o(zt, { variant: e.illustrationVariant }) }),
     /* @__PURE__ */ o(
       "h3",
       {
         style: {
           margin: 0,
-          fontFamily: s,
+          fontFamily: c,
           fontSize: "1rem",
           fontWeight: 700,
           lineHeight: 1.3,
-          color: n.color
+          color: i.color
         },
-        children: /* @__PURE__ */ o(k, { nodeId: `${t}:block:${e.id}`, fieldPath: `${i}.title`, label: "Title", children: e.title })
+        children: /* @__PURE__ */ o(S, { nodeId: `${t}:block:${e.id}`, fieldPath: `${n}.title`, label: "Title", children: e.title })
       }
     ),
-    /* @__PURE__ */ m("p", { style: { margin: "4px 0 0", fontFamily: s, fontSize: "0.8125rem", color: n.muted }, children: [
-      /* @__PURE__ */ o(k, { nodeId: `${t}:block:${e.id}`, fieldPath: `${i}.date`, label: "Date", children: e.date }),
+    /* @__PURE__ */ m("p", { style: { margin: "4px 0 0", fontFamily: c, fontSize: "0.8125rem", color: i.muted }, children: [
+      /* @__PURE__ */ o(S, { nodeId: `${t}:block:${e.id}`, fieldPath: `${n}.date`, label: "Date", children: e.date }),
       " | ",
-      /* @__PURE__ */ o(k, { nodeId: `${t}:block:${e.id}`, fieldPath: `${i}.author`, label: "Author", children: e.author })
+      /* @__PURE__ */ o(S, { nodeId: `${t}:block:${e.id}`, fieldPath: `${n}.author`, label: "Author", children: e.author })
     ] }),
     /* @__PURE__ */ o(
       "p",
       {
         style: {
           margin: "8px 0 0",
-          fontFamily: s,
+          fontFamily: c,
           fontSize: "0.875rem",
           lineHeight: 1.45,
-          color: n.color
+          color: i.color
         },
-        children: /* @__PURE__ */ o(k, { nodeId: `${t}:block:${e.id}`, fieldPath: `${i}.excerpt`, label: "Excerpt", children: e.excerpt })
+        children: /* @__PURE__ */ o(S, { nodeId: `${t}:block:${e.id}`, fieldPath: `${n}.excerpt`, label: "Excerpt", children: e.excerpt })
       }
     )
   ] });
+  return /* @__PURE__ */ o("article", { "data-blog-card": !0, children: e.href ? /* @__PURE__ */ o(D, { to: e.href, style: { textDecoration: "none", color: "inherit", display: "block" }, children: l }) : l });
 }
-function yr({
+function Il({
   sectionId: e = "blog_posts_grid",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s } = X(), u = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = i === "template" ? `template:${t}:${e}` : `layout:${e}`, a = F(() => fr(n, u), [n, u]), r = F(
-    () => zt(n, t, e, i, a.postCount),
-    [n, t, e, i, a.postCount]
-  ), p = a.sectionWidth === "full" ? 24 : L.padX, c = a.sectionWidth === "full" ? "100%" : L.maxWidth, h = `ziplofy-blog-posts-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = Math.max(1, Math.min(4, a.columns)), $ = {
+  const i = j(), { fontBody: c } = q(), s = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, l = n === "template" ? `template:${t}:${e}` : `layout:${e}`, a = M(() => ql(i, s), [i, s]), { cards: d } = Pt(t, e, n, s, a.postCount), h = a.sectionWidth === "full" ? 24 : R.padX, u = a.sectionWidth === "full" ? "100%" : R.maxWidth, p = `codiic-blog-posts-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = Math.max(1, Math.min(4, a.columns)), k = {
     position: "relative",
     background: a.scheme.background,
     color: a.scheme.color,
     paddingTop: a.paddingTop,
     paddingBottom: a.paddingBottom,
-    paddingLeft: p,
-    paddingRight: p,
+    paddingLeft: h,
+    paddingRight: h,
     boxSizing: "border-box",
-    fontFamily: s
-  }, b = {
-    maxWidth: c,
+    fontFamily: c
+  }, y = {
+    maxWidth: u,
     margin: "0 auto",
     width: "100%"
-  }, v = (S) => i === "template" ? `templates.${t}.sections.${e}.blocks.${S}.settings` : `sections.${e}.blocks.${S}.settings`, x = {
+  }, v = ($) => n === "template" ? `templates.${t}.sections.${e}.blocks.${$}.settings` : `sections.${e}.blocks.${$}.settings`, b = {
     display: "flex",
     gap: a.horizontalGap,
     overflowX: "auto",
     scrollSnapType: "x mandatory",
     scrollbarWidth: "none",
     msOverflowStyle: "none"
-  }, z = a.mobileColumns === 2 ? `calc(50% - ${a.horizontalGap / 2}px)` : `calc(100% - ${a.horizontalGap}px)`;
-  return /* @__PURE__ */ o(G, { nodeId: d, label: "Blog posts: Grid", children: /* @__PURE__ */ m(
+  }, _ = a.mobileColumns === 2 ? `calc(50% - ${a.horizontalGap / 2}px)` : `calc(100% - ${a.horizontalGap}px)`;
+  return /* @__PURE__ */ o(B, { nodeId: l, label: "Blog posts: Grid", children: /* @__PURE__ */ m(
     "section",
     {
-      className: h,
-      style: $,
+      className: p,
+      style: k,
       "data-section-type": "blog-posts-grid",
       "data-carousel-mobile": a.carouselOnMobile ? "true" : "false",
       "data-mobile-columns": a.mobileColumns,
       children: [
         /* @__PURE__ */ o("style", { children: `
-            .${h} [data-grid-desktop] {
+            .${p} [data-grid-desktop] {
               display: grid;
               grid-template-columns: repeat(${g}, minmax(0, 1fr));
               column-gap: ${a.horizontalGap}px;
               row-gap: ${a.verticalGap}px;
             }
-            .${h} [data-mobile-track]::-webkit-scrollbar { display: none; }
+            .${p} [data-mobile-track]::-webkit-scrollbar { display: none; }
             @media (max-width: 749px) {
-              .${h}[data-carousel-mobile="true"] [data-grid-desktop] { display: none !important; }
-              .${h}[data-carousel-mobile="true"] [data-mobile-layout] { display: block !important; }
-              .${h}[data-carousel-mobile="false"] [data-grid-desktop] {
+              .${p}[data-carousel-mobile="true"] [data-grid-desktop] { display: none !important; }
+              .${p}[data-carousel-mobile="true"] [data-mobile-layout] { display: block !important; }
+              .${p}[data-carousel-mobile="false"] [data-grid-desktop] {
                 grid-template-columns: repeat(${a.mobileColumns}, minmax(0, 1fr)) !important;
               }
-              .${h}[data-carousel-mobile="false"] [data-mobile-layout] { display: none !important; }
+              .${p}[data-carousel-mobile="false"] [data-mobile-layout] { display: none !important; }
             }
             @media (min-width: 750px) {
-              .${h} [data-mobile-layout] { display: none !important; }
+              .${p} [data-mobile-layout] { display: none !important; }
             }
-            ${br(e, a.customCss)}
+            ${Xl(e, a.customCss)}
           ` }),
-        /* @__PURE__ */ m("div", { style: b, children: [
+        /* @__PURE__ */ m("div", { style: y, children: [
           /* @__PURE__ */ o(
             "h2",
             {
@@ -6873,43 +7206,43 @@ function yr({
                 fontWeight: 700,
                 letterSpacing: "-0.02em"
               },
-              children: /* @__PURE__ */ o(k, { nodeId: d, fieldPath: `${u}.heading`, label: "Heading", children: a.heading })
+              children: /* @__PURE__ */ o(S, { nodeId: l, fieldPath: `${s}.heading`, label: "Heading", children: a.heading })
             }
           ),
-          /* @__PURE__ */ o("div", { "data-grid-desktop": !0, children: r.map((S) => /* @__PURE__ */ o(
-            bo,
+          /* @__PURE__ */ o("div", { "data-grid-desktop": !0, children: d.map(($) => /* @__PURE__ */ o(
+            $o,
             {
-              card: S,
-              editorNodeId: d,
-              blockBase: v(S.id),
+              card: $,
+              editorNodeId: l,
+              blockBase: v($.id),
               scheme: a.scheme,
-              fontBody: s
+              fontBody: c
             },
-            S.id
+            $.id
           )) }),
-          /* @__PURE__ */ o("div", { "data-mobile-layout": !0, style: { display: "none" }, children: /* @__PURE__ */ o("div", { "data-mobile-track": !0, style: x, children: r.map((S) => /* @__PURE__ */ o(
+          /* @__PURE__ */ o("div", { "data-mobile-layout": !0, style: { display: "none" }, children: /* @__PURE__ */ o("div", { "data-mobile-track": !0, style: b, children: d.map(($) => /* @__PURE__ */ o(
             "div",
             {
-              style: { flex: `0 0 ${z}`, minWidth: 0, scrollSnapAlign: "start" },
+              style: { flex: `0 0 ${_}`, minWidth: 0, scrollSnapAlign: "start" },
               children: /* @__PURE__ */ o(
-                bo,
+                $o,
                 {
-                  card: S,
-                  editorNodeId: d,
-                  blockBase: v(S.id),
+                  card: $,
+                  editorNodeId: l,
+                  blockBase: v($.id),
                   scheme: a.scheme,
-                  fontBody: s
+                  fontBody: c
                 }
               )
             },
-            S.id
+            $.id
           )) }) })
         ] })
       ]
     }
   ) });
 }
-function xr() {
+function Vl() {
   return /* @__PURE__ */ o("div", { style: { position: "relative", height: 48, width: 44 }, "aria-hidden": !0, children: /* @__PURE__ */ o(
     "div",
     {
@@ -6927,51 +7260,51 @@ function xr() {
     }
   ) });
 }
-const yo = {
+const ko = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function $r(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.navIcon`, "arrows"), s = l(e, `${t}.navIconBackground`, "none"), u = l(e, `${t}.sectionWidth`, "page"), d = l(e, `${t}.mobileColumns`, "1");
+function Kl(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.navIcon`, "arrows"), c = r(e, `${t}.navIconBackground`, "none"), s = r(e, `${t}.sectionWidth`, "page"), l = r(e, `${t}.mobileColumns`, "1");
   return {
-    scheme: yo[i] ?? yo["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    columns: y(e, `${t}.columns`, 3),
-    mobileColumns: d === "2" ? 2 : 1,
-    sectionWidth: u === "full" ? "full" : "page",
-    horizontalGap: y(e, `${t}.horizontalGap`, 12),
-    navIcon: n === "chevron" ? "chevron" : n === "none" ? "none" : "arrows",
-    navIconBackground: s === "circle" ? "circle" : s === "square" ? "square" : "none",
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: ko[n] ?? ko["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    columns: x(e, `${t}.columns`, 3),
+    mobileColumns: l === "2" ? 2 : 1,
+    sectionWidth: s === "full" ? "full" : "page",
+    horizontalGap: x(e, `${t}.horizontalGap`, 12),
+    navIcon: i === "chevron" ? "chevron" : i === "none" ? "none" : "arrows",
+    navIconBackground: c === "circle" ? "circle" : c === "square" ? "square" : "none",
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function kr(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
+function Yl(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
   if (!a || typeof a != "object") return [];
-  const r = d.length ? d : Object.keys(a), p = "Made with care and unconditionally loved by our customers.";
-  return r.map((c) => {
-    const h = a[c]?.settings ?? {};
+  const d = l.length ? l : Object.keys(a), h = "Made with care and unconditionally loved by our customers.";
+  return d.map((u) => {
+    const p = a[u]?.settings ?? {};
     return {
-      id: c,
-      title: String(h.title ?? ""),
-      description: String(h.description ?? p),
-      imageUrl: String(h.imageUrl ?? "")
+      id: u,
+      title: String(p.title ?? ""),
+      description: String(p.description ?? h),
+      imageUrl: String(p.imageUrl ?? "")
     };
   });
 }
-function vr(e, t) {
-  const i = `.ziplofy-storytelling-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Ql(e, t) {
+  const n = `.codiic-storytelling-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function xo({
+function vo({
   label: e,
   onClick: t,
-  background: i,
-  shape: n
+  background: n,
+  shape: i
 }) {
   return /* @__PURE__ */ o(
     "button",
@@ -6984,69 +7317,69 @@ function xo({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: i === "none" ? 32 : 36,
-        height: i === "none" ? 32 : 36,
+        width: n === "none" ? 32 : 36,
+        height: n === "none" ? 32 : 36,
         border: "none",
         cursor: "pointer",
-        background: i === "circle" || i === "square" ? "rgba(255,255,255,0.95)" : "transparent",
-        borderRadius: i === "circle" ? "50%" : i === "square" ? 6 : 0,
-        boxShadow: i !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
+        background: n === "circle" || n === "square" ? "rgba(255,255,255,0.95)" : "transparent",
+        borderRadius: n === "circle" ? "50%" : n === "square" ? 6 : 0,
+        boxShadow: n !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
         color: "#111827",
-        fontSize: n === "chevron" ? 18 : 20,
+        fontSize: i === "chevron" ? 18 : 20,
         lineHeight: 1
       },
-      children: n === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
+      children: i === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
     }
   );
 }
-function Sr({
+function Zl({
   sectionId: e = "storytelling_carousel",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s } = X(), u = ot(null), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(
-    () => $r(n, d),
-    [n, d]
-  ), p = F(
-    () => kr(n, t, e, i),
-    [n, t, e, i]
-  ), c = r.sectionWidth === "full" ? 24 : L.padX, h = r.sectionWidth === "full" ? "100%" : L.maxWidth, g = `ziplofy-storytelling-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`, $ = Math.max(1, Math.min(4, r.columns)), b = `calc((100% - ${($ - 1) * r.horizontalGap}px) / ${$})`, v = (w) => {
-    const R = u.current;
-    R && R.scrollBy({ left: R.clientWidth * 0.85 * w, behavior: "smooth" });
-  }, x = r.navIcon !== "none" && p.length > $, z = {
+  const i = j(), { fontBody: c } = q(), s = Ke(null), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(
+    () => Kl(i, l),
+    [i, l]
+  ), h = M(
+    () => Yl(i, t, e, n),
+    [i, t, e, n]
+  ), u = d.sectionWidth === "full" ? 24 : R.padX, p = d.sectionWidth === "full" ? "100%" : R.maxWidth, g = `codiic-storytelling-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`, k = Math.max(1, Math.min(4, d.columns)), y = `calc((100% - ${(k - 1) * d.horizontalGap}px) / ${k})`, v = (z) => {
+    const L = s.current;
+    L && L.scrollBy({ left: L.clientWidth * 0.85 * z, behavior: "smooth" });
+  }, b = d.navIcon !== "none" && h.length > k, _ = {
     position: "relative",
-    background: r.scheme.background,
-    color: r.scheme.color,
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    paddingLeft: c,
-    paddingRight: c,
+    background: d.scheme.background,
+    color: d.scheme.color,
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    paddingLeft: u,
+    paddingRight: u,
     boxSizing: "border-box",
-    fontFamily: s
-  }, S = {
-    maxWidth: h,
+    fontFamily: c
+  }, $ = {
+    maxWidth: p,
     margin: "0 auto",
     width: "100%"
-  }, _ = {
+  }, w = {
     display: "flex",
-    gap: r.horizontalGap,
+    gap: d.horizontalGap,
     overflowX: "auto",
     scrollSnapType: "x mandatory",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
     flex: 1
-  }, H = {
-    flex: `0 0 ${b}`,
+  }, P = {
+    flex: `0 0 ${y}`,
     minWidth: 0,
     scrollSnapAlign: "start"
   };
-  return /* @__PURE__ */ o(G, { nodeId: a, label: "Carousel", children: /* @__PURE__ */ m(
+  return /* @__PURE__ */ o(B, { nodeId: a, label: "Carousel", children: /* @__PURE__ */ m(
     "section",
     {
       className: g,
-      style: z,
+      style: _,
       "data-section-type": "storytelling-carousel",
-      "data-mobile-columns": r.mobileColumns,
+      "data-mobile-columns": d.mobileColumns,
       children: [
         /* @__PURE__ */ o("style", { children: `
             .${g} [data-carousel-track]::-webkit-scrollbar { display: none; }
@@ -7055,12 +7388,12 @@ function Sr({
                 flex: 0 0 calc(100% - 8px);
               }
               .${g}[data-mobile-columns="2"] [data-carousel-slide] {
-                flex: 0 0 calc(50% - ${r.horizontalGap / 2}px);
+                flex: 0 0 calc(50% - ${d.horizontalGap / 2}px);
               }
             }
-            ${vr(e, r.customCss)}
+            ${Ql(e, d.customCss)}
           ` }),
-        /* @__PURE__ */ m("div", { style: S, children: [
+        /* @__PURE__ */ m("div", { style: $, children: [
           /* @__PURE__ */ o(
             "h2",
             {
@@ -7071,22 +7404,22 @@ function Sr({
                 fontWeight: 700,
                 letterSpacing: "-0.02em"
               },
-              children: /* @__PURE__ */ o(k, { nodeId: a, fieldPath: `${d}.heading`, label: "Heading", children: r.heading })
+              children: /* @__PURE__ */ o(S, { nodeId: a, fieldPath: `${l}.heading`, label: "Heading", children: d.heading })
             }
           ),
           /* @__PURE__ */ m("div", { style: { display: "flex", alignItems: "center", gap: 8 }, children: [
-            x ? /* @__PURE__ */ o(
-              xo,
+            b ? /* @__PURE__ */ o(
+              vo,
               {
                 label: "Previous",
                 onClick: () => v(-1),
-                background: r.navIconBackground,
-                shape: r.navIcon
+                background: d.navIconBackground,
+                shape: d.navIcon
               }
             ) : null,
-            /* @__PURE__ */ o("div", { ref: u, "data-carousel-track": !0, style: _, children: p.map((w) => {
-              const R = i === "template" ? `templates.${t}.sections.${e}.blocks.${w.id}.settings` : `sections.${e}.blocks.${w.id}.settings`;
-              return /* @__PURE__ */ m("article", { "data-carousel-slide": !0, style: H, children: [
+            /* @__PURE__ */ o("div", { ref: s, "data-carousel-track": !0, style: w, children: h.map((z) => {
+              const L = n === "template" ? `templates.${t}.sections.${e}.blocks.${z.id}.settings` : `sections.${e}.blocks.${z.id}.settings`;
+              return /* @__PURE__ */ m("article", { "data-carousel-slide": !0, style: P, children: [
                 /* @__PURE__ */ o(
                   "div",
                   {
@@ -7100,14 +7433,14 @@ function Sr({
                       overflow: "hidden",
                       marginBottom: 12
                     },
-                    children: w.imageUrl ? /* @__PURE__ */ o(
+                    children: z.imageUrl ? /* @__PURE__ */ o(
                       "img",
                       {
-                        src: w.imageUrl,
+                        src: z.imageUrl,
                         alt: "",
                         style: { width: "100%", height: "100%", objectFit: "cover" }
                       }
-                    ) : /* @__PURE__ */ o(xr, {})
+                    ) : /* @__PURE__ */ o(Vl, {})
                   }
                 ),
                 /* @__PURE__ */ o(
@@ -7118,15 +7451,15 @@ function Sr({
                       fontSize: "1rem",
                       fontWeight: 700,
                       lineHeight: 1.3,
-                      color: r.scheme.color
+                      color: d.scheme.color
                     },
                     children: /* @__PURE__ */ o(
-                      k,
+                      S,
                       {
-                        nodeId: `${a}:block:${w.id}`,
-                        fieldPath: `${R}.title`,
+                        nodeId: `${a}:block:${z.id}`,
+                        fieldPath: `${L}.title`,
                         label: "Title",
-                        children: w.title
+                        children: z.title
                       }
                     )
                   }
@@ -7138,28 +7471,28 @@ function Sr({
                       margin: "6px 0 0",
                       fontSize: "0.875rem",
                       lineHeight: 1.45,
-                      color: r.scheme.muted
+                      color: d.scheme.muted
                     },
                     children: /* @__PURE__ */ o(
-                      k,
+                      S,
                       {
-                        nodeId: `${a}:block:${w.id}`,
-                        fieldPath: `${R}.description`,
+                        nodeId: `${a}:block:${z.id}`,
+                        fieldPath: `${L}.description`,
                         label: "Description",
-                        children: w.description
+                        children: z.description
                       }
                     )
                   }
                 )
-              ] }, w.id);
+              ] }, z.id);
             }) }),
-            x ? /* @__PURE__ */ o(
-              xo,
+            b ? /* @__PURE__ */ o(
+              vo,
               {
                 label: "Next",
                 onClick: () => v(1),
-                background: r.navIconBackground,
-                shape: r.navIcon
+                background: d.navIconBackground,
+                shape: d.navIcon
               }
             ) : null
           ] })
@@ -7168,53 +7501,53 @@ function Sr({
     }
   ) });
 }
-const $o = {
+const So = {
   "scheme-1": { background: "#ffffff", color: "#111827" },
   "scheme-2": { background: "#f6f6f7", color: "#111827" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b" }
 };
-function wr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.sectionWidth`, "page"), s = l(e, `${t}.sectionHeight`, "auto");
+function Jl(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.sectionWidth`, "page"), c = r(e, `${t}.sectionHeight`, "auto");
   return {
-    scheme: $o[i] ?? $o["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    imageUrl: l(e, `${t}.imageUrl`, ""),
+    scheme: So[n] ?? So["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    imageUrl: r(e, `${t}.imageUrl`, ""),
     mediaOverlay: !!K(e, `${t}.mediaOverlay`),
-    sectionWidth: n === "full" ? "full" : "page",
-    sectionHeight: s === "small" || s === "medium" || s === "large" ? s : "auto",
-    hotspotColor: l(e, `${t}.hotspotColor`, "#FFFFFF57"),
-    innerColor: l(e, `${t}.innerColor`, "#FFFFFF"),
-    popoverGap: y(e, `${t}.popoverGap`, 8),
-    paddingTop: y(e, `${t}.paddingTop`, 40),
-    paddingBottom: y(e, `${t}.paddingBottom`, 40),
-    customCss: l(e, `${t}.customCss`, "")
+    sectionWidth: i === "full" ? "full" : "page",
+    sectionHeight: c === "small" || c === "medium" || c === "large" ? c : "auto",
+    hotspotColor: r(e, `${t}.hotspotColor`, "#FFFFFF57"),
+    innerColor: r(e, `${t}.innerColor`, "#FFFFFF"),
+    popoverGap: x(e, `${t}.popoverGap`, 8),
+    paddingTop: x(e, `${t}.paddingTop`, 40),
+    paddingBottom: x(e, `${t}.paddingBottom`, 40),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function _r(e) {
+function ea(e) {
   if (e === "small") return "320px";
   if (e === "medium") return "420px";
   if (e === "large") return "520px";
 }
-function Cr(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
-  return !a || typeof a != "object" ? [] : (d.length ? d : Object.keys(a)).map((p) => {
-    const c = a[p]?.settings ?? {};
+function ta(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
+  return !a || typeof a != "object" ? [] : (l.length ? l : Object.keys(a)).map((h) => {
+    const u = a[h]?.settings ?? {};
     return {
-      id: p,
-      positionX: Number(c.positionX ?? 50),
-      positionY: Number(c.positionY ?? 50),
-      productTitle: String(c.productTitle ?? ""),
-      price: String(c.price ?? "")
+      id: h,
+      positionX: Number(u.positionX ?? 50),
+      positionY: Number(u.positionY ?? 50),
+      productTitle: String(u.productTitle ?? ""),
+      price: String(u.price ?? "")
     };
   });
 }
-function zr(e, t) {
-  const i = `.ziplofy-product-hotspots-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function oa(e, t) {
+  const n = `.codiic-product-hotspots-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function Wr() {
-  return /* @__PURE__ */ m(ne, { children: [
+function na() {
+  return /* @__PURE__ */ m(Z, { children: [
     /* @__PURE__ */ o(
       "div",
       {
@@ -7319,47 +7652,47 @@ function Wr() {
     )
   ] });
 }
-function Pr({
+function ia({
   sectionId: e = "product_hotspots",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), [d, a] = Z(null), r = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, p = i === "template" ? `template:${t}:${e}` : `layout:${e}`, c = F(
-    () => wr(n, r),
-    [n, r]
-  ), h = F(
-    () => Cr(n, t, e, i),
-    [n, t, e, i]
-  ), g = `ziplofy-product-hotspots-${e.replace(/[^a-z0-9_-]/gi, "-")}`, $ = zr(e, c.customCss), b = _r(c.sectionHeight), v = {
-    paddingTop: c.paddingTop,
-    paddingBottom: c.paddingBottom,
-    background: c.scheme.background,
-    color: c.scheme.color,
-    fontFamily: s
-  }, x = c.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : { maxWidth: L.contentMaxWidth, margin: "0 auto", paddingLeft: 24, paddingRight: 24 }, z = {
+  const i = j(), { fontBody: c, fontHeading: s } = q(), [l, a] = te(null), d = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, h = n === "template" ? `template:${t}:${e}` : `layout:${e}`, u = M(
+    () => Jl(i, d),
+    [i, d]
+  ), p = M(
+    () => ta(i, t, e, n),
+    [i, t, e, n]
+  ), g = `codiic-product-hotspots-${e.replace(/[^a-z0-9_-]/gi, "-")}`, k = oa(e, u.customCss), y = ea(u.sectionHeight), v = {
+    paddingTop: u.paddingTop,
+    paddingBottom: u.paddingBottom,
+    background: u.scheme.background,
+    color: u.scheme.color,
+    fontFamily: c
+  }, b = u.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : { maxWidth: R.contentMaxWidth, margin: "0 auto", paddingLeft: 24, paddingRight: 24 }, _ = {
     position: "relative",
     width: "100%",
-    aspectRatio: b ? void 0 : "4 / 3",
-    minHeight: b,
+    aspectRatio: y ? void 0 : "4 / 3",
+    minHeight: y,
     borderRadius: 12,
     overflow: "hidden",
     background: "#1e3a5f",
     boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
-  }, S = `${r}.heading`;
-  return /* @__PURE__ */ m(G, { sectionId: e, label: "Product hotspots", editorNodeId: p, style: v, children: [
-    $ ? /* @__PURE__ */ o("style", { children: $ }) : null,
-    /* @__PURE__ */ m("div", { className: g, style: x, children: [
-      /* @__PURE__ */ o(k, { fieldPath: S, label: "Heading", as: "h2", style: { margin: "0 0 20px", fontSize: 28, fontWeight: 700, fontFamily: u }, children: c.heading }),
-      /* @__PURE__ */ m("div", { style: z, children: [
-        c.imageUrl ? /* @__PURE__ */ o(
+  }, $ = `${d}.heading`;
+  return /* @__PURE__ */ m(B, { sectionId: e, label: "Product hotspots", editorNodeId: h, style: v, children: [
+    k ? /* @__PURE__ */ o("style", { children: k }) : null,
+    /* @__PURE__ */ m("div", { className: g, style: b, children: [
+      /* @__PURE__ */ o(S, { fieldPath: $, label: "Heading", as: "h2", style: { margin: "0 0 20px", fontSize: 28, fontWeight: 700, fontFamily: s }, children: u.heading }),
+      /* @__PURE__ */ m("div", { style: _, children: [
+        u.imageUrl ? /* @__PURE__ */ o(
           "img",
           {
-            src: c.imageUrl,
+            src: u.imageUrl,
             alt: "",
             style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
           }
-        ) : /* @__PURE__ */ o(Wr, {}),
-        c.mediaOverlay ? /* @__PURE__ */ o(
+        ) : /* @__PURE__ */ o(na, {}),
+        u.mediaOverlay ? /* @__PURE__ */ o(
           "div",
           {
             "aria-hidden": !0,
@@ -7370,23 +7703,23 @@ function Pr({
             }
           }
         ) : null,
-        h.map((_) => {
-          const H = i === "template" ? `template:${t}:${e}:block:${_.id}` : `layout:${e}:block:${_.id}`, w = d === _.id, R = {
+        p.map((w) => {
+          const P = n === "template" ? `template:${t}:${e}:block:${w.id}` : `layout:${e}:block:${w.id}`, z = l === w.id, L = {
             position: "relative",
             width: 20,
             height: 20,
             borderRadius: "50%",
-            border: `2px solid ${c.innerColor}`,
-            background: c.hotspotColor,
+            border: `2px solid ${u.innerColor}`,
+            background: u.hotspotColor,
             boxShadow: "0 0 0 1px rgba(0,0,0,0.08), 0 0 12px rgba(255,255,255,0.35)",
             cursor: "pointer",
             padding: 0
-          }, T = {
+          }, H = {
             position: "absolute",
             left: "50%",
             top: "100%",
             transform: "translateX(-50%)",
-            marginTop: c.popoverGap,
+            marginTop: u.popoverGap,
             display: "flex",
             flexDirection: "column",
             gap: 2,
@@ -7400,27 +7733,27 @@ function Pr({
             pointerEvents: "none"
           };
           return /* @__PURE__ */ o(
-            E,
+            N,
             {
-              nodeId: H,
+              nodeId: P,
               label: "Hotspot",
               style: {
                 position: "absolute",
-                left: `${_.positionX}%`,
-                top: `${_.positionY}%`,
+                left: `${w.positionX}%`,
+                top: `${w.positionY}%`,
                 transform: "translate(-50%, -50%)",
-                zIndex: w ? 12 : 10
+                zIndex: z ? 12 : 10
               },
               children: /* @__PURE__ */ m(
                 "button",
                 {
                   type: "button",
-                  "aria-label": _.productTitle,
-                  style: R,
-                  onMouseEnter: () => a(_.id),
-                  onMouseLeave: () => a((W) => W === _.id ? null : W),
-                  onFocus: () => a(_.id),
-                  onBlur: () => a((W) => W === _.id ? null : W),
+                  "aria-label": w.productTitle,
+                  style: L,
+                  onMouseEnter: () => a(w.id),
+                  onMouseLeave: () => a((W) => W === w.id ? null : W),
+                  onFocus: () => a(w.id),
+                  onBlur: () => a((W) => W === w.id ? null : W),
                   children: [
                     /* @__PURE__ */ o(
                       "span",
@@ -7434,26 +7767,26 @@ function Pr({
                           height: 8,
                           transform: "translate(-50%, -50%)",
                           borderRadius: "50%",
-                          background: c.innerColor
+                          background: u.innerColor
                         }
                       }
                     ),
-                    w ? /* @__PURE__ */ m("span", { style: T, children: [
-                      /* @__PURE__ */ o("span", { style: { fontWeight: 600 }, children: _.productTitle }),
-                      /* @__PURE__ */ o("span", { style: { color: "#6b7280", fontSize: 12 }, children: _.price })
+                    z ? /* @__PURE__ */ m("span", { style: H, children: [
+                      /* @__PURE__ */ o("span", { style: { fontWeight: 600 }, children: w.productTitle }),
+                      /* @__PURE__ */ o("span", { style: { color: "#6b7280", fontSize: 12 }, children: w.price })
                     ] }) : null
                   ]
                 }
               )
             },
-            _.id
+            w.id
           );
         })
       ] })
     ] })
   ] });
 }
-function Tr({
+function ra({
   shirtColor: e,
   withSun: t = !1
 }) {
@@ -7518,39 +7851,39 @@ function Tr({
     }
   );
 }
-const ko = {
+const wo = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function Hr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.cardStyle`, "grid"), s = l(e, `${t}.sectionWidth`, "page"), u = l(e, `${t}.mobileColumns`, "2");
+function la(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.cardStyle`, "grid"), c = r(e, `${t}.sectionWidth`, "page"), s = r(e, `${t}.mobileColumns`, "2");
   return {
-    scheme: ko[i] ?? ko["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    cardStyle: n === "carousel" ? "carousel" : "grid",
+    scheme: wo[n] ?? wo["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    cardStyle: i === "carousel" ? "carousel" : "grid",
     carouselOnMobile: !!K(e, `${t}.carouselOnMobile`),
-    productCount: y(e, `${t}.productCount`, 4),
-    columns: y(e, `${t}.columns`, 4),
-    mobileColumns: u === "1" ? 1 : 2,
-    horizontalGap: y(e, `${t}.horizontalGap`, 12),
-    verticalGap: y(e, `${t}.verticalGap`, 24),
-    sectionWidth: s === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 28),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    productCount: x(e, `${t}.productCount`, 4),
+    columns: x(e, `${t}.columns`, 4),
+    mobileColumns: s === "1" ? 1 : 2,
+    horizontalGap: x(e, `${t}.horizontalGap`, 12),
+    verticalGap: x(e, `${t}.verticalGap`, 24),
+    sectionWidth: c === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 28),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function Rr(e, t, i, n, s) {
-  const d = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, a = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), r = K(e, d);
-  if (!r || typeof r != "object") return [];
-  const p = a.length ? a : Object.keys(r), c = Math.max(1, Math.min(12, s));
-  return p.slice(0, c).map((h) => {
-    const g = r[h]?.settings ?? {};
+function aa(e, t, n, i, c) {
+  const l = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, a = i === "template" ? _e(e, t, n, []) : ke(e, n, []), d = K(e, l);
+  if (!d || typeof d != "object") return [];
+  const h = a.length ? a : Object.keys(d), u = Math.max(1, Math.min(12, c));
+  return h.slice(0, u).map((p) => {
+    const g = d[p]?.settings ?? {};
     return {
-      id: h,
+      id: p,
       shirtColor: String(g.shirtColor ?? "#d45454"),
       withSun: !!g.withSun,
       productTitle: String(g.productTitle ?? ""),
@@ -7558,15 +7891,15 @@ function Rr(e, t, i, n, s) {
     };
   });
 }
-function Lr(e, t) {
-  const i = `.ziplofy-recommended-products-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function da(e, t) {
+  const n = `.codiic-recommended-products-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function vo({
+function Co({
   label: e,
   onClick: t,
-  background: i,
-  shape: n
+  background: n,
+  shape: i
 }) {
   return /* @__PURE__ */ o(
     "button",
@@ -7579,121 +7912,121 @@ function vo({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: i === "none" ? 32 : 36,
-        height: i === "none" ? 32 : 36,
+        width: n === "none" ? 32 : 36,
+        height: n === "none" ? 32 : 36,
         border: "none",
         cursor: "pointer",
-        background: i === "circle" || i === "square" ? "rgba(255,255,255,0.95)" : "transparent",
-        borderRadius: i === "circle" ? "50%" : i === "square" ? 6 : 0,
-        boxShadow: i !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
+        background: n === "circle" || n === "square" ? "rgba(255,255,255,0.95)" : "transparent",
+        borderRadius: n === "circle" ? "50%" : n === "square" ? 6 : 0,
+        boxShadow: n !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
         color: "#111827",
-        fontSize: n === "chevron" ? 18 : 20,
+        fontSize: i === "chevron" ? 18 : 20,
         lineHeight: 1
       },
-      children: n === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
+      children: i === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
     }
   );
 }
-function Mr({
+function ca({
   sectionId: e = "recommended_products",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = ot(null), a = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, r = i === "template" ? `template:${t}:${e}` : `layout:${e}`, p = F(
-    () => Hr(n, a),
-    [n, a]
-  ), c = F(
-    () => Rr(
-      n,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = Ke(null), a = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = n === "template" ? `template:${t}:${e}` : `layout:${e}`, h = M(
+    () => la(i, a),
+    [i, a]
+  ), u = M(
+    () => aa(
+      i,
       t,
       e,
-      i,
-      p.productCount
+      n,
+      h.productCount
     ),
-    [n, t, e, i, p.productCount]
-  ), h = p.cardStyle === "carousel", g = `ziplofy-recommended-products-${e.replace(/[^a-z0-9_-]/gi, "-")}`, $ = Lr(e, p.customCss), b = F(
+    [i, t, e, n, h.productCount]
+  ), p = h.cardStyle === "carousel", g = `codiic-recommended-products-${e.replace(/[^a-z0-9_-]/gi, "-")}`, k = da(e, h.customCss), y = M(
     () => `
-[data-ziplofy-section="${e}"] .rp-product-grid {
-  display: ${h ? "flex" : "grid"};
-  ${h ? "flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;" : `grid-template-columns: repeat(${p.columns}, minmax(0, 1fr));`}
-  column-gap: ${p.horizontalGap}px;
-  row-gap: ${p.verticalGap}px;
+[data-codiic-section="${e}"] .rp-product-grid {
+  display: ${p ? "flex" : "grid"};
+  ${p ? "flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;" : `grid-template-columns: repeat(${h.columns}, minmax(0, 1fr));`}
+  column-gap: ${h.horizontalGap}px;
+  row-gap: ${h.verticalGap}px;
 }
-[data-ziplofy-section="${e}"] .rp-product-grid::-webkit-scrollbar { display: none; }
-[data-ziplofy-section="${e}"] .rp-product-grid > article {
-  ${h ? `flex: 0 0 calc((100% - ${(p.columns - 1) * p.horizontalGap}px) / ${p.columns}); min-width: 0; scroll-snap-align: start;` : ""}
+[data-codiic-section="${e}"] .rp-product-grid::-webkit-scrollbar { display: none; }
+[data-codiic-section="${e}"] .rp-product-grid > article {
+  ${p ? `flex: 0 0 calc((100% - ${(h.columns - 1) * h.horizontalGap}px) / ${h.columns}); min-width: 0; scroll-snap-align: start;` : ""}
 }
 @media (max-width: 749px) {
-  [data-ziplofy-section="${e}"] .rp-product-grid {
-    ${p.carouselOnMobile || h ? "display: flex; flex-wrap: nowrap; overflow-x: auto; grid-template-columns: unset;" : `grid-template-columns: repeat(${p.mobileColumns}, minmax(0, 1fr));`}
+  [data-codiic-section="${e}"] .rp-product-grid {
+    ${h.carouselOnMobile || p ? "display: flex; flex-wrap: nowrap; overflow-x: auto; grid-template-columns: unset;" : `grid-template-columns: repeat(${h.mobileColumns}, minmax(0, 1fr));`}
   }
-  [data-ziplofy-section="${e}"][data-mobile-columns="1"] .rp-product-grid > article {
+  [data-codiic-section="${e}"][data-mobile-columns="1"] .rp-product-grid > article {
     flex: 0 0 calc(100% - 8px);
   }
-  [data-ziplofy-section="${e}"][data-mobile-columns="2"] .rp-product-grid > article {
-    flex: 0 0 calc(50% - ${p.horizontalGap / 2}px);
+  [data-codiic-section="${e}"][data-mobile-columns="2"] .rp-product-grid > article {
+    flex: 0 0 calc(50% - ${h.horizontalGap / 2}px);
   }
 }
 `,
     [
       e,
-      h,
-      p.columns,
-      p.horizontalGap,
-      p.verticalGap,
-      p.mobileColumns,
-      p.carouselOnMobile
+      p,
+      h.columns,
+      h.horizontalGap,
+      h.verticalGap,
+      h.mobileColumns,
+      h.carouselOnMobile
     ]
   ), v = {
-    paddingTop: p.paddingTop,
-    paddingBottom: p.paddingBottom,
-    background: p.scheme.background,
-    color: p.scheme.color,
-    fontFamily: s
-  }, x = p.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : {
-    maxWidth: L.contentMaxWidth,
+    paddingTop: h.paddingTop,
+    paddingBottom: h.paddingBottom,
+    background: h.scheme.background,
+    color: h.scheme.color,
+    fontFamily: c
+  }, b = h.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
     paddingLeft: 24,
     paddingRight: 24
-  }, z = `${a}.heading`, S = (_) => {
-    const H = d.current;
-    H && H.scrollBy({ left: _ * H.clientWidth * 0.85, behavior: "smooth" });
+  }, _ = `${a}.heading`, $ = (w) => {
+    const P = l.current;
+    P && P.scrollBy({ left: w * P.clientWidth * 0.85, behavior: "smooth" });
   };
   return /* @__PURE__ */ m(
-    G,
+    B,
     {
       sectionId: e,
       label: "Recommended products",
-      editorNodeId: r,
+      editorNodeId: d,
       style: v,
       children: [
-        $ ? /* @__PURE__ */ o("style", { children: $ }) : null,
-        /* @__PURE__ */ o("style", { children: b }),
+        k ? /* @__PURE__ */ o("style", { children: k }) : null,
+        /* @__PURE__ */ o("style", { children: y }),
         /* @__PURE__ */ m(
           "div",
           {
             className: g,
-            style: x,
-            "data-mobile-columns": String(p.mobileColumns),
-            "data-rp-carousel": h || p.carouselOnMobile ? "true" : "false",
+            style: b,
+            "data-mobile-columns": String(h.mobileColumns),
+            "data-rp-carousel": p || h.carouselOnMobile ? "true" : "false",
             children: [
               /* @__PURE__ */ o(
-                k,
+                S,
                 {
-                  fieldPath: z,
+                  fieldPath: _,
                   label: "Heading",
                   as: "h2",
                   style: {
-                    margin: `0 0 ${p.layoutGap}px`,
+                    margin: `0 0 ${h.layoutGap}px`,
                     fontSize: 28,
                     fontWeight: 700,
-                    fontFamily: u
+                    fontFamily: s
                   },
-                  children: p.heading
+                  children: h.heading
                 }
               ),
               /* @__PURE__ */ m("div", { style: { position: "relative" }, children: [
-                h ? /* @__PURE__ */ m(
+                p ? /* @__PURE__ */ m(
                   "div",
                   {
                     style: {
@@ -7705,18 +8038,18 @@ function Mr({
                       zIndex: 2
                     },
                     children: [
-                      /* @__PURE__ */ o(vo, { label: "Previous", onClick: () => S(-1), background: "circle", shape: "arrows" }),
-                      /* @__PURE__ */ o(vo, { label: "Next", onClick: () => S(1), background: "circle", shape: "arrows" })
+                      /* @__PURE__ */ o(Co, { label: "Previous", onClick: () => $(-1), background: "circle", shape: "arrows" }),
+                      /* @__PURE__ */ o(Co, { label: "Next", onClick: () => $(1), background: "circle", shape: "arrows" })
                     ]
                   }
                 ) : null,
-                /* @__PURE__ */ o("div", { ref: d, className: "rp-product-grid", children: c.map((_) => {
-                  const H = i === "template" ? `templates.${t}.sections.${e}.blocks.${_.id}.settings` : `sections.${e}.blocks.${_.id}.settings`, w = i === "template" ? `template:${t}:${e}:block:${_.id}` : `layout:${e}:block:${_.id}`;
-                  return /* @__PURE__ */ o(E, { nodeId: w, label: "Product card", style: {
+                /* @__PURE__ */ o("div", { ref: l, className: "rp-product-grid", children: u.map((w) => {
+                  const P = n === "template" ? `templates.${t}.sections.${e}.blocks.${w.id}.settings` : `sections.${e}.blocks.${w.id}.settings`, z = n === "template" ? `template:${t}:${e}:block:${w.id}` : `layout:${e}:block:${w.id}`;
+                  return /* @__PURE__ */ o(N, { nodeId: z, label: "Product card", style: {
                     margin: 0,
                     minWidth: 0
                   }, children: /* @__PURE__ */ m("article", { children: [
-                    /* @__PURE__ */ o(Tr, { shirtColor: _.shirtColor, withSun: _.withSun }),
+                    /* @__PURE__ */ o(ra, { shirtColor: w.shirtColor, withSun: w.withSun }),
                     /* @__PURE__ */ o(
                       "p",
                       {
@@ -7724,10 +8057,10 @@ function Mr({
                           margin: "10px 0 0",
                           fontSize: 14,
                           fontWeight: 500,
-                          color: p.scheme.color,
+                          color: h.scheme.color,
                           textAlign: "center"
                         },
-                        children: /* @__PURE__ */ o(k, { fieldPath: `${H}.productTitle`, label: "Product title", children: _.productTitle })
+                        children: /* @__PURE__ */ o(S, { fieldPath: `${P}.productTitle`, label: "Product title", children: w.productTitle })
                       }
                     ),
                     /* @__PURE__ */ o(
@@ -7736,13 +8069,13 @@ function Mr({
                         style: {
                           margin: "2px 0 0",
                           fontSize: 13,
-                          color: p.scheme.muted,
+                          color: h.scheme.muted,
                           textAlign: "center"
                         },
-                        children: /* @__PURE__ */ o(k, { fieldPath: `${H}.price`, label: "Price", children: _.price })
+                        children: /* @__PURE__ */ o(S, { fieldPath: `${P}.price`, label: "Price", children: w.price })
                       }
                     )
-                  ] }) }, _.id);
+                  ] }) }, w.id);
                 }) })
               ] })
             ]
@@ -7752,7 +8085,7 @@ function Mr({
     }
   );
 }
-function Fr() {
+function sa() {
   return /* @__PURE__ */ m("div", { style: { position: "relative", width: 118, height: 96, margin: "0 auto" }, "aria-hidden": !0, children: [
     /* @__PURE__ */ o(
       "div",
@@ -7807,79 +8140,79 @@ function Fr() {
     )
   ] });
 }
-const So = {
+const _o = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function Er(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.catalogVariant`, "collection-links-spotlight"), s = l(e, `${t}.layoutMode`, "spotlight"), u = n === "collection-links-text" || s === "text" ? "text" : "spotlight", d = l(e, `${t}.sectionWidth`, "page"), a = l(e, `${t}.alignment`, "left"), r = l(e, `${t}.imagePosition`, "right");
+function ua(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.catalogVariant`, "collection-links-spotlight"), c = r(e, `${t}.layoutMode`, "spotlight"), s = i === "collection-links-text" || c === "text" ? "text" : "spotlight", l = r(e, `${t}.sectionWidth`, "page"), a = r(e, `${t}.alignment`, "left"), d = r(e, `${t}.imagePosition`, "right");
   return {
-    scheme: So[i] ?? So["scheme-1"],
-    layoutMode: u,
-    sectionWidth: d === "full" ? "full" : "page",
+    scheme: _o[n] ?? _o["scheme-1"],
+    layoutMode: s,
+    sectionWidth: l === "full" ? "full" : "page",
     alignment: a === "center" ? "center" : a === "right" ? "right" : "left",
-    imagePosition: r === "left" ? "left" : "right",
-    imageUrl: l(e, `${t}.imageUrl`, ""),
-    paddingTop: y(e, `${t}.paddingTop`, 40),
-    paddingBottom: y(e, `${t}.paddingBottom`, 40),
-    customCss: l(e, `${t}.customCss`, "")
+    imagePosition: d === "left" ? "left" : "right",
+    imageUrl: r(e, `${t}.imageUrl`, ""),
+    paddingTop: x(e, `${t}.paddingTop`, 40),
+    paddingBottom: x(e, `${t}.paddingBottom`, 40),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function Ar(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
-  return !a || typeof a != "object" ? [] : (d.length ? d : Object.keys(a)).map((p) => {
-    const c = a[p]?.settings ?? {};
+function ha(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
+  return !a || typeof a != "object" ? [] : (l.length ? l : Object.keys(a)).map((h) => {
+    const u = a[h]?.settings ?? {};
     return {
-      id: p,
-      title: String(c.title ?? ""),
-      productCount: Number(c.productCount ?? 5),
-      href: String(c.href ?? "")
+      id: h,
+      title: String(u.title ?? ""),
+      productCount: Number(u.productCount ?? 5),
+      href: String(u.href ?? "")
     };
   });
 }
-function Ur(e, t) {
-  const i = `.ziplofy-collection-links-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function pa(e, t) {
+  const n = `.codiic-collection-links-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function Nr(e) {
+function ma(e) {
   return e === "center" ? "center" : e === "right" ? "right" : "left";
 }
-function wo({
+function Wo({
   sectionId: e = "collection_links_spotlight",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s } = X(), u = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = i === "template" ? `template:${t}:${e}` : `layout:${e}`, a = F(
-    () => Er(n, u),
-    [n, u]
-  ), r = l(n, `${u}.catalogVariant`, "collection-links-spotlight"), p = a.layoutMode === "text" || r === "collection-links-text" ? "Collection links: Text" : "Collection links: Spotlight", c = F(
-    () => Ar(n, t, e, i),
-    [n, t, e, i]
-  ), h = `ziplofy-collection-links-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = Ur(e, a.customCss), $ = Nr(a.alignment), b = a.layoutMode === "text", v = {
+  const i = j(), { fontBody: c } = q(), s = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, l = n === "template" ? `template:${t}:${e}` : `layout:${e}`, a = M(
+    () => ua(i, s),
+    [i, s]
+  ), d = r(i, `${s}.catalogVariant`, "collection-links-spotlight"), h = a.layoutMode === "text" || d === "collection-links-text" ? "Collection links: Text" : "Collection links: Spotlight", u = M(
+    () => ha(i, t, e, n),
+    [i, t, e, n]
+  ), p = `codiic-collection-links-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = pa(e, a.customCss), k = ma(a.alignment), y = a.layoutMode === "text", v = {
     paddingTop: a.paddingTop,
     paddingBottom: a.paddingBottom,
     background: a.scheme.background,
     color: a.scheme.color,
-    fontFamily: s
-  }, x = a.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : {
-    maxWidth: L.contentMaxWidth,
+    fontFamily: c
+  }, b = a.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
     paddingLeft: 24,
     paddingRight: 24
-  }, z = {
+  }, _ = {
     margin: 0,
-    fontSize: b ? 18 : 22,
+    fontSize: y ? 18 : 22,
     fontWeight: 500,
     lineHeight: 1.25,
     color: a.scheme.color,
     textDecoration: "none",
-    textAlign: $
-  }, S = /* @__PURE__ */ o(
+    textAlign: k
+  }, $ = /* @__PURE__ */ o(
     "div",
     {
-      style: b ? {
+      style: y ? {
         display: "grid",
         gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
         columnGap: 48,
@@ -7894,10 +8227,10 @@ function wo({
         gap: 20,
         alignItems: a.alignment === "center" ? "center" : a.alignment === "right" ? "flex-end" : "flex-start"
       },
-      children: c.map((w) => {
-        const R = i === "template" ? `templates.${t}.sections.${e}.blocks.${w.id}.settings` : `sections.${e}.blocks.${w.id}.settings`, T = i === "template" ? `template:${t}:${e}:block:${w.id}` : `layout:${e}:block:${w.id}`;
-        return /* @__PURE__ */ o(E, { nodeId: T, label: "Collection link", children: /* @__PURE__ */ m(I, { to: w.href, style: z, children: [
-          /* @__PURE__ */ o(k, { fieldPath: `${R}.title`, label: "Title", children: w.title }),
+      children: u.map((z) => {
+        const L = n === "template" ? `templates.${t}.sections.${e}.blocks.${z.id}.settings` : `sections.${e}.blocks.${z.id}.settings`, H = n === "template" ? `template:${t}:${e}:block:${z.id}` : `layout:${e}:block:${z.id}`;
+        return /* @__PURE__ */ o(N, { nodeId: H, label: "Collection link", children: /* @__PURE__ */ m(D, { to: z.href, style: _, children: [
+          /* @__PURE__ */ o(S, { fieldPath: `${L}.title`, label: "Title", children: z.title }),
           /* @__PURE__ */ o(
             "sup",
             {
@@ -7907,13 +8240,13 @@ function wo({
                 fontWeight: 400,
                 color: a.scheme.muted
               },
-              children: /* @__PURE__ */ o(k, { fieldPath: `${R}.productCount`, label: "Product count", children: w.productCount })
+              children: /* @__PURE__ */ o(S, { fieldPath: `${L}.productCount`, label: "Product count", children: z.productCount })
             }
           )
-        ] }) }, w.id);
+        ] }) }, z.id);
       })
     }
-  ), _ = /* @__PURE__ */ o(
+  ), w = /* @__PURE__ */ o(
     "div",
     {
       style: {
@@ -7932,9 +8265,9 @@ function wo({
           alt: "",
           style: { maxWidth: "100%", maxHeight: 240, objectFit: "contain" }
         }
-      ) : /* @__PURE__ */ o(Fr, {})
+      ) : /* @__PURE__ */ o(sa, {})
     }
-  ), H = /* @__PURE__ */ o(
+  ), P = /* @__PURE__ */ o(
     "div",
     {
       style: {
@@ -7946,19 +8279,19 @@ function wo({
         borderRight: a.imagePosition === "right" ? "1px solid #f3f4f6" : void 0,
         borderLeft: a.imagePosition === "left" ? "1px solid #f3f4f6" : void 0
       },
-      children: S
+      children: $
     }
   );
   return /* @__PURE__ */ m(
-    G,
+    B,
     {
       sectionId: e,
-      label: p,
-      editorNodeId: d,
+      label: h,
+      editorNodeId: l,
       style: v,
       children: [
         g ? /* @__PURE__ */ o("style", { children: g }) : null,
-        /* @__PURE__ */ o("div", { className: h, style: x, children: b ? S : /* @__PURE__ */ m(
+        /* @__PURE__ */ o("div", { className: p, style: b, children: y ? $ : /* @__PURE__ */ m(
           "div",
           {
             style: {
@@ -7969,8 +8302,8 @@ function wo({
               borderRadius: 2
             },
             children: [
-              H,
-              _
+              P,
+              w
             ]
           }
         ) })
@@ -7978,7 +8311,7 @@ function wo({
     }
   );
 }
-function Or() {
+function ga() {
   return /* @__PURE__ */ m("div", { style: { position: "relative", width: 64, height: 52, margin: "0 auto" }, "aria-hidden": !0, children: [
     /* @__PURE__ */ o(
       "div",
@@ -8033,20 +8366,20 @@ function Or() {
     )
   ] });
 }
-function Gr() {
+function fa() {
   return /* @__PURE__ */ o("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 6 }, "aria-hidden": !0, children: ["#6b7280", "#c44d4d", "#4a9a9a"].map((e, t) => /* @__PURE__ */ m("div", { style: { display: "flex", flexDirection: "column", alignItems: "center" }, children: [
     /* @__PURE__ */ o("div", { style: { marginBottom: 2, width: 20, height: 2, borderRadius: 999, background: "#6b7280" } }),
     /* @__PURE__ */ o("div", { style: { width: 24, height: 36, borderRadius: "4px 4px 2px 2px", background: e } })
   ] }, t)) });
 }
-function jr() {
+function ba() {
   return /* @__PURE__ */ m("div", { style: { display: "flex", alignItems: "flex-start", justifyContent: "center", gap: 8 }, "aria-hidden": !0, children: [
     /* @__PURE__ */ o("div", { style: { width: 28, height: 44, borderRadius: "8px 8px 4px 4px", background: "#9ca3af" } }),
     /* @__PURE__ */ o("div", { style: { width: 28, height: 44, borderRadius: "8px 8px 4px 4px", background: "#e8c547" } }),
     /* @__PURE__ */ o("div", { style: { width: 28, height: 44, borderRadius: "8px 8px 4px 4px", background: "#5ba8a8" } })
   ] });
 }
-function Dr({ wide: e = !1 }) {
+function ya({ wide: e = !1 }) {
   return e ? /* @__PURE__ */ m("div", { style: { position: "relative", width: 128, height: 56, margin: "0 auto" }, "aria-hidden": !0, children: [
     /* @__PURE__ */ o("div", { style: { position: "absolute", bottom: 12, left: 4, right: 4, height: 1, background: "#6b7280" } }),
     /* @__PURE__ */ o("div", { style: { position: "absolute", bottom: 12, left: "50%", width: 1, height: 36, transform: "translateX(-50%)", background: "#6b7280" } }),
@@ -8061,81 +8394,134 @@ function Dr({ wide: e = !1 }) {
     /* @__PURE__ */ o("div", { style: { position: "absolute", top: 4, right: 6, width: 12, height: 20, borderRadius: 4, background: "#9ca3af" } })
   ] });
 }
-function pt({
+function ct({
   variant: e,
   wide: t = !1
 }) {
   switch (e) {
     case "hanger-shirts":
-      return /* @__PURE__ */ o(Gr, {});
+      return /* @__PURE__ */ o(fa, {});
     case "hanging-sweaters":
-      return /* @__PURE__ */ o(jr, {});
+      return /* @__PURE__ */ o(ba, {});
     case "clothing-rack":
-      return /* @__PURE__ */ o(Dr, { wide: t });
+      return /* @__PURE__ */ o(ya, { wide: t });
     default:
-      return /* @__PURE__ */ o(Or, {});
+      return /* @__PURE__ */ o(ga, {});
   }
 }
-const _o = {
+const zo = {
   "scheme-1": { background: "#ffffff", color: "#111827" },
   "scheme-2": { background: "#f6f6f7", color: "#111827" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b" }
 };
-function Br(e) {
+function xa(e) {
   return e === "hanger-shirts" || e === "hanging-sweaters" || e === "clothing-rack" || e === "folded-shirts" ? e : "folded-shirts";
 }
-function Xr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.cardsLayoutType`), s = l(e, `${t}.sectionWidth`, "page");
+function $a(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.cardsLayoutType`), c = r(e, `${t}.sectionWidth`, "page");
   return {
-    scheme: _o[i] ?? _o["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    cardsLayoutType: n === "carousel" || n === "editorial" || n === "grid" ? n : "bento",
+    scheme: zo[n] ?? zo["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    cardsLayoutType: i === "carousel" || i === "editorial" || i === "grid" ? i : "bento",
     carouselOnMobile: !!K(e, `${t}.carouselOnMobile`),
-    cardsGap: y(e, `${t}.cardsGap`, 8),
-    sectionWidth: s === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 12),
-    paddingTop: y(e, `${t}.paddingTop`, 24),
-    paddingBottom: y(e, `${t}.paddingBottom`, 24),
-    customCss: l(e, `${t}.customCss`, "")
+    cardsGap: x(e, `${t}.cardsGap`, 8),
+    sectionWidth: c === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 12),
+    paddingTop: x(e, `${t}.paddingTop`, 24),
+    paddingBottom: x(e, `${t}.paddingBottom`, 24),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function mt(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
-  return !a || typeof a != "object" ? [] : (d.length ? d : Object.keys(a)).map((p) => {
-    const c = a[p]?.settings ?? {}, h = Number(c.columnSpan ?? 1);
+function ka(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
+  return !a || typeof a != "object" ? [] : (l.length ? l : Object.keys(a)).map((h) => {
+    const u = a[h]?.settings ?? {}, p = Number(u.columnSpan ?? 1);
     return {
-      id: p,
-      title: String(c.title ?? ""),
-      href: String(c.href ?? ""),
-      illustrationVariant: Br(String(c.illustrationVariant ?? "folded-shirts")),
-      columnSpan: h === 2 ? 2 : 1,
-      imageUrl: String(c.imageUrl ?? "")
+      id: h,
+      title: String(u.title ?? ""),
+      href: String(u.href ?? ""),
+      illustrationVariant: xa(String(u.illustrationVariant ?? "folded-shirts")),
+      columnSpan: p === 2 ? 2 : 1,
+      imageUrl: String(u.imageUrl ?? "")
     };
   });
 }
-function qr(e, t) {
-  const i = `.ziplofy-collection-list-bento-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function va(e, t) {
+  const n = `.codiic-collection-list-bento-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function Ir({
+const Po = [
+  "folded-shirts",
+  "hanger-shirts",
+  "hanging-sweaters",
+  "clothing-rack"
+], Ho = [1, 2, 2, 1];
+function Sa(e) {
+  return e.trim() ? e.split(/[,\n]/).map((t) => t.trim().toLowerCase()).filter(Boolean) : [];
+}
+function wa(e, t, n, i) {
+  const c = i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`;
+  let s = e;
+  for (const a of c.split(".")) {
+    if (!s || typeof s != "object") return "collection-list-grid";
+    s = s[a];
+  }
+  const l = s?.type;
+  return typeof l == "string" ? l : "collection-list-grid";
+}
+function Ca(e, t) {
+  const n = Sa(t);
+  return n.length ? n.map((i) => e.find((c) => c.urlHandle === i)).filter((i) => !!i) : e;
+}
+function _a(e, t, n) {
+  const i = new Map(
+    n.map((c) => [c.href.replace(/^\/collections\//, "").replace(/^\/collection\//, ""), c])
+  );
+  return e.map((c, s) => {
+    const l = c.urlHandle?.trim() || "", a = l ? Sn(l) : dt.allProducts, d = l ? i.get(l) : void 0, h = d?.id ?? `tile_${s + 1}`, u = t === "collection-list-bento" ? d?.columnSpan ?? Ho[s % Ho.length] : d?.columnSpan ?? 1;
+    return {
+      id: h,
+      title: c.title?.trim() || d?.title || "Collection title",
+      href: a,
+      illustrationVariant: d?.illustrationVariant ?? Po[s % Po.length],
+      columnSpan: u,
+      imageUrl: c.imageUrl?.trim() || d?.imageUrl || ""
+    };
+  });
+}
+function st(e, t, n, i) {
+  const c = j(), { storeFrontMeta: s } = De(), l = s?.storeId ?? "", { collections: a, fetchCollectionsByStoreId: d } = at();
+  le(() => {
+    l && d(l);
+  }, [l, d]);
+  const h = M(
+    () => ka(c, e, t, n),
+    [c, e, t, n]
+  );
+  return M(() => {
+    const u = r(c, `${i}.collectionsPicker`, ""), p = wa(c, e, t, n), g = Ca(a, u);
+    return g.length ? _a(g, p, h) : h;
+  }, [a, c, h, n, t, i, e]);
+}
+function Wa({
   tile: e,
   gap: t,
-  blockBase: i,
-  blockNodeId: n,
-  fontBody: s
+  blockBase: n,
+  blockNodeId: i,
+  fontBody: c
 }) {
-  const u = e.columnSpan === 2 ? 2 : 1, d = {
-    gridColumn: `span ${u}`,
-    minHeight: u === 2 ? 120 : 140,
+  const s = e.columnSpan === 2 ? 2 : 1, l = {
+    gridColumn: `span ${s}`,
+    minHeight: s === 2 ? 120 : 140,
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
     borderRadius: 8,
     background: "#ececec"
   };
-  return /* @__PURE__ */ o(E, { nodeId: n, label: "Collection", style: d, children: /* @__PURE__ */ m(
-    I,
+  return /* @__PURE__ */ o(N, { nodeId: i, label: "Collection", style: l, children: /* @__PURE__ */ m(
+    D,
     {
       to: e.href,
       style: {
@@ -8164,10 +8550,10 @@ function Ir({
                 style: { width: "100%", height: "100%", objectFit: "cover" }
               }
             ) : /* @__PURE__ */ o(
-              pt,
+              ct,
               {
                 variant: e.illustrationVariant,
-                wide: u === 2
+                wide: s === 2
               }
             )
           }
@@ -8180,81 +8566,78 @@ function Ir({
               padding: "10px 12px",
               fontSize: 14,
               fontWeight: 500,
-              fontFamily: s,
+              fontFamily: c,
               color: "#111827"
             },
-            children: /* @__PURE__ */ o(k, { fieldPath: `${i}.title`, label: "Title", children: e.title })
+            children: /* @__PURE__ */ o(S, { fieldPath: `${n}.title`, label: "Title", children: e.title })
           }
         )
       ]
     }
   ) });
 }
-function Vr({
+function za({
   sectionId: e = "collection_list_bento",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(
-    () => Xr(n, d),
-    [n, d]
-  ), p = F(
-    () => mt(n, t, e, i),
-    [n, t, e, i]
-  ), c = `ziplofy-collection-list-bento-${e.replace(/[^a-z0-9_-]/gi, "-")}`, h = qr(e, r.customCss), g = {
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    background: r.scheme.background,
-    color: r.scheme.color,
-    fontFamily: s
-  }, $ = r.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : {
-    maxWidth: L.contentMaxWidth,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(
+    () => $a(i, l),
+    [i, l]
+  ), h = st(t, e, n, l), u = `codiic-collection-list-bento-${e.replace(/[^a-z0-9_-]/gi, "-")}`, p = va(e, d.customCss), g = {
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    background: d.scheme.background,
+    color: d.scheme.color,
+    fontFamily: c
+  }, k = d.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 0, paddingRight: 0 } : {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
     paddingLeft: 24,
     paddingRight: 24
-  }, b = `${d}.heading`, v = {
+  }, y = `${l}.heading`, v = {
     display: "grid",
     gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
     gridTemplateRows: "repeat(2, minmax(120px, auto))",
-    gap: r.cardsGap
+    gap: d.cardsGap
   };
   return /* @__PURE__ */ m(
-    G,
+    B,
     {
       sectionId: e,
       label: "Collection list: Bento",
       editorNodeId: a,
       style: g,
       children: [
-        h ? /* @__PURE__ */ o("style", { children: h }) : null,
-        /* @__PURE__ */ m("div", { className: c, style: $, children: [
+        p ? /* @__PURE__ */ o("style", { children: p }) : null,
+        /* @__PURE__ */ m("div", { className: u, style: k, children: [
           /* @__PURE__ */ o(
-            k,
+            S,
             {
-              fieldPath: b,
+              fieldPath: y,
               label: "Heading",
               as: "h2",
               style: {
-                margin: `0 0 ${r.layoutGap}px`,
+                margin: `0 0 ${d.layoutGap}px`,
                 fontSize: 28,
                 fontWeight: 700,
-                fontFamily: u
+                fontFamily: s
               },
-              children: r.heading
+              children: d.heading
             }
           ),
-          /* @__PURE__ */ o("div", { style: v, children: p.map((x) => {
-            const z = i === "template" ? `templates.${t}.sections.${e}.blocks.${x.id}.settings` : `sections.${e}.blocks.${x.id}.settings`, S = i === "template" ? `template:${t}:${e}:block:${x.id}` : `layout:${e}:block:${x.id}`;
+          /* @__PURE__ */ o("div", { style: v, children: h.map((b) => {
+            const _ = n === "template" ? `templates.${t}.sections.${e}.blocks.${b.id}.settings` : `sections.${e}.blocks.${b.id}.settings`, $ = n === "template" ? `template:${t}:${e}:block:${b.id}` : `layout:${e}:block:${b.id}`;
             return /* @__PURE__ */ o(
-              Ir,
+              Wa,
               {
-                tile: x,
-                gap: r.cardsGap,
-                blockBase: z,
-                blockNodeId: S,
-                fontBody: s
+                tile: b,
+                gap: d.cardsGap,
+                blockBase: _,
+                blockNodeId: $,
+                fontBody: c
               },
-              x.id
+              b.id
             );
           }) })
         ] })
@@ -8262,101 +8645,98 @@ function Vr({
     }
   );
 }
-const Co = {
+const To = {
   "scheme-1": { background: "#ffffff", color: "#111827" },
   "scheme-2": { background: "#f6f6f7", color: "#111827" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b" }
 };
-function Kr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.navigationIcon`, "arrows"), s = l(e, `${t}.navigationIconBackground`, "circle"), u = l(e, `${t}.sectionWidth`, "page"), d = l(e, `${t}.mobileColumns`, "1");
+function Pa(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.navigationIcon`, "arrows"), c = r(e, `${t}.navigationIconBackground`, "circle"), s = r(e, `${t}.sectionWidth`, "page"), l = r(e, `${t}.mobileColumns`, "1");
   return {
-    scheme: Co[i] ?? Co["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    columns: Math.min(6, Math.max(1, y(e, `${t}.columns`, 3))),
-    mobileColumns: d === "2" ? 2 : 1,
-    horizontalGap: y(e, `${t}.horizontalGap`, 8),
-    navigationIcon: n === "chevron" || n === "none" ? n : "arrows",
-    navigationIconBackground: s === "square" || s === "none" ? s : "circle",
-    sectionWidth: u === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 12),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    scheme: To[n] ?? To["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    columns: Math.min(6, Math.max(1, x(e, `${t}.columns`, 3))),
+    mobileColumns: l === "2" ? 2 : 1,
+    horizontalGap: x(e, `${t}.horizontalGap`, 8),
+    navigationIcon: i === "chevron" || i === "none" ? i : "arrows",
+    navigationIconBackground: c === "square" || c === "none" ? c : "circle",
+    sectionWidth: s === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 12),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function Yr(e, t) {
-  const i = `.ziplofy-collection-list-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Ha(e, t) {
+  const n = `.codiic-collection-list-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function zo({
+function Lo({
   label: e,
   onClick: t,
-  background: i,
-  shape: n
+  background: n,
+  shape: i
 }) {
   return /* @__PURE__ */ o("button", { type: "button", "aria-label": e, onClick: t, style: {
     flexShrink: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: i === "none" ? 32 : 36,
-    height: i === "none" ? 32 : 36,
+    width: n === "none" ? 32 : 36,
+    height: n === "none" ? 32 : 36,
     border: "none",
     cursor: "pointer",
-    background: i === "circle" || i === "square" ? "rgba(255,255,255,0.95)" : "transparent",
-    borderRadius: i === "circle" ? "50%" : i === "square" ? 6 : 0,
-    boxShadow: i !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
+    background: n === "circle" || n === "square" ? "rgba(255,255,255,0.95)" : "transparent",
+    borderRadius: n === "circle" ? "50%" : n === "square" ? 6 : 0,
+    boxShadow: n !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
     color: "#111827",
-    fontSize: n === "chevron" ? 18 : 20,
+    fontSize: i === "chevron" ? 18 : 20,
     lineHeight: 1
-  }, children: n === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→" });
+  }, children: i === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→" });
 }
-function Zr({
+function Ta({
   sectionId: e = "collection_list_carousel",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = ot(null), a = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, r = i === "template" ? `template:${t}:${e}` : `layout:${e}`, p = F(
-    () => Kr(n, a),
-    [n, a]
-  ), c = F(
-    () => mt(n, t, e, i),
-    [n, t, e, i]
-  ), h = `ziplofy-collection-list-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = (p.sectionWidth === "full", 24), $ = p.sectionWidth === "full" ? "100%" : L.contentMaxWidth, b = p.columns > 0 ? `calc((100% - ${(p.columns - 1) * p.horizontalGap}px) / ${p.columns})` : "200px", v = (W) => {
-    const P = d.current;
-    P && P.scrollBy({ left: P.clientWidth * 0.85 * W, behavior: "smooth" });
-  }, x = p.navigationIcon !== "none" && c.length > p.columns, z = {
-    background: p.scheme.background,
-    color: p.scheme.color,
-    paddingTop: p.paddingTop,
-    paddingBottom: p.paddingBottom,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = Ke(null), a = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = n === "template" ? `template:${t}:${e}` : `layout:${e}`, h = M(
+    () => Pa(i, a),
+    [i, a]
+  ), u = st(t, e, n, a), p = `codiic-collection-list-carousel-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = (h.sectionWidth === "full", 24), k = h.sectionWidth === "full" ? "100%" : R.contentMaxWidth, y = h.columns > 0 ? `calc((100% - ${(h.columns - 1) * h.horizontalGap}px) / ${h.columns})` : "200px", v = (W) => {
+    const T = l.current;
+    T && T.scrollBy({ left: T.clientWidth * 0.85 * W, behavior: "smooth" });
+  }, b = h.navigationIcon !== "none" && u.length > h.columns, _ = {
+    background: h.scheme.background,
+    color: h.scheme.color,
+    paddingTop: h.paddingTop,
+    paddingBottom: h.paddingBottom,
     paddingLeft: g,
     paddingRight: g,
-    fontFamily: s,
+    fontFamily: c,
     boxSizing: "border-box"
-  }, S = {
-    maxWidth: $,
+  }, $ = {
+    maxWidth: k,
     margin: "0 auto",
     width: "100%"
-  }, _ = {
+  }, w = {
     display: "flex",
     alignItems: "center",
     gap: 8
-  }, H = {
+  }, P = {
     display: "flex",
-    gap: p.horizontalGap,
+    gap: h.horizontalGap,
     overflowX: "auto",
     scrollSnapType: "x mandatory",
     scrollbarWidth: "none",
     msOverflowStyle: "none",
     flex: 1,
     paddingBottom: 4
-  }, w = {
-    flex: `0 0 ${b}`,
+  }, z = {
+    flex: `0 0 ${y}`,
     minWidth: 0,
     scrollSnapAlign: "start"
-  }, R = {
+  }, L = {
     aspectRatio: "1",
     borderRadius: 8,
     background: "#ececec",
@@ -8365,60 +8745,60 @@ function Zr({
     justifyContent: "center",
     overflow: "hidden",
     marginBottom: 10
-  }, T = {
+  }, H = {
     margin: 0,
     fontSize: 14,
     fontWeight: 500,
     lineHeight: 1.3,
     color: "#111827"
   };
-  return /* @__PURE__ */ o(G, { sectionId: e, label: "Collection list: Carousel", editorNodeId: r, style: z, children: /* @__PURE__ */ m("div", { className: h, style: S, "data-mobile-columns": p.mobileColumns, children: [
+  return /* @__PURE__ */ o(B, { sectionId: e, label: "Collection list: Carousel", editorNodeId: d, style: _, children: /* @__PURE__ */ m("div", { className: p, style: $, "data-mobile-columns": h.mobileColumns, children: [
     /* @__PURE__ */ o("style", { children: `
-            .${h} [data-carousel-track]::-webkit-scrollbar { display: none; }
+            .${p} [data-carousel-track]::-webkit-scrollbar { display: none; }
             @media (max-width: 749px) {
-              .${h}[data-mobile-columns="1"] [data-collection-card] {
+              .${p}[data-mobile-columns="1"] [data-collection-card] {
                 flex: 0 0 calc(100% - 8px);
               }
-              .${h}[data-mobile-columns="2"] [data-collection-card] {
-                flex: 0 0 calc(50% - ${p.horizontalGap / 2}px);
+              .${p}[data-mobile-columns="2"] [data-collection-card] {
+                flex: 0 0 calc(50% - ${h.horizontalGap / 2}px);
               }
             }
-            ${Yr(e, p.customCss)}
+            ${Ha(e, h.customCss)}
           ` }),
     /* @__PURE__ */ o(
-      k,
+      S,
       {
         fieldPath: `${a}.heading`,
         label: "Heading",
         as: "h2",
         style: {
-          margin: `0 0 ${p.layoutGap}px`,
+          margin: `0 0 ${h.layoutGap}px`,
           fontSize: 28,
           fontWeight: 700,
-          fontFamily: u
+          fontFamily: s
         },
-        children: p.heading
+        children: h.heading
       }
     ),
-    /* @__PURE__ */ m("div", { style: _, children: [
-      x ? /* @__PURE__ */ o(
-        zo,
+    /* @__PURE__ */ m("div", { style: w, children: [
+      b ? /* @__PURE__ */ o(
+        Lo,
         {
           label: "Previous",
           onClick: () => v(-1),
-          background: p.navigationIconBackground,
-          shape: p.navigationIcon === "chevron" ? "chevron" : "arrows"
+          background: h.navigationIconBackground,
+          shape: h.navigationIcon === "chevron" ? "chevron" : "arrows"
         }
       ) : null,
-      /* @__PURE__ */ o("div", { ref: d, "data-carousel-track": !0, style: H, children: c.map((W) => {
-        const P = i === "template" ? `templates.${t}.sections.${e}.blocks.${W.id}.settings` : `sections.${e}.blocks.${W.id}.settings`, C = i === "template" ? `template:${t}:${e}:block:${W.id}` : `layout:${e}:block:${W.id}`;
-        return /* @__PURE__ */ o(E, { nodeId: C, label: "Collection", style: w, children: /* @__PURE__ */ o("div", { "data-collection-card": !0, children: /* @__PURE__ */ m(
-          I,
+      /* @__PURE__ */ o("div", { ref: l, "data-carousel-track": !0, style: P, children: u.map((W) => {
+        const T = n === "template" ? `templates.${t}.sections.${e}.blocks.${W.id}.settings` : `sections.${e}.blocks.${W.id}.settings`, C = n === "template" ? `template:${t}:${e}:block:${W.id}` : `layout:${e}:block:${W.id}`;
+        return /* @__PURE__ */ o(N, { nodeId: C, label: "Collection", style: z, children: /* @__PURE__ */ o("div", { "data-collection-card": !0, children: /* @__PURE__ */ m(
+          D,
           {
             to: W.href,
             style: { display: "block", textDecoration: "none", color: "inherit" },
             children: [
-              /* @__PURE__ */ o("div", { style: R, children: W.imageUrl ? /* @__PURE__ */ o(
+              /* @__PURE__ */ o("div", { style: L, children: W.imageUrl ? /* @__PURE__ */ o(
                 "img",
                 {
                   src: W.imageUrl,
@@ -8426,89 +8806,86 @@ function Zr({
                   style: { width: "100%", height: "100%", objectFit: "cover" }
                 }
               ) : /* @__PURE__ */ o(
-                pt,
+                ct,
                 {
                   variant: W.illustrationVariant
                 }
               ) }),
-              /* @__PURE__ */ o("p", { style: T, children: /* @__PURE__ */ o(k, { fieldPath: `${P}.title`, label: "Title", children: W.title }) })
+              /* @__PURE__ */ o("p", { style: H, children: /* @__PURE__ */ o(S, { fieldPath: `${T}.title`, label: "Title", children: W.title }) })
             ]
           }
         ) }) }, W.id);
       }) }),
-      x ? /* @__PURE__ */ o(
-        zo,
+      b ? /* @__PURE__ */ o(
+        Lo,
         {
           label: "Next",
           onClick: () => v(1),
-          background: p.navigationIconBackground,
-          shape: p.navigationIcon === "chevron" ? "chevron" : "arrows"
+          background: h.navigationIconBackground,
+          shape: h.navigationIcon === "chevron" ? "chevron" : "arrows"
         }
       ) : null
     ] })
   ] }) });
 }
-const Wo = {
+const Ro = {
   "scheme-1": { background: "#ffffff", color: "#111827" },
   "scheme-2": { background: "#f6f6f7", color: "#111827" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b" }
 };
-function Qr(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.sectionWidth`, "page");
+function La(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.sectionWidth`, "page");
   return {
-    scheme: Wo[i] ?? Wo["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    collectionCount: Math.min(8, Math.max(1, y(e, `${t}.collectionCount`, 4))),
+    scheme: Ro[n] ?? Ro["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    collectionCount: Math.min(8, Math.max(1, x(e, `${t}.collectionCount`, 4))),
     carouselOnMobile: !!K(e, `${t}.carouselOnMobile`),
-    sectionWidth: n === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 64),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    sectionWidth: i === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 64),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function Jr(e, t) {
-  const i = `.ziplofy-collection-list-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Ra(e, t) {
+  const n = `.codiic-collection-list-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function ea(e) {
+function Ma(e) {
   const t = e % 4;
   return t === 0 ? { gridColumn: "1", marginTop: 0, minHeight: 200, wideIllustration: !1 } : t === 1 ? { gridColumn: "2", marginTop: 56, minHeight: 200, wideIllustration: !1 } : { gridColumn: "1 / -1", marginTop: 0, minHeight: t === 2 ? 160 : 180, wideIllustration: !0 };
 }
-function ta({
+function Fa({
   sectionId: e = "collection_list_editorial",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(
-    () => Qr(n, d),
-    [n, d]
-  ), p = F(
-    () => mt(n, t, e, i),
-    [n, t, e, i]
-  ), c = F(
-    () => p.slice(0, r.collectionCount),
-    [p, r.collectionCount]
-  ), h = `ziplofy-collection-list-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = {
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    background: r.scheme.background,
-    color: r.scheme.color,
-    fontFamily: s
-  }, $ = r.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 24, paddingRight: 24 } : {
-    maxWidth: L.contentMaxWidth,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(
+    () => La(i, l),
+    [i, l]
+  ), h = st(t, e, n, l), u = M(
+    () => h.slice(0, d.collectionCount),
+    [h, d.collectionCount]
+  ), p = `codiic-collection-list-editorial-${e.replace(/[^a-z0-9_-]/gi, "-")}`, g = {
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    background: d.scheme.background,
+    color: d.scheme.color,
+    fontFamily: c
+  }, k = d.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 24, paddingRight: 24 } : {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
     paddingLeft: 24,
     paddingRight: 24
-  }, b = {
+  }, y = {
     display: "grid",
     gridTemplateColumns: "0.85fr 1.25fr",
-    gap: r.layoutGap,
+    gap: d.layoutGap,
     alignItems: "start"
-  }, v = r.carouselOnMobile;
+  }, v = d.carouselOnMobile;
   return /* @__PURE__ */ o(
-    G,
+    B,
     {
       sectionId: e,
       label: "Collection list: Editorial",
@@ -8517,23 +8894,23 @@ function ta({
       children: /* @__PURE__ */ m(
         "div",
         {
-          className: h,
-          style: $,
+          className: p,
+          style: k,
           "data-editorial-carousel": v ? "true" : "false",
           children: [
             /* @__PURE__ */ o("style", { children: `
             @media (max-width: 749px) {
-              .${h}[data-editorial-carousel="true"] [data-editorial-grid] {
+              .${p}[data-editorial-carousel="true"] [data-editorial-grid] {
                 display: flex;
                 overflow-x: auto;
                 scroll-snap-type: x mandatory;
                 gap: 16px;
                 padding-bottom: 4px;
               }
-              .${h}[data-editorial-carousel="true"] [data-editorial-grid]::-webkit-scrollbar {
+              .${p}[data-editorial-carousel="true"] [data-editorial-grid]::-webkit-scrollbar {
                 display: none;
               }
-              .${h}[data-editorial-carousel="true"] [data-editorial-tile] {
+              .${p}[data-editorial-carousel="true"] [data-editorial-tile] {
                 flex: 0 0 78%;
                 min-width: 0;
                 scroll-snap-align: start;
@@ -8541,45 +8918,45 @@ function ta({
                 grid-column: auto !important;
               }
             }
-            ${Jr(e, r.customCss)}
+            ${Ra(e, d.customCss)}
           ` }),
             /* @__PURE__ */ o(
-              k,
+              S,
               {
-                fieldPath: `${d}.heading`,
+                fieldPath: `${l}.heading`,
                 label: "Heading",
                 as: "h2",
                 style: {
-                  margin: `0 0 ${Math.min(r.layoutGap, 48)}px`,
+                  margin: `0 0 ${Math.min(d.layoutGap, 48)}px`,
                   fontSize: 28,
                   fontWeight: 700,
-                  fontFamily: u
+                  fontFamily: s
                 },
-                children: r.heading
+                children: d.heading
               }
             ),
-            /* @__PURE__ */ o("div", { "data-editorial-grid": !0, style: b, children: c.map((x, z) => {
-              const S = ea(z), _ = i === "template" ? `templates.${t}.sections.${e}.blocks.${x.id}.settings` : `sections.${e}.blocks.${x.id}.settings`, H = i === "template" ? `template:${t}:${e}:block:${x.id}` : `layout:${e}:block:${x.id}`, w = {
-                gridColumn: S.gridColumn,
-                marginTop: S.marginTop,
-                minHeight: S.minHeight,
+            /* @__PURE__ */ o("div", { "data-editorial-grid": !0, style: y, children: u.map((b, _) => {
+              const $ = Ma(_), w = n === "template" ? `templates.${t}.sections.${e}.blocks.${b.id}.settings` : `sections.${e}.blocks.${b.id}.settings`, P = n === "template" ? `template:${t}:${e}:block:${b.id}` : `layout:${e}:block:${b.id}`, z = {
+                gridColumn: $.gridColumn,
+                marginTop: $.marginTop,
+                minHeight: $.minHeight,
                 display: "flex",
                 flexDirection: "column",
                 borderRadius: 8,
                 background: "#ececec",
                 overflow: "hidden"
               };
-              return /* @__PURE__ */ o(E, { nodeId: H, label: "Collection", style: w, children: /* @__PURE__ */ o("div", { "data-editorial-tile": !0, children: /* @__PURE__ */ m(
-                I,
+              return /* @__PURE__ */ o(N, { nodeId: P, label: "Collection", style: z, children: /* @__PURE__ */ o("div", { "data-editorial-tile": !0, children: /* @__PURE__ */ m(
+                D,
                 {
-                  to: x.href,
+                  to: b.href,
                   style: {
                     display: "flex",
                     flex: 1,
                     flexDirection: "column",
                     textDecoration: "none",
                     color: "inherit",
-                    minHeight: S.minHeight
+                    minHeight: $.minHeight
                   },
                   children: [
                     /* @__PURE__ */ o(
@@ -8592,18 +8969,18 @@ function ta({
                           justifyContent: "center",
                           padding: 16
                         },
-                        children: x.imageUrl ? /* @__PURE__ */ o(
+                        children: b.imageUrl ? /* @__PURE__ */ o(
                           "img",
                           {
-                            src: x.imageUrl,
+                            src: b.imageUrl,
                             alt: "",
                             style: { width: "100%", height: "100%", objectFit: "cover" }
                           }
                         ) : /* @__PURE__ */ o(
-                          pt,
+                          ct,
                           {
-                            variant: x.illustrationVariant,
-                            wide: S.wideIllustration
+                            variant: b.illustrationVariant,
+                            wide: $.wideIllustration
                           }
                         )
                       }
@@ -8616,14 +8993,14 @@ function ta({
                           padding: "10px 12px",
                           fontSize: 14,
                           fontWeight: 500,
-                          fontFamily: s
+                          fontFamily: c
                         },
-                        children: /* @__PURE__ */ o(k, { fieldPath: `${_}.title`, label: "Title", children: x.title })
+                        children: /* @__PURE__ */ o(S, { fieldPath: `${w}.title`, label: "Title", children: b.title })
                       }
                     )
                   ]
                 }
-              ) }) }, x.id);
+              ) }) }, b.id);
             }) })
           ]
         }
@@ -8631,62 +9008,59 @@ function ta({
     }
   );
 }
-const Po = {
+const Mo = {
   "scheme-1": { background: "#ffffff", color: "#111827" },
   "scheme-2": { background: "#f6f6f7", color: "#111827" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b" }
 };
-function oa(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.sectionWidth`, "page"), s = l(e, `${t}.mobileColumns`, "2");
+function Aa(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.sectionWidth`, "page"), c = r(e, `${t}.mobileColumns`, "2");
   return {
-    scheme: Po[i] ?? Po["scheme-1"],
-    heading: l(e, `${t}.heading`),
-    columns: Math.min(6, Math.max(1, y(e, `${t}.columns`, 3))),
-    mobileColumns: s === "1" ? 1 : 2,
-    horizontalGap: y(e, `${t}.horizontalGap`, 8),
-    verticalGap: y(e, `${t}.verticalGap`, 8),
+    scheme: Mo[n] ?? Mo["scheme-1"],
+    heading: r(e, `${t}.heading`),
+    columns: Math.min(6, Math.max(1, x(e, `${t}.columns`, 3))),
+    mobileColumns: c === "1" ? 1 : 2,
+    horizontalGap: x(e, `${t}.horizontalGap`, 8),
+    verticalGap: x(e, `${t}.verticalGap`, 8),
     carouselOnMobile: !!K(e, `${t}.carouselOnMobile`),
-    sectionWidth: n === "full" ? "full" : "page",
-    layoutGap: y(e, `${t}.layoutGap`, 12),
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48),
-    customCss: l(e, `${t}.customCss`, "")
+    sectionWidth: i === "full" ? "full" : "page",
+    layoutGap: x(e, `${t}.layoutGap`, 12),
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function ia(e, t) {
-  const i = `.ziplofy-collection-list-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Na(e, t) {
+  const n = `.codiic-collection-list-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function na({
+function Ea({
   sectionId: e = "collection_list_grid",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), d = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = i === "template" ? `template:${t}:${e}` : `layout:${e}`, r = F(
-    () => oa(n, d),
-    [n, d]
-  ), p = F(
-    () => mt(n, t, e, i),
-    [n, t, e, i]
-  ), c = `ziplofy-collection-list-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`, h = {
-    paddingTop: r.paddingTop,
-    paddingBottom: r.paddingBottom,
-    background: r.scheme.background,
-    color: r.scheme.color,
-    fontFamily: s,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), l = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, a = n === "template" ? `template:${t}:${e}` : `layout:${e}`, d = M(
+    () => Aa(i, l),
+    [i, l]
+  ), h = st(t, e, n, l), u = `codiic-collection-list-grid-${e.replace(/[^a-z0-9_-]/gi, "-")}`, p = {
+    paddingTop: d.paddingTop,
+    paddingBottom: d.paddingBottom,
+    background: d.scheme.background,
+    color: d.scheme.color,
+    fontFamily: c,
     boxSizing: "border-box"
-  }, g = r.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 24, paddingRight: 24 } : {
-    maxWidth: L.contentMaxWidth,
+  }, g = d.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 24, paddingRight: 24 } : {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
     paddingLeft: 24,
     paddingRight: 24
-  }, $ = {
+  }, k = {
     display: "grid",
-    gridTemplateColumns: `repeat(${r.columns}, minmax(0, 1fr))`,
-    columnGap: r.horizontalGap,
-    rowGap: r.verticalGap
-  }, b = {
+    gridTemplateColumns: `repeat(${d.columns}, minmax(0, 1fr))`,
+    columnGap: d.horizontalGap,
+    rowGap: d.verticalGap
+  }, y = {
     position: "relative",
     aspectRatio: "1",
     borderRadius: 8,
@@ -8708,87 +9082,87 @@ function na({
     background: "#ffffff",
     borderRadius: 4,
     color: "#111827",
-    fontFamily: s,
+    fontFamily: c,
     zIndex: 1
   };
   return /* @__PURE__ */ o(
-    G,
+    B,
     {
       sectionId: e,
       label: "Collection list: Grid",
       editorNodeId: a,
-      style: h,
+      style: p,
       children: /* @__PURE__ */ m(
         "div",
         {
-          className: c,
+          className: u,
           style: g,
-          "data-grid-columns": r.columns,
-          "data-mobile-columns": r.mobileColumns,
-          "data-carousel-mobile": r.carouselOnMobile ? "true" : "false",
+          "data-grid-columns": d.columns,
+          "data-mobile-columns": d.mobileColumns,
+          "data-carousel-mobile": d.carouselOnMobile ? "true" : "false",
           children: [
             /* @__PURE__ */ o("style", { children: `
             @media (max-width: 749px) {
-              .${c}[data-carousel-mobile="false"] [data-grid-track] {
-                grid-template-columns: repeat(${r.mobileColumns}, minmax(0, 1fr)) !important;
+              .${u}[data-carousel-mobile="false"] [data-grid-track] {
+                grid-template-columns: repeat(${d.mobileColumns}, minmax(0, 1fr)) !important;
               }
-              .${c}[data-carousel-mobile="true"] [data-grid-track] {
+              .${u}[data-carousel-mobile="true"] [data-grid-track] {
                 display: flex !important;
                 overflow-x: auto;
                 scroll-snap-type: x mandatory;
-                gap: ${r.horizontalGap}px;
+                gap: ${d.horizontalGap}px;
                 padding-bottom: 4px;
               }
-              .${c}[data-carousel-mobile="true"] [data-grid-track]::-webkit-scrollbar {
+              .${u}[data-carousel-mobile="true"] [data-grid-track]::-webkit-scrollbar {
                 display: none;
               }
-              .${c}[data-carousel-mobile="true"] [data-grid-tile] {
-                flex: 0 0 calc(${r.mobileColumns === 1 ? "88" : "46"}% - 8px);
+              .${u}[data-carousel-mobile="true"] [data-grid-tile] {
+                flex: 0 0 calc(${d.mobileColumns === 1 ? "88" : "46"}% - 8px);
                 scroll-snap-align: start;
               }
             }
-            ${ia(e, r.customCss)}
+            ${Na(e, d.customCss)}
           ` }),
             /* @__PURE__ */ o(
-              k,
+              S,
               {
-                fieldPath: `${d}.heading`,
+                fieldPath: `${l}.heading`,
                 label: "Heading",
                 as: "h2",
                 style: {
-                  margin: `0 0 ${r.layoutGap}px`,
+                  margin: `0 0 ${d.layoutGap}px`,
                   fontSize: 28,
                   fontWeight: 700,
-                  fontFamily: u
+                  fontFamily: s
                 },
-                children: r.heading
+                children: d.heading
               }
             ),
-            /* @__PURE__ */ o("div", { "data-grid-track": !0, style: $, children: p.map((x) => {
-              const z = i === "template" ? `templates.${t}.sections.${e}.blocks.${x.id}.settings` : `sections.${e}.blocks.${x.id}.settings`, S = i === "template" ? `template:${t}:${e}:block:${x.id}` : `layout:${e}:block:${x.id}`;
-              return /* @__PURE__ */ o(E, { nodeId: S, label: "Collection", children: /* @__PURE__ */ o("div", { "data-grid-tile": !0, children: /* @__PURE__ */ o(
-                I,
+            /* @__PURE__ */ o("div", { "data-grid-track": !0, style: k, children: h.map((b) => {
+              const _ = n === "template" ? `templates.${t}.sections.${e}.blocks.${b.id}.settings` : `sections.${e}.blocks.${b.id}.settings`, $ = n === "template" ? `template:${t}:${e}:block:${b.id}` : `layout:${e}:block:${b.id}`;
+              return /* @__PURE__ */ o(N, { nodeId: $, label: "Collection", children: /* @__PURE__ */ o("div", { "data-grid-tile": !0, children: /* @__PURE__ */ o(
+                D,
                 {
-                  to: x.href,
+                  to: b.href,
                   style: { display: "block", textDecoration: "none", color: "inherit" },
-                  children: /* @__PURE__ */ m("div", { style: b, children: [
-                    /* @__PURE__ */ o("span", { style: v, children: /* @__PURE__ */ o(k, { fieldPath: `${z}.title`, label: "Title", children: x.title }) }),
-                    x.imageUrl ? /* @__PURE__ */ o(
+                  children: /* @__PURE__ */ m("div", { style: y, children: [
+                    /* @__PURE__ */ o("span", { style: v, children: /* @__PURE__ */ o(S, { fieldPath: `${_}.title`, label: "Title", children: b.title }) }),
+                    b.imageUrl ? /* @__PURE__ */ o(
                       "img",
                       {
-                        src: x.imageUrl,
+                        src: b.imageUrl,
                         alt: "",
                         style: { width: "100%", height: "100%", objectFit: "cover" }
                       }
                     ) : /* @__PURE__ */ o(
-                      pt,
+                      ct,
                       {
-                        variant: x.illustrationVariant
+                        variant: b.illustrationVariant
                       }
                     )
                   ] })
                 }
-              ) }) }, x.id);
+              ) }) }, b.id);
             }) })
           ]
         }
@@ -8796,7 +9170,7 @@ function na({
     }
   );
 }
-function la({ imageUrl: e, style: t }) {
+function Ua({ imageUrl: e, style: t }) {
   return e ? /* @__PURE__ */ o(
     "img",
     {
@@ -8865,7 +9239,7 @@ function la({ imageUrl: e, style: t }) {
     )
   ] });
 }
-function mi({ variant: e }) {
+function wn({ variant: e }) {
   return e === "landscape" ? /* @__PURE__ */ m(
     "div",
     {
@@ -8967,86 +9341,86 @@ function mi({ variant: e }) {
     }
   );
 }
-const To = {
+const Fo = {
   "scheme-1": { background: "#f3efe6", color: "#111827", muted: "#4b5563" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function ra(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.height`, "medium"), s = l(e, `${t}.sectionWidth`, "page");
+function Oa(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.height`, "medium"), c = r(e, `${t}.sectionWidth`, "page");
   return {
-    scheme: To[i] ?? To["scheme-1"],
-    sectionWidth: s === "full" ? "full" : "page",
-    height: n === "small" || n === "large" ? n : "medium",
-    cornerRadius: y(e, `${t}.cornerRadius`, 0),
-    borderThickness: y(e, `${t}.borderThickness`, 1),
+    scheme: Fo[n] ?? Fo["scheme-1"],
+    sectionWidth: c === "full" ? "full" : "page",
+    height: i === "small" || i === "large" ? i : "medium",
+    cornerRadius: x(e, `${t}.cornerRadius`, 0),
+    borderThickness: x(e, `${t}.borderThickness`, 1),
     dropShadow: !!K(e, `${t}.dropShadow`),
-    paddingTop: y(e, `${t}.paddingTop`, 40),
-    paddingBottom: y(e, `${t}.paddingBottom`, 40),
-    customCss: l(e, `${t}.customCss`, "")
+    paddingTop: x(e, `${t}.paddingTop`, 40),
+    paddingBottom: x(e, `${t}.paddingBottom`, 40),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function aa(e) {
+function Ga(e) {
   return e === "small" ? 360 : e === "large" ? 560 : 460;
 }
-function Wt(e, t, i, n) {
-  const u = `${n === "template" ? `templates.${t}.sections.${i}` : `sections.${i}`}.blocks`, d = n === "template" ? Le(e, t, i, []) : Pe(e, i, []), a = K(e, u);
-  return !a || typeof a != "object" ? [] : (d.length ? d : Object.keys(a)).map((p) => {
-    const c = a[p]?.settings ?? {}, h = String(c.peekVariant ?? "figure");
+function Ht(e, t, n, i) {
+  const s = `${i === "template" ? `templates.${t}.sections.${n}` : `sections.${n}`}.blocks`, l = i === "template" ? _e(e, t, n, []) : ke(e, n, []), a = K(e, s);
+  return !a || typeof a != "object" ? [] : (l.length ? l : Object.keys(a)).map((h) => {
+    const u = a[h]?.settings ?? {}, p = String(u.peekVariant ?? "figure");
     return {
-      id: p,
-      title: String(c.title ?? ""),
+      id: h,
+      title: String(u.title ?? ""),
       body: String(
-        c.body ?? "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!"
+        u.body ?? "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!"
       ),
-      buttonLabel: String(c.buttonLabel ?? ""),
-      buttonHref: String(c.buttonHref ?? ""),
-      imageUrl: String(c.imageUrl ?? ""),
-      peekVariant: h === "landscape" ? "landscape" : "figure"
+      buttonLabel: String(u.buttonLabel ?? ""),
+      buttonHref: String(u.buttonHref ?? ""),
+      imageUrl: String(u.imageUrl ?? ""),
+      peekVariant: p === "landscape" ? "landscape" : "figure"
     };
   });
 }
-function da(e, t) {
-  const i = `.ziplofy-layered-slideshow-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Da(e, t) {
+  const n = `.codiic-layered-slideshow-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function ca({
+function ja({
   sectionId: e = "layered_slideshow",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), [d, a] = Z(0), r = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, p = i === "template" ? `template:${t}:${e}` : `layout:${e}`, c = F(
-    () => ra(n, r),
-    [n, r]
-  ), h = F(
-    () => Wt(n, t, e, i),
-    [n, t, e, i]
-  ), g = Math.max(1, h.length), $ = (d % g + g) % g, b = h[$] ?? h[0], v = h[($ + 1) % g] ?? b, x = `ziplofy-layered-slideshow-${e.replace(/[^a-z0-9_-]/gi, "-")}`, z = da(e, c.customCss), S = aa(c.height), _ = {
-    paddingTop: c.paddingTop,
-    paddingBottom: c.paddingBottom,
-    background: c.scheme.background,
-    color: c.scheme.color,
-    fontFamily: s,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), [l, a] = te(0), d = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, h = n === "template" ? `template:${t}:${e}` : `layout:${e}`, u = M(
+    () => Oa(i, d),
+    [i, d]
+  ), p = M(
+    () => Ht(i, t, e, n),
+    [i, t, e, n]
+  ), g = Math.max(1, p.length), k = (l % g + g) % g, y = p[k] ?? p[0], v = p[(k + 1) % g] ?? y, b = `codiic-layered-slideshow-${e.replace(/[^a-z0-9_-]/gi, "-")}`, _ = Da(e, u.customCss), $ = Ga(u.height), w = {
+    paddingTop: u.paddingTop,
+    paddingBottom: u.paddingBottom,
+    background: u.scheme.background,
+    color: u.scheme.color,
+    fontFamily: c,
     boxSizing: "border-box"
-  }, H = c.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 24, paddingRight: 24 } : {
-    maxWidth: L.contentMaxWidth,
+  }, P = u.sectionWidth === "full" ? { maxWidth: "100%", paddingLeft: 24, paddingRight: 24 } : {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
     paddingLeft: 24,
     paddingRight: 24
-  }, w = {
+  }, z = {
     position: "relative",
     display: "flex",
-    minHeight: S,
+    minHeight: $,
     overflow: "hidden",
-    borderRadius: c.cornerRadius,
-    border: c.borderThickness ? `${c.borderThickness}px solid rgba(0,0,0,0.08)` : "none",
-    boxShadow: c.dropShadow ? "0 8px 28px rgba(0,0,0,0.12)" : void 0,
-    background: c.scheme.background
-  }, R = qe((T) => a(T), []);
-  return b ? /* @__PURE__ */ m(G, { nodeId: p, label: "Layered slideshow", children: [
-    z ? /* @__PURE__ */ o("style", { children: z }) : null,
-    /* @__PURE__ */ o("section", { "data-ziplofy-section": e, className: x, style: _, children: /* @__PURE__ */ o("div", { style: H, children: /* @__PURE__ */ m("div", { style: w, children: [
+    borderRadius: u.cornerRadius,
+    border: u.borderThickness ? `${u.borderThickness}px solid rgba(0,0,0,0.08)` : "none",
+    boxShadow: u.dropShadow ? "0 8px 28px rgba(0,0,0,0.12)" : void 0,
+    background: u.scheme.background
+  }, L = Me((H) => a(H), []);
+  return y ? /* @__PURE__ */ m(B, { nodeId: h, label: "Layered slideshow", children: [
+    _ ? /* @__PURE__ */ o("style", { children: _ }) : null,
+    /* @__PURE__ */ o("section", { "data-codiic-section": e, className: b, style: w, children: /* @__PURE__ */ o("div", { style: P, children: /* @__PURE__ */ m("div", { style: z, children: [
       /* @__PURE__ */ o(
         "div",
         {
@@ -9061,32 +9435,32 @@ function ca({
             padding: "48px 40px",
             boxSizing: "border-box"
           },
-          children: /* @__PURE__ */ m(E, { nodeId: `${p}:${b.id}`, label: "Slide", children: [
+          children: /* @__PURE__ */ m(N, { nodeId: `${h}:${y.id}`, label: "Slide", children: [
             /* @__PURE__ */ o(
-              k,
+              S,
               {
-                fieldPath: `${r.replace(".settings", "")}.blocks.${b.id}.settings.title`,
+                fieldPath: `${d.replace(".settings", "")}.blocks.${y.id}.settings.title`,
                 label: "Heading",
                 children: /* @__PURE__ */ o(
                   "h2",
                   {
                     style: {
                       margin: 0,
-                      fontFamily: u,
+                      fontFamily: s,
                       fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
                       fontWeight: 700,
                       lineHeight: 1.1,
                       letterSpacing: "-0.02em"
                     },
-                    children: b.title
+                    children: y.title
                   }
                 )
               }
             ),
             /* @__PURE__ */ o(
-              k,
+              S,
               {
-                fieldPath: `${r.replace(".settings", "")}.blocks.${b.id}.settings.body`,
+                fieldPath: `${d.replace(".settings", "")}.blocks.${y.id}.settings.body`,
                 label: "Text",
                 children: /* @__PURE__ */ o(
                   "p",
@@ -9095,23 +9469,23 @@ function ca({
                       margin: "16px 0 0",
                       fontSize: "1rem",
                       lineHeight: 1.55,
-                      color: c.scheme.muted,
+                      color: u.scheme.muted,
                       maxWidth: 420
                     },
-                    children: b.body
+                    children: y.body
                   }
                 )
               }
             ),
             /* @__PURE__ */ o(
-              k,
+              S,
               {
-                fieldPath: `${r.replace(".settings", "")}.blocks.${b.id}.settings.buttonLabel`,
+                fieldPath: `${d.replace(".settings", "")}.blocks.${y.id}.settings.buttonLabel`,
                 label: "Button label",
                 children: /* @__PURE__ */ o(
-                  I,
+                  D,
                   {
-                    to: b.buttonHref || "#",
+                    to: y.buttonHref || "#",
                     style: {
                       display: "inline-flex",
                       marginTop: 28,
@@ -9123,7 +9497,7 @@ function ca({
                       fontWeight: 600,
                       textDecoration: "none"
                     },
-                    children: b.buttonLabel
+                    children: y.buttonLabel
                   }
                 )
               }
@@ -9144,7 +9518,7 @@ function ca({
             paddingRight: "17%",
             paddingBottom: 24
           },
-          children: /* @__PURE__ */ o("div", { style: { position: "relative", width: "72%", maxWidth: 340, height: "78%", minHeight: 280 }, children: /* @__PURE__ */ o(la, { imageUrl: b.imageUrl || void 0 }) })
+          children: /* @__PURE__ */ o("div", { style: { position: "relative", width: "72%", maxWidth: 340, height: "78%", minHeight: 280 }, children: /* @__PURE__ */ o(Ua, { imageUrl: y.imageUrl || void 0 }) })
         }
       ),
       /* @__PURE__ */ o(
@@ -9161,7 +9535,7 @@ function ca({
             boxShadow: "-4px 0 12px rgba(0,0,0,0.06)"
           },
           "aria-hidden": !0,
-          children: /* @__PURE__ */ o(mi, { variant: v.peekVariant })
+          children: /* @__PURE__ */ o(wn, { variant: v.peekVariant })
         }
       ),
       g > 1 ? /* @__PURE__ */ o(
@@ -9176,12 +9550,12 @@ function ca({
             gap: 8,
             zIndex: 5
           },
-          children: h.map((T, W) => /* @__PURE__ */ o(
+          children: p.map((H, W) => /* @__PURE__ */ o(
             "button",
             {
               type: "button",
               "aria-label": `Go to slide ${W + 1}`,
-              onClick: () => R(W),
+              onClick: () => L(W),
               style: {
                 width: 8,
                 height: 8,
@@ -9189,17 +9563,17 @@ function ca({
                 border: "none",
                 borderRadius: "50%",
                 cursor: "pointer",
-                background: W === $ ? "#111827" : "rgba(17,24,39,0.35)"
+                background: W === k ? "#111827" : "rgba(17,24,39,0.35)"
               }
             },
-            T.id
+            H.id
           ))
         }
       ) : null
     ] }) }) })
   ] }) : null;
 }
-function gi({
+function Cn({
   imageUrl: e,
   style: t
 }) {
@@ -9343,50 +9717,50 @@ function gi({
     )
   ] });
 }
-const Ho = {
+const Ao = {
   "scheme-1": { background: "#ddd6c8", color: "#ffffff", muted: "rgba(255,255,255,0.92)" },
   "scheme-2": { background: "#1e3a5f", color: "#ffffff", muted: "rgba(255,255,255,0.9)" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function sa(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.mediaHeight`, "medium"), s = l(e, `${t}.sectionWidth`, "full"), u = l(e, `${t}.contentPosition`, "on-media"), d = l(e, `${t}.navigationIcon`, "large-arrows"), a = l(
+function Ba(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.mediaHeight`, "medium"), c = r(e, `${t}.sectionWidth`, "full"), s = r(e, `${t}.contentPosition`, "on-media"), l = r(e, `${t}.navigationIcon`, "large-arrows"), a = r(
     e,
     `${t}.navigationIconBackground`,
     "none"
-  ), r = l(e, `${t}.pagination`), p = a === "circle" || a === "square" ? a : "none";
+  ), d = r(e, `${t}.pagination`), h = a === "circle" || a === "square" ? a : "none";
   return {
-    scheme: Ho[i] ?? Ho["scheme-1"],
-    sectionWidth: s === "page" ? "page" : "full",
-    mediaHeight: n === "small" || n === "large" ? n : "medium",
-    contentPosition: u === "below-media" ? "below-media" : "on-media",
-    navigationIcon: d === "arrows" || d === "chevron" || d === "none" ? d : "large-arrows",
-    navigationIconBackground: p,
-    pagination: r === "counter" || r === "none" ? r : "dots",
+    scheme: Ao[n] ?? Ao["scheme-1"],
+    sectionWidth: c === "page" ? "page" : "full",
+    mediaHeight: i === "small" || i === "large" ? i : "medium",
+    contentPosition: s === "below-media" ? "below-media" : "on-media",
+    navigationIcon: l === "arrows" || l === "chevron" || l === "none" ? l : "large-arrows",
+    navigationIconBackground: h,
+    pagination: d === "counter" || d === "none" ? d : "dots",
     autoRotate: !!K(e, `${t}.autoRotate`),
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    customCss: l(e, `${t}.customCss`, "")
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function ua(e) {
+function qa(e) {
   return e === "small" ? 420 : e === "large" ? 640 : 520;
 }
-function ha(e, t, i, n) {
-  return Wt(e, t, i, n);
+function Xa(e, t, n, i) {
+  return Ht(e, t, n, i);
 }
-function pa(e, t) {
-  const i = `.ziplofy-slideshow-full-frame-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Ia(e, t) {
+  const n = `.codiic-slideshow-full-frame-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function Ro({
+function No({
   label: e,
   onClick: t,
-  background: i,
-  size: n,
-  shape: s
+  background: n,
+  size: i,
+  shape: c
 }) {
-  const u = n === "large-arrows", d = i === "none" ? u ? 48 : 36 : u ? 52 : 40;
+  const s = i === "large-arrows", l = n === "none" ? s ? 48 : 36 : s ? 52 : 40;
   return /* @__PURE__ */ o(
     "button",
     {
@@ -9398,66 +9772,66 @@ function Ro({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: d,
-        height: d,
+        width: l,
+        height: l,
         border: "none",
         cursor: "pointer",
-        background: i === "circle" || i === "square" ? "rgba(255,255,255,0.95)" : "transparent",
-        borderRadius: i === "circle" ? "50%" : i === "square" ? 8 : 0,
-        boxShadow: i !== "none" ? "0 2px 8px rgba(0,0,0,0.15)" : void 0,
+        background: n === "circle" || n === "square" ? "rgba(255,255,255,0.95)" : "transparent",
+        borderRadius: n === "circle" ? "50%" : n === "square" ? 8 : 0,
+        boxShadow: n !== "none" ? "0 2px 8px rgba(0,0,0,0.15)" : void 0,
         color: "#fff",
-        fontSize: s === "chevron" ? u ? 28 : 20 : u ? 28 : 22,
+        fontSize: c === "chevron" ? s ? 28 : 20 : s ? 28 : 22,
         lineHeight: 1,
-        textShadow: i === "none" ? "0 1px 3px rgba(0,0,0,0.35)" : void 0
+        textShadow: n === "none" ? "0 1px 3px rgba(0,0,0,0.35)" : void 0
       },
-      children: s === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
+      children: c === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
     }
   );
 }
-function ma({
+function Va({
   sectionId: e = "slideshow_full_frame",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), [d, a] = Z(0), r = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, p = i === "template" ? `template:${t}:${e}` : `layout:${e}`, c = F(
-    () => sa(n, r),
-    [n, r]
-  ), h = F(
-    () => ha(n, t, e, i),
-    [n, t, e, i]
-  ), g = Math.max(1, h.length), $ = (d % g + g) % g, b = h[$] ?? h[0], v = qe(() => a((D) => (D - 1 + g) % g), [g]), x = qe(() => a((D) => (D + 1) % g), [g]), z = qe((D) => a(D), []);
-  ue(() => {
-    if (!c.autoRotate || g < 2) return;
-    const D = window.setInterval(() => a((V) => (V + 1) % g), 5e3);
-    return () => window.clearInterval(D);
-  }, [c.autoRotate, g]);
-  const S = `ziplofy-slideshow-full-frame-${e.replace(/[^a-z0-9_-]/gi, "-")}`, _ = pa(e, c.customCss), H = ua(c.mediaHeight), w = c.contentPosition === "on-media", R = c.navigationIcon !== "none" && g > 1, T = c.navigationIcon === "chevron" ? "chevron" : "arrows", W = c.navigationIcon === "large-arrows" ? "large-arrows" : c.navigationIcon, P = {
-    paddingTop: c.paddingTop,
-    paddingBottom: c.paddingBottom,
-    background: w ? c.scheme.background : "#fff",
-    fontFamily: s,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), [l, a] = te(0), d = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, h = n === "template" ? `template:${t}:${e}` : `layout:${e}`, u = M(
+    () => Ba(i, d),
+    [i, d]
+  ), p = M(
+    () => Xa(i, t, e, n),
+    [i, t, e, n]
+  ), g = Math.max(1, p.length), k = (l % g + g) % g, y = p[k] ?? p[0], v = Me(() => a((O) => (O - 1 + g) % g), [g]), b = Me(() => a((O) => (O + 1) % g), [g]), _ = Me((O) => a(O), []);
+  le(() => {
+    if (!u.autoRotate || g < 2) return;
+    const O = window.setInterval(() => a((Y) => (Y + 1) % g), 5e3);
+    return () => window.clearInterval(O);
+  }, [u.autoRotate, g]);
+  const $ = `codiic-slideshow-full-frame-${e.replace(/[^a-z0-9_-]/gi, "-")}`, w = Ia(e, u.customCss), P = qa(u.mediaHeight), z = u.contentPosition === "on-media", L = u.navigationIcon !== "none" && g > 1, H = u.navigationIcon === "chevron" ? "chevron" : "arrows", W = u.navigationIcon === "large-arrows" ? "large-arrows" : u.navigationIcon, T = {
+    paddingTop: u.paddingTop,
+    paddingBottom: u.paddingBottom,
+    background: z ? u.scheme.background : "#fff",
+    fontFamily: c,
     boxSizing: "border-box"
-  }, C = c.sectionWidth === "full" ? { maxWidth: "100%" } : {
-    maxWidth: L.contentMaxWidth,
+  }, C = u.sectionWidth === "full" ? { maxWidth: "100%" } : {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
     paddingLeft: 24,
     paddingRight: 24
-  }, M = {
+  }, F = {
     position: "relative",
     width: "100%",
-    minHeight: H,
+    minHeight: P,
     overflow: "hidden",
-    borderRadius: c.sectionWidth === "page" ? 12 : 0,
-    background: c.scheme.background
-  }, f = w ? "#fff" : c.scheme.color, O = w ? "rgba(255,255,255,0.92)" : c.scheme.muted;
-  if (!b) return null;
-  const N = r.replace(".settings", "");
-  return /* @__PURE__ */ m(G, { nodeId: p, label: "Slideshow: Full frame", children: [
-    _ ? /* @__PURE__ */ o("style", { children: _ }) : null,
-    /* @__PURE__ */ o("section", { "data-ziplofy-section": e, className: S, style: P, children: /* @__PURE__ */ m("div", { style: C, children: [
-      /* @__PURE__ */ m("div", { style: M, children: [
-        /* @__PURE__ */ o(gi, { imageUrl: b.imageUrl || void 0 }),
-        w ? /* @__PURE__ */ o(
+    borderRadius: u.sectionWidth === "page" ? 12 : 0,
+    background: u.scheme.background
+  }, f = z ? "#fff" : u.scheme.color, U = z ? "rgba(255,255,255,0.92)" : u.scheme.muted;
+  if (!y) return null;
+  const X = d.replace(".settings", "");
+  return /* @__PURE__ */ m(B, { nodeId: h, label: "Slideshow: Full frame", children: [
+    w ? /* @__PURE__ */ o("style", { children: w }) : null,
+    /* @__PURE__ */ o("section", { "data-codiic-section": e, className: $, style: T, children: /* @__PURE__ */ m("div", { style: C, children: [
+      /* @__PURE__ */ m("div", { style: F, children: [
+        /* @__PURE__ */ o(Cn, { imageUrl: y.imageUrl || void 0 }),
+        z ? /* @__PURE__ */ o(
           "div",
           {
             style: {
@@ -9472,23 +9846,23 @@ function ma({
               boxSizing: "border-box",
               zIndex: 2
             },
-            children: /* @__PURE__ */ m(E, { nodeId: `${p}:${b.id}`, label: "Slide", children: [
-              /* @__PURE__ */ o(k, { fieldPath: `${N}.blocks.${b.id}.settings.title`, label: "Heading", children: /* @__PURE__ */ o(
+            children: /* @__PURE__ */ m(N, { nodeId: `${h}:${y.id}`, label: "Slide", children: [
+              /* @__PURE__ */ o(S, { fieldPath: `${X}.blocks.${y.id}.settings.title`, label: "Heading", children: /* @__PURE__ */ o(
                 "h2",
                 {
                   style: {
                     margin: 0,
-                    fontFamily: u,
+                    fontFamily: s,
                     fontSize: "clamp(2rem, 4vw, 3rem)",
                     fontWeight: 700,
                     lineHeight: 1.1,
                     color: f,
                     textShadow: "0 1px 4px rgba(0,0,0,0.2)"
                   },
-                  children: b.title
+                  children: y.title
                 }
               ) }),
-              /* @__PURE__ */ o(k, { path: `${N}.blocks.${b.id}.settings.body`, label: "Text", children: /* @__PURE__ */ o(
+              /* @__PURE__ */ o(S, { path: `${X}.blocks.${y.id}.settings.body`, label: "Text", children: /* @__PURE__ */ o(
                 "p",
                 {
                   style: {
@@ -9496,20 +9870,20 @@ function ma({
                     maxWidth: 520,
                     fontSize: "1.0625rem",
                     lineHeight: 1.55,
-                    color: O
+                    color: U
                   },
-                  children: b.body
+                  children: y.body
                 }
               ) }),
               /* @__PURE__ */ o(
-                k,
+                S,
                 {
-                  fieldPath: `${N}.blocks.${b.id}.settings.buttonLabel`,
+                  fieldPath: `${X}.blocks.${y.id}.settings.buttonLabel`,
                   label: "Button label",
                   children: /* @__PURE__ */ o(
-                    I,
+                    D,
                     {
-                      to: b.buttonHref || "#",
+                      to: y.buttonHref || "#",
                       style: {
                         display: "inline-flex",
                         marginTop: 28,
@@ -9522,7 +9896,7 @@ function ma({
                         textDecoration: "none",
                         boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
                       },
-                      children: b.buttonLabel
+                      children: y.buttonLabel
                     }
                   )
                 }
@@ -9530,7 +9904,7 @@ function ma({
             ] })
           }
         ) : null,
-        R ? /* @__PURE__ */ m(ne, { children: [
+        L ? /* @__PURE__ */ m(Z, { children: [
           /* @__PURE__ */ o(
             "div",
             {
@@ -9542,13 +9916,13 @@ function ma({
                 zIndex: 4
               },
               children: /* @__PURE__ */ o(
-                Ro,
+                No,
                 {
                   label: "Previous",
                   onClick: v,
-                  background: c.navigationIconBackground,
+                  background: u.navigationIconBackground,
                   size: W,
-                  shape: T
+                  shape: H
                 }
               )
             }
@@ -9564,19 +9938,19 @@ function ma({
                 zIndex: 4
               },
               children: /* @__PURE__ */ o(
-                Ro,
+                No,
                 {
                   label: "Next",
-                  onClick: x,
-                  background: c.navigationIconBackground,
+                  onClick: b,
+                  background: u.navigationIconBackground,
                   size: W,
-                  shape: T
+                  shape: H
                 }
               )
             }
           )
         ] }) : null,
-        c.pagination === "dots" && g > 1 ? /* @__PURE__ */ o(
+        u.pagination === "dots" && g > 1 ? /* @__PURE__ */ o(
           "div",
           {
             style: {
@@ -9588,12 +9962,12 @@ function ma({
               gap: 8,
               zIndex: 4
             },
-            children: h.map((D, V) => /* @__PURE__ */ o(
+            children: p.map((O, Y) => /* @__PURE__ */ o(
               "button",
               {
                 type: "button",
-                "aria-label": `Go to slide ${V + 1}`,
-                onClick: () => z(V),
+                "aria-label": `Go to slide ${Y + 1}`,
+                onClick: () => _(Y),
                 style: {
                   width: 8,
                   height: 8,
@@ -9601,14 +9975,14 @@ function ma({
                   border: "none",
                   borderRadius: "50%",
                   cursor: "pointer",
-                  background: V === $ ? "#fff" : "rgba(255,255,255,0.45)"
+                  background: Y === k ? "#fff" : "rgba(255,255,255,0.45)"
                 }
               },
-              D.id
+              O.id
             ))
           }
         ) : null,
-        c.pagination === "counter" && g > 1 ? /* @__PURE__ */ m(
+        u.pagination === "counter" && g > 1 ? /* @__PURE__ */ m(
           "div",
           {
             style: {
@@ -9618,23 +9992,23 @@ function ma({
               zIndex: 4,
               fontSize: "0.875rem",
               fontWeight: 600,
-              color: w ? "#fff" : c.scheme.color
+              color: z ? "#fff" : u.scheme.color
             },
             children: [
-              $ + 1,
+              k + 1,
               " / ",
               g
             ]
           }
         ) : null
       ] }),
-      w ? null : /* @__PURE__ */ m("div", { style: { padding: "32px 24px", textAlign: "center", color: c.scheme.color }, children: [
-        /* @__PURE__ */ o("h2", { style: { margin: 0, fontFamily: u, fontSize: "2rem", fontWeight: 700 }, children: b.title }),
-        /* @__PURE__ */ o("p", { style: { margin: "12px auto 0", maxWidth: 520, color: c.scheme.muted }, children: b.body }),
+      z ? null : /* @__PURE__ */ m("div", { style: { padding: "32px 24px", textAlign: "center", color: u.scheme.color }, children: [
+        /* @__PURE__ */ o("h2", { style: { margin: 0, fontFamily: s, fontSize: "2rem", fontWeight: 700 }, children: y.title }),
+        /* @__PURE__ */ o("p", { style: { margin: "12px auto 0", maxWidth: 520, color: u.scheme.muted }, children: y.body }),
         /* @__PURE__ */ o(
-          I,
+          D,
           {
-            to: b.buttonHref || "#",
+            to: y.buttonHref || "#",
             style: {
               display: "inline-flex",
               marginTop: 20,
@@ -9645,58 +10019,58 @@ function ma({
               textDecoration: "none",
               fontWeight: 600
             },
-            children: b.buttonLabel
+            children: y.buttonLabel
           }
         )
       ] })
     ] }) })
   ] });
 }
-const Lo = {
+const Eo = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f6f6f7", color: "#111827", muted: "#6b7280" },
   "scheme-3": { background: "#eef6fb", color: "#0f172a", muted: "#64748b" },
   "scheme-4": { background: "#f5f3ff", color: "#1e1b4b", muted: "#6b7280" }
 };
-function ga(e, t) {
-  const i = l(e, `${t}.colorScheme`, "scheme-1"), n = l(e, `${t}.mediaHeight`, "medium"), s = l(e, `${t}.contentPosition`), u = l(e, `${t}.navigationIcon`, "large-arrows"), d = l(
+function Ka(e, t) {
+  const n = r(e, `${t}.colorScheme`, "scheme-1"), i = r(e, `${t}.mediaHeight`, "medium"), c = r(e, `${t}.contentPosition`), s = r(e, `${t}.navigationIcon`, "large-arrows"), l = r(
     e,
     `${t}.navigationIconBackground`,
     "none"
-  ), a = l(e, `${t}.pagination`, "none"), r = d === "circle" || d === "square" ? d : "none";
+  ), a = r(e, `${t}.pagination`, "none"), d = l === "circle" || l === "square" ? l : "none";
   return {
-    scheme: Lo[i] ?? Lo["scheme-1"],
-    gap: y(e, `${t}.gap`, 18),
-    cornerRadius: y(e, `${t}.cornerRadius`, 20),
+    scheme: Eo[n] ?? Eo["scheme-1"],
+    gap: x(e, `${t}.gap`, 18),
+    cornerRadius: x(e, `${t}.cornerRadius`, 20),
     fullWidthOnMobile: !!K(e, `${t}.fullWidthOnMobile`),
-    mediaHeight: n === "small" || n === "large" ? n : "medium",
-    contentPosition: s === "on-media" ? "on-media" : "below-media",
-    navigationIcon: u === "arrows" || u === "chevron" || u === "none" ? u : "large-arrows",
-    navigationIconBackground: r,
+    mediaHeight: i === "small" || i === "large" ? i : "medium",
+    contentPosition: c === "on-media" ? "on-media" : "below-media",
+    navigationIcon: s === "arrows" || s === "chevron" || s === "none" ? s : "large-arrows",
+    navigationIconBackground: d,
     pagination: a === "dots" || a === "counter" ? a : "none",
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    customCss: l(e, `${t}.customCss`, "")
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    customCss: r(e, `${t}.customCss`, "")
   };
 }
-function fa(e) {
+function Ya(e) {
   return e === "small" ? 280 : e === "large" ? 440 : 360;
 }
-function ba(e, t, i, n) {
-  return Wt(e, t, i, n);
+function Qa(e, t, n, i) {
+  return Ht(e, t, n, i);
 }
-function ya(e, t) {
-  const i = `.ziplofy-slideshow-inset-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
-  return t.trim() ? `${i} { ${t} }` : "";
+function Za(e, t) {
+  const n = `.codiic-slideshow-inset-${e.replace(/[^a-z0-9_-]/gi, "-")}`;
+  return t.trim() ? `${n} { ${t} }` : "";
 }
-function Mo({
+function Uo({
   label: e,
   onClick: t,
-  background: i,
-  size: n,
-  shape: s
+  background: n,
+  size: i,
+  shape: c
 }) {
-  const u = n === "large-arrows", d = i === "none" ? u ? 44 : 36 : u ? 48 : 40;
+  const s = i === "large-arrows", l = n === "none" ? s ? 44 : 36 : s ? 48 : 40;
   return /* @__PURE__ */ o(
     "button",
     {
@@ -9708,90 +10082,90 @@ function Mo({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: d,
-        height: d,
+        width: l,
+        height: l,
         border: "none",
         cursor: "pointer",
-        background: i === "circle" || i === "square" ? "rgba(255,255,255,0.95)" : "transparent",
-        borderRadius: i === "circle" ? "50%" : i === "square" ? 8 : 0,
-        boxShadow: i !== "none" ? "0 2px 8px rgba(0,0,0,0.12)" : void 0,
+        background: n === "circle" || n === "square" ? "rgba(255,255,255,0.95)" : "transparent",
+        borderRadius: n === "circle" ? "50%" : n === "square" ? 8 : 0,
+        boxShadow: n !== "none" ? "0 2px 8px rgba(0,0,0,0.12)" : void 0,
         color: "#111827",
-        fontSize: s === "chevron" ? u ? 24 : 18 : u ? 24 : 20,
+        fontSize: c === "chevron" ? s ? 24 : 18 : s ? 24 : 20,
         lineHeight: 1
       },
-      children: s === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
+      children: c === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→"
     }
   );
 }
-function xa({
+function Ja({
   sectionId: e = "slideshow_inset",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), { fontBody: s, fontHeading: u } = X(), [d, a] = Z(0), r = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, p = i === "template" ? `template:${t}:${e}` : `layout:${e}`, c = F(
-    () => ga(n, r),
-    [n, r]
-  ), h = F(
-    () => ba(n, t, e, i),
-    [n, t, e, i]
-  ), g = Math.max(1, h.length), $ = (d % g + g) % g, b = h[$] ?? h[0], v = h[($ + 1) % g] ?? b, x = qe(() => a((B) => (B - 1 + g) % g), [g]), z = qe(() => a((B) => (B + 1) % g), [g]), S = qe((B) => a(B), []), _ = `ziplofy-slideshow-inset-${e.replace(/[^a-z0-9_-]/gi, "-")}`, H = ya(e, c.customCss), w = fa(c.mediaHeight), R = c.contentPosition === "below-media", T = c.navigationIcon !== "none" && g > 1, W = c.navigationIcon === "chevron" ? "chevron" : "arrows", P = c.navigationIcon === "large-arrows" ? "large-arrows" : c.navigationIcon === "chevron" ? "chevron" : "arrows", C = {
-    paddingTop: c.paddingTop,
-    paddingBottom: c.paddingBottom,
-    background: c.scheme.background,
-    color: c.scheme.color,
-    fontFamily: s,
+  const i = j(), { fontBody: c, fontHeading: s } = q(), [l, a] = te(0), d = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, h = n === "template" ? `template:${t}:${e}` : `layout:${e}`, u = M(
+    () => Ka(i, d),
+    [i, d]
+  ), p = M(
+    () => Qa(i, t, e, n),
+    [i, t, e, n]
+  ), g = Math.max(1, p.length), k = (l % g + g) % g, y = p[k] ?? p[0], v = p[(k + 1) % g] ?? y, b = Me(() => a((I) => (I - 1 + g) % g), [g]), _ = Me(() => a((I) => (I + 1) % g), [g]), $ = Me((I) => a(I), []), w = `codiic-slideshow-inset-${e.replace(/[^a-z0-9_-]/gi, "-")}`, P = Za(e, u.customCss), z = Ya(u.mediaHeight), L = u.contentPosition === "below-media", H = u.navigationIcon !== "none" && g > 1, W = u.navigationIcon === "chevron" ? "chevron" : "arrows", T = u.navigationIcon === "large-arrows" ? "large-arrows" : u.navigationIcon === "chevron" ? "chevron" : "arrows", C = {
+    paddingTop: u.paddingTop,
+    paddingBottom: u.paddingBottom,
+    background: u.scheme.background,
+    color: u.scheme.color,
+    fontFamily: c,
     boxSizing: "border-box"
-  }, M = {
-    maxWidth: L.contentMaxWidth,
+  }, F = {
+    maxWidth: R.contentMaxWidth,
     margin: "0 auto",
-    paddingLeft: c.fullWidthOnMobile ? 0 : 24,
-    paddingRight: c.fullWidthOnMobile ? 0 : 24
+    paddingLeft: u.fullWidthOnMobile ? 0 : 24,
+    paddingRight: u.fullWidthOnMobile ? 0 : 24
   }, f = {
     display: "flex",
     flexDirection: "column",
-    gap: R ? 24 : 0
-  }, O = {
+    gap: L ? 24 : 0
+  }, U = {
     position: "relative",
     display: "flex",
-    gap: c.gap,
+    gap: u.gap,
     overflow: "hidden",
     paddingLeft: 24,
     paddingRight: 24
-  }, N = {
+  }, X = {
     position: "relative",
     flex: "1 1 auto",
     minWidth: 0,
-    height: w,
-    borderRadius: c.cornerRadius,
+    height: z,
+    borderRadius: u.cornerRadius,
     overflow: "hidden",
     background: "#ddd6c8"
-  }, D = {
-    flex: `0 0 ${Math.max(48, c.gap + 32)}px`,
-    width: Math.max(48, c.gap + 32),
-    height: w,
-    borderRadius: c.cornerRadius,
+  }, O = {
+    flex: `0 0 ${Math.max(48, u.gap + 32)}px`,
+    width: Math.max(48, u.gap + 32),
+    height: z,
+    borderRadius: u.cornerRadius,
     overflow: "hidden",
     opacity: 0.95
   };
-  if (!b) return null;
-  const V = r.replace(".settings", ""), te = /* @__PURE__ */ m(E, { nodeId: `${p}:${b.id}`, label: "Slide", children: [
-    /* @__PURE__ */ o(k, { fieldPath: `${V}.blocks.${b.id}.settings.title`, label: "Heading", children: /* @__PURE__ */ o(
+  if (!y) return null;
+  const Y = d.replace(".settings", ""), J = /* @__PURE__ */ m(N, { nodeId: `${h}:${y.id}`, label: "Slide", children: [
+    /* @__PURE__ */ o(S, { fieldPath: `${Y}.blocks.${y.id}.settings.title`, label: "Heading", children: /* @__PURE__ */ o(
       "h2",
       {
         style: {
           margin: 0,
-          fontFamily: u,
+          fontFamily: s,
           fontSize: "clamp(1.5rem, 2.5vw, 2rem)",
           fontWeight: 700,
           lineHeight: 1.15,
           letterSpacing: "-0.02em",
-          color: R ? c.scheme.color : "#fff",
+          color: L ? u.scheme.color : "#fff",
           textAlign: "center"
         },
-        children: b.title
+        children: y.title
       }
     ) }),
-    /* @__PURE__ */ o(k, { fieldPath: `${V}.blocks.${b.id}.settings.body`, label: "Text", children: /* @__PURE__ */ o(
+    /* @__PURE__ */ o(S, { fieldPath: `${Y}.blocks.${y.id}.settings.body`, label: "Text", children: /* @__PURE__ */ o(
       "p",
       {
         style: {
@@ -9799,38 +10173,38 @@ function xa({
           maxWidth: 520,
           fontSize: "1rem",
           lineHeight: 1.55,
-          color: R ? c.scheme.muted : "rgba(255,255,255,0.92)",
+          color: L ? u.scheme.muted : "rgba(255,255,255,0.92)",
           textAlign: "center"
         },
-        children: b.body
+        children: y.body
       }
     ) }),
-    /* @__PURE__ */ o(k, { fieldPath: `${V}.blocks.${b.id}.settings.buttonLabel`, label: "Button label", children: /* @__PURE__ */ o(
-      I,
+    /* @__PURE__ */ o(S, { fieldPath: `${Y}.blocks.${y.id}.settings.buttonLabel`, label: "Button label", children: /* @__PURE__ */ o(
+      D,
       {
-        to: b.buttonHref || "#",
+        to: y.buttonHref || "#",
         style: {
           display: "inline-flex",
           marginTop: 20,
           padding: "14px 28px",
           borderRadius: 999,
-          background: R ? "#111827" : "#fff",
-          color: R ? "#fff" : "#111827",
+          background: L ? "#111827" : "#fff",
+          color: L ? "#fff" : "#111827",
           fontSize: "0.9375rem",
           fontWeight: 600,
           textDecoration: "none"
         },
-        children: b.buttonLabel
+        children: y.buttonLabel
       }
     ) })
   ] });
-  return /* @__PURE__ */ m(G, { nodeId: p, label: "Slideshow: Inset", children: [
-    H ? /* @__PURE__ */ o("style", { children: H }) : null,
-    /* @__PURE__ */ o("section", { "data-ziplofy-section": e, className: _, style: C, children: /* @__PURE__ */ o("div", { style: M, children: /* @__PURE__ */ m("div", { style: f, children: [
-      /* @__PURE__ */ m("div", { style: O, children: [
-        /* @__PURE__ */ m("div", { style: N, children: [
-          /* @__PURE__ */ o(gi, { imageUrl: b.imageUrl || void 0 }),
-          R ? null : /* @__PURE__ */ o(
+  return /* @__PURE__ */ m(B, { nodeId: h, label: "Slideshow: Inset", children: [
+    P ? /* @__PURE__ */ o("style", { children: P }) : null,
+    /* @__PURE__ */ o("section", { "data-codiic-section": e, className: w, style: C, children: /* @__PURE__ */ o("div", { style: F, children: /* @__PURE__ */ m("div", { style: f, children: [
+      /* @__PURE__ */ m("div", { style: U, children: [
+        /* @__PURE__ */ m("div", { style: X, children: [
+          /* @__PURE__ */ o(Cn, { imageUrl: y.imageUrl || void 0 }),
+          L ? null : /* @__PURE__ */ o(
             "div",
             {
               style: {
@@ -9844,32 +10218,32 @@ function xa({
                 boxSizing: "border-box",
                 zIndex: 2
               },
-              children: te
+              children: J
             }
           ),
-          T ? /* @__PURE__ */ m(ne, { children: [
+          H ? /* @__PURE__ */ m(Z, { children: [
             /* @__PURE__ */ o("div", { style: { position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 4 }, children: /* @__PURE__ */ o(
-              Mo,
+              Uo,
               {
                 label: "Previous",
-                onClick: x,
-                background: c.navigationIconBackground,
-                size: P,
+                onClick: b,
+                background: u.navigationIconBackground,
+                size: T,
                 shape: W
               }
             ) }),
             /* @__PURE__ */ o("div", { style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", zIndex: 4 }, children: /* @__PURE__ */ o(
-              Mo,
+              Uo,
               {
                 label: "Next",
-                onClick: z,
-                background: c.navigationIconBackground,
-                size: P,
+                onClick: _,
+                background: u.navigationIconBackground,
+                size: T,
                 shape: W
               }
             ) })
           ] }) : null,
-          c.pagination === "dots" && g > 1 && !R ? /* @__PURE__ */ o(
+          u.pagination === "dots" && g > 1 && !L ? /* @__PURE__ */ o(
             "div",
             {
               style: {
@@ -9881,12 +10255,12 @@ function xa({
                 gap: 8,
                 zIndex: 4
               },
-              children: h.map((B, de) => /* @__PURE__ */ o(
+              children: p.map((I, ce) => /* @__PURE__ */ o(
                 "button",
                 {
                   type: "button",
-                  "aria-label": `Go to slide ${de + 1}`,
-                  onClick: () => S(de),
+                  "aria-label": `Go to slide ${ce + 1}`,
+                  onClick: () => $(ce),
                   style: {
                     width: 8,
                     height: 8,
@@ -9894,23 +10268,23 @@ function xa({
                     border: "none",
                     borderRadius: "50%",
                     cursor: "pointer",
-                    background: de === $ ? "#fff" : "rgba(255,255,255,0.45)"
+                    background: ce === k ? "#fff" : "rgba(255,255,255,0.45)"
                   }
                 },
-                B.id
+                I.id
               ))
             }
           ) : null
         ] }),
-        g > 1 ? /* @__PURE__ */ o("div", { style: D, "aria-hidden": !0, children: /* @__PURE__ */ o(mi, { variant: v.peekVariant }) }) : null
+        g > 1 ? /* @__PURE__ */ o("div", { style: O, "aria-hidden": !0, children: /* @__PURE__ */ o(wn, { variant: v.peekVariant }) }) : null
       ] }),
-      R ? /* @__PURE__ */ o("div", { style: { textAlign: "center", padding: "0 24px 8px" }, children: te }) : null,
-      c.pagination === "dots" && g > 1 && R ? /* @__PURE__ */ o("div", { style: { display: "flex", justifyContent: "center", gap: 8, paddingBottom: 8 }, children: h.map((B, de) => /* @__PURE__ */ o(
+      L ? /* @__PURE__ */ o("div", { style: { textAlign: "center", padding: "0 24px 8px" }, children: J }) : null,
+      u.pagination === "dots" && g > 1 && L ? /* @__PURE__ */ o("div", { style: { display: "flex", justifyContent: "center", gap: 8, paddingBottom: 8 }, children: p.map((I, ce) => /* @__PURE__ */ o(
         "button",
         {
           type: "button",
-          "aria-label": `Go to slide ${de + 1}`,
-          onClick: () => S(de),
+          "aria-label": `Go to slide ${ce + 1}`,
+          onClick: () => $(ce),
           style: {
             width: 8,
             height: 8,
@@ -9918,86 +10292,100 @@ function xa({
             border: "none",
             borderRadius: "50%",
             cursor: "pointer",
-            background: de === $ ? "#111827" : "rgba(17,24,39,0.25)"
+            background: ce === k ? "#111827" : "rgba(17,24,39,0.25)"
           }
         },
-        B.id
+        I.id
       )) }) : null,
-      c.pagination === "counter" && g > 1 ? /* @__PURE__ */ m("p", { style: { textAlign: "center", margin: 0, fontSize: "0.875rem", fontWeight: 600 }, children: [
-        $ + 1,
+      u.pagination === "counter" && g > 1 ? /* @__PURE__ */ m("p", { style: { textAlign: "center", margin: 0, fontSize: "0.875rem", fontWeight: 600 }, children: [
+        k + 1,
         " / ",
         g
       ] }) : null
     ] }) }) })
   ] });
 }
-function $a({ sectionId: e = "divider", templateId: t = "index" }) {
-  return /* @__PURE__ */ o(wt, { sectionId: e, placement: "template", templateId: t });
+function ed({ sectionId: e = "divider", templateId: t = "index" }) {
+  return /* @__PURE__ */ o(_t, { sectionId: e, placement: "template", templateId: t });
 }
-function ka(e, t) {
+function td(e, t) {
   return e === "fit" ? "fit-content" : "100%";
 }
-function va(e, t) {
+function od(e, t) {
   return t ? "baseline" : e === "top" ? "flex-start" : e === "bottom" ? "flex-end" : "center";
 }
-function Sa(e, t, i, n) {
-  const s = l(e, `${t}.direction`, "horizontal"), u = l(e, `${t}.layoutAlignment`, "space-between"), d = l(e, `${t}.position`, "bottom"), a = U(e, `${t}.alignTextBaseline`, !0), r = y(e, `${t}.layoutGap`, 12), p = l(e, `${t}.width`, "fill"), c = l(e, `${t}.height`, "fit"), h = U(e, `${t}.inheritColorScheme`, !0), g = l(e, `${t}.backgroundMedia`, "none"), $ = l(e, `${t}.backgroundImageUrl`, "").trim(), b = l(e, `${t}.borderStyle`, "none"), v = Math.max(0, y(e, `${t}.cornerRadius`, 0)), x = U(e, `${t}.verticalOnMobile`, !1), z = i.background, S = i.color;
+function nd(e, t, n, i) {
+  const c = r(e, `${t}.direction`, "horizontal"), s = r(e, `${t}.layoutAlignment`, "space-between"), l = r(e, `${t}.position`, "bottom"), a = E(e, `${t}.alignTextBaseline`, !0), d = x(e, `${t}.layoutGap`, 12), h = r(e, `${t}.width`, "fill"), u = r(e, `${t}.height`, "fit"), p = E(e, `${t}.inheritColorScheme`, !0), g = r(e, `${t}.backgroundMedia`, "none"), k = r(e, `${t}.backgroundImageUrl`, "").trim(), y = r(e, `${t}.borderStyle`, "none"), v = Math.max(0, x(e, `${t}.cornerRadius`, 0)), b = E(e, `${t}.verticalOnMobile`, !1), _ = n.background, $ = n.color;
   return {
-    flexDirection: s === "vertical" ? "column" : "row",
-    justifyContent: u,
-    alignItems: va(d, a),
-    gap: r,
+    flexDirection: c === "vertical" ? "column" : "row",
+    justifyContent: s,
+    alignItems: od(l, a),
+    gap: d,
     flexWrap: "wrap",
-    width: ka(p),
-    minHeight: c === "fit" ? "auto" : c === "fill" ? "100%" : "auto",
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    paddingLeft: y(e, `${t}.paddingLeft`, 0),
-    paddingRight: y(e, `${t}.paddingRight`, 0),
+    width: td(h),
+    minHeight: u === "fit" ? "auto" : u === "fill" ? "100%" : "auto",
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    paddingLeft: x(e, `${t}.paddingLeft`, 0),
+    paddingRight: x(e, `${t}.paddingRight`, 0),
     borderRadius: v,
-    border: b === "solid" ? `1px solid ${n}` : void 0,
-    background: z,
-    backgroundImage: g === "image" && $ ? `url(${$})` : void 0,
-    color: S,
-    mobileStack: x
+    border: y === "solid" ? `1px solid ${i}` : void 0,
+    background: _,
+    backgroundImage: g === "image" && k ? `url(${k})` : void 0,
+    color: $,
+    mobileStack: b
   };
 }
-function wa(e, t, i) {
-  const n = `[data-ziplofy-section="${e}"] [data-fc-collection-header]`;
-  let s = "";
-  return i && (s += `@media (max-width: 749px) { ${n} { flex-direction: column !important; align-items: stretch !important; } }`), t === "fit" ? s += `@media (max-width: 749px) { ${n} { width: fit-content !important; max-width: 100%; } }` : t === "fill" && (s += `@media (max-width: 749px) { ${n} { width: 100% !important; } }`), s;
+function id(e, t, n) {
+  const i = `[data-codiic-section="${e}"] [data-fc-collection-header]`;
+  let c = "";
+  return n && (c += `@media (max-width: 749px) { ${i} { flex-direction: column !important; align-items: stretch !important; } }`), t === "fit" ? c += `@media (max-width: 749px) { ${i} { width: fit-content !important; max-width: 100%; } }` : t === "fill" && (c += `@media (max-width: 749px) { ${i} { width: 100% !important; } }`), c;
 }
-const Fo = {
+const Oo = {
   "heading-1": { fontSize: 40, fontWeight: 700, lineHeight: 1.15 },
   "heading-2": { fontSize: 32, fontWeight: 600, lineHeight: 1.2 },
   "heading-3": { fontSize: 24, fontWeight: 600, lineHeight: 1.25 },
   "heading-4": { fontSize: 20, fontWeight: 600, lineHeight: 1.3 },
   body: { fontSize: 16, fontWeight: 400, lineHeight: 1.5 }
-}, Eo = {
+}, Go = {
   narrow: "480px",
   normal: "640px",
   wide: "960px",
   none: void 0
 };
-function _a(e, t, i, n) {
-  const s = l(e, `${t}.titleTypographyPreset`, "heading-4"), u = Fo[s] ?? Fo["heading-4"], d = l(e, `${t}.titleWidth`, "fit"), a = l(e, `${t}.titleMaxWidth`), r = l(e, `${t}.titleColor`, "text"), p = r === "heading" ? n.heading : r === "accent" ? n.accent : n.text, c = U(e, `${t}.titleBackgroundEnabled`, !1);
+function rd(e) {
+  const n = e?.settings?.colors?.palette;
+  return Array.isArray(n) && n.length >= 2 ? n.filter((i) => typeof i == "string" && i.trim().length > 0) : ["#ffffff", "#111827"];
+}
+function ld(e, t, n) {
+  if (t.startsWith("#")) return t;
+  if (t === "palette" || /^palette:\d+$/.test(t)) {
+    const i = rd(e), c = /^palette:(\d+)$/.exec(t), s = c ? Number(c[1]) : 1;
+    return i[s] ?? n.text;
+  }
+  return t === "heading" ? n.heading : t === "accent" ? n.accent : n.text;
+}
+function ad(e, t, n, i) {
+  const c = r(e, `${t}.titleTypographyPreset`, "heading-4"), s = Oo[c] ?? Oo["heading-4"], a = r(e, `${t}.titleWidth`, "fit") === "fill", d = r(e, `${t}.titleMaxWidth`, "normal"), h = Go[d] ?? Go.normal, u = r(e, `${t}.titleAlignment`, "left"), p = u === "right" ? "right" : u === "center" ? "center" : "left", g = r(e, `${t}.titleColor`, "text"), k = ld(e, g, i), y = E(e, `${t}.titleBackgroundEnabled`, !1), v = r(e, `${t}.titleBackgroundColor`, "#00000026"), b = x(e, `${t}.titleCornerRadius`, 0);
   return {
-    width: d === "fill" ? "100%" : "fit-content",
-    maxWidth: Eo[a] ?? Eo.normal,
-    fontFamily: i.heading,
-    fontSize: u.fontSize,
-    fontWeight: u.fontWeight,
-    lineHeight: u.lineHeight,
-    color: p,
-    background: c ? "rgba(0,0,0,0.04)" : void 0,
-    paddingTop: y(e, `${t}.titlePaddingTop`, 0),
-    paddingBottom: y(e, `${t}.titlePaddingBottom`, 0),
-    paddingLeft: y(e, `${t}.titlePaddingLeft`, 0),
-    paddingRight: y(e, `${t}.titlePaddingRight`, 0),
-    borderRadius: c ? 6 : 0
+    flex: a ? "1 1 auto" : "0 0 auto",
+    width: a ? "auto" : "fit-content",
+    maxWidth: h,
+    textAlign: a ? p : void 0,
+    fontFamily: n.heading,
+    fontSize: s.fontSize,
+    fontWeight: s.fontWeight,
+    lineHeight: s.lineHeight,
+    color: k,
+    background: y ? v : void 0,
+    paddingTop: x(e, `${t}.titlePaddingTop`, 0),
+    paddingBottom: x(e, `${t}.titlePaddingBottom`, 0),
+    paddingLeft: x(e, `${t}.titlePaddingLeft`, 0),
+    paddingRight: x(e, `${t}.titlePaddingRight`, 0),
+    borderRadius: y ? b : 0
   };
 }
-const Ao = {
+const Do = {
   auto: void 0,
   "1/1": "1 / 1",
   "4/5": "4 / 5",
@@ -10005,337 +10393,395 @@ const Ao = {
   "16/9": "16 / 9",
   "2/3": "2 / 3"
 };
-function Ca(e, t, i) {
-  const n = l(e, `${t}.mediaAspectRatio`, "auto"), s = l(e, `${t}.mediaBorderStyle`, "none"), u = y(e, `${t}.mediaCornerRadius`, 0);
+function dd(e, t, n) {
+  const i = r(e, `${t}.mediaAspectRatio`, "auto"), c = r(e, `${t}.mediaBorderStyle`, "none"), s = x(e, `${t}.mediaCornerRadius`, 0);
   return {
-    aspectRatio: Ao[n] ?? Ao["4/5"],
+    aspectRatio: Do[i] ?? Do["4/5"],
+    border: c === "solid" ? `1px solid ${n}` : "none",
+    borderRadius: s,
+    paddingTop: x(e, `${t}.mediaPaddingTop`, 0),
+    paddingBottom: x(e, `${t}.mediaPaddingBottom`, 0),
+    paddingLeft: x(e, `${t}.mediaPaddingLeft`, 0),
+    paddingRight: x(e, `${t}.mediaPaddingRight`, 0)
+  };
+}
+function cd(e, t, n, i) {
+  const c = E(e, `${t}.inheritColorScheme`, !0), s = r(e, `${t}.borderStyle`, "none"), l = x(e, `${t}.cornerRadius`, 0);
+  return {
+    verticalGap: x(e, `${t}.verticalGap`, 4),
+    background: n.background,
+    color: n.color,
     border: s === "solid" ? `1px solid ${i}` : "none",
-    borderRadius: u,
-    paddingTop: y(e, `${t}.mediaPaddingTop`, 0),
-    paddingBottom: y(e, `${t}.mediaPaddingBottom`, 0),
-    paddingLeft: y(e, `${t}.mediaPaddingLeft`, 0),
-    paddingRight: y(e, `${t}.mediaPaddingRight`, 0)
+    borderRadius: l,
+    paddingTop: x(e, `${t}.paddingTop`, 0),
+    paddingBottom: x(e, `${t}.paddingBottom`, 0),
+    paddingLeft: x(e, `${t}.paddingLeft`, 0),
+    paddingRight: x(e, `${t}.paddingRight`, 0)
   };
 }
-function za(e, t, i, n) {
-  const s = U(e, `${t}.inheritColorScheme`, !0), u = l(e, `${t}.borderStyle`, "none"), d = y(e, `${t}.cornerRadius`, 0);
-  return {
-    verticalGap: y(e, `${t}.verticalGap`, 4),
-    background: i.background,
-    color: i.color,
-    border: u === "solid" ? `1px solid ${n}` : "none",
-    borderRadius: d,
-    paddingTop: y(e, `${t}.paddingTop`, 0),
-    paddingBottom: y(e, `${t}.paddingBottom`, 0),
-    paddingLeft: y(e, `${t}.paddingLeft`, 0),
-    paddingRight: y(e, `${t}.paddingRight`, 0)
-  };
+function sd(e) {
+  const n = e?.settings?.colors?.palette;
+  return Array.isArray(n) && n.length >= 2 ? n.filter((i) => typeof i == "string" && i.trim().length > 0) : ["#ffffff", "#111827"];
 }
-const Uo = {
+function ud(e, t, n) {
+  if (t === "" || t === "default" || t === "text") return n.text;
+  if (t.startsWith("#")) return t;
+  if (t === "palette" || /^palette:\d+$/.test(t)) {
+    const i = sd(e), c = /^palette:(\d+)$/.exec(t), s = c ? Number(c[1]) : 1;
+    return i[s] ?? n.text;
+  }
+  return t === "heading" ? n.heading : t === "accent" ? n.accent : t === "muted" ? n.muted : n.text;
+}
+const jo = {
   default: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 },
   "heading-6": { fontSize: 14, fontWeight: 600, lineHeight: 1.4 },
   "heading-5": { fontSize: 16, fontWeight: 600, lineHeight: 1.35 },
   "heading-4": { fontSize: 18, fontWeight: 600, lineHeight: 1.3 },
   body: { fontSize: 14, fontWeight: 400, lineHeight: 1.5 }
 };
-function Wa(e, t, i, n) {
-  const s = l(e, `${t}.priceTypographyPreset`), u = Uo[s] ?? Uo["heading-6"], d = l(e, `${t}.priceWidth`, "fill"), a = l(e, `${t}.priceAlignment`, "left"), r = l(e, `${t}.priceColor`, "text"), p = r === "heading" ? n.heading : r === "accent" ? n.accent : r === "muted" ? n.muted : n.text;
+function hd(e, t, n, i) {
+  const c = r(e, `${t}.priceTypographyPreset`), s = jo[c] ?? jo["heading-6"], l = r(e, `${t}.priceWidth`, "fill"), a = r(e, `${t}.priceAlignment`, "left"), d = r(e, `${t}.priceColor`, ""), h = ud(e, d, i);
   return {
-    width: d === "fill" ? "100%" : "fit-content",
+    width: l === "fill" ? "100%" : "fit-content",
     textAlign: a === "center" ? "center" : a === "right" ? "right" : "left",
-    fontFamily: i,
-    fontSize: u.fontSize,
-    fontWeight: u.fontWeight,
-    lineHeight: u.lineHeight,
-    color: p,
-    paddingTop: y(e, `${t}.pricePaddingTop`, 0),
-    paddingBottom: y(e, `${t}.pricePaddingBottom`, 0),
-    paddingLeft: y(e, `${t}.pricePaddingLeft`, 0),
-    paddingRight: y(e, `${t}.pricePaddingRight`, 0),
-    showSaleFirst: U(e, `${t}.priceShowSaleFirst`, !0),
-    showInstallments: U(e, `${t}.priceInstallments`, !1),
-    showTaxInfo: U(e, `${t}.priceTaxInfo`, !1)
+    fontFamily: n,
+    fontSize: s.fontSize,
+    fontWeight: s.fontWeight,
+    lineHeight: s.lineHeight,
+    color: h,
+    paddingTop: x(e, `${t}.pricePaddingTop`, 0),
+    paddingBottom: x(e, `${t}.pricePaddingBottom`, 0),
+    paddingLeft: x(e, `${t}.pricePaddingLeft`, 0),
+    paddingRight: x(e, `${t}.pricePaddingRight`, 0),
+    showSaleFirst: E(e, `${t}.priceShowSaleFirst`, !0),
+    showInstallments: E(e, `${t}.priceInstallments`, !1),
+    showTaxInfo: E(e, `${t}.priceTaxInfo`, !1)
   };
 }
-function Pa(e, t, i, n) {
-  const s = t != null && t > e && Number.isFinite(t);
-  return i.showSaleFirst && s ? { primary: n(e), compareAt: n(t) } : s && !i.showSaleFirst ? { primary: n(t), compareAt: n(e) } : { primary: n(e) };
+function pd(e, t, n, i) {
+  const c = t != null && t > e && Number.isFinite(t);
+  return n.showSaleFirst && c ? { primary: i(e), compareAt: i(t) } : c && !n.showSaleFirst ? { primary: i(t), compareAt: i(e) } : { primary: i(e) };
 }
-const No = {
+function md(e) {
+  const n = e?.settings?.colors?.palette;
+  return Array.isArray(n) && n.length >= 2 ? n.filter((i) => typeof i == "string" && i.trim().length > 0) : ["#ffffff", "#111827"];
+}
+function gd(e, t, n) {
+  if (t === "" || t === "default") return n;
+  if (t.startsWith("#")) return t;
+  if (t === "palette" || /^palette:\d+$/.test(t)) {
+    const i = md(e), c = /^palette:(\d+)$/.exec(t), s = c ? Number(c[1]) : 1;
+    return i[s] ?? n;
+  }
+  return n;
+}
+const Bo = {
   default: { fontSize: 18, fontWeight: 600, lineHeight: 1.3 },
   "heading-1": { fontSize: 28, fontWeight: 700, lineHeight: 1.15 },
   "heading-2": { fontSize: 24, fontWeight: 600, lineHeight: 1.2 },
   "heading-3": { fontSize: 20, fontWeight: 600, lineHeight: 1.25 },
   "heading-4": { fontSize: 18, fontWeight: 600, lineHeight: 1.3 },
   body: { fontSize: 16, fontWeight: 400, lineHeight: 1.5 }
-}, Oo = {
+}, qo = {
   narrow: "280px",
   normal: "100%",
   wide: "100%",
   none: void 0
 };
-function Ta(e, t, i, n) {
-  const s = l(e, `${t}.productTitleTypographyPreset`, "default"), u = No[s] ?? No.default, d = l(e, `${t}.productTitleWidth`, "fill"), a = l(e, `${t}.productTitleMaxWidth`), r = l(e, `${t}.productTitleAlignment`, "left"), p = U(e, `${t}.productTitleBackgroundEnabled`, !1), c = r === "center" ? "center" : r === "right" ? "right" : "left";
+function fd(e, t, n, i) {
+  const c = r(e, `${t}.productTitleTypographyPreset`, "default"), s = Bo[c] ?? Bo.default, l = r(e, `${t}.productTitleWidth`, "fill"), a = r(e, `${t}.productTitleMaxWidth`), d = r(e, `${t}.productTitleAlignment`, "left"), h = E(e, `${t}.productTitleBackgroundEnabled`, !1), u = r(e, `${t}.productTitleColor`, ""), p = gd(e, u, i), g = d === "center" ? "center" : d === "right" ? "right" : "left";
   return {
-    width: d === "fill" ? "100%" : "fit-content",
-    maxWidth: Oo[a] ?? Oo.normal,
-    textAlign: c,
-    fontFamily: i,
-    fontSize: u.fontSize,
-    fontWeight: u.fontWeight,
-    lineHeight: u.lineHeight,
-    color: n,
-    background: p ? "rgba(0,0,0,0.04)" : void 0,
-    paddingTop: y(e, `${t}.productTitlePaddingTop`, 0),
-    paddingBottom: y(e, `${t}.productTitlePaddingBottom`, 0),
-    paddingLeft: y(e, `${t}.productTitlePaddingLeft`, 0),
-    paddingRight: y(e, `${t}.productTitlePaddingRight`, 0),
-    borderRadius: p ? 6 : 0,
+    width: l === "fill" ? "100%" : "fit-content",
+    maxWidth: qo[a] ?? qo.normal,
+    textAlign: g,
+    fontFamily: n,
+    fontSize: s.fontSize,
+    fontWeight: s.fontWeight,
+    lineHeight: s.lineHeight,
+    color: p,
+    background: h ? "rgba(0,0,0,0.04)" : void 0,
+    paddingTop: x(e, `${t}.productTitlePaddingTop`, 0),
+    paddingBottom: x(e, `${t}.productTitlePaddingBottom`, 0),
+    paddingLeft: x(e, `${t}.productTitlePaddingLeft`, 0),
+    paddingRight: x(e, `${t}.productTitlePaddingRight`, 0),
+    borderRadius: h ? 6 : 0,
     marginBottom: 0
   };
 }
-const Ha = {
+const bd = {
   "scheme-1": { background: "#ffffff", color: "#111827", muted: "#6b7280" },
   "scheme-2": { background: "#f8fafc", color: "#0f172a", muted: "#64748b" },
   "scheme-3": { background: "#fff7ed", color: "#431407", muted: "#9a3412" },
   "scheme-4": { background: "#f5f3ff", color: "#4c1d95", muted: "#6d28d9" }
 };
-function Ra(e, t, i) {
-  const n = l(e, `${t}.colorScheme`, "scheme-1");
-  return Ha[n] ?? i;
+function yd(e, t, n) {
+  const i = r(e, `${t}.colorScheme`, "scheme-1");
+  return bd[i] ?? n;
 }
-function La(e, t) {
-  return l(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
+function xd(e, t) {
+  return r(e, `${t}.sectionWidth`, "page") === "full" ? "full" : "page";
 }
-function Ma(e, t) {
+function $d(e, t) {
   return {
-    paddingTop: y(e, `${t}.paddingTop`, 48),
-    paddingBottom: y(e, `${t}.paddingBottom`, 48)
+    paddingTop: x(e, `${t}.paddingTop`, 48),
+    paddingBottom: x(e, `${t}.paddingBottom`, 48)
   };
 }
-function Fa(e, t) {
-  const i = y(e, `${t}.gap`, 24);
+function kd(e, t) {
+  const n = x(e, `${t}.gap`, 24);
   return {
-    horizontal: y(e, `${t}.horizontalGap`, i > 0 ? Math.min(i, 48) : 8),
-    vertical: y(e, `${t}.verticalGap`, 24),
-    section: y(e, `${t}.sectionGap`, 28)
+    horizontal: x(e, `${t}.horizontalGap`, n > 0 ? Math.min(n, 48) : 8),
+    vertical: x(e, `${t}.verticalGap`, 24),
+    section: x(e, `${t}.sectionGap`, 28)
   };
 }
-function Ea(e, t) {
-  const i = t.trim();
-  if (!i) return "";
-  const n = `[data-ziplofy-section="${e}"]`;
-  return i.replace(/:root/g, n).replace(/&/g, n);
+function vd(e, t) {
+  const n = t.trim();
+  if (!n) return "";
+  const i = `[data-codiic-section="${e}"]`;
+  return n.replace(/:root/g, i).replace(/&/g, i);
 }
-function Go({
+function Sd(e) {
+  const t = e.trim().toLowerCase();
+  return !t || t === "products" ? "" : t;
+}
+function wd({
+  collectionHandle: e,
+  limit: t
+}) {
+  const { storeFrontMeta: n } = De(), i = n?.storeId ?? "", c = Sd(e), { products: s, fetchProductsByStoreId: l } = lt(), { products: a, fetchProductsInCollectionByUrlHandle: d } = at();
+  return le(() => {
+    if (i) {
+      if (c) {
+        d(i, c, { page: 1, limit: t });
+        return;
+      }
+      l({ storeId: i, page: 1, limit: t });
+    }
+  }, [
+    i,
+    c,
+    t,
+    l,
+    d
+  ]), M(() => (c ? a : s).slice(0, t), [c, a, s, t]);
+}
+function bt(e) {
+  return /<(?:p|ol|ul|h[1-6]|div)\b/i.test(e);
+}
+function yt({ html: e, className: t = "", style: n }) {
+  const i = e.trim();
+  if (!i) return null;
+  if (!bt(i) && !/<[a-z]/i.test(i))
+    return /* @__PURE__ */ o("span", { className: t, style: n, children: i });
+  const c = bt(i) ? "div" : "span";
+  return /* @__PURE__ */ o(c, { className: t, style: n, dangerouslySetInnerHTML: { __html: i } });
+}
+function Xo({
   label: e,
   onClick: t,
-  background: i,
-  shape: n
+  background: n,
+  shape: i
 }) {
   return /* @__PURE__ */ o("button", { type: "button", "aria-label": e, onClick: t, style: {
     flexShrink: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: i === "none" ? 32 : 36,
-    height: i === "none" ? 32 : 36,
+    width: n === "none" ? 32 : 36,
+    height: n === "none" ? 32 : 36,
     border: "none",
     cursor: "pointer",
-    background: i === "circle" || i === "square" ? "rgba(255,255,255,0.95)" : "transparent",
-    borderRadius: i === "circle" ? "50%" : i === "square" ? 6 : 0,
-    boxShadow: i !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
+    background: n === "circle" || n === "square" ? "rgba(255,255,255,0.95)" : "transparent",
+    borderRadius: n === "circle" ? "50%" : n === "square" ? 6 : 0,
+    boxShadow: n !== "none" ? "0 1px 4px rgba(0,0,0,0.12)" : void 0,
     color: "#111827",
-    fontSize: n === "chevron" ? 18 : 20,
+    fontSize: i === "chevron" ? 18 : 20,
     lineHeight: 1
-  }, children: n === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→" });
+  }, children: i === "chevron" ? e === "Previous" ? "‹" : "›" : e === "Previous" ? "←" : "→" });
 }
-function yt({
+function xt({
   sectionId: e = "featured_collection",
   templateId: t = "index",
-  placement: i = "template"
+  placement: n = "template"
 }) {
-  const n = j(), s = ot(null), u = i === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, d = i === "template" ? `templates.${t}.sections.${e}.blocks` : `sections.${e}.blocks`, a = `${d}.collection_header.settings`, r = `${d}.product_card.settings`, p = i === "template" ? `template:${t}:${e}` : `layout:${e}`, c = X(), { text: h, background: g, primary: $, fontHeading: b, fontBody: v } = c, { storeFrontMeta: x } = it(), { products: z, fetchProductsByStoreId: S } = ht(), _ = F(() => {
-    const ie = Ra(n, u, {
+  const i = j(), c = Ke(null), s = n === "template" ? `templates.${t}.sections.${e}.settings` : `sections.${e}.settings`, l = n === "template" ? `templates.${t}.sections.${e}.blocks` : `sections.${e}.blocks`, a = `${l}.collection_header.settings`, d = `${l}.product_card.settings`, h = n === "template" ? `template:${t}:${e}` : `layout:${e}`, u = q(), { text: p, background: g, primary: k, fontHeading: y, fontBody: v } = u, b = r(i, `${s}.collectionHandle`, "products"), _ = wd({ collectionHandle: b, limit: f }), $ = M(() => {
+    const Q = yd(i, s, {
       background: g,
-      color: h,
+      color: p,
       muted: "#6b7280"
-    }), pe = Fa(n, u), { paddingTop: nt, paddingBottom: gt } = Ma(n, u), Je = l(n, `${u}.navIcon`, "arrows"), $e = l(n, `${u}.navIconBackground`, "circle");
+    }), ae = kd(i, s), { paddingTop: Ue, paddingBottom: Ee } = $d(i, s), Re = r(i, `${s}.navIcon`, "arrows"), se = r(i, `${s}.navIconBackground`, "circle");
     return {
-      scheme: ie,
-      gaps: pe,
-      paddingTop: nt,
-      paddingBottom: gt,
-      widthMode: La(n, u),
-      layoutType: l(n, `${u}.layoutType`, "grid"),
-      carouselOnMobile: U(n, `${u}.carouselOnMobile`, !1),
-      columns: Math.max(1, Math.min(6, y(n, `${u}.columns`, 4))),
+      scheme: Q,
+      gaps: ae,
+      paddingTop: Ue,
+      paddingBottom: Ee,
+      widthMode: xd(i, s),
+      layoutType: r(i, `${s}.layoutType`, "grid"),
+      carouselOnMobile: E(i, `${s}.carouselOnMobile`, !1),
+      columns: Math.max(1, Math.min(6, x(i, `${s}.columns`, 4))),
       mobileColumns: Math.max(
         1,
-        Math.min(2, Number(l(n, `${u}.mobileColumns`, "2")) || 2)
+        Math.min(2, Number(r(i, `${s}.mobileColumns`, "2")) || 2)
       ),
-      limit: Math.max(1, y(n, `${u}.productsToShow`, 8)),
-      customCss: l(n, `${u}.customCss`, ""),
-      emptyMessage: l(n, `${u}.emptyMessage`),
-      subtitle: l(n, `${u}.subtitle`, ""),
-      title: l(n, `${d}.collection_header.settings.title`),
-      viewAllLabel: l(n, `${d}.collection_header.settings.viewAllLabel`, ""),
-      viewAllHref: l(n, `${d}.collection_header.settings.viewAllHref`),
-      showMedia: U(n, `${d}.product_card.settings.showMedia`, !0),
-      showTitle: U(n, `${d}.product_card.settings.showTitle`, !0),
-      showPrice: U(n, `${d}.product_card.settings.showPrice`, !0),
-      navIcon: Je === "none" || Je === "chevron" || Je === "arrows" ? Je : "arrows",
-      navIconBackground: $e === "none" || $e === "circle" || $e === "square" ? $e : "circle"
+      limit: Math.max(1, x(i, `${s}.productsToShow`, 8)),
+      customCss: r(i, `${s}.customCss`, ""),
+      emptyMessage: r(i, `${s}.emptyMessage`),
+      subtitle: r(i, `${s}.subtitle`, ""),
+      title: r(i, `${l}.collection_header.settings.title`),
+      viewAllLabel: r(i, `${l}.collection_header.settings.viewAllLabel`, ""),
+      viewAllHref: r(i, `${l}.collection_header.settings.viewAllHref`),
+      showMedia: E(i, `${l}.product_card.settings.showMedia`, !0),
+      showTitle: E(i, `${l}.product_card.settings.showTitle`, !0),
+      showPrice: E(i, `${l}.product_card.settings.showPrice`, !0),
+      navIcon: Re === "none" || Re === "chevron" || Re === "arrows" ? Re : "arrows",
+      navIconBackground: se === "none" || se === "circle" || se === "square" ? se : "circle"
     };
-  }, [n, g, h, u, d]), {
-    scheme: H,
-    gaps: w,
-    paddingTop: R,
-    paddingBottom: T,
-    widthMode: W,
-    layoutType: P,
-    carouselOnMobile: C,
-    columns: M,
-    mobileColumns: f,
-    limit: O,
-    customCss: N,
-    emptyMessage: D,
-    subtitle: V,
-    title: te,
-    viewAllLabel: B,
-    viewAllHref: de,
+  }, [i, g, p, s, l]), {
+    scheme: w,
+    gaps: P,
+    paddingTop: z,
+    paddingBottom: L,
+    widthMode: H,
+    layoutType: W,
+    carouselOnMobile: T,
+    columns: C,
+    mobileColumns: F,
+    limit: f,
+    customCss: U,
+    emptyMessage: X,
+    subtitle: O,
+    title: Y,
+    viewAllLabel: J,
+    viewAllHref: I,
     showMedia: ce,
-    showTitle: ye,
-    showPrice: Oe,
-    navIcon: Ue,
-    navIconBackground: je
-  } = _, { color: xe, background: Me } = H, ke = P === "carousel", Fe = P === "editorial", Ie = P === "grid" && !ke && !Fe, ge = M >= 4, Te = ge ? 0.78 : M === 3 ? 0.9 : 1, He = ge ? 8 : 12, Ve = Ea(e, N), Qe = F(
+    showTitle: pe,
+    showPrice: be,
+    navIcon: ve,
+    navIconBackground: Fe
+  } = $, { color: ge, background: Ae } = w, ue = W === "carousel", Se = W === "editorial", je = W === "grid" && !ue && !Se, ye = C >= 4, We = ye ? 0.78 : C === 3 ? 0.9 : 1, xe = ye ? 8 : 12, Be = vd(e, U), qe = M(
     () => `
-[data-ziplofy-section="${e}"] .fc-product-grid {
+[data-codiic-section="${e}"] .fc-product-grid {
   display: flex;
-  ${ke ? "flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;" : "flex-wrap: wrap;"}
-  column-gap: ${w.horizontal}px;
-  row-gap: ${w.vertical}px;
+  ${ue ? "flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;" : "flex-wrap: wrap;"}
+  column-gap: ${P.horizontal}px;
+  row-gap: ${P.vertical}px;
 }
-[data-ziplofy-section="${e}"] .fc-product-grid::-webkit-scrollbar { display: none; }
-[data-ziplofy-section="${e}"] .fc-product-grid > article {
-  ${ke ? `flex: 0 0 calc((100% - ${(M - 1) * w.horizontal}px) / ${M}); min-width: 0; max-width: calc((100% - ${(M - 1) * w.horizontal}px) / ${M}); scroll-snap-align: start;` : ge ? `flex: 0 0 min(calc((100% - ${(M - 1) * w.horizontal}px) / ${M}), 210px); max-width: min(calc((100% - ${(M - 1) * w.horizontal}px) / ${M}), 210px); min-width: 168px;` : `flex: 0 0 calc((100% - ${(M - 1) * w.horizontal}px) / ${M}); max-width: calc((100% - ${(M - 1) * w.horizontal}px) / ${M}); min-width: 220px;`}
+[data-codiic-section="${e}"] .fc-product-grid::-webkit-scrollbar { display: none; }
+[data-codiic-section="${e}"] .fc-product-grid > article {
+  ${ue ? `flex: 0 0 calc((100% - ${(C - 1) * P.horizontal}px) / ${C}); min-width: 0; max-width: calc((100% - ${(C - 1) * P.horizontal}px) / ${C}); scroll-snap-align: start;` : ye ? `flex: 0 0 min(calc((100% - ${(C - 1) * P.horizontal}px) / ${C}), 210px); max-width: min(calc((100% - ${(C - 1) * P.horizontal}px) / ${C}), 210px); min-width: 168px;` : `flex: 0 0 calc((100% - ${(C - 1) * P.horizontal}px) / ${C}); max-width: calc((100% - ${(C - 1) * P.horizontal}px) / ${C}); min-width: 220px;`}
 }
-[data-ziplofy-section="${e}"] .fc-editorial-grid {
+[data-codiic-section="${e}"] .fc-editorial-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: ${w.horizontal}px;
-  row-gap: ${w.section}px;
+  column-gap: ${P.horizontal}px;
+  row-gap: ${P.section}px;
   align-items: start;
 }
-[data-ziplofy-section="${e}"] .fc-editorial-grid > article:nth-child(2) {
+[data-codiic-section="${e}"] .fc-editorial-grid > article:nth-child(2) {
   margin-top: 3rem;
 }
-[data-ziplofy-section="${e}"] .fc-editorial-grid > article:nth-child(3) {
+[data-codiic-section="${e}"] .fc-editorial-grid > article:nth-child(3) {
   margin-top: -1.25rem;
 }
-[data-ziplofy-section="${e}"] .fc-editorial-grid > article:nth-child(4) {
+[data-codiic-section="${e}"] .fc-editorial-grid > article:nth-child(4) {
   margin-top: 2.5rem;
 }
-[data-ziplofy-section="${e}"] .fc-editorial-grid > article:nth-child(2) .fc-media-inner,
-[data-ziplofy-section="${e}"] .fc-editorial-grid > article:nth-child(3) .fc-media-inner {
+[data-codiic-section="${e}"] .fc-editorial-grid > article:nth-child(2) .fc-media-inner,
+[data-codiic-section="${e}"] .fc-editorial-grid > article:nth-child(3) .fc-media-inner {
   aspect-ratio: 4 / 5;
   min-height: 200px;
 }
 @media (max-width: 749px) {
-  [data-ziplofy-section="${e}"] .fc-product-grid {
+  [data-codiic-section="${e}"] .fc-product-grid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
   }
-  [data-ziplofy-section="${e}"][data-mobile-columns="1"] .fc-product-grid > article { flex: 0 0 calc(92% - 8px); max-width: calc(92% - 8px); scroll-snap-align: start; }
-  [data-ziplofy-section="${e}"][data-mobile-columns="2"] .fc-product-grid > article { flex: 0 0 calc(50% - ${w.horizontal / 2}px); max-width: calc(50% - ${w.horizontal / 2}px); scroll-snap-align: start; }
-  [data-ziplofy-section="${e}"][data-fc-mobile-carousel="true"] .fc-editorial-grid {
+  [data-codiic-section="${e}"][data-mobile-columns="1"] .fc-product-grid > article { flex: 0 0 calc(92% - 8px); max-width: calc(92% - 8px); scroll-snap-align: start; }
+  [data-codiic-section="${e}"][data-mobile-columns="2"] .fc-product-grid > article { flex: 0 0 calc(50% - ${P.horizontal / 2}px); max-width: calc(50% - ${P.horizontal / 2}px); scroll-snap-align: start; }
+  [data-codiic-section="${e}"][data-fc-mobile-carousel="true"] .fc-editorial-grid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
-  [data-ziplofy-section="${e}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article {
+  [data-codiic-section="${e}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article {
     flex: 0 0 min(85%, 320px);
     margin-top: 0 !important;
     scroll-snap-align: start;
   }
-  [data-ziplofy-section="${e}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article .fc-media-inner {
+  [data-codiic-section="${e}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article .fc-media-inner {
     aspect-ratio: 4 / 3;
     min-height: 140px;
   }
 }
 `,
     [
-      ke,
-      Fe,
-      ge,
+      ue,
+      Se,
+      ye,
       e,
-      M,
-      f,
       C,
-      w.horizontal,
-      w.vertical,
-      w.section
+      F,
+      T,
+      P.horizontal,
+      P.vertical,
+      P.section
     ]
-  ), A = (ie) => {
-    const pe = s.current;
-    pe && pe.scrollBy({ left: pe.clientWidth * 0.85 * ie, behavior: "smooth" });
-  };
-  ue(() => {
-    x?.storeId && S({ storeId: x.storeId, page: 1, limit: O });
-  }, [S, O, x?.storeId]);
-  const J = z.slice(0, O), Q = ke && Ue !== "none" && J.length > M, q = W === "full" ? "100%" : L.maxWidth, ee = lt(
-    n,
-    `${d}.collection_header.nested_block_order`,
-    `${d}.collection_header.blocks`,
+  ), Xe = (Q) => {
+    const ae = c.current;
+    ae && ae.scrollBy({ left: ae.clientWidth * 0.85 * Q, behavior: "smooth" });
+  }, A = ue && ve !== "none" && _.length > C, oe = H === "full" ? "100%" : R.maxWidth, ee = et(
+    i,
+    `${l}.collection_header.nested_block_order`,
+    `${l}.collection_header.blocks`,
     ["collection_title", "view_all_button"]
-  ), ve = lt(
-    n,
-    `${d}.product_card.nested_block_order`,
-    `${d}.product_card.blocks`,
+  ), V = et(
+    i,
+    `${l}.product_card.nested_block_order`,
+    `${l}.product_card.blocks`,
     ["media", "product_title", "price"]
-  ), Y = F(
-    () => Sa(n, a, H, L.line),
-    [n, H, a]
-  ), Se = F(() => {
-    const ie = l(n, `${a}.mobileWidth`, "fill"), pe = U(n, `${a}.verticalOnMobile`, !1);
-    return wa(e, ie, pe);
-  }, [n, a, e]), le = F(
-    () => _a(
-      n,
+  ), G = M(
+    () => nd(i, a, w, R.line),
+    [i, w, a]
+  ), me = M(() => {
+    const Q = r(i, `${a}.mobileWidth`, "fill"), ae = E(i, `${a}.verticalOnMobile`, !1);
+    return id(e, Q, ae);
+  }, [i, a, e]), ne = M(
+    () => ad(
+      i,
       a,
-      { heading: b },
-      { text: xe, heading: xe, accent: $ }
+      { heading: y },
+      { text: ge, heading: ge, accent: k }
     ),
-    [n, b, v, xe, $, Me]
-  ), he = F(
-    () => za(n, r, H, L.line),
-    [n, H]
-  ), oe = F(
-    () => Ca(n, r, L.line),
-    [n]
-  ), re = F(
-    () => Ta(n, r, b, xe),
-    [n, b, xe]
-  ), ae = F(
-    () => Wa(n, r, v, {
-      text: xe,
-      heading: xe,
-      accent: $,
-      muted: H.muted
+    [i, y, v, ge, k, Ae]
+  ), he = M(
+    () => cd(i, d, w, R.line),
+    [i, w]
+  ), re = M(
+    () => dd(i, d, R.line),
+    [i]
+  ), de = M(
+    () => fd(i, d, y, ge),
+    [i, y, ge]
+  ), ie = M(
+    () => hd(i, d, v, {
+      text: ge,
+      heading: ge,
+      accent: k,
+      muted: w.muted
     }),
-    [n, v, xe, $, H.muted]
-  ), De = Le(n, t, e, [
+    [i, v, ge, k, w.muted]
+  ), ze = _e(i, t, e, [
     "collection_header",
     "product_card"
-  ]), Ge = /* @__PURE__ */ o(
-    E,
+  ]), Ie = /* @__PURE__ */ o(
+    N,
     {
-      nodeId: `${p}:block:collection_header`,
+      nodeId: `${h}:block:collection_header`,
       label: "Header",
       children: /* @__PURE__ */ m(
         "div",
@@ -10343,102 +10789,121 @@ function yt({
           "data-fc-collection-header": !0,
           style: {
             display: "flex",
-            flexDirection: Y.flexDirection,
-            flexWrap: Y.flexWrap,
-            justifyContent: Y.justifyContent,
-            alignItems: Y.alignItems,
-            gap: Y.gap,
-            width: Y.width,
-            minHeight: Y.minHeight,
-            marginBottom: w.section,
-            paddingTop: Y.paddingTop,
-            paddingBottom: Y.paddingBottom,
-            paddingLeft: Y.paddingLeft,
-            paddingRight: Y.paddingRight,
-            borderRadius: Y.borderRadius,
-            border: Y.border,
-            background: Y.background,
-            backgroundImage: Y.backgroundImage,
-            backgroundSize: Y.backgroundImage ? "cover" : void 0,
-            backgroundPosition: Y.backgroundImage ? "center" : void 0,
-            color: Y.color,
+            flexDirection: G.flexDirection,
+            flexWrap: G.flexWrap,
+            justifyContent: G.justifyContent,
+            alignItems: G.alignItems,
+            gap: G.gap,
+            width: G.width,
+            minHeight: G.minHeight,
+            marginBottom: P.section,
+            paddingTop: G.paddingTop,
+            paddingBottom: G.paddingBottom,
+            paddingLeft: G.paddingLeft,
+            paddingRight: G.paddingRight,
+            borderRadius: G.borderRadius,
+            border: G.border,
+            background: G.background,
+            backgroundImage: G.backgroundImage,
+            backgroundSize: G.backgroundImage ? "cover" : void 0,
+            backgroundPosition: G.backgroundImage ? "center" : void 0,
+            color: G.color,
             boxSizing: "border-box"
           },
           children: [
-            ee.map((ie) => ie === "collection_title" ? /* @__PURE__ */ o(
-              E,
-              {
-                nodeId: `${p}:block:collection_header:nested:collection_title`,
-                label: "Collection title",
-                children: /* @__PURE__ */ o(
-                  k,
+            ee.map((Q) => {
+              if (Q === "collection_title") {
+                const ae = bt(Y) ? "div" : "h2";
+                return /* @__PURE__ */ o(
+                  N,
                   {
-                    fieldPath: `${d}.collection_header.settings.title`,
-                    nodeId: p,
-                    label: "Text",
-                    as: "h2",
+                    nodeId: `${h}:block:collection_header:nested:collection_title`,
+                    label: "Collection title",
                     style: {
-                      margin: 0,
-                      width: le.width,
-                      maxWidth: le.maxWidth,
-                      fontFamily: le.fontFamily,
-                      fontSize: le.fontSize,
-                      fontWeight: le.fontWeight,
-                      lineHeight: le.lineHeight,
-                      color: le.color,
-                      background: le.background,
-                      paddingTop: le.paddingTop,
-                      paddingBottom: le.paddingBottom,
-                      paddingLeft: le.paddingLeft,
-                      paddingRight: le.paddingRight,
-                      borderRadius: le.borderRadius,
-                      boxSizing: "border-box"
+                      flex: ne.flex,
+                      minWidth: ne.flex ? 0 : void 0
                     },
-                    children: te
-                  }
-                )
-              },
-              ie
-            ) : ie === "view_all_button" && B.trim() ? /* @__PURE__ */ o(
-              E,
-              {
-                nodeId: `${p}:block:collection_header:nested:view_all_button`,
-                label: "View all button",
-                children: /* @__PURE__ */ o(
-                  k,
-                  {
-                    fieldPath: `${d}.collection_header.settings.viewAllLabel`,
-                    nodeId: p,
-                    label: "Label",
                     children: /* @__PURE__ */ o(
-                      I,
+                      S,
                       {
-                        to: de,
-                        style: { color: c.primary, fontWeight: 600, textDecoration: "none", fontSize: 14 },
-                        children: B
+                        fieldPath: `${l}.collection_header.settings.title`,
+                        nodeId: h,
+                        label: "Text",
+                        as: ae,
+                        style: {
+                          margin: 0,
+                          width: ne.width,
+                          maxWidth: ne.maxWidth,
+                          textAlign: ne.textAlign,
+                          color: ne.color,
+                          background: ne.background,
+                          paddingTop: ne.paddingTop,
+                          paddingBottom: ne.paddingBottom,
+                          paddingLeft: ne.paddingLeft,
+                          paddingRight: ne.paddingRight,
+                          borderRadius: ne.borderRadius,
+                          boxSizing: "border-box"
+                        },
+                        children: /* @__PURE__ */ o(
+                          yt,
+                          {
+                            html: Y,
+                            style: {
+                              fontFamily: ne.fontFamily,
+                              fontSize: ne.fontSize,
+                              fontWeight: ne.fontWeight,
+                              lineHeight: ne.lineHeight,
+                              color: ne.color
+                            }
+                          }
+                        )
                       }
                     )
-                  }
-                )
-              },
-              ie
-            ) : null),
-            V ? /* @__PURE__ */ o("p", { style: { margin: 0, fontSize: 14, color: H.muted, maxWidth: 480 }, children: V }) : null
+                  },
+                  Q
+                );
+              }
+              return Q === "view_all_button" && J.trim() ? /* @__PURE__ */ o(
+                N,
+                {
+                  nodeId: `${h}:block:collection_header:nested:view_all_button`,
+                  label: "View all button",
+                  children: /* @__PURE__ */ o(
+                    S,
+                    {
+                      fieldPath: `${l}.collection_header.settings.viewAllLabel`,
+                      nodeId: h,
+                      label: "Label",
+                      children: /* @__PURE__ */ o(
+                        D,
+                        {
+                          to: I,
+                          style: { color: u.primary, fontWeight: 600, textDecoration: "none", fontSize: 14 },
+                          children: J
+                        }
+                      )
+                    }
+                  )
+                },
+                Q
+              ) : null;
+            }),
+            O ? /* @__PURE__ */ o("p", { style: { margin: 0, fontSize: 14, color: w.muted, maxWidth: 480 }, children: O }) : null
           ]
         }
       )
     }
-  ), se = J.map((ie) => {
-    const pe = ie.imageUrls?.[0], nt = ce ? /* @__PURE__ */ o(E, { nodeId: `${p}:block:product_card:nested:media`, label: "Media", children: /* @__PURE__ */ o(
+  ), Pe = _.map((Q) => {
+    const ae = Q.imageUrls?.[0], Ue = ce ? /* @__PURE__ */ o(N, { nodeId: `${h}:block:product_card:nested:media`, label: "Media", children: /* @__PURE__ */ o(
       "div",
       {
         style: {
-          border: oe.border,
-          borderRadius: oe.borderRadius,
-          paddingTop: oe.paddingTop,
-          paddingBottom: oe.paddingBottom,
-          paddingLeft: oe.paddingLeft,
-          paddingRight: oe.paddingRight,
+          border: re.border,
+          borderRadius: re.borderRadius,
+          paddingTop: re.paddingTop,
+          paddingBottom: re.paddingBottom,
+          paddingLeft: re.paddingLeft,
+          paddingRight: re.paddingRight,
           boxSizing: "border-box"
         },
         children: /* @__PURE__ */ o(
@@ -10447,58 +10912,58 @@ function yt({
             className: "fc-media-inner",
             style: {
               width: "100%",
-              aspectRatio: ge ? "1 / 1" : oe.aspectRatio ?? "1 / 1",
-              minHeight: ge ? 116 : oe.aspectRatio ? void 0 : 140,
-              maxHeight: ge ? 160 : 280,
+              aspectRatio: ye ? "1 / 1" : re.aspectRatio ?? "1 / 1",
+              minHeight: ye ? 116 : re.aspectRatio ? void 0 : 140,
+              maxHeight: ye ? 160 : 280,
               overflow: "hidden",
-              borderRadius: oe.borderRadius > 0 ? Math.max(
+              borderRadius: re.borderRadius > 0 ? Math.max(
                 0,
-                oe.borderRadius - Math.max(
-                  oe.paddingTop,
-                  oe.paddingBottom,
-                  oe.paddingLeft,
-                  oe.paddingRight
+                re.borderRadius - Math.max(
+                  re.paddingTop,
+                  re.paddingBottom,
+                  re.paddingLeft,
+                  re.paddingRight
                 )
               ) : 0,
-              background: pe ? `center / cover no-repeat url(${pe})` : "linear-gradient(135deg, #f3f4f6, #e5e7eb)"
+              background: ae ? `center / cover no-repeat url(${ae})` : "linear-gradient(135deg, #f3f4f6, #e5e7eb)"
             }
           }
         )
       }
-    ) }) : null, gt = ye ? /* @__PURE__ */ o(E, { nodeId: `${p}:block:product_card:nested:product_title`, label: "Product title", children: /* @__PURE__ */ o(
+    ) }) : null, Ee = pe ? /* @__PURE__ */ o(N, { nodeId: `${h}:block:product_card:nested:product_title`, label: "Product title", children: /* @__PURE__ */ o(
       "h3",
       {
         style: {
           margin: 0,
-          width: re.width,
-          maxWidth: re.maxWidth,
-          textAlign: re.textAlign,
-          fontFamily: re.fontFamily,
-          fontSize: Math.max(12, Math.round(re.fontSize * Te)),
-          fontWeight: re.fontWeight,
-          lineHeight: re.lineHeight,
-          color: re.color,
-          background: re.background,
-          paddingTop: re.paddingTop,
-          paddingBottom: re.paddingBottom,
-          paddingLeft: re.paddingLeft,
-          paddingRight: re.paddingRight,
-          borderRadius: re.borderRadius,
+          width: de.width,
+          maxWidth: de.maxWidth,
+          textAlign: de.textAlign,
+          fontFamily: de.fontFamily,
+          fontSize: Math.max(12, Math.round(de.fontSize * We)),
+          fontWeight: de.fontWeight,
+          lineHeight: de.lineHeight,
+          color: de.color,
+          background: de.background,
+          paddingTop: de.paddingTop,
+          paddingBottom: de.paddingBottom,
+          paddingLeft: de.paddingLeft,
+          paddingRight: de.paddingRight,
+          borderRadius: de.borderRadius,
           boxSizing: "border-box"
         },
-        children: ie.title
+        children: Q.title
       }
-    ) }) : null, Je = Oe ? /* @__PURE__ */ o(E, { nodeId: `${p}:block:product_card:nested:price`, label: "Price", children: /* @__PURE__ */ m(
+    ) }) : null, Re = be ? /* @__PURE__ */ o(N, { nodeId: `${h}:block:product_card:nested:price`, label: "Price", children: /* @__PURE__ */ m(
       "div",
       {
         style: {
           margin: 0,
-          width: ae.width,
-          textAlign: ae.textAlign,
-          paddingTop: ae.paddingTop,
-          paddingBottom: ae.paddingBottom,
-          paddingLeft: ae.paddingLeft,
-          paddingRight: ae.paddingRight,
+          width: ie.width,
+          textAlign: ie.textAlign,
+          paddingTop: ie.paddingTop,
+          paddingBottom: ie.paddingBottom,
+          paddingLeft: ie.paddingLeft,
+          paddingRight: ie.paddingRight,
           boxSizing: "border-box"
         },
         children: [
@@ -10507,91 +10972,98 @@ function yt({
             {
               style: {
                 margin: 0,
-                fontFamily: ae.fontFamily,
-                fontSize: Math.max(11, Math.round(ae.fontSize * Te)),
-                fontWeight: ae.fontWeight,
-                lineHeight: ae.lineHeight,
-                color: ae.color
+                fontFamily: ie.fontFamily,
+                fontSize: Math.max(11, Math.round(ie.fontSize * We)),
+                fontWeight: ie.fontWeight,
+                lineHeight: ie.lineHeight,
+                color: ie.color
               },
               children: (() => {
-                const $e = Pa(
-                  ie.price,
-                  ie.compareAtPrice,
-                  ae,
-                  Ye
+                const se = pd(
+                  Q.price,
+                  Q.compareAtPrice,
+                  ie,
+                  Ge
                 );
-                return /* @__PURE__ */ m(ne, { children: [
-                  /* @__PURE__ */ o("span", { children: $e.primary }),
-                  $e.compareAt ? /* @__PURE__ */ o(
+                return /* @__PURE__ */ m(Z, { children: [
+                  /* @__PURE__ */ o("span", { children: se.primary }),
+                  se.compareAt ? /* @__PURE__ */ o(
                     "span",
                     {
                       style: {
                         marginLeft: 8,
-                        fontSize: ae.fontSize * 0.85,
+                        fontSize: ie.fontSize * 0.85,
                         fontWeight: 400,
-                        color: H.muted,
+                        color: w.muted,
                         textDecoration: "line-through"
                       },
-                      children: $e.compareAt
+                      children: se.compareAt
                     }
                   ) : null
                 ] });
               })()
             }
           ),
-          ae.showInstallments ? /* @__PURE__ */ o("p", { style: { margin: "4px 0 0", fontSize: 12, color: H.muted }, children: "Pay in installments" }) : null,
-          ae.showTaxInfo ? /* @__PURE__ */ o("p", { style: { margin: "2px 0 0", fontSize: 11, color: H.muted }, children: "Tax included" }) : null
+          ie.showInstallments ? /* @__PURE__ */ o("p", { style: { margin: "4px 0 0", fontSize: 12, color: w.muted }, children: "Pay in installments" }) : null,
+          ie.showTaxInfo ? /* @__PURE__ */ o("p", { style: { margin: "2px 0 0", fontSize: 11, color: w.muted }, children: "Tax included" }) : null
         ]
       }
     ) }) : null;
     return /* @__PURE__ */ o(
-      "article",
+      D,
       {
-        style: {
-          border: he.border === "none" ? `1px solid ${L.line}` : he.border,
-          borderRadius: he.borderRadius,
-          overflow: "hidden",
-          background: he.background,
-          color: he.color,
-          paddingTop: he.paddingTop,
-          paddingBottom: he.paddingBottom,
-          paddingLeft: he.paddingLeft,
-          paddingRight: he.paddingRight,
-          display: "flex",
-          flexDirection: "column",
-          boxSizing: "border-box"
-        },
-        children: ve.map(($e) => $e === "media" ? /* @__PURE__ */ o("div", { children: nt }, $e) : $e === "product_title" ? /* @__PURE__ */ o(
-          "div",
+        to: productPath(Q.urlHandle ?? Q._id),
+        style: { textDecoration: "none", color: "inherit" },
+        children: /* @__PURE__ */ o(
+          "article",
           {
             style: {
-              padding: `${He}px ${He}px 0`
+              border: he.border === "none" ? `1px solid ${R.line}` : he.border,
+              borderRadius: he.borderRadius,
+              overflow: "hidden",
+              background: he.background,
+              color: he.color,
+              paddingTop: he.paddingTop,
+              paddingBottom: he.paddingBottom,
+              paddingLeft: he.paddingLeft,
+              paddingRight: he.paddingRight,
+              display: "flex",
+              flexDirection: "column",
+              boxSizing: "border-box"
             },
-            children: gt
-          },
-          $e
-        ) : $e === "price" ? /* @__PURE__ */ o(
-          "div",
-          {
-            style: {
-              padding: `0 ${He}px ${He}px`
-            },
-            children: Je
-          },
-          $e
-        ) : null)
+            children: V.map((se) => se === "media" ? /* @__PURE__ */ o("div", { children: Ue }, se) : se === "product_title" ? /* @__PURE__ */ o(
+              "div",
+              {
+                style: {
+                  padding: `${xe}px ${xe}px 0`
+                },
+                children: Ee
+              },
+              se
+            ) : se === "price" ? /* @__PURE__ */ o(
+              "div",
+              {
+                style: {
+                  padding: `0 ${xe}px ${xe}px`
+                },
+                children: Re
+              },
+              se
+            ) : null)
+          }
+        )
       },
-      ie._id
+      Q._id
     );
-  }), Ne = Fe ? /* @__PURE__ */ o(
+  }), Le = Se ? /* @__PURE__ */ o(
     "div",
     {
-      ref: C ? s : void 0,
+      ref: T ? c : void 0,
       className: "fc-editorial-grid",
-      "data-fc-mobile-carousel": C ? "true" : "false",
-      children: se
+      "data-fc-mobile-carousel": T ? "true" : "false",
+      children: Pe
     }
-  ) : ke ? /* @__PURE__ */ m(
+  ) : ue ? /* @__PURE__ */ m(
     "div",
     {
       style: {
@@ -10600,23 +11072,23 @@ function yt({
         gap: 8
       },
       children: [
-        Q ? /* @__PURE__ */ o(
-          Go,
+        A ? /* @__PURE__ */ o(
+          Xo,
           {
             label: "Previous",
-            onClick: () => A(-1),
-            background: je,
-            shape: Ue === "chevron" ? "chevron" : "arrows"
+            onClick: () => Xe(-1),
+            background: Fe,
+            shape: ve === "chevron" ? "chevron" : "arrows"
           }
         ) : null,
-        /* @__PURE__ */ o("div", { ref: s, className: "fc-product-grid", style: { flex: 1, minWidth: 0 }, children: se }),
-        Q ? /* @__PURE__ */ o(
-          Go,
+        /* @__PURE__ */ o("div", { ref: c, className: "fc-product-grid", style: { flex: 1, minWidth: 0 }, children: Pe }),
+        A ? /* @__PURE__ */ o(
+          Xo,
           {
             label: "Next",
-            onClick: () => A(1),
-            background: je,
-            shape: Ue === "chevron" ? "chevron" : "arrows"
+            onClick: () => Xe(1),
+            background: Fe,
+            shape: ve === "chevron" ? "chevron" : "arrows"
           }
         ) : null
       ]
@@ -10624,210 +11096,410 @@ function yt({
   ) : /* @__PURE__ */ o(
     "div",
     {
-      ref: C ? s : void 0,
+      ref: T ? c : void 0,
       className: "fc-product-grid",
-      "data-mobile-columns": f,
-      children: se
+      "data-mobile-columns": F,
+      children: Pe
     }
-  ), at = /* @__PURE__ */ o(E, { nodeId: `${p}:block:product_card`, label: "Product card", children: J.length === 0 ? /* @__PURE__ */ o("p", { style: { color: H.muted, fontSize: 14 }, children: D }) : Ne }), Ke = {
-    collection_header: Ge,
-    product_card: at
+  ), Ne = /* @__PURE__ */ o(N, { nodeId: `${h}:block:product_card`, label: "Product card", children: _.length === 0 ? /* @__PURE__ */ o("p", { style: { color: w.muted, fontSize: 14 }, children: X }) : Le }), Ye = {
+    collection_header: Ie,
+    product_card: Ne
   };
-  return /* @__PURE__ */ m(ne, { children: [
-    Ve ? /* @__PURE__ */ o("style", { children: Ve }) : null,
-    /* @__PURE__ */ o("style", { children: Qe }),
-    Se ? /* @__PURE__ */ o("style", { children: Se }) : null,
+  return /* @__PURE__ */ m(Z, { children: [
+    Be ? /* @__PURE__ */ o("style", { children: Be }) : null,
+    /* @__PURE__ */ o("style", { children: qe }),
+    me ? /* @__PURE__ */ o("style", { children: me }) : null,
     /* @__PURE__ */ o(
-      G,
+      B,
       {
-        nodeId: p,
-        label: Ie ? "Featured collection: Grid" : Fe ? "Featured collection: Editorial" : ke ? "Featured collection: Carousel" : "Featured collection",
-        "data-ziplofy-section": e,
-        "data-mobile-columns": f,
-        "data-fc-mobile-carousel": Fe && C ? "true" : "false",
+        nodeId: h,
+        label: je ? "Featured collection: Grid" : Se ? "Featured collection: Editorial" : ue ? "Featured collection: Carousel" : "Featured collection",
+        "data-codiic-section": e,
+        "data-mobile-columns": F,
+        "data-fc-mobile-carousel": Se && T ? "true" : "false",
         style: {
-          padding: `${R}px ${L.padX}px ${T}px`,
+          padding: `${z}px ${R.padX}px ${L}px`,
           fontFamily: v,
-          color: xe,
-          background: Me
+          color: ge,
+          background: Ae
         },
-        children: /* @__PURE__ */ o("div", { style: { maxWidth: q, margin: "0 auto" }, children: De.map((ie) => {
-          const pe = Ke[ie];
-          return pe ? /* @__PURE__ */ o("div", { children: pe }, ie) : null;
+        children: /* @__PURE__ */ o("div", { style: { maxWidth: oe, margin: "0 auto" }, children: ze.map((Q) => {
+          const ae = Ye[Q];
+          return ae ? /* @__PURE__ */ o("div", { children: ae }, Q) : null;
         }) })
       }
     )
   ] });
 }
-const Aa = {
-  hero_main: kt,
-  featured_collection: yt,
-  divider: $a,
-  contact_form: Vo,
-  email_signup: Ko,
-  custom_section: dr,
-  product_highlight: Jo,
-  editorial: ei,
-  editorial_jumbo: ti,
-  image_compare: oi,
-  image_with_text: ii,
-  storytelling_logo: si,
-  storytelling_video: ui,
-  faq_section: ni,
-  icons_with_text: li,
-  multicolumn_section: ri,
-  pull_quote_section: ai,
-  rich_text_section: di,
-  text_marquee_section: ci,
-  blog_posts_carousel: hr,
-  blog_posts_editorial: gr,
-  blog_posts_grid: yr,
-  storytelling_carousel: Sr,
-  product_hotspots: Pr,
-  recommended_products: Mr,
-  collection_links_spotlight: wo,
-  collection_links_text: wo,
-  collection_list_bento: Vr,
-  collection_list_carousel: Zr,
-  collection_list_editorial: ta,
-  collection_list_grid: na,
-  layered_slideshow: ca,
-  slideshow_full_frame: ma,
-  slideshow_inset: xa
-}, Ua = ["hero_main", "featured_collection"];
-function Na() {
-  const e = j(), t = Ei(e, "index", Ua);
-  return /* @__PURE__ */ o(Ae, { children: t.map((i) => {
-    if (!Gi(e, "index", i)) return null;
-    let n = i;
-    i.startsWith("divider") ? n = "divider" : i.startsWith("contact_form") ? n = "contact_form" : i.startsWith("email_signup") ? n = "email_signup" : i.startsWith("custom_section") ? n = "custom_section" : i.startsWith("product_highlight") ? n = "product_highlight" : i.startsWith("storytelling_video") ? n = "storytelling_video" : i.startsWith("faq_section") ? n = "faq_section" : i.startsWith("icons_with_text") ? n = "icons_with_text" : i.startsWith("multicolumn_section") ? n = "multicolumn_section" : i.startsWith("pull_quote_section") ? n = "pull_quote_section" : i.startsWith("rich_text_section") ? n = "rich_text_section" : i.startsWith("text_marquee_section") ? n = "text_marquee_section" : i.startsWith("blog_posts_carousel") ? n = "blog_posts_carousel" : i.startsWith("blog_posts_editorial") ? n = "blog_posts_editorial" : i.startsWith("blog_posts_grid") ? n = "blog_posts_grid" : i.startsWith("storytelling_carousel") ? n = "storytelling_carousel" : i.startsWith("product_hotspots") ? n = "product_hotspots" : i.startsWith("recommended_products") ? n = "recommended_products" : i.startsWith("collection_links_spotlight") ? n = "collection_links_spotlight" : i.startsWith("collection_links_text") ? n = "collection_links_text" : i.startsWith("collection_list_bento") ? n = "collection_list_bento" : i.startsWith("collection_list_carousel") ? n = "collection_list_carousel" : i.startsWith("collection_list_editorial") ? n = "collection_list_editorial" : i.startsWith("collection_list_grid") ? n = "collection_list_grid" : i.startsWith("layered_slideshow") ? n = "layered_slideshow" : i.startsWith("slideshow_full_frame") ? n = "slideshow_full_frame" : i.startsWith("slideshow_inset") ? n = "slideshow_inset" : i.startsWith("storytelling_logo") ? n = "storytelling_logo" : i.startsWith("image_with_text") ? n = "image_with_text" : i.startsWith("image_compare") ? n = "image_compare" : i.startsWith("editorial_jumbo") ? n = "editorial_jumbo" : i.startsWith("editorial") ? n = "editorial" : i.startsWith("featured_collection") && (n = "featured_collection");
-    const s = Aa[n];
-    return s ? /* @__PURE__ */ o(s, { sectionId: i, templateId: "index" }, i) : null;
-  }) });
-}
-const me = "templates.login.sections.login_main";
-function Oa() {
-  const e = j(), { login: t, loading: i } = Ze(), { storeFrontMeta: n } = it(), s = $t(), { text: u, primary: d, fontHeading: a, fontBody: r } = X(), [p, c] = Z(""), [h, g] = Z(""), $ = l(e, `${me}.settings.eyebrow`, ""), b = l(e, `${me}.settings.title`), v = l(e, `${me}.settings.subtitle`, ""), x = l(e, `${me}.blocks.form_fields.blocks.email_field.settings.placeholder`), z = l(e, `${me}.blocks.form_fields.blocks.password_field.settings.placeholder`), S = l(e, `${me}.blocks.primary_button.settings.label`), _ = l(e, `${me}.blocks.primary_button.settings.loadingLabel`), H = l(e, `${me}.blocks.footer_link.blocks.signup_prompt.settings.text`), w = l(e, `${me}.blocks.footer_link.blocks.signup_link.settings.label`), R = l(e, `${me}.blocks.footer_link.blocks.signup_link.settings.href`), T = l(e, `${me}.blocks.forgot_password_link.settings.label`), W = l(e, `${me}.blocks.forgot_password_link.settings.href`), P = async (C) => {
-    C.preventDefault(), n?.storeId && (await t({ storeId: n.storeId, email: p, password: h }), s("/"));
-  };
-  return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(
-    G,
+function Cd() {
+  const { collections: e, loading: t } = at(), { text: n, muted: i, fontHeading: c, fontBody: s } = q(), l = e.filter(
+    (a) => a.urlHandle?.trim() && a.urlHandle.trim().toLowerCase() !== "all"
+  );
+  return /* @__PURE__ */ o(
+    "section",
     {
-      sectionId: "login_main",
-      label: "Login form",
-      style: { padding: `48px ${L.padX}px 80px`, fontFamily: r, color: u },
-      children: /* @__PURE__ */ m("div", { style: { maxWidth: 440, margin: "0 auto", border: `1px solid ${L.line}`, borderRadius: 12, padding: 40 }, children: [
-        $ ? /* @__PURE__ */ o(k, { fieldPath: `${me}.settings.eyebrow`, label: "Eyebrow", as: "p", style: { fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.7, margin: "0 0 8px" }, children: $ }) : null,
-        /* @__PURE__ */ o(k, { fieldPath: `${me}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: a, fontSize: 28, marginTop: 0 }, children: b }),
-        v ? /* @__PURE__ */ o(k, { fieldPath: `${me}.settings.subtitle`, label: "Subtext", as: "p", style: { lineHeight: 1.6, opacity: 0.85, margin: "12px 0 24px" }, children: v }) : null,
-        /* @__PURE__ */ m("form", { onSubmit: (C) => {
-          P(C);
-        }, style: { display: "grid", gap: 16 }, children: [
-          /* @__PURE__ */ m(E, { nodeId: "template:login:login_main:block:form_fields", label: "Form fields", children: [
-            /* @__PURE__ */ o("input", { value: p, onChange: (C) => c(C.target.value), placeholder: x, style: We }),
-            /* @__PURE__ */ o("input", { value: h, onChange: (C) => g(C.target.value), type: "password", placeholder: z, style: We })
-          ] }),
-          /* @__PURE__ */ o(E, { nodeId: "template:login:login_main:block:forgot_password_link", label: "Forgot password", children: /* @__PURE__ */ o("p", { style: { margin: 0, textAlign: "right" }, children: /* @__PURE__ */ o(I, { to: W, style: { color: d, fontSize: 13, fontWeight: 600 }, children: /* @__PURE__ */ o(k, { fieldPath: `${me}.blocks.forgot_password_link.settings.label`, label: "Link label", as: "span", children: T }) }) }) }),
-          /* @__PURE__ */ o(E, { nodeId: "template:login:login_main:block:primary_button", label: "Submit button", children: /* @__PURE__ */ o(
-            "button",
+      className: "hz-collections-index",
+      style: {
+        padding: `clamp(48px, 8vw, 96px) ${R.padX}px`,
+        fontFamily: s,
+        color: n
+      },
+      children: /* @__PURE__ */ m("div", { style: { maxWidth: R.maxWidth, margin: "0 auto" }, children: [
+        /* @__PURE__ */ m("header", { className: "hz-reveal", style: { marginBottom: "clamp(32px, 5vw, 56px)" }, children: [
+          /* @__PURE__ */ o(
+            "p",
             {
-              type: "submit",
-              disabled: i,
-              style: {
-                marginTop: 8,
-                background: d,
-                color: "#fff",
-                border: "none",
-                padding: "14px 20px",
-                borderRadius: 8,
-                cursor: i ? "wait" : "pointer",
-                fontWeight: 600,
-                width: "100%"
-              },
-              children: i ? _ : S
+              className: "hz-eyebrow",
+              style: { margin: "0 0 12px", color: i, letterSpacing: "0.22em", fontSize: 11 },
+              children: "Explore"
             }
-          ) })
+          ),
+          /* @__PURE__ */ o(
+            "h1",
+            {
+              style: {
+                margin: 0,
+                fontFamily: c,
+                fontSize: "clamp(2.25rem, 5vw, 3.5rem)",
+                fontWeight: 400,
+                lineHeight: 1.05,
+                letterSpacing: "-0.03em"
+              },
+              children: "Collections"
+            }
+          ),
+          /* @__PURE__ */ o("p", { style: { margin: "16px 0 0", maxWidth: 480, color: i, lineHeight: 1.7, fontSize: 15 }, children: "Curated edits, thoughtfully grouped. Choose a world to step into." })
         ] }),
-        /* @__PURE__ */ o(E, { nodeId: "template:login:login_main:block:footer_link", label: "Sign up link", children: /* @__PURE__ */ m("p", { style: { marginTop: 20, fontSize: 14 }, children: [
-          /* @__PURE__ */ m(k, { fieldPath: `${me}.blocks.footer_link.blocks.signup_prompt.settings.text`, label: "Prompt text", as: "span", children: [
-            H,
-            " "
-          ] }),
-          /* @__PURE__ */ o(I, { to: R, style: { color: d, fontWeight: 600 }, children: /* @__PURE__ */ o(k, { fieldPath: `${me}.blocks.footer_link.blocks.signup_link.settings.label`, label: "Link label", as: "span", children: w }) })
-        ] }) })
+        t && l.length === 0 ? /* @__PURE__ */ o("p", { style: { color: i, fontSize: 14 }, children: "Loading collections…" }) : null,
+        !t && l.length === 0 ? /* @__PURE__ */ o("p", { style: { color: i, fontSize: 14 }, children: "No collections yet." }) : null,
+        /* @__PURE__ */ m(
+          "div",
+          {
+            className: "hz-collections-grid",
+            style: {
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+              gap: "clamp(16px, 2.5vw, 28px)"
+            },
+            children: [
+              /* @__PURE__ */ m(D, { to: dt.allProducts, className: "hz-collection-card hz-reveal", children: [
+                /* @__PURE__ */ o("div", { className: "hz-collection-card__media hz-collection-card__media--all" }),
+                /* @__PURE__ */ m("div", { className: "hz-collection-card__body", children: [
+                  /* @__PURE__ */ o("span", { className: "hz-collection-card__label", children: "Everything" }),
+                  /* @__PURE__ */ o("span", { className: "hz-collection-card__title", children: "All products" })
+                ] })
+              ] }),
+              l.map((a, d) => {
+                const h = a.urlHandle?.trim() ?? "", u = Sn(h), p = a.imageUrl?.trim();
+                return /* @__PURE__ */ m(
+                  D,
+                  {
+                    to: u,
+                    className: "hz-collection-card hz-reveal",
+                    style: { animationDelay: `${Math.min(d, 8) * 60}ms` },
+                    children: [
+                      /* @__PURE__ */ o(
+                        "div",
+                        {
+                          className: "hz-collection-card__media",
+                          style: p ? { backgroundImage: `url(${p})` } : { background: "linear-gradient(145deg, var(--hz-surface), var(--hz-surface-2))" }
+                        }
+                      ),
+                      /* @__PURE__ */ m("div", { className: "hz-collection-card__body", children: [
+                        /* @__PURE__ */ o("span", { className: "hz-collection-card__label", children: "Collection" }),
+                        /* @__PURE__ */ o("span", { className: "hz-collection-card__title", children: a.title?.trim() || "Untitled" })
+                      ] })
+                    ]
+                  },
+                  a._id
+                );
+              })
+            ]
+          }
+        )
       ] })
     }
-  ) });
+  );
 }
-const we = "templates.orders.sections.orders_main";
-function Ga() {
-  const e = j(), t = rt(), { user: i, checkAuth: n } = Ze(), { orders: s, getOrdersByCustomerId: u, loading: d } = yi(), { text: a, fontHeading: r, fontBody: p } = X(), c = l(e, `${we}.settings.title`), h = l(e, `${we}.settings.subtitle`, ""), g = l(e, `${we}.blocks.loading_state.settings.message`), $ = l(e, `${we}.blocks.empty_state.settings.message`), b = l(e, `${we}.blocks.order_card.blocks.order_total_line.settings.label`), v = l(e, `${we}.blocks.order_card.blocks.order_date_line.settings.prefix`), x = l(e, `${we}.blocks.order_card.blocks.status_line.settings.prefix`);
-  ue(() => {
-    t || n();
-  }, [n, t]), ue(() => {
-    t || !i?._id || u(i._id);
-  }, [u, t, i?._id]);
-  const z = F(() => s.length > 0 ? s : t ? Ui : [], [t, s]), S = !t && d, _ = !S && z.length === 0;
-  return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ m(
-    G,
-    {
-      sectionId: "orders_main",
-      label: "Order history",
-      style: { padding: `48px ${L.padX}px 80px`, maxWidth: 720, margin: "0 auto", fontFamily: p, color: a },
-      children: [
-        /* @__PURE__ */ o(k, { fieldPath: `${we}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: r, fontSize: 32, marginTop: 0 }, children: c }),
-        h ? /* @__PURE__ */ o(k, { fieldPath: `${we}.settings.subtitle`, label: "Subtext", as: "p", style: { opacity: 0.85, margin: "8px 0 24px" }, children: h }) : null,
-        S ? /* @__PURE__ */ o(E, { nodeId: "template:orders:orders_main:block:loading_state", label: "Loading", children: /* @__PURE__ */ o(k, { fieldPath: `${we}.blocks.loading_state.settings.message`, label: "Loading message", as: "p", style: { opacity: 0.7 }, children: g }) }) : null,
-        _ ? /* @__PURE__ */ o(E, { nodeId: "template:orders:orders_main:block:empty_state", label: "Empty orders", children: /* @__PURE__ */ o(k, { fieldPath: `${we}.blocks.empty_state.settings.message`, label: "Empty message", as: "p", style: { opacity: 0.7 }, children: $ }) }) : null,
-        /* @__PURE__ */ o("div", { style: { display: "grid", gap: 16, marginTop: 24 }, children: z.map((H) => /* @__PURE__ */ o(E, { nodeId: "template:orders:orders_main:block:order_card", label: "Order card", children: /* @__PURE__ */ m("article", { style: { border: `1px solid ${L.line}`, borderRadius: 10, padding: 20 }, children: [
-          /* @__PURE__ */ o(E, { nodeId: "template:orders:orders_main:block:order_card:block:order_total_line", label: "Order total", children: /* @__PURE__ */ m("p", { style: { margin: 0, fontWeight: 600 }, children: [
-            /* @__PURE__ */ o(k, { fieldPath: `${we}.blocks.order_card.blocks.order_total_line.settings.label`, label: "Total label", as: "span", children: b }),
-            ": ",
-            Ye(H.total)
-          ] }) }),
-          /* @__PURE__ */ o("p", { style: { margin: "8px 0 0", fontSize: 13, opacity: 0.75, wordBreak: "break-all" }, children: H._id }),
-          /* @__PURE__ */ o(E, { nodeId: "template:orders:orders_main:block:order_card:block:order_date_line", label: "Order date", children: /* @__PURE__ */ m("p", { style: { margin: "8px 0 0", fontSize: 13, opacity: 0.75 }, children: [
-            /* @__PURE__ */ o(k, { fieldPath: `${we}.blocks.order_card.blocks.order_date_line.settings.prefix`, label: "Date prefix", as: "span", children: v }),
-            ": ",
-            H.orderDate
-          ] }) }),
-          /* @__PURE__ */ o(E, { nodeId: "template:orders:orders_main:block:order_card:block:status_line", label: "Status", children: /* @__PURE__ */ m("p", { style: { margin: "8px 0 0" }, children: [
-            /* @__PURE__ */ o(k, { fieldPath: `${we}.blocks.order_card.blocks.status_line.settings.prefix`, label: "Status prefix", as: "span", children: x }),
-            " ",
-            H.status
-          ] }) })
-        ] }) }, H._id)) })
-      ]
-    }
-  ) });
-}
-const _e = "templates.preferences.sections.preferences_main";
-function ja() {
-  const e = j(), t = rt(), { user: i, checkAuth: n, updateUser: s, loading: u } = Ze(), { text: d, primary: a, fontHeading: r, fontBody: p } = X(), [c, h] = Z("en"), [g, $] = Z(!1), [b, v] = Z(!1), x = i ?? (t ? Xe : null), z = l(e, `${_e}.settings.title`), S = l(e, `${_e}.settings.subtitle`, ""), _ = l(e, `${_e}.blocks.signed_out.settings.message`), H = l(e, `${_e}.blocks.marketing_options.blocks.email_marketing.settings.label`), w = l(e, `${_e}.blocks.marketing_options.blocks.sms_marketing.settings.label`), R = l(e, `${_e}.blocks.marketing_options.blocks.language_field.settings.label`), T = l(e, `${_e}.blocks.save_button.settings.label`), W = l(e, `${_e}.blocks.save_button.settings.savingLabel`);
-  ue(() => {
-    t || n();
-  }, [n, t]), ue(() => {
-    x && (h(x.language || "en"), $(!!x.agreedToMarketingEmails), v(!!x.agreedToSmsMarketing));
-  }, [x]);
-  const P = async (C) => {
-    C.preventDefault(), !(t || !i?._id) && await s(i._id, { language: c, agreedToMarketingEmails: g, agreedToSmsMarketing: b });
+function _d(e) {
+  const t = e.variants, n = Array.isArray(t) && t.length ? t[0] : null, i = typeof n?.price == "number" ? n.price : typeof e.price == "number" ? e.price : 0, c = typeof n?.compareAtPrice == "number" ? n.compareAtPrice : null, s = typeof n?.quantity == "number" ? n.quantity : null, l = Array.isArray(e.imageUrls) && e.imageUrls[0] || (typeof e.imageUrl == "string" ? e.imageUrl : "") || "";
+  return {
+    id: e._id,
+    urlHandle: e.urlHandle?.trim() || e._id,
+    title: e.title?.trim() || "Product title",
+    price: i,
+    compareAtPrice: c,
+    imageUrl: l,
+    soldOut: s !== null ? s <= 0 : !1
   };
-  return x ? /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "preferences_main", label: "Preferences", style: { padding: `48px ${L.padX}px 80px`, fontFamily: p, color: d }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 520, margin: "0 auto", border: `1px solid ${L.line}`, borderRadius: 12, padding: 40 }, children: [
-    /* @__PURE__ */ o(k, { fieldPath: `${_e}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: r, fontSize: 28, marginTop: 0 }, children: z }),
-    S ? /* @__PURE__ */ o(k, { fieldPath: `${_e}.settings.subtitle`, label: "Subtext", as: "p", style: { lineHeight: 1.6, opacity: 0.85, margin: "12px 0 24px" }, children: S }) : null,
+}
+function _n() {
+  const { activeCollection: e, products: t, loading: n } = at(), i = t.map(_d);
+  return {
+    collection: e,
+    products: i,
+    loading: n,
+    itemCount: i.length
+  };
+}
+function Wd({
+  sectionId: e = "collection_heading",
+  templateId: t = "collection"
+}) {
+  const n = j(), { text: i, background: c, fontHeading: s, fontBody: l } = q(), { collection: a } = _n(), d = `templates.${t}.sections.${e}`, h = r(n, `${d}.blocks.title.settings.text`, ""), u = r(n, `${d}.blocks.description.settings.text`, ""), p = a?.title?.trim() || h || "Collection title", g = a?.description?.trim() || u;
+  return /* @__PURE__ */ o(
+    B,
+    {
+      sectionId: e,
+      editorNodeId: `template:${t}:${e}`,
+      label: "Collection heading",
+      style: {
+        background: c,
+        color: i,
+        fontFamily: l,
+        padding: `32px ${R.padX}px 8px`
+      },
+      children: /* @__PURE__ */ m("div", { style: { maxWidth: R.maxWidth, margin: "0 auto" }, children: [
+        /* @__PURE__ */ o(N, { nodeId: `template:${t}:${e}:block:title`, label: "Title", children: /* @__PURE__ */ o(
+          "h1",
+          {
+            style: {
+              margin: 0,
+              fontFamily: s,
+              fontSize: "2.25rem",
+              fontWeight: 600,
+              lineHeight: 1.15,
+              letterSpacing: "-0.02em"
+            },
+            children: /* @__PURE__ */ o(S, { fieldPath: `${d}.blocks.title.settings.text`, label: "Title", children: /* @__PURE__ */ o(yt, { html: p }) })
+          }
+        ) }),
+        g ? /* @__PURE__ */ o(N, { nodeId: `template:${t}:${e}:block:description`, label: "Description", children: /* @__PURE__ */ o("div", { style: { marginTop: 12, fontSize: "1rem", lineHeight: 1.55, opacity: 0.82 }, children: /* @__PURE__ */ o(yt, { html: g }) }) }) : null
+      ] })
+    }
+  );
+}
+function pt({ label: e }) {
+  return /* @__PURE__ */ m("span", { className: "hz-chip", role: "presentation", children: [
+    e,
+    /* @__PURE__ */ o("span", { style: { opacity: 0.45, fontSize: 10 }, children: "▾" })
+  ] });
+}
+function zd({
+  templateId: e,
+  sectionId: t,
+  title: n,
+  price: i,
+  imageUrl: c,
+  soldOut: s,
+  href: l
+}) {
+  const { text: a, muted: d } = q();
+  return /* @__PURE__ */ o(D, { to: l, className: "hz-product-card", children: /* @__PURE__ */ m("article", { children: [
+    /* @__PURE__ */ o(N, { nodeId: `template:${e}:${t}:block:product_card:nested:media`, label: "Media", children: /* @__PURE__ */ m("div", { className: "hz-product-card__media", style: { position: "relative" }, children: [
+      c ? /* @__PURE__ */ o("img", { src: c, alt: "" }) : /* @__PURE__ */ o("div", { style: { aspectRatio: "4 / 5", background: "var(--hz-surface)" } }),
+      s ? /* @__PURE__ */ o(
+        "span",
+        {
+          style: {
+            position: "absolute",
+            top: 12,
+            left: 12,
+            background: "var(--hz-bg)",
+            color: "var(--hz-muted)",
+            fontSize: 10,
+            fontWeight: 500,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            padding: "6px 10px"
+          },
+          children: "Sold out"
+        }
+      ) : null
+    ] }) }),
+    /* @__PURE__ */ m("div", { children: [
+      /* @__PURE__ */ o(
+        N,
+        {
+          nodeId: `template:${e}:${t}:block:product_card:nested:product_title`,
+          label: "Product title",
+          children: /* @__PURE__ */ o("div", { className: "hz-product-card__title", children: n })
+        }
+      ),
+      /* @__PURE__ */ o(N, { nodeId: `template:${e}:${t}:block:product_card:nested:price`, label: "Price", children: /* @__PURE__ */ o("div", { className: "hz-product-card__price", children: Ge(i) }) })
+    ] })
+  ] }) });
+}
+function Pd({
+  sectionId: e = "main_collection",
+  templateId: t = "collection"
+}) {
+  const n = j(), { text: i, background: c, fontBody: s } = q(), { products: l, itemCount: a, loading: d } = _n(), h = `templates.${t}.sections.${e}`, u = x(n, `${h}.settings.columns`, 4), p = x(n, `${h}.settings.mobileColumns`, 2), g = x(n, `${h}.settings.horizontalGap`, 12), k = x(n, `${h}.settings.verticalGap`, 24), y = E(
+    n,
+    `${h}.blocks.filtering_and_sorting.settings.enableFiltering`,
+    !0
+  ), v = E(
+    n,
+    `${h}.blocks.filtering_and_sorting.settings.enableSorting`,
+    !0
+  ), b = M(
+    () => ({
+      display: "grid",
+      gridTemplateColumns: `repeat(${Math.max(1, u)}, minmax(0, 1fr))`,
+      gap: `${k}px ${g}px`
+    }),
+    [u, g, k]
+  ), _ = l.length ? l : d ? [] : [
+    { id: "p1", urlHandle: "p1", title: "Product title", price: 0, imageUrl: "", soldOut: !1 },
+    { id: "p2", urlHandle: "p2", title: "Product title", price: 0, imageUrl: "", soldOut: !0 }
+  ];
+  return /* @__PURE__ */ o(
+    B,
+    {
+      sectionId: e,
+      editorNodeId: `template:${t}:${e}`,
+      label: "Main collection",
+      style: {
+        background: c,
+        color: i,
+        fontFamily: s,
+        padding: `8px ${R.padX}px 48px`
+      },
+      children: /* @__PURE__ */ m("div", { style: { maxWidth: R.maxWidth, margin: "0 auto" }, children: [
+        (y || v) && /* @__PURE__ */ o(N, { nodeId: `template:${t}:${e}:block:filtering_and_sorting`, label: "Filters", children: /* @__PURE__ */ m("div", { className: "hz-collection-toolbar", children: [
+          /* @__PURE__ */ o("div", { style: { display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }, children: y ? /* @__PURE__ */ m(Z, { children: [
+            /* @__PURE__ */ o(pt, { label: "Availability" }),
+            /* @__PURE__ */ o(pt, { label: "Price" })
+          ] }) : null }),
+          /* @__PURE__ */ m("div", { style: { display: "flex", alignItems: "center", gap: 16 }, children: [
+            /* @__PURE__ */ m("span", { style: { fontSize: 14, opacity: 0.75 }, children: [
+              a,
+              " ",
+              a === 1 ? "item" : "items"
+            ] }),
+            v ? /* @__PURE__ */ o(pt, { label: "Sort" }) : null
+          ] })
+        ] }) }),
+        /* @__PURE__ */ o("div", { style: b, "data-mobile-columns": p, children: _.map(($) => /* @__PURE__ */ o(
+          zd,
+          {
+            templateId: t,
+            sectionId: e,
+            title: $.title,
+            price: $.price,
+            imageUrl: $.imageUrl,
+            soldOut: $.soldOut,
+            href: vn($.urlHandle)
+          },
+          $.id
+        )) })
+      ] })
+    }
+  );
+}
+const Wn = {
+  hero_main: St,
+  featured_collection: xt,
+  divider: ed,
+  contact_form: tn,
+  email_signup: on,
+  custom_section: Ml,
+  product_highlight: an,
+  editorial: dn,
+  editorial_jumbo: cn,
+  image_compare: sn,
+  image_with_text: un,
+  storytelling_logo: yn,
+  storytelling_video: xn,
+  faq_section: hn,
+  icons_with_text: pn,
+  multicolumn_section: mn,
+  pull_quote_section: gn,
+  rich_text_section: fn,
+  text_marquee_section: bn,
+  blog_posts_carousel: Gl,
+  blog_posts_editorial: Bl,
+  blog_posts_grid: Il,
+  storytelling_carousel: Zl,
+  product_hotspots: ia,
+  recommended_products: ca,
+  collection_links_spotlight: Wo,
+  collection_links_text: Wo,
+  collection_list_bento: za,
+  collection_list_carousel: Ta,
+  collection_list_editorial: Fa,
+  collection_list_grid: Ea,
+  layered_slideshow: ja,
+  slideshow_full_frame: Va,
+  slideshow_inset: Ja
+}, zn = {
+  collection_heading: Wd,
+  main_collection: Pd
+}, Hd = ["hero_main", "featured_collection"], Td = ["collection_heading", "main_collection"];
+function Ld(e, t) {
+  return t === "collection" ? e.startsWith("collection_heading") ? "collection_heading" : e.startsWith("main_collection") ? "main_collection" : zn[e] ? e : null : e.startsWith("divider") ? "divider" : e.startsWith("contact_form") ? "contact_form" : e.startsWith("email_signup") ? "email_signup" : e.startsWith("custom_section") ? "custom_section" : e.startsWith("product_highlight") ? "product_highlight" : e.startsWith("storytelling_video") ? "storytelling_video" : e.startsWith("faq_section") ? "faq_section" : e.startsWith("icons_with_text") ? "icons_with_text" : e.startsWith("multicolumn_section") ? "multicolumn_section" : e.startsWith("pull_quote_section") ? "pull_quote_section" : e.startsWith("rich_text_section") ? "rich_text_section" : e.startsWith("text_marquee_section") ? "text_marquee_section" : e.startsWith("blog_posts_carousel") ? "blog_posts_carousel" : e.startsWith("blog_posts_editorial") ? "blog_posts_editorial" : e.startsWith("blog_posts_grid") ? "blog_posts_grid" : e.startsWith("storytelling_carousel") ? "storytelling_carousel" : e.startsWith("product_hotspots") ? "product_hotspots" : e.startsWith("recommended_products") ? "recommended_products" : e.startsWith("collection_links_spotlight") ? "collection_links_spotlight" : e.startsWith("collection_links_text") ? "collection_links_text" : e.startsWith("collection_list_bento") ? "collection_list_bento" : e.startsWith("collection_list_carousel") ? "collection_list_carousel" : e.startsWith("collection_list_editorial") ? "collection_list_editorial" : e.startsWith("collection_list_grid") ? "collection_list_grid" : e.startsWith("layered_slideshow") ? "layered_slideshow" : e.startsWith("slideshow_full_frame") ? "slideshow_full_frame" : e.startsWith("slideshow_inset") ? "slideshow_inset" : e.startsWith("storytelling_logo") ? "storytelling_logo" : e.startsWith("image_with_text") ? "image_with_text" : e.startsWith("image_compare") ? "image_compare" : e.startsWith("editorial_jumbo") ? "editorial_jumbo" : e.startsWith("editorial") ? "editorial" : e.startsWith("featured_collection") ? "featured_collection" : e.startsWith("hero_main") ? "hero_main" : Wn[e] ? e : null;
+}
+function Rd({ templateId: e }) {
+  const t = j(), n = e === "collection" ? Td : Hd, i = e === "collection" ? zn : Wn, c = $i(t, e, n);
+  return /* @__PURE__ */ o(Z, { children: c.map((s) => {
+    if (!ci(t, e, s)) return null;
+    const l = Ld(s, e);
+    if (!l) return null;
+    const a = i[l];
+    return a ? /* @__PURE__ */ o(a, { sectionId: s, templateId: e }, s) : null;
+  }) });
+}
+function Md() {
+  const { pathname: e } = Io();
+  if (e === "/collections")
+    return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o(Cd, {}) });
+  const t = e === "/collections/all" || e.startsWith("/collection/") || e.startsWith("/collections/") && e !== "/collections" ? "collection" : "index";
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o(Rd, { templateId: t }) });
+}
+function Fd() {
+  const { fontHeading: e, fontBody: t, text: n, muted: i } = q();
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o("section", { style: { padding: `72px ${R.padX}px`, fontFamily: t, color: n }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 420, margin: "0 auto" }, className: "hz-reveal", children: [
+    /* @__PURE__ */ o("h1", { style: { fontFamily: e, fontSize: "2.5rem", fontWeight: 400, margin: "0 0 12px" }, children: "Sign in" }),
+    /* @__PURE__ */ o("p", { style: { color: i, marginBottom: 32, lineHeight: 1.7 }, children: "Welcome back. Sign in to access your orders and saved details." }),
+    /* @__PURE__ */ o(D, { to: "/auth/signup", className: "hz-btn hz-btn--ghost", style: { display: "inline-flex" }, children: "Create account" })
+  ] }) }) });
+}
+function Ad() {
+  const { fontHeading: e, fontBody: t, text: n, muted: i } = q();
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o("section", { style: { padding: `72px ${R.padX}px`, fontFamily: t, color: n }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 640, margin: "0 auto" }, className: "hz-reveal", children: [
+    /* @__PURE__ */ o("p", { className: "hz-eyebrow", style: { color: i, margin: "0 0 12px" }, children: "Account" }),
+    /* @__PURE__ */ o("h1", { style: { fontFamily: e, fontSize: "2.5rem", fontWeight: 400, margin: "0 0 16px" }, children: "Orders" }),
+    /* @__PURE__ */ o("p", { style: { color: i, lineHeight: 1.7, marginBottom: 24 }, children: "Your order history will appear here." }),
+    /* @__PURE__ */ o(D, { to: "/collections/all", className: "hz-btn hz-btn--primary", children: "Continue shopping" })
+  ] }) }) });
+}
+const fe = "templates.preferences.sections.preferences_main";
+function Nd() {
+  const e = j(), t = kt(), { user: n, checkAuth: i, updateUser: c, loading: s } = tt(), { text: l, primary: a, fontHeading: d, fontBody: h } = q(), [u, p] = te("en"), [g, k] = te(!1), [y, v] = te(!1), b = n ?? (t ? Ve : null), _ = r(e, `${fe}.settings.title`), $ = r(e, `${fe}.settings.subtitle`, ""), w = r(e, `${fe}.blocks.signed_out.settings.message`), P = r(e, `${fe}.blocks.marketing_options.blocks.email_marketing.settings.label`), z = r(e, `${fe}.blocks.marketing_options.blocks.sms_marketing.settings.label`), L = r(e, `${fe}.blocks.marketing_options.blocks.language_field.settings.label`), H = r(e, `${fe}.blocks.save_button.settings.label`), W = r(e, `${fe}.blocks.save_button.settings.savingLabel`);
+  le(() => {
+    t || i();
+  }, [i, t]), le(() => {
+    b && (p(b.language || "en"), k(!!b.agreedToMarketingEmails), v(!!b.agreedToSmsMarketing));
+  }, [b]);
+  const T = async (C) => {
+    C.preventDefault(), !(t || !n?._id) && await c(n._id, { language: u, agreedToMarketingEmails: g, agreedToSmsMarketing: y });
+  };
+  return b ? /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o(B, { sectionId: "preferences_main", label: "Preferences", style: { padding: `48px ${R.padX}px 80px`, fontFamily: h, color: l }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 520, margin: "0 auto", border: `1px solid ${R.line}`, borderRadius: 12, padding: 40 }, children: [
+    /* @__PURE__ */ o(S, { fieldPath: `${fe}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: d, fontSize: 28, marginTop: 0 }, children: _ }),
+    $ ? /* @__PURE__ */ o(S, { fieldPath: `${fe}.settings.subtitle`, label: "Subtext", as: "p", style: { lineHeight: 1.6, opacity: 0.85, margin: "12px 0 24px" }, children: $ }) : null,
     /* @__PURE__ */ m("form", { onSubmit: (C) => {
-      P(C);
+      T(C);
     }, style: { display: "grid", gap: 16 }, children: [
-      /* @__PURE__ */ m(E, { nodeId: "template:preferences:preferences_main:block:marketing_options", label: "Marketing", children: [
+      /* @__PURE__ */ m(N, { nodeId: "template:preferences:preferences_main:block:marketing_options", label: "Marketing", children: [
         /* @__PURE__ */ m("label", { style: { display: "grid", gap: 8 }, children: [
-          /* @__PURE__ */ o(k, { fieldPath: `${_e}.blocks.marketing_options.blocks.language_field.settings.label`, label: "Field label", as: "span", children: R }),
+          /* @__PURE__ */ o(S, { fieldPath: `${fe}.blocks.marketing_options.blocks.language_field.settings.label`, label: "Field label", as: "span", children: L }),
           /* @__PURE__ */ m(
             "select",
             {
-              value: c,
-              onChange: (C) => h(C.target.value),
+              value: u,
+              onChange: (C) => p(C.target.value),
               disabled: t,
-              style: { ...We, cursor: t ? "default" : "pointer" },
+              style: { ...vt, cursor: t ? "default" : "pointer" },
               children: [
                 /* @__PURE__ */ o("option", { value: "en", children: "English" }),
                 /* @__PURE__ */ o("option", { value: "hi", children: "Hindi" })
@@ -10841,243 +11513,245 @@ function ja() {
             {
               type: "checkbox",
               checked: g,
-              onChange: (C) => $(C.target.checked),
+              onChange: (C) => k(C.target.checked),
               disabled: t
             }
           ),
-          /* @__PURE__ */ o(k, { fieldPath: `${_e}.blocks.marketing_options.blocks.email_marketing.settings.label`, label: "Checkbox label", as: "span", children: H })
+          /* @__PURE__ */ o(S, { fieldPath: `${fe}.blocks.marketing_options.blocks.email_marketing.settings.label`, label: "Checkbox label", as: "span", children: P })
         ] }),
         /* @__PURE__ */ m("label", { style: { display: "flex", gap: 10, alignItems: "center" }, children: [
           /* @__PURE__ */ o(
             "input",
             {
               type: "checkbox",
-              checked: b,
+              checked: y,
               onChange: (C) => v(C.target.checked),
               disabled: t
             }
           ),
-          /* @__PURE__ */ o(k, { fieldPath: `${_e}.blocks.marketing_options.blocks.sms_marketing.settings.label`, label: "Checkbox label", as: "span", children: w })
+          /* @__PURE__ */ o(S, { fieldPath: `${fe}.blocks.marketing_options.blocks.sms_marketing.settings.label`, label: "Checkbox label", as: "span", children: z })
         ] })
       ] }),
-      /* @__PURE__ */ o(E, { nodeId: "template:preferences:preferences_main:block:save_button", label: "Save button", children: /* @__PURE__ */ o("button", { type: "submit", disabled: !t && u, style: { background: a, color: "#fff", border: "none", padding: "14px 20px", borderRadius: 8, cursor: "pointer", fontWeight: 600, width: "100%" }, children: !t && u ? W : T }) })
+      /* @__PURE__ */ o(N, { nodeId: "template:preferences:preferences_main:block:save_button", label: "Save button", children: /* @__PURE__ */ o("button", { type: "submit", disabled: !t && s, style: { background: a, color: "#fff", border: "none", padding: "14px 20px", borderRadius: 8, cursor: "pointer", fontWeight: 600, width: "100%" }, children: !t && s ? W : H }) })
     ] })
-  ] }) }) }) : /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "preferences_main", label: "Preferences", style: { padding: `48px ${L.padX}px`, fontFamily: p, color: d }, children: /* @__PURE__ */ o(E, { nodeId: "template:preferences:preferences_main:block:signed_out", label: "Signed out", children: /* @__PURE__ */ o(k, { fieldPath: `${_e}.blocks.signed_out.settings.message`, label: "Message", as: "p", children: _ }) }) }) });
+  ] }) }) }) : /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o(B, { sectionId: "preferences_main", label: "Preferences", style: { padding: `48px ${R.padX}px`, fontFamily: h, color: l }, children: /* @__PURE__ */ o(N, { nodeId: "template:preferences:preferences_main:block:signed_out", label: "Signed out", children: /* @__PURE__ */ o(S, { fieldPath: `${fe}.blocks.signed_out.settings.message`, label: "Message", as: "p", children: w }) }) }) });
 }
-const Ee = "templates.product.sections.product_main";
-function Da() {
-  const { id: e } = ki(), t = j(), { text: i, background: n, primary: s, fontHeading: u, fontBody: d } = X(), { storeFrontMeta: a } = it(), { productDetail: r, fetchProductById: p } = ht(), { variants: c, fetchVariantsByProductId: h } = xi(), { createCartEntry: g } = xt(), [$, b] = Z(!1), v = U(t, `${Ee}.blocks.product_media.settings.showImage`, !0), x = U(t, `${Ee}.blocks.product_header.blocks.vendor_line.settings.showVendor`, !0), z = l(t, `${Ee}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`), S = l(t, `${Ee}.blocks.product_header.blocks.product_title.settings.loadingLabel`), _ = U(t, `${Ee}.blocks.product_content.blocks.description.settings.showDescription`, !0), H = l(t, `${Ee}.blocks.product_content.blocks.price_line.settings.priceFallback`, "—"), w = l(t, `${Ee}.blocks.buy_box.blocks.add_to_cart_button.settings.label`), R = l(t, `${Ee}.blocks.buy_box.blocks.add_to_cart_button.settings.addingLabel`);
-  ue(() => {
-    e && (p(e), h(e));
-  }, [p, h, e]);
-  const T = F(
-    () => c[0] ?? r?.variantDetails?.[0],
-    [r?.variantDetails, c]
-  ), W = async () => {
-    if (!(!a?.storeId || !T))
+const He = "templates.product.sections.product_main";
+function Ed() {
+  const { urlHandle: e } = On(), t = j(), { text: n, background: i, primary: c, muted: s, fontHeading: l, fontBody: a } = q(), { storeFrontMeta: d } = De(), { productDetail: h, fetchProductForRoute: u } = lt(), { variants: p, fetchVariantsByProductId: g } = Un(), { createCartEntry: k } = $t(), [y, v] = te(!1), [b, _] = te(1), [$, w] = te(null), P = E(t, `${He}.blocks.product_media.settings.showImage`, !0), z = E(t, `${He}.blocks.product_header.blocks.vendor_line.settings.showVendor`, !0), L = r(t, `${He}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`), H = r(t, `${He}.blocks.product_header.blocks.product_title.settings.loadingLabel`), W = E(t, `${He}.blocks.product_content.blocks.description.settings.showDescription`, !0), T = r(t, `${He}.blocks.product_content.blocks.price_line.settings.priceFallback`, "—"), C = r(t, `${He}.blocks.buy_box.blocks.add_to_cart_button.settings.label`), F = r(t, `${He}.blocks.buy_box.blocks.add_to_cart_button.settings.addingLabel`);
+  le(() => {
+    !e || !d?.storeId || u(d.storeId, e);
+  }, [u, d?.storeId, e]), le(() => {
+    h?._id && g(h._id);
+  }, [g, h?._id]);
+  const f = M(() => $ ? p.find((O) => O._id === $) ?? null : p[0] ?? h?.variantDetails?.[0] ?? null, [h?.variantDetails, $, p]);
+  le(() => {
+    p.length && !$ && w(p[0]._id);
+  }, [p, $]);
+  const U = async () => {
+    if (!(!d?.storeId || !f))
       try {
-        b(!0), await g(
-          { storeId: a.storeId, productVariantId: T._id, quantity: 1 },
-          T
+        v(!0), await k(
+          { storeId: d.storeId, productVariantId: f._id, quantity: b },
+          f
         );
       } finally {
-        b(!1);
+        v(!1);
       }
   };
   if (!e) return null;
-  const P = r?.imageUrls?.[0];
-  return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "product_main", label: "Product details", style: { padding: `48px ${L.padX}px` }, children: /* @__PURE__ */ m(
-    "div",
+  const X = h?.imageUrls?.[0];
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o(
+    B,
     {
-      style: {
-        maxWidth: L.maxWidth,
-        margin: "0 auto",
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-        gap: 40,
-        fontFamily: d,
-        color: i
-      },
-      children: [
-        /* @__PURE__ */ o(E, { nodeId: "template:product:product_main:block:product_media", label: "Media", children: v ? /* @__PURE__ */ o(
-          "div",
-          {
-            style: {
-              aspectRatio: "3/4",
-              borderRadius: 12,
-              border: `1px solid ${L.line}`,
-              background: P ? `center/cover url(${P}) no-repeat` : "linear-gradient(135deg, #f3f4f6, #e5e7eb)"
-            }
-          }
-        ) : null }),
-        /* @__PURE__ */ m("div", { children: [
-          /* @__PURE__ */ m(E, { nodeId: "template:product:product_main:block:product_header", label: "Header", children: [
-            x && r?.vendor?.name ? /* @__PURE__ */ o(E, { nodeId: "template:product:product_main:block:product_header:block:vendor_line", label: "Vendor", children: /* @__PURE__ */ m("p", { style: { fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em", opacity: 0.6 }, children: [
-              /* @__PURE__ */ o(
-                k,
-                {
-                  fieldPath: `${Ee}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`,
-                  label: "Vendor prefix",
-                  as: "span",
-                  children: z
-                }
-              ),
-              " ",
-              r.vendor.name
-            ] }) }) : null,
-            /* @__PURE__ */ o(E, { nodeId: "template:product:product_main:block:product_header:block:product_title", label: "Product title", children: /* @__PURE__ */ o("h1", { style: { fontFamily: u, fontSize: 32, margin: "8px 0 16px", fontWeight: 600 }, children: r?.title ?? /* @__PURE__ */ o(
-              k,
+      sectionId: "product_main",
+      label: "Product details",
+      style: { padding: `clamp(40px, 6vw, 72px) ${R.padX}px` },
+      children: /* @__PURE__ */ m(
+        "div",
+        {
+          className: "hz-product__grid",
+          style: {
+            maxWidth: R.maxWidth,
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "clamp(32px, 5vw, 64px)",
+            fontFamily: a,
+            color: n,
+            alignItems: "start"
+          },
+          children: [
+            /* @__PURE__ */ o(N, { nodeId: "template:product:product_main:block:product_media", label: "Media", children: P ? /* @__PURE__ */ o(
+              "div",
               {
-                fieldPath: `${Ee}.blocks.product_header.blocks.product_title.settings.loadingLabel`,
-                label: "Loading label",
-                children: S
+                className: "hz-product__media",
+                style: {
+                  aspectRatio: "4 / 5",
+                  borderRadius: 2,
+                  background: X ? `center/cover url(${X}) no-repeat` : "linear-gradient(160deg, var(--hz-surface), var(--hz-surface-2))"
+                }
               }
-            ) }) })
-          ] }),
-          /* @__PURE__ */ m(E, { nodeId: "template:product:product_main:block:product_content", label: "Content", children: [
-            _ ? /* @__PURE__ */ o(E, { nodeId: "template:product:product_main:block:product_content:block:description", label: "Description", children: /* @__PURE__ */ o("p", { style: { lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }, children: r?.description }) }) : null,
-            /* @__PURE__ */ o(E, { nodeId: "template:product:product_main:block:product_content:block:price_line", label: "Price", children: /* @__PURE__ */ o("p", { style: { fontSize: 24, fontWeight: 600, marginBottom: 24 }, children: r ? Ye(r.price) : H }) })
-          ] }),
-          /* @__PURE__ */ o(E, { nodeId: "template:product:product_main:block:buy_box", label: "Buy box", children: /* @__PURE__ */ o(
-            E,
-            {
-              nodeId: "template:product:product_main:block:buy_box:block:add_to_cart_button",
-              label: "Add to cart button",
-              children: /* @__PURE__ */ o(
-                "button",
-                {
-                  type: "button",
-                  disabled: $ || !T,
-                  onClick: () => {
-                    W();
-                  },
-                  style: {
-                    padding: "14px 28px",
-                    borderRadius: 8,
-                    border: "none",
-                    background: s,
-                    color: n,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    fontFamily: d
-                  },
-                  children: /* @__PURE__ */ o(
-                    k,
+            ) : null }),
+            /* @__PURE__ */ m("div", { className: "hz-product__details hz-reveal", children: [
+              /* @__PURE__ */ m(N, { nodeId: "template:product:product_main:block:product_header", label: "Header", children: [
+                z && h?.vendor?.name ? /* @__PURE__ */ o(N, { nodeId: "template:product:product_main:block:product_header:block:vendor_line", label: "Vendor", children: /* @__PURE__ */ m("p", { className: "hz-eyebrow", style: { margin: "0 0 12px", color: s }, children: [
+                  /* @__PURE__ */ o(
+                    S,
                     {
-                      fieldPath: `${Ee}.blocks.buy_box.blocks.add_to_cart_button.settings.label`,
-                      label: "Button label",
+                      fieldPath: `${He}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`,
+                      label: "Vendor prefix",
                       as: "span",
-                      children: $ ? R : w
+                      children: L
+                    }
+                  ),
+                  " ",
+                  h.vendor.name
+                ] }) }) : null,
+                /* @__PURE__ */ o(N, { nodeId: "template:product:product_main:block:product_header:block:product_title", label: "Product title", children: /* @__PURE__ */ o(
+                  "h1",
+                  {
+                    style: {
+                      fontFamily: l,
+                      fontSize: "clamp(1.75rem, 4vw, 2.75rem)",
+                      margin: "0 0 20px",
+                      fontWeight: 400,
+                      lineHeight: 1.1,
+                      letterSpacing: "-0.03em"
+                    },
+                    children: h?.title ?? /* @__PURE__ */ o(
+                      S,
+                      {
+                        fieldPath: `${He}.blocks.product_header.blocks.product_title.settings.loadingLabel`,
+                        label: "Loading label",
+                        children: H
+                      }
+                    )
+                  }
+                ) })
+              ] }),
+              /* @__PURE__ */ m(N, { nodeId: "template:product:product_main:block:product_content", label: "Content", children: [
+                W ? /* @__PURE__ */ o(N, { nodeId: "template:product:product_main:block:product_content:block:description", label: "Description", children: /* @__PURE__ */ o("p", { style: { lineHeight: 1.8, color: s, marginBottom: 28, fontSize: 15 }, children: h?.description }) }) : null,
+                /* @__PURE__ */ o(N, { nodeId: "template:product:product_main:block:product_content:block:price_line", label: "Price", children: /* @__PURE__ */ o("p", { style: { fontSize: "1.35rem", fontWeight: 500, marginBottom: 28, letterSpacing: "-0.02em" }, children: f ? Ge(f.price) : h ? Ge(h.price) : T }) })
+              ] }),
+              /* @__PURE__ */ m(N, { nodeId: "template:product:product_main:block:buy_box", label: "Buy box", children: [
+                p.length > 1 ? /* @__PURE__ */ m("label", { style: { display: "block", marginBottom: 18 }, children: [
+                  /* @__PURE__ */ o("span", { style: { display: "block", fontSize: 12, marginBottom: 8, color: s, letterSpacing: "0.08em", textTransform: "uppercase" }, children: "Variant" }),
+                  /* @__PURE__ */ o(
+                    "select",
+                    {
+                      value: f?._id ?? "",
+                      onChange: (O) => w(O.target.value),
+                      className: "hz-input",
+                      style: { width: "100%", maxWidth: 300 },
+                      children: p.map((O) => /* @__PURE__ */ o("option", { value: O._id, children: O.sku || O._id }, O._id))
                     }
                   )
-                }
-              )
-            }
-          ) })
-        ] })
-      ]
+                ] }) : null,
+                /* @__PURE__ */ m("label", { style: { display: "block", marginBottom: 24 }, children: [
+                  /* @__PURE__ */ o("span", { style: { display: "block", fontSize: 12, marginBottom: 8, color: s, letterSpacing: "0.08em", textTransform: "uppercase" }, children: "Quantity" }),
+                  /* @__PURE__ */ o(
+                    "input",
+                    {
+                      type: "number",
+                      min: 1,
+                      value: b,
+                      onChange: (O) => _(Math.max(1, Number(O.target.value) || 1)),
+                      className: "hz-input",
+                      style: { width: 96 }
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ o(
+                  N,
+                  {
+                    nodeId: "template:product:product_main:block:buy_box:block:add_to_cart_button",
+                    label: "Add to cart button",
+                    children: /* @__PURE__ */ o(
+                      "button",
+                      {
+                        type: "button",
+                        disabled: y || !f,
+                        onClick: () => {
+                          U();
+                        },
+                        className: "hz-btn hz-btn--primary",
+                        style: { fontFamily: a },
+                        children: /* @__PURE__ */ o(
+                          S,
+                          {
+                            fieldPath: `${He}.blocks.buy_box.blocks.add_to_cart_button.settings.label`,
+                            label: "Button label",
+                            as: "span",
+                            children: y ? F : C
+                          }
+                        )
+                      }
+                    )
+                  }
+                )
+              ] })
+            ] })
+          ]
+        }
+      )
     }
-  ) }) });
+  ) });
 }
-const be = "templates.profile.sections.profile_main";
-function Ba() {
-  const e = j(), t = rt(), { user: i, checkAuth: n, updateUser: s, loading: u } = Ze(), d = $t(), { text: a, primary: r, fontHeading: p, fontBody: c } = X(), [h, g] = Z(""), [$, b] = Z(""), [v, x] = Z(""), z = i ?? (t ? Xe : null), S = l(e, `${be}.settings.title`), _ = l(e, `${be}.settings.subtitle`, ""), H = l(e, `${be}.blocks.signed_out.blocks.empty_message.settings.text`), w = l(e, `${be}.blocks.signed_out.blocks.sign_in_button.settings.label`), R = l(e, `${be}.blocks.profile_form.blocks.email_field.settings.label`), T = l(e, `${be}.blocks.profile_form.blocks.email_field.settings.helperText`, ""), W = l(e, `${be}.blocks.profile_form.blocks.first_name_field.settings.placeholder`), P = l(e, `${be}.blocks.profile_form.blocks.last_name_field.settings.placeholder`), C = l(e, `${be}.blocks.profile_form.blocks.phone_field.settings.placeholder`), M = l(e, `${be}.blocks.save_button.settings.label`), f = l(e, `${be}.blocks.save_button.settings.savingLabel`);
-  if (ue(() => {
-    t || n();
-  }, [n, t]), ue(() => {
-    z && (g(z.firstName || ""), b(z.lastName || ""), x(z.phoneNumber || ""));
-  }, [z]), !z)
-    return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "profile_main", label: "Profile", style: { padding: `48px ${L.padX}px`, textAlign: "center", fontFamily: c, color: a }, children: /* @__PURE__ */ m(E, { nodeId: "template:profile:profile_main:block:signed_out", label: "Signed out", children: [
-      /* @__PURE__ */ o(k, { fieldPath: `${be}.blocks.signed_out.blocks.empty_message.settings.text`, label: "Message", as: "p", children: H }),
-      /* @__PURE__ */ o(E, { nodeId: "template:profile:profile_main:block:signed_out:block:sign_in_button", label: "Sign in button", children: /* @__PURE__ */ o("button", { type: "button", onClick: () => d("/auth/login"), style: { marginTop: 16, background: r, color: "#fff", border: "none", padding: "12px 24px", borderRadius: 8, cursor: "pointer" }, children: w }) })
-    ] }) }) });
-  const O = async (N) => {
-    N.preventDefault(), !(t || !i) && await s(i._id, { firstName: h, lastName: $, phoneNumber: v });
-  };
-  return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "profile_main", label: "Profile", style: { padding: `48px ${L.padX}px 80px`, fontFamily: c, color: a }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 480, margin: "0 auto", border: `1px solid ${L.line}`, borderRadius: 12, padding: 40 }, children: [
-    /* @__PURE__ */ o(k, { fieldPath: `${be}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: p, fontSize: 28, marginTop: 0 }, children: S }),
-    _ ? /* @__PURE__ */ o(k, { fieldPath: `${be}.settings.subtitle`, label: "Subtext", as: "p", style: { lineHeight: 1.6, opacity: 0.85, margin: "12px 0 24px" }, children: _ }) : null,
-    /* @__PURE__ */ m("form", { onSubmit: (N) => {
-      O(N);
-    }, style: { display: "grid", gap: 16 }, children: [
-      /* @__PURE__ */ m(E, { nodeId: "template:profile:profile_main:block:profile_form", label: "Profile form", children: [
-        /* @__PURE__ */ m("label", { style: { display: "grid", gap: 6 }, children: [
-          /* @__PURE__ */ o(k, { fieldPath: `${be}.blocks.profile_form.blocks.email_field.settings.label`, label: "Email label", as: "span", style: { fontSize: 13, fontWeight: 600 }, children: R }),
-          /* @__PURE__ */ o("input", { value: z.email, readOnly: !0, style: { ...We, opacity: 0.85 } }),
-          T ? /* @__PURE__ */ o(k, { fieldPath: `${be}.blocks.profile_form.blocks.email_field.settings.helperText`, label: "Helper", as: "span", style: { fontSize: 12, opacity: 0.7 }, children: T }) : null
-        ] }),
-        /* @__PURE__ */ o("input", { value: h, onChange: (N) => g(N.target.value), placeholder: W, readOnly: t, style: We }),
-        /* @__PURE__ */ o("input", { value: $, onChange: (N) => b(N.target.value), placeholder: P, readOnly: t, style: We }),
-        /* @__PURE__ */ o("input", { value: v, onChange: (N) => x(N.target.value), placeholder: C, readOnly: t, style: We })
-      ] }),
-      /* @__PURE__ */ o(E, { nodeId: "template:profile:profile_main:block:save_button", label: "Save button", children: /* @__PURE__ */ o("button", { type: "submit", disabled: !t && u, style: { background: r, color: "#fff", border: "none", padding: "14px 20px", borderRadius: 8, cursor: "pointer", fontWeight: 600, width: "100%" }, children: !t && u ? f : M }) })
+function Ud() {
+  const { user: e } = tt(), { fontHeading: t, fontBody: n, text: i, muted: c } = q();
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o("section", { style: { padding: `72px ${R.padX}px`, fontFamily: n, color: i }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 520, margin: "0 auto" }, className: "hz-reveal", children: [
+    /* @__PURE__ */ o("p", { className: "hz-eyebrow", style: { color: c, margin: "0 0 12px" }, children: "Account" }),
+    /* @__PURE__ */ o("h1", { style: { fontFamily: t, fontSize: "2.5rem", fontWeight: 400, margin: "0 0 24px" }, children: e?.name?.trim() || e?.email || "Your profile" }),
+    /* @__PURE__ */ m("div", { style: { display: "flex", gap: 12, flexWrap: "wrap" }, children: [
+      /* @__PURE__ */ o(D, { to: "/my-orders", className: "hz-btn hz-btn--primary", children: "Orders" }),
+      /* @__PURE__ */ o(D, { to: "/preferences", className: "hz-btn hz-btn--ghost", children: "Preferences" })
     ] })
   ] }) }) });
 }
-const ze = "templates.forgot_password.sections.forgot_main";
-function Xa() {
-  const e = j(), { text: t, primary: i, fontHeading: n, fontBody: s } = X(), [u, d] = Z(""), [a, r] = Z(!1), p = l(e, `${ze}.settings.eyebrow`, ""), c = l(e, `${ze}.settings.title`), h = l(e, `${ze}.settings.subtitle`, ""), g = l(e, `${ze}.blocks.form_fields.blocks.email_field.settings.placeholder`), $ = l(e, `${ze}.blocks.primary_button.settings.label`), b = l(e, `${ze}.blocks.success_message.settings.text`), v = l(e, `${ze}.blocks.footer_link.blocks.back_link.settings.label`), x = l(e, `${ze}.blocks.footer_link.blocks.back_link.settings.href`), z = (S) => {
-    S.preventDefault(), u.trim() && r(!0);
+const $e = "templates.forgot_password.sections.forgot_main";
+function Od() {
+  const e = j(), { text: t, primary: n, fontHeading: i, fontBody: c } = q(), [s, l] = te(""), [a, d] = te(!1), h = r(e, `${$e}.settings.eyebrow`, ""), u = r(e, `${$e}.settings.title`), p = r(e, `${$e}.settings.subtitle`, ""), g = r(e, `${$e}.blocks.form_fields.blocks.email_field.settings.placeholder`), k = r(e, `${$e}.blocks.primary_button.settings.label`), y = r(e, `${$e}.blocks.success_message.settings.text`), v = r(e, `${$e}.blocks.footer_link.blocks.back_link.settings.label`), b = r(e, `${$e}.blocks.footer_link.blocks.back_link.settings.href`), _ = ($) => {
+    $.preventDefault(), s.trim() && d(!0);
   };
-  return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "forgot_main", label: "Reset password", style: { padding: `48px ${L.padX}px 80px`, fontFamily: s, color: t }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 440, margin: "0 auto", border: `1px solid ${L.line}`, borderRadius: 12, padding: 40 }, children: [
-    p ? /* @__PURE__ */ o(k, { fieldPath: `${ze}.settings.eyebrow`, label: "Eyebrow", as: "p", style: { fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.7, margin: "0 0 8px" }, children: p }) : null,
-    /* @__PURE__ */ o(k, { fieldPath: `${ze}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: n, fontSize: 28, marginTop: 0 }, children: c }),
-    /* @__PURE__ */ o(k, { fieldPath: `${ze}.settings.subtitle`, label: "Instructions", as: "p", style: { lineHeight: 1.6, opacity: 0.85, margin: "12px 0 24px" }, children: h }),
-    a ? /* @__PURE__ */ o(E, { nodeId: "template:forgot_password:forgot_main:block:success_message", label: "Success message", children: /* @__PURE__ */ o(k, { fieldPath: `${ze}.blocks.success_message.settings.text`, label: "Confirmation text", as: "p", style: { marginTop: 16, fontSize: 14, color: i }, children: b }) }) : /* @__PURE__ */ m("form", { onSubmit: z, style: { display: "grid", gap: 16 }, children: [
-      /* @__PURE__ */ o(E, { nodeId: "template:forgot_password:forgot_main:block:form_fields", label: "Form fields", children: /* @__PURE__ */ o("input", { value: u, onChange: (S) => d(S.target.value), placeholder: g, style: We }) }),
-      /* @__PURE__ */ o(E, { nodeId: "template:forgot_password:forgot_main:block:primary_button", label: "Submit button", children: /* @__PURE__ */ o("button", { type: "submit", style: { background: i, color: "#fff", border: "none", padding: "14px 20px", borderRadius: 8, cursor: "pointer", fontWeight: 600, width: "100%" }, children: $ }) })
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o(B, { sectionId: "forgot_main", label: "Reset password", style: { padding: `48px ${R.padX}px 80px`, fontFamily: c, color: t }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 440, margin: "0 auto", border: `1px solid ${R.line}`, borderRadius: 12, padding: 40 }, children: [
+    h ? /* @__PURE__ */ o(S, { fieldPath: `${$e}.settings.eyebrow`, label: "Eyebrow", as: "p", style: { fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.7, margin: "0 0 8px" }, children: h }) : null,
+    /* @__PURE__ */ o(S, { fieldPath: `${$e}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: i, fontSize: 28, marginTop: 0 }, children: u }),
+    /* @__PURE__ */ o(S, { fieldPath: `${$e}.settings.subtitle`, label: "Instructions", as: "p", style: { lineHeight: 1.6, opacity: 0.85, margin: "12px 0 24px" }, children: p }),
+    a ? /* @__PURE__ */ o(N, { nodeId: "template:forgot_password:forgot_main:block:success_message", label: "Success message", children: /* @__PURE__ */ o(S, { fieldPath: `${$e}.blocks.success_message.settings.text`, label: "Confirmation text", as: "p", style: { marginTop: 16, fontSize: 14, color: n }, children: y }) }) : /* @__PURE__ */ m("form", { onSubmit: _, style: { display: "grid", gap: 16 }, children: [
+      /* @__PURE__ */ o(N, { nodeId: "template:forgot_password:forgot_main:block:form_fields", label: "Form fields", children: /* @__PURE__ */ o("input", { value: s, onChange: ($) => l($.target.value), placeholder: g, style: vt }) }),
+      /* @__PURE__ */ o(N, { nodeId: "template:forgot_password:forgot_main:block:primary_button", label: "Submit button", children: /* @__PURE__ */ o("button", { type: "submit", style: { background: n, color: "#fff", border: "none", padding: "14px 20px", borderRadius: 8, cursor: "pointer", fontWeight: 600, width: "100%" }, children: k }) })
     ] }),
-    /* @__PURE__ */ o(E, { nodeId: "template:forgot_password:forgot_main:block:footer_link", label: "Back to login", children: /* @__PURE__ */ o("p", { style: { marginTop: 20, fontSize: 14 }, children: /* @__PURE__ */ o(I, { to: x, style: { color: i, fontWeight: 600 }, children: /* @__PURE__ */ o(k, { fieldPath: `${ze}.blocks.footer_link.blocks.back_link.settings.label`, label: "Link label", as: "span", children: v }) }) }) })
+    /* @__PURE__ */ o(N, { nodeId: "template:forgot_password:forgot_main:block:footer_link", label: "Back to login", children: /* @__PURE__ */ o("p", { style: { marginTop: 20, fontSize: 14 }, children: /* @__PURE__ */ o(D, { to: b, style: { color: n, fontWeight: 600 }, children: /* @__PURE__ */ o(S, { fieldPath: `${$e}.blocks.footer_link.blocks.back_link.settings.label`, label: "Link label", as: "span", children: v }) }) }) })
   ] }) }) });
 }
-const fe = "templates.signup.sections.signup_main";
-function qa() {
-  const e = j(), { signup: t, loading: i } = Ze(), { storeFrontMeta: n } = it(), s = $t(), { text: u, primary: d, fontHeading: a, fontBody: r } = X(), [p, c] = Z(""), [h, g] = Z(""), [$, b] = Z(""), [v, x] = Z(""), z = l(e, `${fe}.settings.eyebrow`, ""), S = l(e, `${fe}.settings.title`), _ = l(e, `${fe}.settings.subtitle`, ""), H = l(e, `${fe}.blocks.form_fields.blocks.first_name_field.settings.placeholder`), w = l(e, `${fe}.blocks.form_fields.blocks.last_name_field.settings.placeholder`), R = l(e, `${fe}.blocks.form_fields.blocks.email_field.settings.placeholder`), T = l(e, `${fe}.blocks.form_fields.blocks.password_field.settings.placeholder`), W = l(e, `${fe}.blocks.primary_button.settings.label`), P = l(e, `${fe}.blocks.primary_button.settings.loadingLabel`), C = l(e, `${fe}.blocks.footer_link.blocks.login_prompt.settings.text`), M = l(e, `${fe}.blocks.footer_link.blocks.login_link.settings.label`), f = l(e, `${fe}.blocks.footer_link.blocks.login_link.settings.href`), O = async (N) => {
-    N.preventDefault(), n?.storeId && (await t({ storeId: n.storeId, firstName: p, lastName: h, email: $, password: v }), s("/"));
-  };
-  return /* @__PURE__ */ o(Ae, { children: /* @__PURE__ */ o(G, { sectionId: "signup_main", label: "Sign up form", style: { padding: `48px ${L.padX}px 80px`, fontFamily: r, color: u }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 440, margin: "0 auto", border: `1px solid ${L.line}`, borderRadius: 12, padding: 40 }, children: [
-    z ? /* @__PURE__ */ o(k, { fieldPath: `${fe}.settings.eyebrow`, label: "Eyebrow", as: "p", style: { fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.7, margin: "0 0 8px" }, children: z }) : null,
-    /* @__PURE__ */ o(k, { fieldPath: `${fe}.settings.title`, label: "Heading", as: "h1", style: { fontFamily: a, fontSize: 28, marginTop: 0 }, children: S }),
-    _ ? /* @__PURE__ */ o(k, { fieldPath: `${fe}.settings.subtitle`, label: "Subtext", as: "p", style: { lineHeight: 1.6, opacity: 0.85, margin: "12px 0 24px" }, children: _ }) : null,
-    /* @__PURE__ */ m("form", { onSubmit: (N) => {
-      O(N);
-    }, style: { display: "grid", gap: 16 }, children: [
-      /* @__PURE__ */ m(E, { nodeId: "template:signup:signup_main:block:form_fields", label: "Form fields", children: [
-        /* @__PURE__ */ o("input", { value: p, onChange: (N) => c(N.target.value), placeholder: H, style: We }),
-        /* @__PURE__ */ o("input", { value: h, onChange: (N) => g(N.target.value), placeholder: w, style: We }),
-        /* @__PURE__ */ o("input", { value: $, onChange: (N) => b(N.target.value), placeholder: R, style: We }),
-        /* @__PURE__ */ o("input", { value: v, onChange: (N) => x(N.target.value), type: "password", placeholder: T, style: We })
-      ] }),
-      /* @__PURE__ */ o(E, { nodeId: "template:signup:signup_main:block:primary_button", label: "Submit button", children: /* @__PURE__ */ o("button", { type: "submit", disabled: i, style: { marginTop: 8, background: d, color: "#fff", border: "none", padding: "14px 20px", borderRadius: 8, cursor: i ? "wait" : "pointer", fontWeight: 600, width: "100%" }, children: i ? P : W }) })
-    ] }),
-    /* @__PURE__ */ o(E, { nodeId: "template:signup:signup_main:block:footer_link", label: "Sign in link", children: /* @__PURE__ */ m("p", { style: { marginTop: 20, fontSize: 14 }, children: [
-      /* @__PURE__ */ m(k, { fieldPath: `${fe}.blocks.footer_link.blocks.login_prompt.settings.text`, label: "Prompt text", as: "span", children: [
-        C,
-        " "
-      ] }),
-      /* @__PURE__ */ o(I, { to: f, style: { color: d, fontWeight: 600 }, children: /* @__PURE__ */ o(k, { fieldPath: `${fe}.blocks.footer_link.blocks.login_link.settings.label`, label: "Link label", as: "span", children: M }) })
-    ] }) })
+function Gd() {
+  const { fontHeading: e, fontBody: t, text: n, muted: i } = q();
+  return /* @__PURE__ */ o(Te, { children: /* @__PURE__ */ o("section", { style: { padding: `72px ${R.padX}px`, fontFamily: t, color: n }, children: /* @__PURE__ */ m("div", { style: { maxWidth: 420, margin: "0 auto" }, className: "hz-reveal", children: [
+    /* @__PURE__ */ o("h1", { style: { fontFamily: e, fontSize: "2.5rem", fontWeight: 400, margin: "0 0 12px" }, children: "Create account" }),
+    /* @__PURE__ */ o("p", { style: { color: i, marginBottom: 32, lineHeight: 1.7 }, children: "Join us for a seamless checkout and order history." }),
+    /* @__PURE__ */ o(D, { to: "/auth/login", className: "hz-btn hz-btn--ghost", style: { display: "inline-flex" }, children: "Already have an account?" })
   ] }) }) });
 }
-const Za = {
+const Vd = {
   id: "horizon",
-  Header: Xo,
-  Footer: Bo,
-  HeroSection: kt,
-  TestimonialsSection: yt,
-  NewArrivalsSection: yt,
-  HomePage: Na,
-  ProductPage: Da,
-  LoginPage: Oa,
-  SignupPage: qa,
-  ForgotPasswordPage: Xa,
-  ProfilePage: Ba,
-  OrdersPage: Ga,
-  PreferencesPage: ja,
-  CartPage: ar
+  Header: Zo,
+  Footer: Yo,
+  HeroSection: St,
+  TestimonialsSection: xt,
+  NewArrivalsSection: xt,
+  HomePage: Md,
+  ProductPage: Ed,
+  LoginPage: Fd,
+  SignupPage: Gd,
+  ForgotPasswordPage: Od,
+  ProfilePage: Ud,
+  OrdersPage: Ad,
+  PreferencesPage: Nd,
+  CartPage: Rl
 };
 export {
-  Za as default,
-  Za as horizonThemeContract
+  Vd as default,
+  Vd as horizonThemeContract
 };
 //# sourceMappingURL=theme.js.map

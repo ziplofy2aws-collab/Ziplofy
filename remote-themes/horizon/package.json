@@ -1,9 +1,9 @@
 {
-  "name": "@ziplofy/theme-horizon",
+  "name": "@codiic/theme-horizon",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Shopify-style reference theme — config-driven sections for Ziplofy theme editor.",
+  "description": "Shopify-style reference theme — config-driven sections for codiic theme editor.",
   "scripts": {
     "build": "vite build",
     "build:preview": "npm run build"

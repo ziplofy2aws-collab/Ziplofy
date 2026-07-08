@@ -50,7 +50,7 @@ export function CollectionLinksSpotlightSection({
     [config, templateId, sectionId, placement]
   );
 
-  const scopeClass = `ziplofy-collection-links-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-links-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedCollectionLinksSpotlightCss(sectionId, layoutStyle.customCss);
   const textAlign = textAlignForAlignment(layoutStyle.alignment);
   const isTextLayout = layoutStyle.layoutMode === 'text';

@@ -12,6 +12,7 @@
   },
   "templates": [
     "index",
+    "collection",
     "product",
     "cart",
     "login",

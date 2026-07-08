@@ -150,14 +150,14 @@ export function scopedHeroCss(sectionId: string, css: string): string {
   if (!trimmed) return '';
   return trimmed
     .split('\n')
-    .map((line) => `[data-ziplofy-section="${sectionId}"] ${line}`)
+    .map((line) => `[data-codiic-section="${sectionId}"] ${line}`)
     .join('\n');
 }
 
 export function splitShowcaseResponsiveCss(sectionId: string, verticalOnMobile: boolean): string {
   if (!verticalOnMobile) return '';
-  const sel = `[data-ziplofy-section="${sectionId}"] .split-showcase-grid`;
-  const tile = `[data-ziplofy-section="${sectionId}"] .split-showcase-tile`;
+  const sel = `[data-codiic-section="${sectionId}"] .split-showcase-grid`;
+  const tile = `[data-codiic-section="${sectionId}"] .split-showcase-tile`;
   return `@media (max-width: 749px) { ${sel} { flex-direction: column !important; } ${tile} { flex: 1 1 auto !important; width: 100% !important; min-height: 320px; } }`;
 }
 
@@ -167,7 +167,7 @@ export function heroResponsiveCss(
   differentMobile: boolean
 ): string {
   if (!stackMedia && !differentMobile) return '';
-  const sel = `[data-ziplofy-section="${sectionId}"] .hero-media-grid`;
+  const sel = `[data-codiic-section="${sectionId}"] .hero-media-grid`;
   let css = '';
   if (stackMedia) {
     css += `@media (max-width: 749px) { ${sel} { flex-direction: column !important; } }`;

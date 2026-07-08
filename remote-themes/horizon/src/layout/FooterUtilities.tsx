@@ -1,6 +1,11 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useEffect, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  StorefrontPolicyLinks,
+  useStorefront,
+  useStorefrontPolicies,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgString } from '../lib/config';
 
 function readCatalogVariant(
@@ -30,6 +35,13 @@ type Props = { sectionId?: string };
 export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
   const config = useThemeConfig();
   const { text, fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
+  const { fetchByStoreId } = useStorefrontPolicies();
+
+  useEffect(() => {
+    if (!storeFrontMeta?.storeId) return;
+    void fetchByStoreId(storeFrontMeta.storeId);
+  }, [fetchByStoreId, storeFrontMeta?.storeId]);
 
   const settingsBase = `sections.${sectionId}.settings`;
   const blocksBase = `sections.${sectionId}.blocks`;
@@ -102,33 +114,16 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
       <EditorBlock
         nodeId={`layout:${sectionId}:block:policy_links`}
         label="Policy links"
-        style={{ display: 'flex', gap: 16 }}
+        style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}
       >
-        <EditorField fieldPath={`${policyLinksBase}.fontSize`} label="Size">
-          <Link to={privacyHref} style={policyLinkStyle}>
-            {privacyLabel}
-          </Link>
-        </EditorField>
-        <span
-          data-ziplofy-node={`field:${policyLinksBase}.privacyHref`}
-          data-ziplofy-label="Privacy link"
-          data-ziplofy-kind="field"
-          hidden
-        >
-          {privacyHref}
-        </span>
-        <EditorField fieldPath={`${policyLinksBase}.termsLabel`} label="Terms">
-          <Link to={termsHref} style={policyLinkStyle}>
-            {termsLabel}
-          </Link>
-        </EditorField>
-        <span
-          data-ziplofy-node={`field:${policyLinksBase}.termsHref`}
-          data-ziplofy-label="Terms link"
-          data-ziplofy-kind="field"
-          hidden
-        >
-          {termsHref}
+        <StorefrontPolicyLinks
+          storeId={storeFrontMeta?.storeId}
+          linkClassName=""
+          className=""
+        />
+        <span style={{ display: 'none' }} aria-hidden>
+          <Link to={privacyHref}>{privacyLabel}</Link>
+          <Link to={termsHref}>{termsLabel}</Link>
         </span>
       </EditorBlock>
     ),

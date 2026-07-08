@@ -5,7 +5,7 @@ import {
   CollectionTileIllustration,
   type CollectionIllustrationVariant,
 } from '../lib/CollectionBentoIllustrations';
-import { readCollectionTiles } from '../lib/collectionListBentoStyles';
+import { useCollectionListTiles } from '../lib/useCollectionListTiles';
 import {
   readCollectionListGridLayout,
   scopedCollectionListGridCss,
@@ -40,12 +40,9 @@ export function CollectionListGridSection({
     [config, settingsBase]
   );
 
-  const tiles = useMemo(
-    () => readCollectionTiles(config, templateId, sectionId, placement),
-    [config, templateId, sectionId, placement]
-  );
+  const tiles = useCollectionListTiles(templateId, sectionId, placement, settingsBase);
 
-  const scopeClass = `ziplofy-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
   const outerStyle: CSSProperties = {
     paddingTop: style.paddingTop,

@@ -58,6 +58,6 @@ export function footerUtilitiesShowPaymentIcons(
 export function scopedFooterUtilitiesCss(sectionId: string, css: string): string {
   const trimmed = css.trim();
   if (!trimmed) return '';
-  const sel = `[data-ziplofy-section="${sectionId}"]`;
+  const sel = `[data-codiic-section="${sectionId}"]`;
   return trimmed.replace(/:root/g, sel).replace(/&/g, sel);
 }

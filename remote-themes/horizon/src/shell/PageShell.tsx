@@ -8,12 +8,25 @@ import { useThemeColors } from '../tokens';
 
 export function PageShell({ children }: { children: ReactNode }) {
   const config = useThemeConfig();
-  const { background, text } = useThemeColors();
+  const { background, text, primary } = useThemeColors();
   const headerOrder = headerLayoutOrder(config);
   const footerOrder = footerLayoutOrder(config);
 
   return (
-    <div style={{ minHeight: '100vh', background, color: text }}>
+    <div
+      className="hz-storefront"
+      style={
+        {
+          minHeight: '100vh',
+          background,
+          color: text,
+          '--hz-bg': background,
+          '--hz-text': text,
+          '--hz-primary': primary,
+          '--hz-on-primary': background,
+        } as React.CSSProperties
+      }
+    >
       {headerOrder.map((sectionId) =>
         isLayoutSectionEnabled(config, sectionId) ? (
           <HeaderLayoutSections key={sectionId} sectionId={sectionId} />

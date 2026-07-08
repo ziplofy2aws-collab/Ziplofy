@@ -85,7 +85,7 @@ export function collectionHeaderResponsiveCss(
   mobileWidth: string,
   verticalOnMobile: boolean
 ): string {
-  const sel = `[data-ziplofy-section="${sectionId}"] [data-fc-collection-header]`;
+  const sel = `[data-codiic-section="${sectionId}"] [data-fc-collection-header]`;
   let css = '';
   if (verticalOnMobile) {
     css += `@media (max-width: 749px) { ${sel} { flex-direction: column !important; align-items: stretch !important; } }`;

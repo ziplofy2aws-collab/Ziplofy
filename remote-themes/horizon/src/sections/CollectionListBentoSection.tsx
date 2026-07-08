@@ -7,9 +7,9 @@ import {
 } from '../lib/CollectionBentoIllustrations';
 import {
   readCollectionListBentoLayout,
-  readCollectionTiles,
   scopedCollectionListBentoCss,
 } from '../lib/collectionListBentoStyles';
+import { useCollectionListTiles } from '../lib/useCollectionListTiles';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
 import { layout, useThemeColors } from '../tokens';
 
@@ -26,7 +26,7 @@ function BentoTile({
   blockNodeId,
   fontBody,
 }: {
-  tile: ReturnType<typeof readCollectionTiles>[number];
+  tile: ReturnType<typeof useCollectionListTiles>[number];
   gap: number;
   blockBase: string;
   blockNodeId: string;
@@ -117,12 +117,9 @@ export function CollectionListBentoSection({
     [config, settingsBase]
   );
 
-  const tiles = useMemo(
-    () => readCollectionTiles(config, templateId, sectionId, placement),
-    [config, templateId, sectionId, placement]
-  );
+  const tiles = useCollectionListTiles(templateId, sectionId, placement, settingsBase);
 
-  const scopeClass = `ziplofy-collection-list-bento-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-bento-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedCollectionListBentoCss(sectionId, layoutStyle.customCss);
 
   const outerStyle: CSSProperties = {

@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   formatINR,
-  useStorefront,
-  useStorefrontProducts,
 } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../lib/config';
@@ -24,6 +22,7 @@ import {
   scopedFeaturedCollectionCss,
 } from '../lib/featuredCollectionStyles';
 import { orderedIds, templateBlockOrder } from '../lib/structureOrder';
+import { useFeaturedCollectionProducts } from '../lib/useFeaturedCollectionProducts';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
 import { ThemeRichTextContent, richTextHasBlockMarkup } from '../lib/ThemeRichTextContent';
 import { layout, useThemeColors } from '../tokens';
@@ -92,8 +91,8 @@ export function FeaturedCollectionSection({
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
   const themeColors = useThemeColors();
   const { text, background, primary, fontHeading, fontBody } = themeColors;
-  const { storeFrontMeta } = useStorefront();
-  const { products, fetchProductsByStoreId } = useStorefrontProducts();
+  const collectionHandle = cfgString(config, `${settingsBase}.collectionHandle`, 'products');
+  const list = useFeaturedCollectionProducts({ collectionHandle, limit });
 
   const state = useMemo(() => {
     const scheme = featuredCollectionColorScheme(config, settingsBase, {
@@ -171,14 +170,14 @@ export function FeaturedCollectionSection({
   const scopedCss = scopedFeaturedCollectionCss(sectionId, customCss);
   const layoutCss = useMemo(
     () => `
-[data-ziplofy-section="${sectionId}"] .fc-product-grid {
+[data-codiic-section="${sectionId}"] .fc-product-grid {
   display: flex;
   ${isCarousel ? 'flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;' : 'flex-wrap: wrap;'}
   column-gap: ${gaps.horizontal}px;
   row-gap: ${gaps.vertical}px;
 }
-[data-ziplofy-section="${sectionId}"] .fc-product-grid::-webkit-scrollbar { display: none; }
-[data-ziplofy-section="${sectionId}"] .fc-product-grid > article {
+[data-codiic-section="${sectionId}"] .fc-product-grid::-webkit-scrollbar { display: none; }
+[data-codiic-section="${sectionId}"] .fc-product-grid > article {
   ${
     isCarousel
       ? `flex: 0 0 calc((100% - ${(columns - 1) * gaps.horizontal}px) / ${columns}); min-width: 0; max-width: calc((100% - ${(columns - 1) * gaps.horizontal}px) / ${columns}); scroll-snap-align: start;`
@@ -187,49 +186,49 @@ export function FeaturedCollectionSection({
         : `flex: 0 0 calc((100% - ${(columns - 1) * gaps.horizontal}px) / ${columns}); max-width: calc((100% - ${(columns - 1) * gaps.horizontal}px) / ${columns}); min-width: 220px;`
   }
 }
-[data-ziplofy-section="${sectionId}"] .fc-editorial-grid {
+[data-codiic-section="${sectionId}"] .fc-editorial-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: ${gaps.horizontal}px;
   row-gap: ${gaps.section}px;
   align-items: start;
 }
-[data-ziplofy-section="${sectionId}"] .fc-editorial-grid > article:nth-child(2) {
+[data-codiic-section="${sectionId}"] .fc-editorial-grid > article:nth-child(2) {
   margin-top: 3rem;
 }
-[data-ziplofy-section="${sectionId}"] .fc-editorial-grid > article:nth-child(3) {
+[data-codiic-section="${sectionId}"] .fc-editorial-grid > article:nth-child(3) {
   margin-top: -1.25rem;
 }
-[data-ziplofy-section="${sectionId}"] .fc-editorial-grid > article:nth-child(4) {
+[data-codiic-section="${sectionId}"] .fc-editorial-grid > article:nth-child(4) {
   margin-top: 2.5rem;
 }
-[data-ziplofy-section="${sectionId}"] .fc-editorial-grid > article:nth-child(2) .fc-media-inner,
-[data-ziplofy-section="${sectionId}"] .fc-editorial-grid > article:nth-child(3) .fc-media-inner {
+[data-codiic-section="${sectionId}"] .fc-editorial-grid > article:nth-child(2) .fc-media-inner,
+[data-codiic-section="${sectionId}"] .fc-editorial-grid > article:nth-child(3) .fc-media-inner {
   aspect-ratio: 4 / 5;
   min-height: 200px;
 }
 @media (max-width: 749px) {
-  [data-ziplofy-section="${sectionId}"] .fc-product-grid {
+  [data-codiic-section="${sectionId}"] .fc-product-grid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
   }
-  [data-ziplofy-section="${sectionId}"][data-mobile-columns="1"] .fc-product-grid > article { flex: 0 0 calc(92% - 8px); max-width: calc(92% - 8px); scroll-snap-align: start; }
-  [data-ziplofy-section="${sectionId}"][data-mobile-columns="2"] .fc-product-grid > article { flex: 0 0 calc(50% - ${gaps.horizontal / 2}px); max-width: calc(50% - ${gaps.horizontal / 2}px); scroll-snap-align: start; }
-  [data-ziplofy-section="${sectionId}"][data-fc-mobile-carousel="true"] .fc-editorial-grid {
+  [data-codiic-section="${sectionId}"][data-mobile-columns="1"] .fc-product-grid > article { flex: 0 0 calc(92% - 8px); max-width: calc(92% - 8px); scroll-snap-align: start; }
+  [data-codiic-section="${sectionId}"][data-mobile-columns="2"] .fc-product-grid > article { flex: 0 0 calc(50% - ${gaps.horizontal / 2}px); max-width: calc(50% - ${gaps.horizontal / 2}px); scroll-snap-align: start; }
+  [data-codiic-section="${sectionId}"][data-fc-mobile-carousel="true"] .fc-editorial-grid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
-  [data-ziplofy-section="${sectionId}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article {
+  [data-codiic-section="${sectionId}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article {
     flex: 0 0 min(85%, 320px);
     margin-top: 0 !important;
     scroll-snap-align: start;
   }
-  [data-ziplofy-section="${sectionId}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article .fc-media-inner {
+  [data-codiic-section="${sectionId}"][data-fc-mobile-carousel="true"] .fc-editorial-grid > article .fc-media-inner {
     aspect-ratio: 4 / 3;
     min-height: 140px;
   }
@@ -255,12 +254,6 @@ export function FeaturedCollectionSection({
     el.scrollBy({ left: el.clientWidth * 0.85 * dir, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    if (!storeFrontMeta?.storeId) return;
-    void fetchProductsByStoreId({ storeId: storeFrontMeta.storeId, page: 1, limit });
-  }, [fetchProductsByStoreId, limit, storeFrontMeta?.storeId]);
-
-  const list = products.slice(0, limit);
   const showNav = isCarousel && navIcon !== 'none' && list.length > columns;
   const innerMaxWidth = widthMode === 'full' ? '100%' : layout.maxWidth;
   const headerNestedOrder = orderedIds(
@@ -575,8 +568,12 @@ export function FeaturedCollectionSection({
             ) : null;
 
             return (
-              <article
+              <Link
                 key={product._id}
+                to={productPath(product.urlHandle ?? product._id)}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+              <article
                 style={{
                   border: productCardStyle.border === 'none' ? `1px solid ${layout.line}` : productCardStyle.border,
                   borderRadius: productCardStyle.borderRadius,
@@ -619,6 +616,7 @@ export function FeaturedCollectionSection({
                   return null;
                 })}
               </article>
+              </Link>
             );
   });
 
@@ -699,7 +697,7 @@ export function FeaturedCollectionSection({
                 ? 'Featured collection: Carousel'
                 : 'Featured collection'
         }
-        data-ziplofy-section={sectionId}
+        data-codiic-section={sectionId}
         data-mobile-columns={mobileColumns}
         data-fc-mobile-carousel={isEditorial && carouselOnMobile ? 'true' : 'false'}
         style={{

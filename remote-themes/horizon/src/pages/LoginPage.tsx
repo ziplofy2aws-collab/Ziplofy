@@ -1,2 +1,24 @@
-/** Checkout editor sign-in UI — used on storefront `/auth/login`. */
-export { CheckoutSignInPage as LoginPage } from '../../../../render-store/src/pages/checkout-auth/CheckoutSignInPage';
+import { Link } from 'react-router-dom';
+import { PageShell } from '../shell/PageShell';
+import { layout, useThemeColors } from '../tokens';
+
+export function LoginPage() {
+  const { fontHeading, fontBody, text, muted } = useThemeColors();
+  const title = 'Sign in';
+
+  return (
+    <PageShell>
+      <section style={{ padding: `72px ${layout.padX}px`, fontFamily: fontBody, color: text }}>
+        <div style={{ maxWidth: 420, margin: '0 auto' }} className="hz-reveal">
+          <h1 style={{ fontFamily: fontHeading, fontSize: '2.5rem', fontWeight: 400, margin: '0 0 12px' }}>{title}</h1>
+          <p style={{ color: muted, marginBottom: 32, lineHeight: 1.7 }}>
+            Welcome back. Sign in to access your orders and saved details.
+          </p>
+          <Link to="/auth/signup" className="hz-btn hz-btn--ghost" style={{ display: 'inline-flex' }}>
+            Create account
+          </Link>
+        </div>
+      </section>
+    </PageShell>
+  );
+}

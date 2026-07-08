@@ -13,6 +13,7 @@ import { cfgString } from '../lib/config';
 import { PREVIEW_CART_LINES } from '../lib/editorPreviewFixtures';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
 import { PageShell } from '../shell/PageShell';
+import { productPath, STOREFRONT_PATHS } from '../lib/storefrontPaths';
 import { inputStyle, layout, useThemeColors } from '../tokens';
 
 const SEC = 'templates.cart.sections.cart_main';
@@ -68,9 +69,9 @@ export function CartPage() {
 
   return (
     <PageShell>
-      <EditorSection sectionId="cart_main" label="Cart" style={{ padding: `40px ${layout.padX}px 64px`, fontFamily: fontBody, color: text }}>
-        <div style={{ maxWidth: 880, margin: '0 auto' }}>
-          <EditorField fieldPath={`${SEC}.settings.title`} label="Page title" as="h1" style={{ fontFamily: fontHeading, fontSize: 32, marginTop: 0 }}>
+      <EditorSection sectionId="cart_main" label="Cart" style={{ padding: `clamp(48px, 6vw, 80px) ${layout.padX}px`, fontFamily: fontBody, color: text }}>
+        <div className="hz-cart">
+          <EditorField fieldPath={`${SEC}.settings.title`} label="Page title" as="h1" style={{ fontFamily: fontHeading, fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 400, margin: '0 0 32px', letterSpacing: '-0.03em' }}>
             {title}
           </EditorField>
           {showLoading ? (
@@ -99,11 +100,11 @@ export function CartPage() {
                   {lines.map((item) => {
                     const v = variantOf(item);
                     return (
-                      <article key={item._id} style={{ border: `1px solid ${layout.line}`, borderRadius: 10, padding: 16, background }}>
+                      <article key={item._id} className="hz-cart__line">
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
                           <div>
                             {v ? (
-                              <Link to={`/products/${v.productId}`} style={{ color: text, fontWeight: 600 }} onClick={(e) => isEditorPreview && e.preventDefault()}>
+                              <Link to={productPath(String(v.productId))} style={{ color: text, fontWeight: 500 }} onClick={(e) => isEditorPreview && e.preventDefault()}>
                                 {v.sku}
                               </Link>
                             ) : (
@@ -146,12 +147,22 @@ export function CartPage() {
                 </div>
               </EditorBlock>
               <EditorBlock nodeId="template:cart:cart_main:block:cart_summary" label="Summary">
-                <p style={{ marginTop: 24, fontSize: 20, fontWeight: 600 }}>
+                <div className="hz-cart__summary">
+                <p style={{ fontSize: 20, fontWeight: 500, letterSpacing: '-0.02em' }}>
                   <EditorField fieldPath={`${SEC}.blocks.cart_summary.blocks.subtotal.settings.label`} label="Subtotal prefix" as="span">
                     {subtotalPrefix}
                   </EditorField>{' '}
                   {formatINR(total)}
                 </p>
+                <Link
+                  to="/checkout"
+                  onClick={(e) => isEditorPreview && e.preventDefault()}
+                  className="hz-btn hz-btn--primary"
+                  style={{ marginTop: 20, textDecoration: 'none', display: 'inline-flex' }}
+                >
+                  Proceed to checkout
+                </Link>
+                </div>
               </EditorBlock>
             </>
           ) : null}

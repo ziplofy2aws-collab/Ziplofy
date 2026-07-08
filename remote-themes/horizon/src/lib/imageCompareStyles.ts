@@ -137,5 +137,5 @@ export function justifyContentForAlignment(alignment: string): string {
 export function scopedImageCompareCss(sectionId: string, css: string): string {
   const trimmed = css.trim();
   if (!trimmed) return '';
-  return trimmed.replace(/:root/g, `[data-ziplofy-section="${sectionId}"]`);
+  return trimmed.replace(/:root/g, `[data-codiic-section="${sectionId}"]`);
 }

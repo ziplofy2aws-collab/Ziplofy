@@ -5,7 +5,7 @@ import {
   CollectionTileIllustration,
   type CollectionIllustrationVariant,
 } from '../lib/CollectionBentoIllustrations';
-import { readCollectionTiles } from '../lib/collectionListBentoStyles';
+import { useCollectionListTiles } from '../lib/useCollectionListTiles';
 import {
   editorialTilePlacement,
   readCollectionListEditorialLayout,
@@ -41,17 +41,14 @@ export function CollectionListEditorialSection({
     [config, settingsBase]
   );
 
-  const allTiles = useMemo(
-    () => readCollectionTiles(config, templateId, sectionId, placement),
-    [config, templateId, sectionId, placement]
-  );
+  const allTiles = useCollectionListTiles(templateId, sectionId, placement, settingsBase);
 
   const tiles = useMemo(
     () => allTiles.slice(0, layoutStyle.collectionCount),
     [allTiles, layoutStyle.collectionCount]
   );
 
-  const scopeClass = `ziplofy-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
   const outerStyle: CSSProperties = {
     paddingTop: layoutStyle.paddingTop,

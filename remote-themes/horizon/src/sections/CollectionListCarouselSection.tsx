@@ -5,7 +5,7 @@ import {
   CollectionTileIllustration,
   type CollectionIllustrationVariant,
 } from '../lib/CollectionBentoIllustrations';
-import { readCollectionTiles } from '../lib/collectionListBentoStyles';
+import { useCollectionListTiles } from '../lib/useCollectionListTiles';
 import {
   readCollectionListCarouselLayout,
   scopedCollectionListCarouselCss,
@@ -77,12 +77,9 @@ export function CollectionListCarouselSection({
     [config, settingsBase]
   );
 
-  const tiles = useMemo(
-    () => readCollectionTiles(config, templateId, sectionId, placement),
-    [config, templateId, sectionId, placement]
-  );
+  const tiles = useCollectionListTiles(templateId, sectionId, placement, settingsBase);
 
-  const scopeClass = `ziplofy-collection-list-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : 24;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.contentMaxWidth;
   const cardBasis =

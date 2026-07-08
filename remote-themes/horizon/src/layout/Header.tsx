@@ -1,5 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useStorefrontAuth, useStorefrontCart } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
@@ -15,6 +14,7 @@ import {
   scopedHeaderCss,
 } from '../lib/headerStyles';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
+import { HeaderAccountPanel } from './HeaderAccountPanel';
 import { layout, useThemeColors } from '../tokens';
 
 type Props = { sectionId?: string };
@@ -71,6 +71,8 @@ export function Header({ sectionId = 'header' }: Props) {
   const { user, logout } = useStorefrontAuth();
   const { getAllItems } = useStorefrontCart();
   const cartCount = getAllItems().reduce((s, i) => s + i.quantity, 0);
+  const accountBtnRef = useRef<HTMLButtonElement>(null);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   const base = `sections.${sectionId}`;
   const settingsBase = `${base}.settings`;
@@ -296,7 +298,7 @@ export function Header({ sectionId = 'header' }: Props) {
       {showLanguage && languageLabel ? <span style={utilityStyle}>{languageLabel}</span> : null}
       {searchOn ? (
         <Link
-          to="/products"
+          to="/search"
           title={searchPlaceholder}
           style={{
             display: 'flex',
@@ -317,9 +319,10 @@ export function Header({ sectionId = 'header' }: Props) {
       {showAccount ? (
         user ? (
           <button
+            ref={accountBtnRef}
             type="button"
-            onClick={() => void logout()}
-            title="Sign out"
+            onClick={() => setAccountOpen((open) => !open)}
+            title="Account"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -329,20 +332,27 @@ export function Header({ sectionId = 'header' }: Props) {
               cursor: 'pointer',
               color: iconColor,
             }}
+            aria-label="Account menu"
           >
             {useIcons ? (
               <HeaderIconAccount color={iconColor} />
             ) : (
-              <span style={{ fontSize: 14, color: primary }}>Sign out</span>
+              <span style={{ fontSize: 14, color: primary }}>Account</span>
             )}
           </button>
         ) : (
-          <Link
-            to="/auth/login"
+          <button
+            ref={accountBtnRef}
+            type="button"
+            onClick={() => setAccountOpen(true)}
             title="Account"
             style={{
               display: 'flex',
               alignItems: 'center',
+              border: 'none',
+              background: 'transparent',
+              padding: 0,
+              cursor: 'pointer',
               color: iconColor,
               textDecoration: 'none',
             }}
@@ -353,7 +363,7 @@ export function Header({ sectionId = 'header' }: Props) {
             ) : (
               <span style={{ fontSize: 14, fontWeight: 600, color: primary }}>Sign in</span>
             )}
-          </Link>
+          </button>
         )
       ) : null}
       <Link
@@ -481,6 +491,13 @@ export function Header({ sectionId = 'header' }: Props) {
           ) : null}
         </div>
       </EditorSection>
+      <HeaderAccountPanel
+        open={accountOpen}
+        anchorRef={accountBtnRef}
+        onClose={() => setAccountOpen(false)}
+        user={user}
+        onSignOut={() => void logout()}
+      />
     </>
   );
 }

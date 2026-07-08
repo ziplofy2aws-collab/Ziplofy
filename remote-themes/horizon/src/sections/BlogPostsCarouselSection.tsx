@@ -1,8 +1,8 @@
 import { useMemo, useRef, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { BlogPostIllustration } from '../lib/BlogPostIllustration';
+import { useBlogPostCards } from '../lib/useBlogPostCards';
 import {
-  readBlogPostCards,
   readBlogPostsCarouselLayout,
   scopedBlogPostsCarouselCss,
 } from '../lib/blogPostsCarouselStyles';
@@ -78,14 +78,11 @@ export function BlogPostsCarouselSection({
     [config, settingsBase]
   );
 
-  const cards = useMemo(
-    () => readBlogPostCards(config, templateId, sectionId, placement, style.postCount),
-    [config, templateId, sectionId, placement, style.postCount]
-  );
+  const { cards } = useBlogPostCards(templateId, sectionId, placement, settingsBase, style.postCount);
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-blog-posts-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cardBasis =
     style.columns > 0
       ? `calc((100% - ${(style.columns - 1) * style.horizontalGap}px) / ${style.columns})`
