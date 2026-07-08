@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 import { axiosi } from '../config/axios.config';
 
-// Types mirrored from backend (Ziplofy3b)
+// Types mirrored from backend (codiic3b)
 export interface StoreBillingAddress {
   _id: string;
   storeId: string;

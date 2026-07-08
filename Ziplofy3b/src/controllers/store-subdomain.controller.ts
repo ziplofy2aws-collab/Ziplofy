@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { config } from '../config';
 import { Store } from '../models/store/store.model';
-import { StoreCustomTheme } from '../models/store-custom-theme/store-custom-theme.model';
+import { resolveStorefrontThemeSource } from '../utils/storefront-theme-resolution.util';
 import { Subdomain } from '../models/subdomain.model';
 import { asyncErrorHandler } from '../utils/error.utils';
 
@@ -41,23 +41,13 @@ export const checkSubdomain = asyncErrorHandler(async (req: Request, res: Respon
   }
 
   const store = await Store.findById(mapping.storeId)
-    .select('storeName storeDescription seoHomePageTitle seoMetaDescription seoSocialImageUrl appliedCustomThemeId')
+    .select('storeName storeDescription seoHomePageTitle seoMetaDescription seoSocialImageUrl appliedCustomThemeId appliedTheme')
     .lean();
   if (!store) {
     return res.status(404).json({ success: false, message: 'Store not found for subdomain' });
   }
 
-  const appliedCustomThemeId = store.appliedCustomThemeId
-    ? String(store.appliedCustomThemeId)
-    : null;
-
-  let appliedCustomThemeName: string | null = null;
-  if (appliedCustomThemeId) {
-    const customTheme = await StoreCustomTheme.findById(appliedCustomThemeId)
-      .select('themeName')
-      .lean();
-    appliedCustomThemeName = customTheme?.themeName ?? null;
-  }
+  const themeSource = await resolveStorefrontThemeSource(String(store._id));
 
   return res.status(200).json({
     success: true,
@@ -68,8 +58,11 @@ export const checkSubdomain = asyncErrorHandler(async (req: Request, res: Respon
       seoHomePageTitle: store.seoHomePageTitle ?? '',
       seoMetaDescription: store.seoMetaDescription ?? '',
       seoSocialImageUrl: store.seoSocialImageUrl ?? '',
-      appliedCustomThemeId,
-      appliedCustomThemeName,
+      themeKind: themeSource.kind,
+      appliedCustomThemeId: themeSource.storeCustomThemeId,
+      appliedCustomThemeName: themeSource.storeCustomThemeName,
+      appliedThemeId: themeSource.catalogThemeId,
+      appliedThemeName: themeSource.catalogThemeName,
     }
   });
 });

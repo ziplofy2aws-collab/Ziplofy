@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useState } from 'react';
 import { axiosi } from '../config/axios.config';
 
 export type CheckoutContactMethod = 'phone_or_email' | 'email';
-export type CheckoutEmailRegionMode = 'ziplofy_recommended' | 'custom';
+export type CheckoutEmailRegionMode = 'codiic_recommended' | 'custom';
 
 export interface CheckoutSettings {
   _id: string;

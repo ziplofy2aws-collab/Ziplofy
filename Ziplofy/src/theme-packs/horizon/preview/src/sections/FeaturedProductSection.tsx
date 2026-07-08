@@ -188,7 +188,7 @@ export function FeaturedProductSection({
       {style.customCss ? (
         <style dangerouslySetInnerHTML={{ __html: scopedProductHighlightCss(sectionId, style.customCss) }} />
       ) : null}
-      <div style={stage} data-ziplofy-section={sectionId}>
+      <div style={stage} data-codiic-section={sectionId}>
         <div style={split}>
           <div style={mediaPanel}>
             {productImageUrl ? (

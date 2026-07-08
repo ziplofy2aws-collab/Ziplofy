@@ -52,17 +52,17 @@ export function readThemeBadgeCssVars(
   const textCase = badges.textCase === 'uppercase' ? 'uppercase' : 'none';
 
   return {
-    '--ziplofy-badge-radius': `${cornerRadius}px`,
-    '--ziplofy-badge-sale-bg': resolvePaletteColor(config, badges.saleBackground, 0, '#ffffff'),
-    '--ziplofy-badge-sale-text': resolvePaletteColor(config, badges.saleText, 1, '#111827'),
-    '--ziplofy-badge-sold-out-bg': resolvePaletteColor(
+    '--codiic-badge-radius': `${cornerRadius}px`,
+    '--codiic-badge-sale-bg': resolvePaletteColor(config, badges.saleBackground, 0, '#ffffff'),
+    '--codiic-badge-sale-text': resolvePaletteColor(config, badges.saleText, 1, '#111827'),
+    '--codiic-badge-sold-out-bg': resolvePaletteColor(
       config,
       badges.soldOutBackground,
       0,
       '#EEF1EA'
     ),
-    '--ziplofy-badge-sold-out-text': resolvePaletteColor(config, badges.soldOutText, 1, '#111827'),
-    '--ziplofy-badge-text-transform': textCase,
+    '--codiic-badge-sold-out-text': resolvePaletteColor(config, badges.soldOutText, 1, '#111827'),
+    '--codiic-badge-text-transform': textCase,
     position,
   };
 }

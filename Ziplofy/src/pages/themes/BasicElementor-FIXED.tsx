@@ -20,20 +20,20 @@ const injectSelectionHandlerFixed = (doc: Document, win: Window, iframe: HTMLIFr
   
   // Inject CSS
   const style = doc.createElement('style');
-  style.id = 'ziplofy-style';
+  style.id = 'codiic-style';
   style.textContent = `
-    .ziplofy-section-highlight {
+    .codiic-section-highlight {
       outline: 3px solid #008060 !important;
       outline-offset: -3px !important;
       position: relative !important;
       box-shadow: 0 0 0 3px rgba(0, 128, 96, 0.3) !important;
-      animation: ziplofy-pulse 2s ease-in-out infinite !important;
+      animation: codiic-pulse 2s ease-in-out infinite !important;
     }
-    @keyframes ziplofy-pulse {
+    @keyframes codiic-pulse {
       0%, 100% { box-shadow: 0 0 0 3px rgba(0, 128, 96, 0.3); }
       50% { box-shadow: 0 0 0 3px rgba(0, 128, 96, 0.6); }
     }
-    .ziplofy-section-highlight::after {
+    .codiic-section-highlight::after {
       content: attr(data-section-name);
       position: absolute;
       top: -35px;
@@ -47,27 +47,27 @@ const injectSelectionHandlerFixed = (doc: Document, win: Window, iframe: HTMLIFr
       z-index: 10000;
       pointer-events: none;
     }
-    body.ziplofy-edit-mode * {
+    body.codiic-edit-mode * {
       cursor: pointer !important;
     }
-    body.ziplofy-edit-mode *:hover {
+    body.codiic-edit-mode *:hover {
       outline: 2px dashed rgba(0, 128, 96, 0.5) !important;
     }
   `;
   doc.head.appendChild(style);
-  doc.body.classList.add('ziplofy-edit-mode');
+  doc.body.classList.add('codiic-edit-mode');
   
   // Select element function
   const selectElement = (element: HTMLElement) => {
     // Remove old highlights
-    doc.querySelectorAll('.ziplofy-section-highlight').forEach(el => {
-      el.classList.remove('ziplofy-section-highlight');
+    doc.querySelectorAll('.codiic-section-highlight').forEach(el => {
+      el.classList.remove('codiic-section-highlight');
     });
     
     // Highlight new element
-    element.classList.add('ziplofy-section-highlight');
+    element.classList.add('codiic-section-highlight');
     element.setAttribute('data-section-name', 'Selected Element');
-    (win as any).ziplofySelectedElement = element;
+    (win as any).codiicSelectedElement = element;
     
     // Get styles
     const computed = win.getComputedStyle(element);
@@ -124,7 +124,7 @@ const injectSelectionHandlerFixed = (doc: Document, win: Window, iframe: HTMLIFr
     const target = e.target as HTMLElement;
     
     if (!target || target === doc.body || target === doc.documentElement) return;
-    if (target.closest('.ziplofy-section-highlight')) return;
+    if (target.closest('.codiic-section-highlight')) return;
     
     const tag = target.tagName.toLowerCase();
     if (['script', 'style', 'meta', 'link', 'title', 'head'].includes(tag)) return;
@@ -163,5 +163,5 @@ const injectSelectionHandlerFixed = (doc: Document, win: Window, iframe: HTMLIFr
   console.log('✅ FIXED handler attached - clicks should work now!');
   
   // Expose function
-  (win as any).ziplofySelectElement = selectElement;
+  (win as any).codiicSelectElement = selectElement;
 };

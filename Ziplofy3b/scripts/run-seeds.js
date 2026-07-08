@@ -1,7 +1,7 @@
 /**
  * Run package.json seed scripts by preset or by explicit script name(s).
  *
- * Usage (from Ziplofy3b folder):
+ * Usage (from codiic3b folder):
  *   node scripts/run-seeds.js <preset>
  *   node scripts/run-seeds.js seed:countries seed:states
  *   npm run seed:run -- full

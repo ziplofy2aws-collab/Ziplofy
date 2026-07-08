@@ -46,7 +46,7 @@ const CancelTrialModal: React.FC<CancelTrialModalProps> = ({
         Avoid unwanted charges
       </h3>
       <ul className="pl-5 mb-3 text-xs text-gray-600 list-disc space-y-1">
-        <li>Cancel any app subscriptions you signed up for outside of Ziplofy</li>
+        <li>Cancel any app subscriptions you signed up for outside of codiic</li>
         <li>
           Cancel additional{' '}
           <a href="#" className="text-gray-700 hover:underline">
@@ -56,7 +56,7 @@ const CancelTrialModal: React.FC<CancelTrialModalProps> = ({
         <li>
           Turn off automatic renewals for any{' '}
           <a href="#" className="text-gray-700 hover:underline">
-            domains with Ziplofy
+            domains with codiic
           </a>
         </li>
       </ul>
@@ -66,7 +66,7 @@ const CancelTrialModal: React.FC<CancelTrialModalProps> = ({
       </h3>
       <p className="text-xs text-gray-600 mb-3">
         Any domains connected to your account will be disconnected if you cancel your plan. As well,
-        all auto renewals will be turned off for any domains bought through Ziplofy.
+        all auto renewals will be turned off for any domains bought through codiic.
       </p>
 
       <h3 className="text-sm font-medium text-gray-900 mb-2">

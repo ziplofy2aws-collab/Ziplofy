@@ -48,7 +48,7 @@ export function RichTextSection({
   const textAlign = richTextContentAlign(style.layoutAlignment);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-rich-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-rich-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const isHorizontal = style.direction === 'horizontal';
 
   const shell: CSSProperties = {

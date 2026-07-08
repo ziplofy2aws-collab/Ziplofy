@@ -1,7 +1,10 @@
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const text = fs.readFileSync(
-  'C:/Users/dell/.cursor/projects/c-Work-merged-ziplofy/agent-tools/31167208-dc13-4575-a04d-34d31a9850ec.txt',
+  path.join(__dirname, 'checkout-fonts-source.txt'),
   'utf8'
 );
 const fenceMatch = text.match(/```json\r?\n/);
@@ -44,6 +47,6 @@ const google = fonts.map((f) => ({
 }));
 
 const all = [...system, ...google];
-const outPath = 'c:/Work/merged-ziplofy-/Ziplofy/src/create-theme/checkout/settings/checkout-typography-fonts.json';
+const outPath = path.join(__dirname, '../src/create-theme/checkout/settings/checkout-typography-fonts.json');
 fs.writeFileSync(outPath, JSON.stringify(all, null, 2));
 console.log('Wrote', all.length, 'fonts to', outPath);

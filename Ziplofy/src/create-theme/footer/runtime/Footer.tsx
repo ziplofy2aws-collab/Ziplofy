@@ -217,7 +217,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
   };
 
   const showCopy = Boolean(title.trim() || subtitle.trim());
-  const shellClass = sectionScopeClass('ziplofy-footer', sectionId);
+  const shellClass = sectionScopeClass('codiic-footer', sectionId);
   const responsiveCss = combineResponsiveCss(
     scopedMobileHorizontalPadCss(shellClass),
     scopedFooterMobileCss(shellClass)
@@ -261,7 +261,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
           nodeId={`layout:${sectionId}:block:${newsletterBlockId}`}
           label="Email signup"
         >
-          <div className="ziplofy-footer-row" style={row}>
+          <div className="codiic-footer-row" style={row}>
             {showCopy ? (
               <div style={copyColumn}>
                 {title.trim() ? (
@@ -303,7 +303,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
             ) : null}
 
             <form
-              className="ziplofy-footer-form"
+              className="codiic-footer-form"
               onSubmit={onSubmit}
               style={{
                 ...formRow,

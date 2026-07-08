@@ -77,7 +77,7 @@ const CheckoutSettingsPage: React.FC = () => {
   
   // Marketing options
   const [emailMarketing, setEmailMarketing] = useState(true);
-  const [emailRegionOption, setEmailRegionOption] = useState<'ziplofy_recommended' | 'custom'>('ziplofy_recommended');
+  const [emailRegionOption, setEmailRegionOption] = useState<'codiic_recommended' | 'custom'>('codiic_recommended');
   const [smsMarketing, setSmsMarketing] = useState(true);
   const [editRegionsModalOpen, setEditRegionsModalOpen] = useState(false);
   const [regionTab, setRegionTab] = useState<'all' | 'recommended'>('all');
@@ -97,7 +97,7 @@ const CheckoutSettingsPage: React.FC = () => {
       showOrderTracking: boolean;
       requireSignIn: boolean;
       emailMarketing: boolean;
-      emailRegionOption: 'ziplofy_recommended' | 'custom';
+      emailRegionOption: 'codiic_recommended' | 'custom';
       smsMarketing: boolean;
       selectedRegions: string[];
       showTipping: boolean;
@@ -186,7 +186,7 @@ const CheckoutSettingsPage: React.FC = () => {
     const orderTrackingEnabled = settings.orderTracking?.enabled ?? true;
     const requireSignInValue = settings.requireSignIn ?? false;
     const emailEnabled = settings.marketing?.email?.enabled ?? true;
-    const emailMode = settings.marketing?.email?.regionMode ?? 'ziplofy_recommended';
+    const emailMode = settings.marketing?.email?.regionMode ?? 'codiic_recommended';
     const smsEnabled = settings.marketing?.sms?.enabled ?? false;
     const tippingEnabled = settings.tipping?.enabled ?? false;
     const tippingPresets = settings.tipping?.presets ?? [];
@@ -457,7 +457,7 @@ const CheckoutSettingsPage: React.FC = () => {
     setEmailMarketing(checked);
   }, []);
 
-  const handleEmailRegionOptionChange = useCallback((value: 'ziplofy_recommended' | 'custom') => {
+  const handleEmailRegionOptionChange = useCallback((value: 'codiic_recommended' | 'custom') => {
     setEmailRegionOption(value);
   }, []);
 
@@ -676,7 +676,7 @@ const CheckoutSettingsPage: React.FC = () => {
             <p className="text-sm font-medium text-gray-900">
               Show a link for customers to track their order with{' '}
               <button type="button" className="font-medium text-blue-600 underline decoration-blue-600/30 hover:text-blue-700">
-                Ziplofy
+                codiic
               </button>
             </p>
             <p className="mt-1 text-xs text-gray-600">
@@ -974,9 +974,9 @@ const CheckoutSettingsPage: React.FC = () => {
                 </p>
                 <div className="flex gap-3">
                   <div
-                    onClick={() => handleEmailRegionOptionChange('ziplofy_recommended')}
+                    onClick={() => handleEmailRegionOptionChange('codiic_recommended')}
                     className={`flex-1 cursor-pointer rounded-xl border p-3 transition-colors ${
-                      emailRegionOption === 'ziplofy_recommended'
+                      emailRegionOption === 'codiic_recommended'
                         ? 'border-blue-600 ring-1 ring-blue-500/25'
                         : 'border-slate-200 hover:border-slate-300'
                     }`}
@@ -985,14 +985,14 @@ const CheckoutSettingsPage: React.FC = () => {
                       <input
                         type="radio"
                         name="emailRegionOption"
-                        value="ziplofy_recommended"
-                        checked={emailRegionOption === 'ziplofy_recommended'}
-                        onChange={(e) => handleEmailRegionOptionChange(e.target.value as 'ziplofy_recommended' | 'custom')}
+                        value="codiic_recommended"
+                        checked={emailRegionOption === 'codiic_recommended'}
+                        onChange={(e) => handleEmailRegionOptionChange(e.target.value as 'codiic_recommended' | 'custom')}
                         className={radioClassStart}
                       />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-1">
-                          Regions recommended by Ziplofy
+                          Regions recommended by codiic
                         </p>
                         <p className="text-xs text-gray-600 mb-1">United States only</p>
                         <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium border border-gray-200 h-5">
@@ -1015,7 +1015,7 @@ const CheckoutSettingsPage: React.FC = () => {
                         name="emailRegionOption"
                         value="custom"
                         checked={emailRegionOption === 'custom'}
-                        onChange={(e) => handleEmailRegionOptionChange(e.target.value as 'ziplofy_recommended' | 'custom')}
+                        onChange={(e) => handleEmailRegionOptionChange(e.target.value as 'codiic_recommended' | 'custom')}
                         className={radioClassStart}
                       />
                       <div className="flex-1">
@@ -1258,7 +1258,7 @@ const CheckoutSettingsPage: React.FC = () => {
           <p className="mt-3 text-sm text-gray-600">
             There are no apps installed with rules for checkout or cart. Visit the{' '}
             <button type="button" className="font-medium text-blue-600 underline decoration-blue-600/30 hover:text-blue-700">
-              Ziplofy App Store
+              codiic App Store
             </button>{' '}
             to install one.
           </p>

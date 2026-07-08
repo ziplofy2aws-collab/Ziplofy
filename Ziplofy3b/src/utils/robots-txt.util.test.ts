@@ -3,11 +3,11 @@ import { buildRobotsTxt } from './robots-txt.util';
 
 describe('buildRobotsTxt', () => {
   it('includes allow rules and sitemap for the storefront origin', () => {
-    const text = buildRobotsTxt('https://nike.ziplofy.com');
+    const text = buildRobotsTxt('https://nike.codiic.com');
 
     expect(text).toContain('User-agent: *');
     expect(text).toContain('Allow: /');
     expect(text).toContain('Disallow: /auth/');
-    expect(text).toContain('Sitemap: https://nike.ziplofy.com/sitemap.xml');
+    expect(text).toContain('Sitemap: https://nike.codiic.com/sitemap.xml');
   });
 });

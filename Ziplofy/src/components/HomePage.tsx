@@ -43,9 +43,9 @@ export default function HomePage() {
     const handleShowTour = () => {
       setShowOnboarding(true);
     };
-    window.addEventListener('ziplofy-show-tour', handleShowTour);
+    window.addEventListener('codiic-show-tour', handleShowTour);
     return () => {
-      window.removeEventListener('ziplofy-show-tour', handleShowTour);
+      window.removeEventListener('codiic-show-tour', handleShowTour);
     };
   }, []);
 
@@ -358,7 +358,7 @@ export default function HomePage() {
                   }}
                   utm={{
                     utmCampaign: 'developer-meeting',
-                    utmSource: 'ziplofy',
+                    utmSource: 'codiic',
                     utmMedium: 'website',
                   }}
                 />

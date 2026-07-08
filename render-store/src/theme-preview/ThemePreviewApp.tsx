@@ -16,7 +16,7 @@ import {
 import { hintsMatchKey, hintsStructureKey } from './previewPerf';
 
 const PREVIEW_CONFIG_DEBOUNCE_MS = 180;
-const PREVIEW_MOBILE_CLASS = 'ziplofy-preview-mobile';
+const PREVIEW_MOBILE_CLASS = 'codiic-preview-mobile';
 
 function applyPreviewDeviceClass(device: PreviewDevice): void {
   document.documentElement.classList.toggle(PREVIEW_MOBILE_CLASS, device === 'mobile');
@@ -110,7 +110,7 @@ export function ThemePreviewApp() {
   );
 
   useEffect(() => {
-    document.documentElement.classList.add('ziplofy-theme-preview-root');
+    document.documentElement.classList.add('codiic-theme-preview-root');
     document.body.style.margin = '0';
     document.body.style.background = 'transparent';
 
@@ -121,7 +121,7 @@ export function ThemePreviewApp() {
       if (!isParentPreviewMessage(event.data)) return;
       const msg = event.data;
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_INIT') {
+      if (msg.type === 'codiic_PREVIEW_INIT') {
         if (readyInterval !== undefined) {
           window.clearInterval(readyInterval);
           readyInterval = undefined;
@@ -148,17 +148,17 @@ export function ThemePreviewApp() {
         applyPreviewDeviceClass(payload.device === 'mobile' ? 'mobile' : 'desktop');
       }
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_SET_DEVICE') {
+      if (msg.type === 'codiic_PREVIEW_SET_DEVICE') {
         const device = msg.payload.device === 'mobile' ? 'mobile' : 'desktop';
         setPreviewDevice(device);
         applyPreviewDeviceClass(device);
       }
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_INSPECTOR') {
+      if (msg.type === 'codiic_PREVIEW_INSPECTOR') {
         setInspectorEnabled(Boolean(msg.payload.enabled));
       }
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_CONFIG') {
+      if (msg.type === 'codiic_PREVIEW_CONFIG') {
         if (msg.payload.immediate) {
           applyConfigImmediate(msg.payload.config);
         } else {
@@ -173,11 +173,11 @@ export function ThemePreviewApp() {
         }
       }
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_PATCH') {
+      if (msg.type === 'codiic_PREVIEW_PATCH') {
         patchConfigField(msg.payload.fieldPath, msg.payload.value);
       }
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_HINTS') {
+      if (msg.type === 'codiic_PREVIEW_HINTS') {
         setSelectionHints((prev) => {
           const next = msg.payload.selectionHints;
           if (
@@ -190,23 +190,23 @@ export function ThemePreviewApp() {
         });
       }
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_SET_PAGE') {
+      if (msg.type === 'codiic_PREVIEW_SET_PAGE') {
         setPage(msg.payload.page);
         setPreviewRoute(msg.payload.previewRoute);
         setPageRevision((n) => n + 1);
         window.setTimeout(() => {
-          postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_LOADED' });
+          postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_LOADED' });
         }, 0);
       }
 
-      if (msg.type === 'ZIPLOFY_PREVIEW_INSERT_HIGHLIGHT') {
+      if (msg.type === 'codiic_PREVIEW_INSERT_HIGHLIGHT') {
         setInsertHighlight(msg.payload ?? null);
       }
     };
 
     const signalReady = () => {
       if (readySent) return;
-      postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_READY' });
+      postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_READY' });
     };
 
     window.addEventListener('message', onMessage);
@@ -219,7 +219,7 @@ export function ThemePreviewApp() {
         window.clearTimeout(configDebounceRef.current);
       }
       window.removeEventListener('message', onMessage);
-      document.documentElement.classList.remove('ziplofy-theme-preview-root');
+      document.documentElement.classList.remove('codiic-theme-preview-root');
       document.documentElement.classList.remove(PREVIEW_MOBILE_CLASS);
     };
   }, [applyConfigImmediate, applyConfigDebounced, patchConfigField]);

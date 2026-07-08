@@ -65,7 +65,7 @@ exports.createCartEntry = (0, error_utils_1.asyncErrorHandler)(async (req, res) 
                     if (automationExists.flowData?.mainData?.action?.actionType === action_model_1.ActionType.SEND_EMAIL) {
                         const to = user.email;
                         if (to) {
-                            await (0, email_queue_1.enqueueEmailAddress)(to, 'Ziplofy: Cart threshold reached', `<p>Hi, you added ${quantity} item(s) to cart.</p>`);
+                            await (0, email_queue_1.enqueueEmailAddress)(to, 'codiic: Cart threshold reached', `<p>Hi, you added ${quantity} item(s) to cart.</p>`);
                         }
                     }
                 }
@@ -78,7 +78,7 @@ exports.createCartEntry = (0, error_utils_1.asyncErrorHandler)(async (req, res) 
             if (automationExists.flowData?.mainData?.action?.actionType === action_model_1.ActionType.SEND_EMAIL) {
                 const to = user?.email;
                 if (to) {
-                    await (0, email_queue_1.enqueueEmailAddress)(to, 'Ziplofy: Item added to cart', `<p>Hi, you added an item to your cart.</p>`);
+                    await (0, email_queue_1.enqueueEmailAddress)(to, 'codiic: Item added to cart', `<p>Hi, you added an item to your cart.</p>`);
                 }
             }
         }

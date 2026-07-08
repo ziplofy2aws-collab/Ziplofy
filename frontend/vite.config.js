@@ -10,9 +10,9 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
   },
   server: {
-    allowedHosts: ['admin.ziplofy.com'],
+    allowedHosts: ['admin.codiic.com'],
   },
   preview: {
-    allowedHosts: ['admin.ziplofy.com'],
+    allowedHosts: ['admin.codiic.com'],
   },
 })

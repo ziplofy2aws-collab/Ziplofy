@@ -22,11 +22,11 @@ export function EditorSection({
   const layoutNodeId = editorNodeId ?? `layout:${sectionId}`;
   return (
     <section
-      data-ziplofy-section={sectionId}
+      data-codiic-section={sectionId}
       data-section-id={sectionId}
-      data-ziplofy-node={layoutNodeId}
-      data-ziplofy-label={label ?? sectionId}
-      data-ziplofy-kind="section"
+      data-codiic-node={layoutNodeId}
+      data-codiic-label={label ?? sectionId}
+      data-codiic-kind="section"
       className={className}
       style={style}
     >
@@ -47,9 +47,9 @@ type BlockProps = {
 export function EditorBlock({ nodeId, label, className, style, children }: BlockProps) {
   return (
     <div
-      data-ziplofy-node={nodeId}
-      data-ziplofy-label={label}
-      data-ziplofy-kind="block"
+      data-codiic-node={nodeId}
+      data-codiic-label={label}
+      data-codiic-kind="block"
       className={className}
       style={style}
     >
@@ -79,9 +79,9 @@ export function EditorField({
   const Component = Tag;
   return (
     <Component
-      data-ziplofy-node={`field:${fieldPath}`}
-      data-ziplofy-label={label}
-      data-ziplofy-kind="field"
+      data-codiic-node={`field:${fieldPath}`}
+      data-codiic-label={label}
+      data-codiic-kind="field"
       className={className}
       style={style}
     >

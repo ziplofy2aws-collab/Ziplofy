@@ -1,6 +1,6 @@
 # Horizon theme pack — editor benchmark
 
-This pack is the **reference schema** for Ziplofy section-based theme editors. New themes (Studio, Volt, etc.) should mirror this structure.
+This pack is the **reference schema** for codiic section-based theme editors. New themes (Studio, Volt, etc.) should mirror this structure.
 
 ## Files
 
@@ -17,7 +17,7 @@ This pack is the **reference schema** for Ziplofy section-based theme editors. N
 node scripts/build-horizon-benchmark-schema.mjs
 ```
 
-Add runtimes under `Ziplofy/src/create-theme/{element}/runtime/`.
+Add runtimes under `codiic/src/create-theme/{element}/runtime/`.
 
 ## Schema layout
 

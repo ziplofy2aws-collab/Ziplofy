@@ -72,19 +72,19 @@ export function CustomThemePageShell({ children }: { children: ReactNode }) {
         ...themeSwatchesCssVars(config),
         ...themeVariantPickersCssVars(config),
       }}
-      data-ziplofy-page-transition={animations.pageTransition ? 'true' : 'false'}
-      data-ziplofy-product-card-transition={animations.productCardTransition ? 'true' : 'false'}
-      data-ziplofy-add-to-cart-animation={animations.addToCart ? 'true' : 'false'}
-      data-ziplofy-card-hover={animations.cardHoverEffect}
-      data-ziplofy-badge-position={badges.position}
-      data-ziplofy-cart-type={cart.type}
-      data-ziplofy-product-media-border={productMedia.borderStyle}
-      data-ziplofy-icon-stroke={icons.stroke}
-      data-ziplofy-product-card-quick-add={productCards.quickAdd ? 'true' : 'false'}
-      data-ziplofy-product-card-mobile-quick-add={productCards.mobileQuickAdd ? 'true' : 'false'}
-      data-ziplofy-swatch-border={swatches.borderStyle}
-      data-ziplofy-swatch-variant-images={swatches.variantImages ? 'true' : 'false'}
-      data-ziplofy-variant-picker-width={variantPickers.width}
+      data-codiic-page-transition={animations.pageTransition ? 'true' : 'false'}
+      data-codiic-product-card-transition={animations.productCardTransition ? 'true' : 'false'}
+      data-codiic-add-to-cart-animation={animations.addToCart ? 'true' : 'false'}
+      data-codiic-card-hover={animations.cardHoverEffect}
+      data-codiic-badge-position={badges.position}
+      data-codiic-cart-type={cart.type}
+      data-codiic-product-media-border={productMedia.borderStyle}
+      data-codiic-icon-stroke={icons.stroke}
+      data-codiic-product-card-quick-add={productCards.quickAdd ? 'true' : 'false'}
+      data-codiic-product-card-mobile-quick-add={productCards.mobileQuickAdd ? 'true' : 'false'}
+      data-codiic-swatch-border={swatches.borderStyle}
+      data-codiic-swatch-variant-images={swatches.variantImages ? 'true' : 'false'}
+      data-codiic-variant-picker-width={variantPickers.width}
     >
       {headerOrder.map((sectionId) =>
         isLayoutSectionEnabled(config, sectionId) ? (

@@ -67,7 +67,8 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
   const homePageTitle = store.seoHomePageTitle?.trim() || storeName;
   const homeOgImage = store.seoSocialImageUrl?.trim() || undefined;
 
-  const productMatch = pathname.match(/^\/products\/([^/]+)$/);
+  const productMatch =
+    pathname.match(/^\/product\/([^/]+)$/) ?? pathname.match(/^\/products\/([^/]+)$/);
   if (productMatch && !product) {
     return {
       title: joinTitle(['Product', storeName]),
@@ -97,8 +98,22 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
     };
   }
 
-  const collectionMatch = pathname.match(/^\/collections\/([^/]+)$/);
-  if (collectionMatch && !collection && collectionMatch[1] !== 'all') {
+  const collectionSingularMatch = pathname.match(/^\/collection\/([^/]+)$/);
+  const collectionMatch =
+    pathname === '/collections'
+      ? (['', 'index'] as RegExpMatchArray)
+      : pathname.match(/^\/collections\/([^/]+)$/) ?? collectionSingularMatch;
+  if (collectionMatch && collectionMatch[1] === 'index' && !collection) {
+    return {
+      title: joinTitle(['Collections', storeName]),
+      description: storeDescription || `Browse collections at ${storeName}.`,
+      canonicalUrl,
+      ogType: 'website',
+      jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
+    };
+  }
+
+  if (collectionMatch && !collection && collectionMatch[1] !== 'all' && collectionMatch[1] !== 'index') {
     return {
       title: joinTitle(['Collection', storeName]),
       description: storeDescription,

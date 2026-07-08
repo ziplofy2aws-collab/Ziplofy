@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { CheckoutOrderStatusView } from '@ziplofy/create-theme/checkout/order-status/CheckoutOrderStatusView';
+import { CheckoutOrderStatusView } from '@codiic/create-theme/checkout/order-status/CheckoutOrderStatusView';
 import { useStorefrontAuth } from '@/contexts/storefront-auth.context';
 import { useStorefrontOrder } from '@/contexts/storefront-order.context';
 import { useCheckoutProfilePageAppearance } from '@/hooks/useCheckoutProfilePageAppearance';

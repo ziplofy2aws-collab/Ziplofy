@@ -41,7 +41,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *     (MONGODB_URI, JWT, email, AWS, etc.); connectDB pulls in env.utils.
  *   - npm run build so compiled seeds exist under build/seed/ (this file becomes build/seed/run-all-seeds.js).
  *
- * Usage (from repo root Ziplofy3b):
+ * Usage (from repo root codiic3b):
  *   npm run seed:database
  *
  * Or after build only:
@@ -88,7 +88,7 @@ function runScript(relPath) {
     const abs = path.join(repoRoot, relPath);
     if (!fs.existsSync(abs)) {
         console.error('\nMissing seed file: ' + relPath);
-        console.error('Run npm run build from the Ziplofy3b folder, then try again.\n');
+        console.error('Run npm run build from the codiic3b folder, then try again.\n');
         process.exit(1);
     }
     console.log(`\n${'='.repeat(72)}\n> ${relPath}\n${'='.repeat(72)}\n`);
@@ -108,7 +108,7 @@ function runScript(relPath) {
 }
 function main() {
     const { skipDemo } = parseArgs(process.argv.slice(2));
-    console.log('\nZiplofy3b - master database seed');
+    console.log('\ncodiic3b - master database seed');
     console.log(`Repo root: ${repoRoot}`);
     console.log(skipDemo ? 'Mode: reference data only (--skip-demo)\n' : 'Mode: reference + demo data\n');
     for (const rel of REFERENCE_SEEDS) {

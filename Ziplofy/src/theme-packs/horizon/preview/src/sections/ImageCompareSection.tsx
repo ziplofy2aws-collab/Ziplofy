@@ -99,7 +99,7 @@ export function ImageCompareSection({
 
   const mobileStackClass =
     style.verticalOnMobile && isHorizontal
-      ? `ziplofy-image-compare-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+      ? `codiic-image-compare-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
       : '';
 
   const contentPanel: CSSProperties = {

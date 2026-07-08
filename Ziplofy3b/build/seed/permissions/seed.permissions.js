@@ -122,14 +122,14 @@ const defs = [
     { key: 'checkout_customer_accounts.view_edit.manage_store_credit_visibility', name: 'Manage store credit visibility', resource: 'checkout', parentKey: 'checkout_customer_accounts.view_edit', isLeaf: true, order: 11 },
     // Quick sale
     { key: 'quick_sale', name: 'Quick sale', resource: 'pos', parentKey: null, isLeaf: false, order: 12 },
-    { key: 'quick_sale.use_on_mobile', name: 'Use Quick sale on Ziplofy mobile', resource: 'pos', parentKey: 'quick_sale', isLeaf: true, order: 10 },
+    { key: 'quick_sale.use_on_mobile', name: 'Use Quick sale on codiic mobile', resource: 'pos', parentKey: 'quick_sale', isLeaf: true, order: 10 },
     // Finance
     { key: 'finance', name: 'Finance', resource: 'finance', parentKey: null, isLeaf: false, order: 13 },
     { key: 'finance.view_billing_receive_emails', name: 'View billing and receive billing emails', resource: 'finance', parentKey: 'finance', isLeaf: true, order: 10 },
     { key: 'finance.edit_billing_methods_pay_invoices', name: 'Edit billing payment methods and pay invoices', resource: 'finance', parentKey: 'finance', isLeaf: true, order: 20 },
     { key: 'finance.manage_plan', name: 'Manage plan', resource: 'finance', parentKey: 'finance', isLeaf: true, order: 30 },
     { key: 'finance.manage_app_billing', name: 'Manage app billing', resource: 'finance', parentKey: 'finance', isLeaf: true, order: 40 },
-    { key: 'finance.view_ziplofy_payments_payouts', name: 'View Ziplofy Payments payouts', resource: 'finance', parentKey: 'finance', isLeaf: true, order: 50 },
+    { key: 'finance.view_codiic_payments_payouts', name: 'View codiic Payments payouts', resource: 'finance', parentKey: 'finance', isLeaf: true, order: 50 },
     { key: 'finance.manage_other_payment_settings', name: 'Manage other payment settings', resource: 'finance', parentKey: 'finance', isLeaf: true, order: 60 },
     // Analytics
     { key: 'analytics', name: 'Analytics', resource: 'analytics', parentKey: null, isLeaf: false, order: 14 },
@@ -152,7 +152,7 @@ const defs = [
     { key: 'store_settings.taxes_and_duties', name: 'Taxes and duties', resource: 'settings', parentKey: 'store_settings', isLeaf: true, order: 30 },
     { key: 'store_settings.locations', name: 'Locations', resource: 'settings', parentKey: 'store_settings', isLeaf: true, order: 40 },
     { key: 'store_settings.domains', name: 'Domains', resource: 'settings', parentKey: 'store_settings', isLeaf: false, order: 50 },
-    { key: 'store_settings.domains.transfer_domain', name: 'Transfer domain to another Ziplofy store', resource: 'settings', parentKey: 'store_settings.domains', isLeaf: true, order: 51 },
+    { key: 'store_settings.domains.transfer_domain', name: 'Transfer domain to another codiic store', resource: 'settings', parentKey: 'store_settings.domains', isLeaf: true, order: 51 },
     { key: 'store_settings.view_customer_events', name: 'View customer events', resource: 'settings', parentKey: 'store_settings', isLeaf: false, order: 60 },
     { key: 'store_settings.view_customer_events.manage_add_custom_pixels', name: 'Manage and add custom pixels', resource: 'settings', parentKey: 'store_settings.view_customer_events', isLeaf: true, order: 61 },
     { key: 'store_settings.store_policies', name: 'Store policies', resource: 'settings', parentKey: 'store_settings', isLeaf: true, order: 70 },

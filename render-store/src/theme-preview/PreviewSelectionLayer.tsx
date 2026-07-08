@@ -112,8 +112,8 @@ export function PreviewSelectionLayer({
 
     const value = (el.innerText ?? '').replace(/\s+/g, ' ').trim();
     postToParent({
-      source: 'ziplofy-theme-preview',
-      type: 'ZIPLOFY_PREVIEW_FIELD_CHANGE',
+      source: 'codiic-theme-preview',
+      type: 'codiic_PREVIEW_FIELD_CHANGE',
       payload: { nodeId: sel.nodeId, fieldPath, value },
     });
   }, []);
@@ -182,14 +182,14 @@ export function PreviewSelectionLayer({
 
   useEffect(() => {
     if (!enabled) return;
-    document.documentElement.classList.add('ziplofy-preview-edit-mode');
-    return () => document.documentElement.classList.remove('ziplofy-preview-edit-mode');
+    document.documentElement.classList.add('codiic-preview-edit-mode');
+    return () => document.documentElement.classList.remove('codiic-preview-edit-mode');
   }, [enabled]);
 
   useEffect(() => {
     if (enabled) return;
     clearPreviewSelection({ commitEdit: false });
-    postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_DESELECT' });
+    postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_DESELECT' });
   }, [enabled, clearPreviewSelection]);
 
   useEffect(() => {
@@ -220,7 +220,7 @@ export function PreviewSelectionLayer({
 
     const onMessage = (event: MessageEvent) => {
       if (!isParentPreviewMessage(event.data)) return;
-      if (event.data.type !== 'ZIPLOFY_PREVIEW_HIGHLIGHT') return;
+      if (event.data.type !== 'codiic_PREVIEW_HIGHLIGHT') return;
       const nodeId = event.data.payload.nodeId;
       if (!nodeId) {
         clearPreviewSelection({ commitEdit: true });
@@ -230,15 +230,15 @@ export function PreviewSelectionLayer({
       const applyHighlight = () => {
         const el = findElementForNodeId(nodeId);
         if (!el) return false;
-        const markedId = el.getAttribute('data-ziplofy-node');
+        const markedId = el.getAttribute('data-codiic-node');
         const hintMeta = hintForNodeId(nodeId, hintsRef.current);
         const resolved =
           markedId === nodeId
             ? {
                 nodeId,
-                label: el.getAttribute('data-ziplofy-label') ?? hintMeta?.label ?? 'Section',
+                label: el.getAttribute('data-codiic-label') ?? hintMeta?.label ?? 'Section',
                 kind:
-                  (el.getAttribute('data-ziplofy-kind') as ThemePreviewSelectionHint['kind']) ??
+                  (el.getAttribute('data-codiic-kind') as ThemePreviewSelectionHint['kind']) ??
                   hintMeta?.kind ??
                   'section',
               }
@@ -250,9 +250,9 @@ export function PreviewSelectionLayer({
                 }
               : resolveSelectionFromElement(el, hintsRef.current) ?? {
                   nodeId,
-                  label: el.getAttribute('data-ziplofy-label') ?? 'Section',
+                  label: el.getAttribute('data-codiic-label') ?? 'Section',
                   kind:
-                    (el.getAttribute('data-ziplofy-kind') as ThemePreviewSelectionHint['kind']) ??
+                    (el.getAttribute('data-codiic-kind') as ThemePreviewSelectionHint['kind']) ??
                     'section',
                 };
         setSelected({ el, ...resolved });
@@ -301,7 +301,7 @@ export function PreviewSelectionLayer({
       }
 
       const resolved = resolveSelectionFromElement(target, hintsRef.current);
-      const nodeId = resolved?.nodeId ?? target.getAttribute('data-ziplofy-node');
+      const nodeId = resolved?.nodeId ?? target.getAttribute('data-codiic-node');
       if (nodeId && nodeId === selectedRef.current?.nodeId) {
         if (lastHoverNodeIdRef.current !== null) {
           lastHoverNodeIdRef.current = null;
@@ -314,20 +314,20 @@ export function PreviewSelectionLayer({
 
       lastHoverNodeIdRef.current = nodeId;
       setHoverRect(measureRect(target));
-      setHoverLabel(resolved?.label ?? target.getAttribute('data-ziplofy-label') ?? 'Section');
+      setHoverLabel(resolved?.label ?? target.getAttribute('data-codiic-label') ?? 'Section');
     });
 
     const onClick = (e: MouseEvent) => {
-      const toolbar = (e.target as HTMLElement).closest('.ziplofy-selection-toolbar');
+      const toolbar = (e.target as HTMLElement).closest('.codiic-selection-toolbar');
       if (toolbar) return;
-      if ((e.target as HTMLElement).closest('[data-ziplofy-inline-editing]')) return;
+      if ((e.target as HTMLElement).closest('[data-codiic-inline-editing]')) return;
 
       const target = findEditableTargetFromPoint(e.clientX, e.clientY);
       if (!target) {
         if (isEditingRef.current) commitInlineEdit();
         if (selectedRef.current) {
           clearPreviewSelection({ commitEdit: false });
-          postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_DESELECT' });
+          postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_DESELECT' });
         }
         return;
       }
@@ -349,8 +349,8 @@ export function PreviewSelectionLayer({
       lastHoverNodeIdRef.current = null;
 
       postToParent({
-        source: 'ziplofy-theme-preview',
-        type: 'ZIPLOFY_PREVIEW_SELECT',
+        source: 'codiic-theme-preview',
+        type: 'codiic_PREVIEW_SELECT',
         payload: resolved,
       });
 
@@ -372,13 +372,13 @@ export function PreviewSelectionLayer({
     if (!selected) return;
     if (isEditing) commitInlineEdit();
     postToParent({
-      source: 'ziplofy-theme-preview',
-      type: 'ZIPLOFY_PREVIEW_ACTION',
+      source: 'codiic-theme-preview',
+      type: 'codiic_PREVIEW_ACTION',
       payload: { action, nodeId: selected.nodeId },
     });
     if (action === 'hide' || action === 'delete') {
       clearPreviewSelection({ commitEdit: false });
-      postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_DESELECT' });
+      postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_DESELECT' });
     }
   };
 
@@ -386,12 +386,12 @@ export function PreviewSelectionLayer({
 
   return createPortal(
     <div
-      id="ziplofy-preview-selection-root"
-      className={selected || isEditing ? 'ziplofy-selection-active' : undefined}
+      id="codiic-preview-selection-root"
+      className={selected || isEditing ? 'codiic-selection-active' : undefined}
     >
       {hoverRect && !isEditing && (
         <div
-          className="ziplofy-selection-box ziplofy-selection-box-hover"
+          className="codiic-selection-box codiic-selection-box-hover"
           style={{
             top: hoverRect.top,
             left: hoverRect.left,
@@ -405,7 +405,7 @@ export function PreviewSelectionLayer({
       {selectRect && selected && (
         <>
           <div
-            className={`ziplofy-selection-box ${isEditing ? 'ziplofy-selection-box-editing' : ''}`}
+            className={`codiic-selection-box ${isEditing ? 'codiic-selection-box-editing' : ''}`}
             style={{
               top: selectRect.top,
               left: selectRect.left,
@@ -416,7 +416,7 @@ export function PreviewSelectionLayer({
           {!isEditing && (
             <>
               <div
-                className="ziplofy-selection-label"
+                className="codiic-selection-label"
                 style={{
                   top: Math.max(4, selectRect.top - 28),
                   left: selectRect.left,
@@ -426,7 +426,7 @@ export function PreviewSelectionLayer({
                 {selected.label}
               </div>
               <div
-                className="ziplofy-selection-toolbar"
+                className="codiic-selection-toolbar"
                 style={{
                   top: selectRect.top + selectRect.height + 8,
                   left: Math.max(8, Math.min(selectRect.left, window.innerWidth - 120)),
@@ -434,7 +434,7 @@ export function PreviewSelectionLayer({
               >
                 <button
                   type="button"
-                  className="ziplofy-selection-toolbar-btn"
+                  className="codiic-selection-toolbar-btn"
                   title="Hide"
                   onClick={() => postAction('hide')}
                 >
@@ -442,7 +442,7 @@ export function PreviewSelectionLayer({
                 </button>
                 <button
                   type="button"
-                  className="ziplofy-selection-toolbar-btn danger"
+                  className="codiic-selection-toolbar-btn danger"
                   title="Remove"
                   onClick={() => postAction('delete')}
                 >
@@ -453,7 +453,7 @@ export function PreviewSelectionLayer({
           )}
           {isEditing && (
             <div
-              className="ziplofy-selection-label ziplofy-selection-label-editing"
+              className="codiic-selection-label codiic-selection-label-editing"
               style={{
                 top: Math.max(4, selectRect.top - 28),
                 left: selectRect.left,
@@ -467,7 +467,7 @@ export function PreviewSelectionLayer({
 
       {hoverRect && hoverLabel && !isEditing && (
         <div
-          className="ziplofy-selection-label"
+          className="codiic-selection-label"
           style={{
             top: Math.max(4, hoverRect.top - 28),
             left: hoverRect.left,
@@ -485,8 +485,8 @@ export function PreviewSelectionLayer({
           highlightedInsert={insertHighlight}
           onInsert={(payload) => {
             postToParent({
-              source: 'ziplofy-theme-preview',
-              type: 'ZIPLOFY_PREVIEW_INSERT_SECTION',
+              source: 'codiic-theme-preview',
+              type: 'codiic_PREVIEW_INSERT_SECTION',
               payload,
             });
           }}

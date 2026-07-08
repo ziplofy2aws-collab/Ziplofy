@@ -47,16 +47,16 @@ export function readThemeButtonCssVars(
   const secondaryBorder = Number(secondary.borderThickness);
 
   return {
-    '--ziplofy-btn-primary-bg': resolvePaletteColor(config, primary.background, 1, '#111827'),
-    '--ziplofy-btn-primary-text': resolvePaletteColor(config, primary.text, 0, '#ffffff'),
-    '--ziplofy-btn-primary-border-color': resolvePaletteColor(config, primary.border, 1, '#111827'),
-    '--ziplofy-btn-primary-border-width': `${Number.isFinite(primaryBorder) ? primaryBorder : 0}px`,
-    '--ziplofy-btn-primary-radius': `${Number.isFinite(primaryRadius) ? primaryRadius : 14}px`,
-    '--ziplofy-btn-secondary-bg': resolvePaletteColor(config, secondary.background, 0, 'transparent'),
-    '--ziplofy-btn-secondary-text': resolvePaletteColor(config, secondary.text, 1, '#111827'),
-    '--ziplofy-btn-secondary-border-color': resolvePaletteColor(config, secondary.border, 1, '#111827'),
-    '--ziplofy-btn-secondary-border-width': `${Number.isFinite(secondaryBorder) ? secondaryBorder : 1}px`,
-    '--ziplofy-btn-secondary-radius': `${Number.isFinite(secondaryRadius) ? secondaryRadius : 14}px`,
-    '--ziplofy-pill-radius': `${Number.isFinite(pillsRadius) ? pillsRadius : 40}px`,
+    '--codiic-btn-primary-bg': resolvePaletteColor(config, primary.background, 1, '#111827'),
+    '--codiic-btn-primary-text': resolvePaletteColor(config, primary.text, 0, '#ffffff'),
+    '--codiic-btn-primary-border-color': resolvePaletteColor(config, primary.border, 1, '#111827'),
+    '--codiic-btn-primary-border-width': `${Number.isFinite(primaryBorder) ? primaryBorder : 0}px`,
+    '--codiic-btn-primary-radius': `${Number.isFinite(primaryRadius) ? primaryRadius : 14}px`,
+    '--codiic-btn-secondary-bg': resolvePaletteColor(config, secondary.background, 0, 'transparent'),
+    '--codiic-btn-secondary-text': resolvePaletteColor(config, secondary.text, 1, '#111827'),
+    '--codiic-btn-secondary-border-color': resolvePaletteColor(config, secondary.border, 1, '#111827'),
+    '--codiic-btn-secondary-border-width': `${Number.isFinite(secondaryBorder) ? secondaryBorder : 1}px`,
+    '--codiic-btn-secondary-radius': `${Number.isFinite(secondaryRadius) ? secondaryRadius : 14}px`,
+    '--codiic-pill-radius': `${Number.isFinite(pillsRadius) ? pillsRadius : 40}px`,
   };
 }

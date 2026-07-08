@@ -120,7 +120,7 @@ export function scopedLargeLogoBlockMobileCss(
   layout: LargeLogoBlockLayout
 ): string {
   if (!layout.customMobileSize) return '';
-  const sel = `.${scopeClass} .ziplofy-large-logo-mark`;
+  const sel = `.${scopeClass} .codiic-large-logo-mark`;
   if (layout.mobileSizeUnit === 'pixel') {
     return mobileMedia(
       `${sel} { font-size: ${layout.mobilePixelHeight}px !important; width: auto !important; }`

@@ -49,7 +49,7 @@ export function CreateThemePoweredByLoader() {
           </div>
         </div>
         <p className="create-theme-powered-loader__brand">
-          Powered by <span>Ziplofy</span>
+          Powered by <span>codiic</span>
         </p>
       </div>
     </div>

@@ -6,6 +6,6 @@ export function readThemeCartCssVars(
   const productTitleCase = cart.productTitleCase === 'uppercase' ? 'uppercase' : 'none';
 
   return {
-    '--ziplofy-cart-product-title-transform': productTitleCase,
+    '--codiic-cart-product-title-transform': productTitleCase,
   };
 }

@@ -1,6 +1,6 @@
 import type { AdminSeoPayload } from './seo.types';
 
-const ADMIN_JSON_LD_SCRIPT_ID = 'ziplofy-admin-seo-jsonld';
+const ADMIN_JSON_LD_SCRIPT_ID = 'codiic-admin-seo-jsonld';
 
 function upsertMeta(attr: 'name' | 'property', key: string, content: string): void {
   const selector = attr === 'name' ? `meta[name="${key}"]` : `meta[property="${key}"]`;

@@ -180,6 +180,7 @@ exports.updateStore = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
                 throw new error_utils_1.CustomError("Store custom theme not found for this store", 404);
             }
             $set.appliedCustomThemeId = new mongoose_1.default.Types.ObjectId(body.appliedCustomThemeId);
+            $set.appliedTheme = null;
         }
     }
     if (Object.keys($set).length === 0) {

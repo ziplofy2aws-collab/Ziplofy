@@ -43,7 +43,7 @@ node scripts/fork-create-theme-sidebar.mjs
 
 - Composer: `runtime/` walks `themeConfig` and mounts section runtimes from each element folder.
 - Implemented runtimes: `header/runtime`, `announcement-bar/runtime`, `divider/runtime` (more sections show a placeholder until ported).
-- render-store loads `@ziplofy/create-theme/runtime` when `isStoreCustomTheme` (no `theme.js`).
+- render-store loads `@codiic/create-theme/runtime` when `isStoreCustomTheme` (no `theme.js`).
 
 ## Mobile responsiveness (section runtimes)
 

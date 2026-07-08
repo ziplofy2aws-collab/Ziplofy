@@ -72,9 +72,9 @@ function BlogPostCardView({ card, blockNodeId, blockBase, scheme, fontBody, edit
     return (
       <article
         data-blog-card
-        data-ziplofy-node={blockNodeId}
-        data-ziplofy-label={card.title || 'Blog post'}
-        data-ziplofy-kind="block"
+        data-codiic-node={blockNodeId}
+        data-codiic-label={card.title || 'Blog post'}
+        data-codiic-kind="block"
       >
         <div style={imageBox}>{image}</div>
         <h3 style={titleStyle}>{card.title}</h3>
@@ -102,9 +102,9 @@ function BlogPostCardView({ card, blockNodeId, blockBase, scheme, fontBody, edit
   return (
     <article
       data-blog-card
-      data-ziplofy-node={blockNodeId}
-      data-ziplofy-label={card.title || 'Blog post'}
-      data-ziplofy-kind="block"
+      data-codiic-node={blockNodeId}
+      data-codiic-label={card.title || 'Blog post'}
+      data-codiic-kind="block"
     >
       <div style={imageBox}>
         <EditorField fieldPath={`${blockBase}.imageUrl`} label="Image" as="span">
@@ -190,7 +190,7 @@ export function BlogPostsGrid({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cols = Math.max(1, Math.min(4, style.columns));
 
   const shell: CSSProperties = {

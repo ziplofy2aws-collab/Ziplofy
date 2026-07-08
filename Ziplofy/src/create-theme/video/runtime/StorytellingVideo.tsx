@@ -99,7 +99,7 @@ export function StorytellingVideo({
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const mediaOnRight = style.videoOnRight;
   const isHorizontal = style.direction === 'horizontal';
-  const scopeClass = `ziplofy-storytelling-video-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-storytelling-video-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
   const shell: CSSProperties = {
     position: 'relative',

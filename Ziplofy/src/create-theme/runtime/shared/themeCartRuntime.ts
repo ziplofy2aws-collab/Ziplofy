@@ -37,10 +37,10 @@ export function themeCartCssVars(
   const priceTraits = resolveThemeCartPriceFontTraits(config);
 
   return {
-    '--ziplofy-cart-price-font-family': priceFontFamily,
-    '--ziplofy-cart-price-font-weight': String(priceTraits.fontWeight),
-    '--ziplofy-cart-price-font-style': priceTraits.fontStyle,
-    '--ziplofy-cart-product-title-transform':
+    '--codiic-cart-price-font-family': priceFontFamily,
+    '--codiic-cart-price-font-weight': String(priceTraits.fontWeight),
+    '--codiic-cart-price-font-style': priceTraits.fontStyle,
+    '--codiic-cart-product-title-transform':
       cart.productTitleCase === 'uppercase' ? 'uppercase' : 'none',
   };
 }

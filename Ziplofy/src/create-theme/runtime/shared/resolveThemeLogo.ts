@@ -75,6 +75,6 @@ export function scopedHeaderLogoHeightCss(
   desktop: number,
   mobile: number
 ): string {
-  const sel = `[data-ziplofy-section="${sectionId}"] .ziplofy-header-logo-img`;
+  const sel = `[data-codiic-section="${sectionId}"] .codiic-header-logo-img`;
   return `${sel}{height:${desktop}px;max-height:${desktop}px;width:auto;object-fit:contain;display:block;}\n${mobileMedia(`${sel}{height:${mobile}px;max-height:${mobile}px;}`)}`;
 }

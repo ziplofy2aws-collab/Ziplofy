@@ -24,11 +24,11 @@ function editorAttrs(
   fieldPath?: string
 ): Record<string, string> {
   const attrs: Record<string, string> = {
-    'data-ziplofy-node': editorNodeId,
-    'data-ziplofy-label': label,
-    'data-ziplofy-kind': kind,
+    'data-codiic-node': editorNodeId,
+    'data-codiic-label': label,
+    'data-codiic-kind': kind,
   };
-  if (fieldPath) attrs['data-ziplofy-field'] = fieldPath;
+  if (fieldPath) attrs['data-codiic-field'] = fieldPath;
   return attrs;
 }
 
@@ -59,12 +59,12 @@ export function IconsWithText({
   const scheme = style.scheme;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const colCount = Math.max(items.length, style.columns);
   const isHorizontal = style.direction === 'horizontal';
   const shellClass = `${scopeClass}-shell`;
   const mobileStackClass = isHorizontal
-    ? `ziplofy-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+    ? `codiic-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
     : '';
   const typo = columnTypography(fontBody);
 

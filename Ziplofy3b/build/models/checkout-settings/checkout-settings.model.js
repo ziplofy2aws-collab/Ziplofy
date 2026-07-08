@@ -51,8 +51,8 @@ const checkoutSettingsSchema = new mongoose_1.Schema({
             enabled: { type: Boolean, default: true },
             regionMode: {
                 type: String,
-                enum: ['ziplofy_recommended', 'custom'],
-                default: 'ziplofy_recommended',
+                enum: ['codiic_recommended', 'custom'],
+                default: 'codiic_recommended',
             },
         },
         sms: {

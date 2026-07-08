@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { CheckoutThankYouView } from '@ziplofy/create-theme/checkout/CheckoutThankYouView';
-import { CHECKOUT_STOREFRONT_ROOT_CLASS } from '@ziplofy/create-theme/checkout/checkout-storefront.constants';
+import { CheckoutThankYouView } from '@codiic/create-theme/checkout/CheckoutThankYouView';
+import { CHECKOUT_STOREFRONT_ROOT_CLASS } from '@codiic/create-theme/checkout/checkout-storefront.constants';
 import { useCheckoutThankYouPageAppearance } from '@/hooks/useCheckoutThankYouPageAppearance';
 import { loadCompletedCheckoutOrder } from '@/utils/completedCheckoutOrder';
 

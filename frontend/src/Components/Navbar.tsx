@@ -110,7 +110,7 @@ const Navbar = () => {
     <>
       <header className="navbar navbar-simple">
         <div className="navbar-left">
-          <img src="/LOGO.png" alt="Ziplofy Logo" className="navbar-logo" />
+          <img src="/LOGO.png" alt="codiic Logo" className="navbar-logo" />
         </div>
 
         <div className="navbar-right" ref={userMenuRef}>

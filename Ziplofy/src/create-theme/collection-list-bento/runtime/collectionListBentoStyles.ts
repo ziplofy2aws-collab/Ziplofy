@@ -155,7 +155,7 @@ export function readCollectionTiles(
 }
 
 export function sectionScopeClass(sectionId: string): string {
-  return `ziplofy-collection-list-bento-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  return `codiic-collection-list-bento-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 }
 
 export function scopedCollectionListBentoCss(sectionId: string, customCss: string): string {
@@ -171,7 +171,7 @@ export function collectionListBentoMobileCarouselCss(
   if (!enabled) return '';
   const scope = `.${sectionScopeClass(sectionId)}`;
   return `@media (max-width: 749px) {
-    ${scope} .ziplofy-bento-grid {
+    ${scope} .codiic-bento-grid {
       display: flex !important;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
@@ -181,7 +181,7 @@ export function collectionListBentoMobileCarouselCss(
       gap: 8px;
       padding-bottom: 4px;
     }
-    ${scope} .ziplofy-bento-tile {
+    ${scope} .codiic-bento-tile {
       flex: 0 0 min(78vw, 280px);
       scroll-snap-align: start;
       grid-column: unset !important;

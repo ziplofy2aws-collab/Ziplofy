@@ -14,8 +14,8 @@ export function ThemeProductCardBadge({ kind, label, className, style }: Props) 
 
   return (
     <span
-      className={`ziplofy-product-card-badge ziplofy-product-card-badge--${kind}${className ? ` ${className}` : ''}`}
-      data-ziplofy-badge-kind={kind}
+      className={`codiic-product-card-badge codiic-product-card-badge--${kind}${className ? ` ${className}` : ''}`}
+      data-codiic-badge-kind={kind}
       style={{ ...badgeKindStyles(badges, kind), ...style }}
     >
       {text}

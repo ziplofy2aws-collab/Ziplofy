@@ -106,7 +106,7 @@ export function SlideshowFullFrameSection({
     return () => window.clearInterval(id);
   }, [layoutStyle.autoRotate, slideCount]);
 
-  const scopeClass = `ziplofy-slideshow-full-frame-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-slideshow-full-frame-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedSlideshowFullFrameCss(sectionId, layoutStyle.customCss);
   const mediaHeight = slideshowFullFrameMediaHeight(layoutStyle.mediaHeight);
   const onMedia = layoutStyle.contentPosition === 'on-media';
@@ -153,7 +153,7 @@ export function SlideshowFullFrameSection({
   return (
     <EditorSection nodeId={editorNodeId} label="Slideshow: Full frame">
       {customCss ? <style>{customCss}</style> : null}
-      <section data-ziplofy-section={sectionId} className={scopeClass} style={outerStyle}>
+      <section data-codiic-section={sectionId} className={scopeClass} style={outerStyle}>
         <div style={innerStyle}>
           <div style={frameStyle}>
             <SlideshowFullFrameLandscapeArt imageUrl={slide.imageUrl || undefined} />

@@ -1,6 +1,6 @@
 .env.development
 .env.production
-Ziplofy-zip.zip
+codiic-zip.zip
 node_modules
 dist/
 dist

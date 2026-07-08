@@ -2,7 +2,7 @@ import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { useCallback, useState, type FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import ziplofyLogo from '../assets/ziplofy-logo.png';
+import codiicLogo from '../assets/codiic-logo.png';
 import SlantedImageCarouselWrapper from '../components/SlantedImageCarouselWrapper';
 import { useAuth } from '../contexts/auth.context';
 
@@ -75,7 +75,7 @@ function Register() {
             <div className="flex flex-col gap-4">
               {/* Logo */}
               <div className="flex justify-center mb-1">
-                <img src={ziplofyLogo} alt="Ziplofy" className="h-10 w-auto" />
+                <img src={codiicLogo} alt="codiic" className="h-10 w-auto" />
               </div>
 
               {/* Form */}

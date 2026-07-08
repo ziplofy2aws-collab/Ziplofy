@@ -69,7 +69,7 @@ function ProductHighlightDefault({
 
   const scheme = style.scheme;
   const mediaOnLeft = mediaPosition !== 'right';
-  const shellClass = sectionScopeClass('ziplofy-product-highlight', sectionId);
+  const shellClass = sectionScopeClass('codiic-product-highlight', sectionId);
   const gridClass = `${shellClass}-grid`;
 
   const shell: CSSProperties = {

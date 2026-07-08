@@ -53,7 +53,7 @@ export function readCollectionListGridLayout(
 }
 
 export function scopedCollectionListGridCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

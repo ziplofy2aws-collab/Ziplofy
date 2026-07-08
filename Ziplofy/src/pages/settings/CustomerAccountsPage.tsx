@@ -54,7 +54,7 @@ const CustomerAccountsPage: React.FC = () => {
       activeStore?.storeName
         ? activeStore.storeName.toLowerCase().replace(/[^a-z0-9]+/g, '-')
         : 'store';
-    const fallbackUrl = `https://ziplofy.com/${slug}/account`;
+    const fallbackUrl = `https://codiic.com/${slug}/account`;
     setAccountUrl(settings.customAccountUrl || fallbackUrl);
   }, [settings, activeStore]);
 

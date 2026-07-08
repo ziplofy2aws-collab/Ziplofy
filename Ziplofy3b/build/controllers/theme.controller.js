@@ -454,7 +454,7 @@ exports.downloadTheme = (0, error_utils_1.asyncErrorHandler)(async (req, res) =>
         res.redirect(302, zipUrl);
         return;
     }
-    const tmpBase = path_1.default.join((0, os_1.tmpdir)(), `ziplofy-theme-dl-${id}-${Date.now()}`);
+    const tmpBase = path_1.default.join((0, os_1.tmpdir)(), `codiic-theme-dl-${id}-${Date.now()}`);
     fs_1.default.mkdirSync(tmpBase, { recursive: true });
     const folderDir = path_1.default.join(tmpBase, "files");
     try {
@@ -633,7 +633,9 @@ exports.applyThemeToStore = (0, error_utils_1.asyncErrorHandler)(async (req, res
     if (!installedRecord && !customTheme) {
         throw new error_utils_1.CustomError("Theme is not installed for this store", 404);
     }
-    await store_model_1.Store.findByIdAndUpdate(storeId, { $set: { appliedTheme: themeObjectId } });
+    await store_model_1.Store.findByIdAndUpdate(storeId, {
+        $set: { appliedTheme: themeObjectId, appliedCustomThemeId: null },
+    });
     res.status(200).json({
         success: true,
         message: "Theme applied successfully",

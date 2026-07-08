@@ -387,7 +387,7 @@ const CustomThemeBuilder: React.FC = () => {
   ]);
   const [currentPageId, setCurrentPageId] = useState<string>('page-1');
   const [showPageManager, setShowPageManager] = useState<boolean>(false);
-  const LOCAL_STORAGE_PAGES_KEY = useMemo(() => (id ? `ziplofy.builder.pages.${id}` : null), [id]);
+  const LOCAL_STORAGE_PAGES_KEY = useMemo(() => (id ? `codiic.builder.pages.${id}` : null), [id]);
   const tabIdRef = useRef(`tab-${Math.random().toString(36).slice(2)}`);
   const skipPersistRef = useRef(false);
   const lastSyncedAtRef = useRef(0);
@@ -411,7 +411,7 @@ const CustomThemeBuilder: React.FC = () => {
   }, [pages]);
 
   const buildMultiPageHtmlDocument = (pagesData: Page[], themeName: string, globalCss: string): string => {
-    const safeName = (themeName || 'Ziplofy Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safeName = (themeName || 'codiic Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const pagesJson = encodePagesData(pagesData);
     const combinedCss = globalCss || '';
 
@@ -432,23 +432,23 @@ const CustomThemeBuilder: React.FC = () => {
     * {
       box-sizing: border-box;
     }
-    .ziplofy-page {
+    .codiic-page {
       display: none;
     }
-    .ziplofy-page.active {
+    .codiic-page.active {
       display: block;
     }
     ${combinedCss}
   </style>
 </head>
 <body>
-  <div id="ziplofy-page-container"></div>
-  <script id="ziplofy-pages-data" type="application/json">${pagesJson}</script>
+  <div id="codiic-page-container"></div>
+  <script id="codiic-pages-data" type="application/json">${pagesJson}</script>
   <script>
     (function() {
       try {
-        const container = document.getElementById('ziplofy-page-container');
-        const dataEl = document.getElementById('ziplofy-pages-data');
+        const container = document.getElementById('codiic-page-container');
+        const dataEl = document.getElementById('codiic-pages-data');
         if (!container || !dataEl) return;
         const pagesText = dataEl.textContent || dataEl.innerText || '[]';
         const pages = JSON.parse(pagesText);
@@ -490,7 +490,7 @@ const CustomThemeBuilder: React.FC = () => {
           container.innerHTML = '';
           pages.forEach(function(page, index) {
             const wrapper = document.createElement('div');
-            wrapper.className = 'ziplofy-page' + (index === 0 ? ' active' : '');
+            wrapper.className = 'codiic-page' + (index === 0 ? ' active' : '');
             wrapper.setAttribute('data-page-id', page.id || ('page-' + (index + 1)));
             wrapper.style.display = index === 0 ? 'block' : 'none';
             wrapper.innerHTML = page.html || '';
@@ -502,7 +502,7 @@ const CustomThemeBuilder: React.FC = () => {
           const normalizedRequest = normalizeId(pageId);
           if (!normalizedRequest) return false;
           
-          const wrappers = container.querySelectorAll('.ziplofy-page');
+          const wrappers = container.querySelectorAll('.codiic-page');
           let found = false;
           
           wrappers.forEach(function(wrapper) {
@@ -519,7 +519,7 @@ const CustomThemeBuilder: React.FC = () => {
           });
           
           if (found && updateHash) {
-            const activeWrapper = container.querySelector('.ziplofy-page.active');
+            const activeWrapper = container.querySelector('.codiic-page.active');
             const actualPageId = activeWrapper ? (activeWrapper.getAttribute('data-page-id') || normalizedRequest) : normalizedRequest;
             window.location.hash = '#' + normalizeId(actualPageId);
           }
@@ -555,7 +555,7 @@ const CustomThemeBuilder: React.FC = () => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 if (!showPage(targetPage, true)) {
-                  console.warn('Ziplofy: target page not found for link', targetPage);
+                  console.warn('codiic: target page not found for link', targetPage);
                 }
                 return;
               }
@@ -565,7 +565,7 @@ const CustomThemeBuilder: React.FC = () => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 if (!showPage(href, true)) {
-                  console.warn('Ziplofy: target page not found for link href', href);
+                  console.warn('codiic: target page not found for link href', href);
                 }
                 return;
               }
@@ -590,14 +590,14 @@ const CustomThemeBuilder: React.FC = () => {
               
               if (targetPage && targetPage.trim() !== '') {
                 if (!showPage(targetPage, true)) {
-                  console.warn('Ziplofy: target page not found for button', targetPage, 'Available pages:', Array.from(container.querySelectorAll('.ziplofy-page')).map(function(p) { return p.getAttribute('data-page-id'); }));
+                  console.warn('codiic: target page not found for button', targetPage, 'Available pages:', Array.from(container.querySelectorAll('.codiic-page')).map(function(p) { return p.getAttribute('data-page-id'); }));
                 }
                 return;
               }
               
               if (href && href.startsWith('#')) {
                 if (!showPage(href, true)) {
-                  console.warn('Ziplofy: target page not found for button href', href);
+                  console.warn('codiic: target page not found for button href', href);
                 }
                 return;
               }
@@ -654,7 +654,7 @@ const CustomThemeBuilder: React.FC = () => {
         window.addEventListener('hashchange', handleHashChange);
         handleHashChange();
       } catch (err) {
-        console.error('Ziplofy multipage preview error:', err);
+        console.error('codiic multipage preview error:', err);
       }
     })();
   </script>
@@ -677,7 +677,7 @@ const CustomThemeBuilder: React.FC = () => {
     }
 
     // Check for embedded JSON script tag
-    const scriptMatch = htmlContent.match(/<script id="ziplofy-pages-data"[^>]*>([\s\S]*?)<\/script>/i);
+    const scriptMatch = htmlContent.match(/<script id="codiic-pages-data"[^>]*>([\s\S]*?)<\/script>/i);
     if (scriptMatch && scriptMatch[1]) {
       try {
         const jsonText = scriptMatch[1].trim();
@@ -3817,7 +3817,7 @@ ${linkStylesheetTag}  <style>
       setSaving(false);
 
       if (applyAfterSave) {
-        localStorage.setItem('ziplofy.appliedCustomThemeId', savedThemeId);
+        localStorage.setItem('codiic.appliedCustomThemeId', savedThemeId);
         navigate('/');
       }
     } catch (e: any) {
@@ -3919,7 +3919,7 @@ ${linkStylesheetTag}  <style>
 
   // Check if tutorial should be shown on first load
   useEffect(() => {
-    const tutorialSeen = localStorage.getItem('ziplofy.elementorTutorialSeen');
+    const tutorialSeen = localStorage.getItem('codiic.elementorTutorialSeen');
     if (!tutorialSeen) {
       // Show tutorial after a short delay to let the editor load
       setTimeout(() => {
@@ -4271,7 +4271,7 @@ ${linkStylesheetTag}  <style>
           <div style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
             {/* Canvas Header */}
             <div className="elementor-canvas-header" style={{ width: '100%', maxWidth: '1200px', marginBottom: 0 }}>
-              <div className="elementor-canvas-site-name">{name || 'Ziplofy Theme'}</div>
+              <div className="elementor-canvas-site-name">{name || 'codiic Theme'}</div>
               <div className="elementor-canvas-page-name">{pages.find(p => p.id === currentPageId)?.name || 'Home'}</div>
             </div>
             
@@ -4315,8 +4315,8 @@ ${linkStylesheetTag}  <style>
             
             {/* Canvas Footer */}
             <div className="elementor-canvas-footer" style={{ width: '100%', maxWidth: '1200px', marginTop: 0 }}>
-              Copyright © {new Date().getFullYear()} {name || 'Ziplofy Theme'} | Powered by{' '}
-              <a href="#" onClick={(e) => e.preventDefault()}>Ziplofy Theme Builder</a>
+              Copyright © {new Date().getFullYear()} {name || 'codiic Theme'} | Powered by{' '}
+              <a href="#" onClick={(e) => e.preventDefault()}>codiic Theme Builder</a>
             </div>
           </div>
         </div>

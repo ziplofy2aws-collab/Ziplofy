@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Scan shared checkout/theme UI from Ziplofy so Tailwind generates all utility classes. */
+/* Scan shared checkout/theme UI from codiic so Tailwind generates all utility classes. */
 @source "../../Ziplofy/src/create-theme";
 @source "./";
 

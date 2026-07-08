@@ -1,4 +1,4 @@
-"""Generate Ziplofy Shopify Module Status Tracker for Google Sheets import."""
+"""Generate codiic Shopify Module Status Tracker for Google Sheets import."""
 
 from datetime import date
 from pathlib import Path
@@ -8,7 +8,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 REPORT_DATE = date(2026, 6, 22)
-OUTPUT = Path(__file__).parent / "Ziplofy_Shopify_Module_Status_Tracker.xlsx"
+OUTPUT = Path(__file__).parent / "codiic_Shopify_Module_Status_Tracker.xlsx"
 
 STATUS_COLORS = {
     "Complete": "C6EFCE",
@@ -216,7 +216,7 @@ def auto_width(ws, min_width=10, max_width=45):
 def build_tracker(wb):
     ws = wb.active
     ws.title = "Module Tracker"
-    ws["A1"] = "Ziplofy — Shopify Module Status Tracker"
+    ws["A1"] = "codiic — Shopify Module Status Tracker"
     ws["A1"].font = title_font
     ws.merge_cells("A1:O1")
     ws["A2"] = (

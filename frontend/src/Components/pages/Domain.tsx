@@ -44,7 +44,7 @@ const Domain: React.FC = () => {
   const [domains, setDomains] = useState<DomainType[]>([
     {
       id: 1,
-      leadId: "Ziplofy_174980",
+      leadId: "codiic_174980",
       email: "info@gmail.com",
       domain: "infodemo.vhost12",
       selection: "",
@@ -53,7 +53,7 @@ const Domain: React.FC = () => {
     },
     {
       id: 2,
-      leadId: "Ziplofy_174981",
+      leadId: "codiic_174981",
       email: "support@example.com",
       domain: "exampledemo.vhost12",
       selection: "",
@@ -62,7 +62,7 @@ const Domain: React.FC = () => {
     },
     {
       id: 3,
-      leadId: "Ziplofy_174982",
+      leadId: "codiic_174982",
       email: "contact@test.com",
       domain: "testdemo.vhost12",
       selection: "",

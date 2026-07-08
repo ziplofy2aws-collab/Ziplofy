@@ -6,7 +6,7 @@ Today's Work — Thursday, June 19, 2026
    - Backend: added GET /products/public/store/:storeId/url-handle/:urlHandle; refactored getProductByIdPublic to share buildPublicProductDetailResponse (includes pageTitle, metaDescription, urlHandle).
    - render-store: added fetchProductForRoute(storeId, routeParam) in product.context.tsx — resolves either ObjectId or URL handle.
    - Updated StorefrontProductSeoLoader and StorefrontProductPreviewLoader to use store id + route param for SEO data.
-   - Ziplofy3b backend typecheck passed (tsc --noEmit).
+   - codiic3b backend typecheck passed (tsc --noEmit).
 
 2. Storefront SEO — Collections
    - Storefront collection-by-handle API now explicitly returns pageTitle and metaDescription.

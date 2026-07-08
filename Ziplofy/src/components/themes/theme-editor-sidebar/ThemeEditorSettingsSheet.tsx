@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
-const STORAGE_KEY = 'ziplofy-theme-editor-settings-sheet-height';
+const STORAGE_KEY = 'codiic-theme-editor-settings-sheet-height';
 const MIN_HEIGHT = 180;
 const DEFAULT_HEIGHT = 420;
 

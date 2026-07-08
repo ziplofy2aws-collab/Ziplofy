@@ -26,7 +26,7 @@ const GettingStartedCard: React.FC<GettingStartedCardProps> = ({
     {
       id: 'domain',
       title: 'Set your own domain for your store',
-      description: 'Added Domain: fashion-0-60058040737.ziplofy.com',
+      description: 'Added Domain: fashion-0-60058040737.codiic.com',
       buttonText: 'Add Domain',
       buttonVariant: 'primary',
     },

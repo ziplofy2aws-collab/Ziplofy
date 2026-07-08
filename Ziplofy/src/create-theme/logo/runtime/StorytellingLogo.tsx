@@ -56,7 +56,7 @@ export function StorytellingLogo({
   const scheme = style.scheme;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-storytelling-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-storytelling-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const sizeVars = storytellingLogoSizeVars(style);
   const justify = storytellingLogoJustify(style.layoutAlignment);
 

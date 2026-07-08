@@ -435,7 +435,7 @@ function PreviewVisual({ variant }: { variant: BlockPreviewSlide['variant'] }) {
   if (variant === 'copyright-only') {
     return (
       <div className="mx-auto flex w-full max-w-[560px] items-center justify-center py-20 text-center">
-        <p className="text-[42px] font-normal text-[#3a3d42]">© 2026 My Store, Powered by Ziplofy</p>
+        <p className="text-[42px] font-normal text-[#3a3d42]">© 2026 My Store, Powered by codiic</p>
       </div>
     );
   }
@@ -572,7 +572,7 @@ function PreviewVisual({ variant }: { variant: BlockPreviewSlide['variant'] }) {
   if (variant === 'policies-links') {
     return (
       <div className="mx-auto w-full max-w-[360px] rounded-2xl border border-gray-200 bg-white p-5 shadow-md">
-        <p className="text-base font-semibold text-gray-900">© 2026 My Store, Powered by Ziplofy</p>
+        <p className="text-base font-semibold text-gray-900">© 2026 My Store, Powered by codiic</p>
         <div className="mt-3 flex flex-wrap gap-3 text-sm text-gray-600">
           <span>Privacy</span>
           <span>Terms</span>

@@ -97,7 +97,7 @@ export function readCarouselSlides(
 }
 
 export function scopedStorytellingCarouselCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-storytelling-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-storytelling-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

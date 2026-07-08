@@ -51,7 +51,7 @@ export function CollectionListEditorialSection({
     [allTiles, layoutStyle.collectionCount]
   );
 
-  const scopeClass = `ziplofy-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
   const outerStyle: CSSProperties = {
     paddingTop: layoutStyle.paddingTop,

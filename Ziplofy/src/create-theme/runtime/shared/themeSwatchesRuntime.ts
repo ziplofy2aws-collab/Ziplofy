@@ -50,10 +50,10 @@ export function themeSwatchesCssVars(
 ): Record<string, string> {
   const settings = readThemeSwatchesSettings(config);
   return {
-    '--ziplofy-swatch-width': `${settings.width}px`,
-    '--ziplofy-swatch-height': `${settings.height}px`,
-    '--ziplofy-swatch-radius': `${settings.cornerRadius}px`,
-    '--ziplofy-swatch-border': resolveThemeSwatchBorderCss(config, settings),
+    '--codiic-swatch-width': `${settings.width}px`,
+    '--codiic-swatch-height': `${settings.height}px`,
+    '--codiic-swatch-radius': `${settings.cornerRadius}px`,
+    '--codiic-swatch-border': resolveThemeSwatchBorderCss(config, settings),
   };
 }
 

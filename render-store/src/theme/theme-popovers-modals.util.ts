@@ -27,11 +27,11 @@ export function readThemePopoversModalsCssVars(
     popoversModals.dropShadow === 1;
 
   return {
-    '--ziplofy-popover-bg': resolvePalette(popoversModals.backgroundColor, 0, '#ffffff'),
-    '--ziplofy-popover-text': resolvePalette(popoversModals.textColor, 1, '#111827'),
-    '--ziplofy-popover-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 14}px`,
-    '--ziplofy-popover-border': resolvePalette(popoversModals.borderColor, 1, '#111827'),
-    '--ziplofy-popover-border-width': `${Number.isFinite(borderThickness) ? borderThickness : 1}px`,
-    '--ziplofy-popover-shadow': dropShadow ? '0 12px 40px rgba(0, 0, 0, 0.14)' : 'none',
+    '--codiic-popover-bg': resolvePalette(popoversModals.backgroundColor, 0, '#ffffff'),
+    '--codiic-popover-text': resolvePalette(popoversModals.textColor, 1, '#111827'),
+    '--codiic-popover-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 14}px`,
+    '--codiic-popover-border': resolvePalette(popoversModals.borderColor, 1, '#111827'),
+    '--codiic-popover-border-width': `${Number.isFinite(borderThickness) ? borderThickness : 1}px`,
+    '--codiic-popover-shadow': dropShadow ? '0 12px 40px rgba(0, 0, 0, 0.14)' : 'none',
   };
 }

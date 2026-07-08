@@ -12,8 +12,8 @@ export function themeProductCardsCssVars(
 ): Record<string, string> {
   const productCards = resolveThemeProductCardColors(config);
   return {
-    '--ziplofy-product-card-bg': productCards.backgroundColorResolved,
-    '--ziplofy-product-card-text': productCards.textColorResolved,
+    '--codiic-product-card-bg': productCards.backgroundColorResolved,
+    '--codiic-product-card-text': productCards.textColorResolved,
   };
 }
 

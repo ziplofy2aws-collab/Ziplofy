@@ -15,7 +15,7 @@ export function IconGlyph({ icon, style }: Props) {
     viewBox: '0 0 24 24',
     fill: 'none',
     'aria-hidden': true as const,
-    className: 'ziplofy-theme-icon',
+    className: 'codiic-theme-icon',
     style: { flexShrink: 0, ...style },
   };
 

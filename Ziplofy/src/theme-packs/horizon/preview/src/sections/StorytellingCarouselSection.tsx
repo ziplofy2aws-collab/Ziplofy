@@ -85,7 +85,7 @@ export function StorytellingCarouselSection({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-storytelling-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-storytelling-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cols = Math.max(1, Math.min(4, style.columns));
   const cardBasis = `calc((100% - ${(cols - 1) * style.horizontalGap}px) / ${cols})`;
 

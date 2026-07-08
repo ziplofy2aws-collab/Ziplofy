@@ -98,8 +98,8 @@ export const InstalledThemesProvider: React.FC<{ children: React.ReactNode }> = 
     try {
       const { data } = await axiosi.post(`/themes/install`, { storeId, themeId });
       if (data.success) {
-        localStorage.removeItem('ziplofy.appliedCustomThemeId');
-        localStorage.removeItem('ziplofy.appliedCustomThemeStoreId');
+        localStorage.removeItem('codiic.appliedCustomThemeId');
+        localStorage.removeItem('codiic.appliedCustomThemeStoreId');
         await loadInstalledThemes(storeId);
         toast.success('Theme installed', { id: toastId });
       } else {
@@ -146,6 +146,8 @@ export const InstalledThemesProvider: React.FC<{ children: React.ReactNode }> = 
     try {
       const { data } = await axiosi.post(`/themes/apply`, { storeId, themeId });
       if (data?.success !== false) {
+        localStorage.removeItem('codiic.appliedCustomThemeId');
+        localStorage.removeItem('codiic.appliedCustomThemeStoreId');
         await loadInstalledThemes(storeId);
         toast.success(`${resolvedName} has been applied to your store`, { id: toastId });
         return true;

@@ -56,12 +56,12 @@ export function Multicolumn({
       : resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-multicolumn-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-multicolumn-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const colCount = Math.max(items.length, style.columns);
   const isHorizontal = style.direction === 'horizontal';
   const shellClass = `${scopeClass}-shell`;
   const mobileStackClass = isHorizontal
-    ? `ziplofy-multicolumn-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+    ? `codiic-multicolumn-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
     : '';
 
   const shell: CSSProperties = {
@@ -348,9 +348,9 @@ export function Multicolumn({
             return (
               <div
                 key={item.id}
-                data-ziplofy-node={blockNodeId}
-                data-ziplofy-label={item.heading}
-                data-ziplofy-kind="block"
+                data-codiic-node={blockNodeId}
+                data-codiic-label={item.heading}
+                data-codiic-kind="block"
                 style={columnStyle}
               >
                 {s.link ? (

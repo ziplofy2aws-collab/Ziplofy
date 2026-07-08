@@ -44,12 +44,12 @@ export function IconsWithTextSection({
   const scheme = style.scheme;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const colCount = Math.max(items.length, style.columns);
   const isHorizontal = style.direction === 'horizontal';
   const mobileStackClass =
     style.verticalOnMobile && isHorizontal
-      ? `ziplofy-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+      ? `codiic-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
       : '';
 
   const shell: CSSProperties = {
@@ -160,9 +160,9 @@ export function IconsWithTextSection({
             return (
               <div
                 key={item.id}
-                data-ziplofy-node={blockNodeId}
-                data-ziplofy-label={item.heading}
-                data-ziplofy-kind="block"
+                data-codiic-node={blockNodeId}
+                data-codiic-label={item.heading}
+                data-codiic-kind="block"
                 style={columnStyle}
               >
                 <IconGlyph icon={item.icon} style={{ color: 'inherit' }} />

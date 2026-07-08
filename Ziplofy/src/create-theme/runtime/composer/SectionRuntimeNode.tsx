@@ -8,10 +8,10 @@ type Props = SectionRuntimeProps;
 function MissingSection({ sectionId, sectionType }: { sectionId: string; sectionType: string }) {
   return (
     <section
-      data-ziplofy-section={sectionId}
-      data-ziplofy-node={`layout:${sectionId}`}
-      data-ziplofy-label={sectionType}
-      data-ziplofy-kind="section"
+      data-codiic-section={sectionId}
+      data-codiic-node={`layout:${sectionId}`}
+      data-codiic-label={sectionType}
+      data-codiic-kind="section"
       style={{
         padding: '24px 16px',
         textAlign: 'center',

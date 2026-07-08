@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 
-/** Must match ProductVariant schema enum in Ziplofy3b. */
+/** Must match ProductVariant schema enum in codiic3b. */
 export const PRODUCT_UNIT_PRICE_METRICS = {
   weight: [
     { value: "milligram", label: "Milligram" },

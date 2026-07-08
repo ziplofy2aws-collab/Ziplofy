@@ -10,9 +10,9 @@ export function readThemeSearchCssVars(
   const titleCase = typeof popover.titleCase === 'string' ? popover.titleCase : 'default';
 
   return {
-    '--ziplofy-search-product-radius': `${Number.isFinite(productCornerRadius) ? productCornerRadius : 0}px`,
-    '--ziplofy-search-card-radius': `${Number.isFinite(cardCornerRadius) ? cardCornerRadius : 4}px`,
-    '--ziplofy-search-title-transform': titleCase === 'uppercase' ? 'uppercase' : 'none',
+    '--codiic-search-product-radius': `${Number.isFinite(productCornerRadius) ? productCornerRadius : 0}px`,
+    '--codiic-search-card-radius': `${Number.isFinite(cardCornerRadius) ? cardCornerRadius : 4}px`,
+    '--codiic-search-title-transform': titleCase === 'uppercase' ? 'uppercase' : 'none',
   };
 }
 

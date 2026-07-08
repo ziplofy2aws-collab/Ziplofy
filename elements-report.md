@@ -29,25 +29,25 @@
 ### What “shown in the UI” means
 
 1. **Left sidebar tree** — built from live theme config + `theme.schema.json` via `buildShopifySidebarTree()`
-  - File: `Ziplofy/src/create-theme/sidebar/create-theme-sidebar.tree.ts`
+  - File: `codiic/src/create-theme/sidebar/create-theme-sidebar.tree.ts`
 2. **Add section modal** — all insertable sections grouped as Header / Template / Footer
-  - File: `Ziplofy/src/components/themes/theme-editor-sidebar/add-section-catalog.ts`
+  - File: `codiic/src/components/themes/theme-editor-sidebar/add-section-catalog.ts`
 3. **Add block modal** — nested blocks inside sections
-  - File: `Ziplofy/src/components/themes/theme-editor-sidebar/add-block-catalog.ts`
+  - File: `codiic/src/components/themes/theme-editor-sidebar/add-block-catalog.ts`
 4. **Theme settings tab** — global style groups
-  - File: `Ziplofy/src/components/themes/theme-editor-sidebar/theme-settings-catalog.ts`
+  - File: `codiic/src/components/themes/theme-editor-sidebar/theme-settings-catalog.ts`
 
 ### What “implemented” means (composer preview)
 
 Preview iframe uses `**SECTION_RUNTIME_BY_TYPE`** in:
 
-`Ziplofy/src/create-theme/runtime/registry.ts`
+`codiic/src/create-theme/runtime/registry.ts`
 
 If a section type is **missing** from that map, the preview shows:
 
 > Section `"…"` — runtime not implemented yet
 
-(`Ziplofy/src/create-theme/runtime/composer/SectionRuntimeNode.tsx`)
+(`codiic/src/create-theme/runtime/composer/SectionRuntimeNode.tsx`)
 
 ### Secondary path: bundled Horizon theme
 
@@ -152,7 +152,7 @@ Status is for **create-theme composer preview** unless noted.
 
 ## Template page sections (page switcher in editor)
 
-From `Ziplofy/src/create-theme/utils/theme-page-registry.ts` + `theme.schema.json` templates.
+From `codiic/src/create-theme/utils/theme-page-registry.ts` + `theme.schema.json` templates.
 
 
 | Editor page        | Primary section(s)            | Composer status     | Remote theme page             |
@@ -308,7 +308,7 @@ Blocks only render **inside a parent section** that implements them. If the pare
 | Cart / auth pages      | ✅ Dedicated `pages/*.tsx`          |
 
 
-**Implication:** Work is largely **porting remote-theme section components into `Ziplofy/src/create-theme/*/runtime/`** and registering them in `registry.ts`.
+**Implication:** Work is largely **porting remote-theme section components into `codiic/src/create-theme/*/runtime/`** and registering them in `registry.ts`.
 
 ---
 
@@ -331,17 +331,17 @@ Blocks only render **inside a parent section** that implements them. If the pare
 
 | Purpose                       | Path                                                                           |
 | ----------------------------- | ------------------------------------------------------------------------------ |
-| Section catalog (UI labels)   | `Ziplofy/src/components/themes/theme-editor-sidebar/add-section-catalog.ts`    |
-| Block catalog                 | `Ziplofy/src/components/themes/theme-editor-sidebar/add-block-catalog.ts`      |
-| Sidebar tree                  | `Ziplofy/src/create-theme/sidebar/create-theme-sidebar.tree.ts`                |
-| **Composer runtime registry** | `Ziplofy/src/create-theme/runtime/registry.ts`                                 |
-| Missing-section stub          | `Ziplofy/src/create-theme/runtime/composer/SectionRuntimeNode.tsx`             |
+| Section catalog (UI labels)   | `codiic/src/components/themes/theme-editor-sidebar/add-section-catalog.ts`    |
+| Block catalog                 | `codiic/src/components/themes/theme-editor-sidebar/add-block-catalog.ts`      |
+| Sidebar tree                  | `codiic/src/create-theme/sidebar/create-theme-sidebar.tree.ts`                |
+| **Composer runtime registry** | `codiic/src/create-theme/runtime/registry.ts`                                 |
+| Missing-section stub          | `codiic/src/create-theme/runtime/composer/SectionRuntimeNode.tsx`             |
 | Block runtime registry        | `render-store/src/create-theme/blocks/registry.ts`                             |
 | Theme schema (canonical)      | `remote-themes/horizon/theme.schema.json`                                      |
 | Default theme config          | `remote-themes/horizon/theme.default-config.json`                              |
 | Remote full renderers         | `remote-themes/horizon/src/sections/*.tsx`                                     |
-| Editor page registry          | `Ziplofy/src/create-theme/utils/theme-page-registry.ts`                        |
-| Theme settings catalog        | `Ziplofy/src/components/themes/theme-editor-sidebar/theme-settings-catalog.ts` |
+| Editor page registry          | `codiic/src/create-theme/utils/theme-page-registry.ts`                        |
+| Theme settings catalog        | `codiic/src/components/themes/theme-editor-sidebar/theme-settings-catalog.ts` |
 
 
 ---

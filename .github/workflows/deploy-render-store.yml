@@ -3,7 +3,7 @@
 #   RENDER_STORE_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
 #   RENDER_STORE_EC2_HOST        - EC2 hostname or IP
 #   RENDER_STORE_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
-#   RENDER_STORE_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-ziplofy-/render-store)
+#   RENDER_STORE_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-codiic-/render-store)
 
 name: Deploy Render Store to EC2
 
@@ -12,7 +12,7 @@ on:
     branches: [main]
     paths:
       - 'render-store/**'
-      # Bundled via @ziplofy/create-theme alias — rebuild storefront when runtimes change
+      # Bundled via @codiic/create-theme alias — rebuild storefront when runtimes change
       - 'Ziplofy/src/create-theme/**'
   workflow_dispatch:  # Allow manual trigger
 
@@ -34,7 +34,7 @@ jobs:
             render-store/package-lock.json
             Ziplofy/package-lock.json
 
-      - name: Install Ziplofy dependencies (create-theme peer types)
+      - name: Install codiic dependencies (create-theme peer types)
         working-directory: Ziplofy
         run: npm ci
 
@@ -45,8 +45,8 @@ jobs:
       - name: Build render-store
         working-directory: render-store
         env:
-          # Optional: remote Ziplofy3b host for vite preview /sitemap.xml + /api proxy on EC2
-          VITE_PROXY_TARGET: ${{ secrets.ZIPLOFY3B_API_UPSTREAM }}
+          # Optional: remote codiic3b host for vite preview /sitemap.xml + /api proxy on EC2
+          VITE_PROXY_TARGET: ${{ secrets.codiic3B_API_UPSTREAM }}
         run: npm run build
 
       - name: Deploy to EC2
@@ -80,9 +80,9 @@ jobs:
             echo "Using node: $(command -v node) ($(node -v))"
             cd ${{ secrets.RENDER_STORE_EC2_DEPLOY_PATH }}
             npm ci
-            if [ -n "${{ secrets.ZIPLOFY3B_API_UPSTREAM }}" ]; then
-              export VITE_PROXY_TARGET="${{ secrets.ZIPLOFY3B_API_UPSTREAM }}"
-              export ZIPLOFY3B_API_UPSTREAM="${{ secrets.ZIPLOFY3B_API_UPSTREAM }}"
+            if [ -n "${{ secrets.codiic3B_API_UPSTREAM }}" ]; then
+              export VITE_PROXY_TARGET="${{ secrets.codiic3B_API_UPSTREAM }}"
+              export codiic3B_API_UPSTREAM="${{ secrets.codiic3B_API_UPSTREAM }}"
             fi
             pm2 delete all || true
             pm2 start npm -- run preview

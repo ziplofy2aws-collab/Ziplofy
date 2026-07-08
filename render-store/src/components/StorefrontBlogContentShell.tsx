@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { CustomThemePageShell } from '@ziplofy/create-theme/runtime';
+import { CustomThemePageShell } from '@codiic/create-theme/runtime';
 import { useStorefront } from '@/contexts/store.context';
 import { useLoadedThemeContract } from '@/themes/RemoteThemeProvider.tsx';
 

@@ -119,7 +119,7 @@ export function ImageCompare({
 
   const mobileStackClass =
     style.verticalOnMobile && isHorizontal
-      ? `ziplofy-image-compare-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+      ? `codiic-image-compare-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
       : '';
 
   const mutedColor = contentStyle.shell.color === scheme.color ? scheme.muted : '#4b5563';

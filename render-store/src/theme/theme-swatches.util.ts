@@ -19,10 +19,10 @@ export function readThemeSwatchesCssVars(
       : 'none';
 
   return {
-    '--ziplofy-swatch-width': `${Number.isFinite(width) ? width : 34}px`,
-    '--ziplofy-swatch-height': `${Number.isFinite(height) ? height : 34}px`,
-    '--ziplofy-swatch-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 32}px`,
-    '--ziplofy-swatch-border': border,
+    '--codiic-swatch-width': `${Number.isFinite(width) ? width : 34}px`,
+    '--codiic-swatch-height': `${Number.isFinite(height) ? height : 34}px`,
+    '--codiic-swatch-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 32}px`,
+    '--codiic-swatch-border': border,
   };
 }
 

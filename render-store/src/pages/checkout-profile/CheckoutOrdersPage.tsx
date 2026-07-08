@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { CheckoutOrdersView } from '@ziplofy/create-theme/checkout/orders/CheckoutOrdersView';
+import { CheckoutOrdersView } from '@codiic/create-theme/checkout/orders/CheckoutOrdersView';
 import { useStorefrontAuth } from '@/contexts/storefront-auth.context';
 import { useStorefrontOrder } from '@/contexts/storefront-order.context';
 import { useCheckoutProfilePageAppearance } from '@/hooks/useCheckoutProfilePageAppearance';

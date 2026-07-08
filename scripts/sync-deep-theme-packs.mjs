@@ -230,11 +230,11 @@ for (const [pack, indexSection, indexLabel] of [
   console.log('Updated', pack);
 }
 
-// Ziplofy3b mirror
+// codiic3b mirror
 const b3 = path.join(ROOT, 'Ziplofy3b', 'src', 'theme-packs');
 for (const pack of ['bloom', 'horizon', 'studio']) {
   for (const file of ['theme.schema.json', 'theme.default-config.json']) {
     fs.copyFileSync(path.join(PACKS, pack, file), path.join(b3, pack, file));
   }
 }
-console.log('Synced Ziplofy3b packs');
+console.log('Synced codiic3b packs');

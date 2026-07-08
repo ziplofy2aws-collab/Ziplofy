@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PreviewLoadingOverlay } from './PreviewStatus';
 
-const EDITOR_SOURCE = 'ziplofy-theme-editor';
-const FRAME_SOURCE = 'ziplofy-theme-preview';
+const EDITOR_SOURCE = 'codiic-theme-editor';
+const FRAME_SOURCE = 'codiic-theme-preview';
 
 /** Config is debounced upstream; post to iframe soon after it lands. */
 const PREVIEW_CONFIG_POST_MS = 40;
@@ -88,13 +88,13 @@ export function resolveThemePreviewOrigin(): string {
       return `${protocol}//localhost:${DEFAULT_RENDER_STORE_PORT}`;
     }
 
-    // Production admin on ziplofy.com → dedicated preview host (same render-store app, embeddable headers).
-    if (hostname === 'admin.ziplofy.com' || hostname === 'dashboard.ziplofy.com') {
-      return `${protocol}//preview.ziplofy.com`;
+    // Production admin on codiic.com → dedicated preview host (same render-store app, embeddable headers).
+    if (hostname === 'admin.codiic.com' || hostname === 'dashboard.codiic.com') {
+      return `${protocol}//preview.codiic.com`;
     }
 
-    if (hostname.endsWith('.ziplofy.com')) {
-      return `${protocol}//preview.ziplofy.com`;
+    if (hostname.endsWith('.codiic.com')) {
+      return `${protocol}//preview.codiic.com`;
     }
   }
 
@@ -175,7 +175,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_PATCH',
+        type: 'codiic_PREVIEW_PATCH',
         payload: { fieldPath, value },
       },
       '*'
@@ -189,7 +189,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_INIT',
+        type: 'codiic_PREVIEW_INIT',
         payload: {
           storeId,
           storeName,
@@ -214,7 +214,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_SET_DEVICE',
+        type: 'codiic_PREVIEW_SET_DEVICE',
         payload: { device: nextDevice },
       },
       '*'
@@ -227,7 +227,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_INSPECTOR',
+        type: 'codiic_PREVIEW_INSPECTOR',
         payload: { enabled },
       },
       '*'
@@ -243,7 +243,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_CONFIG',
+        type: 'codiic_PREVIEW_CONFIG',
         payload: { config: configRef.current, immediate },
       },
       '*'
@@ -280,7 +280,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_HINTS',
+        type: 'codiic_PREVIEW_HINTS',
         payload: { selectionHints: selectionHintsRef.current },
       },
       '*'
@@ -303,39 +303,39 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
         };
       };
       if (data?.source !== FRAME_SOURCE) return;
-      if (data.type === 'ZIPLOFY_PREVIEW_READY') {
+      if (data.type === 'codiic_PREVIEW_READY') {
         setReady(true);
         setLoadError(null);
         postInit();
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_LOADED') {
+      if (data.type === 'codiic_PREVIEW_LOADED') {
         setReady(true);
         setLoadError(null);
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_ERROR') {
+      if (data.type === 'codiic_PREVIEW_ERROR') {
         setLoadError(data.payload?.message ?? 'Preview failed to load');
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_DESELECT') {
+      if (data.type === 'codiic_PREVIEW_DESELECT') {
         onPreviewDeselectRef.current?.();
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_SELECT' && data.payload?.nodeId) {
+      if (data.type === 'codiic_PREVIEW_SELECT' && data.payload?.nodeId) {
         onPreviewSelectRef.current?.({
           nodeId: data.payload.nodeId,
           label: data.payload.label ?? 'Element',
           kind: data.payload.kind ?? 'element',
         });
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_ACTION' && data.payload?.nodeId && data.payload.action) {
+      if (data.type === 'codiic_PREVIEW_ACTION' && data.payload?.nodeId && data.payload.action) {
         onPreviewActionRef.current?.(data.payload.action, data.payload.nodeId);
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_FIELD_CHANGE' && data.payload?.fieldPath) {
+      if (data.type === 'codiic_PREVIEW_FIELD_CHANGE' && data.payload?.fieldPath) {
         const fieldPath = data.payload.fieldPath;
         const value = data.payload.value ?? '';
         onPreviewFieldChangeRef.current?.(fieldPath, value, data.payload.nodeId ?? '');
         postPatch(fieldPath, value);
       }
       if (
-        data.type === 'ZIPLOFY_PREVIEW_INSERT_SECTION' &&
+        data.type === 'codiic_PREVIEW_INSERT_SECTION' &&
         (data.payload?.afterNodeId || data.payload?.beforeNodeId)
       ) {
         onPreviewInsertSectionRef.current?.(data.payload);
@@ -384,7 +384,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_SET_PAGE',
+        type: 'codiic_PREVIEW_SET_PAGE',
         payload: { page, previewRoute: previewRouteRef.current },
       },
       '*'
@@ -401,7 +401,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
       frame.postMessage(
         {
           source: EDITOR_SOURCE,
-          type: 'ZIPLOFY_PREVIEW_HIGHLIGHT',
+          type: 'codiic_PREVIEW_HIGHLIGHT',
           payload: { nodeId: highlightNodeId ?? null },
         },
         '*'
@@ -433,7 +433,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
         }
       : null;
     frame.postMessage(
-      { source: EDITOR_SOURCE, type: 'ZIPLOFY_PREVIEW_INSERT_HIGHLIGHT', payload },
+      { source: EDITOR_SOURCE, type: 'codiic_PREVIEW_INSERT_HIGHLIGHT', payload },
       '*'
     );
   }, [insertHoverHighlight, ready]);

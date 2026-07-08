@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useMemo } from "react";
 import type { AxiosResponse } from "axios";
 import axiosi from "../config/axios";
 
-// —— Mirrors Ziplofy3b theme.model.ts / formatThemeForClient ——
+// —— Mirrors codiic3b theme.model.ts / formatThemeForClient ——
 
 export type ThemeCategory =
   | "travel"

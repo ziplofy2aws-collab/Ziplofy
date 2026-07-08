@@ -1,4 +1,4 @@
-/** Mirrors Ziplofy/src/create-theme/_shared/preview-variant-resolver.ts (keep in sync). */
+/** Mirrors codiic/src/create-theme/_shared/preview-variant-resolver.ts (keep in sync). */
 export function resolveCreateThemePreviewVariant(elementId, icon) {
   if (elementId === 'announcement-bar') return 'announcement-bar';
   if (elementId === 'header') return 'header';

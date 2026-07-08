@@ -110,9 +110,9 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
           </Link>
         </EditorField>
         <span
-          data-ziplofy-node={`field:${policyLinksBase}.privacyHref`}
-          data-ziplofy-label="Privacy link"
-          data-ziplofy-kind="field"
+          data-codiic-node={`field:${policyLinksBase}.privacyHref`}
+          data-codiic-label="Privacy link"
+          data-codiic-kind="field"
           hidden
         >
           {privacyHref}
@@ -123,9 +123,9 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
           </Link>
         </EditorField>
         <span
-          data-ziplofy-node={`field:${policyLinksBase}.termsHref`}
-          data-ziplofy-label="Terms link"
-          data-ziplofy-kind="field"
+          data-codiic-node={`field:${policyLinksBase}.termsHref`}
+          data-codiic-label="Terms link"
+          data-codiic-kind="field"
           hidden
         >
           {termsHref}

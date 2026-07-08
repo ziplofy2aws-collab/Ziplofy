@@ -3,7 +3,7 @@
 #   FRONTEND_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
 #   FRONTEND_EC2_HOST        - EC2 hostname or IP
 #   FRONTEND_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
-#   FRONTEND_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-ziplofy-/frontend)
+#   FRONTEND_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-codiic-/frontend)
 
 name: Deploy Frontend to EC2
 

@@ -32,12 +32,12 @@ ABANDONED CARTS
 
 FILES TOUCHED (main areas)
 --------------------------
-- Ziplofy/src/pages/OrdersPage.tsx
-- Ziplofy/src/pages/orders/DraftsPage.tsx, CreateDraftOrderPage.tsx, AbandonedCartPage.tsx, AbondonedCartDetailsPage.tsx
-- Ziplofy/src/components/orders/* (table, export, analytics, draft-order, abandoned cart components)
-- Ziplofy/src/App.tsx, resolve-admin-seo.ts
-- Ziplofy/src/utils/recovery-email-templates.ts, send-abandoned-cart-recovery-email.ts
-- Ziplofy3b/src/controllers/cart-recovery.controller.ts, cart.route.ts
+- codiic/src/pages/OrdersPage.tsx
+- codiic/src/pages/orders/DraftsPage.tsx, CreateDraftOrderPage.tsx, AbandonedCartPage.tsx, AbondonedCartDetailsPage.tsx
+- codiic/src/components/orders/* (table, export, analytics, draft-order, abandoned cart components)
+- codiic/src/App.tsx, resolve-admin-seo.ts
+- codiic/src/utils/recovery-email-templates.ts, send-abandoned-cart-recovery-email.ts
+- codiic3b/src/controllers/cart-recovery.controller.ts, cart.route.ts
 
 NOT DONE / FOLLOW-UPS
 ---------------------

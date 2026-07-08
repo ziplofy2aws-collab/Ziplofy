@@ -102,7 +102,7 @@ export function storytellingLogoSizeVars(style: StorytellingLogoLayout): CSSProp
 }
 
 export function scopedStorytellingLogoCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-storytelling-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-storytelling-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const mobile = `
     @media (max-width: 749px) {
       ${scope} [data-logo-mark] {

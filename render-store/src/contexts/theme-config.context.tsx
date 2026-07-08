@@ -12,7 +12,7 @@ const ThemeConfigContext = createContext<ThemeConfig | null>(null);
 
 declare global {
   interface Window {
-    __ZIPLOFY_THEME_CONFIG__?: ThemeConfig;
+    __codiic_THEME_CONFIG__?: ThemeConfig;
   }
 }
 
@@ -20,18 +20,18 @@ function applyThemeConfigCssVars(config: ThemeConfig | null): void {
   const root = document.documentElement;
   const settings = config?.settings as Record<string, unknown> | undefined;
   const colors = settings?.colors as Record<string, string> | undefined;
-  if (colors?.primary) root.style.setProperty('--ziplofy-primary', colors.primary);
-  if (colors?.accent) root.style.setProperty('--ziplofy-accent', colors.accent);
-  if (colors?.background) root.style.setProperty('--ziplofy-background', colors.background);
+  if (colors?.primary) root.style.setProperty('--codiic-primary', colors.primary);
+  if (colors?.accent) root.style.setProperty('--codiic-accent', colors.accent);
+  if (colors?.background) root.style.setProperty('--codiic-background', colors.background);
   const page = settings?.page as Record<string, unknown> | undefined;
   const pageBg = readThemePageBackgroundForCss(config);
-  if (pageBg) root.style.setProperty('--ziplofy-background', pageBg);
+  if (pageBg) root.style.setProperty('--codiic-background', pageBg);
   const pageMaxWidth = readThemePageMaxWidthForCss(config);
-  if (pageMaxWidth) root.style.setProperty('--ziplofy-page-max-width', `${pageMaxWidth}px`);
-  if (colors?.text) root.style.setProperty('--ziplofy-text', colors.text);
-  if (colors?.surface) root.style.setProperty('--ziplofy-surface', colors.surface);
-  if (colors?.muted) root.style.setProperty('--ziplofy-muted', colors.muted);
-  if (colors?.border) root.style.setProperty('--ziplofy-border', colors.border);
+  if (pageMaxWidth) root.style.setProperty('--codiic-page-max-width', `${pageMaxWidth}px`);
+  if (colors?.text) root.style.setProperty('--codiic-text', colors.text);
+  if (colors?.surface) root.style.setProperty('--codiic-surface', colors.surface);
+  if (colors?.muted) root.style.setProperty('--codiic-muted', colors.muted);
+  if (colors?.border) root.style.setProperty('--codiic-border', colors.border);
   applyThemeTypographyCssVars(config);
 }
 
@@ -65,18 +65,18 @@ export function ThemeConfigProvider({
 
   useEffect(() => {
     const sig = configSignature(contextValue);
-    if (sig === lastSigRef.current && window.__ZIPLOFY_THEME_CONFIG__ === contextValue) return;
+    if (sig === lastSigRef.current && window.__codiic_THEME_CONFIG__ === contextValue) return;
 
     if (contextValue && typeof contextValue === 'object') {
-      window.__ZIPLOFY_THEME_CONFIG__ = contextValue;
+      window.__codiic_THEME_CONFIG__ = contextValue;
     } else {
-      delete window.__ZIPLOFY_THEME_CONFIG__;
+      delete window.__codiic_THEME_CONFIG__;
     }
     applyThemeConfigCssVars(contextValue);
     applyThemeTypographyFontsToDocument(contextValue);
     applyThemeFaviconToDocument(readThemeFaviconUrl(contextValue));
     window.dispatchEvent(
-      new CustomEvent('ziplofy-theme-config-changed', { detail: contextValue ?? null })
+      new CustomEvent('codiic-theme-config-changed', { detail: contextValue ?? null })
     );
   }, [contextValue]);
 

@@ -403,7 +403,7 @@ export function FeaturedProduct({
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const gridCols = style.equalColumns ? '1fr 1fr' : '1.05fr 0.95fr';
-  const shellClass = sectionScopeClass('ziplofy-featured-product', sectionId);
+  const shellClass = sectionScopeClass('codiic-featured-product', sectionId);
   const splitClass = `${shellClass}-split`;
   const featuredResponsiveCss = combineResponsiveCss(
     scopedMobileHorizontalPadCss(shellClass),
@@ -937,7 +937,7 @@ export function FeaturedProduct({
                       <span
                         key={color}
                         aria-hidden
-                        className="ziplofy-theme-swatch"
+                        className="codiic-theme-swatch"
                         style={variantSwatchStyle(color, index === 0)}
                       />
                     ))}
@@ -983,9 +983,9 @@ export function FeaturedProduct({
                       <button
                         key={option.key}
                         type="button"
-                        className={`ziplofy-variant-picker-option${
+                        className={`codiic-variant-picker-option${
                           index === selectedVariantIndex
-                            ? ' ziplofy-variant-picker-option--selected'
+                            ? ' codiic-variant-picker-option--selected'
                             : ''
                         }`}
                         style={variantOptionStyle(index === selectedVariantIndex)}

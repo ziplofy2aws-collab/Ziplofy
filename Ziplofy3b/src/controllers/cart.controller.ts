@@ -41,7 +41,7 @@ export const createCartEntry = asyncErrorHandler(async (req: Request, res: Respo
             if (to) {
               await enqueueEmailAddress(
                 to,
-                'Ziplofy: Cart threshold reached',
+                'codiic: Cart threshold reached',
                 `<p>Hi, you added ${quantity} item(s) to cart.</p>`
               );
             }
@@ -56,7 +56,7 @@ export const createCartEntry = asyncErrorHandler(async (req: Request, res: Respo
         if (to) {
           await enqueueEmailAddress(
             to,
-            'Ziplofy: Item added to cart',
+            'codiic: Item added to cart',
             `<p>Hi, you added an item to your cart.</p>`
           );
         }

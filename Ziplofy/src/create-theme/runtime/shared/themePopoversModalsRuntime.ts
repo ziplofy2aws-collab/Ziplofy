@@ -41,12 +41,12 @@ export function themePopoversModalsCssVars(
 ): Record<string, string> {
   const settings = resolveThemePopoversModalsColors(config);
   return {
-    '--ziplofy-popover-bg': settings.backgroundColorResolved,
-    '--ziplofy-popover-text': settings.textColorResolved,
-    '--ziplofy-popover-radius': `${settings.cornerRadius}px`,
-    '--ziplofy-popover-border': settings.borderColorResolved,
-    '--ziplofy-popover-border-width': `${settings.borderThickness}px`,
-    '--ziplofy-popover-shadow': resolveThemePopoverModalBoxShadow(settings),
+    '--codiic-popover-bg': settings.backgroundColorResolved,
+    '--codiic-popover-text': settings.textColorResolved,
+    '--codiic-popover-radius': `${settings.cornerRadius}px`,
+    '--codiic-popover-border': settings.borderColorResolved,
+    '--codiic-popover-border-width': `${settings.borderThickness}px`,
+    '--codiic-popover-shadow': resolveThemePopoverModalBoxShadow(settings),
   };
 }
 

@@ -256,7 +256,7 @@ export function FeaturedCollection({
     }));
   }, [products, limit, columns]);
 
-  const scopeClass = sectionScopeClass('ziplofy-featured-collection', sectionId);
+  const scopeClass = sectionScopeClass('codiic-featured-collection', sectionId);
   const gridClass = `${scopeClass}-grid`;
   const cardCount = cards.length;
 
@@ -268,11 +268,11 @@ export function FeaturedCollection({
       headerLayout.mobileCustomWidth
     );
     const sharedCss = combineResponsiveCss(
-      `.${scopeClass} .ziplofy-fc-media { aspect-ratio: 1 / 1; }`,
-      `.${scopeClass} .ziplofy-fc-quick-add { opacity: 0; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }`,
-      `.${scopeClass} .ziplofy-fc-card:hover .ziplofy-fc-quick-add, .${scopeClass} .ziplofy-fc-card:focus-within .ziplofy-fc-quick-add { opacity: 1; transform: translateY(0); pointer-events: auto; }`,
+      `.${scopeClass} .codiic-fc-media { aspect-ratio: 1 / 1; }`,
+      `.${scopeClass} .codiic-fc-quick-add { opacity: 0; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }`,
+      `.${scopeClass} .codiic-fc-card:hover .codiic-fc-quick-add, .${scopeClass} .codiic-fc-card:focus-within .codiic-fc-quick-add { opacity: 1; transform: translateY(0); pointer-events: auto; }`,
       mobileMedia(
-        `.${scopeClass} .ziplofy-fc-quick-add { opacity: ${quickAddFlags.mobileQuickAdd ? '1' : '0'} !important; transform: none !important; pointer-events: ${quickAddFlags.mobileQuickAdd ? 'auto' : 'none'} !important; }`
+        `.${scopeClass} .codiic-fc-quick-add { opacity: ${quickAddFlags.mobileQuickAdd ? '1' : '0'} !important; transform: none !important; pointer-events: ${quickAddFlags.mobileQuickAdd ? 'auto' : 'none'} !important; }`
       )
     );
 
@@ -285,16 +285,16 @@ export function FeaturedCollection({
       const cardBasis = `calc((100% - ${columns * hGap}px) / ${visibleColumns})`;
       const mobileBasis = `calc((100% - ${mobileColumns * hGap}px) / ${mobileVisible})`;
       const layoutCss = combineResponsiveCss(
-        `.${scopeClass} .ziplofy-fc-carousel { position: relative; }`,
+        `.${scopeClass} .codiic-fc-carousel { position: relative; }`,
         `.${gridClass} { display: flex; flex-wrap: nowrap; column-gap: ${hGap}px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; }`,
         `.${gridClass}::-webkit-scrollbar { display: none; }`,
-        `.${gridClass} > .ziplofy-fc-card { flex: 0 0 ${cardBasis}; scroll-snap-align: start; }`,
-        `.${scopeClass} .ziplofy-fc-nav { opacity: 0; transform: translateY(-50%) scale(0.92); transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }`,
-        `.${scopeClass} .ziplofy-fc-carousel:hover .ziplofy-fc-nav, .${scopeClass} .ziplofy-fc-carousel:focus-within .ziplofy-fc-nav { opacity: 1; transform: translateY(-50%) scale(1); pointer-events: auto; }`,
-        `.${scopeClass} .ziplofy-fc-nav:disabled { opacity: 0 !important; pointer-events: none !important; }`,
+        `.${gridClass} > .codiic-fc-card { flex: 0 0 ${cardBasis}; scroll-snap-align: start; }`,
+        `.${scopeClass} .codiic-fc-nav { opacity: 0; transform: translateY(-50%) scale(0.92); transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }`,
+        `.${scopeClass} .codiic-fc-carousel:hover .codiic-fc-nav, .${scopeClass} .codiic-fc-carousel:focus-within .codiic-fc-nav { opacity: 1; transform: translateY(-50%) scale(1); pointer-events: auto; }`,
+        `.${scopeClass} .codiic-fc-nav:disabled { opacity: 0 !important; pointer-events: none !important; }`,
         mobileMedia(
-          `.${gridClass} > .ziplofy-fc-card { flex-basis: ${mobileBasis} !important; }` +
-            `.${scopeClass} .ziplofy-fc-nav { display: none !important; }`
+          `.${gridClass} > .codiic-fc-card { flex-basis: ${mobileBasis} !important; }` +
+            `.${scopeClass} .codiic-fc-nav { display: none !important; }`
         )
       );
       return combineResponsiveCss(layoutCss, sharedCss, headerCss);
@@ -303,13 +303,13 @@ export function FeaturedCollection({
     if (isEditorial) {
       const layoutCss = combineResponsiveCss(
         `.${gridClass} { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: ${hGap}px; row-gap: ${sectionGap}px; align-items: start; }`,
-        `.${gridClass} > .ziplofy-fc-card:nth-child(4n + 2) { margin-top: 3rem; }`,
-        `.${gridClass} > .ziplofy-fc-card:nth-child(4n + 3) { margin-top: -1.25rem; }`,
-        `.${gridClass} > .ziplofy-fc-card:nth-child(4n + 4) { margin-top: 2.5rem; }`,
-        `.${gridClass} > .ziplofy-fc-card:nth-child(4n + 2) .ziplofy-fc-media, .${gridClass} > .ziplofy-fc-card:nth-child(4n + 3) .ziplofy-fc-media { aspect-ratio: 4 / 5; }`,
+        `.${gridClass} > .codiic-fc-card:nth-child(4n + 2) { margin-top: 3rem; }`,
+        `.${gridClass} > .codiic-fc-card:nth-child(4n + 3) { margin-top: -1.25rem; }`,
+        `.${gridClass} > .codiic-fc-card:nth-child(4n + 4) { margin-top: 2.5rem; }`,
+        `.${gridClass} > .codiic-fc-card:nth-child(4n + 2) .codiic-fc-media, .${gridClass} > .codiic-fc-card:nth-child(4n + 3) .codiic-fc-media { aspect-ratio: 4 / 5; }`,
         mobileMedia(
           `.${gridClass} { grid-template-columns: 1fr !important; row-gap: ${vGap}px !important; }` +
-            `.${gridClass} > .ziplofy-fc-card { margin-top: 0 !important; }`
+            `.${gridClass} > .codiic-fc-card { margin-top: 0 !important; }`
         )
       );
       return combineResponsiveCss(layoutCss, sharedCss, headerCss);
@@ -395,7 +395,7 @@ export function FeaturedCollection({
   const renderNavButton = (side: 'prev' | 'next'): ReactNode => (
     <button
       type="button"
-      className="ziplofy-fc-nav"
+      className="codiic-fc-nav"
       aria-label={side === 'prev' ? 'Previous products' : 'Next products'}
       onClick={() => scrollByPage(side === 'prev' ? -1 : 1)}
       style={navButtonStyle(side)}
@@ -512,7 +512,7 @@ export function FeaturedCollection({
           style={{ position: 'relative' }}
         >
           <div
-            className="ziplofy-fc-media"
+            className="codiic-fc-media"
             style={{
               width: '100%',
               overflow: 'hidden',
@@ -530,7 +530,7 @@ export function FeaturedCollection({
           {quickAddFlags.quickAdd ? (
             <button
               type="button"
-              className="ziplofy-fc-quick-add"
+              className="codiic-fc-quick-add"
               style={{
                 position: 'absolute',
                 left: 10,
@@ -642,12 +642,12 @@ export function FeaturedCollection({
       {cards.length === 0 ? (
         <p style={{ color: muted, fontSize: 14 }}>{emptyMessage}</p>
       ) : isCarousel ? (
-        <div className="ziplofy-fc-carousel">
+        <div className="codiic-fc-carousel">
           <div className={gridClass} ref={trackRef}>
             {cards.map((product) => (
               <article
                 key={product._id}
-                className="ziplofy-fc-card"
+                className="codiic-fc-card"
                 style={{
                   position: 'relative',
                   display: 'flex',
@@ -681,7 +681,7 @@ export function FeaturedCollection({
           {cards.map((product) => (
             <article
               key={product._id}
-              className="ziplofy-fc-card"
+              className="codiic-fc-card"
               style={{
                 position: 'relative',
                 display: 'flex',

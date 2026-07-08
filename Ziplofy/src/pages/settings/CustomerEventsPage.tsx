@@ -193,7 +193,7 @@ const CustomerEventsPage: React.FC = () => {
             <button type="button" className="text-gray-700 font-medium hover:underline">
               pixels
             </button>{' '}
-            that use the applicable Ziplofy APIs, the supported pixel integration.
+            that use the applicable codiic APIs, the supported pixel integration.
           </p>
 
           <button type="button" className="text-sm text-gray-700 font-medium mt-4 inline-flex items-center hover:underline">

@@ -21,7 +21,7 @@ describe('config', () => {
   it('allows production origin when not development', async () => {
     process.env.NODE_ENV = 'production';
     const { config } = await import('./index.js');
-    expect(config.allowedOrigins).toContain('https://auth.ziplofy.com');
+    expect(config.allowedOrigins).toContain('https://auth.codiic.com');
   });
 
   it('uses development config when NODE_ENV is unset', async () => {

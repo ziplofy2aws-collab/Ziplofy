@@ -9,6 +9,7 @@ if (NODE_ENV === 'development') {
             "http://admin.localhost:5173",
             "http://localhost:5173",
             "http://localhost:5174",
+            "http://localhost:5175",
             // Allow any subdomain of localhost:5173 (e.g., admin.localhost:5173)
             /^http:\/\/([a-z0-9-]+\.)*localhost:5173$/i,
             // If you also run https locally via proxy/certs
@@ -24,11 +25,11 @@ if (NODE_ENV === 'development') {
 else {
     exports.config = config = {
         allowedOrigins: [
-            // Allow any subdomain of ziplofy.com (e.g., gibberish.ziplofy.com, dashboard.ziplofy.com)
-            /^https?:\/\/([a-z0-9-]+\.)*ziplofy\.com$/i,
-            "https://admin.ziplofy.com"
+            // Allow any subdomain of codiic.com (e.g., gibberish.codiic.com, dashboard.codiic.com)
+            /^https?:\/\/([a-z0-9-]+\.)*codiic\.com$/i,
+            "https://admin.codiic.com"
         ],
-        clientUrl: "https://dashboard.ziplofy.com",
-        storeRenderMicroserviceUrlSuffix: ".ziplofy.com"
+        clientUrl: "https://dashboard.codiic.com",
+        storeRenderMicroserviceUrlSuffix: ".codiic.com"
     };
 }

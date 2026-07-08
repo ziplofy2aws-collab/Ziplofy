@@ -200,19 +200,19 @@ export function PreviewSectionInsertZones({
         return (
           <div
             key={key}
-            className="ziplofy-section-insert-zone"
+            className="codiic-section-insert-zone"
             style={{ top: gap.top }}
             onMouseEnter={() => setActiveKey(gap.afterNodeId)}
             onMouseLeave={() => setActiveKey((k) => (k === gap.afterNodeId ? null : k))}
           >
             <div
-              className={`ziplofy-section-insert-line ${active ? 'is-active' : ''}`}
+              className={`codiic-section-insert-line ${active ? 'is-active' : ''}`}
               aria-hidden={!active}
             >
-              <div className="ziplofy-section-insert-rule" />
+              <div className="codiic-section-insert-rule" />
               <button
                 type="button"
-                className="ziplofy-section-insert-btn"
+                className="codiic-section-insert-btn"
                 aria-label="Add section"
                 tabIndex={active ? 0 : -1}
                 style={{ backgroundColor: SHOPIFY_BLUE }}
@@ -229,7 +229,7 @@ export function PreviewSectionInsertZones({
                   <path d="M10 5v10M5 10h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </button>
-              <div className="ziplofy-section-insert-rule" />
+              <div className="codiic-section-insert-rule" />
             </div>
           </div>
         );

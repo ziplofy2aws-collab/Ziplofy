@@ -14,8 +14,8 @@ export class PreviewErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, info: ErrorInfo) {
     const message = error.message || 'Theme render error';
     postToParent({
-      source: 'ziplofy-theme-preview',
-      type: 'ZIPLOFY_PREVIEW_ERROR',
+      source: 'codiic-theme-preview',
+      type: 'codiic_PREVIEW_ERROR',
       payload: { message: `${message}${info.componentStack ? '' : ''}` },
     });
   }

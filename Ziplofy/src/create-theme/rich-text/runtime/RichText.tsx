@@ -99,7 +99,7 @@ export function RichText({
   const textAlign = richTextContentAlign(style.layoutAlignment);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-rich-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-rich-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const shellClass = `${scopeClass}-shell`;
   const isHorizontal = style.direction === 'horizontal';
 

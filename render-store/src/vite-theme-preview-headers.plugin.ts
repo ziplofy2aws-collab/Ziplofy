@@ -5,9 +5,9 @@ const FRAME_ANCESTORS = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://admin.localhost:5173',
-  'https://admin.ziplofy.com',
-  'https://dashboard.ziplofy.com',
-  'https://*.ziplofy.com',
+  'https://admin.codiic.com',
+  'https://dashboard.codiic.com',
+  'https://*.codiic.com',
 ].join(' ');
 
 /** Allow theme editor iframes to embed /theme-preview (overrides restrictive defaults). */

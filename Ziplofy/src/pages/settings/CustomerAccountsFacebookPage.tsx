@@ -28,14 +28,14 @@ const cardStyles = {
   backgroundColor: '#fff',
 };
 
-const fallbackDomains = ['https://ziplofy.com', 'https://example.myziplofy.com'];
+const fallbackDomains = ['https://codiic.com', 'https://example.mycodiic.com'];
 const fallbackRedirects = [
-  'https://ziplofy.com/authentication/placeholder/social/facebook/callback',
-  'https://example.myziplofy.com/authentication/social/facebook/callback',
+  'https://codiic.com/authentication/placeholder/social/facebook/callback',
+  'https://example.mycodiic.com/authentication/social/facebook/callback',
 ];
 const fallbackDeauth = [
-  'https://ziplofy.com/authentication/placeholder/social/facebook/revoke',
-  'https://example.myziplofy.com/authentication/social/facebook/revoke',
+  'https://codiic.com/authentication/placeholder/social/facebook/revoke',
+  'https://example.mycodiic.com/authentication/social/facebook/revoke',
 ];
 
 const CustomerAccountsFacebookPage: React.FC = () => {

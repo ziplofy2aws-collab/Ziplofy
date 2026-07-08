@@ -45,7 +45,7 @@ export function readCollectionListEditorialLayout(
 }
 
 export function scopedCollectionListEditorialCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

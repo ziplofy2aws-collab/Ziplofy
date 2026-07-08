@@ -14,6 +14,7 @@ const custom_theme_model_1 = require("../models/custom-theme.model");
 const store_model_1 = require("../models/store/store.model");
 const store_custom_theme_model_1 = require("../models/store-custom-theme/store-custom-theme.model");
 const storefront_liquid_util_1 = require("../utils/storefront-liquid.util");
+const storefront_theme_resolution_util_1 = require("../utils/storefront-theme-resolution.util");
 const theme_s3_ingest_1 = require("../utils/theme-s3-ingest");
 const theme_config_util_1 = require("../utils/theme-config.util");
 const theme_pack_util_1 = require("../utils/theme-pack.util");
@@ -35,7 +36,7 @@ exports.renderStorefront = (0, error_utils_1.asyncErrorHandler)(async (req, res)
         name: "My Store",
         description: "Welcome to my online store",
         logo: "",
-        domain: `store${storeId}.ziplofy.com`
+        domain: `store${storeId}.codiic.com`
     };
     const storeDoc = await store_model_1.Store.findById(storeId).select("appliedTheme").lean();
     const appliedThemeId = themeId || (storeDoc?.appliedTheme ? String(storeDoc.appliedTheme) : null);
@@ -173,7 +174,7 @@ exports.getStoreData = (0, error_utils_1.asyncErrorHandler)(async (req, res) => 
         name: "My Store",
         description: "Welcome to my online store",
         logo: "",
-        domain: `store${storeId}.ziplofy.com`
+        domain: `store${storeId}.codiic.com`
     };
     const storeDoc = await store_model_1.Store.findById(storeId).select("appliedTheme").lean();
     const appliedThemeId = storeDoc?.appliedTheme ? String(storeDoc.appliedTheme) : null;
@@ -227,9 +228,9 @@ exports.getStorefrontThemeRuntime = (0, error_utils_1.asyncErrorHandler)(async (
     if (!storeId) {
         throw new error_utils_1.CustomError("Store ID is required", 400);
     }
-    const storeDoc = await store_model_1.Store.findById(storeId).select('appliedCustomThemeId').lean();
-    if (storeDoc?.appliedCustomThemeId) {
-        const customThemeId = String(storeDoc.appliedCustomThemeId);
+    const themeSource = await (0, storefront_theme_resolution_util_1.resolveStorefrontThemeSource)(storeId);
+    if (themeSource.kind === 'store-custom' && themeSource.storeCustomThemeId) {
+        const customThemeId = themeSource.storeCustomThemeId;
         const customDoc = await store_custom_theme_model_1.StoreCustomTheme.findOne({
             _id: customThemeId,
             storeId: new mongoose_1.Types.ObjectId(storeId),
@@ -240,7 +241,8 @@ exports.getStorefrontThemeRuntime = (0, error_utils_1.asyncErrorHandler)(async (
                 data: {
                     storeId,
                     themeId: customThemeId,
-                    themeName: customDoc.themeName ?? 'Custom theme',
+                    themeName: customDoc.themeName ?? themeSource.storeCustomThemeName ?? 'Custom theme',
+                    themeKind: 'store-custom',
                     isStoreCustomTheme: true,
                     remoteThemeJsUrl: null,
                     remoteThemeCssUrl: null,
@@ -263,12 +265,19 @@ exports.getStorefrontThemeRuntime = (0, error_utils_1.asyncErrorHandler)(async (
             });
         }
     }
+    if (themeSource.kind !== 'catalog' || !themeSource.catalogThemeId) {
+        return res.status(200).json({
+            success: true,
+            data: null,
+            message: 'Applied theme record is missing',
+        });
+    }
     const resolved = await (0, storefront_liquid_util_1.resolveAppliedStoreTheme)(storeId);
     if (!resolved) {
         return res.status(200).json({
             success: true,
             data: null,
-            message: "Applied theme record is missing",
+            message: 'Applied theme record is missing',
         });
     }
     const installedTheme = await installed_themes_model_1.InstalledThemes.findOne({
@@ -339,6 +348,8 @@ exports.getStorefrontThemeRuntime = (0, error_utils_1.asyncErrorHandler)(async (
             storeId,
             themeId: resolved.appliedThemeId,
             themeName: resolved.themeName,
+            themeKind: 'catalog',
+            isStoreCustomTheme: false,
             theme: resolved.isCustomTheme ? customTheme : theme,
             installedTheme: installedTheme
                 ? {
@@ -375,7 +386,7 @@ function injectStoreData(html, data) {
     // Create a script tag with store data
     const storeDataScript = `
     <script>
-      window.ZIPLOFY_STORE_DATA = {
+      window.codiic_STORE_DATA = {
         store: ${JSON.stringify({
         _id: store._id,
         name: store.name,

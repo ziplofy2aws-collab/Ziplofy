@@ -35,7 +35,7 @@ export function canonicalStorefrontOrigin(mapping: SubdomainMapping, req: Reques
   const storefrontHost = `${mapping.subdomain}${config.storeRenderMicroserviceUrlSuffix}`.toLowerCase();
 
   if (requestHost === storefrontHost || requestHost.startsWith(`${mapping.subdomain.toLowerCase()}.`)) {
-    if (isProduction() && requestHost.endsWith('.ziplofy.com')) {
+    if (isProduction() && requestHost.endsWith('.codiic.com')) {
       return `https://${requestHost}`;
     }
     return fromRequest;

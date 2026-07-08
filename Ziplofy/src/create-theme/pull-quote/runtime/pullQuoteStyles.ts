@@ -68,7 +68,7 @@ export function readPullQuoteLayout(
 }
 
 export function scopedPullQuoteCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-pull-quote-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-pull-quote-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

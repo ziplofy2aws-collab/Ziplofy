@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { axiosi } from '../config/axios.config';
 
-/** Mirrors Ziplofy3b `PaymentConfirmValues` / POST /payments/confirm body. */
+/** Mirrors codiic3b `PaymentConfirmValues` / POST /payments/confirm body. */
 export interface PaymentConfirmPayload {
   storeId: string;
   customerId: string;

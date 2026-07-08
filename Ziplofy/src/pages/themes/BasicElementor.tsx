@@ -660,9 +660,9 @@ const BasicElementor: React.FC = () => {
       // Rewrite inline CSS urls (base = page)
       let originalCssContent = rewriteCssUrls(cssContent || '', baseUrl);
 
-      // Custom themes from CustomThemeBuilder: content is in ziplofy-pages-data JSON, not in body
+      // Custom themes from CustomThemeBuilder: content is in codiic-pages-data JSON, not in body
       let extractedPagesFromCustomTheme: { html: string; css: string }[] | null = null;
-      const pagesDataMatch = htmlContent.match(/<script id="ziplofy-pages-data"[^>]*>([\s\S]*?)<\/script>/i);
+      const pagesDataMatch = htmlContent.match(/<script id="codiic-pages-data"[^>]*>([\s\S]*?)<\/script>/i);
       if (pagesDataMatch && pagesDataMatch[1]) {
         try {
           const parsed = JSON.parse(pagesDataMatch[1].trim());
@@ -671,10 +671,10 @@ const BasicElementor: React.FC = () => {
               html: p?.html || '',
               css: p?.css || ''
             }));
-            console.log('✓ Loaded custom theme with', extractedPagesFromCustomTheme.length, 'page(s) from ziplofy-pages-data');
+            console.log('✓ Loaded custom theme with', extractedPagesFromCustomTheme.length, 'page(s) from codiic-pages-data');
           }
         } catch (e) {
-          console.warn('Failed to parse ziplofy-pages-data:', e);
+          console.warn('Failed to parse codiic-pages-data:', e);
         }
       }
 
@@ -749,7 +749,7 @@ const BasicElementor: React.FC = () => {
       doc.querySelectorAll('style').forEach((s) => s.remove());
       doc.querySelectorAll('link[rel="stylesheet"]').forEach((s) => s.remove());
       
-      // Get body HTML: use ziplofy-pages-data first page if custom theme, else body innerHTML
+      // Get body HTML: use codiic-pages-data first page if custom theme, else body innerHTML
       let bodyHtml: string;
       if (extractedPagesFromCustomTheme && extractedPagesFromCustomTheme.length > 0) {
         const rawPageHtml = extractedPagesFromCustomTheme[0].html || '';
@@ -901,18 +901,18 @@ const BasicElementor: React.FC = () => {
           }
           
           // Remove existing theme styles and our preserve-color style
-          const existingStyles = head.querySelectorAll('#ziplofy-theme-styles, #ziplofy-preserve-text-color, #ziplofy-slider-fix, style[data-ziplofy-theme], link[data-ziplofy-theme]');
+          const existingStyles = head.querySelectorAll('#codiic-theme-styles, #codiic-preserve-text-color, #codiic-slider-fix, style[data-codiic-theme], link[data-codiic-theme]');
           existingStyles.forEach((style: Element) => style.remove());
           
           // Inject preserve-text-color CSS first (so theme can override if needed, but we override GrapesJS black)
           const preserveEl = doc.createElement('style');
-          preserveEl.id = 'ziplofy-preserve-text-color';
-          preserveEl.setAttribute('data-ziplofy-basic-elementor', 'true');
+          preserveEl.id = 'codiic-preserve-text-color';
+          preserveEl.setAttribute('data-codiic-basic-elementor', 'true');
           preserveEl.textContent = PRESERVE_TEXT_COLOR_CSS;
           head.appendChild(preserveEl);
           const sliderFixEl = doc.createElement('style');
-          sliderFixEl.id = 'ziplofy-slider-fix';
-          sliderFixEl.setAttribute('data-ziplofy-theme', 'true');
+          sliderFixEl.id = 'codiic-slider-fix';
+          sliderFixEl.setAttribute('data-codiic-theme', 'true');
           sliderFixEl.textContent = SLIDER_FIX_CSS;
           head.appendChild(sliderFixEl);
           
@@ -920,8 +920,8 @@ const BasicElementor: React.FC = () => {
           const fullCss = (originalCssContent || cssContent || '').trim();
           if (fullCss) {
             const styleEl = doc.createElement('style');
-            styleEl.id = 'ziplofy-theme-styles';
-            styleEl.setAttribute('data-ziplofy-theme', 'true');
+            styleEl.id = 'codiic-theme-styles';
+            styleEl.setAttribute('data-codiic-theme', 'true');
             styleEl.textContent = fullCss;
             head.appendChild(styleEl);
             console.log('✓ Injected theme CSS (combined:', fullCss.length, 'chars)');
@@ -932,7 +932,7 @@ const BasicElementor: React.FC = () => {
             const linkEl = doc.createElement('link');
             linkEl.rel = 'stylesheet';
             linkEl.href = cssUrl;
-            linkEl.setAttribute('data-ziplofy-theme', 'true');
+            linkEl.setAttribute('data-codiic-theme', 'true');
             linkEl.crossOrigin = 'anonymous';
             linkEl.onerror = () => {
               console.warn(`Failed to load stylesheet: ${cssUrl}`);
@@ -975,7 +975,7 @@ const BasicElementor: React.FC = () => {
                 const linkEl = doc.createElement('link');
                 linkEl.rel = 'stylesheet';
                 linkEl.href = importUrl;
-                linkEl.setAttribute('data-ziplofy-theme', 'true');
+                linkEl.setAttribute('data-codiic-theme', 'true');
                 linkEl.crossOrigin = 'anonymous';
                 head.appendChild(linkEl);
                 console.log(`✓ Added @import stylesheet: ${importUrl}`);
@@ -1689,7 +1689,7 @@ const BasicElementor: React.FC = () => {
             const frame = canvas.getFrameEl();
             if (frame && frame.contentDocument) {
               const style = frame.contentDocument.createElement('style');
-              style.setAttribute('data-ziplofy-disable-drag', 'true');
+              style.setAttribute('data-codiic-disable-drag', 'true');
               style.textContent = `
                 * {
                   -webkit-user-drag: none !important;
@@ -2078,7 +2078,7 @@ const BasicElementor: React.FC = () => {
                 const head = doc.head;
                 if (head) {
                   // Check if CSS is already injected
-                  const existingStyles = head.querySelectorAll('[data-ziplofy-theme]');
+                  const existingStyles = head.querySelectorAll('[data-codiic-theme]');
                   if (existingStyles.length === 0) {
                     console.log('No CSS found, triggering re-injection...');
                     // This will be handled by loadThemeIntoEditor's retry mechanism
@@ -2239,25 +2239,25 @@ const BasicElementor: React.FC = () => {
             
             if (head) {
               // Remove existing theme styles
-              const existingStyles = head.querySelectorAll('#ziplofy-theme-styles, #ziplofy-preserve-text-color, #ziplofy-slider-fix, style[data-ziplofy-theme]');
+              const existingStyles = head.querySelectorAll('#codiic-theme-styles, #codiic-preserve-text-color, #codiic-slider-fix, style[data-codiic-theme]');
               existingStyles.forEach((style: Element) => style.remove());
               
               // Re-inject preserve-text-color (persists across page switch)
               const preserveEl = doc.createElement('style');
-              preserveEl.id = 'ziplofy-preserve-text-color';
-              preserveEl.setAttribute('data-ziplofy-basic-elementor', 'true');
+              preserveEl.id = 'codiic-preserve-text-color';
+              preserveEl.setAttribute('data-codiic-basic-elementor', 'true');
               preserveEl.textContent = PRESERVE_TEXT_COLOR_CSS;
               head.appendChild(preserveEl);
               const sliderFixEl = doc.createElement('style');
-              sliderFixEl.id = 'ziplofy-slider-fix';
-              sliderFixEl.setAttribute('data-ziplofy-theme', 'true');
+              sliderFixEl.id = 'codiic-slider-fix';
+              sliderFixEl.setAttribute('data-codiic-theme', 'true');
               sliderFixEl.textContent = SLIDER_FIX_CSS;
               head.appendChild(sliderFixEl);
               
               // Inject page CSS
               const styleEl = doc.createElement('style');
-              styleEl.id = 'ziplofy-theme-styles';
-              styleEl.setAttribute('data-ziplofy-theme', 'true');
+              styleEl.id = 'codiic-theme-styles';
+              styleEl.setAttribute('data-codiic-theme', 'true');
               styleEl.textContent = targetPage.css;
               head.appendChild(styleEl);
             }
@@ -2524,7 +2524,7 @@ const BasicElementor: React.FC = () => {
 
   // Build multi-page HTML document (like CustomThemeBuilder)
   const buildMultiPageHtmlDocument = useCallback((pagesData: Page[], themeName: string, globalCss: string): string => {
-    const safeName = (themeName || 'Ziplofy Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safeName = (themeName || 'codiic Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const pagesJson = encodePagesData(pagesData);
     const combinedCss = globalCss || '';
 
@@ -2545,16 +2545,16 @@ const BasicElementor: React.FC = () => {
     * {
       box-sizing: border-box;
     }
-    .ziplofy-page {
+    .codiic-page {
       display: none;
       width: 100%;
       min-height: 100vh;
     }
-    .ziplofy-page.active {
+    .codiic-page.active {
       display: block;
     }
-    .ziplofy-page > .gjs-wrapper-body,
-    .ziplofy-page.gjs-wrapper-body {
+    .codiic-page > .gjs-wrapper-body,
+    .codiic-page.gjs-wrapper-body {
       width: 100%;
       min-height: 100vh;
     }
@@ -2562,13 +2562,13 @@ const BasicElementor: React.FC = () => {
   </style>
 </head>
 <body>
-  <div id="ziplofy-page-container"></div>
-  <script id="ziplofy-pages-data" type="application/json">${pagesJson}</script>
+  <div id="codiic-page-container"></div>
+  <script id="codiic-pages-data" type="application/json">${pagesJson}</script>
   <script>
     (function() {
       try {
-        const container = document.getElementById('ziplofy-page-container');
-        const dataEl = document.getElementById('ziplofy-pages-data');
+        const container = document.getElementById('codiic-page-container');
+        const dataEl = document.getElementById('codiic-pages-data');
         if (!container || !dataEl) return;
         const pagesText = dataEl.textContent || dataEl.innerText || '[]';
         const pages = JSON.parse(pagesText);
@@ -2600,7 +2600,7 @@ const BasicElementor: React.FC = () => {
           container.innerHTML = '';
           pages.forEach(function(page, index) {
             const wrapper = document.createElement('div');
-            wrapper.className = 'ziplofy-page gjs-wrapper-body' + (index === 0 ? ' active' : '');
+            wrapper.className = 'codiic-page gjs-wrapper-body' + (index === 0 ? ' active' : '');
             wrapper.setAttribute('data-page-id', page.id || ('page-' + (index + 1)));
             wrapper.style.display = index === 0 ? 'block' : 'none';
             wrapper.innerHTML = page.html || '';
@@ -2610,7 +2610,7 @@ const BasicElementor: React.FC = () => {
         const showPage = function(pageId, updateHash) {
           const normalizedRequest = normalizeId(pageId);
           if (!normalizedRequest) return false;
-          const pageEls = container.querySelectorAll('.ziplofy-page');
+          const pageEls = container.querySelectorAll('.codiic-page');
           let found = false;
           pageEls.forEach(function(pageEl) {
             const pageIdAttr = pageEl.getAttribute('data-page-id');
@@ -2624,7 +2624,7 @@ const BasicElementor: React.FC = () => {
             }
           });
           if (found && updateHash) {
-            const active = container.querySelector('.ziplofy-page.active');
+            const active = container.querySelector('.codiic-page.active');
             const actualId = active ? (active.getAttribute('data-page-id') || normalizedRequest) : normalizedRequest;
             window.location.hash = '#' + normalizeId(actualId);
           }
@@ -2720,7 +2720,7 @@ const BasicElementor: React.FC = () => {
 
   // Build HTML document from GrapesJS content (single page)
   const buildHtmlDocument = useCallback((htmlContent: string, cssContent: string, themeName: string): string => {
-    const safeName = (themeName || 'Ziplofy Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safeName = (themeName || 'codiic Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     
     // Separate @import statements from regular CSS (imports must be at the top)
     const cssLines = cssContent.split('\n');
@@ -2914,10 +2914,10 @@ const BasicElementor: React.FC = () => {
           if (frame && frame.contentDocument) {
             const doc = frame.contentDocument;
             
-            // Extract all <style> tags (excluding editor-only: ziplofy-preserve-text-color, ziplofy-slider-fix)
+            // Extract all <style> tags (excluding editor-only: codiic-preserve-text-color, codiic-slider-fix)
             const styles = doc.querySelectorAll('style');
             const styleTagCss: string[] = [];
-            const EDITOR_ONLY_IDS = ['ziplofy-preserve-text-color', 'ziplofy-slider-fix'];
+            const EDITOR_ONLY_IDS = ['codiic-preserve-text-color', 'codiic-slider-fix'];
             styles.forEach((style: Element) => {
               const id = (style as HTMLElement).id;
               if (EDITOR_ONLY_IDS.includes(id || '')) return;
@@ -3270,7 +3270,7 @@ const BasicElementor: React.FC = () => {
 
       if (applyAfterSave) {
         // Apply theme (publish)
-        localStorage.setItem('ziplofy.appliedCustomThemeId', savedThemeId);
+        localStorage.setItem('codiic.appliedCustomThemeId', savedThemeId);
         setPublishSuccess(true);
         setTimeout(() => setPublishSuccess(false), 3000);
       }
@@ -3470,10 +3470,10 @@ const BasicElementor: React.FC = () => {
           if (frame && frame.contentDocument) {
             const doc = frame.contentDocument;
             
-            // Extract all <style> tags (excluding editor-only: ziplofy-preserve-text-color, ziplofy-slider-fix)
+            // Extract all <style> tags (excluding editor-only: codiic-preserve-text-color, codiic-slider-fix)
             const styles = doc.querySelectorAll('style');
             const styleTagCss: string[] = [];
-            const EDITOR_ONLY_IDS = ['ziplofy-preserve-text-color', 'ziplofy-slider-fix'];
+            const EDITOR_ONLY_IDS = ['codiic-preserve-text-color', 'codiic-slider-fix'];
             styles.forEach((style: Element) => {
               const id = (style as HTMLElement).id;
               if (EDITOR_ONLY_IDS.includes(id || '')) return;
@@ -3935,7 +3935,7 @@ const BasicElementor: React.FC = () => {
         <div className="builder-center-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--builder-bg-canvas, #f6f6f7)', position: 'relative' }}>
         <div style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', alignItems: currentDevice === 'desktop' ? 'stretch' : 'center', padding: '20px', width: '100%' }}>
           <div className="elementor-canvas-header" style={{ width: '100%', maxWidth: currentDevice === 'desktop' ? '100%' : (currentDevice === 'mobile' ? '375px' : '768px'), marginBottom: 0 }}>
-            <div className="elementor-canvas-site-name">{themeName || 'Ziplofy Theme'}</div>
+            <div className="elementor-canvas-site-name">{themeName || 'codiic Theme'}</div>
             <div className="elementor-canvas-page-name">{pages.find(p => p.id === currentPageId)?.name || 'Home'}</div>
           </div>
         <div 
@@ -3968,7 +3968,7 @@ const BasicElementor: React.FC = () => {
           />
         </div>
         <div className="elementor-canvas-footer" style={{ width: '100%', maxWidth: currentDevice === 'desktop' ? '100%' : (currentDevice === 'mobile' ? '375px' : '768px'), marginTop: 0 }}>
-          Copyright © {new Date().getFullYear()} {themeName || 'Ziplofy Theme'} | Powered by <a href="#" onClick={(e) => e.preventDefault()}>Ziplofy Theme Builder</a>
+          Copyright © {new Date().getFullYear()} {themeName || 'codiic Theme'} | Powered by <a href="#" onClick={(e) => e.preventDefault()}>codiic Theme Builder</a>
         </div>
         </div>
         </div>

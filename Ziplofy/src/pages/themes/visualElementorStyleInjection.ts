@@ -15,7 +15,7 @@ export interface InjectThemeStylesOptions {
   baseUrl?: string;
 }
 
-const REMOVAL_SELECTOR = '#ziplofy-theme-styles, #ziplofy-preserve-text-color, #ziplofy-selection-highlight, #ziplofy-selection-override, #ziplofy-slider-fix, #ziplofy-pointer-events-final, #ziplofy-gjs-iframe-overlay-kill, style[data-ziplofy-theme], link[data-ziplofy-theme]';
+const REMOVAL_SELECTOR = '#codiic-theme-styles, #codiic-preserve-text-color, #codiic-selection-highlight, #codiic-selection-override, #codiic-slider-fix, #codiic-pointer-events-final, #codiic-gjs-iframe-overlay-kill, style[data-codiic-theme], link[data-codiic-theme]';
 
 function doInject(editor: any, options: InjectThemeStylesOptions): boolean {
   const { styleBlockContent: cssContent = '', stylesheetUrls = [], baseUrl = '' } = options;
@@ -33,19 +33,19 @@ function doInject(editor: any, options: InjectThemeStylesOptions): boolean {
     const append = (id: string, text: string) => {
       const el = doc.createElement('style');
       el.id = id;
-      el.setAttribute('data-ziplofy-theme', 'true');
+      el.setAttribute('data-codiic-theme', 'true');
       el.textContent = text;
       head.appendChild(el);
     };
 
-    append('ziplofy-selection-highlight', SELECTION_HIGHLIGHT_BASIC_CSS);
-    append('ziplofy-selection-override', SELECTION_OVERRIDE_CSS);
-    append('ziplofy-slider-fix', SLIDER_FIX_CSS);
+    append('codiic-selection-highlight', SELECTION_HIGHLIGHT_BASIC_CSS);
+    append('codiic-selection-override', SELECTION_OVERRIDE_CSS);
+    append('codiic-slider-fix', SLIDER_FIX_CSS);
 
     if (cssContent.trim()) {
       const styleEl = doc.createElement('style');
-      styleEl.id = 'ziplofy-theme-styles';
-      styleEl.setAttribute('data-ziplofy-theme', 'true');
+      styleEl.id = 'codiic-theme-styles';
+      styleEl.setAttribute('data-codiic-theme', 'true');
       styleEl.textContent = cssContent;
       head.appendChild(styleEl);
     }
@@ -54,7 +54,7 @@ function doInject(editor: any, options: InjectThemeStylesOptions): boolean {
       const link = doc.createElement('link');
       link.rel = 'stylesheet';
       link.href = url;
-      link.setAttribute('data-ziplofy-theme', 'true');
+      link.setAttribute('data-codiic-theme', 'true');
       link.crossOrigin = 'anonymous';
       head.appendChild(link);
     });
@@ -81,20 +81,20 @@ function doInject(editor: any, options: InjectThemeStylesOptions): boolean {
           const link = doc.createElement('link');
           link.rel = 'stylesheet';
           link.href = url;
-          link.setAttribute('data-ziplofy-theme', 'true');
+          link.setAttribute('data-codiic-theme', 'true');
           link.crossOrigin = 'anonymous';
           head.appendChild(link);
         }
       }
     }
     // CRITICAL: Inject pointer-events override LAST so it wins over theme CSS (themes often use pointer-events: none)
-    append('ziplofy-pointer-events-final', POINTER_EVENTS_FINAL_CSS);
+    append('codiic-pointer-events-final', POINTER_EVENTS_FINAL_CSS);
     // Grapes frame CSS may inject after head styles — append parent-outline kill to body so it wins the cascade
     try {
-      doc.getElementById('ziplofy-gjs-iframe-overlay-kill')?.remove();
+      doc.getElementById('codiic-gjs-iframe-overlay-kill')?.remove();
       const tail = doc.createElement('style');
-      tail.id = 'ziplofy-gjs-iframe-overlay-kill';
-      tail.setAttribute('data-ziplofy-theme', 'true');
+      tail.id = 'codiic-gjs-iframe-overlay-kill';
+      tail.setAttribute('data-codiic-theme', 'true');
       tail.textContent = GJS_IFRAME_OVERLAY_KILL_CSS;
       (doc.body || head).appendChild(tail);
     } catch (_) {}

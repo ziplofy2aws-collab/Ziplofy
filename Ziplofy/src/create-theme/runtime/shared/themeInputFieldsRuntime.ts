@@ -19,17 +19,17 @@ export function themeInputFieldsCssVars(
   const typo = resolveThemeTypographyStyle(config, fields.textPreset, fonts);
 
   return {
-    '--ziplofy-input-bg': fields.backgroundColorResolved,
-    '--ziplofy-input-text': fields.textColorResolved,
-    '--ziplofy-input-border': fields.borderColorResolved,
-    '--ziplofy-input-border-width': `${fields.borderThickness}px`,
-    '--ziplofy-input-radius': `${fields.cornerRadius}px`,
-    '--ziplofy-input-font-family': typo.fontFamily,
-    '--ziplofy-input-font-size': `${typo.fontSize}px`,
-    '--ziplofy-input-font-weight': String(typo.fontWeight),
-    '--ziplofy-input-line-height': String(typo.lineHeight),
-    '--ziplofy-input-letter-spacing': typo.letterSpacing,
-    '--ziplofy-input-text-transform': typo.textTransform ?? 'none',
+    '--codiic-input-bg': fields.backgroundColorResolved,
+    '--codiic-input-text': fields.textColorResolved,
+    '--codiic-input-border': fields.borderColorResolved,
+    '--codiic-input-border-width': `${fields.borderThickness}px`,
+    '--codiic-input-radius': `${fields.cornerRadius}px`,
+    '--codiic-input-font-family': typo.fontFamily,
+    '--codiic-input-font-size': `${typo.fontSize}px`,
+    '--codiic-input-font-weight': String(typo.fontWeight),
+    '--codiic-input-line-height': String(typo.lineHeight),
+    '--codiic-input-letter-spacing': typo.letterSpacing,
+    '--codiic-input-text-transform': typo.textTransform ?? 'none',
   };
 }
 

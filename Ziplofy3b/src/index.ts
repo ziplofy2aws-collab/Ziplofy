@@ -322,7 +322,7 @@ app.get('/robots.txt', getStorefrontRobots);
 // Routes
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ 
-    message: 'Ziplofy3b Server is running!',
+    message: 'codiic3b Server is running!',
     status: 'ok',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()

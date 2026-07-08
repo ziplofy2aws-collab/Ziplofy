@@ -56,7 +56,7 @@ export const protect = asyncErrorHandler(async (req: Request, res: Response, nex
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string) as UserJwtDecode
     console.log('✅ JWT decoded successfully:', decoded);
     
-    // Try to find user in Ziplofy3b database
+    // Try to find user in codiic3b database
     const user = await User.findById(decoded.uid).select("-password").populate('role').catch(() => null);
 
     if (user) {
@@ -68,8 +68,8 @@ export const protect = asyncErrorHandler(async (req: Request, res: Response, nex
       //     : "Your session has expired. Please log in again.";
       //   return next(new CustomError(msg, 403));
       // }
-      // Ziplofy3b user found - use database data
-      console.log('👤 Ziplofy3b User found:', {
+      // codiic3b user found - use database data
+      console.log('👤 codiic3b User found:', {
         id: user._id.toString(),
         name: user.name,
         email: user.email,
@@ -116,12 +116,12 @@ export const protect = asyncErrorHandler(async (req: Request, res: Response, nex
       }
 
       req.user = secureUser
-      console.log('✅ Ziplofy3b User authenticated successfully:', secureUser);
+      console.log('✅ codiic3b User authenticated successfully:', secureUser);
       return next();
     } else {
-      // Ziplofy user (not in database) - use JWT payload data only
-      // This allows Ziplofy frontend users to authenticate without being in Ziplofy3b database
-      console.log('👤 Ziplofy User (JWT-only, no database user):', {
+      // codiic user (not in database) - use JWT payload data only
+      // This allows codiic frontend users to authenticate without being in codiic3b database
+      console.log('👤 codiic User (JWT-only, no database user):', {
         uid: decoded.uid,
         email: decoded.email,
         role: decoded.role || 'client'
@@ -138,7 +138,7 @@ export const protect = asyncErrorHandler(async (req: Request, res: Response, nex
       }
 
       req.user = secureUser
-      console.log('✅ Ziplofy User authenticated successfully (JWT-only):', secureUser);
+      console.log('✅ codiic User authenticated successfully (JWT-only):', secureUser);
       return next();
     }
   } catch (error) {
@@ -210,7 +210,7 @@ export const authorizePermission = (
       return next();
     }
 
-    // For Ziplofy users (not in database), deny access (they don't have role permissions)
+    // For codiic users (not in database), deny access (they don't have role permissions)
     if (!req.user.id) {
       console.log('❌ No user ID found');
       return next(new CustomError("Not authorized to access this route", 401));
@@ -268,7 +268,7 @@ export const authorizePermission = (
 };
 
 // Optional auth: attach req.user if a valid token is presented; otherwise continue without user
-// Supports both Ziplofy3b users (database) and Ziplofy users (JWT-only)
+// Supports both codiic3b users (database) and codiic users (JWT-only)
 export const optionalAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     let token: string | undefined;
@@ -279,7 +279,7 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
     
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string) as UserJwtDecode;
     
-    // Try to find user in database, but don't fail if not found (Ziplofy users)
+    // Try to find user in database, but don't fail if not found (codiic users)
     const user = await User.findById(decoded.uid).select("-password").populate('role').catch(() => null);
     
     if (user) {
@@ -289,7 +289,7 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
           select: "username email",
         });
       }
-      // Ziplofy3b user - use database data
+      // codiic3b user - use database data
       const role = user.role as any;
       const roleName = role?.name || 'unknown';
       const isSuperAdmin = role?.isSuperAdmin || roleName === 'super-admin';
@@ -315,7 +315,7 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
       };
       req.user = secureUser;
     } else {
-      // Ziplofy user (JWT-only) - use JWT payload
+      // codiic user (JWT-only) - use JWT payload
       const secureUser: SecureUserInfo & { superAdmin?: boolean } = {
         id: decoded.uid,
         email: decoded.email || '',

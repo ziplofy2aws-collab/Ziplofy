@@ -4,7 +4,7 @@ const TEXT_SELECTOR =
   'h1,h2,h3,h4,h5,h6,p,button,a,span,label,figcaption,li,strong,em';
 
 const SECTION_SELECTOR =
-  'section,header,footer,main,article,[data-section-id],[data-ziplofy-section]';
+  'section,header,footer,main,article,[data-section-id],[data-codiic-section]';
 
 const PRESERVED_ANNOTATION_KINDS = new Set(['field', 'section', 'block']);
 
@@ -13,22 +13,22 @@ function normalizeText(value: string): string {
 }
 
 function clearAnnotations(root: ParentNode): void {
-  root.querySelectorAll('[data-ziplofy-node]').forEach((el) => {
-    const kind = el.getAttribute('data-ziplofy-kind');
+  root.querySelectorAll('[data-codiic-node]').forEach((el) => {
+    const kind = el.getAttribute('data-codiic-kind');
     // Keep precise markers from theme components — do not re-tag by fuzzy matchText.
     if (kind && PRESERVED_ANNOTATION_KINDS.has(kind)) return;
-    el.removeAttribute('data-ziplofy-node');
-    el.removeAttribute('data-ziplofy-label');
-    el.removeAttribute('data-ziplofy-kind');
+    el.removeAttribute('data-codiic-node');
+    el.removeAttribute('data-codiic-label');
+    el.removeAttribute('data-codiic-kind');
   });
 }
 
 function tagElement(el: Element, hint: ThemePreviewSelectionHint): void {
-  if (el.getAttribute('data-ziplofy-node')) return;
-  if (el.closest('[data-ziplofy-node]')) return;
-  el.setAttribute('data-ziplofy-node', hint.nodeId);
-  el.setAttribute('data-ziplofy-label', hint.label);
-  el.setAttribute('data-ziplofy-kind', hint.kind);
+  if (el.getAttribute('data-codiic-node')) return;
+  if (el.closest('[data-codiic-node]')) return;
+  el.setAttribute('data-codiic-node', hint.nodeId);
+  el.setAttribute('data-codiic-label', hint.label);
+  el.setAttribute('data-codiic-kind', hint.kind);
 }
 
 function sectionInstanceIdFromNodeId(nodeId: string): string | null {
@@ -49,12 +49,12 @@ function findSectionRootsByInstanceId(
 ): HTMLElement[] {
   const escaped = CSS.escape(instanceId);
   const roots = document.querySelectorAll(
-    `[data-ziplofy-section="${escaped}"],[data-section-id="${escaped}"]`
+    `[data-codiic-section="${escaped}"],[data-section-id="${escaped}"]`
   );
   const out: HTMLElement[] = [];
   for (const root of roots) {
     if (!(root instanceof HTMLElement)) continue;
-    const node = root.getAttribute('data-ziplofy-node');
+    const node = root.getAttribute('data-codiic-node');
     if (expectedNodeId && node && node !== expectedNodeId) continue;
     out.push(root);
   }
@@ -66,7 +66,7 @@ function findBySectionId(sectionId: string, expectedNodeId?: string): HTMLElemen
   if (matches.length) return matches[0]!;
   if (expectedNodeId) {
     const marked = document.querySelector(
-      `[data-ziplofy-node="${CSS.escape(expectedNodeId)}"]`
+      `[data-codiic-node="${CSS.escape(expectedNodeId)}"]`
     );
     if (marked instanceof HTMLElement) return marked;
   }
@@ -101,7 +101,7 @@ function duplicateMatchTexts(hints: ThemePreviewSelectionHint[]): Set<string> {
   return dupes;
 }
 
-/** Stamp data-ziplofy-node attributes so hover/click selection can resolve sidebar nodes. */
+/** Stamp data-codiic-node attributes so hover/click selection can resolve sidebar nodes. */
 export function annotatePreviewSelectionHints(
   hints: ThemePreviewSelectionHint[],
   options?: { incremental?: boolean }
@@ -116,7 +116,7 @@ export function annotatePreviewSelectionHints(
   const sectionHints = hints.filter((h) => h.sectionId && h.kind === 'section');
 
   for (const hint of textHints) {
-    const existing = document.querySelector(`[data-ziplofy-node="${CSS.escape(hint.nodeId)}"]`);
+    const existing = document.querySelector(`[data-codiic-node="${CSS.escape(hint.nodeId)}"]`);
     if (existing) continue;
 
     const target = normalizeText(hint.matchText!);
@@ -132,7 +132,7 @@ export function annotatePreviewSelectionHints(
     let best: { el: Element; score: number } | null = null;
 
     for (const el of nodes) {
-      if (el.closest('[data-ziplofy-node]')) continue;
+      if (el.closest('[data-codiic-node]')) continue;
       const content = normalizeText(el.textContent ?? '');
       if (!content) continue;
 
@@ -152,7 +152,7 @@ export function annotatePreviewSelectionHints(
   for (const hint of sectionHints) {
     if (!hint.sectionId) continue;
     const root = findBySectionId(hint.sectionId, hint.nodeId);
-    if (root && !root.hasAttribute('data-ziplofy-node')) {
+    if (root && !root.hasAttribute('data-codiic-node')) {
       tagElement(root, hint);
     }
   }
@@ -162,7 +162,7 @@ export function annotatePreviewSelectionHints(
     const root =
       findBySectionId(id, hint.nodeId) ??
       (id === 'footer' ? document.querySelector('footer,[role="contentinfo"]') : null);
-    if (root instanceof HTMLElement && !root.hasAttribute('data-ziplofy-node')) {
+    if (root instanceof HTMLElement && !root.hasAttribute('data-codiic-node')) {
       tagElement(root, hint);
     }
   }
@@ -171,10 +171,10 @@ export function annotatePreviewSelectionHints(
 export function findEditableTargetFromPoint(x: number, y: number): HTMLElement | null {
   const stack = document.elementsFromPoint(x, y) as HTMLElement[];
   for (const el of stack) {
-    if (el.id === 'ziplofy-preview-selection-root') continue;
-    const selfNode = el.getAttribute('data-ziplofy-node');
+    if (el.id === 'codiic-preview-selection-root') continue;
+    const selfNode = el.getAttribute('data-codiic-node');
     if (selfNode) return el;
-    const marked = el.closest('[data-ziplofy-node]') as HTMLElement | null;
+    const marked = el.closest('[data-codiic-node]') as HTMLElement | null;
     if (marked) return marked;
     const semantic = el.closest(TEXT_SELECTOR) as HTMLElement | null;
     if (semantic && semantic !== document.body) return semantic;
@@ -188,19 +188,19 @@ function resolveHintForSectionElement(
   section: HTMLElement,
   hints: ThemePreviewSelectionHint[]
 ): { nodeId: string; label: string; kind: ThemePreviewSelectionHint['kind'] } | null {
-  const markedSectionNode = section.getAttribute('data-ziplofy-node');
+  const markedSectionNode = section.getAttribute('data-codiic-node');
   if (markedSectionNode) {
     const hint = hints.find((h) => h.nodeId === markedSectionNode);
     if (hint) return { nodeId: hint.nodeId, label: hint.label, kind: hint.kind };
     return {
       nodeId: markedSectionNode,
-      label: section.getAttribute('data-ziplofy-label') ?? 'Section',
-      kind: (section.getAttribute('data-ziplofy-kind') as ThemePreviewSelectionHint['kind']) ?? 'section',
+      label: section.getAttribute('data-codiic-label') ?? 'Section',
+      kind: (section.getAttribute('data-codiic-kind') as ThemePreviewSelectionHint['kind']) ?? 'section',
     };
   }
 
   const domSectionId =
-    section.getAttribute('data-section-id') ?? section.getAttribute('data-ziplofy-section');
+    section.getAttribute('data-section-id') ?? section.getAttribute('data-codiic-section');
   if (domSectionId) {
     const exactHint = hints.find((h) => h.kind === 'section' && h.sectionId === domSectionId);
     if (exactHint) {
@@ -225,7 +225,7 @@ function resolveHintForText(
 
   const section = el.closest(SECTION_SELECTOR) as HTMLElement | null;
   const domSectionId =
-    section?.getAttribute('data-section-id') ?? section?.getAttribute('data-ziplofy-section');
+    section?.getAttribute('data-section-id') ?? section?.getAttribute('data-codiic-section');
   if (domSectionId) {
     const scoped = candidates.find(
       (h) =>
@@ -243,12 +243,12 @@ export function resolveSelectionFromElement(
   el: HTMLElement,
   hints: ThemePreviewSelectionHint[]
 ): { nodeId: string; label: string; kind: ThemePreviewSelectionHint['kind'] } | null {
-  const selfNode = el.getAttribute('data-ziplofy-node');
+  const selfNode = el.getAttribute('data-codiic-node');
   if (selfNode) {
     return {
       nodeId: selfNode,
-      label: el.getAttribute('data-ziplofy-label') ?? 'Element',
-      kind: (el.getAttribute('data-ziplofy-kind') as ThemePreviewSelectionHint['kind']) ?? 'element',
+      label: el.getAttribute('data-codiic-label') ?? 'Element',
+      kind: (el.getAttribute('data-codiic-kind') as ThemePreviewSelectionHint['kind']) ?? 'element',
     };
   }
 
@@ -258,14 +258,14 @@ export function resolveSelectionFromElement(
     if (fromSection && el === containingSection) return fromSection;
   }
 
-  const marked = el.closest('[data-ziplofy-node]') as HTMLElement | null;
+  const marked = el.closest('[data-codiic-node]') as HTMLElement | null;
   if (marked) {
-    const nodeId = marked.getAttribute('data-ziplofy-node');
+    const nodeId = marked.getAttribute('data-codiic-node');
     if (nodeId) {
       return {
         nodeId,
-        label: marked.getAttribute('data-ziplofy-label') ?? 'Element',
-        kind: (marked.getAttribute('data-ziplofy-kind') as ThemePreviewSelectionHint['kind']) ?? 'element',
+        label: marked.getAttribute('data-codiic-label') ?? 'Element',
+        kind: (marked.getAttribute('data-codiic-kind') as ThemePreviewSelectionHint['kind']) ?? 'element',
       };
     }
   }
@@ -286,7 +286,7 @@ export function resolveSelectionFromElement(
 
 function resolveSectionElementForNodeId(nodeId: string): HTMLElement | null {
   if (nodeId.startsWith('field:')) {
-    const marked = document.querySelector(`[data-ziplofy-node="${CSS.escape(nodeId)}"]`);
+    const marked = document.querySelector(`[data-codiic-node="${CSS.escape(nodeId)}"]`);
     return (marked?.closest(SECTION_SELECTOR) as HTMLElement | null) ?? null;
   }
 
@@ -311,7 +311,7 @@ function resolveSectionElementForNodeId(nodeId: string): HTMLElement | null {
 }
 
 function scrollTargetForElement(el: HTMLElement): HTMLElement {
-  if (el.matches(SECTION_SELECTOR) || el.hasAttribute('data-ziplofy-section')) {
+  if (el.matches(SECTION_SELECTOR) || el.hasAttribute('data-codiic-section')) {
     return el;
   }
   const section = el.closest(SECTION_SELECTOR) as HTMLElement | null;
@@ -329,7 +329,7 @@ export function scrollPreviewToNodeId(nodeId: string): boolean {
 }
 
 export function findElementForNodeId(nodeId: string): HTMLElement | null {
-  const marked = document.querySelector(`[data-ziplofy-node="${CSS.escape(nodeId)}"]`);
+  const marked = document.querySelector(`[data-codiic-node="${CSS.escape(nodeId)}"]`);
   if (marked instanceof HTMLElement) return marked;
 
   return resolveSectionElementForNodeId(nodeId);

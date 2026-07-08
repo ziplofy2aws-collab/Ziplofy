@@ -135,7 +135,7 @@ export function RecommendedProducts({
   const scopeClass = sectionScopeClass('recommended-products', sectionId);
 
   const layoutCss = useMemo(() => {
-    const sel = `[data-ziplofy-section="${sectionId}"]`;
+    const sel = `[data-codiic-section="${sectionId}"]`;
     return combineResponsiveCss(
       `${sel} .rp-product-grid {
   display: ${isCarousel ? 'flex' : 'grid'};

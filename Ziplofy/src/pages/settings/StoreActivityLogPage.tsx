@@ -62,7 +62,7 @@ const activityEntries: ActivityEntry[] = [
   },
   {
     id: '10',
-    title: 'Ziplofy added default retail role',
+    title: 'codiic added default retail role',
     timestamp: 'November 14, 2025 at 10:39 AM GMT+5:30',
     description: 'Associate',
   },

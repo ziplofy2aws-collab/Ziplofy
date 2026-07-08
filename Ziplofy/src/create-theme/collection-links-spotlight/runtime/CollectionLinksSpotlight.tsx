@@ -120,7 +120,7 @@ export function CollectionLinksSpotlight({
   );
 
   const customCss = scopedCollectionLinksCss(sectionId, layoutStyle.customCss);
-  const shellClass = sectionScopeClass('ziplofy-collection-links', sectionId);
+  const shellClass = sectionScopeClass('codiic-collection-links', sectionId);
   const responsiveCss = combineResponsiveCss(
     scopedMobileHorizontalPadCss(shellClass),
     isTextLayout
@@ -170,7 +170,7 @@ export function CollectionLinksSpotlight({
 
   const linksList = (
     <div
-      className={isTextLayout ? 'ziplofy-cl-links-text' : undefined}
+      className={isTextLayout ? 'codiic-cl-links-text' : undefined}
       onMouseLeave={isTextLayout ? clearTextHover : resetSpotlightToFirst}
       style={
         isTextLayout
@@ -271,7 +271,7 @@ export function CollectionLinksSpotlight({
 
   const mediaColumn = (
     <div
-      className="ziplofy-cl-media-col"
+      className="codiic-cl-media-col"
       style={{
         flex: '1 1 52%',
         display: 'flex',
@@ -307,7 +307,7 @@ export function CollectionLinksSpotlight({
 
   const linksColumn = (
     <div
-      className="ziplofy-cl-links-col"
+      className="codiic-cl-links-col"
       style={{
         flex: '1 1 48%',
         display: 'flex',
@@ -340,7 +340,7 @@ export function CollectionLinksSpotlight({
           </>
         ) : (
           <div
-            className="ziplofy-cl-spotlight-row"
+            className="codiic-cl-spotlight-row"
             style={{
               display: 'flex',
               flexDirection: layoutStyle.imagePosition === 'left' ? 'row-reverse' : 'row',

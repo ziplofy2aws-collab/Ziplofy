@@ -22,7 +22,7 @@ const DomainsPage: React.FC = () => {
   const domains = [
     {
       id: '1',
-      domain: '00yj51-t0.ziplofy.com',
+      domain: '00yj51-t0.codiic.com',
       type: 'Online Store',
       isPrimary: true,
       status: 'connected',
@@ -101,21 +101,21 @@ const DomainsPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Change ziplofy.com domain section */}
+        {/* Change codiic.com domain section */}
         <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5 mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex-1">
               <h2 className="text-base font-semibold text-gray-900 mb-1">
-                Change to a new ziplofy.com domain
+                Change to a new codiic.com domain
               </h2>
               <p className="text-sm text-gray-500 mb-4">
-                Update your current Ziplofy subdomain for free to better match your brand. You can also buy or connect a custom domain.
+                Update your current codiic subdomain for free to better match your brand. You can also buy or connect a custom domain.
               </p>
               <button
                 type="button"
                 className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
               >
-                Change ziplofy.com domain
+                Change codiic.com domain
               </button>
             </div>
             <div className="hidden md:flex items-center justify-center relative w-48 h-32">

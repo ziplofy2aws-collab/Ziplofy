@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Deletes all documents from every discount-related MongoDB collection (full reset).
  * Does not modify orders, carts, or products — only discount definitions + usage/eligibility rows.
  *
- * Usage (from Ziplofy3b):
+ * Usage (from codiic3b):
  *   npm run reset-discount-model
  *
  * Ensure MONGODB_URI / MONGO_URI is set (e.g. via .env.development).

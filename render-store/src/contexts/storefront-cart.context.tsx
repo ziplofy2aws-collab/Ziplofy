@@ -51,7 +51,7 @@ interface StorefrontCartContextType {
   getAllItems: () => (StorefrontCartItem | GuestCartItem)[];
 }
 
-const GUEST_CART_KEY = 'ziplofy_guest_cart';
+const GUEST_CART_KEY = 'codiic_guest_cart';
 
 const generateId = () => `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 

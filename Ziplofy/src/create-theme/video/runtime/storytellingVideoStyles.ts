@@ -102,7 +102,7 @@ export function justifyContentForAlignment(alignment: string): string {
 }
 
 export function scopedStorytellingVideoCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-storytelling-video-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-storytelling-video-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

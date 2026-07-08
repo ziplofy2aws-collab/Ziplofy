@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { resolveCheckoutProfilePageAppearance } from '@ziplofy/create-theme/checkout/runtime/checkout-profile-page.utils';
+import { resolveCheckoutProfilePageAppearance } from '@codiic/create-theme/checkout/runtime/checkout-profile-page.utils';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontCheckoutConfiguration } from '@/contexts/storefront-checkout-configuration.context';
 

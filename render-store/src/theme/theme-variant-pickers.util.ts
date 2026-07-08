@@ -25,14 +25,14 @@ export function readThemeVariantPickersCssVars(
   const cornerRadius = Number(variantPickers.cornerRadius);
 
   return {
-    '--ziplofy-variant-picker-bg': resolvePalette(variant.backgroundColor, 0, '#ffffff'),
-    '--ziplofy-variant-picker-text': resolvePalette(variant.textColor, 1, '#111827'),
-    '--ziplofy-variant-picker-border': resolvePalette(variant.borderColor, 1, '#111827'),
-    '--ziplofy-variant-picker-border-width': `${Number.isFinite(borderThickness) ? borderThickness : 1}px`,
-    '--ziplofy-variant-picker-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 14}px`,
-    '--ziplofy-variant-picker-selected-bg': resolvePalette(selected.backgroundColor, 1, '#111827'),
-    '--ziplofy-variant-picker-selected-text': resolvePalette(selected.textColor, 0, '#ffffff'),
-    '--ziplofy-variant-picker-selected-border': resolvePalette(selected.borderColor, 1, '#111827'),
+    '--codiic-variant-picker-bg': resolvePalette(variant.backgroundColor, 0, '#ffffff'),
+    '--codiic-variant-picker-text': resolvePalette(variant.textColor, 1, '#111827'),
+    '--codiic-variant-picker-border': resolvePalette(variant.borderColor, 1, '#111827'),
+    '--codiic-variant-picker-border-width': `${Number.isFinite(borderThickness) ? borderThickness : 1}px`,
+    '--codiic-variant-picker-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 14}px`,
+    '--codiic-variant-picker-selected-bg': resolvePalette(selected.backgroundColor, 1, '#111827'),
+    '--codiic-variant-picker-selected-text': resolvePalette(selected.textColor, 0, '#ffffff'),
+    '--codiic-variant-picker-selected-border': resolvePalette(selected.borderColor, 1, '#111827'),
   };
 }
 

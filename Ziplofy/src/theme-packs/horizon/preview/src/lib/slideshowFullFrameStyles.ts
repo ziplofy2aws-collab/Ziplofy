@@ -93,7 +93,7 @@ export function readSlideshowFullFrameSlides(
 }
 
 export function scopedSlideshowFullFrameCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-slideshow-full-frame-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-slideshow-full-frame-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

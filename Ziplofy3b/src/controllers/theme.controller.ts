@@ -649,7 +649,7 @@ export const downloadTheme = asyncErrorHandler(async (req: Request, res: Respons
     return;
   }
 
-  const tmpBase = path.join(tmpdir(), `ziplofy-theme-dl-${id}-${Date.now()}`);
+  const tmpBase = path.join(tmpdir(), `codiic-theme-dl-${id}-${Date.now()}`);
   fs.mkdirSync(tmpBase, { recursive: true });
   const folderDir = path.join(tmpBase, "files");
   try {
@@ -856,7 +856,9 @@ export const applyThemeToStore = asyncErrorHandler(async (req: Request, res: Res
     throw new CustomError("Theme is not installed for this store", 404);
   }
 
-  await Store.findByIdAndUpdate(storeId, { $set: { appliedTheme: themeObjectId } });
+  await Store.findByIdAndUpdate(storeId, {
+    $set: { appliedTheme: themeObjectId, appliedCustomThemeId: null },
+  });
 
   res.status(200).json({
     success: true,

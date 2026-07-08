@@ -1,6 +1,6 @@
 import type { StorefrontSeoPayload } from './seo.types';
 
-const JSON_LD_SCRIPT_ID = 'ziplofy-storefront-seo-jsonld';
+const JSON_LD_SCRIPT_ID = 'codiic-storefront-seo-jsonld';
 
 function upsertMeta(attr: 'name' | 'property', key: string, content: string): void {
   const selector =

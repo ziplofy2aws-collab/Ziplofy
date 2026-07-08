@@ -1,6 +1,7 @@
 import { StorePasswordGate } from './components/StorePasswordGate';
 import { useStorefrontAccess } from './contexts/store-access.context';
 import { useStorefront } from './contexts/store.context';
+import { shouldUseComposerRuntime } from './utils/themeComposer';
 import { CustomThemeRoutes } from './custom-theme/CustomThemeRoutes.tsx';
 import { RemoteThemeProvider } from './themes/RemoteThemeProvider.tsx';
 import { StorefrontRoutes } from './StorefrontRoutes.tsx';
@@ -16,6 +17,7 @@ export const IsValidStorefront = () => {
     storeFrontMeta,
     isStoreCustomTheme,
     themeConfig,
+    remoteThemeJsUrl,
     storeAssetsLoading,
     storeAssetsReady,
   } = useStorefront();
@@ -65,7 +67,13 @@ export const IsValidStorefront = () => {
     );
   }
 
-  if (isStoreCustomTheme && themeConfig) {
+  const useComposer = shouldUseComposerRuntime({
+    isStoreCustomTheme,
+    themeConfig,
+    remoteThemeJsUrl,
+  });
+
+  if (useComposer && themeConfig) {
     return <CustomThemeRoutes />;
   }
 

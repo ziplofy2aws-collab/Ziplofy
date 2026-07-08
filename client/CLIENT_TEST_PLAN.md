@@ -191,7 +191,7 @@ The goal is to cover all critical flows and edge‑cases so that the client beha
      - Link to “Create account” / register page.
 
 2. **Shows logo**
-   - Assert that logo image with `alt="Ziplofy"` is present.
+   - Assert that logo image with `alt="codiic"` is present.
 
 ### 4.2. Email/password login
 

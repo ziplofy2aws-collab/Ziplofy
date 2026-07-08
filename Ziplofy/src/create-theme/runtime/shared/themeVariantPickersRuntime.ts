@@ -13,14 +13,14 @@ export function themeVariantPickersCssVars(
 ): Record<string, string> {
   const pickers = resolveThemeVariantPickerColors(config);
   return {
-    '--ziplofy-variant-picker-bg': pickers.variantBackgroundResolved,
-    '--ziplofy-variant-picker-text': pickers.variantTextResolved,
-    '--ziplofy-variant-picker-border': pickers.variantBorderResolved,
-    '--ziplofy-variant-picker-border-width': `${pickers.borderThickness}px`,
-    '--ziplofy-variant-picker-radius': `${pickers.cornerRadius}px`,
-    '--ziplofy-variant-picker-selected-bg': pickers.selectedBackgroundResolved,
-    '--ziplofy-variant-picker-selected-text': pickers.selectedTextResolved,
-    '--ziplofy-variant-picker-selected-border': pickers.selectedBorderResolved,
+    '--codiic-variant-picker-bg': pickers.variantBackgroundResolved,
+    '--codiic-variant-picker-text': pickers.variantTextResolved,
+    '--codiic-variant-picker-border': pickers.variantBorderResolved,
+    '--codiic-variant-picker-border-width': `${pickers.borderThickness}px`,
+    '--codiic-variant-picker-radius': `${pickers.cornerRadius}px`,
+    '--codiic-variant-picker-selected-bg': pickers.selectedBackgroundResolved,
+    '--codiic-variant-picker-selected-text': pickers.selectedTextResolved,
+    '--codiic-variant-picker-selected-border': pickers.selectedBorderResolved,
   };
 }
 

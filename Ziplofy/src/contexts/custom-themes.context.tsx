@@ -338,8 +338,8 @@ export const CustomThemesProvider: React.FC<{ children: React.ReactNode }> = ({ 
         // IMPORTANT: Clear any previously applied custom theme to ensure only one is active
         // The backend already deactivated all regular themes, so we just need to update localStorage
         const themeIdForStore = `custom-${customThemeId}`;
-        localStorage.setItem('ziplofy.appliedCustomThemeId', themeIdForStore);
-        localStorage.setItem('ziplofy.appliedCustomThemeStoreId', storeId);
+        localStorage.setItem('codiic.appliedCustomThemeId', themeIdForStore);
+        localStorage.setItem('codiic.appliedCustomThemeStoreId', storeId);
         // Wait a moment for backend to complete cleanup
         await new Promise(resolve => setTimeout(resolve, 500));
         // Toast notification removed per user request
@@ -391,8 +391,8 @@ export const CustomThemesProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
       if (data.success) {
         // Clear custom theme from localStorage
-        localStorage.removeItem('ziplofy.appliedCustomThemeId');
-        localStorage.removeItem('ziplofy.appliedCustomThemeStoreId');
+        localStorage.removeItem('codiic.appliedCustomThemeId');
+        localStorage.removeItem('codiic.appliedCustomThemeStoreId');
         // Toast notification removed per user request
         return true;
       }

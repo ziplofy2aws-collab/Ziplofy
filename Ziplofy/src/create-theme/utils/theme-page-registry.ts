@@ -1,6 +1,6 @@
 /**
  * Single source of truth: editor page id → template JSON key → storefront URL(s).
- * Used by Ziplofy create-theme and render-store preview / custom-theme routes.
+ * Used by codiic create-theme and render-store preview / custom-theme routes.
  */
 
 export type ThemePageIcon =

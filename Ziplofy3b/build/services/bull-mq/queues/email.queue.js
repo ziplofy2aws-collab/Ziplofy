@@ -9,7 +9,7 @@ exports.EMAIL_QUEUE = 'email_queue';
 async function enqueueEmailAddress(to, subject, html, text) {
     console.log('[email.queue] Redis disabled, skipping enqueue', {
         to,
-        subject: subject || 'Notification from Ziplofy',
+        subject: subject || 'Notification from codiic',
         hasHtml: Boolean(html),
         hasText: Boolean(text),
     });

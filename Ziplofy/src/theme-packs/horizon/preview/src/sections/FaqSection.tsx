@@ -106,7 +106,7 @@ export function FaqSection({
   const answerColor = accordionStyle.inheritColorScheme ? scheme.muted : themeText;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const headingStyleTokens = useMemo(
     () =>
       readHeroHeadingStyle(config, settingsBase, { fontHeading, fontBody }, {
@@ -254,9 +254,9 @@ export function FaqSection({
         {showAccordion ? (
         <div
           role="list"
-          data-ziplofy-node={accordionNodeId}
-          data-ziplofy-label="Accordion"
-          data-ziplofy-kind="block"
+          data-codiic-node={accordionNodeId}
+          data-codiic-label="Accordion"
+          data-codiic-kind="block"
           style={{
             ...listStyle,
             borderTop: accordionStyle.dividers ? `1px solid ${scheme.border}` : undefined,
@@ -287,9 +287,9 @@ export function FaqSection({
               <div
                 key={item.id}
                 role="listitem"
-                data-ziplofy-node={blockNodeId}
-                data-ziplofy-label={item.question}
-                data-ziplofy-kind="block"
+                data-codiic-node={blockNodeId}
+                data-codiic-label={item.question}
+                data-codiic-kind="block"
                 style={{ borderBottom: rowBorder }}
               >
                 <button
@@ -361,9 +361,9 @@ export function FaqSection({
                       return (
                         <div key={textBlock.id} style={answerStyle}>
                           <div
-                            data-ziplofy-node={textNodeId}
-                            data-ziplofy-label="Text"
-                            data-ziplofy-kind="block"
+                            data-codiic-node={textNodeId}
+                            data-codiic-label="Text"
+                            data-codiic-kind="block"
                           >
                             <EditorField fieldPath={answerPath} label="Text" as="div">
                               {textBlock.text || 'Add text in the sidebar.'}

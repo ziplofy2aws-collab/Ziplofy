@@ -194,6 +194,7 @@ export const updateStore = asyncErrorHandler(async (req: Request, res: Response)
         throw new CustomError("Store custom theme not found for this store", 404);
       }
       $set.appliedCustomThemeId = new mongoose.Types.ObjectId(body.appliedCustomThemeId);
+      $set.appliedTheme = null;
     }
   }
 

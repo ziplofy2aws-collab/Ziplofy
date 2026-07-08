@@ -20,7 +20,7 @@ const sendEmail = async (options) => {
         emailBody += `<br/><br/>Link: <a href="${options.url}" target="_blank">${options.url}</a>`;
     }
     const mailOptions = {
-        from: `Ziplofy <${from}>`,
+        from: `codiic <${from}>`,
         to: options.to,
         subject: options.subject,
         html: emailBody,

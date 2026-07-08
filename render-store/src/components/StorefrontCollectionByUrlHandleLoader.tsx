@@ -4,7 +4,7 @@ import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontCollections } from '@/contexts/storefront-collections.context';
 
 /**
- * When the route is `/collections/:urlHandle`, loads collection metadata and products
+ * When the route is `/collection/:urlHandle` (or legacy `/collections/:urlHandle`),
  * via storefront API (storeId + urlHandle), not collection id.
  */
 type Props = {

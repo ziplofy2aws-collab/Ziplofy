@@ -24,7 +24,10 @@ exports.getMe = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     console.log("Assigned Support Developer ID:", req.user?.assignedSupportDeveloperId);
     console.log("Full User Object:", JSON.stringify(req.user, null, 2));
     // Always fetch user with role populated (including permissions) for consistent permission resolution
-    const user = await user_model_1.User.findById(req.user?.id).select("-password").populate("role");
+    const user = await user_model_1.User.findById(req.user?.id)
+        .select("-password")
+        .populate("role")
+        .populate("assignedSupportDeveloperId", "username email");
     if (user && user.role) {
         const role = user.role;
         const roleName = role.name || req.user?.role;
@@ -38,6 +41,18 @@ exports.getMe = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
             permissions: role.permissions || [],
         };
         console.log("✅ User role with permissions attached:", roleName, "permissions count:", role.permissions?.length || 0);
+    }
+    if (user) {
+        let assignedSupportDeveloperId = "";
+        if (user.assignedSupportDeveloperId) {
+            const dev = user.assignedSupportDeveloperId;
+            assignedSupportDeveloperId = {
+                id: dev._id ? dev._id.toString() : dev.toString(),
+                username: dev.username || "",
+                email: dev.email || ""
+            };
+        }
+        req.user.assignedSupportDeveloperId = assignedSupportDeveloperId;
     }
     res.status(200).json({
         success: true,
@@ -109,7 +124,7 @@ exports.adminLoginStep1 = (0, error_utils_1.asyncErrorHandler)(async (req, res) 
     // send email
     await (0, email_utils_1.sendEmail)({
         to: email,
-        subject: "Your Ziplofy Admin Login Code",
+        subject: "Your codiic Admin Login Code",
         body: `<p>Your verification code is:</p><h2 style="letter-spacing:4px">${code}</h2><p>This code expires in 5 minutes.</p>`
     });
     res.status(200).json({
@@ -188,7 +203,7 @@ exports.resendAdminLoginOtp = (0, error_utils_1.asyncErrorHandler)(async (req, r
     await login_otp_model_1.LoginOtp.create({ userId: user._id, email, code, expiresAt, attempts: 0 });
     await (0, email_utils_1.sendEmail)({
         to: email,
-        subject: "Your Ziplofy Admin Login Code",
+        subject: "Your codiic Admin Login Code",
         body: `<p>Your verification code is:</p><h2 style=\"letter-spacing:4px\">${code}</h2><p>This code expires in 5 minutes.</p>`
     });
     res.status(200).json({ success: true, message: "Code resent" });
@@ -218,7 +233,7 @@ exports.requestEditVerificationOtp = (0, error_utils_1.asyncErrorHandler)(async 
     await edit_verification_otp_model_1.EditVerificationOtp.create({ email: superAdminEmail, code, expiresAt, attempts: 0 });
     await (0, email_utils_1.sendEmail)({
         to: superAdminEmail,
-        subject: "Ziplofy - Edit Verification Code",
+        subject: "codiic - Edit Verification Code",
         body: `<p>A user has requested to make changes. Your verification code is:</p><h2 style="letter-spacing:4px">${code}</h2><p>This code expires in 5 minutes. Share this code with the user to approve the edit.</p>`,
     });
     res.status(200).json({

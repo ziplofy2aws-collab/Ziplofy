@@ -142,9 +142,9 @@ const CustomerPrivacyPage: React.FC = () => {
                   <ShieldCheckIcon className="h-5 w-5" aria-hidden />
                 </div>
                 <div className="min-w-0 border-l-4 border-blue-500/75 pl-3">
-                  <h2 className="text-base font-semibold text-gray-900">Ziplofy Network Intelligence</h2>
+                  <h2 className="text-base font-semibold text-gray-900">codiic Network Intelligence</h2>
                   <p className="mt-1 text-sm text-gray-500">
-                    Optional data use to improve recommendations and targeting across Ziplofy.
+                    Optional data use to improve recommendations and targeting across codiic.
                   </p>
                 </div>
               </div>
@@ -169,7 +169,7 @@ const CustomerPrivacyPage: React.FC = () => {
             )}
 
             <p className="text-sm leading-relaxed text-gray-600">
-              Your customer data is securely used with other Ziplofy data to improve products, ad targeting, and
+              Your customer data is securely used with other codiic data to improve products, ad targeting, and
               personalization for your store as described in the{' '}
               <a href="#" className="font-medium text-blue-700 underline-offset-2 hover:underline">
                 Additional Services Terms
@@ -246,7 +246,7 @@ const CustomerPrivacyPage: React.FC = () => {
         <Modal
           open={disableModalOpen}
           onClose={handleCloseDisableModal}
-          title="Turn off Ziplofy Network Intelligence"
+          title="Turn off codiic Network Intelligence"
           maxWidth="sm"
           actions={
             <>
@@ -260,7 +260,7 @@ const CustomerPrivacyPage: React.FC = () => {
           }
         >
           <p className="text-sm leading-relaxed text-slate-600">
-            This means your customer data is no longer securely used with other Ziplofy data to improve products.
+            This means your customer data is no longer securely used with other codiic data to improve products.
             This restricts your access or ability to customize all apps and features that require this data.
           </p>
         </Modal>

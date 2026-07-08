@@ -1,8 +1,8 @@
 import type { StorefrontOrder } from '@/contexts/storefront-order.context';
-import type { CheckoutOrderStatusDetails } from '@ziplofy/create-theme/checkout/order-status/checkout-order-status.types';
-import { CHECKOUT_ORDER_STATUS_GRADIENTS } from '@ziplofy/create-theme/checkout/order-status/checkout-order-status.types';
-import { checkoutPaymentMethodLabel } from '@ziplofy/create-theme/checkout/utils/checkout-order.utils';
-import { formatCheckoutPrice } from '@ziplofy/create-theme/checkout/utils/format-checkout-price';
+import type { CheckoutOrderStatusDetails } from '@codiic/create-theme/checkout/order-status/checkout-order-status.types';
+import { CHECKOUT_ORDER_STATUS_GRADIENTS } from '@codiic/create-theme/checkout/order-status/checkout-order-status.types';
+import { checkoutPaymentMethodLabel } from '@codiic/create-theme/checkout/utils/checkout-order.utils';
+import { formatCheckoutPrice } from '@codiic/create-theme/checkout/utils/format-checkout-price';
 
 type OrderShippingAddress = {
   firstName?: string;

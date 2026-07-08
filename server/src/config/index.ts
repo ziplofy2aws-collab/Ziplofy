@@ -16,7 +16,7 @@ if (NODE_ENV === 'development') {
 } else {
     config = {
         allowedOrigins: [
-            "https://auth.ziplofy.com",
+            "https://auth.codiic.com",
         ]
     };
 }

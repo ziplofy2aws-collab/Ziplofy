@@ -45,7 +45,7 @@ const Ticket: React.FC = () => {
     {
       id: 1,
       ticketId: "1689686999",
-      leadId: "Ziplofy_174980",
+      leadId: "codiic_174980",
       issueType: "website",
       subject: "Plan support",
       status: "On Hold",
@@ -54,7 +54,7 @@ const Ticket: React.FC = () => {
     {
       id: 2,
       ticketId: "1689686999",
-      leadId: "Ziplofy_174980",
+      leadId: "codiic_174980",
       issueType: "domain",
       subject: "Performance Degration",
       status: "Process",
@@ -63,7 +63,7 @@ const Ticket: React.FC = () => {
     {
       id: 3,
       ticketId: "1689686999",
-      leadId: "Ziplofy_174980",
+      leadId: "codiic_174980",
       issueType: "domain",
       subject: "Performance Degration",
       status: "Process",

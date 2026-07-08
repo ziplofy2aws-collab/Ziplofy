@@ -11,7 +11,7 @@ export function themeIconCssVars(
 ): Record<string, string> {
   const icons = readThemeIconsSettings(config);
   return {
-    '--ziplofy-icon-stroke-width': String(resolveThemeIconStrokeWidth(icons.stroke)),
+    '--codiic-icon-stroke-width': String(resolveThemeIconStrokeWidth(icons.stroke)),
   };
 }
 

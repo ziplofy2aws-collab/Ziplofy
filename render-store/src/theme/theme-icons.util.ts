@@ -14,6 +14,6 @@ export function readThemeIconCssVars(
   config: Record<string, unknown> | null | undefined
 ): Record<string, string> {
   return {
-    '--ziplofy-icon-stroke-width': String(readThemeIconStrokeWidth(config)),
+    '--codiic-icon-stroke-width': String(readThemeIconStrokeWidth(config)),
   };
 }

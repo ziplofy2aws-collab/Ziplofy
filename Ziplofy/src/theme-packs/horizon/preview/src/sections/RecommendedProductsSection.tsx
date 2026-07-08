@@ -91,33 +91,33 @@ export function RecommendedProductsSection({
   );
 
   const isCarousel = layoutStyle.cardStyle === 'carousel';
-  const scopeClass = `ziplofy-recommended-products-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-recommended-products-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedRecommendedProductsCss(sectionId, layoutStyle.customCss);
 
   const layoutCss = useMemo(
     () => `
-[data-ziplofy-section="${sectionId}"] .rp-product-grid {
+[data-codiic-section="${sectionId}"] .rp-product-grid {
   display: ${isCarousel ? 'flex' : 'grid'};
   ${isCarousel ? 'flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;' : `grid-template-columns: repeat(${layoutStyle.columns}, minmax(0, 1fr));`}
   column-gap: ${layoutStyle.horizontalGap}px;
   row-gap: ${layoutStyle.verticalGap}px;
 }
-[data-ziplofy-section="${sectionId}"] .rp-product-grid::-webkit-scrollbar { display: none; }
-[data-ziplofy-section="${sectionId}"] .rp-product-grid > article {
+[data-codiic-section="${sectionId}"] .rp-product-grid::-webkit-scrollbar { display: none; }
+[data-codiic-section="${sectionId}"] .rp-product-grid > article {
   ${isCarousel ? `flex: 0 0 calc((100% - ${(layoutStyle.columns - 1) * layoutStyle.horizontalGap}px) / ${layoutStyle.columns}); min-width: 0; scroll-snap-align: start;` : ''}
 }
 @media (max-width: 749px) {
-  [data-ziplofy-section="${sectionId}"] .rp-product-grid {
+  [data-codiic-section="${sectionId}"] .rp-product-grid {
     ${
       layoutStyle.carouselOnMobile || isCarousel
         ? 'display: flex; flex-wrap: nowrap; overflow-x: auto; grid-template-columns: unset;'
         : `grid-template-columns: repeat(${layoutStyle.mobileColumns}, minmax(0, 1fr));`
     }
   }
-  [data-ziplofy-section="${sectionId}"][data-mobile-columns="1"] .rp-product-grid > article {
+  [data-codiic-section="${sectionId}"][data-mobile-columns="1"] .rp-product-grid > article {
     flex: 0 0 calc(100% - 8px);
   }
-  [data-ziplofy-section="${sectionId}"][data-mobile-columns="2"] .rp-product-grid > article {
+  [data-codiic-section="${sectionId}"][data-mobile-columns="2"] .rp-product-grid > article {
     flex: 0 0 calc(50% - ${layoutStyle.horizontalGap / 2}px);
   }
 }

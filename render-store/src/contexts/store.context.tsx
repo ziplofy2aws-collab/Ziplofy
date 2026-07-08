@@ -7,6 +7,7 @@ import { ThemeConfigProvider } from "./theme-config.context";
 type ThemeRuntimePayload = {
   themeId: string;
   themeName: string;
+  themeKind?: 'store-custom' | 'catalog';
   runtimeBaseUrl?: string;
   entryHtml?: string | null;
   htmlUrls?: string[];
@@ -63,6 +64,11 @@ export interface StorefrontContextType {
   /** Set when the store has a JSON theme creator theme applied (Store.appliedCustomThemeId). */
   appliedCustomThemeId: string | null;
   appliedCustomThemeName: string | null;
+  /** Set when a catalog theme from the theme library is applied (Store.appliedTheme). */
+  appliedCatalogThemeId: string | null;
+  appliedCatalogThemeName: string | null;
+  /** Resolved active theme kind from the storefront API. */
+  themeKind: 'store-custom' | 'catalog' | 'none';
   /** True when theme-runtime serves StoreCustomTheme JSON (create-theme composer, no theme.js). */
   isStoreCustomTheme: boolean;
   activeThemeId: string | null;
@@ -117,6 +123,9 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [storeFrontMeta, setStoreFrontMeta] = useState<StorefrontContextType['storeFrontMeta']>(null);
   const [appliedCustomThemeId, setAppliedCustomThemeId] = useState<string | null>(null);
   const [appliedCustomThemeName, setAppliedCustomThemeName] = useState<string | null>(null);
+  const [appliedCatalogThemeId, setAppliedCatalogThemeId] = useState<string | null>(null);
+  const [appliedCatalogThemeName, setAppliedCatalogThemeName] = useState<string | null>(null);
+  const [themeKind, setThemeKind] = useState<'store-custom' | 'catalog' | 'none'>('none');
   const [isStoreCustomTheme, setIsStoreCustomTheme] = useState(false);
   const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
   const [activeThemeName, setActiveThemeName] = useState<string | null>(null);
@@ -142,9 +151,88 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     storeId: string;
     name: string;
     description: string;
-    appliedCustomThemeId: string | null;
-    appliedCustomThemeName: string | null;
   } | null>(null);
+
+  const applyThemeRuntimePayload = (
+    rt: ThemeRuntimePayload | null | undefined,
+    installedRuntimeClear: Parameters<typeof clearInstalledThemeRuntimeState>[0]
+  ): 'store-custom' | 'catalog' | 'none' => {
+    if (!rt?.themeId) {
+      setThemeKind('none');
+      setAppliedCustomThemeId(null);
+      setAppliedCustomThemeName(null);
+      setAppliedCatalogThemeId(null);
+      setAppliedCatalogThemeName(null);
+      setActiveThemeId(null);
+      setActiveThemeName(null);
+      setThemeConfig(null);
+      setIsStoreCustomTheme(false);
+      clearInstalledThemeRuntimeState(installedRuntimeClear);
+      return 'none';
+    }
+
+    const isCustom = Boolean(rt.isStoreCustomTheme || rt.themeKind === 'store-custom');
+    const resolvedKind: 'store-custom' | 'catalog' = isCustom ? 'store-custom' : 'catalog';
+    setThemeKind(resolvedKind);
+    setIsStoreCustomTheme(isCustom);
+    setActiveThemeId(rt.themeId);
+    setActiveThemeName(rt.themeName || null);
+
+    const tc = rt.themeConfig;
+    setThemeConfig(tc && typeof tc === 'object' ? tc : null);
+
+    if (isCustom) {
+      setAppliedCustomThemeId(rt.themeId);
+      setAppliedCustomThemeName(rt.themeName || null);
+      setAppliedCatalogThemeId(null);
+      setAppliedCatalogThemeName(null);
+      clearInstalledThemeRuntimeState(installedRuntimeClear);
+      return 'store-custom';
+    }
+
+    setAppliedCustomThemeId(null);
+    setAppliedCustomThemeName(null);
+    setAppliedCatalogThemeId(rt.themeId);
+    setAppliedCatalogThemeName(rt.themeName || null);
+
+    const entryHtml = rt.entryHtml;
+    const runtimeBaseUrl = rt.runtimeBaseUrl;
+    setActiveThemeEntryHtmlUrl(
+      entryHtml && runtimeBaseUrl ? `${runtimeBaseUrl}/${entryHtml}` : null
+    );
+    setActiveThemeCssUrls(rt.cssUrls || []);
+    setActiveThemeJsUrls(rt.jsUrls || []);
+    setActiveThemeHtmlUrls(rt.htmlUrls || []);
+    const rb = rt.runtimeBaseUrl;
+    setThemeRuntimeBaseUrl(typeof rb === 'string' && rb.length > 0 ? rb.replace(/\/$/, '') : null);
+    const liq = rt.liquid;
+    setLiquidThemeEnabled(Boolean(liq?.enabled));
+    setLiquidRenderPagePath(
+      typeof liq?.renderPagePath === 'string' && liq.renderPagePath.length > 0
+        ? liq.renderPagePath.startsWith('/')
+          ? liq.renderPagePath
+          : `/${liq.renderPagePath}`
+        : null
+    );
+    if (Array.isArray(liq?.templates)) {
+      setLiquidTemplateNames(liq.templates);
+      setLiquidTemplatesListProvided(true);
+    } else {
+      setLiquidTemplateNames([]);
+      setLiquidTemplatesListProvided(false);
+    }
+    setRemoteThemeJsUrl(
+      typeof rt.remoteThemeJsUrl === 'string' && rt.remoteThemeJsUrl.length > 0
+        ? rt.remoteThemeJsUrl
+        : null
+    );
+    setRemoteThemeCssUrl(
+      typeof rt.remoteThemeCssUrl === 'string' && rt.remoteThemeCssUrl.length > 0
+        ? rt.remoteThemeCssUrl
+        : null
+    );
+    return 'catalog';
+  };
 
   const loadStoreAssets = useCallback(async () => {
     const resolved = resolvedStoreRef.current;
@@ -170,49 +258,28 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setReactThemePacks,
     };
 
-    const customId = resolved.appliedCustomThemeId;
-
     try {
-      if (customId) {
-        try {
-          const runtimeRes = await axiosi.get<{
-            success: boolean;
-            data?: ThemeRuntimePayload | null;
-          }>(`/storefront/${resolved.storeId}/theme-runtime`, {
-            params: { _t: Date.now() },
-          });
-          const rt = runtimeRes.data?.data;
-          const tc = rt?.themeConfig;
-          if (rt && tc && typeof tc === "object" && rt.isStoreCustomTheme) {
-            setActiveThemeId(rt.themeId || customId);
-            setActiveThemeName(rt.themeName || resolved.appliedCustomThemeName || "Custom theme");
-            setThemeConfig(tc);
-            setIsStoreCustomTheme(true);
-            clearInstalledThemeRuntimeState(installedRuntimeClear);
-            toast.success("This store is using a custom theme");
-          } else {
-            setActiveThemeId(null);
-            setActiveThemeName(null);
-            setThemeConfig(null);
-            setIsStoreCustomTheme(false);
-            clearInstalledThemeRuntimeState(installedRuntimeClear);
-            toast.error("Custom theme is applied but could not be loaded");
-          }
-        } catch {
-          setActiveThemeId(null);
-          setActiveThemeName(null);
-          setThemeConfig(null);
-          setIsStoreCustomTheme(false);
-          clearInstalledThemeRuntimeState(installedRuntimeClear);
-          toast.error("Failed to load custom theme");
-        }
-      } else {
+      let resolvedKind: 'store-custom' | 'catalog' | 'none' = 'none';
+      try {
+        const runtimeRes = await axiosi.get<{
+          success: boolean;
+          data?: ThemeRuntimePayload | null;
+        }>(`/storefront/${resolved.storeId}/theme-runtime`, {
+          params: { _t: Date.now() },
+        });
+        resolvedKind = applyThemeRuntimePayload(runtimeRes.data?.data, installedRuntimeClear);
+      } catch {
+        resolvedKind = applyThemeRuntimePayload(null, installedRuntimeClear);
+        toast.error('Failed to load store theme');
+      }
+
+      if (resolvedKind !== 'store-custom') {
         try {
           const reactPackRes = await axiosi.get<{
             success: boolean;
             data?: {
-              activePackId: "theme1" | "theme2";
-              packs: StorefrontContextType["reactThemePacks"];
+              activePackId: 'theme1' | 'theme2';
+              packs: StorefrontContextType['reactThemePacks'];
             };
           }>(`/storefront/${resolved.storeId}/react-theme-pack`, {
             params: { _t: Date.now() },
@@ -223,83 +290,11 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           setActiveReactThemePackId(null);
           setReactThemePacks([]);
         }
-
-        try {
-          const runtimeRes = await axiosi.get<{
-            success: boolean;
-            data?: ThemeRuntimePayload | null;
-          }>(`/storefront/${resolved.storeId}/theme-runtime`, {
-            params: { _t: Date.now() },
-          });
-          const rt = runtimeRes.data?.data;
-          if (rt?.isStoreCustomTheme) {
-            setIsStoreCustomTheme(true);
-            setThemeConfig(
-              rt.themeConfig && typeof rt.themeConfig === "object" ? rt.themeConfig : null
-            );
-            clearInstalledThemeRuntimeState(installedRuntimeClear);
-            toast.success("This store is using a custom theme");
-          } else {
-            setActiveThemeId(rt?.themeId || null);
-            setActiveThemeName(rt?.themeName || null);
-            const entryHtml = rt?.entryHtml;
-            const runtimeBaseUrl = rt?.runtimeBaseUrl;
-            setActiveThemeEntryHtmlUrl(
-              entryHtml && runtimeBaseUrl ? `${runtimeBaseUrl}/${entryHtml}` : null
-            );
-            setActiveThemeCssUrls(rt?.cssUrls || []);
-            setActiveThemeJsUrls(rt?.jsUrls || []);
-            setActiveThemeHtmlUrls(rt?.htmlUrls || []);
-            const rb = rt?.runtimeBaseUrl;
-            setThemeRuntimeBaseUrl(typeof rb === "string" && rb.length > 0 ? rb.replace(/\/$/, "") : null);
-            const liq = rt?.liquid;
-            setLiquidThemeEnabled(Boolean(liq?.enabled));
-            setLiquidRenderPagePath(
-              typeof liq?.renderPagePath === "string" && liq.renderPagePath.length > 0
-                ? liq.renderPagePath.startsWith("/")
-                  ? liq.renderPagePath
-                  : `/${liq.renderPagePath}`
-                : null
-            );
-            if (Array.isArray(liq?.templates)) {
-              setLiquidTemplateNames(liq.templates);
-              setLiquidTemplatesListProvided(true);
-            } else {
-              setLiquidTemplateNames([]);
-              setLiquidTemplatesListProvided(false);
-            }
-            setRemoteThemeJsUrl(
-              typeof rt?.remoteThemeJsUrl === "string" && rt.remoteThemeJsUrl.length > 0
-                ? rt.remoteThemeJsUrl
-                : null
-            );
-            setRemoteThemeCssUrl(
-              typeof rt?.remoteThemeCssUrl === "string" && rt.remoteThemeCssUrl.length > 0
-                ? rt.remoteThemeCssUrl
-                : null
-            );
-            const tc = rt?.themeConfig;
-            setThemeConfig(tc && typeof tc === "object" ? tc : null);
-            setIsStoreCustomTheme(false);
-          }
-        } catch {
-          setActiveThemeId(null);
-          setActiveThemeName(null);
-          setActiveThemeEntryHtmlUrl(null);
-          setActiveThemeCssUrls([]);
-          setActiveThemeJsUrls([]);
-          setActiveThemeHtmlUrls([]);
-          setThemeRuntimeBaseUrl(null);
-          setRemoteThemeJsUrl(null);
-          setRemoteThemeCssUrl(null);
-          setThemeConfig(null);
-          setIsStoreCustomTheme(false);
-          setLiquidThemeEnabled(false);
-          setLiquidRenderPagePath(null);
-          setLiquidTemplateNames([]);
-          setLiquidTemplatesListProvided(false);
-        }
+      } else {
+        setActiveReactThemePackId(null);
+        setReactThemePacks([]);
       }
+
       setStoreAssetsReady(true);
       storeAssetsReadyRef.current = true;
     } finally {
@@ -336,6 +331,9 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             seoSocialImageUrl?: string;
             appliedCustomThemeId?: string | null;
             appliedCustomThemeName?: string | null;
+            appliedThemeId?: string | null;
+            appliedThemeName?: string | null;
+            themeKind?: 'store-custom' | 'catalog' | 'none';
           };
         }>(
           "/store-subdomain/check",
@@ -355,22 +353,35 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             data.data.appliedCustomThemeId && String(data.data.appliedCustomThemeId).length > 0
               ? String(data.data.appliedCustomThemeId)
               : null;
+          const catalogId =
+            data.data.appliedThemeId && String(data.data.appliedThemeId).length > 0
+              ? String(data.data.appliedThemeId)
+              : null;
+          const resolvedThemeKind =
+            data.data.themeKind === 'store-custom' || data.data.themeKind === 'catalog'
+              ? data.data.themeKind
+              : customId
+                ? 'store-custom'
+                : catalogId
+                  ? 'catalog'
+                  : 'none';
+
           setAppliedCustomThemeId(customId);
           setAppliedCustomThemeName(
             customId && data.data.appliedCustomThemeName
               ? String(data.data.appliedCustomThemeName)
               : null
           );
+          setAppliedCatalogThemeId(catalogId);
+          setAppliedCatalogThemeName(
+            catalogId && data.data.appliedThemeName ? String(data.data.appliedThemeName) : null
+          );
+          setThemeKind(resolvedThemeKind);
 
           resolvedStoreRef.current = {
             storeId: String(data.data.storeId),
             name: data.data.name,
             description: data.data.description,
-            appliedCustomThemeId: customId,
-            appliedCustomThemeName:
-              customId && data.data.appliedCustomThemeName
-                ? String(data.data.appliedCustomThemeName)
-                : null,
           };
         }
       } catch {
@@ -382,6 +393,9 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setStoreFrontMeta(null);
         setAppliedCustomThemeId(null);
         setAppliedCustomThemeName(null);
+        setAppliedCatalogThemeId(null);
+        setAppliedCatalogThemeName(null);
+        setThemeKind('none');
         setIsStoreCustomTheme(false);
         setActiveThemeId(null);
         setActiveThemeName(null);
@@ -411,6 +425,9 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     storeFrontMeta,
     appliedCustomThemeId,
     appliedCustomThemeName,
+    appliedCatalogThemeId,
+    appliedCatalogThemeName,
+    themeKind,
     isStoreCustomTheme,
     activeThemeId,
     activeThemeName,

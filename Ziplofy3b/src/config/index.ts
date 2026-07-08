@@ -29,12 +29,12 @@ if (NODE_ENV === 'development') {
 } else {
     config = {
         allowedOrigins: [
-            // Allow any subdomain of ziplofy.com (e.g., gibberish.ziplofy.com, dashboard.ziplofy.com)
-            /^https?:\/\/([a-z0-9-]+\.)*ziplofy\.com$/i,
-            "https://admin.ziplofy.com"
+            // Allow any subdomain of codiic.com (e.g., gibberish.codiic.com, dashboard.codiic.com)
+            /^https?:\/\/([a-z0-9-]+\.)*codiic\.com$/i,
+            "https://admin.codiic.com"
         ],
-        clientUrl: "https://dashboard.ziplofy.com",
-        storeRenderMicroserviceUrlSuffix: ".ziplofy.com"
+        clientUrl: "https://dashboard.codiic.com",
+        storeRenderMicroserviceUrlSuffix: ".codiic.com"
     };
 }
 

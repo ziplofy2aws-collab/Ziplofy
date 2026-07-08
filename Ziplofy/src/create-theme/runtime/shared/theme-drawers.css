@@ -1,12 +1,12 @@
-.ziplofy-drawer,
-[data-ziplofy-drawer] {
-  background: var(--ziplofy-drawer-bg, #ffffff);
-  color: var(--ziplofy-drawer-text, #111827);
-  border-color: var(--ziplofy-drawer-border, #e5e7eb);
+.codiic-drawer,
+[data-codiic-drawer] {
+  background: var(--codiic-drawer-bg, #ffffff);
+  color: var(--codiic-drawer-text, #111827);
+  border-color: var(--codiic-drawer-border, #e5e7eb);
 }
 
-.ziplofy-drawer-panel {
-  background: var(--ziplofy-drawer-bg, #ffffff);
-  color: var(--ziplofy-drawer-text, #111827);
-  border: 1px solid var(--ziplofy-drawer-border, #e5e7eb);
+.codiic-drawer-panel {
+  background: var(--codiic-drawer-bg, #ffffff);
+  color: var(--codiic-drawer-text, #111827);
+  border: 1px solid var(--codiic-drawer-border, #e5e7eb);
 }

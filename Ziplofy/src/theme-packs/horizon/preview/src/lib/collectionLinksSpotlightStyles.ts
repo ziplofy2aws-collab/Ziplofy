@@ -99,7 +99,7 @@ export function readCollectionLinks(
 }
 
 export function scopedCollectionLinksSpotlightCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-collection-links-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-collection-links-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

@@ -46,7 +46,7 @@ export function PullQuoteSection({
   const textAlign = pullQuoteContentAlign(style.layoutAlignment);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-pull-quote-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-pull-quote-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
   const shell: CSSProperties = {
     position: 'relative',

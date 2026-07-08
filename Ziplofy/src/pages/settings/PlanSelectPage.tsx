@@ -108,14 +108,14 @@ const faqSections = [
   {
     title: 'General',
     questions: [
-      'What is Ziplofy and how does it work?',
-      'How much does Ziplofy cost?',
+      'What is codiic and how does it work?',
+      'How much does codiic cost?',
       'How long are your contracts?',
       'Can I cancel my account at any time?',
       'Can I change my plan later on?',
       'Do you offer any discounts?',
-      'In what countries can I use Ziplofy?',
-      'Is Ziplofy PCI Compliant or PCI Certified?',
+      'In what countries can I use codiic?',
+      'Is codiic PCI Compliant or PCI Certified?',
     ],
   },
   {
@@ -130,8 +130,8 @@ const faqSections = [
     title: 'Store setup',
     questions: [
       'Is there a setup fee?',
-      "I'm looking to switch to Ziplofy. How do I get my data over?",
-      'Can I use my own domain name with Ziplofy?',
+      "I'm looking to switch to codiic. How do I get my data over?",
+      'Can I use my own domain name with codiic?',
       'Do I get free web hosting when I open an online store?',
       'What are your bandwidth fees?',
     ],

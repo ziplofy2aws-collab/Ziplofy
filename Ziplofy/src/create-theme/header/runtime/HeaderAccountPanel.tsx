@@ -128,7 +128,7 @@ export function HeaderAccountPanel({ open, anchorRef, onClose, user, onSignOut }
     const onPointerDown = (e: MouseEvent) => {
       const target = e.target as Node;
       if (anchorRef.current?.contains(target)) return;
-      const panel = document.getElementById('ziplofy-header-account-panel');
+      const panel = document.getElementById('codiic-header-account-panel');
       if (panel?.contains(target)) return;
       onClose();
     };
@@ -182,8 +182,8 @@ export function HeaderAccountPanel({ open, anchorRef, onClose, user, onSignOut }
 
   return createPortal(
     <div
-      id="ziplofy-header-account-panel"
-      className="ziplofy-popover"
+      id="codiic-header-account-panel"
+      className="codiic-popover"
       role="dialog"
       aria-modal="false"
       aria-label={user ? 'Account menu' : 'Sign in or create account'}

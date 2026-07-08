@@ -99,7 +99,7 @@ export function SlideshowFullFrame({
   const paddingBottom = cfgNumber(config, `${settingsBase}.paddingBottom`, 0);
   const customCss = scopedLayeredSlideshowCss(sectionId, cfgString(config, `${settingsBase}.customCss`, ''));
 
-  const scopeClass = `ziplofy-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const minHeight = frameHeight(mediaHeight);
 
   const slideCount = slides.length;

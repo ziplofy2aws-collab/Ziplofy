@@ -53,7 +53,7 @@ const STOCK_IMAGES: ThemeEditorMediaFile[] = [
 ];
 
 function storageKey(storeId: string): string {
-  return `ziplofy-theme-editor-media:${storeId || 'dev'}`;
+  return `codiic-theme-editor-media:${storeId || 'dev'}`;
 }
 
 export function stockThemeEditorImages(): ThemeEditorMediaFile[] {

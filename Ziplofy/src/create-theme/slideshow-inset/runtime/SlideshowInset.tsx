@@ -87,7 +87,7 @@ export function SlideshowInset({
   const fullWidthOnMobile = cfgBool(config, `${settingsBase}.fullWidthOnMobile`, false);
   const customCss = scopedLayeredSlideshowCss(sectionId, cfgString(config, `${settingsBase}.customCss`, ''));
 
-  const scopeClass = `ziplofy-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const frameH = mediaFrameHeight(mediaHeight);
 
   const slideCount = slides.length;

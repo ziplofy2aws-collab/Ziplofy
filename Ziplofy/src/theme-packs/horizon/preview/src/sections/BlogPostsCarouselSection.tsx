@@ -85,7 +85,7 @@ export function BlogPostsCarouselSection({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-blog-posts-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cardBasis =
     style.columns > 0
       ? `calc((100% - ${(style.columns - 1) * style.horizontalGap}px) / ${style.columns})`

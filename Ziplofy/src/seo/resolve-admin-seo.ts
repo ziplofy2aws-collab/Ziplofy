@@ -1,7 +1,7 @@
 import { joinTitle } from './seo-text.util';
 import type { AdminSeoPayload } from './seo.types';
 
-const BRAND = 'Ziplofy';
+const BRAND = 'codiic';
 
 type RouteRule = {
   test: (pathname: string) => boolean;
@@ -68,7 +68,7 @@ export function resolveAdminSeo(pathname: string, storeName?: string | null): Ad
 
   return {
     title,
-    description: matched?.description ?? `Manage ${pageTitle.toLowerCase()} in your Ziplofy store admin.`,
+    description: matched?.description ?? `Manage ${pageTitle.toLowerCase()} in your codiic store admin.`,
     robots: matched?.robots,
   };
 }

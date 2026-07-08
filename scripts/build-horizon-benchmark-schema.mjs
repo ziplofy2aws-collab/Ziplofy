@@ -1,6 +1,6 @@
 /**
- * Horizon benchmark pack — sync rich editor schema + default-config from Ziplofy pack
- * to Ziplofy3b theme-packs. Run after editing theme source or schema.
+ * Horizon benchmark pack — sync rich editor schema + default-config from codiic pack
+ * to codiic3b theme-packs. Run after editing theme source or schema.
  *
  *   node scripts/build-horizon-benchmark-schema.mjs
  */

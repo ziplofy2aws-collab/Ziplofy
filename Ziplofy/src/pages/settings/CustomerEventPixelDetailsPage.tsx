@@ -240,7 +240,7 @@ const CustomerEventPixelDetailsPage: React.FC = () => {
                     </button>
                     <DropdownMenu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose}>
                       <DropdownMenuItem disabled>Edit pixel name</DropdownMenuItem>
-                      <DropdownMenuItem disabled>Hire a Ziplofy Partner</DropdownMenuItem>
+                      <DropdownMenuItem disabled>Hire a codiic Partner</DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => {
                           handleMenuClose();

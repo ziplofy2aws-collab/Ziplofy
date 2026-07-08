@@ -56,7 +56,7 @@ export async function downloadS3PrefixToLocalDir(prefix: string, destCodeDir: st
  * (directory is replaced if it already exists).
  */
 export async function downloadS3ZipAndExtractToDir(zipKey: string, destCodeDir: string): Promise<void> {
-  const tmpZip = path.join(tmpdir(), `ziplofy-theme-${Date.now()}-${Math.random().toString(36).slice(2)}.zip`);
+  const tmpZip = path.join(tmpdir(), `codiic-theme-${Date.now()}-${Math.random().toString(36).slice(2)}.zip`);
   if (fs.existsSync(destCodeDir)) fs.rmSync(destCodeDir, { recursive: true, force: true });
   fs.mkdirSync(destCodeDir, { recursive: true });
   await downloadS3KeyToFile(zipKey, tmpZip);
@@ -66,7 +66,7 @@ export async function downloadS3ZipAndExtractToDir(zipKey: string, destCodeDir: 
 }
 
 function catalogCacheRoot(themeId: string): string {
-  return path.join(tmpdir(), 'ziplofy-catalog-themes', themeId);
+  return path.join(tmpdir(), 'codiic-catalog-themes', themeId);
 }
 
 /** Download catalog theme from S3 to temp (preview / storefront render only — not on install). */

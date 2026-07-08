@@ -1,4 +1,4 @@
-export type LocalStorageKey = "accessToken" | "ziplofy_guest_cart";
+export type LocalStorageKey = "accessToken" | "codiic_guest_cart";
 
 export const safeLocalStorage = {
   getItem: (key: LocalStorageKey): string | null => {

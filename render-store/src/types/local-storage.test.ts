@@ -13,16 +13,16 @@ describe('safeLocalStorage', () => {
   });
 
   it('removes values', () => {
-    safeLocalStorage.setItem('ziplofy_guest_cart', 'cart-data');
-    safeLocalStorage.removeItem('ziplofy_guest_cart');
-    expect(safeLocalStorage.getItem('ziplofy_guest_cart')).toBeNull();
+    safeLocalStorage.setItem('codiic_guest_cart', 'cart-data');
+    safeLocalStorage.removeItem('codiic_guest_cart');
+    expect(safeLocalStorage.getItem('codiic_guest_cart')).toBeNull();
   });
 
   it('clear removes all keys', () => {
     safeLocalStorage.setItem('accessToken', 'abc');
-    safeLocalStorage.setItem('ziplofy_guest_cart', 'cart-data');
+    safeLocalStorage.setItem('codiic_guest_cart', 'cart-data');
     safeLocalStorage.clear();
     expect(safeLocalStorage.getItem('accessToken')).toBeNull();
-    expect(safeLocalStorage.getItem('ziplofy_guest_cart')).toBeNull();
+    expect(safeLocalStorage.getItem('codiic_guest_cart')).toBeNull();
   });
 });

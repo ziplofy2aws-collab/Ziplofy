@@ -1,6 +1,6 @@
-# create-theme (copied from Ziplofy)
+# create-theme (copied from codiic)
 
-Section catalog, presets, and registry — synced from `Ziplofy/src/create-theme`.
+Section catalog, presets, and registry — synced from `codiic/src/create-theme`.
 
 **Live storefront preview today:** when `appliedCustomThemeId` is set, render-store loads the saved
 `themeConfig` JSON from the API and renders it with the **Horizon** bundle

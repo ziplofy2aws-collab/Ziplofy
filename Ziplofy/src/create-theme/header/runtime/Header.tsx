@@ -285,7 +285,7 @@ export function Header({ sectionId = 'header' }: Props) {
             <img
               src={logoUrl}
               alt={logoText}
-              className="ziplofy-header-logo-img"
+              className="codiic-header-logo-img"
               style={{ display: 'block' }}
             />
           </Link>
@@ -354,7 +354,7 @@ export function Header({ sectionId = 'header' }: Props) {
   const menuNode: ReactNode = (
     <EditorBlock nodeId={`layout:${sectionId}:block:menu`} label="Menu">
       <nav
-        className="ziplofy-header-desktop-nav"
+        className="codiic-header-desktop-nav"
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -373,7 +373,7 @@ export function Header({ sectionId = 'header' }: Props) {
   const mobileMenuNode: ReactNode = mobileMenuOpen ? (
     <EditorBlock nodeId={`layout:${sectionId}:block:menu`} label="Menu">
       <nav
-        className="ziplofy-header-mobile-nav"
+        className="codiic-header-mobile-nav"
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -414,7 +414,7 @@ export function Header({ sectionId = 'header' }: Props) {
   const menuToggleButton = (
     <button
       type="button"
-      className="ziplofy-header-menu-toggle"
+      className="codiic-header-menu-toggle"
       aria-expanded={mobileMenuOpen}
       aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
       onClick={() => setMobileMenuOpen((open) => !open)}
@@ -629,7 +629,7 @@ export function Header({ sectionId = 'header' }: Props) {
 
   const bottomRowNode: ReactNode = hasBottomRow ? (
     <div
-      className="ziplofy-header-desktop-nav-row"
+      className="codiic-header-desktop-nav-row"
       style={{
         ...mainRow,
         alignItems: 'center',
@@ -652,7 +652,7 @@ export function Header({ sectionId = 'header' }: Props) {
   ) : null;
 
   const positionedMainRow = (
-    <div className="ziplofy-header-main-row" style={mainRow}>
+    <div className="codiic-header-main-row" style={mainRow}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 40, flex: 1, minWidth: 0, flexWrap: 'wrap' }}>
         {leftItems}
       </div>
@@ -714,7 +714,7 @@ export function Header({ sectionId = 'header' }: Props) {
         }}
       >
         <div
-          className="ziplofy-header-inner"
+          className="codiic-header-inner"
           style={{
             maxWidth: innerMaxWidth,
             margin: '0 auto',

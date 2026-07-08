@@ -166,7 +166,7 @@ export function readImageCompareContentStyle(
 
   const showBgImage = bgMedia === 'image' && Boolean(bgImageUrl.trim());
   const safeId = sectionId.replace(/[^a-z0-9_-]/gi, '-');
-  const mobileClass = `ziplofy-ic-content-${safeId}`;
+  const mobileClass = `codiic-ic-content-${safeId}`;
 
   const shell: CSSProperties = {
     position: 'relative',

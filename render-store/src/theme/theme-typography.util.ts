@@ -1,4 +1,4 @@
-const THEME_FONT_LINK_PREFIX = 'ziplofy-theme-font-';
+const THEME_FONT_LINK_PREFIX = 'codiic-theme-font-';
 
 function extractQuotedFontNames(family: unknown): string[] {
   if (typeof family !== 'string' || !family.trim()) return [];
@@ -106,17 +106,17 @@ export function applyThemeTypographyCssVars(config: Record<string, unknown> | nu
   const typography = settings?.typography as Record<string, string> | undefined;
   if (!typography) return;
 
-  if (typography.fontFamily) root.style.setProperty('--ziplofy-font-family', typography.fontFamily);
+  if (typography.fontFamily) root.style.setProperty('--codiic-font-family', typography.fontFamily);
   if (typography.fontFamilyBody) {
-    root.style.setProperty('--ziplofy-font-family-body', typography.fontFamilyBody);
+    root.style.setProperty('--codiic-font-family-body', typography.fontFamilyBody);
   }
   if (typography.fontFamilySubheading) {
-    root.style.setProperty('--ziplofy-font-family-subheading', typography.fontFamilySubheading);
+    root.style.setProperty('--codiic-font-family-subheading', typography.fontFamilySubheading);
   }
   if (typography.fontFamilyAccent) {
-    root.style.setProperty('--ziplofy-font-family-accent', typography.fontFamilyAccent);
+    root.style.setProperty('--codiic-font-family-accent', typography.fontFamilyAccent);
   }
 
   const textColor = readThemeTypographyTextColor(config);
-  if (textColor) root.style.setProperty('--ziplofy-text', textColor);
+  if (textColor) root.style.setProperty('--codiic-text', textColor);
 }

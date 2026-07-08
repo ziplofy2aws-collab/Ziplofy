@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import { Route } from 'react-router-dom';
-import { CustomThemeTemplatePage } from '@ziplofy/create-theme/runtime';
+import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
 import { CheckoutSignInPage } from '@/pages/checkout-auth/CheckoutSignInPage';
 import { CheckoutSignupPage } from '@/pages/checkout-auth/CheckoutSignupPage';
 import { CheckoutAuthGuestRoute } from '@/components/auth/CheckoutAuthGuestRoute';
@@ -10,7 +10,7 @@ import { CheckoutOrderStatusPage } from '@/pages/checkout-profile/CheckoutOrderS
 import { CheckoutProfilePage } from '@/pages/checkout-profile/CheckoutProfilePage';
 import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
-import { listThemePageRouteSpecs } from '@ziplofy/create-theme/utils/theme-page-registry';
+import { listThemePageRouteSpecs } from '@codiic/create-theme/utils/theme-page-registry';
 import { StorefrontBlogByUrlHandleLoader } from '../components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from '../components/StorefrontBlogPostByUrlHandleLoader.tsx';
 import { StorefrontCollectionByUrlHandleLoader } from '../components/StorefrontCollectionByUrlHandleLoader.tsx';

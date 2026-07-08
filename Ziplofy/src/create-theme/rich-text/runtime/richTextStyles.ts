@@ -68,7 +68,7 @@ export function readRichTextLayout(
 }
 
 export function scopedRichTextCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-rich-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-rich-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

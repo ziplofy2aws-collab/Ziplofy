@@ -108,7 +108,7 @@ export function readCollectionLinks(
 }
 
 export function scopedCollectionLinksCss(sectionId: string, customCss: string): string {
-  const scope = `[data-ziplofy-section="${sectionId}"]`;
+  const scope = `[data-codiic-section="${sectionId}"]`;
   if (!customCss.trim()) return '';
   return customCss
     .trim()

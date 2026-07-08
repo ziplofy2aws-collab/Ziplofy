@@ -4,13 +4,14 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import { themePreviewFrameHeadersPlugin } from './src/vite-theme-preview-headers.plugin'
-/** Dev/preview proxy to Ziplofy3b. In production EC2, prefer nginx → backend (see deploy/nginx-store-vhost.example.conf). */
-const proxyTarget = process.env.VITE_PROXY_TARGET || process.env.ZIPLOFY3B_API_UPSTREAM || 'http://127.0.0.1:5000'
+/** Dev/preview proxy to codiic3b. In production EC2, prefer nginx → backend (see deploy/nginx-store-vhost.example.conf). */
+const proxyTarget = process.env.VITE_PROXY_TARGET || process.env.codiic3B_API_UPSTREAM || 'http://127.0.0.1:5000'
 
 /** Extra Rollup inputs so remote theme blob imports resolve in production (no /src/*.ts on static host). */
 const remoteThemeRuntimeInputs = {
   'remote-shim-react-jsx-runtime': path.resolve(__dirname, 'src/themes/remote-runtime-shims/react-jsx-runtime.ts'),
   'remote-shim-react': path.resolve(__dirname, 'src/themes/remote-runtime-shims/react.ts'),
+  'remote-shim-react-dom': path.resolve(__dirname, 'src/themes/remote-runtime-shims/react-dom.ts'),
   'remote-shim-react-router-dom': path.resolve(__dirname, 'src/themes/remote-runtime-shims/react-router-dom.ts'),
   'remote-shim-sdk': path.resolve(__dirname, 'src/sdk/index.ts'),
 } as const
@@ -47,7 +48,7 @@ export default defineConfig({
     },
     headers: {
       'Content-Security-Policy':
-        "frame-ancestors 'self' http://localhost:5173 https://admin.ziplofy.com https://dashboard.ziplofy.com https://*.ziplofy.com",
+        "frame-ancestors 'self' http://localhost:5173 https://admin.codiic.com https://dashboard.codiic.com https://*.codiic.com",
     },
   },
   build: {
@@ -79,6 +80,7 @@ export default defineConfig({
             const map: Record<string, string> = {
               'remote-shim-react-jsx-runtime': 'remote-theme-runtime/react-jsx-runtime.js',
               'remote-shim-react': 'remote-theme-runtime/react.js',
+              'remote-shim-react-dom': 'remote-theme-runtime/react-dom.js',
               'remote-shim-react-router-dom': 'remote-theme-runtime/react-router-dom.js',
               'remote-shim-sdk': 'remote-theme-runtime/sdk.js',
             };
@@ -90,12 +92,12 @@ export default defineConfig({
     },
   },
   resolve: {
-    /** Single React instance for host app + @ziplofy/create-theme (avoids preview hook crashes). */
+    /** Single React instance for host app + @codiic/create-theme (avoids preview hook crashes). */
     dedupe: ['react', 'react-dom', 'react-router', 'react-router-dom'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@render-store/sdk': path.resolve(__dirname, 'src/sdk/index.ts'),
-      '@ziplofy/create-theme': path.resolve(__dirname, '../Ziplofy/src/create-theme'),
+      '@codiic/create-theme': path.resolve(__dirname, '../Ziplofy/src/create-theme'),
     },
   },
   server: {

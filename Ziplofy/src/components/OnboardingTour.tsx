@@ -29,7 +29,7 @@ interface TourStep {
 const tourSteps: TourStep[] = [
   {
     id: 'welcome',
-    title: 'Welcome to Ziplofy! 🎉',
+    title: 'Welcome to codiic! 🎉',
     description: "We're excited to have you here! Let's take a quick tour to help you get started with managing your store.",
     icon: <SparklesIcon className="w-7 h-7" />,
     position: 'center',
@@ -108,7 +108,7 @@ const tourSteps: TourStep[] = [
   {
     id: 'complete',
     title: "You're All Set! 🚀",
-    description: "Congratulations! You now know your way around Ziplofy. Start building your successful online business!",
+    description: "Congratulations! You now know your way around codiic. Start building your successful online business!",
     icon: <CheckIcon className="w-7 h-7" />,
     position: 'center',
     action: 'next',
@@ -129,7 +129,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep, setCurrentStep] = useState(() => {
-    const saved = localStorage.getItem('ziplofy_onboarding_step');
+    const saved = localStorage.getItem('codiic_onboarding_step');
     return saved ? parseInt(saved, 10) : 0;
   });
   const [isVisible, setIsVisible] = useState(true);
@@ -200,7 +200,7 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
   }, [calculatePosition, currentStep]);
 
   useEffect(() => {
-    localStorage.setItem('ziplofy_onboarding_step', currentStep.toString());
+    localStorage.setItem('codiic_onboarding_step', currentStep.toString());
   }, [currentStep]);
 
   const handleNext = useCallback(() => {
@@ -221,9 +221,9 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ onComplete }) => {
 
   const handleComplete = useCallback(() => {
     setIsVisible(false);
-    localStorage.removeItem('ziplofy_onboarding_step');
+    localStorage.removeItem('codiic_onboarding_step');
     setTimeout(() => {
-      localStorage.setItem('ziplofy_onboarding_complete', 'true');
+      localStorage.setItem('codiic_onboarding_complete', 'true');
       onComplete();
     }, 300);
   }, [onComplete]);

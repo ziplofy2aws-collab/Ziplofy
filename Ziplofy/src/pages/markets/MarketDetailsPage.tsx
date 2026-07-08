@@ -293,7 +293,7 @@ const MarketDetailsPage: React.FC = () => {
                 {[
                   ['Currency', '→ Indian Rupee (INR ₹)'],
                   ['Catalogs', '→ All products'],
-                  ['Domain / language', '→ example.myziplofy.com • English'],
+                  ['Domain / language', '→ example.mycodiic.com • English'],
                   ['Taxes and duties', '→ Not collecting'],
                   ['Online Store', '→ Horizon'],
                 ].map((row, i) => (

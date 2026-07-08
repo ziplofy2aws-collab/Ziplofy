@@ -61,7 +61,7 @@ export function editorialPairCardOffset(index: number): number {
 }
 
 export function scopedBlogPostsEditorialCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

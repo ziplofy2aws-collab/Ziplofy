@@ -55,11 +55,11 @@ export const THEME_EDITOR_STATIC_CONFIG = {
   /** Fake store id for editor context when no store is selected. */
   devStoreId: envOr('dev-store', 'VITE_THEME_EDITOR_STATIC_STORE_ID'),
 
-  localStorageKey: 'ziplofy-theme-editor-static-config',
+  localStorageKey: 'codiic-theme-editor-static-config',
 } as const;
 
 /** Set to `true` only for local UI work without API/DB. Production builds must keep this `false`. */
-export const FORCE_THEME_EDITOR_STATIC_MODE = true;
+export const FORCE_THEME_EDITOR_STATIC_MODE = false;
 
 export function isThemeEditorStaticMode(): boolean {
   return FORCE_THEME_EDITOR_STATIC_MODE || THEME_EDITOR_STATIC_CONFIG.enabled;
@@ -72,7 +72,7 @@ export const DEV_STATIC_THEME_PACKS = [{ id: 'horizon', label: 'Horizon' }] as c
 
 export type DevStaticThemePackId = (typeof DEV_STATIC_THEME_PACKS)[number]['id'];
 
-const DEV_PACK_STORAGE_KEY = 'ziplofy-theme-editor-static-pack-id';
+const DEV_PACK_STORAGE_KEY = 'codiic-theme-editor-static-pack-id';
 
 export function getStaticDevPackId(): DevStaticThemePackId {
   try {

@@ -83,7 +83,7 @@ export function TextMarquee({
   );
   const fonts = useMemo(() => themeFontsFromConfig(config), [config]);
   const text = cfgString(config, `${settingsBase}.text`, DEFAULT_TEXT) || DEFAULT_TEXT;
-  const scopeClass = `ziplofy-text-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-text-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const textPath = `${settingsBase}.text`;
 
   const textTransformFor = (c: string): CSSProperties['textTransform'] =>

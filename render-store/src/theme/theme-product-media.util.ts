@@ -65,8 +65,8 @@ export function readThemeProductMediaCssVars(
       : 'none';
 
   return {
-    '--ziplofy-product-media-radius': `${cornerRadius}px`,
-    '--ziplofy-product-media-border': borderCss,
+    '--codiic-product-media-radius': `${cornerRadius}px`,
+    '--codiic-product-media-border': borderCss,
   };
 }
 

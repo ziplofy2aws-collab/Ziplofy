@@ -433,7 +433,7 @@ export function buildSchemaJson(
   return {
     version: '1.0.0',
     themeId,
-    description: 'Theme generated from Ziplofy Theme Creator',
+    description: 'Theme generated from codiic Theme Creator',
     globalSettings: buildGlobalSettingsSchema(),
     layout,
     templates: [{ id: 'index', label: 'Home page', sections: indexSections }],

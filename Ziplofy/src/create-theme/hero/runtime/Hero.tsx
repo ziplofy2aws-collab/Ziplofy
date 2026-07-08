@@ -559,7 +559,7 @@ export function Hero({
     const marqueeOverlay = marqueeHasMedia && hero.mediaOverlay ? overlayBackground : undefined;
     const marqueeTextColor = marqueeHasMedia ? '#ffffff' : '#1f2937';
     const marqueeTextShadow = marqueeHasMedia ? '0 2px 24px rgba(0,0,0,0.25)' : 'none';
-    const marqueeAnimId = `ziplofy-hero-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+    const marqueeAnimId = `codiic-hero-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
     // "Text" block (inside the Marquee folder) drives typography, color and padding.
     const marqueeTextBase = `${settingsBase}.marqueeTextBlock.settings`;

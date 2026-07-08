@@ -52,7 +52,7 @@ export function LayeredSlideshow({
     [config, templateId, sectionId, placement]
   );
 
-  const scopeClass = `ziplofy-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const customCss = scopedLayeredSlideshowCss(sectionId, layoutStyle.customCss);
   const minHeight = slideshowMinHeight(layoutStyle.height);
   const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');

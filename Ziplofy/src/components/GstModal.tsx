@@ -43,7 +43,7 @@ const GstModal: React.FC<GstModalProps> = ({
     >
       <div className="flex flex-col gap-4">
         <p className="text-sm text-gray-600">
-          Your Ziplofy bills may be exempt from Indian GST if you are GST registered in India and enter
+          Your codiic bills may be exempt from Indian GST if you are GST registered in India and enter
           a valid GSTIN.
         </p>
         <div>

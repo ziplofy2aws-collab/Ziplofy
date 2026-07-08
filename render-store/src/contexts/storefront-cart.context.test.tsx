@@ -39,7 +39,7 @@ describe('StorefrontCartProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     try {
-      localStorage?.removeItem?.('ziplofy_guest_cart');
+      localStorage?.removeItem?.('codiic_guest_cart');
     } catch {
       // ignore
     }

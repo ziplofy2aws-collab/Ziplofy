@@ -131,7 +131,7 @@ export const adminLoginStep1 = asyncErrorHandler(async (req: Request, res: Respo
   // send email
   await sendEmail({
     to: email,
-    subject: "Your Ziplofy Admin Login Code",
+    subject: "Your codiic Admin Login Code",
     body: `<p>Your verification code is:</p><h2 style="letter-spacing:4px">${code}</h2><p>This code expires in 5 minutes.</p>`
   });
 
@@ -219,7 +219,7 @@ export const resendAdminLoginOtp = asyncErrorHandler(async (req: Request, res: R
 
   await sendEmail({
     to: email,
-    subject: "Your Ziplofy Admin Login Code",
+    subject: "Your codiic Admin Login Code",
     body: `<p>Your verification code is:</p><h2 style=\"letter-spacing:4px\">${code}</h2><p>This code expires in 5 minutes.</p>`
   });
 
@@ -255,7 +255,7 @@ export const requestEditVerificationOtp = asyncErrorHandler(async (req: Request,
 
   await sendEmail({
     to: superAdminEmail,
-    subject: "Ziplofy - Edit Verification Code",
+    subject: "codiic - Edit Verification Code",
     body: `<p>A user has requested to make changes. Your verification code is:</p><h2 style="letter-spacing:4px">${code}</h2><p>This code expires in 5 minutes. Share this code with the user to approve the edit.</p>`,
   });
 

@@ -28,7 +28,7 @@ function isPublicEmailDomain(email: string): boolean {
 
 function getRelayEmail(storeId: string): string {
   const suffix = storeId.replace(/[^a-f0-9]/gi, '').slice(-12) || 'store';
-  return `store+${suffix}@ziplofyemail.com`;
+  return `store+${suffix}@codiicemail.com`;
 }
 
 interface SenderEmailSectionProps {
@@ -54,7 +54,7 @@ const SenderEmailSection: React.FC<SenderEmailSectionProps> = ({
   const [sendingVerification, setSendingVerification] = useState(false);
 
   const relayEmail = useMemo(
-    () => (storeId ? getRelayEmail(storeId) : 'store+@ziplofyemail.com'),
+    () => (storeId ? getRelayEmail(storeId) : 'store+@codiicemail.com'),
     [storeId]
   );
 

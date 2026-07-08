@@ -1,5 +1,5 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
-import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
+import { filterSidebarSectionPanelFields } from './theme-editor-field.utils';
 
 export const PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER = [
   'General',

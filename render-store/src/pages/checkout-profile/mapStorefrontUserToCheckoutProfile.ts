@@ -3,7 +3,7 @@ import type { StorefrontUser } from '@/contexts/storefront-auth.context';
 import type {
   CheckoutProfileAddress,
   CheckoutProfileViewData,
-} from '@ziplofy/create-theme/checkout/profile/checkout-profile.types';
+} from '@codiic/create-theme/checkout/profile/checkout-profile.types';
 
 function countryName(countryId: CustomerAddress['countryId']): string {
   if (typeof countryId === 'object' && countryId?.name) return countryId.name;

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // Connect to MongoDB using the connection string from the image
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://ziplofy:ziplofy@cluster0.6kameny.mongodb.net/test', {
+    await mongoose.connect('mongodb+srv://codiic:codiic@cluster0.6kameny.mongodb.net/test', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

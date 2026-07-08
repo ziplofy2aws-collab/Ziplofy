@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../contexts/store.context";
 
-// NOTE: Requires installing dependencies in Ziplofy:
+// NOTE: Requires installing dependencies in codiic:
 // npm install grapesjs grapesjs-preset-webpage
 
 const ThemeEditor: React.FC = () => {

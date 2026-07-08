@@ -38,7 +38,7 @@ exports.protect = (0, error_utils_1.asyncErrorHandler)(async (req, res, next) =>
         console.log('🔍 Verifying JWT token...');
         const decoded = jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET);
         console.log('✅ JWT decoded successfully:', decoded);
-        // Try to find user in Ziplofy3b database
+        // Try to find user in codiic3b database
         const user = await user_model_1.User.findById(decoded.uid).select("-password").populate('role').catch(() => null);
         if (user) {
             // Block suspended/inactive users from accessing the dashboard
@@ -49,8 +49,8 @@ exports.protect = (0, error_utils_1.asyncErrorHandler)(async (req, res, next) =>
             //     : "Your session has expired. Please log in again.";
             //   return next(new CustomError(msg, 403));
             // }
-            // Ziplofy3b user found - use database data
-            console.log('👤 Ziplofy3b User found:', {
+            // codiic3b user found - use database data
+            console.log('👤 codiic3b User found:', {
                 id: user._id.toString(),
                 name: user.name,
                 email: user.email,
@@ -72,23 +72,32 @@ exports.protect = (0, error_utils_1.asyncErrorHandler)(async (req, res, next) =>
                 isSuperAdmin,
                 roleId: role?._id?.toString()
             });
+            let assignedSupportDeveloperId = "";
+            if (user.assignedSupportDeveloperId) {
+                const dev = user.assignedSupportDeveloperId;
+                assignedSupportDeveloperId = {
+                    id: dev._id ? dev._id.toString() : dev.toString(),
+                    username: dev.username || "",
+                    email: dev.email || ""
+                };
+            }
             const secureUser = {
                 id: user._id.toString(),
                 email: user.email,
                 role: roleName,
                 name: user.name,
                 accessToken: token,
-                assignedSupportDeveloperId: user.assignedSupportDeveloperId?.toString() || "",
+                assignedSupportDeveloperId,
                 superAdmin: isSuperAdmin
             };
             req.user = secureUser;
-            console.log('✅ Ziplofy3b User authenticated successfully:', secureUser);
+            console.log('✅ codiic3b User authenticated successfully:', secureUser);
             return next();
         }
         else {
-            // Ziplofy user (not in database) - use JWT payload data only
-            // This allows Ziplofy frontend users to authenticate without being in Ziplofy3b database
-            console.log('👤 Ziplofy User (JWT-only, no database user):', {
+            // codiic user (not in database) - use JWT payload data only
+            // This allows codiic frontend users to authenticate without being in codiic3b database
+            console.log('👤 codiic User (JWT-only, no database user):', {
                 uid: decoded.uid,
                 email: decoded.email,
                 role: decoded.role || 'client'
@@ -103,7 +112,7 @@ exports.protect = (0, error_utils_1.asyncErrorHandler)(async (req, res, next) =>
                 superAdmin: false
             };
             req.user = secureUser;
-            console.log('✅ Ziplofy User authenticated successfully (JWT-only):', secureUser);
+            console.log('✅ codiic User authenticated successfully (JWT-only):', secureUser);
             return next();
         }
     }
@@ -164,7 +173,7 @@ const authorizePermission = (section, permission, subsection) => {
             console.log('✅ Super Admin - has all permissions');
             return next();
         }
-        // For Ziplofy users (not in database), deny access (they don't have role permissions)
+        // For codiic users (not in database), deny access (they don't have role permissions)
         if (!req.user.id) {
             console.log('❌ No user ID found');
             return next(new error_utils_1.CustomError("Not authorized to access this route", 401));
@@ -215,7 +224,7 @@ const authorizePermission = (section, permission, subsection) => {
 };
 exports.authorizePermission = authorizePermission;
 // Optional auth: attach req.user if a valid token is presented; otherwise continue without user
-// Supports both Ziplofy3b users (database) and Ziplofy users (JWT-only)
+// Supports both codiic3b users (database) and codiic users (JWT-only)
 const optionalAuth = async (req, res, next) => {
     try {
         let token;
@@ -225,26 +234,41 @@ const optionalAuth = async (req, res, next) => {
         if (!token)
             return next();
         const decoded = jsonwebtoken_1.default.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        // Try to find user in database, but don't fail if not found (Ziplofy users)
+        // Try to find user in database, but don't fail if not found (codiic users)
         const user = await user_model_1.User.findById(decoded.uid).select("-password").populate('role').catch(() => null);
         if (user) {
-            // Ziplofy3b user - use database data
+            if (user.assignedSupportDeveloperId) {
+                await user.populate({
+                    path: "assignedSupportDeveloperId",
+                    select: "username email",
+                });
+            }
+            // codiic3b user - use database data
             const role = user.role;
             const roleName = role?.name || 'unknown';
             const isSuperAdmin = role?.isSuperAdmin || roleName === 'super-admin';
+            let assignedSupportDeveloperId = "";
+            if (user.assignedSupportDeveloperId) {
+                const dev = user.assignedSupportDeveloperId;
+                assignedSupportDeveloperId = {
+                    id: dev._id ? dev._id.toString() : dev.toString(),
+                    username: dev.username || "",
+                    email: dev.email || ""
+                };
+            }
             const secureUser = {
                 id: user._id.toString(),
                 email: user.email,
                 role: roleName,
                 name: user.name,
                 accessToken: token,
-                assignedSupportDeveloperId: user.assignedSupportDeveloperId?.toString() || "",
+                assignedSupportDeveloperId,
                 superAdmin: isSuperAdmin,
             };
             req.user = secureUser;
         }
         else {
-            // Ziplofy user (JWT-only) - use JWT payload
+            // codiic user (JWT-only) - use JWT payload
             const secureUser = {
                 id: decoded.uid,
                 email: decoded.email || '',

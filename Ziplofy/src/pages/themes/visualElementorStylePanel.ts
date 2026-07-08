@@ -90,7 +90,7 @@ function clearBlackInlineColor(comp: any): void {
   } catch {}
 }
 
-const BODY_HIGHLIGHT_CLASS = 'ziplofy-body-selected';
+const BODY_HIGHLIGHT_CLASS = 'codiic-body-selected';
 
 /** Add/remove visual highlight on body when wrapper is selected (body has no default dashed border) */
 export function updateBodySelectionHighlight(editor: any, selected: any): void {

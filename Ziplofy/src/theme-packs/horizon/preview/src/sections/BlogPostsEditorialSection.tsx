@@ -131,7 +131,7 @@ export function BlogPostsEditorialSection({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const gap = style.layoutGap;
 
   const gridPair = cards.length >= 2 ? cards.slice(0, 2) : cards.length === 1 ? [] : [];

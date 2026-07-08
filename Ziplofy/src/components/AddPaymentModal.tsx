@@ -227,7 +227,7 @@ const AddPaymentModal: React.FC<AddPaymentModalProps> = ({
         {consent && (
           <div className="bg-blue-50 p-3 border border-blue-200 text-blue-900 text-sm">
             You will be redirected to Razorpay to finish authentication and may be requested for a
-            one-time mandate for ₹15,000. This will allow Ziplofy to automatically charge future bills
+            one-time mandate for ₹15,000. This will allow codiic to automatically charge future bills
             below the mandate amount.
           </div>
         )}

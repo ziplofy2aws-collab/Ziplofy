@@ -1028,7 +1028,7 @@ writeJson(voltSchemaPath, voltSchema);
 writeJson(voltDcPath, voltDc);
 console.log('volt →', countFields(voltSchema), 'schema fields');
 
-// --- Ziplofy3b mirror ---
+// --- codiic3b mirror ---
 for (const pack of ['bloom', 'horizon', 'studio', 'volt']) {
   for (const file of ['theme.schema.json', 'theme.default-config.json']) {
     const src = path.join(PACKS, pack, file);
@@ -1037,4 +1037,4 @@ for (const pack of ['bloom', 'horizon', 'studio', 'volt']) {
     fs.copyFileSync(src, dest);
   }
 }
-console.log('Synced Ziplofy3b theme packs');
+console.log('Synced codiic3b theme packs');

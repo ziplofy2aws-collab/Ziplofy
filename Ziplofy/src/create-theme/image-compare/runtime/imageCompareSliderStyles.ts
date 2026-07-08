@@ -85,7 +85,7 @@ export function readImageCompareSliderStyle(
   const desktopWidth = widthCss(desktopWidthMode, desktopCustom);
   const mobileWidthCss = widthCss(mobileWidthMode, mobileCustom);
   const safeId = sectionId.replace(/[^a-z0-9_-]/gi, '-');
-  const mobileClass = `ziplofy-ic-slider-${safeId}`;
+  const mobileClass = `codiic-ic-slider-${safeId}`;
 
   const wrap: CSSProperties = {
     position: 'relative',

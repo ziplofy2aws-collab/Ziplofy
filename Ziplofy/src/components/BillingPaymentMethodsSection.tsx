@@ -12,7 +12,7 @@ const BillingPaymentMethodsSection: React.FC<BillingPaymentMethodsSectionProps> 
   return (
     <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5 mb-6">
       <h2 className="text-base font-semibold text-gray-900 mb-1">Payment methods</h2>
-      <p className="text-sm text-gray-500 mb-4">For purchases and bills in Ziplofy</p>
+      <p className="text-sm text-gray-500 mb-4">For purchases and bills in codiic</p>
       <button
         type="button"
         onClick={handleAddPayment}

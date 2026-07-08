@@ -55,20 +55,20 @@ const CustomerAccountsGooglePage: React.FC = () => {
   };
 
   const fallbackOrigins = useMemo(
-    () => ['https://ziplofy.com', 'https://example.myziplofy.com'],
+    () => ['https://codiic.com', 'https://example.mycodiic.com'],
     [],
   );
   const fallbackRedirects = useMemo(
     () => [
-      'https://ziplofy.com/authentication/placeholder/social/google/callback',
-      'https://example.myziplofy.com/authentication/social/google/callback',
+      'https://codiic.com/authentication/placeholder/social/google/callback',
+      'https://example.mycodiic.com/authentication/social/google/callback',
     ],
     [],
   );
   const fallbackDeauth = useMemo(
     () => [
-      'https://ziplofy.com/authentication/placeholder/social/google/revoke',
-      'https://example.myziplofy.com/authentication/social/google/revoke',
+      'https://codiic.com/authentication/placeholder/social/google/revoke',
+      'https://example.mycodiic.com/authentication/social/google/revoke',
     ],
     [],
   );

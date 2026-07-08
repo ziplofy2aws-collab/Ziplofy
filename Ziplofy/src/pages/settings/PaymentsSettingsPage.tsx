@@ -79,7 +79,7 @@ const PaymentsSettingsPage: React.FC = () => {
             <div className="border-l-4 border-blue-500/75 pl-3">
               <h2 className="text-base font-semibold text-gray-900">Supported payment methods</h2>
               <p className="mt-1 text-sm text-gray-500">
-                Methods available through Ziplofy-approved payment providers.
+                Methods available through codiic-approved payment providers.
               </p>
             </div>
           </div>

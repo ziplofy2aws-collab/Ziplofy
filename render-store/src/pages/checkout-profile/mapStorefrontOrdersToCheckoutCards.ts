@@ -1,6 +1,6 @@
 import type { StorefrontOrder } from '@/contexts/storefront-order.context';
-import type { CheckoutOrderCardData } from '@ziplofy/create-theme/checkout/orders/checkout-order-card.types';
-import { CHECKOUT_ORDER_CARD_GRADIENTS } from '@ziplofy/create-theme/checkout/orders/checkout-order-card.types';
+import type { CheckoutOrderCardData } from '@codiic/create-theme/checkout/orders/checkout-order-card.types';
+import { CHECKOUT_ORDER_CARD_GRADIENTS } from '@codiic/create-theme/checkout/orders/checkout-order-card.types';
 
 function formatOrderStatus(order: StorefrontOrder): string {
   if (order.status === 'shipped') return 'On its way';

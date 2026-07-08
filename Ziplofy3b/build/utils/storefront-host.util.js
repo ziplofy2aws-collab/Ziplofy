@@ -22,7 +22,7 @@ function canonicalStorefrontOrigin(mapping, req) {
     const requestHost = fromRequest.replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
     const storefrontHost = `${mapping.subdomain}${config_1.config.storeRenderMicroserviceUrlSuffix}`.toLowerCase();
     if (requestHost === storefrontHost || requestHost.startsWith(`${mapping.subdomain.toLowerCase()}.`)) {
-        if (isProduction() && requestHost.endsWith('.ziplofy.com')) {
+        if (isProduction() && requestHost.endsWith('.codiic.com')) {
             return `https://${requestHost}`;
         }
         return fromRequest;

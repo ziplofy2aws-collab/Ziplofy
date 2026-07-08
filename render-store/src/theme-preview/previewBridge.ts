@@ -1,12 +1,12 @@
-/** postMessage contract between Ziplofy theme editor (parent) and render-store preview iframe. */
+/** postMessage contract between codiic theme editor (parent) and render-store preview iframe. */
 
 import {
   previewPageToRoute as registryPreviewPageToRoute,
   PREVIEW_PAGE_ROUTES,
-} from '@ziplofy/create-theme/utils/theme-page-registry';
+} from '@codiic/create-theme/utils/theme-page-registry';
 
-export const PREVIEW_MESSAGE_SOURCE = 'ziplofy-theme-editor' as const;
-export const PREVIEW_FRAME_SOURCE = 'ziplofy-theme-preview' as const;
+export const PREVIEW_MESSAGE_SOURCE = 'codiic-theme-editor' as const;
+export const PREVIEW_FRAME_SOURCE = 'codiic-theme-preview' as const;
 
 /** Theme template id for preview routing (matches manifest templates). */
 export type ThemePreviewPage = string;
@@ -91,33 +91,33 @@ export type ThemePreviewInsertHighlightPayload = {
 } | null;
 
 export type ParentToPreviewMessage =
-  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_INIT'; payload: ThemePreviewInitPayload }
-  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_CONFIG'; payload: ThemePreviewConfigPayload }
-  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_SET_PAGE'; payload: { page: ThemePreviewPage; previewRoute?: string } }
+  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'codiic_PREVIEW_INIT'; payload: ThemePreviewInitPayload }
+  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'codiic_PREVIEW_CONFIG'; payload: ThemePreviewConfigPayload }
+  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'codiic_PREVIEW_SET_PAGE'; payload: { page: ThemePreviewPage; previewRoute?: string } }
   | {
       source: typeof PREVIEW_MESSAGE_SOURCE;
-      type: 'ZIPLOFY_PREVIEW_HIGHLIGHT';
+      type: 'codiic_PREVIEW_HIGHLIGHT';
       payload: ThemePreviewHighlightPayload;
     }
   | {
       source: typeof PREVIEW_MESSAGE_SOURCE;
-      type: 'ZIPLOFY_PREVIEW_INSERT_HIGHLIGHT';
+      type: 'codiic_PREVIEW_INSERT_HIGHLIGHT';
       payload: ThemePreviewInsertHighlightPayload;
     }
-  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'ZIPLOFY_PREVIEW_PATCH'; payload: ThemePreviewPatchPayload }
+  | { source: typeof PREVIEW_MESSAGE_SOURCE; type: 'codiic_PREVIEW_PATCH'; payload: ThemePreviewPatchPayload }
   | {
       source: typeof PREVIEW_MESSAGE_SOURCE;
-      type: 'ZIPLOFY_PREVIEW_HINTS';
+      type: 'codiic_PREVIEW_HINTS';
       payload: { selectionHints: ThemePreviewSelectionHint[] };
     }
   | {
       source: typeof PREVIEW_MESSAGE_SOURCE;
-      type: 'ZIPLOFY_PREVIEW_INSPECTOR';
+      type: 'codiic_PREVIEW_INSPECTOR';
       payload: { enabled: boolean };
     }
   | {
       source: typeof PREVIEW_MESSAGE_SOURCE;
-      type: 'ZIPLOFY_PREVIEW_SET_DEVICE';
+      type: 'codiic_PREVIEW_SET_DEVICE';
       payload: { device: PreviewDevice };
     };
 
@@ -128,20 +128,20 @@ export type ThemePreviewFieldChangePayload = {
 };
 
 export type PreviewToParentMessage =
-  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'ZIPLOFY_PREVIEW_READY' }
-  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'ZIPLOFY_PREVIEW_LOADED' }
-  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'ZIPLOFY_PREVIEW_ERROR'; payload: { message: string } }
-  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'ZIPLOFY_PREVIEW_SELECT'; payload: ThemePreviewSelectPayload }
-  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'ZIPLOFY_PREVIEW_DESELECT' }
-  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'ZIPLOFY_PREVIEW_ACTION'; payload: ThemePreviewActionPayload }
+  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'codiic_PREVIEW_READY' }
+  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'codiic_PREVIEW_LOADED' }
+  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'codiic_PREVIEW_ERROR'; payload: { message: string } }
+  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'codiic_PREVIEW_SELECT'; payload: ThemePreviewSelectPayload }
+  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'codiic_PREVIEW_DESELECT' }
+  | { source: typeof PREVIEW_FRAME_SOURCE; type: 'codiic_PREVIEW_ACTION'; payload: ThemePreviewActionPayload }
   | {
       source: typeof PREVIEW_FRAME_SOURCE;
-      type: 'ZIPLOFY_PREVIEW_FIELD_CHANGE';
+      type: 'codiic_PREVIEW_FIELD_CHANGE';
       payload: ThemePreviewFieldChangePayload;
     }
   | {
       source: typeof PREVIEW_FRAME_SOURCE;
-      type: 'ZIPLOFY_PREVIEW_INSERT_SECTION';
+      type: 'codiic_PREVIEW_INSERT_SECTION';
       payload: ThemePreviewInsertSectionPayload;
     };
 

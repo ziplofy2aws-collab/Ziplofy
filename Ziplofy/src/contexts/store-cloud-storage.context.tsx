@@ -96,7 +96,7 @@ export const buildS3ObjectUrl = (
   region: string
 ): string => `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
 
-const S3_META_STORAGE_KEY = 'ziplofy_content_files_s3_meta';
+const S3_META_STORAGE_KEY = 'codiic_content_files_s3_meta';
 
 export const parseS3MetaFromObjectUrl = (objectUrl: string): S3ObjectMeta | null => {
   const match = objectUrl.match(/^https:\/\/([^.]+)\.s3\.([^.]+)\.amazonaws\.com\//);

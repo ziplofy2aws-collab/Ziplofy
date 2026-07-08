@@ -107,7 +107,7 @@ export function ImageWithText({
 
   const mobileStackClass =
     style.verticalOnMobile && isHorizontal
-      ? `ziplofy-image-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+      ? `codiic-image-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
       : '';
 
   const imagePanel: CSSProperties = {

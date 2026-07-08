@@ -10,6 +10,11 @@ import { StorefrontBlogContentShell } from './components/StorefrontBlogContentSh
 import { StorefrontBlogByUrlHandleLoader } from './components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from './components/StorefrontBlogPostByUrlHandleLoader.tsx';
 import { StorefrontCollectionByUrlHandleLoader } from './components/StorefrontCollectionByUrlHandleLoader.tsx';
+import { StorefrontCollectionsListLoader } from './components/StorefrontCollectionsListLoader.tsx';
+import {
+  LegacyCollectionRedirect,
+  LegacyProductRedirect,
+} from './components/StorefrontLegacyRedirects.tsx';
 import { StorefrontProductSeoLoader } from './components/StorefrontProductSeoLoader.tsx';
 import { StorefrontBlogPage } from './pages/StorefrontBlogPage.tsx';
 import { StorefrontBlogPostPage } from './pages/StorefrontBlogPostPage.tsx';
@@ -81,17 +86,8 @@ export const StorefrontRoutes = () => (
     <StorefrontSeoManager />
     <Routes>
       <Route path="/" element={<StorefrontHomeRoute />} />
-      <Route path="/products" element={<StorefrontHomeRoute />} />
-      <Route
-        path="/products/:id"
-        element={
-          <>
-            <StorefrontProductSeoLoader />
-            <StorefrontProductRoute />
-          </>
-        }
-      />
-      <Route path="/collection" element={<StorefrontHomeRoute />} />
+
+      {/* Catalog: all products */}
       <Route
         path="/collections/all"
         element={
@@ -101,9 +97,21 @@ export const StorefrontRoutes = () => (
           </>
         }
       />
-      <Route path="/collections" element={<StorefrontHomeRoute />} />
+
+      {/* Catalog: all collections index */}
       <Route
-        path="/collections/:urlHandle"
+        path="/collections"
+        element={
+          <>
+            <StorefrontCollectionsListLoader />
+            <StorefrontHomeRoute />
+          </>
+        }
+      />
+
+      {/* Catalog: single collection */}
+      <Route
+        path="/collection/:urlHandle"
         element={
           <>
             <StorefrontCollectionByUrlHandleLoader />
@@ -111,6 +119,26 @@ export const StorefrontRoutes = () => (
           </>
         }
       />
+
+      {/* Catalog: single product */}
+      <Route
+        path="/product/:urlHandle"
+        element={
+          <>
+            <StorefrontProductSeoLoader />
+            <StorefrontProductRoute />
+          </>
+        }
+      />
+
+      <Route path="/cart" element={<StorefrontCartRoute />} />
+
+      {/* Legacy redirects */}
+      <Route path="/products" element={<Navigate to="/collections/all" replace />} />
+      <Route path="/products/:id" element={<LegacyProductRedirect />} />
+      <Route path="/collection" element={<Navigate to="/collections" replace />} />
+      <Route path="/collections/:urlHandle" element={<LegacyCollectionRedirect />} />
+
       <Route path="/auth/login" element={<StorefrontAuthRoute />} />
       <Route path="/auth/signup" element={<StorefrontAuthRoute />} />
       <Route path="/auth/forgot" element={<StorefrontForgotRoute />} />
@@ -118,7 +146,6 @@ export const StorefrontRoutes = () => (
       <Route path="/my-orders" element={<StorefrontOrdersRoute />} />
       <Route path="/my-orders/:orderId" element={<StorefrontOrderStatusRoute />} />
       <Route path="/preferences" element={<StorefrontPreferencesRoute />} />
-      <Route path="/cart" element={<StorefrontCartRoute />} />
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
       <Route path="/search" element={<StorefrontHomeRoute />} />

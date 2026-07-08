@@ -148,9 +148,9 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
         <Link to={s.link} style={{ color: scheme.color, textDecoration: 'none' }}>
           {messageEl}
           <span
-            data-ziplofy-node={`field:${linkPath}`}
-            data-ziplofy-label="Link"
-            data-ziplofy-kind="field"
+            data-codiic-node={`field:${linkPath}`}
+            data-codiic-label="Link"
+            data-codiic-kind="field"
             hidden
           >
             {s.link}

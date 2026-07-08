@@ -220,7 +220,7 @@ const CustomThemeBuilder: React.FC = () => {
             
             // Also clear any localStorage data for this invalid ID
             try {
-              const oldKey = `ziplofy.builder.pages.${fromHook}`;
+              const oldKey = `codiic.builder.pages.${fromHook}`;
               localStorage.removeItem(oldKey);
             } catch (e) {
               console.warn('Failed to clear localStorage for invalid ID:', e);
@@ -247,7 +247,7 @@ const CustomThemeBuilder: React.FC = () => {
           window.history.replaceState({}, '', newUrl.toString());
           
           try {
-            const oldKey = `ziplofy.builder.pages.${fromWindow}`;
+            const oldKey = `codiic.builder.pages.${fromWindow}`;
             localStorage.removeItem(oldKey);
           } catch (e) {
             console.warn('Failed to clear localStorage for invalid ID:', e);
@@ -268,7 +268,7 @@ const CustomThemeBuilder: React.FC = () => {
   // Load notes from localStorage when theme ID changes
   useEffect(() => {
     try {
-      const savedNotes = localStorage.getItem(`ziplofy-theme-notes-${id || 'new'}`);
+      const savedNotes = localStorage.getItem(`codiic-theme-notes-${id || 'new'}`);
       if (savedNotes) {
         const parsed = JSON.parse(savedNotes);
         if (Array.isArray(parsed)) {
@@ -291,7 +291,7 @@ const CustomThemeBuilder: React.FC = () => {
     if (notes.length > 0 || editingNoteId !== null) {
       const saveTimeout = setTimeout(() => {
         try {
-          localStorage.setItem(`ziplofy-theme-notes-${id || 'new'}`, JSON.stringify(notes));
+          localStorage.setItem(`codiic-theme-notes-${id || 'new'}`, JSON.stringify(notes));
         } catch (e) {
           console.warn('Failed to auto-save notes:', e);
         }
@@ -325,7 +325,7 @@ const CustomThemeBuilder: React.FC = () => {
       }
       try {
         const updatedNotes = notes.filter(note => note.id !== noteId);
-        localStorage.setItem(`ziplofy-theme-notes-${id || 'new'}`, JSON.stringify(updatedNotes));
+        localStorage.setItem(`codiic-theme-notes-${id || 'new'}`, JSON.stringify(updatedNotes));
       } catch (e) {
         console.warn('Failed to save after delete:', e);
       }
@@ -393,7 +393,7 @@ const CustomThemeBuilder: React.FC = () => {
       resolvedStoreId,
       localStorageActiveStoreId: localStorage.getItem('activeStoreId'),
       localStorageStoreId: localStorage.getItem('storeId'),
-      appliedCustomThemeId: localStorage.getItem('ziplofy.appliedCustomThemeId')
+      appliedCustomThemeId: localStorage.getItem('codiic.appliedCustomThemeId')
     });
   }, [storeIdParam, contextActiveStoreId, resolvedStoreId]);
 
@@ -767,7 +767,7 @@ const CustomThemeBuilder: React.FC = () => {
       // We'll need to modify applyPageToEditor to accept scripts as a parameter
       // For now, we'll inject them into the HTML as a comment that can be parsed
       const scriptsData = JSON.stringify(allScripts);
-      const scriptsMarker = `<!-- ZIPLOFY_SCRIPTS_DATA:${scriptsData} -->`;
+      const scriptsMarker = `<!-- codiic_SCRIPTS_DATA:${scriptsData} -->`;
       const htmlWithScriptsMarker = processedHtml + scriptsMarker;
       
       // CRITICAL: Rewrite relative URLs in CSS to absolute URLs
@@ -1018,7 +1018,7 @@ const CustomThemeBuilder: React.FC = () => {
   ]);
   const [currentPageId, setCurrentPageId] = useState<string>('page-1');
   const [showPageManager, setShowPageManager] = useState<boolean>(false);
-  const LOCAL_STORAGE_PAGES_KEY = useMemo(() => (id ? `ziplofy.builder.pages.${id}` : null), [id]);
+  const LOCAL_STORAGE_PAGES_KEY = useMemo(() => (id ? `codiic.builder.pages.${id}` : null), [id]);
   const tabIdRef = useRef(`tab-${Math.random().toString(36).slice(2)}`);
   const skipPersistRef = useRef(false);
   const lastSyncedAtRef = useRef(0);
@@ -1108,7 +1108,7 @@ const CustomThemeBuilder: React.FC = () => {
   }, [pages]);
 
   const buildMultiPageHtmlDocument = (pagesData: Page[], themeName: string, globalCss: string): string => {
-    const safeName = (themeName || 'Ziplofy Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const safeName = (themeName || 'codiic Theme').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     const pagesJson = encodePagesData(pagesData);
     const combinedCss = globalCss || '';
 
@@ -1129,17 +1129,17 @@ const CustomThemeBuilder: React.FC = () => {
     * {
       box-sizing: border-box;
     }
-    .ziplofy-page {
+    .codiic-page {
       display: none;
       width: 100%;
       min-height: 100vh;
     }
-    .ziplofy-page.active {
+    .codiic-page.active {
       display: block;
     }
     /* CRITICAL: Ensure wrapper styles apply to page containers */
-    .ziplofy-page > .gjs-wrapper-body,
-    .ziplofy-page.gjs-wrapper-body {
+    .codiic-page > .gjs-wrapper-body,
+    .codiic-page.gjs-wrapper-body {
       width: 100%;
       min-height: 100vh;
     }
@@ -1147,13 +1147,13 @@ const CustomThemeBuilder: React.FC = () => {
   </style>
 </head>
 <body>
-  <div id="ziplofy-page-container"></div>
-  <script id="ziplofy-pages-data" type="application/json">${pagesJson}</script>
+  <div id="codiic-page-container"></div>
+  <script id="codiic-pages-data" type="application/json">${pagesJson}</script>
   <script>
     (function() {
       try {
-        const container = document.getElementById('ziplofy-page-container');
-        const dataEl = document.getElementById('ziplofy-pages-data');
+        const container = document.getElementById('codiic-page-container');
+        const dataEl = document.getElementById('codiic-pages-data');
         if (!container || !dataEl) return;
         const pagesText = dataEl.textContent || dataEl.innerText || '[]';
         const pages = JSON.parse(pagesText);
@@ -1196,7 +1196,7 @@ const CustomThemeBuilder: React.FC = () => {
           pages.forEach(function(page, index) {
             const wrapper = document.createElement('div');
             // CRITICAL: Add gjs-wrapper-body class so background images work
-            wrapper.className = 'ziplofy-page gjs-wrapper-body' + (index === 0 ? ' active' : '');
+            wrapper.className = 'codiic-page gjs-wrapper-body' + (index === 0 ? ' active' : '');
             wrapper.setAttribute('data-page-id', page.id || ('page-' + (index + 1)));
             wrapper.style.display = index === 0 ? 'block' : 'none';
             wrapper.innerHTML = page.html || '';
@@ -1208,7 +1208,7 @@ const CustomThemeBuilder: React.FC = () => {
           const normalizedRequest = normalizeId(pageId);
           if (!normalizedRequest) return false;
           
-          const wrappers = container.querySelectorAll('.ziplofy-page');
+          const wrappers = container.querySelectorAll('.codiic-page');
           let found = false;
           
           wrappers.forEach(function(wrapper) {
@@ -1225,7 +1225,7 @@ const CustomThemeBuilder: React.FC = () => {
           });
           
           if (found && updateHash) {
-            const activeWrapper = container.querySelector('.ziplofy-page.active');
+            const activeWrapper = container.querySelector('.codiic-page.active');
             const actualPageId = activeWrapper ? (activeWrapper.getAttribute('data-page-id') || normalizedRequest) : normalizedRequest;
             window.location.hash = '#' + normalizeId(actualPageId);
           }
@@ -1261,7 +1261,7 @@ const CustomThemeBuilder: React.FC = () => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 if (!showPage(targetPage, true)) {
-                  console.warn('Ziplofy: target page not found for link', targetPage);
+                  console.warn('codiic: target page not found for link', targetPage);
                 }
                 return;
               }
@@ -1271,7 +1271,7 @@ const CustomThemeBuilder: React.FC = () => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 if (!showPage(href, true)) {
-                  console.warn('Ziplofy: target page not found for link href', href);
+                  console.warn('codiic: target page not found for link href', href);
                 }
                 return;
               }
@@ -1296,14 +1296,14 @@ const CustomThemeBuilder: React.FC = () => {
               
               if (targetPage && targetPage.trim() !== '') {
                 if (!showPage(targetPage, true)) {
-                  console.warn('Ziplofy: target page not found for button', targetPage, 'Available pages:', Array.from(container.querySelectorAll('.ziplofy-page')).map(function(p) { return p.getAttribute('data-page-id'); }));
+                  console.warn('codiic: target page not found for button', targetPage, 'Available pages:', Array.from(container.querySelectorAll('.codiic-page')).map(function(p) { return p.getAttribute('data-page-id'); }));
                 }
                 return;
               }
               
               if (href && href.startsWith('#')) {
                 if (!showPage(href, true)) {
-                  console.warn('Ziplofy: target page not found for button href', href);
+                  console.warn('codiic: target page not found for button href', href);
                 }
                 return;
               }
@@ -1360,12 +1360,12 @@ const CustomThemeBuilder: React.FC = () => {
         window.addEventListener('hashchange', handleHashChange);
         handleHashChange();
       } catch (err) {
-        console.error('Ziplofy multipage preview error:', err);
+        console.error('codiic multipage preview error:', err);
       }
 
       // Initialize Countdown Timers
       function initCountdownTimers() {
-        const timers = document.querySelectorAll('.ziplofy-countdown-timer');
+        const timers = document.querySelectorAll('.codiic-countdown-timer');
         timers.forEach((timer) => {
           const daysEl = timer.querySelector('.countdown-days');
           const hoursEl = timer.querySelector('.countdown-hours');
@@ -1418,7 +1418,7 @@ const CustomThemeBuilder: React.FC = () => {
 
       // Initialize Progress Bars - sync percentage text with bar width
       function initProgressBars() {
-        const progressBars = document.querySelectorAll('.ziplofy-progress-bar');
+        const progressBars = document.querySelectorAll('.codiic-progress-bar');
         progressBars.forEach((bar) => {
           const percentageEl = bar.querySelector('.progress-percentage');
           const fillEl = bar.querySelector('.progress-bar-fill');
@@ -1457,7 +1457,7 @@ const CustomThemeBuilder: React.FC = () => {
 
       // Initialize Parallax Sections
       function initParallaxSections() {
-        const parallaxSections = document.querySelectorAll('.ziplofy-parallax-section');
+        const parallaxSections = document.querySelectorAll('.codiic-parallax-section');
         
         if (parallaxSections.length === 0) return;
         
@@ -1555,7 +1555,7 @@ const CustomThemeBuilder: React.FC = () => {
     }
 
     // Check for embedded JSON script tag
-    const scriptMatch = htmlContent.match(/<script id="ziplofy-pages-data"[^>]*>([\s\S]*?)<\/script>/i);
+    const scriptMatch = htmlContent.match(/<script id="codiic-pages-data"[^>]*>([\s\S]*?)<\/script>/i);
     if (scriptMatch && scriptMatch[1]) {
       try {
         const jsonText = scriptMatch[1].trim();
@@ -1805,7 +1805,7 @@ const CustomThemeBuilder: React.FC = () => {
     
     // First, check for scripts stored in comment marker (from installed themes)
     if (htmlContent) {
-      const scriptsMarkerMatch = htmlContent.match(/<!-- ZIPLOFY_SCRIPTS_DATA:(\[.*?\]) -->/);
+      const scriptsMarkerMatch = htmlContent.match(/<!-- codiic_SCRIPTS_DATA:(\[.*?\]) -->/);
       if (scriptsMarkerMatch && scriptsMarkerMatch[1]) {
         try {
           const storedScripts = JSON.parse(scriptsMarkerMatch[1]);
@@ -1827,8 +1827,8 @@ const CustomThemeBuilder: React.FC = () => {
         const attrs = match[1];
         const content = match[2].trim();
         
-        // Skip our internal script tags (ziplofy-pages-data)
-        if (attrs.includes('ziplofy-pages-data')) continue;
+        // Skip our internal script tags (codiic-pages-data)
+        if (attrs.includes('codiic-pages-data')) continue;
         
         const script: any = {};
         
@@ -1859,7 +1859,7 @@ const CustomThemeBuilder: React.FC = () => {
     // Remove script tags and comment markers from HTML before loading (GrapesJS will strip them anyway)
     let htmlWithoutScripts = htmlContent ? htmlContent.replace(/<script[\s\S]*?<\/script>/gi, '') : '';
     // Also remove the scripts comment marker
-    htmlWithoutScripts = htmlWithoutScripts.replace(/<!-- ZIPLOFY_SCRIPTS_DATA:\[.*?\] -->/g, '');
+    htmlWithoutScripts = htmlWithoutScripts.replace(/<!-- codiic_SCRIPTS_DATA:\[.*?\] -->/g, '');
     
     // Set HTML content (without scripts)
     editor.setComponents(htmlWithoutScripts || DEFAULT_PAGE_CONTENT);
@@ -2153,10 +2153,10 @@ const CustomThemeBuilder: React.FC = () => {
                 scriptsInjected = true;
 
                 // Ensure base tag exists for relative path resolution
-                let baseTag = head.querySelector('base[data-ziplofy-theme-base]');
+                let baseTag = head.querySelector('base[data-codiic-theme-base]');
                 if (!baseTag) {
                   baseTag = doc.createElement('base');
-                  baseTag.setAttribute('data-ziplofy-theme-base', 'true');
+                  baseTag.setAttribute('data-codiic-theme-base', 'true');
                   // Set base href to theme file serving endpoint if theme ID is available
                   if (themeId) {
                     (baseTag as HTMLBaseElement).href = `${window.location.origin}/api/custom-themes/${themeId}/files/`;
@@ -2170,11 +2170,11 @@ const CustomThemeBuilder: React.FC = () => {
                 }
                 
                 // Remove existing theme scripts to avoid duplicates
-                const existingScripts = head.querySelectorAll('script[data-ziplofy-theme-script]');
+                const existingScripts = head.querySelectorAll('script[data-codiic-theme-script]');
                 existingScripts.forEach((script: Element) => script.remove());
                 
                 // Also check body for scripts
-                const existingBodyScripts = body.querySelectorAll('script[data-ziplofy-theme-script]');
+                const existingBodyScripts = body.querySelectorAll('script[data-codiic-theme-script]');
                 existingBodyScripts.forEach((script: Element) => script.remove());
                 
                 // Inject scripts sequentially to maintain order (important for dependencies)
@@ -2183,7 +2183,7 @@ const CustomThemeBuilder: React.FC = () => {
                     const scriptTag = scriptTags[index];
                     try {
                       const scriptEl = doc.createElement('script');
-                      scriptEl.setAttribute('data-ziplofy-theme-script', 'true');
+                      scriptEl.setAttribute('data-codiic-theme-script', 'true');
                       
                       if (scriptTag.type) {
                         scriptEl.type = scriptTag.type;
@@ -2747,7 +2747,7 @@ const CustomThemeBuilder: React.FC = () => {
     // Remove GrapesJS internal attributes but preserve:
     // - data-page-link for navigation
     // - data-countdown-* attributes for countdown timer functionality
-    // - class attributes (including ziplofy-countdown-timer and countdown-* classes)
+    // - class attributes (including codiic-countdown-timer and countdown-* classes)
     let output = input.replace(/\s*data-gjs-[^=]*="[^"]*"/g, '');
     
     // CRITICAL: Ensure data-page-link attributes are preserved (they're not data-gjs-*)
@@ -3048,7 +3048,7 @@ ${linkStylesheetTag}  <style>
 
       // Initialize Progress Bars - sync percentage text with bar width
       function initProgressBars() {
-        const progressBars = document.querySelectorAll('.ziplofy-progress-bar');
+        const progressBars = document.querySelectorAll('.codiic-progress-bar');
         progressBars.forEach((bar) => {
           const percentageEl = bar.querySelector('.progress-percentage');
           const fillEl = bar.querySelector('.progress-bar-fill');
@@ -3087,7 +3087,7 @@ ${linkStylesheetTag}  <style>
 
       // Initialize Parallax Sections
       function initParallaxSections() {
-        const parallaxSections = document.querySelectorAll('.ziplofy-parallax-section');
+        const parallaxSections = document.querySelectorAll('.codiic-parallax-section');
         
         if (parallaxSections.length === 0) return;
         
@@ -3271,7 +3271,7 @@ ${linkStylesheetTag}  <style>
       const keysToRemove: string[] = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && key.startsWith('ziplofy.builder.pages.')) {
+        if (key && key.startsWith('codiic.builder.pages.')) {
           keysToRemove.push(key);
         }
       }
@@ -3759,7 +3759,7 @@ ${linkStylesheetTag}  <style>
             const viewEl = component.getEl ? component.getEl() : null;
             if (!viewEl || viewEl.nodeType !== 1) return;
             
-            const progressBar = viewEl.closest ? viewEl.closest('.ziplofy-progress-bar') : null;
+            const progressBar = viewEl.closest ? viewEl.closest('.codiic-progress-bar') : null;
             if (!progressBar) return;
             
             const percentageEl = progressBar.querySelector('.progress-percentage');
@@ -4097,7 +4097,7 @@ ${linkStylesheetTag}  <style>
               const componentHtml = editor.getHtml({ component: selected });
               
               // Store both JSON and HTML in window for persistence
-              (window as any).__ziplofyCopiedComponent = {
+              (window as any).__codiicCopiedComponent = {
                 json: componentJson,
                 html: componentHtml,
                 component: selected // Keep reference for cloning
@@ -4131,7 +4131,7 @@ ${linkStylesheetTag}  <style>
               e.stopPropagation();
             }
 
-            const copiedData = (window as any).__ziplofyCopiedComponent;
+            const copiedData = (window as any).__codiicCopiedComponent;
             if (!copiedData) {
               console.log('No component copied');
               return;
@@ -5068,7 +5068,7 @@ ${linkStylesheetTag}  <style>
         bm.add('progress-bar', {
           label: 'Progress Bar',
           category: 'Advanced',
-          content: '<div class="ziplofy-progress-bar" style="padding: 30px; background: #ffffff; border-radius: 12px;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="margin-bottom: 20px;"><div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span class="progress-label" style="font-size: 14px; font-weight: 600; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true">Skill Name</span><span class="progress-percentage" style="font-size: 14px; font-weight: 600; color: #5e72e4;" data-gjs-type="text" data-gjs-editable="true">75%</span></div><div class="progress-bar-container" style="width: 100%; height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden;"><div class="progress-bar-fill" style="width: 75%; height: 100%; background: linear-gradient(90deg, #5e72e4 0%, #667eea 100%); border-radius: 6px; transition: width 0.3s ease;"></div></div></div></div>',
+          content: '<div class="codiic-progress-bar" style="padding: 30px; background: #ffffff; border-radius: 12px;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="margin-bottom: 20px;"><div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span class="progress-label" style="font-size: 14px; font-weight: 600; color: #1e1e1e;" data-gjs-type="text" data-gjs-editable="true">Skill Name</span><span class="progress-percentage" style="font-size: 14px; font-weight: 600; color: #5e72e4;" data-gjs-type="text" data-gjs-editable="true">75%</span></div><div class="progress-bar-container" style="width: 100%; height: 12px; background: #e5e7eb; border-radius: 6px; overflow: hidden;"><div class="progress-bar-fill" style="width: 75%; height: 100%; background: linear-gradient(90deg, #5e72e4 0%, #667eea 100%); border-radius: 6px; transition: width 0.3s ease;"></div></div></div></div>',
         } as any);
 
         // Counter Widget
@@ -5082,7 +5082,7 @@ ${linkStylesheetTag}  <style>
         bm.add('image-carousel', {
           label: 'Image Carousel',
           category: 'Media',
-          content: '<div class="ziplofy-image-carousel" style="position:relative;width:100%;max-width:100%;padding:24px;background:linear-gradient(180deg,#fafbfc 0%,#fff 100%);border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);" data-gjs-selectable="true" data-gjs-droppable="*"><div class="ziplofy-carousel-track" style="display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;padding:8px 0;" data-gjs-selectable="true" data-gjs-droppable="*"><div class="ziplofy-carousel-slide" style="min-width:min(320px,85vw);max-width:100%;scroll-snap-align:center;flex-shrink:0;aspect-ratio:16/10;overflow:hidden;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);" data-gjs-selectable="true"><img src="https://via.placeholder.com/600x375/667eea/ffffff?text=Slide+1" alt="Slide 1" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" /></div><div class="ziplofy-carousel-slide" style="min-width:min(320px,85vw);max-width:100%;scroll-snap-align:center;flex-shrink:0;aspect-ratio:16/10;overflow:hidden;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);" data-gjs-selectable="true"><img src="https://via.placeholder.com/600x375/764ba2/ffffff?text=Slide+2" alt="Slide 2" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" /></div><div class="ziplofy-carousel-slide" style="min-width:min(320px,85vw);max-width:100%;scroll-snap-align:center;flex-shrink:0;aspect-ratio:16/10;overflow:hidden;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);" data-gjs-selectable="true"><img src="https://via.placeholder.com/600x375/f093fb/ffffff?text=Slide+3" alt="Slide 3" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" /></div></div><div class="ziplofy-carousel-nav" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;"><button type="button" class="ziplofy-carousel-prev" aria-label="Previous" style="width:40px;height:40px;border-radius:50%;border:2px solid #e5e7eb;background:#fff;color:#5e72e4;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;">‹</button><div style="display:flex;gap:8px;"><span class="ziplofy-carousel-dot" style="width:10px;height:10px;border-radius:50%;background:#5e72e4;"></span><span class="ziplofy-carousel-dot" style="width:10px;height:10px;border-radius:50%;background:#e5e7eb;"></span><span class="ziplofy-carousel-dot" style="width:10px;height:10px;border-radius:50%;background:#e5e7eb;"></span></div><button type="button" class="ziplofy-carousel-next" aria-label="Next" style="width:40px;height:40px;border-radius:50%;border:2px solid #e5e7eb;background:#fff;color:#5e72e4;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;">›</button></div></div>',
+          content: '<div class="codiic-image-carousel" style="position:relative;width:100%;max-width:100%;padding:24px;background:linear-gradient(180deg,#fafbfc 0%,#fff 100%);border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);" data-gjs-selectable="true" data-gjs-droppable="*"><div class="codiic-carousel-track" style="display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;padding:8px 0;" data-gjs-selectable="true" data-gjs-droppable="*"><div class="codiic-carousel-slide" style="min-width:min(320px,85vw);max-width:100%;scroll-snap-align:center;flex-shrink:0;aspect-ratio:16/10;overflow:hidden;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);" data-gjs-selectable="true"><img src="https://via.placeholder.com/600x375/667eea/ffffff?text=Slide+1" alt="Slide 1" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" /></div><div class="codiic-carousel-slide" style="min-width:min(320px,85vw);max-width:100%;scroll-snap-align:center;flex-shrink:0;aspect-ratio:16/10;overflow:hidden;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);" data-gjs-selectable="true"><img src="https://via.placeholder.com/600x375/764ba2/ffffff?text=Slide+2" alt="Slide 2" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" /></div><div class="codiic-carousel-slide" style="min-width:min(320px,85vw);max-width:100%;scroll-snap-align:center;flex-shrink:0;aspect-ratio:16/10;overflow:hidden;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);" data-gjs-selectable="true"><img src="https://via.placeholder.com/600x375/f093fb/ffffff?text=Slide+3" alt="Slide 3" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" /></div></div><div class="codiic-carousel-nav" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px;"><button type="button" class="codiic-carousel-prev" aria-label="Previous" style="width:40px;height:40px;border-radius:50%;border:2px solid #e5e7eb;background:#fff;color:#5e72e4;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;">‹</button><div style="display:flex;gap:8px;"><span class="codiic-carousel-dot" style="width:10px;height:10px;border-radius:50%;background:#5e72e4;"></span><span class="codiic-carousel-dot" style="width:10px;height:10px;border-radius:50%;background:#e5e7eb;"></span><span class="codiic-carousel-dot" style="width:10px;height:10px;border-radius:50%;background:#e5e7eb;"></span></div><button type="button" class="codiic-carousel-next" aria-label="Next" style="width:40px;height:40px;border-radius:50%;border:2px solid #e5e7eb;background:#fff;color:#5e72e4;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;">›</button></div></div>',
         } as any);
 
         // Advanced Card with Hover Effect
@@ -5117,7 +5117,7 @@ ${linkStylesheetTag}  <style>
         bm.add('countdown-timer', {
           label: 'Countdown Timer',
           category: 'Advanced',
-          content: '<div class="ziplofy-countdown-timer" data-countdown-days="30" data-countdown-hours="12" data-countdown-minutes="45" data-countdown-seconds="30" style="padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; text-align: center; color: #ffffff;" data-gjs-selectable="true" data-gjs-droppable="*"><h2 style="font-size: 32px; font-weight: 700; margin-bottom: 32px;" data-gjs-type="text" data-gjs-editable="true">Limited Time Offer</h2><div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-days" style="font-size: 48px; font-weight: 800; line-height: 1;">30</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Days</div></div><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-hours" style="font-size: 48px; font-weight: 800; line-height: 1;">12</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Hours</div></div><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-minutes" style="font-size: 48px; font-weight: 800; line-height: 1;">45</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Minutes</div></div><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-seconds" style="font-size: 48px; font-weight: 800; line-height: 1;">30</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Seconds</div></div></div></div>',
+          content: '<div class="codiic-countdown-timer" data-countdown-days="30" data-countdown-hours="12" data-countdown-minutes="45" data-countdown-seconds="30" style="padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; text-align: center; color: #ffffff;" data-gjs-selectable="true" data-gjs-droppable="*"><h2 style="font-size: 32px; font-weight: 700; margin-bottom: 32px;" data-gjs-type="text" data-gjs-editable="true">Limited Time Offer</h2><div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;" data-gjs-selectable="true" data-gjs-droppable="*"><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-days" style="font-size: 48px; font-weight: 800; line-height: 1;">30</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Days</div></div><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-hours" style="font-size: 48px; font-weight: 800; line-height: 1;">12</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Hours</div></div><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-minutes" style="font-size: 48px; font-weight: 800; line-height: 1;">45</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Minutes</div></div><div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 20px; border-radius: 12px; min-width: 100px;"><div class="countdown-seconds" style="font-size: 48px; font-weight: 800; line-height: 1;">30</div><div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Seconds</div></div></div></div>',
         } as any);
 
         // Advanced Button with Icon
@@ -5138,7 +5138,7 @@ ${linkStylesheetTag}  <style>
         bm.add('parallax-section', {
           label: 'Parallax Section',
           category: 'Layout',
-          content: '<section class="ziplofy-parallax-section" style="position: relative; min-height: 600px; overflow: hidden; display: flex; align-items: center; justify-content: center;" data-gjs-selectable="true" data-gjs-droppable="*"><div class="parallax-background" style="position: absolute; top: -20%; left: 0; width: 100%; height: 140%; background-image: linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%), url(\'https://via.placeholder.com/1920x1080\'); background-size: cover; background-position: center; background-repeat: no-repeat; will-change: transform; transform: translateZ(0);"></div><div class="parallax-content" style="position: relative; z-index: 2; text-align: center; color: #ffffff; padding: 80px 40px; max-width: 800px;" data-gjs-selectable="true" data-gjs-droppable="*"><h1 style="font-size: 56px; font-weight: 800; margin-bottom: 24px; line-height: 1.2; text-shadow: 0 4px 20px rgba(0,0,0,0.3);" data-gjs-type="text" data-gjs-editable="true">Parallax Effect</h1><p style="font-size: 20px; margin-bottom: 40px; line-height: 1.6; opacity: 0.95; text-shadow: 0 2px 10px rgba(0,0,0,0.3);" data-gjs-type="text" data-gjs-editable="true">Create stunning parallax scrolling effects with this section.</p><button style="padding: 16px 40px; background: #ffffff; color: #5e72e4; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.2);" data-gjs-type="text" data-gjs-editable="true">Learn More</button></div></section>',
+          content: '<section class="codiic-parallax-section" style="position: relative; min-height: 600px; overflow: hidden; display: flex; align-items: center; justify-content: center;" data-gjs-selectable="true" data-gjs-droppable="*"><div class="parallax-background" style="position: absolute; top: -20%; left: 0; width: 100%; height: 140%; background-image: linear-gradient(135deg, rgba(102,126,234,0.9) 0%, rgba(118,75,162,0.9) 100%), url(\'https://via.placeholder.com/1920x1080\'); background-size: cover; background-position: center; background-repeat: no-repeat; will-change: transform; transform: translateZ(0);"></div><div class="parallax-content" style="position: relative; z-index: 2; text-align: center; color: #ffffff; padding: 80px 40px; max-width: 800px;" data-gjs-selectable="true" data-gjs-droppable="*"><h1 style="font-size: 56px; font-weight: 800; margin-bottom: 24px; line-height: 1.2; text-shadow: 0 4px 20px rgba(0,0,0,0.3);" data-gjs-type="text" data-gjs-editable="true">Parallax Effect</h1><p style="font-size: 20px; margin-bottom: 40px; line-height: 1.6; opacity: 0.95; text-shadow: 0 2px 10px rgba(0,0,0,0.3);" data-gjs-type="text" data-gjs-editable="true">Create stunning parallax scrolling effects with this section.</p><button style="padding: 16px 40px; background: #ffffff; color: #5e72e4; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.2);" data-gjs-type="text" data-gjs-editable="true">Learn More</button></div></section>',
         } as any);
 
         // Advanced Form Widget
@@ -5474,19 +5474,19 @@ ${linkStylesheetTag}  <style>
           try {
             const frame = editor?.Canvas?.getFrameEl?.() as HTMLIFrameElement | undefined;
             const doc = frame?.contentDocument;
-            if (!doc || (doc as any).__ziplofyCarouselSetup) return;
-            (doc as any).__ziplofyCarouselSetup = true;
+            if (!doc || (doc as any).__codiicCarouselSetup) return;
+            (doc as any).__codiicCarouselSetup = true;
             doc.addEventListener('click', (e: MouseEvent) => {
               const t = e.target as HTMLElement;
-              const prev = t.closest?.('.ziplofy-carousel-prev');
-              const next = t.closest?.('.ziplofy-carousel-next');
+              const prev = t.closest?.('.codiic-carousel-prev');
+              const next = t.closest?.('.codiic-carousel-next');
               if (!prev && !next) return;
-              const carousel = (prev || next)?.closest?.('.ziplofy-image-carousel');
-              const track = carousel?.querySelector?.('.ziplofy-carousel-track') as HTMLElement;
+              const carousel = (prev || next)?.closest?.('.codiic-image-carousel');
+              const track = carousel?.querySelector?.('.codiic-carousel-track') as HTMLElement;
               if (!track) return;
               e.preventDefault();
               e.stopPropagation();
-              const slide = track.querySelector('.ziplofy-carousel-slide');
+              const slide = track.querySelector('.codiic-carousel-slide');
               const slideW = slide?.getBoundingClientRect?.()?.width ?? 340;
               if (prev) track.scrollBy({ left: -slideW, behavior: 'smooth' });
               if (next) track.scrollBy({ left: slideW, behavior: 'smooth' });
@@ -6479,7 +6479,7 @@ ${linkStylesheetTag}  <style>
               const wrap = editor.getWrapper?.();
               const selTag = (component?.get?.('tagName') || '').toLowerCase();
               const isHeavySelection = component === wrap || selTag === 'body';
-              rootContainerRef.current?.classList.toggle('ziplofy-wrapper-or-body-selected', Boolean(isHeavySelection));
+              rootContainerRef.current?.classList.toggle('codiic-wrapper-or-body-selected', Boolean(isHeavySelection));
               if (isHeavySelection) {
                 try {
                   const currentStyles = component?.getStyle?.() || {};
@@ -6590,24 +6590,24 @@ ${linkStylesheetTag}  <style>
                     fetch('http://127.0.0.1:7524/ingest/80cc1e14-e0cc-49d1-bb1b-2091c52c2ee1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'5dd1c3'},body:JSON.stringify({sessionId:'5dd1c3',runId:'black-text-pass-20',hypothesisId:'H40',location:'CustomThemeBuilder.tsx:component:selected:gradient-color-transparent',message:'gradient clip text detected; no inline color override applied',data:{tag:lastSelectedColorSnapshot.tag,className:String(el.className || '').slice(0,120)},timestamp:Date.now()})}).catch(()=>{});
                     // #endregion agent log
                   } else if (isBlackNow) {
-                    if (!el.hasAttribute('data-ziplofy-temp-text-fix')) {
-                      el.setAttribute('data-ziplofy-temp-text-fix', '1');
-                      el.setAttribute('data-ziplofy-prev-color', el.style.getPropertyValue('color') || '');
-                      el.setAttribute('data-ziplofy-prev-text-fill', el.style.getPropertyValue('-webkit-text-fill-color') || '');
+                    if (!el.hasAttribute('data-codiic-temp-text-fix')) {
+                      el.setAttribute('data-codiic-temp-text-fix', '1');
+                      el.setAttribute('data-codiic-prev-color', el.style.getPropertyValue('color') || '');
+                      el.setAttribute('data-codiic-prev-text-fill', el.style.getPropertyValue('-webkit-text-fill-color') || '');
                     }
                     el.style.setProperty('color', '#ffffff', 'important');
                     el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important');
                     fetch('http://127.0.0.1:7524/ingest/80cc1e14-e0cc-49d1-bb1b-2091c52c2ee1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'5dd1c3'},body:JSON.stringify({sessionId:'5dd1c3',runId:'black-text-pass-7',hypothesisId:'H27',location:'CustomThemeBuilder.tsx:component:selected:heroTextFallback',message:'applied temporary hero text readability fallback',data:{reason:'black',tag:lastSelectedColorSnapshot.tag,className:String(el.className || '').slice(0,120),computedColor:lastSelectedColorSnapshot.computedColor,computedTextFill:lastSelectedColorSnapshot.computedTextFill},timestamp:Date.now()})}).catch(()=>{});
-                  } else if (el.hasAttribute('data-ziplofy-temp-text-fix')) {
-                    const prevColor = el.getAttribute('data-ziplofy-prev-color') || '';
-                    const prevTextFill = el.getAttribute('data-ziplofy-prev-text-fill') || '';
+                  } else if (el.hasAttribute('data-codiic-temp-text-fix')) {
+                    const prevColor = el.getAttribute('data-codiic-prev-color') || '';
+                    const prevTextFill = el.getAttribute('data-codiic-prev-text-fill') || '';
                     if (prevColor) el.style.setProperty('color', prevColor);
                     else el.style.removeProperty('color');
                     if (prevTextFill) el.style.setProperty('-webkit-text-fill-color', prevTextFill);
                     else el.style.removeProperty('-webkit-text-fill-color');
-                    el.removeAttribute('data-ziplofy-temp-text-fix');
-                    el.removeAttribute('data-ziplofy-prev-color');
-                    el.removeAttribute('data-ziplofy-prev-text-fill');
+                    el.removeAttribute('data-codiic-temp-text-fix');
+                    el.removeAttribute('data-codiic-prev-color');
+                    el.removeAttribute('data-codiic-prev-text-fill');
                   }
                 }
                 const isTextTag = /^(h1|h2|h3|h4|h5|h6|p|span|a|li|button|label|strong|em)$/i.test(lastSelectedColorSnapshot.tag);
@@ -7431,12 +7431,12 @@ ${linkStylesheetTag}  <style>
         
         // Handle component deselection - ensure Style Manager stays visible
         editor.on('component:deselected', () => {
-          rootContainerRef.current?.classList.remove('ziplofy-wrapper-or-body-selected');
+          rootContainerRef.current?.classList.remove('codiic-wrapper-or-body-selected');
           // cleanup any temporary selection readability fallback
           try {
             const frame = editor?.Canvas?.getFrameEl?.();
             const doc = frame?.contentDocument;
-            const fixedNodes = doc?.querySelectorAll?.('[data-ziplofy-temp-text-fix="1"]') || [];
+            const fixedNodes = doc?.querySelectorAll?.('[data-codiic-temp-text-fix="1"]') || [];
             // #region agent log
             try {
               const firstFixed = (fixedNodes?.[0] as HTMLElement | undefined) || null;
@@ -7446,15 +7446,15 @@ ${linkStylesheetTag}  <style>
             // #endregion agent log
             fixedNodes.forEach((n: any) => {
               const el = n as HTMLElement;
-              const prevColor = el.getAttribute('data-ziplofy-prev-color') || '';
-              const prevTextFill = el.getAttribute('data-ziplofy-prev-text-fill') || '';
+              const prevColor = el.getAttribute('data-codiic-prev-color') || '';
+              const prevTextFill = el.getAttribute('data-codiic-prev-text-fill') || '';
               if (prevColor) el.style.setProperty('color', prevColor);
               else el.style.removeProperty('color');
               if (prevTextFill) el.style.setProperty('-webkit-text-fill-color', prevTextFill);
               else el.style.removeProperty('-webkit-text-fill-color');
-              el.removeAttribute('data-ziplofy-temp-text-fix');
-              el.removeAttribute('data-ziplofy-prev-color');
-              el.removeAttribute('data-ziplofy-prev-text-fill');
+              el.removeAttribute('data-codiic-temp-text-fix');
+              el.removeAttribute('data-codiic-prev-color');
+              el.removeAttribute('data-codiic-prev-text-fill');
             });
             // Repair malformed gradient URLs that appear as url(.../linear-gradient(...))
             // after selection transitions. This keeps gradient text visible on deselect.
@@ -9128,7 +9128,7 @@ ${linkStylesheetTag}  <style>
       const exportHtml = buildMultiPageHtmlDocument(finalPagesSnapshot, name || 'Theme', combinedCss);
       
       // CRITICAL: Verify the export HTML contains all pages
-      const pagesInExport = exportHtml.match(/ziplofy-pages-data/);
+      const pagesInExport = exportHtml.match(/codiic-pages-data/);
       if (!pagesInExport) {
         console.error('❌ ERROR: Pages data not found in export HTML!');
       } else {
@@ -9137,7 +9137,7 @@ ${linkStylesheetTag}  <style>
       
       console.log('📦 Built export HTML:', {
         htmlLength: exportHtml.length,
-        containsPagesData: exportHtml.includes('ziplofy-pages-data'),
+        containsPagesData: exportHtml.includes('codiic-pages-data'),
         combinedCssLength: combinedCss.length
       });
 
@@ -9200,7 +9200,7 @@ ${linkStylesheetTag}  <style>
           
           // Clear old localStorage data for invalid ID
           try {
-            const oldKey = `ziplofy.builder.pages.${id}`;
+            const oldKey = `codiic.builder.pages.${id}`;
             localStorage.removeItem(oldKey);
             console.log('Cleared localStorage for invalid theme ID:', id);
           } catch (e) {
@@ -9239,7 +9239,7 @@ ${linkStylesheetTag}  <style>
       }, 200);
 
       if (applyAfterSave) {
-        localStorage.setItem('ziplofy.appliedCustomThemeId', savedThemeId);
+        localStorage.setItem('codiic.appliedCustomThemeId', savedThemeId);
         // Show success message instead of redirecting
         setPublishSuccess(true);
         setIsPublished(true);
@@ -9536,7 +9536,7 @@ ${linkStylesheetTag}  <style>
       console.log('✅ Preview HTML built:', {
         htmlLength: fullHtml.length,
         containsCss: fullHtml.includes('<style>'),
-        containsPages: fullHtml.includes('ziplofy-pages-data'),
+        containsPages: fullHtml.includes('codiic-pages-data'),
         htmlPreview: fullHtml.substring(0, 500)
       });
 
@@ -9679,7 +9679,7 @@ ${linkStylesheetTag}  <style>
 
   // Check if tutorial should be shown on first load
   useEffect(() => {
-    const tutorialSeen = localStorage.getItem('ziplofy.elementorTutorialSeen');
+    const tutorialSeen = localStorage.getItem('codiic.elementorTutorialSeen');
     if (!tutorialSeen) {
       // Show tutorial after a short delay to let the editor load
       setTimeout(() => {
@@ -11035,7 +11035,7 @@ ${linkStylesheetTag}  <style>
                       if (!showGridOverlay) {
                         // Add grid overlay
                         const gridOverlay = frame.contentDocument.createElement('div');
-                        gridOverlay.id = 'ziplofy-grid-overlay';
+                        gridOverlay.id = 'codiic-grid-overlay';
                         gridOverlay.style.cssText = `
                           position: fixed;
                           top: 0;
@@ -11052,7 +11052,7 @@ ${linkStylesheetTag}  <style>
                         body.appendChild(gridOverlay);
                       } else {
                         // Remove grid overlay
-                        const existing = frame.contentDocument.getElementById('ziplofy-grid-overlay');
+                        const existing = frame.contentDocument.getElementById('codiic-grid-overlay');
                         if (existing) {
                           existing.remove();
                         }
@@ -12134,10 +12134,10 @@ ${linkStylesheetTag}  <style>
                       r.readAsDataURL(file);
                     }
                   }}
-                  onClick={() => (document.getElementById('ziplofy-image-file-input') as HTMLInputElement)?.click()}
+                  onClick={() => (document.getElementById('codiic-image-file-input') as HTMLInputElement)?.click()}
                   style={{ border: '2px dashed #d1d5db', borderRadius: '10px', padding: '24px', textAlign: 'center', cursor: 'pointer', background: '#f9fafb', transition: 'all 0.2s' }}
                 >
-                  <input id="ziplofy-image-file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => {
+                  <input id="codiic-image-file-input" type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file?.type?.startsWith('image/')) {
                       const r = new FileReader();
@@ -12181,7 +12181,7 @@ ${linkStylesheetTag}  <style>
             }}>
             {/* Canvas Header - inside white block, no gap */}
             <div className="elementor-canvas-header" style={{ width: '100%', maxWidth: '100%', marginBottom: 0 }}>
-              <div className="elementor-canvas-site-name">{name || 'Ziplofy Theme'}</div>
+              <div className="elementor-canvas-site-name">{name || 'codiic Theme'}</div>
               <div className="elementor-canvas-page-name">{pages.find(p => p.id === currentPageId)?.name || 'Home'}</div>
             </div>
               {loading && (
@@ -12234,8 +12234,8 @@ ${linkStylesheetTag}  <style>
             
             {/* Canvas Footer */}
             <div className="elementor-canvas-footer" style={{ width: '100%', maxWidth: '1200px', marginTop: 0 }}>
-              Copyright © {new Date().getFullYear()} {name || 'Ziplofy Theme'} | Powered by{' '}
-              <a href="#" onClick={(e) => e.preventDefault()}>Ziplofy Theme Builder</a>
+              Copyright © {new Date().getFullYear()} {name || 'codiic Theme'} | Powered by{' '}
+              <a href="#" onClick={(e) => e.preventDefault()}>codiic Theme Builder</a>
             </div>
           </div>
         </div>
@@ -12720,7 +12720,7 @@ ${linkStylesheetTag}  <style>
                 <button
                   onClick={() => {
                     try {
-                      localStorage.setItem(`ziplofy-theme-notes-${id || 'new'}`, JSON.stringify(notes));
+                      localStorage.setItem(`codiic-theme-notes-${id || 'new'}`, JSON.stringify(notes));
                     } catch (e) {
                       console.warn('Failed to save notes:', e);
                     }

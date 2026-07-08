@@ -12,9 +12,9 @@ export function themeSearchCssVars(
 ): Record<string, string> {
   const search = readThemeSearchSettings(config);
   return {
-    '--ziplofy-search-product-radius': `${search.popover.productCornerRadius}px`,
-    '--ziplofy-search-card-radius': `${search.popover.cardCornerRadius}px`,
-    '--ziplofy-search-title-transform': themeSearchTitleTextTransform(search.popover.titleCase),
+    '--codiic-search-product-radius': `${search.popover.productCornerRadius}px`,
+    '--codiic-search-card-radius': `${search.popover.cardCornerRadius}px`,
+    '--codiic-search-title-transform': themeSearchTitleTextTransform(search.popover.titleCase),
   };
 }
 

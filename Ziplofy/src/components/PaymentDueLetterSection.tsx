@@ -67,7 +67,7 @@ const PaymentDueLetterSection: React.FC<PaymentDueLetterSectionProps> = ({
         <div className="pl-3 border-l-4 border-blue-600">
           <h3 className="text-base font-semibold text-gray-900">Payment due letter</h3>
           <p className="text-xs text-gray-500 mt-0.5">
-            Your Ziplofy Payment is Due - Ensure Uninterrupted Service Today!
+            Your codiic Payment is Due - Ensure Uninterrupted Service Today!
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 
 export type CheckoutContactMethod = 'phone_or_email' | 'email';
-export type CheckoutEmailRegionMode = 'ziplofy_recommended' | 'custom';
+export type CheckoutEmailRegionMode = 'codiic_recommended' | 'custom';
 
 export interface ICheckoutSettings extends Document {
   storeId: mongoose.Types.ObjectId;
@@ -54,8 +54,8 @@ const checkoutSettingsSchema = new Schema<ICheckoutSettings>(
         enabled: { type: Boolean, default: true },
         regionMode: {
           type: String,
-          enum: ['ziplofy_recommended', 'custom'],
-          default: 'ziplofy_recommended',
+          enum: ['codiic_recommended', 'custom'],
+          default: 'codiic_recommended',
         },
       },
       sms: {

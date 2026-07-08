@@ -45,7 +45,7 @@ export function CollectionListGridSection({
     [config, templateId, sectionId, placement]
   );
 
-  const scopeClass = `ziplofy-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
 
   const outerStyle: CSSProperties = {
     paddingTop: style.paddingTop,

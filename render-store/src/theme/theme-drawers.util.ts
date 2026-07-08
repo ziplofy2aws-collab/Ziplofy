@@ -37,8 +37,8 @@ export function readThemeDrawerCssVars(
   const drawers = (settings?.drawers ?? {}) as Record<string, unknown>;
 
   return {
-    '--ziplofy-drawer-bg': resolvePaletteColor(config, drawers.backgroundColor, 0, '#ffffff'),
-    '--ziplofy-drawer-text': resolvePaletteColor(config, drawers.textColor, 1, '#111827'),
-    '--ziplofy-drawer-border': resolvePaletteColor(config, drawers.borderColor, 1, '#111827'),
+    '--codiic-drawer-bg': resolvePaletteColor(config, drawers.backgroundColor, 0, '#ffffff'),
+    '--codiic-drawer-text': resolvePaletteColor(config, drawers.textColor, 1, '#111827'),
+    '--codiic-drawer-border': resolvePaletteColor(config, drawers.borderColor, 1, '#111827'),
   };
 }

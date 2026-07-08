@@ -39,7 +39,7 @@ const VerifyEmailSuccess: React.FC = () => {
   return (
     <div className="verify-email-page">
       <div className="verify-email-card">
-        <img src="/LOGO.png" alt="Ziplofy" className="verify-email-logo" />
+        <img src="/LOGO.png" alt="codiic" className="verify-email-logo" />
         {status === "loading" && (
           <>
             <div className="verify-email-spinner" />

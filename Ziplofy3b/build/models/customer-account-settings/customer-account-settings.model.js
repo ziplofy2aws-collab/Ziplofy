@@ -232,7 +232,7 @@ customerAccountSettingsSchema.methods.getAccountUrl = function (baseDomain) {
         return this.customAccountUrl;
     }
     // Default URL format
-    return baseDomain ? `${baseDomain}/account` : 'https://ziplofy.com/your-store/account';
+    return baseDomain ? `${baseDomain}/account` : 'https://codiic.com/your-store/account';
 };
 // Static method to find or create settings for a store
 customerAccountSettingsSchema.statics.findOrCreate = async function (storeId) {

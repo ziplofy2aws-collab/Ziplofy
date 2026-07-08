@@ -115,8 +115,8 @@ export const SELECTION_HIGHLIGHT_BASIC_CSS = `
     outline-offset: 0 !important;
   }
   /* Body selected: visible highlight when StyleManager targets body */
-  body.ziplofy-body-selected,
-  .gjs-wrapper-body.ziplofy-body-selected {
+  body.codiic-body-selected,
+  .gjs-wrapper-body.codiic-body-selected {
     outline: 2px solid #2563eb !important;
     outline-offset: 2px !important;
   }

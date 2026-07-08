@@ -26,7 +26,7 @@ export const sendEmail = async (options: SendEmailOptions): Promise<void> => {
   }
 
   const mailOptions = {
-    from: `Ziplofy <${from}>`,
+    from: `codiic <${from}>`,
     to: options.to,
     subject: options.subject,
     html: emailBody,

@@ -67,7 +67,7 @@ export function LargeLogo({
 
   const settingsPath = settingsBase(sectionId, placement, templateId);
   const blocksPath = blocksBase(sectionId, placement, templateId);
-  const shellClass = `ziplofy-large-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const shellClass = `codiic-large-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const editorNodeId = sectionNodeId(sectionId, placement, templateId);
 
   const hero = useMemo(
@@ -181,7 +181,7 @@ export function LargeLogo({
       {cornerText.trim() ? (
         <EditorBlock nodeId={blockNodeId(sectionId, placement, templateId, 'text_2')} label="Text">
           <div
-            className="ziplofy-large-logo-corner"
+            className="codiic-large-logo-corner"
             style={{
               ...cornerTextLayout,
               flex: isHorizontal ? '0 1 300px' : undefined,
@@ -207,7 +207,7 @@ export function LargeLogo({
       ) : null}
       <EditorBlock nodeId={blockNodeId(sectionId, placement, templateId, 'logo')} label="Logo">
         <div
-          className="ziplofy-large-logo-stage"
+          className="codiic-large-logo-stage"
           style={{
             flex: spreadVerticalBlocks || isHorizontal ? 1 : undefined,
             display: 'flex',
@@ -228,7 +228,7 @@ export function LargeLogo({
               <img
                 src={logoImageUrl}
                 alt={logoTitle}
-                className="ziplofy-large-logo-mark"
+                className="codiic-large-logo-mark"
                 style={{
                   ...largeLogoImageStyle(logoBlockLayout),
                   margin:
@@ -245,7 +245,7 @@ export function LargeLogo({
               fieldPath={`${blocksPath}.logo.settings.text`}
               label="Text"
               as="h1"
-              className="ziplofy-large-logo-mark"
+              className="codiic-large-logo-mark"
               style={largeLogoMarkStyle(
                 logoBlockLayout,
                 { fontHeading, fontBody },

@@ -606,7 +606,9 @@ export const installCustomTheme = asyncErrorHandler(
         console.log('📁 Existing theme files found - preserving user edits');
       }
 
-      await Store.findByIdAndUpdate(storeIdToUse, { $set: { appliedTheme: customThemeObjectId } });
+      await Store.findByIdAndUpdate(storeIdToUse, {
+        $set: { appliedTheme: customThemeObjectId, appliedCustomThemeId: null },
+      });
 
       res.status(200).json({
         success: true,

@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import React, { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ziplofyLogo from '../assets/ziplofy-logo.png';
+import codiicLogo from '../assets/codiic-logo.png';
 import StoreDropdown from '../components/StoreDropdown';
 import { useCustomerTags } from '../contexts/customer-tags.context';
 import { useCustomers } from '../contexts/customer.context';
@@ -18,7 +18,7 @@ import { useStore } from '../contexts/store.context';
 import { useTransferTags } from '../contexts/transfer-tags.context';
 import { useVendors } from '../contexts/vendor.context';
 
-const ZiplofyNavbar: React.FC = () => {
+const codiicNavbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isAlertsOpen, setIsAlertsOpen] = useState<boolean>(false);
   const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
@@ -76,9 +76,9 @@ const ZiplofyNavbar: React.FC = () => {
   }, [setActiveStoreId]);
 
   const handleShowTour = useCallback(() => {
-    localStorage.removeItem('ziplofy_onboarding_complete');
-    localStorage.removeItem('ziplofy_onboarding_step');
-    window.dispatchEvent(new CustomEvent('ziplofy-show-tour'));
+    localStorage.removeItem('codiic_onboarding_complete');
+    localStorage.removeItem('codiic_onboarding_step');
+    window.dispatchEvent(new CustomEvent('codiic-show-tour'));
   }, []);
 
   // Close alerts menu when clicking outside
@@ -129,8 +129,8 @@ const ZiplofyNavbar: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link to="/" className="inline-flex shrink-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50" aria-label="Go to home">
               <img
-                src={ziplofyLogo}
-                alt="Ziplofy Logo"
+                src={codiicLogo}
+                alt="codiic Logo"
                 className="h-8 w-auto object-contain"
               />
             </Link>
@@ -297,4 +297,4 @@ const ZiplofyNavbar: React.FC = () => {
   );
 };
 
-export default ZiplofyNavbar;
+export default codiicNavbar;

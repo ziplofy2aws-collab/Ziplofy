@@ -69,7 +69,7 @@ async function downloadS3PrefixToLocalDir(prefix, destCodeDir) {
  * (directory is replaced if it already exists).
  */
 async function downloadS3ZipAndExtractToDir(zipKey, destCodeDir) {
-    const tmpZip = path_1.default.join((0, os_1.tmpdir)(), `ziplofy-theme-${Date.now()}-${Math.random().toString(36).slice(2)}.zip`);
+    const tmpZip = path_1.default.join((0, os_1.tmpdir)(), `codiic-theme-${Date.now()}-${Math.random().toString(36).slice(2)}.zip`);
     if (fs_1.default.existsSync(destCodeDir))
         fs_1.default.rmSync(destCodeDir, { recursive: true, force: true });
     fs_1.default.mkdirSync(destCodeDir, { recursive: true });
@@ -79,7 +79,7 @@ async function downloadS3ZipAndExtractToDir(zipKey, destCodeDir) {
     normalizeExtractedSingleTopLevelWrapper(destCodeDir);
 }
 function catalogCacheRoot(themeId) {
-    return path_1.default.join((0, os_1.tmpdir)(), 'ziplofy-catalog-themes', themeId);
+    return path_1.default.join((0, os_1.tmpdir)(), 'codiic-catalog-themes', themeId);
 }
 /** Download catalog theme from S3 to temp (preview / storefront render only — not on install). */
 async function ensureCatalogThemeCodeDir(theme) {

@@ -102,28 +102,28 @@ const BrandSettingsPage: React.FC = () => {
 
   const getExampleUrl = useCallback((platformName: string) => {
     const examples: Record<string, string> = {
-      'Facebook': 'https://facebook.com/ziplofy',
-      'X': 'https://x.com/ziplofy',
-      'Pinterest': 'https://pinterest.com/ziplofy',
-      'Instagram': 'https://instagram.com/ziplofy',
-      'TikTok': 'https://tiktok.com/@ziplofy',
-      'Tumblr': 'https://tumblr.com/ziplofy',
-      'Snapchat': 'https://snapchat.com/add/ziplofy',
-      'YouTube': 'https://youtube.com/ziplofy',
-      'Vimeo': 'https://vimeo.com/ziplofy',
-      'LinkedIn': 'https://linkedin.com/company/ziplofy',
-      'Spotify': 'https://open.spotify.com/artist/ziplofy',
-      'WhatsApp': 'https://wa.me/ziplofy',
-      'Threads': 'https://threads.net/@ziplofy',
-      'KakaoTalk': 'https://kakaotalk.com/ziplofy',
-      'LINE': 'https://line.me/ziplofy',
-      'Discord': 'https://discord.gg/ziplofy',
-      'Twitch': 'https://twitch.tv/ziplofy',
-      'Weibo': 'https://weibo.com/ziplofy',
-      'WeChat': 'https://wechat.com/ziplofy',
-      'Ziplofy Inbox': 'https://ziplofy.com/inbox',
+      'Facebook': 'https://facebook.com/codiic',
+      'X': 'https://x.com/codiic',
+      'Pinterest': 'https://pinterest.com/codiic',
+      'Instagram': 'https://instagram.com/codiic',
+      'TikTok': 'https://tiktok.com/@codiic',
+      'Tumblr': 'https://tumblr.com/codiic',
+      'Snapchat': 'https://snapchat.com/add/codiic',
+      'YouTube': 'https://youtube.com/codiic',
+      'Vimeo': 'https://vimeo.com/codiic',
+      'LinkedIn': 'https://linkedin.com/company/codiic',
+      'Spotify': 'https://open.spotify.com/artist/codiic',
+      'WhatsApp': 'https://wa.me/codiic',
+      'Threads': 'https://threads.net/@codiic',
+      'KakaoTalk': 'https://kakaotalk.com/codiic',
+      'LINE': 'https://line.me/codiic',
+      'Discord': 'https://discord.gg/codiic',
+      'Twitch': 'https://twitch.tv/codiic',
+      'Weibo': 'https://weibo.com/codiic',
+      'WeChat': 'https://wechat.com/codiic',
+      'codiic Inbox': 'https://codiic.com/inbox',
     };
-    return examples[platformName] || `https://${platformName.toLowerCase()}.com/ziplofy`;
+    return examples[platformName] || `https://${platformName.toLowerCase()}.com/codiic`;
   }, []);
 
   const socialPlatforms = [
@@ -146,7 +146,7 @@ const BrandSettingsPage: React.FC = () => {
     { name: 'Twitch', icon: <VideoCameraIcon className="w-5 h-5" /> },
     { name: 'Weibo', icon: <GlobeAltIcon className="w-5 h-5" /> },
     { name: 'WeChat', icon: <ChatBubbleLeftRightIcon className="w-5 h-5" /> },
-    { name: 'Ziplofy Inbox', icon: <ShoppingBagIcon className="w-5 h-5" /> },
+    { name: 'codiic Inbox', icon: <ShoppingBagIcon className="w-5 h-5" /> },
   ];
 
   const availablePlatforms = socialPlatforms.filter(platform => !addedSocialLinks.includes(platform.name));

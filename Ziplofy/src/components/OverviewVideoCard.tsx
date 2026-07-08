@@ -1,5 +1,5 @@
 import React from 'react';
-import allAboutZiplofyImg from '../assets/all-about-ziplofy.png';
+import allAboutcodiicImg from '../assets/all-about-codiic.png';
 
 interface OverviewVideoCardProps {
   videoUrl?: string;
@@ -34,8 +34,8 @@ const OverviewVideoCard: React.FC<OverviewVideoCardProps> = ({
           />
         ) : (
           <img 
-            src={allAboutZiplofyImg} 
-            alt="All About Ziplofy" 
+            src={allAboutcodiicImg} 
+            alt="All About codiic" 
             className="w-full h-full object-cover"
           />
         )}

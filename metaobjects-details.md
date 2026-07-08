@@ -1,6 +1,6 @@
-# Metaobjects — Developer Guide for Ziplofy
+# Metaobjects — Developer Guide for codiic
 
-This document explains what Shopify-style **metaobjects** are, how they relate to **metafields**, and how to implement them in Ziplofy. It matches the current codebase state (UI placeholders exist; backend is not wired yet).
+This document explains what Shopify-style **metaobjects** are, how they relate to **metafields**, and how to implement them in codiic. It matches the current codebase state (UI placeholders exist; backend is not wired yet).
 
 ---
 
@@ -85,7 +85,7 @@ They work **together**: metaobjects are often **referenced by metafields**.
 
 ---
 
-## 4. What you already have in Ziplofy (today)
+## 4. What you already have in codiic (today)
 
 ### Frontend (UI only, no API yet)
 
@@ -138,7 +138,7 @@ Use **three main database concepts** (Shopify does the same logically):
 
 ---
 
-## 6. Suggested MongoDB models (Ziplofy3b style)
+## 6. Suggested MongoDB models (codiic3b style)
 
 ### Model 1: `MetaobjectDefinition`
 
@@ -329,7 +329,7 @@ In Shopify, theme does:
 {{ product.metafields.custom.author.value.bio }}
 ```
 
-In Ziplofy you would eventually:
+In codiic you would eventually:
 
 1. When rendering product/blog, **resolve metafields** on that resource
 2. If value is `metaobject_reference`, **populate** the entry (and maybe nested references)
@@ -345,7 +345,7 @@ That’s **phase 3**; not required to ship admin metaobjects.
 
 ---
 
-## 11. Suggested implementation phases for Ziplofy
+## 11. Suggested implementation phases for codiic
 
 ### Phase 1 — MVP (finish Content → Metaobjects)
 
@@ -373,7 +373,7 @@ That’s **phase 3**; not required to ship admin metaobjects.
 
 ## 12. File map (where code would live)
 
-### Backend (`Ziplofy3b`)
+### Backend (`codiic3b`)
 
 ```
 src/models/metaobject/
@@ -389,7 +389,7 @@ src/routes/
 
 Register routes in `src/index.ts` and export models from `models/index.ts`.
 
-### Frontend (`Ziplofy`)
+### Frontend (`codiic`)
 
 ```
 src/contexts/metaobject-definition.context.tsx
@@ -500,4 +500,4 @@ That completes the Content → Metaobjects feature for merchants without waiting
 
 ---
 
-*Last updated: May 2026 — Ziplofy monorepo (`Ziplofy` admin + `Ziplofy3b` API).*
+*Last updated: May 2026 — codiic monorepo (`codiic` admin + `codiic3b` API).*

@@ -17,7 +17,7 @@ const BillingTaxIdSection: React.FC<BillingTaxIdSectionProps> = ({ onAddGstin })
         <InformationCircleIcon className="w-4 h-4 text-gray-500" />
       </div>
       <p className="text-sm text-gray-500 mb-4">
-        Ziplofy is required to charge Goods and Services Tax (GST) in India. Your bills may be exempt
+        codiic is required to charge Goods and Services Tax (GST) in India. Your bills may be exempt
         from Indian GST if you are GST registered in India and enter a valid GSTIN.
       </p>
       <button

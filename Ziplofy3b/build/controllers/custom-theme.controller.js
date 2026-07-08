@@ -526,7 +526,9 @@ exports.installCustomTheme = (0, error_utils_1.asyncErrorHandler)(async (req, re
         else if (hasExistingFiles) {
             console.log('📁 Existing theme files found - preserving user edits');
         }
-        await store_model_1.Store.findByIdAndUpdate(storeIdToUse, { $set: { appliedTheme: customThemeObjectId } });
+        await store_model_1.Store.findByIdAndUpdate(storeIdToUse, {
+            $set: { appliedTheme: customThemeObjectId, appliedCustomThemeId: null },
+        });
         res.status(200).json({
             success: true,
             message: 'Custom theme installed successfully',

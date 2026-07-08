@@ -479,7 +479,7 @@ const ElementorTutorial: React.FC<ElementorTutorialProps> = ({ onClose }) => {
     if (onClose) {
       onClose();
     }
-    localStorage.setItem('ziplofy.elementorTutorialSeen', 'true');
+    localStorage.setItem('codiic.elementorTutorialSeen', 'true');
   };
 
   if (!showTutorial) return null;

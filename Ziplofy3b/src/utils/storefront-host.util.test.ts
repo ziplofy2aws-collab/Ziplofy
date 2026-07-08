@@ -28,27 +28,27 @@ describe('canonicalStorefrontOrigin', () => {
     ).toBe('http://developer-pgdp.localhost:5180');
   });
 
-  it('falls back to production ziplofy storefront origin when API host does not match store', () => {
+  it('falls back to production codiic storefront origin when API host does not match store', () => {
     vi.stubEnv('NODE_ENV', 'production');
     const req = mockRequest({ host: 'internal-api:5000' });
 
-    expect(canonicalStorefrontOrigin({ subdomain: 'nike' }, req)).toBe('https://nike.ziplofy.com');
+    expect(canonicalStorefrontOrigin({ subdomain: 'nike' }, req)).toBe('https://nike.codiic.com');
   });
 
-  it('forces https for production ziplofy forwarded hosts', () => {
+  it('forces https for production codiic forwarded hosts', () => {
     vi.stubEnv('NODE_ENV', 'production');
     const req = mockRequest({
-      'x-forwarded-host': 'nike.ziplofy.com',
+      'x-forwarded-host': 'nike.codiic.com',
       'x-forwarded-proto': 'http',
     });
 
-    expect(canonicalStorefrontOrigin({ subdomain: 'nike' }, req)).toBe('https://nike.ziplofy.com');
+    expect(canonicalStorefrontOrigin({ subdomain: 'nike' }, req)).toBe('https://nike.codiic.com');
   });
 
   it('prefers custom domain when configured', () => {
     vi.stubEnv('NODE_ENV', 'production');
     const req = mockRequest({
-      'x-forwarded-host': 'nike.ziplofy.com',
+      'x-forwarded-host': 'nike.codiic.com',
       'x-forwarded-proto': 'https',
     });
 

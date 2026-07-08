@@ -1,9 +1,9 @@
-import type { CheckoutFormValues } from '@ziplofy/create-theme/checkout/checkout-form.types';
+import type { CheckoutFormValues } from '@codiic/create-theme/checkout/checkout-form.types';
 import {
   checkoutPaymentMethodLabel,
   computeCheckoutTotals,
   formatCheckoutAddressLines,
-} from '@ziplofy/create-theme/checkout/utils/checkout-order.utils';
+} from '@codiic/create-theme/checkout/utils/checkout-order.utils';
 import type { StorefrontCartItem } from '@/contexts/storefront-cart.context';
 
 const STORAGE_KEY = 'render-store-completed-checkout-order';

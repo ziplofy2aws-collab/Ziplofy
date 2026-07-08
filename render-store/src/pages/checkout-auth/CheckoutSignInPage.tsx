@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { CheckoutSignInView } from '@ziplofy/create-theme/checkout/auth/CheckoutSignInView';
+import { CheckoutSignInView } from '@codiic/create-theme/checkout/auth/CheckoutSignInView';
 import {
   checkoutAuthLinkStyle,
   resolveCheckoutAuthAccentColor,
-} from '@ziplofy/create-theme/checkout/auth/checkout-auth-styles';
+} from '@codiic/create-theme/checkout/auth/checkout-auth-styles';
 import { useStorefrontAuth } from '@/contexts/storefront-auth.context';
 import {
   useStorefrontPolicies,

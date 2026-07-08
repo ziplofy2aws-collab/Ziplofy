@@ -136,7 +136,7 @@ export function RemoteThemeProvider({ children }: { children: ReactNode }) {
   }, [remoteThemeCssUrl]);
 
   useEffect(() => {
-    const linkId = 'ziplofy-remote-theme-css';
+    const linkId = 'codiic-remote-theme-css';
     document.getElementById(linkId)?.remove();
     if (!contract || !cssHref) return;
     const link = document.createElement('link');
@@ -151,9 +151,9 @@ export function RemoteThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!contract) return;
-    document.documentElement.dataset.ziplofyTheme = contract.id;
+    document.documentElement.dataset.codiicTheme = contract.id;
     return () => {
-      delete document.documentElement.dataset.ziplofyTheme;
+      delete document.documentElement.dataset.codiicTheme;
     };
   }, [contract]);
 

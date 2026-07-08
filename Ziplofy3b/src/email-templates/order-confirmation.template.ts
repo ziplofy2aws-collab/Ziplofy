@@ -14,14 +14,14 @@ export function buildOrderConfirmationEmail(
   const year = new Date().getFullYear();
 
   return {
-    subject: 'Order Confirmed - Ziplofy',
+    subject: 'Order Confirmed - codiic',
     html: `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Confirmation - Ziplofy</title>
+  <title>Order Confirmation - codiic</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f4f4f5; line-height: 1.6;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f5; padding: 40px 20px;">
@@ -30,7 +30,7 @@ export function buildOrderConfirmationEmail(
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07); overflow: hidden;">
           <tr>
             <td style="background: linear-gradient(135deg, #18181b 0%, #27272a 100%); padding: 32px 40px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">Ziplofy</h1>
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">codiic</h1>
               <p style="margin: 8px 0 0 0; color: #a1a1aa; font-size: 14px;">Thank you for your order</p>
             </td>
           </tr>
@@ -60,7 +60,7 @@ export function buildOrderConfirmationEmail(
           </tr>
           <tr>
             <td style="padding: 24px 40px; background-color: #fafafa; border-top: 1px solid #e4e4e7; text-align: center;">
-              <p style="margin: 0; color: #71717a; font-size: 12px;">© ${year} Ziplofy. All rights reserved.</p>
+              <p style="margin: 0; color: #71717a; font-size: 12px;">© ${year} codiic. All rights reserved.</p>
             </td>
           </tr>
         </table>

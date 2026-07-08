@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { CustomThemeTemplatePage } from '@ziplofy/create-theme/runtime';
-import { previewPageToTemplateId } from '@ziplofy/create-theme/utils/theme-page-registry';
+import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
+import { previewPageToTemplateId } from '@codiic/create-theme/utils/theme-page-registry';
 import { postToParent } from './previewBridge';
 import { previewPageToRoute, type ThemePreviewPage } from './previewBridge';
 import { renderThemePageRoutes, renderCheckoutAuthRoutes, renderCheckoutProfileRoutes, renderCheckoutPageRoutes } from './ThemePageRouteElements';
@@ -14,7 +14,7 @@ type Props = {
 
 export function CustomThemeComposerPreview({ page, pageRevision, previewRoute }: Props) {
   useEffect(() => {
-    postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_LOADED' });
+    postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_LOADED' });
   }, [page, pageRevision, previewRoute]);
 
   const routeKey = `${page}-${previewRoute ?? ''}-${pageRevision}`;

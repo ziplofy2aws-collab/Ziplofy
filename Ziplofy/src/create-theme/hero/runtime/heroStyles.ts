@@ -250,7 +250,7 @@ export function scopedHeroCss(sectionId: string, css: string): string {
   if (!trimmed) return '';
   return trimmed
     .split('\n')
-    .map((line) => `[data-ziplofy-section="${sectionId}"] ${line}`)
+    .map((line) => `[data-codiic-section="${sectionId}"] ${line}`)
     .join('\n');
 }
 
@@ -260,7 +260,7 @@ export function heroResponsiveCss(
   differentMobile: boolean
 ): string {
   if (!stackMedia && !differentMobile) return '';
-  const sel = `[data-ziplofy-section="${sectionId}"] .hero-media-grid`;
+  const sel = `[data-codiic-section="${sectionId}"] .hero-media-grid`;
   let css = '';
   if (stackMedia) {
     css += atMobileBreakpoint(`${sel} { flex-direction: column !important; }`);
@@ -280,15 +280,15 @@ export function heroContentVerticalOnMobileCss(
   isHorizontal: boolean
 ): string {
   if (!isHorizontal || !verticalOnMobile) return '';
-  const sel = `[data-ziplofy-section="${sectionId}"] .hero-content-blocks`;
+  const sel = `[data-codiic-section="${sectionId}"] .hero-content-blocks`;
   return atMobileBreakpoint(`${sel} { flex-direction: column !important; align-items: stretch !important; }`);
 }
 
 /** Stack dual hero media vertically on small screens when enabled in settings. */
 export function heroDualMediaResponsiveCss(sectionId: string, stackOnMobile: boolean): string {
   if (!stackOnMobile) return '';
-  const root = `[data-ziplofy-section="${sectionId}"] .hero-dual-media-backdrop`;
-  const tile = `[data-ziplofy-section="${sectionId}"] .hero-dual-media-tile`;
+  const root = `[data-codiic-section="${sectionId}"] .hero-dual-media-backdrop`;
+  const tile = `[data-codiic-section="${sectionId}"] .hero-dual-media-tile`;
   return atMobileBreakpoint(
     `${root} { flex-direction: column !important; } ${tile} { flex: 1 1 50% !important; width: 100% !important; max-width: 100% !important; min-height: 50%; }`
   );

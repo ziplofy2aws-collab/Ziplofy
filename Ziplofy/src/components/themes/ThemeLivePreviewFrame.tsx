@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PreviewLoadingOverlay, PreviewSyncPulse } from './EditorPreviewStatus';
 
-const EDITOR_SOURCE = 'ziplofy-theme-editor';
-const FRAME_SOURCE = 'ziplofy-theme-preview';
+const EDITOR_SOURCE = 'codiic-theme-editor';
+const FRAME_SOURCE = 'codiic-theme-preview';
 
 /** Debounce full config sync to iframe — avoids message spam while typing in sidebar. */
 const PREVIEW_CONFIG_POST_MS = 180;
@@ -85,13 +85,13 @@ export function resolveThemePreviewOrigin(): string {
       return `${protocol}//localhost:${DEFAULT_RENDER_STORE_PORT}`;
     }
 
-    // Production admin on ziplofy.com → dedicated preview host (same render-store app, embeddable headers).
-    if (hostname === 'admin.ziplofy.com' || hostname === 'dashboard.ziplofy.com') {
-      return `${protocol}//preview.ziplofy.com`;
+    // Production admin on codiic.com → dedicated preview host (same render-store app, embeddable headers).
+    if (hostname === 'admin.codiic.com' || hostname === 'dashboard.codiic.com') {
+      return `${protocol}//preview.codiic.com`;
     }
 
-    if (hostname.endsWith('.ziplofy.com')) {
-      return `${protocol}//preview.ziplofy.com`;
+    if (hostname.endsWith('.codiic.com')) {
+      return `${protocol}//preview.codiic.com`;
     }
   }
 
@@ -166,7 +166,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_PATCH',
+        type: 'codiic_PREVIEW_PATCH',
         payload: { fieldPath, value },
       },
       '*'
@@ -180,7 +180,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_INIT',
+        type: 'codiic_PREVIEW_INIT',
         payload: {
           storeId,
           storeName,
@@ -205,7 +205,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_CONFIG',
+        type: 'codiic_PREVIEW_CONFIG',
         payload: { config: configRef.current, immediate },
       },
       '*'
@@ -249,7 +249,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
     frame.postMessage(
       {
         source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_HINTS',
+        type: 'codiic_PREVIEW_HINTS',
         payload: { selectionHints: selectionHintsRef.current },
       },
       '*'
@@ -272,39 +272,39 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
         };
       };
       if (data?.source !== FRAME_SOURCE) return;
-      if (data.type === 'ZIPLOFY_PREVIEW_READY') {
+      if (data.type === 'codiic_PREVIEW_READY') {
         setReady(true);
         setLoadError(null);
         postInit();
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_LOADED') {
+      if (data.type === 'codiic_PREVIEW_LOADED') {
         setReady(true);
         setLoadError(null);
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_ERROR') {
+      if (data.type === 'codiic_PREVIEW_ERROR') {
         setLoadError(data.payload?.message ?? 'Preview failed to load');
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_DESELECT') {
+      if (data.type === 'codiic_PREVIEW_DESELECT') {
         onPreviewDeselectRef.current?.();
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_SELECT' && data.payload?.nodeId) {
+      if (data.type === 'codiic_PREVIEW_SELECT' && data.payload?.nodeId) {
         onPreviewSelectRef.current?.({
           nodeId: data.payload.nodeId,
           label: data.payload.label ?? 'Element',
           kind: data.payload.kind ?? 'element',
         });
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_ACTION' && data.payload?.nodeId && data.payload.action) {
+      if (data.type === 'codiic_PREVIEW_ACTION' && data.payload?.nodeId && data.payload.action) {
         onPreviewActionRef.current?.(data.payload.action, data.payload.nodeId);
       }
-      if (data.type === 'ZIPLOFY_PREVIEW_FIELD_CHANGE' && data.payload?.fieldPath) {
+      if (data.type === 'codiic_PREVIEW_FIELD_CHANGE' && data.payload?.fieldPath) {
         const fieldPath = data.payload.fieldPath;
         const value = data.payload.value ?? '';
         onPreviewFieldChangeRef.current?.(fieldPath, value, data.payload.nodeId ?? '');
         postPatch(fieldPath, value);
       }
       if (
-        data.type === 'ZIPLOFY_PREVIEW_INSERT_SECTION' &&
+        data.type === 'codiic_PREVIEW_INSERT_SECTION' &&
         (data.payload?.afterNodeId || data.payload?.beforeNodeId)
       ) {
         onPreviewInsertSectionRef.current?.(data.payload);
@@ -364,7 +364,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
     const frame = iframeRef.current?.contentWindow;
     if (!frame) return;
     frame.postMessage(
-      { source: EDITOR_SOURCE, type: 'ZIPLOFY_PREVIEW_SET_PAGE', payload: { page } },
+      { source: EDITOR_SOURCE, type: 'codiic_PREVIEW_SET_PAGE', payload: { page } },
       '*'
     );
   }, [page, ready]);
@@ -379,7 +379,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
       frame.postMessage(
         {
           source: EDITOR_SOURCE,
-          type: 'ZIPLOFY_PREVIEW_HIGHLIGHT',
+          type: 'codiic_PREVIEW_HIGHLIGHT',
           payload: { nodeId: highlightNodeId ?? null },
         },
         '*'
@@ -401,7 +401,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
         }
       : null;
     frame.postMessage(
-      { source: EDITOR_SOURCE, type: 'ZIPLOFY_PREVIEW_INSERT_HIGHLIGHT', payload },
+      { source: EDITOR_SOURCE, type: 'codiic_PREVIEW_INSERT_HIGHLIGHT', payload },
       '*'
     );
   }, [insertHoverHighlight, ready]);

@@ -82,7 +82,7 @@ export function CollectionListCarouselSection({
     [config, templateId, sectionId, placement]
   );
 
-  const scopeClass = `ziplofy-collection-list-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : 24;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.contentMaxWidth;
   const cardBasis =

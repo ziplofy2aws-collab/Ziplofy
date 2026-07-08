@@ -133,7 +133,7 @@ const RateCalculatorModal: React.FC<RateCalculatorModalProps> = ({
           </div>
         </div>
         <div className="flex-1 md:flex-[0.8] md:border-l md:border-gray-100 md:pl-6 flex items-center justify-center text-center text-gray-600">
-          Calculate how much you'll save when you buy labels at discounted rates from Ziplofy
+          Calculate how much you'll save when you buy labels at discounted rates from codiic
         </div>
       </div>
     </Modal>

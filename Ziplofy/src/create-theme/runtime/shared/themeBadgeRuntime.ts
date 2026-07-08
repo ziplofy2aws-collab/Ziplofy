@@ -52,15 +52,15 @@ export function themeBadgeCssVars(
   styles: ResolvedThemeBadgeStyles
 ): Record<string, string | number> {
   return {
-    '--ziplofy-badge-radius': `${styles.cornerRadius}px`,
-    '--ziplofy-badge-sale-bg': styles.saleBackgroundColor,
-    '--ziplofy-badge-sale-text': styles.saleTextColor,
-    '--ziplofy-badge-sold-out-bg': styles.soldOutBackgroundColor,
-    '--ziplofy-badge-sold-out-text': styles.soldOutTextColor,
-    '--ziplofy-badge-font-family': styles.fontFamily,
-    '--ziplofy-badge-font-weight': String(styles.fontWeight ?? 400),
-    '--ziplofy-badge-font-style': styles.fontStyle ?? 'normal',
-    '--ziplofy-badge-text-transform': styles.textTransform ?? 'none',
+    '--codiic-badge-radius': `${styles.cornerRadius}px`,
+    '--codiic-badge-sale-bg': styles.saleBackgroundColor,
+    '--codiic-badge-sale-text': styles.saleTextColor,
+    '--codiic-badge-sold-out-bg': styles.soldOutBackgroundColor,
+    '--codiic-badge-sold-out-text': styles.soldOutTextColor,
+    '--codiic-badge-font-family': styles.fontFamily,
+    '--codiic-badge-font-weight': String(styles.fontWeight ?? 400),
+    '--codiic-badge-font-style': styles.fontStyle ?? 'normal',
+    '--codiic-badge-text-transform': styles.textTransform ?? 'none',
   };
 }
 

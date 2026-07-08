@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckoutProfileView } from '@ziplofy/create-theme/checkout/profile/CheckoutProfileView';
+import { CheckoutProfileView } from '@codiic/create-theme/checkout/profile/CheckoutProfileView';
 import {
   CheckoutProfileAddressModal,
   type CheckoutProfileAddressFormValues,

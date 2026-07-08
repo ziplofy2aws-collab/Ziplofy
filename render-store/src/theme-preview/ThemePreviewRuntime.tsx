@@ -81,11 +81,11 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
       blobUrlRef.current = blobUrl;
       const next = await loadRemoteTheme(blobUrl);
       setContract(next);
-      postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_LOADED' });
+      postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_LOADED' });
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       setError(msg);
-      postToParent({ source: 'ziplofy-theme-preview', type: 'ZIPLOFY_PREVIEW_ERROR', payload: { message: msg } });
+      postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_ERROR', payload: { message: msg } });
     } finally {
       setLoading(false);
     }
@@ -99,7 +99,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
   const cssHref = useMemo(() => (cssUrl ? resolveAssetUrl(cssUrl) : ''), [cssUrl]);
 
   useEffect(() => {
-    const linkId = 'ziplofy-preview-theme-css';
+    const linkId = 'codiic-preview-theme-css';
     document.getElementById(linkId)?.remove();
     if (!contract || !cssHref) return;
     const link = document.createElement('link');
@@ -150,13 +150,14 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
     <MemoryRouter key={routeKey} initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/collections/all" element={<Home />} />
+        <Route path="/collections" element={<Home />} />
+        <Route path="/collection/:urlHandle" element={<Home />} />
+        <Route path="/collections/:urlHandle" element={<Home />} />
+        <Route path="/product/:urlHandle" element={<Product />} />
         <Route path="/products" element={<Home />} />
         <Route path="/products/:id" element={<Product />} />
         <Route path="/collections/preview" element={<Home />} />
-        <Route path="/collection" element={<Home />} />
-        <Route path="/collections/all" element={<Home />} />
-        <Route path="/collections" element={<Home />} />
-        <Route path="/collections/:urlHandle" element={<Home />} />
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/forgot" element={<Forgot />} />

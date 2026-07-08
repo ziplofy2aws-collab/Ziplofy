@@ -85,7 +85,7 @@ export function readTextMarqueeTextSettings(
 }
 
 export function scopedTextMarqueeCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-text-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-text-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

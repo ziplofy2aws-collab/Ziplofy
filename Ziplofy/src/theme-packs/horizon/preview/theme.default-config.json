@@ -233,7 +233,7 @@
           "type": "copyright",
           "settings": {
             "showPoweredBy": true,
-            "poweredByLabel": "Powered by Ziplofy",
+            "poweredByLabel": "Powered by codiic",
             "fontSize": "12px",
             "textCase": "default",
             "text": "© 2026 My Store"

@@ -110,7 +110,7 @@ export function BlogPostsGridSection({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `ziplofy-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cols = Math.max(1, Math.min(4, style.columns));
 
   const shell: CSSProperties = {

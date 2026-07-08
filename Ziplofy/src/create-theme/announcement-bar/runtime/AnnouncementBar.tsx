@@ -152,7 +152,7 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
   const dividerPx = announcementDividerPx(config, settingsBase);
   const customCss = cfgString(config, `${settingsBase}.customCss`, '');
   const scopedCss = scopedAnnouncementCss(sectionId, customCss);
-  const shellClass = sectionScopeClass('ziplofy-announcement', sectionId);
+  const shellClass = sectionScopeClass('codiic-announcement', sectionId);
   const responsiveCss = scopedAnnouncementMobileCss(shellClass);
 
   const renderSlide = (s: AnnouncementSlide, visible: boolean): ReactNode => {
@@ -163,7 +163,7 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
     const messageEl = (
       <EditorField fieldPath={textPath} label="Text">
         <ThemeEditorRichTextContent
-          className="ziplofy-announcement-message"
+          className="codiic-announcement-message"
           html={s.text}
           style={textStyle}
         />
@@ -175,9 +175,9 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
         <Link to={s.link} style={{ color: scheme.color, textDecoration: 'none' }}>
           {messageEl}
           <span
-            data-ziplofy-node={`field:${linkPath}`}
-            data-ziplofy-label="Link"
-            data-ziplofy-kind="field"
+            data-codiic-node={`field:${linkPath}`}
+            data-codiic-label="Link"
+            data-codiic-kind="field"
             hidden
           >
             {s.link}

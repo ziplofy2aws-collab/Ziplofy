@@ -22,7 +22,7 @@ function formatInr(amount) {
     }).format(n);
 }
 /**
- * Liquid engine scoped to one theme root with Ziplofy storefront tags/filters.
+ * Liquid engine scoped to one theme root with codiic storefront tags/filters.
  */
 function createStorefrontLiquid(themeRoot, assetBaseUrl) {
     const layoutsDir = path_1.default.join(themeRoot, "layouts");

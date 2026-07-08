@@ -20,8 +20,8 @@ export function readThemeProductCardsCssVars(
   };
 
   return {
-    '--ziplofy-product-card-bg': resolvePalette(productCards.backgroundColor, 0, '#ffffff'),
-    '--ziplofy-product-card-text': resolvePalette(productCards.textColor, 1, '#111827'),
+    '--codiic-product-card-bg': resolvePalette(productCards.backgroundColor, 0, '#ffffff'),
+    '--codiic-product-card-text': resolvePalette(productCards.textColor, 1, '#111827'),
   };
 }
 

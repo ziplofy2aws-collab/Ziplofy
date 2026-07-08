@@ -9,7 +9,7 @@ const { User } = require('./build/models/user.model');
 async function createTestTheme() {
   try {
     // Connect to database
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ziplofy');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/codiic');
     console.log('Connected to database');
 
     // Create a test theme

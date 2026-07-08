@@ -135,7 +135,7 @@ const AddPixelModal: React.FC<AddPixelModalProps> = ({
       </div>
 
       <p className="text-sm text-gray-600 mt-4">
-        This is an advanced feature that requires JavaScript knowledge. Ziplofy is not responsible
+        This is an advanced feature that requires JavaScript knowledge. codiic is not responsible
         for your use of pixels. Compliance with applicable laws, consents, code security, troubleshooting,
         and updates are your responsibility. Pixels are subject to the Terms of Service.
       </p>

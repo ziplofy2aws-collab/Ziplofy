@@ -25,7 +25,7 @@ export function startInlineEdit(
   hint: ThemePreviewSelectionHint | undefined
 ): string {
   const original = (el.textContent ?? '').trim();
-  el.setAttribute('data-ziplofy-inline-editing', 'true');
+  el.setAttribute('data-codiic-inline-editing', 'true');
   el.contentEditable = 'true';
   if (hint?.fieldType === 'textarea') {
     el.style.whiteSpace = 'pre-wrap';
@@ -41,6 +41,6 @@ export function startInlineEdit(
 
 export function stopInlineEdit(el: HTMLElement): void {
   el.contentEditable = 'false';
-  el.removeAttribute('data-ziplofy-inline-editing');
+  el.removeAttribute('data-codiic-inline-editing');
   el.style.whiteSpace = '';
 }

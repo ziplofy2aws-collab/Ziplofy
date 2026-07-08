@@ -125,7 +125,7 @@ export function ContactForm({
     formGroup.backgroundColor && formGroup.backgroundColor !== 'default'
       ? resolveThemePaletteColorSetting(config, formGroup.backgroundColor, 0, 'transparent')
       : undefined;
-  const formScopeClass = `ziplofy-contact-form-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const formScopeClass = `codiic-contact-form-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const formResponsiveCss =
     formGroup.mobileWidth === 'custom'
       ? `@media (max-width: 749px){.${formScopeClass}{width:${clampPct(formGroup.mobileCustomWidth)}% !important;max-width:100% !important;}}`
@@ -151,7 +151,7 @@ export function ContactForm({
     () => readContactFormSubmitButton(config, settingsBase),
     [config, settingsBase]
   );
-  const submitScopeClass = `ziplofy-contact-submit-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const submitScopeClass = `codiic-contact-submit-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const submitDesktopWidthCss =
     submitBtn.desktopWidth === 'custom' ? `${clampPct(submitBtn.desktopCustomWidth)}%` : 'auto';
   const submitResponsiveCss =
@@ -308,7 +308,7 @@ export function ContactForm({
             <EditorField fieldPath={`${settingsBase}.namePlaceholder`} label="Name placeholder" as="span">
               <input
                 type="text"
-                className="ziplofy-theme-input"
+                className="codiic-theme-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={namePlaceholder}
@@ -319,7 +319,7 @@ export function ContactForm({
             <EditorField fieldPath={`${settingsBase}.emailPlaceholder`} label="Email placeholder" as="span">
               <input
                 type="email"
-                className="ziplofy-theme-input"
+                className="codiic-theme-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={emailPlaceholder}
@@ -333,7 +333,7 @@ export function ContactForm({
             <EditorField fieldPath={`${settingsBase}.phonePlaceholder`} label="Phone placeholder" as="span">
               <input
                 type="tel"
-                className="ziplofy-theme-input"
+                className="codiic-theme-input"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder={phonePlaceholder}
@@ -350,7 +350,7 @@ export function ContactForm({
               as="span"
             >
               <textarea
-                className="ziplofy-theme-input"
+                className="codiic-theme-input"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder={commentPlaceholder}

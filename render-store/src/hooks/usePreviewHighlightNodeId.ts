@@ -8,7 +8,7 @@ export function usePreviewHighlightNodeId(): string | null {
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (!isParentPreviewMessage(event.data)) return;
-      if (event.data.type !== 'ZIPLOFY_PREVIEW_HIGHLIGHT') return;
+      if (event.data.type !== 'codiic_PREVIEW_HIGHLIGHT') return;
       setNodeId(event.data.payload.nodeId ?? null);
     };
     window.addEventListener('message', onMessage);

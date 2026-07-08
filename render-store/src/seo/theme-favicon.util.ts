@@ -1,4 +1,4 @@
-const THEME_FAVICON_LINK_ID = 'ziplofy-theme-favicon';
+const THEME_FAVICON_LINK_ID = 'codiic-theme-favicon';
 
 function guessFaviconMimeType(url: string): string {
   const lower = url.split('?')[0]?.toLowerCase() ?? '';

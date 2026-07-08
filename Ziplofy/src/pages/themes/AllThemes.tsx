@@ -244,11 +244,12 @@ const AllThemes: React.FC = () => {
   };
 
   const handleEditTheme = (themeId: string, isInstalled: boolean = false, isCustomTheme: boolean = false) => {
-    if (isInstalled && !isCustomTheme) {
-      navigate(`/themes/${themeId}/editor`);
+    if (isCustomTheme) {
+      setEditChoice({ isOpen: true, themeId, isInstalled, isCustomTheme });
       return;
     }
-    setEditChoice({ isOpen: true, themeId, isInstalled, isCustomTheme });
+    // Catalog themes (schema / manifest / default-config editor)
+    navigate(`/themes/${themeId}/editor`);
   };
 
   // Handle thumbnail update
@@ -375,9 +376,9 @@ const AllThemes: React.FC = () => {
     const success = await deleteCustomTheme(themeId);
     if (success) {
       // If this was the applied theme, clear it
-      const appliedThemeId = localStorage.getItem('ziplofy.appliedCustomThemeId');
+      const appliedThemeId = localStorage.getItem('codiic.appliedCustomThemeId');
       if (appliedThemeId === themeId) {
-        localStorage.removeItem('ziplofy.appliedCustomThemeId');
+        localStorage.removeItem('codiic.appliedCustomThemeId');
       }
     } else {
       alert('Failed to delete theme. Please try again.');
@@ -437,12 +438,12 @@ const AllThemes: React.FC = () => {
     fetchCustomThemes();
     
     // Clean up invalid theme IDs from localStorage
-    const appliedThemeId = localStorage.getItem('ziplofy.appliedCustomThemeId');
+    const appliedThemeId = localStorage.getItem('codiic.appliedCustomThemeId');
     if (appliedThemeId) {
       const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(appliedThemeId);
       if (!isValidObjectId) {
         // Remove invalid ID (likely old UUID format from localStorage)
-        localStorage.removeItem('ziplofy.appliedCustomThemeId');
+        localStorage.removeItem('codiic.appliedCustomThemeId');
         console.warn('Removed invalid custom theme ID from localStorage');
       }
     }
@@ -482,7 +483,19 @@ const AllThemes: React.FC = () => {
     }
     try {
       setApplyingStoreCustomThemeId(theme._id);
-      await applyStoreCustomTheme(activeStoreId, theme._id);
+      const updated = await applyStoreCustomTheme(activeStoreId, theme._id);
+      setStores((prev) =>
+        prev.map((s) =>
+          s._id === activeStoreId
+            ? {
+                ...s,
+                ...updated,
+                appliedCustomThemeId: theme._id,
+                appliedTheme: null,
+              }
+            : s
+        )
+      );
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
@@ -776,7 +789,7 @@ const AllThemes: React.FC = () => {
                             setStores((prev) =>
                               prev.map((s) =>
                                 s._id === activeStoreId
-                                  ? { ...s, appliedTheme: themeIdForApply }
+                                  ? { ...s, appliedTheme: themeIdForApply, appliedCustomThemeId: null }
                                   : s
                               )
                             );
@@ -1372,6 +1385,14 @@ const AllThemes: React.FC = () => {
                 >
                   View demo
                 </button>
+                {isThemeInstalled(theme._id) ? (
+                  <button
+                    className="action-btn secondary"
+                    onClick={() => handleEditTheme(theme._id, true)}
+                  >
+                    Edit
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>

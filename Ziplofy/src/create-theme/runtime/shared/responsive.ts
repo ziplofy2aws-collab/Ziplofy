@@ -5,7 +5,7 @@
 export const MOBILE_MAX_WIDTH_PX = 749;
 
 /** Applied on `<html>` when the theme editor mobile device toggle is active. */
-export const PREVIEW_MOBILE_ROOT_CLASS = 'ziplofy-preview-mobile';
+export const PREVIEW_MOBILE_ROOT_CLASS = 'codiic-preview-mobile';
 
 function scopeCssForPreviewMobile(css: string): string {
   return css.replace(/(^|[\s,{])(\.[a-zA-Z_][\w-]*)/g, `$1.${PREVIEW_MOBILE_ROOT_CLASS} $2`);
@@ -73,29 +73,29 @@ export function scopedProductSplitMobileCss(scopeClass: string): string {
 
 export function scopedCollectionLinksSpotlightMobileCss(scopeClass: string): string {
   return mobileMedia(
-    `.${scopeClass} .ziplofy-cl-spotlight-row { flex-direction: column !important; }` +
-      `.${scopeClass} .ziplofy-cl-links-col { padding: 24px 20px !important; border: none !important; }` +
-      `.${scopeClass} .ziplofy-cl-media-col { min-height: 200px !important; padding: 16px !important; }`
+    `.${scopeClass} .codiic-cl-spotlight-row { flex-direction: column !important; }` +
+      `.${scopeClass} .codiic-cl-links-col { padding: 24px 20px !important; border: none !important; }` +
+      `.${scopeClass} .codiic-cl-media-col { min-height: 200px !important; padding: 16px !important; }`
   );
 }
 
 export function scopedCollectionLinksTextMobileCss(scopeClass: string): string {
   return mobileMedia(
-    `.${scopeClass} .ziplofy-cl-links-text { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }`
+    `.${scopeClass} .codiic-cl-links-text { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }`
   );
 }
 
 export function scopedFooterMobileCss(scopeClass: string): string {
   return mobileMedia(
-    `.${scopeClass} .ziplofy-footer-row { flex-direction: column !important; align-items: stretch !important; gap: 24px !important; }` +
-      `.${scopeClass} .ziplofy-footer-form { max-width: 100% !important; min-width: 0 !important; flex: 1 1 auto !important; }`
+    `.${scopeClass} .codiic-footer-row { flex-direction: column !important; align-items: stretch !important; gap: 24px !important; }` +
+      `.${scopeClass} .codiic-footer-form { max-width: 100% !important; min-width: 0 !important; flex: 1 1 auto !important; }`
   );
 }
 
 export function scopedAnnouncementMobileCss(scopeClass: string): string {
   return mobileMedia(
     `.${scopeClass} { padding-left: 16px !important; padding-right: 16px !important; }` +
-      `.${scopeClass} .ziplofy-announcement-message { font-size: 13px !important; line-height: 1.35 !important; }`
+      `.${scopeClass} .codiic-announcement-message { font-size: 13px !important; line-height: 1.35 !important; }`
   );
 }
 
@@ -107,19 +107,19 @@ export function scopedFaqAccordionMobileCss(scopeClass: string): string {
 }
 
 export function scopedHeaderResponsiveCss(sectionId: string): string {
-  const scope = `[data-ziplofy-section="${sectionId}"]`;
+  const scope = `[data-codiic-section="${sectionId}"]`;
   return combineResponsiveCss(
     desktopMedia(
-      `${scope} .ziplofy-header-mobile-nav { display: none !important; }` +
-        `${scope} .ziplofy-header-menu-toggle { display: none !important; }`
+      `${scope} .codiic-header-mobile-nav { display: none !important; }` +
+        `${scope} .codiic-header-menu-toggle { display: none !important; }`
     ),
     mobileMedia(
-      `${scope} .ziplofy-header-desktop-nav { display: none !important; }` +
-        `${scope} .ziplofy-header-desktop-nav-row { display: none !important; }` +
-        `${scope} .ziplofy-header-menu-toggle { display: inline-flex !important; }` +
-        `${scope} .ziplofy-header-inner { padding-left: 16px !important; padding-right: 16px !important; }` +
-        `${scope} .ziplofy-header-main-row { gap: 12px !important; flex-wrap: nowrap !important; }` +
-        `${scope} .ziplofy-header-brand-cluster { gap: 0 !important; }`
+      `${scope} .codiic-header-desktop-nav { display: none !important; }` +
+        `${scope} .codiic-header-desktop-nav-row { display: none !important; }` +
+        `${scope} .codiic-header-menu-toggle { display: inline-flex !important; }` +
+        `${scope} .codiic-header-inner { padding-left: 16px !important; padding-right: 16px !important; }` +
+        `${scope} .codiic-header-main-row { gap: 12px !important; flex-wrap: nowrap !important; }` +
+        `${scope} .codiic-header-brand-cluster { gap: 0 !important; }`
     )
   );
 }

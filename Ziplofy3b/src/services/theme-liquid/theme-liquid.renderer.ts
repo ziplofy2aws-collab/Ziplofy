@@ -16,7 +16,7 @@ function formatInr(amount: unknown): string {
 }
 
 /**
- * Liquid engine scoped to one theme root with Ziplofy storefront tags/filters.
+ * Liquid engine scoped to one theme root with codiic storefront tags/filters.
  */
 export function createStorefrontLiquid(themeRoot: string, assetBaseUrl: string): Liquid {
   const layoutsDir = path.join(themeRoot, "layouts");

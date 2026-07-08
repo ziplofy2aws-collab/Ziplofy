@@ -83,7 +83,7 @@ export function StorytellingCarousel({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-storytelling-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-storytelling-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cols = Math.max(1, Math.min(4, style.columns));
   const cardBasis = `calc((100% - ${(cols - 1) * style.horizontalGap}px) / ${cols})`;
 
@@ -222,9 +222,9 @@ export function StorytellingCarousel({
                 <article
                   key={slide.id}
                   data-carousel-slide
-                  data-ziplofy-node={blockNodeId}
-                  data-ziplofy-label={slide.title || 'Carousel slide'}
-                  data-ziplofy-kind="block"
+                  data-codiic-node={blockNodeId}
+                  data-codiic-label={slide.title || 'Carousel slide'}
+                  data-codiic-kind="block"
                   style={slideStyle}
                 >
                   <div style={mediaStyle}>

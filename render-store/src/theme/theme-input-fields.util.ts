@@ -23,10 +23,10 @@ export function readThemeInputFieldsCssVars(
   const cornerRadius = Number(inputFields.cornerRadius);
 
   return {
-    '--ziplofy-input-bg': resolvePalette(inputFields.backgroundColor, 0, '#ffffff'),
-    '--ziplofy-input-text': resolvePalette(inputFields.textColor, 1, '#111827'),
-    '--ziplofy-input-border': resolvePalette(inputFields.borderColor, 1, '#111827'),
-    '--ziplofy-input-border-width': `${Number.isFinite(borderThickness) ? borderThickness : 1}px`,
-    '--ziplofy-input-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 4}px`,
+    '--codiic-input-bg': resolvePalette(inputFields.backgroundColor, 0, '#ffffff'),
+    '--codiic-input-text': resolvePalette(inputFields.textColor, 1, '#111827'),
+    '--codiic-input-border': resolvePalette(inputFields.borderColor, 1, '#111827'),
+    '--codiic-input-border-width': `${Number.isFinite(borderThickness) ? borderThickness : 1}px`,
+    '--codiic-input-radius': `${Number.isFinite(cornerRadius) ? cornerRadius : 4}px`,
   };
 }

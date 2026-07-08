@@ -62,7 +62,7 @@ const KEYBOARD_SHORTCUT_SECTIONS: KeyboardShortcutSection[] = [
       { action: 'Go to Online Store: Navigation', keys: ['G', 'W', 'N'] },
       { action: 'Go to Online Store: Domains', keys: ['G', 'W', 'D'] },
       { action: 'Go to Point of Sale: Overview', keys: ['G', 'T', 'O'] },
-      { action: 'Go to Ziplofy Capital', keys: ['G', 'T', 'C'] },
+      { action: 'Go to codiic Capital', keys: ['G', 'T', 'C'] },
     ],
   },
   {

@@ -1,5 +1,5 @@
 /**
- * Copies create-theme section catalog from Ziplofy → render-store (no admin UI).
+ * Copies create-theme section catalog from codiic → render-store (no admin UI).
  * Run: node scripts/copy-create-theme-to-render-store.mjs
  */
 import fs from 'fs';
@@ -63,9 +63,9 @@ for (const name of fs.readdirSync(src)) {
   copyRecursive(s, path.join(dst, name));
 }
 
-const readme = `# create-theme (copied from Ziplofy)
+const readme = `# create-theme (copied from codiic)
 
-Section catalog, presets, and registry — synced from \`Ziplofy/src/create-theme\`.
+Section catalog, presets, and registry — synced from \`codiic/src/create-theme\`.
 
 **Live storefront preview today:** when \`appliedCustomThemeId\` is set, render-store loads the saved
 \`themeConfig\` JSON from the API via the **create-theme composer** (no theme.js).

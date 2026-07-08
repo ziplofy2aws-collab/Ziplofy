@@ -133,13 +133,13 @@ export function readIconWithTextItems(
 }
 
 export function scopedIconsWithTextCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }
 
 export function iconsWithTextMobileStackCss(sectionId: string): string {
-  const scope = `.ziplofy-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-icons-with-text-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   return mobileMedia(`${scope} { grid-template-columns: 1fr !important; }`);
 }
 

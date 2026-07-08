@@ -92,9 +92,9 @@ function BlogPostCardView({
       <article
         data-blog-card
         data-featured={featured ? 'true' : 'false'}
-        data-ziplofy-node={blockNodeId}
-        data-ziplofy-label={card.title || 'Blog post'}
-        data-ziplofy-kind="block"
+        data-codiic-node={blockNodeId}
+        data-codiic-label={card.title || 'Blog post'}
+        data-codiic-kind="block"
         style={articleStyle}
       >
         <div style={imageBox}>{image}</div>
@@ -124,9 +124,9 @@ function BlogPostCardView({
     <article
       data-blog-card
       data-featured={featured ? 'true' : 'false'}
-      data-ziplofy-node={blockNodeId}
-      data-ziplofy-label={card.title || 'Blog post'}
-      data-ziplofy-kind="block"
+      data-codiic-node={blockNodeId}
+      data-codiic-label={card.title || 'Blog post'}
+      data-codiic-kind="block"
       style={articleStyle}
     >
       <div style={imageBox}>
@@ -216,7 +216,7 @@ export function BlogPostsEditorial({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const gap = style.layoutGap;
 
   const gridPair = cards.length >= 2 ? cards.slice(0, 2) : cards.length === 1 ? [] : [];

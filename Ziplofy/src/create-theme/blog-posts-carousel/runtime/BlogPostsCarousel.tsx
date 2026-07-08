@@ -121,9 +121,9 @@ function BlogPostCarouselCard({
     return (
       <article
         data-blog-card
-        data-ziplofy-node={blockNodeId}
-        data-ziplofy-label={card.title || 'Blog post'}
-        data-ziplofy-kind="block"
+        data-codiic-node={blockNodeId}
+        data-codiic-label={card.title || 'Blog post'}
+        data-codiic-kind="block"
         style={cardStyle}
       >
         <div style={imageBox}>{image}</div>
@@ -152,9 +152,9 @@ function BlogPostCarouselCard({
   return (
     <article
       data-blog-card
-      data-ziplofy-node={blockNodeId}
-      data-ziplofy-label={card.title || 'Blog post'}
-      data-ziplofy-kind="block"
+      data-codiic-node={blockNodeId}
+      data-codiic-label={card.title || 'Blog post'}
+      data-codiic-kind="block"
       style={cardStyle}
     >
       <div style={imageBox}>
@@ -245,7 +245,7 @@ export function BlogPostsCarousel({
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
-  const scopeClass = `ziplofy-blog-posts-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-blog-posts-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cardBasis =
     style.columns > 0
       ? `calc((100% - ${(style.columns - 1) * style.horizontalGap}px) / ${style.columns})`

@@ -10,9 +10,9 @@ export function themeDrawerCssVars(
 ): Record<string, string> {
   const colors = resolveThemeDrawerColors(config);
   return {
-    '--ziplofy-drawer-bg': colors.backgroundColorResolved,
-    '--ziplofy-drawer-text': colors.textColorResolved,
-    '--ziplofy-drawer-border': colors.borderColorResolved,
+    '--codiic-drawer-bg': colors.backgroundColorResolved,
+    '--codiic-drawer-text': colors.textColorResolved,
+    '--codiic-drawer-border': colors.borderColorResolved,
   };
 }
 

@@ -104,7 +104,7 @@ export function readRecommendedProductCards(
 }
 
 export function scopedRecommendedProductsCss(sectionId: string, customCss: string): string {
-  const scope = `.ziplofy-recommended-products-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scope = `.codiic-recommended-products-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }

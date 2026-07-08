@@ -27,7 +27,7 @@ export default function SupportDeveloperCard({
           <div className="min-w-0">
             <p className="text-sm font-semibold text-slate-900">Need a developer to customize your store?</p>
             <p className="mt-0.5 text-xs text-slate-600 sm:text-sm">
-              Hire a certified Ziplofy Partner to build custom sections, install apps, or configure advanced settings.
+              Hire a certified codiic Partner to build custom sections, install apps, or configure advanced settings.
             </p>
           </div>
         </div>

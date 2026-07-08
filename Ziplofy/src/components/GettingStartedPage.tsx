@@ -22,7 +22,7 @@ const GettingStartedPage: React.FC<GettingStartedPageProps> = ({
       {/* Welcome Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Welcome to <span className="text-blue-600">Ziplofy</span>
+          Welcome to <span className="text-blue-600">codiic</span>
         </h1>
         <p className="mt-1 text-sm text-gray-500">
           Let's set up your e-commerce store and manage your business effectively

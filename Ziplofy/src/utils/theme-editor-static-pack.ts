@@ -377,7 +377,7 @@ export function saveStaticThemeConfigLocal(
   localStorage.setItem(configLocalStorageKeyForPack(packId), JSON.stringify(config));
 }
 
-export const THEME_CREATOR_CONFIG_STORAGE_KEY = 'ziplofy-theme-creator-config';
+export const THEME_CREATOR_CONFIG_STORAGE_KEY = 'codiic-theme-creator-config';
 
 /** True when the given template has at least one section in its section_order. */
 export function creatorTemplateHasSections(

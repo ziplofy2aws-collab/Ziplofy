@@ -49,8 +49,8 @@ export function themeProductMediaCssVars(
 ): Record<string, string> {
   const settings = readThemeProductMediaSettings(config);
   return {
-    '--ziplofy-product-media-radius': `${settings.cornerRadius}px`,
-    '--ziplofy-product-media-border': resolveThemeProductMediaBorderCss(config, settings),
+    '--codiic-product-media-radius': `${settings.cornerRadius}px`,
+    '--codiic-product-media-border': resolveThemeProductMediaBorderCss(config, settings),
   };
 }
 

@@ -146,7 +146,7 @@ export default function OnlineStorePage() {
               <div className="min-w-0">
                 <h2 className="text-base font-semibold text-gray-900">Develop your theme</h2>
                 <p className="mt-1 text-sm text-gray-500 leading-relaxed">
-                  Use the Ziplofy CLI tool to develop your theme from scratch
+                  Use the codiic CLI tool to develop your theme from scratch
                 </p>
               </div>
             </div>

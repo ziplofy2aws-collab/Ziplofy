@@ -97,11 +97,11 @@ function editorAttrs(
   fieldPath?: string
 ): Record<string, string> {
   const attrs: Record<string, string> = {
-    'data-ziplofy-node': editorNodeId,
-    'data-ziplofy-label': label,
-    'data-ziplofy-kind': kind,
+    'data-codiic-node': editorNodeId,
+    'data-codiic-label': label,
+    'data-codiic-kind': kind,
   };
-  if (fieldPath) attrs['data-ziplofy-field'] = fieldPath;
+  if (fieldPath) attrs['data-codiic-field'] = fieldPath;
   return attrs;
 }
 
@@ -207,7 +207,7 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
         ? 24
         : LAYOUT.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : themePageMaxWidth;
-  const scopeClass = `ziplofy-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const shellClass = `${scopeClass}-shell`;
   const accordionScopeClass = `${scopeClass}-accordion`;
   const headingStyleTokens = useMemo(

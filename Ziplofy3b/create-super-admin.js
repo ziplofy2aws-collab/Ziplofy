@@ -9,7 +9,7 @@ const { Role } = require('./build/models/role.model');
 async function createSuperAdmin() {
   try {
     // Connect to database
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ziplofy');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/codiic');
     console.log('Connected to database');
 
     // Find or create super-admin role

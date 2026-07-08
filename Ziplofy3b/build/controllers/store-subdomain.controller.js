@@ -7,7 +7,7 @@ exports.checkSubdomain = exports.getSubdomainByStoreId = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("../config");
 const store_model_1 = require("../models/store/store.model");
-const store_custom_theme_model_1 = require("../models/store-custom-theme/store-custom-theme.model");
+const storefront_theme_resolution_util_1 = require("../utils/storefront-theme-resolution.util");
 const subdomain_model_1 = require("../models/subdomain.model");
 const error_utils_1 = require("../utils/error.utils");
 exports.getSubdomainByStoreId = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
@@ -39,21 +39,12 @@ exports.checkSubdomain = (0, error_utils_1.asyncErrorHandler)(async (req, res) =
         return res.status(404).json({ success: false, message: 'Subdomain not found' });
     }
     const store = await store_model_1.Store.findById(mapping.storeId)
-        .select('storeName storeDescription seoHomePageTitle seoMetaDescription seoSocialImageUrl appliedCustomThemeId')
+        .select('storeName storeDescription seoHomePageTitle seoMetaDescription seoSocialImageUrl appliedCustomThemeId appliedTheme')
         .lean();
     if (!store) {
         return res.status(404).json({ success: false, message: 'Store not found for subdomain' });
     }
-    const appliedCustomThemeId = store.appliedCustomThemeId
-        ? String(store.appliedCustomThemeId)
-        : null;
-    let appliedCustomThemeName = null;
-    if (appliedCustomThemeId) {
-        const customTheme = await store_custom_theme_model_1.StoreCustomTheme.findById(appliedCustomThemeId)
-            .select('themeName')
-            .lean();
-        appliedCustomThemeName = customTheme?.themeName ?? null;
-    }
+    const themeSource = await (0, storefront_theme_resolution_util_1.resolveStorefrontThemeSource)(String(store._id));
     return res.status(200).json({
         success: true,
         data: {
@@ -63,8 +54,11 @@ exports.checkSubdomain = (0, error_utils_1.asyncErrorHandler)(async (req, res) =
             seoHomePageTitle: store.seoHomePageTitle ?? '',
             seoMetaDescription: store.seoMetaDescription ?? '',
             seoSocialImageUrl: store.seoSocialImageUrl ?? '',
-            appliedCustomThemeId,
-            appliedCustomThemeName,
+            themeKind: themeSource.kind,
+            appliedCustomThemeId: themeSource.storeCustomThemeId,
+            appliedCustomThemeName: themeSource.storeCustomThemeName,
+            appliedThemeId: themeSource.catalogThemeId,
+            appliedThemeName: themeSource.catalogThemeName,
         }
     });
 });

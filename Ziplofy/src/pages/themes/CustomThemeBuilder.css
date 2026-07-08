@@ -1,10 +1,10 @@
-/* Ziplofy Theme Builder - Modern Light Theme */
+/* codiic Theme Builder - Modern Light Theme */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
 
 /* Brand yellow: #FBBF24 (Preview button hover) - use for secondary accent/hover states */
 :root {
-  --ziplofy-yellow: #FBBF24;
-  --ziplofy-yellow-rgb: 251, 191, 36;
+  --codiic-yellow: #FBBF24;
+  --codiic-yellow-rgb: 251, 191, 36;
 }
 
 * {
@@ -116,8 +116,8 @@
 }
 
 .elementor-top-bar-icon:hover {
-  background: rgba(var(--ziplofy-yellow-rgb), 0.2) !important;
-  color: var(--ziplofy-yellow) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.2) !important;
+  color: var(--codiic-yellow) !important;
 }
 
 .elementor-nav-back {
@@ -125,8 +125,8 @@
 }
 
 .elementor-nav-back:hover {
-  background: rgba(var(--ziplofy-yellow-rgb), 0.2) !important;
-  color: var(--ziplofy-yellow) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.2) !important;
+  color: var(--codiic-yellow) !important;
 }
 
 .elementor-preview-btn {
@@ -143,9 +143,9 @@
 }
 
 .elementor-preview-btn:hover {
-  background: var(--ziplofy-yellow) !important;
+  background: var(--codiic-yellow) !important;
   color: #1a1a1a !important;
-  border-color: var(--ziplofy-yellow) !important;
+  border-color: var(--codiic-yellow) !important;
 }
 
 .elementor-publish-btn {
@@ -227,8 +227,8 @@
 }
 
 .sidebar-toggle-btn:hover {
-  background: rgba(var(--ziplofy-yellow-rgb), 0.2) !important;
-  color: var(--ziplofy-yellow) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.2) !important;
+  color: var(--codiic-yellow) !important;
 }
 
 .elementor-left-scroll {
@@ -535,8 +535,8 @@
 }
 
 .elementor-primary-tab:hover {
-  color: var(--ziplofy-yellow) !important;
-  background: rgba(var(--ziplofy-yellow-rgb), 0.12) !important;
+  color: var(--codiic-yellow) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.12) !important;
 }
 
 /* Widget Grid using GrapesJS blocks */
@@ -788,9 +788,9 @@
 }
 
 .gjs-block:hover {
-  border-color: var(--ziplofy-yellow) !important;
-  background: rgba(var(--ziplofy-yellow-rgb), 0.06) !important;
-  box-shadow: 0 4px 16px rgba(var(--ziplofy-yellow-rgb), 0.2), 0 0 0 1px rgba(var(--ziplofy-yellow-rgb), 0.3) !important;
+  border-color: var(--codiic-yellow) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.06) !important;
+  box-shadow: 0 4px 16px rgba(var(--codiic-yellow-rgb), 0.2), 0 0 0 1px rgba(var(--codiic-yellow-rgb), 0.3) !important;
   transform: translateY(-2px) !important;
 }
 
@@ -836,7 +836,7 @@
 }
 
 .gjs-block:hover .gjs-block-label {
-  color: var(--ziplofy-yellow) !important;
+  color: var(--codiic-yellow) !important;
 }
 
 .gjs-block-category {
@@ -981,8 +981,8 @@
 }
 
 .elementor-drop-zone-icon.magic {
-  background: var(--ziplofy-yellow) !important;
-  box-shadow: 0 4px 15px rgba(var(--ziplofy-yellow-rgb), 0.3) !important;
+  background: var(--codiic-yellow) !important;
+  box-shadow: 0 4px 15px rgba(var(--codiic-yellow-rgb), 0.3) !important;
   color: #1a1a1a !important;
 }
 
@@ -1048,8 +1048,8 @@
 }
 
 .elementor-device-btn:hover {
-  background: rgba(var(--ziplofy-yellow-rgb), 0.2) !important;
-  color: var(--ziplofy-yellow) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.2) !important;
+  color: var(--codiic-yellow) !important;
 }
 
 .elementor-device-btn.active {
@@ -1644,7 +1644,7 @@
   opacity: 1 !important;
   border-radius: 12px !important;
   margin-bottom: 14px !important;
-  border: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  border: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   box-shadow: none !important;
   overflow: hidden !important;
   width: 100% !important;
@@ -1657,8 +1657,8 @@
 }
 
 .gjs-sm-sector:hover {
-  border-color: rgba(var(--ziplofy-yellow-rgb), 0.5) !important;
-  box-shadow: 0 4px 14px rgba(var(--ziplofy-yellow-rgb), 0.2) !important;
+  border-color: rgba(var(--codiic-yellow-rgb), 0.5) !important;
+  box-shadow: 0 4px 14px rgba(var(--codiic-yellow-rgb), 0.2) !important;
 }
 
 .gjs-sm-sector .gjs-sm-title {
@@ -1669,7 +1669,7 @@
   background: linear-gradient(135deg, rgba(126, 96, 224, 0.25) 0%, rgba(139, 92, 246, 0.18) 100%) !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  border-bottom: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.25) !important;
+  border-bottom: 1px solid rgba(var(--codiic-yellow-rgb), 0.25) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.6px !important;
   display: flex !important;
@@ -1718,7 +1718,7 @@
   width: 100% !important;
   pointer-events: auto !important;
   border: none !important;
-  border-top: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.2) !important;
+  border-top: 1px solid rgba(var(--codiic-yellow-rgb), 0.2) !important;
   border-radius: 0 0 12px 12px !important;
 }
 
@@ -1738,7 +1738,7 @@
 
 .gjs-sm-property {
   padding: 12px 14px !important;
-  border: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  border: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   background: linear-gradient(180deg, #ffffff 0%, rgba(251, 191, 36, 0.06) 100%) !important;
   display: flex !important;
   flex-direction: column !important;
@@ -1760,9 +1760,9 @@
 }
 
 .gjs-sm-property:hover {
-  border-color: rgba(var(--ziplofy-yellow-rgb), 0.5) !important;
+  border-color: rgba(var(--codiic-yellow-rgb), 0.5) !important;
   background: rgba(251, 191, 36, 0.08) !important;
-  box-shadow: 0 4px 12px rgba(var(--ziplofy-yellow-rgb), 0.2) !important;
+  box-shadow: 0 4px 12px rgba(var(--codiic-yellow-rgb), 0.2) !important;
 }
 
 /* Full width for all properties */
@@ -1801,7 +1801,7 @@
   flex: 1 !important;
   padding: 10px 12px !important;
   background: #ffffff !important;
-  border: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  border: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   border-radius: 8px !important;
   color: #000000 !important;
   font-size: 13px !important;
@@ -1824,8 +1824,8 @@
 #style-panel select:hover,
 .gjs-sm-property__field input:hover,
 .gjs-sm-property__field select:hover {
-  border-color: rgba(var(--ziplofy-yellow-rgb), 0.5) !important;
-  box-shadow: 0 2px 8px rgba(var(--ziplofy-yellow-rgb), 0.15) !important;
+  border-color: rgba(var(--codiic-yellow-rgb), 0.5) !important;
+  box-shadow: 0 2px 8px rgba(var(--codiic-yellow-rgb), 0.15) !important;
   background: #faf9fc !important;
 }
 
@@ -1845,8 +1845,8 @@
 .gjs-sm-property__field textarea:focus,
 #style-panel input:focus,
 #style-panel select:focus {
-  border-color: var(--ziplofy-yellow) !important;
-  box-shadow: 0 0 0 2px rgba(var(--ziplofy-yellow-rgb), 0.25) !important;
+  border-color: var(--codiic-yellow) !important;
+  box-shadow: 0 0 0 2px rgba(var(--codiic-yellow-rgb), 0.25) !important;
   outline: none !important;
   background: #ffffff !important;
   pointer-events: auto !important;
@@ -1882,7 +1882,7 @@
   font-weight: 700 !important;
   color: #3d3366 !important;
   margin-bottom: 8px !important;
-  border-bottom: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  border-bottom: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   padding-bottom: 8px !important;
   display: block !important;
   text-transform: uppercase !important;
@@ -1894,8 +1894,8 @@
 /* Unit selectors styling */
 #style-panel .gjs-field-units,
 #style-panel .gjs-input-unit {
-  background: rgba(var(--ziplofy-yellow-rgb), 0.1) !important;
-  border: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.1) !important;
+  border: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   border-left: none !important;
   border-radius: 0 8px 8px 0 !important;
   padding: 0 10px !important;
@@ -1980,7 +1980,7 @@
 /* Select dropdown styling */
 #style-panel select {
   background: #ffffff !important;
-  border: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  border: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   color: #1a1a1a !important;
   font-weight: 500 !important;
   font-size: 13px !important;
@@ -1996,8 +1996,8 @@
 }
 
 #style-panel select:hover {
-  background: rgba(var(--ziplofy-yellow-rgb), 0.06) !important;
-  border-color: rgba(var(--ziplofy-yellow-rgb), 0.5) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.06) !important;
+  border-color: rgba(var(--codiic-yellow-rgb), 0.5) !important;
 }
 
 /* Full width select wrapper */
@@ -2118,7 +2118,7 @@
 /* Color picker styling - builder theme */
 #style-panel .gjs-field-color,
 #style-panel .sp-replacer {
-  border: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  border: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   border-radius: 8px !important;
   overflow: visible !important;
   height: 40px !important;
@@ -2131,7 +2131,7 @@
 
 #style-panel .gjs-field-color:hover,
 #style-panel .sp-replacer:hover {
-  border-color: rgba(var(--ziplofy-yellow-rgb), 0.5) !important;
+  border-color: rgba(var(--codiic-yellow-rgb), 0.5) !important;
 }
 
 #style-panel .gjs-field-color-picker,
@@ -2162,18 +2162,18 @@
 
 /* Composite properties (margin, padding, border-radius) - builder theme */
 #style-panel .gjs-sm-composite {
-  background: rgba(var(--ziplofy-yellow-rgb), 0.04) !important;
+  background: rgba(var(--codiic-yellow-rgb), 0.04) !important;
   border-radius: 10px !important;
   padding: 14px !important;
-  border: 1px solid rgba(var(--ziplofy-yellow-rgb), 0.35) !important;
+  border: 1px solid rgba(var(--codiic-yellow-rgb), 0.35) !important;
   width: 100% !important;
   box-shadow: none !important;
   transition: all 0.2s ease !important;
 }
 
 #style-panel .gjs-sm-composite:hover {
-  border-color: rgba(var(--ziplofy-yellow-rgb), 0.5) !important;
-  box-shadow: 0 4px 12px rgba(var(--ziplofy-yellow-rgb), 0.18) !important;
+  border-color: rgba(var(--codiic-yellow-rgb), 0.5) !important;
+  box-shadow: 0 4px 12px rgba(var(--codiic-yellow-rgb), 0.18) !important;
 }
 
 #style-panel .gjs-sm-composite .gjs-sm-properties {
@@ -2267,7 +2267,7 @@
 }
 
 /* Wrapper/body: host highlighter matches full canvas — only left/right edges read as “rails” */
-.custom-theme-builder-root.ziplofy-wrapper-or-body-selected .gjs-highlighter {
+.custom-theme-builder-root.codiic-wrapper-or-body-selected .gjs-highlighter {
   opacity: 0 !important;
 }
 
@@ -3063,14 +3063,14 @@
 }
 
 /* Image Carousel - scrollbar hide, responsive, button hover */
-.ziplofy-image-carousel .ziplofy-carousel-track::-webkit-scrollbar {
+.codiic-image-carousel .codiic-carousel-track::-webkit-scrollbar {
   display: none;
 }
-.ziplofy-image-carousel .ziplofy-carousel-track {
+.codiic-image-carousel .codiic-carousel-track {
   -webkit-overflow-scrolling: touch;
 }
-.ziplofy-image-carousel .ziplofy-carousel-prev:hover,
-.ziplofy-image-carousel .ziplofy-carousel-next:hover {
+.codiic-image-carousel .codiic-carousel-prev:hover,
+.codiic-image-carousel .codiic-carousel-next:hover {
   background: #5e72e4 !important;
   color: #fff !important;
   border-color: #5e72e4 !important;

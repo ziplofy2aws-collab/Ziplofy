@@ -23,6 +23,9 @@ export function rewriteRemoteThemeImports(source: string, appOrigin: string): st
     ? `${root}/src/themes/remote-runtime-shims/react-jsx-runtime.ts`
     : `${root}/remote-theme-runtime/react-jsx-runtime.js`;
   const react = dev ? `${root}/src/themes/remote-runtime-shims/react.ts` : `${root}/remote-theme-runtime/react.js`;
+  const reactDom = dev
+    ? `${root}/src/themes/remote-runtime-shims/react-dom.ts`
+    : `${root}/remote-theme-runtime/react-dom.js`;
   const rrd = dev
     ? `${root}/src/themes/remote-runtime-shims/react-router-dom.ts`
     : `${root}/remote-theme-runtime/react-router-dom.js`;
@@ -30,7 +33,15 @@ export function rewriteRemoteThemeImports(source: string, appOrigin: string): st
 
   return source
     .replaceAll('from "react/jsx-runtime"', `from "${jsx}"`)
+    .replaceAll("from 'react/jsx-runtime'", `from "${jsx}"`)
+    .replaceAll('from "react-dom/client"', `from "${reactDom}"`)
+    .replaceAll("from 'react-dom/client'", `from "${reactDom}"`)
+    .replaceAll('from "react-dom"', `from "${reactDom}"`)
+    .replaceAll("from 'react-dom'", `from "${reactDom}"`)
     .replaceAll('from "react-router-dom"', `from "${rrd}"`)
+    .replaceAll("from 'react-router-dom'", `from "${rrd}"`)
     .replaceAll('from "@render-store/sdk"', `from "${sdk}"`)
-    .replaceAll('from "react"', `from "${react}"`);
+    .replaceAll("from '@render-store/sdk'", `from "${sdk}"`)
+    .replaceAll('from "react"', `from "${react}"`)
+    .replaceAll("from 'react'", `from "${react}"`);
 }

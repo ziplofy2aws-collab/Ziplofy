@@ -273,7 +273,7 @@ function BentoTile({
       nodeId={blockNodeId}
       label="Collection card"
       style={tileStyle}
-      className="ziplofy-bento-tile"
+      className="codiic-bento-tile"
     >
       <Link
         to={tile.href || '/collections/all'}
@@ -382,7 +382,7 @@ export function CollectionListBentoLayoutView({
         scopeClass={scopeClass}
       />
       <div
-        className="ziplofy-bento-grid"
+        className="codiic-bento-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
@@ -439,7 +439,7 @@ export function CollectionListGridLayoutView({
     () => readCollectionListCardImageStyle(config, settingsBase),
     [config, settingsBase]
   );
-  const scopeClass = `ziplofy-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-grid-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const innerStyle: CSSProperties =
     style.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: 24, paddingRight: 24 }
@@ -620,7 +620,7 @@ export function CollectionListCarouselLayoutView({
     () => readCollectionListCardImageStyle(config, settingsBase),
     [config, settingsBase]
   );
-  const scopeClass = `ziplofy-collection-list-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-carousel-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const cardBasis = `calc((100% - ${(style.columns - 1) * style.horizontalGap}px) / ${style.columns})`;
   const showNav = style.navigationIcon !== 'none' && tiles.length > style.columns;
 
@@ -783,7 +783,7 @@ export function CollectionListEditorialLayoutView({
     () => readCollectionListCardImageStyle(config, settingsBase),
     [config, settingsBase]
   );
-  const scopeClass = `ziplofy-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-collection-list-editorial-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const innerStyle: CSSProperties =
     layoutStyle.sectionWidth === 'full'
       ? { maxWidth: '100%', paddingLeft: 24, paddingRight: 24 }

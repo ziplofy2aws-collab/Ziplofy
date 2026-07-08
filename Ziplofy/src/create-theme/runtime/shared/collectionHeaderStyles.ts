@@ -191,7 +191,7 @@ export function collectionHeaderResponsiveCss(
   mobileCustomWidth?: number
 ): string {
   return collectionHeaderResponsiveCssForSelector(
-    `[data-ziplofy-section="${sectionId}"] [data-fc-collection-header]`,
+    `[data-codiic-section="${sectionId}"] [data-fc-collection-header]`,
     mobileWidth,
     verticalOnMobile,
     mobileCustomWidth

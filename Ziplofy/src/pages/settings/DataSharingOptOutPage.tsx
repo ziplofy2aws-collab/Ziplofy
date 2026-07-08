@@ -92,7 +92,7 @@ const DataSharingOptOutPage: React.FC = () => {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 mb-0.5">Use automated settings</p>
               <p className="text-sm text-gray-500">
-                Keep regions and content in sync with latest Ziplofy recommendations
+                Keep regions and content in sync with latest codiic recommendations
               </p>
             </div>
             <ToggleSwitch

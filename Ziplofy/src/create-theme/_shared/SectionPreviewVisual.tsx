@@ -796,7 +796,7 @@ export function SectionPreviewVisual({ variant }: { variant: SectionPreviewVaria
   if (variant === 'policies-links') {
     return (
       <div className="relative mx-auto flex w-full max-w-[400px] items-center justify-between gap-4 overflow-hidden rounded-lg border border-[#e1e1e1] bg-[#f6f6f7] px-5 py-4 shadow-[0_2px_14px_rgba(0,0,0,0.08)]">
-        <span className="shrink-0 text-[0.5rem] text-gray-600">© 2026 My Store, Powered by Ziplofy</span>
+        <span className="shrink-0 text-[0.5rem] text-gray-600">© 2026 My Store, Powered by codiic</span>
         <span className="shrink-0 text-[0.5rem] text-gray-700">Terms and Policies</span>
       </div>
     );
