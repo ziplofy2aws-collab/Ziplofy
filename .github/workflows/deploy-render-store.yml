@@ -3,6 +3,7 @@
 # EC2 host (hardcoded): 3.6.64.3 (preview.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/Ziplofy
+# API proxy target (hardcoded): https://backend.codiic.com
 
 name: Deploy Render Store to EC2
 
@@ -44,8 +45,7 @@ jobs:
       - name: Build render-store
         working-directory: render-store
         env:
-          # Optional: remote codiic3b host for vite preview /sitemap.xml + /api proxy on EC2
-          VITE_PROXY_TARGET: ${{ secrets.codiic3B_API_UPSTREAM }}
+          VITE_PROXY_TARGET: https://backend.codiic.com
         run: npm run build
 
       - name: Deploy to EC2
@@ -79,9 +79,7 @@ jobs:
             echo "Using node: $(command -v node) ($(node -v))"
             cd /home/ubuntu/Ziplofy
             npm ci
-            if [ -n "${{ secrets.codiic3B_API_UPSTREAM }}" ]; then
-              export VITE_PROXY_TARGET="${{ secrets.codiic3B_API_UPSTREAM }}"
-              export codiic3B_API_UPSTREAM="${{ secrets.codiic3B_API_UPSTREAM }}"
-            fi
+            export VITE_PROXY_TARGET="https://backend.codiic.com"
+            export codiic3B_API_UPSTREAM="https://backend.codiic.com"
             pm2 delete all || true
             pm2 start npm -- run preview
