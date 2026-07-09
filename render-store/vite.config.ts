@@ -40,6 +40,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), themePreviewFrameHeadersPlugin()],
   preview: {
     port: 5180,
+    host: true,
+    allowedHosts: ['preview.codiic.com', '.codiic.com', 'localhost'],
     proxy: {
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),

@@ -29,9 +29,13 @@ if (NODE_ENV === 'development') {
 } else {
     config = {
         allowedOrigins: [
-            // Allow any subdomain of codiic.com (e.g., gibberish.codiic.com, dashboard.codiic.com)
+            // Merchant storefronts (*.codiic.com), dashboard, admin, auth, preview
             /^https?:\/\/([a-z0-9-]+\.)*codiic\.com$/i,
-            "https://admin.codiic.com"
+            "https://api.codiic.com",
+            "https://auth.codiic.com",
+            "https://dashboard.codiic.com",
+            "https://admin.codiic.com",
+            "https://preview.codiic.com",
         ],
         clientUrl: "https://dashboard.codiic.com",
         storeRenderMicroserviceUrlSuffix: ".codiic.com"

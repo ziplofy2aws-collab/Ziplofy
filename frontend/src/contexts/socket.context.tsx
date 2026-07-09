@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { io, Socket } from 'socket.io-client';
+import { adminEnv } from '../config/env';
 import { SuperAdminNotification, useNotifications } from './notification.context';
 
 interface HireDeveloperData {
@@ -33,7 +34,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const { setNotifications } = useNotifications();
 
   useEffect(() => {
-    const baseUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_BACKEND_URL;
+    const baseUrl = adminEnv.socketUrl;
     const token = localStorage.getItem('admin_token');
     // Do not connect sockets if not authenticated
     if (!baseUrl || !token) {

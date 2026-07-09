@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { adminEnv } from "../../config/env";
 import { useAdminAuth } from "../../contexts/admin-auth.context";
 import "./AdminLogin.css";
 
@@ -54,7 +55,7 @@ const AdminLogin: React.FC = () => {
   const handleResend = async () => {
     if (!awaitingOtp?.email || resendSeconds > 0) return;
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api'}/auth/admin/resend-otp`, {
+      await fetch(`${adminEnv.backendUrl}/auth/admin/resend-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: awaitingOtp.email })

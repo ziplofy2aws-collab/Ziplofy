@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { clientEnv } from '../config/env';
 import { axiosi } from '../config/axios.config';
 import { safeLocalStorage } from '../types/local-storage';
 
@@ -72,7 +73,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (user) {
       const token = safeLocalStorage.getItem("accessToken")
       if (token) {
-        const url = new URL(import.meta.env.VITE_REDIRECTION_URL);
+        const url = new URL(clientEnv.redirectionUrl);
         url.searchParams.set("accessToken", token);
         window.location.href = url.toString();
       }

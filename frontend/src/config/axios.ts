@@ -1,12 +1,8 @@
 import axios from "axios";
-
-// Type-safe environment variable access
-const getBaseURL = (): string => {
-    return import.meta.env.VITE_BACKEND_URL
-};
+import { adminEnv } from "./env";
 
 const axiosi = axios.create({
-    baseURL: getBaseURL(),
+    baseURL: adminEnv.backendUrl,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',

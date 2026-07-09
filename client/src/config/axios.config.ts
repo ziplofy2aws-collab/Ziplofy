@@ -3,8 +3,10 @@ import axios from "axios";
 import { safeLocalStorage } from "../types/local-storage";
 
 
+import { clientEnv } from './env';
+
 export const axiosi: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: clientEnv.apiUrl,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

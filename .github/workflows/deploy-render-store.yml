@@ -3,7 +3,7 @@
 #   RENDER_STORE_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
 #   RENDER_STORE_EC2_HOST        - EC2 hostname or IP
 #   RENDER_STORE_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
-#   RENDER_STORE_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-codiic-/render-store)
+# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
 
 name: Deploy Render Store to EC2
 
@@ -55,7 +55,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.RENDER_STORE_EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.RENDER_STORE_EC2_HOST }}
           REMOTE_USER: ${{ secrets.RENDER_STORE_EC2_USER }}
-          TARGET: ${{ secrets.RENDER_STORE_EC2_DEPLOY_PATH }}
+          TARGET: /home/ubuntu/merged-ziplofy
         with:
           source: 'render-store/'
           exclude: 'node_modules'
@@ -78,7 +78,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd ${{ secrets.RENDER_STORE_EC2_DEPLOY_PATH }}
+            cd /home/ubuntu/merged-ziplofy
             npm ci
             if [ -n "${{ secrets.codiic3B_API_UPSTREAM }}" ]; then
               export VITE_PROXY_TARGET="${{ secrets.codiic3B_API_UPSTREAM }}"

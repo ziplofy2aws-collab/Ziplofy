@@ -3,7 +3,7 @@
 #   FRONTEND_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
 #   FRONTEND_EC2_HOST        - EC2 hostname or IP
 #   FRONTEND_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
-#   FRONTEND_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-codiic-/frontend)
+# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
 
 name: Deploy Frontend to EC2
 
@@ -37,6 +37,9 @@ jobs:
         run: npm ci
 
       - name: Build frontend
+        env:
+          VITE_BACKEND_URL: https://api.codiic.com/api
+          VITE_SOCKET_URL: https://api.codiic.com
         run: npm run build
 
       - name: Deploy to EC2
@@ -45,7 +48,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.FRONTEND_EC2_HOST }}
           REMOTE_USER: ${{ secrets.FRONTEND_EC2_USER }}
-          TARGET: ${{ secrets.FRONTEND_EC2_DEPLOY_PATH }}
+          TARGET: /home/ubuntu/merged-ziplofy
         with:
           source: 'frontend/'
           exclude: 'node_modules'
@@ -68,7 +71,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd ${{ secrets.FRONTEND_EC2_DEPLOY_PATH }}
+            cd /home/ubuntu/merged-ziplofy
             npm ci
             pm2 delete all || true
             pm2 start npm -- run preview

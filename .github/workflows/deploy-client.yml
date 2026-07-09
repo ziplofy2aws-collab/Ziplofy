@@ -1,8 +1,8 @@
 # Required GitHub Secrets:
-#   CLIENT_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
-#   CLIENT_EC2_HOST        - EC2 hostname or IP
-#   CLIENT_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
-#   CLIENT_EC2_DEPLOY_PATH - Remote path (e.g. /var/www/client or /home/ubuntu/auth)
+#   CLIENT_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+# EC2 host (hardcoded): 13.126.29.157 (auth.codiic.com public IP)
+# SSH user (hardcoded): ubuntu
+# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
 
 name: Deploy Client to EC2
 
@@ -44,9 +44,9 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.CLIENT_EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.CLIENT_EC2_HOST }}
-          REMOTE_USER: ${{ secrets.CLIENT_EC2_USER }}
-          TARGET: ${{ secrets.CLIENT_EC2_DEPLOY_PATH }}
+          REMOTE_HOST: 13.126.29.157
+          REMOTE_USER: ubuntu
+          TARGET: /home/ubuntu/merged-ziplofy
         with:
           source: 'client/'
           exclude: 'node_modules'
@@ -54,8 +54,8 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.CLIENT_EC2_HOST }}
-          username: ${{ secrets.CLIENT_EC2_USER }}
+          host: 13.126.29.157
+          username: ubuntu
           key: ${{ secrets.CLIENT_EC2_SSH_KEY }}
           # Non-interactive SSH does not load .bashrc — nvm/fnm Node 24 is missing unless sourced.
           script: |
@@ -69,7 +69,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd ${{ secrets.CLIENT_EC2_DEPLOY_PATH }}
+            cd /home/ubuntu/merged-ziplofy
             npm ci
             pm2 delete all || true
-            pm2 start npm -- run preview
+            pm2 start npm -- run start

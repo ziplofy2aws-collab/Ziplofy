@@ -1,9 +1,10 @@
-# Deploy the codiic (main admin dashboard) app to EC2
+# Deploy the codiic (main merchant dashboard) app to EC2
 # Required GitHub Secrets:
 #   codiic_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
 #   codiic_EC2_HOST        - EC2 hostname or IP
 #   codiic_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
-#   codiic_EC2_DEPLOY_PATH - Remote path (e.g. /home/ubuntu/merged-codiic-/codiic)
+# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
+#   VITE_GOOGLE_CLIENT_ID  - Optional; only if dashboard uses Google OAuth directly
 
 name: Deploy codiic to EC2
 
@@ -28,7 +29,6 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          # Pin to match EC2 runtime and avoid Node engine mismatch warnings
           node-version: '24'
           cache: 'npm'
           cache-dependency-path: Ziplofy/package-lock.json
@@ -38,7 +38,10 @@ jobs:
 
       - name: Build codiic
         env:
-          # Theme editor live preview iframe (must allow framing — not merchant *.codiic.com store URLs).
+          VITE_APP_ENV: production
+          VITE_API_URL: https://api.codiic.com/api
+          VITE_SOCKET_URL: https://api.codiic.com
+          VITE_AUTH_MICROSERVICE_FRONTEND_URL: https://auth.codiic.com
           VITE_RENDER_STORE_ORIGIN: https://preview.codiic.com
         run: npm run build
 
@@ -48,7 +51,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.codiic_EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.codiic_EC2_HOST }}
           REMOTE_USER: ${{ secrets.codiic_EC2_USER }}
-          TARGET: ${{ secrets.codiic_EC2_DEPLOY_PATH }}
+          TARGET: /home/ubuntu/merged-ziplofy
         with:
           source: 'Ziplofy/'
           exclude: 'node_modules'
@@ -59,7 +62,6 @@ jobs:
           host: ${{ secrets.codiic_EC2_HOST }}
           username: ${{ secrets.codiic_EC2_USER }}
           key: ${{ secrets.codiic_EC2_SSH_KEY }}
-          # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
           script: |
             set -e
             if [ -f "$HOME/.nvm/nvm.sh" ]; then
@@ -71,7 +73,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd ${{ secrets.codiic_EC2_DEPLOY_PATH }}
+            cd /home/ubuntu/merged-ziplofy
             npm ci
             pm2 delete all || true
             pm2 start npm -- run preview
