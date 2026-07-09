@@ -1,8 +1,8 @@
 # Required GitHub Secrets:
 #   RENDER_STORE_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 13.126.29.157 (preview.codiic.com)
+# EC2 host (hardcoded): 3.6.64.3 (preview.codiic.com)
 # SSH user (hardcoded): ubuntu
-# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
+# Deploy path (hardcoded): /home/ubuntu/Ziplofy
 
 name: Deploy Render Store to EC2
 
@@ -52,9 +52,9 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.RENDER_STORE_EC2_SSH_KEY }}
-          REMOTE_HOST: 13.126.29.157
+          REMOTE_HOST: 3.6.64.3
           REMOTE_USER: ubuntu
-          TARGET: /home/ubuntu/merged-ziplofy
+          TARGET: /home/ubuntu/Ziplofy
         with:
           source: 'render-store/'
           exclude: 'node_modules'
@@ -62,7 +62,7 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 13.126.29.157
+          host: 3.6.64.3
           username: ubuntu
           key: ${{ secrets.RENDER_STORE_EC2_SSH_KEY }}
           # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
@@ -77,7 +77,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd /home/ubuntu/merged-ziplofy
+            cd /home/ubuntu/Ziplofy
             npm ci
             if [ -n "${{ secrets.codiic3B_API_UPSTREAM }}" ]; then
               export VITE_PROXY_TARGET="${{ secrets.codiic3B_API_UPSTREAM }}"
