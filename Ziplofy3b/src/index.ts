@@ -331,7 +331,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({ 
-    status: 'ok  - team codiic hello world',
+    status: 'ok  - team codiic hello world ci cd updated',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
