@@ -1,8 +1,7 @@
-# Deploy the codiic3b (main backend API) to EC2
 # Required GitHub Secrets:
-#   codiic3B_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
-#   codiic3B_EC2_HOST        - EC2 hostname or IP
-#   codiic3B_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
+#   codiic3B_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+# EC2 host (hardcoded): 13.126.29.157 (api.codiic.com)
+# SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
 
 name: Deploy codiic3b to EC2
@@ -42,8 +41,8 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.codiic3B_EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.codiic3B_EC2_HOST }}
-          REMOTE_USER: ${{ secrets.codiic3B_EC2_USER }}
+          REMOTE_HOST: 13.126.29.157
+          REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/merged-ziplofy
         with:
           source: 'Ziplofy3b/'
@@ -52,8 +51,8 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.codiic3B_EC2_HOST }}
-          username: ${{ secrets.codiic3B_EC2_USER }}
+          host: 13.126.29.157
+          username: ubuntu
           key: ${{ secrets.codiic3B_EC2_SSH_KEY }}
           script: |
             set -e

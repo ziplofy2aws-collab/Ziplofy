@@ -1,8 +1,7 @@
-# Deploy the frontend (admin dashboard) app to EC2
 # Required GitHub Secrets:
-#   FRONTEND_EC2_SSH_KEY     - Private SSH key for EC2 (contents of .pem file)
-#   FRONTEND_EC2_HOST        - EC2 hostname or IP
-#   FRONTEND_EC2_USER        - SSH user (e.g. ubuntu, ec2-user)
+#   FRONTEND_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+# EC2 host (hardcoded): 13.126.29.157 (admin.codiic.com)
+# SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
 
 name: Deploy Frontend to EC2
@@ -46,8 +45,8 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.FRONTEND_EC2_HOST }}
-          REMOTE_USER: ${{ secrets.FRONTEND_EC2_USER }}
+          REMOTE_HOST: 13.126.29.157
+          REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/merged-ziplofy
         with:
           source: 'frontend/'
@@ -56,8 +55,8 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.FRONTEND_EC2_HOST }}
-          username: ${{ secrets.FRONTEND_EC2_USER }}
+          host: 13.126.29.157
+          username: ubuntu
           key: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
           # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
           script: |
