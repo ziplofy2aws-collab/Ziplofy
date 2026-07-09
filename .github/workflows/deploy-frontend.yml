@@ -1,8 +1,8 @@
 # Required GitHub Secrets:
 #   FRONTEND_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 13.126.29.157 (admin.codiic.com)
+# EC2 host (hardcoded): 3.111.196.66 (admin.codiic.com)
 # SSH user (hardcoded): ubuntu
-# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
+# Deploy path (hardcoded): /home/ubuntu/Ziplofy
 
 name: Deploy Frontend to EC2
 
@@ -45,9 +45,9 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
-          REMOTE_HOST: 13.126.29.157
+          REMOTE_HOST: 3.111.196.66
           REMOTE_USER: ubuntu
-          TARGET: /home/ubuntu/merged-ziplofy
+          TARGET: /home/ubuntu/Ziplofy
         with:
           source: 'frontend/'
           exclude: 'node_modules'
@@ -55,7 +55,7 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 13.126.29.157
+          host: 3.111.196.66
           username: ubuntu
           key: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
           # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
@@ -70,7 +70,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd /home/ubuntu/merged-ziplofy
+            cd /home/ubuntu/Ziplofy
             npm ci
             pm2 delete all || true
             pm2 start npm -- run preview

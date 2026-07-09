@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import { themePreviewFrameHeadersPlugin } from './src/vite-theme-preview-headers.plugin'
+import { resolveZiplofyNodeModules } from './src/vite-resolve-ziplofy-deps.plugin'
 /** Dev/preview proxy to codiic3b. In production EC2, prefer nginx → backend (see deploy/nginx-store-vhost.example.conf). */
 const proxyTarget = process.env.VITE_PROXY_TARGET || process.env.codiic3B_API_UPSTREAM || 'http://127.0.0.1:5000'
 
@@ -37,7 +38,7 @@ function createDevProxy() {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), themePreviewFrameHeadersPlugin()],
+  plugins: [react(), tailwindcss(), resolveZiplofyNodeModules(), themePreviewFrameHeadersPlugin()],
   preview: {
     port: 5180,
     host: true,

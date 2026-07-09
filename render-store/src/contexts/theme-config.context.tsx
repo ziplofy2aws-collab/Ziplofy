@@ -23,7 +23,6 @@ function applyThemeConfigCssVars(config: ThemeConfig | null): void {
   if (colors?.primary) root.style.setProperty('--codiic-primary', colors.primary);
   if (colors?.accent) root.style.setProperty('--codiic-accent', colors.accent);
   if (colors?.background) root.style.setProperty('--codiic-background', colors.background);
-  const page = settings?.page as Record<string, unknown> | undefined;
   const pageBg = readThemePageBackgroundForCss(config);
   if (pageBg) root.style.setProperty('--codiic-background', pageBg);
   const pageMaxWidth = readThemePageMaxWidthForCss(config);
