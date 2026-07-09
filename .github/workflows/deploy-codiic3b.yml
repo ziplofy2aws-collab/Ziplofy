@@ -1,6 +1,6 @@
 # Required GitHub Secrets:
 #   codiic3B_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 13.126.29.157 (api.codiic.com)
+# EC2 host (hardcoded): 15.207.160.239 (api.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
 
@@ -41,7 +41,7 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.codiic3B_EC2_SSH_KEY }}
-          REMOTE_HOST: 13.126.29.157
+          REMOTE_HOST: 15.207.160.239
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/merged-ziplofy
         with:
@@ -51,7 +51,7 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 13.126.29.157
+          host: 15.207.160.239
           username: ubuntu
           key: ${{ secrets.codiic3B_EC2_SSH_KEY }}
           script: |

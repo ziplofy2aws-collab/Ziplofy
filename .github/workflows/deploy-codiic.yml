@@ -12,6 +12,7 @@ on:
     branches: [main]
     paths:
       - 'Ziplofy/**'
+      - 'render-store/**'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
@@ -30,12 +31,20 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: Ziplofy/package-lock.json
+          cache-dependency-path: |
+            Ziplofy/package-lock.json
+            render-store/package-lock.json
 
-      - name: Install dependencies
+      - name: Install Ziplofy dependencies
+        working-directory: Ziplofy
+        run: npm ci
+
+      - name: Install render-store dependencies
+        working-directory: render-store
         run: npm ci
 
       - name: Build codiic
+        working-directory: Ziplofy
         env:
           VITE_APP_ENV: production
           VITE_API_URL: https://api.codiic.com/api
