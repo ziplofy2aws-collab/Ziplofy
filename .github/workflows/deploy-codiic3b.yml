@@ -2,7 +2,7 @@
 #   codiic3B_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
 # EC2 host (hardcoded): 15.207.160.239 (api.codiic.com)
 # SSH user (hardcoded): ubuntu
-# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
+# Deploy path (hardcoded): /home/ubuntu/Ziplofy
 
 name: Deploy codiic3b to EC2
 
@@ -43,7 +43,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.codiic3B_EC2_SSH_KEY }}
           REMOTE_HOST: 15.207.160.239
           REMOTE_USER: ubuntu
-          TARGET: /home/ubuntu/merged-ziplofy
+          TARGET: /home/ubuntu/Ziplofy
         with:
           source: 'Ziplofy3b/'
           exclude: 'node_modules'
@@ -65,7 +65,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd /home/ubuntu/merged-ziplofy
+            cd /home/ubuntu/Ziplofy
             npm ci
             pm2 delete all || true
             pm2 start npm -- run start
