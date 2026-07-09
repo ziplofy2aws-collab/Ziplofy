@@ -2,6 +2,8 @@
 .env.production
 !server/.env.development
 !server/.env.production
+!client/.env.development
+!client/.env.production
 codiic-zip.zip
 node_modules
 dist/
