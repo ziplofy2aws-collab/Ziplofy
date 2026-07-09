@@ -17,7 +17,7 @@ app.use(cors({
 
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({
-    status: 'server updated -- codiic production!',
+    status: 'server updated, latest update !!',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
   });
