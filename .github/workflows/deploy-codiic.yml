@@ -2,7 +2,7 @@
 #   codiic_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
 # EC2 host (hardcoded): 13.126.29.157 (dashboard.codiic.com)
 # SSH user (hardcoded): ubuntu
-# Deploy path (hardcoded): /home/ubuntu/merged-ziplofy
+# Deploy path (hardcoded): /home/ubuntu/Ziplofy
 #   VITE_GOOGLE_CLIENT_ID  - Optional; only if dashboard uses Google OAuth directly
 
 name: Deploy codiic to EC2
@@ -50,7 +50,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.codiic_EC2_SSH_KEY }}
           REMOTE_HOST: 13.126.29.157
           REMOTE_USER: ubuntu
-          TARGET: /home/ubuntu/merged-ziplofy
+          TARGET: /home/ubuntu/Ziplofy
         with:
           source: 'Ziplofy/'
           exclude: 'node_modules'
@@ -72,7 +72,7 @@ jobs:
             fi
             [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
             echo "Using node: $(command -v node) ($(node -v))"
-            cd /home/ubuntu/merged-ziplofy
+            cd /home/ubuntu/Ziplofy
             npm ci
             pm2 delete all || true
             pm2 start npm -- run preview
