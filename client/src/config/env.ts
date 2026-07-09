@@ -1,5 +1,5 @@
 const CODIIC = {
-  apiUrl: 'https://api.codiic.com/api',
+  apiUrl: 'https://backend.codiic.com/api',
   redirectionUrl: 'https://dashboard.codiic.com',
 } as const;
 

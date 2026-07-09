@@ -31,7 +31,7 @@ if (NODE_ENV === 'development') {
         allowedOrigins: [
             // Merchant storefronts (*.codiic.com), dashboard, admin, auth, preview
             /^https?:\/\/([a-z0-9-]+\.)*codiic\.com$/i,
-            "https://api.codiic.com",
+            "https://backend.codiic.com",
             "https://auth.codiic.com",
             "https://dashboard.codiic.com",
             "https://admin.codiic.com",

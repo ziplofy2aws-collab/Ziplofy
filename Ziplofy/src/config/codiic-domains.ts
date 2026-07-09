@@ -1,7 +1,7 @@
 /** Production codiic.com hostnames — shared across dashboard env resolution. */
 export const CODIIC_PRODUCTION = {
-  apiOrigin: 'https://api.codiic.com',
-  apiUrl: 'https://api.codiic.com/api',
+  apiOrigin: 'https://backend.codiic.com',
+  apiUrl: 'https://backend.codiic.com/api',
   authOrigin: 'https://auth.codiic.com',
   dashboardOrigin: 'https://dashboard.codiic.com',
   adminOrigin: 'https://admin.codiic.com',

@@ -1,6 +1,6 @@
 const CODIIC = {
-  backendUrl: 'https://api.codiic.com/api',
-  socketUrl: 'https://api.codiic.com',
+  backendUrl: 'https://backend.codiic.com/api',
+  socketUrl: 'https://backend.codiic.com',
 } as const;
 
 function isCodiicHost(hostname: string): boolean {
