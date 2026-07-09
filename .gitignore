@@ -23,5 +23,10 @@ build/
 *.tmp
 
 # Built theme bundles (theme sources remain tracked)
-remote-themes/**/dist/
 **/theme-packs/**/preview/dist/
+
+# Remote theme packages (built/served locally; not versioned in this repo)
+remote-themes/
+
+# Personal notes / scratch work
+my-work/
