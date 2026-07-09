@@ -6,5 +6,20 @@
 !client/.env.production
 codiic-zip.zip
 node_modules
+
+# Build outputs (generated locally or in CI)
 dist/
-dist
+build/
+
+# Vite dependency pre-bundle cache
+.vite/
+
+# IDE / local debug logs
+.cursor/debug-*.log
+
+# Scratch / temp files
+*.tmp
+
+# Built theme bundles (theme sources remain tracked)
+remote-themes/**/dist/
+**/theme-packs/**/preview/dist/
