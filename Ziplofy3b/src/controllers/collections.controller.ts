@@ -1,62 +1,52 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import { SecureUserInfo } from "../middlewares/auth.middleware";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { Collections, ICollection } from "../models/collections/collections.model";
 import { CollectionEntry } from "../models/collection-entry/collection-entry.model";
 import { Product } from "../models/product/product.model";
-import { assertOptionalStoreCloudImageUrl } from "../utils/cloud-storage-image.util";
-import { sanitizeRichTextHtml } from "../utils/sanitize-html.util";
-import { assertStoreAccess } from "../utils/store-access.util";
+import {
+  isValidCollectionThemeTemplate,
+  listCollectionThemeTemplatesForStore,
+  normalizeCollectionThemeTemplate,
+} from "../utils/collection-theme-template.util";
 
-const COLLECTION_UPDATE_FIELDS = [
-  "title",
-  "imageUrl",
-  "imageAltText",
-  "description",
-  "pageTitle",
-  "metaDescription",
-  "urlHandle",
-  "productSort",
-  "status",
-] as const;
+const MAX_TITLE_LENGTH = 200;
+const MAX_URL_HANDLE_LENGTH = 100;
 
-const ALLOWED_SORTS = ["manual", "title-asc", "title-desc", "price-high", "price-low", "newest", "oldest"] as const;
-
-function buildCollectionUpdatePayload(body: Record<string, unknown>): Partial<ICollection> {
-  const updatePayload: Partial<ICollection> = {};
-
-  for (const field of COLLECTION_UPDATE_FIELDS) {
-    if (!Object.prototype.hasOwnProperty.call(body, field)) continue;
-    (updatePayload as Record<string, unknown>)[field] = body[field];
-  }
-
-  return updatePayload;
+function buildDuplicateTitle(title: string): string {
+  const base = title.trim() || "Collection";
+  const duplicateTitle = base.toLowerCase().startsWith("copy of ") ? base : `Copy of ${base}`;
+  return duplicateTitle.slice(0, MAX_TITLE_LENGTH);
 }
 
-async function getCollectionOrThrow(id: string) {
-  if (!id || !mongoose.isValidObjectId(id)) {
-    throw new CustomError("Valid collection id is required", 400);
-  }
-
-  const collection = await Collections.findById(id).select("storeId");
-  if (!collection) {
-    throw new CustomError("Collection not found", 404);
-  }
-
-  return collection;
+function normalizeUrlHandleCandidate(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, MAX_URL_HANDLE_LENGTH);
 }
 
-function validateCollectionStatus(status: unknown): void {
-  if (typeof status !== "undefined" && status !== "draft" && status !== "published") {
-    throw new CustomError("Invalid status. Allowed values are 'draft' or 'published'", 400);
-  }
-}
+async function generateDuplicateUrlHandle(
+  storeId: mongoose.Types.ObjectId,
+  sourceHandle: string
+): Promise<string> {
+  const normalizedSource = normalizeUrlHandleCandidate(sourceHandle) || "collection";
+  const rootHandle = normalizedSource.replace(/-copy(-\d+)?$/, "") || "collection";
 
-function validateProductSort(productSort: unknown): void {
-  if (typeof productSort !== "undefined" && !ALLOWED_SORTS.includes(productSort as (typeof ALLOWED_SORTS)[number])) {
-    throw new CustomError("Invalid productSort value", 400);
+  let attempt = 1;
+  while (attempt <= 1000) {
+    const suffix = attempt === 1 ? "-copy" : `-copy-${attempt}`;
+    const maxRootLength = Math.max(1, MAX_URL_HANDLE_LENGTH - suffix.length);
+    const candidate = `${rootHandle.slice(0, maxRootLength)}${suffix}`;
+    const existing = await Collections.findOne({ storeId, urlHandle: candidate }).select({ _id: 1 }).lean();
+    if (!existing) return candidate;
+    attempt += 1;
   }
+
+  throw new CustomError("Unable to generate a unique URL handle for the duplicated collection", 409);
 }
 
 // Create a new collection
@@ -73,18 +63,28 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
     productIds,
     productSort,
     status,
+    themeTemplate,
   } = req.body as Partial<ICollection> & Record<string, any>;
 
   if (!storeId || !title || !description || !pageTitle || !metaDescription || !urlHandle) {
     throw new CustomError("Missing required fields", 400);
   }
 
-  await assertStoreAccess(storeId.toString(), req.user as SecureUserInfo | undefined);
-  validateCollectionStatus(status);
-  validateProductSort(productSort);
-
-  const sanitizedDescription = sanitizeRichTextHtml(String(description));
-  await assertOptionalStoreCloudImageUrl(storeId.toString(), imageUrl);
+  // Optional status validation
+  if (typeof status !== 'undefined' && status !== 'draft' && status !== 'published') {
+    throw new CustomError("Invalid status. Allowed values are 'draft' or 'published'", 400);
+  }
+  const allowedSorts = ['manual', 'title-asc', 'title-desc', 'price-high', 'price-low', 'newest', 'oldest'];
+  if (typeof productSort !== 'undefined' && !allowedSorts.includes(productSort)) {
+    throw new CustomError("Invalid productSort value", 400);
+  }
+  if (typeof themeTemplate !== 'undefined' && !isValidCollectionThemeTemplate(themeTemplate)) {
+    throw new CustomError("Invalid themeTemplate value", 400);
+  }
+  const normalizedThemeTemplate =
+    typeof themeTemplate !== 'undefined'
+      ? normalizeCollectionThemeTemplate(themeTemplate)
+      : undefined;
 
   const normalizedProductIds = Array.isArray(productIds)
     ? [...new Set(productIds.filter((id: unknown) => typeof id === "string" && mongoose.isValidObjectId(id)))]
@@ -119,12 +119,13 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
             title,
             imageUrl,
             imageAltText,
-            description: sanitizedDescription,
+            description,
             pageTitle,
             metaDescription,
             urlHandle,
-            ...(typeof productSort !== "undefined" ? { productSort } : {}),
-            ...(typeof status !== "undefined" ? { status } : {}),
+            ...(typeof productSort !== 'undefined' ? { productSort } : {}),
+            ...(typeof status !== 'undefined' ? { status } : {}),
+            ...(normalizedThemeTemplate ? { themeTemplate: normalizedThemeTemplate } : {}),
           },
         ],
         { session }
@@ -155,84 +156,105 @@ export const getCollectionsByStoreId = asyncErrorHandler(async (req: Request, re
   const { storeId } = req.params;
   if (!storeId) throw new CustomError("storeId is required", 400);
 
-  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
-
-  const collections = await Collections.find({ storeId }).sort({ createdAt: -1 }).lean();
-
-  if (collections.length === 0) {
-    res.status(200).json({ success: true, data: [], count: 0 });
-    return;
-  }
-
-  const collectionIds = collections.map((collection) => collection._id);
-  const productCounts = await CollectionEntry.aggregate<{ _id: mongoose.Types.ObjectId; count: number }>([
-    { $match: { collectionId: { $in: collectionIds } } },
-    { $group: { _id: "$collectionId", count: { $sum: 1 } } },
-  ]);
-
-  const countByCollectionId = new Map(
-    productCounts.map((entry) => [String(entry._id), entry.count])
-  );
-
-  const data = collections.map((collection) => ({
-    ...collection,
-    productCount: countByCollectionId.get(String(collection._id)) ?? 0,
-  }));
-
-  res.status(200).json({ success: true, data, count: data.length });
+  const collections = await Collections.find({ storeId }).sort({ createdAt: -1 });
+  res.status(200).json({ success: true, data: collections, count: collections.length });
 });
 
-// Get collection by id
-export const getCollectionById = asyncErrorHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
+// Get available collection theme templates for a store
+export const getCollectionThemeTemplates = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+  if (!storeId || !mongoose.isValidObjectId(storeId)) {
+    throw new CustomError("Valid storeId is required", 400);
+  }
 
+  const templates = await listCollectionThemeTemplatesForStore(storeId);
+  res.status(200).json({ success: true, data: templates, count: templates.length });
+});
+
+// Duplicate collection
+export const duplicateCollection = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
   if (!id || !mongoose.isValidObjectId(id)) {
     throw new CustomError("Valid collection id is required", 400);
   }
 
-  const collection = await Collections.findById(id).lean();
-  if (!collection) {
+  const source = await Collections.findById(id).lean();
+  if (!source) {
     throw new CustomError("Collection not found", 404);
   }
 
-  await assertStoreAccess(collection.storeId.toString(), req.user as SecureUserInfo | undefined);
+  const entries = await CollectionEntry.find({ collectionId: source._id })
+    .sort({ position: 1, createdAt: 1 })
+    .select({ productId: 1, position: 1 })
+    .lean();
 
-  const productCount = await CollectionEntry.countDocuments({ collectionId: collection._id });
+  const duplicateTitle = buildDuplicateTitle(source.title);
+  const duplicatePageTitle = buildDuplicateTitle(source.pageTitle || source.title);
+  const duplicateUrlHandle = await generateDuplicateUrlHandle(
+    source.storeId as mongoose.Types.ObjectId,
+    source.urlHandle
+  );
 
-  res.status(200).json({
+  const session = await mongoose.startSession();
+  let duplicated: any;
+  try {
+    await session.withTransaction(async () => {
+      const created = await Collections.create(
+        [
+          {
+            storeId: source.storeId,
+            title: duplicateTitle,
+            imageUrl: source.imageUrl,
+            imageAltText: source.imageAltText,
+            description: source.description,
+            pageTitle: duplicatePageTitle,
+            metaDescription: source.metaDescription,
+            urlHandle: duplicateUrlHandle,
+            productSort: source.productSort,
+            themeTemplate: source.themeTemplate ?? "default",
+            status: "draft",
+          },
+        ],
+        { session }
+      );
+
+      duplicated = created[0];
+
+      if (entries.length > 0) {
+        await CollectionEntry.insertMany(
+          entries.map((entry, index) => ({
+            collectionId: duplicated._id,
+            productId: entry.productId,
+            position: typeof entry.position === "number" ? entry.position : index + 1,
+          })),
+          { session, ordered: false }
+        );
+      }
+    });
+  } finally {
+    await session.endSession();
+  }
+
+  res.status(201).json({
     success: true,
-    data: {
-      ...collection,
-      productCount,
-    },
+    data: duplicated,
+    message: "Collection duplicated successfully",
   });
 });
 
 // Update collection
 export const updateCollection = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const existing = await getCollectionOrThrow(id);
-  const storeId = existing.storeId.toString();
+  const update = { ...(req.body as Partial<ICollection>) };
 
-  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
-
-  const updatePayload = buildCollectionUpdatePayload(req.body as Record<string, unknown>);
-  if (!Object.keys(updatePayload).length) {
-    throw new CustomError("No valid fields provided to update", 400);
+  if (Object.prototype.hasOwnProperty.call(update, "themeTemplate")) {
+    if (!isValidCollectionThemeTemplate(update.themeTemplate)) {
+      throw new CustomError("Invalid themeTemplate value", 400);
+    }
+    update.themeTemplate = normalizeCollectionThemeTemplate(update.themeTemplate);
   }
 
-  validateCollectionStatus(updatePayload.status);
-  validateProductSort(updatePayload.productSort);
-
-  if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
-    updatePayload.description = sanitizeRichTextHtml(String(updatePayload.description ?? ""));
-  }
-
-  if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrl")) {
-    await assertOptionalStoreCloudImageUrl(storeId, updatePayload.imageUrl);
-  }
-
-  const updated = await Collections.findByIdAndUpdate(id, updatePayload, { new: true, runValidators: true });
+  const updated = await Collections.findByIdAndUpdate(id, update, { new: true, runValidators: true });
   if (!updated) throw new CustomError("Collection not found", 404);
 
   res.status(200).json({ success: true, data: updated, message: "Collection updated successfully" });
@@ -241,10 +263,6 @@ export const updateCollection = asyncErrorHandler(async (req: Request, res: Resp
 // Delete collection
 export const deleteCollection = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const existing = await getCollectionOrThrow(id);
-
-  await assertStoreAccess(existing.storeId.toString(), req.user as SecureUserInfo | undefined);
-
   const deleted = await Collections.findByIdAndDelete(id);
   if (!deleted) throw new CustomError("Collection not found", 404);
 
@@ -255,38 +273,40 @@ export const deleteCollection = asyncErrorHandler(async (req: Request, res: Resp
 export const searchCollections = asyncErrorHandler(async (req: Request, res: Response) => {
   const { storeId } = req.params;
   const { q, page = 1, limit = 10 } = req.query;
-
+  
   if (!storeId) throw new CustomError("storeId is required", 400);
-  if (!q || typeof q !== "string") throw new CustomError("Search query 'q' is required", 400);
-
-  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
+  if (!q || typeof q !== 'string') throw new CustomError("Search query 'q' is required", 400);
 
   const skip = (Number(page) - 1) * Number(limit);
 
+  // Simple fuzzy search on collection names
   const searchCriteria = {
     storeId,
-    title: { $regex: q, $options: "i" },
+    title: { $regex: q, $options: 'i' }
   };
 
+  // Get collections with pagination
   const collections = await Collections.find(searchCriteria)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(Number(limit))
     .lean();
 
+  // Get product counts for each collection
   const collectionsWithProductCount = await Promise.all(
     collections.map(async (collection) => {
       const productCount = await CollectionEntry.countDocuments({
-        collectionId: collection._id,
+        collectionId: collection._id
       });
 
       return {
         ...collection,
-        productCount,
+        productCount
       };
     })
   );
 
+  // Get total count for pagination
   const totalCollections = await Collections.countDocuments(searchCriteria);
 
   res.status(200).json({
@@ -296,8 +316,8 @@ export const searchCollections = asyncErrorHandler(async (req: Request, res: Res
       currentPage: Number(page),
       totalPages: Math.ceil(totalCollections / Number(limit)),
       totalItems: totalCollections,
-      itemsPerPage: Number(limit),
-    },
+      itemsPerPage: Number(limit)
+    }
   });
 });
 
@@ -312,14 +332,12 @@ export const searchProductsInCollection = asyncErrorHandler(async (req: Request,
     throw new CustomError("Search query 'q' is required", 400);
   }
 
-  const collection = await getCollectionOrThrow(collectionId);
-  await assertStoreAccess(collection.storeId.toString(), req.user as SecureUserInfo | undefined);
-
   const pageNum = Math.max(1, Number(page) || 1);
   const limitNum = Math.min(100, Math.max(1, Number(limit) || 10));
   const skip = (pageNum - 1) * limitNum;
   const rx = new RegExp(q.trim(), "i");
 
+  // Get product ids in the collection
   const productIds: mongoose.Types.ObjectId[] = await CollectionEntry.find({ collectionId })
     .distinct("productId");
 
@@ -339,7 +357,10 @@ export const searchProductsInCollection = asyncErrorHandler(async (req: Request,
   const filter = {
     _id: { $in: productIds },
     isDeleted: { $ne: true },
-    $or: [{ title: rx }, { sku: rx }],
+    $or: [
+      { title: rx },
+      { sku: rx },
+    ],
   } as any;
 
   const [products, total] = await Promise.all([
@@ -363,3 +384,4 @@ export const searchProductsInCollection = asyncErrorHandler(async (req: Request,
     },
   });
 });
+

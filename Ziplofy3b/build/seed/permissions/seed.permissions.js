@@ -156,6 +156,147 @@ const defs = [
     { key: 'store_settings.view_customer_events', name: 'View customer events', resource: 'settings', parentKey: 'store_settings', isLeaf: false, order: 60 },
     { key: 'store_settings.view_customer_events.manage_add_custom_pixels', name: 'Manage and add custom pixels', resource: 'settings', parentKey: 'store_settings.view_customer_events', isLeaf: true, order: 61 },
     { key: 'store_settings.store_policies', name: 'Store policies', resource: 'settings', parentKey: 'store_settings', isLeaf: true, order: 70 },
+    // Purchase orders
+    { key: 'purchase_orders', name: 'Purchase orders', resource: 'purchase_orders', parentKey: null, isLeaf: false, order: 18 },
+    { key: 'purchase_orders.view', name: 'View', resource: 'purchase_orders', parentKey: 'purchase_orders', isLeaf: true, order: 10 },
+    { key: 'purchase_orders.create_edit', name: 'Create and edit', resource: 'purchase_orders', parentKey: 'purchase_orders', isLeaf: true, order: 20 },
+    { key: 'purchase_orders.export', name: 'Export', resource: 'purchase_orders', parentKey: 'purchase_orders', isLeaf: true, order: 30 },
+    { key: 'purchase_orders.delete', name: 'Delete', resource: 'purchase_orders', parentKey: 'purchase_orders', isLeaf: true, order: 40 },
+    // Vendors
+    { key: 'vendors', name: 'Vendors', resource: 'vendors', parentKey: null, isLeaf: false, order: 19 },
+    { key: 'vendors.view', name: 'View', resource: 'vendors', parentKey: 'vendors', isLeaf: true, order: 10 },
+    { key: 'vendors.create_edit', name: 'Create and edit', resource: 'vendors', parentKey: 'vendors', isLeaf: true, order: 20 },
+    { key: 'vendors.delete', name: 'Delete', resource: 'vendors', parentKey: 'vendors', isLeaf: true, order: 30 },
+    // Tag management
+    { key: 'tag_management', name: 'Tag management', resource: 'tags', parentKey: null, isLeaf: false, order: 20 },
+    { key: 'tag_management.view', name: 'View', resource: 'tags', parentKey: 'tag_management', isLeaf: true, order: 10 },
+    { key: 'tag_management.create_edit', name: 'Create and edit', resource: 'tags', parentKey: 'tag_management', isLeaf: true, order: 20 },
+    { key: 'tag_management.delete', name: 'Delete', resource: 'tags', parentKey: 'tag_management', isLeaf: true, order: 30 },
+    // Theme gallery
+    { key: 'themes', name: 'Themes', resource: 'themes', parentKey: null, isLeaf: false, order: 21 },
+    { key: 'themes.view', name: 'View themes', resource: 'themes', parentKey: 'themes', isLeaf: true, order: 10 },
+    { key: 'themes.install', name: 'Install themes', resource: 'themes', parentKey: 'themes', isLeaf: true, order: 20 },
+    { key: 'themes.customize', name: 'Customize themes', resource: 'themes', parentKey: 'themes', isLeaf: true, order: 30 },
+    // Staff users
+    { key: 'users', name: 'Users', resource: 'users', parentKey: null, isLeaf: false, order: 22 },
+    { key: 'users.view', name: 'View staff', resource: 'users', parentKey: 'users', isLeaf: true, order: 10 },
+    { key: 'users.create_edit', name: 'Create and edit staff', resource: 'users', parentKey: 'users', isLeaf: true, order: 20 },
+    { key: 'users.delete', name: 'Delete staff', resource: 'users', parentKey: 'users', isLeaf: true, order: 30 },
+    // Roles & permissions
+    { key: 'roles', name: 'Roles', resource: 'roles', parentKey: null, isLeaf: false, order: 23 },
+    { key: 'roles.view', name: 'View roles', resource: 'roles', parentKey: 'roles', isLeaf: true, order: 10 },
+    { key: 'roles.create_edit', name: 'Create and edit roles', resource: 'roles', parentKey: 'roles', isLeaf: true, order: 20 },
+    { key: 'roles.delete', name: 'Delete roles', resource: 'roles', parentKey: 'roles', isLeaf: true, order: 30 },
+    // Marketing extensions
+    { key: 'marketing.automations', name: 'Automations', resource: 'marketing', parentKey: 'marketing', isLeaf: false, order: 30 },
+    { key: 'marketing.automations.view', name: 'View', resource: 'marketing', parentKey: 'marketing.automations', isLeaf: true, order: 31 },
+    { key: 'marketing.automations.create_edit', name: 'Create and edit', resource: 'marketing', parentKey: 'marketing.automations', isLeaf: true, order: 32 },
+    { key: 'marketing.automations.delete', name: 'Delete', resource: 'marketing', parentKey: 'marketing.automations', isLeaf: true, order: 33 },
+    { key: 'marketing.attribution', name: 'Attribution', resource: 'marketing', parentKey: 'marketing', isLeaf: false, order: 40 },
+    { key: 'marketing.attribution.view', name: 'View', resource: 'marketing', parentKey: 'marketing.attribution', isLeaf: true, order: 41 },
+    // Analytics live view
+    { key: 'analytics.live_view', name: 'Live view', resource: 'analytics', parentKey: 'analytics', isLeaf: true, order: 30 },
+    // Online store extensions
+    { key: 'online_store.pages', name: 'Pages', resource: 'online_store', parentKey: 'online_store', isLeaf: false, order: 30 },
+    { key: 'online_store.pages.view', name: 'View', resource: 'online_store', parentKey: 'online_store.pages', isLeaf: true, order: 31 },
+    { key: 'online_store.pages.create_edit', name: 'Create and edit', resource: 'online_store', parentKey: 'online_store.pages', isLeaf: true, order: 32 },
+    { key: 'online_store.pages.delete', name: 'Delete', resource: 'online_store', parentKey: 'online_store.pages', isLeaf: true, order: 33 },
+    { key: 'online_store.preference', name: 'Store preference', resource: 'online_store', parentKey: 'online_store', isLeaf: true, order: 40 },
+    // Settings — plan & billing
+    { key: 'settings_plan', name: 'Plan', resource: 'settings', parentKey: null, isLeaf: false, order: 24 },
+    { key: 'settings_plan.view', name: 'View plan', resource: 'settings', parentKey: 'settings_plan', isLeaf: true, order: 10 },
+    { key: 'settings_plan.manage', name: 'Manage plan', resource: 'settings', parentKey: 'settings_plan', isLeaf: true, order: 20 },
+    { key: 'settings_billing', name: 'Billing', resource: 'settings', parentKey: null, isLeaf: false, order: 25 },
+    { key: 'settings_billing.view', name: 'View billing', resource: 'settings', parentKey: 'settings_billing', isLeaf: true, order: 10 },
+    { key: 'settings_billing.manage', name: 'Manage billing', resource: 'settings', parentKey: 'settings_billing', isLeaf: true, order: 20 },
+    { key: 'settings_payments', name: 'Payments', resource: 'settings', parentKey: null, isLeaf: false, order: 26 },
+    { key: 'settings_payments.view', name: 'View payment settings', resource: 'settings', parentKey: 'settings_payments', isLeaf: true, order: 10 },
+    { key: 'settings_payments.manage', name: 'Manage payment settings', resource: 'settings', parentKey: 'settings_payments', isLeaf: true, order: 20 },
+    { key: 'settings_checkout', name: 'Checkout', resource: 'settings', parentKey: null, isLeaf: false, order: 27 },
+    { key: 'settings_checkout.view', name: 'View checkout settings', resource: 'settings', parentKey: 'settings_checkout', isLeaf: true, order: 10 },
+    { key: 'settings_checkout.manage', name: 'Manage checkout settings', resource: 'settings', parentKey: 'settings_checkout', isLeaf: true, order: 20 },
+    { key: 'settings_customer_accounts', name: 'Customer accounts', resource: 'settings', parentKey: null, isLeaf: false, order: 28 },
+    { key: 'settings_customer_accounts.view', name: 'View customer account settings', resource: 'settings', parentKey: 'settings_customer_accounts', isLeaf: true, order: 10 },
+    { key: 'settings_customer_accounts.manage', name: 'Manage customer account settings', resource: 'settings', parentKey: 'settings_customer_accounts', isLeaf: true, order: 20 },
+    { key: 'settings_notifications', name: 'Notifications', resource: 'settings', parentKey: null, isLeaf: false, order: 29 },
+    { key: 'settings_notifications.view', name: 'View notifications', resource: 'settings', parentKey: 'settings_notifications', isLeaf: true, order: 10 },
+    { key: 'settings_notifications.manage', name: 'Manage notifications', resource: 'settings', parentKey: 'settings_notifications', isLeaf: true, order: 20 },
+    { key: 'settings_metafields', name: 'Metafields and metaobjects', resource: 'settings', parentKey: null, isLeaf: false, order: 30 },
+    { key: 'settings_metafields.view', name: 'View', resource: 'settings', parentKey: 'settings_metafields', isLeaf: true, order: 10 },
+    { key: 'settings_metafields.manage', name: 'Manage', resource: 'settings', parentKey: 'settings_metafields', isLeaf: true, order: 20 },
+    { key: 'settings_languages', name: 'Languages', resource: 'settings', parentKey: null, isLeaf: false, order: 31 },
+    { key: 'settings_languages.view', name: 'View languages', resource: 'settings', parentKey: 'settings_languages', isLeaf: true, order: 10 },
+    { key: 'settings_languages.manage', name: 'Manage languages', resource: 'settings', parentKey: 'settings_languages', isLeaf: true, order: 20 },
+    { key: 'settings_customer_privacy', name: 'Customer privacy', resource: 'settings', parentKey: null, isLeaf: false, order: 32 },
+    { key: 'settings_customer_privacy.view', name: 'View privacy settings', resource: 'settings', parentKey: 'settings_customer_privacy', isLeaf: true, order: 10 },
+    { key: 'settings_customer_privacy.manage', name: 'Manage privacy settings', resource: 'settings', parentKey: 'settings_customer_privacy', isLeaf: true, order: 20 },
+    { key: 'settings_policies', name: 'Policies', resource: 'settings', parentKey: null, isLeaf: false, order: 33 },
+    { key: 'settings_policies.view', name: 'View policies', resource: 'settings', parentKey: 'settings_policies', isLeaf: true, order: 10 },
+    { key: 'settings_policies.manage', name: 'Manage policies', resource: 'settings', parentKey: 'settings_policies', isLeaf: true, order: 20 },
+    { key: 'settings_security', name: 'Security', resource: 'settings', parentKey: null, isLeaf: false, order: 34 },
+    { key: 'settings_security.view', name: 'View security settings', resource: 'settings', parentKey: 'settings_security', isLeaf: true, order: 10 },
+    { key: 'settings_security.manage', name: 'Manage security settings', resource: 'settings', parentKey: 'settings_security', isLeaf: true, order: 20 },
+    // Collections (under Products)
+    { key: 'collections', name: 'Collections', resource: 'products', parentKey: 'products', isLeaf: false, order: 55 },
+    { key: 'collections.view', name: 'View', resource: 'products', parentKey: 'collections', isLeaf: true, order: 10 },
+    { key: 'collections.create_edit', name: 'Create and edit', resource: 'products', parentKey: 'collections', isLeaf: true, order: 20 },
+    { key: 'collections.delete', name: 'Delete', resource: 'products', parentKey: 'collections', isLeaf: true, order: 30 },
+    // Customer segments (under Customers)
+    { key: 'customer_segments', name: 'Customer segments', resource: 'customers', parentKey: 'customers', isLeaf: false, order: 90 },
+    { key: 'customer_segments.view', name: 'View', resource: 'customers', parentKey: 'customer_segments', isLeaf: true, order: 10 },
+    { key: 'customer_segments.create_edit', name: 'Create and edit', resource: 'customers', parentKey: 'customer_segments', isLeaf: true, order: 20 },
+    { key: 'customer_segments.delete', name: 'Delete', resource: 'customers', parentKey: 'customer_segments', isLeaf: true, order: 30 },
+    // General settings (Settings > General)
+    { key: 'settings_general', name: 'General settings', resource: 'settings', parentKey: null, isLeaf: false, order: 0 },
+    { key: 'settings_general.view', name: 'View general settings', resource: 'settings', parentKey: 'settings_general', isLeaf: true, order: 10 },
+    { key: 'settings_general.manage', name: 'Manage general settings', resource: 'settings', parentKey: 'settings_general', isLeaf: true, order: 20 },
+    { key: 'settings_general.branding', name: 'Manage branding', resource: 'settings', parentKey: 'settings_general', isLeaf: true, order: 30 },
+    { key: 'settings_general.activity', name: 'View store activity log', resource: 'settings', parentKey: 'settings_general', isLeaf: true, order: 40 },
+    { key: 'settings_general.metafields', name: 'Manage shop metafields', resource: 'settings', parentKey: 'settings_general', isLeaf: true, order: 50 },
+    // Content extensions
+    { key: 'content.blog_posts', name: 'Blog posts', resource: 'content', parentKey: 'content', isLeaf: false, order: 40 },
+    { key: 'content.blog_posts.view', name: 'View', resource: 'content', parentKey: 'content.blog_posts', isLeaf: true, order: 41 },
+    { key: 'content.blog_posts.create_edit', name: 'Create and edit', resource: 'content', parentKey: 'content.blog_posts', isLeaf: true, order: 42 },
+    { key: 'content.blog_posts.delete', name: 'Delete', resource: 'content', parentKey: 'content.blog_posts', isLeaf: true, order: 43 },
+    { key: 'content.url_redirects', name: 'URL redirects', resource: 'content', parentKey: 'content', isLeaf: false, order: 50 },
+    { key: 'content.url_redirects.view', name: 'View', resource: 'content', parentKey: 'content.url_redirects', isLeaf: true, order: 51 },
+    { key: 'content.url_redirects.create_edit', name: 'Create and edit', resource: 'content', parentKey: 'content.url_redirects', isLeaf: true, order: 52 },
+    { key: 'content.url_redirects.delete', name: 'Delete', resource: 'content', parentKey: 'content.url_redirects', isLeaf: true, order: 53 },
+    // Orders extensions
+    { key: 'orders.create', name: 'Create orders', resource: 'orders', parentKey: 'orders', isLeaf: true, order: 15 },
+    // Transfers & shipments
+    { key: 'transfers', name: 'Transfers', resource: 'products', parentKey: null, isLeaf: false, order: 35 },
+    { key: 'transfers.view', name: 'View transfers', resource: 'products', parentKey: 'transfers', isLeaf: true, order: 10 },
+    { key: 'transfers.create_edit', name: 'Create and edit transfers', resource: 'products', parentKey: 'transfers', isLeaf: true, order: 20 },
+    { key: 'transfers.delete', name: 'Delete transfers', resource: 'products', parentKey: 'transfers', isLeaf: true, order: 30 },
+    { key: 'shipments', name: 'Shipments', resource: 'products', parentKey: 'transfers', isLeaf: false, order: 40 },
+    { key: 'shipments.view', name: 'View shipments', resource: 'products', parentKey: 'shipments', isLeaf: true, order: 41 },
+    { key: 'shipments.create_edit', name: 'Create and edit shipments', resource: 'products', parentKey: 'shipments', isLeaf: true, order: 42 },
+    { key: 'shipments.receive', name: 'Receive shipments', resource: 'products', parentKey: 'shipments', isLeaf: true, order: 43 },
+    // Tag management extensions
+    { key: 'tag_management.product_types', name: 'Product types', resource: 'tags', parentKey: 'tag_management', isLeaf: false, order: 40 },
+    { key: 'tag_management.product_types.view', name: 'View', resource: 'tags', parentKey: 'tag_management.product_types', isLeaf: true, order: 41 },
+    { key: 'tag_management.product_types.create_edit', name: 'Create and edit', resource: 'tags', parentKey: 'tag_management.product_types', isLeaf: true, order: 42 },
+    { key: 'tag_management.product_types.delete', name: 'Delete', resource: 'tags', parentKey: 'tag_management.product_types', isLeaf: true, order: 43 },
+    { key: 'tag_management.transfer_tags', name: 'Transfer tags', resource: 'tags', parentKey: 'tag_management', isLeaf: false, order: 50 },
+    { key: 'tag_management.transfer_tags.view', name: 'View', resource: 'tags', parentKey: 'tag_management.transfer_tags', isLeaf: true, order: 51 },
+    { key: 'tag_management.transfer_tags.create_edit', name: 'Create and edit', resource: 'tags', parentKey: 'tag_management.transfer_tags', isLeaf: true, order: 52 },
+    { key: 'tag_management.transfer_tags.delete', name: 'Delete', resource: 'tags', parentKey: 'tag_management.transfer_tags', isLeaf: true, order: 53 },
+    { key: 'tag_management.purchase_order_tags', name: 'Purchase order tags', resource: 'tags', parentKey: 'tag_management', isLeaf: false, order: 60 },
+    { key: 'tag_management.purchase_order_tags.view', name: 'View', resource: 'tags', parentKey: 'tag_management.purchase_order_tags', isLeaf: true, order: 61 },
+    { key: 'tag_management.purchase_order_tags.create_edit', name: 'Create and edit', resource: 'tags', parentKey: 'tag_management.purchase_order_tags', isLeaf: true, order: 62 },
+    { key: 'tag_management.purchase_order_tags.delete', name: 'Delete', resource: 'tags', parentKey: 'tag_management.purchase_order_tags', isLeaf: true, order: 63 },
+    // Online store extensions
+    { key: 'online_store.theme_editor', name: 'Theme editor', resource: 'online_store', parentKey: 'online_store', isLeaf: true, order: 50 },
+    { key: 'online_store.navigation', name: 'Navigation menus', resource: 'online_store', parentKey: 'online_store', isLeaf: true, order: 60 },
+    // Apps & sales channels
+    { key: 'apps', name: 'Apps', resource: 'apps', parentKey: null, isLeaf: false, order: 36 },
+    { key: 'apps.view', name: 'View apps', resource: 'apps', parentKey: 'apps', isLeaf: true, order: 10 },
+    { key: 'apps.install', name: 'Install apps', resource: 'apps', parentKey: 'apps', isLeaf: true, order: 20 },
+    { key: 'apps.manage', name: 'Manage apps', resource: 'apps', parentKey: 'apps', isLeaf: true, order: 30 },
+    { key: 'sales_channels', name: 'Sales channels', resource: 'sales_channels', parentKey: null, isLeaf: false, order: 37 },
+    { key: 'sales_channels.view', name: 'View sales channels', resource: 'sales_channels', parentKey: 'sales_channels', isLeaf: true, order: 10 },
+    { key: 'sales_channels.manage', name: 'Manage sales channels', resource: 'sales_channels', parentKey: 'sales_channels', isLeaf: true, order: 20 },
 ];
 async function seedPermissions() {
     try {
@@ -175,7 +316,7 @@ async function seedPermissions() {
         // Optional: set implies based on grouping (example: selecting group implies children)
         // We keep it explicit for now; can be updated later if needed.
         // eslint-disable-next-line no-console
-        console.log('Permissions seeded successfully');
+        console.log(`Permissions seeded successfully (${defs.length} definitions)`);
         process.exit(0);
     }
     catch (err) {

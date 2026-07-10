@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import { SecureUserInfo } from "../middlewares/auth.middleware";
 import { InventoryLevelModel } from "../models/inventory-level/inventory-level.model";
 import { LocationModel } from "../models/location/location.model";
 import { IProductVariant, ProductVariant } from "../models/product/product-variants.model";
@@ -10,66 +9,6 @@ import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { AmountOffProductsDiscount, AmountOffProductsEntry, AmountOffOrderDiscount } from "../models";
 import { CollectionEntry } from "../models/collection-entry/collection-entry.model";
 import { absolutizeImageUrlsArray, publicOriginFromRequest } from "../utils/public-origin.util";
-import { assertStoreAccess } from "../utils/store-access.util";
-import { assertStoreCloudImageUrls } from "../utils/cloud-storage-image.util";
-import { sanitizeRichTextHtml } from "../utils/sanitize-html.util";
-
-const PUBLIC_PRODUCT_DETAIL_SELECT = {
-  title: 1,
-  description: 1,
-  pageTitle: 1,
-  metaDescription: 1,
-  urlHandle: 1,
-  price: 1,
-  compareAtPrice: 1,
-  imageUrls: 1,
-  sku: 1,
-  status: 1,
-  category: 1,
-  vendor: 1,
-  storeId: 1,
-  variants: 1,
-  createdAt: 1,
-  updatedAt: 1,
-} as const;
-
-function normalizeProductUrlHandle(raw: string): string {
-  return raw.trim().toLowerCase();
-}
-
-async function buildPublicProductDetailResponse(req: Request, productId: mongoose.Types.ObjectId) {
-  const product = await Product.findOne({ _id: productId, status: "active", isDeleted: { $ne: true } })
-    .populate({ path: "category", select: "name" })
-    .populate({ path: "vendor", model: "Vendor", select: "name" })
-    .select(PUBLIC_PRODUCT_DETAIL_SELECT)
-    .lean();
-
-  if (!product) {
-    throw new CustomError("Product not found", 404);
-  }
-
-  const variants = await ProductVariant.find({ productId, depricated: false })
-    .select({
-      price: 1,
-      compareAtPrice: 1,
-      optionValues: 1,
-      sku: 1,
-      images: 1,
-    })
-    .lean();
-
-  const publicOrigin = publicOriginFromRequest(req);
-  const variantsOut = variants.map((v: any) => ({
-    ...v,
-    images: absolutizeImageUrlsArray(publicOrigin, v.images),
-  }));
-
-  return {
-    ...product,
-    imageUrls: absolutizeImageUrlsArray(publicOrigin, (product as any).imageUrls),
-    variants: variantsOut,
-  };
-}
 
 // Create a new product
 export const createProduct = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -88,7 +27,7 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
   }
 
   // Normalize images if client sent "images" instead of "imageUrls"
-  body.imageUrls = body.imageUrls ?? body.images ?? [];
+  body.imageUrls = body.images ?? [];
 
   // Shipping fields are optional; keep the controller lean and rely on schema defaults
 
@@ -132,20 +71,8 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
       tagIds: body.tagIds ?? [],
       imageUrls: body.imageUrls ?? [],
     });
-  } catch (error: any) {
-    const validationMessage =
-      error?.errors && typeof error.errors === 'object'
-        ? Object.values(error.errors)
-            .map((entry: any) => entry?.message)
-            .filter(Boolean)
-            .join(', ')
-        : '';
-    throw new CustomError(
-      validationMessage ||
-        error?.message ||
-        "We couldn't create the product. Please verify the product details and try again.",
-      400
-    );
+  } catch (error) {
+    throw new CustomError("We couldn't create the product. Please verify the product details and try again.", 400);
   }
 
   // 2) Generate ProductVariant docs
@@ -367,24 +294,6 @@ export const updateProductById = asyncErrorHandler(async (req: Request, res: Res
     throw new CustomError("No valid fields provided to update", 400);
   }
 
-  const existingProduct = await Product.findOne({ _id: id, isDeleted: { $ne: true } }).select("storeId");
-  if (!existingProduct) {
-    throw new CustomError("Product not found", 404);
-  }
-
-  await assertStoreAccess(existingProduct.storeId.toString(), req.user as SecureUserInfo | undefined);
-
-  const storeId = existingProduct.storeId.toString();
-
-  if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
-    updatePayload.description = sanitizeRichTextHtml(String(updatePayload.description ?? ""));
-  }
-
-  if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrls")) {
-    const imageUrls = Array.isArray(updatePayload.imageUrls) ? updatePayload.imageUrls : [];
-    await assertStoreCloudImageUrls(storeId, imageUrls);
-  }
-
   const updatedProduct = await Product.findOneAndUpdate(
     { _id: id },
     { $set: updatePayload },
@@ -426,44 +335,6 @@ export const getProductsByStoreId = asyncErrorHandler(async (req: Request, res: 
     success: true,
     data: products,
     count: products.length,
-  });
-});
-
-/** Latest active product for checkout editor order-summary preview. */
-export const getStorePreviewProduct = asyncErrorHandler(async (req: Request, res: Response) => {
-  const { storeId } = req.params;
-  if (!storeId || !mongoose.isValidObjectId(storeId)) {
-    throw new CustomError("Valid storeId is required", 400);
-  }
-
-  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
-
-  const product = await Product.findOne({
-    storeId,
-    isDeleted: { $ne: true },
-  })
-    .sort({ status: 1, createdAt: -1 })
-    .select({ title: 1, price: 1, imageUrls: 1 })
-    .lean();
-
-  if (!product) {
-    return res.status(200).json({ success: true, data: null });
-  }
-
-  const origin = publicOriginFromRequest(req);
-  const imageUrls = absolutizeImageUrlsArray(
-    origin,
-    Array.isArray(product.imageUrls) ? product.imageUrls : []
-  );
-
-  return res.status(200).json({
-    success: true,
-    data: {
-      _id: product._id,
-      title: product.title,
-      price: product.price,
-      imageUrl: imageUrls[0] ?? null,
-    },
   });
 });
 
@@ -752,43 +623,53 @@ export const getProductByIdPublic = asyncErrorHandler(async (req: Request, res: 
     throw new CustomError("Valid product ID is required", 400);
   }
 
-  const data = await buildPublicProductDetailResponse(req, new mongoose.Types.ObjectId(productId));
-
-  res.status(200).json({
-    success: true,
-    data,
-  });
-});
-
-/** Storefront: resolve an active product by store + URL handle (for /products/:handle routes). */
-export const getProductByUrlHandlePublic = asyncErrorHandler(async (req: Request, res: Response) => {
-  const { storeId, urlHandle } = req.params;
-
-  if (!storeId || !mongoose.isValidObjectId(storeId)) {
-    throw new CustomError("Valid storeId is required", 400);
-  }
-  if (!urlHandle?.trim()) {
-    throw new CustomError("urlHandle is required", 400);
-  }
-
-  const product = await Product.findOne({
-    storeId,
-    urlHandle: normalizeProductUrlHandle(urlHandle),
-    status: "active",
-    isDeleted: { $ne: true },
-  })
-    .select({ _id: 1 })
+  const product = await Product.findOne({ _id: productId, status: "active", isDeleted: { $ne: true } })
+    .populate({ path: "category", select: "name" })
+    .populate({ path: "vendor", model: "Vendor", select: "name" })
+    .select({
+      title: 1,
+      description: 1,
+      price: 1,
+      compareAtPrice: 1,
+      imageUrls: 1,
+      sku: 1,
+      status: 1,
+      category: 1,
+      vendor: 1,
+      storeId: 1,
+      variants: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    })
     .lean();
 
   if (!product) {
     throw new CustomError("Product not found", 404);
   }
 
-  const data = await buildPublicProductDetailResponse(req, product._id);
+  const variants = await ProductVariant.find({ productId, depricated: false })
+    .select({
+      price: 1,
+      compareAtPrice: 1,
+      optionValues: 1,
+      sku: 1,
+      images: 1,
+    })
+    .lean();
+
+  const publicOrigin = publicOriginFromRequest(req);
+  const variantsOut = variants.map((v: any) => ({
+    ...v,
+    images: absolutizeImageUrlsArray(publicOrigin, v.images),
+  }));
 
   res.status(200).json({
     success: true,
-    data,
+    data: {
+      ...product,
+      imageUrls: absolutizeImageUrlsArray(publicOrigin, (product as any).imageUrls),
+      variants: variantsOut,
+    },
   });
 });
 

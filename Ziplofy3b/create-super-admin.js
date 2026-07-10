@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 // Import models
@@ -43,9 +42,8 @@ async function createSuperAdmin() {
       console.log('Super admin user already exists with email: shubham2105834@gmail.com');
       console.log('Updating password...');
       
-      // Update password
-      const hashedPassword = await bcrypt.hash('1234567', 10);
-      existingUser.password = hashedPassword;
+      // Plain password — User model pre-save hook handles hashing
+      existingUser.password = '12345678';
       existingUser.role = superAdminRole._id;
       existingUser.status = 'active';
       await existingUser.save();
@@ -54,14 +52,11 @@ async function createSuperAdmin() {
     } else {
       console.log('Creating super admin user...');
       
-      // Hash password
-      const hashedPassword = await bcrypt.hash('1234567', 10);
-      
-      // Create super admin user
+      // Create super admin user (password hashed by User model pre-save hook)
       const superAdmin = await User.create({
         name: 'Shubham Super Admin',
         email: 'shubham2105834@gmail.com',
-        password: hashedPassword,
+        password: '12345678',
         role: superAdminRole._id,
         status: 'active',
         lastLogin: null,
@@ -70,13 +65,13 @@ async function createSuperAdmin() {
       
       console.log('Super admin user created successfully!');
       console.log('Email: shubham2105834@gmail.com');
-      console.log('Password: 1234567');
+      console.log('Password: 12345678');
     }
 
     console.log('\n✅ Super admin user is ready!');
     console.log('You can now login with:');
     console.log('Email: shubham2105834@gmail.com');
-    console.log('Password: 1234567');
+    console.log('Password: 12345678');
     
     process.exit(0);
   } catch (error) {

@@ -1,5 +1,4 @@
-whatconst mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Import models
@@ -21,11 +20,8 @@ async function fixUserPassword() {
     
     console.log('User found, updating password...');
     
-    // Hash the password
-    const hashedPassword = await bcrypt.hash('1234567', 10);
-    
-    // Update the user's password
-    user.password = hashedPassword;
+    // Plain password — User model pre-save hook handles hashing
+    user.password = '12345678';
     await user.save();
     
     console.log('Password updated successfully!');

@@ -142,15 +142,6 @@ exports.updateStore = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     if (body.storeDescription !== undefined) {
         $set.storeDescription = body.storeDescription;
     }
-    if (body.seoHomePageTitle !== undefined) {
-        $set.seoHomePageTitle = body.seoHomePageTitle;
-    }
-    if (body.seoMetaDescription !== undefined) {
-        $set.seoMetaDescription = body.seoMetaDescription;
-    }
-    if (body.seoSocialImageUrl !== undefined) {
-        $set.seoSocialImageUrl = body.seoSocialImageUrl;
-    }
     if (body.defaultLocation !== undefined) {
         if (body.defaultLocation === null || body.defaultLocation === "") {
             $set.defaultLocation = null;

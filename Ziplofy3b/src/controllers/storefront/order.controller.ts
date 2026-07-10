@@ -18,8 +18,7 @@ import { BuyXGetYDiscountUsage } from '../../models/discount/buy-x-get-y-discoun
 import { LocationModel } from '../../models/location/location.model';
 import { InventoryLevelModel } from '../../models/inventory-level/inventory-level.model';
 import { asyncErrorHandler, CustomError } from '../../utils/error.utils';
-import { buildOrderConfirmationEmail } from '../../email-templates';
-import { sendEmail } from '../../utils/email.utils';
+import { getOrderConfirmationEmailBody, getOrderConfirmationEmailSubject, sendEmail } from '../../utils/email.utils';
 
 export const createOrder = asyncErrorHandler(async (req: Request, res: Response) => {
   const user = req.storefrontUser;
@@ -324,15 +323,41 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
   if (user.email) {
     try {
       const customerName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || 'Customer';
-      const orderConfirmationEmail = buildOrderConfirmationEmail({
-        customerName,
-        orderId: String(order._id),
-        total: order.total,
-      });
+      const orderNumber = String(order._id).slice(-4).toUpperCase();
+
+      const formatAddressLines = (address: any): string[] => {
+        if (!address) return [];
+        const lines = [
+          [address.firstName, address.lastName].filter(Boolean).join(' ').trim(),
+          address.company,
+          address.address,
+          address.apartment,
+          [address.city, address.state, address.pinCode].filter(Boolean).join(' '),
+          address.countryId?.name,
+        ].filter(Boolean) as string[];
+        return lines;
+      };
+
+      const lineItems = populatedOrderItems.map((item: any) => ({
+        name: item.productVariantId?.title || item.productVariantId?.sku || 'Product',
+        quantity: item.quantity,
+        total: item.total,
+      }));
+
       await sendEmail({
         to: user.email,
-        subject: orderConfirmationEmail.subject,
-        body: orderConfirmationEmail.html,
+        subject: getOrderConfirmationEmailSubject(orderNumber),
+        body: getOrderConfirmationEmailBody({
+          customerName,
+          orderNumber,
+          subtotal: order.subtotal,
+          tax: order.tax,
+          shippingCost: order.shippingCost,
+          total: order.total,
+          lineItems,
+          shippingAddressLines: formatAddressLines(order.shippingAddressId),
+          billingAddressLines: formatAddressLines(order.billingAddressId ?? order.shippingAddressId),
+        }),
       });
     } catch (emailErr) {
       console.error('Failed to send order confirmation email:', emailErr);

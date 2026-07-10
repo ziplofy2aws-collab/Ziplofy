@@ -95,23 +95,13 @@ export const protect = asyncErrorHandler(async (req: Request, res: Response, nex
         roleId: role?._id?.toString()
       });
 
-      let assignedSupportDeveloperId: any = "";
-      if (user.assignedSupportDeveloperId) {
-        const dev = user.assignedSupportDeveloperId as any;
-        assignedSupportDeveloperId = {
-          id: dev._id ? dev._id.toString() : dev.toString(),
-          username: dev.username || "",
-          email: dev.email || ""
-        };
-      }
-
       const secureUser:SecureUserInfo & {superAdmin?: boolean} = {
         id: user._id.toString(),
         email: user.email,
         role: roleName,
         name: user.name,
         accessToken: token,
-        assignedSupportDeveloperId,
+        assignedSupportDeveloperId: user.assignedSupportDeveloperId?.toString() || "",
         superAdmin: isSuperAdmin
       }
 
@@ -283,34 +273,17 @@ export const optionalAuth = async (req: Request, res: Response, next: NextFuncti
     const user = await User.findById(decoded.uid).select("-password").populate('role').catch(() => null);
     
     if (user) {
-      if (user.assignedSupportDeveloperId) {
-        await user.populate({
-          path: "assignedSupportDeveloperId",
-          select: "username email",
-        });
-      }
       // Ziplofy3b user - use database data
       const role = user.role as any;
       const roleName = role?.name || 'unknown';
       const isSuperAdmin = role?.isSuperAdmin || roleName === 'super-admin';
-
-      let assignedSupportDeveloperId: any = "";
-      if (user.assignedSupportDeveloperId) {
-        const dev = user.assignedSupportDeveloperId as any;
-        assignedSupportDeveloperId = {
-          id: dev._id ? dev._id.toString() : dev.toString(),
-          username: dev.username || "",
-          email: dev.email || ""
-        };
-      }
-
       const secureUser: SecureUserInfo & { superAdmin?: boolean } = {
         id: user._id.toString(),
         email: user.email,
         role: roleName,
         name: user.name,
         accessToken: token,
-        assignedSupportDeveloperId,
+        assignedSupportDeveloperId: user.assignedSupportDeveloperId?.toString() || "",
         superAdmin: isSuperAdmin,
       };
       req.user = secureUser;

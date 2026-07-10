@@ -3,67 +3,64 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchProductsInCollection = exports.searchCollections = exports.deleteCollection = exports.updateCollection = exports.getCollectionById = exports.getCollectionsByStoreId = exports.createCollection = void 0;
+exports.searchProductsInCollection = exports.searchCollections = exports.deleteCollection = exports.updateCollection = exports.duplicateCollection = exports.getCollectionThemeTemplates = exports.getCollectionsByStoreId = exports.createCollection = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const error_utils_1 = require("../utils/error.utils");
 const collections_model_1 = require("../models/collections/collections.model");
 const collection_entry_model_1 = require("../models/collection-entry/collection-entry.model");
 const product_model_1 = require("../models/product/product.model");
-const cloud_storage_image_util_1 = require("../utils/cloud-storage-image.util");
-const sanitize_html_util_1 = require("../utils/sanitize-html.util");
-const store_access_util_1 = require("../utils/store-access.util");
-const COLLECTION_UPDATE_FIELDS = [
-    "title",
-    "imageUrl",
-    "imageAltText",
-    "description",
-    "pageTitle",
-    "metaDescription",
-    "urlHandle",
-    "productSort",
-    "status",
-];
-const ALLOWED_SORTS = ["manual", "title-asc", "title-desc", "price-high", "price-low", "newest", "oldest"];
-function buildCollectionUpdatePayload(body) {
-    const updatePayload = {};
-    for (const field of COLLECTION_UPDATE_FIELDS) {
-        if (!Object.prototype.hasOwnProperty.call(body, field))
-            continue;
-        updatePayload[field] = body[field];
-    }
-    return updatePayload;
+const collection_theme_template_util_1 = require("../utils/collection-theme-template.util");
+const MAX_TITLE_LENGTH = 200;
+const MAX_URL_HANDLE_LENGTH = 100;
+function buildDuplicateTitle(title) {
+    const base = title.trim() || "Collection";
+    const duplicateTitle = base.toLowerCase().startsWith("copy of ") ? base : `Copy of ${base}`;
+    return duplicateTitle.slice(0, MAX_TITLE_LENGTH);
 }
-async function getCollectionOrThrow(id) {
-    if (!id || !mongoose_1.default.isValidObjectId(id)) {
-        throw new error_utils_1.CustomError("Valid collection id is required", 400);
-    }
-    const collection = await collections_model_1.Collections.findById(id).select("storeId");
-    if (!collection) {
-        throw new error_utils_1.CustomError("Collection not found", 404);
-    }
-    return collection;
+function normalizeUrlHandleCandidate(value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, MAX_URL_HANDLE_LENGTH);
 }
-function validateCollectionStatus(status) {
-    if (typeof status !== "undefined" && status !== "draft" && status !== "published") {
-        throw new error_utils_1.CustomError("Invalid status. Allowed values are 'draft' or 'published'", 400);
+async function generateDuplicateUrlHandle(storeId, sourceHandle) {
+    const normalizedSource = normalizeUrlHandleCandidate(sourceHandle) || "collection";
+    const rootHandle = normalizedSource.replace(/-copy(-\d+)?$/, "") || "collection";
+    let attempt = 1;
+    while (attempt <= 1000) {
+        const suffix = attempt === 1 ? "-copy" : `-copy-${attempt}`;
+        const maxRootLength = Math.max(1, MAX_URL_HANDLE_LENGTH - suffix.length);
+        const candidate = `${rootHandle.slice(0, maxRootLength)}${suffix}`;
+        const existing = await collections_model_1.Collections.findOne({ storeId, urlHandle: candidate }).select({ _id: 1 }).lean();
+        if (!existing)
+            return candidate;
+        attempt += 1;
     }
-}
-function validateProductSort(productSort) {
-    if (typeof productSort !== "undefined" && !ALLOWED_SORTS.includes(productSort)) {
-        throw new error_utils_1.CustomError("Invalid productSort value", 400);
-    }
+    throw new error_utils_1.CustomError("Unable to generate a unique URL handle for the duplicated collection", 409);
 }
 // Create a new collection
 exports.createCollection = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
-    const { storeId, title, imageUrl, imageAltText, description, pageTitle, metaDescription, urlHandle, productIds, productSort, status, } = req.body;
+    const { storeId, title, imageUrl, imageAltText, description, pageTitle, metaDescription, urlHandle, productIds, productSort, status, themeTemplate, } = req.body;
     if (!storeId || !title || !description || !pageTitle || !metaDescription || !urlHandle) {
         throw new error_utils_1.CustomError("Missing required fields", 400);
     }
-    await (0, store_access_util_1.assertStoreAccess)(storeId.toString(), req.user);
-    validateCollectionStatus(status);
-    validateProductSort(productSort);
-    const sanitizedDescription = (0, sanitize_html_util_1.sanitizeRichTextHtml)(String(description));
-    await (0, cloud_storage_image_util_1.assertOptionalStoreCloudImageUrl)(storeId.toString(), imageUrl);
+    // Optional status validation
+    if (typeof status !== 'undefined' && status !== 'draft' && status !== 'published') {
+        throw new error_utils_1.CustomError("Invalid status. Allowed values are 'draft' or 'published'", 400);
+    }
+    const allowedSorts = ['manual', 'title-asc', 'title-desc', 'price-high', 'price-low', 'newest', 'oldest'];
+    if (typeof productSort !== 'undefined' && !allowedSorts.includes(productSort)) {
+        throw new error_utils_1.CustomError("Invalid productSort value", 400);
+    }
+    if (typeof themeTemplate !== 'undefined' && !(0, collection_theme_template_util_1.isValidCollectionThemeTemplate)(themeTemplate)) {
+        throw new error_utils_1.CustomError("Invalid themeTemplate value", 400);
+    }
+    const normalizedThemeTemplate = typeof themeTemplate !== 'undefined'
+        ? (0, collection_theme_template_util_1.normalizeCollectionThemeTemplate)(themeTemplate)
+        : undefined;
     const normalizedProductIds = Array.isArray(productIds)
         ? [...new Set(productIds.filter((id) => typeof id === "string" && mongoose_1.default.isValidObjectId(id)))]
         : [];
@@ -92,12 +89,13 @@ exports.createCollection = (0, error_utils_1.asyncErrorHandler)(async (req, res)
                     title,
                     imageUrl,
                     imageAltText,
-                    description: sanitizedDescription,
+                    description,
                     pageTitle,
                     metaDescription,
                     urlHandle,
-                    ...(typeof productSort !== "undefined" ? { productSort } : {}),
-                    ...(typeof status !== "undefined" ? { status } : {}),
+                    ...(typeof productSort !== 'undefined' ? { productSort } : {}),
+                    ...(typeof status !== 'undefined' ? { status } : {}),
+                    ...(normalizedThemeTemplate ? { themeTemplate: normalizedThemeTemplate } : {}),
                 },
             ], { session });
             collection = created[0];
@@ -120,63 +118,84 @@ exports.getCollectionsByStoreId = (0, error_utils_1.asyncErrorHandler)(async (re
     const { storeId } = req.params;
     if (!storeId)
         throw new error_utils_1.CustomError("storeId is required", 400);
-    await (0, store_access_util_1.assertStoreAccess)(storeId, req.user);
-    const collections = await collections_model_1.Collections.find({ storeId }).sort({ createdAt: -1 }).lean();
-    if (collections.length === 0) {
-        res.status(200).json({ success: true, data: [], count: 0 });
-        return;
-    }
-    const collectionIds = collections.map((collection) => collection._id);
-    const productCounts = await collection_entry_model_1.CollectionEntry.aggregate([
-        { $match: { collectionId: { $in: collectionIds } } },
-        { $group: { _id: "$collectionId", count: { $sum: 1 } } },
-    ]);
-    const countByCollectionId = new Map(productCounts.map((entry) => [String(entry._id), entry.count]));
-    const data = collections.map((collection) => ({
-        ...collection,
-        productCount: countByCollectionId.get(String(collection._id)) ?? 0,
-    }));
-    res.status(200).json({ success: true, data, count: data.length });
+    const collections = await collections_model_1.Collections.find({ storeId }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: collections, count: collections.length });
 });
-// Get collection by id
-exports.getCollectionById = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
+// Get available collection theme templates for a store
+exports.getCollectionThemeTemplates = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
+    const { storeId } = req.params;
+    if (!storeId || !mongoose_1.default.isValidObjectId(storeId)) {
+        throw new error_utils_1.CustomError("Valid storeId is required", 400);
+    }
+    const templates = await (0, collection_theme_template_util_1.listCollectionThemeTemplatesForStore)(storeId);
+    res.status(200).json({ success: true, data: templates, count: templates.length });
+});
+// Duplicate collection
+exports.duplicateCollection = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     const { id } = req.params;
     if (!id || !mongoose_1.default.isValidObjectId(id)) {
         throw new error_utils_1.CustomError("Valid collection id is required", 400);
     }
-    const collection = await collections_model_1.Collections.findById(id).lean();
-    if (!collection) {
+    const source = await collections_model_1.Collections.findById(id).lean();
+    if (!source) {
         throw new error_utils_1.CustomError("Collection not found", 404);
     }
-    await (0, store_access_util_1.assertStoreAccess)(collection.storeId.toString(), req.user);
-    const productCount = await collection_entry_model_1.CollectionEntry.countDocuments({ collectionId: collection._id });
-    res.status(200).json({
+    const entries = await collection_entry_model_1.CollectionEntry.find({ collectionId: source._id })
+        .sort({ position: 1, createdAt: 1 })
+        .select({ productId: 1, position: 1 })
+        .lean();
+    const duplicateTitle = buildDuplicateTitle(source.title);
+    const duplicatePageTitle = buildDuplicateTitle(source.pageTitle || source.title);
+    const duplicateUrlHandle = await generateDuplicateUrlHandle(source.storeId, source.urlHandle);
+    const session = await mongoose_1.default.startSession();
+    let duplicated;
+    try {
+        await session.withTransaction(async () => {
+            const created = await collections_model_1.Collections.create([
+                {
+                    storeId: source.storeId,
+                    title: duplicateTitle,
+                    imageUrl: source.imageUrl,
+                    imageAltText: source.imageAltText,
+                    description: source.description,
+                    pageTitle: duplicatePageTitle,
+                    metaDescription: source.metaDescription,
+                    urlHandle: duplicateUrlHandle,
+                    productSort: source.productSort,
+                    themeTemplate: source.themeTemplate ?? "default",
+                    status: "draft",
+                },
+            ], { session });
+            duplicated = created[0];
+            if (entries.length > 0) {
+                await collection_entry_model_1.CollectionEntry.insertMany(entries.map((entry, index) => ({
+                    collectionId: duplicated._id,
+                    productId: entry.productId,
+                    position: typeof entry.position === "number" ? entry.position : index + 1,
+                })), { session, ordered: false });
+            }
+        });
+    }
+    finally {
+        await session.endSession();
+    }
+    res.status(201).json({
         success: true,
-        data: {
-            ...collection,
-            productCount,
-        },
+        data: duplicated,
+        message: "Collection duplicated successfully",
     });
 });
 // Update collection
 exports.updateCollection = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     const { id } = req.params;
-    const existing = await getCollectionOrThrow(id);
-    const storeId = existing.storeId.toString();
-    await (0, store_access_util_1.assertStoreAccess)(storeId, req.user);
-    const updatePayload = buildCollectionUpdatePayload(req.body);
-    if (!Object.keys(updatePayload).length) {
-        throw new error_utils_1.CustomError("No valid fields provided to update", 400);
+    const update = { ...req.body };
+    if (Object.prototype.hasOwnProperty.call(update, "themeTemplate")) {
+        if (!(0, collection_theme_template_util_1.isValidCollectionThemeTemplate)(update.themeTemplate)) {
+            throw new error_utils_1.CustomError("Invalid themeTemplate value", 400);
+        }
+        update.themeTemplate = (0, collection_theme_template_util_1.normalizeCollectionThemeTemplate)(update.themeTemplate);
     }
-    validateCollectionStatus(updatePayload.status);
-    validateProductSort(updatePayload.productSort);
-    if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
-        updatePayload.description = (0, sanitize_html_util_1.sanitizeRichTextHtml)(String(updatePayload.description ?? ""));
-    }
-    if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrl")) {
-        await (0, cloud_storage_image_util_1.assertOptionalStoreCloudImageUrl)(storeId, updatePayload.imageUrl);
-    }
-    const updated = await collections_model_1.Collections.findByIdAndUpdate(id, updatePayload, { new: true, runValidators: true });
+    const updated = await collections_model_1.Collections.findByIdAndUpdate(id, update, { new: true, runValidators: true });
     if (!updated)
         throw new error_utils_1.CustomError("Collection not found", 404);
     res.status(200).json({ success: true, data: updated, message: "Collection updated successfully" });
@@ -184,8 +203,6 @@ exports.updateCollection = (0, error_utils_1.asyncErrorHandler)(async (req, res)
 // Delete collection
 exports.deleteCollection = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     const { id } = req.params;
-    const existing = await getCollectionOrThrow(id);
-    await (0, store_access_util_1.assertStoreAccess)(existing.storeId.toString(), req.user);
     const deleted = await collections_model_1.Collections.findByIdAndDelete(id);
     if (!deleted)
         throw new error_utils_1.CustomError("Collection not found", 404);
@@ -197,28 +214,31 @@ exports.searchCollections = (0, error_utils_1.asyncErrorHandler)(async (req, res
     const { q, page = 1, limit = 10 } = req.query;
     if (!storeId)
         throw new error_utils_1.CustomError("storeId is required", 400);
-    if (!q || typeof q !== "string")
+    if (!q || typeof q !== 'string')
         throw new error_utils_1.CustomError("Search query 'q' is required", 400);
-    await (0, store_access_util_1.assertStoreAccess)(storeId, req.user);
     const skip = (Number(page) - 1) * Number(limit);
+    // Simple fuzzy search on collection names
     const searchCriteria = {
         storeId,
-        title: { $regex: q, $options: "i" },
+        title: { $regex: q, $options: 'i' }
     };
+    // Get collections with pagination
     const collections = await collections_model_1.Collections.find(searchCriteria)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(Number(limit))
         .lean();
+    // Get product counts for each collection
     const collectionsWithProductCount = await Promise.all(collections.map(async (collection) => {
         const productCount = await collection_entry_model_1.CollectionEntry.countDocuments({
-            collectionId: collection._id,
+            collectionId: collection._id
         });
         return {
             ...collection,
-            productCount,
+            productCount
         };
     }));
+    // Get total count for pagination
     const totalCollections = await collections_model_1.Collections.countDocuments(searchCriteria);
     res.status(200).json({
         success: true,
@@ -227,8 +247,8 @@ exports.searchCollections = (0, error_utils_1.asyncErrorHandler)(async (req, res
             currentPage: Number(page),
             totalPages: Math.ceil(totalCollections / Number(limit)),
             totalItems: totalCollections,
-            itemsPerPage: Number(limit),
-        },
+            itemsPerPage: Number(limit)
+        }
     });
 });
 exports.searchProductsInCollection = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
@@ -240,12 +260,11 @@ exports.searchProductsInCollection = (0, error_utils_1.asyncErrorHandler)(async 
     if (!q || typeof q !== "string") {
         throw new error_utils_1.CustomError("Search query 'q' is required", 400);
     }
-    const collection = await getCollectionOrThrow(collectionId);
-    await (0, store_access_util_1.assertStoreAccess)(collection.storeId.toString(), req.user);
     const pageNum = Math.max(1, Number(page) || 1);
     const limitNum = Math.min(100, Math.max(1, Number(limit) || 10));
     const skip = (pageNum - 1) * limitNum;
     const rx = new RegExp(q.trim(), "i");
+    // Get product ids in the collection
     const productIds = await collection_entry_model_1.CollectionEntry.find({ collectionId })
         .distinct("productId");
     if (productIds.length === 0) {
@@ -263,7 +282,10 @@ exports.searchProductsInCollection = (0, error_utils_1.asyncErrorHandler)(async 
     const filter = {
         _id: { $in: productIds },
         isDeleted: { $ne: true },
-        $or: [{ title: rx }, { sku: rx }],
+        $or: [
+            { title: rx },
+            { sku: rx },
+        ],
     };
     const [products, total] = await Promise.all([
         product_model_1.Product.find(filter)

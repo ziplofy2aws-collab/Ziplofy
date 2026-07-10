@@ -20,10 +20,7 @@ export const getSubdomainByStoreId = asyncErrorHandler(async (req: Request, res:
   // Build preview URL from subdomain (not stored in DB)
   const isProduction = process.env.NODE_ENV === 'production';
   const protocol = isProduction ? 'https' : 'http';
-  const customDomain = doc.customDomain?.trim().toLowerCase();
-  const url = customDomain
-    ? `${protocol}://${customDomain}`
-    : `${protocol}://${doc.subdomain}${config.storeRenderMicroserviceUrlSuffix}`;
+  const url = `${protocol}://${doc.subdomain}${config.storeRenderMicroserviceUrlSuffix}`;
 
   return res.status(200).json({ success: true, data: { ...doc.toObject(), url } });
 });
@@ -41,7 +38,7 @@ export const checkSubdomain = asyncErrorHandler(async (req: Request, res: Respon
   }
 
   const store = await Store.findById(mapping.storeId)
-    .select('storeName storeDescription seoHomePageTitle seoMetaDescription seoSocialImageUrl appliedCustomThemeId')
+    .select('storeName storeDescription appliedCustomThemeId')
     .lean();
   if (!store) {
     return res.status(404).json({ success: false, message: 'Store not found for subdomain' });
@@ -65,9 +62,6 @@ export const checkSubdomain = asyncErrorHandler(async (req: Request, res: Respon
       storeId: store._id,
       name: store.storeName,
       description: store.storeDescription,
-      seoHomePageTitle: store.seoHomePageTitle ?? '',
-      seoMetaDescription: store.seoMetaDescription ?? '',
-      seoSocialImageUrl: store.seoSocialImageUrl ?? '',
       appliedCustomThemeId,
       appliedCustomThemeName,
     }

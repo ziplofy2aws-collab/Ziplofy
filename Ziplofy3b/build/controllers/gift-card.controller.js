@@ -9,7 +9,7 @@ const gift_card_model_1 = require("../models/gift-cards/gift-card.model");
 const error_utils_1 = require("../utils/error.utils");
 // Create gift card
 exports.createGiftCard = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
-    const { storeId, code, initialValue, expirationDate, notes, isActive, customerId } = req.body;
+    const { storeId, code, initialValue, expirationDate, notes, isActive } = req.body;
     if (!storeId || !code || initialValue === undefined) {
         throw new error_utils_1.CustomError('storeId, code and initialValue are required', 400);
     }
@@ -23,16 +23,12 @@ exports.createGiftCard = (0, error_utils_1.asyncErrorHandler)(async (req, res) =
     if (expirationDate && new Date(expirationDate) <= new Date()) {
         throw new error_utils_1.CustomError('expirationDate must be in the future', 400);
     }
-    if (customerId !== undefined && customerId !== null && customerId !== '' && !mongoose_1.default.isValidObjectId(customerId)) {
-        throw new error_utils_1.CustomError('Invalid customerId', 400);
-    }
     const giftCard = await gift_card_model_1.GiftCard.create({
         storeId,
         code,
         initialValue,
         expirationDate: expirationDate ? new Date(expirationDate) : undefined,
         notes,
-        customerId: customerId && mongoose_1.default.isValidObjectId(customerId) ? customerId : undefined,
         isActive: isActive !== undefined ? isActive : true
     });
     res.status(201).json({
@@ -61,7 +57,7 @@ exports.getGiftCardsByStoreId = (0, error_utils_1.asyncErrorHandler)(async (req,
 // Update gift card
 exports.updateGiftCard = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     const { id } = req.params;
-    const { code, initialValue, expirationDate, notes, isActive, customerId } = req.body;
+    const { code, initialValue, expirationDate, notes, isActive } = req.body;
     if (!mongoose_1.default.isValidObjectId(id)) {
         throw new error_utils_1.CustomError('Invalid gift card id', 400);
     }
@@ -84,9 +80,6 @@ exports.updateGiftCard = (0, error_utils_1.asyncErrorHandler)(async (req, res) =
     if (expirationDate && new Date(expirationDate) <= new Date()) {
         throw new error_utils_1.CustomError('expirationDate must be in the future', 400);
     }
-    if (customerId !== undefined && customerId !== null && customerId !== '' && !mongoose_1.default.isValidObjectId(customerId)) {
-        throw new error_utils_1.CustomError('Invalid customerId', 400);
-    }
     const updateData = {};
     if (code !== undefined)
         updateData.code = code;
@@ -99,9 +92,6 @@ exports.updateGiftCard = (0, error_utils_1.asyncErrorHandler)(async (req, res) =
         updateData.notes = notes;
     if (isActive !== undefined)
         updateData.isActive = isActive;
-    if (customerId !== undefined) {
-        updateData.customerId = customerId && mongoose_1.default.isValidObjectId(customerId) ? customerId : null;
-    }
     const giftCard = await gift_card_model_1.GiftCard.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
     if (!giftCard) {
         throw new error_utils_1.CustomError('Gift card not found', 404);

@@ -22,10 +22,7 @@ export const getMe = asyncErrorHandler(async (req: Request, res: Response) => {
   console.log("Full User Object:", JSON.stringify(req.user, null, 2));
   
   // Always fetch user with role populated (including permissions) for consistent permission resolution
-  const user = await User.findById(req.user?.id)
-    .select("-password")
-    .populate("role")
-    .populate("assignedSupportDeveloperId", "username email");
+  const user = await User.findById(req.user?.id).select("-password").populate("role");
   if (user && user.role) {
     const role = user.role as any;
     const roleName = role.name || req.user?.role;
@@ -39,19 +36,6 @@ export const getMe = asyncErrorHandler(async (req: Request, res: Response) => {
       permissions: role.permissions || [],
     };
     console.log("✅ User role with permissions attached:", roleName, "permissions count:", role.permissions?.length || 0);
-  }
-
-  if (user) {
-    let assignedSupportDeveloperId: any = "";
-    if (user.assignedSupportDeveloperId) {
-      const dev = user.assignedSupportDeveloperId as any;
-      assignedSupportDeveloperId = {
-        id: dev._id ? dev._id.toString() : dev.toString(),
-        username: dev.username || "",
-        email: dev.email || ""
-      };
-    }
-    (req.user as any).assignedSupportDeveloperId = assignedSupportDeveloperId;
   }
   
   res.status(200).json({

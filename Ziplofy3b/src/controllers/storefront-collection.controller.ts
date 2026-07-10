@@ -36,22 +36,7 @@ export const getCollectionDetailsByUrlHandle = asyncErrorHandler(async (req: Req
     storeId,
     urlHandle: normalizeUrlHandle(urlHandle),
     status: "published",
-  })
-    .select({
-      storeId: 1,
-      title: 1,
-      description: 1,
-      pageTitle: 1,
-      metaDescription: 1,
-      urlHandle: 1,
-      imageUrl: 1,
-      imageAltText: 1,
-      productSort: 1,
-      status: 1,
-      createdAt: 1,
-      updatedAt: 1,
-    })
-    .lean();
+  }).lean();
 
   if (!collection) {
     throw new CustomError("Collection not found", 404);

@@ -7,7 +7,6 @@ export interface IGiftCard {
   initialValue: number;
   expirationDate?: Date;
   notes?: string;
-  customerId?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -46,12 +45,6 @@ const GiftCardSchema = new Schema<IGiftCard>({
     type: String,
     trim: true,
     maxLength: [1000, "Notes cannot exceed 1000 characters"],
-  },
-  customerId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Customer',
-    default: null,
-    index: true,
   },
   isActive: {
     type: Boolean,

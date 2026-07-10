@@ -7,7 +7,6 @@ exports.deleteStoreCloudStorageUpload = exports.listStoreCloudStorageUploadsBySt
 const mongoose_1 = __importDefault(require("mongoose"));
 const store_cloud_storage_model_1 = require("../models/store-cloud-storage/store-cloud-storage.model");
 const error_utils_1 = require("../utils/error.utils");
-const store_access_util_1 = require("../utils/store-access.util");
 const isDuplicateKeyError = (err) => typeof err === 'object' &&
     err !== null &&
     'code' in err &&
@@ -28,8 +27,6 @@ exports.registerStoreCloudStorageUpload = (0, error_utils_1.asyncErrorHandler)(a
         throw new error_utils_1.CustomError('key is required (S3 object key from the upload response)', 400);
     }
     const trimmedKey = key.trim();
-    await (0, store_access_util_1.assertStoreAccess)(storeId, req.user);
-    (0, store_access_util_1.assertStoreContentFileKey)(storeId, trimmedKey);
     try {
         const entry = await store_cloud_storage_model_1.StoreCloudStorage.create({ storeId, key: trimmedKey });
         return res.status(201).json({
@@ -55,7 +52,6 @@ exports.listStoreCloudStorageUploadsByStoreId = (0, error_utils_1.asyncErrorHand
     if (!storeId || !mongoose_1.default.isValidObjectId(storeId)) {
         throw new error_utils_1.CustomError('Valid storeId is required', 400);
     }
-    await (0, store_access_util_1.assertStoreAccess)(storeId, req.user);
     const uploads = await store_cloud_storage_model_1.StoreCloudStorage.find({ storeId }).sort({ createdAt: -1 }).lean();
     return res.status(200).json({
         success: true,
@@ -74,12 +70,10 @@ exports.deleteStoreCloudStorageUpload = (0, error_utils_1.asyncErrorHandler)(asy
     if (!id || !mongoose_1.default.isValidObjectId(id)) {
         throw new error_utils_1.CustomError('Valid upload id is required', 400);
     }
-    const existing = await store_cloud_storage_model_1.StoreCloudStorage.findById(id);
-    if (!existing) {
+    const removed = await store_cloud_storage_model_1.StoreCloudStorage.findByIdAndDelete(id);
+    if (!removed) {
         throw new error_utils_1.CustomError('Upload record not found', 404);
     }
-    await (0, store_access_util_1.assertStoreAccess)(existing.storeId.toString(), req.user);
-    const removed = await store_cloud_storage_model_1.StoreCloudStorage.findByIdAndDelete(id);
     return res.status(200).json({
         success: true,
         message: 'Upload record removed',

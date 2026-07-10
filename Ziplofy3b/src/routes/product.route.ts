@@ -6,10 +6,8 @@ import {
   getProductById,
   deleteVariantsFromProduct,
   getProductByIdPublic,
-  getProductByUrlHandlePublic,
   getProductsByStoreId,
   getProductsByStoreIdPublic,
-  getStorePreviewProduct,
   searchProductsBasic,
   searchProductsWithAvailability,
   searchProductsWithVariantAndDestination,
@@ -23,9 +21,6 @@ export const productRouter = Router();
 
 // Public route for getting products by store ID with pagination
 productRouter.get("/public/store/:storeId", getProductsByStoreIdPublic);
-
-// Public route for getting product details by store + URL handle
-productRouter.get("/public/store/:storeId/url-handle/:urlHandle", getProductByUrlHandlePublic);
 
 // Public route for getting product details by product ID
 productRouter.get("/public/:productId", getProductByIdPublic);
@@ -43,7 +38,6 @@ productRouter.patch("/:id", updateProductById);
 productRouter.delete("/:id", softDeleteProductById);
 
 // Get products by store id
-productRouter.get("/store/:storeId/preview", getStorePreviewProduct);
 productRouter.get("/store/:storeId", getProductsByStoreId);
 
 // add variants to product

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.softDeleteProductById = exports.searchProductsWithVariantAndDestination = exports.searchProductsWithVariants = exports.searchProductsBasic = exports.searchProductsWithAvailability = exports.addOptionToProduct = exports.deleteVariantsFromProduct = exports.addVariantsToProduct = exports.getProductByUrlHandlePublic = exports.getProductByIdPublic = exports.getProductById = exports.getProductsByStoreIdPublic = exports.getStorePreviewProduct = exports.getProductsByStoreId = exports.updateProductById = exports.createProduct = void 0;
+exports.softDeleteProductById = exports.searchProductsWithVariantAndDestination = exports.searchProductsWithVariants = exports.searchProductsBasic = exports.searchProductsWithAvailability = exports.addOptionToProduct = exports.deleteVariantsFromProduct = exports.addVariantsToProduct = exports.getProductByIdPublic = exports.getProductById = exports.getProductsByStoreIdPublic = exports.getProductsByStoreId = exports.updateProductById = exports.createProduct = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const inventory_level_model_1 = require("../models/inventory-level/inventory-level.model");
 const location_model_1 = require("../models/location/location.model");
@@ -14,59 +14,6 @@ const error_utils_1 = require("../utils/error.utils");
 const models_1 = require("../models");
 const collection_entry_model_1 = require("../models/collection-entry/collection-entry.model");
 const public_origin_util_1 = require("../utils/public-origin.util");
-const store_access_util_1 = require("../utils/store-access.util");
-const cloud_storage_image_util_1 = require("../utils/cloud-storage-image.util");
-const sanitize_html_util_1 = require("../utils/sanitize-html.util");
-const PUBLIC_PRODUCT_DETAIL_SELECT = {
-    title: 1,
-    description: 1,
-    pageTitle: 1,
-    metaDescription: 1,
-    urlHandle: 1,
-    price: 1,
-    compareAtPrice: 1,
-    imageUrls: 1,
-    sku: 1,
-    status: 1,
-    category: 1,
-    vendor: 1,
-    storeId: 1,
-    variants: 1,
-    createdAt: 1,
-    updatedAt: 1,
-};
-function normalizeProductUrlHandle(raw) {
-    return raw.trim().toLowerCase();
-}
-async function buildPublicProductDetailResponse(req, productId) {
-    const product = await product_model_1.Product.findOne({ _id: productId, status: "active", isDeleted: { $ne: true } })
-        .populate({ path: "category", select: "name" })
-        .populate({ path: "vendor", model: "Vendor", select: "name" })
-        .select(PUBLIC_PRODUCT_DETAIL_SELECT)
-        .lean();
-    if (!product) {
-        throw new error_utils_1.CustomError("Product not found", 404);
-    }
-    const variants = await product_variants_model_1.ProductVariant.find({ productId, depricated: false })
-        .select({
-        price: 1,
-        compareAtPrice: 1,
-        optionValues: 1,
-        sku: 1,
-        images: 1,
-    })
-        .lean();
-    const publicOrigin = (0, public_origin_util_1.publicOriginFromRequest)(req);
-    const variantsOut = variants.map((v) => ({
-        ...v,
-        images: (0, public_origin_util_1.absolutizeImageUrlsArray)(publicOrigin, v.images),
-    }));
-    return {
-        ...product,
-        imageUrls: (0, public_origin_util_1.absolutizeImageUrlsArray)(publicOrigin, product.imageUrls),
-        variants: variantsOut,
-    };
-}
 // Create a new product
 exports.createProduct = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
     // Parse and type the incoming payload; allow extra fields but prefer strong typing for known ones
@@ -81,7 +28,7 @@ exports.createProduct = (0, error_utils_1.asyncErrorHandler)(async (req, res) =>
         body.productWeightUnit = "g";
     }
     // Normalize images if client sent "images" instead of "imageUrls"
-    body.imageUrls = body.imageUrls ?? body.images ?? [];
+    body.imageUrls = body.images ?? [];
     // Shipping fields are optional; keep the controller lean and rely on schema defaults
     // 1) Create the base Product document first; variants (combinations) are created separately below
     let product;
@@ -125,15 +72,7 @@ exports.createProduct = (0, error_utils_1.asyncErrorHandler)(async (req, res) =>
         });
     }
     catch (error) {
-        const validationMessage = error?.errors && typeof error.errors === 'object'
-            ? Object.values(error.errors)
-                .map((entry) => entry?.message)
-                .filter(Boolean)
-                .join(', ')
-            : '';
-        throw new error_utils_1.CustomError(validationMessage ||
-            error?.message ||
-            "We couldn't create the product. Please verify the product details and try again.", 400);
+        throw new error_utils_1.CustomError("We couldn't create the product. Please verify the product details and try again.", 400);
     }
     // 2) Generate ProductVariant docs
     // If variant dimensions are provided (e.g., color/size), create the cartesian combinations.
@@ -345,19 +284,6 @@ exports.updateProductById = (0, error_utils_1.asyncErrorHandler)(async (req, res
     if (Object.keys(updatePayload).length === 0) {
         throw new error_utils_1.CustomError("No valid fields provided to update", 400);
     }
-    const existingProduct = await product_model_1.Product.findOne({ _id: id, isDeleted: { $ne: true } }).select("storeId");
-    if (!existingProduct) {
-        throw new error_utils_1.CustomError("Product not found", 404);
-    }
-    await (0, store_access_util_1.assertStoreAccess)(existingProduct.storeId.toString(), req.user);
-    const storeId = existingProduct.storeId.toString();
-    if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
-        updatePayload.description = (0, sanitize_html_util_1.sanitizeRichTextHtml)(String(updatePayload.description ?? ""));
-    }
-    if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrls")) {
-        const imageUrls = Array.isArray(updatePayload.imageUrls) ? updatePayload.imageUrls : [];
-        await (0, cloud_storage_image_util_1.assertStoreCloudImageUrls)(storeId, imageUrls);
-    }
     const updatedProduct = await product_model_1.Product.findOneAndUpdate({ _id: id }, { $set: updatePayload }, { new: true, runValidators: true })
         .populate({ path: "category" })
         .populate({ path: "package", model: "Packaging" })
@@ -390,35 +316,6 @@ exports.getProductsByStoreId = (0, error_utils_1.asyncErrorHandler)(async (req, 
         success: true,
         data: products,
         count: products.length,
-    });
-});
-/** Latest active product for checkout editor order-summary preview. */
-exports.getStorePreviewProduct = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
-    const { storeId } = req.params;
-    if (!storeId || !mongoose_1.default.isValidObjectId(storeId)) {
-        throw new error_utils_1.CustomError("Valid storeId is required", 400);
-    }
-    await (0, store_access_util_1.assertStoreAccess)(storeId, req.user);
-    const product = await product_model_1.Product.findOne({
-        storeId,
-        isDeleted: { $ne: true },
-    })
-        .sort({ status: 1, createdAt: -1 })
-        .select({ title: 1, price: 1, imageUrls: 1 })
-        .lean();
-    if (!product) {
-        return res.status(200).json({ success: true, data: null });
-    }
-    const origin = (0, public_origin_util_1.publicOriginFromRequest)(req);
-    const imageUrls = (0, public_origin_util_1.absolutizeImageUrlsArray)(origin, Array.isArray(product.imageUrls) ? product.imageUrls : []);
-    return res.status(200).json({
-        success: true,
-        data: {
-            _id: product._id,
-            title: product.title,
-            price: product.price,
-            imageUrl: imageUrls[0] ?? null,
-        },
     });
 });
 // Get products by store id with pagination (public route)
@@ -664,36 +561,49 @@ exports.getProductByIdPublic = (0, error_utils_1.asyncErrorHandler)(async (req, 
     if (!productId || !mongoose_1.default.isValidObjectId(productId)) {
         throw new error_utils_1.CustomError("Valid product ID is required", 400);
     }
-    const data = await buildPublicProductDetailResponse(req, new mongoose_1.default.Types.ObjectId(productId));
-    res.status(200).json({
-        success: true,
-        data,
-    });
-});
-/** Storefront: resolve an active product by store + URL handle (for /products/:handle routes). */
-exports.getProductByUrlHandlePublic = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
-    const { storeId, urlHandle } = req.params;
-    if (!storeId || !mongoose_1.default.isValidObjectId(storeId)) {
-        throw new error_utils_1.CustomError("Valid storeId is required", 400);
-    }
-    if (!urlHandle?.trim()) {
-        throw new error_utils_1.CustomError("urlHandle is required", 400);
-    }
-    const product = await product_model_1.Product.findOne({
-        storeId,
-        urlHandle: normalizeProductUrlHandle(urlHandle),
-        status: "active",
-        isDeleted: { $ne: true },
+    const product = await product_model_1.Product.findOne({ _id: productId, status: "active", isDeleted: { $ne: true } })
+        .populate({ path: "category", select: "name" })
+        .populate({ path: "vendor", model: "Vendor", select: "name" })
+        .select({
+        title: 1,
+        description: 1,
+        price: 1,
+        compareAtPrice: 1,
+        imageUrls: 1,
+        sku: 1,
+        status: 1,
+        category: 1,
+        vendor: 1,
+        storeId: 1,
+        variants: 1,
+        createdAt: 1,
+        updatedAt: 1,
     })
-        .select({ _id: 1 })
         .lean();
     if (!product) {
         throw new error_utils_1.CustomError("Product not found", 404);
     }
-    const data = await buildPublicProductDetailResponse(req, product._id);
+    const variants = await product_variants_model_1.ProductVariant.find({ productId, depricated: false })
+        .select({
+        price: 1,
+        compareAtPrice: 1,
+        optionValues: 1,
+        sku: 1,
+        images: 1,
+    })
+        .lean();
+    const publicOrigin = (0, public_origin_util_1.publicOriginFromRequest)(req);
+    const variantsOut = variants.map((v) => ({
+        ...v,
+        images: (0, public_origin_util_1.absolutizeImageUrlsArray)(publicOrigin, v.images),
+    }));
     res.status(200).json({
         success: true,
-        data,
+        data: {
+            ...product,
+            imageUrls: (0, public_origin_util_1.absolutizeImageUrlsArray)(publicOrigin, product.imageUrls),
+            variants: variantsOut,
+        },
     });
 });
 // POST /products/:id/variants - add one or more variants to an existing product

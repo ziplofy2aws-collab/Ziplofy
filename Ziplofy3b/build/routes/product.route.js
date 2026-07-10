@@ -7,8 +7,6 @@ const auth_middleware_1 = require("../middlewares/auth.middleware");
 exports.productRouter = (0, express_1.Router)();
 // Public route for getting products by store ID with pagination
 exports.productRouter.get("/public/store/:storeId", product_controller_1.getProductsByStoreIdPublic);
-// Public route for getting product details by store + URL handle
-exports.productRouter.get("/public/store/:storeId/url-handle/:urlHandle", product_controller_1.getProductByUrlHandlePublic);
 // Public route for getting product details by product ID
 exports.productRouter.get("/public/:productId", product_controller_1.getProductByIdPublic);
 // Protect all product routes (adjust if public create not desired)
@@ -20,7 +18,6 @@ exports.productRouter.patch("/:id", product_controller_1.updateProductById);
 // Soft delete product
 exports.productRouter.delete("/:id", product_controller_1.softDeleteProductById);
 // Get products by store id
-exports.productRouter.get("/store/:storeId/preview", product_controller_1.getStorePreviewProduct);
 exports.productRouter.get("/store/:storeId", product_controller_1.getProductsByStoreId);
 // add variants to product
 exports.productRouter.post("/:id/variants", product_controller_1.addVariantsToProduct);

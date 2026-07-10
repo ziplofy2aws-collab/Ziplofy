@@ -15,6 +15,7 @@ const collection_entry_model_1 = require("../models/collection-entry/collection-
 const storefront_liquid_util_1 = require("../utils/storefront-liquid.util");
 const theme_liquid_renderer_1 = require("../services/theme-liquid/theme-liquid.renderer");
 const public_origin_util_1 = require("../utils/public-origin.util");
+const collection_theme_template_util_1 = require("../utils/collection-theme-template.util");
 function toLiquidProduct(p, publicOrigin) {
     const vendor = p.vendor;
     const category = p.category;
@@ -60,10 +61,6 @@ exports.renderStorefrontLiquidPage = (0, error_utils_1.asyncErrorHandler)(async 
     if (!(0, storefront_liquid_util_1.isSafeLiquidTemplateName)(tpl)) {
         throw new error_utils_1.CustomError("Invalid template name", 400);
     }
-    const templateFile = path_1.default.join(liquidRoots.runtimeBaseDir, "templates", `${tpl}.liquid`);
-    if (!fs_1.default.existsSync(templateFile)) {
-        throw new error_utils_1.CustomError(`Liquid template not found: templates/${tpl}.liquid`, 404);
-    }
     const store = await store_model_1.Store.findById(storeId).lean();
     if (!store)
         throw new error_utils_1.CustomError("Store not found", 404);
@@ -73,6 +70,32 @@ exports.renderStorefrontLiquidPage = (0, error_utils_1.asyncErrorHandler)(async 
         : null;
     if (!storeObjectId)
         throw new error_utils_1.CustomError("Invalid store ID", 400);
+    let renderTemplate = tpl;
+    let collectionDoc = null;
+    if (tpl === "collection" || tpl.startsWith("collection.")) {
+        if (collectionId && mongoose_1.default.isValidObjectId(collectionId)) {
+            collectionDoc = (await collections_model_1.Collections.findOne({
+                _id: collectionId,
+                storeId: storeObjectId,
+            }).lean());
+        }
+        if (!collectionDoc && handle) {
+            collectionDoc = (await collections_model_1.Collections.findOne({
+                storeId: storeObjectId,
+                urlHandle: handle,
+            }).lean());
+        }
+        if (collectionDoc && tpl === "collection") {
+            renderTemplate = (0, collection_theme_template_util_1.resolveCollectionLiquidTemplate)(collectionDoc.themeTemplate);
+            if (!(0, storefront_liquid_util_1.isSafeLiquidTemplateName)(renderTemplate)) {
+                renderTemplate = "collection";
+            }
+        }
+    }
+    const templateFile = path_1.default.join(liquidRoots.runtimeBaseDir, "templates", `${renderTemplate}.liquid`);
+    if (!fs_1.default.existsSync(templateFile)) {
+        throw new error_utils_1.CustomError(`Liquid template not found: templates/${renderTemplate}.liquid`, 404);
+    }
     const publicOrigin = (0, public_origin_util_1.publicOriginFromRequest)(req);
     const liquid = (0, theme_liquid_renderer_1.createStorefrontLiquid)(liquidRoots.runtimeBaseDir, liquidRoots.runtimeBaseUrl);
     const menu = {
@@ -120,23 +143,10 @@ exports.renderStorefrontLiquidPage = (0, error_utils_1.asyncErrorHandler)(async 
         products = productRows.map((p) => toLiquidProduct(p, publicOrigin));
         collections = collectionRows.map((c) => toLiquidCollection(c, publicOrigin));
     }
-    if (tpl === "collection") {
-        let col = null;
-        if (collectionId && mongoose_1.default.isValidObjectId(collectionId)) {
-            col = (await collections_model_1.Collections.findOne({
-                _id: collectionId,
-                storeId: storeObjectId,
-            }).lean());
-        }
-        if (!col && handle) {
-            col = (await collections_model_1.Collections.findOne({
-                storeId: storeObjectId,
-                urlHandle: handle,
-            }).lean());
-        }
-        if (col) {
-            collection = toLiquidCollection(col, publicOrigin);
-            const productIds = await collection_entry_model_1.CollectionEntry.find({ collectionId: col._id }).distinct("productId");
+    if (renderTemplate === "collection" || renderTemplate.startsWith("collection.")) {
+        if (collectionDoc) {
+            collection = toLiquidCollection(collectionDoc, publicOrigin);
+            const productIds = await collection_entry_model_1.CollectionEntry.find({ collectionId: collectionDoc._id }).distinct("productId");
             if (productIds.length) {
                 const productRows = await product_model_1.Product.find({
                     _id: { $in: productIds },
@@ -254,7 +264,7 @@ exports.renderStorefrontLiquidPage = (0, error_utils_1.asyncErrorHandler)(async 
         article,
         section: { settings: {} },
     };
-    const html = await (0, theme_liquid_renderer_1.renderLiquidThemePage)(liquid, liquidRoots.runtimeBaseDir, tpl, context);
+    const html = await (0, theme_liquid_renderer_1.renderLiquidThemePage)(liquid, liquidRoots.runtimeBaseDir, renderTemplate, context);
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "no-cache");
     res.send(html);

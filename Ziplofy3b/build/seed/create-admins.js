@@ -45,7 +45,7 @@ async function seedAdmins() {
     try {
         await (0, database_config_1.connectDB)();
         const entries = [
-            { email: "developer200419@gmail.com", password: "zebronics", role: "super-admin" },
+            { email: "Shubham2105834@gmail.com", password: "12345678", role: "super-admin" },
             { email: "blinderspeaky823@gmail.com", password: "zebronics", role: "support-admin" },
         ];
         for (const entry of entries) {

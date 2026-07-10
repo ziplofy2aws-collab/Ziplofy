@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const store_role_controller_1 = require("../controllers/store-role.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
 const storeRoleRouter = (0, express_1.Router)();
-// CRUD
-storeRoleRouter.get('/', store_role_controller_1.getRolesByStoreId); // /api/store-roles?storeId=...
+storeRoleRouter.use(auth_middleware_1.protect);
+storeRoleRouter.get('/', store_role_controller_1.getRolesByStoreId);
 storeRoleRouter.post('/', store_role_controller_1.createRole);
 storeRoleRouter.patch('/:roleId', store_role_controller_1.updateRole);
 storeRoleRouter.delete('/:roleId', store_role_controller_1.deleteRole);

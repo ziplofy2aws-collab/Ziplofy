@@ -91,6 +91,14 @@ const collectionSchema = new mongoose_1.Schema({
         enum: ['manual', 'title-asc', 'title-desc', 'price-high', 'price-low', 'newest', 'oldest'],
         default: 'manual',
     },
+    themeTemplate: {
+        type: String,
+        trim: true,
+        lowercase: true,
+        default: 'default',
+        maxLength: [80, "Theme template cannot exceed 80 characters"],
+        match: [/^(default|collection(?:\.[a-z][a-z0-9_-]*)?)$/, "Invalid theme template value"],
+    },
     status: {
         type: String,
         enum: ['draft', 'published'],
