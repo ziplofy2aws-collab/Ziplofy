@@ -87,7 +87,13 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
 };
 
 export function resolveRuntimeForSectionType(sectionType: string): SectionRuntimeComponent | null {
-  return SECTION_RUNTIME_BY_TYPE[sectionType] ?? null;
+  if (SECTION_RUNTIME_BY_TYPE[sectionType]) return SECTION_RUNTIME_BY_TYPE[sectionType];
+  // Pack / schema ids use underscores; runtime keys use kebab-case (hero_main → hero-main).
+  // Hero blueprint is registered as `hero` only.
+  if (sectionType === 'hero-main' || sectionType === 'hero_main') {
+    return SECTION_RUNTIME_BY_TYPE.hero ?? null;
+  }
+  return null;
 }
 
 export function blueprintIdFromInstanceId(instanceId: string): string {

@@ -34,9 +34,10 @@ export function templateSectionOrder(
   }
 
   const orderRaw = getThemeConfigValue(config, `templates.${templateId}.section_order`);
-  if (Array.isArray(orderRaw) && orderRaw.length > 0) {
-    const fromOrder = orderRaw.map((id) => String(id)).filter((id) => sectionKeys.has(id));
-    if (fromOrder.length > 0) return fromOrder;
+  // Explicit section_order (including []) wins — never invent order from Object.keys.
+  // Phantom sections can appear via applyValues setConfigAtPath; sidebar uses section_order only.
+  if (Array.isArray(orderRaw)) {
+    return orderRaw.map((id) => String(id)).filter((id) => sectionKeys.has(id));
   }
 
   return orderedIds(

@@ -184,12 +184,41 @@ export function flattenEditorFields(schema: EditorSchemaDoc) {
   }));
 }
 
+/** Only persist values for global settings or sections that already exist in config. */
+function fieldPathBelongsToExistingStructure(
+  config: Record<string, unknown>,
+  path: string
+): boolean {
+  if (path.startsWith('settings.')) return true;
+
+  const templateMatch = path.match(/^templates\.([^.]+)\.sections\.([^.]+)(?:\.|$)/);
+  if (templateMatch) {
+    const [, tplId, sectionId] = templateMatch;
+    const sections = (
+      config.templates as Record<string, { sections?: Record<string, unknown> }> | undefined
+    )?.[tplId]?.sections;
+    return Boolean(sections && sectionId in sections);
+  }
+
+  const layoutMatch = path.match(/^sections\.([^.]+)(?:\.|$)/);
+  if (layoutMatch) {
+    const sectionId = layoutMatch[1];
+    const sections = config.sections as Record<string, unknown> | undefined;
+    return Boolean(sections && sectionId in sections);
+  }
+
+  return true;
+}
+
 export function formValuesFromEditorConfig(
   schema: EditorSchemaDoc,
   config: Record<string, unknown>
 ): Record<string, string | boolean> {
   const values: Record<string, string | boolean> = {};
   for (const field of collectEditableFieldPaths(schema, config)) {
+    // Skip schema blueprint paths for sections the user has not added — otherwise
+    // applyValuesToThemeConfig materializes every pack section when hasSections flips true.
+    if (!fieldPathBelongsToExistingStructure(config, field.path)) continue;
     const v = getNested(config, field.path);
     if (field.type === 'boolean') {
       values[field.path] = v === true || v === 'true' || v === 1 || v === '1';

@@ -1680,6 +1680,28 @@ function coerceFieldValue(
 }
 
 /** Merge sidebar `values` into a full theme config (used for preview + save). */
+function valuePathTargetsExistingSection(
+  config: Record<string, unknown>,
+  path: string
+): boolean {
+  if (path.startsWith('settings.')) return true;
+  const templateMatch = path.match(/^templates\.([^.]+)\.sections\.([^.]+)(?:\.|$)/);
+  if (templateMatch) {
+    const [, tplId, sectionId] = templateMatch;
+    const sections = (
+      config.templates as Record<string, { sections?: Record<string, unknown> }> | undefined
+    )?.[tplId]?.sections;
+    return Boolean(sections && sectionId in sections);
+  }
+  const layoutMatch = path.match(/^sections\.([^.]+)(?:\.|$)/);
+  if (layoutMatch) {
+    const sectionId = layoutMatch[1];
+    const sections = config.sections as Record<string, unknown> | undefined;
+    return Boolean(sections && sectionId in sections);
+  }
+  return true;
+}
+
 export function applyValuesToThemeConfig(
   baseConfig: Record<string, unknown>,
   values: Record<string, string | boolean>,
@@ -1691,6 +1713,8 @@ export function applyValuesToThemeConfig(
   );
 
   for (const [path, raw] of Object.entries(values)) {
+    // Never create layout/template sections that were not explicitly inserted.
+    if (!valuePathTargetsExistingSection(config, path)) continue;
     const type = resolveFieldTypeForPath(path, typeByPath);
     if (!type) {
       if (path.endsWith('.enabled')) {

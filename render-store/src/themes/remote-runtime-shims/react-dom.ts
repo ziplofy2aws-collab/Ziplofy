@@ -1,2 +1,6 @@
-/** Re-exports used by remote theme bundles loaded from the API. */
-export { createPortal } from 'react-dom';
+/**
+ * Named re-exports for remote theme bundles.
+ * Vite prebundles `react-dom` as CJS — keep explicit named exports (not `export *`).
+ */
+export { createPortal, flushSync } from 'react-dom';
+export { default } from 'react-dom';

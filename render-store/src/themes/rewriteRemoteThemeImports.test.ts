@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { rewriteRemoteThemeImports } from './rewriteRemoteThemeImports';
+import {
+  patchRemoteThemeFeaturedCollectionLimitTdZ,
+  rewriteRemoteThemeImports,
+} from './rewriteRemoteThemeImports';
 
 describe('rewriteRemoteThemeImports', () => {
   it('rewrites bare react-dom imports', () => {
@@ -22,5 +25,17 @@ describe('rewriteRemoteThemeImports', () => {
     expect(out).not.toContain('from "react-router-dom"');
     expect(out).not.toContain('from "@render-store/sdk"');
     expect(out).toContain('http://localhost:5180');
+  });
+
+  it('inlines productsToShow when featured-collection limit is used before init', () => {
+    const source = [
+      'b = r(i, `${s}.collectionHandle`, "products"), _ = wd({ collectionHandle: b, limit: f }), $ = M(() => {',
+      '  return { limit: Math.max(1, x(i, `${s}.productsToShow`, 8)) };',
+      '}, [i, s]), { limit: f } = $;',
+    ].join('\n');
+    const out = patchRemoteThemeFeaturedCollectionLimitTdZ(source);
+    expect(out).not.toContain('limit: f })');
+    expect(out).toContain('limit: Math.max(1, x(i, `${s}.productsToShow`, 8)) })');
+    expect(out).toContain('{ limit: f } = $');
   });
 });

@@ -11,6 +11,31 @@ function storefrontPublicBase(appOrigin: string): string {
 }
 
 /**
+ * Some published catalog `theme.js` builds call `useFeaturedCollectionProducts({ limit })`
+ * in the same `const` list before `limit` is bound from `useMemo` → TDZ
+ * (`Cannot access 'f' before initialization` in Featured Collection).
+ * Inline the `productsToShow` read when that pattern is detected.
+ */
+export function patchRemoteThemeFeaturedCollectionLimitTdZ(source: string): string {
+  return source.replace(
+    /(\w+)\(\{\s*collectionHandle:\s*(\w+),\s*limit:\s*(\w+)\s*\}\)/g,
+    (full, hookFn: string, handleVar: string, limitVar: string, offset: number) => {
+      const after = source.slice(offset + full.length, offset + full.length + 4000);
+      if (!new RegExp(`\\blimit:\\s*${limitVar}\\b`).test(after)) return full;
+
+      const productsToShow = after.match(
+        /Math\.max\(\s*1\s*,\s*(\w+)\(\s*(\w+)\s*,\s*`\$\{(\w+)\}\.productsToShow`\s*,\s*8\s*\)\s*\)/
+      );
+      if (!productsToShow) {
+        return `${hookFn}({ collectionHandle: ${handleVar}, limit: 8 })`;
+      }
+      const [, numFn, cfgVar, settingsVar] = productsToShow;
+      return `${hookFn}({ collectionHandle: ${handleVar}, limit: Math.max(1, ${numFn}(${cfgVar}, \`\${${settingsVar}}.productsToShow\`, 8)) })`;
+    }
+  );
+}
+
+/**
  * Rewrites bare imports in a built remote theme `theme.js` so it can run in the browser
  * when loaded from the API (same transforms the old Vite `localRemoteThemePlugin` applied).
  *
@@ -31,7 +56,9 @@ export function rewriteRemoteThemeImports(source: string, appOrigin: string): st
     : `${root}/remote-theme-runtime/react-router-dom.js`;
   const sdk = dev ? `${root}/src/sdk/index.ts` : `${root}/remote-theme-runtime/sdk.js`;
 
-  return source
+  const patched = patchRemoteThemeFeaturedCollectionLimitTdZ(source);
+
+  return patched
     .replaceAll('from "react/jsx-runtime"', `from "${jsx}"`)
     .replaceAll("from 'react/jsx-runtime'", `from "${jsx}"`)
     .replaceAll('from "react-dom/client"', `from "${reactDom}"`)
