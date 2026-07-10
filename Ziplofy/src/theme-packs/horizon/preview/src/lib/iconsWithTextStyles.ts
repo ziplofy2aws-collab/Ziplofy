@@ -9,8 +9,8 @@ export type IconsWithTextScheme = {
 };
 
 const SCHEMES: Record<string, IconsWithTextScheme> = {
-  'scheme-1': { background: '#f6f6f7', color: '#111827', muted: '#6b7280' },
-  'scheme-2': { background: '#ffffff', color: '#111827', muted: '#6b7280' },
+  'scheme-1': { background: '#ffffff', color: '#111827', muted: '#111827' },
+  'scheme-2': { background: '#ffffff', color: '#111827', muted: '#111827' },
   'scheme-3': { background: '#eef6fb', color: '#0f172a', muted: '#475569' },
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6' },
 };
@@ -71,7 +71,7 @@ export function readIconsWithTextLayout(
     layoutAlignment: align === 'left' || align === 'right' ? align : 'center',
     position: cfgString(config, `${settingsBase}.position`, 'center'),
     columns: Math.min(4, Math.max(2, cols)),
-    layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 16),
+    layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 32),
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
     height: cfgString(config, `${settingsBase}.height`, 'auto'),
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),

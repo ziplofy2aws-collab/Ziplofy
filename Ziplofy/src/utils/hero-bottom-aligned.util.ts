@@ -55,6 +55,67 @@ export function isHeroBottomAlignedSectionConfig(
   return Array.isArray(blockOrder) && blockOrder.includes('content_group');
 }
 
+/** Default "Text"/"Heading" block settings (Text/Layout/Typography/Appearance/Padding). */
+function textBlockDefaults(
+  text: string,
+  typographyPreset: string
+): Record<string, unknown> {
+  return {
+    text,
+    width: 'fill',
+    maxWidth: 'normal',
+    alignment: 'left',
+    typographyPreset,
+    font: 'body',
+    fontSize: 'default',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    textCase: 'default',
+    wrap: 'pretty',
+    textColor: 'default',
+    backgroundEnabled: false,
+    backgroundColor: '#00000026',
+    cornerRadius: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+  };
+}
+
+/** Default "Group" block settings (Layout/Size/Appearance/Borders/Block link/Padding). */
+function groupBlockDefaults(
+  overrides: Record<string, unknown> = {}
+): Record<string, unknown> {
+  return {
+    direction: 'horizontal',
+    verticalOnMobile: true,
+    layoutAlignment: 'left',
+    position: 'bottom',
+    alignTextBaseline: true,
+    layoutGap: 18,
+    width: 'fill',
+    customWidth: 100,
+    mobileWidth: 'fill',
+    mobileCustomWidth: 100,
+    height: 'fit',
+    customHeight: 100,
+    backgroundMedia: 'none',
+    backgroundImageUrl: '',
+    backgroundColor: '',
+    backgroundOverlay: false,
+    borderStyle: 'none',
+    cornerRadius: 0,
+    link: '',
+    linkOpenInNewTab: false,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    ...overrides,
+  };
+}
+
 export function buildBottomAlignedHeroBlocks(
   blocksPathPrefix: string
 ): Record<string, Record<string, unknown>> {
@@ -62,20 +123,27 @@ export function buildBottomAlignedHeroBlocks(
   return {
     content_group: {
       type: 'group',
-      settings: {},
+      settings: groupBlockDefaults(),
       blocks: {
         heading_group: {
           type: 'group',
-          settings: {},
+          settings: groupBlockDefaults({
+            direction: 'vertical',
+            position: 'top',
+            alignTextBaseline: false,
+            layoutGap: 8,
+            width: 'fit',
+            mobileWidth: 'fit',
+          }),
           blocks: {
             text_intro: {
               type: 'text',
-              settings: { text: 'Introducing' },
+              settings: textBlockDefaults('Introducing', 'heading-6'),
               settings_field_order: [p.textIntro],
             },
             heading_main: {
               type: 'heading',
-              settings: { text: 'New arrivals' },
+              settings: textBlockDefaults('New arrivals', 'heading-2'),
               settings_field_order: [p.headingMain],
             },
           },
@@ -84,7 +152,7 @@ export function buildBottomAlignedHeroBlocks(
         },
         text_body: {
           type: 'text',
-          settings: { text: HERO_BOTTOM_ALIGNED_BODY },
+          settings: textBlockDefaults(HERO_BOTTOM_ALIGNED_BODY, 'paragraph'),
           settings_field_order: [p.textBody],
         },
       },
@@ -108,13 +176,11 @@ export function bottomAlignedHeroStructureOrder(
       `${contentPrefix}:inner-add-block`,
       headingGroupPrefix,
       `${contentPrefix}:nested:text_body`,
-      `${contentPrefix}:inner-add-block`,
     ],
     [listKeyBlockChildren(headingGroupPrefix)]: [
       `${headingGroupPrefix}:inner-add-block`,
       `${headingGroupPrefix}:nested:text_intro`,
       `${headingGroupPrefix}:nested:heading_main`,
-      `${headingGroupPrefix}:inner-add-block`,
     ],
   };
 }
@@ -161,10 +227,9 @@ export function applyBottomAlignedHeroSection(section: Record<string, unknown>, 
   settings.title = 'New arrivals';
   settings.subtitle = HERO_BOTTOM_ALIGNED_BODY;
   settings.media1Type = 'image';
+  // Leave media empty by default so the landscape illustration backdrop renders.
   settings.media1ImageUrl =
-    typeof settings.media1ImageUrl === 'string' && settings.media1ImageUrl.trim()
-      ? settings.media1ImageUrl
-      : HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE;
+    typeof settings.media1ImageUrl === 'string' ? settings.media1ImageUrl : '';
   settings.media2Type = 'image';
   settings.media2ImageUrl = settings.media2ImageUrl ?? '';
   settings.direction = 'vertical';

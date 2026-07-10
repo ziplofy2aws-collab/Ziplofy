@@ -1,2 +1,6 @@
-/** Defaults applied after pack blueprint clone (extend in place as needed). */
-export function applyPreset(_section: Record<string, unknown>): void {}
+import { applyCollectionListBentoPreset } from '../../utils/collection-list-bento-preset.util';
+
+/** Defaults applied after pack blueprint clone. */
+export function applyPreset(section: Record<string, unknown>): void {
+  applyCollectionListBentoPreset(section);
+}

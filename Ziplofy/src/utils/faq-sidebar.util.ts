@@ -1,5 +1,7 @@
 import type { SidebarIcon, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
 import { faqAccordionFieldDefs } from '../create-theme/sidebar/theme-editor-faq-accordion-block-panel.utils';
+import { faqAccordionRowFieldDefs } from '../create-theme/sidebar/theme-editor-faq-accordion-row-panel.utils';
+import { faqAccordionRowTextFieldDefs } from '../create-theme/sidebar/theme-editor-faq-accordion-row-text-panel.utils';
 
 function listKeyBlockChildren(blockPrefix: string): string {
   return `fields:${blockPrefix}`;
@@ -95,6 +97,24 @@ function readAccordionRowOrder(
   return order.filter((id): id is string => typeof id === 'string' && id in blocks);
 }
 
+function readAccordionRowChildBlockOrder(
+  config: Record<string, unknown> | null,
+  tplId: string | null,
+  secId: string,
+  rowId: string
+): string[] {
+  if (!config) return [];
+  const base =
+    tplId != null
+      ? ['templates', tplId, 'sections', secId, 'blocks', 'accordion', 'blocks', rowId]
+      : ['sections', secId, 'blocks', 'accordion', 'blocks', rowId];
+  const row = getNested(config, base) as Record<string, unknown> | undefined;
+  const order = row?.block_order;
+  if (!Array.isArray(order)) return [];
+  const blocks = (row?.blocks ?? {}) as Record<string, unknown>;
+  return order.filter((id): id is string => typeof id === 'string' && id in blocks);
+}
+
 function previewFromValues(
   values: Record<string, string | boolean>,
   path: string
@@ -104,6 +124,59 @@ function previewFromValues(
   const text = String(raw).trim();
   if (!text) return undefined;
   return text.length > 24 ? `${text.slice(0, 24)}…` : text;
+}
+
+function accordionRowNode(
+  accordionPrefix: string,
+  blocksBase: string,
+  rowId: string,
+  values: Record<string, string | boolean>,
+  config: Record<string, unknown> | null,
+  tplId: string | null,
+  secId: string,
+  itemOrder: Record<string, string[]>
+): SidebarNode {
+  const rowPrefix = `${accordionPrefix}:nested:${rowId}`;
+  const headingPath = `${blocksBase}.accordion.blocks.${rowId}.settings.heading`;
+  const legacyQuestionPath = `${blocksBase}.accordion.blocks.${rowId}.settings.question`;
+  const preview =
+    previewFromValues(values, headingPath) ?? previewFromValues(values, legacyQuestionPath);
+
+  const childOrder = readAccordionRowChildBlockOrder(config, tplId, secId, rowId);
+  const innerAddBlockId = `${rowPrefix}:inner-add-block`;
+  const addBlockRow: SidebarNode = { id: innerAddBlockId, label: 'Add block', kind: 'add-block' };
+
+  const childNodes: SidebarNode[] = childOrder.map((childId) => {
+    const textPath = `${blocksBase}.accordion.blocks.${rowId}.blocks.${childId}.settings.text`;
+    return {
+      id: `${rowPrefix}:nested:${childId}`,
+      label: 'Text',
+      kind: 'block' as const,
+      icon: 'text' as const,
+      fields: faqAccordionRowTextFieldDefs(
+        `${blocksBase}.accordion.blocks.${rowId}.blocks.${childId}`
+      ),
+      preview: previewFromValues(values, textPath),
+      showVisibilityToggle: true,
+      showDeleteButton: true,
+    };
+  });
+
+  const childrenListKey = listKeyBlockChildren(rowPrefix);
+  const children = reorderSidebarChildren([addBlockRow, ...childNodes], childrenListKey, itemOrder);
+
+  return {
+    id: rowPrefix,
+    label: 'Accordion row',
+    kind: 'block',
+    icon: 'section',
+    fields: faqAccordionRowFieldDefs(`${blocksBase}.accordion.blocks.${rowId}`),
+    preview,
+    showVisibilityToggle: true,
+    showDeleteButton: true,
+    children,
+    childrenListKey,
+  };
 }
 
 function accordionBlockNode(
@@ -120,18 +193,18 @@ function accordionBlockNode(
   const innerAddBlockId = `${accordionPrefix}:inner-add-block`;
   const addBlockRow: SidebarNode = { id: innerAddBlockId, label: 'Add block', kind: 'add-block' };
 
-  const rowNodes: SidebarNode[] = rowOrder.map((rowId) => {
-    const questionPath = `${blocksBase}.accordion.blocks.${rowId}.settings.question`;
-    return {
-      id: `${accordionPrefix}:nested:${rowId}`,
-      label: 'Accordion row',
-      kind: 'block' as const,
-      icon: 'section' as const,
-      preview: previewFromValues(values, questionPath),
-      showVisibilityToggle: true,
-      showDeleteButton: true,
-    };
-  });
+  const rowNodes: SidebarNode[] = rowOrder.map((rowId) =>
+    accordionRowNode(
+      accordionPrefix,
+      blocksBase,
+      rowId,
+      values,
+      config,
+      tplId,
+      secId,
+      itemOrder
+    )
+  );
 
   const childrenListKey = listKeyBlockChildren(accordionPrefix);
   const children = reorderSidebarChildren([addBlockRow, ...rowNodes], childrenListKey, itemOrder);
@@ -143,7 +216,7 @@ function accordionBlockNode(
     icon: 'group',
     fields: faqAccordionFieldDefs(`${blocksBase}.accordion`),
     showVisibilityToggle: true,
-    showDeleteButton: false,
+    showDeleteButton: true,
     children,
     childrenListKey,
   };
@@ -154,20 +227,24 @@ function headingBlockNode(
   blocksBase: string,
   values: Record<string, string | boolean>
 ): SidebarNode {
-  const titlePath = `${blocksBase.replace(/\.blocks$/, '.settings')}.title`;
+  const settingsBase = blocksBase.replace(/\.blocks$/, '.settings');
+  const preview =
+    previewFromValues(values, `${settingsBase}.title`) ??
+    previewFromValues(values, `${blocksBase}.heading.settings.heading`);
   return {
     id: `${prefix}:block:heading`,
     label: 'Heading',
     kind: 'block',
     icon: 'text',
     fields: [],
-    preview: previewFromValues(values, titlePath),
+    preview,
+    headingPanel: 'collection-title',
     showVisibilityToggle: true,
     showDeleteButton: true,
   };
 }
 
-/** Shopify FAQ sidebar: Add block → Heading → Accordion (rows). */
+/** Shopify FAQ sidebar: Add block → Heading → Accordion (rows → text blocks). */
 export function mapFaqBlockNodes(
   prefix: string,
   blocksBase: string,
@@ -203,6 +280,25 @@ export function mapFaqBlockNodes(
   return reorderSidebarChildren(blockNodes, sectionChildrenListKey, itemOrder);
 }
 
+function rowChildrenStructureOrder(
+  accordionPrefix: string,
+  config: Record<string, unknown> | null,
+  tplId: string | null,
+  secId: string,
+  rowOrder: string[]
+): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  for (const rowId of rowOrder) {
+    const rowPrefix = `${accordionPrefix}:nested:${rowId}`;
+    const childOrder = readAccordionRowChildBlockOrder(config, tplId, secId, rowId);
+    out[listKeyBlockChildren(rowPrefix)] = [
+      `${rowPrefix}:inner-add-block`,
+      ...childOrder.map((id) => `${rowPrefix}:nested:${id}`),
+    ];
+  }
+  return out;
+}
+
 export function faqStructureOrder(
   prefix: string,
   sectionChildrenListKey: string,
@@ -224,6 +320,7 @@ export function faqStructureOrder(
       `${accordionPrefix}:inner-add-block`,
       ...rowOrder.map((id) => `${accordionPrefix}:nested:${id}`),
     ],
+    ...rowChildrenStructureOrder(accordionPrefix, config, tplId, secId, rowOrder),
   };
 }
 
@@ -247,5 +344,6 @@ export function faqLayoutStructureOrder(
       `${accordionPrefix}:inner-add-block`,
       ...rowOrder.map((id) => `${accordionPrefix}:nested:${id}`),
     ],
+    ...rowChildrenStructureOrder(accordionPrefix, config, null, instanceId, rowOrder),
   };
 }

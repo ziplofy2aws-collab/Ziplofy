@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
 import { CircleStackIcon, MagnifyingGlassIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import type { Collection } from '../../contexts/collection.context';
@@ -9,10 +8,35 @@ import { useStore } from '../../contexts/store.context';
 import type { EditorFieldDef } from './create-theme-sidebar.types';
 import { fieldValueAsString } from './create-theme-field.utils';
 import { parseCollectionLinksPicker } from '../utils/collection-links-collections.util';
+import { ThemeEditorCreateCollectionSheet } from './ThemeEditorCreateCollectionSheet';
 
 const PICKER_WIDTH = 300;
 
 type MenuPos = { top: number; left: number; width: number };
+
+function collectionsById(collections: Collection[], extra: Collection[] = []): Map<string, Collection> {
+  const map = new Map<string, Collection>();
+  for (const col of [...collections, ...extra]) {
+    map.set(col._id, col);
+  }
+  return map;
+}
+
+/** Map persisted picker handles → unique collection ids (handles can be empty/duplicate). */
+function selectedIdsFromHandles(handles: string[], collections: Collection[]): string[] {
+  const ids: string[] = [];
+  const usedIds = new Set<string>();
+  for (const handle of handles) {
+    const match = collections.find(
+      (col) => col.urlHandle === handle && col.urlHandle.trim() && !usedIds.has(col._id)
+    );
+    if (match) {
+      ids.push(match._id);
+      usedIds.add(match._id);
+    }
+  }
+  return ids;
+}
 
 type Props = {
   field: EditorFieldDef;
@@ -28,17 +52,29 @@ export function CollectionsPickerFieldRow({
   const { activeStoreId } = useStore();
   const { collections, loading, fetchCollectionsByStoreId } = useCollections();
   const [open, setOpen] = useState(false);
+  const [createSheetOpen, setCreateSheetOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [selectedHandles, setSelectedHandles] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [menuPos, setMenuPos] = useState<MenuPos | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const skipPickerSyncRef = useRef(false);
+  const pendingOpenInitRef = useRef(false);
 
   const pickerRaw = fieldValueAsString(values, field);
 
   useEffect(() => {
-    setSelectedHandles(parseCollectionLinksPicker(pickerRaw));
-  }, [pickerRaw]);
+    if (open || skipPickerSyncRef.current) return;
+    const handles = parseCollectionLinksPicker(pickerRaw);
+    setSelectedIds(selectedIdsFromHandles(handles, collections));
+  }, [pickerRaw, collections, open]);
+
+  useEffect(() => {
+    if (!open || !pendingOpenInitRef.current || loading) return;
+    pendingOpenInitRef.current = false;
+    const handles = parseCollectionLinksPicker(pickerRaw);
+    setSelectedIds(selectedIdsFromHandles(handles, collections));
+  }, [open, loading, collections, pickerRaw]);
 
   const updateMenuPosition = useCallback(() => {
     const el = triggerRef.current;
@@ -83,6 +119,7 @@ export function CollectionsPickerFieldRow({
       toast.error('Select a store before choosing collections');
       return;
     }
+    pendingOpenInitRef.current = true;
     setOpen(true);
     try {
       await fetchCollectionsByStoreId(activeStoreId);
@@ -101,37 +138,42 @@ export function CollectionsPickerFieldRow({
     );
   }, [collections, search]);
 
-  const selectedSet = useMemo(() => new Set(selectedHandles), [selectedHandles]);
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
 
-  const applyHandles = useCallback(
-    (handles: string[]) => {
-      const picked = handles
-        .map((h) => collections.find((c) => c.urlHandle === h))
+  const applySelectedIds = useCallback(
+    (ids: string[], extra: Collection[] = []) => {
+      const byId = collectionsById(collections, extra);
+      const picked = ids
+        .map((id) => byId.get(id))
         .filter((c): c is Collection => Boolean(c));
+      skipPickerSyncRef.current = true;
       onCollectionsApply(field.path, picked);
-      setSelectedHandles(handles);
+      setSelectedIds(ids);
+      window.setTimeout(() => {
+        skipPickerSyncRef.current = false;
+      }, 0);
     },
     [collections, field.path, onCollectionsApply]
   );
 
-  const toggleHandle = useCallback(
-    (handle: string) => {
-      const next = selectedSet.has(handle)
-        ? selectedHandles.filter((h) => h !== handle)
-        : [...selectedHandles, handle];
-      applyHandles(next);
+  const toggleCollection = useCallback(
+    (collectionId: string) => {
+      const next = selectedIdSet.has(collectionId)
+        ? selectedIds.filter((id) => id !== collectionId)
+        : [...selectedIds, collectionId];
+      applySelectedIds(next);
     },
-    [applyHandles, selectedHandles, selectedSet]
+    [applySelectedIds, selectedIds, selectedIdSet]
   );
 
   const buttonLabel = useMemo(() => {
-    if (!selectedHandles.length) return 'Select';
-    if (selectedHandles.length === 1) {
-      const col = collections.find((c) => c.urlHandle === selectedHandles[0]);
+    if (!selectedIds.length) return 'Select';
+    if (selectedIds.length === 1) {
+      const col = collections.find((c) => c._id === selectedIds[0]);
       return col?.title ?? '1 collection';
     }
-    return `${selectedHandles.length} collections`;
-  }, [collections, selectedHandles]);
+    return `${selectedIds.length} collections`;
+  }, [collections, selectedIds]);
 
   const pickerMenu =
     open && menuPos
@@ -175,14 +217,14 @@ export function CollectionsPickerFieldRow({
                   <p className="px-3 py-4 text-center text-[13px] text-gray-500">No collections found</p>
                 ) : (
                   filtered.map((col) => {
-                    const checked = selectedSet.has(col.urlHandle);
+                    const checked = selectedIdSet.has(col._id);
                     return (
                       <button
                         key={col._id}
                         type="button"
                         role="option"
                         aria-selected={checked}
-                        onClick={() => toggleHandle(col.urlHandle)}
+                        onClick={() => toggleCollection(col._id)}
                         className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-gray-50"
                       >
                         <span
@@ -220,14 +262,17 @@ export function CollectionsPickerFieldRow({
               </div>
 
               <div className="border-t border-gray-100 px-3 py-2">
-                <Link
-                  to="/products/collections/new"
+                <button
+                  type="button"
                   className="inline-flex items-center gap-1 text-[13px] font-medium text-[#2c6ecb] hover:underline"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false);
+                    setCreateSheetOpen(true);
+                  }}
                 >
                   <PlusIcon className="h-4 w-4" />
                   Create collection
-                </Link>
+                </button>
               </div>
             </div>
           </>,
@@ -258,6 +303,17 @@ export function CollectionsPickerFieldRow({
         </button>
       </div>
       {pickerMenu}
+      <ThemeEditorCreateCollectionSheet
+        open={createSheetOpen}
+        onClose={() => setCreateSheetOpen(false)}
+        onCreated={(collection) => {
+          const nextIds = selectedIds.includes(collection._id)
+            ? selectedIds
+            : [...selectedIds, collection._id];
+          applySelectedIds(nextIds, [collection]);
+          setCreateSheetOpen(false);
+        }}
+      />
     </div>
   );
 }

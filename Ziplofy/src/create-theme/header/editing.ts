@@ -89,9 +89,19 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
-      "key": "colorScheme",
-      "label": "Default",
+      "key": "topRowBackground",
+      "label": "Top row background",
       "type": "text"
+    },
+    {
+      "key": "topRowText",
+      "label": "Top row text",
+      "type": "text"
+    },
+    {
+      "key": "cartBubbleStyle",
+      "label": "Bubble style",
+      "type": "select"
     },
     {
       "key": "homeTransparentBackground",
@@ -171,7 +181,8 @@ export const editing: CreateThemeEditing = {
       "label": "Menu",
       "settingsOrder": [
         { "key": "menu", "label": "Menu", "type": "select" },
-        { "key": "colorScheme", "label": "Color scheme", "type": "select" },
+        { "key": "backgroundColor", "label": "Background color", "type": "text" },
+        { "key": "textColor", "label": "Text color", "type": "text" },
         { "key": "topLevelSize", "label": "Top level size", "type": "select" },
         { "key": "submenuSize", "label": "Submenu size", "type": "select" },
         { "key": "font", "label": "Font", "type": "select" },

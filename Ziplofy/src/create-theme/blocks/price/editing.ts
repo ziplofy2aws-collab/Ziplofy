@@ -36,7 +36,7 @@ export const editing: CreateThemeBlockEditing = {
     },
     {
       "key": "priceColor",
-      "label": "Color",
+      "label": "Text color",
       "type": "text"
     },
     {

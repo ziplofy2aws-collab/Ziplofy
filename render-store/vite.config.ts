@@ -103,6 +103,9 @@ export default defineConfig({
       '@codiic/create-theme': path.resolve(__dirname, '../Ziplofy/src/create-theme'),
     },
   },
+  optimizeDeps: {
+    include: ['@heroicons/react/24/outline', '@heroicons/react/24/solid'],
+  },
   server: {
     host: true,
     cors: true,

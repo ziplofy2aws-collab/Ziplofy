@@ -18,7 +18,7 @@ export function readFeaturedProductVariantPickerStyle(
   const rawAlign = cfgString(config, `${settingsBase}.alignment`, 'left');
   return {
     style: rawStyle === 'dropdown' ? 'dropdown' : 'buttons',
-    swatches: cfgBool(config, `${settingsBase}.swatches`, false),
+    swatches: cfgBool(config, `${settingsBase}.swatches`, true),
     alignment:
       rawAlign === 'center' ? 'center' : rawAlign === 'right' ? 'right' : 'left',
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),

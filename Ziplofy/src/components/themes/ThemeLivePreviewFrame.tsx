@@ -36,8 +36,10 @@ export type ThemePreviewSelectionHint = {
 export type ThemeLivePreviewFrameProps = {
   storeId: string;
   storeName?: string;
-  /** Live storefront URL for "View store" links only — never used as iframe src. */
+  /** Merchant storefront origin (e.g. mystore.localhost:5180) — used as preview iframe host. */
   storefrontOrigin?: string | null;
+  /** True while the store subdomain / URL is being fetched. */
+  storefrontLoading?: boolean;
   jsUrl: string | null | undefined;
   cssUrl?: string | null;
   config: Record<string, unknown>;
@@ -71,12 +73,15 @@ function readEnvOrigin(...keys: string[]): string | null {
 }
 
 /**
- * Origin for the preview iframe (render-store `/theme-preview`).
- * Must NOT be a merchant store subdomain — those send X-Frame-Options: SAMEORIGIN.
+ * Origin for the preview iframe (`{storeUrl}/theme-preview` on render-store).
+ * Prefers the merchant store URL (e.g. mystore.localhost:5180) so preview APIs resolve the correct store.
  */
-export function resolveThemePreviewOrigin(): string {
+export function resolveThemePreviewOrigin(storefrontOrigin?: string | null): string {
   const explicit = readEnvOrigin('VITE_RENDER_STORE_ORIGIN', 'VITE_THEME_PREVIEW_ORIGIN');
   if (explicit) return explicit;
+
+  const storefront = storefrontOrigin?.trim().replace(/\/$/, '');
+  if (storefront) return storefront;
 
   if (typeof window !== 'undefined') {
     const { protocol, hostname } = window.location;
@@ -98,14 +103,15 @@ export function resolveThemePreviewOrigin(): string {
   return `http://localhost:${DEFAULT_RENDER_STORE_PORT}`;
 }
 
-function buildPreviewSrc(): string {
-  return `${resolveThemePreviewOrigin()}/theme-preview`;
+export function buildThemePreviewSrc(storefrontOrigin?: string | null): string {
+  return `${resolveThemePreviewOrigin(storefrontOrigin)}/theme-preview`;
 }
 
 const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   storeId,
   storeName,
-  storefrontOrigin: _storefrontOrigin,
+  storefrontOrigin,
+  storefrontLoading = false,
   jsUrl,
   cssUrl,
   config,
@@ -122,8 +128,11 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   valuesSyncKey = 0,
   className = '',
 }) => {
-  const previewSrc = buildPreviewSrc();
-  const previewOrigin = resolveThemePreviewOrigin();
+  const previewSrc = useMemo(() => buildThemePreviewSrc(storefrontOrigin), [storefrontOrigin]);
+  const previewDisplayUrl = useMemo(
+    () => resolveThemePreviewOrigin(storefrontOrigin),
+    [storefrontOrigin]
+  );
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [ready, setReady] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -437,7 +446,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
 
   return (
     <div className={`relative h-full w-full overflow-hidden bg-white ${className}`}>
-      {!ready ? <PreviewLoadingOverlay origin={previewOrigin} /> : null}
+      {!ready ? <PreviewLoadingOverlay origin={previewDisplayUrl} /> : null}
       <PreviewSyncPulse visible={syncPulse && ready} />
       {loadError && (
         <div className="absolute left-0 right-0 top-0 z-20 border-b border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">

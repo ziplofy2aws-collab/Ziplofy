@@ -9,14 +9,15 @@ export type ThemeSettingsCatalogItem = {
 
 export const THEME_SETTINGS_CATALOG: ThemeSettingsCatalogItem[] = [
   { id: 'logo-favicon', label: 'Logo and favicon' },
-  { id: 'colors', label: 'Colors' },
+  { id: 'colors', label: 'Color palette' },
   { id: 'typography', label: 'Typography' },
-  { id: 'page-layout', label: 'Page layout' },
+  { id: 'page-layout', label: 'Page' },
   { id: 'animations', label: 'Animations' },
   { id: 'badges', label: 'Badges' },
   { id: 'buttons', label: 'Buttons' },
   { id: 'cart', label: 'Cart' },
   { id: 'drawers', label: 'Drawers' },
+  { id: 'product-media', label: 'Product media' },
   { id: 'icons', label: 'Icons' },
   { id: 'input-fields', label: 'Input fields' },
   { id: 'popovers-modals', label: 'Popovers and modals' },

@@ -1,7 +1,7 @@
 // src/App.tsx
 import React, { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation, Navigate } from "react-router-dom";
 
 // Import axios config early to ensure interceptors are set up before any requests
 import "./config/axios.config";
@@ -188,7 +188,9 @@ import { CatalogProvider } from "./contexts/catalog.context";
 import { CheckoutSettingsProvider } from "./contexts/checkout-settings.context";
 import { CollectionEntriesProvider } from "./contexts/collection-entries.context";
 import { CollectionProvider } from "./contexts/collection.context";
+import { BlogProvider } from "./contexts/blog.context";
 import { StoreMenuProvider } from "./contexts/store-menu.context";
+import { StoreCheckoutConfigurationsProvider } from "./contexts/store-checkout-configurations.context";
 import { CountryTaxOverrideProvider } from "./contexts/country-tax-override.context";
 import { CountryTaxProvider } from "./contexts/country-tax.context";
 import { CountryProvider } from "./contexts/country.context";
@@ -280,6 +282,9 @@ const AdminApp: React.FC = () => {
   const isBuilderFullScreen = location.pathname.startsWith('/themes/builder');
   const isBasicElementor = location.pathname.startsWith('/themes/basic-elementor');
   const isThemeCreator = location.pathname.startsWith('/themes/create');
+  const isThemesEditorCheckout = location.pathname.startsWith('/themes/editor/checkout');
+  const isCheckoutProfileEditor =
+    location.pathname.startsWith('/checkout/editor') || isThemesEditorCheckout;
   const isThemeSchemaEditor =
     location.pathname === '/themes/dev-editor' ||
     /^\/themes\/[^/]+\/editor$/.test(location.pathname);
@@ -288,10 +293,11 @@ const AdminApp: React.FC = () => {
     isBuilderFullScreen ||
     isBasicElementor ||
     isThemeSchemaEditor ||
-    isThemeCreator;
+    isThemeCreator ||
+    isCheckoutProfileEditor;
   const isSettings = location.pathname.startsWith('/settings');
   const showNavbar = !isFullScreen;
-  const showSidebar = !isFullScreen && !isSettings && !isThemeCreator;
+  const showSidebar = !isFullScreen && !isSettings && !isThemeCreator && !isCheckoutProfileEditor;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -472,6 +478,25 @@ const AdminApp: React.FC = () => {
                 </Suspense>
               }
             />
+            <Route
+              path="/themes/editor/checkout/:configId"
+              element={
+                <Suspense
+                  fallback={
+                    <div className="fixed inset-0 z-[1310] flex items-center justify-center bg-white">
+                      <CreateThemePoweredByLoader />
+                    </div>
+                  }
+                >
+                  <CreateThemePage mode="checkout-profile" />
+                </Suspense>
+              }
+            />
+            <Route path="/themes/editor/checkout" element={<Navigate to="/settings/checkout" replace />} />
+            <Route path="/checkout/editor" element={<Navigate to="/settings/checkout" replace />} />
+            <Route path="/checkout/editor/" element={<Navigate to="/settings/checkout" replace />} />
+            <Route path="/checkout/editor/profiles" element={<Navigate to="/settings/checkout" replace />} />
+            <Route path="/checkout/editor/profiles/" element={<Navigate to="/settings/checkout" replace />} />
             <Route path="/themes/builder" element={<CustomThemeBuilder />} />
             <Route path="/themes/basic-elementor" element={<BasicElementor />} />
             <Route path="/themes/edit/:themeId" element={<ThemeEditor />} />
@@ -504,9 +529,11 @@ const App: React.FC = () => {
         <ThemesProvider>
           <CustomThemesProvider>
           <StoreCustomThemesProvider>
+          <StoreCheckoutConfigurationsProvider>
         <VendorProvider>
         <CollectionProvider>
         <StoreMenuProvider>
+        <BlogProvider>
         <CustomerTagsProvider>
         <ProductTagsProvider>
         <CustomerProvider>
@@ -683,9 +710,11 @@ const App: React.FC = () => {
         </CustomerProvider>
         </ProductTagsProvider>
         </CustomerTagsProvider>
+        </BlogProvider>
         </StoreMenuProvider>
         </CollectionProvider>
         </VendorProvider>
+        </StoreCheckoutConfigurationsProvider>
         </StoreCustomThemesProvider>
         </CustomThemesProvider>
         </ThemesProvider>

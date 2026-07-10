@@ -52,26 +52,69 @@ export function FeaturedProductShirtIllustration() {
 }
 
 export function StackedTealShirtsIllustration() {
+  const layers = [
+    { y: 196, top: '#3f8f8b', depth: '#2b716e' },
+    { y: 162, top: '#4ea09b', depth: '#347c78' },
+  ];
+
   return (
-    <div style={{ position: 'relative', width: 140, height: 120, margin: '0 auto' }} aria-hidden>
-      {[0, 1, 2].map((layer) => (
-        <div
-          key={layer}
-          style={{
-            position: 'absolute',
-            left: '50%',
-            borderRadius: 4,
-            background: '#4a9a9a',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-            width: `${88 - layer * 10}px`,
-            height: `${28 - layer * 3}px`,
-            bottom: `${layer * 22}px`,
-            transform: `translateX(-50%) rotate(${-5 + layer * 5}deg) skewX(-8deg)`,
-            clipPath: 'polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%)',
-            opacity: 1 - layer * 0.1,
-          }}
-        />
+    <svg
+      viewBox="0 0 360 340"
+      width="100%"
+      style={{ maxWidth: 360, height: 'auto', display: 'block', margin: '0 auto' }}
+      role="img"
+      aria-hidden
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="zfp-teal-top" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#62b3af" />
+          <stop offset="1" stopColor="#4b9b97" />
+        </linearGradient>
+      </defs>
+
+      {/* soft cast shadow toward bottom-left */}
+      <ellipse cx="150" cy="288" rx="148" ry="30" fill="rgba(15, 60, 60, 0.10)" />
+
+      {/* lower stacked shirts (give the pile depth) */}
+      {layers.map((layer) => (
+        <g key={layer.y} transform={`translate(180 ${layer.y}) rotate(-10)`}>
+          <rect x="-108" y="-38" width="216" height="124" rx="22" fill={layer.depth} />
+          <rect x="-108" y="-56" width="216" height="124" rx="22" fill={layer.top} />
+        </g>
       ))}
-    </div>
+
+      {/* top folded shirt with collar, tag and pocket */}
+      <g transform="translate(180 128) rotate(-10)">
+        <rect x="-108" y="-38" width="216" height="124" rx="22" fill="#3c8783" />
+        <rect x="-108" y="-56" width="216" height="124" rx="22" fill="url(#zfp-teal-top)" />
+
+        {/* folded sleeve shoulders */}
+        <path d="M-108 -34 L-70 -56 L-70 -10 Z" fill="#56aaa5" />
+        <path d="M108 -34 L70 -56 L70 -10 Z" fill="#56aaa5" />
+
+        {/* neckline crescent */}
+        <ellipse cx="-2" cy="-30" rx="38" ry="18" fill="#2e7a78" />
+        <ellipse cx="-2" cy="-38" rx="38" ry="18" fill="url(#zfp-teal-top)" />
+
+        {/* white collar tag */}
+        <rect x="-12" y="-58" width="22" height="16" rx="3" fill="#ffffff" />
+
+        {/* chest pocket */}
+        <rect
+          x="26"
+          y="-4"
+          width="40"
+          height="34"
+          rx="6"
+          fill="#4ea09b"
+          stroke="#2e7a78"
+          strokeWidth="3"
+        />
+
+        {/* subtle fold seam */}
+        <path d="M-96 40 H96" stroke="#2e7a78" strokeWidth="2" strokeLinecap="round" opacity="0.45" />
+      </g>
+    </svg>
   );
 }

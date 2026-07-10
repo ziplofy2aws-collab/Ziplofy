@@ -1,6 +1,17 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
 
+export const ICON_WITH_TEXT_ICON_OPTIONS = [
+  { value: 'eye', label: 'Eye' },
+  { value: 'heart', label: 'Heart' },
+  { value: 'person', label: 'Person' },
+  { value: 'leaf', label: 'Leaf' },
+  { value: 'truck', label: 'Truck' },
+  { value: 'shield', label: 'Shield' },
+  { value: 'star', label: 'Star' },
+  { value: 'gift', label: 'Gift' },
+] as const;
+
 export const ICONS_WITH_TEXT_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
@@ -94,8 +105,68 @@ export function isIconsWithTextSettingsPanelFields(fields: EditorFieldDef[]): bo
     keys.has('verticalOnMobile') &&
     keys.has('direction') &&
     keys.has('layoutGap') &&
-    path.includes('icons_with_text')
+    keys.has('columns') &&
+    (path.includes('icons_with_text') || path.includes('icons-with-text'))
   );
+}
+
+export function iconsWithTextBlocksBaseFromNodeId(nodeId: string): string | null {
+  const tpl = nodeId.match(/^template:([^:]+):([^:]+):block:/);
+  if (tpl) return `templates.${tpl[1]}.sections.${tpl[2]}`;
+  const layout = nodeId.match(/^layout:([^:]+):block:/);
+  if (layout) return `sections.${layout[1]}`;
+  return null;
+}
+
+export function iconsWithTextBlockInstanceIdFromNodeId(nodeId: string): string | null {
+  const m = nodeId.match(/:block:(.+)$/);
+  return m?.[1] ?? null;
+}
+
+export function isIconsWithTextBlockNodeId(nodeId: string): boolean {
+  const tpl = nodeId.match(/^template:([^:]+):(icons_with_text[^:]*):block:/);
+  if (tpl) return true;
+  const layout = nodeId.match(/^layout:(icons_with_text[^:]*):block:/);
+  return Boolean(layout);
+}
+
+export function iconWithTextBlockFieldDefs(
+  blocksBase: string,
+  blockInstanceId: string
+): EditorFieldDef[] {
+  const s = (key: string) => `${blocksBase}.blocks.${blockInstanceId}.settings.${key}`;
+  return [
+    {
+      path: s('icon'),
+      type: 'select',
+      label: 'Icon',
+      group: 'Content',
+      widget: 'select',
+      sidebar: true,
+      options: [...ICON_WITH_TEXT_ICON_OPTIONS],
+    },
+    {
+      path: s('heading'),
+      type: 'text',
+      label: 'Heading',
+      group: 'Content',
+      sidebar: true,
+    },
+    {
+      path: s('text'),
+      type: 'textarea',
+      label: 'Description',
+      group: 'Content',
+      sidebar: true,
+    },
+  ];
+}
+
+export function iconWithTextBlockFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
+  const base = iconsWithTextBlocksBaseFromNodeId(nodeId);
+  const blockId = iconsWithTextBlockInstanceIdFromNodeId(nodeId);
+  if (!base || !blockId) return [];
+  return iconWithTextBlockFieldDefs(base, blockId);
 }
 
 export function prepareIconsWithTextSettingsNode(node: SidebarNode): SidebarNode {
@@ -106,6 +177,10 @@ export function prepareIconsWithTextSettingsNode(node: SidebarNode): SidebarNode
 }
 
 export function prepareIconsWithTextBlockSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = (node.fields ?? []).filter(isIconsWithTextBlockField);
-  return { ...node, label: node.label || 'Icon', kind: 'block', fields };
+  const fromNode = iconWithTextBlockFieldDefsFromNodeId(node.id);
+  const fields =
+    fromNode.length > 0
+      ? fromNode
+      : (node.fields ?? []).filter(isIconsWithTextBlockField);
+  return { ...node, label: node.label || 'Icon with text', kind: 'block', fields };
 }

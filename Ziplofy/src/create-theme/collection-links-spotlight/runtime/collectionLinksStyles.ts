@@ -19,6 +19,7 @@ export type CollectionLinkData = {
   id: string;
   title: string;
   productCount: number;
+  showCount: boolean;
   href: string;
   imageUrl: string;
 };
@@ -99,6 +100,7 @@ export function readCollectionLinks(
       id,
       title: String(settings.title ?? 'Collection title'),
       productCount: Number(settings.productCount ?? 5),
+      showCount: Boolean(settings.showCount),
       href,
       imageUrl: String(settings.imageUrl ?? '').trim(),
     };

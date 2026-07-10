@@ -122,7 +122,7 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
 }) => {
   const navigate = useNavigate();
   const { activeStoreId, stores } = useStore();
-  const { storeSubdomain, getByStoreId } = useStoreSubdomain();
+  const { storeSubdomain, getByStoreId, loading: subdomainLoading } = useStoreSubdomain();
 
   const { load, saveValues, saving, loading, error: loadError } = useStoreThemeConfig();
   const [error, setError] = useState<string | null>(null);
@@ -944,6 +944,7 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
                 storeId={previewStoreId}
                 storeName={activeStoreName}
                 storefrontOrigin={storeSubdomain?.url ?? null}
+                storefrontLoading={subdomainLoading}
                 jsUrl={themeRuntime.jsUrl}
                 cssUrl={themeRuntime.cssUrl}
                 config={livePreviewConfig}

@@ -74,7 +74,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
   {
     pageId: 'product',
     templateId: 'product',
-    label: 'Product page',
+    label: 'Default product',
     icon: 'product',
     previewPath: '/products/preview',
     routes: [
@@ -98,11 +98,16 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
   {
     pageId: 'collection',
     templateId: 'collection',
-    label: 'Collection page',
+    label: 'Default collection',
     icon: 'collection',
-    previewPath: '/collection',
+    previewPath: '/collections/preview',
     routes: [
-      { path: '/collection', templateId: 'collection' },
+      {
+        path: '/collections/preview',
+        templateId: 'collection',
+        withCollectionLoader: true,
+        loadCollectionUrlHandle: 'preview',
+      },
       {
         path: '/collections/:urlHandle',
         templateId: 'collection',
@@ -115,7 +120,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'collections',
     label: 'Collections',
     icon: 'collection',
-    previewPath: '/collection',
+    previewPath: '/collections/preview',
     routes: [],
   },
   {
@@ -302,6 +307,8 @@ export type ThemePageMenuSeed = {
   icon: ThemePageIcon;
   dividerBefore?: boolean;
   hasSubmenu?: boolean;
+  /** Opens checkout editor in a new tab — not a selectable preview page. */
+  openInNewTab?: boolean;
   children?: ThemePageMenuSeed[];
 };
 
@@ -313,10 +320,7 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     label: 'Products',
     icon: 'product',
     hasSubmenu: true,
-    children: [
-      { previewPage: 'product', label: 'Product page', icon: 'product' },
-      { previewPage: 'products', label: 'All products', icon: 'product' },
-    ],
+    children: [{ previewPage: 'product', label: 'Default product', icon: 'product' }],
   },
   {
     previewPage: 'collections',
@@ -324,14 +328,19 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     icon: 'collection',
     hasSubmenu: true,
     children: [
+      { previewPage: 'collection', label: 'Default collection', icon: 'collection' },
       { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
-      { previewPage: 'collection', label: 'Collection page', icon: 'collection' },
     ],
   },
   { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
   { previewPage: 'gift-card', label: 'Gift card', icon: 'gift' },
   { previewPage: 'cart', label: 'Cart', icon: 'cart', dividerBefore: true },
-  { previewPage: 'checkout', label: 'Checkout and customer accounts', icon: 'checkout' },
+  {
+    previewPage: 'checkout',
+    label: 'Checkout and customer accounts',
+    icon: 'checkout',
+    openInNewTab: true,
+  },
   { previewPage: 'pages', label: 'Pages', icon: 'page', dividerBefore: true },
   {
     previewPage: 'blogs',

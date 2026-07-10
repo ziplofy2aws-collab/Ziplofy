@@ -1,0 +1,31 @@
+.codiic-product-card {
+  background: var(--codiic-product-card-bg, #ffffff);
+  color: var(--codiic-product-card-text, #111827);
+}
+
+.codiic-product-card-quick-add {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+[data-codiic-product-card-quick-add='false'] .codiic-product-card-quick-add {
+  display: none;
+}
+
+[data-codiic-product-card-quick-add='true'] .codiic-product-card:hover .codiic-product-card-quick-add {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 749px) {
+  [data-codiic-product-card-mobile-quick-add='true'] .codiic-product-card-quick-add {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  [data-codiic-product-card-mobile-quick-add='false'] .codiic-product-card-quick-add {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

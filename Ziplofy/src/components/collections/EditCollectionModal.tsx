@@ -1,8 +1,7 @@
-import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import Modal from '../Modal';
 import ProductDescriptionInput from '../products/ProductDescriptionInput';
-import { useAwsUpload } from '../../contexts/aws-upload.context';
+import CollectionCoverImageField from './CollectionCoverImageField';
 
 interface EditCollectionForm {
   title: string;
@@ -32,8 +31,6 @@ const EditCollectionModal: React.FC<EditCollectionModalProps> = ({
   onUpdate,
   hasChanges = true,
 }) => {
-  const { uploadImageWithSignedUrl, loading: awsUploading } = useAwsUpload();
-
   return (
     <Modal
       open={isOpen}
@@ -73,42 +70,12 @@ const EditCollectionModal: React.FC<EditCollectionModalProps> = ({
         </div>
         <div>
           <label className="mb-1.5 block text-sm font-medium text-gray-700">Collection image</label>
-          {formData.imageUrl ? (
-            <div className="relative overflow-hidden rounded-lg border border-gray-200">
-              <img src={formData.imageUrl} alt="Collection" className="h-40 w-full object-cover" />
-              <button
-                type="button"
-                onClick={() => onChange('imageUrl', '')}
-                className="absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/65 text-white transition hover:bg-black/80"
-                aria-label="Remove collection image"
-              >
-                <XMarkIcon className="h-4 w-4" />
-              </button>
-            </div>
-          ) : (
-            <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-white px-4 py-7 text-center hover:border-blue-300 hover:bg-blue-50/30">
-              <PhotoIcon className="h-7 w-7 text-gray-400" />
-              <span className="mt-2 text-sm font-medium text-gray-700">
-                {awsUploading ? 'Uploading image...' : 'Upload collection image'}
-              </span>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  e.currentTarget.value = '';
-                  if (!file) return;
-                  try {
-                    const uploaded = await uploadImageWithSignedUrl(file, { folder: 'collections' });
-                    onChange('imageUrl', uploaded.objectUrl);
-                  } catch {
-                    // upload errors are handled in context
-                  }
-                }}
-              />
-            </label>
-          )}
+          <CollectionCoverImageField
+            imageUrl={formData.imageUrl}
+            imageAlt={formData.imageAltText || formData.title || 'Collection'}
+            onImageUrlChange={(url) => onChange('imageUrl', url)}
+            compact
+          />
         </div>
         <div>
           <label htmlFor="edit-image-alt" className="block text-sm font-medium text-gray-700 mb-1.5">

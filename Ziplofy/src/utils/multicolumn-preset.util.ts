@@ -22,7 +22,7 @@ export function applyMulticolumnPreset(section: Record<string, unknown>): void {
   settings.catalogVariant = 'multicolumn';
   settings.direction = settings.direction ?? 'horizontal';
   settings.verticalOnMobile = settings.verticalOnMobile ?? true;
-  settings.layoutAlignment = settings.layoutAlignment ?? 'left';
+  settings.layoutAlignment = settings.layoutAlignment ?? 'center';
   settings.position = settings.position ?? 'top';
   settings.layoutGap = settings.layoutGap ?? 16;
   settings.columns = settings.columns ?? 3;

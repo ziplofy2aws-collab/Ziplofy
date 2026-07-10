@@ -5,6 +5,7 @@ export const SPLIT_SHOWCASE_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
   'Custom CSS',
 ] as const;
@@ -17,9 +18,9 @@ const SPLIT_SHOWCASE_PANEL_KEYS = new Set([
   'layoutGap',
   'sectionWidth',
   'height',
-  'colorScheme',
   'backgroundMedia',
   'backgroundImageUrl',
+  'backgroundColor',
   'borderStyle',
   'cornerRadius',
   'mediaOverlay',
@@ -47,12 +48,12 @@ function fieldSortKey(path: string): number {
     layoutGap: 4,
     sectionWidth: 10,
     height: 11,
-    colorScheme: 20,
     backgroundMedia: 21,
-    backgroundImageUrl: 22,
-    borderStyle: 23,
-    cornerRadius: 24,
+    backgroundColor: 22,
+    backgroundImageUrl: 23,
     mediaOverlay: 25,
+    borderStyle: 26,
+    cornerRadius: 27,
     paddingTop: 30,
     paddingBottom: 31,
     customCss: 50,
@@ -67,6 +68,27 @@ export function isSplitShowcasePanelField(field: EditorFieldDef): boolean {
   return true;
 }
 
+/** The shared hero schema has no backgroundColor; synthesize one so Split showcase can expose it. */
+function withSplitShowcaseBackgroundColor(fields: EditorFieldDef[]): EditorFieldDef[] {
+  if (fields.some((f) => f.path.endsWith('.backgroundColor'))) return fields;
+  const anchor =
+    fields.find((f) => f.path.endsWith('.backgroundMedia')) ??
+    fields.find((f) => isHeroSettingsPath(f.path));
+  if (!anchor) return fields;
+  const base = anchor.path.replace(/\.[^.]+$/, '');
+  return [
+    ...fields,
+    {
+      path: `${base}.backgroundColor`,
+      type: 'color',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    },
+  ];
+}
+
 function remapSplitShowcaseField(field: EditorFieldDef): EditorFieldDef {
   const key = field.path.split('.').pop() ?? '';
   let next = enrichHeroPanelField(field);
@@ -76,27 +98,33 @@ function remapSplitShowcaseField(field: EditorFieldDef): EditorFieldDef {
     if (key === 'verticalOnMobile') {
       next = { ...next, label: 'Vertical on mobile', widget: 'toggle' };
     }
-    if (key === 'layoutAlignment' || key === 'position') {
+    if (key === 'direction') {
+      next = { ...next, widget: 'segmented' };
+    }
+    if (key === 'layoutAlignment') {
       next = { ...next, widget: 'select-inline' };
+    }
+    if (key === 'position') {
+      next = { ...next, widget: 'segmented' };
     }
   } else if (SIZE_KEYS.has(key)) {
     next = { ...next, group: 'Size' };
   } else if (key === 'mediaOverlay') {
-    next = { ...next, label: 'Background overlay', group: 'Appearance', widget: 'toggle' };
+    next = { ...next, label: 'Background overlay', group: 'Appearance', widget: 'toggle', sidebar: true };
   } else if (key === 'backgroundMedia') {
     next = { ...next, group: 'Appearance', widget: 'select-inline' };
+  } else if (key === 'backgroundColor') {
+    next = { ...next, label: 'Background color', group: 'Appearance', widget: 'color' };
   } else if (key === 'backgroundImageUrl') {
     next = { ...next, group: 'Appearance', widget: 'image' };
   } else if (key === 'borderStyle') {
-    next = { ...next, group: 'Appearance', widget: 'segmented' };
+    next = { ...next, label: 'Style', group: 'Borders', widget: 'segmented' };
   } else if (key === 'cornerRadius') {
-    next = { ...next, group: 'Appearance', widget: 'slider' };
+    next = { ...next, group: 'Borders', widget: 'slider' };
   } else if (key === 'customCss') {
     next = { ...next, group: 'Custom CSS', widget: 'accordion' };
-  } else if (key === 'colorScheme') {
-    next = { ...next, group: 'Appearance' };
   } else if (key === 'paddingTop' || key === 'paddingBottom') {
-    next = { ...next, group: 'Padding' };
+    next = { ...next, group: 'Padding', widget: 'slider' };
   }
 
   return next;
@@ -107,8 +135,9 @@ export function sortSplitShowcasePanelFields(fields: EditorFieldDef[]): EditorFi
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -120,7 +149,9 @@ export function sortSplitShowcasePanelFields(fields: EditorFieldDef[]): EditorFi
 
 export function prepareSplitShowcaseSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortSplitShowcasePanelFields(
-    (node.fields ?? []).filter(isSplitShowcasePanelField).map(remapSplitShowcaseField)
+    withSplitShowcaseBackgroundColor(
+      (node.fields ?? []).filter(isSplitShowcasePanelField)
+    ).map(remapSplitShowcaseField)
   );
   return { ...node, label: 'Split showcase', kind: 'section', fields };
 }
@@ -129,7 +160,9 @@ export function groupSplitShowcasePanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {
   const sorted = sortSplitShowcasePanelFields(
-    fields.filter(isSplitShowcasePanelField).map(remapSplitShowcaseField)
+    withSplitShowcaseBackgroundColor(
+      fields.filter(isSplitShowcasePanelField)
+    ).map(remapSplitShowcaseField)
   );
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of sorted) {
@@ -143,5 +176,7 @@ export function groupSplitShowcasePanelFields(
 
 export function isSplitShowcaseSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
-  return fields.every(isSplitShowcasePanelField);
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  if (keys.has('media1Type') || keys.has('marqueeText') || keys.has('media1ImageUrl')) return false;
+  return keys.has('verticalOnMobile') && keys.has('direction') && keys.has('sectionWidth');
 }

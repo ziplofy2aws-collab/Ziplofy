@@ -7,7 +7,7 @@ export type PullQuoteScheme = {
 };
 
 const SCHEMES: Record<string, PullQuoteScheme> = {
-  'scheme-1': { background: '#f6f6f7', color: '#111827', muted: '#4b5563' },
+  'scheme-1': { background: '#ffffff', color: '#111827', muted: '#4b5563' },
   'scheme-2': { background: '#ffffff', color: '#111827', muted: '#4b5563' },
   'scheme-3': { background: '#eef6fb', color: '#0f172a', muted: '#475569' },
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6' },

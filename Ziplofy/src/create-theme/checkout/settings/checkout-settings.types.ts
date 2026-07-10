@@ -303,7 +303,7 @@ export function readCheckoutGlobalSettings(
   }
   const typed = settings as CheckoutGlobalSettings;
   const palette = Array.isArray(typed.colorPalette)
-    ? typed.colorPalette.filter((color): color is string => typeof color === 'string' && color.trim().length > 0)
+    ? typed.colorPalette.filter((color): color is string => typeof color === 'string' && color.trim())
     : [...CHECKOUT_DEFAULT_COLOR_PALETTE];
   const alignment = typed.logoAlignment;
   const layout = typed.layout;

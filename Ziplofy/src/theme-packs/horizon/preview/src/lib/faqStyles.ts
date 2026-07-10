@@ -3,6 +3,65 @@ import { getThemeConfigValue } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from './config';
 import { layoutBlockOrder, templateBlockOrder } from './structureOrder';
 
+const TEXT_TYPOGRAPHY_PRESETS: Record<
+  string,
+  { fontSize: number; fontWeight: number; lineHeight: number; fontFamilyKey: 'heading' | 'body' }
+> = {
+  default: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
+  paragraph: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
+  body: { fontSize: 15, fontWeight: 400, lineHeight: 1.5, fontFamilyKey: 'body' },
+  'heading-1': { fontSize: 32, fontWeight: 600, lineHeight: 1.15, fontFamilyKey: 'heading' },
+  'heading-2': { fontSize: 28, fontWeight: 600, lineHeight: 1.2, fontFamilyKey: 'heading' },
+  'heading-3': { fontSize: 24, fontWeight: 600, lineHeight: 1.25, fontFamilyKey: 'heading' },
+  'heading-4': { fontSize: 20, fontWeight: 600, lineHeight: 1.3, fontFamilyKey: 'heading' },
+  'heading-5': { fontSize: 18, fontWeight: 600, lineHeight: 1.35, fontFamilyKey: 'heading' },
+  'heading-6': { fontSize: 14, fontWeight: 600, lineHeight: 1.4, fontFamilyKey: 'heading' },
+};
+
+const TEXT_MAX_WIDTH: Record<string, string | undefined> = {
+  narrow: '280px',
+  normal: '100%',
+  wide: '100%',
+  none: undefined,
+};
+
+export function readFaqTextBlockStyle(
+  config: Record<string, unknown> | null,
+  settingsBase: string,
+  themeFonts: { fontHeading: string; fontBody: string },
+  color: string
+): CSSProperties {
+  const preset = cfgString(config, `${settingsBase}.typographyPreset`, 'default');
+  const typo = TEXT_TYPOGRAPHY_PRESETS[preset] ?? TEXT_TYPOGRAPHY_PRESETS.default;
+  const widthMode = cfgString(config, `${settingsBase}.width`, 'fill');
+  const maxKey = cfgString(config, `${settingsBase}.maxWidth`, 'normal');
+  const alignment = cfgString(config, `${settingsBase}.alignment`, 'left');
+  const bgOn = cfgBool(config, `${settingsBase}.backgroundEnabled`, false);
+  const textColorRaw = cfgString(config, `${settingsBase}.textColor`, 'default');
+  const resolvedColor =
+    !textColorRaw || textColorRaw === 'default' ? color : textColorRaw;
+  const bgColor = cfgString(config, `${settingsBase}.backgroundColor`, '#00000026');
+  const cornerRadius = cfgNumber(config, `${settingsBase}.cornerRadius`, 0);
+
+  return {
+    width: widthMode === 'fill' ? '100%' : 'fit-content',
+    maxWidth: TEXT_MAX_WIDTH[maxKey] ?? TEXT_MAX_WIDTH.normal,
+    textAlign: alignment === 'center' || alignment === 'right' ? alignment : 'left',
+    fontFamily: typo.fontFamilyKey === 'heading' ? themeFonts.fontHeading : themeFonts.fontBody,
+    fontSize: typo.fontSize,
+    fontWeight: typo.fontWeight,
+    lineHeight: typo.lineHeight,
+    color: resolvedColor,
+    background: bgOn ? bgColor || 'rgba(0,0,0,0.04)' : undefined,
+    paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 0),
+    paddingLeft: cfgNumber(config, `${settingsBase}.paddingLeft`, 0),
+    paddingRight: cfgNumber(config, `${settingsBase}.paddingRight`, 0),
+    borderRadius: bgOn ? cornerRadius : 0,
+    boxSizing: 'border-box',
+  };
+}
+
 export type FaqScheme = {
   background: string;
   color: string;
@@ -17,18 +76,105 @@ const SCHEMES: Record<string, FaqScheme> = {
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6', border: '#ddd6fe' },
 };
 
+function resolveFaqScheme(value: string): FaqScheme {
+  const fallback = SCHEMES['scheme-1']!;
+  const hex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value) ? value : '';
+  if (hex) {
+    let h = hex.slice(1);
+    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+    const r = parseInt(h.slice(0, 2), 16);
+    const g = parseInt(h.slice(2, 4), 16);
+    const b = parseInt(h.slice(4, 6), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    const isLight = luminance > 0.6;
+    return {
+      background: hex,
+      color: isLight ? '#111827' : '#ffffff',
+      muted: isLight ? '#4b5563' : 'rgba(255,255,255,0.72)',
+      border: isLight ? '#e5e7eb' : 'rgba(255,255,255,0.2)',
+    };
+  }
+  return SCHEMES[value] ?? fallback;
+}
+
+export type FaqTextBlock = {
+  id: string;
+  text: string;
+};
+
 export type FaqItem = {
   id: string;
   question: string;
   answer: string;
+  answerTextBlockId: string;
+  textBlocks: FaqTextBlock[];
+  openByDefault: boolean;
+  rowImageIconUrl: string;
+  rowIconWidth: number;
 };
 
-const HEIGHT_PX: Record<string, number> = {
+function isFaqBlockEnabled(block: Record<string, unknown> | null | undefined): boolean {
+  if (!block || typeof block !== 'object') return false;
+  return (block as { enabled?: boolean }).enabled !== false;
+}
+
+function readAccordionRowTextBlocks(block: Record<string, unknown>): FaqTextBlock[] {
+  const nestedBlocks = (block.blocks ?? {}) as Record<string, Record<string, unknown>>;
+  const order = Array.isArray(block.block_order)
+    ? (block.block_order as string[])
+    : Object.keys(nestedBlocks);
+  const blocks: FaqTextBlock[] = [];
+  for (const id of order) {
+    const nested = nestedBlocks[id];
+    if (!nested || nested.type !== 'text' || !isFaqBlockEnabled(nested)) continue;
+    const settings = (nested.settings ?? {}) as Record<string, unknown>;
+    blocks.push({ id, text: String(settings.text ?? '') });
+  }
+  if (blocks.length) return blocks;
+  const settings = (block.settings ?? {}) as Record<string, unknown>;
+  const legacy = String(settings.answer ?? '').trim();
+  if (legacy) return [{ id: 'text', text: legacy }];
+  return [{ id: 'text', text: '' }];
+}
+
+export function isFaqHeadingBlockEnabled(
+  config: Record<string, unknown> | null,
+  sectionBase: string
+): boolean {
+  const heading = getThemeConfigValue(config, `${sectionBase}.blocks.heading`) as
+    | Record<string, unknown>
+    | null;
+  if (!heading) return true;
+  return isFaqBlockEnabled(heading);
+}
+
+export function isFaqAccordionBlockEnabled(
+  config: Record<string, unknown> | null,
+  sectionBase: string
+): boolean {
+  const accordion = getThemeConfigValue(config, `${sectionBase}.blocks.accordion`) as
+    | Record<string, unknown>
+    | null;
+  if (!accordion) return true;
+  return isFaqBlockEnabled(accordion);
+}
+
+const HEIGHT_VH: Record<string, number> = {
   auto: 0,
-  small: 260,
-  medium: 320,
-  large: 400,
+  small: 40,
+  medium: 60,
+  large: 80,
+  'full-screen': 100,
 };
+
+function resolveFaqMinHeight(heightKey: string, customHeightPercent: number): string | undefined {
+  if (heightKey === 'custom') {
+    const pct = Math.min(Math.max(customHeightPercent, 0), 100);
+    return pct > 0 ? `${pct}vh` : undefined;
+  }
+  const vh = HEIGHT_VH[heightKey] ?? 0;
+  return vh > 0 ? `${vh}vh` : undefined;
+}
 
 export type FaqLayout = {
   scheme: FaqScheme;
@@ -39,12 +185,16 @@ export type FaqLayout = {
   openFirstItem: boolean;
   sectionWidth: 'page' | 'full';
   height: string;
-  minHeightPx: number;
+  customHeight: number;
+  minHeight: string | undefined;
   backgroundMedia: string;
   backgroundImageUrl: string;
   borderStyle: string;
   cornerRadius: number;
   backgroundOverlay: boolean;
+  overlayColor: string;
+  overlayStyle: 'solid' | 'gradient';
+  overlayGradientDirection: 'up' | 'down';
   paddingTop: number;
   paddingBottom: number;
   customCss: string;
@@ -60,13 +210,14 @@ export function readFaqLayout(
     cfgString(config, `${settingsBase}.layoutAlignment`, '') ||
     cfgString(config, `${settingsBase}.headingAlignment`, 'left');
   const height = cfgString(config, `${settingsBase}.height`, 'auto');
+  const customHeight = cfgNumber(config, `${settingsBase}.customHeight`, 50);
   const accordionBase = settingsBase.replace(/\.settings$/, '.blocks.accordion.settings');
   const openFirstItem =
     cfgBool(config, `${accordionBase}.openFirstItem`, false) ||
     cfgBool(config, `${settingsBase}.openFirstItem`, false);
 
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme: resolveFaqScheme(schemeKey),
     direction: dir === 'horizontal' ? 'horizontal' : 'vertical',
     layoutAlignment:
       alignRaw === 'center' || alignRaw === 'right' ? alignRaw : 'left',
@@ -75,16 +226,33 @@ export function readFaqLayout(
     openFirstItem,
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
     height,
-    minHeightPx: HEIGHT_PX[height] ?? 0,
+    customHeight,
+    minHeight: resolveFaqMinHeight(height, customHeight),
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
     backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
+    overlayColor: cfgString(config, `${settingsBase}.overlayColor`, '#00000066'),
+    overlayStyle:
+      cfgString(config, `${settingsBase}.overlayStyle`, 'solid') === 'gradient' ? 'gradient' : 'solid',
+    overlayGradientDirection:
+      cfgString(config, `${settingsBase}.overlayGradientDirection`, 'up') === 'down' ? 'down' : 'up',
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 48),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 48),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
   };
+}
+
+export function faqOverlayBackground(
+  style: Pick<FaqLayout, 'overlayColor' | 'overlayStyle' | 'overlayGradientDirection'>
+): string {
+  if (style.overlayStyle === 'gradient') {
+    return style.overlayGradientDirection === 'down'
+      ? `linear-gradient(180deg, transparent 0%, ${style.overlayColor} 100%)`
+      : `linear-gradient(180deg, ${style.overlayColor} 0%, transparent 100%)`;
+  }
+  return style.overlayColor;
 }
 
 const ACCORDION_TYPOGRAPHY_PRESETS: Record<
@@ -187,7 +355,17 @@ function readLegacyFaqItems(
       const settings = (block.settings ?? {}) as Record<string, unknown>;
       const question = String(settings.question ?? '').trim();
       if (!question) return null;
-      return { id, question, answer: String(settings.answer ?? '') };
+      const textBlocks = [{ id, text: String(settings.answer ?? '') }];
+      return {
+        id,
+        question,
+        answer: textBlocks[0]?.text ?? '',
+        answerTextBlockId: 'text',
+        textBlocks,
+        openByDefault: false,
+        rowImageIconUrl: '',
+        rowIconWidth: 20,
+      };
     })
     .filter((x): x is FaqItem => x != null);
 }
@@ -216,11 +394,22 @@ export function readFaqItems(
     return order
       .map((id) => {
         const block = accordionBlock.blocks?.[id];
-        if (!block) return null;
+        if (!block || !isFaqBlockEnabled(block)) return null;
         const settings = (block.settings ?? {}) as Record<string, unknown>;
-        const question = String(settings.question ?? '').trim();
+        const question = String(settings.heading ?? settings.question ?? '').trim();
         if (!question) return null;
-        return { id, question, answer: String(settings.answer ?? '') };
+        const textBlocks = readAccordionRowTextBlocks(block);
+        const primary = textBlocks[0];
+        return {
+          id,
+          question,
+          answer: primary?.text ?? '',
+          answerTextBlockId: primary?.id ?? 'text',
+          textBlocks,
+          openByDefault: Boolean(settings.openByDefault),
+          rowImageIconUrl: String(settings.rowImageIconUrl ?? ''),
+          rowIconWidth: Number(settings.rowIconWidth ?? 20) || 20,
+        };
       })
       .filter((x): x is FaqItem => x != null);
   }

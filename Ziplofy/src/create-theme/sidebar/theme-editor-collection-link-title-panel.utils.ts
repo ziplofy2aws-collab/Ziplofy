@@ -49,6 +49,88 @@ export function sortCollectionLinkTitlePanelFields(fields: EditorFieldDef[]): Ed
   );
 }
 
+const TITLE_FONT_OPTIONS = [
+  { value: 'body', label: 'Body' },
+  { value: 'subheading', label: 'Subheading' },
+  { value: 'heading', label: 'Heading' },
+  { value: 'accent', label: 'Accent' },
+] as const;
+
+const TITLE_WEIGHT_OPTIONS = [
+  { value: 'default', label: 'Default' },
+  { value: '300', label: 'Light' },
+  { value: '400', label: 'Regular' },
+  { value: '500', label: 'Medium' },
+  { value: '600', label: 'Semibold' },
+  { value: '700', label: 'Bold' },
+] as const;
+
+const TITLE_LINE_HEIGHT_OPTIONS = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'tight', label: 'Tight' },
+  { value: 'loose', label: 'Loose' },
+] as const;
+
+const TITLE_LETTER_SPACING_OPTIONS = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'tight', label: 'Tight' },
+  { value: 'wide', label: 'Wide' },
+] as const;
+
+const TITLE_CASE_OPTIONS = [
+  { value: 'default', label: 'Default' },
+  { value: 'uppercase', label: 'Uppercase' },
+] as const;
+
+/** Build Title typography panel fields from a block settings base (fallback when schema lookup misses). */
+function collectionLinkTitleFieldDefsFromSettingsBase(settingsBase: string): EditorFieldDef[] {
+  return sortCollectionLinkTitlePanelFields([
+    {
+      path: `${settingsBase}.titleFont`,
+      type: 'select',
+      label: 'Font',
+      widget: 'select',
+      options: [...TITLE_FONT_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.titleWeight`,
+      type: 'select',
+      label: 'Weight',
+      widget: 'select',
+      options: [...TITLE_WEIGHT_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.titleLineHeight`,
+      type: 'select',
+      label: 'Line height',
+      widget: 'select',
+      options: [...TITLE_LINE_HEIGHT_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.titleLetterSpacing`,
+      type: 'select',
+      label: 'Letter spacing',
+      widget: 'select',
+      options: [...TITLE_LETTER_SPACING_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.titleCase`,
+      type: 'select',
+      label: 'Case',
+      widget: 'segmented',
+      options: [...TITLE_CASE_OPTIONS],
+    },
+  ]);
+}
+
+function settingsBaseFromTitleFieldPath(path: string): string | null {
+  const tpl = path.match(/^templates\.[^.]+\.sections\.[^.]+\.blocks\.[^.]+\.settings\.title$/);
+  if (tpl) return path.replace(/\.title$/, '');
+  const layout = path.match(/^sections\.[^.]+\.blocks\.[^.]+\.settings\.title$/);
+  if (layout) return path.replace(/\.title$/, '');
+  return null;
+}
+
 const COLLECTION_LINK_SECTION_BLUEPRINTS = ['collection_links_spotlight', 'collection_links_text'] as const;
 
 export function collectionLinkBlueprintSettingsFields(
@@ -99,18 +181,19 @@ export function collectionLinkTitleFieldDefsFromSchema(
       'template',
       tplId
     );
-    if (!settingsFields.length) return [];
-    return sortCollectionLinkTitlePanelFields(
-      settingsFields
-        .filter((f) => TYPOGRAPHY_KEY_SET.has(f.path.split('.').pop() ?? ''))
-        .map((f) => ({
-          ...f,
-          path: remapTemplateSchemaPath(f.path, tplId, secId).replace(
-            /\.blocks\.collection_link\./,
-            `.blocks.${blockId}.`
-          ),
-        }))
-    );
+    if (settingsFields.length) {
+      return sortCollectionLinkTitlePanelFields(
+        settingsFields
+          .filter((f) => TYPOGRAPHY_KEY_SET.has(f.path.split('.').pop() ?? ''))
+          .map((f) => ({
+            ...f,
+            path: remapTemplateSchemaPath(f.path, tplId, secId).replace(
+              /\.blocks\.collection_link\./,
+              `.blocks.${blockId}.`
+            ),
+          }))
+      );
+    }
   }
 
   const layoutMatch = path.match(/^sections\.([^.]+)\.blocks\.([^.]+)\.settings\.title$/);
@@ -118,18 +201,22 @@ export function collectionLinkTitleFieldDefsFromSchema(
     const [, secId, blockId] = layoutMatch;
     const blueprint = layoutBlueprintKey(secId);
     const settingsFields = collectionLinkBlueprintSettingsFields(editorSchema, blueprint, 'layout');
-    if (!settingsFields.length) return [];
-    return sortCollectionLinkTitlePanelFields(
-      settingsFields
-        .filter((f) => TYPOGRAPHY_KEY_SET.has(f.path.split('.').pop() ?? ''))
-        .map((f) => ({
-          ...f,
-          path: f.path
-            .replace(/^sections\.[^.]+\./, `sections.${secId}.`)
-            .replace(/\.blocks\.collection_link\./, `.blocks.${blockId}.`),
-        }))
-    );
+    if (settingsFields.length) {
+      return sortCollectionLinkTitlePanelFields(
+        settingsFields
+          .filter((f) => TYPOGRAPHY_KEY_SET.has(f.path.split('.').pop() ?? ''))
+          .map((f) => ({
+            ...f,
+            path: f.path
+              .replace(/^sections\.[^.]+\./, `sections.${secId}.`)
+              .replace(/\.blocks\.collection_link\./, `.blocks.${blockId}.`),
+          }))
+      );
+    }
   }
+
+  const settingsBase = settingsBaseFromTitleFieldPath(path);
+  if (settingsBase) return collectionLinkTitleFieldDefsFromSettingsBase(settingsBase);
 
   return [];
 }

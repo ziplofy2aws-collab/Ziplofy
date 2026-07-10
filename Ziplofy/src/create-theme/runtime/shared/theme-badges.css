@@ -1,0 +1,59 @@
+[data-codiic-badge-position='top-left'] .codiic-product-card-badge {
+  top: 8px;
+  left: 8px;
+  right: auto;
+  bottom: auto;
+}
+
+[data-codiic-badge-position='top-right'] .codiic-product-card-badge {
+  top: 8px;
+  right: 8px;
+  left: auto;
+  bottom: auto;
+}
+
+[data-codiic-badge-position='bottom-left'] .codiic-product-card-badge {
+  bottom: 8px;
+  left: 8px;
+  top: auto;
+  right: auto;
+}
+
+[data-codiic-badge-position='bottom-right'] .codiic-product-card-badge {
+  bottom: 8px;
+  right: 8px;
+  top: auto;
+  left: auto;
+}
+
+.codiic-product-card-badge {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  border-radius: var(--codiic-badge-radius, 100px);
+  font-family: var(--codiic-badge-font-family, inherit);
+  font-weight: var(--codiic-badge-font-weight, 400);
+  font-style: var(--codiic-badge-font-style, normal);
+  text-transform: var(--codiic-badge-text-transform, none);
+}
+
+.codiic-product-card-badge--sale {
+  background: var(--codiic-badge-sale-bg, #ffffff);
+  color: var(--codiic-badge-sale-text, #111827);
+}
+
+.codiic-product-card-badge--sold-out {
+  background: var(--codiic-badge-sold-out-bg, #eef1ea);
+  color: var(--codiic-badge-sold-out-text, #111827);
+}
+
+.codiic-product-card-media {
+  position: relative;
+}

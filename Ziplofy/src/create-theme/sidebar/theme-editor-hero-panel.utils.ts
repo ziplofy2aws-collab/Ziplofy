@@ -5,6 +5,8 @@ import {
   templateBlueprintKey,
 } from '../../utils/theme-editor-insert-section';
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
+import { prepareLargeLogoSettingsNode } from './theme-editor-large-logo-panel.utils';
+import { prepareSplitShowcaseSettingsNode } from './theme-editor-split-showcase-panel.utils';
 
 const PANEL_GROUPS = new Set([
   'Media 1',
@@ -43,11 +45,13 @@ const HERO_PANEL_KEYS = new Set([
   'height',
   'customHeight',
   'colorScheme',
+  'backgroundColor',
   'mediaOverlay',
   'overlayColor',
   'overlayStyle',
   'overlayGradientDirection',
   'blurredReflection',
+  'reflectionOpacity',
   'paddingTop',
   'paddingBottom',
   'customCss',
@@ -61,6 +65,7 @@ export const HERO_PANEL_GROUP_ORDER = [
   'Layout',
   'Appearance',
   'Padding',
+  'Theme Settings',
   'Custom CSS',
 ] as const;
 
@@ -119,12 +124,14 @@ function fieldSortKey(path: string): number {
     sectionWidth: 46,
     height: 47,
     customHeight: 48,
+    backgroundColor: 49,
     colorScheme: 50,
     mediaOverlay: 51,
     overlayColor: 52,
     overlayStyle: 53,
     overlayGradientDirection: 54,
     blurredReflection: 55,
+    reflectionOpacity: 56,
     paddingTop: 60,
     paddingBottom: 61,
     customCss: 70,
@@ -171,6 +178,12 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
   if (key === 'overlayColor') {
     return { ...field, widget: 'color' };
   }
+  if (key === 'reflectionOpacity' && !field.widget) {
+    return { ...field, widget: 'slider' };
+  }
+  if (key === 'colorScheme') {
+    return { ...field, label: 'Background color', widget: 'color' };
+  }
   if (
     key === 'media1Type' ||
     key === 'media2Type' ||
@@ -188,6 +201,12 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
   }
   if ((key === 'direction' || key === 'sectionWidth') && !field.widget) {
     return { ...field, widget: 'segmented' };
+  }
+  if (key === 'layoutAlignment' && !field.widget) {
+    return { ...field, widget: 'segmented' };
+  }
+  if ((key === 'position' || key === 'height') && !field.widget) {
+    return { ...field, widget: 'select-inline' };
   }
   if (key === 'verticalOnMobile') {
     return { ...field, label: 'Vertical on mobile', widget: 'toggle' };
@@ -316,10 +335,10 @@ export function prepareHeroSectionSettingsForNode(
     return prepareHeroMarqueeSettingsNode(base);
   }
   if (isHeroLargeLogoSidebarSection(heroSection)) {
-    return prepareHeroLargeLogoSettingsNode(base);
+    return prepareLargeLogoSettingsNode(base);
   }
   if (isHeroSplitShowcaseSidebarSection(heroSection)) {
-    return prepareHeroSplitShowcaseSettingsNode(base);
+    return prepareSplitShowcaseSettingsNode(base);
   }
   return prepareHeroSettingsNode(base);
 }

@@ -441,6 +441,10 @@ function expandedIdsFromStructuralNodeId(nodeId: string): Record<string, boolean
       if (parts[5] === 'nested' && parts[6]) {
         prefix = `${prefix}:nested:${parts[6]}`;
         out[prefix] = true;
+        if (parts[7] === 'nested' && parts[8]) {
+          prefix = `${prefix}:nested:${parts[8]}`;
+          out[prefix] = true;
+        }
       }
     }
     return out;
@@ -455,6 +459,10 @@ function expandedIdsFromStructuralNodeId(nodeId: string): Record<string, boolean
       if (parts[4] === 'nested' && parts[5]) {
         prefix = `${prefix}:nested:${parts[5]}`;
         out[prefix] = true;
+        if (parts[6] === 'nested' && parts[7]) {
+          prefix = `${prefix}:nested:${parts[7]}`;
+          out[prefix] = true;
+        }
       }
     }
     return out;

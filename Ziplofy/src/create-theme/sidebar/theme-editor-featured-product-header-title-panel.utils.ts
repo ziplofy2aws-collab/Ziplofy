@@ -14,6 +14,7 @@ const TITLE_FIELD_KEYS = new Set([
   'width',
   'maxWidth',
   'typographyPreset',
+  'textColor',
   'backgroundEnabled',
   'paddingTop',
   'paddingBottom',
@@ -57,6 +58,7 @@ export function featuredProductHeaderTitleDefaultSettings(): Record<string, stri
     width: 'fit',
     maxWidth: 'normal',
     typographyPreset: 'default',
+    textColor: 'default',
     backgroundEnabled: false,
     paddingTop: 0,
     paddingBottom: 0,
@@ -95,6 +97,14 @@ export function featuredProductHeaderTitleFieldDefs(blocksBase: string): EditorF
       sidebar: false,
       description: 'Edit presets in theme settings',
       options: [...TYPOGRAPHY_PRESET_OPTIONS],
+    },
+    {
+      path: s('textColor'),
+      type: 'text',
+      label: 'Text color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: false,
     },
     {
       path: s('backgroundEnabled'),
@@ -173,14 +183,20 @@ export function featuredProductHeaderTitleFieldDefsFromSchema(
   const header = details?.blocks?.find((b) => b.id === 'header');
   const title = header?.blocks?.find((b) => b.id === 'title');
   const blocksBase = blocksBaseFromNodeId(nodeId);
+  const built = blocksBase ? featuredProductHeaderTitleFieldDefs(blocksBase) : [];
   const schemaFields = title?.settingsFields ?? [];
   if (schemaFields.length) {
-    return schemaFields.map((f) => ({
+    const remapped = schemaFields.map((f) => ({
       ...f,
       path: remapTemplateSchemaPath(f.path, tplId, secId),
     }));
+    const schemaKeys = new Set(remapped.map((f) => f.path.split('.').pop() ?? ''));
+    return [
+      ...remapped,
+      ...built.filter((f) => !schemaKeys.has(f.path.split('.').pop() ?? '')),
+    ];
   }
-  return blocksBase ? featuredProductHeaderTitleFieldDefs(blocksBase) : [];
+  return built;
 }
 
 export const FEATURED_PRODUCT_HEADER_TITLE_DEFAULTS: Record<string, string | boolean> =
@@ -197,6 +213,7 @@ function fieldSortKey(path: string): number {
     width: 0,
     maxWidth: 1,
     typographyPreset: 10,
+    textColor: 19,
     backgroundEnabled: 20,
     paddingTop: 30,
     paddingBottom: 31,

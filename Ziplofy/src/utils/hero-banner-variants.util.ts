@@ -8,6 +8,46 @@ export const HERO_MARQUEE_TEXT =
 export const LARGE_LOGO_BODY =
   'Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.';
 
+/** Default Large logo block settings (Font, Size, Padding panel). */
+export function largeLogoBlockDefaultSettings(
+  text = 'My Store'
+): Record<string, string | number | boolean> {
+  return {
+    text,
+    imageUrl: '',
+    logoFont: 'heading',
+    sizeUnit: 'percent',
+    pixelHeight: 120,
+    percentWidth: 100,
+    customMobileSize: false,
+    mobileSizeUnit: 'percent',
+    mobilePixelHeight: 80,
+    mobilePercentWidth: 100,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+  };
+}
+
+/** Default Large logo corner text block settings (Shopify Text block panel). */
+export function largeLogoTextBlockSettings(text = LARGE_LOGO_BODY): Record<string, string | number | boolean> {
+  return {
+    text,
+    width: 'fit',
+    maxWidth: 'narrow',
+    alignment: 'left',
+    typographyPreset: 'default',
+    backgroundEnabled: false,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+  };
+}
+
+export const LARGE_LOGO_BACKGROUND = '#f0f1ed';
+
 export const SPLIT_SHOWCASE_IMAGE_LEFT =
   'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?auto=format&fit=crop&w=1600&q=85';
 
@@ -56,11 +96,46 @@ export function applyHeroMarqueePreset(section: Record<string, unknown>, blocksP
   settings.catalogVariant = 'hero-marquee';
   settings.marqueeText = HERO_MARQUEE_TEXT;
   settings.subtitle = HERO_MARQUEE_TEXT;
+  // Settings-backed "Text" block inside the Marquee folder (sidebar hierarchy).
+  settings.marqueeTextBlock = {
+    settings: {
+      text: HERO_MARQUEE_TEXT,
+      width: 'fit',
+      maxWidth: 'normal',
+      alignment: 'left',
+      typographyPreset: 'heading-1',
+      font: 'body',
+      fontSize: 'default',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+      textCase: 'default',
+      wrap: 'pretty',
+      textColor: 'default',
+      backgroundEnabled: false,
+      backgroundColor: '#00000026',
+      cornerRadius: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  };
+  // Section-level "Spacer" block defaults.
+  settings.marqueeSpacerUnit = 'pixel';
+  settings.marqueeSpacerHeight = 24;
+  settings.marqueeSpacerCustomMobile = false;
+  settings.marqueeSpacerMobileHeight = 24;
+  // "Marquee" folder block defaults (Motion direction, Background, Padding).
+  settings.marqueeMotionDirection = 'forward';
+  settings.marqueeBackgroundColor = '';
+  settings.marqueeTransparentBg = true;
+  settings.marqueePaddingTop = 24;
+  settings.marqueePaddingBottom = 24;
+  settings.marqueeGap = 24;
   settings.media1Type = 'image';
+  // Leave media empty by default so the landscape illustration backdrop renders.
   settings.media1ImageUrl =
-    typeof settings.media1ImageUrl === 'string' && settings.media1ImageUrl.trim()
-      ? settings.media1ImageUrl
-      : HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE;
+    typeof settings.media1ImageUrl === 'string' ? settings.media1ImageUrl : '';
   settings.direction = 'vertical';
   settings.layoutAlignment = 'center';
   settings.position = 'space-between';
@@ -110,8 +185,9 @@ export function applyLargeLogoPreset(section: Record<string, unknown>, blocksPat
   settings.paddingTop = 40;
   settings.paddingBottom = 40;
   settings.mediaOverlay = false;
-  settings.colorScheme = settings.colorScheme ?? 'scheme-3';
+  settings.colorScheme = 'scheme-large-logo';
   settings.backgroundMedia = 'none';
+  settings.backgroundColor = '';
   settings.backgroundImageUrl = '';
   settings.borderStyle = 'none';
   settings.cornerRadius = 0;
@@ -119,13 +195,20 @@ export function applyLargeLogoPreset(section: Record<string, unknown>, blocksPat
   section.settings = settings;
 
   const blocks = (section.blocks ?? {}) as Record<string, Record<string, unknown>>;
+  const textSettings = largeLogoTextBlockSettings(LARGE_LOGO_BODY);
   blocks.text_2 = {
     type: 'text',
-    settings: { text: LARGE_LOGO_BODY },
-    settings_field_order: [`${blocksPath}.text_2.settings.text`],
+    settings: textSettings,
+    settings_field_order: Object.keys(textSettings).map((key) => `${blocksPath}.text_2.settings.${key}`),
+  };
+  const logoSettings = largeLogoBlockDefaultSettings('My Store');
+  blocks.logo = {
+    type: 'logo',
+    settings: logoSettings,
+    settings_field_order: Object.keys(logoSettings).map((key) => `${blocksPath}.logo.settings.${key}`),
   };
   section.blocks = blocks;
-  section.block_order = ['text_2'];
+  section.block_order = ['text_2', 'logo'];
 }
 
 export function applySplitShowcasePreset(section: Record<string, unknown>, blocksPath: string): void {
@@ -134,9 +217,9 @@ export function applySplitShowcasePreset(section: Record<string, unknown>, block
   settings.title = 'New arrivals';
   settings.splitRightTitle = 'Bestsellers';
   settings.media1Type = 'image';
-  settings.media1ImageUrl = SPLIT_SHOWCASE_IMAGE_LEFT;
+  settings.media1ImageUrl = '';
   settings.media2Type = 'image';
-  settings.media2ImageUrl = SPLIT_SHOWCASE_IMAGE_RIGHT;
+  settings.media2ImageUrl = '';
   settings.direction = 'horizontal';
   settings.verticalOnMobile = true;
   settings.layoutAlignment = 'left';
@@ -207,12 +290,12 @@ export function defaultHeroBlockOrder(catalogVariant: string): string[] {
     case 'hero-marquee':
       return ['primary_button'];
     case 'large-logo':
-      return ['text_2'];
+      return ['text_2', 'logo'];
     case 'split-showcase':
       return ['heading', 'text_right', 'primary_button', 'secondary_button'];
     case 'hero-bottom-aligned':
       return ['content_group'];
     default:
-      return ['heading', 'primary_button'];
+      return ['text_1', 'text_2', 'primary_button'];
   }
 }

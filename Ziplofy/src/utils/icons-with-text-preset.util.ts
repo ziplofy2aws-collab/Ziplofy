@@ -25,9 +25,9 @@ export function applyIconsWithTextPreset(section: Record<string, unknown>): void
   settings.catalogVariant = 'icons-with-text';
   settings.direction = settings.direction ?? 'horizontal';
   settings.verticalOnMobile = settings.verticalOnMobile ?? false;
-  settings.layoutAlignment = settings.layoutAlignment ?? 'left';
+  settings.layoutAlignment = settings.layoutAlignment ?? 'center';
   settings.position = settings.position ?? 'center';
-  settings.layoutGap = settings.layoutGap ?? 16;
+  settings.layoutGap = settings.layoutGap ?? 32;
   settings.columns = settings.columns ?? 3;
   settings.sectionWidth = settings.sectionWidth ?? 'page';
   settings.height = settings.height ?? 'auto';

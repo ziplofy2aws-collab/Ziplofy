@@ -1,65 +1,52 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
-const STORAGE_KEY = 'ziplofy-theme-editor-settings-sheet-height';
 const MIN_HEIGHT = 180;
-const DEFAULT_HEIGHT = 420;
+/** Initial guess before the sidebar is measured; the mount effect expands to full height. */
+const DEFAULT_HEIGHT = 640;
 
 type ThemeEditorSettingsSheetProps = {
   children: ReactNode;
 };
 
-function readStoredHeight(): number {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    const n = raw ? Number(raw) : NaN;
-    if (Number.isFinite(n) && n >= MIN_HEIGHT) return n;
-  } catch {
-    /* ignore */
-  }
-  return DEFAULT_HEIGHT;
-}
-
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-/** Bottom settings panel with drag-to-resize (up to nearly full sidebar height). */
+/** Bottom settings panel; opens fully expanded and supports drag-to-resize. */
 export function ThemeEditorSettingsSheet({ children }: ThemeEditorSettingsSheetProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
-  const heightRef = useRef(readStoredHeight());
-  const [height, setHeight] = useState(heightRef.current);
+  const heightRef = useRef(DEFAULT_HEIGHT);
+  const [height, setHeight] = useState(DEFAULT_HEIGHT);
   const dragRef = useRef<{ startY: number; startH: number } | null>(null);
 
   const getBounds = useCallback(() => {
     const aside = sheetRef.current?.closest('aside');
     const asideH = aside?.clientHeight ?? 720;
     const max = Math.max(MIN_HEIGHT, asideH - 52);
-    const defaultH = Math.min(DEFAULT_HEIGHT, max);
-    return { min: MIN_HEIGHT, max, default: defaultH };
+    return { min: MIN_HEIGHT, max, default: max };
   }, []);
 
-  const persistHeight = useCallback((value: number) => {
+  const setHeightValue = useCallback((value: number) => {
     heightRef.current = value;
-    try {
-      sessionStorage.setItem(STORAGE_KEY, String(Math.round(value)));
-    } catch {
-      /* ignore */
-    }
+    setHeight(value);
   }, []);
 
+  // Open fully expanded once the sidebar height is known, and keep it pinned to
+  // full height on resize unless the user has dragged it smaller this session.
+  const userResizedRef = useRef(false);
   useEffect(() => {
     const onResize = () => {
       const { max } = getBounds();
       setHeight((h) => {
-        const next = clamp(h, MIN_HEIGHT, max);
-        if (next !== h) persistHeight(next);
+        const next = userResizedRef.current ? clamp(h, MIN_HEIGHT, max) : max;
+        heightRef.current = next;
         return next;
       });
     };
     window.addEventListener('resize', onResize);
     onResize();
     return () => window.removeEventListener('resize', onResize);
-  }, [getBounds, persistHeight]);
+  }, [getBounds]);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -77,7 +64,6 @@ export function ThemeEditorSettingsSheet({ children }: ThemeEditorSettingsSheetP
     }
     document.body.style.userSelect = '';
     document.body.style.cursor = '';
-    persistHeight(heightRef.current);
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -85,17 +71,16 @@ export function ThemeEditorSettingsSheet({ children }: ThemeEditorSettingsSheetP
     const { min, max } = getBounds();
     const delta = dragRef.current.startY - e.clientY;
     const next = clamp(dragRef.current.startH + delta, min, max);
-    heightRef.current = next;
-    setHeight(next);
+    userResizedRef.current = next < max - 4;
+    setHeightValue(next);
   };
 
   const onDoubleClick = () => {
     const { max, default: defaultH } = getBounds();
     const nearMax = heightRef.current >= max - 32;
-    const next = nearMax ? defaultH : max;
-    heightRef.current = next;
-    setHeight(next);
-    persistHeight(next);
+    const next = nearMax ? Math.min(defaultH, max) : max;
+    userResizedRef.current = next < max - 4;
+    setHeightValue(next);
   };
 
   return (

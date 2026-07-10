@@ -1,5 +1,6 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
+import { prepareCollectionListSettingsNode } from './theme-editor-collection-list-panel.utils';
 
 export const COLLECTION_LIST_EDITORIAL_PANEL_GROUP_ORDER = [
   'Collections',
@@ -77,8 +78,5 @@ export function isCollectionListEditorialSettingsPanelFields(fields: EditorField
 }
 
 export function prepareCollectionListEditorialSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortCollectionListEditorialPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isCollectionListEditorialPanelField)
-  );
-  return { ...node, label: 'Collection list: Editorial', kind: 'section', fields };
+  return prepareCollectionListSettingsNode({ ...node, label: node.label ?? 'Collection list: Editorial' });
 }

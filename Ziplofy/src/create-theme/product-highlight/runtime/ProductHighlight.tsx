@@ -1,11 +1,18 @@
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from 'react';
-import { formatINR, useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
+import { useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
+import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { FeaturedProduct } from './FeaturedProduct';
 import { FeaturedProductShirtIllustration, StackedTealShirtsIllustration } from './FeaturedProductArt';
+import {
+  combineResponsiveCss,
+  scopedMobileHorizontalPadCss,
+  scopedProductSplitMobileCss,
+  sectionScopeClass,
+} from '../../runtime/shared/responsive';
 import { readProductHighlightLayout, scopedProductHighlightCss } from './productHighlightStyles';
 
 function ProductHighlightDefault({
@@ -15,6 +22,7 @@ function ProductHighlightDefault({
 }: SectionRuntimeProps) {
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
+  const { maxWidth } = useThemeLayout();
   const { storeFrontMeta } = useStorefront();
   const { products, fetchProductsByStoreId, fetchProductById, productDetail } = useStorefrontProducts();
 
@@ -54,11 +62,15 @@ function ProductHighlightDefault({
   }, [productId, productDetail, products]);
 
   const productTitle = resolvedProduct?.title ?? cachedTitle;
-  const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
+  const price = resolvedProduct
+    ? formatThemePrice(config, resolvedProduct.price, 'productCards')
+    : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
   const scheme = style.scheme;
   const mediaOnLeft = mediaPosition !== 'right';
+  const shellClass = sectionScopeClass('codiic-product-highlight', sectionId);
+  const gridClass = `${shellClass}-grid`;
 
   const shell: CSSProperties = {
     background: scheme.background,
@@ -73,7 +85,7 @@ function ProductHighlightDefault({
   };
 
   const grid: CSSProperties = {
-    maxWidth: layout.maxWidth,
+    maxWidth: maxWidth,
     margin: '0 auto',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
@@ -175,15 +187,22 @@ function ProductHighlightDefault({
     </div>
   );
 
+  const responsiveCss = combineResponsiveCss(
+    scopedMobileHorizontalPadCss(shellClass),
+    scopedProductSplitMobileCss(gridClass)
+  );
+
   return (
     <EditorSection
       sectionId={sectionId}
       label="Product highlight"
       editorNodeId={editorNodeId}
+      className={shellClass}
       style={shell}
     >
       {style.customCss ? <style>{scopedProductHighlightCss(sectionId, style.customCss)}</style> : null}
-      <div style={grid}>
+      {responsiveCss ? <style>{responsiveCss}</style> : null}
+      <div className={gridClass} style={grid}>
         {mediaColumn}
         {productColumn}
       </div>
@@ -192,6 +211,7 @@ function ProductHighlightDefault({
 }
 
 export function ProductHighlight(props: SectionRuntimeProps) {
+  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { templateId = 'index', placement = 'template', sectionId } = props;
 

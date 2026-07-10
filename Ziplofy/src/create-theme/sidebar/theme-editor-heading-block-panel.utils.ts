@@ -124,7 +124,7 @@ const HEADING_SECTION_STYLE_KEYS = new Set([
   'headingPaddingRight',
 ]);
 
-function assignHeadingPanelGroup(key: string): string | undefined {
+export function inferHeadingPanelGroup(key: string): string | undefined {
   if (key === 'title' || key === 'heading' || key === 'text') return 'Text';
   if (key === 'headingWidth' || key === 'headingMaxWidth' || key === 'headingAlignment') {
     return 'Layout';
@@ -136,12 +136,12 @@ function assignHeadingPanelGroup(key: string): string | undefined {
     key === 'headingLineHeight' ||
     key === 'headingLetterSpacing' ||
     key === 'headingTextCase' ||
-    key === 'headingWrap' ||
-    key === 'headingColor'
+    key === 'headingWrap'
   ) {
     return 'Typography';
   }
   if (
+    key === 'headingColor' ||
     key === 'headingBackgroundEnabled' ||
     key === 'headingBackgroundColor' ||
     key === 'headingCornerRadius'
@@ -152,18 +152,27 @@ function assignHeadingPanelGroup(key: string): string | undefined {
   return undefined;
 }
 
+function resolveHeadingPanelGroup(field: EditorFieldDef): string | undefined {
+  const key = field.path.split('.').pop() ?? '';
+  const inferred = inferHeadingPanelGroup(key);
+  if (inferred) return inferred;
+  if (field.group && HEADING_PANEL_GROUPS.has(field.group)) return field.group;
+  return undefined;
+}
+
 export function isHeadingPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
   if (!HEADING_PANEL_SETTING_KEYS.has(key)) return false;
-  if (field.group && !HEADING_PANEL_GROUPS.has(field.group)) return false;
-  return /\.settings\./.test(field.path);
+  if (!/\.settings\./.test(field.path)) return false;
+  return Boolean(resolveHeadingPanelGroup(field));
 }
 
 function withHeadingPanelGroup(field: EditorFieldDef): EditorFieldDef | null {
   const key = field.path.split('.').pop() ?? '';
-  const group = field.group ?? assignHeadingPanelGroup(key);
-  if (!group || !HEADING_PANEL_GROUPS.has(group)) return null;
-  return { ...field, group };
+  const group = resolveHeadingPanelGroup(field);
+  if (!group) return null;
+  const label = key === 'title' && field.label === 'Title' ? 'Text' : field.label;
+  return { ...field, group, label };
 }
 
 /** @deprecated Use {@link isHeadingPanelField} */
@@ -326,7 +335,7 @@ function normalizeHeadingBlockFieldPaths(
       path = `${settingsBase}.${key}`;
     }
 
-    const group = field.group ?? assignHeadingPanelGroup(key);
+    const group = inferHeadingPanelGroup(key) ?? field.group;
     const label =
       key === 'title' && field.label === 'Title' ? 'Text' : field.label;
     return { ...field, path, group, label };
@@ -379,8 +388,14 @@ function syncHeadingTextPathsInValues(
   raw: string | boolean
 ): void {
   next[`${sectionPrefix}.settings.title`] = raw;
+  const blocksPrefix = `${sectionPrefix}.blocks.`;
   for (const key of Object.keys(next)) {
-    if (key.startsWith(`${sectionPrefix}.blocks.`) && key.endsWith('.settings.heading')) {
+    if (!key.startsWith(blocksPrefix) || !key.endsWith('.settings.heading')) continue;
+    // Only mirror onto direct section heading blocks. A remainder that still
+    // contains `.blocks.` is a nested block (e.g. an accordion row) and must
+    // keep its own heading rather than inherit the section title.
+    const remainder = key.slice(blocksPrefix.length);
+    if (/^[^.]+\.settings\.heading$/.test(remainder)) {
       next[key] = raw;
     }
   }
@@ -399,7 +414,16 @@ export function mirrorHeadingTextInValues(
   const next = { ...values, [path]: raw };
   const block = path.match(/^(.+)\.blocks\.([^.]+)\.settings\.heading$/);
   if (block) {
-    syncHeadingTextPathsInValues(next, block[1]!, raw);
+    const sectionPrefix = block[1]!;
+    // Only a section-level heading block should mirror onto the section `title`
+    // and sibling heading blocks. A nested block heading (e.g. an accordion
+    // row: `...blocks.accordion.blocks.row_1.settings.heading`) captures a
+    // prefix that still contains a `.blocks.` segment — fanning out there would
+    // overwrite every sibling row's heading with the same value.
+    if (sectionPrefix.includes('.blocks.')) {
+      return next;
+    }
+    syncHeadingTextPathsInValues(next, sectionPrefix, raw);
     return next;
   }
   const title = path.match(/^(.+)\.settings\.title$/);
@@ -407,6 +431,42 @@ export function mirrorHeadingTextInValues(
     syncHeadingTextPathsInValues(next, title[1]!, raw);
   }
   return next;
+}
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+/** Seed sidebar `values` for all heading block panel fields from merged config. */
+export function extendValuesForHeadingBlock(
+  values: Record<string, string | boolean>,
+  editorSchema: EditorSchemaDoc | null,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const defs = editorSchema
+    ? headingBlockFieldDefsFromSchema(editorSchema, nodeId)
+    : headingBlockCanonicalFieldDefsForNodeId(nodeId);
+  if (!defs.length) return values;
+  const next = { ...values };
+  let changed = false;
+  for (const field of defs) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw === undefined) continue;
+    if (field.type === 'boolean') {
+      next[field.path] = Boolean(raw);
+    } else {
+      next[field.path] = raw == null ? '' : String(raw);
+    }
+    changed = true;
+  }
+  return changed ? next : values;
 }
 
 export function headingBlockFieldDefsFromSchema(
@@ -425,7 +485,222 @@ export function headingBlockFieldDefsFromSchema(
   if (!canon.length) return [];
 
   const remapped = remapCanonicalHeadingFields(canon, parsed);
-  return normalizeHeadingBlockFieldPaths(remapFieldsForNode(remapped, parsed), parsed);
+  const fromCanon = normalizeHeadingBlockFieldPaths(remapFieldsForNode(remapped, parsed), parsed);
+  if (fromCanon.length) return fromCanon;
+
+  return headingBlockCanonicalFieldDefsForNodeId(nodeId);
+}
+
+const HEADING_CANON_MAX_WIDTH_OPTIONS = [
+  { value: 'narrow', label: 'Narrow' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'none', label: 'None' },
+] as const;
+
+const HEADING_CANON_ALIGNMENT_OPTIONS = [
+  { value: 'left', label: 'Left' },
+  { value: 'center', label: 'Center' },
+  { value: 'right', label: 'Right' },
+] as const;
+
+const HEADING_CANON_PRESET_OPTIONS = [
+  { value: 'default', label: 'Default' },
+  { value: 'paragraph', label: 'Paragraph' },
+  { value: 'heading-1', label: 'Heading 1' },
+  { value: 'heading-2', label: 'Heading 2' },
+  { value: 'heading-3', label: 'Heading 3' },
+  { value: 'heading-4', label: 'Heading 4' },
+  { value: 'heading-5', label: 'Heading 5' },
+  { value: 'heading-6', label: 'Heading 6' },
+  { value: 'custom', label: 'Custom' },
+] as const;
+
+/** Built-in Shopify-order heading panel fields (FAQ, hero, etc.) when schema is sparse. */
+export function headingBlockCanonicalFieldDefsForNodeId(nodeId: string): EditorFieldDef[] {
+  const parsed = parseHeadingBlockNodeId(nodeId);
+  if (!parsed) return [];
+
+  const settingsBase = settingsBaseForParsed(parsed);
+  const defs: EditorFieldDef[] = [
+    {
+      path: `${settingsBase}.title`,
+      type: 'textarea',
+      label: 'Text',
+      group: 'Text',
+      widget: 'richtext',
+    },
+    {
+      path: `${settingsBase}.headingWidth`,
+      type: 'select',
+      label: 'Width',
+      group: 'Layout',
+      widget: 'segmented',
+      options: [
+        { value: 'fit', label: 'Fit' },
+        { value: 'fill', label: 'Fill' },
+      ],
+    },
+    {
+      path: `${settingsBase}.headingMaxWidth`,
+      type: 'select',
+      label: 'Max width',
+      group: 'Layout',
+      widget: 'select',
+      options: [...HEADING_CANON_MAX_WIDTH_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingAlignment`,
+      type: 'select',
+      label: 'Alignment',
+      group: 'Layout',
+      widget: 'segmented',
+      options: [...HEADING_CANON_ALIGNMENT_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingTypographyPreset`,
+      type: 'select',
+      label: 'Preset',
+      group: 'Typography',
+      widget: 'select',
+      description: 'Edit presets in theme settings',
+      options: [...HEADING_CANON_PRESET_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingFont`,
+      type: 'select',
+      label: 'Font',
+      group: 'Typography',
+      widget: 'select',
+      options: [...HEADING_FONT_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingFontSize`,
+      type: 'select',
+      label: 'Size',
+      group: 'Typography',
+      widget: 'select',
+      options: [...HEADING_FONT_SIZE_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingLineHeight`,
+      type: 'select',
+      label: 'Line height',
+      group: 'Typography',
+      widget: 'segmented',
+      options: [...HEADING_LINE_HEIGHT_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingLetterSpacing`,
+      type: 'select',
+      label: 'Letter spacing',
+      group: 'Typography',
+      widget: 'segmented',
+      options: [...HEADING_LETTER_SPACING_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingTextCase`,
+      type: 'select',
+      label: 'Case',
+      group: 'Typography',
+      widget: 'segmented',
+      options: [...HEADING_TEXT_CASE_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingWrap`,
+      type: 'select',
+      label: 'Wrap',
+      group: 'Typography',
+      widget: 'select',
+      options: [...HEADING_WRAP_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.headingColor`,
+      type: 'select',
+      label: 'Text color',
+      group: 'Appearance',
+      widget: 'select',
+      options: [
+        { value: 'text', label: 'Text' },
+        { value: 'heading', label: 'Heading' },
+        { value: 'link', label: 'Link' },
+      ],
+    },
+    {
+      path: `${settingsBase}.headingBackgroundEnabled`,
+      type: 'boolean',
+      label: 'Background',
+      group: 'Appearance',
+      widget: 'toggle',
+    },
+    {
+      path: `${settingsBase}.headingBackgroundColor`,
+      type: 'color',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+    },
+    {
+      path: `${settingsBase}.headingCornerRadius`,
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Appearance',
+      widget: 'slider',
+      min: 0,
+      max: 40,
+      step: 1,
+      unit: 'px',
+    },
+    {
+      path: `${settingsBase}.headingPaddingTop`,
+      type: 'number',
+      label: 'Top',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+    },
+    {
+      path: `${settingsBase}.headingPaddingBottom`,
+      type: 'number',
+      label: 'Bottom',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+    },
+    {
+      path: `${settingsBase}.headingPaddingLeft`,
+      type: 'number',
+      label: 'Left',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+    },
+    {
+      path: `${settingsBase}.headingPaddingRight`,
+      type: 'number',
+      label: 'Right',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 80,
+      step: 1,
+      unit: 'px',
+    },
+  ];
+
+  return normalizeHeadingBlockFieldPaths(defs, parsed);
+}
+
+export function headingBlockFieldDefsForNodeId(nodeId: string): EditorFieldDef[] {
+  return headingBlockCanonicalFieldDefsForNodeId(nodeId);
 }
 
 /** @deprecated Use {@link headingBlockFieldDefsFromSchema} */
@@ -450,6 +725,38 @@ export const HEADING_CUSTOM_TYPOGRAPHY_KEYS = [
   'headingTextCase',
   'headingWrap',
 ] as const;
+
+const HEADING_CUSTOM_TYPOGRAPHY_KEY_SET = new Set<string>(HEADING_CUSTOM_TYPOGRAPHY_KEYS);
+
+/** True when the heading typography preset is set to Custom (shows manual font controls). */
+export function isHeadingTypographyCustomPreset(
+  values: Record<string, string | boolean>,
+  presetPath: string
+): boolean {
+  const raw = values[presetPath];
+  const preset =
+    typeof raw === 'string' ? raw : raw === undefined || raw === null ? 'default' : String(raw);
+  const normalized = preset === 'body' ? 'paragraph' : preset;
+  return normalized === 'custom';
+}
+
+/** Hide custom typography fields unless Preset is Custom (Shopify heading block behaviour). */
+export function filterHeadingPanelFieldsForTypographyPreset(
+  fields: EditorFieldDef[],
+  values: Record<string, string | boolean>
+): EditorFieldDef[] {
+  const presetField = fields.find((f) => f.path.endsWith('headingTypographyPreset'));
+  const presetPath =
+    presetField?.path ??
+    Object.keys(values).find((path) => path.endsWith('.headingTypographyPreset'));
+  if (!presetPath || isHeadingTypographyCustomPreset(values, presetPath)) {
+    return fields;
+  }
+  return fields.filter((f) => {
+    const key = f.path.split('.').pop() ?? '';
+    return !HEADING_CUSTOM_TYPOGRAPHY_KEY_SET.has(key);
+  });
+}
 
 export const HEADING_FONT_OPTIONS = [
   { value: 'body', label: 'Body' },
@@ -565,8 +872,18 @@ export function resolveHeadingTypographyField(
   settingsBase: string,
   fields: EditorFieldDef[]
 ): EditorFieldDef {
-  const fromSchema = fields.find((f) => f.path.endsWith(key));
-  if (fromSchema) return fromSchema;
   const fallback = HEADING_TYPO_FIELD_FALLBACKS[key];
+  const fromSchema = fields.find((f) => f.path.endsWith(key));
+  if (fromSchema) {
+    // Schema heading fields carry only `type`, so backfill the widget/options the panel needs.
+    return {
+      ...fromSchema,
+      label: fromSchema.label ?? fallback.label,
+      group: fromSchema.group ?? fallback.group,
+      widget: fromSchema.widget ?? fallback.widget,
+      options:
+        fromSchema.options && fromSchema.options.length ? fromSchema.options : fallback.options,
+    };
+  }
   return { ...fallback, path: `${settingsBase}.${key}` };
 }

@@ -19,8 +19,62 @@ export function templateBlockEnabledPath(tplId: string, sectionId: string, block
   return `templates.${tplId}.sections.${sectionId}.blocks.${blockId}.enabled`;
 }
 
+export function layoutFaqAccordionRowEnabledPath(sectionId: string, rowId: string): string {
+  return `sections.${sectionId}.blocks.accordion.blocks.${rowId}.enabled`;
+}
+
+export function templateFaqAccordionRowEnabledPath(
+  tplId: string,
+  sectionId: string,
+  rowId: string
+): string {
+  return `templates.${tplId}.sections.${sectionId}.blocks.accordion.blocks.${rowId}.enabled`;
+}
+
+export function layoutFaqRowTextEnabledPath(sectionId: string, rowId: string, textId: string): string {
+  return `sections.${sectionId}.blocks.accordion.blocks.${rowId}.blocks.${textId}.enabled`;
+}
+
+export function templateFaqRowTextEnabledPath(
+  tplId: string,
+  sectionId: string,
+  rowId: string,
+  textId: string
+): string {
+  return `templates.${tplId}.sections.${sectionId}.blocks.accordion.blocks.${rowId}.blocks.${textId}.enabled`;
+}
+
 /** Sidebar node id → config path for visibility, or null for unsupported nodes. */
 export function sectionEnabledPathFromNodeId(nodeId: string): string | null {
+  const layoutFaqText = nodeId.match(
+    /^layout:([^:]+):block:accordion:nested:([^:]+):nested:([^:]+)$/
+  );
+  if (layoutFaqText) {
+    return layoutFaqRowTextEnabledPath(layoutFaqText[1]!, layoutFaqText[2]!, layoutFaqText[3]!);
+  }
+
+  const tplFaqText = nodeId.match(
+    /^template:([^:]+):([^:]+):block:accordion:nested:([^:]+):nested:([^:]+)$/
+  );
+  if (tplFaqText) {
+    return templateFaqRowTextEnabledPath(
+      tplFaqText[1]!,
+      tplFaqText[2]!,
+      tplFaqText[3]!,
+      tplFaqText[4]!
+    );
+  }
+
+  const layoutFaqRow = nodeId.match(/^layout:([^:]+):block:accordion:nested:([^:]+)$/);
+  if (layoutFaqRow) {
+    return layoutFaqAccordionRowEnabledPath(layoutFaqRow[1]!, layoutFaqRow[2]!);
+  }
+
+  const tplFaqRow = nodeId.match(/^template:([^:]+):([^:]+):block:accordion:nested:([^:]+)$/);
+  if (tplFaqRow) {
+    return templateFaqAccordionRowEnabledPath(tplFaqRow[1]!, tplFaqRow[2]!, tplFaqRow[3]!);
+  }
+
   const layoutBlock = nodeId.match(/^layout:([^:]+):block:([^:]+)$/);
   if (layoutBlock) return layoutBlockEnabledPath(layoutBlock[1], layoutBlock[2]);
 
@@ -70,6 +124,20 @@ export function seedSectionEnabledValues(
       if (block && typeof block === 'object' && 'enabled' in block) {
         out[layoutBlockEnabledPath(id, blockId)] = block.enabled !== false;
       }
+      if (blockId === 'accordion' && block && typeof block === 'object') {
+        const accordionBlocks = (block as { blocks?: Record<string, { enabled?: boolean }> }).blocks;
+        for (const [rowId, row] of Object.entries(accordionBlocks ?? {})) {
+          if (row && typeof row === 'object' && 'enabled' in row) {
+            out[layoutFaqAccordionRowEnabledPath(id, rowId)] = row.enabled !== false;
+          }
+          const rowTextBlocks = (row as { blocks?: Record<string, { enabled?: boolean }> }).blocks;
+          for (const [textId, textBlock] of Object.entries(rowTextBlocks ?? {})) {
+            if (textBlock && typeof textBlock === 'object' && 'enabled' in textBlock) {
+              out[layoutFaqRowTextEnabledPath(id, rowId, textId)] = textBlock.enabled !== false;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -85,6 +153,21 @@ export function seedSectionEnabledValues(
       for (const [blockId, block] of Object.entries(blocks ?? {})) {
         if (block && typeof block === 'object' && 'enabled' in block) {
           out[templateBlockEnabledPath(tplId, id, blockId)] = block.enabled !== false;
+        }
+        if (blockId === 'accordion' && block && typeof block === 'object') {
+          const accordionBlocks = (block as { blocks?: Record<string, { enabled?: boolean }> }).blocks;
+          for (const [rowId, row] of Object.entries(accordionBlocks ?? {})) {
+            if (row && typeof row === 'object' && 'enabled' in row) {
+              out[templateFaqAccordionRowEnabledPath(tplId, id, rowId)] = row.enabled !== false;
+            }
+            const rowTextBlocks = (row as { blocks?: Record<string, { enabled?: boolean }> }).blocks;
+            for (const [textId, textBlock] of Object.entries(rowTextBlocks ?? {})) {
+              if (textBlock && typeof textBlock === 'object' && 'enabled' in textBlock) {
+                out[templateFaqRowTextEnabledPath(tplId, id, rowId, textId)] =
+                  textBlock.enabled !== false;
+              }
+            }
+          }
         }
       }
     }

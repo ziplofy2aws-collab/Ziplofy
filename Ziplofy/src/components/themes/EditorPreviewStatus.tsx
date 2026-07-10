@@ -1,6 +1,13 @@
 import React from 'react';
 
-export function PreviewLoadingOverlay({ origin }: { origin?: string }) {
+export function PreviewLoadingOverlay({
+  origin,
+  previewUrl,
+}: {
+  origin?: string;
+  previewUrl?: string;
+}) {
+  const label = previewUrl?.trim() || origin?.trim();
   return (
     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/90 backdrop-blur-[2px]">
       <div
@@ -10,7 +17,7 @@ export function PreviewLoadingOverlay({ origin }: { origin?: string }) {
       />
       <div className="text-center">
         <p className="text-sm font-medium text-gray-700">Loading live preview</p>
-        {origin ? <p className="mt-0.5 text-xs text-gray-400">{origin}</p> : null}
+        {label ? <p className="mt-0.5 text-xs text-gray-400">{label}</p> : null}
       </div>
     </div>
   );

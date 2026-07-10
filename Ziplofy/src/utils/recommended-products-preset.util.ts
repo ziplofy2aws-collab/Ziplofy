@@ -1,4 +1,12 @@
-/** Defaults for Recommended products sections. */
+import { productCardDefaultSettings } from '../create-theme/sidebar/theme-editor-product-card-panel.utils';
+import { productCardMediaDefaultSettings } from '../create-theme/sidebar/theme-editor-product-card-media-panel.utils';
+import { productCardPriceDefaultSettings } from '../create-theme/sidebar/theme-editor-product-card-price-panel.utils';
+import { productCardTitleDefaultSettings } from '../create-theme/sidebar/theme-editor-product-card-title-panel.utils';
+import { mergeRecommendedProductsHeaderSettings } from '../create-theme/sidebar/theme-editor-recommended-products-header-panel.utils';
+import {
+  RECOMMENDED_PRODUCTS_CARD_NESTED_ORDER,
+  RECOMMENDED_PRODUCTS_SECTION_BLOCK_ORDER,
+} from './recommended-products-sidebar.util';
 
 const CARD_SPECS = [
   { shirtColor: '#d45454', withSun: false },
@@ -7,26 +15,45 @@ const CARD_SPECS = [
   { shirtColor: '#d45454', withSun: false },
 ] as const;
 
-function makeCard(index: number) {
-  const spec = CARD_SPECS[index % CARD_SPECS.length];
+function productCardBlockSettings(): Record<string, unknown> {
   return {
-    type: 'recommended-product-card',
-    settings: {
-      shirtColor: spec.shirtColor,
-      withSun: spec.withSun,
-      productTitle: 'Product title',
-      price: 'Rs. 19.99',
-      productId: '',
+    ...productCardDefaultSettings(),
+    ...productCardMediaDefaultSettings(),
+    ...productCardTitleDefaultSettings(),
+    ...productCardPriceDefaultSettings(),
+    priceWidth: 'fit',
+    showMedia: true,
+    showTitle: true,
+    showPrice: true,
+  };
+}
+
+export function recommendedProductsSectionBlocks(): {
+  block_order: string[];
+  blocks: Record<string, unknown>;
+} {
+  return {
+    block_order: [...RECOMMENDED_PRODUCTS_SECTION_BLOCK_ORDER],
+    blocks: {
+      product_card: {
+        type: 'product-card',
+        settings: productCardBlockSettings(),
+        block_order: [...RECOMMENDED_PRODUCTS_CARD_NESTED_ORDER],
+        nested_block_order: [...RECOMMENDED_PRODUCTS_CARD_NESTED_ORDER],
+        blocks: {},
+      },
     },
   };
 }
 
+/** Defaults for Recommended products sections. */
 export function applyRecommendedProductsPreset(section: Record<string, unknown>): void {
   if (section.type !== 'recommended-products') return;
 
   const settings = (section.settings ?? {}) as Record<string, unknown>;
   settings.catalogVariant = settings.catalogVariant ?? 'recommended-products';
   settings.heading = settings.heading ?? 'Related products';
+  mergeRecommendedProductsHeaderSettings(settings);
   settings.productId = settings.productId ?? '';
   settings.recommendationType = settings.recommendationType ?? 'related';
   settings.cardStyle = settings.cardStyle ?? 'grid';
@@ -39,6 +66,7 @@ export function applyRecommendedProductsPreset(section: Record<string, unknown>)
   settings.sectionWidth = settings.sectionWidth ?? 'page';
   settings.layoutGap = settings.layoutGap ?? 28;
   settings.colorScheme = settings.colorScheme ?? 'scheme-1';
+  settings.backgroundColor = settings.backgroundColor ?? 'default';
   settings.paddingTop = settings.paddingTop ?? 48;
   settings.paddingBottom = settings.paddingBottom ?? 48;
   settings.customCss = settings.customCss ?? '';
@@ -46,26 +74,62 @@ export function applyRecommendedProductsPreset(section: Record<string, unknown>)
 
   const blocks = (section.blocks ?? {}) as Record<string, Record<string, unknown>>;
   const order = Array.isArray(section.block_order) ? [...(section.block_order as string[])] : [];
-  const count = Math.max(1, Math.min(12, Number(settings.productCount) || 4));
+  const hasProductCard = Boolean(blocks.product_card);
 
-  if (!order.length) {
-    const nextBlocks: Record<string, Record<string, unknown>> = {};
-    const nextOrder: string[] = [];
-    for (let i = 0; i < count; i++) {
-      const id = `product_${i + 1}`;
-      nextBlocks[id] = makeCard(i);
-      nextOrder.push(id);
-    }
-    section.blocks = nextBlocks;
-    section.block_order = nextOrder;
+  if (!hasProductCard || order.some((id) => id.startsWith('product_'))) {
+    const preset = recommendedProductsSectionBlocks();
+    section.block_order = preset.block_order;
+    section.blocks = JSON.parse(JSON.stringify(preset.blocks)) as Record<string, unknown>;
     return;
   }
 
-  section.block_order = order.slice(0, count);
-  for (let i = order.length; i < count; i++) {
-    const id = `product_${i + 1}`;
-    if (!blocks[id]) blocks[id] = makeCard(i);
-    (section.block_order as string[]).push(id);
-  }
+  const productCard = blocks.product_card as {
+    settings?: Record<string, unknown>;
+    block_order?: string[];
+    nested_block_order?: string[];
+  };
+  productCard.settings = { ...productCardBlockSettings(), ...(productCard.settings ?? {}) };
+  productCard.block_order = [...RECOMMENDED_PRODUCTS_CARD_NESTED_ORDER];
+  productCard.nested_block_order = [...RECOMMENDED_PRODUCTS_CARD_NESTED_ORDER];
   section.blocks = blocks;
+  section.block_order = order.filter((id) => id === 'product_card').length
+    ? order.filter((id) => id === 'product_card')
+    : [...RECOMMENDED_PRODUCTS_SECTION_BLOCK_ORDER];
 }
+
+/** Ensure recommended-products sections use Header + Product card hierarchy. */
+export function ensureRecommendedProductsSectionBlocks(
+  config: Record<string, unknown>
+): boolean {
+  let changed = false;
+
+  const migrateSection = (sec: Record<string, unknown>) => {
+    if (sec.type !== 'recommended-products') return;
+    const settings = (sec.settings ?? {}) as { catalogVariant?: string };
+    if (settings.catalogVariant !== 'recommended-products' && settings.catalogVariant !== undefined) {
+      return;
+    }
+    const before = JSON.stringify(sec);
+    applyRecommendedProductsPreset(sec);
+    if (JSON.stringify(sec) !== before) changed = true;
+  };
+
+  for (const sec of Object.values(
+    (config.sections ?? {}) as Record<string, Record<string, unknown>>
+  )) {
+    migrateSection(sec);
+  }
+
+  const templates = config.templates as
+    | Record<string, { sections?: Record<string, Record<string, unknown>> }>
+    | undefined;
+  for (const tpl of Object.values(templates ?? {})) {
+    for (const sec of Object.values(tpl?.sections ?? {})) {
+      migrateSection(sec);
+    }
+  }
+
+  return changed;
+}
+
+export { CARD_SPECS };
