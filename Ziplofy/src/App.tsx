@@ -200,6 +200,7 @@ import { CustomerSegmentProvider } from "./contexts/customer-segment.context";
 import { FinalSaleItemProvider } from "./contexts/final-sale-item.context";
 import { FreeShippingDiscountProvider } from "./contexts/free-shipping-discount.context";
 import { GeneralSettingsProvider } from "./contexts/general-settings.context";
+import { OnlineStorePreferencesProvider } from "./contexts/online-store-preferences.context";
 import { GiftCardTimelineProvider } from "./contexts/gift-card-timeline.context";
 import { GiftCardsProvider } from "./contexts/gift-cards.context";
 import { InstalledThemesProvider } from "./contexts/installed-themes.context";
@@ -539,6 +540,7 @@ const App: React.FC = () => {
         <StoreBannerProvider>
         <PaymentProvider>
         <GeneralSettingsProvider>
+        <OnlineStorePreferencesProvider>
         <CustomerAccountSettingsProvider>
         <ReturnRulesProvider>
         <FinalSaleItemProvider>
@@ -647,6 +649,7 @@ const App: React.FC = () => {
         </FinalSaleItemProvider>
         </ReturnRulesProvider>
         </CustomerAccountSettingsProvider>
+        </OnlineStorePreferencesProvider>
         </GeneralSettingsProvider>
         </PaymentProvider>
         </StoreBannerProvider>
