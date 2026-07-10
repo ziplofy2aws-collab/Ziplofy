@@ -110,3 +110,20 @@ export function isRichTextEditorContentEqual(a: string, b: string): boolean {
   };
   return textOf(a) === textOf(b) && richTextHasBlockMarkup(a) === richTextHasBlockMarkup(b);
 }
+
+/** True when rich text has no meaningful content (empty, whitespace, or empty blocks). */
+export function isRichTextContentEmpty(html: string): boolean {
+  const trimmed = html.trim();
+  if (!trimmed) return true;
+  if (typeof document === 'undefined') {
+    return !trimmed.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, ' ').trim();
+  }
+  const el = document.createElement('div');
+  el.innerHTML = trimmed;
+  return !(el.textContent ?? '').replace(/\u00a0/g, ' ').trim();
+}
+
+/** Normalize policy HTML for API save (empty editor → delete on backend). */
+export function normalizePolicyContentForSave(html: string): string {
+  return isRichTextContentEmpty(html) ? '' : html;
+}
