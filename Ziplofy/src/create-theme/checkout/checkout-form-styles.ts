@@ -1,4 +1,4 @@
-import type { CheckoutTypographyTheme } from '../settings/checkout-typography-fonts';
+import type { CheckoutTypographyTheme } from './settings/checkout-typography-fonts';
 
 export type CheckoutFieldChrome = {
   boxClass: string;
