@@ -49,35 +49,13 @@ export type HeroStyle = {
   customCss: string;
 };
 
-function resolveHeroBackground(value: string, fallback: HeroScheme): HeroScheme {
-  if (value === 'transparent') {
-    return { background: 'transparent', color: '#111827', muted: '#6b7280' };
-  }
-  const hex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value) ? value : '';
-  if (hex) {
-    let h = hex.slice(1);
-    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-    const r = parseInt(h.slice(0, 2), 16);
-    const g = parseInt(h.slice(2, 4), 16);
-    const b = parseInt(h.slice(4, 6), 16);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    const isLight = luminance > 0.6;
-    return {
-      background: hex,
-      color: isLight ? '#111827' : '#ffffff',
-      muted: isLight ? '#4b5563' : 'rgba(255,255,255,0.72)',
-    };
-  }
-  return COLOR_SCHEMES[value] ?? fallback;
-}
-
 export function readHeroStyle(
   config: Record<string, unknown> | null,
   settingsBase: string,
   fallback: HeroScheme
 ): HeroStyle {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-6');
-  const scheme = resolveHeroBackground(schemeKey, fallback);
+  const scheme = COLOR_SCHEMES[schemeKey] ?? fallback;
 
   const legacyAlign = cfgString(config, `${settingsBase}.textAlign`, '');
   const layoutAlignment = cfgString(

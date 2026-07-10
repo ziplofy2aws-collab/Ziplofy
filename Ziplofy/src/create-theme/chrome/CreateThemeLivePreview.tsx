@@ -42,9 +42,6 @@ export type CreateThemeLivePreviewProps = {
   cssUrl?: string | null;
   config: Record<string, unknown>;
   page?: ThemePreviewPage;
-  /** Storefront path for iframe navigation (overrides registry previewPath when set). */
-  previewRoute?: string;
-  device?: 'desktop' | 'mobile';
   selectionHints?: ThemePreviewSelectionHint[];
   onPreviewSelect?: (payload: ThemePreviewSelectPayload) => void;
   /** Preview clicked empty canvas or cleared selection in iframe. */
@@ -113,8 +110,6 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
   cssUrl,
   config,
   page = 'index',
-  previewRoute,
-  device = 'desktop',
   selectionHints = [],
   onPreviewSelect,
   onPreviewDeselect,
@@ -154,10 +149,6 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
   const highlightRafRef = useRef(0);
   const inspectorEnabledRef = useRef(inspectorEnabled);
   inspectorEnabledRef.current = inspectorEnabled;
-  const deviceRef = useRef(device);
-  deviceRef.current = device;
-  const previewRouteRef = useRef(previewRoute);
-  previewRouteRef.current = previewRoute;
   /** Stable key so we only re-sync when config content changes, not object identity. */
   const configStableKey = useMemo(() => {
     try {
@@ -197,29 +188,14 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
           cssUrl: cssUrl ?? null,
           config: configRef.current,
           page,
-          previewRoute: previewRouteRef.current,
           selectionHints: selectionHintsRef.current,
           inspectorEnabled: inspectorEnabledRef.current,
-          device: deviceRef.current,
         },
       },
       '*'
     );
     initSentRef.current = true;
-  }, [storeId, storeName, jsUrl, cssUrl, page, previewRoute]);
-
-  const postPreviewDevice = useCallback((nextDevice: 'desktop' | 'mobile') => {
-    const frame = iframeRef.current?.contentWindow;
-    if (!frame || !initSentRef.current) return;
-    frame.postMessage(
-      {
-        source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_SET_DEVICE',
-        payload: { device: nextDevice },
-      },
-      '*'
-    );
-  }, []);
+  }, [storeId, storeName, jsUrl, cssUrl, page]);
 
   const postInspectorState = useCallback((enabled: boolean) => {
     const frame = iframeRef.current?.contentWindow;
@@ -382,14 +358,10 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     const frame = iframeRef.current?.contentWindow;
     if (!frame) return;
     frame.postMessage(
-      {
-        source: EDITOR_SOURCE,
-        type: 'ZIPLOFY_PREVIEW_SET_PAGE',
-        payload: { page, previewRoute: previewRouteRef.current },
-      },
+      { source: EDITOR_SOURCE, type: 'ZIPLOFY_PREVIEW_SET_PAGE', payload: { page } },
       '*'
     );
-  }, [page, previewRoute, ready]);
+  }, [page, ready]);
 
   useEffect(() => {
     if (!ready) return;
@@ -416,11 +388,6 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
     if (!ready) return;
     postInspectorState(inspectorEnabled);
   }, [inspectorEnabled, ready, postInspectorState]);
-
-  useEffect(() => {
-    if (!ready) return;
-    postPreviewDevice(device);
-  }, [device, ready, postPreviewDevice]);
 
   useEffect(() => {
     if (!ready) return;

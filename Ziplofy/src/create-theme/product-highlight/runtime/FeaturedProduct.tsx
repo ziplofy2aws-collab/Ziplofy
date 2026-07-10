@@ -1,22 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  getThemeConfigValue,
-  useStorefront,
-  useStorefrontCart,
-  useStorefrontProductVariants,
-  useStorefrontProducts,
-  useThemeConfig,
-  useThemeEditorPreview,
-} from '@render-store/sdk';
-import { FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER } from '../../../utils/featured-product-sidebar.util';
+import { useEffect, useMemo, type CSSProperties } from 'react';
+import { formatINR, useStorefront, useStorefrontProducts, useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
-import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
-import { resolveThemeSwatchInlineStyle } from '../../runtime/shared/themeSwatchesRuntime';
-import { resolveThemeVariantPickerOptionStyle } from '../../runtime/shared/themeVariantPickersRuntime';
-import { readThemeSwatchesSettings } from '../../settings/theme-swatches.settings';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { FeaturedProductShirtIllustration } from './FeaturedProductArt';
 import { readFeaturedProductAddToCartStyle } from './featuredProductAddToCartStyles';
@@ -29,34 +15,7 @@ import { readFeaturedProductVariantPickerStyle } from './featuredProductVariantP
 import { readFeaturedProductHeaderBlockStyle } from './featuredProductHeaderBlockStyles';
 import { readFeaturedProductHeaderPriceStyle } from './featuredProductHeaderPriceStyles';
 import { readFeaturedProductHeaderTitleStyle } from './featuredProductHeaderTitleStyles';
-import {
-  combineResponsiveCss,
-  scopedMobileHorizontalPadCss,
-  scopedProductSplitMobileCss,
-  sectionScopeClass,
-} from '../../runtime/shared/responsive';
 import { readProductHighlightLayout, scopedProductHighlightCss } from './productHighlightStyles';
-
-function AddToCartBagIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M6 8h12l-1.2 11.4a1 1 0 0 1-1 .6H8.2a1 1 0 0 1-1-.6L6 8Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9 8V6a3 3 0 1 1 6 0v2"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path d="M12 14v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M10.5 15.5h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function clampPercent(value: number, fallback = 100): number {
   if (!Number.isFinite(value)) return fallback;
@@ -140,18 +99,10 @@ export function FeaturedProduct({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
-  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading, text: themeText, accent: themeAccent } = useThemeColors();
   const { storeFrontMeta } = useStorefront();
   const { products, fetchProductsByStoreId, fetchProductById, productDetail } = useStorefrontProducts();
-  const { variants, fetchVariantsByProductId } = useStorefrontProductVariants();
-  const { createCartEntry } = useStorefrontCart();
-  const isEditorPreview = useThemeEditorPreview();
-  const navigate = useNavigate();
-  const [quantity, setQuantity] = useState(1);
-  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
-  const [adding, setAdding] = useState(false);
 
   const settingsBase =
     placement === 'template'
@@ -213,11 +164,6 @@ export function FeaturedProduct({
       ? `templates.${templateId}.sections.${sectionId}.blocks.details.blocks.buy_buttons.blocks.accelerated_checkout.settings`
       : `sections.${sectionId}.blocks.details.blocks.buy_buttons.blocks.accelerated_checkout.settings`;
 
-  const buyButtonsBlocksBase =
-    placement === 'template'
-      ? `templates.${templateId}.sections.${sectionId}.blocks.details.blocks.buy_buttons`
-      : `sections.${sectionId}.blocks.details.blocks.buy_buttons`;
-
   const editorNodeId =
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
 
@@ -232,22 +178,22 @@ export function FeaturedProduct({
   const reviewCount = cfgNumber(config, `${settingsBase}.reviewCount`, 3);
   const showTaxNote = cfgBool(config, `${settingsBase}.showTaxNote`, true);
   const taxNote = cfgString(config, `${settingsBase}.taxNote`, 'Taxes included.');
-  const configuredAddToCartLabel = cfgString(
+  const buttonLabel = cfgString(
     config,
     `${addToCartSettingsBase}.buttonLabel`,
-    cfgString(config, `${settingsBase}.buttonLabel`, 'Add to cart')
+    cfgString(config, `${settingsBase}.buttonLabel`, 'Sold out')
   );
-  const configSoldOut = cfgBool(config, `${settingsBase}.soldOut`, true);
+  const soldOut = cfgBool(config, `${settingsBase}.soldOut`, true);
 
   const mediaCornerRadius = cfgNumber(config, `${mediaSettingsBase}.cornerRadius`, 0);
-  const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'cover');
+  const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'contain');
   const mediaAspectRatio = cfgString(config, `${mediaSettingsBase}.aspectRatio`, 'auto');
   const mediaPaddingTop = cfgNumber(config, `${mediaSettingsBase}.paddingTop`, 0);
   const mediaPaddingBottom = cfgNumber(config, `${mediaSettingsBase}.paddingBottom`, 0);
   const mediaPaddingLeft = cfgNumber(config, `${mediaSettingsBase}.paddingLeft`, 0);
   const mediaPaddingRight = cfgNumber(config, `${mediaSettingsBase}.paddingRight`, 0);
 
-  const detailsGap = cfgNumber(config, `${detailsSettingsBase}.layoutGap`, 28);
+  const detailsGap = cfgNumber(config, `${detailsSettingsBase}.layoutGap`, 31);
   const detailsHeight = cfgString(config, `${detailsSettingsBase}.height`, 'fit');
   const detailsPosition = cfgString(config, `${detailsSettingsBase}.position`, 'top');
   const detailsHeightFill = detailsHeight === 'fill';
@@ -272,7 +218,6 @@ export function FeaturedProduct({
       ? `@media (max-width: 749px) { [data-fp-details="${detailsWidthScopeId}"] { width: ${detailsMobileWidth} !important; } }`
       : '';
   const detailsBgMedia = cfgString(config, `${detailsSettingsBase}.backgroundMedia`, 'none');
-  const detailsBgColor = cfgString(config, `${detailsSettingsBase}.backgroundColor`, 'default');
   const detailsBgImageUrl = cfgString(config, `${detailsSettingsBase}.backgroundImageUrl`, '');
   const detailsBgImagePosition = cfgString(config, `${detailsSettingsBase}.backgroundImagePosition`, 'cover');
   const detailsShowBgImage = detailsBgMedia === 'image' && Boolean(detailsBgImageUrl.trim());
@@ -290,16 +235,6 @@ export function FeaturedProduct({
     if (!inList) void fetchProductById(productId);
   }, [productId, products, fetchProductById]);
 
-  useEffect(() => {
-    if (!productId || isEditorPreview) return;
-    void fetchVariantsByProductId(productId);
-  }, [productId, isEditorPreview, fetchVariantsByProductId]);
-
-  useEffect(() => {
-    setSelectedVariantIndex(0);
-    setQuantity(1);
-  }, [productId]);
-
   const resolvedProduct = useMemo(() => {
     if (!productId) return null;
     if (productDetail?._id === productId) return productDetail;
@@ -307,114 +242,17 @@ export function FeaturedProduct({
   }, [productId, productDetail, products]);
 
   const productTitle = resolvedProduct?.title ?? cachedTitle;
-  const price = resolvedProduct
-    ? formatThemePrice(config, resolvedProduct.price, 'productCards')
-    : cachedPrice;
+  const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
-  const soldOut = useMemo(() => {
-    if (isEditorPreview) return configSoldOut;
-    if (resolvedProduct) return resolvedProduct.status !== 'active';
-    return configSoldOut;
-  }, [isEditorPreview, configSoldOut, resolvedProduct]);
-
-  const addToCartLabel = soldOut
-    ? 'Sold out'
-    : configuredAddToCartLabel === 'Sold out'
-      ? 'Add to cart'
-      : configuredAddToCartLabel;
-
-  const buyButtonsBlockOrder = useMemo(() => {
-    const order = getThemeConfigValue(config, `${buyButtonsBlocksBase}.block_order`);
-    return Array.isArray(order) ? (order as string[]) : [...FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER];
-  }, [config, buyButtonsBlocksBase]);
-
-  const showQuantityBlock = buyButtonsBlockOrder.includes('quantity');
-  const showAddToCartBlock = buyButtonsBlockOrder.includes('add_to_cart');
-  const showBuyItNowBlock =
-    buyButtonsBlockOrder.includes('accelerated_checkout') &&
-    cfgBool(config, `${acceleratedCheckoutSettingsBase}.enabled`, true);
-
-  const variantOptions = useMemo(() => {
-    if (variants.length > 0) {
-      return variants.map((variant, index) => ({
-        key: variant._id,
-        label:
-          Object.values(variant.optionValues ?? {})
-            .filter(Boolean)
-            .join(' / ') || `Option ${index + 1}`,
-      }));
-    }
-    if (productDetail?.variantDetails?.length) {
-      return productDetail.variantDetails.map((variant, index) => ({
-        key: variant._id,
-        label:
-          Object.values(variant.optionValues ?? {})
-            .filter(Boolean)
-            .join(' / ') || `Option ${index + 1}`,
-      }));
-    }
-    return ['S', 'M', 'L'].map((size) => ({ key: size, label: size }));
-  }, [variants, productDetail]);
-
-  const selectedVariant = useMemo(() => {
-    if (variants.length > 0) return variants[selectedVariantIndex] ?? variants[0];
-    if (productDetail?.variantDetails?.length) {
-      return productDetail.variantDetails[selectedVariantIndex] ?? productDetail.variantDetails[0];
-    }
-    return null;
-  }, [variants, productDetail, selectedVariantIndex]);
-
-  const canPurchase = Boolean(!soldOut && !isEditorPreview && storeId && selectedVariant);
-
-  const handleAddToCart = useCallback(async () => {
-    if (!canPurchase || adding || !selectedVariant) return;
-    try {
-      setAdding(true);
-      await createCartEntry(
-        { storeId, productVariantId: selectedVariant._id, quantity },
-        selectedVariant
-      );
-    } finally {
-      setAdding(false);
-    }
-  }, [adding, canPurchase, createCartEntry, quantity, selectedVariant, storeId]);
-
-  const handleBuyItNow = useCallback(async () => {
-    if (!canPurchase || adding || !selectedVariant) return;
-    try {
-      setAdding(true);
-      await createCartEntry(
-        { storeId, productVariantId: selectedVariant._id, quantity },
-        selectedVariant
-      );
-      navigate('/cart');
-    } finally {
-      setAdding(false);
-    }
-  }, [adding, canPurchase, createCartEntry, navigate, quantity, selectedVariant, storeId]);
-
   const scheme = style.scheme;
-  const detailsResolvedBackground =
-    detailsShowBgImage || !detailsBgColor || detailsBgColor === 'default'
-      ? scheme.panelRight
-      : detailsBgColor;
   const mediaOnLeft = mediaPosition !== 'right';
-  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
+  const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const gridCols = style.equalColumns ? '1fr 1fr' : '1.05fr 0.95fr';
-  const shellClass = sectionScopeClass('ziplofy-featured-product', sectionId);
-  const splitClass = `${shellClass}-split`;
-  const featuredResponsiveCss = combineResponsiveCss(
-    scopedMobileHorizontalPadCss(shellClass),
-    scopedProductSplitMobileCss(splitClass)
-  );
 
   const shell: CSSProperties = {
-    background:
-      !style.backgroundColor || style.backgroundColor === 'default'
-        ? scheme.background
-        : style.backgroundColor,
+    background: scheme.background,
     color: scheme.color,
     fontFamily: fontBody,
     paddingTop: style.paddingTop,
@@ -470,7 +308,7 @@ export function FeaturedProduct({
         : 'start';
 
   const detailsPanelShell: CSSProperties = {
-    background: detailsResolvedBackground,
+    background: scheme.panelRight,
     position: detailsSticky ? 'sticky' : 'relative',
     top: detailsSticky ? 24 : undefined,
     order: mediaOnLeft ? 1 : 0,
@@ -481,20 +319,12 @@ export function FeaturedProduct({
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
-    borderRadius:
-      detailsBorderStyle === 'solid'
-        ? detailsCornerRadius
-        : detailsCornerRadius > 0
-          ? detailsCornerRadius
-          : undefined,
+    borderRadius: detailsBorderStyle === 'solid' ? detailsCornerRadius : undefined,
     border:
       detailsBorderStyle === 'solid'
         ? `${detailsBorderThickness}px solid rgba(0,0,0,${Math.min(100, Math.max(0, detailsBorderOpacity)) / 100})`
         : undefined,
-    overflow:
-      (detailsBorderStyle === 'solid' || detailsShowBgImage) && detailsCornerRadius > 0
-        ? 'hidden'
-        : undefined,
+    overflow: detailsBorderStyle === 'solid' && detailsCornerRadius > 0 ? 'hidden' : undefined,
     minHeight: !detailsHeightFill && detailsShowBgImage ? 360 : undefined,
   };
 
@@ -532,8 +362,8 @@ export function FeaturedProduct({
   };
 
   const reviewStarsStyle = useMemo(
-    () => readFeaturedProductReviewStarsStyle(config, reviewStarsSettingsBase, scheme.color, themeAccent),
-    [config, reviewStarsSettingsBase, scheme.color, themeAccent]
+    () => readFeaturedProductReviewStarsStyle(config, reviewStarsSettingsBase),
+    [config, reviewStarsSettingsBase]
   );
 
   const reviewStarsTypographyStyle = useMemo(
@@ -545,9 +375,6 @@ export function FeaturedProduct({
     () => readFeaturedProductVariantPickerStyle(config, variantPickerSettingsBase),
     [config, variantPickerSettingsBase]
   );
-
-  const themeSwatches = useMemo(() => readThemeSwatchesSettings(config), [config]);
-  const themeSwatchBaseStyle = useMemo(() => resolveThemeSwatchInlineStyle(config), [config]);
 
   const buyButtonsStyle = useMemo(
     () => readFeaturedProductBuyButtonsStyle(config, buyButtonsSettingsBase),
@@ -575,28 +402,10 @@ export function FeaturedProduct({
   const buyButtonsRow: CSSProperties = {
     display: 'flex',
     flexDirection: buyButtonsStyle.alwaysStackButtons ? 'column' : 'row',
-    flexWrap: buyButtonsStyle.alwaysStackButtons ? 'nowrap' : 'nowrap',
-    gap: 12,
+    flexWrap: buyButtonsStyle.alwaysStackButtons ? 'nowrap' : 'wrap',
+    gap: buyButtonsStyle.alwaysStackButtons ? 12 : 8,
     alignItems: buyButtonsStyle.alwaysStackButtons ? 'stretch' : 'center',
     width: '100%',
-  };
-
-  const actionButtonBase: CSSProperties = {
-    marginTop: 0,
-    height: 48,
-    padding: '0 20px',
-    borderRadius: 12,
-    fontSize: 15,
-    fontWeight: 500,
-    fontFamily: fontBody,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    flex: buyButtonsStyle.alwaysStackButtons ? undefined : '1 1 0',
-    width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined,
-    minWidth: buyButtonsStyle.alwaysStackButtons ? undefined : 0,
-    boxSizing: 'border-box',
   };
 
   const titleBlockStyle = useMemo(
@@ -670,43 +479,24 @@ export function FeaturedProduct({
     [config, headerSettingsBase]
   );
 
-  const titleRowStyle: CSSProperties = { ...titleStyle, margin: 0, flex: '1 1 auto', minWidth: 0 };
-  const priceRowStyle: CSSProperties = {
-    ...priceStyle,
-    margin: 0,
-    flex: '0 0 auto',
-    whiteSpace: 'nowrap',
-    textAlign: 'right',
-  };
-
   const headerInner = (
     <>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          justifyContent: 'space-between',
-          gap: 16,
-          width: '100%',
-        }}
+      <EditorField
+        fieldPath={`${titleSettingsBase}.typographyPreset`}
+        label="Product title"
+        as="h2"
+        style={titleStyle}
       >
-        <EditorField
-          fieldPath={`${titleSettingsBase}.typographyPreset`}
-          label="Product title"
-          as="h2"
-          style={titleRowStyle}
-        >
-          {productTitle}
-        </EditorField>
-        <EditorField
-          fieldPath={`${priceSettingsBase}.typographyPreset`}
-          label="Price"
-          as="p"
-          style={priceRowStyle}
-        >
-          {price}
-        </EditorField>
-      </div>
+        {productTitle}
+      </EditorField>
+      <EditorField
+        fieldPath={`${priceSettingsBase}.typographyPreset`}
+        label="Price"
+        as="p"
+        style={priceStyle}
+      >
+        {price}
+      </EditorField>
       {priceBlockStyle.showInstallments ? (
         <p style={installmentsStyle}>Pay in installments</p>
       ) : null}
@@ -719,25 +509,27 @@ export function FeaturedProduct({
   );
 
   const addToCartButtonStyle: CSSProperties = {
-    ...actionButtonBase,
-    border: soldOut
-      ? 'none'
-      : addToCartStyle.style === 'secondary'
-        ? '1px solid #111827'
+    marginTop: 0,
+    width: buyButtonsStyle.alwaysStackButtons ? '100%' : 'auto',
+    flex: buyButtonsStyle.alwaysStackButtons ? undefined : '1 1 auto',
+    minWidth: buyButtonsStyle.alwaysStackButtons ? undefined : 160,
+    padding: '14px 24px',
+    border:
+      addToCartStyle.style === 'secondary' && !soldOut
+        ? `1px solid ${scheme.muted}88`
         : 'none',
-    background: soldOut ? '#9ca3af' : addToCartStyle.style === 'secondary' ? '#ffffff' : '#111827',
+    borderRadius: 999,
+    background:
+      soldOut
+        ? '#6b7280'
+        : addToCartStyle.style === 'secondary'
+          ? '#ffffff'
+          : '#111827',
     color: soldOut ? '#ffffff' : addToCartStyle.style === 'secondary' ? '#111827' : '#ffffff',
-    cursor: soldOut || adding ? 'not-allowed' : 'pointer',
-    opacity: adding ? 0.75 : 1,
-  };
-
-  const buyItNowButtonStyle: CSSProperties = {
-    ...actionButtonBase,
-    border: 'none',
-    background: '#111827',
-    color: '#ffffff',
-    cursor: adding ? 'wait' : 'pointer',
-    opacity: adding ? 0.75 : 1,
+    fontSize: 15,
+    fontWeight: 500,
+    cursor: soldOut ? 'not-allowed' : 'pointer',
+    fontFamily: fontBody,
   };
 
   const pickupStyle: CSSProperties = {
@@ -771,23 +563,21 @@ export function FeaturedProduct({
     display: 'inline-flex',
     alignItems: 'center',
     border: `1px solid ${scheme.muted}88`,
-    borderRadius: 12,
+    borderRadius: 999,
     overflow: 'hidden',
     flex: buyButtonsStyle.alwaysStackButtons ? undefined : '0 0 auto',
     width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined,
     justifyContent: buyButtonsStyle.alwaysStackButtons ? 'center' : undefined,
-    height: 48,
-    boxSizing: 'border-box',
   };
 
   const quantityBtnStyle: CSSProperties = {
     width: 40,
-    height: '100%',
+    height: 44,
     border: 'none',
     background: 'transparent',
     color: scheme.color,
     fontSize: 18,
-    cursor: soldOut || isEditorPreview ? 'default' : 'pointer',
+    cursor: 'default',
     fontFamily: fontBody,
   };
 
@@ -810,25 +600,25 @@ export function FeaturedProduct({
   };
 
   const variantOptionStyle = (selected: boolean): CSSProperties => ({
+    minWidth: 44,
     padding: '10px 16px',
+    borderRadius: 999,
+    border: `1px solid ${selected ? scheme.color : `${scheme.muted}88`}`,
+    background: selected ? scheme.color : scheme.background,
+    color: selected ? scheme.background : scheme.color,
     fontSize: 14,
     fontFamily: fontBody,
-    cursor: isEditorPreview ? 'default' : 'pointer',
-    ...resolveThemeVariantPickerOptionStyle(config, selected),
+    cursor: 'default',
   });
 
-  const variantSwatchStyle = (color: string, selected: boolean, imageUrl?: string): CSSProperties => ({
-    ...themeSwatchBaseStyle,
-    border: selected
-      ? `2px solid ${scheme.color}`
-      : themeSwatchBaseStyle.border ?? `1px solid ${scheme.muted}55`,
-    background:
-      themeSwatches.variantImages && imageUrl
-        ? `url(${imageUrl}) center/cover no-repeat`
-        : color,
-    boxShadow: selected ? undefined : `inset 0 0 0 1px ${scheme.muted}55`,
+  const variantSwatchStyle = (color: string, selected: boolean): CSSProperties => ({
+    width: 32,
+    height: 32,
+    borderRadius: '50%',
+    border: `2px solid ${selected ? scheme.color : 'transparent'}`,
+    background: color,
+    boxShadow: `inset 0 0 0 1px ${scheme.muted}55`,
     cursor: 'default',
-    flexShrink: 0,
   });
 
   return (
@@ -836,15 +626,13 @@ export function FeaturedProduct({
       sectionId={sectionId}
       label="Featured product"
       editorNodeId={editorNodeId}
-      className={shellClass}
       style={shell}
     >
       {style.customCss ? <style>{scopedProductHighlightCss(sectionId, style.customCss)}</style> : null}
-      {featuredResponsiveCss ? <style>{featuredResponsiveCss}</style> : null}
       {detailsMobileWidthCss ? <style>{detailsMobileWidthCss}</style> : null}
       {headerBlockStyle.mobileWidthCss ? <style>{headerBlockStyle.mobileWidthCss}</style> : null}
       <div style={stage}>
-        <div className={splitClass} style={split}>
+        <div style={split}>
           <div style={mediaPanel}>
             {productImageUrl ? (
               <EditorField fieldPath={`${settingsBase}.productImageUrl`} label="Product image">
@@ -903,7 +691,7 @@ export function FeaturedProduct({
                   rating={rating}
                   reviewCount={reviewCount}
                   starColor={reviewStarsStyle.style === 'shaded' ? '#111827' : scheme.color}
-                  countColor={reviewStarsStyle.textColor}
+                  countColor={reviewStarsStyle.color === 'link' ? themeAccent : scheme.color}
                   shaded={reviewStarsStyle.style === 'shaded'}
                   showReviewCount={reviewStarsStyle.reviewCount}
                   typography={reviewStarsTypographyStyle}
@@ -937,7 +725,6 @@ export function FeaturedProduct({
                       <span
                         key={color}
                         aria-hidden
-                        className="ziplofy-theme-swatch"
                         style={variantSwatchStyle(color, index === 0)}
                       />
                     ))}
@@ -979,21 +766,9 @@ export function FeaturedProduct({
                       width: '100%',
                     }}
                   >
-                    {variantOptions.map((option, index) => (
-                      <button
-                        key={option.key}
-                        type="button"
-                        className={`ziplofy-variant-picker-option${
-                          index === selectedVariantIndex
-                            ? ' ziplofy-variant-picker-option--selected'
-                            : ''
-                        }`}
-                        style={variantOptionStyle(index === selectedVariantIndex)}
-                        onClick={() => {
-                          if (!isEditorPreview) setSelectedVariantIndex(index);
-                        }}
-                      >
-                        {option.label}
+                    {['S', 'M', 'L'].map((size, index) => (
+                      <button key={size} type="button" style={variantOptionStyle(index === 1)}>
+                        {size}
                       </button>
                     ))}
                   </div>
@@ -1011,55 +786,33 @@ export function FeaturedProduct({
                   </EditorField>
                 ) : null}
                 <div style={buyButtonsRow}>
-                  {showQuantityBlock ? (
-                    <EditorField
-                      fieldPath={quantitySettingsBase}
-                      label="Quantity"
-                      as="span"
-                      style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
-                    >
-                      <span style={quantityWrapStyle}>
-                        <button
-                          type="button"
-                          aria-label="Decrease quantity"
-                          style={quantityBtnStyle}
-                          disabled={soldOut || isEditorPreview}
-                          onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-                        >
-                          −
-                        </button>
-                        <span style={quantityValueStyle}>{quantity}</span>
-                        <button
-                          type="button"
-                          aria-label="Increase quantity"
-                          style={quantityBtnStyle}
-                          disabled={soldOut || isEditorPreview}
-                          onClick={() => setQuantity((value) => value + 1)}
-                        >
-                          +
-                        </button>
-                      </span>
-                    </EditorField>
-                  ) : null}
-                  {showAddToCartBlock ? (
-                    <EditorField
-                      fieldPath={`${addToCartSettingsBase}.style`}
-                      label="Add to cart"
-                      as="span"
-                      style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
-                    >
-                      <button
-                        type="button"
-                        disabled={soldOut || adding}
-                        style={addToCartButtonStyle}
-                        onClick={() => void handleAddToCart()}
-                      >
-                        {!soldOut ? <AddToCartBagIcon /> : null}
-                        {addToCartLabel}
+                  <EditorField
+                    fieldPath={quantitySettingsBase}
+                    label="Quantity"
+                    as="span"
+                    style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
+                  >
+                    <span style={quantityWrapStyle}>
+                      <button type="button" aria-label="Decrease quantity" style={quantityBtnStyle}>
+                        −
                       </button>
-                    </EditorField>
-                  ) : null}
-                  {showBuyItNowBlock && !soldOut ? (
+                      <span style={quantityValueStyle}>1</span>
+                      <button type="button" aria-label="Increase quantity" style={quantityBtnStyle}>
+                        +
+                      </button>
+                    </span>
+                  </EditorField>
+                  <EditorField
+                    fieldPath={`${addToCartSettingsBase}.style`}
+                    label="Add to cart"
+                    as="span"
+                    style={{ width: buyButtonsStyle.alwaysStackButtons ? '100%' : undefined }}
+                  >
+                    <button type="button" disabled={soldOut} style={addToCartButtonStyle}>
+                      {buttonLabel}
+                    </button>
+                  </EditorField>
+                  {!soldOut ? (
                     <EditorField
                       fieldPath={`${acceleratedCheckoutSettingsBase}.enabled`}
                       label="Accelerated checkout"
@@ -1068,9 +821,12 @@ export function FeaturedProduct({
                     >
                       <button
                         type="button"
-                        disabled={adding}
-                        style={buyItNowButtonStyle}
-                        onClick={() => void handleBuyItNow()}
+                        style={{
+                          ...addToCartButtonStyle,
+                          background: '#ffffff',
+                          color: '#111827',
+                          border: `1px solid ${scheme.muted}88`,
+                        }}
                       >
                         Buy it now
                       </button>

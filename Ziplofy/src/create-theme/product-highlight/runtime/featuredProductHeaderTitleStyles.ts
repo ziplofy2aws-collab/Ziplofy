@@ -44,9 +44,6 @@ export function readFeaturedProductHeaderTitleStyle(
   const widthMode = cfgString(config, `${settingsBase}.width`, 'fit');
   const maxKey = cfgString(config, `${settingsBase}.maxWidth`, 'normal');
   const bgOn = cfgBool(config, `${settingsBase}.backgroundEnabled`, false);
-  const textColor = cfgString(config, `${settingsBase}.textColor`, 'default');
-  const resolvedColor =
-    textColor && textColor !== 'default' ? textColor : color;
 
   return {
     width: widthMode === 'fill' ? '100%' : 'fit-content',
@@ -55,7 +52,7 @@ export function readFeaturedProductHeaderTitleStyle(
     fontSize: typo.fontSize,
     fontWeight: typo.fontWeight,
     lineHeight: typo.lineHeight,
-    color: resolvedColor,
+    color,
     background: bgOn ? 'rgba(0,0,0,0.04)' : undefined,
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 0),

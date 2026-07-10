@@ -3,17 +3,10 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { CollectionLinksSpotlightArt } from './CollectionLinksSpotlightArt';
 import { CollectionLinksTextHoverPreview } from './CollectionLinksTextHoverPreview';
-import {
-  combineResponsiveCss,
-  scopedCollectionLinksSpotlightMobileCss,
-  scopedCollectionLinksTextMobileCss,
-  scopedMobileHorizontalPadCss,
-  sectionScopeClass,
-} from '../../runtime/shared/responsive';
 import {
   blockSettingsBaseForCollectionLink,
   readCollectionLinks,
@@ -30,7 +23,6 @@ export function CollectionLinksSpotlight({
   templateId = 'index',
   placement = 'template',
 }: SectionRuntimeProps) {
-  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
   const themeFonts = useMemo(() => ({ fontHeading, fontBody }), [fontHeading, fontBody]);
@@ -120,13 +112,6 @@ export function CollectionLinksSpotlight({
   );
 
   const customCss = scopedCollectionLinksCss(sectionId, layoutStyle.customCss);
-  const shellClass = sectionScopeClass('ziplofy-collection-links', sectionId);
-  const responsiveCss = combineResponsiveCss(
-    scopedMobileHorizontalPadCss(shellClass),
-    isTextLayout
-      ? scopedCollectionLinksTextMobileCss(shellClass)
-      : scopedCollectionLinksSpotlightMobileCss(shellClass)
-  );
   const textAlign = textAlignForAlignment(layoutStyle.alignment) as CSSProperties['textAlign'];
 
   const horizontalPad = layoutStyle.sectionWidth === 'full' ? 24 : layout.padX;
@@ -146,7 +131,7 @@ export function CollectionLinksSpotlight({
   const innerStyle: CSSProperties =
     layoutStyle.sectionWidth === 'full'
       ? { maxWidth: '100%', width: '100%' }
-      : { maxWidth: maxWidth, margin: '0 auto', width: '100%' };
+      : { maxWidth: layout.maxWidth, margin: '0 auto', width: '100%' };
 
   const linkItemStyle: CSSProperties = {
     margin: 0,
@@ -170,7 +155,6 @@ export function CollectionLinksSpotlight({
 
   const linksList = (
     <div
-      className={isTextLayout ? 'ziplofy-cl-links-text' : undefined}
       onMouseLeave={isTextLayout ? clearTextHover : resetSpotlightToFirst}
       style={
         isTextLayout
@@ -255,13 +239,11 @@ export function CollectionLinksSpotlight({
               <EditorField fieldPath={`${blockBase}.title`} label="Title">
                 {link.title}
               </EditorField>
-              {link.showCount ? (
-                <sup style={countStyle}>
-                  <EditorField fieldPath={`${blockBase}.productCount`} label="Product count">
-                    {link.productCount}
-                  </EditorField>
-                </sup>
-              ) : null}
+              <sup style={countStyle}>
+                <EditorField fieldPath={`${blockBase}.productCount`} label="Product count">
+                  {link.productCount}
+                </EditorField>
+              </sup>
             </Link>
           </EditorBlock>
         );
@@ -271,7 +253,6 @@ export function CollectionLinksSpotlight({
 
   const mediaColumn = (
     <div
-      className="ziplofy-cl-media-col"
       style={{
         flex: '1 1 52%',
         display: 'flex',
@@ -307,7 +288,6 @@ export function CollectionLinksSpotlight({
 
   const linksColumn = (
     <div
-      className="ziplofy-cl-links-col"
       style={{
         flex: '1 1 48%',
         display: 'flex',
@@ -327,11 +307,9 @@ export function CollectionLinksSpotlight({
       sectionId={sectionId}
       label={sectionLabel}
       editorNodeId={editorNodeId}
-      className={shellClass}
       style={outerStyle}
     >
       {customCss ? <style>{customCss}</style> : null}
-      {responsiveCss ? <style>{responsiveCss}</style> : null}
       <div style={innerStyle}>
         {isTextLayout ? (
           <>
@@ -340,7 +318,6 @@ export function CollectionLinksSpotlight({
           </>
         ) : (
           <div
-            className="ziplofy-cl-spotlight-row"
             style={{
               display: 'flex',
               flexDirection: layoutStyle.imagePosition === 'left' ? 'row-reverse' : 'row',

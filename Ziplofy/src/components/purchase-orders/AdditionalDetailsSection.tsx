@@ -1,12 +1,6 @@
 import React from 'react';
+import { DocumentIcon } from '@heroicons/react/24/outline';
 import MultiSelect from '../MultiSelect';
-import {
-  productFormCardClass,
-  productFormInputClass,
-  productFormLabelClass,
-  productFormSectionTitleClass,
-} from '../products/product-form-appearance';
-import { PO_FORM_APPEARANCE } from './purchase-order-ui.util';
 
 interface SelectOption {
   value: string;
@@ -35,46 +29,45 @@ const AdditionalDetailsSection: React.FC<AdditionalDetailsSectionProps> = ({
   tagsLoading,
 }) => {
   return (
-    <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
-      <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Additional details</h2>
-      <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+    <div className="border border-gray-200 p-4 bg-white/95">
+      <h2 className="text-base font-medium text-gray-900 mb-3">Additional details</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className={productFormLabelClass(PO_FORM_APPEARANCE)} htmlFor="po-reference">
+          <label className="block text-xs text-gray-600 mb-1.5">
             Reference number
           </label>
           <input
-            id="po-reference"
             type="text"
             value={reference}
             onChange={(e) => onReferenceChange(e.target.value)}
-            className={productFormInputClass(PO_FORM_APPEARANCE)}
+            className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
           />
         </div>
-        <div>
+        <div className="flex-1">
           <MultiSelect
             label="Tags"
             value={tagIds}
             options={tagOptions}
             onChange={onTagIdsChange}
-            placeholder={tagsLoading ? 'Loading…' : 'Select tags'}
+            placeholder={tagsLoading ? 'Loading…' : 'No tags'}
             disabled={tagsLoading && tagOptions.length === 0}
           />
         </div>
       </div>
       <div className="mt-3">
-        <label className={productFormLabelClass(PO_FORM_APPEARANCE)} htmlFor="po-note">
+        <label className="block text-xs text-gray-600 mb-1.5">
           Note to supplier
         </label>
         <textarea
-          id="po-note"
           value={note}
           onChange={(e) => onNoteChange(e.target.value)}
           rows={3}
-          className={`${productFormInputClass(PO_FORM_APPEARANCE)} resize-y`}
+          className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
       </div>
-    </section>
+    </div>
   );
 };
 
 export default AdditionalDetailsSection;
+

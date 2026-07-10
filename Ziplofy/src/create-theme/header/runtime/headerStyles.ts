@@ -1,5 +1,4 @@
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
-import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 
 export type HeaderScheme = {
   background: string;
@@ -7,42 +6,30 @@ export type HeaderScheme = {
   border: string;
 };
 
-/**
- * Header colors from explicit `topRowBackground` / `topRowText` settings.
- * Empty background falls back to the theme palette base; empty text inherits
- * the theme text color.
- */
+const COLOR_SCHEMES: Record<string, HeaderScheme> = {
+  'scheme-1': { background: '#ffffff', color: '#111827', border: '#e5e7eb' },
+  'scheme-2': { background: '#1e3a5f', color: '#eff6ff', border: '#334155' },
+  'scheme-3': { background: '#431407', color: '#fff7ed', border: '#7c2d12' },
+  'scheme-4': { background: '#4c1d95', color: '#f5f3ff', border: '#6d28d9' },
+};
+
 export function headerColorScheme(
   config: Record<string, unknown> | null,
   settingsBase: string,
   fallback: HeaderScheme
 ): HeaderScheme {
-  const bgRaw = cfgString(config, `${settingsBase}.topRowBackground`, '');
-  const textRaw = cfgString(config, `${settingsBase}.topRowText`, '');
-  const background = resolveThemePaletteColorSetting(config, bgRaw, 0, fallback.background);
-  const color = textRaw
-    ? resolveThemePaletteColorSetting(config, textRaw, 1, fallback.color)
-    : fallback.color;
-  return { background, color, border: fallback.border };
+  const key = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  return COLOR_SCHEMES[key] ?? fallback;
 }
 
-/**
- * Menu block colors from explicit `backgroundColor` / `textColor` settings
- * (`sections.*.blocks.menu.settings.*`). Empty background falls back to the
- * theme palette base; empty text color inherits the header text color.
- */
+/** Menu block color scheme (`sections.*.blocks.menu.settings.colorScheme`). */
 export function menuBlockColorScheme(
   config: Record<string, unknown> | null,
   menuSettingsBase: string,
   fallback: HeaderScheme
 ): HeaderScheme {
-  const bgRaw = cfgString(config, `${menuSettingsBase}.backgroundColor`, '');
-  const textRaw = cfgString(config, `${menuSettingsBase}.textColor`, '');
-  const background = resolveThemePaletteColorSetting(config, bgRaw, 0, fallback.background);
-  const color = textRaw
-    ? resolveThemePaletteColorSetting(config, textRaw, 1, fallback.color)
-    : fallback.color;
-  return { background, color, border: fallback.border };
+  const key = cfgString(config, `${menuSettingsBase}.colorScheme`, 'scheme-1');
+  return COLOR_SCHEMES[key] ?? fallback;
 }
 
 export function headerSectionWidth(

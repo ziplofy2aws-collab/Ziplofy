@@ -1,7 +1,9 @@
-import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   formatINR,
+  useStorefront,
+  useStorefrontProducts,
 } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../lib/config';
@@ -10,28 +12,19 @@ import {
   readCollectionHeaderLayout,
 } from '../lib/collectionHeaderStyles';
 import { readCollectionTitleStyle } from '../lib/collectionTitleStyles';
-import { readViewAllButtonStyle, viewAllButtonAnchorCss, viewAllButtonWrapperCss } from '../lib/viewAllButtonStyles';
 import { readProductCardMediaStyle } from '../lib/productCardMediaStyles';
 import { readProductCardStyle } from '../lib/productCardStyles';
 import { formatProductCardPrice, readProductCardPriceStyle } from '../lib/productCardPriceStyles';
 import { readProductCardTitleStyle } from '../lib/productCardTitleStyles';
 import {
-  readGlobalProductCardColors,
-  shouldShowProductCardCurrencyCode,
-} from '../lib/themeGlobalProductCardStyles';
-import {
   featuredCollectionColorScheme,
   featuredCollectionGaps,
   featuredCollectionPadding,
-  featuredCollectionSectionBackground,
   featuredCollectionSectionWidth,
   scopedFeaturedCollectionCss,
 } from '../lib/featuredCollectionStyles';
 import { orderedIds, templateBlockOrder } from '../lib/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
-import { ThemeEditorRichTextContent } from '../../../../../create-theme/runtime/shared/ThemeEditorRichTextContent';
-import { useFeaturedCollectionProducts } from '../../../../../create-theme/runtime/shared/useFeaturedCollectionProducts';
-import { richTextHasBlockMarkup } from '../../../../../utils/theme-editor-rich-text.util';
 import { layout, useThemeColors } from '../tokens';
 
 type Props = {
@@ -98,6 +91,8 @@ export function FeaturedCollectionSection({
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
   const themeColors = useThemeColors();
   const { text, background, primary, fontHeading, fontBody } = themeColors;
+  const { storeFrontMeta } = useStorefront();
+  const { products, fetchProductsByStoreId } = useStorefrontProducts();
 
   const state = useMemo(() => {
     const scheme = featuredCollectionColorScheme(config, settingsBase, {
@@ -123,7 +118,6 @@ export function FeaturedCollectionSection({
         Math.min(2, Number(cfgString(config, `${settingsBase}.mobileColumns`, '2')) || 2)
       ),
       limit: Math.max(1, cfgNumber(config, `${settingsBase}.productsToShow`, 8)),
-      collectionHandle: cfgString(config, `${settingsBase}.collectionHandle`, ''),
       customCss: cfgString(config, `${settingsBase}.customCss`, ''),
       emptyMessage: cfgString(config, `${settingsBase}.emptyMessage`),
       subtitle: cfgString(config, `${settingsBase}.subtitle`, ''),
@@ -153,7 +147,6 @@ export function FeaturedCollectionSection({
     columns,
     mobileColumns,
     limit,
-    collectionHandle,
     customCss,
     emptyMessage,
     subtitle,
@@ -167,8 +160,7 @@ export function FeaturedCollectionSection({
     navIconBackground,
   } = state;
 
-  const { color, background: schemeBg } = scheme;
-  const sectionBg = featuredCollectionSectionBackground(config, settingsBase, schemeBg);
+  const { color, background: sectionBg } = scheme;
   const isCarousel = layoutType === 'carousel';
   const isEditorial = layoutType === 'editorial';
   const isGrid = layoutType === 'grid' && !isCarousel && !isEditorial;
@@ -262,7 +254,11 @@ export function FeaturedCollectionSection({
     el.scrollBy({ left: el.clientWidth * 0.85 * dir, behavior: 'smooth' });
   };
 
-  const products = useFeaturedCollectionProducts({ collectionHandle, limit });
+  useEffect(() => {
+    if (!storeFrontMeta?.storeId) return;
+    void fetchProductsByStoreId({ storeId: storeFrontMeta.storeId, page: 1, limit });
+  }, [fetchProductsByStoreId, limit, storeFrontMeta?.storeId]);
+
   const list = products.slice(0, limit);
   const showNav = isCarousel && navIcon !== 'none' && list.length > columns;
   const innerMaxWidth = widthMode === 'full' ? '100%' : layout.maxWidth;
@@ -299,16 +295,6 @@ export function FeaturedCollectionSection({
       ),
     [config, fontHeading, fontBody, color, primary, sectionBg]
   );
-  const viewAllButtonStyle = useMemo(
-    () =>
-      readViewAllButtonStyle(config, headerBase, {
-        primary,
-        background: sectionBg,
-        text: color,
-        line: layout.line,
-      }),
-    [config, headerBase, primary, sectionBg, color, layout.line]
-  );
   const productCardStyle = useMemo(
     () => readProductCardStyle(config, productCardBase, scheme, layout.line),
     [config, scheme]
@@ -334,35 +320,6 @@ export function FeaturedCollectionSection({
       }),
     [config, fontBody, color, primary, scheme.muted]
   );
-  const globalProductCard = useMemo(() => readGlobalProductCardColors(config), [config]);
-  const showCardCurrencyCode = useMemo(
-    () => shouldShowProductCardCurrencyCode(config),
-    [config]
-  );
-  const quickAddCss = useMemo(
-    () => `
-[data-ziplofy-section="${sectionId}"] .fc-quick-add {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-  pointer-events: none;
-}
-[data-ziplofy-section="${sectionId}"] .fc-product-card:hover .fc-quick-add,
-[data-ziplofy-section="${sectionId}"] .fc-product-card:focus-within .fc-quick-add {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-@media (max-width: 749px) {
-  [data-ziplofy-section="${sectionId}"] .fc-quick-add {
-    opacity: ${globalProductCard.mobileQuickAdd ? '1' : '0'};
-    transform: none;
-    pointer-events: ${globalProductCard.mobileQuickAdd ? 'auto' : 'none'};
-  }
-}
-`,
-    [sectionId, globalProductCard.mobileQuickAdd]
-  );
   const blockOrder = templateBlockOrder(config, templateId, sectionId, [
     'collection_header',
     'product_card',
@@ -374,63 +331,52 @@ export function FeaturedCollectionSection({
       label="Header"
     >
       <div
-        style={
-          headerLayout.referenceMinHeight
-            ? { minHeight: headerLayout.referenceMinHeight, width: '100%' }
-            : undefined
-        }
+        data-fc-collection-header
+        style={{
+          display: 'flex',
+          flexDirection: headerLayout.flexDirection,
+          flexWrap: headerLayout.flexWrap,
+          justifyContent: headerLayout.justifyContent,
+          alignItems: headerLayout.alignItems,
+          gap: headerLayout.gap,
+          width: headerLayout.width,
+          minHeight: headerLayout.minHeight,
+          marginBottom: gaps.section,
+          paddingTop: headerLayout.paddingTop,
+          paddingBottom: headerLayout.paddingBottom,
+          paddingLeft: headerLayout.paddingLeft,
+          paddingRight: headerLayout.paddingRight,
+          borderRadius: headerLayout.borderRadius,
+          border: headerLayout.border,
+          background: headerLayout.background,
+          backgroundImage: headerLayout.backgroundImage,
+          backgroundSize: headerLayout.backgroundImage ? 'cover' : undefined,
+          backgroundPosition: headerLayout.backgroundImage ? 'center' : undefined,
+          color: headerLayout.color,
+          boxSizing: 'border-box',
+        }}
       >
-        <div
-          data-fc-collection-header
-          style={{
-            display: 'flex',
-            flexDirection: headerLayout.flexDirection,
-            flexWrap: headerLayout.flexWrap,
-            justifyContent: headerLayout.justifyContent,
-            alignItems: headerLayout.alignItems,
-            gap: headerLayout.gap,
-            width: headerLayout.width,
-            height: headerLayout.height,
-            minHeight: headerLayout.minHeight,
-            marginBottom: gaps.section,
-            paddingTop: headerLayout.paddingTop,
-            paddingBottom: headerLayout.paddingBottom,
-            paddingLeft: headerLayout.paddingLeft,
-            paddingRight: headerLayout.paddingRight,
-            borderRadius: headerLayout.borderRadius,
-            border: headerLayout.border,
-            background: headerLayout.background,
-            backgroundImage: headerLayout.backgroundImage,
-            backgroundSize: headerLayout.backgroundSize,
-            backgroundPosition: headerLayout.backgroundImage ? 'center' : undefined,
-            backgroundRepeat: headerLayout.backgroundRepeat,
-            color: headerLayout.color,
-            boxSizing: 'border-box',
-          }}
-        >
       {headerNestedOrder.map((nestedId) => {
         if (nestedId === 'collection_title') {
-          const titleTag = richTextHasBlockMarkup(title) ? 'div' : 'h2';
           return (
             <EditorBlock
               key={nestedId}
               nodeId={`${editorNodeId}:block:collection_header:nested:collection_title`}
               label="Collection title"
-              style={{
-                flex: titleStyle.flex,
-                minWidth: titleStyle.flex ? 0 : undefined,
-              }}
             >
               <EditorField
                 fieldPath={`${blocksBase}.collection_header.settings.title`}
                 nodeId={editorNodeId}
                 label="Text"
-                as={titleTag}
+                as="h2"
                 style={{
                   margin: 0,
                   width: titleStyle.width,
                   maxWidth: titleStyle.maxWidth,
-                  textAlign: titleStyle.textAlign,
+                  fontFamily: titleStyle.fontFamily,
+                  fontSize: titleStyle.fontSize,
+                  fontWeight: titleStyle.fontWeight,
+                  lineHeight: titleStyle.lineHeight,
                   color: titleStyle.color,
                   background: titleStyle.background,
                   paddingTop: titleStyle.paddingTop,
@@ -441,22 +387,7 @@ export function FeaturedCollectionSection({
                   boxSizing: 'border-box',
                 }}
               >
-                <ThemeEditorRichTextContent
-                  html={title}
-                  style={{
-                    fontFamily: titleStyle.fontFamily,
-                    fontSize: titleStyle.fontSize,
-                    fontWeight: titleStyle.fontWeight,
-                    lineHeight: titleStyle.lineHeight,
-                    color: titleStyle.color,
-                    ...(titleStyle.fontStyle ? { fontStyle: titleStyle.fontStyle } : {}),
-                    ...(titleStyle.letterSpacing ? { letterSpacing: titleStyle.letterSpacing } : {}),
-                    ...(titleStyle.textTransform ? { textTransform: titleStyle.textTransform } : {}),
-                    ...(titleStyle.textWrap
-                      ? { textWrap: titleStyle.textWrap as CSSProperties['textWrap'] }
-                      : {}),
-                  }}
-                />
+                {title}
               </EditorField>
             </EditorBlock>
           );
@@ -467,7 +398,6 @@ export function FeaturedCollectionSection({
               key={nestedId}
               nodeId={`${editorNodeId}:block:collection_header:nested:view_all_button`}
               label="View all button"
-              style={viewAllButtonWrapperCss(viewAllButtonStyle)}
             >
               <EditorField
                 fieldPath={`${blocksBase}.collection_header.settings.viewAllLabel`}
@@ -476,9 +406,7 @@ export function FeaturedCollectionSection({
               >
                 <Link
                   to={viewAllHref}
-                  target={viewAllButtonStyle.openInNewTab ? '_blank' : undefined}
-                  rel={viewAllButtonStyle.openInNewTab ? 'noopener noreferrer' : undefined}
-                  style={viewAllButtonAnchorCss(viewAllButtonStyle)}
+                  style={{ color: themeColors.primary, fontWeight: 600, textDecoration: 'none', fontSize: 14 }}
                 >
                   {viewAllLabel}
                 </Link>
@@ -489,7 +417,6 @@ export function FeaturedCollectionSection({
         return null;
       })}
       {subtitle ? <p style={{ margin: 0, fontSize: 14, color: scheme.muted, maxWidth: 480 }}>{subtitle}</p> : null}
-      </div>
       </div>
     </EditorBlock>
   );
@@ -555,7 +482,7 @@ export function FeaturedCollectionSection({
                     fontSize: Math.max(12, Math.round(productCardTitleStyle.fontSize * compactScale)),
                     fontWeight: productCardTitleStyle.fontWeight,
                     lineHeight: productCardTitleStyle.lineHeight,
-                    color: globalProductCard.text,
+                    color: productCardTitleStyle.color,
                     background: productCardTitleStyle.background,
                     paddingTop: productCardTitleStyle.paddingTop,
                     paddingBottom: productCardTitleStyle.paddingBottom,
@@ -603,10 +530,7 @@ export function FeaturedCollectionSection({
                       );
                       return (
                         <>
-                          <span>
-                            {priced.primary}
-                            {showCardCurrencyCode ? ' INR' : ''}
-                          </span>
+                          <span>{priced.primary}</span>
                           {priced.compareAt ? (
                             <span
                               style={{
@@ -641,14 +565,12 @@ export function FeaturedCollectionSection({
             return (
               <article
                 key={product._id}
-                className="fc-product-card"
                 style={{
-                  position: 'relative',
                   border: productCardStyle.border === 'none' ? `1px solid ${layout.line}` : productCardStyle.border,
                   borderRadius: productCardStyle.borderRadius,
                   overflow: 'hidden',
-                  background: globalProductCard.background,
-                  color: globalProductCard.text,
+                  background: productCardStyle.background,
+                  color: productCardStyle.color,
                   paddingTop: productCardStyle.paddingTop,
                   paddingBottom: productCardStyle.paddingBottom,
                   paddingLeft: productCardStyle.paddingLeft,
@@ -659,36 +581,7 @@ export function FeaturedCollectionSection({
                 }}
               >
                 {productNestedOrder.map((nestedId) => {
-                  if (nestedId === 'media')
-                    return (
-                      <div key={nestedId} style={{ position: 'relative' }}>
-                        {mediaNode}
-                        {globalProductCard.quickAdd && showMedia ? (
-                          <button
-                            type="button"
-                            className="fc-quick-add"
-                            style={{
-                              position: 'absolute',
-                              left: contentPadding,
-                              right: contentPadding,
-                              bottom: contentPadding,
-                              border: 'none',
-                              borderRadius: 8,
-                              padding: '8px 12px',
-                              background: globalProductCard.text,
-                              color: globalProductCard.background,
-                              fontFamily: fontBody,
-                              fontSize: 13,
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                            }}
-                          >
-                            Add to cart
-                          </button>
-                        ) : null}
-                      </div>
-                    );
+                  if (nestedId === 'media') return <div key={nestedId}>{mediaNode}</div>;
                   if (nestedId === 'product_title')
                     return (
                       <div
@@ -782,7 +675,6 @@ export function FeaturedCollectionSection({
     <>
       {scopedCss ? <style>{scopedCss}</style> : null}
       <style>{layoutCss}</style>
-      <style>{quickAddCss}</style>
       {headerResponsiveCss ? <style>{headerResponsiveCss}</style> : null}
       <EditorSection
         nodeId={editorNodeId}

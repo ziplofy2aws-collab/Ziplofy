@@ -1,10 +1,5 @@
 import React, { useCallback } from 'react';
 import Modal from '../Modal';
-import {
-  segmentInputClass,
-  segmentPrimaryButtonClass,
-  segmentSecondaryButtonClass,
-} from './customer-segment-ui.util';
 
 interface EditSegmentModalProps {
   isOpen: boolean;
@@ -36,14 +31,16 @@ const EditSegmentModal: React.FC<EditSegmentModalProps> = ({
       maxWidth="sm"
       actions={
         <>
-          <button type="button" onClick={onClose} className={segmentSecondaryButtonClass}>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
             Cancel
           </button>
           <button
-            type="button"
             onClick={onSave}
             disabled={!editName.trim()}
-            className={segmentPrimaryButtonClass}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
           >
             Save
           </button>
@@ -51,7 +48,7 @@ const EditSegmentModal: React.FC<EditSegmentModalProps> = ({
       }
     >
       <div>
-        <label htmlFor="edit-segment-name" className="mb-1.5 block text-[13px] font-medium text-gray-700">
+        <label htmlFor="edit-segment-name" className="block text-sm font-medium text-gray-700 mb-1.5">
           Name
         </label>
         <input
@@ -59,10 +56,7 @@ const EditSegmentModal: React.FC<EditSegmentModalProps> = ({
           type="text"
           value={editName}
           onChange={handleNameChange}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && editName.trim()) onSave();
-          }}
-          className={segmentInputClass}
+          className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 outline-none transition-all"
           placeholder="Enter segment name"
           autoFocus
         />
@@ -72,3 +66,4 @@ const EditSegmentModal: React.FC<EditSegmentModalProps> = ({
 };
 
 export default EditSegmentModal;
+

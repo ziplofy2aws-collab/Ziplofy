@@ -1,5 +1,5 @@
-import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
-import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
+import type { EditorFieldDef, SidebarNode } from './theme-editor-sidebar.types';
+import { filterSidebarSectionPanelFields } from './theme-editor-field.utils';
 
 export const PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER = [
   'General',
@@ -7,13 +7,10 @@ export const PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER = [
   'Colors',
   'Popover',
   'Padding',
-  'Theme Settings',
   'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER);
-
-const COLORS_KEYS = new Set(['hotspotColor', 'innerColor', 'backgroundColor']);
 
 const FIELD_SORT: Record<string, number> = {
   imageUrl: 0,
@@ -22,13 +19,12 @@ const FIELD_SORT: Record<string, number> = {
   sectionHeight: 1,
   hotspotColor: 0,
   innerColor: 1,
-  backgroundColor: 2,
+  colorScheme: 2,
   popoverGap: 0,
   titleTypography: 1,
   priceTypography: 2,
   paddingTop: 0,
   paddingBottom: 1,
-  colorScheme: 0,
   customCss: 0,
 };
 
@@ -43,62 +39,10 @@ export function isProductHotspotsSectionType(
   return secType === 'product-hotspots' || catalogVariant === 'product-hotspots';
 }
 
-function panelGroupForField(field: EditorFieldDef): string {
-  const key = field.path.split('.').pop() ?? '';
-  if (key === 'colorScheme' || field.group === 'Theme settings') return 'Theme Settings';
-  if (COLORS_KEYS.has(key)) return 'Colors';
-  if (field.group && PANEL_GROUPS.has(field.group)) return field.group;
-  return 'General';
-}
-
 export function isProductHotspotsPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
-  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
-  const key = field.path.split('.').pop() ?? '';
-  if (key === 'heading' || key.startsWith('heading')) return false;
-  if (key === 'colorScheme') return true;
-  if (COLORS_KEYS.has(key)) return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return true;
-}
-
-export function augmentProductHotspotsPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const settingsBase =
-    fields.find((f) => f.path.endsWith('.imageUrl'))?.path.replace(/\.imageUrl$/, '') ??
-    fields.find((f) => f.path.endsWith('.hotspotColor'))?.path.replace(/\.hotspotColor$/, '') ??
-    '';
-  if (!settingsBase) return fields;
-
-  const byKey = new Map<string, EditorFieldDef>();
-  for (const field of fields) {
-    byKey.set(field.path.split('.').pop() ?? '', field);
-  }
-
-  if (!byKey.has('backgroundColor')) {
-    byKey.set('backgroundColor', {
-      path: `${settingsBase}.backgroundColor`,
-      type: 'text',
-      label: 'Background color',
-      group: 'Colors',
-      widget: 'default-color',
-      sidebar: true,
-    });
-  }
-
-  for (const field of byKey.values()) {
-    const key = field.path.split('.').pop() ?? '';
-    if (key === 'titleTypography' || key === 'priceTypography') {
-      byKey.set(key, {
-        ...field,
-        description: field.description ?? 'Edit presets in theme settings',
-      });
-    }
-    if (key === 'colorScheme') {
-      byKey.set(key, { ...field, group: 'Theme settings', sidebar: true });
-    }
-  }
-
-  return Array.from(byKey.values());
+  return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
 export function sortProductHotspotsPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -108,12 +52,11 @@ export function sortProductHotspotsPanelFields(fields: EditorFieldDef[]): Editor
     Colors: 2,
     Popover: 3,
     Padding: 4,
-    'Theme Settings': 5,
-    'Custom CSS': 6,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[panelGroupForField(a)] ?? 9;
-    const gb = groupRank[panelGroupForField(b)] ?? 9;
+    const ga = groupRank[a.group ?? ''] ?? 9;
+    const gb = groupRank[b.group ?? ''] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -124,7 +67,7 @@ export function groupProductHotspotsPanelFields(
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = panelGroupForField(field);
+    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'General';
     const list = map.get(group) ?? [];
     list.push(field);
     map.set(group, list);
@@ -139,7 +82,8 @@ export function isProductHotspotsSettingsPanelFields(fields: EditorFieldDef[]): 
 }
 
 export function prepareProductHotspotsSettingsNode(node: SidebarNode): SidebarNode {
-  const filtered = filterSidebarSectionPanelFields(node.fields ?? [], isProductHotspotsPanelField);
-  const fields = sortProductHotspotsPanelFields(augmentProductHotspotsPanelFields(filtered));
+  const fields = sortProductHotspotsPanelFields(
+    filterSidebarSectionPanelFields(node.fields ?? [], isProductHotspotsPanelField)
+  );
   return { ...node, label: 'Product hotspots', kind: 'section', fields };
 }

@@ -206,19 +206,19 @@ export const ContentFilesPage = () => {
 
     return (
       <div
-        className="fixed bottom-4 right-4 z-50 w-[min(100vw-2rem,20rem)] rounded-lg bg-[#1a1a1a] text-white shadow-xl ring-1 ring-white/10"
+        className="fixed bottom-4 right-4 z-50 w-[min(100vw-2rem,22rem)] rounded-xl bg-[#1a1a1a] text-white shadow-2xl ring-1 ring-white/10"
         role="region"
         aria-label="Upload progress"
       >
         <button
           type="button"
           onClick={() => setUploadQueueCollapsed((c) => !c)}
-          className="flex w-full items-start justify-between gap-3 rounded-t-lg px-3.5 py-3 text-left transition-colors hover:bg-white/5"
+          className="flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left hover:bg-white/5 rounded-t-xl transition-colors"
           aria-expanded={!uploadQueueCollapsed}
         >
           <div className="min-w-0">
-            <p className="text-[13px] font-medium leading-tight">Uploading</p>
-            <p className="mt-0.5 text-[12px] font-normal text-[#9ca3af]">
+            <p className="text-[15px] font-semibold leading-tight">Uploading</p>
+            <p className="text-[13px] text-[#9ca3af] mt-0.5">
               {remainingCount} remaining
             </p>
           </div>
@@ -255,7 +255,7 @@ export const ContentFilesPage = () => {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[12px] font-normal text-white" title={item.file.name}>
+                    <p className="truncate text-[13px] font-medium text-white" title={item.file.name}>
                       {item.file.name}
                     </p>
                     {isError && item.errorMessage ? (
@@ -283,23 +283,23 @@ export const ContentFilesPage = () => {
   };
 
   const renderEmptyState = (title: string, description: string, showUploadButton: boolean) => (
-    <div className="flex min-h-[360px] items-center justify-center rounded-lg border border-gray-200/80 bg-white p-10 shadow-sm">
-      <div className="flex max-w-md flex-col items-center gap-3 text-center">
-        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gray-50">
-          <FolderIcon className="h-5 w-5 text-gray-400" />
+    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm min-h-[400px] flex justify-center items-center p-12">
+      <div className="flex flex-col justify-center items-center text-center gap-4 max-w-md">
+        <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
+          <FolderIcon className="w-7 h-7 text-blue-600" />
         </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-[15px] font-medium text-gray-800">{title}</span>
-          <span className="text-[13px] font-normal text-gray-500">{description}</span>
+        <div className="flex flex-col gap-1.5">
+          <span className="text-lg font-semibold text-gray-900">{title}</span>
+          <span className="text-sm text-gray-500">{description}</span>
         </div>
         {showUploadButton && (
           <button
             type="button"
             onClick={openFilePicker}
             disabled={deleteLoading}
-            className="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors mt-2"
           >
-            <DocumentArrowUpIcon className="h-3.5 w-3.5" />
+            <DocumentArrowUpIcon className="w-4 h-4" />
             Upload files
           </button>
         )}
@@ -308,11 +308,11 @@ export const ContentFilesPage = () => {
   );
 
   const renderLibraryGrid = () => (
-    <div className="rounded-lg border border-gray-200/80 bg-white p-4 shadow-sm sm:p-5">
-      <p className="mb-3 text-xs font-normal text-gray-500">
+    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-4 sm:p-6">
+      <p className="text-sm text-gray-500 mb-4">
         {uploads.length} file{uploads.length === 1 ? '' : 's'} in your library
       </p>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {uploads.map((upload) => {
           const previewUrl = resolveUploadPreviewUrl(upload);
           const name = fileNameFromStorageKey(upload.key);
@@ -321,9 +321,9 @@ export const ContentFilesPage = () => {
           return (
             <div
               key={upload._id}
-              className="group relative flex flex-col overflow-hidden rounded-md border border-gray-200/80 bg-white"
+              className="group relative flex flex-col rounded-lg border border-gray-200 overflow-hidden bg-gray-50"
             >
-              <div className="relative flex aspect-square items-center justify-center bg-gray-50">
+              <div className="aspect-square flex items-center justify-center bg-gray-100 relative">
                 {previewUrl ? (
                   <img
                     src={previewUrl}
@@ -332,30 +332,30 @@ export const ContentFilesPage = () => {
                     loading="lazy"
                   />
                 ) : (
-                  <div className="flex flex-col items-center gap-1 p-3 text-gray-400">
+                  <div className="flex flex-col items-center gap-1 text-gray-400 p-3">
                     {isImageStorageKey(upload.key) ? (
-                      <PhotoIcon className="h-8 w-8" />
+                      <PhotoIcon className="w-10 h-10" />
                     ) : (
-                      <DocumentIcon className="h-8 w-8" />
+                      <DocumentIcon className="w-10 h-10" />
                     )}
-                    <span className="line-clamp-2 text-center text-[10px] font-normal">{name}</span>
+                    <span className="text-[10px] text-center line-clamp-2">{name}</span>
                   </div>
                 )}
                 <button
                   type="button"
                   onClick={() => handleDelete(upload)}
                   disabled={isDeleting || isProcessingQueue || deleteLoading}
-                  className="absolute right-1.5 top-1.5 rounded-md bg-white/90 p-1 text-gray-500 opacity-0 shadow-sm transition-opacity hover:bg-white hover:text-red-600 group-hover:opacity-100 disabled:opacity-50"
+                  className="absolute top-2 right-2 rounded-md bg-white/90 p-1.5 text-gray-600 shadow-sm opacity-0 group-hover:opacity-100 hover:text-red-600 hover:bg-white disabled:opacity-50 transition-opacity"
                   aria-label={`Delete ${name}`}
                 >
-                  <TrashIcon className="h-3.5 w-3.5" />
+                  <TrashIcon className="w-4 h-4" />
                 </button>
               </div>
-              <div className="border-t border-gray-100 bg-white px-2 py-1.5">
-                <p className="truncate text-[11px] font-normal text-gray-700" title={name}>
+              <div className="p-2 border-t border-gray-200 bg-white">
+                <p className="text-xs font-medium text-gray-900 truncate" title={name}>
                   {name}
                 </p>
-                <p className="mt-0.5 text-[10px] font-normal text-gray-400">{formatUploadedAt(upload.createdAt)}</p>
+                <p className="text-[10px] text-gray-500 mt-0.5">{formatUploadedAt(upload.createdAt)}</p>
               </div>
             </div>
           );
@@ -378,8 +378,8 @@ export const ContentFilesPage = () => {
 
     if (fetchLoading && !hasLibrary && !hasQueue) {
       return (
-        <div className="flex min-h-[360px] items-center justify-center rounded-lg border border-gray-200/80 bg-white p-10 shadow-sm">
-          <p className="text-[13px] font-normal text-gray-500">Loading files…</p>
+        <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm min-h-[400px] flex justify-center items-center p-12">
+          <p className="text-sm text-gray-500">Loading files…</p>
         </div>
       );
     }
@@ -407,11 +407,11 @@ export const ContentFilesPage = () => {
           onChange={handleFilesSelected}
         />
 
-        <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h1 className="text-lg font-medium text-gray-900">Files</h1>
-              <p className="mt-0.5 text-[13px] font-normal text-gray-500">
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div className="pl-3 border-l-4 border-blue-500/60">
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Files</h1>
+              <p className="text-sm text-gray-500 mt-0.5">
                 Upload and manage images, videos, documents, and more
               </p>
             </div>
@@ -419,9 +419,9 @@ export const ContentFilesPage = () => {
               type="button"
               onClick={openFilePicker}
               disabled={deleteLoading || !activeStoreId}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors shadow-sm"
             >
-              <DocumentArrowUpIcon className="h-3.5 w-3.5" />
+              <DocumentArrowUpIcon className="w-4 h-4" />
               {isProcessingQueue ? 'Uploading…' : 'Upload files'}
             </button>
           </div>

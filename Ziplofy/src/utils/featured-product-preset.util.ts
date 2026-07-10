@@ -5,8 +5,6 @@ import {
   FEATURED_PRODUCT_SECTION_BLOCK_ORDER,
 } from './featured-product-sidebar.util';
 import { featuredProductDetailsDefaultSettings } from '../create-theme/sidebar/theme-editor-featured-product-details-block-panel.utils';
-import { featuredProductMediaDefaultSettings } from '../create-theme/sidebar/theme-editor-featured-product-media-block-panel.utils';
-import { featuredProductSectionDefaultSettings } from '../create-theme/sidebar/theme-editor-featured-product-panel.utils';
 import { featuredProductAddToCartDefaultSettings } from '../create-theme/sidebar/theme-editor-featured-product-add-to-cart-panel.utils';
 import { featuredProductBuyButtonsDefaultSettings } from '../create-theme/sidebar/theme-editor-featured-product-buy-buttons-block-panel.utils';
 import { featuredProductHeaderDefaultSettings } from '../create-theme/sidebar/theme-editor-featured-product-header-block-panel.utils';
@@ -25,7 +23,23 @@ export function featuredProductSectionBlocks(): {
     blocks: {
       product_media: {
         type: 'product-media',
-        settings: { ...featuredProductMediaDefaultSettings() },
+        settings: {
+          aspectRatio: 'auto',
+          constrainToScreenHeight: true,
+          mediaFit: 'contain',
+          cornerRadius: 0,
+          extendMediaToScreenEdge: false,
+          enableZoom: true,
+          videoLooping: false,
+          hideUnselectedVariantMedia: true,
+          carouselIcons: 'arrows',
+          carouselPagination: 'counter',
+          carouselMobilePagination: 'dots',
+          paddingTop: 0,
+          paddingBottom: 0,
+          paddingLeft: 0,
+          paddingRight: 0,
+        },
       },
       details: {
         type: 'group',
@@ -54,7 +68,7 @@ export function featuredProductSectionBlocks(): {
             settings: { ...featuredProductBuyButtonsDefaultSettings() },
             block_order: [...FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER],
             blocks: {
-              quantity: { type: 'quantity', settings: { inputStyle: 'default' } },
+              quantity: { type: 'quantity', settings: {} },
               add_to_cart: {
                 type: 'add-to-cart',
                 settings: { ...featuredProductAddToCartDefaultSettings() },
@@ -66,17 +80,6 @@ export function featuredProductSectionBlocks(): {
       },
     },
   };
-}
-
-function mergeFeaturedProductMediaSettings(blocks: Record<string, unknown>): boolean {
-  const productMedia = blocks.product_media as { settings?: Record<string, unknown> } | undefined;
-  if (!productMedia) return false;
-  const defaults = featuredProductMediaDefaultSettings();
-  const current = (productMedia.settings ?? {}) as Record<string, unknown>;
-  const merged = { ...defaults, ...current };
-  const changed = Object.keys(defaults).some((key) => current[key] === undefined);
-  productMedia.settings = merged;
-  return changed;
 }
 
 function mergeFeaturedProductDetailsSettings(blocks: Record<string, unknown>): boolean {
@@ -220,19 +223,6 @@ function mergeFeaturedProductHeaderPriceSettings(blocks: Record<string, unknown>
   return changed;
 }
 
-function mergeFeaturedProductQuantitySettings(blocks: Record<string, unknown>): boolean {
-  const details = blocks.details as { blocks?: Record<string, unknown> } | undefined;
-  const buyButtons = details?.blocks?.buy_buttons as { blocks?: Record<string, unknown> } | undefined;
-  const quantity = buyButtons?.blocks?.quantity as { settings?: Record<string, unknown> } | undefined;
-  if (!quantity) return false;
-  const defaults = { inputStyle: 'default' };
-  const current = (quantity.settings ?? {}) as Record<string, unknown>;
-  const merged = { ...defaults, ...current };
-  const changed = Object.keys(defaults).some((key) => current[key] === undefined);
-  quantity.settings = merged;
-  return changed;
-}
-
 /** Ensure featured-product sections have block hierarchy (for older configs). */
 export function ensureFeaturedProductSectionBlocks(
   config: Record<string, unknown>
@@ -249,8 +239,6 @@ export function ensureFeaturedProductSectionBlocks(
       const blocks = sec.blocks as Record<string, unknown> | undefined;
       const order = sec.block_order as string[] | undefined;
       if (blocks?.product_media && blocks?.details && order?.includes('product_media')) {
-        if (mergeFeaturedProductSectionSettings(sec)) changed = true;
-        if (blocks && mergeFeaturedProductMediaSettings(blocks)) changed = true;
         if (blocks && mergeFeaturedProductDetailsSettings(blocks)) changed = true;
         if (blocks && mergeFeaturedProductHeaderBlockSettings(blocks)) changed = true;
         if (blocks && mergeFeaturedProductHeaderTitleSettings(blocks)) changed = true;
@@ -260,7 +248,6 @@ export function ensureFeaturedProductSectionBlocks(
         if (blocks && mergeFeaturedProductBuyButtonsSettings(blocks)) changed = true;
         if (blocks && mergeFeaturedProductAddToCartSettings(blocks, sec.settings as Record<string, unknown>))
           changed = true;
-        if (blocks && mergeFeaturedProductQuantitySettings(blocks)) changed = true;
         continue;
       }
       const preset = featuredProductSectionBlocks();
@@ -274,24 +261,21 @@ export function ensureFeaturedProductSectionBlocks(
 
 /** Catalog preset for Featured product (product-highlight variant). */
 
-function mergeFeaturedProductSectionSettings(sec: Record<string, unknown>): boolean {
-  const defaults = featuredProductSectionDefaultSettings();
-  const current = (sec.settings ?? {}) as Record<string, unknown>;
-  const merged = { ...defaults, ...current };
-  const changed = Object.keys(defaults).some((key) => current[key] === undefined);
-  sec.settings = merged;
-  return changed;
-}
-
 export function applyFeaturedProductPreset(section: Record<string, unknown>): void {
   if (section.type !== 'product-highlight') return;
 
   const settings = (section.settings ?? {}) as Record<string, unknown>;
-  const defaults = featuredProductSectionDefaultSettings();
-  for (const [key, value] of Object.entries(defaults)) {
-    settings[key] = settings[key] ?? value;
-  }
   settings.catalogVariant = 'featured-product';
+  settings.productId = settings.productId ?? '';
+  settings.productTitle = settings.productTitle ?? 'Product title';
+  settings.price = settings.price ?? 'Rs. 19.99';
+  settings.productImageUrl = settings.productImageUrl ?? '';
+  settings.mediaPosition = settings.mediaPosition ?? 'left';
+  settings.sectionWidth = settings.sectionWidth ?? 'page';
+  settings.equalColumns = settings.equalColumns ?? true;
+  settings.limitProductDetailsWidth = settings.limitProductDetailsWidth ?? false;
+  settings.layoutGap = settings.layoutGap ?? 48;
+  settings.colorScheme = settings.colorScheme ?? 'scheme-1';
   settings.showRating = settings.showRating ?? false;
   settings.rating = settings.rating ?? 4.5;
   settings.reviewCount = settings.reviewCount ?? 3;
@@ -299,6 +283,9 @@ export function applyFeaturedProductPreset(section: Record<string, unknown>): vo
   settings.taxNote = settings.taxNote ?? 'Taxes included.';
   settings.buttonLabel = settings.buttonLabel ?? 'Sold out';
   settings.soldOut = settings.soldOut ?? true;
+  settings.paddingTop = settings.paddingTop ?? 40;
+  settings.paddingBottom = settings.paddingBottom ?? 40;
+  settings.customCss = settings.customCss ?? '';
   section.settings = settings;
   const { block_order, blocks } = featuredProductSectionBlocks();
   section.block_order = block_order;

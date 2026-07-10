@@ -305,8 +305,9 @@ export function resolveEditingPanelFromCatalog(nodeId: string): ResolvedEditingP
   }
 
   const panelId = resolvePanelId(ctx);
-  const rawRule = panels?.[panelId] ?? panels?.default;
-  const rule = normalizePanelRule(rawRule ?? {});
+  const rawRule = panels[panelId] ?? panels.default;
+  if (!rawRule) return null;
+  const rule = normalizePanelRule(rawRule);
 
   const filtered = applyPanelRule(sourceFields, rule);
   if (!filtered.length) return null;

@@ -1,24 +1,21 @@
 import React from "react";
+import HierarchicalCategoryDropdown from "../HierarchicalCategoryDropdown";
 import ProductDescriptionInput from "./ProductDescriptionInput";
 import ProductImagesSection from "./ProductImagesSection";
 import ProductTitleInput from "./ProductTitleInput";
-import {
-  type ProductFormAppearance,
-  productFormCardClass,
-  productFormDividerClass,
-  productFormSectionTitleClass,
-} from "./product-form-appearance";
 
 interface ProductBasicInformationSectionProps {
   title: string;
   description: string;
+  category: string;
+  activeStoreId: string | null;
   images: string[];
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
-  onAddImageUrl: (url: string) => void;
+  onCategoryChange: (categoryId: string) => void;
+  onAddImageFiles: (files: File[]) => void;
   onRemoveImage: (index: number) => void;
   mediaDisabled?: boolean;
-  appearance?: ProductFormAppearance;
 }
 
 const ProductBasicInformationSection: React.FC<
@@ -26,26 +23,27 @@ const ProductBasicInformationSection: React.FC<
 > = ({
   title,
   description,
+  category,
+  activeStoreId,
   images,
   onTitleChange,
   onDescriptionChange,
-  onAddImageUrl,
+  onCategoryChange,
+  onAddImageFiles,
   onRemoveImage,
   mediaDisabled = false,
-  appearance = 'default',
 }) => {
   return (
-    <div className={productFormCardClass(appearance)}>
-      <h2 className={productFormSectionTitleClass(appearance)}>
+    <div className="rounded-xl border border-gray-200/80 bg-white p-6 shadow-sm">
+      <h2 className="mb-4 text-base font-semibold text-gray-900">
         Basic Information
       </h2>
 
-      <div className={appearance === 'minimal' ? 'space-y-3' : 'space-y-4'}>
+      <div className="space-y-4">
         <ProductTitleInput
           value={title}
           onChange={onTitleChange}
           required
-          appearance={appearance}
         />
 
         <ProductDescriptionInput
@@ -54,14 +52,24 @@ const ProductBasicInformationSection: React.FC<
         />
       </div>
 
-      <div className={productFormDividerClass(appearance)}>
+      <div className="mt-6 border-t border-gray-100 pt-6">
         <ProductImagesSection
           embedded
           images={images}
-          onAddImageUrl={onAddImageUrl}
+          onAddImageFiles={onAddImageFiles}
           onRemoveImage={onRemoveImage}
           disabled={mediaDisabled}
-          appearance={appearance}
+        />
+      </div>
+
+      <div className="mt-6 border-t border-gray-100 pt-6">
+        <h3 className="mb-4 text-base font-semibold text-gray-900">Category</h3>
+        <HierarchicalCategoryDropdown
+          selectedCategory={category}
+          onCategorySelect={(categoryId) => {
+            onCategoryChange(categoryId);
+          }}
+          storeId={activeStoreId || ""}
         />
       </div>
     </div>

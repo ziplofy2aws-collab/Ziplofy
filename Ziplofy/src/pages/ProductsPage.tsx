@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import ConfirmUndeleteProductModal from "../components/ConfirmUndeleteProductModal";
+import ProductsPageEmptyState from "../components/products/ProductsPageEmptyState";
 import ProductsPageFilters from "../components/products/ProductsPageFilters";
 import ProductsPageHeader from "../components/products/ProductsPageHeader";
 import ProductsTable from "../components/products/ProductsTable";
@@ -14,6 +15,7 @@ const ProductsPage: React.FC = () => {
   const { activeStoreId } = useStore();
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [search, setSearch] = useState("");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [restoreCandidate, setRestoreCandidate] = useState<Product | null>(null);
   const [restoringProduct, setRestoringProduct] = useState(false);
 
@@ -22,6 +24,15 @@ const ProductsPage: React.FC = () => {
       fetchProductsByStoreId(activeStoreId);
     }
   }, [activeStoreId, fetchProductsByStoreId]);
+
+  const counts = useMemo(() => {
+    const list = products || [];
+    return {
+      All: list.length,
+      Active: list.filter((p) => p.status === "active").length,
+      Draft: list.filter((p) => p.status === "draft").length,
+    };
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     const list = products || [];
@@ -33,20 +44,13 @@ const ProductsPage: React.FC = () => {
     if (!q) return byTab;
     return byTab.filter((p) => {
       const categoryName = typeof p.category === "object" ? p.category?.name : String(p.category || "");
-      const productTypeName =
-        typeof p.productType === "object" ? p.productType?.name : String(p.productType || "");
-      const vendorName = typeof p.vendor === "object" ? p.vendor?.name : String(p.vendor || "");
       return (
         p.title.toLowerCase().includes(q) ||
         (p.sku || "").toLowerCase().includes(q) ||
-        categoryName.toLowerCase().includes(q) ||
-        productTypeName.toLowerCase().includes(q) ||
-        vendorName.toLowerCase().includes(q)
+        categoryName.toLowerCase().includes(q)
       );
     });
   }, [products, activeTab, search]);
-
-  const hasProducts = (products || []).length > 0;
 
   const handleOpenUndeleteModal = (product: Product) => {
     setRestoreCandidate(product);
@@ -76,41 +80,32 @@ const ProductsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
         <ProductsPageHeader />
+        <ProductsPageFilters
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          search={search}
+          onSearchChange={setSearch}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          counts={counts}
+        />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-          <ProductsPageFilters
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            search={search}
-            onSearchChange={setSearch}
-          />
-
-          {!hasProducts ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Add your products</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
-                Start by stocking your store with products your customers will love
-              </p>
+        <div>
+          {(!filteredProducts || filteredProducts.length === 0) ? (
+            <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+              <ProductsPageEmptyState />
             </div>
           ) : (
             <ProductsTable
               products={filteredProducts}
+              viewMode={viewMode}
               onUndeleteProduct={handleOpenUndeleteModal}
             />
           )}
         </div>
-
-        <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
-              Learn more about products
-            </a>
-          </p>
-        </div>
       </div>
-
       <ConfirmUndeleteProductModal
         isOpen={Boolean(restoreCandidate)}
         productTitle={restoreCandidate?.title || ""}

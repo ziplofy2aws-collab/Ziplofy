@@ -9,10 +9,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import AddPackageModal from "../AddPackageModal";
 import { Packaging, usePackaging } from "../../contexts/packaging.context";
-import {
-  type ProductFormAppearance,
-  productFormCardClass,
-} from "./product-form-appearance";
 
 interface ProductShippingSectionProps {
   physicalProduct: boolean;
@@ -28,7 +24,6 @@ interface ProductShippingSectionProps {
   onCountryOfOriginChange: (value: string) => void;
   onHsCodeChange: (value: string) => void;
   activeStoreId: string | null;
-  appearance?: ProductFormAppearance;
 }
 
 const weightUnits = ["lb", "oz", "kg", "grams"];
@@ -77,7 +72,6 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
   onCountryOfOriginChange,
   onHsCodeChange,
   activeStoreId,
-  appearance = 'default',
 }) => {
   const { packagings, fetchPackagingsByStoreId, createPackaging } = usePackaging();
   const [isAddPackageModalOpen, setIsAddPackageModalOpen] = useState(false);
@@ -230,11 +224,11 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
     "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500";
 
   return (
-    <div className={productFormCardClass(appearance)}>
+    <div className="rounded-xl border border-gray-200/80 bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between gap-4">
-        <h2 className={appearance === 'minimal' ? 'text-sm font-medium text-gray-600' : 'text-base font-semibold text-gray-900'}>Shipping</h2>
+        <h2 className="text-base font-semibold text-gray-900">Shipping</h2>
         <div className="flex shrink-0 items-center gap-2">
-          <span className={appearance === 'minimal' ? 'text-[13px] text-gray-500' : 'text-sm text-gray-600'}>
+          <span className="text-sm text-gray-600">
             {physicalProduct ? "Physical product" : "Not a physical product"}
           </span>
           <span

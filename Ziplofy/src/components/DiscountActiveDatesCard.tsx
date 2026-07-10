@@ -28,9 +28,9 @@ const DiscountActiveDatesCard: React.FC<DiscountActiveDatesCardProps> = ({
   const endDisplay = setEndDate ? ([endDate, endTime].filter(Boolean).join(' ') || '—') : 'No end date';
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
       <div className="px-5 py-4 sm:px-6 sm:py-5">
-        <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Active dates</h2>
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Active dates</h2>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
@@ -38,7 +38,7 @@ const DiscountActiveDatesCard: React.FC<DiscountActiveDatesCardProps> = ({
             </div>
             <div>
               <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Start</dt>
-              <dd className="mt-0.5 text-[13px] text-gray-900">{startDisplay}</dd>
+              <dd className="mt-0.5 text-sm text-gray-900">{startDisplay}</dd>
             </div>
           </div>
           <div className="flex gap-3">
@@ -47,16 +47,16 @@ const DiscountActiveDatesCard: React.FC<DiscountActiveDatesCardProps> = ({
             </div>
             <div>
               <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">End</dt>
-              <dd className="mt-0.5 text-[13px] text-gray-900">{endDisplay}</dd>
+              <dd className="mt-0.5 text-sm text-gray-900">{endDisplay}</dd>
             </div>
           </div>
           <div>
             <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Created</dt>
-            <dd className="mt-0.5 text-[13px] text-gray-900">{formatDate(createdAt)}</dd>
+            <dd className="mt-0.5 text-sm text-gray-900">{formatDate(createdAt)}</dd>
           </div>
           <div>
             <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">Last updated</dt>
-            <dd className="mt-0.5 text-[13px] text-gray-900">{formatDate(updatedAt)}</dd>
+            <dd className="mt-0.5 text-sm text-gray-900">{formatDate(updatedAt)}</dd>
           </div>
         </dl>
       </div>

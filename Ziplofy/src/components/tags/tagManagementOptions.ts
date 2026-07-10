@@ -2,7 +2,6 @@ import {
   ArrowPathIcon,
   CubeIcon,
   DocumentTextIcon,
-  PencilSquareIcon,
   TagIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
@@ -27,12 +26,6 @@ export const TAG_MANAGEMENT_OPTIONS: TagManagementOption[] = [
     route: 'product-tags',
     icon: TagIcon,
     description: 'Group products for collections, search, and merchandising.',
-  },
-  {
-    name: 'Blog Tags',
-    route: 'blog-tags',
-    icon: PencilSquareIcon,
-    description: 'Organize and categorize blog posts for better discoverability.',
   },
   {
     name: 'Product Types',

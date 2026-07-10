@@ -10,8 +10,14 @@ import { useNotificationOptions } from '../../contexts/notification-options.cont
 import { useNotificationCategories } from '../../contexts/notification-categories.context';
 import type { NotificationOption } from '../../contexts/notification-options.context';
 import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
+import {
+  CUSTOMER_NOTIFICATION_SEGMENT_LABELS,
+  CUSTOMER_NOTIFICATION_SEGMENT_ORDER,
+  sortCustomerNotificationOptions,
+} from '../../constants/customer-notification-sections';
 
 interface NotificationSection {
+  segment: string;
   title: string;
   items: NotificationOption[];
 }
@@ -42,13 +48,18 @@ const CustomerNotificationsPage: React.FC = () => {
   }, [categoryId, fetchByCategoryId]);
 
   useEffect(() => {
-    if (!isCustomerCategory) {
+    if (!isCustomerCategory || options.length === 0) {
       return;
     }
     const initialExpanded: { [key: string]: boolean } = {};
-    const segments = new Set(options.map((opt) => opt.segment).filter(Boolean));
-    segments.forEach((segment) => {
-      if (segment) {
+    CUSTOMER_NOTIFICATION_SEGMENT_ORDER.forEach((segment) => {
+      if (options.some((opt) => opt.segment === segment)) {
+        initialExpanded[segment] = true;
+      }
+    });
+    options.forEach((opt) => {
+      const segment = opt.segment || 'other';
+      if (!(segment in initialExpanded)) {
         initialExpanded[segment] = true;
       }
     });
@@ -82,39 +93,27 @@ const CustomerNotificationsPage: React.FC = () => {
       segmentMap.get(segment)!.push(option);
     });
 
-    const segmentNameMap: { [key: string]: string } = {
-      orders: 'Order processing',
-      localpickup: 'Local pick up',
-      localdelivery: 'Local delivery',
-      giftcards: 'Gift cards',
-      storecredit: 'Store credit',
-      orderexceptions: 'Order exceptions',
-      payments: 'Payments',
-      shippingupdated: 'Shipping updated',
-      returns: 'Returns',
-      accounts_and_outreach: 'Accounts and outreach',
-      other: 'Other',
-    };
+    const orderedSegments = [
+      ...CUSTOMER_NOTIFICATION_SEGMENT_ORDER.filter((segment) => segmentMap.has(segment)),
+      ...Array.from(segmentMap.keys()).filter(
+        (segment) => !CUSTOMER_NOTIFICATION_SEGMENT_ORDER.includes(segment as (typeof CUSTOMER_NOTIFICATION_SEGMENT_ORDER)[number])
+      ),
+    ];
 
-    return Array.from(segmentMap.entries()).map(([segment, items]) => {
-      let formattedTitle = segmentNameMap[segment] || segment;
-      if (!segmentNameMap[segment]) {
-        formattedTitle = segment.replace(/_/g, ' ');
-        if (/[A-Z]/.test(formattedTitle)) {
-          formattedTitle = formattedTitle
-            .split(/(?=[A-Z])/)
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-            .join(' ');
-        }
-        formattedTitle = formattedTitle
+    return orderedSegments.map((segment) => {
+      const items = segmentMap.get(segment) ?? [];
+      const formattedTitle =
+        CUSTOMER_NOTIFICATION_SEGMENT_LABELS[segment] ??
+        segment
+          .replace(/_/g, ' ')
           .split(' ')
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
           .join(' ');
-      }
 
       return {
+        segment,
         title: formattedTitle,
-        items: items.sort((a, b) => a.optionName.localeCompare(b.optionName)),
+        items: sortCustomerNotificationOptions(items, segment),
       };
     });
   }, [options, isCustomerCategory]);
@@ -124,10 +123,10 @@ const CustomerNotificationsPage: React.FC = () => {
     return [...options].sort((a, b) => a.optionName.localeCompare(b.optionName));
   }, [options, isCustomerCategory]);
 
-  const handleToggleSection = useCallback((sectionTitle: string) => {
+  const handleToggleSection = useCallback((segment: string) => {
     setExpandedSections((prev) => ({
       ...prev,
-      [sectionTitle]: !prev[sectionTitle],
+      [segment]: !prev[segment],
     }));
   }, []);
 
@@ -196,14 +195,13 @@ const CustomerNotificationsPage: React.FC = () => {
           groupedSections.length > 0 ? (
             <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5">
               {groupedSections.map((section, sectionIndex) => {
-                const sectionKey = section.title.toLowerCase().replace(/\s+/g, '');
-                const isExpanded = expandedSections[sectionKey] ?? true;
+                const isExpanded = expandedSections[section.segment] ?? true;
 
                 return (
-                  <div key={sectionIndex} className={sectionIndex < groupedSections.length - 1 ? 'mb-4 pb-4 border-b border-gray-200' : ''}>
+                  <div key={section.segment} className={sectionIndex < groupedSections.length - 1 ? 'mb-4 pb-4 border-b border-gray-200' : ''}>
                     <button
                       type="button"
-                      onClick={() => handleToggleSection(sectionKey)}
+                      onClick={() => handleToggleSection(section.segment)}
                       className="w-full flex items-center justify-between py-2 hover:bg-transparent transition-colors"
                     >
                       <h2 className="text-base font-semibold text-gray-900 flex-1 text-left">

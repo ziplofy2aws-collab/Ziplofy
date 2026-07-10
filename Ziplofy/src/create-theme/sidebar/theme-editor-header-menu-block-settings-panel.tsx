@@ -10,8 +10,13 @@ import {
 import { pickHeaderMenuBlockField } from './theme-editor-header-menu-block-panel.utils';
 import type { StoreMenu, StoreMenuItem } from '../../contexts/store-menu.context';
 import { StoreMenuSelectFieldRow } from './StoreMenuSelectFieldRow';
-import { ThemePaletteColorField } from '../settings/ThemePaletteColorField';
-import { ThemeDefaultColorField } from '../settings/ThemeDefaultColorField';
+
+const SCHEME_SWATCHES: Record<string, { bg: string; fg: string; accent: string }> = {
+  'scheme-1': { bg: '#ffffff', fg: '#121212', accent: '#e8e8e8' },
+  'scheme-2': { bg: '#f6f6f6', fg: '#121212', accent: '#dcdcdc' },
+  'scheme-3': { bg: '#1a1a1a', fg: '#ffffff', accent: '#333333' },
+  'scheme-4': { bg: '#f0ebe3', fg: '#2c2416', accent: '#c4a574' },
+};
 
 function numValue(values: Record<string, string | boolean>, field: EditorFieldDef, fallback: number): number {
   const raw = values[field.path];
@@ -66,6 +71,51 @@ function MenuInlineSelectFieldRow({
       {description ? (
         <p className="mt-1.5 text-[12px] leading-snug text-gray-500">{description}</p>
       ) : null}
+    </div>
+  );
+}
+
+function MenuColorSchemeFieldRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const current = fieldValueAsString(values, field) || 'scheme-1';
+  const swatch = SCHEME_SWATCHES[current] ?? SCHEME_SWATCHES['scheme-1'];
+
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
+      <span className="text-[13px] text-gray-800">{field.label}</span>
+      <div className="relative min-w-[140px]">
+        <div
+          className="pointer-events-none absolute left-2.5 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded border border-[#e1e1e1] bg-white px-1 py-0.5"
+          aria-hidden
+        >
+          <span className="text-[10px] font-semibold" style={{ color: swatch.fg }}>
+            Aa
+          </span>
+          <span className="h-3 w-3 rounded-sm" style={{ background: swatch.bg }} />
+          <span className="h-3 w-3 rounded-sm" style={{ background: swatch.accent }} />
+        </div>
+        <select
+          value={current}
+          onChange={(e) =>
+            onFieldChange(field.path, fieldTypeFromSchema(field.type), e.target.value)
+          }
+          className="w-full appearance-none rounded-lg border border-[#c9cccf] bg-white py-2 pl-[72px] pr-8 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+        >
+          {(field.options ?? []).map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDownIcon className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+      </div>
     </div>
   );
 }
@@ -193,23 +243,20 @@ function MenuToggleFieldRow({
   );
 }
 
-/** Shopify header menu block: Menu → Appearance → Typography → Submenu feature → Mobile layout. */
+/** Shopify header menu block: Menu → Color scheme → Typography → Submenu feature → Mobile layout. */
 export function HeaderMenuBlockSettingsPanel({
   fields,
   values,
-  colorPalette,
   onFieldChange,
   onStoreMenuSelect,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
-  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
   onStoreMenuSelect?: (menuFieldPath: string, menu: StoreMenu, items: StoreMenuItem[]) => void;
 }) {
   const menuField = pickHeaderMenuBlockField(fields, 'menu');
-  const backgroundColorField = pickHeaderMenuBlockField(fields, 'backgroundColor');
-  const textColorField = pickHeaderMenuBlockField(fields, 'textColor');
+  const colorSchemeField = pickHeaderMenuBlockField(fields, 'colorScheme');
   const topLevelSize = pickHeaderMenuBlockField(fields, 'topLevelSize');
   const submenuSize = pickHeaderMenuBlockField(fields, 'submenuSize');
   const fontField = pickHeaderMenuBlockField(fields, 'font');
@@ -233,45 +280,23 @@ export function HeaderMenuBlockSettingsPanel({
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
-      {menuField ? (
+      {menuField || colorSchemeField ? (
         <div className="space-y-1 px-1 py-3">
-          <StoreMenuSelectFieldRow
-            field={menuField}
-            values={values}
-            onFieldChange={onFieldChange}
-            onStoreMenuSelect={onStoreMenuSelect}
-          />
-        </div>
-      ) : null}
-
-      {backgroundColorField || textColorField ? (
-        <div className="px-1 py-3">
-          <h3 className="text-[13px] font-semibold text-gray-900">Appearance</h3>
-          <p className="mb-2 mt-1 text-[12px] leading-snug text-gray-500">
-            Affects submenus on desktop and the main menu on mobile.
-          </p>
-          <div className="space-y-0.5">
-            {backgroundColorField ? (
-              <ThemePaletteColorField
-                label={backgroundColorField.label}
-                path={backgroundColorField.path}
-                values={values}
-                colorPalette={colorPalette}
-                defaultPaletteIndex={0}
-                onFieldChange={onFieldChange}
-              />
-            ) : null}
-            {textColorField ? (
-              <ThemeDefaultColorField
-                label={textColorField.label}
-                path={textColorField.path}
-                values={values}
-                colorPalette={colorPalette}
-                defaultPaletteIndex={1}
-                onFieldChange={onFieldChange}
-              />
-            ) : null}
-          </div>
+          {menuField ? (
+            <StoreMenuSelectFieldRow
+              field={menuField}
+              values={values}
+              onFieldChange={onFieldChange}
+              onStoreMenuSelect={onStoreMenuSelect}
+            />
+          ) : null}
+          {colorSchemeField ? (
+            <MenuColorSchemeFieldRow
+              field={colorSchemeField}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          ) : null}
         </div>
       ) : null}
 

@@ -203,22 +203,6 @@ export const editing: CreateThemeEditing = {
       ]
     },
     {
-      "blockId": "logo",
-      "label": "Logo",
-      "settingsOrder": [
-        {
-          "key": "text",
-          "label": "Text",
-          "type": "text"
-        },
-        {
-          "key": "imageUrl",
-          "label": "Image",
-          "type": "text"
-        }
-      ]
-    },
-    {
       "blockId": "primary_button",
       "label": "Button",
       "settingsOrder": [

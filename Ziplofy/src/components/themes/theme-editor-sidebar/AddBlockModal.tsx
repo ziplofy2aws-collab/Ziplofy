@@ -26,7 +26,6 @@ import {
 import {
   filterBlocksForSection,
   getThemeCatalogSections,
-  resolveNestedAddBlockAllowlist,
   resolveSectionTypeForAddBlock,
   themeCatalogToBlockItems,
   usesShopifyFullBlockPicker,
@@ -807,17 +806,8 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
         );
       }
       if (addBlockNodeId) {
-        const nestedAllow = resolveNestedAddBlockAllowlist(addBlockNodeId);
-        if (nestedAllow) {
-          const set = new Set(nestedAllow);
-          items = items.filter((b) => set.has(b.id));
-        } else {
-          const st = resolveSectionTypeForAddBlock(editorSchema ?? null, addBlockNodeId);
-          items = filterBlocksForSection(themeBlockCatalog, st, items);
-          if (st === 'faq') {
-            items = items.filter((b) => b.id !== 'accordion-row');
-          }
-        }
+        const st = resolveSectionTypeForAddBlock(editorSchema ?? null, addBlockNodeId);
+        items = filterBlocksForSection(themeBlockCatalog, st, items);
       }
       return items;
     }

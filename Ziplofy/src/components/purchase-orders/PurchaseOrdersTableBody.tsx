@@ -12,41 +12,32 @@ interface PurchaseOrder {
 
 interface PurchaseOrdersTableBodyProps {
   purchaseOrders: PurchaseOrder[];
-  selectedIds: Set<string>;
-  onSelectRow: (purchaseOrderId: string, checked: boolean) => void;
   onRowClick: (purchaseOrderId: string) => void;
 }
 
 const PurchaseOrdersTableBody: React.FC<PurchaseOrdersTableBodyProps> = ({
   purchaseOrders,
-  selectedIds,
-  onSelectRow,
   onRowClick,
 }) => {
   return (
-    <tbody className="bg-white">
-      {purchaseOrders.length === 0 ? (
+    <tbody className="bg-white divide-y divide-gray-100">
+      {purchaseOrders.map((po) => (
+        <PurchaseOrderTableRow
+          key={po._id}
+          purchaseOrder={po}
+          onRowClick={onRowClick}
+        />
+      ))}
+      {purchaseOrders.length === 0 && (
         <tr>
-          <td colSpan={7} className="px-3 py-16 text-center">
-            <p className="text-[15px] font-semibold text-gray-900">No purchase orders found</p>
-            <p className="mt-1.5 text-[13px] font-normal text-gray-500">
-              Try changing the filters or search term
-            </p>
+          <td colSpan={6} className="px-4 py-12 text-center text-sm text-gray-500">
+            No purchase orders
           </td>
         </tr>
-      ) : (
-        purchaseOrders.map((po) => (
-          <PurchaseOrderTableRow
-            key={po._id}
-            purchaseOrder={po}
-            isSelected={selectedIds.has(po._id)}
-            onSelect={onSelectRow}
-            onRowClick={onRowClick}
-          />
-        ))
       )}
     </tbody>
   );
 };
 
 export default PurchaseOrdersTableBody;
+

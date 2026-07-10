@@ -12,7 +12,6 @@ import { SocketEventType } from '../types/event.types';
 import CustomizeDomainCard from './CustomizeDomainCard';
 import DashboardContent from './DashboardContent';
 import DashboardUpgradeBanner from './DashboardUpgradeBanner';
-import SupportDeveloperCard from './SupportDeveloperCard';
 import GettingStartedPage from './GettingStartedPage';
 import OnboardingTour from './OnboardingTour';
 
@@ -136,7 +135,8 @@ export default function HomePage() {
     console.log('Developer email:', developerEmail);
 
     // Extract username from email (part before @)
-    const emailUsername = developerEmail ? developerEmail.split("@")[0] : 'gibberish';
+    // const emailUsername = developerEmail.split("@")[0];
+    const emailUsername = 'gibberish';
     console.log('Extracted username:', emailUsername);
 
     // Construct Calendly URL using the email username
@@ -256,12 +256,6 @@ export default function HomePage() {
 
           <div className="mb-8 space-y-6">
             <DashboardUpgradeBanner />
-            <SupportDeveloperCard
-              assignedDeveloper={loggedInUser?.assignedSupportDeveloperId && typeof loggedInUser.assignedSupportDeveloperId === 'object' ? loggedInUser.assignedSupportDeveloperId : null}
-              onHireClick={handleHireDeveloperClick}
-              onScheduleClick={handleScheduleMeetingClick}
-              onEndMeetingClick={handleEndMeetingClick}
-            />
 
             {/* Tabs — pill switcher */}
             <div

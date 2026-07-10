@@ -86,25 +86,22 @@ export function IconsWithTextSection({
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center',
-    gap: 10,
-    color: scheme.color,
+    gap: 12,
   };
 
   const headingStyle: CSSProperties = {
     margin: 0,
-    fontSize: 17,
+    fontSize: '1.0625rem',
     fontWeight: 700,
     lineHeight: 1.3,
     letterSpacing: '-0.01em',
-    color: scheme.color,
   };
 
   const textStyle: CSSProperties = {
     margin: 0,
-    fontSize: 15,
-    fontWeight: 400,
+    fontSize: '0.9375rem',
     lineHeight: 1.5,
-    color: scheme.color,
+    color: scheme.muted,
     maxWidth: 280,
   };
 

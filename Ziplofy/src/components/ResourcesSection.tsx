@@ -9,10 +9,9 @@ import { useNavigate } from 'react-router-dom';
 
 interface ResourcesSectionProps {
   onOpenShortcutsModal: () => void;
-  onHireDeveloper?: () => void;
 }
 
-export default function ResourcesSection({ onOpenShortcutsModal, onHireDeveloper }: ResourcesSectionProps) {
+export default function ResourcesSection({ onOpenShortcutsModal }: ResourcesSectionProps) {
   const navigate = useNavigate();
 
   return (
@@ -48,10 +47,7 @@ export default function ResourcesSection({ onOpenShortcutsModal, onHireDeveloper
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900">Hire a Ziplofy Partner</p>
           </div>
-          <button
-            onClick={onHireDeveloper}
-            className="inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
-          >
+          <button className="inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-colors">
             Hire
           </button>
         </div>

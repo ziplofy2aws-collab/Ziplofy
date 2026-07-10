@@ -1,9 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowPathIcon, PlusIcon } from '@heroicons/react/24/outline';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TransfersPageFilters, { type TransferFilterTab } from '../components/transfers/TransfersPageFilters';
-import TransfersPageHeader from '../components/transfers/TransfersPageHeader';
-import TransfersTable from '../components/transfers/TransfersTable';
-import { transferPrimaryButtonClass } from '../components/transfers/transfer-ui.util';
+import TransfersPageHeader from '../components/TransfersPageHeader';
 import { useStore } from '../contexts/store.context';
 import { useTransfers } from '../contexts/transfer.context';
 
@@ -11,8 +9,6 @@ const TransfersPage: React.FC = () => {
   const navigate = useNavigate();
   const { fetchTransfersByStoreId, transfers, loading } = useTransfers();
   const { activeStoreId } = useStore();
-  const [activeTab, setActiveTab] = useState<TransferFilterTab>('All');
-  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (activeStoreId) {
@@ -20,84 +16,133 @@ const TransfersPage: React.FC = () => {
     }
   }, [activeStoreId, fetchTransfersByStoreId]);
 
-  const handleRowClick = useCallback(
-    (transferId: string) => {
-      navigate(`/products/transfers/${transferId}`);
-    },
-    [navigate]
-  );
+  const handleRowClick = useCallback((transferId: string) => {
+    navigate(`/products/transfers/${transferId}`);
+  }, [navigate]);
 
   const handleCreateTransfer = useCallback(() => {
     navigate('/products/transfers/new');
   }, [navigate]);
 
-  const filteredTransfers = useMemo(() => {
-    const list = transfers || [];
-    const byTab = list.filter((transfer) => {
-      if (activeTab === 'All') return true;
-      if (activeTab === 'Draft') return transfer.status === 'draft';
-      if (activeTab === 'In progress') {
-        return transfer.status === 'in_progress' || transfer.status === 'ready_to_ship';
-      }
-      return transfer.status === 'transferred';
-    });
-
-    const query = search.trim().toLowerCase();
-    if (!query) return byTab;
-
-    return byTab.filter((transfer) => {
-      return (
-        transfer._id.toLowerCase().includes(query) ||
-        (transfer.referenceName || '').toLowerCase().includes(query) ||
-        (transfer.originLocationId?.name || '').toLowerCase().includes(query) ||
-        (transfer.destinationLocationId?.name || '').toLowerCase().includes(query) ||
-        transfer.status.toLowerCase().includes(query) ||
-        (transfer.tags || []).some((tag) => tag.name.toLowerCase().includes(query))
-      );
-    });
-  }, [transfers, activeTab, search]);
-
-  const hasTransfers = (transfers || []).length > 0;
+  const getStatusStyles = useCallback((status: string) => {
+    switch (status) {
+      case 'transferred':
+        return 'bg-green-50 text-green-700 border-green-200/80';
+      case 'in_progress':
+        return 'bg-blue-50 text-blue-700 border-blue-200/80';
+      case 'ready_to_ship':
+        return 'bg-amber-50 text-amber-700 border-amber-200/80';
+      default:
+        return 'bg-gray-100 text-gray-600 border-gray-200/80';
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
-        <TransfersPageHeader />
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+        <TransfersPageHeader onCreateTransfer={handleCreateTransfer} />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-          <TransfersPageFilters
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            search={search}
-            onSearchChange={setSearch}
-          />
+        {loading && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm flex justify-center items-center py-16">
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-blue-600"></div>
+          </div>
+        )}
 
-          {loading ? (
-            <div className="flex min-h-[280px] items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-            </div>
-          ) : !hasTransfers ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Create your first transfer</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
-                Move products between locations and keep inventory organized
-              </p>
-              <button type="button" onClick={handleCreateTransfer} className={`mt-4 ${transferPrimaryButtonClass}`}>
-                Create transfer
+        {!loading && transfers.length === 0 && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm min-h-[320px] flex justify-center items-center p-12">
+            <div className="flex flex-col justify-center items-center text-center gap-4 max-w-md">
+              <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
+                <ArrowPathIcon className="w-7 h-7 text-blue-600" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <h2 className="text-lg font-semibold text-gray-900">No transfers yet</h2>
+                <p className="text-sm text-gray-500">
+                  Start by creating your first transfer to move products between locations and keep your inventory organized.
+                </p>
+              </div>
+              <button
+                onClick={handleCreateTransfer}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-semibold transition-colors shadow-sm"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Create Transfer
               </button>
             </div>
-          ) : (
-            <TransfersTable transfers={filteredTransfers} onRowClick={handleRowClick} />
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-gray-600 hover:text-gray-800">
-              Learn more about transfers
-            </a>
-          </p>
-        </div>
+        {!loading && transfers.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-100">
+                <thead className="bg-gray-50/80">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Transfer ID</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Reference</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Origin</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Destination</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Transfer Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Tags</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Created</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Updated</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {transfers.map((t) => (
+                    <tr
+                      key={t._id}
+                      onClick={() => handleRowClick(t._id)}
+                      className="cursor-pointer hover:bg-blue-50/50 transition-colors"
+                    >
+                      <td className="px-4 py-3 font-medium text-gray-900 font-mono text-sm">
+                        #{t._id.slice(-8)}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{t.referenceName || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{t.originLocationId?.name || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{t.destinationLocationId?.name || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {t.transferDate ? new Date(t.transferDate).toLocaleDateString() : '-'}
+                      </td>
+                      <td className="px-4 py-3">
+                        {t.tags && t.tags.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {t.tags.slice(0, 2).map(tag => (
+                              <span
+                                key={tag._id}
+                                className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-lg bg-blue-50 text-blue-700 border border-blue-200/60"
+                              >
+                                {tag.name}
+                              </span>
+                            ))}
+                            {t.tags.length > 2 && (
+                              <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-lg bg-gray-100 text-gray-600">
+                                +{t.tags.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-gray-500">No tags</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-lg border capitalize ${getStatusStyles(t.status)}`}>
+                          {t.status.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {new Date(t.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">
+                        {t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

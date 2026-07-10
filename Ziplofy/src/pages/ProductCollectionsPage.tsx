@@ -1,19 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import CollectionsPageFilters, {
-  type CollectionFilterTab,
-} from "../components/collections/CollectionsPageFilters";
-import CollectionsPageHeader from "../components/collections/CollectionsPageHeader";
-import CollectionsTable from "../components/collections/CollectionsTable";
-import { useCollections } from "../contexts/collection.context";
-import { useStore } from "../contexts/store.context";
+import { PlusIcon, RectangleStackIcon } from '@heroicons/react/24/outline';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import CollectionsTable from '../components/collections/CollectionsTable';
+import { useCollections } from '../contexts/collection.context';
+import { useStore } from '../contexts/store.context';
+
+type SortOrder = 'asc' | 'desc';
 
 const ProductCollectionsPage: React.FC = () => {
   const { collections, fetchCollectionsByStoreId, loading } = useCollections();
   const { activeStoreId } = useStore();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<CollectionFilterTab>("All");
-  const [search, setSearch] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
   useEffect(() => {
     if (activeStoreId) {
@@ -22,7 +20,7 @@ const ProductCollectionsPage: React.FC = () => {
   }, [activeStoreId, fetchCollectionsByStoreId]);
 
   const handleAddCollection = useCallback(() => {
-    navigate("/products/collections/new");
+    navigate('/products/collections/new');
   }, [navigate]);
 
   const handleCollectionClick = useCallback(
@@ -32,78 +30,77 @@ const ProductCollectionsPage: React.FC = () => {
     [navigate]
   );
 
-  const filteredCollections = useMemo(() => {
-    const list = collections || [];
-    const byTab = list.filter((collection) => {
-      if (activeTab === "All") return true;
-      return activeTab === "Published"
-        ? collection.status === "published"
-        : collection.status === "draft";
+  const sortedCollections = useMemo(() => {
+    const sorted = [...collections].sort((a, b) => {
+      const dateA = new Date(a.updatedAt).getTime();
+      const dateB = new Date(b.updatedAt).getTime();
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
     });
+    return sorted;
+  }, [collections, sortOrder]);
 
-    const query = search.trim().toLowerCase();
-    if (!query) return byTab;
-
-    return byTab.filter((collection) => {
-      return (
-        collection.title.toLowerCase().includes(query) ||
-        collection.pageTitle.toLowerCase().includes(query) ||
-        collection.urlHandle.toLowerCase().includes(query)
-      );
-    });
-  }, [collections, activeTab, search]);
-
-  const hasCollections = (collections || []).length > 0;
+  const handleSortToggle = useCallback(() => {
+    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+  }, []);
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
-        <CollectionsPageHeader />
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+        {/* Page Header */}
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <div className="pl-3 border-l-4 border-blue-500/60">
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Collections</h1>
+            <p className="text-sm text-gray-500 mt-0.5">Organize your products into collections</p>
+          </div>
+          <button
+            onClick={handleAddCollection}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-semibold transition-colors shadow-sm"
+          >
+            <PlusIcon className="w-4 h-4" />
+            Add Collection
+          </button>
+        </div>
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-          <CollectionsPageFilters
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            search={search}
-            onSearchChange={setSearch}
-          />
+        {/* Loading State */}
+        {loading && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm flex justify-center items-center py-16">
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-blue-600"></div>
+          </div>
+        )}
 
-          {loading ? (
-            <div className="flex min-h-[280px] items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-            </div>
-          ) : !hasCollections ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Add your collections</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
-                Group products into collections your customers can browse
-              </p>
+        {/* Empty State */}
+        {!loading && collections.length === 0 && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm min-h-[320px] flex justify-center items-center p-12">
+            <div className="flex flex-col justify-center items-center text-center gap-4 max-w-md">
+              <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
+                <RectangleStackIcon className="w-7 h-7 text-blue-600" />
+              </div>
+              <p className="text-sm text-gray-500">No collections found for this store.</p>
               <button
-                type="button"
                 onClick={handleAddCollection}
-                className="mt-4 inline-flex items-center rounded-lg bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-gray-800"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-semibold transition-colors shadow-sm"
               >
-                Add collection
+                <PlusIcon className="w-4 h-4" />
+                Add Collection
               </button>
             </div>
-          ) : (
-            <CollectionsTable
-              collections={filteredCollections}
-              onCollectionClick={handleCollectionClick}
-            />
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
-              Learn more about collections
-            </a>
-          </p>
-        </div>
+        {/* Collections Table */}
+        {!loading && collections.length > 0 && (
+          <CollectionsTable
+            collections={sortedCollections}
+            onCollectionClick={handleCollectionClick}
+            sortOrder={sortOrder}
+            onSortToggle={handleSortToggle}
+          />
+        )}
       </div>
     </div>
   );
 };
 
 export default ProductCollectionsPage;
+
+

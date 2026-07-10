@@ -83,7 +83,7 @@ export const StorePrivacyPolicyProvider: React.FC<{ children: React.ReactNode }>
       const res = await axiosi.put<ApiResponse<StorePrivacyPolicy>>(`/store-privacy-policy/${id}`, payload);
       const { success, data, message } = res.data;
       if (!success) throw new Error(message || 'Failed to update privacy policy');
-      setPolicy(data || null);
+      setPolicy(data);
       return data;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to update privacy policy';

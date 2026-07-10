@@ -14,10 +14,9 @@ function makeLink() {
       collectionHandle: '',
       href: '/collections/all',
       imageUrl: '',
-      imageHeight: 'medium',
-      imageRatio: 'portrait',
+      imageHeight: 'large',
+      imageRatio: 'square',
       imageCornerRadius: 0,
-      showCount: false,
     },
   };
 }
@@ -45,8 +44,18 @@ export function applyCollectionLinksSpotlightPreset(section: Record<string, unkn
   const order = Array.isArray(section.block_order) ? [...(section.block_order as string[])] : [];
 
   if (!order.length) {
-    section.blocks = { link_1: makeLink() };
-    section.block_order = ['link_1'];
+    if (isText) {
+      section.blocks = {
+        link_1: makeLink(),
+        link_2: makeLink(),
+        link_3: makeLink(),
+        link_4: makeLink(),
+      };
+      section.block_order = ['link_1', 'link_2', 'link_3', 'link_4'];
+    } else {
+      section.blocks = { link_1: makeLink() };
+      section.block_order = ['link_1'];
+    }
     return;
   }
 

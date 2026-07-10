@@ -2,11 +2,7 @@ import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../lib/config';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
-import {
-  readTextMarqueeLayout,
-  scopedTextMarqueeCss,
-  textMarqueeKeyframes,
-} from '../lib/textMarqueeStyles';
+import { readTextMarqueeLayout, scopedTextMarqueeCss } from '../lib/textMarqueeStyles';
 import { layout, useThemeColors } from '../tokens';
 
 type Props = {
@@ -14,41 +10,6 @@ type Props = {
   templateId?: string;
   placement?: 'layout' | 'template';
 };
-
-const DEFAULT_TEXT = 'We make things that work better and last longer.';
-const PHRASE_COPIES = 6;
-
-function MarqueePhrases({
-  text,
-  gap,
-  textPath,
-  ariaHidden,
-}: {
-  text: string;
-  gap: number;
-  textPath: string;
-  ariaHidden?: boolean;
-}) {
-  return (
-    <>
-      {Array.from({ length: PHRASE_COPIES }, (_, index) => (
-        <span
-          key={index}
-          style={{ flexShrink: 0, paddingRight: gap }}
-          aria-hidden={ariaHidden && index > 0 ? true : undefined}
-        >
-          {index === 0 && !ariaHidden ? (
-            <EditorField fieldPath={textPath} label="Text">
-              {text}
-            </EditorField>
-          ) : (
-            text
-          )}
-        </span>
-      ))}
-    </>
-  );
-}
 
 export function TextMarqueeSection({
   sectionId = 'text_marquee_section',
@@ -67,9 +28,11 @@ export function TextMarqueeSection({
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
 
   const style = useMemo(() => readTextMarqueeLayout(config, settingsBase), [config, settingsBase]);
-  const text = cfgString(config, `${settingsBase}.text`, DEFAULT_TEXT) || DEFAULT_TEXT;
+
+  const text = cfgString(config, `${settingsBase}.text`);
   const scopeClass = `ziplofy-text-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
-  const textPath = `${settingsBase}.text`;
+  const animName =
+    style.motionDirection === 'reverse' ? 'ziplofy-marquee-reverse' : 'ziplofy-marquee-forward';
 
   const shell: CSSProperties = {
     position: 'relative',
@@ -86,43 +49,50 @@ export function TextMarqueeSection({
   const track: CSSProperties = {
     display: 'flex',
     width: 'max-content',
+    animation: `${animName} 28s linear infinite`,
     gap: style.layoutGap,
     fontFamily: fontBody,
     fontSize: '1.125rem',
     fontWeight: 500,
-    lineHeight: 1.4,
     letterSpacing: '-0.01em',
     whiteSpace: 'nowrap',
-    color: style.scheme.color,
   };
 
-  const viewport: CSSProperties = {
-    overflow: 'hidden',
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    minHeight: 32,
+  const phraseStyle: CSSProperties = {
+    flexShrink: 0,
+    paddingRight: style.layoutGap,
   };
 
-  const customCss = scopedTextMarqueeCss(sectionId, style.customCss);
-  const keyframes = textMarqueeKeyframes(scopeClass, style.motionDirection);
+  const phrase = (
+    <span style={phraseStyle}>
+      <EditorField nodeId={editorNodeId} fieldPath={`${settingsBase}.text`} label="Text">
+        {text}
+      </EditorField>
+    </span>
+  );
 
   return (
-    <EditorSection sectionId={sectionId} editorNodeId={editorNodeId} label="Marquee">
+    <EditorSection nodeId={editorNodeId} label="Marquee">
       <section className={scopeClass} style={shell} data-section-type="text-marquee">
         <style>
-          {keyframes}
-          {customCss ? customCss : ''}
+          {`
+            @keyframes ziplofy-marquee-forward {
+              from { transform: translateX(0); }
+              to { transform: translateX(-50%); }
+            }
+            @keyframes ziplofy-marquee-reverse {
+              from { transform: translateX(-50%); }
+              to { transform: translateX(0); }
+            }
+            ${scopedTextMarqueeCss(sectionId, style.customCss)}
+          `}
         </style>
-        <div className={`${scopeClass}__viewport`} style={viewport}>
+        <div className={`${scopeClass}__viewport`} style={{ overflow: 'hidden', width: '100%' }}>
           <div className={`${scopeClass}__track`} style={track}>
-            <MarqueePhrases text={text} gap={style.layoutGap} textPath={textPath} />
-            <MarqueePhrases
-              text={text}
-              gap={style.layoutGap}
-              textPath={textPath}
-              ariaHidden
-            />
+            {phrase}
+            <span style={phraseStyle} aria-hidden>
+              {text}
+            </span>
           </div>
         </div>
       </section>

@@ -1,28 +1,5 @@
 import React, { useCallback } from "react";
 
-/** Must match ProductVariant schema enum in Ziplofy3b. */
-export const PRODUCT_UNIT_PRICE_METRICS = {
-  weight: [
-    { value: "milligram", label: "Milligram" },
-    { value: "gram", label: "Gram" },
-    { value: "kilogram", label: "Kilogram" },
-  ],
-  volume: [
-    { value: "milliliter", label: "Milliliter" },
-    { value: "centiliter", label: "Centiliter" },
-    { value: "liter", label: "Liter" },
-    { value: "cubic_meter", label: "Cubic meter" },
-  ],
-  size: [
-    { value: "centimeter", label: "Centimeter" },
-    { value: "meter", label: "Meter" },
-  ],
-  area: [{ value: "square_meter", label: "Square meter" }],
-  "per item": [{ value: "item", label: "Item" }],
-} as const;
-
-export const ALL_PRODUCT_UNIT_PRICE_METRICS = Object.values(PRODUCT_UNIT_PRICE_METRICS).flat();
-
 interface ProductUnitPriceSectionProps {
   unitPriceTotalAmount: string;
   unitPriceBaseMeasure: string;
@@ -33,6 +10,14 @@ interface ProductUnitPriceSectionProps {
   onSelectedUnitChange: (value: string) => void;
   onSelectedBaseMeasureUnitChange: (value: string) => void;
 }
+
+const unitCategories = {
+  weight: ["milligram", "gram", "kilogram"],
+  volume: ["milliliter", "centiliter", "liter", "cubic meter"],
+  size: ["millimeter", "centimeter", "meter"],
+  area: ["square meter"],
+  "per item": ["item"],
+};
 
 const ProductUnitPriceSection: React.FC<ProductUnitPriceSectionProps> = ({
   unitPriceTotalAmount,
@@ -46,8 +31,8 @@ const ProductUnitPriceSection: React.FC<ProductUnitPriceSectionProps> = ({
 }) => {
   const getAvailableBaseMeasureUnits = useCallback(() => {
     if (!selectedUnit) return [];
-    for (const units of Object.values(PRODUCT_UNIT_PRICE_METRICS)) {
-      if (units.some((unit) => unit.value === selectedUnit)) {
+    for (const [, units] of Object.entries(unitCategories)) {
+      if (units.includes(selectedUnit)) {
         return units;
       }
     }
@@ -94,14 +79,14 @@ const ProductUnitPriceSection: React.FC<ProductUnitPriceSectionProps> = ({
             className="min-w-28 shrink-0 rounded-lg border border-gray-200 bg-white px-2 py-2 text-sm text-gray-800 transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400"
           >
             <option value="">Unit</option>
-            {Object.entries(PRODUCT_UNIT_PRICE_METRICS).map(([category, units]) => (
+            {Object.entries(unitCategories).map(([category, units]) => (
               <optgroup
                 key={category}
                 label={category.charAt(0).toUpperCase() + category.slice(1)}
               >
                 {units.map((unit) => (
-                  <option key={unit.value} value={unit.value}>
-                    {unit.label}
+                  <option key={unit} value={unit}>
+                    {unit}
                   </option>
                 ))}
               </optgroup>
@@ -132,8 +117,8 @@ const ProductUnitPriceSection: React.FC<ProductUnitPriceSectionProps> = ({
               {!selectedUnit ? "--" : "Per unit"}
             </option>
             {getAvailableBaseMeasureUnits().map((unit) => (
-              <option key={unit.value} value={unit.value}>
-                {unit.label}
+              <option key={unit} value={unit}>
+                {unit}
               </option>
             ))}
           </select>

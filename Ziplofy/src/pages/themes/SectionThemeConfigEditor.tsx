@@ -49,7 +49,7 @@ import {
   findSidebarNode,
   resolveAddBlockSectionLabel,
   settingsNodeForSelection,
-} from '../../create-theme/sidebar/create-theme-sidebar.tree';
+} from '../../components/themes/theme-editor-sidebar/theme-editor-sidebar.tree';
 import { announcementBlockNodeIdFromSelection } from '../../components/themes/theme-editor-sidebar/theme-editor-announcement-block-panel.utils';
 import { axiosi } from '../../config/axios.config';
 import {
@@ -504,15 +504,8 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   };
 
   const settingsNode = useMemo(
-    () =>
-      settingsNodeForSelection(
-        selectedNode,
-        activeTree,
-        editorSchema,
-        values,
-        livePreviewConfig
-      ),
-    [selectedNode, activeTree, editorSchema, values, livePreviewConfig]
+    () => settingsNodeForSelection(selectedNode, activeTree, editorSchema),
+    [selectedNode, activeTree, editorSchema]
   );
 
   const closeSettings = useCallback(() => {
@@ -932,7 +925,6 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           error={error}
           settingsNode={settingsNode}
           settingsValues={values}
-          themeConfig={livePreviewConfig}
           onSettingsFieldChange={handleFieldChange}
           onCloseSettings={closeSettings}
           onRemoveSettingsSection={handleRemoveSettingsSection}

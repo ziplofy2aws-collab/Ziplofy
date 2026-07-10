@@ -55,20 +55,6 @@
   animation: preview-sync-progress 1.15s ease-out forwards;
 }
 
-.checkout-preview-inspector-on [data-checkout-selectable='true'] {
-  cursor: pointer;
-}
-
-.checkout-preview-inspector-on [data-checkout-selectable='true']:hover {
-  outline: 2px solid rgba(0, 91, 211, 0.4);
-  outline-offset: -2px;
-}
-
-.checkout-preview-scroll {
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-}
-
 .create-theme-sidebar-scroll {
   contain: layout style;
   scroll-behavior: smooth;

@@ -1,23 +1,9 @@
-import { RectangleStackIcon } from '@heroicons/react/24/outline';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import PurchaseOrderFormHeader from '../components/purchase-orders/PurchaseOrderFormHeader';
-import {
-  formatPurchaseOrderLabel,
-  PO_FORM_APPEARANCE,
-  poInputClass,
-  poTableCellClass,
-  poTableCellRightClass,
-  poTableHeadClass,
-  poTableHeadRightClass,
-} from '../components/purchase-orders/purchase-order-ui.util';
-import {
-  productFormCardClass,
-  productFormPageClass,
-  productFormSectionTitleClass,
-} from '../components/products/product-form-appearance';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { usePurchaseOrderEntries } from '../contexts/purchase-order-entry.context';
 import { usePurchaseOrders } from '../contexts/purchase-order.context';
+
 export default function PurchaseOrderReceivePage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,171 +18,152 @@ export default function PurchaseOrderReceivePage() {
       fetchEntriesByPurchaseOrderId(id).catch(() => {});
       return () => clearEntries();
     }
-  }, [id, fetchEntriesByPurchaseOrderId, clearEntries]);
+  }, [id]);
 
-  const rows = useMemo(
-    () =>
-      entries.map((entry) => {
-        const variant = entry.variantId as any;
-        const productTitle = variant?.productId?.title || '—';
-        const optionText = variant?.optionValues ? Object.values(variant.optionValues).join(' / ') : '';
-        const sku = variant?.sku || 'No SKU';
-        const imageUrl = variant?.images?.[0] || variant?.productId?.imageUrls?.[0];
-        return { entry, productTitle, optionText, sku, imageUrl };
-      }),
-    [entries]
-  );
+  const rows = useMemo(() => entries.map(e => {
+    const v: any = e.variantId as any;
+    const productTitle = v?.productId?.title || '-';
+    const optionText = v?.optionValues ? Object.values(v.optionValues).join(' / ') : '';
+    const rsku = v?.sku || '-';
+    return { e, productTitle, optionText, rsku };
+  }), [entries]);
 
-  const handleAcceptChange =
-    (entryId: string, remaining: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = Number(event.target.value || 0);
-      const clampedAccept = Math.max(0, Math.min(raw, remaining));
-      const currentReject = rejectById[entryId] ?? 0;
-      const maxReject = Math.max(0, remaining - clampedAccept);
-      const nextReject = Math.min(currentReject, maxReject);
-      setAcceptById((prev) => ({ ...prev, [entryId]: clampedAccept }));
-      if (nextReject !== currentReject) {
-        setRejectById((prev) => ({ ...prev, [entryId]: nextReject }));
-      }
-    };
-
-  const handleRejectChange =
-    (entryId: string, remaining: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = Number(event.target.value || 0);
-      const currentAccept = acceptById[entryId] ?? 0;
-      const maxReject = Math.max(0, remaining - currentAccept);
-      const clampedReject = Math.max(0, Math.min(raw, maxReject));
-      setRejectById((prev) => ({ ...prev, [entryId]: clampedReject }));
-    };
-
-  const handleSave = async () => {
-    if (!id) return;
-    const payload = entries.map((entry) => ({
-      entryId: entry._id,
-      accept: Number(acceptById[entry._id] ?? 0) || 0,
-      reject: Number(rejectById[entry._id] ?? 0) || 0,
-    }));
-    try {
-      await receiveInventory(id, payload);
-      navigate(`/products/purchase-orders/${id}`);
-    } catch {
-      // errors handled in context
-    }
+  const handleAcceptChange = (entryId: string, remaining: number) => (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = Number(ev.target.value || 0);
+    const clampedAccept = Math.max(0, Math.min(raw, remaining));
+    const currentReject = rejectById[entryId] ?? 0;
+    const maxReject = Math.max(0, remaining - clampedAccept);
+    const nextReject = Math.min(currentReject, maxReject);
+    setAcceptById(prev => ({ ...prev, [entryId]: clampedAccept }));
+    if (nextReject !== currentReject) setRejectById(prev => ({ ...prev, [entryId]: nextReject }));
+  };
+  const handleRejectChange = (entryId: string, remaining: number) => (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = Number(ev.target.value || 0);
+    const currentAccept = acceptById[entryId] ?? 0;
+    const maxReject = Math.max(0, remaining - currentAccept);
+    const clampedReject = Math.max(0, Math.min(raw, maxReject));
+    setRejectById(prev => ({ ...prev, [entryId]: clampedReject }));
   };
 
   return (
-    <div className={productFormPageClass(PO_FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
-        <PurchaseOrderFormHeader
-          title={`Receive ${id ? formatPurchaseOrderLabel(id) : 'inventory'}`}
-          backLabel="Back to purchase order"
-          onBack={() => navigate(`/products/purchase-orders/${id}`)}
-          onSubmit={() => void handleSave()}
-          submitLabel="Save"
-        />
-
-        {error ? (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
-            <p className="text-sm text-red-600">{error}</p>
-          </div>
-        ) : null}
-
-        <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
-          <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Incoming inventory</h2>
-
-          {loading ? (
-            <div className="flex min-h-[240px] items-center justify-center py-12">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
+    <div className="min-h-screen bg-page-background-color">
+        {/* Header */}
+        <div className="border-b border-gray-200 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => navigate(`/products/purchase-orders/${id}`)}
+                className="p-1 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <ArrowLeftIcon className="w-4 h-4" />
+              </button>
+              <h1 className="text-xl font-medium text-gray-900">Receive Inventory</h1>
             </div>
-          ) : (
-            <div className="mt-3 overflow-hidden rounded-lg border border-gray-100">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[920px] text-left">
-                  <thead>
-                    <tr className="border-b border-gray-100 bg-gray-50/50">
-                      <th className={poTableHeadClass}>Product</th>
-                      <th className={poTableHeadClass}>Supplier SKU</th>
-                      <th className={poTableHeadClass}>SKU</th>
-                      <th className={poTableHeadRightClass}>Ordered</th>
-                      <th className={poTableHeadRightClass}>Received</th>
-                      <th className={poTableHeadRightClass}>Accept</th>
-                      <th className={poTableHeadRightClass}>Reject</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white">
-                    {rows.length === 0 ? (
-                      <tr>
-                        <td colSpan={7} className={`${poTableCellClass} py-12 text-center text-gray-500`}>
-                          No entries
-                        </td>
-                      </tr>
-                    ) : (
-                      rows.map(({ entry, productTitle, optionText, sku, imageUrl }) => {
-                        const remaining = Math.max(
-                          0,
-                          (entry.quantityOrdered || 0) - (entry.quantityReceived || 0)
-                        );
-                        const currentAccept = acceptById[entry._id] ?? 0;
-                        const currentReject = rejectById[entry._id] ?? 0;
-                        const acceptMax = Math.max(0, remaining - currentReject);
-                        const rejectMax = Math.max(0, remaining - currentAccept);
+            <button
+              onClick={async () => {
+                if (!id) return;
+                const payload = entries.map(e => ({
+                  entryId: e._id,
+                  accept: Number(acceptById[e._id] ?? 0) || 0,
+                  reject: Number(rejectById[e._id] ?? 0) || 0,
+                }));
+                try {
+                  await receiveInventory(id, payload);
+                  navigate(`/products/purchase-orders/${id}`);
+                } catch {
+                  // errors are handled in context; stay on page
+                }
+              }}
+              className="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+            >
+              Save
+            </button>
+          </div>
+        </div>
 
-                        return (
-                          <tr key={entry._id} className="border-b border-gray-100">
-                            <td className={poTableCellClass}>
-                              <div className="flex min-w-[200px] items-center gap-3">
-                                <div className="h-9 w-9 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
-                                  {imageUrl ? (
-                                    <img src={imageUrl} alt="" className="h-full w-full object-cover" />
-                                  ) : (
-                                    <div className="flex h-full w-full items-center justify-center bg-gray-100">
-                                      <RectangleStackIcon className="h-4 w-4 text-gray-400" />
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="truncate text-[13px] font-medium text-gray-900">{productTitle}</p>
-                                  {optionText ? (
-                                    <p className="truncate text-[12px] text-gray-500">{optionText}</p>
-                                  ) : null}
-                                </div>
-                              </div>
-                            </td>
-                            <td className={poTableCellClass}>{entry.supplierSku || '—'}</td>
-                            <td className={poTableCellClass}>{sku}</td>
-                            <td className={poTableCellRightClass}>{entry.quantityOrdered}</td>
-                            <td className={poTableCellRightClass}>{entry.quantityReceived}</td>
-                            <td className={poTableCellRightClass}>
-                              <input
-                                type="number"
-                                min={0}
-                                max={acceptMax}
-                                value={currentAccept}
-                                onChange={handleAcceptChange(entry._id, remaining)}
-                                className={`${poInputClass} w-24 text-right`}
-                              />
-                            </td>
-                            <td className={poTableCellRightClass}>
-                              <input
-                                type="number"
-                                min={0}
-                                max={rejectMax}
-                                value={currentReject}
-                                onChange={handleRejectChange(entry._id, remaining)}
-                                className={`${poInputClass} w-24 text-right`}
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          {error && (
+            <div className="mb-4 px-3 py-2 border border-red-200 bg-red-50">
+              <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
-        </section>
-      </div>
+
+          {loading && (
+            <div className="py-12 text-center">
+              <div className="animate-spin rounded-full w-4 h-4 border-2 border-gray-300 border-t-gray-900 mx-auto"></div>
+            </div>
+          )}
+
+          {!loading && (
+            <div className="border border-gray-200 p-4">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-white">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Product</th>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Supplier SKU</th>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">RSKU</th>
+                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Ordered</th>
+                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Received</th>
+                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Accept</th>
+                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Reject</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {rows.map(({ e, productTitle, optionText, rsku }) => {
+                    const remaining = Math.max(0, (e.quantityOrdered || 0) - (e.quantityReceived || 0));
+                    const currentAccept = acceptById[e._id] ?? 0;
+                    const currentReject = rejectById[e._id] ?? 0;
+                    const acceptMax = Math.max(0, remaining - currentReject);
+                    const rejectMax = Math.max(0, remaining - currentAccept);
+                    return (
+                      <tr key={e._id} className="hover:bg-gray-50">
+                        <td className="px-4 py-2">
+                          <div className="space-y-0.5">
+                            <p className="text-sm font-medium text-gray-900">{productTitle}</p>
+                            {optionText && <p className="text-xs text-gray-600">{optionText}</p>}
+                            <p className="text-xs text-gray-600">SKU: {rsku}</p>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{e.supplierSku || '-'}</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{rsku}</td>
+                        <td className="px-4 py-2 text-sm text-gray-900 text-right">{e.quantityOrdered}</td>
+                        <td className="px-4 py-2 text-sm text-gray-900 text-right">{e.quantityReceived}</td>
+                        <td className="px-4 py-2 text-right">
+                          <input
+                            type="number"
+                            min={0}
+                            max={acceptMax}
+                            value={currentAccept}
+                            onChange={handleAcceptChange(e._id, remaining)}
+                            className="w-[140px] px-2 py-1 text-sm border border-gray-200 text-right focus:outline-none focus:ring-1 focus:ring-gray-400"
+                          />
+                        </td>
+                        <td className="px-4 py-2 text-right">
+                          <input
+                            type="number"
+                            min={0}
+                            max={rejectMax}
+                            value={currentReject}
+                            onChange={handleRejectChange(e._id, remaining)}
+                            className="w-[140px] px-2 py-1 text-sm border border-gray-200 text-right focus:outline-none focus:ring-1 focus:ring-gray-400"
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {!loading && rows.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-600">No entries</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          )}
+        </div>
     </div>
   );
 }

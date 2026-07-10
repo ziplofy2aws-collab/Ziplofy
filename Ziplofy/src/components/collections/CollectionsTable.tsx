@@ -1,20 +1,27 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import type { Collection } from "../../contexts/collection.context";
-import CollectionsTableItem from "./CollectionsTableItem";
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import type { Collection } from '../../contexts/collection.context';
+import CollectionsTableItem from './CollectionsTableItem';
+
+type SortOrder = 'asc' | 'desc';
 
 interface CollectionsTableProps {
   collections: Collection[];
   onCollectionClick: (collectionId: string) => void;
+  sortOrder?: SortOrder;
+  onSortToggle?: () => void;
 }
 
 const CollectionsTable: React.FC<CollectionsTableProps> = ({
   collections,
   onCollectionClick,
+  sortOrder,
+  onSortToggle
 }) => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const selectAllRef = useRef<HTMLInputElement | null>(null);
 
-  const visibleIds = useMemo(() => collections.map((collection) => collection._id), [collections]);
+  const visibleIds = useMemo(() => collections.map((c) => c._id), [collections]);
   const selectedVisibleCount = useMemo(
     () => visibleIds.filter((id) => selectedIds.has(id)).length,
     [visibleIds, selectedIds]
@@ -49,39 +56,58 @@ const CollectionsTable: React.FC<CollectionsTableProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[640px] text-left">
-        <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className="w-10 px-3 py-2.5 text-center">
-              <input
-                ref={selectAllRef}
-                type="checkbox"
-                checked={allVisibleSelected}
-                onChange={(e) => handleSelectAllVisible(e.target.checked)}
-                aria-label="Select all collections"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
-              />
-            </th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Title</th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-medium text-gray-500">Products</th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-medium text-gray-500">
-              Product conditions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white">
-          {collections.length === 0 ? (
+    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-100">
+          <thead className="bg-gray-50/80">
             <tr>
-              <td colSpan={4} className="px-3 py-16 text-center">
-                <p className="text-[15px] font-semibold text-gray-900">No collections found</p>
-                <p className="mt-1.5 text-[13px] font-normal text-gray-500">
-                  Try changing the filters or search term
-                </p>
-              </td>
+              <th className="w-12 px-3 py-3 text-center">
+                <input
+                  ref={selectAllRef}
+                  type="checkbox"
+                  checked={allVisibleSelected}
+                  onChange={(e) => handleSelectAllVisible(e.target.checked)}
+                  aria-label="Select all collections"
+                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/40"
+                />
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
+                Title
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
+                Page Title
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
+                URL Handle
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
+                Status
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
+                {onSortToggle ? (
+                  <button
+                    onClick={onSortToggle}
+                    className="flex items-center gap-1 hover:text-blue-600 transition-colors cursor-pointer"
+                  >
+                    Updated
+                    {sortOrder && (
+                      <span className="inline-flex items-center">
+                        {sortOrder === 'asc' ? (
+                          <ArrowUpIcon className="w-3.5 h-3.5" />
+                        ) : (
+                          <ArrowDownIcon className="w-3.5 h-3.5" />
+                        )}
+                      </span>
+                    )}
+                  </button>
+                ) : (
+                  <span>Updated</span>
+                )}
+              </th>
             </tr>
-          ) : (
-            collections.map((collection) => (
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-100">
+            {collections.map((collection) => (
               <CollectionsTableItem
                 key={collection._id}
                 collection={collection}
@@ -89,12 +115,13 @@ const CollectionsTable: React.FC<CollectionsTableProps> = ({
                 onSelect={handleSelectRow}
                 onClick={onCollectionClick}
               />
-            ))
-          )}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 export default CollectionsTable;
+

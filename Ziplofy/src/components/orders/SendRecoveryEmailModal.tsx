@@ -1,10 +1,7 @@
 import React, { useCallback } from 'react';
 import Modal from '../Modal';
 import ProductDescriptionInput from '../products/ProductDescriptionInput';
-import {
-  RECOVERY_EMAIL_TEMPLATE_OPTIONS,
-  RECOVERY_EMAIL_TEST_RECIPIENT,
-} from '../../utils/recovery-email-templates';
+import { RECOVERY_EMAIL_TEMPLATE_OPTIONS } from '../../utils/recovery-email-templates';
 
 interface Customer {
   firstName: string;
@@ -23,11 +20,7 @@ interface SendRecoveryEmailModalProps {
   onSubjectChange: (subject: string) => void;
   onBodyChange: (body: string) => void;
   onSubmit: () => void;
-  sending?: boolean;
 }
-
-const fieldClassName =
-  'w-full rounded-md border border-gray-200 px-2.5 py-1.5 text-[13px] text-gray-700 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200';
 
 const SendRecoveryEmailModal: React.FC<SendRecoveryEmailModalProps> = ({
   isOpen,
@@ -40,7 +33,6 @@ const SendRecoveryEmailModal: React.FC<SendRecoveryEmailModalProps> = ({
   onSubjectChange,
   onBodyChange,
   onSubmit,
-  sending = false,
 }) => {
   const handleTemplateChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -56,58 +48,50 @@ const SendRecoveryEmailModal: React.FC<SendRecoveryEmailModalProps> = ({
     [onSubjectChange]
   );
 
-  const canSend = emailSubject.trim().length > 0 && emailBody.trim().length > 0;
-
   return (
     <Modal
       open={isOpen}
       onClose={onClose}
-      title="Send recovery email"
+      title={
+        <div>
+          <h2 className="text-base font-medium text-gray-900">Send Recovery Email</h2>
+          {customer && (
+            <p className="text-xs text-gray-500 mt-1">
+              To: {customer.firstName} {customer.lastName} ({customer.email})
+            </p>
+          )}
+        </div>
+      }
       maxWidth="lg"
       actions={
         <>
           <button
-            type="button"
             onClick={onClose}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
           <button
-            type="button"
             onClick={onSubmit}
-            disabled={!canSend || sending}
-            className="rounded-lg bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!emailSubject.trim() || !emailBody.trim()}
+            className="px-4 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[100px]"
           >
-            {sending ? 'Sending…' : 'Send email'}
+            Send Email
           </button>
         </>
       }
     >
-      <div className="space-y-4">
-        {customer ? (
-          <div className="space-y-1">
-            <p className="text-[13px] text-gray-500">
-              Cart for{' '}
-              <span className="text-gray-800">
-                {customer.firstName} {customer.lastName}
-              </span>
-            </p>
-            <p className="text-[12px] text-gray-500">
-              Email will be sent to{' '}
-              <span className="font-medium text-gray-700">{RECOVERY_EMAIL_TEST_RECIPIENT}</span>{' '}
-              (test mode)
-            </p>
-          </div>
-        ) : null}
-
-        <label className="block">
-          <span className="mb-1 block text-[13px] font-semibold text-gray-900">Template</span>
+      <div className="flex flex-col gap-4">
+        {/* Template Selection */}
+        <div>
+          <label htmlFor="email-template" className="block text-sm font-medium text-gray-700 mb-1.5">
+            Email Template
+          </label>
           <select
             id="email-template"
             value={emailTemplate}
             onChange={handleTemplateChange}
-            className={fieldClassName}
+            className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 bg-white"
           >
             {RECOVERY_EMAIL_TEMPLATE_OPTIONS.map((template) => (
               <option key={template.id} value={template.id}>
@@ -115,29 +99,49 @@ const SendRecoveryEmailModal: React.FC<SendRecoveryEmailModalProps> = ({
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="block">
-          <span className="mb-1 block text-[13px] font-semibold text-gray-900">Subject</span>
+        {/* Subject Field */}
+        <div>
+          <label htmlFor="email-subject" className="block text-sm font-medium text-gray-700 mb-1.5">
+            Email Subject
+          </label>
           <input
             id="email-subject"
             type="text"
             value={emailSubject}
             onChange={handleSubjectChange}
-            className={fieldClassName}
+            className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
             required
           />
-        </label>
+        </div>
 
+        {/* Body Field */}
         <div>
-          <span className="mb-1 block text-[13px] font-semibold text-gray-900">Message</span>
           <ProductDescriptionInput
             value={emailBody}
             onChange={onBodyChange}
-            placeholder="Write your recovery message…"
-            hideLabel
+            placeholder="Write your recovery message..."
             enableImages={false}
             enableTemplates={false}
+          />
+        </div>
+
+        {/* Preview Section */}
+        <div className="bg-gray-50 p-3 border border-gray-200 rounded-lg">
+          <h4 className="text-xs font-medium text-gray-700 mb-2">Preview:</h4>
+          <p className="text-xs font-medium text-gray-900 mb-1.5">Subject: {emailSubject}</p>
+          <div
+            className="text-[13px] text-gray-700
+              [&_h1]:my-2 [&_h1]:text-2xl [&_h1]:font-semibold
+              [&_h2]:my-2 [&_h2]:text-xl [&_h2]:font-semibold
+              [&_h3]:my-1.5 [&_h3]:text-lg [&_h3]:font-semibold
+              [&_p]:my-1.5 [&_p]:leading-relaxed
+              [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5
+              [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-5
+              [&_strong]:font-semibold
+              [&_em]:italic"
+            dangerouslySetInnerHTML={{ __html: emailBody || '<p></p>' }}
           />
         </div>
       </div>
@@ -146,3 +150,4 @@ const SendRecoveryEmailModal: React.FC<SendRecoveryEmailModalProps> = ({
 };
 
 export default SendRecoveryEmailModal;
+

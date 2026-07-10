@@ -1,9 +1,0 @@
-.ziplofy-popover,
-.ziplofy-modal,
-[data-ziplofy-popover] {
-  background: var(--ziplofy-popover-bg, #ffffff);
-  color: var(--ziplofy-popover-text, #111827);
-  border-radius: var(--ziplofy-popover-radius, 14px);
-  border: var(--ziplofy-popover-border-width, 1px) solid var(--ziplofy-popover-border, #e5e7eb);
-  box-shadow: var(--ziplofy-popover-shadow, 0 12px 40px rgba(0, 0, 0, 0.14));
-}

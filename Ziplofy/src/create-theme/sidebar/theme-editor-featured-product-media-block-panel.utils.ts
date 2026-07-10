@@ -227,32 +227,23 @@ export function featuredProductMediaFieldDefsFromSchema(
   return featuredProductMediaFieldDefsFromNodeId(nodeId);
 }
 
-export function featuredProductMediaDefaultSettings(): Record<string, string | number | boolean> {
-  return {
-    aspectRatio: 'auto',
-    constrainToScreenHeight: true,
-    mediaFit: 'cover',
-    cornerRadius: 0,
-    extendMediaToScreenEdge: false,
-    enableZoom: true,
-    videoLooping: false,
-    hideUnselectedVariantMedia: true,
-    carouselIcons: 'arrows',
-    carouselPagination: 'counter',
-    carouselMobilePagination: 'dots',
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-  };
-}
-
-export const FEATURED_PRODUCT_MEDIA_DEFAULTS: Record<string, string | boolean> = Object.fromEntries(
-  Object.entries(featuredProductMediaDefaultSettings()).map(([k, v]) => [
-    k,
-    typeof v === 'boolean' ? v : String(v),
-  ])
-) as Record<string, string | boolean>;
+export const FEATURED_PRODUCT_MEDIA_DEFAULTS: Record<string, string | boolean> = {
+  aspectRatio: 'auto',
+  constrainToScreenHeight: true,
+  mediaFit: 'contain',
+  cornerRadius: '0',
+  extendMediaToScreenEdge: false,
+  enableZoom: true,
+  videoLooping: false,
+  hideUnselectedVariantMedia: true,
+  carouselIcons: 'arrows',
+  carouselPagination: 'counter',
+  carouselMobilePagination: 'dots',
+  paddingTop: '0',
+  paddingBottom: '0',
+  paddingLeft: '0',
+  paddingRight: '0',
+};
 
 function getNested(obj: Record<string, unknown> | null, path: string[]): unknown {
   let cur: unknown = obj;

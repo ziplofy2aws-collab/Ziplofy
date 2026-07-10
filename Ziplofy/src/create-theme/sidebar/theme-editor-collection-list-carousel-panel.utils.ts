@@ -1,6 +1,5 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
-import { prepareCollectionListSettingsNode } from './theme-editor-collection-list-panel.utils';
 
 export const COLLECTION_LIST_CAROUSEL_PANEL_GROUP_ORDER = [
   'Collections',
@@ -83,5 +82,8 @@ export function isCollectionListCarouselSettingsPanelFields(fields: EditorFieldD
 }
 
 export function prepareCollectionListCarouselSettingsNode(node: SidebarNode): SidebarNode {
-  return prepareCollectionListSettingsNode({ ...node, label: node.label ?? 'Collection list: Carousel' });
+  const fields = sortCollectionListCarouselPanelFields(
+    filterSidebarSectionPanelFields(node.fields ?? [], isCollectionListCarouselPanelField)
+  );
+  return { ...node, label: 'Collection list: Carousel', kind: 'section', fields };
 }

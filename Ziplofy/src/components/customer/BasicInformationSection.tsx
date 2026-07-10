@@ -1,10 +1,4 @@
 import React, { useCallback } from 'react';
-import {
-  customerInputClass,
-  customerLabelClass,
-  customerSectionSubtitleClass,
-  customerSectionTitleClass,
-} from '../customers/customer-ui.util';
 
 interface BasicInformationData {
   firstName: string;
@@ -24,89 +18,77 @@ const BasicInformationSection: React.FC<BasicInformationSectionProps> = ({
   onChange,
 }) => {
   const handleChange = useCallback(
-    (field: keyof BasicInformationData) =>
-      (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        onChange(field, e.target.value);
-      },
+    (field: keyof BasicInformationData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      onChange(field, e.target.value);
+    },
     [onChange]
   );
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-      <div className="border-b border-gray-100 px-4 py-3">
-        <h2 className={customerSectionTitleClass}>Basic information</h2>
-        <p className={customerSectionSubtitleClass}>Name, contact details, and language.</p>
-      </div>
-      <div className="px-4 py-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className={customerLabelClass} htmlFor="customer-first-name">
-              First name <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="customer-first-name"
-              type="text"
-              value={data.firstName}
-              onChange={handleChange('firstName')}
-              required
-              className={customerInputClass}
-            />
-          </div>
-          <div>
-            <label className={customerLabelClass} htmlFor="customer-last-name">
-              Last name <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="customer-last-name"
-              type="text"
-              value={data.lastName}
-              onChange={handleChange('lastName')}
-              required
-              className={customerInputClass}
-            />
-          </div>
-          <div>
-            <label className={customerLabelClass} htmlFor="customer-email">
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="customer-email"
-              type="email"
-              value={data.email}
-              onChange={handleChange('email')}
-              required
-              className={customerInputClass}
-            />
-          </div>
-          <div>
-            <label className={customerLabelClass} htmlFor="customer-phone">
-              Phone number <span className="text-red-500">*</span>
-            </label>
-            <input
-              id="customer-phone"
-              type="tel"
-              value={data.phoneNumber}
-              onChange={handleChange('phoneNumber')}
-              required
-              className={customerInputClass}
-            />
-          </div>
-          <div>
-            <label className={customerLabelClass} htmlFor="customer-language">
-              Language
-            </label>
-            <select
-              id="customer-language"
-              value={data.language}
-              onChange={handleChange('language')}
-              className={customerInputClass}
-            >
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-            </select>
-          </div>
+    <div className="bg-white rounded-xl border border-gray-200/80 p-6 shadow-sm">
+      <h2 className="text-base font-semibold text-gray-900 mb-4">Basic Information</h2>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            First Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={data.firstName}
+            onChange={handleChange('firstName')}
+            required
+            className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Last Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            value={data.lastName}
+            onChange={handleChange('lastName')}
+            required
+            className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Email <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            value={data.email}
+            onChange={handleChange('email')}
+            required
+            className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Phone Number <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="tel"
+            value={data.phoneNumber}
+            onChange={handleChange('phoneNumber')}
+            required
+            className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Language</label>
+          <select
+            value={data.language}
+            onChange={handleChange('language')}
+            className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
+          >
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+          </select>
         </div>
       </div>
     </div>
@@ -114,3 +96,4 @@ const BasicInformationSection: React.FC<BasicInformationSectionProps> = ({
 };
 
 export default BasicInformationSection;
+
