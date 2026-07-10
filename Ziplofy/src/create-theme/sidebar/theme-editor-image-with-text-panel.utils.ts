@@ -6,31 +6,11 @@ export const IMAGE_WITH_TEXT_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
-  'Borders',
   'Padding',
   'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(IMAGE_WITH_TEXT_PANEL_GROUP_ORDER);
-
-export const IMAGE_WITH_TEXT_SECTION_FIELD_KEYS = new Set([
-  'direction',
-  'verticalOnMobile',
-  'layoutAlignment',
-  'position',
-  'layoutGap',
-  'sectionWidth',
-  'height',
-  'backgroundMedia',
-  'backgroundImageUrl',
-  'backgroundColor',
-  'backgroundOverlay',
-  'borderStyle',
-  'cornerRadius',
-  'paddingTop',
-  'paddingBottom',
-  'customCss',
-]);
 
 const FIELD_SORT: Record<string, number> = {
   direction: 0,
@@ -40,12 +20,12 @@ const FIELD_SORT: Record<string, number> = {
   layoutGap: 4,
   sectionWidth: 10,
   height: 11,
+  colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  backgroundColor: 23,
-  backgroundOverlay: 24,
-  borderStyle: 26,
-  cornerRadius: 27,
+  borderStyle: 23,
+  cornerRadius: 24,
+  backgroundOverlay: 25,
   paddingTop: 30,
   paddingBottom: 31,
   customCss: 40,
@@ -60,14 +40,8 @@ export function isImageWithTextSectionType(secType: string | undefined, catalogV
 }
 
 export function isImageWithTextPanelField(field: EditorFieldDef): boolean {
-  const key = field.path.split('.').pop() ?? '';
-  if (!IMAGE_WITH_TEXT_SECTION_FIELD_KEYS.has(key)) return false;
-  if (!/\.sections\.[^.]+\.settings\./.test(field.path) && !/\.templates\.[^.]+\.sections\.[^.]+\.settings\./.test(field.path)) {
-    return false;
-  }
-  if (key === 'borderStyle' || key === 'cornerRadius') return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return true;
+  return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
 export function sortImageWithTextPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -75,9 +49,8 @@ export function sortImageWithTextPanelFields(fields: EditorFieldDef[]): EditorFi
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Borders: 3,
-    Padding: 4,
-    'Custom CSS': 5,
+    Padding: 3,
+    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -89,19 +62,10 @@ export function sortImageWithTextPanelFields(fields: EditorFieldDef[]): EditorFi
 
 export function groupImageWithTextPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields.filter(isImageWithTextPanelField)) {
-    const key = field.path.split('.').pop() ?? '';
-    let group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
-    let panelField = field;
-    if (key === 'borderStyle') {
-      group = 'Borders';
-      panelField = { ...field, label: 'Style', group: 'Borders' };
-    } else if (key === 'cornerRadius') {
-      group = 'Borders';
-      panelField = { ...field, group: 'Borders' };
-    }
+  for (const field of fields) {
+    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
-    list.push(panelField);
+    list.push(field);
     map.set(group, list);
   }
   return map;
@@ -110,17 +74,10 @@ export function groupImageWithTextPanelFields(fields: EditorFieldDef[]): Map<str
 export function isImageWithTextSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  const path = fields[0]?.path ?? '';
-  if (!path.includes('image_with_text')) return false;
   /** Collection links also has imageUrl — do not classify as Image with text. */
   if (keys.has('collectionsPicker') || keys.has('layoutMode')) return false;
-  if (!keys.has('direction') || !keys.has('layoutGap') || !keys.has('height')) return false;
-  if (keys.has('imageUrl') && !keys.has('colorScheme')) return false;
-  if (keys.has('heading') && keys.has('headingWidth') && !keys.has('colorScheme')) return false;
-  if (keys.has('descriptionWidth') && !keys.has('colorScheme')) return false;
-  if (keys.has('buttonLabel') && !keys.has('colorScheme')) return false;
-  if (keys.has('buttonStyle') && !keys.has('colorScheme')) return false;
-  return !keys.has('imageBeforeUrl');
+  if (keys.has('buttonLabel')) return true;
+  return keys.has('direction') && keys.has('layoutGap') && keys.has('height') && !keys.has('imageBeforeUrl');
 }
 
 export function prepareImageWithTextSettingsNode(node: SidebarNode): SidebarNode {

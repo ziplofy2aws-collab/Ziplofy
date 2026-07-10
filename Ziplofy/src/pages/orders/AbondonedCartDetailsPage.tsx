@@ -1,33 +1,32 @@
-import { ChevronLeftIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ArrowLeftIcon,
+  ExclamationTriangleIcon,
+  PaperAirplaneIcon,
+  ShoppingCartIcon,
+} from '@heroicons/react/24/outline';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import AbandonedCartCustomerInfo from '../../components/orders/AbandonedCartCustomerInfo';
+import AbandonedCartDetailsBreadcrumbs from '../../components/orders/AbandonedCartDetailsBreadcrumbs';
 import AbandonedCartItemsTable from '../../components/orders/AbandonedCartItemsTable';
 import AbandonedCartSummary from '../../components/orders/AbandonedCartSummary';
 import SendRecoveryEmailModal from '../../components/orders/SendRecoveryEmailModal';
 import { useAbandonedCarts } from '../../contexts/abandoned-cart.context';
 import { useStore } from '../../contexts/store.context';
 import { buildRecoveryEmailTemplate } from '../../utils/recovery-email-templates';
-import { sendAbandonedCartRecoveryEmail } from '../../utils/send-abandoned-cart-recovery-email';
 
 const AbandonedCartDetailsPage: React.FC = () => {
   const { customerId } = useParams<{ customerId: string }>();
   const navigate = useNavigate();
   const { abandonedCarts, loading, error, fetchAbandonedCartsByStoreId } = useAbandonedCarts();
-  const { activeStoreId, stores } = useStore();
+  const { activeStoreId } = useStore();
 
   const [selectedCart, setSelectedCart] = useState<any>(null);
+
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [emailSubject, setEmailSubject] = useState('');
   const [emailBody, setEmailBody] = useState('');
   const [emailTemplate, setEmailTemplate] = useState('custom');
-  const [sendingEmail, setSendingEmail] = useState(false);
-
-  const storeName = useMemo(() => {
-    if (!activeStoreId) return 'Your Store';
-    return stores.find((s) => s._id === activeStoreId)?.storeName?.trim() || 'Your Store';
-  }, [activeStoreId, stores]);
 
   useEffect(() => {
     if (activeStoreId) {
@@ -47,11 +46,15 @@ const AbandonedCartDetailsPage: React.FC = () => {
   const formatDate = useCallback((dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
     });
+  }, []);
+
+  const getInitials = useCallback((firstName: string, lastName: string) => {
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   }, []);
 
   const calculateCartTotal = useCallback(() => {
@@ -64,13 +67,13 @@ const AbandonedCartDetailsPage: React.FC = () => {
   const handleSendEmail = useCallback(() => {
     if (selectedCart?.customer) {
       const customer = selectedCart.customer;
-      const template = buildRecoveryEmailTemplate('custom', customer.firstName, storeName);
+      const template = buildRecoveryEmailTemplate('custom', customer.firstName);
       setEmailTemplate('custom');
       setEmailSubject(template.subject);
       setEmailBody(template.bodyHtml);
       setIsEmailModalOpen(true);
     }
-  }, [selectedCart, storeName]);
+  }, [selectedCart]);
 
   const handleCloseEmailModal = useCallback(() => {
     setIsEmailModalOpen(false);
@@ -79,47 +82,24 @@ const AbandonedCartDetailsPage: React.FC = () => {
     setEmailTemplate('custom');
   }, []);
 
-  const handleSendEmailSubmit = useCallback(async () => {
-    if (!activeStoreId) {
-      toast.error('No active store selected');
-      return;
-    }
-
-    try {
-      setSendingEmail(true);
-      await sendAbandonedCartRecoveryEmail({
-        storeId: activeStoreId,
-        storeName,
-        customerFirstName: selectedCart?.customer?.firstName,
-        subject: emailSubject,
-        bodyHtml: emailBody,
-      });
-      toast.success('Recovery email sent');
-      handleCloseEmailModal();
-    } catch (err: any) {
-      const message = err?.response?.data?.message || err?.message || 'Failed to send recovery email';
-      toast.error(message);
-    } finally {
-      setSendingEmail(false);
-    }
-  }, [
-    activeStoreId,
-    storeName,
-    selectedCart?.customer?.firstName,
-    emailSubject,
-    emailBody,
-    handleCloseEmailModal,
-  ]);
+  const handleSendEmailSubmit = useCallback(() => {
+    console.log('Sending email to:', selectedCart?.customer?.email);
+    console.log('Subject:', emailSubject);
+    console.log('Body:', emailBody);
+    console.log('Template:', emailTemplate);
+    handleCloseEmailModal();
+  }, [selectedCart?.customer?.email, emailSubject, emailBody, emailTemplate, handleCloseEmailModal]);
 
   const handleTemplateChange = useCallback(
     (template: string) => {
       setEmailTemplate(template);
+
       if (!selectedCart?.customer) return;
-      const next = buildRecoveryEmailTemplate(template, selectedCart.customer.firstName, storeName);
+      const next = buildRecoveryEmailTemplate(template, selectedCart.customer.firstName);
       setEmailSubject(next.subject);
       setEmailBody(next.bodyHtml);
     },
-    [selectedCart?.customer, storeName]
+    [selectedCart?.customer]
   );
 
   const handleBack = useCallback(() => {
@@ -149,8 +129,14 @@ const AbandonedCartDetailsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="mx-auto flex min-h-[360px] max-w-[1400px] items-center justify-center px-3 py-4 sm:px-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900" />
+        <div className="mx-auto flex min-h-[50vh] max-w-[1440px] items-center justify-center px-4 py-8 sm:px-6">
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-gray-200/80 bg-white px-10 py-12 shadow-sm">
+            <div
+              className="h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
+              aria-hidden
+            />
+            <p className="text-sm font-medium text-gray-600">Loading cart details…</p>
+          </div>
         </div>
       </div>
     );
@@ -159,24 +145,30 @@ const AbandonedCartDetailsPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
-          <div className="flex min-h-[280px] flex-col items-center justify-center text-center">
-            <p className="text-[13px] text-red-600">{error}</p>
-            <div className="mt-4 flex gap-3">
-              <button
-                type="button"
-                onClick={handleRetryFetch}
-                className="text-[13px] font-medium text-gray-900 hover:underline"
-              >
-                Try again
-              </button>
-              <button
-                type="button"
-                onClick={handleBack}
-                className="text-[13px] text-gray-500 hover:text-gray-700"
-              >
-                Back to abandoned carts
-              </button>
+        <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6">
+          <div className="flex items-start gap-4 rounded-2xl border border-red-200/90 bg-linear-to-br from-red-50/80 to-white p-5 shadow-sm">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-700">
+              <ExclamationTriangleIcon className="h-5 w-5" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-sm font-semibold text-red-900">Couldn&apos;t load cart</h2>
+              <p className="mt-1 text-sm text-red-800/90">{error}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={handleRetryFetch}
+                  className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+                >
+                  Try again
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+                >
+                  Back to abandoned carts
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -187,78 +179,91 @@ const AbandonedCartDetailsPage: React.FC = () => {
   if (!selectedCart) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+        <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6">
           <button
             type="button"
             onClick={handleBack}
-            className="mb-4 inline-flex items-center gap-1 text-[13px] text-gray-600 transition-colors hover:text-gray-900"
+            className="mb-6 inline-flex items-center gap-2 rounded-xl border border-gray-200/80 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
           >
-            <ChevronLeftIcon className="h-4 w-4" aria-hidden />
+            <ArrowLeftIcon className="h-4 w-4" aria-hidden />
             Abandoned carts
           </button>
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                <ShoppingCartIcon className="h-7 w-7 text-gray-400" aria-hidden />
-              </div>
-              <p className="text-[15px] font-semibold text-gray-900">Cart not found</p>
-              <p className="mt-1.5 max-w-md text-[13px] text-gray-500">
-                This abandoned cart is no longer available or the link may be incorrect.
-              </p>
-              <button
-                type="button"
-                onClick={handleBack}
-                className="mt-6 rounded-lg bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-gray-800"
-              >
-                View all abandoned carts
-              </button>
+          <div className="flex flex-col items-center rounded-2xl border border-gray-200/80 bg-white px-6 py-16 text-center shadow-sm sm:py-20">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-gray-100 bg-gray-50">
+              <ShoppingCartIcon className="h-8 w-8 text-gray-400" aria-hidden />
             </div>
+            <h2 className="text-lg font-semibold text-gray-900">Cart not found</h2>
+            <p className="mt-2 max-w-md text-sm text-gray-500">
+              This abandoned cart is no longer available or the link may be incorrect. Return to the list to pick
+              another customer.
+            </p>
+            <button
+              type="button"
+              onClick={handleBack}
+              className="mt-8 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+            >
+              View all abandoned carts
+            </button>
           </div>
         </div>
       </div>
     );
   }
 
-  const customerName = `${selectedCart.customer.firstName} ${selectedCart.customer.lastName}`.trim();
-
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
-        <button
-          type="button"
-          onClick={handleBack}
-          className="mb-4 inline-flex items-center gap-1 text-[13px] text-gray-600 transition-colors hover:text-gray-900"
-        >
-          <ChevronLeftIcon className="h-4 w-4" aria-hidden />
-          Abandoned carts
-        </button>
-
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="text-lg font-semibold text-gray-900">{customerName}</h1>
-            <p className="mt-0.5 text-[13px] text-gray-500">
-              {selectedCart.customer.email} · Last activity {formatDate(selectedCart.lastUpdated)}
-            </p>
-          </div>
+      <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8">
+        <header className="mb-6 space-y-5">
           <button
             type="button"
-            onClick={handleSendEmail}
-            className="inline-flex shrink-0 items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+            onClick={handleBack}
+            className="inline-flex items-center gap-2 rounded-xl border border-gray-200/80 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
           >
-            Send recovery email
+            <ArrowLeftIcon className="h-4 w-4" aria-hidden />
+            Abandoned carts
           </button>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] lg:items-start">
-          <AbandonedCartItemsTable
-            cartItems={selectedCart.cartItems}
-            cartTotal={calculateCartTotal()}
-            onViewProduct={handleViewProduct}
+          <AbandonedCartDetailsBreadcrumbs
+            customerFirstName={selectedCart.customer.firstName}
+            customerLastName={selectedCart.customer.lastName}
           />
+        </header>
 
-          <div className="space-y-4">
+        <section className="mb-8 rounded-2xl border border-gray-200/80 bg-linear-to-b from-white to-blue-50/25 p-5 shadow-sm sm:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex min-w-0 flex-1 items-start gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 text-lg font-bold text-white shadow-lg ring-4 ring-blue-100">
+                {getInitials(selectedCart.customer.firstName, selectedCart.customer.lastName)}
+              </div>
+              <div className="min-w-0 border-l-4 border-blue-500/70 pl-4">
+                <button
+                  type="button"
+                  onClick={() => handleViewCustomer(selectedCart.customer._id)}
+                  className="text-left text-2xl font-semibold tracking-tight text-gray-900 transition-colors hover:text-blue-700 hover:underline sm:text-3xl"
+                >
+                  {selectedCart.customer.firstName} {selectedCart.customer.lastName}
+                </button>
+                <p className="mt-1 truncate text-sm text-gray-500 sm:text-base">{selectedCart.customer.email}</p>
+                <p className="mt-2 text-xs text-gray-500">
+                  Last cart activity · {formatDate(selectedCart.lastUpdated)}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleSendEmail}
+              className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-colors hover:bg-blue-700 lg:w-auto"
+            >
+              <PaperAirplaneIcon className="h-4 w-4" aria-hidden />
+              Send recovery email
+            </button>
+          </div>
+        </section>
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
+          <aside className="space-y-5 lg:col-span-4 lg:space-y-6">
             <AbandonedCartCustomerInfo
               customer={selectedCart.customer}
+              getInitials={getInitials}
               onViewCustomer={handleViewCustomer}
             />
             <AbandonedCartSummary
@@ -268,15 +273,15 @@ const AbandonedCartDetailsPage: React.FC = () => {
               lastUpdated={selectedCart.lastUpdated}
               formatDate={formatDate}
             />
-          </div>
-        </div>
+          </aside>
 
-        <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
-              Learn more about abandoned carts
-            </a>
-          </p>
+          <div className="lg:col-span-8">
+            <AbandonedCartItemsTable
+              cartItems={selectedCart.cartItems}
+              cartTotal={calculateCartTotal()}
+              onViewProduct={handleViewProduct}
+            />
+          </div>
         </div>
       </div>
 
@@ -291,7 +296,6 @@ const AbandonedCartDetailsPage: React.FC = () => {
         onSubjectChange={setEmailSubject}
         onBodyChange={setEmailBody}
         onSubmit={handleSendEmailSubmit}
-        sending={sendingEmail}
       />
     </div>
   );

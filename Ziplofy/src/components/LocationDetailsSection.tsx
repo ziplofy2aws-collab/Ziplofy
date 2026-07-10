@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import LocationsTable from './LocationsTable';
+import { SettingsCallout, SettingsPanel } from './settings/SettingsPageScaffold';
 
 interface Location {
   _id: string;
@@ -32,35 +33,46 @@ const LocationDetailsSection: React.FC<LocationDetailsSectionProps> = ({
   onLocationClick,
 }) => {
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-      <div className="border-b border-gray-100 px-4 py-3">
-        <h2 className="text-[13px] font-semibold text-gray-900">All locations</h2>
-        <p className="mt-0.5 text-[12px] font-normal text-gray-500">
-          Select a location to view or edit details.
-        </p>
+    <SettingsPanel className="ring-1 ring-slate-200/60">
+      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-5 py-4 sm:px-6">
+        <div className="border-l-4 border-blue-500/75 pl-3">
+          <h2 className="text-base font-semibold text-gray-900">All locations</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Fulfillment, pickup, and local delivery use these addresses. Select a row to view or edit.
+          </p>
+        </div>
       </div>
-
-      {error ? (
-        <div className="mx-4 mt-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5">
-          <ExclamationTriangleIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" aria-hidden />
-          <p className="text-[13px] text-amber-900">{error}</p>
-        </div>
-      ) : null}
-
-      {loading ? (
-        <div className="flex min-h-[240px] items-center justify-center py-16">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-        </div>
-      ) : (
-        <LocationsTable
-          locations={locations}
-          defaultLocationId={defaultLocationId}
-          onLocationClick={onLocationClick}
-          onAddLocation={onAddLocation}
-        />
-      )}
-    </div>
+      <div className="p-5 sm:p-6">
+        {error && (
+          <SettingsCallout
+            variant="warning"
+            title="Could not load locations"
+            icon={<ExclamationTriangleIcon className="h-5 w-5 text-amber-600" />}
+            className="mb-4"
+          >
+            {error}
+          </SettingsCallout>
+        )}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-14">
+            <div
+              className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600"
+              aria-hidden
+            />
+            <p className="text-sm text-gray-500">Loading locations…</p>
+          </div>
+        ) : (
+          <LocationsTable
+            locations={locations}
+            defaultLocationId={defaultLocationId}
+            onLocationClick={onLocationClick}
+            onAddLocation={onAddLocation}
+          />
+        )}
+      </div>
+    </SettingsPanel>
   );
 };
 
 export default LocationDetailsSection;
+

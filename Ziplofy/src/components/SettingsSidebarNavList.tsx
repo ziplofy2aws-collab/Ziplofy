@@ -17,14 +17,6 @@ export default function SettingsSidebarNavList({
   onItemClick,
   onChildClick,
 }: SettingsSidebarNavListProps) {
-  const matchesItemPath = (item: SettingsNavItem): boolean => {
-    if (!item.path) return false;
-    if (isActivePath(item.path) || currentPath.startsWith(`${item.path}/`)) return true;
-    return (item.matchPrefixes ?? []).some(
-      (prefix) => currentPath === prefix || currentPath.startsWith(`${prefix}/`)
-    );
-  };
-
   return (
     <ul className="m-0 list-none p-2">
       {items.map((item) => {
@@ -34,8 +26,11 @@ export default function SettingsSidebarNavList({
           ? item.children!.some((child) => isActivePath(child.path))
           : false;
         const isCurrentPath = hasChildren
-          ? childActive || matchesItemPath(item)
-          : matchesItemPath(item);
+          ? childActive ||
+            (!!item.path && currentPath.startsWith(`${item.path}/`)) ||
+            isActivePath(item.path)
+          : isActivePath(item.path) ||
+            (!!item.path && currentPath.startsWith(`${item.path}/`));
         const isExpanded = hasChildren ? expanded[itemKey] ?? childActive : false;
 
         return (

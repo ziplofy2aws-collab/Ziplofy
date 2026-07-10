@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { CircleStackIcon, ExclamationCircleIcon, MagnifyingGlassIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { ChevronUpDownIcon } from '@heroicons/react/24/solid';
+import { CircleStackIcon, MagnifyingGlassIcon, PhotoIcon, PlusIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import type { Product } from '../../contexts/product.context';
 import { useProducts } from '../../contexts/product.context';
@@ -21,11 +20,9 @@ type Props = {
   field: EditorFieldDef;
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
-  /** Horizon recommended products — closest product source empty state. */
-  variant?: 'default' | 'closest-source';
 };
 
-export function ProductPickerFieldRow({ field, values, onFieldChange, variant = 'default' }: Props) {
+export function ProductPickerFieldRow({ field, values, onFieldChange }: Props) {
   const { activeStoreId } = useStore();
   const { products, loading, fetchProductsByStoreId } = useProducts();
   const storeId = activeStoreId || THEME_EDITOR_STATIC_CONFIG.devStoreId;
@@ -219,49 +216,25 @@ export function ProductPickerFieldRow({ field, values, onFieldChange, variant = 
   return (
     <div className="space-y-2 py-1">
       <span className="block text-[13px] font-medium text-gray-800">{field.label}</span>
-      {variant === 'closest-source' && !hasProduct ? (
-        <>
-          <button
-            ref={triggerRef}
-            type="button"
-            onClick={() => void openPicker()}
-            className="w-full rounded-lg border border-[#f5b89a] bg-[#fff4e5] px-3 py-2.5 text-left"
-          >
-            <div className="flex items-center gap-2">
-              <ExclamationCircleIcon className="h-5 w-5 shrink-0 text-[#b98900]" aria-hidden />
-              <span className="min-w-0 flex-1 text-[13px] font-medium text-[#303030]">Closest Product</span>
-              <ChevronUpDownIcon className="h-4 w-4 shrink-0 text-[#616161]" aria-hidden />
-              <span
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[#616161]"
-                aria-hidden
-              >
-                <CircleStackIcon className="h-4 w-4" />
-              </span>
-            </div>
-          </button>
-          <p className="text-[12px] text-gray-500">No product found</p>
-        </>
-      ) : (
-        <div className="flex items-center gap-2">
-          <button
-            ref={triggerRef}
-            type="button"
-            onClick={() => void openPicker()}
-            className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-4 py-2 text-left text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
-          >
-            {buttonLabel}
-          </button>
-          <button
-            type="button"
-            title="Browse products"
-            onClick={() => void openPicker()}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
-            aria-label="Browse products"
-          >
-            <CircleStackIcon className="h-4 w-4" />
-          </button>
-        </div>
-      )}
+      <div className="flex items-center gap-2">
+        <button
+          ref={triggerRef}
+          type="button"
+          onClick={() => void openPicker()}
+          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-4 py-2 text-left text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
+        >
+          {buttonLabel}
+        </button>
+        <button
+          type="button"
+          title="Browse products"
+          onClick={() => void openPicker()}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+          aria-label="Browse products"
+        >
+          <CircleStackIcon className="h-4 w-4" />
+        </button>
+      </div>
       {hasProduct ? (
         <button type="button" className="text-[12px] text-[#005bd3] hover:underline" onClick={clearProduct}>
           Clear product

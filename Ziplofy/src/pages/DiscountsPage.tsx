@@ -17,11 +17,11 @@ const EmptyState = ({ message, onCreate }: { message: string; onCreate: () => vo
   <div className="flex min-h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50/30 px-8 py-14 text-center">
     <div className="relative mb-5">
       <div
-        className="absolute inset-0 rounded-full bg-gray-400/10 blur-xl"
+        className="absolute inset-0 rounded-full bg-blue-400/10 blur-xl"
         aria-hidden
       />
       <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-gray-100 bg-white shadow-sm">
-        <TagIcon className="h-8 w-8 text-gray-500" aria-hidden />
+        <TagIcon className="h-8 w-8 text-blue-500" aria-hidden />
       </div>
     </div>
     <p className="max-w-sm text-sm font-medium text-gray-700">{message}</p>
@@ -31,7 +31,7 @@ const EmptyState = ({ message, onCreate }: { message: string; onCreate: () => vo
     <button
       type="button"
       onClick={onCreate}
-      className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-gray-800"
+      className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
     >
       Create discount
     </button>

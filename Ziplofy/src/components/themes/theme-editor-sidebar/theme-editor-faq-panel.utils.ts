@@ -6,7 +6,6 @@ export const FAQ_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
-  'Borders',
   'Padding',
   'Custom CSS',
 ] as const;
@@ -21,17 +20,11 @@ export const FAQ_LAYOUT_FIELD_ORDER = [
 export const FAQ_SIZE_FIELD_ORDER = ['sectionWidth', 'height'] as const;
 
 export const FAQ_APPEARANCE_FIELD_ORDER = [
+  'colorScheme',
   'backgroundMedia',
-  'backgroundImagePosition',
-  'backgroundOverlay',
-] as const;
-
-export const FAQ_BORDERS_FIELD_ORDER = [
   'borderStyle',
-  'borderThickness',
-  'borderOpacity',
-  'borderColor',
   'cornerRadius',
+  'backgroundOverlay',
 ] as const;
 
 export const FAQ_PADDING_FIELD_ORDER = ['paddingTop', 'paddingBottom'] as const;
@@ -45,19 +38,15 @@ const FIELD_SORT: Record<string, number> = {
   layoutGap: 3,
   sectionWidth: 10,
   height: 11,
-  backgroundMedia: 20,
-  backgroundImageUrl: 21,
-  backgroundImagePosition: 22,
-  backgroundOverlay: 23,
-  colorScheme: 24,
-  borderStyle: 30,
-  borderThickness: 31,
-  borderOpacity: 32,
-  borderColor: 33,
-  cornerRadius: 34,
-  paddingTop: 40,
-  paddingBottom: 41,
-  customCss: 50,
+  colorScheme: 20,
+  backgroundMedia: 21,
+  backgroundImageUrl: 22,
+  borderStyle: 23,
+  cornerRadius: 24,
+  backgroundOverlay: 25,
+  paddingTop: 30,
+  paddingBottom: 31,
+  customCss: 40,
 };
 
 function fieldSortKey(path: string): number {
@@ -83,9 +72,8 @@ export function sortFaqPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Borders: 3,
-    Padding: 4,
-    'Custom CSS': 5,
+    Padding: 3,
+    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -120,8 +108,6 @@ export function groupFaqPanelFields(fields: EditorFieldDef[]): Map<string, Edito
     else if (group === 'Size') map.set(group, sortFaqGroupFields(list, FAQ_SIZE_FIELD_ORDER));
     else if (group === 'Appearance') {
       map.set(group, sortFaqGroupFields(list, FAQ_APPEARANCE_FIELD_ORDER));
-    } else if (group === 'Borders') {
-      map.set(group, sortFaqGroupFields(list, FAQ_BORDERS_FIELD_ORDER));
     } else if (group === 'Padding') {
       map.set(group, sortFaqGroupFields(list, FAQ_PADDING_FIELD_ORDER));
     }

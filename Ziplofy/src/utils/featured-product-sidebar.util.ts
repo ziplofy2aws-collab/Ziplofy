@@ -1,12 +1,29 @@
 import type { SidebarIcon, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
-import {
-  listKeyBlockChildren,
-  reorderSidebarChildren,
-} from '../create-theme/sidebar/create-theme-structure-order';
 import { featuredProductMediaFieldDefs } from '../create-theme/sidebar/theme-editor-featured-product-media-block-panel.utils';
 import { featuredProductDetailsFieldDefs } from '../create-theme/sidebar/theme-editor-featured-product-details-block-panel.utils';
-import { featuredProductHeaderFieldDefs } from '../create-theme/sidebar/theme-editor-featured-product-header-block-panel.utils';
-import { featuredProductBuyButtonsFieldDefs } from '../create-theme/sidebar/theme-editor-featured-product-buy-buttons-block-panel.utils';
+
+function listKeyBlockChildren(blockPrefix: string): string {
+  return `fields:${blockPrefix}`;
+}
+
+function reorderSidebarChildren(
+  children: SidebarNode[],
+  listKey: string,
+  itemOrder: Record<string, string[]>
+): SidebarNode[] {
+  const order = itemOrder[listKey];
+  if (!order?.length) return children;
+  const byId = new Map(children.map((c) => [c.id, c]));
+  const out: SidebarNode[] = [];
+  for (const id of order) {
+    const node = byId.get(id);
+    if (node) out.push(node);
+  }
+  for (const c of children) {
+    if (!order.includes(c.id)) out.push(c);
+  }
+  return out;
+}
 
 export const FEATURED_PRODUCT_SECTION_BLOCK_ORDER = ['product_media', 'details'] as const;
 
@@ -44,17 +61,19 @@ function featuredProductBlockIcon(blockId: string): SidebarIcon {
     case 'product_media':
       return 'image';
     case 'details':
-    case 'review_stars':
-    case 'quantity':
-      return 'default';
-    case 'header':
       return 'group';
+    case 'header':
+      return 'text';
+    case 'review_stars':
+      return 'default';
     case 'variant_picker':
       return 'product-card';
     case 'buy_buttons':
     case 'add_to_cart':
     case 'accelerated_checkout':
       return 'button';
+    case 'quantity':
+      return 'default';
     case 'title':
       return 'title';
     case 'price':
@@ -132,91 +151,37 @@ function readDetailsBlockOrder(
   return order.filter((id): id is string => typeof id === 'string' && id in blocks);
 }
 
-function headerBlockNode(
-  detailsPrefix: string,
-  blocksBase: string,
-  itemOrder: Record<string, string[]>
-): SidebarNode {
-  const headerPrefix = `${detailsPrefix}:nested:header`;
-  const headerChildren = reorderSidebarChildren(
-    [
-      { id: `${headerPrefix}:inner-add-block`, label: 'Add block', kind: 'add-block' },
-      ...FEATURED_PRODUCT_HEADER_NESTED_ORDER.map((blockId) => ({
-        id: `${headerPrefix}:nested:${blockId}`,
-        label: BLOCK_LABELS[blockId] ?? blockId,
-        kind: 'block' as const,
-        icon: featuredProductBlockIcon(blockId),
-      })),
-    ],
-    listKeyBlockChildren(headerPrefix),
-    itemOrder
-  );
-
-  return {
-    id: headerPrefix,
-    label: 'Header',
-    kind: 'block',
-    icon: 'group',
-    fields: featuredProductHeaderFieldDefs(`${blocksBase}.details.blocks.header`),
-    children: headerChildren,
-    childrenListKey: listKeyBlockChildren(headerPrefix),
-  };
-}
-
-function buyButtonsBlockNode(
-  detailsPrefix: string,
-  blocksBase: string,
-  nestedOrder: readonly string[],
-  itemOrder: Record<string, string[]>
-): SidebarNode {
-  const buyButtonsPrefix = `${detailsPrefix}:nested:buy_buttons`;
-  const nestedChildren = nestedOrder.map((blockId) => ({
-    id: `${buyButtonsPrefix}:nested:${blockId}`,
-    label: BLOCK_LABELS[blockId] ?? blockId,
-    kind: 'block' as const,
-    icon: featuredProductBlockIcon(blockId),
-    showVisibilityToggle: true,
-  }));
-
-  return {
-    id: buyButtonsPrefix,
-    label: 'Buy buttons',
-    kind: 'block',
-    icon: 'button',
-    fields: featuredProductBuyButtonsFieldDefs(`${blocksBase}.details.blocks.buy_buttons`),
-    children: reorderSidebarChildren(
-      nestedChildren,
-      listKeyBlockChildren(buyButtonsPrefix),
-      itemOrder
-    ),
-    childrenListKey: listKeyBlockChildren(buyButtonsPrefix),
-  };
-}
-
-function detailsInnerBlockNode(
-  detailsPrefix: string,
-  blockId: string,
-  blocksBase: string,
-  config: Record<string, unknown> | null,
-  tplId: string,
-  secId: string,
-  itemOrder: Record<string, string[]>
-): SidebarNode {
-  if (blockId === 'header') {
-    return headerBlockNode(detailsPrefix, blocksBase, itemOrder);
-  }
-  if (blockId === 'buy_buttons') {
-    const nestedOrder =
-      readBuyButtonsNestedBlockOrder(config, tplId, secId) ||
-      [...FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER];
-    return buyButtonsBlockNode(detailsPrefix, blocksBase, nestedOrder, itemOrder);
-  }
-  return {
-    id: `${detailsPrefix}:nested:${blockId}`,
-    label: BLOCK_LABELS[blockId] ?? blockId,
-    kind: 'block',
-    icon: featuredProductBlockIcon(blockId),
-  };
+function nestedBlockNodes(
+  parentPrefix: string,
+  blockIds: readonly string[],
+  nestedLists: Partial<Record<string, readonly string[]>>,
+  itemOrder: Record<string, string[]>,
+  options?: { showVisibilityToggle?: boolean; showDeleteButton?: boolean },
+  nestedOrderResolver?: (blockId: string) => readonly string[] | undefined
+): SidebarNode[] {
+  return blockIds.map((blockId) => {
+    const nestedPrefix = `${parentPrefix}:nested:${blockId}`;
+    const nestedOrder = nestedOrderResolver?.(blockId) ?? nestedLists[blockId];
+    const children = nestedOrder?.length
+      ? nestedBlockNodes(nestedPrefix, nestedOrder, {}, itemOrder, {
+          showVisibilityToggle: true,
+          showDeleteButton: true,
+        })
+      : undefined;
+    const childrenListKey = listKeyBlockChildren(nestedPrefix);
+    return {
+      id: nestedPrefix,
+      label: BLOCK_LABELS[blockId] ?? blockId,
+      kind: 'block' as const,
+      icon: featuredProductBlockIcon(blockId),
+      showVisibilityToggle: options?.showVisibilityToggle ?? true,
+      showDeleteButton: options?.showDeleteButton ?? true,
+      children: children?.length
+        ? reorderSidebarChildren(children, childrenListKey, itemOrder)
+        : undefined,
+      childrenListKey: children?.length ? childrenListKey : undefined,
+    };
+  });
 }
 
 function detailsBlockNode(
@@ -231,17 +196,27 @@ function detailsBlockNode(
   const detailsBlockOrder =
     readDetailsBlockOrder(config, tplId, secId) || [...FEATURED_PRODUCT_DETAILS_BLOCK_ORDER];
 
-  const detailBlocks = detailsBlockOrder.map((blockId) =>
-    detailsInnerBlockNode(detailsPrefix, blockId, blocksBase, config, tplId, secId, itemOrder)
+  const innerAddBlockId = `${detailsPrefix}:inner-add-block`;
+  const addBlockRow: SidebarNode = { id: innerAddBlockId, label: 'Add block', kind: 'add-block' };
+
+  const buyButtonsNestedOrder =
+    readBuyButtonsNestedBlockOrder(config, tplId, secId) || [...FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER];
+
+  const detailBlocks = nestedBlockNodes(
+    detailsPrefix,
+    detailsBlockOrder,
+    {
+      header: FEATURED_PRODUCT_HEADER_NESTED_ORDER,
+      buy_buttons: FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER,
+    },
+    itemOrder,
+    undefined,
+    (blockId) => (blockId === 'buy_buttons' ? buyButtonsNestedOrder : undefined)
   );
 
   const childrenListKey = listKeyBlockChildren(detailsPrefix);
   const children = reorderSidebarChildren(
-    [
-      { id: `${detailsPrefix}:inner-add-block`, label: 'Add block', kind: 'add-block' },
-      ...detailBlocks,
-      { id: `${detailsPrefix}:add-block`, label: 'Add block', kind: 'add-block' },
-    ],
+    [addBlockRow, ...detailBlocks],
     childrenListKey,
     itemOrder
   );
@@ -250,8 +225,10 @@ function detailsBlockNode(
     id: detailsPrefix,
     label: 'Details',
     kind: 'block',
-    icon: 'default',
+    icon: 'group',
     fields: featuredProductDetailsFieldDefs(`${blocksBase}.details`),
+    showVisibilityToggle: true,
+    showDeleteButton: false,
     children,
     childrenListKey,
   };
@@ -264,6 +241,8 @@ function productMediaBlockNode(prefix: string, blocksBase: string): SidebarNode 
     kind: 'block',
     icon: 'image',
     fields: featuredProductMediaFieldDefs(`${blocksBase}.product_media`),
+    showVisibilityToggle: true,
+    showDeleteButton: false,
   };
 }
 
@@ -291,6 +270,8 @@ export function mapFeaturedProductBlockNodes(
       label: BLOCK_LABELS[blockId] ?? blockId,
       kind: 'block' as const,
       icon: featuredProductBlockIcon(blockId),
+      showVisibilityToggle: true,
+      showDeleteButton: true,
     };
   });
 
@@ -315,15 +296,13 @@ export function featuredProductStructureOrder(
     [listKeyBlockChildren(detailsPrefix)]: [
       `${detailsPrefix}:inner-add-block`,
       ...detailsBlockOrder.map((id) => `${detailsPrefix}:nested:${id}`),
-      `${detailsPrefix}:add-block`,
     ],
   };
 
   const headerPrefix = `${detailsPrefix}:nested:header`;
-  out[listKeyBlockChildren(headerPrefix)] = [
-    `${headerPrefix}:inner-add-block`,
-    ...FEATURED_PRODUCT_HEADER_NESTED_ORDER.map((id) => `${headerPrefix}:nested:${id}`),
-  ];
+  out[listKeyBlockChildren(headerPrefix)] = FEATURED_PRODUCT_HEADER_NESTED_ORDER.map(
+    (id) => `${headerPrefix}:nested:${id}`
+  );
 
   const buyButtonsPrefix = `${detailsPrefix}:nested:buy_buttons`;
   const buyButtonsNestedOrder =

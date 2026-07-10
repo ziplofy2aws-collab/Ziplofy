@@ -3,8 +3,7 @@ import { layoutBlueprintKey, remapLayoutSchemaPath } from '../../utils/theme-edi
 
 const MENU_BLOCK_PANEL_KEYS = new Set([
   'menu',
-  'backgroundColor',
-  'textColor',
+  'colorScheme',
   'topLevelSize',
   'submenuSize',
   'font',
@@ -19,8 +18,7 @@ const MENU_BLOCK_PANEL_KEYS = new Set([
 
 const MENU_BLOCK_FIELD_ORDER = [
   'menu',
-  'backgroundColor',
-  'textColor',
+  'colorScheme',
   'topLevelSize',
   'submenuSize',
   'font',

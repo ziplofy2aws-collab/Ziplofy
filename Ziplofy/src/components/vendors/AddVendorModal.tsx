@@ -1,10 +1,5 @@
 import React from 'react';
 import Modal from '../Modal';
-import {
-  vendorInputClass,
-  vendorPrimaryButtonClass,
-  vendorSecondaryButtonClass,
-} from './vendor-ui.util';
 
 interface AddVendorModalProps {
   isOpen: boolean;
@@ -29,14 +24,18 @@ const AddVendorModal: React.FC<AddVendorModalProps> = ({
       maxWidth="sm"
       actions={
         <>
-          <button type="button" onClick={onClose} className={vendorSecondaryButtonClass}>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+          >
             Cancel
           </button>
           <button
             type="button"
             onClick={onSubmit}
             disabled={!vendorName.trim()}
-            className={vendorPrimaryButtonClass}
+            className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Add vendor
           </button>
@@ -44,7 +43,7 @@ const AddVendorModal: React.FC<AddVendorModalProps> = ({
       }
     >
       <div>
-        <label htmlFor="vendor-name" className="mb-1.5 block text-[13px] font-medium text-gray-700">
+        <label htmlFor="vendor-name" className="mb-2 block text-sm font-medium text-gray-700">
           Vendor name
         </label>
         <input
@@ -53,10 +52,7 @@ const AddVendorModal: React.FC<AddVendorModalProps> = ({
           autoFocus
           value={vendorName}
           onChange={onVendorNameChange}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && vendorName.trim()) onSubmit();
-          }}
-          className={vendorInputClass}
+          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm shadow-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
           placeholder="e.g. Acme Wholesale Co."
         />
       </div>

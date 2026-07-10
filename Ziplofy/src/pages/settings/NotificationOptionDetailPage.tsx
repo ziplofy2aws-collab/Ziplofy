@@ -14,6 +14,7 @@ import { useStore } from '../../contexts/store.context';
 import type { NotificationOption } from '../../contexts/notification-options.context';
 import toast from 'react-hot-toast';
 import { useNotificationOverrides } from '../../contexts/notification-overrides.context';
+import { replaceNotificationTemplateVariables } from '../../utils/notification-template-variables';
 
 const NotificationOptionDetailPage: React.FC = () => {
   const { categoryId, categorySlug, optionId } = useParams<{ categoryId: string; categorySlug: string; optionId: string }>();
@@ -294,42 +295,15 @@ const NotificationOptionDetailPage: React.FC = () => {
   }
 
   // Replace template variables with sample data
-  const replaceTemplateVariables = (text: string): string => {
-    return text
-      .replace(/\{\{customer_name\}\}/g, 'John Doe')
-      .replace(/\{\{order_number\}\}/g, '#9999')
-      .replace(/\{\{store_name\}\}/g, 'My Store')
-      .replace(/\{\{view_order_url\}\}/g, '#')
-      .replace(/\{\{store_url\}\}/g, '#')
-      .replace(/\{\{return_tracking_url\}\}/g, '#')
-      .replace(/\{\{return_label_url\}\}/g, '#')
-      .replace(/\{\{account_invite_url\}\}/g, '#')
-      .replace(/\{\{account_url\}\}/g, '#')
-      .replace(/\{\{password_reset_url\}\}/g, '#')
-      .replace(/\{\{new_email\}\}/g, 'newemail@example.com')
-      .replace(/\{\{message_body\}\}/g, 'Your message here')
-      .replace(/\{\{gift_card_code\}\}/g, 'A1B2 3C4D 5E6F 7G8H')
-      .replace(/\{\{gift_card_amount\}\}/g, 'Rs. 100.00')
-      .replace(/\{\{shipping_name\}\}/g, 'Steve Shipper')
-      .replace(/\{\{shipping_address_line1\}\}/g, '123 Shipping Street')
-      .replace(/\{\{shipping_city\}\}/g, 'Shippington')
-      .replace(/\{\{shipping_state\}\}/g, 'Kentucky')
-      .replace(/\{\{shipping_zip\}\}/g, '40003')
-      .replace(/\{\{shipping_country\}\}/g, 'United States')
-      .replace(/\{\{shipping_phone\}\}/g, '555-555-SHIP')
-      .replace(/\{\{shipping_method\}\}/g, 'Generic Shipping')
-      .replace(/\{\{tracking_number\}\}/g, 'None')
-      .replace(/\{\{customer_email\}\}/g, 'jon@example.com');
-  };
+  const replaceTemplateVariables = replaceNotificationTemplateVariables;
 
   // Render email preview HTML from actual emailBody
   const renderEmailPreview = () => {
-    // Use override emailBody if it exists, otherwise use default
     const emailBody = overrideData?.emailBody ?? (currentOption.emailBody || '<p>No email template available.</p>');
     const processedHtml = replaceTemplateVariables(emailBody);
 
     return (
-      <div className="rounded-lg border border-gray-200 p-3 bg-white max-w-[600px] overflow-auto">
+      <div className="rounded-lg border border-gray-200 bg-[#f6f6f7] p-6 overflow-auto">
         <div
           dangerouslySetInnerHTML={{ __html: processedHtml }}
           className="[&_img]:max-w-full [&_img]:h-auto [&_img]:block [&_*]:box-border"
@@ -426,13 +400,22 @@ const NotificationOptionDetailPage: React.FC = () => {
             </div>
           </div>
           {activeTab === 'email' && (
-            <button
-              type="button"
-              onClick={handleSendTest}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
-            >
-              Send test
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleSendTest}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Send test
+              </button>
+              <button
+                type="button"
+                onClick={handleEditCode}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Edit code
+              </button>
+            </div>
           )}
         </header>
 
@@ -497,9 +480,9 @@ const NotificationOptionDetailPage: React.FC = () => {
           {/* Email Preview */}
           {activeTab === 'email' && currentOption.emailSupported && (
             <>
-              <div className="mb-3">
-                <p className="text-xs text-gray-600 mb-1">
-                  Subject: {overrideData?.emailSubject ?? (currentOption.emailSubject || 'No subject')}
+              <div className="mb-4">
+                <p className="text-sm text-gray-700">
+                  Subject: {replaceTemplateVariables(overrideData?.emailSubject ?? (currentOption.emailSubject || 'No subject'))}
                 </p>
               </div>
               {renderEmailPreview()}

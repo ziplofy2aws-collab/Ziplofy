@@ -29,10 +29,6 @@ export type ThemePageRouteSpec = {
   loadCollectionUrlHandle?: string;
   /** Load product detail for `/products/:id` (preview uses first catalog product when id is `preview`) */
   withProductLoader?: boolean;
-  /** Load blog + visible posts for `/blogs/:blogHandle` */
-  withBlogLoader?: boolean;
-  /** Load visible blog post for `/blogs/:blogHandle/:articleHandle` */
-  withBlogPostLoader?: boolean;
 };
 
 export type ThemePageRegistryEntry = {
@@ -74,7 +70,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
   {
     pageId: 'product',
     templateId: 'product',
-    label: 'Default product',
+    label: 'Product page',
     icon: 'product',
     previewPath: '/products/preview',
     routes: [
@@ -98,16 +94,11 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
   {
     pageId: 'collection',
     templateId: 'collection',
-    label: 'Default collection',
+    label: 'Collection page',
     icon: 'collection',
-    previewPath: '/collections/preview',
+    previewPath: '/collection',
     routes: [
-      {
-        path: '/collections/preview',
-        templateId: 'collection',
-        withCollectionLoader: true,
-        loadCollectionUrlHandle: 'preview',
-      },
+      { path: '/collection', templateId: 'collection' },
       {
         path: '/collections/:urlHandle',
         templateId: 'collection',
@@ -120,7 +111,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'collections',
     label: 'Collections',
     icon: 'collection',
-    previewPath: '/collections/preview',
+    previewPath: '/collection',
     routes: [],
   },
   {
@@ -160,28 +151,16 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'blogs',
     label: 'Blogs',
     icon: 'blog',
-    previewPath: '/blogs/preview',
-    routes: [
-      {
-        path: '/blogs/:blogHandle',
-        templateId: 'blogs',
-        withBlogLoader: true,
-      },
-    ],
+    previewPath: '/',
+    routes: [],
   },
   {
     pageId: 'blog-posts',
     templateId: 'blog-posts',
     label: 'Blog posts',
     icon: 'blog',
-    previewPath: '/blogs/preview/preview',
-    routes: [
-      {
-        path: '/blogs/:blogHandle/:articleHandle',
-        templateId: 'blog-posts',
-        withBlogPostLoader: true,
-      },
-    ],
+    previewPath: '/',
+    routes: [],
   },
   {
     pageId: 'search',
@@ -307,8 +286,6 @@ export type ThemePageMenuSeed = {
   icon: ThemePageIcon;
   dividerBefore?: boolean;
   hasSubmenu?: boolean;
-  /** Opens checkout editor in a new tab — not a selectable preview page. */
-  openInNewTab?: boolean;
   children?: ThemePageMenuSeed[];
 };
 
@@ -320,7 +297,10 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     label: 'Products',
     icon: 'product',
     hasSubmenu: true,
-    children: [{ previewPage: 'product', label: 'Default product', icon: 'product' }],
+    children: [
+      { previewPage: 'product', label: 'Product page', icon: 'product' },
+      { previewPage: 'products', label: 'All products', icon: 'product' },
+    ],
   },
   {
     previewPage: 'collections',
@@ -328,19 +308,14 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     icon: 'collection',
     hasSubmenu: true,
     children: [
-      { previewPage: 'collection', label: 'Default collection', icon: 'collection' },
       { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
+      { previewPage: 'collection', label: 'Collection page', icon: 'collection' },
     ],
   },
   { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
   { previewPage: 'gift-card', label: 'Gift card', icon: 'gift' },
   { previewPage: 'cart', label: 'Cart', icon: 'cart', dividerBefore: true },
-  {
-    previewPage: 'checkout',
-    label: 'Checkout and customer accounts',
-    icon: 'checkout',
-    openInNewTab: true,
-  },
+  { previewPage: 'checkout', label: 'Checkout and customer accounts', icon: 'checkout' },
   { previewPage: 'pages', label: 'Pages', icon: 'page', dividerBefore: true },
   {
     previewPage: 'blogs',

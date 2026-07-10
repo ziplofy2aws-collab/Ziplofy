@@ -122,7 +122,13 @@ export function HeaderLogoBlockSettingsPanel({
       <div className="px-1 py-3">
         <p className="text-[12px] text-gray-500">
           Edit logo in{' '}
-          <span className="font-medium text-gray-700">Theme settings → Logo and favicon</span>
+          <button
+            type="button"
+            className="text-[#005bd3] underline underline-offset-2 hover:text-[#004299]"
+            onClick={() => window.open('/settings/theme', '_blank', 'noopener,noreferrer')}
+          >
+            theme settings
+          </button>
         </p>
       </div>
 

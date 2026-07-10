@@ -2,8 +2,6 @@ import React from 'react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import Modal from '../Modal';
 import Select from '../Select';
-import { productFormInputClass } from '../products/product-form-appearance';
-import { poPrimaryButtonClass, poSecondaryButtonClass } from './purchase-order-ui.util';
 
 interface AdjustmentRow {
   type: string;
@@ -31,12 +29,12 @@ const ManageCostSummaryModal: React.FC<ManageCostSummaryModalProps> = ({
   adjustmentTypeOptions,
 }) => {
   const handleTypeChange = (idx: number, value: string) => {
-    onAdjustmentsRowsChange(adjustmentsRows.map((row, i) => (i === idx ? { ...row, type: value } : row)));
+    onAdjustmentsRowsChange(adjustmentsRows.map((r, i) => i === idx ? { ...r, type: value } : r));
   };
 
   const handleAmountChange = (idx: number, value: number) => {
-    const next = Number(value) || 0;
-    onAdjustmentsRowsChange(adjustmentsRows.map((row, i) => (i === idx ? { ...row, amount: next } : row)));
+    const n = Number(value) || 0;
+    onAdjustmentsRowsChange(adjustmentsRows.map((r, i) => i === idx ? { ...r, amount: n } : r));
   };
 
   const handleRemove = (idx: number) => {
@@ -55,57 +53,68 @@ const ManageCostSummaryModal: React.FC<ManageCostSummaryModalProps> = ({
       maxWidth="sm"
       actions={
         <>
-          <button type="button" onClick={onClose} className={poSecondaryButtonClass}>
+          <button
+            onClick={onClose}
+            className="px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors"
+          >
             Cancel
           </button>
-          <button type="button" onClick={onClose} className={poPrimaryButtonClass}>
+          <button
+            onClick={onClose}
+            className="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+          >
             Save
           </button>
         </>
       }
     >
-      <div className="mt-2 space-y-3">
+      <div className="space-y-3 mt-2">
         {adjustmentsRows.map((row, idx) => (
-          <div key={idx} className="flex flex-col items-center gap-3 md:flex-row">
+          <div key={idx} className="flex flex-col md:flex-row gap-3 items-center">
             <div className="flex-1">
               <Select
                 label="Adjustment"
                 value={idx === 0 ? 'shipping' : row.type}
                 options={adjustmentTypeOptions}
-                onChange={(value) => handleTypeChange(idx, value)}
+                onChange={(v) => handleTypeChange(idx, v)}
                 placeholder="Select adjustment"
                 disabled={idx === 0}
               />
             </div>
             <div className="flex-1">
-              <label className="mb-1.5 block text-sm font-normal text-gray-500">Amount</label>
+              <label className="block text-xs text-gray-600 mb-1.5">
+                Amount
+              </label>
               <input
                 type="number"
                 value={row.amount}
                 onChange={(e) => handleAmountChange(idx, Number(e.target.value))}
-                className={productFormInputClass('minimal')}
+                className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
               />
             </div>
-            {idx !== 0 ? (
+            {idx !== 0 && (
               <button
-                type="button"
                 onClick={() => handleRemove(idx)}
-                className="rounded p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-red-600"
+                className="p-1 text-gray-600 hover:text-red-600 transition-colors"
                 aria-label="Remove adjustment"
               >
-                <TrashIcon className="h-4 w-4" />
+                <TrashIcon className="w-4 h-4" />
               </button>
-            ) : null}
+            )}
           </div>
         ))}
-        {adjustmentsRows.length < 8 ? (
-          <button type="button" onClick={handleAdd} className={`w-full ${poSecondaryButtonClass}`}>
+        {adjustmentsRows.length < 8 && (
+          <button
+            onClick={handleAdd}
+            className="w-full px-3 py-1.5 text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
+          >
             Add adjustment
           </button>
-        ) : null}
+        )}
       </div>
     </Modal>
   );
 };
 
 export default ManageCostSummaryModal;
+

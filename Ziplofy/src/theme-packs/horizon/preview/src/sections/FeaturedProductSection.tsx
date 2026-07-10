@@ -97,10 +97,7 @@ export function FeaturedProductSection({
   const gridCols = style.equalColumns ? '1fr 1fr' : '1.05fr 0.95fr';
 
   const shell: CSSProperties = {
-    background:
-      !style.backgroundColor || style.backgroundColor === 'default'
-        ? scheme.background
-        : style.backgroundColor,
+    background: scheme.background,
     color: scheme.color,
     fontFamily: fontBody,
     paddingTop: style.paddingTop,

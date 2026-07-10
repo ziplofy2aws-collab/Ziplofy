@@ -4,11 +4,6 @@ import ProductTagsInput from "./ProductTagsInput";
 import ProductTypeInput from "./ProductTypeInput";
 import SelectedTagsList from "./SelectedTagsList";
 import VendorInput from "./VendorInput";
-import {
-  type ProductFormAppearance,
-  productFormCardClass,
-  productFormSectionTitleClass,
-} from "./product-form-appearance";
 
 interface ProductOrganizationSectionProps {
   productType: string;
@@ -18,7 +13,6 @@ interface ProductOrganizationSectionProps {
   onVendorChange: (vendorId: string) => void;
   onTagsChange: (tags: string[]) => void;
   activeStoreId: string | null;
-  appearance?: ProductFormAppearance;
 }
 
 const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
@@ -29,7 +23,6 @@ const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
   onVendorChange,
   onTagsChange,
   activeStoreId,
-  appearance = 'default',
 }) => {
   const { productTags } = useProductTags();
 
@@ -38,10 +31,12 @@ const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
   }, [tags, onTagsChange]);
 
   return (
-    <div className={productFormCardClass(appearance)}>
-      <h2 className={productFormSectionTitleClass(appearance)}>Product Organization</h2>
-
-      <div className={appearance === 'minimal' ? 'space-y-4' : 'space-y-5'}>
+    <div className="bg-white rounded-xl border border-gray-200/80 p-7 shadow-sm">
+      <h2 className="text-base font-semibold text-gray-900 mb-5">
+        Product Organization
+      </h2>
+      
+      <div className="space-y-5">
         <ProductTypeInput
           selectedProductTypeId={productType}
           activeStoreId={activeStoreId}
@@ -54,7 +49,7 @@ const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
         />
       </div>
 
-      <div className={appearance === 'minimal' ? 'mt-5' : 'mt-6'}>
+      <div className="mt-6">
         <ProductTagsInput
           selectedTags={tags}
           activeStoreId={activeStoreId}
@@ -71,3 +66,4 @@ const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
 };
 
 export default ProductOrganizationSection;
+

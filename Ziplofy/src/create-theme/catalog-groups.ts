@@ -62,13 +62,14 @@ export const CREATE_THEME_CATALOG_GROUPS: Record<CreateThemeCatalogGroup, Create
           "email-signup"
         ]
       },
-        "layout": {
-          "label": "Layout",
-          "itemIds": [
-            "custom-section",
-            "divider"
-          ]
-        },
+      "layout": {
+        "label": "Layout",
+        "itemIds": [
+          "custom-liquid",
+          "custom-section",
+          "divider"
+        ]
+      },
       "products": {
         "label": "Products",
         "itemIds": [
@@ -138,13 +139,14 @@ export const CREATE_THEME_CATALOG_GROUPS: Record<CreateThemeCatalogGroup, Create
           "email-signup"
         ]
       },
-        "layout": {
-          "label": "Layout",
-          "itemIds": [
-            "custom-section",
-            "divider"
-          ]
-        },
+      "layout": {
+        "label": "Layout",
+        "itemIds": [
+          "custom-liquid",
+          "custom-section",
+          "divider"
+        ]
+      },
       "products": {
         "label": "Products",
         "itemIds": [

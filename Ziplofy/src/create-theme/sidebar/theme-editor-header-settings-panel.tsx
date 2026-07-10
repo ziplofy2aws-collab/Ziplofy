@@ -11,9 +11,13 @@ import {
   HEADER_ELEMENT_GROUP_ORDER,
   groupHeaderPanelFields,
 } from './theme-editor-header-panel.utils';
-import { ThemePaletteColorField } from '../settings/ThemePaletteColorField';
-import { ThemeDefaultColorField } from '../settings/ThemeDefaultColorField';
-import { ThemeHexColorField } from '../settings/ThemeHexColorField';
+
+const SCHEME_SWATCHES: Record<string, { bg: string; fg: string; accent: string }> = {
+  'scheme-1': { bg: '#111827', fg: '#f9fafb', accent: '#60a5fa' },
+  'scheme-2': { bg: '#1e3a5f', fg: '#eff6ff', accent: '#93c5fd' },
+  'scheme-3': { bg: '#431407', fg: '#fff7ed', accent: '#fb923c' },
+  'scheme-4': { bg: '#4c1d95', fg: '#f5f3ff', accent: '#c4b5fd' },
+};
 
 type PanelProps = {
   fields: EditorFieldDef[];
@@ -175,6 +179,49 @@ function SliderRow({
   );
 }
 
+function ColorSchemeRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: PanelProps['onFieldChange'];
+}) {
+  const current = fieldValueAsString(values, field) || field.options?.[0]?.value || 'scheme-1';
+  const swatch = SCHEME_SWATCHES[current] ?? SCHEME_SWATCHES['scheme-1'];
+
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
+      <span className="text-[13px] text-gray-800">{field.label}</span>
+      <div className="relative min-w-[140px]">
+        <div
+          className="pointer-events-none absolute left-2.5 top-1/2 flex -translate-y-1/2 items-center gap-1 rounded border border-[#e1e1e1] bg-white px-1 py-0.5"
+          aria-hidden
+        >
+          <span className="text-[10px] font-semibold" style={{ color: swatch.fg }}>
+            Aa
+          </span>
+          <span className="h-3 w-3 rounded-sm" style={{ background: swatch.bg }} />
+          <span className="h-3 w-3 rounded-sm" style={{ background: swatch.accent }} />
+        </div>
+        <select
+          value={current}
+          onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
+          className="w-full appearance-none rounded-lg border border-[#c9cccf] bg-white py-2 pl-[72px] pr-8 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+        >
+          {(field.options ?? []).map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <ChevronDownIcon className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+      </div>
+    </div>
+  );
+}
+
 function ManageLink({ label, href }: { label: string; href: string }) {
   return (
     <button
@@ -203,6 +250,50 @@ function CustomerAccountSection({
         account settings. Legacy accounts not supported.
       </p>
       <SelectDropdownRow field={menu} values={values} onFieldChange={onFieldChange} />
+    </div>
+  );
+}
+
+function LocalizationSection({
+  fields,
+  values,
+  onFieldChange,
+}: PanelProps & { fields: EditorFieldDef[] }) {
+  const byKey = (suffix: string) => fields.find((f) => f.path.endsWith(suffix));
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Localization</h3>
+      <div className="space-y-0.5">
+        {byKey('countryRegionEnabled') ? (
+          <div className="pb-1">
+            <ToggleRow field={byKey('countryRegionEnabled')!} values={values} onFieldChange={onFieldChange} />
+            <ManageLink label="Manage countries/regions" href="/settings/markets" />
+          </div>
+        ) : null}
+        {byKey('showFlag') ? (
+          <ToggleRow field={byKey('showFlag')!} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {byKey('languageSelectorEnabled') ? (
+          <div className="pb-1">
+            <ToggleRow
+              field={byKey('languageSelectorEnabled')!}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+            <ManageLink label="Manage languages" href="/settings/languages" />
+          </div>
+        ) : null}
+        {byKey('localizationFont') ? (
+          <SelectDropdownRow field={byKey('localizationFont')!} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {byKey('localizationSize') ? (
+          <SelectDropdownRow field={byKey('localizationSize')!} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {byKey('localizationPosition') ? (
+          <SegmentedRow field={byKey('localizationPosition')!} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -351,6 +442,11 @@ function DefaultSection({
           if (field.widget === 'slider') {
             return <SliderRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />;
           }
+          if (field.widget === 'color-scheme') {
+            return (
+              <ColorSchemeRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+            );
+          }
           if (field.type === 'boolean' || field.widget === 'toggle') {
             return <ToggleRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />;
           }
@@ -369,12 +465,7 @@ function DefaultSection({
 }
 
 /** Shopify Header element settings — fixed section order and controls. */
-export function HeaderSettingsPanel({
-  fields,
-  values,
-  colorPalette,
-  onFieldChange,
-}: PanelProps & { colorPalette: string[] }) {
+export function HeaderSettingsPanel({ fields, values, onFieldChange }: PanelProps) {
   const grouped = useMemo(() => groupHeaderPanelFields(fields), [fields]);
 
   return (
@@ -393,25 +484,21 @@ export function HeaderSettingsPanel({
             />
           );
         }
+        if (key === 'Localization') {
+          return (
+            <LocalizationSection
+              key={key}
+              fields={groupFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
         if (key === '__appearance__') {
           return (
             <div key={key} className="px-1 py-3">
-              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
               <div className="space-y-0.5">
                 {groupFields.map((field) => {
-                  if (field.widget === 'color' || field.type === 'color') {
-                    return (
-                      <ThemeDefaultColorField
-                        key={field.path}
-                        label={field.label}
-                        path={field.path}
-                        values={values}
-                        colorPalette={colorPalette}
-                        defaultPaletteIndex={1}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
                   if (field.widget === 'segmented') {
                     return (
                       <SegmentedRow
@@ -446,119 +533,23 @@ export function HeaderSettingsPanel({
         if (key === 'Utilities') {
           const menuStyle = groupFields.find((f) => f.path.endsWith('menuStyle'));
           if (!menuStyle) return null;
-          const sizeField = groupFields.find((f) => f.path.endsWith('utilityTextSize'));
-          const fontField = groupFields.find((f) => f.path.endsWith('utilityTextFont'));
-          const caseField = groupFields.find((f) => f.path.endsWith('utilityTextCase'));
-          const isText = fieldValueAsString(values, menuStyle) === 'text';
           return (
             <div key={key} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Utilities</h3>
               <SegmentedRow field={menuStyle} values={values} onFieldChange={onFieldChange} />
               {menuStyle.description ? (
-                <p className="mb-1 mt-1 text-[12px] text-gray-500">{menuStyle.description}</p>
-              ) : null}
-              {isText ? (
-                <div className="mt-2 space-y-0.5">
-                  {sizeField ? (
-                    <SelectDropdownRow field={sizeField} values={values} onFieldChange={onFieldChange} />
-                  ) : null}
-                  {fontField ? (
-                    <SelectDropdownRow field={fontField} values={values} onFieldChange={onFieldChange} />
-                  ) : null}
-                  {caseField ? (
-                    <SegmentedRow field={caseField} values={values} onFieldChange={onFieldChange} />
-                  ) : null}
-                </div>
+                <p className="mt-1 text-[12px] text-gray-500">{menuStyle.description}</p>
               ) : null}
             </div>
           );
         }
         if (key === 'Colors') {
-          const background = groupFields.find((f) => f.path.endsWith('topRowBackground'));
-          const text = groupFields.find((f) => f.path.endsWith('topRowText'));
-          const bottomBackground = groupFields.find((f) => f.path.endsWith('bottomRowBackground'));
-          const bottomText = groupFields.find((f) => f.path.endsWith('bottomRowText'));
-          if (!background && !text && !bottomBackground && !bottomText) return null;
+          const scheme = groupFields.find((f) => f.path.endsWith('colorScheme'));
+          if (!scheme) return null;
           return (
             <div key={key} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Colors</h3>
-              <div className="space-y-0.5">
-                {background ? (
-                  <ThemePaletteColorField
-                    label={background.label}
-                    path={background.path}
-                    values={values}
-                    colorPalette={colorPalette}
-                    defaultPaletteIndex={0}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
-                {text ? (
-                  <ThemeDefaultColorField
-                    label={text.label}
-                    path={text.path}
-                    values={values}
-                    colorPalette={colorPalette}
-                    defaultPaletteIndex={1}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
-                {bottomBackground ? (
-                  <ThemeDefaultColorField
-                    label={bottomBackground.label}
-                    path={bottomBackground.path}
-                    values={values}
-                    colorPalette={colorPalette}
-                    defaultPaletteIndex={0}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
-                {bottomText ? (
-                  <ThemeDefaultColorField
-                    label={bottomText.label}
-                    path={bottomText.path}
-                    values={values}
-                    colorPalette={colorPalette}
-                    defaultPaletteIndex={1}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : null}
-              </div>
-            </div>
-          );
-        }
-        if (key === 'Cart bubble') {
-          const bubble = groupFields.find((f) => f.path.endsWith('cartBubbleStyle'));
-          if (!bubble) return null;
-          const bubbleBackground = groupFields.find((f) => f.path.endsWith('cartBubbleBackground'));
-          const bubbleText = groupFields.find((f) => f.path.endsWith('cartBubbleText'));
-          const isCustom = fieldValueAsString(values, bubble) === 'custom';
-          return (
-            <div key={key} className="px-1 py-3">
-              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Cart bubble</h3>
-              <SegmentedRow field={bubble} values={values} onFieldChange={onFieldChange} />
-              {isCustom ? (
-                <div className="mt-2 space-y-0.5">
-                  {bubbleBackground ? (
-                    <ThemeHexColorField
-                      label={bubbleBackground.label}
-                      path={bubbleBackground.path}
-                      values={values}
-                      defaultColor="#000000"
-                      onFieldChange={onFieldChange}
-                    />
-                  ) : null}
-                  {bubbleText ? (
-                    <ThemeHexColorField
-                      label={bubbleText.label}
-                      path={bubbleText.path}
-                      values={values}
-                      defaultColor="#ffffff"
-                      onFieldChange={onFieldChange}
-                    />
-                  ) : null}
-                </div>
-              ) : null}
+              <ColorSchemeRow field={scheme} values={values} onFieldChange={onFieldChange} />
             </div>
           );
         }

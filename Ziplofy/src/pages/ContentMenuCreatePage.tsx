@@ -19,17 +19,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useBlogs, type Blog } from '../contexts/blog.context';
-import { useBlogPosts, type BlogPost } from '../contexts/blog-post.context';
 import { useCollections, type Collection } from '../contexts/collection.context';
 import { useProducts, type Product } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreMenus } from '../contexts/store-menu.context';
 import { menuItemDraftsToApiInputs, type MenuItemDraft } from '../utils/store-menu-draft.util';
-import {
-  blogLinkPath,
-  blogPostLinkPath,
-} from '../components/theme-editor/ThemeEditorLinkPicker';
 
 type LinkPickerOption = {
   id: string;
@@ -93,7 +87,7 @@ type LinkPickerSelection = {
   productId?: string;
 };
 
-type LinkPickerView = 'root' | 'collections' | 'products' | 'blogs' | 'blog-posts';
+type LinkPickerView = 'root' | 'collections' | 'products';
 
 function collectionLinkPath(collection: Collection): string {
   const handle = collection.urlHandle?.trim();
@@ -121,8 +115,6 @@ function LinkPickerDropdown({
   const panelRef = useRef<HTMLDivElement>(null);
   const { collections, loading: collectionsLoading, fetchCollectionsByStoreId } = useCollections();
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
-  const { blogs, loading: blogsLoading, fetchBlogsByStoreId } = useBlogs();
-  const { blogPosts, loading: blogPostsLoading, fetchBlogPostsByStoreId } = useBlogPosts();
   const [view, setView] = useState<LinkPickerView>('root');
 
   useEffect(() => {
@@ -162,30 +154,6 @@ function LinkPickerDropdown({
     );
   }, [products, searchQuery]);
 
-  const filteredBlogs = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return blogs;
-    return blogs.filter(
-      (blog) =>
-        blog.title.toLowerCase().includes(q) || blog.urlHandle.toLowerCase().includes(q)
-    );
-  }, [blogs, searchQuery]);
-
-  const blogHandleById = useMemo(
-    () => new Map(blogs.map((blog) => [blog._id, blog.urlHandle])),
-    [blogs]
-  );
-
-  const filteredBlogPosts = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return blogPosts;
-    return blogPosts.filter((post) => {
-      const blogTitle = blogs.find((blog) => blog._id === post.blogId)?.title ?? '';
-      const haystack = [post.title, post.urlHandle, blogTitle].join(' ').toLowerCase();
-      return haystack.includes(q);
-    });
-  }, [blogPosts, blogs, searchQuery]);
-
   const openCollectionsPicker = useCallback(async () => {
     if (!storeId) {
       toast.error('Select a store before choosing collections');
@@ -212,32 +180,6 @@ function LinkPickerDropdown({
     }
   }, [storeId, fetchProductsByStoreId]);
 
-  const openBlogsPicker = useCallback(async () => {
-    if (!storeId) {
-      toast.error('Select a store before choosing blogs');
-      return;
-    }
-    setView('blogs');
-    try {
-      await fetchBlogsByStoreId(storeId);
-    } catch {
-      toast.error('Failed to load blogs');
-    }
-  }, [storeId, fetchBlogsByStoreId]);
-
-  const openBlogPostsPicker = useCallback(async () => {
-    if (!storeId) {
-      toast.error('Select a store before choosing blog posts');
-      return;
-    }
-    setView('blog-posts');
-    try {
-      await Promise.all([fetchBlogsByStoreId(storeId), fetchBlogPostsByStoreId(storeId)]);
-    } catch {
-      toast.error('Failed to load blog posts');
-    }
-  }, [storeId, fetchBlogsByStoreId, fetchBlogPostsByStoreId]);
-
   const pickAndClose = (selection: LinkPickerSelection) => {
     onSelect(selection);
     onClose();
@@ -252,15 +194,15 @@ function LinkPickerDropdown({
   return (
     <div
       ref={panelRef}
-      className="absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(300px,50vh)] overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-md"
+      className="absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
     >
-      {view === 'collections' || view === 'products' || view === 'blogs' || view === 'blog-posts' ? (
+      {view === 'collections' || view === 'products' ? (
         <>
           <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-2 py-2">
             <button
               type="button"
               onClick={() => setView('root')}
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[13px] font-normal text-gray-600 hover:bg-gray-50"
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-sm font-medium text-gray-700 hover:bg-gray-100"
             >
               <ArrowLeftIcon className="h-4 w-4" />
               Back
@@ -270,17 +212,9 @@ function LinkPickerDropdown({
                 ? collectionsLoading
                   ? 'Loading…'
                   : `${collectionsResultCount} result${collectionsResultCount === 1 ? '' : 's'}`
-                : view === 'products'
-                  ? productsLoading
-                    ? 'Loading…'
-                    : `${productsResultCount} result${productsResultCount === 1 ? '' : 's'}`
-                  : view === 'blogs'
-                    ? blogsLoading
-                      ? 'Loading…'
-                      : `${filteredBlogs.length} result${filteredBlogs.length === 1 ? '' : 's'}`
-                    : blogPostsLoading
-                      ? 'Loading…'
-                      : `${filteredBlogPosts.length} result${filteredBlogPosts.length === 1 ? '' : 's'}`}
+                : productsLoading
+                  ? 'Loading…'
+                  : `${productsResultCount} result${productsResultCount === 1 ? '' : 's'}`}
             </span>
           </div>
 
@@ -298,7 +232,7 @@ function LinkPickerDropdown({
                       linkType: 'all-collections',
                     })
                   }
-                  className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
                 >
                   <TagIcon className="h-5 w-5 shrink-0 text-gray-500" />
                   <span className="min-w-0 flex-1 truncate">All collections</span>
@@ -315,7 +249,7 @@ function LinkPickerDropdown({
                         collectionId: collection._id,
                       })
                     }
-                    className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
                   >
                     {collection.imageUrl ? (
                       <img
@@ -334,10 +268,9 @@ function LinkPickerDropdown({
                 ) : null}
               </>
             )
-          ) : view === 'products' ? (
-            productsLoading ? (
-              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading products…</p>
-            ) : (
+          ) : productsLoading ? (
+            <p className="px-3 py-4 text-center text-sm text-gray-500">Loading products…</p>
+          ) : (
             <>
               <button
                 type="button"
@@ -348,7 +281,7 @@ function LinkPickerDropdown({
                     linkType: 'all-products',
                   })
                 }
-                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
+                className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
               >
                 <TagIcon className="h-5 w-5 shrink-0 text-gray-500" />
                 <span className="min-w-0 flex-1 truncate">All products</span>
@@ -367,7 +300,7 @@ function LinkPickerDropdown({
                         productId: product._id,
                       })
                     }
-                    className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
                   >
                     {imageUrl ? (
                       <img
@@ -386,67 +319,12 @@ function LinkPickerDropdown({
                 <p className="px-3 py-3 text-center text-sm text-gray-500">No products found</p>
               ) : null}
             </>
-            )
-          ) : view === 'blogs' ? (
-            blogsLoading ? (
-              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading blogs…</p>
-            ) : (
-              <>
-                {filteredBlogs.map((blog: Blog) => (
-                  <button
-                    key={blog._id}
-                    type="button"
-                    onClick={() =>
-                      pickAndClose({
-                        link: blogLinkPath(blog),
-                        label: blog.title,
-                        linkType: 'custom',
-                      })
-                    }
-                    className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
-                  >
-                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
-                    <span className="min-w-0 flex-1 truncate">{blog.title}</span>
-                  </button>
-                ))}
-                {filteredBlogs.length === 0 ? (
-                  <p className="px-3 py-3 text-center text-sm text-gray-500">No blogs found</p>
-                ) : null}
-              </>
-            )
-          ) : view === 'blog-posts' ? (
-            blogPostsLoading ? (
-              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading blog posts…</p>
-            ) : (
-              <>
-                {filteredBlogPosts.map((post: BlogPost) => (
-                  <button
-                    key={post._id}
-                    type="button"
-                    onClick={() =>
-                      pickAndClose({
-                        link: blogPostLinkPath(post, blogHandleById),
-                        label: post.title,
-                        linkType: 'custom',
-                      })
-                    }
-                    className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
-                  >
-                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
-                    <span className="min-w-0 flex-1 truncate">{post.title}</span>
-                  </button>
-                ))}
-                {filteredBlogPosts.length === 0 ? (
-                  <p className="px-3 py-3 text-center text-sm text-gray-500">No blog posts found</p>
-                ) : null}
-              </>
-            )
-          ) : null}
+          )}
         </>
       ) : (
         LINK_PICKER_SECTIONS.map((section) => (
           <div key={section.id} className="py-1">
-            <p className="px-3 py-1.5 text-[11px] font-normal text-gray-400">{section.title}</p>
+            <p className="px-3 py-1.5 text-xs font-semibold text-gray-500">{section.title}</p>
             {section.options.map((opt) => {
               const Icon = opt.icon;
               return (
@@ -462,14 +340,6 @@ function LinkPickerDropdown({
                       void openProductsPicker();
                       return;
                     }
-                    if (opt.id === 'blogs' && opt.hasChildren) {
-                      void openBlogsPicker();
-                      return;
-                    }
-                    if (opt.id === 'blog-posts' && opt.hasChildren) {
-                      void openBlogPostsPicker();
-                      return;
-                    }
                     if (opt.hasChildren) return;
                     pickAndClose({
                       link: opt.value,
@@ -482,7 +352,7 @@ function LinkPickerDropdown({
                             : undefined,
                     });
                   }}
-                  className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] font-normal text-gray-700 hover:bg-gray-50"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
                 >
                   <Icon className="h-5 w-5 shrink-0 text-gray-500" />
                   <span className="min-w-0 flex-1 truncate">{opt.label}</span>
@@ -515,30 +385,30 @@ export function MenuItemRow({
   const [linkPickerOpen, setLinkPickerOpen] = useState(false);
 
   return (
-    <div className="rounded-md border border-gray-200/80 bg-white p-2.5">
-      <div className="flex items-start gap-2">
+    <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+      <div className="flex items-start gap-2 sm:gap-3">
         <button
           type="button"
-          className="mt-6 shrink-0 cursor-grab rounded p-0.5 text-gray-300 hover:bg-gray-50 hover:text-gray-500 active:cursor-grabbing"
+          className="mt-8 shrink-0 cursor-grab rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:cursor-grabbing"
           aria-label="Reorder menu item"
         >
-          <Bars3Icon className="h-4 w-4" />
+          <Bars3Icon className="h-5 w-5" />
         </button>
 
-        <div className="grid min-w-0 flex-1 gap-2 sm:grid-cols-2">
+        <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-0.5 block text-xs font-normal text-gray-500">Label</label>
+            <label className="mb-1 block text-sm font-medium text-gray-800">Label</label>
             <input
               type="text"
               value={item.label}
               onChange={(e) => onChange({ label: e.target.value })}
               placeholder="e.g., About us"
-              className="w-full rounded-md border border-gray-200 px-2.5 py-1.5 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             />
           </div>
 
           <div className="relative">
-            <label className="mb-0.5 block text-xs font-normal text-gray-500">Link</label>
+            <label className="mb-1 block text-sm font-medium text-gray-800">Link</label>
             <input
               type="text"
               value={item.linkLabel ?? item.link}
@@ -550,7 +420,7 @@ export function MenuItemRow({
               }
               onFocus={() => setLinkPickerOpen(true)}
               placeholder="Search or paste link"
-              className="w-full rounded-md border border-gray-200 px-2.5 py-1.5 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             />
             <LinkPickerDropdown
               open={linkPickerOpen}
@@ -571,22 +441,22 @@ export function MenuItemRow({
           </div>
         </div>
 
-        <div className="mt-5 flex shrink-0 items-center gap-0.5">
+        <div className="mt-7 flex shrink-0 items-center gap-1">
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
+            className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
             aria-label="Confirm menu item"
           >
-            <CheckIcon className="h-4 w-4" />
+            <CheckIcon className="h-5 w-5" />
           </button>
           <button
             type="button"
             onClick={onRemove}
-            className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-50 hover:text-red-600"
+            className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-red-600"
             aria-label="Remove menu item"
           >
-            <TrashIcon className="h-4 w-4" />
+            <TrashIcon className="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -656,25 +526,25 @@ export const ContentMenuCreatePage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-page-background-color">
-      <div className="mx-auto max-w-3xl px-3 py-4 sm:px-4">
-        <nav className="mb-4 flex items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
+    <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color">
+      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
+        <nav className="mb-5 flex items-center gap-2 text-sm" aria-label="Breadcrumb">
           <Link
             to="/content/menus"
-            className="inline-flex items-center gap-1 font-normal text-gray-500 hover:text-gray-700"
+            className="inline-flex items-center gap-1.5 font-medium text-gray-600 hover:text-gray-900"
           >
-            <Bars3Icon className="h-3.5 w-3.5" />
+            <Bars3Icon className="h-4 w-4" />
             Menus
           </Link>
-          <ChevronRightIcon className="h-3.5 w-3.5 text-gray-300" aria-hidden />
-          <span className="font-normal text-gray-700">Add menu</span>
+          <ChevronRightIcon className="h-4 w-4 text-gray-400" aria-hidden />
+          <span className="font-semibold text-gray-900">Add menu</span>
         </nav>
 
-        <div className="space-y-3">
-          <section className="rounded-lg border border-gray-200/80 bg-white p-4 shadow-sm">
-            <div className="space-y-3">
+        <div className="space-y-4">
+          <section className="rounded-2xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
+            <div className="space-y-4">
               <div>
-                <label htmlFor={nameInputId} className="mb-1 block text-xs font-normal text-gray-500">
+                <label htmlFor={nameInputId} className="mb-1.5 block text-sm font-semibold text-gray-900">
                   Name
                 </label>
                 <input
@@ -683,21 +553,22 @@ export const ContentMenuCreatePage = () => {
                   value={menuName}
                   onChange={(e) => setMenuName(e.target.value)}
                   placeholder="e.g., Sidebar menu"
-                  className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                  className="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
-              <p className="text-[12px] font-normal text-gray-500">
-                <span className="text-gray-600">Handle:</span> {displayHandle || '—'}
+              <p className="text-sm text-gray-600">
+                <span className="font-medium text-gray-800">Handle:</span>{' '}
+                <span className="text-gray-500">{displayHandle || '—'}</span>
               </p>
             </div>
           </section>
 
-          <section className="rounded-lg border border-gray-200/80 bg-white shadow-sm">
-            <div className="border-b border-gray-100 px-4 py-2.5">
-              <h2 className="text-[13px] font-medium text-gray-800">Menu items</h2>
+          <section className="rounded-2xl border border-gray-200/80 bg-white shadow-sm">
+            <div className="border-b border-gray-100 px-5 py-4 sm:px-6">
+              <h2 className="text-sm font-semibold text-gray-900">Menu items</h2>
             </div>
 
-            <div className="space-y-2 p-3">
+            <div className="space-y-3 p-4 sm:p-5">
               {items.map((item) => (
                 <MenuItemRow
                   key={item.id}
@@ -712,21 +583,21 @@ export const ContentMenuCreatePage = () => {
               <button
                 type="button"
                 onClick={addMenuItem}
-                className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-gray-200 bg-gray-50/50 px-3 py-3 text-[13px] font-normal text-blue-600 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-4 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50/50 hover:border-blue-200"
               >
-                <PlusCircleIcon className="h-4 w-4" />
+                <PlusCircleIcon className="h-5 w-5" />
                 Add menu item
               </button>
             </div>
           </section>
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-6 flex justify-end">
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex min-w-22 items-center justify-center rounded-lg bg-blue-600 px-4 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-60"
+            className="inline-flex min-w-[7rem] items-center justify-center rounded-full bg-gray-900 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gray-800 disabled:opacity-60"
           >
             {saving ? 'Saving…' : 'Save'}
           </button>

@@ -1,13 +1,11 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
-import { prepareCollectionListSettingsNode } from './theme-editor-collection-list-panel.utils';
 
 export const COLLECTION_LIST_BENTO_PANEL_GROUP_ORDER = [
   'Collections',
   'Cards layout',
   'Section layout',
   'Padding',
-  'Theme settings',
   'Custom CSS',
 ] as const;
 
@@ -20,8 +18,7 @@ const FIELD_SORT: Record<string, number> = {
   cardsGap: 2,
   sectionWidth: 0,
   layoutGap: 1,
-  backgroundColor: 2,
-  colorScheme: 0,
+  colorScheme: 2,
   paddingTop: 0,
   paddingBottom: 1,
   customCss: 0,
@@ -50,8 +47,7 @@ export function sortCollectionListBentoPanelFields(fields: EditorFieldDef[]): Ed
     'Cards layout': 1,
     'Section layout': 2,
     Padding: 3,
-    'Theme settings': 4,
-    'Custom CSS': 5,
+    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -81,5 +77,8 @@ export function isCollectionListBentoSettingsPanelFields(fields: EditorFieldDef[
 }
 
 export function prepareCollectionListBentoSettingsNode(node: SidebarNode): SidebarNode {
-  return prepareCollectionListSettingsNode({ ...node, label: node.label ?? 'Collection list: Bento' });
+  const fields = sortCollectionListBentoPanelFields(
+    filterSidebarSectionPanelFields(node.fields ?? [], isCollectionListBentoPanelField)
+  );
+  return { ...node, label: 'Collection list: Bento', kind: 'section', fields };
 }

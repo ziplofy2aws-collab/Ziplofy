@@ -32,38 +32,45 @@ const AbandonedCartItemRow: React.FC<AbandonedCartItemRowProps> = ({ item, onVie
   const lineTotal = item.productVariant.price * item.quantity;
 
   return (
-    <tr className="border-b border-gray-100 transition-colors last:border-b-0 hover:bg-gray-50/80">
-      <td className="px-3 py-2.5">
-        <button
-          type="button"
-          onClick={() => onViewProduct(item.productVariant.productId)}
-          className="flex items-center gap-2.5 text-left"
-        >
-          {item.productVariant.images && item.productVariant.images.length > 0 ? (
-            <img
-              src={item.productVariant.images[0]}
-              alt=""
-              className="h-9 w-9 shrink-0 rounded border border-gray-200 object-cover"
-            />
-          ) : (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-gray-200 bg-gray-50">
-              <CubeIcon className="h-4 w-4 text-gray-400" aria-hidden />
+    <tr className="transition-colors hover:bg-blue-50/30">
+      <td className="px-4 py-4 sm:px-5">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => onViewProduct(item.productVariant.productId)}
+            className="flex items-center gap-3 text-left"
+          >
+            {item.productVariant.images && item.productVariant.images.length > 0 ? (
+              <img
+                src={item.productVariant.images[0]}
+                alt=""
+                className="h-12 w-12 shrink-0 rounded-xl border border-gray-200 object-cover shadow-sm"
+              />
+            ) : (
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-linear-to-br from-gray-50 to-gray-100">
+                <CubeIcon className="h-6 w-6 text-gray-400" aria-hidden />
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-gray-900 hover:text-blue-700 hover:underline">{productLabel}</p>
+              <p className="mt-0.5 font-mono text-xs text-gray-500 sm:hidden">{item.productVariant.sku}</p>
             </div>
-          )}
-          <span className="text-[13px] font-medium text-gray-900 hover:underline">{productLabel}</span>
-        </button>
+          </button>
+          </div>
       </td>
-      <td className="hidden whitespace-nowrap px-3 py-2.5 text-[13px] text-gray-600 sm:table-cell">
-        {item.productVariant.sku}
+      <td className="hidden whitespace-nowrap px-4 py-4 sm:table-cell sm:px-5">
+        <p className="font-mono text-sm text-gray-600">{item.productVariant.sku}</p>
       </td>
-      <td className="whitespace-nowrap px-3 py-2.5 text-right text-[13px] text-gray-900">
-        {formatInr(item.productVariant.price)}
+      <td className="whitespace-nowrap px-4 py-4 text-right sm:px-5">
+        <p className="text-sm font-medium tabular-nums text-gray-900">{formatInr(item.productVariant.price)}</p>
       </td>
-      <td className="whitespace-nowrap px-3 py-2.5 text-center text-[13px] text-gray-900">
-        {item.quantity}
+      <td className="whitespace-nowrap px-4 py-4 text-center sm:px-5">
+        <span className="inline-flex min-w-8 items-center justify-center rounded-lg bg-gray-100 px-2 py-0.5 text-sm font-semibold tabular-nums text-gray-800">
+          {item.quantity}
+        </span>
       </td>
-      <td className="whitespace-nowrap px-3 py-2.5 text-right text-[13px] font-medium text-gray-900">
-        {formatInr(lineTotal)}
+      <td className="whitespace-nowrap px-4 py-4 text-right sm:px-5">
+        <p className="text-sm font-semibold tabular-nums text-blue-700">{formatInr(lineTotal)}</p>
       </td>
     </tr>
   );

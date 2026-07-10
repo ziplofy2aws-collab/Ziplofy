@@ -1,5 +1,4 @@
 import { cfgNumber, cfgString } from './config';
-import { resolveThemePaletteColor } from './themeGlobalProductCardStyles';
 
 export type FeaturedCollectionScheme = {
   background: string;
@@ -21,16 +20,6 @@ export function featuredCollectionColorScheme(
 ): FeaturedCollectionScheme {
   const key = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   return COLOR_SCHEMES[key] ?? fallback;
-}
-
-export function featuredCollectionSectionBackground(
-  config: Record<string, unknown> | null,
-  settingsBase: string,
-  schemeBackground: string
-): string {
-  const raw = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
-  if (raw === 'default' || !raw.trim()) return schemeBackground;
-  return resolveThemePaletteColor(config, raw, 0, schemeBackground);
 }
 
 export function featuredCollectionSectionWidth(

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import type { EditorFieldDef } from './create-theme-sidebar.types';
 import {
@@ -10,12 +10,6 @@ import {
 import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
 import { ThemeEditorRichTextField } from '../../components/theme-editor/ThemeEditorRichTextField';
 import { pickAnnouncementBlockField } from './theme-editor-announcement-block-panel.utils';
-import { CheckoutColorPickerPopover } from '../checkout/settings/CheckoutColorPickerPopover';
-import {
-  getThemePaletteColor,
-  parseThemePaletteColorSetting,
-  themePaletteColorValue,
-} from '../settings/theme-color-palette.settings';
 
 function AnnouncementRichTextFieldRow({
   field,
@@ -127,105 +121,18 @@ function AnnouncementSegmentedFieldRow({
   );
 }
 
-function AnnouncementTextColorFieldRow({
-  field,
-  values,
-  colorPalette,
-  onFieldChange,
-}: {
-  field: EditorFieldDef;
-  values: Record<string, string | boolean>;
-  colorPalette: string[];
-  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
-}) {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = useState(false);
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
-
-  const raw = typeof values[field.path] === 'string' ? String(values[field.path]).trim() : '';
-  const isDefault = raw === '';
-  const parsed = parseThemePaletteColorSetting(raw, 1);
-  const isPaletteLinked = !isDefault && parsed.kind === 'palette';
-  const displayColor = isDefault
-    ? '#ffffff'
-    : parsed.kind === 'palette'
-      ? getThemePaletteColor(colorPalette, parsed.index, '#111827')
-      : parsed.hex;
-  const activePaletteIndex = isPaletteLinked ? parsed.index : null;
-  const labelText = isDefault ? 'Default' : isPaletteLinked ? 'Palette color' : displayColor.toUpperCase();
-
-  const openPicker = () => {
-    const el = buttonRef.current;
-    if (!el) return;
-    setAnchorRect(el.getBoundingClientRect());
-    setOpen(true);
-  };
-  const closePicker = () => {
-    setOpen(false);
-    setAnchorRect(null);
-  };
-
-  return (
-    <>
-      <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1.5">
-        <span className="text-[13px] text-gray-800">{field.label}</span>
-        <div className="min-w-[148px] max-w-[180px]">
-          <button
-            ref={buttonRef}
-            type="button"
-            onClick={openPicker}
-            className="flex w-full items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-2.5 py-2 text-left text-[13px] text-gray-900 shadow-sm hover:border-[#aeb4b9]"
-          >
-            <span
-              className="h-5 w-5 shrink-0 rounded-md border border-[#e1e3e5]"
-              style={
-                isDefault
-                  ? {
-                      backgroundColor: '#ffffff',
-                      backgroundImage:
-                        'linear-gradient(45deg, transparent 44%, #d1d5db 44%, #d1d5db 56%, transparent 56%)',
-                    }
-                  : { background: displayColor }
-              }
-              aria-hidden
-            />
-            <span className="truncate">{labelText}</span>
-          </button>
-        </div>
-      </div>
-      <CheckoutColorPickerPopover
-        open={open}
-        color={isDefault ? getThemePaletteColor(colorPalette, 1, '#111827') : displayColor}
-        anchorRect={anchorRect}
-        paletteColors={colorPalette}
-        activePaletteIndex={activePaletteIndex}
-        onPaletteSelect={(index) => onFieldChange(field.path, 'text', themePaletteColorValue(index))}
-        onChange={(hex) => onFieldChange(field.path, 'text', hex)}
-        onDelete={() => {
-          onFieldChange(field.path, 'text', '');
-          closePicker();
-        }}
-        onClose={closePicker}
-      />
-    </>
-  );
-}
-
-/** Shopify announcement block: Text → Link → Typography → Appearance. */
+/** Shopify announcement block: Text → Link → Typography. */
 export function AnnouncementBlockSettingsPanel({
   fields,
   values,
-  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
-  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const textField = pickAnnouncementBlockField(fields, 'text');
   const linkField = pickAnnouncementBlockField(fields, 'link');
-  const textColorField = pickAnnouncementBlockField(fields, 'textColor');
   const typographyFields = (
     ['font', 'fontSize', 'fontWeight', 'letterSpacing', 'textCase'] as const
   )
@@ -261,19 +168,6 @@ export function AnnouncementBlockSettingsPanel({
                 />
               )
             )}
-          </div>
-        </div>
-      ) : null}
-      {textColorField ? (
-        <div className="border-t border-[#e1e1e1] px-1 py-3">
-          <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
-          <div className="space-y-0.5">
-            <AnnouncementTextColorFieldRow
-              field={textColorField}
-              values={values}
-              colorPalette={colorPalette}
-              onFieldChange={onFieldChange}
-            />
           </div>
         </div>
       ) : null}

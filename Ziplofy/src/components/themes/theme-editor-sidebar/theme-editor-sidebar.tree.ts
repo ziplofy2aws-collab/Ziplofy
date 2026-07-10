@@ -137,8 +137,6 @@ import {
   prepareFeaturedProductAcceleratedCheckoutSettingsNode,
 } from './theme-editor-featured-product-accelerated-checkout-panel.utils';
 import {
-  featuredProductQuantityFieldDefsFromNodeId,
-  featuredProductQuantityFieldDefsFromSchema,
   isFeaturedProductQuantityNestedNodeId,
   prepareFeaturedProductQuantitySettingsNode,
 } from './theme-editor-featured-product-quantity-panel.utils';
@@ -178,26 +176,6 @@ import {
   isFeaturedProductHeaderTitleNestedNodeId,
   prepareFeaturedProductHeaderTitleSettingsNode,
 } from './theme-editor-featured-product-header-title-panel.utils';
-import {
-  isProductHighlightProductImageNestedNodeId,
-  isProductHighlightProductPriceNestedNodeId,
-  isProductHighlightProductSwatchesNestedNodeId,
-  isProductHighlightProductTitleNestedNodeId,
-  prepareProductHighlightProductImageSettingsNode,
-  prepareProductHighlightProductPriceSettingsNode,
-  prepareProductHighlightProductSwatchesSettingsNode,
-  prepareProductHighlightProductTitleSettingsNode,
-  productHighlightProductBlockFieldDefsFromNodeId,
-  productHighlightProductBlockFieldDefsFromSchema,
-} from './theme-editor-product-highlight-product-block-panel.utils';
-import {
-  isProductHighlightMediaPanelFields,
-  prepareProductHighlightMediaSettingsNode,
-  prepareProductHighlightProductSettingsNode,
-  productHighlightMediaFieldDefsFromNodeId,
-  productHighlightMediaFieldDefsFromSchema,
-  isProductHighlightProductBlockNodeId,
-} from './theme-editor-product-highlight-media-block-panel.utils';
 import {
   isEditorialSectionType,
   isEditorialSettingsPanelFields,
@@ -340,14 +318,6 @@ import {
 } from './theme-editor-collection-link-block-panel.utils';
 import { mapCollectionLinksSpotlightBlockNodes } from '../../../utils/collection-links-spotlight-sidebar.util';
 import { mapFeaturedProductBlockNodes } from '../../../utils/featured-product-sidebar.util';
-import { mapProductHighlightBlockNodes } from '../../../utils/product-highlight-sidebar.util';
-import { mapProductHotspotsBlockNodes } from '../../../utils/product-hotspots-sidebar.util';
-import { mapRecommendedProductsBlockNodes } from '../../../utils/recommended-products-sidebar.util';
-import { mapImageCompareBlockNodes } from '../../../create-theme/utils/image-compare-sidebar.util';
-import { mapEditorialJumboBlockNodes } from '../../../create-theme/utils/editorial-jumbo-sidebar.util';
-import { mapEditorialBlockNodes } from '../../../create-theme/utils/editorial-sidebar.util';
-import { mapImageWithTextBlockNodes } from '../../../create-theme/utils/image-with-text-sidebar.util';
-import { mapStorytellingVideoBlockNodes } from '../../../create-theme/utils/storytelling-video-sidebar.util';
 import {
   isCollectionTileBlockFieldsOnly,
   prepareCollectionTileBlockSettingsNode,
@@ -408,11 +378,10 @@ import {
 } from './theme-editor-hero-panel.utils';
 import {
   headingBlockFieldDefsFromSchema,
-  headingBlockCanonicalFieldDefsForNodeId,
   isHeadingBlockNodeId,
   isHeadingPanelField,
   prepareHeadingBlockSettingsNode,
-} from '../../../create-theme/sidebar/theme-editor-heading-block-panel.utils';
+} from './theme-editor-heading-block-panel.utils';
 import {
   heroButtonFieldDefsFromSchema,
   isHeroButtonBlockNodeId,
@@ -1302,32 +1271,8 @@ function layoutSectionNode(
       ];
     }
   }
-  if (isStorytellingVideoLayout) {
-    blockNodes = mapStorytellingVideoBlockNodes(id, values, itemOrder, layoutChildrenKey);
-  }
-  if (isImageCompareLayout) {
-    blockNodes = mapImageCompareBlockNodes(id, values, itemOrder, layoutChildrenKey);
-  }
-  if (isEditorialJumboLayout) {
-    blockNodes = mapEditorialJumboBlockNodes(id, values, itemOrder, layoutChildrenKey);
-  }
-  if (isEditorialLayout) {
-    blockNodes = mapEditorialBlockNodes(id, values, itemOrder, layoutChildrenKey);
-  }
-  if (isImageWithTextLayout) {
-    blockNodes = mapImageWithTextBlockNodes(id, values, itemOrder, layoutChildrenKey);
-  }
   const children = reorderSidebarChildren(
-    isAnnouncement ||
-      isHeader ||
-      isFaqLayout ||
-      isIconsWithTextLayout ||
-      isMulticolumnLayout ||
-      isStorytellingVideoLayout ||
-      isImageCompareLayout ||
-      isEditorialJumboLayout ||
-      isEditorialLayout ||
-      isImageWithTextLayout
+    isAnnouncement || isHeader || isFaqLayout || isIconsWithTextLayout || isMulticolumnLayout
       ? blockNodes
       : [...sectionFields, ...blockNodes],
     layoutChildrenKey,
@@ -1644,44 +1589,6 @@ function sectionToNode(
         secId,
         catalogVariant
       )
-    : isProductHighlight
-      ? mapProductHighlightBlockNodes(
-          prefix,
-          blocksBase,
-          values,
-          itemOrder,
-          childrenListKey,
-          config,
-          tplId,
-          secId
-        )
-    : isProductHotspots
-      ? mapProductHotspotsBlockNodes(
-          prefix,
-          `templates.${tplId}.sections.${secId}.settings`,
-          `templates.${tplId}.sections.${secId}.blocks`,
-          values,
-          config,
-          ['templates', tplId, 'sections', secId, 'block_order']
-        )
-    : isRecommendedProducts
-      ? mapRecommendedProductsBlockNodes(
-          prefix,
-          `templates.${tplId}.sections.${secId}.settings`,
-          values,
-          itemOrder,
-          childrenListKey
-        )
-    : isStorytellingVideo
-      ? mapStorytellingVideoBlockNodes(prefix, values, itemOrder, childrenListKey)
-    : isImageCompare
-      ? mapImageCompareBlockNodes(prefix, values, itemOrder, childrenListKey)
-    : isEditorialJumbo
-      ? mapEditorialJumboBlockNodes(prefix, values, itemOrder, childrenListKey)
-    : isEditorial
-      ? mapEditorialBlockNodes(prefix, values, itemOrder, childrenListKey)
-    : isImageWithText
-      ? mapImageWithTextBlockNodes(prefix, values, itemOrder, childrenListKey)
     : isFeaturedProduct
       ? mapFeaturedProductBlockNodes(
           prefix,
@@ -1713,13 +1620,7 @@ function sectionToNode(
       isIconsWithText ||
       isMulticolumn ||
       isCollectionLinksSpotlight ||
-      isFeaturedProduct ||
-      isProductHighlight ||
-      isProductHotspots ||
-      isRecommendedProducts ||
-      isStorytellingVideo ||
-      isImageCompare ||
-      isImageWithText
+      isFeaturedProduct
       ? blockNodes
       : [...sectionFields, ...blockNodes],
     childrenListKey,
@@ -2264,9 +2165,6 @@ export function settingsNodeForSelection(
   if (isHeadingBlockNodeId(node.id)) {
     let fields = editorSchema ? headingBlockFieldDefsFromSchema(editorSchema, node.id) : [];
     if (!fields.length) {
-      fields = headingBlockCanonicalFieldDefsForNodeId(node.id);
-    }
-    if (!fields.length) {
       fields = (node.fields ?? []).filter(isHeadingPanelField);
     }
     return prepareHeadingBlockSettingsNode({ ...node, fields });
@@ -2283,10 +2181,8 @@ export function settingsNodeForSelection(
   const heroSectionForPanel =
     node.kind === 'section' && isHeroSectionNodeId(node.id)
       ? node
-      : node.kind === 'section'
-        ? findHeroSectionInTree(node.id, tree)
-        : null;
-  if (node.kind === 'section' && heroSectionForPanel && editorSchema) {
+      : findHeroSectionInTree(node.id, tree);
+  if (heroSectionForPanel && editorSchema) {
     const heroFields = heroSectionFieldDefsFromSchema(editorSchema, heroSectionForPanel.id);
     if (heroFields.length) {
       return prepareHeroSectionSettingsForNode(heroSectionForPanel, heroFields);
@@ -2398,9 +2294,6 @@ export function settingsNodeForSelection(
   }
 
   if (isFeaturedProductMediaBlockNodeId(node.id)) {
-    if (node.fields?.length && isProductHighlightMediaPanelFields(node.fields)) {
-      return prepareProductHighlightMediaSettingsNode(node);
-    }
     const fields =
       node.fields?.length && isFeaturedProductMediaPanelFields(node.fields)
         ? node.fields
@@ -2410,10 +2303,6 @@ export function settingsNodeForSelection(
     if (fields.length) {
       return prepareFeaturedProductMediaSettingsNode({ ...node, fields });
     }
-  }
-
-  if (isProductHighlightProductBlockNodeId(node.id)) {
-    return prepareProductHighlightProductSettingsNode(node);
   }
 
   if (isFeaturedProductHeaderBlockNodeId(node.id)) {
@@ -2471,12 +2360,7 @@ export function settingsNodeForSelection(
   }
 
   if (isFeaturedProductQuantityNestedNodeId(node.id)) {
-    const fields = editorSchema
-      ? featuredProductQuantityFieldDefsFromSchema(editorSchema, node.id)
-      : featuredProductQuantityFieldDefsFromNodeId(node.id);
-    if (fields.length) {
-      return prepareFeaturedProductQuantitySettingsNode({ ...node, fields });
-    }
+    return prepareFeaturedProductQuantitySettingsNode(node);
   }
 
   if (isFeaturedProductAcceleratedCheckoutNestedNodeId(node.id)) {
@@ -2489,42 +2373,6 @@ export function settingsNodeForSelection(
       : featuredProductBuyButtonsFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareFeaturedProductBuyButtonsSettingsNode({ ...node, fields });
-    }
-  }
-
-  if (isProductHighlightProductTitleNestedNodeId(node.id)) {
-    const fields = editorSchema
-      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
-      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
-    if (fields.length) {
-      return prepareProductHighlightProductTitleSettingsNode({ ...node, fields });
-    }
-  }
-
-  if (isProductHighlightProductPriceNestedNodeId(node.id)) {
-    const fields = editorSchema
-      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
-      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
-    if (fields.length) {
-      return prepareProductHighlightProductPriceSettingsNode({ ...node, fields });
-    }
-  }
-
-  if (isProductHighlightProductImageNestedNodeId(node.id)) {
-    const fields = editorSchema
-      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
-      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
-    if (fields.length) {
-      return prepareProductHighlightProductImageSettingsNode({ ...node, fields });
-    }
-  }
-
-  if (isProductHighlightProductSwatchesNestedNodeId(node.id)) {
-    const fields = editorSchema
-      ? productHighlightProductBlockFieldDefsFromSchema(editorSchema, node.id)
-      : productHighlightProductBlockFieldDefsFromNodeId(node.id);
-    if (fields.length) {
-      return prepareProductHighlightProductSwatchesSettingsNode({ ...node, fields });
     }
   }
 

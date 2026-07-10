@@ -1,9 +1,0 @@
-.codiic-popover,
-.codiic-modal,
-[data-codiic-popover] {
-  background: var(--codiic-popover-bg, #ffffff);
-  color: var(--codiic-popover-text, #111827);
-  border-radius: var(--codiic-popover-radius, 14px);
-  border: var(--codiic-popover-border-width, 1px) solid var(--codiic-popover-border, #e5e7eb);
-  box-shadow: var(--codiic-popover-shadow, 0 12px 40px rgba(0, 0, 0, 0.14));
-}

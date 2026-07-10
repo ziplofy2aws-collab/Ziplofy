@@ -3,46 +3,24 @@ import { cfgBool, cfgString } from '../../runtime/shared/config';
 export type FeaturedProductReviewStarsStyle = {
   style: 'shaded' | 'default';
   reviewCount: boolean;
-  textColor: string;
+  color: 'text' | 'link';
   typographyPreset: string;
   width: 'fit' | 'fill';
   alignment: 'left' | 'center' | 'right';
 };
 
-export function resolveFeaturedProductReviewStarsTextColor(
-  config: Record<string, unknown> | null,
-  settingsBase: string,
-  schemeColor: string,
-  themeAccent: string
-): string {
-  const textColor = cfgString(config, `${settingsBase}.textColor`, '');
-  if (textColor && textColor !== 'default') return textColor;
-
-  const legacyColor = cfgString(config, `${settingsBase}.color`, '');
-  if (legacyColor === 'link') return themeAccent;
-  if (legacyColor === 'text') return schemeColor;
-
-  return schemeColor;
-}
-
 export function readFeaturedProductReviewStarsStyle(
   config: Record<string, unknown> | null,
-  settingsBase: string,
-  schemeColor = '#111827',
-  themeAccent = '#111827'
+  settingsBase: string
 ): FeaturedProductReviewStarsStyle {
   const rawStyle = cfgString(config, `${settingsBase}.style`, 'shaded');
+  const rawColor = cfgString(config, `${settingsBase}.color`, 'link');
   const rawWidth = cfgString(config, `${settingsBase}.width`, 'fill');
   const rawAlign = cfgString(config, `${settingsBase}.alignment`, 'left');
   return {
     style: rawStyle === 'default' ? 'default' : 'shaded',
-    reviewCount: cfgBool(config, `${settingsBase}.reviewCount`, false),
-    textColor: resolveFeaturedProductReviewStarsTextColor(
-      config,
-      settingsBase,
-      schemeColor,
-      themeAccent
-    ),
+    reviewCount: cfgBool(config, `${settingsBase}.reviewCount`, true),
+    color: rawColor === 'text' ? 'text' : 'link',
     typographyPreset: cfgString(config, `${settingsBase}.typographyPreset`, 'paragraph'),
     width: rawWidth === 'fit' ? 'fit' : 'fill',
     alignment:

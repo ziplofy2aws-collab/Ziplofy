@@ -1,8 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { CircleStackIcon } from '@heroicons/react/24/outline';
 import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
-import { ThemeDefaultColorField } from '../settings/ThemeDefaultColorField';
-import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import type { EditorFieldDef } from './create-theme-sidebar.types';
 import {
   fieldInputId,
@@ -19,9 +17,7 @@ import {
   resolveHeroButtonCustomWidthField,
 } from './theme-editor-hero-button-panel.utils';
 
-const LABEL_FIELD_DEBOUNCE_MS = 350;
-
-export function HeroButtonLabelFieldRow({
+function HeroButtonLabelFieldRow({
   field,
   values,
   onFieldChange,
@@ -31,32 +27,6 @@ export function HeroButtonLabelFieldRow({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const id = fieldInputId(field.path);
-  const external = fieldValueAsString(values, field);
-  const [draft, setDraft] = useState(external);
-  const debouncedDraft = useDebouncedValue(draft, LABEL_FIELD_DEBOUNCE_MS);
-  const focusedRef = useRef(false);
-
-  useEffect(() => {
-    setDraft(external);
-    focusedRef.current = false;
-  }, [field.path]);
-
-  useEffect(() => {
-    if (!focusedRef.current) {
-      setDraft(external);
-    }
-  }, [external]);
-
-  useEffect(() => {
-    if (debouncedDraft === external) return;
-    onFieldChange(field.path, 'text', debouncedDraft);
-  }, [debouncedDraft, external, field.path, onFieldChange]);
-
-  const flushDraft = () => {
-    if (draft !== external) {
-      onFieldChange(field.path, 'text', draft);
-    }
-  };
 
   return (
     <div className="space-y-1.5 py-1">
@@ -75,21 +45,8 @@ export function HeroButtonLabelFieldRow({
       <input
         id={id}
         type="text"
-        value={draft}
-        onFocus={() => {
-          focusedRef.current = true;
-        }}
-        onBlur={() => {
-          focusedRef.current = false;
-          flushDraft();
-        }}
-        onChange={(e) => setDraft(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            flushDraft();
-          }
-        }}
+        value={fieldValueAsString(values, field)}
+        onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
         className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
       />
     </div>
@@ -118,7 +75,7 @@ function HeroButtonLinkFieldRow({
   );
 }
 
-export function HeroButtonToggleFieldRow({
+function HeroButtonToggleFieldRow({
   field,
   values,
   onFieldChange,
@@ -184,7 +141,7 @@ function HeroButtonStyleFieldRow({
   );
 }
 
-export function HeroButtonWidthModeFieldRow({
+function HeroButtonWidthModeFieldRow({
   field,
   values,
   onFieldChange,
@@ -244,7 +201,7 @@ function buttonPercentValue(
   return Math.min(max, Math.max(min, n));
 }
 
-export function HeroButtonCustomWidthFieldRow({
+function HeroButtonCustomWidthFieldRow({
   field,
   values,
   onFieldChange,
@@ -355,84 +312,14 @@ function HeroButtonSizeSettingsGroup({
   );
 }
 
-const HERO_BUTTON_STYLE_OPTIONS = [
-  { value: 'primary', label: 'Primary' },
-  { value: 'secondary', label: 'Secondary' },
-  { value: 'link', label: 'Link' },
-] as const;
-
-/** Style select with the theme-settings hint plus a Link text color revealed for the "Link" style. */
-function HeroButtonStyleGroup({
-  field,
-  values,
-  colorPalette,
-  onFieldChange,
-}: {
-  field: EditorFieldDef;
-  values: Record<string, string | boolean>;
-  colorPalette: string[];
-  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
-}) {
-  const styleField: EditorFieldDef = {
-    ...field,
-    label: field.label ?? 'Style',
-    widget: 'select',
-    options: field.options && field.options.length > 2 ? field.options : [...HERO_BUTTON_STYLE_OPTIONS],
-  };
-  const current = fieldValueAsString(values, styleField) || 'primary';
-  const styleBase = field.path.replace(/\.[^.]+$/, '');
-  const linkTextColorPath = `${styleBase}.linkTextColor`;
-
-  return (
-    <div className="px-1 py-3">
-      <div className="py-1">
-        <div className="grid grid-cols-[1fr_auto] items-center gap-3">
-          <span className="text-[13px] text-gray-800">{styleField.label}</span>
-          <select
-            value={current}
-            onChange={(e) => onFieldChange(styleField.path, 'text', e.target.value)}
-            className="min-w-[140px] appearance-none rounded-lg border border-[#c9cccf] bg-white py-2 pl-3 pr-8 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-          >
-            {(styleField.options ?? []).map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <p className="mt-1 text-[12px] text-gray-500">
-          Edit primary and secondary button styles in{' '}
-          <a href="/settings/theme" className="text-[#005bd3] hover:underline">
-            theme settings
-          </a>
-        </p>
-      </div>
-      {current === 'link' ? (
-        <div className="mt-1">
-          <ThemeDefaultColorField
-            label="Link text color"
-            path={linkTextColorPath}
-            values={values}
-            colorPalette={colorPalette}
-            defaultPaletteIndex={1}
-            onFieldChange={onFieldChange}
-          />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 /** Shopify-order hero button panel: Label → Link → New tab → Style → Size. */
 export function HeroButtonSettingsPanel({
   fields,
   values,
-  colorPalette = [],
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
-  colorPalette?: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const prepared = useMemo(
@@ -464,12 +351,9 @@ export function HeroButtonSettingsPanel({
         ) : null}
       </div>
       {styleField ? (
-        <HeroButtonStyleGroup
-          field={styleField}
-          values={values}
-          colorPalette={colorPalette}
-          onFieldChange={onFieldChange}
-        />
+        <div className="px-1 py-3">
+          <HeroButtonStyleFieldRow field={styleField} values={values} onFieldChange={onFieldChange} />
+        </div>
       ) : (
         HERO_BUTTON_PANEL_GROUP_ORDER.map((group) => {
           if (group !== 'Appearance') return null;

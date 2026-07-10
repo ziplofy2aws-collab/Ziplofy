@@ -1,26 +1,13 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  ArrowLeftIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  MagnifyingGlassIcon,
-} from '@heroicons/react/24/outline';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { usePermissions } from '../../contexts/permissions.context';
 import { useStoreRoles } from '../../contexts/store-roles.context';
 import { useStore } from '../../contexts/store.context';
 import toast from 'react-hot-toast';
+import PermissionPicker from '../../components/settings/PermissionPicker';
 import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
-
-interface PermissionTreeNode {
-  key: string;
-  name: string;
-  isLeaf: boolean;
-  parentKey?: string | null;
-  order?: number;
-  resource?: string;
-  children: PermissionTreeNode[];
-}
+import { buildPermissionTree, collectLeafKeys } from '../../utils/permission-tree.util';
 
 const RoleDetailsPage: React.FC = () => {
   const { roleId } = useParams<{ roleId: string }>();
@@ -32,21 +19,15 @@ const RoleDetailsPage: React.FC = () => {
   const role = useMemo(() => roles.find((r) => r._id === roleId), [roles, roleId]);
 
   useEffect(() => {
-    if (permissions.length === 0 && !loading) {
-      fetchAll().catch(() => {});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchAll().catch(() => {});
+  }, [fetchAll]);
 
   useEffect(() => {
     if (!role && activeStoreId) {
       fetchByStoreId(activeStoreId).catch(() => {});
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeStoreId, role]);
+  }, [activeStoreId, role, fetchByStoreId]);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [expandedKeys, setExpandedKeys] = useState<Set<string>>(new Set());
   const [selectedLeafKeys, setSelectedLeafKeys] = useState<Set<string>>(new Set());
   const [roleName, setRoleName] = useState('');
   const [roleDescription, setRoleDescription] = useState('');
@@ -59,47 +40,10 @@ const RoleDetailsPage: React.FC = () => {
     setSelectedLeafKeys(new Set(role.permissions || []));
   }, [role]);
 
-  const tree = useMemo<PermissionTreeNode[]>(() => {
-    const nodes = new Map<string, PermissionTreeNode>();
-    permissions.forEach((p) => {
-      nodes.set(p.key, {
-        key: p.key,
-        name: p.name,
-        isLeaf: p.isLeaf ?? true,
-        parentKey: p.parentKey ?? null,
-        order: p.order,
-        resource: p.resource,
-        children: [],
-      });
-    });
-    const roots: PermissionTreeNode[] = [];
-    nodes.forEach((node) => {
-      if (node.parentKey && nodes.has(node.parentKey)) {
-        nodes.get(node.parentKey)!.children.push(node);
-      } else {
-        roots.push(node);
-      }
-    });
-    const sortChildren = (arr: PermissionTreeNode[]) => {
-      arr.sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.name.localeCompare(b.name));
-      arr.forEach((child) => sortChildren(child.children));
-    };
-    sortChildren(roots);
-    return roots;
-  }, [permissions]);
-
-  const allLeafKeys = useMemo(() => {
-    const keys: string[] = [];
-    const collect = (node: PermissionTreeNode) => {
-      if (node.isLeaf || node.children.length === 0) {
-        keys.push(node.key);
-      } else {
-        node.children.forEach(collect);
-      }
-    };
-    tree.forEach(collect);
-    return keys;
-  }, [tree]);
+  const allLeafKeys = useMemo(
+    () => collectLeafKeys(buildPermissionTree(permissions)),
+    [permissions]
+  );
 
   useEffect(() => {
     if (!allLeafKeys.length) return;
@@ -107,102 +51,11 @@ const RoleDetailsPage: React.FC = () => {
     setSelectedLeafKeys((prev) => {
       const next = new Set<string>();
       prev.forEach((key) => {
-        if (validSet.has(key)) {
-          next.add(key);
-        }
+        if (validSet.has(key)) next.add(key);
       });
       return next;
     });
   }, [allLeafKeys]);
-
-  const toggleExpand = (key: string) => {
-    setExpandedKeys((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
-
-  const getDescendantLeafKeys = (node: PermissionTreeNode): string[] => {
-    if (node.isLeaf || node.children.length === 0) {
-      return [node.key];
-    }
-    return node.children.flatMap(getDescendantLeafKeys);
-  };
-
-  const getLeafCounts = (node: PermissionTreeNode) => {
-    const leaves = getDescendantLeafKeys(node);
-    const selected = leaves.filter((key) => selectedLeafKeys.has(key));
-    return {
-      total: leaves.length,
-      selected: selected.length,
-      checked: selected.length === leaves.length && leaves.length > 0,
-      indeterminate: selected.length > 0 && selected.length < leaves.length,
-    };
-  };
-
-  const toggleNodeSelection = (node: PermissionTreeNode) => {
-    const leafKeys = getDescendantLeafKeys(node);
-    setSelectedLeafKeys((prev) => {
-      const next = new Set(prev);
-      const allSelected = leafKeys.every((key) => next.has(key));
-      if (allSelected) {
-        leafKeys.forEach((key) => next.delete(key));
-      } else {
-        leafKeys.forEach((key) => next.add(key));
-      }
-      return next;
-    });
-  };
-
-  const filteredTree = useMemo(() => {
-    const treeRoots = tree;
-    if (!searchTerm.trim()) return treeRoots;
-    const term = searchTerm.toLowerCase();
-    const filterNode = (node: PermissionTreeNode): PermissionTreeNode | null => {
-      const matches = node.name.toLowerCase().includes(term) || node.key.toLowerCase().includes(term);
-      const filteredChildren = node.children
-        .map(filterNode)
-        .filter((child): child is PermissionTreeNode => Boolean(child));
-      if (matches || filteredChildren.length > 0) {
-        return { ...node, children: filteredChildren };
-      }
-      return null;
-    };
-    return treeRoots
-      .map(filterNode)
-      .filter((node): node is PermissionTreeNode => Boolean(node));
-  }, [tree, searchTerm]);
-
-  const expandableKeys = useMemo(() => {
-    const keys: string[] = [];
-    const collect = (node: PermissionTreeNode) => {
-      if (node.children.length > 0) {
-        keys.push(node.key);
-        node.children.forEach(collect);
-      }
-    };
-    tree.forEach(collect);
-    return keys;
-  }, [tree]);
-
-  const handleSelectAll = useCallback(() => {
-    if (selectedLeafKeys.size === allLeafKeys.length) {
-      setSelectedLeafKeys(new Set());
-    } else {
-      setSelectedLeafKeys(new Set(allLeafKeys));
-    }
-  }, [allLeafKeys, selectedLeafKeys.size]);
-
-  const handleExpandAll = useCallback(() => {
-    const allExpanded = expandableKeys.every((key) => expandedKeys.has(key));
-    if (allExpanded) {
-      setExpandedKeys(new Set());
-    } else {
-      setExpandedKeys(new Set(expandableKeys));
-    }
-  }, [expandableKeys, expandedKeys]);
 
   const selectedLeafArray = useMemo(() => Array.from(selectedLeafKeys).sort(), [selectedLeafKeys]);
   const originalLeafArray = useMemo(
@@ -225,88 +78,32 @@ const RoleDetailsPage: React.FC = () => {
     const trimmedName = roleName.trim();
     const trimmedDescription = roleDescription.trim();
     if (!trimmedName) {
-      toast.dismiss();
       toast.error('Role name is required');
       return;
     }
     if (selectedLeafKeys.size === 0) {
-      toast.dismiss();
       toast.error('Select at least one permission');
       return;
     }
     try {
       setSaving(true);
-      toast.dismiss();
       await update(roleId, {
         name: trimmedName,
         description: trimmedDescription,
         permissions: Array.from(selectedLeafKeys),
       });
-      toast.dismiss();
       toast.success('Role updated');
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to update role';
-      toast.dismiss();
-      toast.error(msg);
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } }; message?: string })?.response?.data
+          ?.message ||
+        (err as Error)?.message ||
+        'Failed to update role';
+      toast.error(message);
     } finally {
       setSaving(false);
     }
   }, [role, roleId, roleName, roleDescription, selectedLeafKeys, update]);
-
-  const renderNode = (node: PermissionTreeNode, depth = 0): React.ReactNode => {
-    const hasChildren = node.children.length > 0;
-    const state = getLeafCounts(node);
-    const expanded = expandedKeys.has(node.key) || !hasChildren;
-    const indent = depth * 1.5;
-
-    return (
-      <div key={node.key}>
-        <div
-          className="flex items-center py-2 rounded-lg hover:bg-gray-50 transition-colors"
-          style={{ paddingLeft: `${indent}rem` }}
-        >
-          {hasChildren ? (
-            <button
-              type="button"
-              onClick={() => toggleExpand(node.key)}
-              className="p-1 text-gray-500 hover:text-gray-700 mr-1 rounded-md hover:bg-white transition-colors"
-              aria-label={expanded ? 'Collapse' : 'Expand'}
-            >
-              {expanded ? (
-                <ChevronUpIcon className="w-4 h-4" />
-              ) : (
-                <ChevronDownIcon className="w-4 h-4" />
-              )}
-            </button>
-          ) : (
-            <div className="w-6 mr-1" />
-          )}
-          <input
-            type="checkbox"
-            ref={(input) => {
-              if (input) {
-                input.indeterminate = !state.checked && state.indeterminate;
-              }
-            }}
-            checked={state.checked}
-            onChange={() => toggleNodeSelection(node)}
-            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500/30 mr-2"
-          />
-          <span className="text-sm text-gray-900">{node.name}</span>
-          {hasChildren && (
-            <span className="text-xs text-gray-500 ml-auto mr-2">
-              {state.selected}/{state.total}
-            </span>
-          )}
-        </div>
-        {hasChildren && (
-          <div className={expanded ? 'block' : 'hidden'}>
-            {node.children.map((child) => renderNode(child, depth + 1))}
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="w-full">
@@ -381,7 +178,7 @@ const RoleDetailsPage: React.FC = () => {
             <div>
               <h2 className="text-base font-semibold text-gray-900">Permissions</h2>
               <p className="mt-1 text-sm text-gray-500">
-                Choose what this role can view and manage.
+                Choose what this role can view and manage across Ziplofy.
               </p>
             </div>
             <div className="text-sm text-gray-500">
@@ -396,69 +193,14 @@ const RoleDetailsPage: React.FC = () => {
           </div>
 
           <div className="mt-4">
-            {loading && (
-              <div className="flex items-center gap-2 text-gray-600">
-                <div className="w-4 h-4 border-2 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
-                <span className="text-sm">Loading permissions…</span>
-              </div>
-            )}
-
-            {error && <p className="text-sm text-red-600">{error}</p>}
-
-            {!loading && !error && (
-              <div className="flex flex-col gap-3">
-                <div className="relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                  <input
-                    type="text"
-                    placeholder="Search permissions"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50/80 pl-10 pr-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      ref={(input) => {
-                        if (input) {
-                          input.indeterminate =
-                            selectedLeafKeys.size > 0 && selectedLeafKeys.size < allLeafKeys.length;
-                        }
-                      }}
-                      checked={selectedLeafKeys.size === allLeafKeys.length && allLeafKeys.length > 0}
-                      onChange={handleSelectAll}
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
-                      aria-label="Select all permissions"
-                    />
-                    <span className="text-sm font-medium text-gray-900">Select all permissions</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleExpandAll}
-                    className="text-sm font-medium text-gray-700 hover:underline"
-                  >
-                    {expandableKeys.length > 0 &&
-                    expandableKeys.every((key) => expandedKeys.has(key))
-                      ? 'Collapse all'
-                      : 'Expand all'}
-                  </button>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 bg-gray-50/50 p-3 max-h-[520px] overflow-auto">
-                  {filteredTree.map((node) => renderNode(node))}
-                  {filteredTree.length === 0 && (
-                    <p className="text-sm text-gray-500 mt-1">No permissions match your search.</p>
-                  )}
-                </div>
-
-                {tree.length === 0 && (
-                  <p className="text-sm text-gray-500">No permissions found.</p>
-                )}
-              </div>
-            )}
+            <PermissionPicker
+              permissions={permissions}
+              loading={loading}
+              error={error}
+              selectedLeafKeys={selectedLeafKeys}
+              onChange={setSelectedLeafKeys}
+              onRetry={() => fetchAll().catch(() => {})}
+            />
           </div>
         </div>
       </div>

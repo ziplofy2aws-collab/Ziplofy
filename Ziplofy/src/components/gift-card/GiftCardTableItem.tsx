@@ -1,51 +1,44 @@
 import React from 'react';
 import type { GiftCard } from '../../contexts/gift-cards.context';
-import GiftCardStatusBadge from './GiftCardStatusBadge';
-import {
-  giftCardTableCellClass,
-  giftCardTableCellRightClass,
-} from './gift-card-ui.util';
 
 interface GiftCardTableItemProps {
   giftCard: GiftCard;
-  isSelected: boolean;
-  onSelect: (giftCardId: string, checked: boolean) => void;
   onClick: (giftCardId: string) => void;
 }
 
-const GiftCardTableItem: React.FC<GiftCardTableItemProps> = ({
-  giftCard,
-  isSelected,
-  onSelect,
-  onClick,
-}) => {
+const GiftCardTableItem: React.FC<GiftCardTableItemProps> = ({ giftCard, onClick }) => {
+  const handleClick = () => {
+    onClick(giftCard._id);
+  };
+
   return (
     <tr
-      onClick={() => onClick(giftCard._id)}
-      className="cursor-pointer border-b border-gray-100 transition-colors hover:bg-gray-50/60"
+      onClick={handleClick}
+      className="hover:bg-blue-50/50 cursor-pointer transition-colors"
     >
-      <td className="w-10 px-3 py-2.5 text-center" onClick={(e) => e.stopPropagation()}>
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={(e) => onSelect(giftCard._id, e.target.checked)}
-          aria-label={`Select gift card ${giftCard.code}`}
-          className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
-        />
+      <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+        <div className="font-mono">{giftCard.code}</div>
       </td>
-      <td className={`${giftCardTableCellClass} font-medium text-gray-900`}>
-        <span className="font-mono text-[12px]">{giftCard.code}</span>
+      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+        ₹{giftCard.initialValue.toFixed(2)}
       </td>
-      <td className={giftCardTableCellRightClass}>₹{giftCard.initialValue.toFixed(2)}</td>
-      <td className={giftCardTableCellClass}>
-        <GiftCardStatusBadge isActive={giftCard.isActive} />
+      <td className="px-4 py-3 whitespace-nowrap">
+        <span
+          className={`inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-lg border ${
+            giftCard.isActive
+              ? 'bg-green-50 text-green-700 border-green-200/80'
+              : 'bg-red-50 text-red-700 border-red-200/80'
+          }`}
+        >
+          {giftCard.isActive ? 'Active' : 'Inactive'}
+        </span>
       </td>
-      <td className={giftCardTableCellRightClass}>
+      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
         {giftCard.expirationDate
           ? new Date(giftCard.expirationDate).toLocaleDateString()
           : '—'}
       </td>
-      <td className={giftCardTableCellRightClass}>
+      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
         {new Date(giftCard.createdAt).toLocaleDateString()}
       </td>
     </tr>
@@ -53,3 +46,4 @@ const GiftCardTableItem: React.FC<GiftCardTableItemProps> = ({
 };
 
 export default GiftCardTableItem;
+

@@ -50,25 +50,12 @@ export function sectionTypeUsesCatalogSidebar(sectionType: string | undefined): 
 export function settingsNodeFromCatalog(node: SidebarNode): SidebarNode | null {
   // Hero heading block uses schema-backed section settings (see prepareHeadingBlockSettingsNode).
   if (
-    /^template:[^:]+:([^:]+)$/.test(node.id) &&
-    (node.label === 'FAQ' || /:faq_section(?:_\d+)?$/.test(node.id))
-  ) {
-    return null;
-  }
-  if (
-    /^layout:faq_section(?:_\d+)?$/.test(node.id)
-  ) {
-    return null;
-  }
-  if (
     /^template:[^:]+:[^:]+:block:(heading(?:_\d+)?)$/.test(node.id) ||
     /^layout:[^:]+:block:(heading(?:_\d+)?)$/.test(node.id) ||
     /^template:[^:]+:[^:]+:block:(?:primary_button|secondary_button|button_\d+)$/.test(node.id) ||
     /^layout:[^:]+:block:(?:primary_button|secondary_button|button_\d+)$/.test(node.id) ||
     /^template:[^:]+:hero_main(?:_\d+)?$/.test(node.id) ||
-    /^layout:hero_main(?:_\d+)?$/.test(node.id) ||
-    /:block:collection_header:nested:collection_title$/.test(node.id) ||
-    /:block:collection_header:nested:view_all_button$/.test(node.id)
+    /^layout:hero_main(?:_\d+)?$/.test(node.id)
   ) {
     return null;
   }

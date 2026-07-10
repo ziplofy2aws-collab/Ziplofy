@@ -36,24 +36,12 @@ import Youtube from "@tiptap/extension-youtube";
 import type { Editor } from "@tiptap/core";
 import { EditorContent, useEditor } from "@tiptap/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "react-hot-toast";
-import { useStore } from "../../contexts/store.context";
-import {
-  isSafeRichTextUrl,
-  sanitizeProductDescriptionHtml,
-} from "../../utils/product-description-html.util";
-import {
-  SelectImageModal,
-  type SelectedImageAsset,
-} from "../SelectImageModal";
 import ResizableImage from "./ResizableImageExtension";
 
 interface ProductDescriptionInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  label?: string;
-  hideLabel?: boolean;
   /** When false, hides image upload controls (used for recovery emails). */
   enableImages?: boolean;
   /** When false, hides the templates (Sparkles) menu. */
@@ -138,40 +126,6 @@ function getBlockPreviewClass(
   return "text-[1.05rem] font-semibold leading-[1.35] text-gray-900";
 }
 
-function insertEditorImage(editor: Editor, src: string): void {
-  const probe = new window.Image();
-  probe.onload = () => {
-    const maxStartWidth = 640;
-    const naturalW = probe.naturalWidth || maxStartWidth;
-    const naturalH = probe.naturalHeight || 360;
-    const ratio = naturalH / naturalW;
-    const startW = Math.min(maxStartWidth, naturalW);
-    const startH = Math.max(80, Math.round(startW * ratio));
-
-    editor
-      .chain()
-      .focus()
-      .setImage({
-        src,
-        width: `${startW}px`,
-        height: `${startH}px`,
-      })
-      .run();
-  };
-  probe.onerror = () => {
-    editor
-      .chain()
-      .focus()
-      .setImage({
-        src,
-        width: "640px",
-        height: "360px",
-      })
-      .run();
-  };
-  probe.src = src;
-}
-
 function getBlockLabel(editor: Editor | null): string {
   if (!editor) return "Paragraph";
   if (editor.isActive("heading", { level: 1 })) return "Heading 1";
@@ -184,12 +138,10 @@ function getBlockLabel(editor: Editor | null): string {
   return "Paragraph";
 }
 
-const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({ 
-  value, 
-  onChange, 
+const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
+  value,
+  onChange,
   placeholder = "Describe your product...",
-  label = "Description",
-  hideLabel = false,
   enableImages = true,
   enableTemplates = true,
 }) => {
@@ -204,18 +156,17 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
   const [isTableMenuOpen, setIsTableMenuOpen] = useState(false);
   const [isTemplateMenuOpen, setIsTemplateMenuOpen] = useState(false);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
   const [linkDraft, setLinkDraft] = useState("https://");
   const [videoEmbedDraft, setVideoEmbedDraft] = useState("");
   const [colorTab, setColorTab] = useState<"text" | "background">("text");
   const alignMenuRef = useRef<HTMLDivElement | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
   const blockMenuRef = useRef<HTMLDivElement | null>(null);
   const moreMenuRef = useRef<HTMLDivElement | null>(null);
   const colorMenuRef = useRef<HTMLDivElement | null>(null);
   const linkPopoverRef = useRef<HTMLDivElement | null>(null);
   const tableMenuRef = useRef<HTMLDivElement | null>(null);
   const templateMenuRef = useRef<HTMLDivElement | null>(null);
-  const { activeStoreId } = useStore();
 
   const editor = useEditor({
     extensions: [
@@ -415,39 +366,54 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
     setVideoEmbedDraft("");
   };
 
-  const handlePickImage = useCallback(() => {
-    if (!editor) return;
-    if (!activeStoreId) {
-      toast.error("Select a store before choosing files");
-      return;
-    }
-    setIsImagePickerOpen(true);
-  }, [activeStoreId, editor]);
+  const handlePickImage = () => {
+    imageInputRef.current?.click();
+  };
 
-  const handleCloudImageSelected = useCallback(
-    (asset: SelectedImageAsset) => {
-      if (!editor || !asset.url) return;
-      insertEditorImage(editor, asset.url);
-      setIsImagePickerOpen(false);
-    },
-    [editor]
-  );
+  const handleImageFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !editor) return;
+    if (!file.type.startsWith("image/")) return;
+
+    const dataReader = new FileReader();
+    dataReader.onload = () => {
+      const dataUrl = dataReader.result as string;
+      const probe = new window.Image();
+      probe.onload = () => {
+        const maxStartWidth = 640;
+        const naturalW = probe.naturalWidth || maxStartWidth;
+        const naturalH = probe.naturalHeight || 360;
+        const ratio = naturalH / naturalW;
+        const startW = Math.min(maxStartWidth, naturalW);
+        const startH = Math.max(80, Math.round(startW * ratio));
+
+        editor
+          .chain()
+          .focus()
+          .setImage({
+            src: dataUrl,
+            width: `${startW}px`,
+            height: `${startH}px`,
+          })
+          .run();
+      };
+      probe.src = dataUrl;
+    };
+    dataReader.readAsDataURL(file);
+  };
 
   const applyLink = () => {
     if (!editor) return;
     const url = linkDraft.trim();
     if (!url) return;
-    if (!isSafeRichTextUrl(url)) {
-      toast.error("Only http, https, mailto, and anchor links are allowed");
-      return;
-    }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
     setIsLinkPopoverOpen(false);
   };
 
   const removeLink = () => {
     if (!editor) return;
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
     setIsLinkPopoverOpen(false);
   };
 
@@ -499,9 +465,9 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
   ) => {
     const active = editor ? getBlockLabel(editor) === label : false;
     return (
-    <button
+      <button
         key={label}
-      type="button"
+        type="button"
         onClick={() => setBlock(kind)}
         className={`group flex w-full items-start justify-between gap-3 px-4 py-3.5 text-left transition-colors ${
           active ? "bg-gray-100/90" : "hover:bg-gray-50"
@@ -511,7 +477,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
           {kind === "blockquote" ? (
             <span className="inline-flex items-center gap-2">
               <span className="h-6 w-0.5 rounded bg-gray-300" />
-      {label}
+              {label}
             </span>
           ) : (
             label
@@ -525,8 +491,8 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
         >
           ✓
         </span>
-    </button>
-  );
+      </button>
+    );
   };
 
   const handleToggleHtmlMode = () => {
@@ -536,7 +502,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
       closeAllMenus();
       return;
     }
-    const next = sanitizeProductDescriptionHtml(htmlValue || "");
+    const next = htmlValue || "";
     onChange(next);
     if (editor) {
       editor.commands.setContent(next, { emitUpdate: false });
@@ -552,12 +518,19 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
 
   return (
     <div>
-      {!hideLabel ? (
-        <label className="mb-2 block text-sm font-medium text-gray-700">
-          {label}
+      <label className="mb-2 block text-sm font-medium text-gray-700">
+        Description
       </label>
-      ) : null}
       <div className="relative overflow-visible rounded-lg border border-gray-200 bg-white shadow-sm">
+        {enableImages && (
+          <input
+            ref={imageInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageFileSelection}
+          />
+        )}
         <div className="relative z-20 flex flex-wrap items-center gap-0.5 border-b border-gray-200/90 bg-gray-50/95 px-2 py-1.5">
           {enableTemplates && (
             <>
@@ -886,7 +859,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
               className={ICON_BTN}
               onClick={handlePickImage}
               disabled={!editor}
-              title="Insert image from files"
+              title="Insert image"
             >
               <PhotoIcon className="h-5 w-5" aria-hidden />
             </button>
@@ -1175,14 +1148,6 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
             </div>
           </div>
         </div>
-      ) : null}
-
-      {enableImages ? (
-        <SelectImageModal
-          open={isImagePickerOpen}
-          onClose={() => setIsImagePickerOpen(false)}
-          onSelect={handleCloudImageSelected}
-        />
       ) : null}
     </div>
   );

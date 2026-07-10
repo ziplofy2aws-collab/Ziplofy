@@ -42,19 +42,3 @@ export function scopedTextMarqueeCss(sectionId: string, customCss: string): stri
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
 }
-
-export function textMarqueeKeyframes(scopeClass: string, direction: 'forward' | 'reverse'): string {
-  return `
-    @keyframes ${scopeClass}-marquee-forward {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-    @keyframes ${scopeClass}-marquee-reverse {
-      from { transform: translateX(-50%); }
-      to { transform: translateX(0); }
-    }
-    .${scopeClass}__track {
-      animation: ${scopeClass}-marquee-${direction} 32s linear infinite;
-    }
-  `;
-}

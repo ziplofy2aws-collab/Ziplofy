@@ -361,16 +361,11 @@ export function ThemeEditorRichTextField({
 
   return (
     <div className="space-y-1.5 py-1">
-      {label || showDynamicSource ? (
-        <div className="flex items-center justify-between gap-2">
-          {label ? (
-            <label htmlFor={id} className="text-[13px] font-medium text-gray-800">
-              {label}
-            </label>
-          ) : (
-            <span />
-          )}
-          {showDynamicSource ? (
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor={id} className="text-[13px] font-medium text-gray-800">
+          {label}
+        </label>
+        {showDynamicSource ? (
           <button
             type="button"
             title="Connect dynamic source"
@@ -388,8 +383,7 @@ export function ThemeEditorRichTextField({
             </svg>
           </button>
         ) : null}
-        </div>
-      ) : null}
+      </div>
       <div className="overflow-visible rounded-lg border border-[#c9cccf] bg-white shadow-sm focus-within:border-[#005bd3] focus-within:ring-1 focus-within:ring-[#005bd3]">
         <div className="relative z-10 flex flex-wrap items-center gap-0.5 overflow-visible border-b border-[#e1e1e1] bg-[#f6f6f7] px-2 py-1">
           <button

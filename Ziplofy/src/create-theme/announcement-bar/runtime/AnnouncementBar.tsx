@@ -7,9 +7,7 @@ import {
   layoutBlockIdFromHighlightNodeId,
 } from '@render-store/sdk';
 import {
-  announcementBackground,
   announcementColorScheme,
-  announcementDividerColor,
   announcementDividerPx,
   announcementPadding,
   announcementRotateSec,
@@ -20,9 +18,7 @@ import {
   readAnnouncementBlockTypography,
   typographyToStyle,
 } from './announcementBlockTypography';
-import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
-import { scopedAnnouncementMobileCss, sectionScopeClass } from '../../runtime/shared/responsive';
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { useThemeColors } from '../../runtime/shared/tokens';
@@ -40,12 +36,7 @@ function collectSlides(
   config: Record<string, unknown> | null,
   base: string,
   blockOrder: string[],
-  themeFonts: {
-    fontHeading: string;
-    fontBody: string;
-    fontSubheading?: string;
-    fontAccent?: string;
-  }
+  themeFonts: { fontHeading: string; fontBody: string }
 ): AnnouncementSlide[] {
   const out: AnnouncementSlide[] = [];
   for (const blockId of blockOrder) {
@@ -98,18 +89,8 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
       collectSlides(config, base, blockOrder, {
         fontHeading: themeColors.fontHeading,
         fontBody: themeColors.fontBody,
-        fontSubheading: themeColors.fontSubheading,
-        fontAccent: themeColors.fontAccent,
       }),
-    [
-      config,
-      base,
-      blockOrder,
-      themeColors.fontHeading,
-      themeColors.fontBody,
-      themeColors.fontSubheading,
-      themeColors.fontAccent,
-    ]
+    [config, base, blockOrder, themeColors.fontHeading, themeColors.fontBody]
   );
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -145,15 +126,11 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
   if (!enabled || !slides.length || !slide?.text) return null;
 
   const scheme = announcementColorScheme(config, settingsBase, fallbackScheme);
-  const background = announcementBackground(config, settingsBase, scheme.background);
-  const dividerColor = announcementDividerColor(config, settingsBase);
   const sectionWidth = announcementSectionWidth(config, settingsBase);
   const { paddingTop, paddingBottom } = announcementPadding(config, settingsBase);
   const dividerPx = announcementDividerPx(config, settingsBase);
   const customCss = cfgString(config, `${settingsBase}.customCss`, '');
   const scopedCss = scopedAnnouncementCss(sectionId, customCss);
-  const shellClass = sectionScopeClass('codiic-announcement', sectionId);
-  const responsiveCss = scopedAnnouncementMobileCss(shellClass);
 
   const renderSlide = (s: AnnouncementSlide, visible: boolean): ReactNode => {
     const textStyle = typographyToStyle(s.typography);
@@ -162,11 +139,7 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
 
     const messageEl = (
       <EditorField fieldPath={textPath} label="Text">
-        <ThemeEditorRichTextContent
-          className="codiic-announcement-message"
-          html={s.text}
-          style={textStyle}
-        />
+        <span style={textStyle}>{s.text}</span>
       </EditorField>
     );
 
@@ -175,9 +148,9 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
         <Link to={s.link} style={{ color: scheme.color, textDecoration: 'none' }}>
           {messageEl}
           <span
-            data-codiic-node={`field:${linkPath}`}
-            data-codiic-label="Link"
-            data-codiic-kind="field"
+            data-ziplofy-node={`field:${linkPath}`}
+            data-ziplofy-label="Link"
+            data-ziplofy-kind="field"
             hidden
           >
             {s.link}
@@ -205,7 +178,7 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
           </EditorBlock>
         ) : (
           <EditorField fieldPath={`${settingsBase}.message`} label="Announcement text">
-            <ThemeEditorRichTextContent html={s.text} style={textStyle} />
+            <span style={textStyle}>{s.text}</span>
           </EditorField>
         )}
       </div>
@@ -222,22 +195,20 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
     <EditorSection
       sectionId={sectionId}
       label="Announcement bar"
-      className={shellClass}
       style={{
-        background,
+        background: scheme.background,
         color: scheme.color,
         fontFamily: themeColors.fontBody,
         fontSize: 13,
         textAlign: 'center',
         paddingTop,
         paddingBottom,
-        borderBottom: dividerPx > 0 ? `${dividerPx}px solid ${dividerColor}` : undefined,
+        borderBottom: dividerPx > 0 ? `${dividerPx}px solid rgba(0,0,0,0.15)` : undefined,
         width: '100%',
         boxSizing: 'border-box',
       }}
     >
       {scopedCss ? <style>{scopedCss}</style> : null}
-      {responsiveCss ? <style>{responsiveCss}</style> : null}
       <div
         style={
           sectionWidth === 'page'

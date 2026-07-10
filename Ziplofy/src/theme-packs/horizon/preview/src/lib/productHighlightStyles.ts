@@ -47,7 +47,6 @@ export type ProductHighlightLayout = {
   layoutGap: number;
   equalColumns: boolean;
   limitProductDetailsWidth: boolean;
-  backgroundColor: string;
   customCss: string;
 };
 
@@ -56,16 +55,14 @@ export function readProductHighlightLayout(
   settingsBase: string
 ): ProductHighlightLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
-  const backgroundColor = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
-    paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 40),
-    paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 40),
+    paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),
+    paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 0),
     layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 48),
     equalColumns: cfgBool(config, `${settingsBase}.equalColumns`, true),
     limitProductDetailsWidth: cfgBool(config, `${settingsBase}.limitProductDetailsWidth`, false),
-    backgroundColor,
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
   };
 }

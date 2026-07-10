@@ -1,10 +1,6 @@
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/outline';
 import React, { useCallback } from 'react';
 import CustomerSegmentItem from './CustomerSegmentItem';
-import {
-  segmentTableHeadClass,
-  segmentTableHeadRightClass,
-} from './customer-segment-ui.util';
 
 interface CustomerSegment {
   _id: string;
@@ -33,47 +29,39 @@ const CustomerSegmentsTable: React.FC<CustomerSegmentsTableProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[560px] text-left">
-        <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className={segmentTableHeadClass}>Segment name</th>
-            <th className={segmentTableHeadClass}>
-              <button
-                type="button"
-                onClick={handleSortClick}
-                className="inline-flex items-center gap-1 transition-colors hover:text-gray-700"
-              >
-                Created
-                {sortOrder === 'asc' ? (
-                  <ArrowUpIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden />
-                ) : (
-                  <ArrowDownIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden />
-                )}
-              </button>
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50/80">
+          <tr>
+            <th className="px-5 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Segment name
             </th>
-            <th className={segmentTableHeadRightClass}>Actions</th>
+            <th
+              className="px-5 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-100/80 transition-colors"
+              onClick={handleSortClick}
+            >
+              <div className="flex items-center gap-1.5">
+                <span>Created</span>
+                {sortOrder === 'asc' ? (
+                  <ArrowUpIcon className="w-4 h-4 text-gray-500" />
+                ) : (
+                  <ArrowDownIcon className="w-4 h-4 text-gray-500" />
+                )}
+              </div>
+            </th>
+            <th className="px-5 py-3.5 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody className="bg-white">
-          {segments.length === 0 ? (
-            <tr>
-              <td colSpan={3} className="px-3 py-16 text-center">
-                <p className="text-[15px] font-semibold text-gray-900">No segments found</p>
-                <p className="mt-1.5 text-[13px] font-normal text-gray-500">
-                  Try changing the search term
-                </p>
-              </td>
-            </tr>
-          ) : (
-            segments.map((segment) => (
-              <CustomerSegmentItem
-                key={segment._id}
-                segment={segment}
-                onSegmentClick={onSegmentClick}
-                onEditClick={onEditClick}
-              />
-            ))
-          )}
+        <tbody className="bg-white divide-y divide-gray-100">
+          {segments.map((s) => (
+            <CustomerSegmentItem
+              key={s._id}
+              segment={s}
+              onSegmentClick={onSegmentClick}
+              onEditClick={onEditClick}
+            />
+          ))}
         </tbody>
       </table>
     </div>

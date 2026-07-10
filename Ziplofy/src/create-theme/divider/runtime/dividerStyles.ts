@@ -1,15 +1,22 @@
 import { cfgNumber, cfgString } from '../../runtime/shared/config';
-import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { footerSectionWidth, scopedFooterCss } from './footerStyles';
 
-/** Default divider line color when "Color" is left at Default. */
-const DEFAULT_DIVIDER_LINE = '#d1d5db';
+export type DividerScheme = {
+  background: string;
+  color: string;
+  border: string;
+};
+
+/** Divider section backgrounds — scheme 1 matches editor canvas (#f6f6f7). */
+const DIVIDER_SCHEMES: Record<string, DividerScheme> = {
+  'scheme-1': { background: '#f6f6f7', color: '#111827', border: '#d1d5db' },
+  'scheme-2': { background: '#f8fafc', color: '#0f172a', border: '#cbd5e1' },
+  'scheme-3': { background: '#fff7ed', color: '#431407', border: '#fdba74' },
+  'scheme-4': { background: '#f5f3ff', color: '#4c1d95', border: '#c4b5fd' },
+};
 
 export type DividerStyle = {
-  /** Section background; 'transparent' when "Background color" is Default. */
-  background: string;
-  /** Divider line color. */
-  lineColor: string;
+  scheme: DividerScheme;
   widthMode: 'page' | 'full';
   thickness: number;
   lengthPercent: number;
@@ -20,17 +27,12 @@ export type DividerStyle = {
 
 export function readDividerStyle(
   config: Record<string, unknown> | null,
-  settingsBase: string
+  settingsBase: string,
+  _fallback?: DividerScheme
 ): DividerStyle {
-  const bgRaw = cfgString(config, `${settingsBase}.backgroundColor`, '').trim();
-  const colorRaw = cfgString(config, `${settingsBase}.color`, '').trim();
+  const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   return {
-    background: bgRaw
-      ? resolveThemePaletteColorSetting(config, bgRaw, 0, 'transparent')
-      : 'transparent',
-    lineColor: colorRaw
-      ? resolveThemePaletteColorSetting(config, colorRaw, 1, DEFAULT_DIVIDER_LINE)
-      : DEFAULT_DIVIDER_LINE,
+    scheme: DIVIDER_SCHEMES[schemeKey] ?? DIVIDER_SCHEMES['scheme-1'],
     widthMode: footerSectionWidth(config, settingsBase),
     thickness: Math.max(0, cfgNumber(config, `${settingsBase}.thickness`, 1)),
     lengthPercent: Math.min(100, Math.max(10, cfgNumber(config, `${settingsBase}.length`, 100))),

@@ -67,12 +67,10 @@ function readTemplateBlockOrder(
     blocksCur = (blocksCur as Record<string, unknown>)[part];
   }
   const blocks = (blocksCur ?? {}) as Record<string, unknown>;
-  const filtered = order.filter((id) => id in blocks);
-  if (filtered.length) return filtered;
-  return Object.keys(blocks);
+  return order.filter((id) => id in blocks);
 }
 
-/** Shopify Collection links — Collection → Title / Image per link block (Spotlight + Text). */
+/** Shopify Collection links: Spotlight — Collection → Title / Image per link block. */
 export function mapCollectionLinksSpotlightBlockNodes(
   prefix: string,
   blocksBase: string,

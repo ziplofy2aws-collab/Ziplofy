@@ -1,36 +1,16 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
-import { STORYTELLING_VIDEO_MEDIA_FIELD_KEYS } from './theme-editor-storytelling-video-media-panel.utils';
 
 /** Shopify-style Video section settings sheet order. */
 export const STORYTELLING_VIDEO_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
-  'Borders',
   'Padding',
   'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(STORYTELLING_VIDEO_PANEL_GROUP_ORDER);
-
-export const STORYTELLING_VIDEO_SECTION_FIELD_KEYS = new Set([
-  'direction',
-  'layoutAlignment',
-  'position',
-  'layoutGap',
-  'sectionWidth',
-  'height',
-  'backgroundMedia',
-  'backgroundImageUrl',
-  'backgroundColor',
-  'backgroundOverlay',
-  'borderStyle',
-  'cornerRadius',
-  'paddingTop',
-  'paddingBottom',
-  'customCss',
-]);
 
 const FIELD_SORT: Record<string, number> = {
   direction: 0,
@@ -39,12 +19,12 @@ const FIELD_SORT: Record<string, number> = {
   layoutGap: 3,
   sectionWidth: 10,
   height: 11,
+  colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  backgroundColor: 23,
-  backgroundOverlay: 24,
-  borderStyle: 26,
-  cornerRadius: 27,
+  borderStyle: 23,
+  cornerRadius: 24,
+  backgroundOverlay: 25,
   paddingTop: 30,
   paddingBottom: 31,
   customCss: 40,
@@ -63,9 +43,7 @@ export function isStorytellingVideoSectionType(
 
 export function isStorytellingVideoPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
-  const key = field.path.split('.').pop() ?? '';
-  return STORYTELLING_VIDEO_SECTION_FIELD_KEYS.has(key);
+  return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
 export function sortStorytellingVideoPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -73,9 +51,8 @@ export function sortStorytellingVideoPanelFields(fields: EditorFieldDef[]): Edit
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Borders: 3,
-    Padding: 4,
-    'Custom CSS': 5,
+    Padding: 3,
+    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -89,7 +66,7 @@ export function groupStorytellingVideoPanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields.filter(isStorytellingVideoPanelField)) {
+  for (const field of fields) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -101,14 +78,9 @@ export function groupStorytellingVideoPanelFields(
 export function isStorytellingVideoSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  const path = fields[0]?.path ?? '';
-  if (!path.includes('storytelling_video')) return false;
-  if (!keys.has('direction') || !keys.has('layoutGap')) return false;
-  if ([...STORYTELLING_VIDEO_MEDIA_FIELD_KEYS].some((key) => keys.has(key))) return false;
-  if (keys.has('caption') && keys.has('captionWidth')) return false;
-  if (keys.has('linkLabel') && keys.has('buttonStyle')) return false;
-  if (fields.some((f) => f.path.includes('.captionGroup.'))) return false;
-  return true;
+  if (keys.has('imageBeforeUrl') || keys.has('imageUrl') || keys.has('logoText')) return false;
+  if (keys.has('direction') && keys.has('layoutGap') && keys.has('caption')) return true;
+  return keys.has('caption') && (keys.has('videoUrl') || keys.has('videoSource')) && keys.has('layoutGap');
 }
 
 export function prepareStorytellingVideoSettingsNode(node: SidebarNode): SidebarNode {

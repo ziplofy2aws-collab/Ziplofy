@@ -1,5 +1,4 @@
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
-import { atMobileBreakpoint } from '../../runtime/shared/responsive';
 
 export type HeroScheme = {
   background: string;
@@ -8,14 +7,12 @@ export type HeroScheme = {
 };
 
 const COLOR_SCHEMES: Record<string, HeroScheme> = {
-  transparent: { background: 'transparent', color: '#111827', muted: '#6b7280' },
   'scheme-1': { background: '#ffffff', color: '#111827', muted: '#6b7280' },
   'scheme-2': { background: '#f8fafc', color: '#0f172a', muted: '#64748b' },
   'scheme-3': { background: '#fff7ed', color: '#431407', muted: '#9a3412' },
   'scheme-4': { background: '#f5f3ff', color: '#4c1d95', muted: '#6d28d9' },
   'scheme-5': { background: '#ecfdf5', color: '#064e3b', muted: '#047857' },
   'scheme-6': { background: '#1f2937', color: '#f9fafb', muted: '#9ca3af' },
-  'scheme-large-logo': { background: '#f0f1ed', color: '#111827', muted: '#6b7280' },
 };
 
 const HEIGHT_PX: Record<string, number> = {
@@ -27,8 +24,6 @@ const HEIGHT_PX: Record<string, number> = {
 
 export type HeroStyle = {
   scheme: HeroScheme;
-  /** True when the merchant explicitly picked a solid color (hex) or transparent for the background. */
-  backgroundIsCustom: boolean;
   minHeight: number | string;
   maxWidth: string | number;
   paddingTop: number;
@@ -69,31 +64,10 @@ export type HeroStyle = {
   overlayStyle: 'solid' | 'gradient';
   overlayGradientDirection: 'up' | 'down';
   blurredReflection: boolean;
-  reflectionOpacity: number;
   sectionLink: string;
   sectionLinkNewTab: boolean;
   customCss: string;
 };
-
-function resolveHeroBackground(value: string, fallback: HeroScheme): HeroScheme {
-  if (value === 'transparent') return COLOR_SCHEMES.transparent ?? fallback;
-  const hex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value) ? value : '';
-  if (hex) {
-    let h = hex.slice(1);
-    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
-    const r = parseInt(h.slice(0, 2), 16);
-    const g = parseInt(h.slice(2, 4), 16);
-    const b = parseInt(h.slice(4, 6), 16);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    const isLight = luminance > 0.6;
-    return {
-      background: hex,
-      color: isLight ? '#111827' : '#ffffff',
-      muted: isLight ? '#4b5563' : 'rgba(255,255,255,0.72)',
-    };
-  }
-  return COLOR_SCHEMES[value] ?? fallback;
-}
 
 export function readHeroStyle(
   config: Record<string, unknown> | null,
@@ -101,10 +75,7 @@ export function readHeroStyle(
   fallback: HeroScheme
 ): HeroStyle {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-6');
-  const scheme = resolveHeroBackground(schemeKey, fallback);
-  const backgroundIsCustom =
-    schemeKey === 'transparent' ||
-    /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(schemeKey);
+  const scheme = COLOR_SCHEMES[schemeKey] ?? fallback;
 
   const legacyAlign = cfgString(config, `${settingsBase}.textAlign`, '');
   const layoutAlignment = cfgString(
@@ -201,7 +172,6 @@ export function readHeroStyle(
 
   return {
     scheme,
-    backgroundIsCustom,
     minHeight,
     maxWidth: sectionWidth === 'full' ? '100%' : 1200,
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 56),
@@ -238,7 +208,6 @@ export function readHeroStyle(
     overlayGradientDirection:
       cfgString(config, `${settingsBase}.overlayGradientDirection`, 'up') === 'down' ? 'down' : 'up',
     blurredReflection: cfgBool(config, `${settingsBase}.blurredReflection`, false),
-    reflectionOpacity: cfgNumber(config, `${settingsBase}.reflectionOpacity`, 75),
     sectionLink: cfgString(config, `${settingsBase}.sectionLink`, ''),
     sectionLinkNewTab: cfgBool(config, `${settingsBase}.sectionLinkNewTab`, false),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
@@ -250,7 +219,7 @@ export function scopedHeroCss(sectionId: string, css: string): string {
   if (!trimmed) return '';
   return trimmed
     .split('\n')
-    .map((line) => `[data-codiic-section="${sectionId}"] ${line}`)
+    .map((line) => `[data-ziplofy-section="${sectionId}"] ${line}`)
     .join('\n');
 }
 
@@ -260,15 +229,13 @@ export function heroResponsiveCss(
   differentMobile: boolean
 ): string {
   if (!stackMedia && !differentMobile) return '';
-  const sel = `[data-codiic-section="${sectionId}"] .hero-media-grid`;
+  const sel = `[data-ziplofy-section="${sectionId}"] .hero-media-grid`;
   let css = '';
   if (stackMedia) {
-    css += atMobileBreakpoint(`${sel} { flex-direction: column !important; }`);
+    css += `@media (max-width: 749px) { ${sel} { flex-direction: column !important; } }`;
   }
   if (differentMobile) {
-    css += atMobileBreakpoint(
-      `${sel} .hero-media-1 { display: none; } ${sel} .hero-media-2 { display: none; } ${sel} .hero-media-mobile { display: block !important; flex: 1; min-height: 200px; }`
-    );
+    css += `@media (max-width: 749px) { ${sel} .hero-media-1 { display: none; } ${sel} .hero-media-2 { display: none; } ${sel} .hero-media-mobile { display: block !important; flex: 1; min-height: 200px; } }`;
   }
   return css;
 }
@@ -280,16 +247,14 @@ export function heroContentVerticalOnMobileCss(
   isHorizontal: boolean
 ): string {
   if (!isHorizontal || !verticalOnMobile) return '';
-  const sel = `[data-codiic-section="${sectionId}"] .hero-content-blocks`;
-  return atMobileBreakpoint(`${sel} { flex-direction: column !important; align-items: stretch !important; }`);
+  const sel = `[data-ziplofy-section="${sectionId}"] .hero-content-blocks`;
+  return `@media (max-width: 749px) { ${sel} { flex-direction: column !important; align-items: stretch !important; } }`;
 }
 
 /** Stack dual hero media vertically on small screens when enabled in settings. */
 export function heroDualMediaResponsiveCss(sectionId: string, stackOnMobile: boolean): string {
   if (!stackOnMobile) return '';
-  const root = `[data-codiic-section="${sectionId}"] .hero-dual-media-backdrop`;
-  const tile = `[data-codiic-section="${sectionId}"] .hero-dual-media-tile`;
-  return atMobileBreakpoint(
-    `${root} { flex-direction: column !important; } ${tile} { flex: 1 1 50% !important; width: 100% !important; max-width: 100% !important; min-height: 50%; }`
-  );
+  const root = `[data-ziplofy-section="${sectionId}"] .hero-dual-media-backdrop`;
+  const tile = `[data-ziplofy-section="${sectionId}"] .hero-dual-media-tile`;
+  return `@media (max-width: 749px) { ${root} { flex-direction: column !important; } ${tile} { flex: 1 1 50% !important; width: 100% !important; max-width: 100% !important; min-height: 50%; } }`;
 }

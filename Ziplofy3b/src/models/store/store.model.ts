@@ -16,12 +16,6 @@ export interface IStore {
   userId: mongoose.Types.ObjectId;
   storeName: string;
   storeDescription: string;
-  /** Optional SEO title for the storefront home page (max 70). */
-  seoHomePageTitle?: string;
-  /** Optional meta description for search/social previews (max 320). */
-  seoMetaDescription?: string;
-  /** Optional default Open Graph / social sharing image URL. */
-  seoSocialImageUrl?: string;
   appliedTheme?: mongoose.Types.ObjectId | null;
   /** JSON theme creator save applied to the live storefront (StoreCustomTheme). */
   appliedCustomThemeId?: mongoose.Types.ObjectId | null;
@@ -50,23 +44,6 @@ const storeSchema = new Schema<IStore & Document>({
     trim: true,
     maxLength: [500, "Store description cannot exceed 500 characters"],
     minLength: [10, "Store description must be at least 10 characters"],
-  },
-  seoHomePageTitle: {
-    type: String,
-    trim: true,
-    maxLength: [70, "SEO home page title cannot exceed 70 characters"],
-    default: "",
-  },
-  seoMetaDescription: {
-    type: String,
-    trim: true,
-    maxLength: [320, "SEO meta description cannot exceed 320 characters"],
-    default: "",
-  },
-  seoSocialImageUrl: {
-    type: String,
-    trim: true,
-    default: "",
   },
   appliedTheme: {
     type: Schema.Types.ObjectId,

@@ -2,7 +2,6 @@ export {
   FEATURED_PRODUCT_MEDIA_DEFAULTS,
   FEATURED_PRODUCT_MEDIA_PANEL_GROUP_ORDER,
   extendFeaturedProductMediaBlockValues,
-  featuredProductMediaDefaultSettings,
   featuredProductMediaFieldDefs,
   featuredProductMediaFieldDefsFromNodeId,
   featuredProductMediaFieldDefsFromSchema,

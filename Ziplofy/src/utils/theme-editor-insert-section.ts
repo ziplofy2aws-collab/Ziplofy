@@ -377,8 +377,6 @@ export function templateBlueprintKey(sectionId: string): string {
     sectionId === 'collection_list_carousel' ||
     sectionId === 'collection_list_editorial' ||
     sectionId === 'collection_list_grid' ||
-    sectionId === 'collection_heading' ||
-    sectionId === 'main_collection' ||
     sectionId === 'layered_slideshow' ||
     sectionId === 'slideshow_full_frame'
   ) {
@@ -521,10 +519,6 @@ import { applyImageWithTextPreset } from './image-with-text-preset.util';
 import { applyStorytellingLogoPreset } from './storytelling-logo-preset.util';
 import { applyStorytellingVideoPreset } from './storytelling-video-preset.util';
 import { applyFaqPreset } from './faq-preset.util';
-import { FAQ_SECTION_BLOCK_ORDER } from './faq-sidebar.util';
-import { faqAccordionDefaultSettings } from '../create-theme/sidebar/theme-editor-faq-accordion-block-panel.utils';
-import { faqAccordionRowDefaultSettings } from '../create-theme/sidebar/theme-editor-faq-accordion-row-panel.utils';
-import { textBlockDefaultSettings } from '../create-theme/sidebar/theme-editor-text-block-panel.utils';
 import { applyIconsWithTextPreset } from './icons-with-text-preset.util';
 import { applyMulticolumnPreset } from './multicolumn-preset.util';
 import { applyPullQuotePreset } from './pull-quote-preset.util';
@@ -2286,64 +2280,14 @@ export type AddBlockTarget = {
   scope: 'layout' | 'template';
   sectionInstanceId: string;
   templateId?: string;
-  faqTarget?: 'section' | 'accordion' | { rowId: string };
 };
 
 /** Parse sidebar add-block node id (`layout:announcement_bar:add-block`, etc.). */
 export function parseAddBlockTargetNodeId(nodeId: string): AddBlockTarget | null {
-  const layoutRowInner = nodeId.match(
-    /^layout:([^:]+):block:accordion:nested:([^:]+):inner-add-block$/
-  );
-  if (layoutRowInner) {
-    return {
-      scope: 'layout',
-      sectionInstanceId: layoutRowInner[1]!,
-      faqTarget: { rowId: layoutRowInner[2]! },
-    };
-  }
-
-  const tplRowInner = nodeId.match(
-    /^template:([^:]+):([^:]+):block:accordion:nested:([^:]+):inner-add-block$/
-  );
-  if (tplRowInner) {
-    return {
-      scope: 'template',
-      templateId: tplRowInner[1]!,
-      sectionInstanceId: tplRowInner[2]!,
-      faqTarget: { rowId: tplRowInner[3]! },
-    };
-  }
-
-  const layoutAccordionInner = nodeId.match(/^layout:([^:]+):block:accordion:inner-add-block$/);
-  if (layoutAccordionInner) {
-    return {
-      scope: 'layout',
-      sectionInstanceId: layoutAccordionInner[1]!,
-      faqTarget: 'accordion',
-    };
-  }
-
-  const tplAccordionInner = nodeId.match(/^template:([^:]+):([^:]+):block:accordion:inner-add-block$/);
-  if (tplAccordionInner) {
-    return {
-      scope: 'template',
-      templateId: tplAccordionInner[1]!,
-      sectionInstanceId: tplAccordionInner[2]!,
-      faqTarget: 'accordion',
-    };
-  }
-
   const layout = nodeId.match(/^layout:([^:]+):add-block$/);
-  if (layout) return { scope: 'layout', sectionInstanceId: layout[1]!, faqTarget: 'section' };
+  if (layout) return { scope: 'layout', sectionInstanceId: layout[1]! };
   const tpl = nodeId.match(/^template:([^:]+):([^:]+):add-block$/);
-  if (tpl) {
-    return {
-      scope: 'template',
-      templateId: tpl[1]!,
-      sectionInstanceId: tpl[2]!,
-      faqTarget: 'section',
-    };
-  }
+  if (tpl) return { scope: 'template', templateId: tpl[1]!, sectionInstanceId: tpl[2]! };
   return null;
 }
 
@@ -2794,253 +2738,6 @@ function sectionIsFeaturedCollection(
   return blueprint === 'featured_collection';
 }
 
-function sectionIsFaq(
-  sec: Record<string, unknown>,
-  sectionInstanceId: string,
-  scope: AddBlockTarget['scope']
-): boolean {
-  if (sec.type === 'faq') return true;
-  const blueprint =
-    scope === 'layout'
-      ? layoutBlueprintKey(sectionInstanceId)
-      : templateBlueprintKey(sectionInstanceId);
-  return blueprint === 'faq_section';
-}
-
-function sectionIsIconsWithText(
-  sec: Record<string, unknown>,
-  sectionInstanceId: string,
-  scope: AddBlockTarget['scope']
-): boolean {
-  if (sec.type === 'icons-with-text') return true;
-  const blueprint =
-    scope === 'layout'
-      ? layoutBlueprintKey(sectionInstanceId)
-      : templateBlueprintKey(sectionInstanceId);
-  return blueprint === 'icons_with_text';
-}
-
-function sectionIsMulticolumn(
-  sec: Record<string, unknown>,
-  sectionInstanceId: string,
-  scope: AddBlockTarget['scope']
-): boolean {
-  if (sec.type === 'multicolumn') return true;
-  const blueprint =
-    scope === 'layout'
-      ? layoutBlueprintKey(sectionInstanceId)
-      : templateBlueprintKey(sectionInstanceId);
-  return blueprint === 'multicolumn_section';
-}
-
-function nextIconsWithTextBlockId(order: string[], blocks: Record<string, unknown>): string {
-  const existing = new Set([...order, ...Object.keys(blocks)]);
-  let n = 1;
-  while (existing.has(`icon_${n}`)) n += 1;
-  return `icon_${n}`;
-}
-
-function nextMulticolumnBlockId(order: string[], blocks: Record<string, unknown>): string {
-  const existing = new Set([...order, ...Object.keys(blocks)]);
-  let n = 1;
-  while (existing.has(`column_${n}`)) n += 1;
-  return `column_${n}`;
-}
-
-function insertMulticolumnBlock(
-  sec: Record<string, unknown>,
-  catalogBlockId: string
-): { blockInstanceId: string } | null {
-  if (normalizeCatalogBlockId(catalogBlockId) !== 'multicolumn-item') return null;
-  const blocks = { ...((sec.blocks ?? {}) as Record<string, Record<string, unknown>>) };
-  const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [];
-  const blockId = nextMulticolumnBlockId(order, blocks);
-  blocks[blockId] = {
-    type: 'multicolumn-item',
-    settings: {
-      heading: 'Heading',
-      text: '',
-    },
-  };
-  order.push(blockId);
-  sec.blocks = blocks;
-  sec.block_order = order;
-  return { blockInstanceId: blockId };
-}
-
-function insertIconsWithTextBlock(
-  sec: Record<string, unknown>,
-  catalogBlockId: string
-): { blockInstanceId: string } | null {
-  if (normalizeCatalogBlockId(catalogBlockId) !== 'icon-with-text-item') return null;
-  const blocks = { ...((sec.blocks ?? {}) as Record<string, Record<string, unknown>>) };
-  const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [];
-  const blockId = nextIconsWithTextBlockId(order, blocks);
-  blocks[blockId] = {
-    type: 'icon-with-text-item',
-    settings: {
-      icon: 'eye',
-      heading: 'Heading',
-      text: '',
-    },
-  };
-  order.push(blockId);
-  sec.blocks = blocks;
-  sec.block_order = order;
-  return { blockInstanceId: blockId };
-}
-
-function nextFaqRowId(order: string[], blocks: Record<string, unknown>): string {
-  const existing = new Set([...order, ...Object.keys(blocks)]);
-  let n = 1;
-  while (existing.has(`row_${n}`)) n += 1;
-  return `row_${n}`;
-}
-
-function nextFaqRowTextId(order: string[], blocks: Record<string, unknown>): string {
-  const existing = new Set([...order, ...Object.keys(blocks)]);
-  if (!existing.has('text')) return 'text';
-  let n = 2;
-  while (existing.has(`text_${n}`)) n += 1;
-  return `text_${n}`;
-}
-
-function faqNodeId(
-  scope: AddBlockTarget['scope'],
-  tplId: string | undefined,
-  sectionInstanceId: string,
-  suffix: string
-): string {
-  return scope === 'template' && tplId
-    ? `template:${tplId}:${sectionInstanceId}:${suffix}`
-    : `layout:${sectionInstanceId}:${suffix}`;
-}
-
-function insertFaqBlock(
-  sec: Record<string, unknown>,
-  catalogBlockId: string,
-  target: AddBlockTarget
-): { blockInstanceId: string; nodeId: string } | null {
-  const normalized = normalizeCatalogBlockId(catalogBlockId);
-  const faqTarget = target.faqTarget ?? 'section';
-
-  if (faqTarget === 'accordion') {
-    if (normalized !== 'accordion-row') return null;
-    const blocks = (sec.blocks ?? {}) as Record<string, Record<string, unknown>>;
-    const accordion = (blocks.accordion ?? { type: 'group', settings: faqAccordionDefaultSettings() }) as Record<
-      string,
-      unknown
-    >;
-    const rowBlocks = { ...((accordion.blocks ?? {}) as Record<string, Record<string, unknown>>) };
-    const rowOrder = Array.isArray(accordion.block_order) ? [...(accordion.block_order as string[])] : [];
-    const rowId = nextFaqRowId(rowOrder, rowBlocks);
-    rowBlocks[rowId] = {
-      type: 'accordion-row',
-      settings: faqAccordionRowDefaultSettings(),
-      block_order: ['text'],
-      blocks: {
-        text: {
-          type: 'text',
-          settings: textBlockDefaultSettings(),
-        },
-      },
-    };
-    rowOrder.push(rowId);
-    accordion.type = 'group';
-    accordion.blocks = rowBlocks;
-    accordion.block_order = rowOrder;
-    if (!accordion.settings) accordion.settings = faqAccordionDefaultSettings();
-    blocks.accordion = accordion;
-    sec.blocks = blocks;
-    if (!Array.isArray(sec.block_order) || !(sec.block_order as string[]).includes('accordion')) {
-      const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [...FAQ_SECTION_BLOCK_ORDER];
-      if (!order.includes('accordion')) order.push('accordion');
-      sec.block_order = order;
-    }
-    return {
-      blockInstanceId: rowId,
-      nodeId: faqNodeId(target.scope, target.templateId, target.sectionInstanceId, `block:accordion:nested:${rowId}`),
-    };
-  }
-
-  if (typeof faqTarget === 'object') {
-    if (normalized !== 'text') return null;
-    const blocks = (sec.blocks ?? {}) as Record<string, Record<string, unknown>>;
-    const accordion = blocks.accordion as Record<string, unknown> | undefined;
-    if (!accordion) return null;
-    const rowBlocks = (accordion.blocks ?? {}) as Record<string, Record<string, unknown>>;
-    const row = rowBlocks[faqTarget.rowId];
-    if (!row || row.type !== 'accordion-row') return null;
-    const nestedBlocks = { ...((row.blocks ?? {}) as Record<string, Record<string, unknown>>) };
-    const nestedOrder = Array.isArray(row.block_order) ? [...(row.block_order as string[])] : [];
-    const textId = nextFaqRowTextId(nestedOrder, nestedBlocks);
-    nestedBlocks[textId] = { type: 'text', settings: textBlockDefaultSettings() };
-    nestedOrder.push(textId);
-    row.blocks = nestedBlocks;
-    row.block_order = nestedOrder;
-    rowBlocks[faqTarget.rowId] = row;
-    accordion.blocks = rowBlocks;
-    blocks.accordion = accordion;
-    sec.blocks = blocks;
-    return {
-      blockInstanceId: textId,
-      nodeId: faqNodeId(
-        target.scope,
-        target.templateId,
-        target.sectionInstanceId,
-        `block:accordion:nested:${faqTarget.rowId}:nested:${textId}`
-      ),
-    };
-  }
-
-  const blocks = { ...((sec.blocks ?? {}) as Record<string, Record<string, unknown>>) };
-  const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [];
-
-  if (normalized === 'heading') {
-    if (blocks.heading) return null;
-    blocks.heading = { type: 'heading', settings: { heading: 'Frequently asked questions' } };
-    if (!order.includes('heading')) order.push('heading');
-    sec.blocks = blocks;
-    sec.block_order = order;
-    return {
-      blockInstanceId: 'heading',
-      nodeId: faqNodeId(target.scope, target.templateId, target.sectionInstanceId, 'block:heading'),
-    };
-  }
-
-  if (normalized === 'accordion') {
-    if (blocks.accordion) return null;
-    const rowId = 'row_1';
-    blocks.accordion = {
-      type: 'group',
-      settings: faqAccordionDefaultSettings(),
-      block_order: [rowId],
-      blocks: {
-        [rowId]: {
-          type: 'accordion-row',
-          settings: faqAccordionRowDefaultSettings(),
-          block_order: ['text'],
-          blocks: {
-            text: {
-              type: 'text',
-              settings: textBlockDefaultSettings(),
-            },
-          },
-        },
-      },
-    };
-    if (!order.includes('accordion')) order.push('accordion');
-    sec.blocks = blocks;
-    sec.block_order = order;
-    return {
-      blockInstanceId: 'accordion',
-      nodeId: faqNodeId(target.scope, target.templateId, target.sectionInstanceId, 'block:accordion'),
-    };
-  }
-
-  return null;
-}
-
 /** Append an allowlisted block to a layout or template section from the add-block picker. */
 export function insertBlockFromCatalog(
   config: Record<string, unknown>,
@@ -3114,45 +2811,6 @@ export function insertBlockFromCatalog(
         nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
       };
     }
-    if (sectionIsFaq(sec, target.sectionInstanceId, 'layout')) {
-      const inserted = insertFaqBlock(sec, catalogBlockId, target);
-      if (!inserted) return null;
-      sections[target.sectionInstanceId] = sec;
-      next.sections = sections;
-      return {
-        config: next,
-        blockInstanceId: inserted.blockInstanceId,
-        sectionInstanceId: target.sectionInstanceId,
-        scope: 'layout',
-        nodeId: inserted.nodeId,
-      };
-    }
-    if (sectionIsIconsWithText(sec, target.sectionInstanceId, 'layout')) {
-      const inserted = insertIconsWithTextBlock(sec, catalogBlockId);
-      if (!inserted) return null;
-      sections[target.sectionInstanceId] = sec;
-      next.sections = sections;
-      return {
-        config: next,
-        blockInstanceId: inserted.blockInstanceId,
-        sectionInstanceId: target.sectionInstanceId,
-        scope: 'layout',
-        nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
-      };
-    }
-    if (sectionIsMulticolumn(sec, target.sectionInstanceId, 'layout')) {
-      const inserted = insertMulticolumnBlock(sec, catalogBlockId);
-      if (!inserted) return null;
-      sections[target.sectionInstanceId] = sec;
-      next.sections = sections;
-      return {
-        config: next,
-        blockInstanceId: inserted.blockInstanceId,
-        sectionInstanceId: target.sectionInstanceId,
-        scope: 'layout',
-        nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
-      };
-    }
     return null;
   }
 
@@ -3197,124 +2855,8 @@ export function insertBlockFromCatalog(
       nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
     };
   }
-  if (sectionIsFaq(sec, target.sectionInstanceId, 'template')) {
-    const inserted = insertFaqBlock(sec, catalogBlockId, { ...target, templateId: tplId });
-    if (!inserted) return null;
-    sections[target.sectionInstanceId] = sec;
-    tpl.sections = sections;
-    templates[tplId] = tpl;
-    next.templates = templates;
-    return {
-      config: next,
-      blockInstanceId: inserted.blockInstanceId,
-      sectionInstanceId: target.sectionInstanceId,
-      scope: 'template',
-      templateId: tplId,
-      nodeId: inserted.nodeId,
-    };
-  }
-  if (sectionIsIconsWithText(sec, target.sectionInstanceId, 'template')) {
-    const inserted = insertIconsWithTextBlock(sec, catalogBlockId);
-    if (!inserted) return null;
-    sections[target.sectionInstanceId] = sec;
-    tpl.sections = sections;
-    templates[tplId] = tpl;
-    next.templates = templates;
-    return {
-      config: next,
-      blockInstanceId: inserted.blockInstanceId,
-      sectionInstanceId: target.sectionInstanceId,
-      scope: 'template',
-      templateId: tplId,
-      nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
-    };
-  }
-  if (sectionIsMulticolumn(sec, target.sectionInstanceId, 'template')) {
-    const inserted = insertMulticolumnBlock(sec, catalogBlockId);
-    if (!inserted) return null;
-    sections[target.sectionInstanceId] = sec;
-    tpl.sections = sections;
-    templates[tplId] = tpl;
-    next.templates = templates;
-    return {
-      config: next,
-      blockInstanceId: inserted.blockInstanceId,
-      sectionInstanceId: target.sectionInstanceId,
-      scope: 'template',
-      templateId: tplId,
-      nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
-    };
-  }
 
   return null;
-}
-
-/** Seed form values for nested FAQ accordion rows / row text blocks. */
-export function extendValuesForFaqNestedBlock(
-  values: Record<string, string | boolean>,
-  scope: AddBlockTarget['scope'],
-  tplId: string | undefined,
-  sectionInstanceId: string,
-  nodeId: string,
-  config: Record<string, unknown>
-): Record<string, string | boolean> {
-  const next = { ...values };
-  const blocksBase =
-    scope === 'template' && tplId
-      ? `templates.${tplId}.sections.${sectionInstanceId}.blocks.accordion`
-      : `sections.${sectionInstanceId}.blocks.accordion`;
-
-  const rowMatch = nodeId.match(/:block:accordion:nested:([^:]+)$/);
-  const textMatch = nodeId.match(/:block:accordion:nested:([^:]+):nested:([^:]+)$/);
-
-  if (textMatch) {
-    const [, rowId, textId] = textMatch;
-    const prefix = `${blocksBase}.blocks.${rowId}.blocks.${textId}.settings`;
-    const defaults = textBlockDefaultSettings();
-    for (const [key, defaultValue] of Object.entries(defaults)) {
-      const path = `${prefix}.${key}`;
-      const raw = getNested(config, path.split('.'));
-      if (raw !== undefined) {
-        next[path] =
-          typeof defaultValue === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);
-      } else {
-        next[path] = typeof defaultValue === 'boolean' ? defaultValue : String(defaultValue);
-      }
-    }
-    return next;
-  }
-
-  if (rowMatch) {
-    const [, rowId] = rowMatch;
-    const prefix = `${blocksBase}.blocks.${rowId}.settings`;
-    for (const key of ['heading', 'openByDefault', 'rowIcon', 'rowImageIconUrl', 'rowIconWidth']) {
-      const path = `${prefix}.${key}`;
-      const raw = getNested(config, path.split('.'));
-      if (raw === undefined) continue;
-      next[path] =
-        key === 'openByDefault' ? Boolean(raw) : raw == null ? '' : String(raw);
-    }
-    const row = getNested(config, `${blocksBase}.blocks.${rowId}`.split('.')) as
-      | { block_order?: string[]; blocks?: Record<string, unknown> }
-      | undefined;
-    const textOrder = Array.isArray(row?.block_order)
-      ? row.block_order
-      : Object.keys(row?.blocks ?? {});
-    const textId = textOrder[0] ?? 'text';
-    const textDefaults = textBlockDefaultSettings();
-    for (const [key, defaultValue] of Object.entries(textDefaults)) {
-      const path = `${blocksBase}.blocks.${rowId}.blocks.${textId}.settings.${key}`;
-      const raw = getNested(config, path.split('.'));
-      if (raw !== undefined) {
-        next[path] =
-          typeof defaultValue === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);
-      } else {
-        next[path] = typeof defaultValue === 'boolean' ? defaultValue : String(defaultValue);
-      }
-    }
-  }
-
-  return next;
 }
 
 /** Seed form `values` for a newly added layout block instance. */

@@ -3,8 +3,7 @@ import type { CreateThemeEditing } from '../types';
 export const editing: CreateThemeEditing = {
   sectionLabel: 'Divider',
   sectionSettingsOrder: [
-    { key: 'backgroundColor', label: 'Background color', type: 'text' },
-    { key: 'color', label: 'Color', type: 'text' },
+    { key: 'colorScheme', label: 'Color scheme', type: 'select' },
     { key: 'sectionWidth', label: 'Width', type: 'select' },
     { key: 'thickness', label: 'Thickness', type: 'number' },
     { key: 'length', label: 'Length', type: 'number' },

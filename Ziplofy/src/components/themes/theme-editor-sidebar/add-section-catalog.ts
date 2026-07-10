@@ -153,6 +153,17 @@ export const FOOTER_STORYTELLING_RESOLVE: Record<string, { blueprintId: string; 
   video: { blueprintId: 'storytelling_video', type: 'storytelling-video', label: 'Video' },
 };
 
+function layoutLiquidItem(): SectionCatalogItem {
+  return {
+    id: 'custom-liquid',
+    label: 'Custom Liquid',
+    icon: 'code',
+    keywords: ['liquid', 'code', 'html', 'custom'],
+    previewVariant: 'text-block',
+    previewCaption: 'Add custom Liquid code to your theme',
+  };
+}
+
 function layoutBlockItem(
   id: string,
   label: string,
@@ -171,6 +182,7 @@ function layoutBlockItem(
 }
 
 const LAYOUT_CATEGORY_ITEMS: SectionCatalogItem[] = [
+  layoutLiquidItem(),
   layoutBlockItem('custom-section', 'Custom section', ['blank', 'custom', 'blocks'], 'custom-section', 'Build a section with blocks and settings'),
   layoutBlockItem('divider', 'Divider', ['line', 'separator', 'rule'], 'divider', 'A horizontal line to separate content'),
 ];

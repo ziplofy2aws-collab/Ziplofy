@@ -5,7 +5,6 @@ export const FEATURED_PRODUCT_HEADER_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
-  'Borders',
   'Block link',
   'Padding',
 ] as const;
@@ -31,7 +30,6 @@ const HEADER_FIELD_KEYS = new Set([
   'customHeight',
   'inheritColorScheme',
   'backgroundMedia',
-  'backgroundColor',
   'backgroundImageUrl',
   'backgroundImagePosition',
   'borderStyle',
@@ -130,7 +128,6 @@ export function featuredProductHeaderDefaultSettings(): Record<string, string | 
     customHeight: 100,
     inheritColorScheme: false,
     backgroundMedia: 'none',
-    backgroundColor: 'default',
     backgroundImageUrl: '',
     backgroundImagePosition: 'cover',
     borderStyle: 'none',
@@ -268,18 +265,10 @@ export function featuredProductHeaderFieldDefs(blocksBase: string): EditorFieldD
       ],
     },
     {
-      path: s('backgroundColor'),
-      type: 'text',
-      label: 'Background color',
-      group: 'Appearance',
-      widget: 'color',
-      sidebar: false,
-    },
-    {
       path: s('borderStyle'),
       type: 'select',
-      label: 'Style',
-      group: 'Borders',
+      label: 'Borders',
+      group: 'Appearance',
       widget: 'segmented',
       sidebar: false,
       options: [
@@ -290,8 +279,8 @@ export function featuredProductHeaderFieldDefs(blocksBase: string): EditorFieldD
     {
       path: s('borderThickness'),
       type: 'number',
-      label: 'Thickness',
-      group: 'Borders',
+      label: 'Border thickness',
+      group: 'Appearance',
       widget: 'slider',
       min: 0,
       max: 10,
@@ -302,8 +291,8 @@ export function featuredProductHeaderFieldDefs(blocksBase: string): EditorFieldD
     {
       path: s('borderOpacity'),
       type: 'number',
-      label: 'Opacity',
-      group: 'Borders',
+      label: 'Border opacity',
+      group: 'Appearance',
       widget: 'slider',
       min: 0,
       max: 100,
@@ -315,7 +304,7 @@ export function featuredProductHeaderFieldDefs(blocksBase: string): EditorFieldD
       path: s('cornerRadius'),
       type: 'number',
       label: 'Corner radius',
-      group: 'Borders',
+      group: 'Appearance',
       widget: 'slider',
       min: 0,
       max: 100,
@@ -438,39 +427,15 @@ export function featuredProductHeaderFieldDefsFromSchema(
   const blocksBase = blocksBaseFromNodeId(nodeId);
   const schemaFields = header?.settingsFields ?? [];
   if (schemaFields.length) {
-    const remapped = schemaFields.map((f) => {
-      const key = f.path.split('.').pop() ?? '';
-      let group = f.group;
-      if (
-        key === 'borderStyle' ||
-        key === 'borderThickness' ||
-        key === 'borderOpacity' ||
-        key === 'cornerRadius'
-      ) {
-        group = 'Borders';
-      }
-      if (key === 'borderStyle') {
-        return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group, label: 'Style' };
-      }
-      if (key === 'borderThickness') {
-        return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group, label: 'Thickness' };
-      }
-      if (key === 'borderOpacity') {
-        return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group, label: 'Opacity' };
-      }
-      return { ...f, path: remapTemplateSchemaPath(f.path, tplId, secId), group };
-    });
-    const built = blocksBase ? featuredProductHeaderFieldDefs(blocksBase) : [];
-    const schemaKeys = new Set(remapped.map((f) => f.path.split('.').pop() ?? ''));
-    const merged = [
-      ...remapped,
-      ...built.filter((f) => !schemaKeys.has(f.path.split('.').pop() ?? '')),
-    ];
-    const hasCustom = merged.some((f) => f.path.endsWith('.customWidth'));
+    const remapped = schemaFields.map((f) => ({
+      ...f,
+      path: remapTemplateSchemaPath(f.path, tplId, secId),
+    }));
+    const hasCustom = remapped.some((f) => f.path.endsWith('.customWidth'));
     if (!hasCustom && blocksBase) {
-      return [...merged, ...featuredProductHeaderCustomSizeFieldDefs(blocksBase)];
+      return [...remapped, ...featuredProductHeaderCustomSizeFieldDefs(blocksBase)];
     }
-    return merged;
+    return remapped;
   }
   return blocksBase
     ? [
@@ -499,14 +464,13 @@ function fieldSortKey(path: string): number {
     height: 12,
     inheritColorScheme: 20,
     backgroundMedia: 21,
-    backgroundColor: 22,
-    backgroundImageUrl: 23,
-    backgroundImagePosition: 24,
+    backgroundImageUrl: 22,
+    backgroundImagePosition: 23,
+    borderStyle: 24,
+    borderThickness: 25,
+    borderOpacity: 26,
+    cornerRadius: 27,
     backgroundOverlay: 28,
-    borderStyle: 30,
-    borderThickness: 31,
-    borderOpacity: 32,
-    cornerRadius: 33,
     linkUrl: 30,
     openLinkInNewTab: 31,
     paddingTop: 40,
@@ -519,11 +483,8 @@ function fieldSortKey(path: string): number {
 
 export function isFeaturedProductHeaderPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
-  if (key === 'inheritColorScheme') return false;
   if (!HEADER_FIELD_KEYS.has(key)) return false;
-  const isFeaturedProductPath = /\.blocks\.details\.blocks\.header\.settings\./.test(field.path);
-  const isCollectionListHeaderPath = /\.settings\.headerGroup\./.test(field.path);
-  if (!isFeaturedProductPath && !isCollectionListHeaderPath) return false;
+  if (!/\.blocks\.details\.blocks\.header\.settings\./.test(field.path)) return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;
 }

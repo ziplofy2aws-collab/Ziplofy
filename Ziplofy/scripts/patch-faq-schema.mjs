@@ -316,149 +316,6 @@ function accordionBlockSettingsFields(prefix) {
   ];
 }
 
-function textBlockSettingsFields(blockPrefix) {
-  const s = (key) => `${blockPrefix}.settings.${key}`;
-  return [
-    {
-      path: s('text'),
-      type: 'textarea',
-      label: 'Text',
-      group: 'Text',
-      widget: 'richtext',
-      sidebar: true,
-    },
-    {
-      path: s('width'),
-      type: 'select',
-      label: 'Width',
-      group: 'Layout',
-      widget: 'segmented',
-      sidebar: true,
-      options: [
-        { value: 'fit', label: 'Fit' },
-        { value: 'fill', label: 'Fill' },
-      ],
-    },
-    {
-      path: s('maxWidth'),
-      type: 'select',
-      label: 'Max width',
-      group: 'Layout',
-      widget: 'select',
-      sidebar: true,
-      options: [
-        { value: 'narrow', label: 'Narrow' },
-        { value: 'normal', label: 'Normal' },
-        { value: 'wide', label: 'Wide' },
-        { value: 'none', label: 'None' },
-      ],
-    },
-    {
-      path: s('alignment'),
-      type: 'select',
-      label: 'Alignment',
-      group: 'Layout',
-      widget: 'segmented',
-      sidebar: true,
-      options: [
-        { value: 'left', label: 'Left' },
-        { value: 'center', label: 'Center' },
-        { value: 'right', label: 'Right' },
-      ],
-    },
-    {
-      path: s('typographyPreset'),
-      type: 'select',
-      label: 'Preset',
-      group: 'Typography',
-      widget: 'select',
-      sidebar: true,
-      description: 'Edit presets in theme settings',
-      options: [
-        { value: 'default', label: 'Default' },
-        { value: 'paragraph', label: 'Paragraph' },
-        { value: 'body', label: 'Body' },
-        { value: 'heading-1', label: 'Heading 1' },
-        { value: 'heading-2', label: 'Heading 2' },
-        { value: 'heading-3', label: 'Heading 3' },
-        { value: 'heading-4', label: 'Heading 4' },
-        { value: 'heading-5', label: 'Heading 5' },
-        { value: 'heading-6', label: 'Heading 6' },
-      ],
-    },
-    {
-      path: s('backgroundEnabled'),
-      type: 'boolean',
-      label: 'Background',
-      group: 'Appearance',
-      sidebar: true,
-    },
-    {
-      path: s('paddingTop'),
-      type: 'number',
-      label: 'Top',
-      group: 'Padding',
-      widget: 'slider',
-      min: 0,
-      max: 80,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s('paddingBottom'),
-      type: 'number',
-      label: 'Bottom',
-      group: 'Padding',
-      widget: 'slider',
-      min: 0,
-      max: 80,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s('paddingLeft'),
-      type: 'number',
-      label: 'Left',
-      group: 'Padding',
-      widget: 'slider',
-      min: 0,
-      max: 80,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s('paddingRight'),
-      type: 'number',
-      label: 'Right',
-      group: 'Padding',
-      widget: 'slider',
-      min: 0,
-      max: 80,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-  ];
-}
-
-function defaultTextBlockSettings(text = '') {
-  return {
-    text,
-    width: 'fill',
-    maxWidth: 'normal',
-    alignment: 'left',
-    typographyPreset: 'default',
-    backgroundEnabled: false,
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-  };
-}
-
 function faqBlocks(prefix) {
   return [
     {
@@ -476,55 +333,18 @@ function faqBlocks(prefix) {
           label: 'Accordion row',
           settingsFields: [
             {
-              path: `${prefix}.blocks.accordion.blocks.accordion_row.settings.heading`,
+              path: `${prefix}.blocks.accordion.blocks.accordion_row.settings.question`,
               type: 'text',
-              label: 'Heading',
+              label: 'Question',
               group: 'Content',
               sidebar: true,
             },
             {
-              path: `${prefix}.blocks.accordion.blocks.accordion_row.settings.openByDefault`,
-              type: 'boolean',
-              label: 'Open row by default',
+              path: `${prefix}.blocks.accordion.blocks.accordion_row.settings.answer`,
+              type: 'textarea',
+              label: 'Answer',
               group: 'Content',
               sidebar: true,
-            },
-            {
-              path: `${prefix}.blocks.accordion.blocks.accordion_row.settings.rowIcon`,
-              type: 'select',
-              label: 'Icon',
-              group: 'Icon',
-              widget: 'select',
-              sidebar: true,
-              options: [{ value: 'none', label: 'None' }],
-            },
-            {
-              path: `${prefix}.blocks.accordion.blocks.accordion_row.settings.rowImageIconUrl`,
-              type: 'text',
-              label: 'Image icon',
-              group: 'Icon',
-              sidebar: true,
-            },
-            {
-              path: `${prefix}.blocks.accordion.blocks.accordion_row.settings.rowIconWidth`,
-              type: 'number',
-              label: 'Width',
-              group: 'Icon',
-              widget: 'slider',
-              min: 8,
-              max: 64,
-              step: 1,
-              unit: 'px',
-              sidebar: true,
-            },
-          ],
-          blocks: [
-            {
-              id: 'text',
-              label: 'Text',
-              settingsFields: textBlockSettingsFields(
-                `${prefix}.blocks.accordion.blocks.accordion_row.blocks.text`
-              ),
             },
           ],
         },
@@ -562,20 +382,7 @@ function buildDefaultFaqSection() {
   const rowOrder = [];
   defaultRows.forEach(([question, answer], i) => {
     const id = `row_${i + 1}`;
-    rowBlocks[id] = {
-      type: 'accordion-row',
-      settings: {
-        heading: question,
-        openByDefault: false,
-        rowIcon: 'none',
-        rowImageIconUrl: '',
-        rowIconWidth: 20,
-      },
-      block_order: ['text'],
-      blocks: {
-        text: { type: 'text', settings: defaultTextBlockSettings(answer) },
-      },
-    };
+    rowBlocks[id] = { type: 'accordion-row', settings: { question, answer } };
     rowOrder.push(id);
   });
   return {
@@ -671,11 +478,6 @@ function patchDefaultConfig(cfg) {
 function patchManifest(manifest) {
   manifest.sectionBlocks = manifest.sectionBlocks ?? {};
   manifest.sectionBlocks.faq = ['heading', 'accordion', 'accordion-row'];
-  manifest.blockTypes = manifest.blockTypes ?? {};
-  manifest.blockTypes.layout = manifest.blockTypes.layout ?? [];
-  if (!manifest.blockTypes.layout.some((b) => b.id === 'accordion-row')) {
-    manifest.blockTypes.layout.push({ id: 'accordion-row', label: 'Accordion row' });
-  }
 }
 
 for (const target of [schemaPath, previewSchemaPath, defaultPath, previewDefaultPath, manifestPath, previewManifestPath]) {
