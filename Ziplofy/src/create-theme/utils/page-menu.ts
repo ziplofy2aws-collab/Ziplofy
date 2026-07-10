@@ -23,7 +23,6 @@ export type ThemeEditorPageMenuItem = {
   icon: ThemePageIcon;
   dividerBefore?: boolean;
   hasSubmenu?: boolean;
-  openInNewTab?: boolean;
   children?: ThemeEditorPageMenuItem[];
 };
 
@@ -33,7 +32,6 @@ type MenuSeed = {
   icon: ThemePageIcon;
   dividerBefore?: boolean;
   hasSubmenu?: boolean;
-  openInNewTab?: boolean;
   children?: MenuSeed[];
 };
 
@@ -42,14 +40,6 @@ import {
   registryLabel,
   THEME_PAGE_MENU_SEEDS,
 } from './theme-page-registry';
-import {
-  isProductTemplatePreviewPage,
-  productTemplateDisplayName,
-} from './product-templates.util';
-import {
-  collectionTemplateDisplayName,
-  isCollectionTemplatePreviewPage,
-} from './collection-templates.util';
 import { previewPageToTemplateId } from '../../utils/preview-page-template';
 
 export { previewPageToTemplateId };
@@ -121,7 +111,6 @@ function seedToItem(seed: MenuSeed, available: Set<string>): ThemeEditorPageMenu
       icon: seed.icon,
       dividerBefore: seed.dividerBefore,
       hasSubmenu: true,
-      openInNewTab: seed.openInNewTab,
       children,
     };
   }
@@ -133,7 +122,6 @@ function seedToItem(seed: MenuSeed, available: Set<string>): ThemeEditorPageMenu
     icon: seed.icon,
     dividerBefore: seed.dividerBefore,
     hasSubmenu: seed.hasSubmenu && hasVisibleChildren,
-    openInNewTab: seed.openInNewTab,
     children: hasVisibleChildren ? children : undefined,
   };
 }
@@ -198,36 +186,6 @@ export function findPageMenuItemByPreview(
   previewPage: ThemePreviewPage
 ): ThemeEditorPageMenuItem | undefined {
   return flattenPageMenuItems(items).find((i) => i.previewPage === previewPage);
-}
-
-export function findPageMenuItemByPreviewWithConfig(
-  items: ThemeEditorPageMenuItem[],
-  previewPage: ThemePreviewPage,
-  config: Record<string, unknown> | null
-): ThemeEditorPageMenuItem | undefined {
-  if (isProductTemplatePreviewPage(previewPage)) {
-    const label = productTemplateDisplayName(config, previewPage);
-    if (label) {
-      return {
-        menuId: `page:${previewPage}`,
-        previewPage,
-        label,
-        icon: 'product',
-      };
-    }
-  }
-  if (isCollectionTemplatePreviewPage(previewPage)) {
-    const label = collectionTemplateDisplayName(config, previewPage);
-    if (label) {
-      return {
-        menuId: `page:${previewPage}`,
-        previewPage,
-        label,
-        icon: 'collection',
-      };
-    }
-  }
-  return findPageMenuItemByPreview(items, previewPage);
 }
 
 export type VisiblePageMenuRow =

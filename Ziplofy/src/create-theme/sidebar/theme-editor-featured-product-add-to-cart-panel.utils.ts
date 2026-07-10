@@ -37,6 +37,7 @@ export function featuredProductAddToCartFieldDefs(blocksBase: string): EditorFie
       type: 'select',
       label: 'Style',
       group: 'Appearance',
+      widget: 'segmented',
       sidebar: false,
       options: [...STYLE_OPTIONS],
     },

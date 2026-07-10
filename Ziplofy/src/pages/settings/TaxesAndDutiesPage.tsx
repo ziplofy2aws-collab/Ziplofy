@@ -5,7 +5,6 @@ import {
   MagnifyingGlassIcon,
   FunnelIcon,
   ArrowsUpDownIcon,
-  ChevronLeftIcon,
   ChevronRightIcon,
   EllipsisVerticalIcon,
 } from '@heroicons/react/24/outline';
@@ -18,8 +17,6 @@ const btnOutline =
   'inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50';
 const iconBtn =
   'inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50';
-const pageBtn =
-  'inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40';
 
 interface TaxRegion {
   id: string;
@@ -35,8 +32,6 @@ const TaxesAndDutiesPage: React.FC = () => {
   const { activeStoreId } = useStore();
   const { settings, loading: settingsLoading, getByStoreId, update } = useTaxAndDutiesGlobalSettings();
   const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 10;
   const [includeSalesTax, setIncludeSalesTax] = useState(false);
   const [chargeTaxOnShipping, setChargeTaxOnShipping] = useState(false);
   const [chargeVATOnDigital, setChargeVATOnDigital] = useState(false);
@@ -96,21 +91,21 @@ const TaxesAndDutiesPage: React.FC = () => {
     };
   }, []);
 
-  const taxRegions: TaxRegion[] = countries.map((country) => ({
-    id: country._id,
-    name: country.name,
-    flag: country.flagEmoji || '🏳️',
-    collecting: country.name.toLowerCase() === 'india' ? 'Taxes' : null,
-    taxService: 'Manual Tax',
-  }));
+  const taxRegions: TaxRegion[] = countries
+    .filter((country) => country.name.toLowerCase() === 'india' || country.iso2 === 'IN')
+    .map((country) => ({
+      id: country._id,
+      name: country.name,
+      flag: country.flagEmoji || '🇮🇳',
+      collecting: 'Taxes',
+      taxService: 'Manual Tax',
+    }));
 
   const filteredRegions = taxRegions.filter((region) =>
     region.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const paginatedRegions = filteredRegions.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-
-  const totalPages = Math.ceil(filteredRegions.length / rowsPerPage);
+  const paginatedRegions = filteredRegions;
 
   const searchInputClass =
     'w-full rounded-lg border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-inner placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20';
@@ -158,6 +153,15 @@ const TaxesAndDutiesPage: React.FC = () => {
           </div>
 
           <div className="p-5 sm:p-6">
+            <SettingsCallout
+              variant="info"
+              icon={<InformationCircleIcon className="h-5 w-5 text-blue-600" />}
+              className="mb-4"
+            >
+              Currently we are operating in India only. Click India below to configure base taxes
+              and state IGST rates.
+            </SettingsCallout>
+
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <div className="relative min-w-[200px] flex-1 max-w-[320px]">
                 <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -165,10 +169,7 @@ const TaxesAndDutiesPage: React.FC = () => {
                   type="search"
                   placeholder="Search regions"
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setPage(1);
-                  }}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className={searchInputClass}
                   aria-label="Search tax regions"
                 />
@@ -214,7 +215,7 @@ const TaxesAndDutiesPage: React.FC = () => {
                     ) : paginatedRegions.length === 0 ? (
                       <tr>
                         <td colSpan={4} className="px-4 py-10 text-center text-sm text-slate-500">
-                          No countries match your search.
+                          India tax region is not available yet.
                         </td>
                       </tr>
                     ) : (
@@ -260,34 +261,6 @@ const TaxesAndDutiesPage: React.FC = () => {
                 </table>
               </div>
             </div>
-
-            {totalPages > 1 ? (
-              <div className="mt-4 flex items-center justify-between gap-3">
-                <p className="text-xs text-slate-500">
-                  Page {page} of {totalPages}
-                </p>
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    disabled={page === 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    className={pageBtn}
-                    aria-label="Previous page"
-                  >
-                    <ChevronLeftIcon className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    disabled={page === totalPages}
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    className={pageBtn}
-                    aria-label="Next page"
-                  >
-                    <ChevronRightIcon className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ) : null}
           </div>
         </SettingsPanel>
 

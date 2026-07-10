@@ -35,12 +35,9 @@ export function PullQuoteSection({
 
   const style = useMemo(() => readPullQuoteLayout(config, settingsBase), [config, settingsBase]);
 
-  const DEFAULT_QUOTE =
-    'At the heart of every product lies a unique story, driven by our passion for quality and innovation. Each item enhances your everyday life and sparks joy.';
-
-  const quote = cfgString(config, `${settingsBase}.quote`, DEFAULT_QUOTE) || DEFAULT_QUOTE;
-  const linkLabel = cfgString(config, `${settingsBase}.linkLabel`, 'Shop now');
-  const linkUrl = cfgString(config, `${settingsBase}.linkUrl`, '/collections');
+  const quote = cfgString(config, `${settingsBase}.quote`);
+  const linkLabel = cfgString(config, `${settingsBase}.linkLabel`);
+  const linkUrl = cfgString(config, `${settingsBase}.linkUrl`);
 
   const scheme = style.scheme;
   const textAlign = pullQuoteContentAlign(style.layoutAlignment);
@@ -109,7 +106,7 @@ export function PullQuoteSection({
 
   const linkStyle: CSSProperties = {
     fontSize: '1rem',
-    fontWeight: 400,
+    fontWeight: 500,
     color: 'inherit',
     textDecoration: 'underline',
     textUnderlineOffset: 3,

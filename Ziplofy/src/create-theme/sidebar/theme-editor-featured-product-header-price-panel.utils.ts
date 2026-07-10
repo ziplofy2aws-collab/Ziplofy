@@ -4,7 +4,6 @@ import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme
 export const FEATURED_PRODUCT_HEADER_PRICE_PANEL_GROUP_ORDER = [
   'General',
   'Typography',
-  'Appearance',
   'Padding',
 ] as const;
 
@@ -17,7 +16,6 @@ const PRICE_FIELD_KEYS = new Set([
   'typographyPreset',
   'width',
   'alignment',
-  'textColor',
   'color',
   'paddingTop',
   'paddingBottom',
@@ -44,6 +42,13 @@ const TYPOGRAPHY_PRESET_OPTIONS = [
   { value: 'body', label: 'Body' },
 ] as const;
 
+const COLOR_OPTIONS = [
+  { value: 'text', label: 'Text' },
+  { value: 'heading', label: 'Heading' },
+  { value: 'accent', label: 'Accent' },
+  { value: 'muted', label: 'Muted' },
+] as const;
+
 export function isFeaturedProductHeaderPriceNestedNodeId(nodeId: string): boolean {
   return /^template:[^:]+:[^:]+:block:details:nested:header:nested:price$/.test(nodeId);
 }
@@ -62,7 +67,7 @@ export function featuredProductHeaderPriceDefaultSettings(): Record<string, stri
     typographyPreset: 'default',
     width: 'fit',
     alignment: 'left',
-    textColor: 'default',
+    color: 'text',
     paddingTop: 0,
     paddingBottom: 0,
     paddingLeft: 0,
@@ -79,6 +84,7 @@ export function featuredProductHeaderPriceFieldDefs(blocksBase: string): EditorF
       label: 'Show sale price first',
       group: 'General',
       sidebar: false,
+      description: 'Edit price formatting in theme settings',
     },
     {
       path: s('installments'),
@@ -101,6 +107,7 @@ export function featuredProductHeaderPriceFieldDefs(blocksBase: string): EditorF
       group: 'Typography',
       widget: 'select',
       sidebar: false,
+      description: 'Edit presets in theme settings',
       options: [...TYPOGRAPHY_PRESET_OPTIONS],
     },
     {
@@ -122,12 +129,13 @@ export function featuredProductHeaderPriceFieldDefs(blocksBase: string): EditorF
       options: [...ALIGNMENT_OPTIONS],
     },
     {
-      path: s('textColor'),
-      type: 'text',
-      label: 'Text color',
-      group: 'Appearance',
-      widget: 'color',
+      path: s('color'),
+      type: 'select',
+      label: 'Color',
+      group: 'Typography',
+      widget: 'select',
       sidebar: false,
+      options: [...COLOR_OPTIONS],
     },
     {
       path: s('paddingTop'),
@@ -185,22 +193,6 @@ export function featuredProductHeaderPriceFieldDefsFromNodeId(nodeId: string): E
   return base ? featuredProductHeaderPriceFieldDefs(base) : [];
 }
 
-function mergeHeaderPriceFieldDefs(
-  schemaFields: EditorFieldDef[],
-  built: EditorFieldDef[]
-): EditorFieldDef[] {
-  const schemaKeys = new Set(schemaFields.map((f) => f.path.split('.').pop() ?? ''));
-  const withoutLegacyColor = schemaFields.filter((f) => f.path.split('.').pop() !== 'color');
-  const merged = [...withoutLegacyColor];
-  for (const field of built) {
-    const key = field.path.split('.').pop() ?? '';
-    if (schemaKeys.has(key) && key !== 'color') continue;
-    if (key === 'textColor' && schemaKeys.has('color')) continue;
-    if (!merged.some((f) => f.path.split('.').pop() === key)) merged.push(field);
-  }
-  return merged;
-}
-
 export function featuredProductHeaderPriceFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   nodeId: string
@@ -215,16 +207,14 @@ export function featuredProductHeaderPriceFieldDefsFromSchema(
   const header = details?.blocks?.find((b) => b.id === 'header');
   const price = header?.blocks?.find((b) => b.id === 'price');
   const blocksBase = blocksBaseFromNodeId(nodeId);
-  const built = blocksBase ? featuredProductHeaderPriceFieldDefs(blocksBase) : [];
   const schemaFields = price?.settingsFields ?? [];
   if (schemaFields.length) {
-    const remapped = schemaFields.map((f) => ({
+    return schemaFields.map((f) => ({
       ...f,
       path: remapTemplateSchemaPath(f.path, tplId, secId),
     }));
-    return mergeHeaderPriceFieldDefs(remapped, built);
   }
-  return built;
+  return blocksBase ? featuredProductHeaderPriceFieldDefs(blocksBase) : [];
 }
 
 export const FEATURED_PRODUCT_HEADER_PRICE_DEFAULTS: Record<string, string | boolean> =
@@ -244,8 +234,7 @@ function fieldSortKey(path: string): number {
     typographyPreset: 10,
     width: 11,
     alignment: 12,
-    textColor: 0,
-    color: 0,
+    color: 13,
     paddingTop: 20,
     paddingBottom: 21,
     paddingLeft: 22,
@@ -256,7 +245,6 @@ function fieldSortKey(path: string): number {
 
 export function isFeaturedProductHeaderPricePanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
-  if (key === 'color') return false;
   if (!PRICE_FIELD_KEYS.has(key)) return false;
   if (!/\.blocks\.details\.blocks\.header\.blocks\.price\.settings\./.test(field.path)) return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;

@@ -1,60 +1,18 @@
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Modal from '../components/Modal';
-import PurchaseOrderEntriesTable from '../components/purchase-orders/PurchaseOrderEntriesTable';
-import PurchaseOrderFormHeader from '../components/purchase-orders/PurchaseOrderFormHeader';
-import {
-  formatPurchaseOrderLabel,
-  PO_FORM_APPEARANCE,
-  poPrimaryButtonClass,
-  poSecondaryButtonClass,
-} from '../components/purchase-orders/purchase-order-ui.util';
-import {
-  productFormAsideStackClass,
-  productFormCardClass,
-  productFormGridClass,
-  productFormLabelClass,
-  productFormMainStackClass,
-  productFormPageClass,
-  productFormSectionTitleClass,
-} from '../components/products/product-form-appearance';
-import ProductFormPageSkeleton from '../components/products/ProductFormPageSkeleton';
-import { usePurchaseOrderEntries } from '../contexts/purchase-order-entry.context';
+import { ArrowLeftIcon, ChevronDownIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { usePurchaseOrders } from '../contexts/purchase-order.context';
-import { useStore } from '../contexts/store.context';
-
-function ReadOnlyField({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className={productFormLabelClass(PO_FORM_APPEARANCE)}>{label}</p>
-      <p className="text-[13px] text-gray-900">{value}</p>
-    </div>
-  );
-}
+import { usePurchaseOrderEntries } from '../contexts/purchase-order-entry.context';
 
 export default function PurchaseOrderDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { activeStoreId } = useStore();
-  const { purchaseOrders, fetchPurchaseOrdersByStore, markAsOrdered, loading } = usePurchaseOrders();
-  const po = useMemo(() => purchaseOrders.find((item) => item._id === id) || null, [purchaseOrders, id]);
-  const {
-    entries,
-    fetchEntriesByPurchaseOrderId,
-    loading: entriesLoading,
-    error: entriesError,
-    clearEntries,
-  } = usePurchaseOrderEntries();
+  const { purchaseOrders, markAsOrdered } = usePurchaseOrders();
+  const po = useMemo(() => purchaseOrders.find(p => p._id === id) || null, [purchaseOrders, id]);
+  const { entries, fetchEntriesByPurchaseOrderId, loading: entriesLoading, error: entriesError, clearEntries } = usePurchaseOrderEntries();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (activeStoreId && id && !po) {
-      fetchPurchaseOrdersByStore(activeStoreId).catch(() => {});
-    }
-  }, [activeStoreId, id, po, fetchPurchaseOrdersByStore]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,226 +23,328 @@ export default function PurchaseOrderDetailsPage() {
     if (isMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [isMenuOpen]);
 
   useEffect(() => {
     if (po?._id) {
       fetchEntriesByPurchaseOrderId(po._id).catch(() => {});
-      return () => {
-        clearEntries();
-      };
+      return () => { clearEntries(); };
     }
-  }, [po?._id, fetchEntriesByPurchaseOrderId, clearEntries]);
+  }, [po?._id]);
 
   const supplierName = useMemo(() => {
-    if (!po) return '—';
-    return typeof po.supplierId === 'string' ? po.supplierId : po.supplierId?.name || '—';
+    if (!po) return '-';
+    return typeof po.supplierId === 'string' ? po.supplierId : (po.supplierId?.name || po.supplierId?._id);
   }, [po]);
 
   const destinationName = useMemo(() => {
-    if (!po) return '—';
-    return typeof po.destinationLocationId === 'string'
-      ? po.destinationLocationId
-      : po.destinationLocationId?.name || '—';
+    if (!po) return '-';
+    return typeof po.destinationLocationId === 'string' ? po.destinationLocationId : (po.destinationLocationId?.name || po.destinationLocationId?._id);
   }, [po]);
 
-  const handleBack = useCallback(() => {
-    navigate('/products/purchase-orders');
-  }, [navigate]);
-
-  const handleReceive = useCallback(() => {
-    if (po?._id) navigate(`/products/purchase-orders/${po._id}/receive`);
-  }, [navigate, po?._id]);
-
-  if (loading && !po) {
-    return <ProductFormPageSkeleton />;
-  }
-
-  if (!po) {
-    return (
-      <div className={productFormPageClass(PO_FORM_APPEARANCE)}>
-        <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
-          <PurchaseOrderFormHeader title="Purchase order not found" onBack={handleBack} />
-          <div className="rounded-lg border border-gray-200/50 bg-white px-6 py-16 text-center">
-            <p className="text-[15px] font-semibold text-gray-900">Purchase order not found</p>
-            <p className="mt-1.5 text-[13px] text-gray-500">
-              This purchase order isn&apos;t loaded yet or doesn&apos;t exist.
-            </p>
-            <button type="button" onClick={handleBack} className={`mt-6 ${poPrimaryButtonClass}`}>
-              Back to purchase orders
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const referenceNumber = (po as { referenceNumber?: string }).referenceNumber || '—';
-  const noteToSupplier = (po as { noteToSupplier?: string }).noteToSupplier || '—';
-
   return (
-    <div className={productFormPageClass(PO_FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
-        <PurchaseOrderFormHeader
-          title={formatPurchaseOrderLabel(po._id)}
-          status={po.status}
-          onBack={handleBack}
-          actions={
-            <>
-              {po.status === 'draft' ? (
-                <button type="button" onClick={() => setConfirmOpen(true)} className={poPrimaryButtonClass}>
-                  Mark as ordered
-                </button>
-              ) : null}
-              {po.status !== 'draft' && po.status !== 'received' ? (
-                <button type="button" onClick={handleReceive} className={poPrimaryButtonClass}>
-                  Receive inventory
-                </button>
-              ) : null}
-              {po.status === 'draft' ? (
-                <div className="relative" ref={menuRef}>
-                  <button
-                    type="button"
-                    onClick={() => setIsMenuOpen((prev) => !prev)}
-                    className={`${poSecondaryButtonClass} gap-1`}
-                  >
-                    More actions
-                    <ChevronDownIcon className="h-3.5 w-3.5 text-gray-400" />
-                  </button>
-                  {isMenuOpen ? (
-                    <div className="absolute right-0 z-20 mt-1 min-w-[160px] rounded-md border border-gray-200 bg-white py-1 shadow-md">
-                      <button
-                        type="button"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="flex w-full px-3 py-1.5 text-left text-[13px] text-red-600 transition-colors hover:bg-gray-50"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
-            </>
-          }
-        />
-
-        <div className={productFormGridClass(PO_FORM_APPEARANCE)}>
-          <div className={productFormMainStackClass(PO_FORM_APPEARANCE)}>
-            <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
-              <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Supplier & destination</h2>
-              <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <ReadOnlyField label="Supplier" value={supplierName} />
-                <ReadOnlyField label="Destination" value={destinationName} />
-                <ReadOnlyField label="Payment terms" value={po.paymentTerm || '—'} />
-                <ReadOnlyField label="Supplier currency" value={po.supplierCurrency || '—'} />
-              </div>
-            </section>
-
-            <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
-              <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Shipment details</h2>
-              <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <ReadOnlyField
-                  label="Estimated arrival"
-                  value={
-                    po.expectedArrivalDate
-                      ? new Date(po.expectedArrivalDate).toLocaleDateString()
-                      : '—'
-                  }
-                />
-                <ReadOnlyField label="Shipping carrier" value={po.shippingCarrier || '—'} />
-                <ReadOnlyField label="Tracking number" value={po.trackingNumber || '—'} />
-              </div>
-            </section>
-
-            <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
-              <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Products</h2>
-              {entriesError ? <p className="mt-2 text-[13px] text-red-600">{entriesError}</p> : null}
-              <div className="mt-3">
-                <PurchaseOrderEntriesTable entries={entries} loading={entriesLoading} />
-              </div>
-            </section>
-
-            <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
-              <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Additional details</h2>
-              <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <ReadOnlyField label="Reference number" value={referenceNumber} />
-                <ReadOnlyField label="Note to supplier" value={noteToSupplier} />
-              </div>
-            </section>
+    <div className="min-h-screen bg-page-background-color">
+        {/* Header */}
+        <div className="border-b border-gray-200 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => navigate('/products/purchase-orders')}
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <ArrowLeftIcon className="w-4 h-4 inline mr-1" />
+                Purchase Orders
+              </button>
+            </div>
           </div>
+        </div>
 
-          <aside className={productFormAsideStackClass(PO_FORM_APPEARANCE)}>
-            <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
-              <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Cost summary</h2>
-              <div className="mt-3 space-y-2 text-[13px]">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-gray-500">Subtotal</span>
-                  <span className="font-medium text-gray-900">{po.subtotalCost?.toFixed(2) ?? '—'}</span>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          {!po && (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-gray-600">Purchase order not found in current view. Go back to the list and select one.</p>
+              <button
+                onClick={() => navigate('/products/purchase-orders')}
+                className="w-fit px-3 py-1.5 text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                Back to Purchase Orders
+              </button>
+            </div>
+          )}
+
+          {po && (
+            <div className="space-y-4">
+              {/* Header actions */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-medium text-gray-900">Purchase Order Details</h1>
+                  <span className={`px-2 py-0.5 text-xs font-medium ${po.status === 'ordered' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'}`}>
+                    {(po.status || 'draft').replaceAll('_', ' ')}
+                  </span>
                 </div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-gray-500">Taxes</span>
-                  <span className="font-medium text-gray-900">{po.totalTax?.toFixed(2) ?? '—'}</span>
+                <div className="flex items-center gap-2">
+                  {po.status === 'draft' && (
+                    <button
+                      onClick={() => setConfirmOpen(true)}
+                      className="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+                    >
+                      Mark as ordered
+                    </button>
+                  )}
+                  {po.status !== 'draft' && (
+                    <button
+                      onClick={() => navigate(`/products/purchase-orders/${po._id}/receive`)}
+                      className="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+                    >
+                      Receive Inventory
+                    </button>
+                  )}
+                  {po.status === 'draft' && (
+                    <div className="relative" ref={menuRef}>
+                      <button
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="px-3 py-1.5 text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-1"
+                      >
+                        More actions
+                        <ChevronDownIcon className="w-4 h-4" />
+                      </button>
+                      {isMenuOpen && (
+                        <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 shadow-lg z-10">
+                          <button
+                            onClick={() => setIsMenuOpen(false)}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <div className="border-t border-gray-100 pt-2">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium text-gray-900">Total</span>
-                    <span className="text-[15px] font-semibold text-gray-900">
-                      {po.totalCost?.toFixed(2) ?? '—'} {po.supplierCurrency || ''}
-                    </span>
+              </div>
+
+              {/* Confirm Modal */}
+              {confirmOpen && (
+                <div className="border border-gray-200 p-4 bg-white/95">
+                  <h2 className="text-base font-medium text-gray-900 mb-2">Mark as ordered</h2>
+                  <p className="text-sm text-gray-600 mb-3">After marking as ordered, you will be able to receive incoming inventory from your supplier. The purchase order can't be turned into a draft again.</p>
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => setConfirmOpen(false)}
+                      className="px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (po) {
+                          await markAsOrdered(po._id);
+                          setConfirmOpen(false);
+                        }
+                      }}
+                      className="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+                    >
+                      Mark as ordered
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Supplier & Destination */}
+              <div className="border border-gray-200 p-4 bg-white/95">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Supplier</p>
+                    <p className="text-sm text-gray-900">{supplierName}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Destination</p>
+                    <p className="text-sm text-gray-900">{destinationName}</p>
+                  </div>
+                </div>
+                <div className="border-t border-gray-200 my-3" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Payment Terms</p>
+                    <p className="text-sm text-gray-900">{po.paymentTerm || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Supplier Currency</p>
+                    <p className="text-sm text-gray-900">{po.supplierCurrency || '-'}</p>
                   </div>
                 </div>
               </div>
 
-              {(po.costAdjustments ?? []).length > 0 ? (
-                <div className="mt-4 border-t border-gray-100 pt-4">
-                  <p className="mb-2 text-[12px] font-medium text-gray-500">Cost adjustments</p>
-                  <div className="space-y-1">
-                    {(po.costAdjustments ?? []).map((adjustment, index) => (
-                      <div key={index} className="flex items-center justify-between gap-3 text-[13px]">
-                        <span className="capitalize text-gray-700">{adjustment.name}</span>
-                        <span className="text-gray-900">
-                          {adjustment.amount.toFixed(2)}
-                          {adjustment.currency ? ` ${adjustment.currency}` : ''}
-                        </span>
-                      </div>
-                    ))}
+              {/* Shipment Details */}
+              <div className="border border-gray-200 p-4 bg-white/95">
+                <h2 className="text-base font-medium text-gray-900 mb-3">Shipment Details</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Estimated Arrival</p>
+                    <p className="text-sm text-gray-900">{po.expectedArrivalDate ? new Date(po.expectedArrivalDate).toLocaleDateString() : '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Shipping Carrier</p>
+                    <p className="text-sm text-gray-900">{po.shippingCarrier || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Tracking Number</p>
+                    <p className="text-sm text-gray-900">{po.trackingNumber || '-'}</p>
                   </div>
                 </div>
-              ) : null}
-            </section>
-          </aside>
-        </div>
-      </div>
+              </div>
 
-      <Modal
-        open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        maxWidth="sm"
-        title="Mark as ordered"
-        actions={
-          <>
-            <button type="button" onClick={() => setConfirmOpen(false)} className={poSecondaryButtonClass}>
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                await markAsOrdered(po._id);
-                setConfirmOpen(false);
-              }}
-              className={poPrimaryButtonClass}
-            >
-              Mark as ordered
-            </button>
-          </>
-        }
-      >
-        <p className="text-[13px] leading-relaxed text-gray-600">
-          After marking as ordered, you will be able to receive incoming inventory from your supplier.
-          The purchase order can&apos;t be turned into a draft again.
-        </p>
-      </Modal>
+              {/* Purchase Order Entries */}
+              <div className="border border-gray-200 p-4 bg-white/95">
+                <h2 className="text-base font-medium text-gray-900 mb-3">Products</h2>
+                {entriesError && (
+                  <p className="text-sm text-red-600 mb-2">{entriesError}</p>
+                )}
+                <div className="border border-gray-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-white">
+                        <tr>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Product</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">Supplier SKU</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-900">RSKU</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Quantity</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Cost</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Tax %</th>
+                          <th className="px-4 py-2 text-right text-sm font-medium text-gray-900">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {entries.map((e) => {
+                          const v: any = e.variantId as any;
+                          const productTitle = v?.productId?.title || '-';
+                          const optionText = v?.optionValues ? Object.values(v.optionValues).join(' / ') : '';
+                          return (
+                            <tr key={e._id} className="hover:bg-gray-50">
+                              <td className="px-4 py-2">
+                                <div className="space-y-0.5">
+                                  <p className="text-sm font-medium text-gray-900">{productTitle}</p>
+                                  {optionText && <p className="text-xs text-gray-600">{optionText}</p>}
+                                  <p className="text-xs text-gray-600">SKU: {v?.sku || '-'}</p>
+                                </div>
+                              </td>
+                              <td className="px-4 py-2 text-sm text-gray-900">{e.supplierSku || '-'}</td>
+                              <td className="px-4 py-2 text-sm text-gray-900">{v?.sku || '-'}</td>
+                              <td className="px-4 py-2 text-sm text-gray-900 text-right">{e.quantityOrdered}</td>
+                              <td className="px-4 py-2 text-sm text-gray-900 text-right">{e.cost.toFixed(2)}</td>
+                              <td className="px-4 py-2 text-sm text-gray-900 text-right">{(e.taxPercent ?? 0).toFixed(0)}</td>
+                              <td className="px-4 py-2 text-sm text-gray-900 text-right">{e.totalCost.toFixed(2)}</td>
+                            </tr>
+                          );
+                        })}
+                        {!entriesLoading && entries.length === 0 && (
+                          <tr>
+                            <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-600">No products</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Details */}
+              <div className="border border-gray-200 p-4 bg-white/95">
+                <h2 className="text-base font-medium text-gray-900 mb-3">Additional Details</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Reference Number</p>
+                    <p className="text-sm text-gray-900">{(po as any).referenceNumber || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Note to Supplier</p>
+                    <p className="text-sm text-gray-900">{(po as any).noteToSupplier || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Tax</p>
+                    <p className="text-sm text-gray-900">{po.totalTax?.toFixed(2) ?? '-'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cost Summary */}
+              <div className="border border-gray-200 p-4 bg-white/95">
+                <h2 className="text-base font-medium text-gray-900 mb-3">Cost Summary</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">PO ID</p>
+                    <p className="text-sm text-gray-900">{po._id}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Status</p>
+                    <p className="text-sm text-gray-900 capitalize">{po.status.replaceAll('_', ' ')}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Expected Arrival</p>
+                    <p className="text-sm text-gray-900">{po.expectedArrivalDate ? new Date(po.expectedArrivalDate).toLocaleDateString() : '-'}</p>
+                  </div>
+                </div>
+                <div className="border-t border-gray-200 my-3" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Subtotal</p>
+                    <p className="text-sm text-gray-900">{po.subtotalCost?.toFixed(2) ?? '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Taxes</p>
+                    <p className="text-sm text-gray-900">{po.totalTax?.toFixed(2) ?? '-'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Total</p>
+                    <p className="text-sm font-medium text-gray-900">{po.totalCost?.toFixed(2) ?? '-'}</p>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 my-3" />
+                <p className="text-xs text-gray-600 mb-2">Cost Adjustments</p>
+                <div className="space-y-1">
+                  {(po.costAdjustments ?? []).length === 0 && (
+                    <p className="text-sm text-gray-600">No adjustments</p>
+                  )}
+                  {(po.costAdjustments ?? []).map((adj, idx) => (
+                    <div key={idx} className="flex justify-between">
+                      <p className="text-sm text-gray-900 capitalize">{adj.name}</p>
+                      <p className="text-sm text-gray-900">{adj.amount.toFixed(2)}{adj.currency ? ` ${adj.currency}` : ''}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border-t border-gray-200 my-3" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">Converted Total</p>
+                    <p className="text-sm text-gray-900">{po.totalCost?.toFixed(2)} {po.supplierCurrency || ''}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div className="border border-gray-200 p-4 bg-white/95">
+                <h2 className="text-base font-medium text-gray-900 mb-3">Timeline</h2>
+                <div className="space-y-2">
+                  <textarea
+                    className="w-full px-3 py-1.5 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400 resize-y min-h-[100px]"
+                    placeholder="Leave a comment..."
+                  />
+                  <div className="flex justify-end">
+                    <button className="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 transition-colors">
+                      Post
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
     </div>
   );
 }

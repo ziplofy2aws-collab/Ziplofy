@@ -1,14 +1,7 @@
+import { CreditCardIcon, PlusIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GiftCardTable from '../components/gift-card/GiftCardTable';
-import GiftCardsPageFilters, {
-  type GiftCardFilterTab,
-} from '../components/gift-card/GiftCardsPageFilters';
-import GiftCardsPageHeader from '../components/gift-card/GiftCardsPageHeader';
-import {
-  giftCardPrimaryButtonClass,
-  giftCardSecondaryButtonClass,
-} from '../components/gift-card/gift-card-ui.util';
 import { useGiftCards } from '../contexts/gift-cards.context';
 import { useStore } from '../contexts/store.context';
 
@@ -19,15 +12,9 @@ const GiftCardsPage: React.FC = () => {
   const { giftCards, loading, error, fetchGiftCardsByStoreId } = useGiftCards();
   const { activeStoreId } = useStore();
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
-  const [activeTab, setActiveTab] = useState<GiftCardFilterTab>('All');
-  const [search, setSearch] = useState('');
 
   const handleCreateGiftCard = useCallback(() => {
     navigate('/products/gift-cards/new');
-  }, [navigate]);
-
-  const handleAddGiftCardProduct = useCallback(() => {
-    navigate('/products/gift-cards/products/new?from=gift_cards');
   }, [navigate]);
 
   const handleGiftCardClick = useCallback(
@@ -43,100 +30,85 @@ const GiftCardsPage: React.FC = () => {
     }
   }, [activeStoreId, fetchGiftCardsByStoreId]);
 
-  const handleSortToggle = useCallback(() => {
-    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-  }, []);
-
-  const filteredGiftCards = useMemo(() => {
-    const byTab = giftCards.filter((card) => {
-      if (activeTab === 'All') return true;
-      if (activeTab === 'Active') return card.isActive;
-      return !card.isActive;
-    });
-
-    const query = search.trim().toLowerCase();
-    const searched = query
-      ? byTab.filter(
-          (card) =>
-            card.code.toLowerCase().includes(query) ||
-            card.initialValue.toString().includes(query) ||
-            (card.notes || '').toLowerCase().includes(query)
-        )
-      : byTab;
-
-    return [...searched].sort((a, b) => {
+  const sortedGiftCards = useMemo(() => {
+    const sorted = [...giftCards].sort((a, b) => {
       const dateA = new Date(a.createdAt).getTime();
       const dateB = new Date(b.createdAt).getTime();
       return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
     });
-  }, [giftCards, activeTab, search, sortOrder]);
+    return sorted;
+  }, [giftCards, sortOrder]);
 
-  const hasGiftCards = giftCards.length > 0;
+  const handleSortToggle = useCallback(() => {
+    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+  }, []);
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
-        <GiftCardsPageHeader />
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+        {/* Page Header */}
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <div className="pl-3 border-l-4 border-blue-500/60">
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Gift Cards</h1>
+            <p className="text-sm text-gray-500 mt-0.5">Manage your gift cards and create new ones</p>
+          </div>
+          <button
+            onClick={handleCreateGiftCard}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-semibold transition-colors shadow-sm"
+          >
+            <PlusIcon className="w-4 h-4" />
+            Create Gift Card
+          </button>
+        </div>
 
-        {error ? (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+        {error && (
+          <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3">
             <p className="text-sm text-red-600">{error}</p>
           </div>
-        ) : null}
+        )}
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-          {hasGiftCards ? (
-            <GiftCardsPageFilters
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              search={search}
-              onSearchChange={setSearch}
-            />
-          ) : null}
+        {loading && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm flex justify-center items-center py-16">
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-blue-600"></div>
+          </div>
+        )}
 
-          {loading ? (
-            <div className="flex min-h-[280px] items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-            </div>
-          ) : !hasGiftCards ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Start selling gift cards</p>
-              <p className="mt-1.5 max-w-md text-[13px] font-normal text-gray-500">
-                Add gift card products to sell or create gift cards and send them directly to your
-                customers.
-              </p>
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                <button type="button" onClick={handleCreateGiftCard} className={giftCardSecondaryButtonClass}>
-                  Create gift card
-                </button>
-                <button type="button" onClick={handleAddGiftCardProduct} className={giftCardPrimaryButtonClass}>
-                  Add gift card product
-                </button>
+        {!loading && !error && giftCards.length === 0 && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm min-h-[320px] flex justify-center items-center p-12">
+            <div className="flex flex-col justify-center items-center text-center gap-4 max-w-md">
+              <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
+                <CreditCardIcon className="w-7 h-7 text-blue-600" />
               </div>
-              <p className="mt-5 text-xs text-gray-400">
-                By using gift cards, you agree to our{' '}
-                <a href="#" className="text-gray-600 underline hover:text-gray-800">
-                  Terms of Service
-                </a>
-              </p>
+              <div className="flex flex-col gap-1.5">
+                <h2 className="text-lg font-semibold text-gray-900">No gift cards yet</h2>
+                <p className="text-sm text-gray-500">Create your first gift card to get started</p>
+              </div>
+              <button
+                onClick={handleCreateGiftCard}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-semibold transition-colors shadow-sm"
+              >
+                <PlusIcon className="w-4 h-4" />
+                Create Gift Card
+              </button>
             </div>
-          ) : (
+          </div>
+        )}
+
+        {!loading && !error && giftCards.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+            <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/80">
+              <h2 className="text-base font-semibold text-gray-900">
+                {giftCards.length} Gift Card{giftCards.length !== 1 ? 's' : ''}
+              </h2>
+            </div>
             <GiftCardTable
-              giftCards={filteredGiftCards}
+              giftCards={sortedGiftCards}
               onGiftCardClick={handleGiftCardClick}
               sortOrder={sortOrder}
               onSortToggle={handleSortToggle}
             />
-          )}
-        </div>
-
-        <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-gray-600 hover:text-gray-800">
-              Learn more about gift cards
-            </a>
-          </p>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

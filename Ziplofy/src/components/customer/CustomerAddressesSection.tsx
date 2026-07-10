@@ -1,8 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  customerPrimaryButtonClass,
-  customerSectionTitleClass,
-} from '../customers/customer-ui.util';
 import type { CustomerAddress } from '../../contexts/customer-address.context';
 import { useCustomerAddresses } from '../../contexts/customer-address.context';
 import CustomerAddressList from './CustomerAddressList';
@@ -11,7 +7,6 @@ import UpdateCustomerAddressModal from './UpdateCustomerAddressModal';
 
 interface CustomerAddressesSectionProps {
   customerId: string;
-  onAddAddress?: () => void;
 }
 
 interface AddressFormData {
@@ -28,10 +23,7 @@ interface AddressFormData {
   phoneNumber: string;
 }
 
-const CustomerAddressesSection: React.FC<CustomerAddressesSectionProps> = ({
-  customerId,
-  onAddAddress,
-}) => {
+const CustomerAddressesSection: React.FC<CustomerAddressesSectionProps> = ({ customerId }) => {
   const {
     addresses,
     loading: addrLoading,
@@ -58,6 +50,7 @@ const CustomerAddressesSection: React.FC<CustomerAddressesSectionProps> = ({
     phoneNumber: '',
   });
 
+  // Fetch addresses when component mounts or customerId changes
   useEffect(() => {
     if (customerId) {
       fetchCustomerAddressesByCustomerId(customerId);
@@ -132,32 +125,24 @@ const CustomerAddressesSection: React.FC<CustomerAddressesSectionProps> = ({
 
   return (
     <>
-      <div className="overflow-visible rounded-lg border border-gray-200/80 bg-white shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
-          <h2 className={customerSectionTitleClass}>Addresses</h2>
-          {onAddAddress ? (
-            <button type="button" onClick={onAddAddress} className={customerPrimaryButtonClass}>
-              Add address
-            </button>
-          ) : null}
-        </div>
-        <div className="px-4 py-4">
-          {addrLoading ? (
-            <p className="text-[13px] text-gray-500">Loading addresses…</p>
-          ) : addrError ? (
-            <p className="text-[13px] text-red-600">{addrError}</p>
-          ) : addresses && addresses.length > 0 ? (
-            <CustomerAddressList
-              addresses={addresses}
-              onUpdate={handleOpenUpdateModal}
-              onDelete={handleOpenDeleteModal}
-            />
-          ) : (
-            <p className="text-[13px] text-gray-500">No addresses added yet.</p>
-          )}
-        </div>
+      <div className="bg-white rounded-xl border border-gray-200/80 p-6 shadow-sm">
+        <h2 className="text-base font-semibold text-gray-900 mb-4">Addresses</h2>
+        {addrLoading ? (
+          <p className="text-sm text-gray-600">Loading addresses...</p>
+        ) : addrError ? (
+          <p className="text-sm text-red-600">{addrError}</p>
+        ) : addresses && addresses.length > 0 ? (
+          <CustomerAddressList
+            addresses={addresses}
+            onUpdate={handleOpenUpdateModal}
+            onDelete={handleOpenDeleteModal}
+          />
+        ) : (
+          <p className="text-sm text-gray-600">Currently no address added.</p>
+        )}
       </div>
 
+      {/* Update Customer Address Modal */}
       <UpdateCustomerAddressModal
         isOpen={isUpdateModalOpen}
         addressForm={addressForm}
@@ -166,6 +151,7 @@ const CustomerAddressesSection: React.FC<CustomerAddressesSectionProps> = ({
         onSubmit={handleUpdateAddress}
       />
 
+      {/* Delete Address Confirmation Modal */}
       <DeleteAddressConfirmModal
         isOpen={isDeleteConfirmOpen}
         onClose={() => {
@@ -179,3 +165,4 @@ const CustomerAddressesSection: React.FC<CustomerAddressesSectionProps> = ({
 };
 
 export default CustomerAddressesSection;
+

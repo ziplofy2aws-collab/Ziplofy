@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
-import { CreditCardIcon, PlusIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import React, { useEffect } from 'react';
+import {
+  CreditCardIcon,
+  PlusIcon,
+  ArrowRightIcon,
+} from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import PaymentMethodBadges from '../../components/payments/PaymentMethodBadges';
+import {
+  isManualPaymentProvider,
+} from '../../constants/manual-payment-providers';
 import {
   SETTINGS_PAGE_CONTAINER_CLASS,
   SettingsHero,
   SettingsPanel,
 } from '../../components/settings/SettingsPageScaffold';
+import { usePaymentProviders } from '../../hooks/usePaymentProviders';
+import { useStore } from '../../contexts/store.context';
 
 const btnPrimary =
   'inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700';
@@ -21,8 +31,21 @@ const radioInline =
 
 const PaymentsSettingsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [captureMethod, setCaptureMethod] = useState('auto_checkout');
-  const [giftCardExpiration, setGiftCardExpiration] = useState<'never' | 'expires'>('never');
+  const { activeStoreId } = useStore();
+  const { storeProviders, loading, fetchStoreProviders } = usePaymentProviders();
+  const [captureMethod, setCaptureMethod] = React.useState('auto_checkout');
+  const [giftCardExpiration, setGiftCardExpiration] = React.useState<'never' | 'expires'>('never');
+
+  const activeProviders = storeProviders.filter((item) => item.status === 'active' && item.provider);
+  const manualProviders = activeProviders.filter((item) =>
+    isManualPaymentProvider(item.providerKey)
+  );
+
+  useEffect(() => {
+    if (activeStoreId) {
+      fetchStoreProviders(activeStoreId).catch(() => {});
+    }
+  }, [activeStoreId, fetchStoreProviders]);
 
   return (
     <div className="w-full">
@@ -60,15 +83,30 @@ const PaymentsSettingsPage: React.FC = () => {
               <h2 className="text-base font-semibold text-gray-900">Payment providers</h2>
               <p className="mt-1 text-sm text-gray-500">
                 Third-party providers set processing rates. Additional platform fees may apply once you{' '}
-                <a href="#" className="font-medium text-blue-600 underline decoration-blue-600/30 hover:text-blue-700">
+                <button
+                  type="button"
+                  onClick={() => navigate('/settings/subscribe/select-plan')}
+                  className="font-medium text-blue-600 underline decoration-blue-600/30 hover:text-blue-700"
+                >
                   select a plan
-                </a>
+                </button>
                 .
               </p>
             </div>
           </div>
-          <div className="p-5 sm:p-6">
-            <button type="button" className={btnGhost}>
+          <div className="space-y-3 p-5 sm:p-6">
+            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-6 text-center">
+              <p className="text-sm font-medium text-gray-900">Coming soon</p>
+              <p className="mt-1 text-sm text-gray-500">
+                Third-party payment providers will be available here soon.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => navigate('/settings/payments/providers')}
+            >
               Choose a provider
             </button>
           </div>
@@ -84,23 +122,42 @@ const PaymentsSettingsPage: React.FC = () => {
             </div>
           </div>
           <div className="space-y-4 p-5 sm:p-6">
-            <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50/40 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-9 w-12 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
-                  <CreditCardIcon className="h-5 w-5 text-slate-600" />
+            <p className="text-sm text-gray-500">
+              Third-party payment methods are coming soon. Use manual payment methods for now.
+            </p>
+
+            {manualProviders.map((connection) => (
+              <div
+                key={`method-${connection._id}`}
+                className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50/40 p-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-9 w-12 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm">
+                    <CreditCardIcon className="h-5 w-5 text-slate-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900">{connection.provider?.name}</p>
+                    <p className="text-sm text-gray-500">Manual payment method</p>
+                    <div className="mt-2">
+                      <PaymentMethodBadges methods={connection.provider?.paymentMethods ?? []} />
+                    </div>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900">PayPal</p>
-                  <p className="text-sm text-gray-500">
-                    Transaction fees vary by plan • Processing fees set by PayPal
-                  </p>
-                </div>
+                <button
+                  type="button"
+                  className={`${btnGhost} shrink-0`}
+                  onClick={() => navigate('/settings/payments/manual')}
+                >
+                  Manage
+                </button>
               </div>
-              <button type="button" className={`${btnGhost} shrink-0`}>
-                Activate PayPal
-              </button>
-            </div>
-            <button type="button" className={btnGhost}>
+            ))}
+
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => navigate('/settings/payments/manual')}
+            >
               <PlusIcon className="h-4 w-4" />
               Add payment method
             </button>
@@ -181,8 +238,42 @@ const PaymentsSettingsPage: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="p-5 sm:p-6">
-            <button type="button" className={btnGhost}>
+          <div className="space-y-3 p-5 sm:p-6">
+            {loading && <p className="text-sm text-gray-500">Loading manual payment methods...</p>}
+
+            {!loading && manualProviders.length > 0 && (
+              <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200">
+                {manualProviders.map((connection) => (
+                  <li key={connection._id}>
+                    <div className="flex w-full items-center gap-4 px-4 py-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-gray-900">
+                          {connection.provider?.name}
+                        </p>
+                        <div className="mt-2">
+                          <PaymentMethodBadges methods={connection.provider?.paymentMethods ?? []} />
+                        </div>
+                      </div>
+                      <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-green-800">
+                        Active
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {!loading && manualProviders.length === 0 && (
+              <p className="text-sm text-gray-500">
+                Set up bank transfer, UPI ID, or cash on delivery for your store.
+              </p>
+            )}
+
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => navigate('/settings/payments/manual')}
+            >
               <PlusIcon className="h-4 w-4" />
               Manual payment method
             </button>

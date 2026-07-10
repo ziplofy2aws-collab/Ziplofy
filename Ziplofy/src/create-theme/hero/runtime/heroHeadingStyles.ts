@@ -1,17 +1,5 @@
 import type { CSSProperties } from 'react';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
-import {
-  isThemePaletteColorSetting,
-  resolveThemePaletteColorSetting,
-} from '../../settings/theme-color-palette.settings';
-import {
-  resolveThemeTypographyStyle,
-  lineHeightMultiplier,
-  letterSpacingCss,
-  resolveThemeFontFamily,
-  resolveThemeFontWeightAndStyle,
-  type ThemeFonts,
-} from '../../runtime/shared/themeTypographyRuntime';
 
 /** Hero heading rich text: section `title` is canonical; block `heading` is kept in sync. */
 export function readHeroHeadingText(
@@ -26,16 +14,16 @@ export function readHeroHeadingText(
   return block.trim() ? block : title;
 }
 
-const TYPOGRAPHY_PRESETS: Record<string, string> = {
-  default: 'heading-1',
-  paragraph: 'paragraph',
-  body: 'paragraph',
-  'heading-1': 'heading-1',
-  'heading-2': 'heading-2',
-  'heading-3': 'heading-3',
-  'heading-4': 'heading-4',
-  'heading-5': 'heading-5',
-  'heading-6': 'heading-6',
+const TYPOGRAPHY_PRESETS: Record<string, { fontSize: number; fontWeight: number; lineHeight: number }> = {
+  default: { fontSize: 32, fontWeight: 600, lineHeight: 1.2 },
+  paragraph: { fontSize: 15, fontWeight: 400, lineHeight: 1.5 },
+  body: { fontSize: 15, fontWeight: 400, lineHeight: 1.5 },
+  'heading-1': { fontSize: 40, fontWeight: 700, lineHeight: 1.15 },
+  'heading-2': { fontSize: 32, fontWeight: 600, lineHeight: 1.2 },
+  'heading-3': { fontSize: 24, fontWeight: 600, lineHeight: 1.25 },
+  'heading-4': { fontSize: 20, fontWeight: 600, lineHeight: 1.3 },
+  'heading-5': { fontSize: 18, fontWeight: 600, lineHeight: 1.35 },
+  'heading-6': { fontSize: 14, fontWeight: 600, lineHeight: 1.4 },
 };
 
 const MAX_WIDTH: Record<string, string | undefined> = {
@@ -45,10 +33,27 @@ const MAX_WIDTH: Record<string, string | undefined> = {
   none: undefined,
 };
 
+function lineHeightMultiplier(key: string): number {
+  if (key === 'tight') return 1.1;
+  if (key === 'loose') return 1.55;
+  return 1.35;
+}
+
+function letterSpacingCss(key: string): string {
+  if (key === 'tight') return '-0.02em';
+  if (key === 'loose') return '0.06em';
+  return 'normal';
+}
+
+function parseFontSizePx(raw: string, fallback: number): number {
+  const n = parseFloat(raw);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
 function readCustomHeadingTypography(
   config: Record<string, unknown> | null,
   settingsBase: string,
-  themeFonts: ThemeFonts
+  themeFonts: { fontHeading: string; fontBody: string }
 ): Pick<
   HeroHeadingStyle,
   | 'fontFamily'
@@ -67,7 +72,7 @@ function readCustomHeadingTypography(
   const caseKey = cfgString(config, `${settingsBase}.headingTextCase`, 'default');
   const wrapKey = cfgString(config, `${settingsBase}.headingWrap`, 'pretty');
 
-  const fontFamily = resolveThemeFontFamily(fontKey, themeFonts);
+  const fontFamily = fontKey === 'heading' ? themeFonts.fontHeading : themeFonts.fontBody;
   const fontSize = parseFontSizePx(sizeRaw, 16);
   const lineHeight = lineHeightMultiplier(lhKey);
   const letterSpacing = letterSpacingCss(lsKey);
@@ -75,9 +80,11 @@ function readCustomHeadingTypography(
     caseKey === 'uppercase' ? 'uppercase' : 'none';
   const textWrap = wrapKey === 'nowrap' ? 'nowrap' : wrapKey === 'balance' ? 'balance' : 'pretty';
 
-  const weightStyle = resolveThemeFontWeightAndStyle(fontKey);
-  const fontWeight = weightStyle.fontWeight ?? 400;
-  const fontStyle = weightStyle.fontStyle ?? 'normal';
+  let fontWeight = 400;
+  let fontStyle: CSSProperties['fontStyle'] = 'normal';
+  if (fontKey === 'heading') fontWeight = 700;
+  else if (fontKey === 'subheading') fontWeight = 600;
+  else if (fontKey === 'accent') fontStyle = 'italic';
 
   return {
     fontFamily,
@@ -91,14 +98,11 @@ function readCustomHeadingTypography(
   };
 }
 
-function parseFontSizePx(raw: string, fallback: number): number {
-  const n = parseFloat(raw);
-  return Number.isFinite(n) && n > 0 ? n : fallback;
-}
-
 export type HeroHeadingStyle = {
   width: string;
   maxWidth: string | undefined;
+  marginLeft?: string;
+  marginRight?: string;
   textAlign?: 'left' | 'center' | 'right';
   fontFamily: string;
   fontSize: number;
@@ -120,13 +124,11 @@ export type HeroHeadingStyle = {
 export function readHeroHeadingStyle(
   config: Record<string, unknown> | null,
   settingsBase: string,
-  themeFonts: ThemeFonts,
+  themeFonts: { fontHeading: string; fontBody: string },
   colors: { text: string; heading: string; link: string; accent?: string }
 ): HeroHeadingStyle {
   const preset = cfgString(config, `${settingsBase}.headingTypographyPreset`, 'heading-1');
-  const presetKey = TYPOGRAPHY_PRESETS[preset] ?? 'heading-1';
-  const presetTypo =
-    preset === 'custom' ? null : resolveThemeTypographyStyle(config, presetKey, themeFonts);
+  const presetTypo = TYPOGRAPHY_PRESETS[preset] ?? TYPOGRAPHY_PRESETS['heading-1'];
   const customTypo =
     preset === 'custom' ? readCustomHeadingTypography(config, settingsBase, themeFonts) : null;
 
@@ -141,30 +143,39 @@ export function readHeroHeadingStyle(
     alignRaw === 'right' ? 'right' : alignRaw === 'center' ? 'center' : 'left';
   const colorKey = cfgString(config, `${settingsBase}.headingColor`, 'heading');
   const color =
-    isThemePaletteColorSetting(colorKey) || colorKey.startsWith('#')
-      ? resolveThemePaletteColorSetting(config, colorKey, 1, colors.text)
-      : colorKey === 'heading'
-        ? colors.heading
-        : colorKey === 'link'
-          ? colors.link
-          : colorKey === 'accent'
-            ? colors.accent ?? colors.link
-            : colors.text;
+    colorKey === 'heading'
+      ? colors.heading
+      : colorKey === 'link'
+        ? colors.link
+        : colorKey === 'accent'
+          ? colors.accent ?? colors.link
+          : colors.text;
   const bgOn = cfgBool(config, `${settingsBase}.headingBackgroundEnabled`, false);
   const bgColor = cfgString(config, `${settingsBase}.headingBackgroundColor`, '#00000026');
   const cornerRadius = cfgNumber(config, `${settingsBase}.headingCornerRadius`, 0);
 
+  const marginLeft =
+    isFill && maxWidth && textAlign !== 'left'
+      ? textAlign === 'center' || textAlign === 'right'
+        ? 'auto'
+        : undefined
+      : undefined;
+  const marginRight =
+    isFill && maxWidth && textAlign === 'center' ? 'auto' : undefined;
+
   return {
     width: isFill ? '100%' : 'fit-content',
     maxWidth,
-    textAlign,
-    fontFamily: customTypo?.fontFamily ?? presetTypo?.fontFamily ?? themeFonts.fontHeading,
-    fontSize: customTypo?.fontSize ?? presetTypo?.fontSize ?? 32,
-    fontWeight: customTypo?.fontWeight ?? presetTypo?.fontWeight ?? 600,
-    lineHeight: customTypo?.lineHeight ?? presetTypo?.lineHeight ?? 1.2,
-    fontStyle: customTypo?.fontStyle ?? presetTypo?.fontStyle,
-    letterSpacing: customTypo?.letterSpacing ?? presetTypo?.letterSpacing,
-    textTransform: customTypo?.textTransform ?? presetTypo?.textTransform,
+    marginLeft,
+    marginRight,
+    textAlign: isFill ? textAlign : undefined,
+    fontFamily: customTypo?.fontFamily ?? themeFonts.fontHeading,
+    fontSize: customTypo?.fontSize ?? presetTypo.fontSize,
+    fontWeight: customTypo?.fontWeight ?? presetTypo.fontWeight,
+    lineHeight: customTypo?.lineHeight ?? presetTypo.lineHeight,
+    fontStyle: customTypo?.fontStyle,
+    letterSpacing: customTypo?.letterSpacing,
+    textTransform: customTypo?.textTransform,
     textWrap: customTypo?.textWrap,
     color,
     background: bgOn ? bgColor : undefined,

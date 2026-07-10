@@ -19,6 +19,7 @@ import {
   absolutizeMediaUrl,
   publicOriginFromRequest,
 } from "../utils/public-origin.util";
+import { resolveCollectionLiquidTemplate } from "../utils/collection-theme-template.util";
 
 function toLiquidProduct(p: Record<string, unknown>, publicOrigin: string) {
   const vendor = p.vendor as { name?: string } | undefined;
@@ -80,10 +81,6 @@ export const renderStorefrontLiquidPage = asyncErrorHandler(async (req: Request,
   if (!isSafeLiquidTemplateName(tpl)) {
     throw new CustomError("Invalid template name", 400);
   }
-  const templateFile = path.join(liquidRoots.runtimeBaseDir, "templates", `${tpl}.liquid`);
-  if (!fs.existsSync(templateFile)) {
-    throw new CustomError(`Liquid template not found: templates/${tpl}.liquid`, 404);
-  }
 
   const store = await Store.findById(storeId).lean();
   if (!store) throw new CustomError("Store not found", 404);
@@ -93,6 +90,34 @@ export const renderStorefrontLiquidPage = asyncErrorHandler(async (req: Request,
     ? new mongoose.Types.ObjectId(storeId)
     : null;
   if (!storeObjectId) throw new CustomError("Invalid store ID", 400);
+
+  let renderTemplate = tpl;
+  let collectionDoc: Record<string, unknown> | null = null;
+  if (tpl === "collection" || tpl.startsWith("collection.")) {
+    if (collectionId && mongoose.isValidObjectId(collectionId)) {
+      collectionDoc = (await Collections.findOne({
+        _id: collectionId,
+        storeId: storeObjectId,
+      }).lean()) as Record<string, unknown> | null;
+    }
+    if (!collectionDoc && handle) {
+      collectionDoc = (await Collections.findOne({
+        storeId: storeObjectId,
+        urlHandle: handle,
+      }).lean()) as Record<string, unknown> | null;
+    }
+    if (collectionDoc && tpl === "collection") {
+      renderTemplate = resolveCollectionLiquidTemplate(collectionDoc.themeTemplate as string | undefined);
+      if (!isSafeLiquidTemplateName(renderTemplate)) {
+        renderTemplate = "collection";
+      }
+    }
+  }
+
+  const templateFile = path.join(liquidRoots.runtimeBaseDir, "templates", `${renderTemplate}.liquid`);
+  if (!fs.existsSync(templateFile)) {
+    throw new CustomError(`Liquid template not found: templates/${renderTemplate}.liquid`, 404);
+  }
 
   const publicOrigin = publicOriginFromRequest(req);
 
@@ -147,23 +172,10 @@ export const renderStorefrontLiquidPage = asyncErrorHandler(async (req: Request,
     collections = collectionRows.map((c) => toLiquidCollection(c as Record<string, unknown>, publicOrigin));
   }
 
-  if (tpl === "collection") {
-    let col: Record<string, unknown> | null = null;
-    if (collectionId && mongoose.isValidObjectId(collectionId)) {
-      col = (await Collections.findOne({
-        _id: collectionId,
-        storeId: storeObjectId,
-      }).lean()) as Record<string, unknown> | null;
-    }
-    if (!col && handle) {
-      col = (await Collections.findOne({
-        storeId: storeObjectId,
-        urlHandle: handle,
-      }).lean()) as Record<string, unknown> | null;
-    }
-    if (col) {
-      collection = toLiquidCollection(col, publicOrigin);
-      const productIds = await CollectionEntry.find({ collectionId: col._id }).distinct("productId");
+  if (renderTemplate === "collection" || renderTemplate.startsWith("collection.")) {
+    if (collectionDoc) {
+      collection = toLiquidCollection(collectionDoc, publicOrigin);
+      const productIds = await CollectionEntry.find({ collectionId: collectionDoc._id }).distinct("productId");
       if (productIds.length) {
         const productRows = await Product.find({
           _id: { $in: productIds },
@@ -290,7 +302,7 @@ export const renderStorefrontLiquidPage = asyncErrorHandler(async (req: Request,
     section: { settings: {} },
   };
 
-  const html = await renderLiquidThemePage(liquid, liquidRoots.runtimeBaseDir, tpl, context);
+  const html = await renderLiquidThemePage(liquid, liquidRoots.runtimeBaseDir, renderTemplate, context);
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.setHeader("Cache-Control", "no-cache");

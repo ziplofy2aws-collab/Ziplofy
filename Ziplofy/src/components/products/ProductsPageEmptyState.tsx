@@ -10,7 +10,7 @@ const ProductsPageEmptyState: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div className="flex flex-col items-center text-center max-w-2xl mx-auto py-14 px-6">
+    <div className="flex flex-col items-center text-center max-w-2xl mx-auto py-16 px-6">
       {/* Product Illustrations */}
       <div className="relative w-64 h-40 mb-8">
         <div className="absolute top-0 right-4 w-16 h-10 bg-blue-600 rounded-lg transform -rotate-12" />

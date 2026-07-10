@@ -33,7 +33,6 @@ export function ThemeEditorInsertLinkModal({
   const [openInNewTab, setOpenInNewTab] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const hrefInputRef = useRef<HTMLInputElement>(null);
-  const hrefFieldRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -128,7 +127,7 @@ export function ThemeEditorInsertLinkModal({
                   </button>
                 ) : null}
               </div>
-              <div className="relative" ref={hrefFieldRef}>
+              <div className="relative">
                 {linkLabel ? (
                   <TagIcon className="pointer-events-none absolute left-2.5 top-1/2 z-[1] h-4 w-4 -translate-y-1/2 text-gray-500" />
                 ) : null}
@@ -154,8 +153,6 @@ export function ThemeEditorInsertLinkModal({
                 <ThemeEditorLinkPickerDropdown
                   open={pickerOpen}
                   placement="above"
-                  anchorRef={hrefFieldRef}
-                  boundaryRef={hrefFieldRef}
                   searchQuery={linkLabel ?? href}
                   onClose={() => setPickerOpen(false)}
                   onSelect={({ link, label }) => {

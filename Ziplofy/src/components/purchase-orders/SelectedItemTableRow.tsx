@@ -1,7 +1,5 @@
-import { RectangleStackIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { productFormInputClass } from '../products/product-form-appearance';
-import { poTableCellClass, poTableCellRightClass } from './purchase-order-ui.util';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface ProductItem {
   variantId: string;
@@ -35,58 +33,55 @@ const SelectedItemTableRow: React.FC<SelectedItemTableRowProps> = ({
   onRemove,
 }) => {
   const lineTotal = (item.qty || 0) * (item.cost || 0) * (1 + (item.taxPct || 0) / 100);
-  const inputClass = `${productFormInputClass('minimal')} py-1.5`;
 
   return (
-    <tr className="border-b border-gray-100">
-      <td className={poTableCellClass}>
-        <div className="flex min-w-[200px] items-center gap-3">
-          <div className="h-9 w-9 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
-            {item.productImage ? (
-              <img src={item.productImage} alt="" className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gray-100">
-                <RectangleStackIcon className="h-4 w-4 text-gray-400" />
-              </div>
-            )}
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-[13px] font-medium text-gray-900">{item.productTitle}</p>
-            <p className="truncate text-[12px] text-gray-500">
-              {item.variantLabel} • {item.variantSku || 'No SKU'}
-            </p>
+    <tr>
+      <td className="px-4 py-2">
+        <div className="flex items-center gap-2">
+          {item.productImage ? (
+            <img
+              src={item.productImage}
+              alt={item.productTitle}
+              className="w-8 h-8 object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 bg-gray-200"></div>
+          )}
+          <div>
+            <div className="text-sm font-medium text-gray-900">{item.productTitle}</div>
+            <div className="text-xs text-gray-600">{item.variantLabel} • {item.variantSku || '-'}</div>
           </div>
         </div>
       </td>
-      <td className={poTableCellClass}>
+      <td className="px-4 py-2">
         <input
           type="text"
           placeholder="Supplier SKU"
           value={item.supplierSku}
           onChange={(e) => onSupplierSkuChange(index, e.target.value)}
-          className={`${inputClass} min-w-[120px]`}
+          className="px-2 py-1 text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
       </td>
-      <td className={poTableCellRightClass}>
+      <td className="px-4 py-2 text-right">
         <input
           type="number"
           min={1}
           value={item.qty}
           onChange={(e) => onQtyChange(index, Number(e.target.value) || 1)}
-          className={`${inputClass} w-20 text-right`}
+          className="w-[90px] px-2 py-1 text-sm border border-gray-200 text-right focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
       </td>
-      <td className={poTableCellRightClass}>
+      <td className="px-4 py-2 text-right">
         <input
           type="number"
           min={0}
           step="0.01"
           value={item.cost}
           onChange={(e) => onCostChange(index, Number(e.target.value) || 0)}
-          className={`${inputClass} w-24 text-right`}
+          className="w-[110px] px-2 py-1 text-sm border border-gray-200 text-right focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
       </td>
-      <td className={poTableCellRightClass}>
+      <td className="px-4 py-2 text-right">
         <input
           type="number"
           min={0}
@@ -94,18 +89,17 @@ const SelectedItemTableRow: React.FC<SelectedItemTableRowProps> = ({
           step="0.01"
           value={item.taxPct}
           onChange={(e) => onTaxPctChange(index, Number(e.target.value))}
-          className={`${inputClass} w-20 text-right`}
+          className="w-[100px] px-2 py-1 text-sm border border-gray-200 text-right focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
       </td>
-      <td className={`${poTableCellRightClass} font-medium text-gray-900`}>{lineTotal.toFixed(2)}</td>
-      <td className="px-3 py-2.5 text-right">
+      <td className="px-4 py-2 text-right text-sm text-gray-900">{lineTotal.toFixed(2)}</td>
+      <td className="px-4 py-2 text-right">
         <button
-          type="button"
           onClick={() => onRemove(index)}
-          className="rounded p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
-          aria-label="Remove item"
+          className="p-1 text-gray-600 hover:text-red-600 transition-colors"
+          aria-label="Remove"
         >
-          <TrashIcon className="h-4 w-4" />
+          <TrashIcon className="w-4 h-4" />
         </button>
       </td>
     </tr>
@@ -113,3 +107,4 @@ const SelectedItemTableRow: React.FC<SelectedItemTableRowProps> = ({
 };
 
 export default SelectedItemTableRow;
+

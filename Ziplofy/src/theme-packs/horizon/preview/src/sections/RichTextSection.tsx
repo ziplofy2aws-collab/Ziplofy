@@ -35,14 +35,10 @@ export function RichTextSection({
 
   const style = useMemo(() => readRichTextLayout(config, settingsBase), [config, settingsBase]);
 
-  const DEFAULT_HEADING = 'New arrivals';
-  const DEFAULT_TEXT =
-    'We make things that work better and last longer. Our products solve real problems with clean design and honest materials.';
-
-  const heading = cfgString(config, `${settingsBase}.heading`, DEFAULT_HEADING) || DEFAULT_HEADING;
-  const text = cfgString(config, `${settingsBase}.text`, DEFAULT_TEXT) || DEFAULT_TEXT;
-  const buttonLabel = cfgString(config, `${settingsBase}.buttonLabel`, 'Shop now');
-  const buttonUrl = cfgString(config, `${settingsBase}.buttonUrl`, '/collections');
+  const heading = cfgString(config, `${settingsBase}.heading`);
+  const text = cfgString(config, `${settingsBase}.text`);
+  const buttonLabel = cfgString(config, `${settingsBase}.buttonLabel`);
+  const buttonUrl = cfgString(config, `${settingsBase}.buttonUrl`);
 
   const scheme = style.scheme;
   const textAlign = richTextContentAlign(style.layoutAlignment);
@@ -107,7 +103,6 @@ export function RichTextSection({
     fontWeight: 700,
     lineHeight: 1.15,
     letterSpacing: '-0.02em',
-    color: scheme.color,
   };
 
   const bodyStyle: CSSProperties = {
@@ -124,12 +119,11 @@ export function RichTextSection({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '12px 28px',
-    borderRadius: 8,
-    background: '#000000',
+    borderRadius: 9999,
+    background: '#111827',
     color: '#ffffff',
     fontSize: '0.9375rem',
     fontWeight: 500,
-    fontFamily: fontBody,
     textDecoration: 'none',
     border: 'none',
     cursor: 'pointer',
@@ -165,12 +159,16 @@ export function RichTextSection({
         />
       ) : null}
       <div className={scopeClass} style={stage}>
-        <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
-          {heading}
-        </EditorField>
-        <EditorField fieldPath={`${settingsBase}.text`} label="Text" as="p" style={bodyStyle}>
-          {text}
-        </EditorField>
+        {heading ? (
+          <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
+            {heading}
+          </EditorField>
+        ) : null}
+        {text ? (
+          <EditorField fieldPath={`${settingsBase}.text`} label="Text" as="p" style={bodyStyle}>
+            {text}
+          </EditorField>
+        ) : null}
         {buttonLabel ? (
           <EditorField fieldPath={`${settingsBase}.buttonLabel`} label="Button label" as="span">
             <Link to={buttonUrl || '#'} style={buttonStyle}>

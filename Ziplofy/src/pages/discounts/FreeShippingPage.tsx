@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import DiscountFormHeader from "../../components/discounts/DiscountFormHeader";
-import { freeShippingDetailsPath } from "../../utils/discount-navigation.util";
 import { useFreeShippingDiscount } from "../../contexts/free-shipping-discount.context";
 import { useStore } from "../../contexts/store.context";
 import { useCustomerSegments } from "../../contexts/customer-segment.context";
@@ -18,7 +16,7 @@ const FreeShippingPage: React.FC = () => {
   const { createDiscount, updateDiscount, fetchDiscountById, loading, error: createError, clearError } = useFreeShippingDiscount();
   const { activeStoreId } = useStore();
   const { segments, searchCustomerSegments, fetchSegmentsByStoreId, loading: segmentsLoading } = useCustomerSegments();
-  const { customers, customerSearchResults, searchCustomers, fetchCustomersByStoreId, loading: customersLoading, customerSearchLoading } = useCustomers();
+  const { customers, searchCustomers, fetchCustomersByStoreId, loading: customersLoading } = useCustomers();
   const { countries, getCountries, loading: countriesLoading } = useCountries();
   
   const [formData, setFormData] = useState({
@@ -166,7 +164,7 @@ const FreeShippingPage: React.FC = () => {
     if (editId) {
       navigate(`/discounts/free-shipping/${editId}`);
     } else {
-      navigate('/discounts');
+      navigate('/discounts?createDiscountModal=open');
     }
   }, [navigate, editId]);
 
@@ -210,8 +208,8 @@ const FreeShippingPage: React.FC = () => {
         }
       } else {
         const res = await createDiscount(payload as any);
-        if (res.success && res.data?._id) {
-          navigate(freeShippingDetailsPath(res.data._id));
+        if (res.success) {
+          navigate('/discounts');
         }
       }
     } catch {}
@@ -245,29 +243,38 @@ const FreeShippingPage: React.FC = () => {
     label: s.name,
   }));
 
-  const customersForSelect = customerSearchQuery.trim() ? customerSearchResults : customers;
-
-  const customerOptions = customersForSelect.map(c => ({
+  const customerOptions = customers.map(c => ({
     value: c._id,
     label: `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.email,
     secondaryText: c.email,
   }));
 
   const inputClass =
-    'w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-[13px] font-normal text-gray-700 transition-colors placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200';
+    'w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm';
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <DiscountFormHeader
-            title={editId ? 'Edit free shipping' : 'Free shipping'}
-            onBack={handleCancel}
-            onCancel={handleCancel}
-            submitLabel={editId ? 'Save changes' : 'Create discount'}
-            loading={loading}
-            submitDisabled={!activeStoreId}
-          />
+    <div className="min-h-screen">
+      <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6">
+        {/* Page Header */}
+        <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden mb-6">
+          <div className="px-5 py-4 sm:px-6 sm:py-5">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                aria-label="Back"
+              >
+                <ArrowLeftIcon className="w-5 h-5" />
+              </button>
+              <h1 className="text-lg font-semibold text-gray-900 sm:text-xl">
+                Free shipping
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {createError && (
             <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 flex items-center justify-between gap-3">
               <p className="text-sm text-red-800">{createError}</p>
@@ -283,9 +290,9 @@ const FreeShippingPage: React.FC = () => {
           )}
 
           {/* Method */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Method</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Method</h2>
               <fieldset className="mb-3">
                 <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Discount method</legend>
                 <div className="space-y-2">
@@ -296,7 +303,7 @@ const FreeShippingPage: React.FC = () => {
                       value="discount-code"
                       checked={formData.method === 'discount-code'}
                       onChange={(e) => handleInputChange('method', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Discount code</span>
                   </label>
@@ -307,7 +314,7 @@ const FreeShippingPage: React.FC = () => {
                       value="automatic"
                       checked={formData.method === 'automatic'}
                       onChange={(e) => handleInputChange('method', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Automatic discount</span>
                   </label>
@@ -343,9 +350,9 @@ const FreeShippingPage: React.FC = () => {
           </div>
 
           {/* Country */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Country</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Country</h2>
               
               <fieldset className="mb-3">
                 <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Country selection</legend>
@@ -357,7 +364,7 @@ const FreeShippingPage: React.FC = () => {
                       value="all-countries"
                       checked={formData.countrySelection === 'all-countries'}
                       onChange={(e) => handleInputChange('countrySelection', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">All countries</span>
                   </label>
@@ -368,7 +375,7 @@ const FreeShippingPage: React.FC = () => {
                       value="selected-countries"
                       checked={formData.countrySelection === 'selected-countries'}
                       onChange={(e) => handleInputChange('countrySelection', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Selected countries</span>
                   </label>
@@ -434,7 +441,7 @@ const FreeShippingPage: React.FC = () => {
                   type="checkbox"
                   checked={formData.excludeShippingRates}
                   onChange={(e) => handleInputChange('excludeShippingRates', e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <span className="text-sm text-gray-700">Exclude shipping rates over a certain amount</span>
               </label>
@@ -458,7 +465,7 @@ const FreeShippingPage: React.FC = () => {
           </div>
 
           {/* Eligibility */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
               <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-1">Eligibility</h2>
               <p className="text-xs text-gray-500 mb-4">Available on all sales channels</p>
@@ -472,7 +479,7 @@ const FreeShippingPage: React.FC = () => {
                       value="all-customers"
                       checked={formData.eligibility === 'all-customers'}
                       onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">All customers</span>
                   </label>
@@ -483,7 +490,7 @@ const FreeShippingPage: React.FC = () => {
                       value="specific-customer-segments"
                       checked={formData.eligibility === 'specific-customer-segments'}
                       onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Specific customer segments</span>
                   </label>
@@ -494,7 +501,7 @@ const FreeShippingPage: React.FC = () => {
                       value="specific-customers"
                       checked={formData.eligibility === 'specific-customers'}
                       onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Specific customers</span>
                   </label>
@@ -506,7 +513,7 @@ const FreeShippingPage: React.FC = () => {
                     type="checkbox"
                     checked={formData.applyOnPOSPro}
                     onChange={(e) => handleInputChange('applyOnPOSPro', e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-700">Apply on POS Pro locations</span>
                 </label>
@@ -533,7 +540,7 @@ const FreeShippingPage: React.FC = () => {
                       placeholder={formData.eligibility === 'specific-customer-segments' ? 'Search segments...' : 'Search customers...'}
                       className={inputClass}
                     />
-                    {(segmentsLoading || customersLoading || customerSearchLoading) && (
+                    {(segmentsLoading || customersLoading) && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
                         <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                       </div>
@@ -551,7 +558,7 @@ const FreeShippingPage: React.FC = () => {
                       <p className="mt-1.5 text-xs text-gray-500">{selectedSegmentIds.length} segment(s) selected</p>
                     </div>
                   )}
-                  {formData.eligibility === 'specific-customers' && customersForSelect.length > 0 && (
+                  {formData.eligibility === 'specific-customers' && customers.length > 0 && (
                     <div className="mt-3">
                       <MultiSelect
                         label="Choose customers"
@@ -569,9 +576,9 @@ const FreeShippingPage: React.FC = () => {
           </div>
 
           {/* Minimum purchase requirements */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Minimum purchase requirements</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Minimum purchase requirements</h2>
               <fieldset className="mb-4">
                 <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Requirements</legend>
                 <div className="space-y-2">
@@ -582,7 +589,7 @@ const FreeShippingPage: React.FC = () => {
                       value="no-requirements"
                       checked={formData.minimumPurchase === 'no-requirements'}
                       onChange={(e) => handleInputChange('minimumPurchase', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">No minimum requirements</span>
                   </label>
@@ -593,7 +600,7 @@ const FreeShippingPage: React.FC = () => {
                       value="minimum-amount"
                       checked={formData.minimumPurchase === 'minimum-amount'}
                       onChange={(e) => handleInputChange('minimumPurchase', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Minimum purchase amount</span>
                   </label>
@@ -604,7 +611,7 @@ const FreeShippingPage: React.FC = () => {
                       value="minimum-quantity"
                       checked={formData.minimumPurchase === 'minimum-quantity'}
                       onChange={(e) => handleInputChange('minimumPurchase', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Minimum quantity of items</span>
                   </label>
@@ -644,29 +651,29 @@ const FreeShippingPage: React.FC = () => {
 
           {formData.method === 'discount-code' && (
             <>
-              <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+              <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
                 <div className="px-5 py-4 sm:px-6 sm:py-5">
-                  <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Sales channel access</h2>
+                  <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Sales channel access</h2>
                   <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                     <input
                       type="checkbox"
                       checked={formData.allowDiscountOnChannels}
                       onChange={(e) => handleInputChange('allowDiscountOnChannels', e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Allow discount to be featured on selected channels</span>
                   </label>
                 </div>
               </div>
-              <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+              <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
                 <div className="px-5 py-4 sm:px-6 sm:py-5">
-                  <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Maximum discount uses</h2>
+                  <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Maximum discount uses</h2>
                   <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                     <input
                       type="checkbox"
                       checked={formData.limitTotalUses}
                       onChange={(e) => handleInputChange('limitTotalUses', e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Limit total number of uses</span>
                   </label>
@@ -687,7 +694,7 @@ const FreeShippingPage: React.FC = () => {
                       type="checkbox"
                       checked={formData.limitOneUsePerCustomer}
                       onChange={(e) => handleInputChange('limitOneUsePerCustomer', e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">Limit to one use per customer</span>
                   </label>
@@ -697,16 +704,16 @@ const FreeShippingPage: React.FC = () => {
           )}
 
           {/* Combinations */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Combinations</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Combinations</h2>
               <div className="space-y-3">
                 <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                   <input
                     type="checkbox"
                     checked={formData.productDiscounts}
                     onChange={(e) => handleInputChange('productDiscounts', e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-700">Product discounts</span>
                 </label>
@@ -716,7 +723,7 @@ const FreeShippingPage: React.FC = () => {
                     type="checkbox"
                     checked={formData.orderDiscounts}
                     onChange={(e) => handleInputChange('orderDiscounts', e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-700">Order discounts</span>
                 </label>
@@ -730,9 +737,9 @@ const FreeShippingPage: React.FC = () => {
           </div>
 
           {/* Active dates */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Active dates</h2>
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Active dates</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Start date</label>
@@ -759,7 +766,7 @@ const FreeShippingPage: React.FC = () => {
                   type="checkbox"
                   checked={formData.setEndDate}
                   onChange={(e) => handleInputChange('setEndDate', e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <span className="text-sm text-gray-700">Set end date</span>
               </label>
@@ -789,6 +796,26 @@ const FreeShippingPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Actions */}
+          <div className="flex flex-wrap gap-3 justify-end">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading || !activeStoreId}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading && (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              )}
+              {loading ? (editId ? 'Saving…' : 'Creating…') : (editId ? 'Save changes' : 'Create discount')}
+            </button>
+          </div>
         </form>
       </div>
     </div>

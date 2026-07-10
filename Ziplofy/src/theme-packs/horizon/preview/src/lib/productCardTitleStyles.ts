@@ -1,5 +1,4 @@
 import { cfgBool, cfgNumber, cfgString } from './config';
-import { resolveThemePaletteColorSetting } from '../../../../../create-theme/settings/theme-color-palette.settings';
 
 const TYPOGRAPHY_PRESETS: Record<string, { fontSize: number; fontWeight: number; lineHeight: number }> = {
   default: { fontSize: 18, fontWeight: 600, lineHeight: 1.3 },
@@ -8,7 +7,6 @@ const TYPOGRAPHY_PRESETS: Record<string, { fontSize: number; fontWeight: number;
   'heading-3': { fontSize: 20, fontWeight: 600, lineHeight: 1.25 },
   'heading-4': { fontSize: 18, fontWeight: 600, lineHeight: 1.3 },
   body: { fontSize: 16, fontWeight: 400, lineHeight: 1.5 },
-  paragraph: { fontSize: 16, fontWeight: 400, lineHeight: 1.5 },
 };
 
 const MAX_WIDTH: Record<string, string | undefined> = {
@@ -42,17 +40,12 @@ export function readProductCardTitleStyle(
   fontHeading: string,
   color: string
 ): ProductCardTitleStyle {
-  const preset = cfgString(config, `${settingsBase}.productTitleTypographyPreset`, 'paragraph');
-  const typo = TYPOGRAPHY_PRESETS[preset] ?? TYPOGRAPHY_PRESETS.paragraph;
-  const widthMode = cfgString(config, `${settingsBase}.productTitleWidth`, 'fit');
+  const preset = cfgString(config, `${settingsBase}.productTitleTypographyPreset`, 'default');
+  const typo = TYPOGRAPHY_PRESETS[preset] ?? TYPOGRAPHY_PRESETS.default;
+  const widthMode = cfgString(config, `${settingsBase}.productTitleWidth`, 'fill');
   const maxKey = cfgString(config, `${settingsBase}.productTitleMaxWidth`);
   const align = cfgString(config, `${settingsBase}.productTitleAlignment`, 'left');
   const bgOn = cfgBool(config, `${settingsBase}.productTitleBackgroundEnabled`, false);
-  const colorKey = cfgString(config, `${settingsBase}.productTitleColor`, '');
-  const resolvedColor =
-    colorKey === '' || colorKey === 'default'
-      ? color
-      : resolveThemePaletteColorSetting(config, colorKey, 1, color);
   const textAlign =
     align === 'center' ? 'center' : align === 'right' ? 'right' : 'left';
 
@@ -64,9 +57,9 @@ export function readProductCardTitleStyle(
     fontSize: typo.fontSize,
     fontWeight: typo.fontWeight,
     lineHeight: typo.lineHeight,
-    color: resolvedColor,
+    color,
     background: bgOn ? 'rgba(0,0,0,0.04)' : undefined,
-    paddingTop: cfgNumber(config, `${settingsBase}.productTitlePaddingTop`, 4),
+    paddingTop: cfgNumber(config, `${settingsBase}.productTitlePaddingTop`, 0),
     paddingBottom: cfgNumber(config, `${settingsBase}.productTitlePaddingBottom`, 0),
     paddingLeft: cfgNumber(config, `${settingsBase}.productTitlePaddingLeft`, 0),
     paddingRight: cfgNumber(config, `${settingsBase}.productTitlePaddingRight`, 0),

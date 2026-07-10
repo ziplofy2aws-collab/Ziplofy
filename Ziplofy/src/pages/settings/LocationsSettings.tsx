@@ -1,11 +1,14 @@
 import React, { useCallback } from 'react';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import DefaultLocationRow from '../../components/DefaultLocationRow';
 import LocationDetailsSection from '../../components/LocationDetailsSection';
-import LocationsPageHeader from '../../components/locations/LocationsPageHeader';
-import { locationPrimaryButtonClass } from '../../components/locations/location-ui.util';
 import { useLocations } from '../../contexts/location.context';
 import { useStore } from '../../contexts/store.context';
+import { SettingsHero, SettingsPanel } from '../../components/settings/SettingsPageScaffold';
+
+const btnPrimarySm =
+  'inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30 sm:py-2';
 
 export { LocationDetailSettings } from './LocationDetailSettings';
 export { NewLocationSettings } from './NewLocationSettings';
@@ -41,38 +44,52 @@ const LocationsSettings: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-4">
-        <LocationsPageHeader onAddLocation={handleAddLocation} />
+      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+        <SettingsHero
+          title="Locations"
+          description="Manage where you stock inventory, fulfill orders, and offer pickup or local delivery."
+          tip="The default location is used for new products and when a fulfillment location is not explicitly chosen."
+          actions={
+            <button type="button" className={btnPrimarySm} onClick={handleAddLocation}>
+              <PlusIcon className="h-4 w-4 shrink-0" aria-hidden />
+              Add location
+            </button>
+          }
+        />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-          <div className="border-b border-gray-100 px-4 py-3">
-            <h2 className="text-[13px] font-semibold text-gray-900">Default location</h2>
-            <p className="mt-0.5 text-[12px] font-normal text-gray-500">
-              Used when no other location is specified for new products or fulfillments.
-            </p>
+        <SettingsPanel className="ring-1 ring-slate-200/60">
+          <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-5 py-4 sm:px-6">
+            <div className="border-l-4 border-blue-500/75 pl-3">
+              <h2 className="text-base font-semibold text-gray-900">Default location</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Used by Ziplofy and connected apps when no other location is specified.
+              </p>
+            </div>
           </div>
-          <div className="px-4 py-4">
-            {defaultLocationId && defLoc && currentStore ? (
+          <div className="p-5 sm:p-6">
+            {defaultLocationId && defLoc ? (
               <DefaultLocationRow
                 name={defLoc.name}
                 addressLine={addressLine}
                 locations={locations}
-                currentStoreId={currentStore._id}
+                currentStoreId={currentStore!._id}
                 defaultLocationId={defaultLocationId}
               />
             ) : (
-              <div className="flex flex-col items-center justify-center px-4 py-10 text-center">
-                <p className="text-[15px] font-semibold text-gray-900">No default location set</p>
-                <p className="mt-1.5 max-w-md text-[13px] font-normal text-gray-500">
-                  Create a location first, then mark one as the default.
+              <div className="rounded-2xl border border-dashed border-slate-200/90 bg-slate-50/40 px-4 py-10 text-center sm:px-8">
+                <p className="text-sm font-semibold text-gray-900">No default location set</p>
+                <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
+                  Create a location first, then mark one as the default so new products and unnamed fulfillments use the
+                  right address.
                 </p>
-                <button type="button" className={`mt-4 ${locationPrimaryButtonClass}`} onClick={handleAddLocation}>
+                <button type="button" className={`${btnPrimarySm} mt-6`} onClick={handleAddLocation}>
+                  <PlusIcon className="h-4 w-4 shrink-0" aria-hidden />
                   Add your first location
                 </button>
               </div>
             )}
           </div>
-        </div>
+        </SettingsPanel>
 
         <LocationDetailsSection
           locations={locations}
@@ -82,17 +99,10 @@ const LocationsSettings: React.FC = () => {
           onAddLocation={handleAddLocation}
           onLocationClick={handleLocationClick}
         />
-
-        <div className="pb-2 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-gray-600 hover:text-gray-800">
-              Learn more about locations
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   );
 };
+
 
 export default LocationsSettings;

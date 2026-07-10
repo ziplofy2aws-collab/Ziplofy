@@ -57,13 +57,10 @@ export function readFeaturedProductHeaderBlockStyle(
   const paddingRight = cfgNumber(config, `${settingsBase}.paddingRight`, 0);
 
   const bgMedia = cfgString(config, `${settingsBase}.backgroundMedia`, 'none');
-  const bgColor = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
   const bgImageUrl = cfgString(config, `${settingsBase}.backgroundImageUrl`, '');
   const bgImagePosition = cfgString(config, `${settingsBase}.backgroundImagePosition`, 'cover');
   const showBgImage = bgMedia === 'image' && Boolean(bgImageUrl.trim());
   const showOverlay = cfgBool(config, `${settingsBase}.backgroundOverlay`, false) && showBgImage;
-  const resolvedBackground =
-    showBgImage || !bgColor || bgColor === 'default' ? undefined : bgColor;
 
   const linkUrl = cfgString(config, `${settingsBase}.linkUrl`, '');
   const openInNewTab = cfgBool(config, `${settingsBase}.openLinkInNewTab`, false);
@@ -78,7 +75,6 @@ export function readFeaturedProductHeaderBlockStyle(
     width: desktopWidth,
     height,
     boxSizing: 'border-box',
-    background: resolvedBackground,
     paddingTop,
     paddingBottom,
     paddingLeft,

@@ -1,6 +1,4 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
-import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
-import { resolveEditingPanelForNode } from '../../theme-editor/section-editing-support.util';
 
 const PANEL_GROUPS = new Set([
   'Collection',
@@ -25,8 +23,7 @@ const FIELD_SORT: Record<string, number> = {
   sectionWidth: 10,
   alignment: 11,
   sectionGap: 12,
-  backgroundColor: 13,
-  colorScheme: 14,
+  colorScheme: 13,
   paddingTop: 20,
   paddingBottom: 21,
   customCss: 30,
@@ -65,268 +62,11 @@ export function isFeaturedCollectionCatalogVariant(catalogVariant: string): bool
   );
 }
 
-export function featuredCollectionSettingsBaseFromNodeId(nodeId: string): string | null {
-  const sectionMatch = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?)$/);
-  if (sectionMatch) {
-    return `templates.${sectionMatch[1]}.sections.${sectionMatch[2]}.settings`;
-  }
-  const childMatch = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?):/);
-  if (childMatch) {
-    return `templates.${childMatch[1]}.sections.${childMatch[2]}.settings`;
-  }
-  return null;
-}
-
-function s(settingsBase: string, key: string): string {
-  return `${settingsBase}.${key}`;
-}
-
-/** Canonical Shopify-order field defs for featured collection section settings. */
-export function featuredCollectionFieldDefs(settingsBase: string): EditorFieldDef[] {
-  return [
-    {
-      path: s(settingsBase, 'collectionHandle'),
-      type: 'text',
-      label: 'Collection',
-      group: 'Collection',
-      widget: 'collection',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'layoutType'),
-      type: 'select',
-      label: 'Type',
-      group: 'Collection',
-      sidebar: true,
-      options: [
-        { value: 'grid', label: 'Grid' },
-        { value: 'carousel', label: 'Carousel' },
-        { value: 'editorial', label: 'Editorial' },
-      ],
-    },
-    {
-      path: s(settingsBase, 'carouselOnMobile'),
-      type: 'boolean',
-      label: 'Carousel on mobile',
-      group: 'Collection',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'productsToShow'),
-      type: 'number',
-      label: 'Product count',
-      group: 'Collection',
-      widget: 'slider',
-      min: 1,
-      max: 24,
-      step: 1,
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'columns'),
-      type: 'number',
-      label: 'Columns',
-      group: 'Collection',
-      widget: 'slider',
-      min: 1,
-      max: 6,
-      step: 1,
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'mobileColumns'),
-      type: 'select',
-      label: 'Mobile columns',
-      group: 'Collection',
-      widget: 'segmented',
-      sidebar: true,
-      options: [
-        { value: '1', label: '1' },
-        { value: '2', label: '2' },
-      ],
-    },
-    {
-      path: s(settingsBase, 'horizontalGap'),
-      type: 'number',
-      label: 'Horizontal gap',
-      group: 'Collection',
-      widget: 'slider',
-      min: 0,
-      max: 48,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'verticalGap'),
-      type: 'number',
-      label: 'Vertical gap',
-      group: 'Collection',
-      widget: 'slider',
-      min: 0,
-      max: 48,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'navIcon'),
-      type: 'select',
-      label: 'Icon',
-      group: 'Carousel navigation',
-      sidebar: true,
-      options: [
-        { value: 'arrows', label: 'Arrows' },
-        { value: 'chevron', label: 'Chevron' },
-        { value: 'none', label: 'None' },
-      ],
-    },
-    {
-      path: s(settingsBase, 'navIconBackground'),
-      type: 'select',
-      label: 'Icon background',
-      group: 'Carousel navigation',
-      sidebar: true,
-      options: [
-        { value: 'none', label: 'None' },
-        { value: 'circle', label: 'Circle' },
-        { value: 'square', label: 'Square' },
-      ],
-    },
-    {
-      path: s(settingsBase, 'sectionWidth'),
-      type: 'select',
-      label: 'Width',
-      group: 'Section layout',
-      widget: 'segmented',
-      sidebar: true,
-      options: [
-        { value: 'page', label: 'Page' },
-        { value: 'full', label: 'Full' },
-      ],
-    },
-    {
-      path: s(settingsBase, 'alignment'),
-      type: 'select',
-      label: 'Alignment',
-      group: 'Section layout',
-      widget: 'segmented',
-      sidebar: true,
-      options: [
-        { value: 'left', label: 'Left' },
-        { value: 'center', label: 'Center' },
-        { value: 'right', label: 'Right' },
-      ],
-    },
-    {
-      path: s(settingsBase, 'sectionGap'),
-      type: 'number',
-      label: 'Gap',
-      group: 'Section layout',
-      widget: 'slider',
-      min: 0,
-      max: 80,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'backgroundColor'),
-      type: 'text',
-      label: 'Background color',
-      group: 'Section layout',
-      widget: 'color',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'colorScheme'),
-      type: 'select',
-      label: 'Color scheme',
-      group: 'Theme settings',
-      widget: 'color-scheme',
-      sidebar: true,
-      options: [
-        { value: 'scheme-1', label: 'Scheme 1' },
-        { value: 'scheme-2', label: 'Scheme 2' },
-        { value: 'scheme-3', label: 'Scheme 3' },
-        { value: 'scheme-4', label: 'Scheme 4' },
-      ],
-    },
-    {
-      path: s(settingsBase, 'paddingTop'),
-      type: 'number',
-      label: 'Top',
-      group: 'Padding',
-      widget: 'slider',
-      min: 0,
-      max: 120,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'paddingBottom'),
-      type: 'number',
-      label: 'Bottom',
-      group: 'Padding',
-      widget: 'slider',
-      min: 0,
-      max: 120,
-      step: 1,
-      unit: 'px',
-      sidebar: true,
-    },
-    {
-      path: s(settingsBase, 'customCss'),
-      type: 'textarea',
-      label: 'Custom CSS',
-      group: 'Custom CSS',
-      widget: 'accordion',
-      sidebar: true,
-    },
-  ];
-}
-
-function readSettingString(
-  config: Record<string, unknown> | null,
-  settingsBase: string,
-  key: string
-): string {
-  if (!config) return '';
-  const parts = `${settingsBase}.${key}`.split('.');
-  let cur: unknown = config;
-  for (const p of parts) {
-    if (cur == null || typeof cur !== 'object') return '';
-    cur = (cur as Record<string, unknown>)[p];
-  }
-  return typeof cur === 'string' ? cur : '';
-}
-
-function readFlatValueString(
-  values: Record<string, unknown> | undefined,
-  path: string
-): string {
-  if (!values) return '';
-  const value = values[path];
-  if (typeof value === 'string') return value;
-  if (value == null) return '';
-  return String(value);
-}
-
-/** Read `settings.layoutType` for a featured collection section from the merged config. */
-export function readFeaturedCollectionLayoutType(
-  config: Record<string, unknown> | null,
-  settingsBase: string
-): string {
-  return readSettingString(config, settingsBase, 'layoutType');
-}
-
-/** Read `settings.catalogVariant` for a featured collection section from the merged config. */
-export function readFeaturedCollectionCatalogVariant(
-  config: Record<string, unknown> | null,
-  settingsBase: string
-): string {
-  return readSettingString(config, settingsBase, 'catalogVariant');
+export function featuredCollectionSidebarLabel(catalogVariant: string, fallback: string): string {
+  if (catalogVariant === 'featured-collection-carousel') return 'Featured collection: Carousel';
+  if (catalogVariant === 'featured-collection-editorial') return 'Featured collection: Editorial';
+  if (catalogVariant === 'featured-collection-grid') return 'Featured collection: Grid';
+  return fallback;
 }
 
 export function groupFeaturedCollectionPanelFields(
@@ -356,14 +96,6 @@ const EDITORIAL_COLLECTION_FIELD_KEYS = new Set([
   'layoutType',
   'carouselOnMobile',
   'productsToShow',
-]);
-
-const CAROUSEL_HIDDEN_COLLECTION_FIELD_KEYS = new Set([
-  'verticalGap',
-  'carouselOnMobile',
-  'subtitle',
-  'showRating',
-  'emptyMessage',
 ]);
 
 export function isFeaturedCollectionGridSettingsPanelFields(
@@ -402,76 +134,11 @@ export function isFeaturedCollectionCarouselSettingsPanelFields(
   return keys.has('collectionHandle') && keys.has('productsToShow') && keys.has('navIcon');
 }
 
-export type FeaturedCollectionVariant = 'carousel' | 'editorial' | 'grid' | 'default';
-
-export function featuredCollectionVariantLabel(
-  variant: FeaturedCollectionVariant
-): string {
-  if (variant === 'carousel') return 'Featured collection: Carousel';
-  if (variant === 'editorial') return 'Featured collection: Editorial';
-  if (variant === 'grid') return 'Featured collection: Grid';
-  return 'Featured collection';
-}
-
-export function resolveFeaturedCollectionVariant(opts: {
-  label?: string;
-  layoutType?: string;
-  catalogVariant?: string;
-  fields?: EditorFieldDef[];
-}): FeaturedCollectionVariant {
-  const label = opts.label ?? '';
-  if (label.includes('Carousel')) return 'carousel';
-  if (label.includes('Editorial')) return 'editorial';
-  if (label.includes('Grid')) return 'grid';
-
-  const layoutType = opts.layoutType ?? '';
-  // Non-grid layout types reflect an explicit user layout change.
-  if (layoutType === 'carousel' || layoutType === 'editorial') return layoutType;
-
-  const catalogVariant = opts.catalogVariant ?? '';
-  if (catalogVariant === 'featured-collection-carousel') return 'carousel';
-  if (catalogVariant === 'featured-collection-editorial') return 'editorial';
-  if (catalogVariant === 'featured-collection-grid') return 'grid';
-
-  if (layoutType === 'grid') return 'grid';
-
-  const raw = opts.fields ?? [];
-  if (isFeaturedCollectionCarouselSettingsPanelFields(raw)) return 'carousel';
-  if (isFeaturedCollectionEditorialSettingsPanelFields(raw)) return 'editorial';
-  if (isFeaturedCollectionGridSettingsPanelFields(raw)) return 'grid';
-  return 'default';
-}
-
-export function resolveFeaturedCollectionLabel(opts: {
-  label?: string;
-  layoutType?: string;
-  catalogVariant?: string;
-  fields?: EditorFieldDef[];
-}): string {
-  return featuredCollectionVariantLabel(resolveFeaturedCollectionVariant(opts));
-}
-
-export function featuredCollectionSidebarLabel(
-  catalogVariant: string,
-  fallback: string,
-  layoutType?: string
-): string {
-  const variant = resolveFeaturedCollectionVariant({ catalogVariant, layoutType });
-  if (variant !== 'default') return featuredCollectionVariantLabel(variant);
-  return fallback;
-}
-
 export function filterFeaturedCollectionPanelFieldsForVariant(
   fields: EditorFieldDef[],
   variant: 'carousel' | 'editorial' | 'grid' | 'default'
 ): EditorFieldDef[] {
-  if (variant === 'carousel') {
-    return fields.filter((f) => {
-      if (f.group !== 'Collection') return true;
-      const key = f.path.split('.').pop() ?? '';
-      return !CAROUSEL_HIDDEN_COLLECTION_FIELD_KEYS.has(key);
-    });
-  }
+  if (variant === 'carousel') return fields;
   if (variant === 'editorial') {
     return fields
       .filter((f) => !f.path.endsWith('.navIcon') && !f.path.endsWith('.navIconBackground'))
@@ -503,47 +170,35 @@ export function sortFeaturedCollectionPanelFields(fields: EditorFieldDef[]): Edi
   });
 }
 
-export function readFeaturedCollectionSettingValue(
-  values: Record<string, unknown> | undefined,
-  config: Record<string, unknown> | null | undefined,
-  settingsBase: string,
-  key: 'layoutType' | 'catalogVariant'
-): string {
-  const flat = readFlatValueString(values, `${settingsBase}.${key}`);
-  if (flat) return flat;
-  return readSettingString(config ?? null, settingsBase, key);
-}
-
-export function prepareFeaturedCollectionSettingsNode(
-  node: SidebarNode,
-  values?: Record<string, unknown>,
-  config?: Record<string, unknown> | null
-): SidebarNode {
-  const settingsBase = featuredCollectionSettingsBaseFromNodeId(node.id);
-  const catalog = resolveEditingPanelForNode(node.id);
-  const canonical = settingsBase ? featuredCollectionFieldDefs(settingsBase) : [];
-  const source = canonical.length
-    ? canonical
-    : catalog?.fields.length
-      ? catalog.fields
-      : (node.fields ?? []);
+export function prepareFeaturedCollectionSettingsNode(node: SidebarNode): SidebarNode {
   const raw = sortFeaturedCollectionPanelFields(
-    filterSidebarSectionPanelFields(source, isFeaturedCollectionPanelField)
+    (node.fields ?? []).filter(isFeaturedCollectionPanelField)
   );
-  const layoutType = settingsBase
-    ? readFeaturedCollectionSettingValue(values, config, settingsBase, 'layoutType')
-    : '';
-  const catalogVariant = settingsBase
-    ? readFeaturedCollectionSettingValue(values, config, settingsBase, 'catalogVariant')
-    : '';
-  const variant = resolveFeaturedCollectionVariant({
-    label: node.label,
-    layoutType,
-    catalogVariant,
-    fields: raw,
-  });
+  const labelText = node.label ?? '';
+  const isGrid =
+    labelText.includes('Grid') || isFeaturedCollectionGridSettingsPanelFields(raw);
+  const isEditorial =
+    !isGrid &&
+    (labelText.includes('Editorial') || isFeaturedCollectionEditorialSettingsPanelFields(raw));
+  const isCarousel =
+    !isGrid &&
+    !isEditorial &&
+    (labelText.includes('Carousel') || isFeaturedCollectionCarouselSettingsPanelFields(raw));
+  const variant: 'carousel' | 'editorial' | 'grid' | 'default' = isGrid
+    ? 'grid'
+    : isEditorial
+      ? 'editorial'
+      : isCarousel
+        ? 'carousel'
+        : 'default';
   const fields = filterFeaturedCollectionPanelFieldsForVariant(raw, variant);
-  const label = featuredCollectionVariantLabel(variant);
+  const label = isGrid
+    ? 'Featured collection: Grid'
+    : isEditorial
+      ? 'Featured collection: Editorial'
+      : isCarousel
+        ? 'Featured collection: Carousel'
+        : 'Featured collection';
   return { ...node, label, kind: 'section', fields };
 }
 
@@ -569,106 +224,4 @@ export function findFeaturedCollectionSectionInTree(
   const m = nodeId.match(/^template:([^:]+):(featured_collection(?:_\d+)?)/);
   if (!m) return null;
   return findSidebarNodeById(tree, `template:${m[1]}:${m[2]}`);
-}
-
-function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
-  let cur: unknown = obj;
-  for (const p of path) {
-    if (cur == null || typeof cur !== 'object') return undefined;
-    cur = (cur as Record<string, unknown>)[p];
-  }
-  return cur;
-}
-
-export function featuredCollectionDefaultsForVariant(
-  variant: FeaturedCollectionVariant
-): Record<string, string | number | boolean> {
-  const shared = {
-    collectionHandle: 'products',
-    sectionWidth: 'page',
-    alignment: 'left',
-    sectionGap: 28,
-    backgroundColor: 'default',
-    colorScheme: 'scheme-1',
-    paddingTop: 48,
-    paddingBottom: 48,
-    customCss: '',
-  };
-  if (variant === 'carousel') {
-    return {
-      ...shared,
-      layoutType: 'carousel',
-      catalogVariant: 'featured-collection-carousel',
-      productsToShow: 6,
-      columns: 4,
-      mobileColumns: '1',
-      horizontalGap: 8,
-      navIcon: 'arrows',
-      navIconBackground: 'circle',
-    };
-  }
-  if (variant === 'editorial') {
-    return {
-      ...shared,
-      layoutType: 'editorial',
-      catalogVariant: 'featured-collection-editorial',
-      carouselOnMobile: false,
-      productsToShow: 4,
-      columns: 2,
-      mobileColumns: '1',
-      horizontalGap: 24,
-      verticalGap: 24,
-      sectionGap: 64,
-    };
-  }
-  if (variant === 'grid') {
-    return {
-      ...shared,
-      layoutType: 'grid',
-      catalogVariant: 'featured-collection-grid',
-      carouselOnMobile: false,
-      productsToShow: 8,
-      columns: 4,
-      mobileColumns: '2',
-      horizontalGap: 8,
-      verticalGap: 24,
-    };
-  }
-  return {
-    ...shared,
-    layoutType: 'grid',
-    catalogVariant: 'featured-collection',
-    carouselOnMobile: false,
-    productsToShow: 4,
-    columns: 4,
-    mobileColumns: '2',
-    horizontalGap: 16,
-    verticalGap: 24,
-    navIcon: 'arrows',
-    navIconBackground: 'circle',
-  };
-}
-
-export function extendFeaturedCollectionSectionValues(
-  values: Record<string, string | boolean>,
-  fields: EditorFieldDef[],
-  config: Record<string, unknown> | null,
-  variant: FeaturedCollectionVariant
-): Record<string, string | boolean> {
-  const defaults = featuredCollectionDefaultsForVariant(variant);
-  const next = { ...values };
-  for (const field of fields) {
-    if (next[field.path] !== undefined) continue;
-    const raw = getNested(config, field.path.split('.'));
-    if (raw !== undefined && raw !== null) {
-      next[field.path] = field.type === 'boolean' ? Boolean(raw) : String(raw);
-      continue;
-    }
-    const key = field.path.split('.').pop() ?? '';
-    const fallback = defaults[key];
-    if (fallback !== undefined) {
-      next[field.path] = field.type === 'boolean' ? Boolean(fallback) : String(fallback);
-    }
-  }
-  return next;
 }

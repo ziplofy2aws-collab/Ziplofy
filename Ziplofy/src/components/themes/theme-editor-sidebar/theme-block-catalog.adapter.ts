@@ -108,17 +108,8 @@ export function getAddBlockCatalogItems(
     );
   }
   if (addBlockNodeId) {
-    const nestedAllow = resolveNestedAddBlockAllowlist(addBlockNodeId);
-    if (nestedAllow) {
-      const set = new Set(nestedAllow);
-      items = items.filter((b) => set.has(b.id));
-    } else {
-      const sectionType = resolveSectionTypeForAddBlock(editorSchema, addBlockNodeId);
-      items = filterBlocksForSection(catalog, sectionType, items);
-      if (sectionType === 'faq') {
-        items = items.filter((b) => b.id !== 'accordion-row');
-      }
-    }
+    const sectionType = resolveSectionTypeForAddBlock(editorSchema, addBlockNodeId);
+    items = filterBlocksForSection(catalog, sectionType, items);
   }
   return items;
 }
@@ -156,17 +147,6 @@ function layoutBlueprintFromInstanceId(instanceId: string): string {
 
 function layoutSectionTypeFromBlueprint(blueprintId: string): string {
   return blueprintId.replace(/_/g, '-');
-}
-
-/** Nested FAQ add-block targets only allow specific block ids. */
-export function resolveNestedAddBlockAllowlist(addBlockNodeId: string): string[] | undefined {
-  if (/:block:accordion:nested:[^:]+:inner-add-block$/.test(addBlockNodeId)) {
-    return ['text'];
-  }
-  if (/:block:accordion:inner-add-block$/.test(addBlockNodeId)) {
-    return ['accordion-row'];
-  }
-  return undefined;
 }
 
 /** Map add-block node id → section `type` for manifest.sectionBlocks allowlist. */

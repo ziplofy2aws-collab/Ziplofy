@@ -1,10 +1,5 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import {
-  customerInputClass,
-  customerSectionSubtitleClass,
-  customerSectionTitleClass,
-} from '../customers/customer-ui.util';
 import type { CustomerTag } from '../../contexts/customer-tags.context';
 
 interface CustomerTagsSectionProps {
@@ -29,13 +24,10 @@ const CustomerTagsSection: React.FC<CustomerTagsSectionProps> = ({
   const tagsMenuRef = useRef<HTMLDivElement>(null);
   const tagsInputRef = useRef<HTMLInputElement>(null);
 
-  const handleTagsQueryChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setTagsQuery(e.target.value);
-      if (!tagsMenuOpen) setTagsMenuOpen(true);
-    },
-    [tagsMenuOpen]
-  );
+  const handleTagsQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTagsQuery(e.target.value);
+    if (!tagsMenuOpen) setTagsMenuOpen(true);
+  }, [tagsMenuOpen]);
 
   const handleTagSelect = useCallback(
     (tagId: string) => {
@@ -53,11 +45,13 @@ const CustomerTagsSection: React.FC<CustomerTagsSectionProps> = ({
     setTagsMenuOpen(true);
   }, [debouncedTagsQuery, onCreateTag]);
 
+  // Debounce query
   useEffect(() => {
     const t = setTimeout(() => setDebouncedTagsQuery(tagsQuery.trim()), 250);
     return () => clearTimeout(t);
   }, [tagsQuery]);
 
+  // Handle click outside tags menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -95,90 +89,82 @@ const CustomerTagsSection: React.FC<CustomerTagsSectionProps> = ({
   }, [debouncedTagsQuery, customerTags]);
 
   return (
-    <div
-      className={`relative overflow-visible rounded-lg border border-gray-200/80 bg-white shadow-sm ${
-        tagsMenuOpen ? 'z-50' : 'z-0'
-      }`}
-    >
-      <div className="border-b border-gray-100 px-4 py-3">
-        <h2 className={customerSectionTitleClass}>Customer tags</h2>
-        <p className={customerSectionSubtitleClass}>Organize customers with tags for filtering and segments.</p>
-      </div>
-      <div className="overflow-visible px-4 py-4">
-        <div className="relative z-30">
-          <input
-            ref={tagsInputRef}
-            type="text"
-            value={tagsQuery}
-            placeholder="Search or create customer tags"
-            onChange={handleTagsQueryChange}
-            onFocus={() => setTagsMenuOpen(true)}
-            className={customerInputClass}
-          />
-          {selectedTagIds.length > 0 ? (
-            <p className="mt-1 text-[12px] text-gray-500">{selectedTagIds.length} selected</p>
-          ) : null}
-          {tagsMenuOpen && (filteredTags.length > 0 || canCreateTag) ? (
-            <div
-              ref={tagsMenuRef}
-              className="absolute left-0 top-full z-50 mt-1 max-h-[300px] w-full overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-lg"
-              onMouseDown={(e) => e.preventDefault()}
-            >
-              {filteredTags.map((tag) => {
-                const selected = selectedTagIds.includes(tag._id);
-                return (
-                  <div
-                    key={tag._id}
-                    onClick={() => handleTagSelect(tag._id)}
-                    className="flex cursor-pointer items-center gap-2 px-3 py-1.5 transition-colors hover:bg-gray-50"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selected}
-                      readOnly
-                      className="h-3.5 w-3.5 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
-                    />
-                    <span className="text-[13px] text-gray-700">{tag.name}</span>
-                  </div>
-                );
-              })}
-              {canCreateTag ? (
-                <div
-                  onClick={handleCreateTag}
-                  className="cursor-pointer px-3 py-1.5 font-medium transition-colors hover:bg-gray-50"
-                >
-                  <span className="text-[13px] text-gray-700">+ {debouncedTagsQuery}</span>
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-        {selectedTagIds.length > 0 ? (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {selectedTagIds.map((tagId) => {
-              const tag = customerTags.find((ct) => ct._id === tagId);
+    <div className="bg-white rounded-xl border border-gray-200/80 p-6 shadow-sm">
+      <h2 className="text-base font-semibold text-gray-900 mb-4">Customer Tags</h2>
+      <div className="relative">
+        <input
+          ref={tagsInputRef}
+          type="text"
+          value={tagsQuery}
+          placeholder="Search or create customer tags"
+          onChange={handleTagsQueryChange}
+          onFocus={() => setTagsMenuOpen(true)}
+          className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
+        />
+        {selectedTagIds.length > 0 && (
+          <p className="text-xs text-gray-600 mt-1">{selectedTagIds.length} selected</p>
+        )}
+        {tagsMenuOpen && (filteredTags.length > 0 || canCreateTag) && (
+          <div
+            ref={tagsMenuRef}
+            className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-[300px] overflow-y-auto"
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            {filteredTags.map((tag) => {
+              const selected = selectedTagIds.includes(tag._id);
               return (
                 <div
-                  key={tagId}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2 py-0.5 text-[12px] text-gray-700"
+                  key={tag._id}
+                  onClick={() => handleTagSelect(tag._id)}
+                  className="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-gray-50 transition-colors"
                 >
-                  <span>{tag?.name || 'Unknown'}</span>
-                  <button
-                    type="button"
-                    onClick={() => onTagRemove(tagId)}
-                    className="rounded p-0.5 transition-colors hover:bg-gray-200"
-                    aria-label="Remove tag"
-                  >
-                    <XMarkIcon className="h-3.5 w-3.5 text-gray-500" />
-                  </button>
+                  <input
+                    type="checkbox"
+                    checked={selected}
+                    readOnly
+                    className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-400"
+                  />
+                  <span className="text-sm text-gray-700">{tag.name}</span>
                 </div>
               );
             })}
+            {canCreateTag && (
+              <div
+                onClick={handleCreateTag}
+                className="px-3 py-2 cursor-pointer hover:bg-gray-50 transition-colors font-medium"
+              >
+                <span className="text-sm text-gray-700">+ {debouncedTagsQuery}</span>
+              </div>
+            )}
           </div>
-        ) : null}
+        )}
       </div>
+      {selectedTagIds.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {selectedTagIds.map((id) => {
+            const tag = customerTags.find((ct) => ct._id === id);
+            return (
+              <div
+                key={id}
+                className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-gray-100 border border-gray-200 rounded text-sm text-gray-700"
+              >
+                <span>{tag?.name || 'Unknown'}</span>
+                <button
+                  type="button"
+                  onClick={() => onTagRemove(id)}
+                  className="p-0.5 hover:bg-gray-200 rounded transition-colors"
+                  aria-label="Remove tag"
+                >
+                  <XMarkIcon className="w-3.5 h-3.5 text-gray-500" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
 
 export default CustomerTagsSection;
+

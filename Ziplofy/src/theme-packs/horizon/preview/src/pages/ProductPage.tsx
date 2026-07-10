@@ -10,7 +10,6 @@ import {
 } from '@render-store/sdk';
 import { cfgBool, cfgString } from '../lib/config';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
-import { ThemeEditorRichTextContent } from '../../../../../create-theme/runtime/shared/ThemeEditorRichTextContent';
 import { PageShell } from '../shell/PageShell';
 import { layout, useThemeColors } from '../tokens';
 
@@ -125,10 +124,7 @@ export function ProductPage() {
             <EditorBlock nodeId="template:product:product_main:block:product_content" label="Content">
               {showDescription ? (
                 <EditorBlock nodeId="template:product:product_main:block:product_content:block:description" label="Description">
-                  <ThemeEditorRichTextContent
-                    html={productDetail?.description ?? ''}
-                    style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}
-                  />
+                  <p style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}>{productDetail?.description}</p>
                 </EditorBlock>
               ) : null}
               <EditorBlock nodeId="template:product:product_main:block:product_content:block:price_line" label="Price">

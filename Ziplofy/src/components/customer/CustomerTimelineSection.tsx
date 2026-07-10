@@ -1,7 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  customerSectionTitleClass,
-} from '../customers/customer-ui.util';
 import type { CustomerTimelineEntry } from '../../contexts/customer-timeline.context';
 import { useCustomerTimeline } from '../../contexts/customer-timeline.context';
 import CustomerTimelineComposer from './CustomerTimelineComposer';
@@ -80,27 +77,23 @@ const CustomerTimelineSection: React.FC<CustomerTimelineSectionProps> = ({ custo
 
   return (
     <>
-      <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-        <div className="border-b border-gray-100 px-4 py-3">
-          <h2 className={customerSectionTitleClass}>Timeline</h2>
-        </div>
-        <div className="px-4 py-4">
-          <CustomerTimelineList
-            timeline={timeline}
-            loading={tlLoading}
-            error={tlError}
-            onEdit={handleOpenEditTimeline}
-            onDelete={(entryId) => {
-              setTimelineIdToDelete(entryId);
-              setIsDeleteTimelineOpen(true);
-            }}
-          />
-          <CustomerTimelineComposer
-            comment={timelineComment}
-            onCommentChange={setTimelineComment}
-            onSubmit={handleCreateTimeline}
-          />
-        </div>
+      <div className="bg-white rounded-xl border border-gray-200/80 p-6 shadow-sm">
+        <h2 className="text-base font-semibold text-gray-900 mb-4">Timeline</h2>
+        <CustomerTimelineList
+          timeline={timeline}
+          loading={tlLoading}
+          error={tlError}
+          onEdit={handleOpenEditTimeline}
+          onDelete={(entryId) => {
+            setTimelineIdToDelete(entryId);
+            setIsDeleteTimelineOpen(true);
+          }}
+        />
+        <CustomerTimelineComposer
+          comment={timelineComment}
+          onCommentChange={setTimelineComment}
+          onSubmit={handleCreateTimeline}
+        />
       </div>
 
       {/* Delete Timeline Confirmation Modal */}

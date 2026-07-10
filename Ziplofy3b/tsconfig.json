@@ -13,7 +13,6 @@
   },
   "include": ["src/**/*"],
   "exclude": [
-    "src/data/storefront-theme-sources/**/*",
-    "**/*.test.ts"
+    "src/data/storefront-theme-sources/**/*"
   ]
 }

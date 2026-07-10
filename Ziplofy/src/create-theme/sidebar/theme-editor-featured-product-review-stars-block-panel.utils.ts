@@ -8,7 +8,6 @@ const PANEL_GROUPS = new Set<string>(FEATURED_PRODUCT_REVIEW_STARS_PANEL_GROUP_O
 const REVIEW_STARS_FIELD_KEYS = new Set([
   'style',
   'reviewCount',
-  'textColor',
   'color',
   'typographyPreset',
   'width',
@@ -18,6 +17,11 @@ const REVIEW_STARS_FIELD_KEYS = new Set([
 const STYLE_OPTIONS = [
   { value: 'shaded', label: 'Shaded' },
   { value: 'default', label: 'Default' },
+] as const;
+
+const COLOR_OPTIONS = [
+  { value: 'text', label: 'Text' },
+  { value: 'link', label: 'Link' },
 ] as const;
 
 const TYPOGRAPHY_PRESET_OPTIONS = [
@@ -52,8 +56,8 @@ function blocksBaseFromNodeId(nodeId: string): string | null {
 export function featuredProductReviewStarsDefaultSettings(): Record<string, string | boolean> {
   return {
     style: 'shaded',
-    reviewCount: false,
-    textColor: 'default',
+    reviewCount: true,
+    color: 'link',
     typographyPreset: 'paragraph',
     width: 'fill',
     alignment: 'left',
@@ -80,12 +84,13 @@ export function featuredProductReviewStarsFieldDefs(blocksBase: string): EditorF
       sidebar: false,
     },
     {
-      path: s('textColor'),
-      type: 'text',
-      label: 'Text color',
+      path: s('color'),
+      type: 'select',
+      label: 'Color',
       group: 'General',
-      widget: 'color',
+      widget: 'segmented',
       sidebar: false,
+      options: [...COLOR_OPTIONS],
     },
     {
       path: s('typographyPreset'),
@@ -122,22 +127,6 @@ export function featuredProductReviewStarsFieldDefsFromNodeId(nodeId: string): E
   return base ? featuredProductReviewStarsFieldDefs(base) : [];
 }
 
-function mergeReviewStarsFieldDefs(
-  schemaFields: EditorFieldDef[],
-  built: EditorFieldDef[]
-): EditorFieldDef[] {
-  const schemaKeys = new Set(schemaFields.map((f) => f.path.split('.').pop() ?? ''));
-  const withoutLegacyColor = schemaFields.filter((f) => f.path.split('.').pop() !== 'color');
-  const merged = [...withoutLegacyColor];
-  for (const field of built) {
-    const key = field.path.split('.').pop() ?? '';
-    if (schemaKeys.has(key) && key !== 'color') continue;
-    if (key === 'textColor' && schemaKeys.has('color')) continue;
-    if (!merged.some((f) => f.path.split('.').pop() === key)) merged.push(field);
-  }
-  return merged;
-}
-
 export function featuredProductReviewStarsFieldDefsFromSchema(
   editorSchema: EditorSchemaDoc,
   nodeId: string
@@ -151,16 +140,14 @@ export function featuredProductReviewStarsFieldDefsFromSchema(
   const details = sec?.blocks?.find((b) => b.id === 'details');
   const reviewStars = details?.blocks?.find((b) => b.id === 'review_stars');
   const blocksBase = blocksBaseFromNodeId(nodeId);
-  const built = blocksBase ? featuredProductReviewStarsFieldDefs(blocksBase) : [];
   const schemaFields = reviewStars?.settingsFields ?? [];
   if (schemaFields.length) {
-    const remapped = schemaFields.map((f) => ({
+    return schemaFields.map((f) => ({
       ...f,
       path: remapTemplateSchemaPath(f.path, tplId, secId),
     }));
-    return mergeReviewStarsFieldDefs(remapped, built);
   }
-  return built;
+  return blocksBase ? featuredProductReviewStarsFieldDefs(blocksBase) : [];
 }
 
 export const FEATURED_PRODUCT_REVIEW_STARS_DEFAULTS: Record<string, string | boolean> =
@@ -171,7 +158,6 @@ function fieldSortKey(path: string): number {
   const rank: Record<string, number> = {
     style: 0,
     reviewCount: 1,
-    textColor: 2,
     color: 2,
     typographyPreset: 10,
     width: 11,
@@ -182,7 +168,6 @@ function fieldSortKey(path: string): number {
 
 export function isFeaturedProductReviewStarsPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
-  if (key === 'color') return false;
   if (!REVIEW_STARS_FIELD_KEYS.has(key)) return false;
   if (!/\.blocks\.details\.blocks\.review_stars\.settings\./.test(field.path)) return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;

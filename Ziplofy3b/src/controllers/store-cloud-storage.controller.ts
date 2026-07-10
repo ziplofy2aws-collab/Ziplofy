@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { SecureUserInfo } from '../middlewares/auth.middleware';
 import { StoreCloudStorage } from '../models/store-cloud-storage/store-cloud-storage.model';
 import { asyncErrorHandler, CustomError } from '../utils/error.utils';
-import { assertStoreAccess, assertStoreContentFileKey } from '../utils/store-access.util';
 
 const isDuplicateKeyError = (err: unknown): boolean =>
   typeof err === 'object' &&
@@ -29,9 +27,6 @@ export const registerStoreCloudStorageUpload = asyncErrorHandler(async (req: Req
   }
 
   const trimmedKey = key.trim();
-
-  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
-  assertStoreContentFileKey(storeId, trimmedKey);
 
   try {
     const entry = await StoreCloudStorage.create({ storeId, key: trimmedKey });
@@ -61,8 +56,6 @@ export const listStoreCloudStorageUploadsByStoreId = asyncErrorHandler(
       throw new CustomError('Valid storeId is required', 400);
     }
 
-    await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
-
     const uploads = await StoreCloudStorage.find({ storeId }).sort({ createdAt: -1 }).lean();
 
     return res.status(200).json({
@@ -86,23 +79,19 @@ export const deleteStoreCloudStorageUpload = asyncErrorHandler(async (req: Reque
     throw new CustomError('Valid upload id is required', 400);
   }
 
-  const existing = await StoreCloudStorage.findById(id);
+  const removed = await StoreCloudStorage.findByIdAndDelete(id);
 
-  if (!existing) {
+  if (!removed) {
     throw new CustomError('Upload record not found', 404);
   }
-
-  await assertStoreAccess(existing.storeId.toString(), req.user as SecureUserInfo | undefined);
-
-  const removed = await StoreCloudStorage.findByIdAndDelete(id);
 
   return res.status(200).json({
     success: true,
     message: 'Upload record removed',
     data: {
-      id: removed!._id,
-      storeId: removed!.storeId,
-      key: removed!.key,
+      id: removed._id,
+      storeId: removed.storeId,
+      key: removed.key,
     },
   });
 });

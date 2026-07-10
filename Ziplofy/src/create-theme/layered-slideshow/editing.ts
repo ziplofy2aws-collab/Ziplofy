@@ -29,11 +29,6 @@ export const editing: CreateThemeEditing = {
       "type": "boolean"
     },
     {
-      "key": "backgroundColor",
-      "label": "Background color",
-      "type": "color"
-    },
-    {
       "key": "colorScheme",
       "label": "Color scheme",
       "type": "text"

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
+  formatINR,
   useStorefront,
   useStorefrontCart,
   useStorefrontProductVariants,
@@ -8,10 +9,8 @@ import {
   useThemeConfig,
 } from '@render-store/sdk';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
-import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
-import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
 
 function secBase(templateId: string, sectionId: string): string {
@@ -26,7 +25,6 @@ export function ProductMain({
   sectionId = 'product_main',
   templateId = 'product',
 }: SectionRuntimeProps) {
-  const { maxWidth } = useThemeLayout();
   const { id: routeId } = useParams<{ id: string }>();
   const config = useThemeConfig();
   const { text, background, primary, fontHeading, fontBody } = useThemeColors();
@@ -117,7 +115,7 @@ export function ProductMain({
     >
       <div
         style={{
-          maxWidth: maxWidth,
+          maxWidth: layout.maxWidth,
           margin: '0 auto',
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -183,10 +181,7 @@ export function ProductMain({
                 nodeId={blockNodeId(templateId, sectionId, 'product_content', 'description')}
                 label="Description"
               >
-                <ThemeEditorRichTextContent
-                  html={productDetail?.description ?? ''}
-                  style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}
-                />
+                <p style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}>{productDetail?.description}</p>
               </EditorBlock>
             ) : null}
             <EditorBlock
@@ -194,9 +189,7 @@ export function ProductMain({
               label="Price"
             >
               <p style={{ fontSize: 24, fontWeight: 600, marginBottom: 24 }}>
-                {productDetail
-                  ? formatThemePrice(config, productDetail.price, 'productPages')
-                  : priceFallback}
+                {productDetail ? formatINR(productDetail.price) : priceFallback}
               </p>
             </EditorBlock>
           </EditorBlock>

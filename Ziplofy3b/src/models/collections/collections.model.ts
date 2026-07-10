@@ -11,6 +11,7 @@ export interface ICollection {
   metaDescription: string;
   urlHandle: string;
   productSort: 'manual' | 'title-asc' | 'title-desc' | 'price-high' | 'price-low' | 'newest' | 'oldest';
+  themeTemplate: string;
   status: 'draft' | 'published';
   createdAt: Date;
   updatedAt: Date;
@@ -71,6 +72,14 @@ const collectionSchema = new Schema<ICollection & Document>({
     type: String,
     enum: ['manual', 'title-asc', 'title-desc', 'price-high', 'price-low', 'newest', 'oldest'],
     default: 'manual',
+  },
+  themeTemplate: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    default: 'default',
+    maxLength: [80, "Theme template cannot exceed 80 characters"],
+    match: [/^(default|collection(?:\.[a-z][a-z0-9_-]*)?)$/, "Invalid theme template value"],
   },
   status: {
     type: String,

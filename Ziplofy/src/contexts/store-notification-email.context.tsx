@@ -29,6 +29,7 @@ interface CreateStoreNotificationEmailPayload {
 
 interface UpdateStoreNotificationEmailPayload {
   email?: string;
+  isVerified?: boolean;
 }
 
 interface StoreNotificationEmailContextType {
@@ -38,8 +39,6 @@ interface StoreNotificationEmailContextType {
   getByStoreId: (storeId: string) => Promise<StoreNotificationEmail | null>;
   create: (payload: CreateStoreNotificationEmailPayload) => Promise<StoreNotificationEmail>;
   update: (id: string, payload: UpdateStoreNotificationEmailPayload) => Promise<StoreNotificationEmail>;
-  sendVerification: (id: string) => Promise<void>;
-  verifySenderEmail: (token: string) => Promise<StoreNotificationEmail>;
   clear: () => void;
   clearError: () => void;
 }
@@ -92,45 +91,6 @@ export const StoreNotificationEmailProvider: React.FC<{ children: React.ReactNod
     }
   }, []);
 
-  const sendVerification = useCallback(async (id: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await axiosi.post<ApiResponse<null>>(
-        `/store-notification-email/${id}/send-verification`
-      );
-      const { success, message } = res.data;
-      if (!success) throw new Error(message || 'Failed to send verification email');
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to send verification email';
-      setError(msg);
-      throw new Error(msg);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const verifySenderEmail = useCallback(async (token: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await axiosi.post<ApiResponse<StoreNotificationEmail>>(
-        '/store-notification-email/verify',
-        { token }
-      );
-      const { success, data, message } = res.data;
-      if (!success) throw new Error(message || 'Failed to verify sender email');
-      setStoreNotificationEmail(data);
-      return data;
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to verify sender email';
-      setError(msg);
-      throw new Error(msg);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   const update = useCallback(async (id: string, payload: UpdateStoreNotificationEmailPayload) => {
     try {
       setLoading(true);
@@ -168,8 +128,6 @@ export const StoreNotificationEmailProvider: React.FC<{ children: React.ReactNod
     getByStoreId,
     create,
     update,
-    sendVerification,
-    verifySenderEmail,
     clear,
     clearError,
   };

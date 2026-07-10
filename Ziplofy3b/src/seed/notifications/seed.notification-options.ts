@@ -5,6 +5,106 @@ import { NotificationOption } from '../../models/notification-option/notificatio
 import { CustomerNotifications } from '../../enums/customer-notifications.enum';
 import { StaffNotifications } from '../../enums/staff-notifications.enum';
 import { FulfillmentNotifications } from '../../enums/fulfillment-notifications.enum';
+import {
+  ORDER_LEVEL_RETURN_LABEL_EMAIL_BODY,
+  ORDER_LEVEL_RETURN_LABEL_EMAIL_SUBJECT,
+} from '../../templates/order-level-return-label-email.template';
+import {
+  RETURN_CREATED_EMAIL_BODY,
+  RETURN_CREATED_EMAIL_SUBJECT,
+} from '../../templates/return-created-email.template';
+import {
+  RETURN_REQUEST_APPROVED_EMAIL_BODY,
+  RETURN_REQUEST_APPROVED_EMAIL_SUBJECT,
+} from '../../templates/return-request-approved-email.template';
+import {
+  RETURN_REQUEST_DECLINED_EMAIL_BODY,
+  RETURN_REQUEST_DECLINED_EMAIL_SUBJECT,
+} from '../../templates/return-request-declined-email.template';
+import {
+  RETURN_REQUEST_RECEIVED_EMAIL_BODY,
+  RETURN_REQUEST_RECEIVED_EMAIL_SUBJECT,
+} from '../../templates/return-request-received-email.template';
+import {
+  PAYMENT_ERROR_EMAIL_BODY,
+  PAYMENT_ERROR_EMAIL_SUBJECT,
+} from '../../templates/payment-error-email.template';
+import {
+  PAYMENT_REMINDER_EMAIL_BODY,
+  PAYMENT_REMINDER_EMAIL_SUBJECT,
+} from '../../templates/payment-reminder-email.template';
+import {
+  PENDING_PAYMENT_ERROR_EMAIL_BODY,
+  PENDING_PAYMENT_ERROR_EMAIL_SUBJECT,
+} from '../../templates/pending-payment-error-email.template';
+import {
+  PENDING_PAYMENT_SUCCESS_EMAIL_BODY,
+  PENDING_PAYMENT_SUCCESS_EMAIL_SUBJECT,
+} from '../../templates/pending-payment-success-email.template';
+import {
+  ORDER_CANCELED_EMAIL_BODY,
+  ORDER_CANCELED_EMAIL_SUBJECT,
+} from '../../templates/order-canceled-email.template';
+import {
+  ORDER_EDITED_EMAIL_BODY,
+  ORDER_EDITED_EMAIL_SUBJECT,
+} from '../../templates/order-edited-email.template';
+import {
+  ORDER_INVOICE_EMAIL_BODY,
+  ORDER_INVOICE_EMAIL_SUBJECT,
+} from '../../templates/order-invoice-email.template';
+import {
+  ORDER_LINK_EMAIL_BODY,
+  ORDER_LINK_EMAIL_SUBJECT,
+} from '../../templates/order-link-email.template';
+import {
+  ORDER_PAYMENT_RECEIPT_EMAIL_BODY,
+  ORDER_PAYMENT_RECEIPT_EMAIL_SUBJECT,
+} from '../../templates/order-payment-receipt-email.template';
+import {
+  ORDER_REFUND_EMAIL_BODY,
+  ORDER_REFUND_EMAIL_SUBJECT,
+} from '../../templates/order-refund-email.template';
+import {
+  GIFT_CARD_RECEIPT_EMAIL_BODY,
+  GIFT_CARD_RECEIPT_EMAIL_SUBJECT,
+} from '../../templates/gift-card-receipt-email.template';
+import {
+  NEW_GIFT_CARD_EMAIL_BODY,
+  NEW_GIFT_CARD_EMAIL_SUBJECT,
+} from '../../templates/new-gift-card-email.template';
+import {
+  ORDER_LOCALLY_DELIVERED_EMAIL_BODY,
+  ORDER_LOCALLY_DELIVERED_EMAIL_SUBJECT,
+} from '../../templates/order-locally-delivered-email.template';
+import {
+  ORDER_MISSED_LOCAL_DELIVERY_EMAIL_BODY,
+  ORDER_MISSED_LOCAL_DELIVERY_EMAIL_SUBJECT,
+} from '../../templates/order-missed-local-delivery-email.template';
+import {
+  ORDER_OUT_FOR_LOCAL_DELIVERY_EMAIL_BODY,
+  ORDER_OUT_FOR_LOCAL_DELIVERY_EMAIL_SUBJECT,
+} from '../../templates/order-out-for-local-delivery-email.template';
+import {
+  PICKED_UP_BY_CUSTOMER_EMAIL_BODY,
+  PICKED_UP_BY_CUSTOMER_EMAIL_SUBJECT,
+} from '../../templates/picked-up-by-customer-email.template';
+import {
+  DRAFT_ORDER_INVOICE_EMAIL_BODY,
+  DRAFT_ORDER_INVOICE_EMAIL_SUBJECT,
+} from '../../templates/draft-order-invoice-email.template';
+import {
+  READY_FOR_LOCAL_PICKUP_EMAIL_BODY,
+  READY_FOR_LOCAL_PICKUP_EMAIL_SUBJECT,
+} from '../../templates/ready-for-local-pickup-email.template';
+import {
+  SHIPPING_CONFIRMATION_EMAIL_BODY,
+  SHIPPING_CONFIRMATION_EMAIL_SUBJECT,
+} from '../../templates/shipping-confirmation-email.template';
+import {
+  ORDER_CONFIRMATION_EMAIL_BODY,
+  ORDER_CONFIRMATION_EMAIL_SUBJECT,
+} from '../../templates/order-confirmation-email.template';
 
 dotenv.config();
 
@@ -38,9 +138,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when a customer places an order',
         key: CustomerNotifications.OrderConfirmation,
         emailSupported: true,
-        emailSubject: 'Order confirmation',
-        emailBody: 'Hi {{customer_name}}, your order {{order_number}} is confirmed. We\'ll notify you when it ships.',
-        availableVariables: ['customer_name', 'order_number', 'order_total'],
+        emailSubject: ORDER_CONFIRMATION_EMAIL_SUBJECT,
+        emailBody: ORDER_CONFIRMATION_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'customer_name',
+          'order_total',
+        ],
       },
       {
         segment: 'order_processing',
@@ -48,9 +155,17 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when you create an invoice on the draft order page',
         key: CustomerNotifications.DraftOrderInvoice,
         emailSupported: true,
-        emailSubject: 'Invoice for draft order',
-        emailBody: 'Hi {{customer_name}}, you have a new invoice for draft order {{order_number}}.',
-        availableVariables: ['customer_name', 'order_number', 'order_total'],
+        emailSubject: DRAFT_ORDER_INVOICE_EMAIL_SUBJECT,
+        emailBody: DRAFT_ORDER_INVOICE_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'reservation_deadline',
+          'confirm_order_url',
+          'store_url',
+          'customer_name',
+          'order_total',
+        ],
       },
       {
         segment: 'order_processing',
@@ -58,9 +173,19 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when you mark an order as fulfilled',
         key: CustomerNotifications.ShippingConfirmation,
         emailSupported: true,
-        emailSubject: 'Your order has shipped',
-        emailBody: 'Hi {{customer_name}}, your order {{order_number}} is on its way. Track it here: {{tracking_url}}.',
-        availableVariables: ['customer_name', 'order_number', 'tracking_url'],
+        emailSubject: SHIPPING_CONFIRMATION_EMAIL_SUBJECT,
+        emailBody: SHIPPING_CONFIRMATION_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'tracking_url',
+          'store_url',
+          'carrier_name',
+          'tracking_number',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'local_pick_up',
@@ -68,11 +193,24 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when an order is ready to be picked up',
         key: CustomerNotifications.ReadyForLocalPickup,
         emailSupported: true,
-        emailSubject: 'Order ready for pickup',
-        emailBody: 'Hi {{customer_name}}, order {{order_number}} is ready for pickup at {{pickup_location}}.',
+        emailSubject: READY_FOR_LOCAL_PICKUP_EMAIL_SUBJECT,
+        emailBody: READY_FOR_LOCAL_PICKUP_EMAIL_BODY,
         smsSupported: true,
-        smsData: 'Order {{order_number}} is ready for pickup at {{pickup_location}}.',
-        availableVariables: ['customer_name', 'order_number', 'pickup_location'],
+        smsData: 'Order {{order_number}} is ready for pickup at {{pickup_location_name}}.',
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'pickup_location_name',
+          'pickup_address_line1',
+          'pickup_address_line2',
+          'pickup_city',
+          'pickup_state',
+          'pickup_zip',
+          'pickup_map_url',
+          'customer_name',
+        ],
       },
       {
         segment: 'local_pick_up',
@@ -80,11 +218,19 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent to confirm an order was picked up by the customer',
         key: CustomerNotifications.PickedUpByCustomer,
         emailSupported: true,
-        emailSubject: 'Order picked up',
-        emailBody: 'Hi {{customer_name}}, thanks for picking up order {{order_number}}.',
+        emailSubject: PICKED_UP_BY_CUSTOMER_EMAIL_SUBJECT,
+        emailBody: PICKED_UP_BY_CUSTOMER_EMAIL_BODY,
         smsSupported: true,
         smsData: 'Order {{order_number}} has been picked up. Thank you!',
-        availableVariables: ['customer_name', 'order_number'],
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'pickup_location_name',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'local_delivery',
@@ -94,9 +240,23 @@ const optionSeeds: CategorySeed[] = [
         toggleValue: 'true',
         key: CustomerNotifications.OrderOutForLocalDelivery,
         emailSupported: true,
-        emailSubject: 'Order out for delivery',
-        emailBody: 'Hi {{customer_name}}, your order {{order_number}} is out for local delivery.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: ORDER_OUT_FOR_LOCAL_DELIVERY_EMAIL_SUBJECT,
+        emailBody: ORDER_OUT_FOR_LOCAL_DELIVERY_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'tracking_url',
+          'store_url',
+          'delivery_name',
+          'delivery_address_line1',
+          'delivery_address_line2',
+          'delivery_city',
+          'delivery_state',
+          'delivery_zip',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'local_delivery',
@@ -106,9 +266,16 @@ const optionSeeds: CategorySeed[] = [
         toggleValue: 'true',
         key: CustomerNotifications.OrderLocallyDelivered,
         emailSupported: true,
-        emailSubject: 'Order delivered',
-        emailBody: 'Hi {{customer_name}}, your order {{order_number}} has been delivered. Enjoy!',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: ORDER_LOCALLY_DELIVERED_EMAIL_SUBJECT,
+        emailBody: ORDER_LOCALLY_DELIVERED_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'local_delivery',
@@ -118,9 +285,22 @@ const optionSeeds: CategorySeed[] = [
         toggleValue: 'true',
         key: CustomerNotifications.OrderMissedLocalDelivery,
         emailSupported: true,
-        emailSubject: 'Missed delivery attempt',
-        emailBody: 'Hi {{customer_name}}, we attempted to deliver order {{order_number}} but missed you. Please reschedule.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: ORDER_MISSED_LOCAL_DELIVERY_EMAIL_SUBJECT,
+        emailBody: ORDER_MISSED_LOCAL_DELIVERY_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'delivery_name',
+          'delivery_address_line1',
+          'delivery_address_line2',
+          'delivery_city',
+          'delivery_state',
+          'delivery_zip',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'gift_cards',
@@ -128,11 +308,20 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent to the customer or recipient when a gift card is fulfilled, or when you send a gift card',
         key: CustomerNotifications.NewGiftCard,
         emailSupported: true,
-        emailSubject: 'You received a gift card',
-        emailBody: 'Hi {{recipient_name}}, you received a gift card worth {{gift_card_amount}} from {{customer_name}}.',
+        emailSubject: NEW_GIFT_CARD_EMAIL_SUBJECT,
+        emailBody: NEW_GIFT_CARD_EMAIL_BODY,
         smsSupported: true,
         smsData: 'You received a gift card worth {{gift_card_amount}} from {{customer_name}}.',
-        availableVariables: ['recipient_name', 'gift_card_amount', 'customer_name'],
+        availableVariables: [
+          'store_name',
+          'gift_card_amount',
+          'gift_card_amount_formatted',
+          'gift_card_code',
+          'store_url',
+          'gift_card_balance_url',
+          'recipient_name',
+          'customer_name',
+        ],
       },
       {
         segment: 'gift_cards',
@@ -140,9 +329,20 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent to the customer if they add a recipient to a gift card',
         key: CustomerNotifications.GiftCardReceipt,
         emailSupported: true,
-        emailSubject: 'Gift card receipt',
-        emailBody: 'Hi {{customer_name}}, here is the receipt for the gift card sent to {{recipient_name}}.',
-        availableVariables: ['customer_name', 'recipient_name', 'gift_card_amount'],
+        emailSubject: GIFT_CARD_RECEIPT_EMAIL_SUBJECT,
+        emailBody: GIFT_CARD_RECEIPT_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'customer_name',
+          'recipient_name',
+          'gift_card_amount',
+          'gift_card_amount_formatted',
+          'gift_card_code',
+          'view_order_url',
+          'store_url',
+          'support_email',
+        ],
       },
       {
         segment: 'store_credit',
@@ -160,9 +360,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when an order has an outstanding balance',
         key: CustomerNotifications.OrderInvoice,
         emailSupported: true,
-        emailSubject: 'Invoice for order',
-        emailBody: 'Hi {{customer_name}}, your order {{order_number}} has an outstanding balance of {{amount_due}}.',
-        availableVariables: ['customer_name', 'order_number', 'amount_due'],
+        emailSubject: ORDER_INVOICE_EMAIL_SUBJECT,
+        emailBody: ORDER_INVOICE_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'amount_due',
+          'pay_now_url',
+          'store_url',
+          'customer_name',
+        ],
       },
       {
         segment: 'order_exceptions',
@@ -170,9 +377,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when an order is edited',
         key: CustomerNotifications.OrderEdited,
         emailSupported: true,
-        emailSubject: 'Order updated',
-        emailBody: 'Hi {{customer_name}}, your order {{order_number}} was updated. Review the changes in your account.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: ORDER_EDITED_EMAIL_SUBJECT,
+        emailBody: ORDER_EDITED_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'order_exceptions',
@@ -180,9 +394,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent if a customer cancels their order',
         key: CustomerNotifications.OrderCanceled,
         emailSupported: true,
-        emailSubject: 'Order canceled',
-        emailBody: 'Hi {{customer_name}}, your order {{order_number}} has been canceled. Let us know if you have questions.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: ORDER_CANCELED_EMAIL_SUBJECT,
+        emailBody: ORDER_CANCELED_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'order_exceptions',
@@ -190,9 +411,17 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: "Sent after you charge a customer's saved payment method",
         key: CustomerNotifications.OrderPaymentReceipt,
         emailSupported: true,
-        emailSubject: 'Payment receipt',
-        emailBody: 'Hi {{customer_name}}, we received payment for order {{order_number}}. Amount paid: {{amount_paid}}.',
-        availableVariables: ['customer_name', 'order_number', 'amount_paid'],
+        emailSubject: ORDER_PAYMENT_RECEIPT_EMAIL_SUBJECT,
+        emailBody: ORDER_PAYMENT_RECEIPT_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'amount_paid',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'order_exceptions',
@@ -200,9 +429,17 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent if an order is refunded',
         key: CustomerNotifications.OrderRefund,
         emailSupported: true,
-        emailSubject: 'Order refund processed',
-        emailBody: 'Hi {{customer_name}}, a refund of {{refund_amount}} for order {{order_number}} has been processed.',
-        availableVariables: ['customer_name', 'order_number', 'refund_amount'],
+        emailSubject: ORDER_REFUND_EMAIL_SUBJECT,
+        emailBody: ORDER_REFUND_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'refund_amount',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'order_exceptions',
@@ -210,9 +447,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when a customer requests a new link from an expired order status page',
         key: CustomerNotifications.OrderLink,
         emailSupported: true,
-        emailSubject: 'Your updated order link',
-        emailBody: 'Hi {{customer_name}}, here is the updated link for order {{order_number}}: {{order_status_url}}.',
-        availableVariables: ['customer_name', 'order_number', 'order_status_url'],
+        emailSubject: ORDER_LINK_EMAIL_SUBJECT,
+        emailBody: ORDER_LINK_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'order_status_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'payments',
@@ -220,9 +464,15 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: "Sent if a customer's payment can't be processed during checkout",
         key: CustomerNotifications.PaymentError,
         emailSupported: true,
-        emailSubject: 'Payment error on order',
-        emailBody: 'Hi {{customer_name}}, we were unable to process payment for order {{order_number}}. Please update your payment method.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: PAYMENT_ERROR_EMAIL_SUBJECT,
+        emailBody: PAYMENT_ERROR_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'return_to_cart_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'payments',
@@ -230,9 +480,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: "Sent when a customer's pending payment can't be processed",
         key: CustomerNotifications.PendingPaymentError,
         emailSupported: true,
-        emailSubject: 'Pending payment error',
-        emailBody: 'Hi {{customer_name}}, we were unable to process the pending payment for order {{order_number}}. Please review the payment details.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: PENDING_PAYMENT_ERROR_EMAIL_SUBJECT,
+        emailBody: PENDING_PAYMENT_ERROR_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'payments',
@@ -240,9 +497,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: "Sent after a customer's pending payment has been processed successfully",
         key: CustomerNotifications.PendingPaymentSuccess,
         emailSupported: true,
-        emailSubject: 'Payment processed successfully',
-        emailBody: 'Hi {{customer_name}}, the pending payment for order {{order_number}} has been processed successfully.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: PENDING_PAYMENT_SUCCESS_EMAIL_SUBJECT,
+        emailBody: PENDING_PAYMENT_SUCCESS_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'payments',
@@ -250,9 +514,18 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent on or after the due date for an unpaid order',
         key: CustomerNotifications.PaymentReminder,
         emailSupported: true,
-        emailSubject: 'Payment reminder',
-        emailBody: 'Hi {{customer_name}}, payment for order {{order_number}} is due. Amount due: {{amount_due}}.',
-        availableVariables: ['customer_name', 'order_number', 'amount_due'],
+        emailSubject: PAYMENT_REMINDER_EMAIL_SUBJECT,
+        emailBody: PAYMENT_REMINDER_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'amount_due',
+          'pay_now_url',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'shipping_updated',
@@ -294,9 +567,17 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when you create a return, including any return label or tracking information',
         key: CustomerNotifications.ReturnCreated,
         emailSupported: true,
-        emailSubject: 'Return created',
-        emailBody: 'Hi {{customer_name}}, a return for order {{order_number}} has been created. Track it here: {{return_tracking_url}}.',
-        availableVariables: ['customer_name', 'order_number', 'return_tracking_url'],
+        emailSubject: RETURN_CREATED_EMAIL_SUBJECT,
+        emailBody: RETURN_CREATED_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'return_tracking_url',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'returns',
@@ -304,9 +585,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when you create a return label from the order page (US only)',
         key: CustomerNotifications.OrderLevelReturnLabelCreated,
         emailSupported: true,
-        emailSubject: 'Return label created',
-        emailBody: 'Hi {{customer_name}}, a return label for order {{order_number}} has been created. Download it here: {{return_label_url}}.',
-        availableVariables: ['customer_name', 'order_number', 'return_label_url'],
+        emailSubject: ORDER_LEVEL_RETURN_LABEL_EMAIL_SUBJECT,
+        emailBody: ORDER_LEVEL_RETURN_LABEL_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'return_label_url',
+          'view_order_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'returns',
@@ -314,9 +602,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: "Sent to confirm a customer's self-serve return request was received",
         key: CustomerNotifications.ReturnRequestReceived,
         emailSupported: true,
-        emailSubject: 'Return request received',
-        emailBody: 'Hi {{customer_name}}, we received your return request for order {{order_number}}. We\'ll review it soon.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: RETURN_REQUEST_RECEIVED_EMAIL_SUBJECT,
+        emailBody: RETURN_REQUEST_RECEIVED_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'returns',
@@ -324,9 +619,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when you approve a return request',
         key: CustomerNotifications.ReturnRequestApproved,
         emailSupported: true,
-        emailSubject: 'Return approved',
-        emailBody: 'Hi {{customer_name}}, your return request for order {{order_number}} has been approved.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: RETURN_REQUEST_APPROVED_EMAIL_SUBJECT,
+        emailBody: RETURN_REQUEST_APPROVED_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'returns',
@@ -334,9 +636,16 @@ const optionSeeds: CategorySeed[] = [
         optionDesc: 'Sent when you decline a return request',
         key: CustomerNotifications.ReturnRequestDeclined,
         emailSupported: true,
-        emailSubject: 'Return request declined',
-        emailBody: 'Hi {{customer_name}}, your return request for order {{order_number}} was declined. Contact support for help.',
-        availableVariables: ['customer_name', 'order_number'],
+        emailSubject: RETURN_REQUEST_DECLINED_EMAIL_SUBJECT,
+        emailBody: RETURN_REQUEST_DECLINED_EMAIL_BODY,
+        availableVariables: [
+          'store_name',
+          'order_number',
+          'view_order_url',
+          'store_url',
+          'support_email',
+          'customer_name',
+        ],
       },
       {
         segment: 'accounts_and_outreach',

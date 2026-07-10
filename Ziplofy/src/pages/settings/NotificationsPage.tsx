@@ -140,14 +140,8 @@ const NotificationsPage: React.FC = () => {
         {/* Sender email Section */}
         <SenderEmailSection
           loading={storeNotificationEmailLoading}
-          storeId={activeStoreId}
           storeNotificationEmail={storeNotificationEmail}
           onOpenAddEmailModal={handleOpenAddEmailModal}
-          onVerificationSent={() => {
-            if (activeStoreId) {
-              void getByStoreId(activeStoreId);
-            }
-          }}
         />
 
         {/* Add Email Modal */}

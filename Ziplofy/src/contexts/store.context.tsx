@@ -16,9 +16,6 @@ export interface Store {
   userId: string;
   storeName: string;
   storeDescription: string;
-  seoHomePageTitle?: string;
-  seoMetaDescription?: string;
-  seoSocialImageUrl?: string;
   appliedTheme?: string | null;
   /** StoreCustomTheme document id when the JSON theme creator theme is live. */
   appliedCustomThemeId?: string | null;
@@ -38,16 +35,7 @@ interface StoreContextType {
   updateStore: (
     storeId: string,
     payload: Partial<
-      Pick<
-        Store,
-        | 'storeName'
-        | 'storeDescription'
-        | 'defaultLocation'
-        | 'appliedCustomThemeId'
-        | 'seoHomePageTitle'
-        | 'seoMetaDescription'
-        | 'seoSocialImageUrl'
-      >
+      Pick<Store, 'storeName' | 'storeDescription' | 'defaultLocation' | 'appliedCustomThemeId'>
     >
   ) => Promise<Store>;
   applyStoreCustomTheme: (storeId: string, customThemeId: string) => Promise<Store>;
@@ -156,16 +144,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateStore = useCallback(async (
     storeId: string,
     payload: Partial<
-      Pick<
-        Store,
-        | 'storeName'
-        | 'storeDescription'
-        | 'defaultLocation'
-        | 'appliedCustomThemeId'
-        | 'seoHomePageTitle'
-        | 'seoMetaDescription'
-        | 'seoSocialImageUrl'
-      >
+      Pick<Store, 'storeName' | 'storeDescription' | 'defaultLocation' | 'appliedCustomThemeId'>
     >
   ): Promise<Store> => {
     try {

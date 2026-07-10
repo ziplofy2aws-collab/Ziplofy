@@ -1,6 +1,5 @@
 import React from 'react';
 import LocationsList from './LocationsList';
-import { locationTableHeadClass, locationTableHeadRightClass } from './locations/location-ui.util';
 
 interface Location {
   _id: string;
@@ -27,37 +26,23 @@ const LocationsTable: React.FC<LocationsTableProps> = ({
   onLocationClick,
   onAddLocation,
 }) => {
-  if (locations.length === 0) {
-    return (
-      <LocationsList
-        locations={locations}
-        defaultLocationId={defaultLocationId}
-        onLocationClick={onLocationClick}
-        onAddLocation={onAddLocation}
-      />
-    );
-  }
-
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[560px] text-left">
-        <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className={locationTableHeadClass}>Location</th>
-            <th className={locationTableHeadRightClass}>Status</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white">
-          <LocationsList
-            locations={locations}
-            defaultLocationId={defaultLocationId}
-            onLocationClick={onLocationClick}
-            onAddLocation={onAddLocation}
-          />
-        </tbody>
-      </table>
+    <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-inner ring-1 ring-slate-100/80">
+      <div className="grid grid-cols-[1fr_auto] gap-4 border-b border-slate-200 bg-gradient-to-r from-slate-50/95 to-slate-50/40 px-4 py-3 sm:px-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Location</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Status</p>
+      </div>
+      <div className="divide-y divide-slate-100">
+        <LocationsList
+          locations={locations}
+          defaultLocationId={defaultLocationId}
+          onLocationClick={onLocationClick}
+          onAddLocation={onAddLocation}
+        />
+      </div>
     </div>
   );
 };
 
 export default LocationsTable;
+

@@ -94,9 +94,9 @@ const DiscountTargetsCard: React.FC<DiscountTargetsCardProps> = ({
         : [];
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
       <div className="px-5 py-4 sm:px-6 sm:py-5">
-        <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Targets</h2>
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Targets</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <TargetBlock title="Products" chips={productChips} />
           <TargetBlock title="Collections" chips={collectionChips} />

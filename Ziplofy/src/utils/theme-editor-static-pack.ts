@@ -11,7 +11,6 @@ import type { EditorSchemaDoc } from '../components/themes/theme-editor-sidebar/
 import {
   collectEditableFieldPaths,
   flattenSchemaFieldPaths,
-  setConfigAtPath,
 } from './theme-editor-config.utils';
 import {
   mergeTemplateSectionBlueprintsFromPack,
@@ -23,104 +22,6 @@ import {
 import { seedBottomAlignedHeroValues } from './hero-bottom-aligned.util';
 import { seedSectionEnabledValues } from './theme-editor-section-visibility.util';
 import { THEME_PAGE_REGISTRY } from '../create-theme/utils/theme-page-registry';
-import { withAllProductsPageSchema } from './all-products-page-schema.util';
-import { ensureCartPageTemplateBlocks } from './cart-page-preset.util';
-import {
-  ensureThemeLogoFaviconDefaults,
-  withThemeLogoFaviconSchema,
-} from '../create-theme/settings/theme-logo-favicon.settings';
-import {
-  ensureThemeColorPaletteDefaults,
-  seedThemePaletteValues,
-  withThemeColorPaletteSchema,
-} from '../create-theme/settings/theme-color-palette.settings';
-import {
-  ensureThemeAnimationsDefaults,
-  seedThemeAnimationsValues,
-  withThemeAnimationsSchema,
-} from '../create-theme/settings/theme-animations.settings';
-import {
-  ensureThemeBadgesDefaults,
-  seedThemeBadgesValues,
-  withThemeBadgesSchema,
-} from '../create-theme/settings/theme-badges.settings';
-import {
-  ensureThemeButtonsDefaults,
-  seedThemeButtonsValues,
-  withThemeButtonsSchema,
-} from '../create-theme/settings/theme-buttons.settings';
-import {
-  ensureThemeCartDefaults,
-  seedThemeCartValues,
-  withThemeCartSchema,
-  applyThemeCartToHeaderConfig,
-} from '../create-theme/settings/theme-cart.settings';
-import {
-  ensureThemeDrawersDefaults,
-  seedThemeDrawersValues,
-  withThemeDrawersSchema,
-} from '../create-theme/settings/theme-drawers.settings';
-import {
-  ensureThemeProductMediaDefaults,
-  seedThemeProductMediaValues,
-  withThemeProductMediaSchema,
-} from '../create-theme/settings/theme-product-media.settings';
-import {
-  ensureThemeIconsDefaults,
-  seedThemeIconsValues,
-  withThemeIconsSchema,
-} from '../create-theme/settings/theme-icons.settings';
-import {
-  ensureThemeInputFieldsDefaults,
-  seedThemeInputFieldsValues,
-  withThemeInputFieldsSchema,
-} from '../create-theme/settings/theme-input-fields.settings';
-import {
-  ensureThemePopoversModalsDefaults,
-  seedThemePopoversModalsValues,
-  withThemePopoversModalsSchema,
-} from '../create-theme/settings/theme-popovers-modals.settings';
-import {
-  ensureThemePricesDefaults,
-  seedThemePricesValues,
-  withThemePricesSchema,
-} from '../create-theme/settings/theme-prices.settings';
-import {
-  ensureThemeProductCardsDefaults,
-  seedThemeProductCardsValues,
-  withThemeProductCardsSchema,
-} from '../create-theme/settings/theme-product-cards.settings';
-import {
-  ensureThemeSearchDefaults,
-  seedThemeSearchValues,
-  withThemeSearchSchema,
-} from '../create-theme/settings/theme-search.settings';
-import {
-  ensureThemeSwatchesDefaults,
-  seedThemeSwatchesValues,
-  withThemeSwatchesSchema,
-} from '../create-theme/settings/theme-swatches.settings';
-import {
-  ensureThemeVariantPickersDefaults,
-  seedThemeVariantPickersValues,
-  withThemeVariantPickersSchema,
-} from '../create-theme/settings/theme-variant-pickers.settings';
-import {
-  ensureThemePageDefaults,
-  seedThemePageValues,
-  withThemePageSchema,
-} from '../create-theme/settings/theme-page.settings';
-import {
-  ensureThemeTypographyDefaults,
-  seedThemeTypographyValues,
-  withThemeTypographySchema,
-  syncThemeTypographyFontFields,
-  THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH,
-  THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH,
-  THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH,
-  THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH,
-} from '../create-theme/settings/theme-typography.settings';
-import { THEME_LOGO_DEFAULT_PATH } from '../create-theme/settings/theme-logo-favicon.settings';
 
 const PACK_MODULES: Record<
   string,
@@ -379,23 +280,6 @@ export function saveStaticThemeConfigLocal(
 
 export const THEME_CREATOR_CONFIG_STORAGE_KEY = 'codiic-theme-creator-config';
 
-/** True when the given template has at least one section in its section_order. */
-export function creatorTemplateHasSections(
-  config: Record<string, unknown> | null,
-  templateId: string
-): boolean {
-  if (!config) return false;
-  const tpl = (
-    config.templates as
-      | Record<string, { sections?: Record<string, unknown>; section_order?: string[] }>
-      | undefined
-  )?.[templateId];
-  const tplSections = tpl?.sections ?? {};
-  const tplKeys = new Set(Object.keys(tplSections));
-  const tplOrder = Array.isArray(tpl?.section_order) ? tpl.section_order : [];
-  return tplOrder.some((id) => tplKeys.has(id));
-}
-
 /** True when the creator config has at least one section listed in layout_order or template section_order. */
 export function creatorConfigHasSections(
   config: Record<string, unknown> | null,
@@ -410,7 +294,13 @@ export function creatorConfigHasSections(
   );
   if (listedLayout.length > 0) return true;
 
-  return creatorTemplateHasSections(config, templateId);
+  const tpl = (config.templates as Record<string, { sections?: Record<string, unknown>; section_order?: string[] }> | undefined)?.[
+    templateId
+  ];
+  const tplSections = tpl?.sections ?? {};
+  const tplKeys = new Set(Object.keys(tplSections));
+  const tplOrder = Array.isArray(tpl?.section_order) ? tpl.section_order : [];
+  return tplOrder.some((id) => tplKeys.has(id));
 }
 
 /** Drop orphan layout/template sections and sync order — use after load/save in Theme Creator. */
@@ -420,61 +310,6 @@ export function normalizeCreatorThemeConfig(config: Record<string, unknown>): vo
   sanitizeThemeConfigStructure(config);
   syncLayoutOrderFromSections(config);
   sanitizeThemeConfigStructure(config);
-  ensureThemeLogoFaviconDefaults(config);
-  ensureThemeColorPaletteDefaults(config);
-  ensureThemeTypographyDefaults(config);
-  ensureThemePageDefaults(config);
-  ensureThemeAnimationsDefaults(config);
-  ensureThemeBadgesDefaults(config);
-  ensureThemeButtonsDefaults(config);
-  ensureThemeCartDefaults(config);
-  ensureThemeDrawersDefaults(config);
-  ensureThemeProductMediaDefaults(config);
-  ensureThemeIconsDefaults(config);
-  ensureThemeInputFieldsDefaults(config);
-  ensureThemePopoversModalsDefaults(config);
-  ensureThemePricesDefaults(config);
-  ensureThemeProductCardsDefaults(config);
-  ensureThemeSearchDefaults(config);
-  ensureThemeSwatchesDefaults(config);
-  ensureThemeVariantPickersDefaults(config);
-  ensureCartPageTemplateBlocks(config);
-}
-
-export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchemaDoc {
-  return withAllProductsPageSchema(
-    withThemeVariantPickersSchema(
-    withThemeSwatchesSchema(
-      withThemeSearchSchema(
-        withThemeProductCardsSchema(
-          withThemePricesSchema(
-            withThemePopoversModalsSchema(
-              withThemeInputFieldsSchema(
-                withThemeIconsSchema(
-                  withThemeProductMediaSchema(
-                    withThemeDrawersSchema(
-                      withThemeCartSchema(
-                        withThemeButtonsSchema(
-                          withThemeBadgesSchema(
-                            withThemeAnimationsSchema(
-                              withThemePageSchema(
-                                withThemeTypographySchema(withThemeColorPaletteSchema(withThemeLogoFaviconSchema(schema)))
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-    )
-  );
 }
 
 /** Theme settings only — avoids materializing layout/template sections via applyValues. */
@@ -495,99 +330,6 @@ export function creatorGlobalSettingsValues(
     }
   }
   return values;
-}
-
-/** Seed form values for all global theme settings groups from config. */
-export function seedAllCreatorGlobalSettingsValues(
-  schema: EditorSchemaDoc,
-  config: Record<string, unknown>
-): Record<string, string | boolean> {
-  return seedThemeVariantPickersValues(
-    seedThemeSwatchesValues(
-      seedThemeSearchValues(
-        seedThemeProductCardsValues(
-          seedThemePricesValues(
-            seedThemePopoversModalsValues(
-              seedThemeInputFieldsValues(
-                seedThemeIconsValues(
-                  seedThemeProductMediaValues(
-                    seedThemeDrawersValues(
-                      seedThemeCartValues(
-                        seedThemeButtonsValues(
-                          seedThemeBadgesValues(
-                            seedThemeAnimationsValues(
-                              seedThemePageValues(
-                                seedThemeTypographyValues(
-                                  seedThemePaletteValues(
-                                    creatorGlobalSettingsValues(schema, config),
-                                    config
-                                  ),
-                                  config
-                                ),
-                                config
-                              ),
-                              config
-                            ),
-                            config
-                          ),
-                          config
-                        ),
-                        config
-                      ),
-                      config
-                    ),
-                    config
-                  ),
-                  config
-                ),
-                config
-              ),
-              config
-            ),
-            config
-          ),
-          config
-        ),
-        config
-      ),
-      config
-    ),
-    config
-  );
-}
-
-/** Reset global theme settings to pack defaults while preserving sections and templates. */
-export function resetCreatorThemeGlobalSettings(
-  config: Record<string, unknown>,
-  packDefault: Record<string, unknown>,
-  schema: EditorSchemaDoc
-): { config: Record<string, unknown>; values: Record<string, string | boolean> } {
-  const next = JSON.parse(JSON.stringify(config)) as Record<string, unknown>;
-  const settingsDraft = {
-    settings: JSON.parse(JSON.stringify(packDefault.settings ?? {})),
-  } as Record<string, unknown>;
-  normalizeCreatorThemeConfig(settingsDraft);
-  next.settings = settingsDraft.settings;
-  normalizeCreatorThemeConfig(next);
-  applyThemeCartToHeaderConfig(next);
-
-  let values = seedAllCreatorGlobalSettingsValues(schema, next);
-  values = {
-    ...values,
-    ...syncThemeTypographyFontFields({
-      body: values[THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH],
-      subheading: values[THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH],
-      heading: values[THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH],
-      accent: values[THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH],
-    }),
-  };
-
-  const logoUrl = values[THEME_LOGO_DEFAULT_PATH];
-  if (typeof logoUrl === 'string') {
-    setConfigAtPath(next, 'sections.header.settings.defaultLogoUrl', logoUrl);
-  }
-
-  return { config: next, values };
 }
 
 /** Blank page structure for Theme Creator — keeps global settings, no header/template/footer sections. */
@@ -636,7 +378,7 @@ export async function loadCreatorThemeEditorPack(
   packId: DevStaticThemePackId = 'horizon'
 ): Promise<ThemeEditorLoadResult> {
   const loaded = await loadPackFromBundled(packId);
-  const editorSchema = prepareCreatorEditorSchema(loaded.schema as EditorSchemaDoc);
+  const editorSchema = loaded.schema as EditorSchemaDoc;
   const packDefault = JSON.parse(JSON.stringify(loaded.defaultConfig)) as Record<string, unknown>;
   try {
     localStorage.removeItem(THEME_CREATOR_CONFIG_STORAGE_KEY);
@@ -645,99 +387,12 @@ export async function loadCreatorThemeEditorPack(
   }
   const config = createEmptyCreatorConfig(packDefault);
   sanitizeThemeConfigStructure(config);
-  ensureThemeLogoFaviconDefaults(config);
-  ensureThemeColorPaletteDefaults(config);
-  ensureThemeTypographyDefaults(config);
-  ensureThemePageDefaults(config);
-  ensureThemeAnimationsDefaults(config);
-  ensureThemeBadgesDefaults(config);
-  ensureThemeButtonsDefaults(config);
-  ensureThemeCartDefaults(config);
-  ensureThemeDrawersDefaults(config);
-  ensureThemeProductMediaDefaults(config);
-  ensureThemeIconsDefaults(config);
-  ensureThemeInputFieldsDefaults(config);
-  ensureThemePopoversModalsDefaults(config);
-  ensureThemePricesDefaults(config);
-  ensureThemeProductCardsDefaults(config);
-  ensureThemeSearchDefaults(config);
-  ensureThemeSwatchesDefaults(config);
-  ensureThemeVariantPickersDefaults(config);
-  ensureThemeLogoFaviconDefaults(packDefault);
-  ensureThemeColorPaletteDefaults(packDefault);
-  ensureThemeTypographyDefaults(packDefault);
-  ensureThemePageDefaults(packDefault);
-  ensureThemeAnimationsDefaults(packDefault);
-  ensureThemeBadgesDefaults(packDefault);
-  ensureThemeButtonsDefaults(packDefault);
-  ensureThemeCartDefaults(packDefault);
-  ensureThemeDrawersDefaults(packDefault);
-  ensureThemeProductMediaDefaults(packDefault);
-  ensureThemeIconsDefaults(packDefault);
-  ensureThemeInputFieldsDefaults(packDefault);
-  ensureThemePopoversModalsDefaults(packDefault);
-  ensureThemePricesDefaults(packDefault);
-  ensureThemeProductCardsDefaults(packDefault);
-  ensureThemeSearchDefaults(packDefault);
-  ensureThemeSwatchesDefaults(packDefault);
-  ensureThemeVariantPickersDefaults(packDefault);
-  const values = seedThemeVariantPickersValues(
-    seedThemeSwatchesValues(
-      seedThemeSearchValues(
-      seedThemeProductCardsValues(
-      seedThemePricesValues(
-    seedThemePopoversModalsValues(
-      seedThemeInputFieldsValues(
-      seedThemeIconsValues(
-      seedThemeProductMediaValues(
-      seedThemeDrawersValues(
-        seedThemeCartValues(
-      seedThemeButtonsValues(
-        seedThemeBadgesValues(
-          seedThemeAnimationsValues(
-            seedThemePageValues(
-              seedThemeTypographyValues(
-                seedThemePaletteValues(
-                  creatorConfigHasSections(config)
-                    ? {
-                        ...formValuesFromEditorConfig(editorSchema, config),
-                        ...seedSectionEnabledValues(config),
-                      }
-                    : creatorGlobalSettingsValues(editorSchema, config),
-                  config
-                ),
-                config
-              ),
-              config
-            ),
-            config
-          ),
-          config
-        ),
-        config
-      ),
-      config
-    ),
-    config
-  ),
-    config
-  ),
-    config
-  ),
-    config
-  ),
-    config
-  ),
-    config
-  ),
-    config
-  ),
-    config
-  ),
-    config
-  ),
-    config
-  );
+  const values = creatorConfigHasSections(config)
+    ? {
+        ...formValuesFromEditorConfig(editorSchema, config),
+        ...seedSectionEnabledValues(config),
+      }
+    : creatorGlobalSettingsValues(editorSchema, config);
   return {
     themeName: (config.themeName as string) || 'Creator Basic',
     themePath: `theme-packs/${packId}`,
@@ -768,9 +423,8 @@ export async function loadStaticThemeEditorPack(
     ? await loadPackFromBaseUrl()
     : await loadPackFromBundled(packId);
 
-  const editorSchema = prepareCreatorEditorSchema(loaded.schema as EditorSchemaDoc);
+  const editorSchema = loaded.schema as EditorSchemaDoc;
   const defaultConfig = loaded.defaultConfig;
-  ensureThemeLogoFaviconDefaults(defaultConfig);
   const saved = readLocalConfig(packId);
   const config = saved
     ? (JSON.parse(JSON.stringify(saved)) as Record<string, unknown>)

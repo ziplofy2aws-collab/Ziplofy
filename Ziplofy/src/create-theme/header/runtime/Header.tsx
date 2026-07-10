@@ -1,16 +1,9 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useStorefrontAuth, useStorefrontCart } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgMenuItems, cfgNumber, cfgString } from '../../runtime/shared/config';
-import { useThemeIconStrokeWidth } from '../../runtime/shared/themeIconsRuntime';
-import {
-  resolveActiveThemeLogoUrl,
-  resolveThemeLogoHeights,
-  scopedHeaderLogoHeightCss,
-  shouldUseInverseThemeLogo,
-} from '../../runtime/shared/resolveThemeLogo';
 import {
   headerBorderPx,
   headerColorScheme,
@@ -21,50 +14,49 @@ import {
   menuBlockColorScheme,
   scopedHeaderCss,
 } from './headerStyles';
-import { HeaderAccountPanel } from './HeaderAccountPanel';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { scopedHeaderResponsiveCss } from '../../runtime/shared/responsive';
-import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
-import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
+import { layout, useThemeColors } from '../../runtime/shared/tokens';
 
 type Props = { sectionId?: string };
 
-function HeaderIconSearch({ color, strokeWidth }: { color: string; strokeWidth: number }) {
+const iconStroke = 1.75;
+
+function HeaderIconSearch({ color }: { color: string }) {
   return (
     <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="6" stroke={color} strokeWidth={strokeWidth} />
-      <path d="M16 16l4 4" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+      <circle cx="11" cy="11" r="6" stroke={color} strokeWidth={iconStroke} />
+      <path d="M16 16l4 4" stroke={color} strokeWidth={iconStroke} strokeLinecap="round" />
     </svg>
   );
 }
 
-function HeaderIconAccount({ color, strokeWidth }: { color: string; strokeWidth: number }) {
+function HeaderIconAccount({ color }: { color: string }) {
   return (
     <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="8" r="3.5" stroke={color} strokeWidth={strokeWidth} />
+      <circle cx="12" cy="8" r="3.5" stroke={color} strokeWidth={iconStroke} />
       <path
         d="M6 19c0-3.3 2.7-6 6-6s6 2.7 6 6"
         stroke={color}
-        strokeWidth={strokeWidth}
+        strokeWidth={iconStroke}
         strokeLinecap="round"
       />
     </svg>
   );
 }
 
-function HeaderIconCart({ color, strokeWidth }: { color: string; strokeWidth: number }) {
+function HeaderIconCart({ color }: { color: string }) {
   return (
     <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M8 8V6a4 4 0 118 0v2"
         stroke={color}
-        strokeWidth={strokeWidth}
+        strokeWidth={iconStroke}
         strokeLinecap="round"
       />
       <path
         d="M6 8h12l-1 12H7L6 8z"
         stroke={color}
-        strokeWidth={strokeWidth}
+        strokeWidth={iconStroke}
         strokeLinejoin="round"
       />
     </svg>
@@ -72,12 +64,10 @@ function HeaderIconCart({ color, strokeWidth }: { color: string; strokeWidth: nu
 }
 
 export function Header({ sectionId = 'header' }: Props) {
-  const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
-  const iconStroke = useThemeIconStrokeWidth();
   const { pathname } = useLocation();
   const themeColors = useThemeColors();
-  const { fontHeading, fontBody, fontSubheading, primary, background: themeBg } = themeColors;
+  const { fontHeading, fontBody, primary, background: themeBg } = themeColors;
   const { user, logout } = useStorefrontAuth();
   const { getAllItems } = useStorefrontCart();
   const cartCount = getAllItems().reduce((s, i) => s + i.quantity, 0);
@@ -98,40 +88,14 @@ export function Header({ sectionId = 'header' }: Props) {
       widthMode: headerSectionWidth(config, settingsBase),
       height: headerHeightPadding(config, settingsBase),
       borderPx: headerBorderPx(config, settingsBase),
-      bottomBorderColor: (() => {
-        const raw = cfgString(config, `${settingsBase}.bottomBorderColor`, '');
-        return raw ? resolveThemePaletteColorSetting(config, raw, 1, themeColors.text) : '';
-      })(),
-      cartBubbleStyle: cfgString(config, `${settingsBase}.cartBubbleStyle`, 'default'),
-      cartBubbleBackground: cfgString(config, `${settingsBase}.cartBubbleBackground`, ''),
-      cartBubbleText: cfgString(config, `${settingsBase}.cartBubbleText`, ''),
-      bottomRowBackground: (() => {
-        const raw = cfgString(config, `${settingsBase}.bottomRowBackground`, '');
-        return raw ? resolveThemePaletteColorSetting(config, raw, 0, themeBg) : '';
-      })(),
-      bottomRowText: (() => {
-        const raw = cfgString(config, `${settingsBase}.bottomRowText`, '');
-        return raw ? resolveThemePaletteColorSetting(config, raw, 1, themeColors.text) : '';
-      })(),
-      dividerPx: Math.max(0, cfgNumber(config, `${settingsBase}.dividerThickness`, 0)),
-      dividerWidthMode: cfgString(config, `${settingsBase}.dividerWidth`, 'page'),
-      dividerColor: resolveThemePaletteColorSetting(
-        config,
-        cfgString(config, `${settingsBase}.dividerColor`, ''),
-        1,
-        themeColors.text
-      ),
       stickyMode: headerStickyMode(config, settingsBase),
       customCss: cfgString(config, `${settingsBase}.customCss`, ''),
       logoText: cfgString(config, `${logoBase}.text`, 'My Store'),
       tagline: cfgString(config, `${logoBase}.tagline`, ''),
-      logoUrl: resolveActiveThemeLogoUrl(config, sectionId, pathname),
-      logoHeights: resolveThemeLogoHeights(config),
+      logoUrl: cfgString(config, `${settingsBase}.defaultLogoUrl`, '').trim(),
       hideLogoOnHomePage: cfgBool(config, `${logoBase}.hideLogoOnHomePage`, false),
       logoPaddingTop: Math.max(0, cfgNumber(config, `${logoBase}.paddingTop`, 0)),
       logoPaddingBottom: Math.max(0, cfgNumber(config, `${logoBase}.paddingBottom`, 0)),
-      logoPosition: cfgString(config, `${logoBase}.position`, 'left'),
-      menuPosition: cfgString(config, `${menuBase}.position`, 'left'),
       menuRow: cfgString(config, `${menuBase}.row`, ''),
       menuItems: cfgMenuItems(config, `${menuBase}.items`),
       menuScheme: menuBlockColorScheme(config, menuBase, {
@@ -143,12 +107,7 @@ export function Header({ sectionId = 'header' }: Props) {
       menuFont: cfgString(config, `${menuBase}.font`, 'body'),
       menuTextCase: cfgString(config, `${menuBase}.textCase`, 'default'),
       menuStyle: cfgString(config, `${settingsBase}.menuStyle`, 'icons'),
-      utilityTextSize: cfgString(config, `${settingsBase}.utilityTextSize`, '14px'),
-      utilityTextFont: cfgString(config, `${settingsBase}.utilityTextFont`, 'body'),
-      utilityTextCase: cfgString(config, `${settingsBase}.utilityTextCase`, 'default'),
       searchOn: headerSearchEnabled(config, settingsBase),
-      searchPosition: cfgString(config, `${settingsBase}.searchPosition`, 'right'),
-      searchRow: cfgString(config, `${settingsBase}.searchRow`, 'top'),
       searchPlaceholder: cfgString(config, `${settingsBase}.searchPlaceholder`),
       cartLabel: cfgString(config, `${settingsBase}.cartLabel`, 'Cart'),
       showAccount: cfgString(config, `${settingsBase}.customerAccountMenu`, 'customer-account') !== 'none',
@@ -160,33 +119,21 @@ export function Header({ sectionId = 'header' }: Props) {
       countryRegionLabel: cfgString(config, `${settingsBase}.countryRegionLabel`),
       languageLabel: cfgString(config, `${settingsBase}.languageLabel`),
     };
-  }, [config, sectionId, settingsBase, logoBase, menuBase, themeBg, themeColors.text, themeColors, pathname]);
+  }, [config, sectionId, settingsBase, logoBase, menuBase, themeBg, themeColors.text, themeColors]);
 
   const {
     scheme,
     widthMode,
     height: { paddingY, minHeight },
     borderPx,
-    bottomBorderColor,
-    cartBubbleStyle,
-    cartBubbleBackground,
-    cartBubbleText,
-    bottomRowBackground,
-    bottomRowText,
-    dividerPx,
-    dividerWidthMode,
-    dividerColor,
     stickyMode,
     customCss,
     logoText,
     tagline,
     logoUrl,
-    logoHeights,
     hideLogoOnHomePage,
     logoPaddingTop,
     logoPaddingBottom,
-    logoPosition,
-    menuPosition,
     menuRow,
     menuItems,
     menuScheme,
@@ -194,12 +141,7 @@ export function Header({ sectionId = 'header' }: Props) {
     menuFont,
     menuTextCase,
     menuStyle,
-    utilityTextSize,
-    utilityTextFont,
-    utilityTextCase,
     searchOn,
-    searchPosition,
-    searchRow,
     searchPlaceholder,
     cartLabel,
     showAccount,
@@ -216,12 +158,6 @@ export function Header({ sectionId = 'header' }: Props) {
   const menuText = menuScheme.color;
   const iconColor = text;
   const scopedCss = scopedHeaderCss(sectionId, customCss);
-  const headerResponsiveCss = scopedHeaderResponsiveCss(sectionId);
-  const logoHeightCss = scopedHeaderLogoHeightCss(
-    sectionId,
-    logoHeights.desktop,
-    logoHeights.mobile
-  );
 
   const menuLinkFontFamily =
     menuFont === 'heading' ? fontHeading : menuFont === 'subheading' ? fontBody : fontBody;
@@ -238,13 +174,6 @@ export function Header({ sectionId = 'header' }: Props) {
   };
 
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [accountPanelOpen, setAccountPanelOpen] = useState(false);
-  const accountButtonRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    setAccountPanelOpen(false);
-  }, [pathname]);
-
   useEffect(() => {
     if (stickyMode !== 'on-scroll-up') return;
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -258,10 +187,6 @@ export function Header({ sectionId = 'header' }: Props) {
 
   const isHomePage = pathname === '/' || pathname === '';
   const hideLogoOnHome = hideLogoOnHomePage && isHomePage && !stickyActive;
-
-  /** Transparent-background page toggle: header overlays page content until scrolled/sticky. */
-  const transparentActive =
-    shouldUseInverseThemeLogo(config, sectionId, pathname) && !stickyActive;
 
   const utilityStyle: CSSProperties = {
     fontSize: locSize,
@@ -282,12 +207,7 @@ export function Header({ sectionId = 'header' }: Props) {
       >
         {logoUrl ? (
           <Link to="/" style={{ textDecoration: 'none', display: 'flex' }}>
-            <img
-              src={logoUrl}
-              alt={logoText}
-              className="codiic-header-logo-img"
-              style={{ display: 'block' }}
-            />
+            <img src={logoUrl} alt={logoText} style={{ maxHeight: 36, display: 'block' }} />
           </Link>
         ) : (
           <Link to="/" style={{ textDecoration: 'none', color: text }}>
@@ -323,38 +243,9 @@ export function Header({ sectionId = 'header' }: Props) {
     </EditorBlock>
   );
 
-  const menuLinks = (
-    <>
-      {menuItems.map((item, index) => {
-        const nestedIds = ['link_shop', 'link_collections', 'link_about', 'link_account'] as const;
-        const nestedId = nestedIds[index] ?? `link_${index}`;
-        const labelPath = `${menuBase}.items.${index}.label`;
-        const hrefPath = `${menuBase}.items.${index}.href`;
-        return (
-          <EditorBlock
-            key={hrefPath}
-            nodeId={`layout:${sectionId}:block:menu:nested:${nestedId}`}
-            label={item.label}
-          >
-            <EditorField fieldPath={labelPath} label="Label">
-              <Link
-                to={item.href}
-                style={menuLinkStyle}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            </EditorField>
-          </EditorBlock>
-        );
-      })}
-    </>
-  );
-
   const menuNode: ReactNode = (
     <EditorBlock nodeId={`layout:${sectionId}:block:menu`} label="Menu">
       <nav
-        className="codiic-header-desktop-nav"
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -365,42 +256,19 @@ export function Header({ sectionId = 'header' }: Props) {
         }}
         aria-label="Main"
       >
-        {menuLinks}
-      </nav>
-    </EditorBlock>
-  );
-
-  const mobileMenuNode: ReactNode = mobileMenuOpen ? (
-    <EditorBlock nodeId={`layout:${sectionId}:block:menu`} label="Menu">
-      <nav
-        className="codiic-header-mobile-nav"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          gap: 12,
-          margin: 0,
-          padding: '12px 0 4px',
-          borderTop: `1px solid ${border}`,
-        }}
-        aria-label="Main mobile"
-      >
         {menuItems.map((item, index) => {
           const nestedIds = ['link_shop', 'link_collections', 'link_about', 'link_account'] as const;
           const nestedId = nestedIds[index] ?? `link_${index}`;
           const labelPath = `${menuBase}.items.${index}.label`;
+          const hrefPath = `${menuBase}.items.${index}.href`;
           return (
             <EditorBlock
-              key={`mobile-${nestedId}`}
+              key={hrefPath}
               nodeId={`layout:${sectionId}:block:menu:nested:${nestedId}`}
               label={item.label}
             >
               <EditorField fieldPath={labelPath} label="Label">
-                <Link
-                  to={item.href}
-                  style={{ ...menuLinkStyle, whiteSpace: 'normal' }}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                <Link to={item.href} style={menuLinkStyle}>
                   {item.label}
                 </Link>
               </EditorField>
@@ -409,74 +277,9 @@ export function Header({ sectionId = 'header' }: Props) {
         })}
       </nav>
     </EditorBlock>
-  ) : null;
-
-  const menuToggleButton = (
-    <button
-      type="button"
-      className="codiic-header-menu-toggle"
-      aria-expanded={mobileMenuOpen}
-      aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-      onClick={() => setMobileMenuOpen((open) => !open)}
-      style={{
-        display: 'none',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 40,
-        height: 40,
-        border: `1px solid ${border}`,
-        borderRadius: 8,
-        background: background || '#ffffff',
-        color: text,
-        cursor: 'pointer',
-        flexShrink: 0,
-      }}
-    >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-        {mobileMenuOpen ? (
-          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        ) : (
-          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        )}
-      </svg>
-    </button>
   );
 
   const useIcons = menuStyle !== 'text';
-  const utilityTextStyle: CSSProperties = {
-    fontSize: utilityTextSize,
-    fontFamily:
-      utilityTextFont === 'heading'
-        ? fontHeading
-        : utilityTextFont === 'subheading'
-          ? fontSubheading
-          : fontBody,
-    color: iconColor,
-    textTransform: utilityTextCase === 'uppercase' ? 'uppercase' : undefined,
-    letterSpacing: utilityTextCase === 'uppercase' ? '0.06em' : undefined,
-    whiteSpace: 'nowrap',
-  };
-
-  const searchNode: ReactNode = searchOn ? (
-    <Link
-      to="/products"
-      title={searchPlaceholder}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        color: iconColor,
-        textDecoration: 'none',
-        opacity: 0.9,
-      }}
-      aria-label={searchPlaceholder || 'Search'}
-    >
-      {useIcons ? (
-        <HeaderIconSearch color={iconColor} strokeWidth={iconStroke} />
-      ) : (
-        <span style={utilityTextStyle}>Search</span>
-      )}
-    </Link>
-  ) : null;
 
   const utilities = (
     <div
@@ -491,31 +294,67 @@ export function Header({ sectionId = 'header' }: Props) {
         <span style={utilityStyle}>{showFlag ? '🇮🇳 ' : ''}{countryRegionLabel}</span>
       ) : null}
       {showLanguage && languageLabel ? <span style={utilityStyle}>{languageLabel}</span> : null}
-      {searchOn && searchPosition !== 'left' && searchRow !== 'bottom' ? searchNode : null}
-      {showAccount ? (
-        <button
-          ref={accountButtonRef}
-          type="button"
-          onClick={() => setAccountPanelOpen((open) => !open)}
-          title={user ? 'Account' : 'Sign in'}
-          aria-expanded={accountPanelOpen}
-          aria-haspopup="dialog"
+      {searchOn ? (
+        <Link
+          to="/products"
+          title={searchPlaceholder}
           style={{
             display: 'flex',
             alignItems: 'center',
-            border: 'none',
-            background: 'transparent',
-            padding: 0,
-            cursor: 'pointer',
             color: iconColor,
+            textDecoration: 'none',
+            opacity: 0.9,
           }}
+          aria-label={searchPlaceholder || 'Search'}
         >
           {useIcons ? (
-            <HeaderIconAccount color={iconColor} strokeWidth={iconStroke} />
+            <HeaderIconSearch color={iconColor} />
           ) : (
-            <span style={utilityTextStyle}>Account</span>
+            <span style={{ fontSize: 14 }}>Search</span>
           )}
-        </button>
+        </Link>
+      ) : null}
+      {showAccount ? (
+        user ? (
+          <button
+            type="button"
+            onClick={() => void logout()}
+            title="Sign out"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              border: 'none',
+              background: 'transparent',
+              padding: 0,
+              cursor: 'pointer',
+              color: iconColor,
+            }}
+          >
+            {useIcons ? (
+              <HeaderIconAccount color={iconColor} />
+            ) : (
+              <span style={{ fontSize: 14, color: primary }}>Sign out</span>
+            )}
+          </button>
+        ) : (
+          <Link
+            to="/auth/login"
+            title="Account"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              color: iconColor,
+              textDecoration: 'none',
+            }}
+            aria-label="Account"
+          >
+            {useIcons ? (
+              <HeaderIconAccount color={iconColor} />
+            ) : (
+              <span style={{ fontSize: 14, fontWeight: 600, color: primary }}>Sign in</span>
+            )}
+          </Link>
+        )
       ) : null}
       <Link
         to="/cart"
@@ -531,11 +370,10 @@ export function Header({ sectionId = 'header' }: Props) {
         aria-label={cartLabel}
       >
         {useIcons ? (
-          <HeaderIconCart color={iconColor} strokeWidth={iconStroke} />
+          <HeaderIconCart color={iconColor} />
         ) : (
-          <span style={utilityTextStyle}>
-            {cartLabel}
-            {cartCount > 0 ? ` (${cartCount})` : ''}
+          <span style={{ fontSize: 13 }}>
+            {cartLabel} ({cartCount})
           </span>
         )}
         {useIcons && cartCount > 0 ? (
@@ -547,8 +385,8 @@ export function Header({ sectionId = 'header' }: Props) {
               minWidth: 14,
               height: 14,
               borderRadius: 7,
-              background: cartBubbleStyle === 'custom' && cartBubbleBackground ? cartBubbleBackground : primary,
-              color: cartBubbleStyle === 'custom' && cartBubbleText ? cartBubbleText : themeBg,
+              background: primary,
+              color: themeBg,
               fontSize: 9,
               fontWeight: 700,
               display: 'flex',
@@ -564,6 +402,22 @@ export function Header({ sectionId = 'header' }: Props) {
     </div>
   );
 
+  const brandCluster = (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 40,
+        flex: '0 1 auto',
+        minWidth: 0,
+        flexWrap: 'wrap',
+      }}
+    >
+      {logoNode}
+      {menuNode}
+    </div>
+  );
+
   const mainRow: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
@@ -572,163 +426,60 @@ export function Header({ sectionId = 'header' }: Props) {
     width: '100%',
   };
 
-  const innerMaxWidth = widthMode === 'full' ? '100%' : maxWidth;
+  const innerMaxWidth = widthMode === 'full' ? '100%' : layout.maxWidth;
   /** Classic storefront header: logo + nav stay on one row (legacy `row: top` treated as inline). */
   const menuOnOwnRowTop = false;
   const menuOnOwnRowBottom = menuRow === 'bottom';
-  const bottomBorderLineColor = bottomBorderColor || border || layout.line;
   const headerDivider =
-    borderPx > 0 ? `${borderPx}px solid ${bottomBorderLineColor}` : `1px solid ${layout.line}`;
-
-  const utilitiesCluster = (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      {menuToggleButton}
-      {utilities}
-    </div>
-  );
-
-  /** Logo/menu placement driven by their `position` settings; utilities stay on the right. */
-  const leftItems: ReactNode[] = [];
-  const centerItems: ReactNode[] = [];
-  const rightItems: ReactNode[] = [];
-  const zoneFor = (pos: string) =>
-    pos === 'center' ? centerItems : pos === 'right' ? rightItems : leftItems;
-
-  const searchOnBottom = searchOn && searchRow === 'bottom';
-
-  zoneFor(logoPosition).push(<div key="logo">{logoNode}</div>);
-  if (searchOn && searchPosition === 'left' && !searchOnBottom) {
-    leftItems.push(
-      <div key="search-left" style={{ display: 'flex', alignItems: 'center' }}>
-        {searchNode}
-      </div>
-    );
-  }
-  if (!menuOnOwnRowBottom && !menuOnOwnRowTop) {
-    zoneFor(menuPosition).push(<div key="menu">{menuNode}</div>);
-  }
-  rightItems.push(<div key="utilities">{utilitiesCluster}</div>);
-
-  /** Bottom row can hold the menu and/or search, each aligned by its own position. */
-  const bottomLeft: ReactNode[] = [];
-  const bottomCenter: ReactNode[] = [];
-  const bottomRight: ReactNode[] = [];
-  const bottomZoneFor = (pos: string) =>
-    pos === 'center' ? bottomCenter : pos === 'right' ? bottomRight : bottomLeft;
-  if (menuOnOwnRowBottom) {
-    bottomZoneFor(menuPosition).push(<div key="menu-bottom">{menuNode}</div>);
-  }
-  if (searchOnBottom) {
-    bottomZoneFor(searchPosition).push(
-      <div key="search-bottom" style={{ display: 'flex', alignItems: 'center' }}>
-        {searchNode}
-      </div>
-    );
-  }
-  const hasBottomRow = bottomLeft.length > 0 || bottomCenter.length > 0 || bottomRight.length > 0;
-
-  const bottomRowNode: ReactNode = hasBottomRow ? (
-    <div
-      className="codiic-header-desktop-nav-row"
-      style={{
-        ...mainRow,
-        alignItems: 'center',
-        ...(bottomRowBackground ? { background: bottomRowBackground } : null),
-        ...(bottomRowText ? { color: bottomRowText } : null),
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 24, flex: 1, minWidth: 0 }}>
-        {bottomLeft}
-      </div>
-      {bottomCenter.length ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 24, flex: '0 0 auto', minWidth: 0 }}>
-          {bottomCenter}
-        </div>
-      ) : null}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 24, flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
-        {bottomRight}
-      </div>
-    </div>
-  ) : null;
-
-  const positionedMainRow = (
-    <div className="codiic-header-main-row" style={mainRow}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 40, flex: 1, minWidth: 0, flexWrap: 'wrap' }}>
-        {leftItems}
-      </div>
-      {centerItems.length ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 40, flex: '0 0 auto', minWidth: 0 }}>
-          {centerItems}
-        </div>
-      ) : null}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 24, flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
-        {rightItems}
-      </div>
-    </div>
-  );
-
-  /** Decorative divider line below the header; width follows Page/Full setting. */
-  const dividerNode: ReactNode =
-    dividerPx > 0 ? (
-      dividerWidthMode === 'full' ? (
-        <div style={{ height: dividerPx, background: dividerColor, width: '100%' }} />
-      ) : (
-        <div
-          style={{
-            maxWidth: innerMaxWidth,
-            margin: '0 auto',
-            padding: `0 ${Math.max(20, layout.padX)}px`,
-          }}
-        >
-          <div style={{ height: dividerPx, background: dividerColor }} />
-        </div>
-      )
-    ) : null;
+    borderPx > 0 ? `${borderPx}px solid ${border}` : `1px solid ${layout.line}`;
 
   return (
     <>
       {scopedCss ? <style>{scopedCss}</style> : null}
-      <style>{headerResponsiveCss}</style>
-      <style>{logoHeightCss}</style>
-      <HeaderAccountPanel
-        open={accountPanelOpen && showAccount}
-        anchorRef={accountButtonRef}
-        onClose={() => setAccountPanelOpen(false)}
-        user={user}
-        onSignOut={logout}
-      />
       <EditorSection
         sectionId={sectionId}
         label="Header"
         style={{
-          position: transparentActive ? 'absolute' : stickyActive ? 'sticky' : 'relative',
-          top: transparentActive ? 0 : stickyActive ? 0 : undefined,
-          left: transparentActive ? 0 : undefined,
-          right: transparentActive ? 0 : undefined,
+          position: stickyActive ? 'sticky' : 'relative',
+          top: stickyActive ? 0 : undefined,
           zIndex: 50,
-          background: transparentActive ? 'transparent' : background || '#ffffff',
-          borderBottom: transparentActive ? 'none' : headerDivider,
+          background: background || '#ffffff',
+          borderBottom: headerDivider,
           fontFamily: fontBody,
           color: text,
           minHeight,
         }}
       >
         <div
-          className="codiic-header-inner"
           style={{
             maxWidth: innerMaxWidth,
             margin: '0 auto',
             padding: `${paddingY}px ${Math.max(20, layout.padX)}px`,
             display: 'flex',
             flexDirection: 'column',
-            gap: menuOnOwnRowTop || hasBottomRow ? 12 : 0,
+            gap: menuOnOwnRowTop || menuOnOwnRowBottom ? 12 : 0,
           }}
         >
-          {positionedMainRow}
-          {mobileMenuNode}
-          {bottomRowNode}
+          {menuOnOwnRowTop ? (
+            <div style={{ ...mainRow, justifyContent: 'flex-start' }}>{menuNode}</div>
+          ) : null}
+          <div style={mainRow}>
+            {menuOnOwnRowTop || menuOnOwnRowBottom ? (
+              <>
+                <div style={{ display: 'flex', flex: 1, minWidth: 0 }}>{logoNode}</div>
+                {utilities}
+              </>
+            ) : (
+              <>
+                {brandCluster}
+                {utilities}
+              </>
+            )}
+          </div>
+          {menuOnOwnRowBottom ? (
+            <div style={{ ...mainRow, justifyContent: 'flex-start' }}>{menuNode}</div>
+          ) : null}
         </div>
-        {dividerNode}
       </EditorSection>
     </>
   );

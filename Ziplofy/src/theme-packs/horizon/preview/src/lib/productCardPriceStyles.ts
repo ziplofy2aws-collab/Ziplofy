@@ -1,5 +1,4 @@
 import { cfgBool, cfgNumber, cfgString } from './config';
-import { resolveThemePaletteColorSetting } from '../../../../../create-theme/settings/theme-color-palette.settings';
 
 const TYPOGRAPHY_PRESETS: Record<string, { fontSize: number; fontWeight: number; lineHeight: number }> = {
   default: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 },
@@ -36,17 +35,15 @@ export function readProductCardPriceStyle(
   const typo = TYPOGRAPHY_PRESETS[preset] ?? TYPOGRAPHY_PRESETS['heading-6'];
   const widthMode = cfgString(config, `${settingsBase}.priceWidth`, 'fill');
   const align = cfgString(config, `${settingsBase}.priceAlignment`, 'left');
-  const colorKey = cfgString(config, `${settingsBase}.priceColor`, '');
+  const colorKey = cfgString(config, `${settingsBase}.priceColor`, 'text');
   const color =
-    colorKey === '' || colorKey === 'default' || colorKey === 'text'
-      ? colors.text
-      : colorKey === 'heading'
-        ? colors.heading
-        : colorKey === 'accent'
-          ? colors.accent
-          : colorKey === 'muted'
-            ? colors.muted
-            : resolveThemePaletteColorSetting(config, colorKey, 1, colors.text);
+    colorKey === 'heading'
+      ? colors.heading
+      : colorKey === 'accent'
+        ? colors.accent
+        : colorKey === 'muted'
+          ? colors.muted
+          : colors.text;
   const textAlign =
     align === 'center' ? 'center' : align === 'right' ? 'right' : 'left';
 

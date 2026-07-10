@@ -1,7 +1,7 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import { layoutBlueprintKey, remapLayoutSchemaPath } from '../../utils/theme-editor-insert-section';
 
-const BLOCK_PANEL_GROUPS = new Set(['Content', 'Typography', 'Appearance']);
+const BLOCK_PANEL_GROUPS = new Set(['Content', 'Typography']);
 
 const BLOCK_FIELD_SORT: Record<string, number> = {
   text: 0,
@@ -11,7 +11,6 @@ const BLOCK_FIELD_SORT: Record<string, number> = {
   fontWeight: 12,
   letterSpacing: 13,
   textCase: 14,
-  textColor: 20,
 };
 
 const BLOCK_SETTING_KEYS = new Set([
@@ -22,7 +21,6 @@ const BLOCK_SETTING_KEYS = new Set([
   'fontWeight',
   'letterSpacing',
   'textCase',
-  'textColor',
 ]);
 
 function blockSettingKey(path: string): string {
@@ -107,7 +105,7 @@ export function announcementBlockFieldDefsFromSchema(
 }
 
 export function sortAnnouncementBlockPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const groupRank: Record<string, number> = { Content: 0, Typography: 1, Appearance: 2 };
+  const groupRank: Record<string, number> = { Content: 0, Typography: 1 };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
     const gb = groupRank[b.group ?? ''] ?? 9;

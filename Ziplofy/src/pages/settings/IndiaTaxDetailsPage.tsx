@@ -141,6 +141,8 @@ const IndiaTaxDetailsPage: React.FC = () => {
     taxLabel: '',
     calculationMethod: 'instead',
   });
+  const [regionsPage, setRegionsPage] = useState(1);
+  const regionsPerPage = 8;
 
   useEffect(() => {
     getCountries({ limit: 1000 });
@@ -669,6 +671,9 @@ const IndiaTaxDetailsPage: React.FC = () => {
     return '';
   };
 
+  // Get federal/country-level tax default
+  const federalTaxDefault = taxDefaults.find((td) => !td.stateId);
+
   // Get state-level tax defaults (excluding federal) and sort by state name
   const stateTaxDefaults = taxDefaults
     .filter((td) => td.stateId && td.stateId !== null)
@@ -681,6 +686,15 @@ const IndiaTaxDetailsPage: React.FC = () => {
       const nameB = b.stateName.toLowerCase();
       return nameA.localeCompare(nameB);
     });
+
+  const totalRegionPages = Math.max(1, Math.ceil(stateTaxDefaults.length / regionsPerPage));
+  const paginatedStateTaxDefaults = stateTaxDefaults.slice(
+    (regionsPage - 1) * regionsPerPage,
+    regionsPage * regionsPerPage
+  );
+
+  const displayFederalRate =
+    currentCountryTaxRate || federalTaxDefault?.taxRate || countryTaxMap[countryId || '']?.taxRate || 9;
 
   return (
     <div className="w-full">
@@ -701,19 +715,15 @@ const IndiaTaxDetailsPage: React.FC = () => {
           }
         />
 
-        {/* Country Tax Section - Above Base taxes */}
-        {countryId && (countryTaxMap[countryId] || (activeStoreId && countryTaxOverrideMap[`${activeStoreId}-${countryId}`])) && (
+        {/* Country Tax Section - federal base rate */}
+        {country && (
         <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5">
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography sx={{ minWidth: 120, color: '#111827', fontWeight: 500 }}>
-              {country?.name || 'Loading...'}
+              {country?.name || 'India'}
             </Typography>
             <Typography sx={{ color: '#111827', fontWeight: 500 }}>
-              {(
-                (activeStoreId && countryTaxOverrideMap[`${activeStoreId}-${countryId}`]?.taxRate) ||
-                countryTaxMap[countryId]?.taxRate ||
-                0
-              ).toFixed(2)}%
+              {displayFederalRate.toFixed(2)}%
             </Typography>
             {activeStoreId && countryTaxOverrideMap[`${activeStoreId}-${countryId}`] && (
               <Chip
@@ -815,6 +825,39 @@ const IndiaTaxDetailsPage: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+              {/* India federal row */}
+              {country && (
+                <TableRow>
+                  <TableCell sx={{ borderBottom: '1px solid #f3f4f6', color: '#111827', fontWeight: 600 }}>
+                    {country.name}
+                  </TableCell>
+                  <TableCell sx={{ borderBottom: '1px solid #f3f4f6', color: '#111827' }}>
+                    {displayFederalRate.toFixed(3)}%
+                  </TableCell>
+                  <TableCell sx={{ borderBottom: '1px solid #f3f4f6', color: '#111827' }}>
+                    {federalTaxDefault?.taxLabel || 'Federal GST'}
+                  </TableCell>
+                  <TableCell sx={{ borderBottom: '1px solid #f3f4f6', color: '#6b7280' }}>
+                    Base federal tax
+                  </TableCell>
+                  <TableCell sx={{ borderBottom: '1px solid #f3f4f6' }}>
+                    <IconButton
+                      size="small"
+                      onClick={handleEditCountryTaxClick}
+                      sx={{
+                        color: '#6b7280',
+                        '&:hover': {
+                          backgroundColor: '#f3f4f6',
+                          color: '#111827',
+                        },
+                      }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              )}
+
               {/* State rows */}
               {statesLoading || taxDefaultsLoading ? (
                 <TableRow>
@@ -825,11 +868,11 @@ const IndiaTaxDetailsPage: React.FC = () => {
               ) : stateTaxDefaults.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4, color: '#6b7280' }}>
-                    No tax defaults found
+                    No state tax defaults found. Run tax seed for India states.
                   </TableCell>
                 </TableRow>
               ) : (
-                stateTaxDefaults.map((taxDefault) => {
+                paginatedStateTaxDefaults.map((taxDefault) => {
                   const stateName = taxDefault.stateName || getStateName(taxDefault.stateId);
                   const calculationMethod = taxDefault.calculationMethod || 'instead';
                   
@@ -845,7 +888,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
                         {taxDefault.taxLabel || 'IGST'}
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid #f3f4f6', color: '#111827' }}>
-                        {getCalculationMethodLabel(calculationMethod, currentCountryTaxRate)}
+                        {getCalculationMethodLabel(calculationMethod, displayFederalRate)}
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid #f3f4f6' }}>
                         <IconButton
@@ -869,6 +912,27 @@ const IndiaTaxDetailsPage: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        {stateTaxDefaults.length > regionsPerPage && (
+          <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={1} sx={{ mt: 2 }}>
+            <IconButton
+              size="small"
+              disabled={regionsPage === 1}
+              onClick={() => setRegionsPage((p) => Math.max(1, p - 1))}
+              aria-label="Previous regions page"
+            >
+              <ChevronLeftIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              size="small"
+              disabled={regionsPage === totalRegionPages}
+              onClick={() => setRegionsPage((p) => Math.min(totalRegionPages, p + 1))}
+              aria-label="Next regions page"
+            >
+              <ChevronRightIcon fontSize="small" />
+            </IconButton>
+          </Stack>
+        )}
         </div>
 
         {/* Tax rates and exemptions section */}

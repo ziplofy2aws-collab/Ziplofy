@@ -1,7 +1,7 @@
 // src/App.tsx
 import React, { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, BrowserRouter as Router, Routes, Navigate, useLocation } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
 
 // Import axios config early to ensure interceptors are set up before any requests
 import "./config/axios.config";
@@ -19,7 +19,6 @@ import { UserProvider } from "./contexts/user.context";
 import { AwsUploadProvider } from "./contexts/aws-upload.context";
 import { StoreCloudStorageProvider } from "./contexts/store-cloud-storage.context";
 import Navbar from "./pages/Navbar";
-import { AdminSeoManager } from "./seo/AdminSeoManager";
 import { CategoryProvider } from "./contexts/category.context";
 import { NotificationOverridesProvider } from "./contexts/notification-overrides.context";
 import { PermissionsProvider } from "./contexts/permissions.context";
@@ -27,6 +26,7 @@ import { PurchaseOrderProvider } from "./contexts/purchase-order.context";
 import { StoreRolesProvider } from "./contexts/store-roles.context";
 import { StoreSecuritySettingsProvider } from "./contexts/store-security-settings.context";
 import { CreateThemePoweredByLoader } from "./create-theme/chrome/CreateThemePoweredByLoader";
+
 // Lazy-loaded page components (code splitting)
 const BasicElementor = lazy(() => import("./pages/themes/BasicElementor"));
 const CustomThemeBuilder = lazy(() => import("./pages/themes/CustomThemeBuilder"));
@@ -36,12 +36,6 @@ const ThemeEditor = lazy(() => import("./pages/themes/ThemeEditor"));
 const StoreThemeConfigEditor = lazy(() => import("./pages/themes/StoreThemeConfigEditor"));
 const ThemeLayoutEditor = lazy(() => import("./pages/themes/ThemeLayoutEditor"));
 const CreateThemePage = lazy(() => import("./create-theme/CreateThemePage"));
-
-const fullscreenEditorFallback = (
-  <div className="fixed inset-0 z-[1310] flex items-center justify-center bg-white">
-    <CreateThemePoweredByLoader />
-  </div>
-);
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 const ContentPage = lazy(() => import("./pages/ContentPage"));
 const CreateOrderPage = lazy(() => import("./pages/CreateOrderPage"));
@@ -49,9 +43,6 @@ const CustomerDetailsPage = lazy(() => import("./pages/CustomerDetailsPage"));
 const CustomerSegmentDetailsPage = lazy(() => import("./pages/CustomerSegmentDetailsPage"));
 const CustomersPage = lazy(() => import("./pages/CustomersPage"));
 const CustomersSegmentsPage = lazy(() => import("./pages/CustomersSegmentsPage"));
-const CustomerCompaniesPage = lazy(() => import("./pages/CustomerCompaniesPage"));
-const CompanyCreatePage = lazy(() => import("./pages/CompanyCreatePage"));
-const CompanyDetailPage = lazy(() => import("./pages/CompanyDetailPage"));
 const DiscountsPage = lazy(() => import("./pages/DiscountsPage"));
 const GiftCardDetailPage = lazy(() => import("./pages/GiftCardDetailPage"));
 const GiftCardsPage = lazy(() => import("./pages/GiftCardsPage"));
@@ -61,7 +52,6 @@ const MarketingCampaignsPage = lazy(() => import("./pages/MarketingCampaignsPage
 const MarketingPage = lazy(() => import("./pages/MarketingPage"));
 const NewCustomerPage = lazy(() => import("./pages/NewCustomerPage"));
 const NewGiftCardPage = lazy(() => import("./pages/NewGiftCardPage"));
-const NewGiftCardProductPage = lazy(() => import("./pages/NewGiftCardProductPage"));
 const NewProductPage = lazy(() => import("./pages/NewProductPage"));
 const NewTransferPage = lazy(() => import("./pages/NewTransferPage"));
 const OrderDetailsPage = lazy(() => import("./pages/OrderDetailsPage"));
@@ -123,8 +113,10 @@ const NewLocationForm = lazy(() => import("./pages/settings/NewLocationForm"));
 const NewRolePage = lazy(() => import("./pages/settings/NewRolePage"));
 const NotificationOptionDetailPage = lazy(() => import("./pages/settings/NotificationOptionDetailPage"));
 const NotificationsPage = lazy(() => import("./pages/settings/NotificationsPage"));
-const VerifySenderEmailPage = lazy(() => import("./pages/settings/VerifySenderEmailPage"));
 const PaymentsSettingsPage = lazy(() => import("./pages/settings/PaymentsSettingsPage"));
+const PaymentProvidersPage = lazy(() => import("./pages/settings/PaymentProvidersPage"));
+const ManualPaymentMethodsPage = lazy(() => import("./pages/settings/ManualPaymentMethodsPage"));
+const PaymentProviderDetailsPage = lazy(() => import("./pages/settings/PaymentProviderDetailsPage"));
 const PaymentTransactionDetailsPage = lazy(() => import("./pages/settings/PaymentTransactionDetailsPage"));
 const PlanSelectPage = lazy(() => import("./pages/settings/PlanSelectPage"));
 const PlanSettingsPage = lazy(() => import("./pages/settings/PlanSettingsPage"));
@@ -137,11 +129,6 @@ const SettingsLayout = lazy(() => import("./pages/settings/SettingsLayout"));
 const SettingsPlaceholder = lazy(() => import("./pages/settings/SettingsPlaceholder"));
 const ShippingSettings = lazy(() => import("./pages/settings/ShippingSettings"));
 const ShopMetafieldsPage = lazy(() => import("./pages/settings/ShopMetafieldsPage"));
-const MetaobjectDefinitionCreatePage = lazy(() =>
-  import("./pages/settings/MetaobjectDefinitionCreatePage").then((m) => ({
-    default: m.MetaobjectDefinitionCreatePage,
-  }))
-);
 const StoreActivityLogPage = lazy(() => import("./pages/settings/StoreActivityLogPage"));
 const TaxesAndDutiesPage = lazy(() => import("./pages/settings/TaxesAndDutiesPage"));
 const UsersPage = lazy(() => import("./pages/settings/UsersPage"));
@@ -151,19 +138,7 @@ const ProductTagsPage = lazy(() => import("./pages/tag-management/ProductTagsPag
 const ProductTypesPage = lazy(() => import("./pages/tag-management/ProductTypesPage"));
 const PurchaseOrderTagsPage = lazy(() => import("./pages/tag-management/PurchaseOrderTagsPage"));
 const TransferTagsPage = lazy(() => import("./pages/tag-management/TransferTagsPage"));
-const BlogTagsPage = lazy(() => import("./pages/tag-management/BlogTagsPage"));
-const ContentBlogsPage = lazy(() => import("./pages/ContentBlogsPage").then(m => ({ default: m.ContentBlogsPage })));
-const ContentBlogCreatePage = lazy(() =>
-  import("./pages/ContentBlogCreatePage").then(m => ({ default: m.ContentBlogCreatePage }))
-);
-const ContentBlogEditPage = lazy(() =>
-  import("./pages/ContentBlogEditPage").then(m => ({ default: m.ContentBlogEditPage }))
-);
 const BlogPostCreatePage = lazy(() => import("./pages/BlogPostCreatePage").then(m => ({ default: m.BlogPostCreatePage })));
-const BlogPostEditPage = lazy(() => import("./pages/BlogPostEditPage").then(m => ({ default: m.BlogPostEditPage })));
-const BlogPostCommentsPage = lazy(() =>
-  import("./pages/BlogPostCommentsPage").then(m => ({ default: m.BlogPostCommentsPage }))
-);
 const ContentBlogPostsPage = lazy(() => import("./pages/ContentBlogPostsPage").then(m => ({ default: m.ContentBlogPostsPage })));
 const ContentFilesPage = lazy(() => import("./pages/ContentFilesPage").then(m => ({ default: m.ContentFilesPage })));
 const ContentMenusPage = lazy(() => import("./pages/ContentMenusPage").then(m => ({ default: m.ContentMenusPage })));
@@ -192,7 +167,6 @@ const MarketsPage = lazy(() => import("./pages/markets/MarketsPage"));
 const AbandonedCartsPage = lazy(() => import("./pages/orders/AbandonedCartPage"));
 const AbandonedCartDetailsPage = lazy(() => import("./pages/orders/AbondonedCartDetailsPage"));
 const DraftsPage = lazy(() => import("./pages/orders/DraftsPage"));
-const CreateDraftOrderPage = lazy(() => import("./pages/orders/CreateDraftOrderPage"));
 const CustomerEventPixelDetailsPage = lazy(() => import("./pages/settings/CustomerEventPixelDetailsPage"));
 const CustomerEventsPage = lazy(() => import("./pages/settings/CustomerEventsPage"));
 const ShippingProfileCreatePage = lazy(() => import("./pages/settings/ShippingProfileCreatePage"));
@@ -205,7 +179,6 @@ import { CustomerSegmentsEntryProvider } from "./contexts/CustomerSegmentsEntry.
 import { AbandonedCartProvider } from "./contexts/abandoned-cart.context";
 import { ActionProvider } from "./contexts/action.context";
 import { AdminOrderProvider } from "./contexts/admin-order.context";
-import { OrderTimelineProvider } from "./contexts/order-timeline.context";
 import { AmountOffOrderDiscountProvider } from "./contexts/amount-off-order-discount.context";
 import { AutomationFlowProvider } from "./contexts/automation-flow.context";
 import { BuyXGetYDiscountProvider } from "./contexts/buy-x-get-y-discount.context";
@@ -215,11 +188,6 @@ import { CatalogProvider } from "./contexts/catalog.context";
 import { CheckoutSettingsProvider } from "./contexts/checkout-settings.context";
 import { CollectionEntriesProvider } from "./contexts/collection-entries.context";
 import { CollectionProvider } from "./contexts/collection.context";
-import { BlogProvider } from "./contexts/blog.context";
-import { CompanyProvider } from "./contexts/company.context";
-import { BlogCommentsProvider } from "./contexts/blog-comment.context";
-import { BlogPostProvider } from "./contexts/blog-post.context";
-import { BlogTagsProvider } from "./contexts/blog-tags.context";
 import { StoreMenuProvider } from "./contexts/store-menu.context";
 import { CountryTaxOverrideProvider } from "./contexts/country-tax-override.context";
 import { CountryTaxProvider } from "./contexts/country-tax.context";
@@ -232,10 +200,8 @@ import { CustomerSegmentProvider } from "./contexts/customer-segment.context";
 import { FinalSaleItemProvider } from "./contexts/final-sale-item.context";
 import { FreeShippingDiscountProvider } from "./contexts/free-shipping-discount.context";
 import { GeneralSettingsProvider } from "./contexts/general-settings.context";
-import { OnlineStorePreferencesProvider } from "./contexts/online-store-preferences.context";
 import { GiftCardTimelineProvider } from "./contexts/gift-card-timeline.context";
 import { GiftCardsProvider } from "./contexts/gift-cards.context";
-import { GiftCardProductsProvider } from "./contexts/gift-card-products.context";
 import { InstalledThemesProvider } from "./contexts/installed-themes.context";
 import { InventoryLevelsProvider } from "./contexts/inventory-level.contexts";
 import { LocalDeliveryLocationEntriesProvider } from "./contexts/local-delivery-location-entries.context";
@@ -266,7 +232,6 @@ import { ShippingZoneProvider } from "./contexts/shipping-zone.context";
 import { StateProvider } from "./contexts/state.context";
 import { StoreBannerProvider } from "./contexts/store-banner.context";
 import { StoreCustomThemesProvider } from "./contexts/store-custom-themes.context";
-import { StoreCheckoutConfigurationsProvider } from "./contexts/store-checkout-configurations.context";
 import { StoreBrandingProvider } from "./contexts/store-branding.context";
 import { StoreContactInfoProvider } from "./contexts/store-contact-info.context";
 import { StoreNotificationEmailProvider } from "./contexts/store-notification-email.context";
@@ -314,9 +279,6 @@ const AdminApp: React.FC = () => {
   const isBuilderFullScreen = location.pathname.startsWith('/themes/builder');
   const isBasicElementor = location.pathname.startsWith('/themes/basic-elementor');
   const isThemeCreator = location.pathname.startsWith('/themes/create');
-  const isThemesEditorCheckout = location.pathname.startsWith('/themes/editor/checkout');
-  const isCheckoutProfileEditor =
-    location.pathname.startsWith('/checkout/editor') || isThemesEditorCheckout;
   const isThemeSchemaEditor =
     location.pathname === '/themes/dev-editor' ||
     /^\/themes\/[^/]+\/editor$/.test(location.pathname);
@@ -325,16 +287,13 @@ const AdminApp: React.FC = () => {
     isBuilderFullScreen ||
     isBasicElementor ||
     isThemeSchemaEditor ||
-    isThemeCreator ||
-    isCheckoutProfileEditor;
+    isThemeCreator;
   const isSettings = location.pathname.startsWith('/settings');
   const showNavbar = !isFullScreen;
-  const showSidebar =
-    !isFullScreen && !isSettings && !isThemeCreator && !isCheckoutProfileEditor;
+  const showSidebar = !isFullScreen && !isSettings && !isThemeCreator;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <AdminSeoManager />
       {showNavbar && <Navbar />}
 
       <div style={{ display: "flex", flexGrow: 1, overflow: "hidden", position: "relative" }}>
@@ -342,10 +301,8 @@ const AdminApp: React.FC = () => {
 
         <main
           className={[
-            "flex-1 antialiased text-gray-900",
-            isFullScreen
-              ? "relative overflow-hidden bg-transparent p-0"
-              : "overflow-y-auto overflow-x-hidden bg-page-background-color p-4 sm:p-6 lg:p-8 transition-[margin-left] duration-300 ease-out",
+            "flex-1 overflow-y-auto overflow-x-hidden antialiased text-gray-900 transition-[margin-left] duration-300 ease-out",
+            isFullScreen ? "bg-transparent p-0" : "bg-page-background-color p-4 sm:p-6 lg:p-8",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -356,41 +313,13 @@ const AdminApp: React.FC = () => {
             height: showNavbar ? `calc(100vh - ${NAVBAR_HEIGHT}px)` : "100vh",
           }}
         >
-          <Suspense fallback={isFullScreen ? fullscreenEditorFallback : <PageLoader />}>
+          <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/themes/create" element={<CreateThemePage />} />
-            <Route
-              path="/themes/editor/checkout/:configId"
-              element={<CreateThemePage mode="checkout-profile" />}
-            />
-            <Route
-              path="/themes/editor/checkout"
-              element={<Navigate to="/settings/checkout" replace />}
-            />
-            <Route
-              path="/checkout/editor"
-              element={<Navigate to="/settings/checkout" replace />}
-            />
-            <Route
-              path="/checkout/editor/"
-              element={<Navigate to="/settings/checkout" replace />}
-            />
-            <Route
-              path="/checkout/editor/profiles"
-              element={<Navigate to="/settings/checkout" replace />}
-            />
-            <Route
-              path="/checkout/editor/profiles/"
-              element={<Navigate to="/settings/checkout" replace />}
-            />
-
             <Route element={<AdminStandardLayout />}>
             {/* Top-level */}
             <Route path="/" element={<HomePage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/orders/create" element={<CreateOrderPage />} />
-            <Route path="/orders/drafts/new" element={<CreateDraftOrderPage />} />
-            <Route path="/orders/drafts" element={<DraftsPage />} />
             <Route path="/orders/abandoned-carts" element={<AbandonedCartsPage />} />
             <Route path="/orders/abandoned-carts/customer/:customerId" element={<AbandonedCartDetailsPage />} />
             <Route path="/orders/:id" element={<OrderDetailsPage />} />
@@ -407,7 +336,6 @@ const AdminApp: React.FC = () => {
             <Route path="/products/collections/:id" element={<ProductCollectionDetailsPage />} />
             <Route path="/products/collections/new" element={<ProductCollectionCreatePage />} />
             <Route path="/products/gift-cards" element={<GiftCardsPage />} />
-            <Route path="/products/gift-cards/products/new" element={<NewGiftCardProductPage />} />
             <Route path="/products/gift-cards/new" element={<NewGiftCardPage />} />
             <Route path="/products/gift-cards/:giftCardId" element={<GiftCardDetailPage />} />
             <Route path="/products/transfers" element={<TransfersPage />} />
@@ -415,9 +343,6 @@ const AdminApp: React.FC = () => {
             <Route path="/products/transfers/new" element={<NewTransferPage />} />
             <Route path="/products/transfers/:id/shipment/new" element={<ShipmentNewPage />} />
             <Route path="/products/transfers/:id/shipment/:shipmentId/receive" element={<ShipmentReceivePage />} />
-            <Route path="/companies/new" element={<CompanyCreatePage />} />
-            <Route path="/companies" element={<CustomerCompaniesPage />} />
-            <Route path="/company/:id" element={<CompanyDetailPage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/customers/segments" element={<CustomersSegmentsPage />} />
             <Route path="/customers/segments/:id" element={<CustomerSegmentDetailsPage />} />
@@ -442,13 +367,8 @@ const AdminApp: React.FC = () => {
             <Route path="/discounts/new/amount-off-order" element={<AmountOffOrderPage />} />
             <Route path="/discounts/new/free-shipping" element={<FreeShippingPage />} />
             <Route path="/content" element={<ContentPage />} />
-            <Route path="/content/articles" element={<ContentBlogPostsPage />} />
-            <Route path="/content/articles/new" element={<BlogPostCreatePage />} />
-            <Route path="/content/articles/:articleId" element={<BlogPostEditPage />} />
-            <Route path="/content/comments/article/:articleId" element={<BlogPostCommentsPage />} />
-            <Route path="/content/blogs" element={<ContentBlogsPage />} />
-            <Route path="/content/blogs/new" element={<ContentBlogCreatePage />} />
-            <Route path="/content/blogs/:blogId" element={<ContentBlogEditPage />} />
+            <Route path="/content/blog-posts" element={<ContentBlogPostsPage />} />
+            <Route path="/content/blog-posts/new" element={<BlogPostCreatePage />} />
             <Route path="/content/files" element={<ContentFilesPage />} />
             <Route path="/content/menus" element={<ContentMenusPage />} />
             <Route path="/content/menus/new" element={<ContentMenuCreatePage />} />
@@ -469,7 +389,6 @@ const AdminApp: React.FC = () => {
             <Route path="/tag-management" element={<TagManagement />} />
             <Route path="/tag-management/customer-tags" element={<CustomerTagsPage />} />
             <Route path="/tag-management/product-tags" element={<ProductTagsPage />} />
-            <Route path="/tag-management/blog-tags" element={<BlogTagsPage />} />
             <Route path="/tag-management/product-types" element={<ProductTypesPage />} />
             <Route path="/tag-management/transfer-tags" element={<TransferTagsPage />} />
             <Route path="/tag-management/purchase-order-tags" element={<PurchaseOrderTagsPage />} />
@@ -494,6 +413,9 @@ const AdminApp: React.FC = () => {
               <Route path="users/security" element={<UsersSecurityPage />} />
               <Route path="payments/transactions/:transactionId" element={<PaymentTransactionDetailsPage />} />
               <Route path="payments/transactions" element={<TransactionsPage />} />
+              <Route path="payments/manual" element={<ManualPaymentMethodsPage />} />
+              <Route path="payments/providers/:providerKey" element={<PaymentProviderDetailsPage />} />
+              <Route path="payments/providers" element={<PaymentProvidersPage />} />
               <Route path="payments" element={<PaymentsSettingsPage />} />
               <Route path="checkout" element={<CheckoutSettingsPage />} />
               <Route path="customer-accounts" element={<CustomerAccountsPage />} />
@@ -516,20 +438,11 @@ const AdminApp: React.FC = () => {
               <Route path="customer-events" element={<CustomerEventsPage />} />
               <Route path="customer-events/:pixelId" element={<CustomerEventPixelDetailsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
-              <Route path="notifications/verify-sender-email" element={<VerifySenderEmailPage />} />
               <Route path="notifications/:categoryId/:categorySlug" element={<CustomerNotificationsPage />} />
               <Route path="notifications/:categoryId/:categorySlug/:optionId" element={<NotificationOptionDetailPage />} />
               <Route path="notifications/:categoryId/:categorySlug/:optionId/edit" element={<EditNotificationOptionPage />} />
               <Route path="notifications/webhooks" element={<WebhooksNotificationsPage />} />
-              <Route path="custom_data" element={<MetafeildsAndMetaObjectsSettingsPage />} />
-              <Route
-                path="metafields-and-metaobjects"
-                element={<Navigate to="/settings/custom_data" replace />}
-              />
-              <Route
-                path="custom_data/metaobjects/create"
-                element={<MetaobjectDefinitionCreatePage />}
-              />
+              <Route path="metafields-and-metaobjects" element={<MetafeildsAndMetaObjectsSettingsPage />} />
               <Route path="languages" element={<LanguageSettingsPage />} />
               <Route path="customer-privacy" element={<CustomerPrivacyPage />} />
               <Route path="customer-privacy/dns" element={<DataSharingOptOutPage />} />
@@ -538,9 +451,26 @@ const AdminApp: React.FC = () => {
               <Route path="policies/manage-return-rules/new" element={<CreateReturnRules />} />
             </Route>
 
+            {/* Orders subsections */}
+            <Route path="/orders/drafts" element={<DraftsPage />} />
+            
 
             {/* Themes Subsection */}
             <Route path="/themes/all-themes" element={<AllThemes />} />
+            <Route
+              path="/themes/create"
+              element={
+                <Suspense
+                  fallback={
+                    <div className="fixed inset-0 z-[1310] flex items-center justify-center bg-white">
+                      <CreateThemePoweredByLoader />
+                    </div>
+                  }
+                >
+                  <CreateThemePage />
+                </Suspense>
+              }
+            />
             <Route path="/themes/builder" element={<CustomThemeBuilder />} />
             <Route path="/themes/basic-elementor" element={<BasicElementor />} />
             <Route path="/themes/edit/:themeId" element={<ThemeEditor />} />
@@ -573,15 +503,9 @@ const App: React.FC = () => {
         <ThemesProvider>
           <CustomThemesProvider>
           <StoreCustomThemesProvider>
-          <StoreCheckoutConfigurationsProvider>
         <VendorProvider>
         <CollectionProvider>
         <StoreMenuProvider>
-        <BlogProvider>
-        <CompanyProvider>
-        <BlogPostProvider>
-        <BlogCommentsProvider>
-        <BlogTagsProvider>
         <CustomerTagsProvider>
         <ProductTagsProvider>
         <CustomerProvider>
@@ -591,7 +515,6 @@ const App: React.FC = () => {
         <CollectionEntriesProvider>
         <ProductTypeProvider>
         <GiftCardsProvider>
-        <GiftCardProductsProvider>
         <GiftCardTimelineProvider>
         <LocationsProvider>
         <LocalDeliverySettingsProvider>
@@ -616,7 +539,6 @@ const App: React.FC = () => {
         <StoreBannerProvider>
         <PaymentProvider>
         <GeneralSettingsProvider>
-        <OnlineStorePreferencesProvider>
         <CustomerAccountSettingsProvider>
         <ReturnRulesProvider>
         <FinalSaleItemProvider>
@@ -641,7 +563,6 @@ const App: React.FC = () => {
         <AutomationFlowProvider>
         <PixelProvider>
         <AdminOrderProvider>
-        <OrderTimelineProvider>
         <NotificationCategoriesProvider>
         <NotificationOptionsProvider>
         <NotificationOverridesProvider>
@@ -702,7 +623,6 @@ const App: React.FC = () => {
         </NotificationOverridesProvider>
         </NotificationOptionsProvider>
         </NotificationCategoriesProvider>
-        </OrderTimelineProvider>
         </AdminOrderProvider>
         </PixelProvider>
         </AutomationFlowProvider>
@@ -727,7 +647,6 @@ const App: React.FC = () => {
         </FinalSaleItemProvider>
         </ReturnRulesProvider>
         </CustomerAccountSettingsProvider>
-        </OnlineStorePreferencesProvider>
         </GeneralSettingsProvider>
         </PaymentProvider>
         </StoreBannerProvider>
@@ -752,7 +671,6 @@ const App: React.FC = () => {
         </LocalDeliverySettingsProvider>
         </LocationsProvider>
         </GiftCardTimelineProvider>
-        </GiftCardProductsProvider>
         </GiftCardsProvider>
         </ProductTypeProvider>
         </CollectionEntriesProvider>
@@ -762,15 +680,9 @@ const App: React.FC = () => {
         </CustomerProvider>
         </ProductTagsProvider>
         </CustomerTagsProvider>
-        </BlogTagsProvider>
-        </BlogCommentsProvider>
-        </BlogPostProvider>
-        </CompanyProvider>
-        </BlogProvider>
         </StoreMenuProvider>
         </CollectionProvider>
         </VendorProvider>
-        </StoreCheckoutConfigurationsProvider>
         </StoreCustomThemesProvider>
         </CustomThemesProvider>
         </ThemesProvider>

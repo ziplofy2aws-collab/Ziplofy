@@ -1,48 +1,54 @@
 import React, { useCallback } from "react";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import {
-  type ProductFormAppearance,
-  productFormCardClass,
-  productFormInputClass,
-  productFormSectionTitleClass,
-} from "./product-form-appearance";
 
 interface ProductStatusSectionProps {
   status: "draft" | "active";
   onChange: (status: "draft" | "active") => void;
-  appearance?: ProductFormAppearance;
 }
 
 const ProductStatusSection: React.FC<ProductStatusSectionProps> = ({
   status,
   onChange,
-  appearance = 'default',
 }) => {
-  const handleStatusChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value as "draft" | "active");
   }, [onChange]);
 
-  const selectClass =
-    appearance === 'minimal'
-      ? 'w-full appearance-none rounded-md border border-gray-200/70 bg-white py-2 pl-3 pr-8 text-sm text-gray-700 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200'
-      : 'w-full appearance-none rounded-lg border border-gray-200 bg-white py-2.5 pl-3 pr-8 text-sm text-gray-800 focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400';
-
   return (
-    <div className={productFormCardClass(appearance)}>
-      <h2 className={productFormSectionTitleClass(appearance)}>Status</h2>
-      <div className="relative">
-        <select
-          value={status}
-          onChange={handleStatusChange}
-          className={selectClass}
-        >
-          <option value="active">Active</option>
-          <option value="draft">Draft</option>
-        </select>
-        <ChevronDownIcon className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-      </div>
+    <div className="bg-white rounded-xl border border-gray-200/80 p-6 shadow-sm">
+      <h2 className="text-base font-semibold text-gray-900 mb-4">
+        Status
+      </h2>
+      
+      <fieldset>
+        <legend className="text-xs font-medium text-gray-600 mb-2">
+          Product Status
+        </legend>
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              value="active"
+              checked={status === "active"}
+              onChange={handleStatusChange}
+              className="w-3.5 h-3.5 text-gray-900 focus:ring-gray-400"
+            />
+            <span className="text-sm text-gray-700">Active (visible to customers)</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              value="draft"
+              checked={status === "draft"}
+              onChange={handleStatusChange}
+              className="w-3.5 h-3.5 text-gray-900 focus:ring-gray-400"
+            />
+            <span className="text-sm text-gray-700">Draft (not visible to customers)</span>
+          </label>
+        </div>
+      </fieldset>
     </div>
   );
 };
 
 export default ProductStatusSection;
+

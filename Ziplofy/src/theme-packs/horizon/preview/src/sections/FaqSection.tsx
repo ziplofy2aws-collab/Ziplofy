@@ -4,15 +4,11 @@ import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
 import { heroHeadingTypographyCss, readHeroHeadingStyle } from '../lib/heroHeadingStyles';
 import {
   accordionQuestionTypography,
-  isFaqAccordionBlockEnabled,
-  isFaqHeadingBlockEnabled,
   readFaqAccordionStyle,
   readFaqHeading,
   readFaqItems,
   readFaqLayout,
-  readFaqTextBlockStyle,
   scopedFaqCss,
-  faqOverlayBackground,
 } from '../lib/faqStyles';
 import { layout, useThemeColors } from '../tokens';
 
@@ -95,8 +91,6 @@ export function FaqSection({
     [config, sectionBase, settingsBase]
   );
   const [openIds, setOpenIds] = useState<Set<string>>(() => {
-    const defaults = items.filter((item) => item.openByDefault).map((item) => item.id);
-    if (defaults.length) return new Set(defaults);
     if (accordionStyle.openFirstItem && items[0]) return new Set([items[0].id]);
     return new Set();
   });
@@ -106,7 +100,7 @@ export function FaqSection({
   const answerColor = accordionStyle.inheritColorScheme ? scheme.muted : themeText;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
-  const scopeClass = `codiic-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `ziplofy-faq-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const headingStyleTokens = useMemo(
     () =>
       readHeroHeadingStyle(config, settingsBase, { fontHeading, fontBody }, {
@@ -119,8 +113,6 @@ export function FaqSection({
 
   const shell: CSSProperties = {
     position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
     background:
       style.backgroundMedia === 'image' && style.backgroundImageUrl
         ? scheme.background
@@ -131,7 +123,7 @@ export function FaqSection({
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    minHeight: style.minHeight,
+    minHeight: style.minHeightPx > 0 ? style.minHeightPx : undefined,
     border:
       style.borderStyle === 'solid' ? `1px solid ${scheme.border}` : undefined,
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
@@ -147,7 +139,6 @@ export function FaqSection({
     maxWidth: innerMaxWidth,
     margin: '0 auto',
     width: '100%',
-    flex: style.minHeight ? '1 1 auto' : undefined,
     display: 'flex',
     flexDirection: style.direction === 'horizontal' ? 'row' : 'column',
     alignItems:
@@ -170,7 +161,7 @@ export function FaqSection({
     boxSizing: 'border-box',
     ...heroHeadingTypographyCss(headingStyleTokens),
     color: headingStyleTokens.color,
-    textAlign: headingStyleTokens.textAlign,
+    textAlign: headingStyleTokens.textAlign ?? style.layoutAlignment,
     background: headingStyleTokens.background,
     paddingTop: headingStyleTokens.paddingTop,
     paddingBottom: headingStyleTokens.paddingBottom,
@@ -196,12 +187,6 @@ export function FaqSection({
   };
 
   const customCss = scopedFaqCss(sectionId, style.customCss);
-  const showHeading = isFaqHeadingBlockEnabled(config, sectionBase);
-  const showAccordion = isFaqAccordionBlockEnabled(config, sectionBase);
-  const accordionNodeId =
-    placement === 'template'
-      ? `template:${templateId}:${sectionId}:block:accordion`
-      : `layout:${sectionId}:block:accordion`;
 
   return (
     <EditorSection sectionId={sectionId} label="FAQ" editorNodeId={editorNodeId} style={shell}>
@@ -225,38 +210,32 @@ export function FaqSection({
           style={{
             position: 'absolute',
             inset: 0,
-            background: faqOverlayBackground(style),
+            background: 'rgba(0,0,0,0.35)',
             zIndex: 1,
           }}
         />
       ) : null}
       <div className={scopeClass} style={{ ...stage, position: 'relative', zIndex: 2 }}>
-        {showHeading ? (
-          <EditorBlock
-            nodeId={
-              placement === 'template'
-                ? `template:${templateId}:${sectionId}:block:heading`
-                : `layout:${sectionId}:block:heading`
-            }
+        <EditorBlock
+          nodeId={
+            placement === 'template'
+              ? `template:${templateId}:${sectionId}:block:heading`
+              : `layout:${sectionId}:block:heading`
+          }
+          label="Heading"
+        >
+          <EditorField
+            fieldPath={`${settingsBase}.title`}
             label="Heading"
+            as="h2"
+            style={headingStyle}
           >
-            <EditorField
-              fieldPath={`${settingsBase}.title`}
-              label="Heading"
-              as="h2"
-              style={headingStyle}
-            >
-              {heading}
-            </EditorField>
-          </EditorBlock>
-        ) : null}
+            {heading}
+          </EditorField>
+        </EditorBlock>
 
-        {showAccordion ? (
         <div
           role="list"
-          data-codiic-node={accordionNodeId}
-          data-codiic-label="Accordion"
-          data-codiic-kind="block"
           style={{
             ...listStyle,
             borderTop: accordionStyle.dividers ? `1px solid ${scheme.border}` : undefined,
@@ -281,15 +260,16 @@ export function FaqSection({
               placement === 'template'
                 ? `template:${templateId}:${sectionId}:block:accordion:nested:${item.id}`
                 : `layout:${sectionId}:block:accordion:nested:${item.id}`;
-            const questionPath = `${sectionBase}.blocks.accordion.blocks.${item.id}.settings.heading`;
+            const questionPath = `${sectionBase}.blocks.accordion.blocks.${item.id}.settings.question`;
+            const answerPath = `${sectionBase}.blocks.accordion.blocks.${item.id}.settings.answer`;
 
             return (
               <div
                 key={item.id}
                 role="listitem"
-                data-codiic-node={blockNodeId}
-                data-codiic-label={item.question}
-                data-codiic-kind="block"
+                data-ziplofy-node={blockNodeId}
+                data-ziplofy-label={item.question}
+                data-ziplofy-kind="block"
                 style={{ borderBottom: rowBorder }}
               >
                 <button
@@ -311,31 +291,18 @@ export function FaqSection({
                     font: 'inherit',
                   }}
                 >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
-                    {item.rowImageIconUrl ? (
-                      <img
-                        src={item.rowImageIconUrl}
-                        alt=""
-                        style={{
-                          width: item.rowIconWidth,
-                          height: item.rowIconWidth,
-                          objectFit: 'contain',
-                          flexShrink: 0,
-                        }}
-                      />
-                    ) : null}
-                    <EditorField
-                      fieldPath={questionPath}
-                      label="Heading"
-                      as="span"
-                      style={{
-                        ...questionTypography,
-                        color: questionColor,
-                      }}
-                    >
-                      {item.question}
-                    </EditorField>
-                  </span>
+                  <EditorField
+                    fieldPath={questionPath}
+                    label="Question"
+                    as="span"
+                    style={{
+                      ...questionTypography,
+                      color: questionColor,
+                      flex: 1,
+                    }}
+                  >
+                    {item.question}
+                  </EditorField>
                   <AccordionIcon kind={accordionStyle.icon} open={open} />
                 </button>
                 {open ? (
@@ -343,42 +310,20 @@ export function FaqSection({
                     style={{
                       paddingBottom: 20,
                       paddingRight: 32,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 12,
+                      color: answerColor,
+                      fontSize: '0.9375rem',
+                      lineHeight: 1.6,
                     }}
                   >
-                    {item.textBlocks.map((textBlock) => {
-                      const answerSettingsBase = `${sectionBase}.blocks.accordion.blocks.${item.id}.blocks.${textBlock.id}.settings`;
-                      const answerPath = `${answerSettingsBase}.text`;
-                      const textNodeId = `${blockNodeId}:nested:${textBlock.id}`;
-                      const answerStyle = readFaqTextBlockStyle(
-                        config,
-                        answerSettingsBase,
-                        { fontHeading, fontBody },
-                        answerColor
-                      );
-                      return (
-                        <div key={textBlock.id} style={answerStyle}>
-                          <div
-                            data-codiic-node={textNodeId}
-                            data-codiic-label="Text"
-                            data-codiic-kind="block"
-                          >
-                            <EditorField fieldPath={answerPath} label="Text" as="div">
-                              {textBlock.text || 'Add text in the sidebar.'}
-                            </EditorField>
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <EditorField fieldPath={answerPath} label="Answer" as="div">
+                      {item.answer || 'Add an answer in the sidebar.'}
+                    </EditorField>
                   </div>
                 ) : null}
               </div>
             );
           })}
         </div>
-        ) : null}
       </div>
     </EditorSection>
   );

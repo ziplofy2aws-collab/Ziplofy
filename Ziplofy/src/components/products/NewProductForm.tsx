@@ -9,8 +9,6 @@ import React from 'react';
 import type { Product } from '../../contexts/product.context';
 import { useNewProductForm } from '../../hooks/useNewProductForm';
 import ProductBasicInformationSection from './ProductBasicInformationSection';
-import ProductCategorySection from './ProductCategorySection';
-import ProductFormHeader from './ProductFormHeader';
 import ProductInventorySection from './ProductInventorySection';
 import ProductOrganizationSection from './ProductOrganizationSection';
 import ProductPriceSection from './ProductPriceSection';
@@ -20,7 +18,6 @@ import ProductStatusSection from './ProductStatusSection';
 
 export type NewProductFormProps = {
   variant?: 'page' | 'sheet';
-  backLabel?: string;
   onSuccess?: (product: Product) => void;
   onCancel?: () => void;
   onBack?: () => void;
@@ -28,7 +25,6 @@ export type NewProductFormProps = {
 
 export const NewProductForm: React.FC<NewProductFormProps> = ({
   variant = 'page',
-  backLabel = 'Back to Products',
   onSuccess,
   onCancel,
   onBack,
@@ -40,8 +36,8 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
     handleSubmit,
     isSubmitting,
     productLoading,
-    displayImages,
-    addImageUrl,
+    selectedImages,
+    addImageFiles,
     removeImage,
     addVariant,
     removeVariant,
@@ -60,34 +56,62 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
   return (
     <div className={isSheet ? 'bg-page-background-color' : 'min-h-screen bg-page-background-color'}>
       <div className={isSheet ? 'px-4 py-4 sm:px-6' : 'mx-auto max-w-[1500px] px-3 py-4 sm:px-4'}>
-        <ProductFormHeader
-          mode="create"
-          title="Add product"
-          submitLabel={isSubmitting || productLoading ? 'Creating product...' : 'Add product'}
-          submitDisabled={submitDisabled}
-          backLabel={backLabel}
-          onBack={!isSheet ? onBack : undefined}
-          onCancel={isSheet ? onCancel : undefined}
-          onSubmit={() => void handleSubmit()}
-        />
+        <div className={isSheet ? 'mb-4' : 'mb-5'}>
+          {!isSheet && onBack ? (
+            <button
+              type="button"
+              onClick={onBack}
+              className="mb-4 flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900"
+            >
+              <ArrowLeftIcon className="h-4 w-4" />
+              Back to Products
+            </button>
+          ) : null}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gray-100">
+                <CubeIcon className="h-4 w-4 text-gray-700" />
+              </div>
+              <h1 className="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
+                Add product
+              </h1>
+            </div>
+            <div className="flex items-center gap-2">
+              {isSheet && onCancel ? (
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => void handleSubmit()}
+                disabled={submitDisabled}
+                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isSubmitting || productLoading ? 'Creating product...' : 'Add product'}
+              </button>
+            </div>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">
             <ProductBasicInformationSection
               title={formData.title}
               description={formData.description}
-              images={displayImages}
-              onTitleChange={(value) => handleInputChange('title', value)}
-              onDescriptionChange={(value) => handleInputChange('description', value)}
-              onAddImageUrl={addImageUrl}
-              onRemoveImage={removeImage}
-              mediaDisabled={isSubmitting || productLoading}
-            />
-
-            <ProductCategorySection
               category={formData.category}
               activeStoreId={activeStoreId}
+              images={selectedImages.map((image) => image.previewUrl)}
+              onTitleChange={(value) => handleInputChange('title', value)}
+              onDescriptionChange={(value) => handleInputChange('description', value)}
               onCategoryChange={(categoryId) => handleInputChange('category', categoryId)}
+              onAddImageFiles={addImageFiles}
+              onRemoveImage={removeImage}
+              mediaDisabled={isSubmitting || productLoading}
             />
 
             <ProductPriceSection

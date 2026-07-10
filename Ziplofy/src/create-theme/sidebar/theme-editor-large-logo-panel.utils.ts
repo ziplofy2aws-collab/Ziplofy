@@ -5,7 +5,6 @@ export const LARGE_LOGO_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
-  'Borders',
   'Padding',
   'Theme Settings',
   'Custom CSS',
@@ -20,7 +19,6 @@ const LARGE_LOGO_PANEL_KEYS = new Set([
   'height',
   'colorScheme',
   'backgroundMedia',
-  'backgroundColor',
   'backgroundImageUrl',
   'borderStyle',
   'cornerRadius',
@@ -43,16 +41,15 @@ function fieldSortKey(path: string): number {
     layoutGap: 3,
     sectionWidth: 10,
     height: 11,
+    colorScheme: 20,
     backgroundMedia: 21,
-    backgroundColor: 22,
-    backgroundImageUrl: 23,
+    backgroundImageUrl: 22,
+    borderStyle: 23,
+    cornerRadius: 24,
     mediaOverlay: 25,
-    borderStyle: 26,
-    cornerRadius: 27,
     paddingTop: 30,
     paddingBottom: 31,
-    colorScheme: 35,
-    defaultLogoUrl: 36,
+    defaultLogoUrl: 40,
     customCss: 50,
   };
   return rank[key] ?? 50;
@@ -76,16 +73,12 @@ function remapLargeLogoGroup(field: EditorFieldDef): EditorFieldDef {
     next = { ...next, label: 'Background overlay', group: 'Appearance', widget: 'toggle' };
   } else if (key === 'backgroundMedia') {
     next = { ...next, group: 'Appearance', widget: 'select-inline' };
-  } else if (key === 'backgroundColor') {
-    next = { ...next, label: 'Background color', group: 'Appearance', widget: 'color' };
   } else if (key === 'backgroundImageUrl') {
     next = { ...next, group: 'Appearance', widget: 'image' };
   } else if (key === 'borderStyle') {
-    next = { ...next, group: 'Borders', widget: 'segmented' };
+    next = { ...next, group: 'Appearance', widget: 'segmented' };
   } else if (key === 'cornerRadius') {
-    next = { ...next, group: 'Borders', widget: 'slider' };
-  } else if (key === 'colorScheme') {
-    next = { ...next, label: 'Color scheme', group: 'Theme Settings', widget: 'color-scheme' };
+    next = { ...next, group: 'Appearance', widget: 'slider' };
   } else if (key === 'defaultLogoUrl') {
     next = { ...next, group: 'Theme Settings', widget: 'image', label: 'Default logo' };
   } else if (key === 'customCss') {
@@ -99,10 +92,9 @@ export function sortLargeLogoPanelFields(fields: EditorFieldDef[]): EditorFieldD
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Borders: 3,
-    Padding: 4,
-    'Theme Settings': 5,
-    'Custom CSS': 6,
+    Padding: 3,
+    'Theme Settings': 4,
+    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
