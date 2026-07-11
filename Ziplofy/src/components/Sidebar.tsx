@@ -9,7 +9,6 @@ import {
   GlobeAltIcon,
   HomeIcon,
   MegaphoneIcon,
-  PuzzlePieceIcon,
   ShoppingCartIcon,
   TagIcon,
   UserGroupIcon,
@@ -24,6 +23,17 @@ const drawerWidth = 240;
 interface SubNavItem {
   text: string;
   path: string;
+  comingSoon?: boolean;
+  /** Additional paths that highlight this sub-item (e.g. legacy theme routes). */
+  relatedPaths?: string[];
+}
+
+function subNavMatchesPath(sub: SubNavItem, pathname: string): boolean {
+  if (sub.comingSoon) return false;
+  if (pathname === sub.path || pathname.startsWith(`${sub.path}/`)) return true;
+  return (
+    sub.relatedPaths?.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ?? false
+  );
 }
 
 interface NavItem {
@@ -31,6 +41,8 @@ interface NavItem {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   path: string;
   children?: SubNavItem[];
+  /** Additional paths that keep this section expanded and highlighted (e.g. /companies under Customers). */
+  relatedPaths?: string[];
 }
 
 const NAV: NavItem[] = [
@@ -40,7 +52,6 @@ const NAV: NavItem[] = [
     icon: ShoppingCartIcon,
     path: '/orders',
     children: [
-      { text: 'Orders', path: '/orders' },
       { text: 'Drafts', path: '/orders/drafts' },
       { text: 'Abandoned Carts', path: '/orders/abandoned-carts' },
     ],
@@ -54,14 +65,18 @@ const NAV: NavItem[] = [
       { text: 'Inventory', path: '/products/inventory' },
       { text: 'Purchase orders', path: '/products/purchase-orders' },
       { text: 'Transfers', path: '/products/transfers' },
-      { text: 'Gift cards', path: '/products/gift-cards' },
+      { text: 'Gift cards', path: '/products/gift-cards', comingSoon: true },
     ],
   },
   {
     text: 'Customers',
     icon: UserGroupIcon,
     path: '/customers',
-    children: [{ text: 'Segments', path: '/customers/segments' }],
+    relatedPaths: ['/companies'],
+    children: [
+      { text: 'Segments', path: '/customers/segments' },
+      { text: 'Companies', path: '/companies' },
+    ],
   },
   {
     text: 'Marketing',
@@ -103,16 +118,12 @@ const NAV: NavItem[] = [
     text: 'Online Store',
     icon: GlobeAltIcon,
     path: '/online-store',
+    relatedPaths: ['/themes'],
     children: [
-      { text: 'Themes', path: '/online-store/themes' },
+      { text: 'Themes', path: '/online-store/themes', relatedPaths: ['/themes'] },
       { text: 'Pages', path: '/online-store/pages' },
       { text: 'Preference', path: '/online-store/preference' },
     ],
-  },
-  {
-    text: 'Themes',
-    icon: PuzzlePieceIcon,
-    path: '/themes/all-themes',
   },
   {
     text: 'Tag Management',
@@ -133,7 +144,14 @@ export default function Sidebar() {
   const defaultOpen = useMemo(() => {
     const map: Record<string, boolean> = {};
     NAV.forEach((n) => {
-      if (n.children) map[n.text] = location.pathname.startsWith(n.path);
+      if (n.children) {
+        map[n.text] =
+          location.pathname.startsWith(n.path) ||
+          (n.relatedPaths?.some(
+            (p) => location.pathname === p || location.pathname.startsWith(`${p}/`)
+          ) ??
+            false);
+      }
     });
     return map;
   }, [location.pathname]);
@@ -165,17 +183,15 @@ export default function Sidebar() {
             const hasKids = !!item.children?.length;
             const openSection = open[item.text] ?? false;
             const Icon = item.icon;
-            const active = isActive(item.path);
+            const active =
+              isActive(item.path) ||
+              (item.relatedPaths?.some((p) => isActive(p)) ?? false);
 
             /** Longest matching child path so /orders/drafts only highlights Drafts, not Orders */
             const activeSubPath =
               hasKids && item.children
                 ? [...item.children]
-                    .filter(
-                      (c) =>
-                        location.pathname === c.path ||
-                        location.pathname.startsWith(`${c.path}/`)
-                    )
+                    .filter((c) => subNavMatchesPath(c, location.pathname))
                     .sort((a, b) => b.path.length - a.path.length)[0]?.path
                 : undefined;
 
@@ -183,12 +199,9 @@ export default function Sidebar() {
               item.children
                 ? (() => {
                     const matches = item.children
-                      .map((c, i) => ({ path: c.path, i }))
-                      .filter(
-                        ({ path }) =>
-                          location.pathname === path || location.pathname.startsWith(path + '/')
-                      )
-                      .sort((a, b) => b.path.length - a.path.length);
+                      .map((c, i) => ({ sub: c, i }))
+                      .filter(({ sub }) => subNavMatchesPath(sub, location.pathname))
+                      .sort((a, b) => b.sub.path.length - a.sub.path.length);
                     return matches[0]?.i ?? -1;
                   })()
                 : -1;
@@ -242,7 +255,22 @@ export default function Sidebar() {
                   >
                     <ul className="relative z-10 m-0 list-none">
                       {item.children!.map((sub) => {
-                        const subActive = sub.path === activeSubPath;
+                        const subActive = subNavMatchesPath(sub, location.pathname) && sub.path === activeSubPath;
+                        if (sub.comingSoon) {
+                          return (
+                            <li key={sub.text}>
+                              <span
+                                aria-disabled="true"
+                                className="flex w-full cursor-not-allowed items-center justify-between gap-2 rounded-lg px-3 py-1.5 pl-10 text-left text-slate-400"
+                              >
+                                <span className="text-xs font-medium">{sub.text}</span>
+                                <span className="shrink-0 text-[10px] font-normal uppercase tracking-wide text-slate-400">
+                                  Coming soon
+                                </span>
+                              </span>
+                            </li>
+                          );
+                        }
                         return (
                           <li key={sub.text}>
                             <Link
