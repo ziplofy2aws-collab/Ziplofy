@@ -12714,6 +12714,13 @@ function BlogSelectFieldRow({
     void fetchBlogsByStoreId(activeStoreId);
   }, [activeStoreId, fetchBlogsByStoreId]);
 
+  useEffect(() => {
+    if (current || loading || blogs.length === 0) return;
+    const firstHandle = blogs[0]?.urlHandle?.trim();
+    if (!firstHandle) return;
+    onFieldChange(field.path, 'text', firstHandle);
+  }, [blogs, current, field.path, loading, onFieldChange]);
+
   const options = useMemo(
     () => [
       { value: '', label: 'Select' },

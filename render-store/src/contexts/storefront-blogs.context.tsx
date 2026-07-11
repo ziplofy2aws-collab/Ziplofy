@@ -37,6 +37,12 @@ interface FetchBlogDetailsApiResponse {
 	data: StorefrontBlog;
 }
 
+interface FetchBlogsListApiResponse {
+	success: boolean;
+	data: StorefrontBlog[];
+	count: number;
+}
+
 interface FetchBlogPostsApiResponse {
 	success: boolean;
 	data: StorefrontBlogPost[];
@@ -62,6 +68,7 @@ interface StorefrontBlogsContextType {
 	posts: StorefrontBlogPost[];
 	loading: boolean;
 	error: string | null;
+	listBlogsByStoreId: (storeId: string) => Promise<StorefrontBlog[]>;
 	getBlogByUrlHandle: (storeId: string, urlHandle: string) => Promise<StorefrontBlog>;
 	fetchVisiblePostsByBlogUrlHandle: (
 		storeId: string,
@@ -87,6 +94,25 @@ export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = 
 	const [posts, setPosts] = useState<StorefrontBlogPost[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	const listBlogsByStoreId = useCallback(async (storeId: string): Promise<StorefrontBlog[]> => {
+		try {
+			setError(null);
+			const res = await axiosi.get<FetchBlogsListApiResponse>(
+				`/storefront/blogs/store/${storeId}`
+			);
+			return res.data?.data ?? [];
+		} catch (err: unknown) {
+			const msg =
+				(err as { response?: { data?: { message?: string; error?: string } }; message?: string })
+					?.response?.data?.message ||
+				(err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+				(err as { message?: string })?.message ||
+				'Failed to fetch blogs';
+			setError(msg);
+			throw err;
+		}
+	}, []);
 
 	const getBlogByUrlHandle = useCallback(async (storeId: string, urlHandle: string): Promise<StorefrontBlog> => {
 		try {
@@ -217,6 +243,7 @@ export const StorefrontBlogsProvider: React.FC<{ children: React.ReactNode }> = 
 		posts,
 		loading,
 		error,
+		listBlogsByStoreId,
 		getBlogByUrlHandle,
 		fetchVisiblePostsByBlogUrlHandle,
 		getVisiblePostByUrlHandles,

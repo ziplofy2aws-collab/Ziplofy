@@ -66,6 +66,33 @@ const STOREFRONT_BLOG_POST_DETAIL_SELECT = {
   updatedAt: 1,
 } as const;
 
+/** Storefront: list blogs for a store (handles + titles for section pickers / defaults). */
+export const listBlogsByStoreId = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+  assertValidStoreId(storeId);
+
+  const blogs = await Blog.find({ storeId })
+    .sort({ updatedAt: -1 })
+    .select(STOREFRONT_BLOG_SELECT)
+    .lean();
+
+  const withCounts = await Promise.all(
+    blogs.map(async (blog) => {
+      const postCount = await BlogPost.countDocuments({
+        blogId: blog._id,
+        visibility: "visible",
+      });
+      return { ...blog, postCount };
+    })
+  );
+
+  res.status(200).json({
+    success: true,
+    data: withCounts,
+    count: withCounts.length,
+  });
+});
+
 /** Storefront: resolve a blog by store + url handle. */
 export const getBlogByUrlHandle = asyncErrorHandler(async (req: Request, res: Response) => {
   const { storeId, urlHandle } = req.params;

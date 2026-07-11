@@ -1,16 +1,12 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
+import { useMemo, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  useThemeConfig,
-  useStorefront,
-  useStorefrontBlogs,
-  type StorefrontBlogPost,
-} from '@render-store/sdk';
+import { useThemeConfig } from '@render-store/sdk';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
-import { blogListingPath, normalizeBlogPathHandle } from '../../runtime/shared/blogPaths';
+import { blogListingPath } from '../../runtime/shared/blogPaths';
+import { useLiveBlogPosts } from '../../runtime/shared/useLiveBlogPosts';
 import { BlogPostIllustration } from './BlogPostIllustration';
 import { mapBlogPostsToCards, readBlogPostCards, type BlogPostCardData } from './blogPostCards';
 import { readBlogPostsGridLayout, scopedBlogPostsGridCss } from './blogPostsGridStyles';
@@ -151,9 +147,6 @@ export function BlogPostsGrid({
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody } = useThemeColors();
-  const { storeFrontMeta } = useStorefront();
-  const { fetchVisiblePostsByBlogUrlHandle } = useStorefrontBlogs();
-  const [livePosts, setLivePosts] = useState<StorefrontBlogPost[]>([]);
 
   const settingsBase =
     placement === 'template'
@@ -172,31 +165,12 @@ export function BlogPostsGrid({
     [config, templateId, sectionId, placement, style.postCount]
   );
 
-  const storeId = storeFrontMeta?.storeId ?? '';
-  const blogHandle = normalizeBlogPathHandle(style.blogHandle);
-  const blogHref = blogHandle ? blogListingPath(blogHandle) : '';
-
-  useEffect(() => {
-    let cancelled = false;
-    if (!storeId || !blogHandle) {
-      setLivePosts([]);
-      return;
-    }
-    fetchVisiblePostsByBlogUrlHandle(storeId, blogHandle, { page: 1, limit: 12 })
-      .then((posts: StorefrontBlogPost[]) => {
-        if (!cancelled) setLivePosts(Array.isArray(posts) ? posts : []);
-      })
-      .catch(() => {
-        if (!cancelled) setLivePosts([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [storeId, blogHandle, fetchVisiblePostsByBlogUrlHandle]);
+  const { livePosts, resolvedBlogHandle } = useLiveBlogPosts(style.blogHandle, style.postCount);
+  const blogHref = resolvedBlogHandle ? blogListingPath(resolvedBlogHandle) : '';
 
   const liveCards = useMemo(
-    () => mapBlogPostsToCards(livePosts, style.postCount, blogHandle),
-    [livePosts, style.postCount, blogHandle]
+    () => mapBlogPostsToCards(livePosts, style.postCount, resolvedBlogHandle),
+    [livePosts, style.postCount, resolvedBlogHandle]
   );
 
   const usingLive = liveCards.length > 0;
