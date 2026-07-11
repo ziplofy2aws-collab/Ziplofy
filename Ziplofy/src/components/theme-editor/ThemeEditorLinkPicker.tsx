@@ -1,4 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+  type CSSProperties,
+  type RefObject,
+} from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArrowLeftIcon,
   ChevronRightIcon,
@@ -10,9 +20,15 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import { useBlogs, type Blog } from '../../contexts/blog.context';
+import { useBlogPosts, type BlogPost } from '../../contexts/blog-post.context';
 import { useCollections, type Collection } from '../../contexts/collection.context';
 import { useProducts, type Product } from '../../contexts/product.context';
 import { useStore } from '../../contexts/store.context';
+import {
+  buildStorefrontBlogPath,
+  buildStorefrontBlogPostPath,
+} from '../../utils/storefront-url.util';
 
 export type LinkPickerOption = {
   id: string;
@@ -58,10 +74,6 @@ const STATIC_PAGE_OPTIONS: LinkPickerOption[] = [
   { id: 'cart', label: 'Cart', value: '/cart', icon: DocumentTextIcon },
 ];
 
-const STATIC_BLOG_OPTIONS: LinkPickerOption[] = [
-  { id: 'blog-news', label: 'News', value: '/blogs/news', icon: PencilSquareIcon },
-];
-
 const STATIC_POLICY_OPTIONS: LinkPickerOption[] = [
   { id: 'privacy', label: 'Privacy policy', value: '/policies/privacy', icon: DocumentTextIcon },
   { id: 'terms', label: 'Terms of service', value: '/policies/terms', icon: DocumentTextIcon },
@@ -79,6 +91,15 @@ export function productLinkPath(product: Product): string {
   return handle ? `/products/${handle}` : `/products/${product._id}`;
 }
 
+export function blogLinkPath(blog: Blog): string {
+  return buildStorefrontBlogPath(blog.urlHandle || blog.title);
+}
+
+export function blogPostLinkPath(post: BlogPost, blogHandleById: Map<string, string>): string {
+  const blogHandle = blogHandleById.get(post.blogId) ?? '';
+  return buildStorefrontBlogPostPath(blogHandle, post.urlHandle || post.title);
+}
+
 function filterOptions(options: LinkPickerOption[], query: string): LinkPickerOption[] {
   const q = query.trim().toLowerCase();
   if (!q) return options;
@@ -94,6 +115,8 @@ export function ThemeEditorLinkPickerDropdown({
   onClose,
   storeId: storeIdProp,
   placement = 'below',
+  boundaryRef,
+  anchorRef,
 }: {
   open: boolean;
   searchQuery: string;
@@ -102,13 +125,24 @@ export function ThemeEditorLinkPickerDropdown({
   storeId?: string | null;
   /** Pop above the anchor (e.g. Insert link modal) or below (default). */
   placement?: 'below' | 'above';
+  /** Clicks inside this element do not close the picker (e.g. the trigger field). */
+  boundaryRef?: RefObject<HTMLElement | null>;
+  /**
+   * When provided, the picker renders in a fixed-position portal anchored to this
+   * element, flipping above/below based on available space and clamping its height
+   * to the viewport. Use inside scroll/overflow-clipped containers (e.g. modals).
+   */
+  anchorRef?: RefObject<HTMLElement | null>;
 }) {
   const { activeStoreId } = useStore();
   const storeId = storeIdProp ?? activeStoreId;
 
   const panelRef = useRef<HTMLDivElement>(null);
+  const [portalStyle, setPortalStyle] = useState<CSSProperties | null>(null);
   const { collections, loading: collectionsLoading, fetchCollectionsByStoreId } = useCollections();
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
+  const { blogs, loading: blogsLoading, fetchBlogsByStoreId } = useBlogs();
+  const { blogPosts, loading: blogPostsLoading, fetchBlogPostsByStoreId } = useBlogPosts();
   const [view, setView] = useState<LinkPickerView>('root');
 
   useEffect(() => {
@@ -118,13 +152,48 @@ export function ThemeEditorLinkPickerDropdown({
   useEffect(() => {
     if (!open) return;
     const onDocClick = (e: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        onClose();
-      }
+      const target = e.target as Node;
+      if (panelRef.current?.contains(target)) return;
+      if (boundaryRef?.current?.contains(target)) return;
+      onClose();
     };
     document.addEventListener('mousedown', onDocClick);
     return () => document.removeEventListener('mousedown', onDocClick);
-  }, [open, onClose]);
+  }, [open, onClose, boundaryRef]);
+
+  useEffect(() => {
+    if (!open || !anchorRef) {
+      setPortalStyle(null);
+      return;
+    }
+    const update = () => {
+      const el = anchorRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const gap = 6;
+      const viewportH = window.innerHeight;
+      const spaceBelow = viewportH - rect.bottom - gap;
+      const spaceAbove = rect.top - gap;
+      const useAbove =
+        placement === 'above' ? spaceAbove >= spaceBelow : spaceBelow < 200 && spaceAbove > spaceBelow;
+      const avail = useAbove ? spaceAbove : spaceBelow;
+      const maxHeight = Math.max(160, Math.min(320, avail));
+      setPortalStyle({
+        position: 'fixed',
+        left: rect.left,
+        width: rect.width,
+        maxHeight,
+        ...(useAbove ? { bottom: viewportH - rect.top + gap } : { top: rect.bottom + gap }),
+      });
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [open, anchorRef, placement, view]);
 
   const filteredCollections = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -146,10 +215,35 @@ export function ThemeEditorLinkPickerDropdown({
     );
   }, [products, searchQuery]);
 
-  const filteredRootOptions = useMemo(
-    () => filterOptions(THEME_LINK_ROOT_OPTIONS, searchQuery),
-    [searchQuery]
+  const filteredBlogs = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return blogs;
+    return blogs.filter(
+      (blog) =>
+        blog.title.toLowerCase().includes(q) || blog.urlHandle.toLowerCase().includes(q)
+    );
+  }, [blogs, searchQuery]);
+
+  const blogHandleById = useMemo(
+    () => new Map(blogs.map((blog) => [blog._id, blog.urlHandle])),
+    [blogs]
   );
+
+  const filteredBlogPosts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return blogPosts;
+    return blogPosts.filter((post) => {
+      const blogTitle = blogs.find((blog) => blog._id === post.blogId)?.title ?? '';
+      const haystack = [post.title, post.urlHandle, blogTitle].join(' ').toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [blogPosts, blogs, searchQuery]);
+
+  // The top-level category list always shows every category (Shopify-style).
+  // `searchQuery` (the current field value/link) only filters items inside a
+  // drill-down view — never the category list — otherwise an already-set link
+  // like "/collections" would hide the other categories.
+  const filteredRootOptions = THEME_LINK_ROOT_OPTIONS;
 
   const openCollectionsPicker = useCallback(async () => {
     if (!storeId) {
@@ -176,6 +270,32 @@ export function ThemeEditorLinkPickerDropdown({
       toast.error('Failed to load products');
     }
   }, [storeId, fetchProductsByStoreId]);
+
+  const openBlogsPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing blogs');
+      return;
+    }
+    setView('blogs');
+    try {
+      await fetchBlogsByStoreId(storeId);
+    } catch {
+      toast.error('Failed to load blogs');
+    }
+  }, [storeId, fetchBlogsByStoreId]);
+
+  const openBlogPostsPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing blog posts');
+      return;
+    }
+    setView('blog-posts');
+    try {
+      await Promise.all([fetchBlogsByStoreId(storeId), fetchBlogPostsByStoreId(storeId)]);
+    } catch {
+      toast.error('Failed to load blog posts');
+    }
+  }, [storeId, fetchBlogsByStoreId, fetchBlogPostsByStoreId]);
 
   const pickAndClose = (selection: LinkPickerSelection) => {
     onSelect(selection);
@@ -219,26 +339,30 @@ export function ThemeEditorLinkPickerDropdown({
       ? collectionsResultCount
       : view === 'products'
         ? productsResultCount
-        : filterOptions(
-            view === 'pages'
-              ? STATIC_PAGE_OPTIONS
-              : view === 'blogs'
-                ? STATIC_BLOG_OPTIONS
-                : view === 'blog-posts'
-                  ? []
-                  : STATIC_POLICY_OPTIONS,
-            searchQuery
-          ).length;
+        : view === 'blogs'
+          ? filteredBlogs.length
+          : view === 'blog-posts'
+            ? filteredBlogPosts.length
+            : filterOptions(
+                view === 'pages' ? STATIC_PAGE_OPTIONS : STATIC_POLICY_OPTIONS,
+                searchQuery
+              ).length;
 
-  const positionClass =
-    placement === 'above'
+  const usePortal = Boolean(anchorRef);
+  const positionClass = usePortal
+    ? 'z-[10065]'
+    : placement === 'above'
       ? 'absolute left-0 right-0 bottom-full z-[10065] mb-1'
       : 'absolute left-0 right-0 top-full z-30 mt-1';
+  const heightClass = usePortal ? '' : 'max-h-[min(320px,50vh)]';
 
-  return (
+  if (usePortal && !portalStyle) return null;
+
+  const panel = (
     <div
       ref={panelRef}
-      className={`${positionClass} max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-[#e1e1e1] bg-white py-1 shadow-lg ring-1 ring-black/5`}
+      style={usePortal ? portalStyle ?? undefined : undefined}
+      className={`${positionClass} ${heightClass} overflow-y-auto rounded-xl border border-[#e1e1e1] bg-white py-1 shadow-lg ring-1 ring-black/5`}
     >
       {isDrillDown ? (
         <>
@@ -256,7 +380,11 @@ export function ThemeEditorLinkPickerDropdown({
                 ? 'Loading…'
                 : view === 'products' && productsLoading
                   ? 'Loading…'
-                  : `${drillResultCount} result${drillResultCount === 1 ? '' : 's'}`}
+                  : view === 'blogs' && blogsLoading
+                    ? 'Loading…'
+                    : view === 'blog-posts' && blogPostsLoading
+                      ? 'Loading…'
+                      : `${drillResultCount} result${drillResultCount === 1 ? '' : 's'}`}
             </span>
           </div>
 
@@ -317,11 +445,11 @@ export function ThemeEditorLinkPickerDropdown({
               <>
                 <button
                   type="button"
-                  onClick={() => pickAndClose({ link: '/collections/all', label: 'All products' })}
+                  onClick={() => pickAndClose({ link: '/collections/all', label: 'All Products' })}
                   className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
                 >
                   <TagIcon className="h-5 w-5 shrink-0 text-gray-500" />
-                  <span className="min-w-0 flex-1 truncate">All products</span>
+                  <span className="min-w-0 flex-1 truncate">All Products</span>
                 </button>
                 {filteredProducts.map((product) => {
                   const imageUrl = product.imageUrls?.[0];
@@ -358,11 +486,61 @@ export function ThemeEditorLinkPickerDropdown({
           ) : view === 'pages' ? (
             renderStaticList(STATIC_PAGE_OPTIONS)
           ) : view === 'blogs' ? (
-            renderStaticList(STATIC_BLOG_OPTIONS)
+            blogsLoading ? (
+              <p className="px-3 py-4 text-center text-[13px] text-gray-500">Loading blogs…</p>
+            ) : (
+              <>
+                {filteredBlogs.map((blog) => (
+                  <button
+                    key={blog._id}
+                    type="button"
+                    onClick={() =>
+                      pickAndClose({
+                        link: blogLinkPath(blog),
+                        label: blog.title,
+                      })
+                    }
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
+                  >
+                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                    <span className="min-w-0 flex-1 truncate">{blog.title}</span>
+                  </button>
+                ))}
+                {filteredBlogs.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-[13px] text-gray-500">
+                    No blogs found. Create one in Content → Blogs.
+                  </p>
+                ) : null}
+              </>
+            )
           ) : view === 'blog-posts' ? (
-            <p className="px-3 py-4 text-center text-[13px] text-gray-500">
-              Blog posts will appear here once you create posts in Content → Blog posts.
-            </p>
+            blogPostsLoading ? (
+              <p className="px-3 py-4 text-center text-[13px] text-gray-500">Loading blog posts…</p>
+            ) : (
+              <>
+                {filteredBlogPosts.map((post) => (
+                  <button
+                    key={post._id}
+                    type="button"
+                    onClick={() =>
+                      pickAndClose({
+                        link: blogPostLinkPath(post, blogHandleById),
+                        label: post.title,
+                      })
+                    }
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
+                  >
+                    <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                    <span className="min-w-0 flex-1 truncate">{post.title}</span>
+                  </button>
+                ))}
+                {filteredBlogPosts.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-[13px] text-gray-500">
+                    No blog posts found. Create one in Content → Blog posts.
+                  </p>
+                ) : null}
+              </>
+            )
           ) : (
             renderStaticList(STATIC_POLICY_OPTIONS)
           )}
@@ -389,11 +567,11 @@ export function ThemeEditorLinkPickerDropdown({
                     return;
                   }
                   if (opt.id === 'blogs') {
-                    setView('blogs');
+                    void openBlogsPicker();
                     return;
                   }
                   if (opt.id === 'blog-posts') {
-                    setView('blog-posts');
+                    void openBlogPostsPicker();
                     return;
                   }
                   if (opt.id === 'policies') {
@@ -419,4 +597,9 @@ export function ThemeEditorLinkPickerDropdown({
       )}
     </div>
   );
+
+  if (usePortal && typeof document !== 'undefined') {
+    return createPortal(panel, document.body);
+  }
+  return panel;
 }
