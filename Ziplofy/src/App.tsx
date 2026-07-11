@@ -1,7 +1,7 @@
 // src/App.tsx
 import React, { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, BrowserRouter as Router, Routes, useLocation, Navigate } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation, Navigate, useParams } from "react-router-dom";
 
 // Import axios config early to ensure interceptors are set up before any requests
 import "./config/axios.config";
@@ -37,7 +37,6 @@ const StoreThemeConfigEditor = lazy(() => import("./pages/themes/StoreThemeConfi
 const ThemeLayoutEditor = lazy(() => import("./pages/themes/ThemeLayoutEditor"));
 const CreateThemePage = lazy(() => import("./create-theme/CreateThemePage"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
-const ContentPage = lazy(() => import("./pages/ContentPage"));
 const CreateOrderPage = lazy(() => import("./pages/CreateOrderPage"));
 const CustomerDetailsPage = lazy(() => import("./pages/CustomerDetailsPage"));
 const CustomerSegmentDetailsPage = lazy(() => import("./pages/CustomerSegmentDetailsPage"));
@@ -138,7 +137,19 @@ const ProductTagsPage = lazy(() => import("./pages/tag-management/ProductTagsPag
 const ProductTypesPage = lazy(() => import("./pages/tag-management/ProductTypesPage"));
 const PurchaseOrderTagsPage = lazy(() => import("./pages/tag-management/PurchaseOrderTagsPage"));
 const TransferTagsPage = lazy(() => import("./pages/tag-management/TransferTagsPage"));
+const BlogTagsPage = lazy(() => import("./pages/tag-management/BlogTagsPage"));
+const ContentBlogsPage = lazy(() => import("./pages/ContentBlogsPage").then(m => ({ default: m.ContentBlogsPage })));
+const ContentBlogCreatePage = lazy(() =>
+  import("./pages/ContentBlogCreatePage").then(m => ({ default: m.ContentBlogCreatePage }))
+);
+const ContentBlogEditPage = lazy(() =>
+  import("./pages/ContentBlogEditPage").then(m => ({ default: m.ContentBlogEditPage }))
+);
 const BlogPostCreatePage = lazy(() => import("./pages/BlogPostCreatePage").then(m => ({ default: m.BlogPostCreatePage })));
+const BlogPostEditPage = lazy(() => import("./pages/BlogPostEditPage").then(m => ({ default: m.BlogPostEditPage })));
+const BlogPostCommentsPage = lazy(() =>
+  import("./pages/BlogPostCommentsPage").then(m => ({ default: m.BlogPostCommentsPage }))
+);
 const ContentBlogPostsPage = lazy(() => import("./pages/ContentBlogPostsPage").then(m => ({ default: m.ContentBlogPostsPage })));
 const ContentFilesPage = lazy(() => import("./pages/ContentFilesPage").then(m => ({ default: m.ContentFilesPage })));
 const ContentMenusPage = lazy(() => import("./pages/ContentMenusPage").then(m => ({ default: m.ContentMenusPage })));
@@ -189,6 +200,9 @@ import { CheckoutSettingsProvider } from "./contexts/checkout-settings.context";
 import { CollectionEntriesProvider } from "./contexts/collection-entries.context";
 import { CollectionProvider } from "./contexts/collection.context";
 import { BlogProvider } from "./contexts/blog.context";
+import { BlogCommentsProvider } from "./contexts/blog-comment.context";
+import { BlogPostProvider } from "./contexts/blog-post.context";
+import { BlogTagsProvider } from "./contexts/blog-tags.context";
 import { StoreMenuProvider } from "./contexts/store-menu.context";
 import { StoreCheckoutConfigurationsProvider } from "./contexts/store-checkout-configurations.context";
 import { CountryTaxOverrideProvider } from "./contexts/country-tax-override.context";
@@ -274,6 +288,11 @@ const PageLoader: React.FC = () => (
     </div>
   </div>
 );
+
+function LegacyBlogPostRedirect() {
+  const { articleId } = useParams();
+  return <Navigate to={articleId ? `/content/articles/${articleId}` : '/content/articles'} replace />;
+}
 
 // This component is rendered INSIDE <Router>, so hooks like useLocation are safe here
 const AdminApp: React.FC = () => {
@@ -373,15 +392,24 @@ const AdminApp: React.FC = () => {
             <Route path="/discounts/new/buy-x-get-y" element={<BuyXGetYPage />} />
             <Route path="/discounts/new/amount-off-order" element={<AmountOffOrderPage />} />
             <Route path="/discounts/new/free-shipping" element={<FreeShippingPage />} />
-            <Route path="/content" element={<ContentPage />} />
-            <Route path="/content/blog-posts" element={<ContentBlogPostsPage />} />
-            <Route path="/content/blog-posts/new" element={<BlogPostCreatePage />} />
+            <Route path="/content" element={<Navigate to="/content/articles" replace />} />
+            <Route path="/content/articles" element={<ContentBlogPostsPage />} />
+            <Route path="/content/articles/new" element={<BlogPostCreatePage />} />
+            <Route path="/content/articles/:articleId" element={<BlogPostEditPage />} />
+            <Route path="/content/comments/article/:articleId" element={<BlogPostCommentsPage />} />
+            <Route path="/content/blogs" element={<ContentBlogsPage />} />
+            <Route path="/content/blogs/new" element={<ContentBlogCreatePage />} />
+            <Route path="/content/blogs/:blogId" element={<ContentBlogEditPage />} />
             <Route path="/content/files" element={<ContentFilesPage />} />
             <Route path="/content/menus" element={<ContentMenusPage />} />
             <Route path="/content/menus/new" element={<ContentMenuCreatePage />} />
             <Route path="/content/menus/:menuId" element={<ContentMenuEditPage />} />
             <Route path="/content/url-redirects" element={<ContentUrlRedirectsPage />} />
             <Route path="/content/metaobjects" element={<ContentMetaObjectsPage />} />
+            {/* Legacy paths from thinned merge — keep working bookmarks */}
+            <Route path="/content/blog-posts" element={<Navigate to="/content/articles" replace />} />
+            <Route path="/content/blog-posts/new" element={<Navigate to="/content/articles/new" replace />} />
+            <Route path="/content/blog-posts/:articleId" element={<LegacyBlogPostRedirect />} />
             <Route path="/online-store" element={<OnlineStorePage />} />
             <Route path="/online-store/themes" element={<AllThemes />} />
             <Route path="/online-store/pages" element={<OnlineStorePagesPage />} />
@@ -399,6 +427,7 @@ const AdminApp: React.FC = () => {
             <Route path="/tag-management/product-types" element={<ProductTypesPage />} />
             <Route path="/tag-management/transfer-tags" element={<TransferTagsPage />} />
             <Route path="/tag-management/purchase-order-tags" element={<PurchaseOrderTagsPage />} />
+            <Route path="/tag-management/blog-tags" element={<BlogTagsPage />} />
             <Route path="/vendors" element={<VendorsPage />} />
             <Route path="/settings" element={<SettingsLayout />}>
               <Route index element={<SettingsIndex />} />
@@ -534,6 +563,9 @@ const App: React.FC = () => {
         <CollectionProvider>
         <StoreMenuProvider>
         <BlogProvider>
+        <BlogPostProvider>
+        <BlogCommentsProvider>
+        <BlogTagsProvider>
         <CustomerTagsProvider>
         <ProductTagsProvider>
         <CustomerProvider>
@@ -710,6 +742,9 @@ const App: React.FC = () => {
         </CustomerProvider>
         </ProductTagsProvider>
         </CustomerTagsProvider>
+        </BlogTagsProvider>
+        </BlogCommentsProvider>
+        </BlogPostProvider>
         </BlogProvider>
         </StoreMenuProvider>
         </CollectionProvider>
