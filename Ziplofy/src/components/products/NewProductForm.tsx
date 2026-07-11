@@ -1,10 +1,4 @@
-import {
-  ArrowLeftIcon,
-  CubeIcon,
-  PlusCircleIcon,
-  PlusIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
+import { PlusCircleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import type { Product } from '../../contexts/product.context';
 import { useNewProductForm } from '../../hooks/useNewProductForm';
@@ -17,6 +11,15 @@ import ProductPriceSection from './ProductPriceSection';
 import ProductSearchEngineListingSection from './ProductSearchEngineListingSection';
 import ProductShippingSection from './ProductShippingSection';
 import ProductStatusSection from './ProductStatusSection';
+import {
+  productFormAsideStackClass,
+  productFormCardClass,
+  productFormGridClass,
+  productFormInputClass,
+  productFormMainStackClass,
+  productFormPageClass,
+  productFormSectionTitleClass,
+} from './product-form-appearance';
 
 export type NewProductFormProps = {
   variant?: 'page' | 'sheet';
@@ -25,6 +28,8 @@ export type NewProductFormProps = {
   onCancel?: () => void;
   onBack?: () => void;
 };
+
+const FORM_APPEARANCE = 'minimal' as const;
 
 export const NewProductForm: React.FC<NewProductFormProps> = ({
   variant = 'page',
@@ -56,9 +61,14 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
 
   const isSheet = variant === 'sheet';
   const submitDisabled = productLoading || isSubmitting || !activeStoreId;
+  const inputClass = productFormInputClass(FORM_APPEARANCE);
 
   return (
-    <div className={isSheet ? 'bg-page-background-color' : 'min-h-screen bg-page-background-color'}>
+    <div
+      className={
+        isSheet ? 'bg-page-background-color' : productFormPageClass(FORM_APPEARANCE)
+      }
+    >
       <div className={isSheet ? 'px-4 py-4 sm:px-6' : 'mx-auto max-w-[1500px] px-3 py-4 sm:px-4'}>
         <ProductFormHeader
           mode="create"
@@ -69,10 +79,11 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
           onBack={!isSheet ? onBack : undefined}
           onCancel={isSheet ? onCancel : undefined}
           onSubmit={() => void handleSubmit()}
+          appearance={FORM_APPEARANCE}
         />
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="space-y-6">
+        <div className={productFormGridClass(FORM_APPEARANCE)}>
+          <div className={productFormMainStackClass(FORM_APPEARANCE)}>
             <ProductBasicInformationSection
               title={formData.title}
               description={formData.description}
@@ -82,12 +93,14 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               onAddImageUrl={addImageUrl}
               onRemoveImage={removeImage}
               mediaDisabled={isSubmitting || productLoading}
+              appearance={FORM_APPEARANCE}
             />
 
             <ProductCategorySection
               category={formData.category}
               activeStoreId={activeStoreId}
               onCategoryChange={(categoryId) => handleInputChange('category', categoryId)}
+              appearance={FORM_APPEARANCE}
             />
 
             <ProductPriceSection
@@ -104,20 +117,28 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               onUnitPriceTotalAmountChange={(value) => handleInputChange('unitPriceTotalAmount', value)}
               onUnitPriceBaseMeasureChange={(value) => handleInputChange('unitPriceBaseMeasure', value)}
               onSelectedUnitChange={(value) => handleInputChange('selectedUnit', value)}
-              onSelectedBaseMeasureUnitChange={(value) => handleInputChange('selectedBaseMeasureUnit', value)}
+              onSelectedBaseMeasureUnitChange={(value) =>
+                handleInputChange('selectedBaseMeasureUnit', value)
+              }
               onChargeTaxOnProductChange={(checked) => handleInputChange('chargeTaxOnProduct', checked)}
               onCostChange={(value) => handleInputChange('cost', value)}
+              appearance={FORM_APPEARANCE}
             />
 
             <ProductInventorySection
               inventoryTrackingEnabled={formData.inventoryTrackingEnabled}
+              continueSellingWhenOutOfStock={formData.continueSellingWhenOutOfStock}
               sku={formData.sku}
               barcode={formData.barcode}
               onInventoryTrackingEnabledChange={(checked) =>
                 handleInputChange('inventoryTrackingEnabled', checked)
               }
+              onContinueSellingChange={(checked) =>
+                handleInputChange('continueSellingWhenOutOfStock', checked)
+              }
               onSkuChange={(value) => handleInputChange('sku', value)}
               onBarcodeChange={(value) => handleInputChange('barcode', value)}
+              appearance={FORM_APPEARANCE}
             />
 
             <ProductShippingSection
@@ -134,29 +155,30 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               onCountryOfOriginChange={(value) => handleInputChange('countryOfOrigin', value)}
               onHsCodeChange={(value) => handleInputChange('hsCode', value)}
               activeStoreId={activeStoreId}
+              appearance={FORM_APPEARANCE}
             />
 
-            <div className="rounded-xl border border-gray-200/80 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-base font-semibold text-gray-900">Variants</h2>
-              <div className="space-y-4">
+            <div className={productFormCardClass(FORM_APPEARANCE)}>
+              <h2 className={productFormSectionTitleClass(FORM_APPEARANCE)}>Variants</h2>
+              <div className="space-y-3">
                 {formData.variants.map((variant, variantIndex) => (
                   <div
                     key={variantIndex}
-                    className="rounded-lg border border-gray-200 bg-gray-50/50 p-4"
+                    className="rounded-md border border-gray-200/60 bg-gray-50/40 p-3.5"
                   >
-                    <div className="mb-4 flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-gray-900">Option {variantIndex + 1}</h4>
+                    <div className="mb-3 flex items-center justify-between">
+                      <h4 className="text-sm font-medium text-gray-700">Option {variantIndex + 1}</h4>
                       <button
                         type="button"
                         onClick={() => removeVariant(variantIndex)}
-                        className="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+                        className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
                       >
                         <TrashIcon className="h-4 w-4" />
                       </button>
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <div>
-                        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                        <label className="mb-1.5 block text-sm font-normal text-gray-600">
                           Option name
                         </label>
                         <input
@@ -164,11 +186,11 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
                           value={variant.optionName}
                           onChange={(e) => updateVariantOptionName(variantIndex, e.target.value)}
                           placeholder="e.g., Size, Color, Material"
-                          className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+                          className={inputClass}
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                        <label className="mb-1.5 block text-sm font-normal text-gray-600">
                           Option values
                         </label>
                         {variant.values.map((value, valueIndex) => (
@@ -180,13 +202,13 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
                                 updateVariantValue(variantIndex, valueIndex, e.target.value)
                               }
                               placeholder="Enter value"
-                              className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-blue-400 focus:ring-2 focus:ring-blue-500/30"
+                              className={`flex-1 ${inputClass}`}
                             />
                             <button
                               type="button"
                               onClick={() => removeVariantValue(variantIndex, valueIndex)}
                               disabled={variant.values.length === 1}
-                              className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="rounded-md p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                               <TrashIcon className="h-4 w-4" />
                             </button>
@@ -195,7 +217,7 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
                         <button
                           type="button"
                           onClick={() => addVariantValue(variantIndex)}
-                          className="mt-2 flex items-center gap-1.5 text-sm text-gray-600 transition-colors hover:text-gray-900"
+                          className="mt-1.5 flex items-center gap-1.5 text-sm font-normal text-gray-500 transition-colors hover:text-gray-800"
                         >
                           <PlusIcon className="h-4 w-4" />
                           Add another value
@@ -208,11 +230,11 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               <button
                 type="button"
                 onClick={addVariant}
-                className={`flex items-center gap-2 rounded-lg py-2 text-left text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50 ${
-                  formData.variants.length > 0 ? 'mt-4' : ''
+                className={`flex items-center gap-2 rounded-md py-1.5 text-left text-sm font-normal text-gray-600 transition-colors hover:bg-gray-50 ${
+                  formData.variants.length > 0 ? 'mt-3' : ''
                 }`}
               >
-                <PlusCircleIcon className="h-5 w-5 shrink-0 text-gray-700" aria-hidden />
+                <PlusCircleIcon className="h-4 w-4 shrink-0 text-gray-500" aria-hidden />
                 Add options like size or color
               </button>
             </div>
@@ -226,13 +248,15 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               onPageTitleChange={(value) => handleInputChange('pageTitle', value)}
               onMetaDescriptionChange={(value) => handleInputChange('metaDescription', value)}
               onUrlHandleChange={(value) => handleInputChange('urlHandle', value)}
+              appearance={FORM_APPEARANCE}
             />
           </div>
 
-          <aside className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+          <aside className={productFormAsideStackClass(FORM_APPEARANCE)}>
             <ProductStatusSection
               status={formData.status}
               onChange={(status) => handleInputChange('status', status)}
+              appearance={FORM_APPEARANCE}
             />
             <ProductOrganizationSection
               productType={formData.productType}
@@ -242,11 +266,12 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               onVendorChange={(vendorId) => handleInputChange('vendor', vendorId)}
               onTagsChange={(tags) => handleInputChange('tags', tags)}
               activeStoreId={activeStoreId}
+              appearance={FORM_APPEARANCE}
             />
-            <div className="rounded-xl border border-gray-200/80 bg-white p-6 shadow-sm">
-              <h2 className="mb-3 text-base font-semibold text-gray-900">Publishing</h2>
+            <div className={productFormCardClass(FORM_APPEARANCE)}>
+              <h2 className={productFormSectionTitleClass(FORM_APPEARANCE)}>Publishing</h2>
               <div className="flex flex-wrap gap-2">
-                <span className="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
+                <span className="inline-flex items-center rounded-md bg-gray-100/80 px-2 py-0.5 text-xs font-normal text-gray-600">
                   Online Store
                 </span>
               </div>
@@ -257,3 +282,5 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
     </div>
   );
 };
+
+export default NewProductForm;

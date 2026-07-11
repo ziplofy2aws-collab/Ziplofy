@@ -51,6 +51,7 @@ const MarketingCampaignsPage = lazy(() => import("./pages/MarketingCampaignsPage
 const MarketingPage = lazy(() => import("./pages/MarketingPage"));
 const NewCustomerPage = lazy(() => import("./pages/NewCustomerPage"));
 const NewGiftCardPage = lazy(() => import("./pages/NewGiftCardPage"));
+const NewGiftCardProductPage = lazy(() => import("./pages/NewGiftCardProductPage"));
 const NewProductPage = lazy(() => import("./pages/NewProductPage"));
 const NewTransferPage = lazy(() => import("./pages/NewTransferPage"));
 const OrderDetailsPage = lazy(() => import("./pages/OrderDetailsPage"));
@@ -221,6 +222,7 @@ import { GeneralSettingsProvider } from "./contexts/general-settings.context";
 import { OnlineStorePreferencesProvider } from "./contexts/online-store-preferences.context";
 import { GiftCardTimelineProvider } from "./contexts/gift-card-timeline.context";
 import { GiftCardsProvider } from "./contexts/gift-cards.context";
+import { GiftCardProductsProvider } from "./contexts/gift-card-products.context";
 import { InstalledThemesProvider } from "./contexts/installed-themes.context";
 import { InventoryLevelsProvider } from "./contexts/inventory-level.contexts";
 import { LocalDeliveryLocationEntriesProvider } from "./contexts/local-delivery-location-entries.context";
@@ -356,23 +358,24 @@ const AdminApp: React.FC = () => {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/products/new" element={<NewProductPage />} />
             <Route path="/products/inventory" element={<ProductsInventoryPage />} />
-            <Route path="/products/:id" element={<ProductDetailsPage />} />
-            <Route path="/products/:id/variants/:variantId" element={<ProductVariantDetailsPage />} />
             <Route path="/products/purchase-orders" element={<PurchaseOrdersListPage />} />
-            <Route path="/products/purchase-orders/:id" element={<PurchaseOrderDetailsPage />} />
-            <Route path="/products/purchase-orders/:id/receive" element={<PurchaseOrderReceivePage />} />
             <Route path="/products/purchase-orders/new" element={<PurchaseOrderNewPage />} />
+            <Route path="/products/purchase-orders/:id/receive" element={<PurchaseOrderReceivePage />} />
+            <Route path="/products/purchase-orders/:id" element={<PurchaseOrderDetailsPage />} />
             <Route path="/products/collections" element={<ProductCollectionsPage />} />
-            <Route path="/products/collections/:id" element={<ProductCollectionDetailsPage />} />
             <Route path="/products/collections/new" element={<ProductCollectionCreatePage />} />
+            <Route path="/products/collections/:id" element={<ProductCollectionDetailsPage />} />
             <Route path="/products/gift-cards" element={<GiftCardsPage />} />
+            <Route path="/products/gift-cards/products/new" element={<NewGiftCardProductPage />} />
             <Route path="/products/gift-cards/new" element={<NewGiftCardPage />} />
             <Route path="/products/gift-cards/:giftCardId" element={<GiftCardDetailPage />} />
             <Route path="/products/transfers" element={<TransfersPage />} />
-            <Route path="/products/transfers/:id" element={<TransferDetailsPage />} />
             <Route path="/products/transfers/new" element={<NewTransferPage />} />
             <Route path="/products/transfers/:id/shipment/new" element={<ShipmentNewPage />} />
             <Route path="/products/transfers/:id/shipment/:shipmentId/receive" element={<ShipmentReceivePage />} />
+            <Route path="/products/transfers/:id" element={<TransferDetailsPage />} />
+            <Route path="/products/:id/variants/:variantId" element={<ProductVariantDetailsPage />} />
+            <Route path="/products/:id" element={<ProductDetailsPage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/customers/segments" element={<CustomersSegmentsPage />} />
             <Route path="/customers/segments/:id" element={<CustomerSegmentDetailsPage />} />
@@ -575,6 +578,7 @@ const App: React.FC = () => {
         <CollectionEntriesProvider>
         <ProductTypeProvider>
         <GiftCardsProvider>
+        <GiftCardProductsProvider>
         <GiftCardTimelineProvider>
         <LocationsProvider>
         <LocalDeliverySettingsProvider>
@@ -735,6 +739,7 @@ const App: React.FC = () => {
         </LocalDeliverySettingsProvider>
         </LocationsProvider>
         </GiftCardTimelineProvider>
+        </GiftCardProductsProvider>
         </GiftCardsProvider>
         </ProductTypeProvider>
         </CollectionEntriesProvider>
