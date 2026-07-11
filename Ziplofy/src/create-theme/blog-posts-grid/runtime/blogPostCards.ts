@@ -1,5 +1,6 @@
 import { getThemeConfigValue, type StorefrontBlogPost } from '@render-store/sdk';
 import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/structureOrder';
+import { blogArticlePath, normalizeBlogPathHandle } from '../../runtime/shared/blogPaths';
 
 export type BlogPostCardData = {
   id: string;
@@ -9,6 +10,9 @@ export type BlogPostCardData = {
   author: string;
   excerpt: string;
   imageUrl: string;
+  /** Storefront article path `/blogs/{blog}/{article}` when live data is available. */
+  href: string;
+  urlHandle: string;
 };
 
 const ILLUSTRATION_CYCLE = ['sewing', 'thread', 'boxes'] as const;
@@ -26,20 +30,27 @@ export function formatBlogPostDate(iso: string): string {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
-/** Map fetched storefront blog posts into renderable card data. */
+/** Map fetched storefront blog posts into renderable card data with article links. */
 export function mapBlogPostsToCards(
   posts: StorefrontBlogPost[],
-  limit: number
+  limit: number,
+  blogHandle: string
 ): BlogPostCardData[] {
-  return posts.slice(0, Math.max(1, limit)).map((post, index) => ({
-    id: post._id || `post-${index}`,
-    illustrationVariant: ILLUSTRATION_CYCLE[index % ILLUSTRATION_CYCLE.length],
-    title: post.title || 'Untitled',
-    date: formatBlogPostDate(post.createdAt),
-    author: post.author || '',
-    excerpt: post.excerpt || '',
-    imageUrl: post.featuredImageUrl || '',
-  }));
+  const blog = normalizeBlogPathHandle(blogHandle);
+  return posts.slice(0, Math.max(1, limit)).map((post, index) => {
+    const urlHandle = normalizeBlogPathHandle(post.urlHandle || post.title || '');
+    return {
+      id: post._id || `post-${index}`,
+      illustrationVariant: ILLUSTRATION_CYCLE[index % ILLUSTRATION_CYCLE.length],
+      title: post.title || 'Untitled',
+      date: formatBlogPostDate(post.createdAt || post.updatedAt || ''),
+      author: post.author || '',
+      excerpt: post.excerpt || '',
+      imageUrl: post.featuredImageUrl || '',
+      urlHandle,
+      href: blog && urlHandle ? blogArticlePath(blog, urlHandle) : '',
+    };
+  });
 }
 
 export function readBlogPostCards(
@@ -76,6 +87,8 @@ export function readBlogPostCards(
       author: String(settings.author ?? 'Author'),
       excerpt: String(settings.excerpt ?? "An excerpt of your blog post's content"),
       imageUrl: String(settings.imageUrl ?? ''),
+      urlHandle: '',
+      href: '',
     };
   });
 }

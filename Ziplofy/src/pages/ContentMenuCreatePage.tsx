@@ -50,7 +50,7 @@ const LINK_PICKER_SECTIONS: LinkPickerSection[] = [
       { id: 'products', label: 'Products', value: '/products', icon: TagIcon, hasChildren: true },
       { id: 'pages', label: 'Pages', value: '/pages', icon: DocumentTextIcon, hasChildren: true },
       { id: 'blogs', label: 'Blogs', value: '/blogs', icon: PencilSquareIcon, hasChildren: true },
-      { id: 'blog-posts', label: 'Blog posts', value: '/blogs/news', icon: PencilSquareIcon, hasChildren: true },
+      { id: 'blog-posts', label: 'Blog posts', value: '/blogs', icon: PencilSquareIcon, hasChildren: true },
       { id: 'policies', label: 'Policies', value: '/policies', icon: DocumentTextIcon, hasChildren: true },
     ],
   },

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
+import { normalizeStorefrontPathHandle } from '@/utils/storefront-path-handle.util';
 
 function formatPostDate(iso: string): string {
   try {
@@ -11,6 +12,14 @@ function formatPostDate(iso: string): string {
   } catch {
     return '';
   }
+}
+
+function blogArticleHref(blogHandle: string, postHandle: string): string {
+  const blog = normalizeStorefrontPathHandle(blogHandle);
+  const post = normalizeStorefrontPathHandle(postHandle);
+  if (!blog) return '/blogs';
+  if (!post) return `/blogs/${blog}`;
+  return `/blogs/${blog}/${post}`;
 }
 
 export function StorefrontBlogPage() {
@@ -58,7 +67,7 @@ export function StorefrontBlogPage() {
             {posts.map((post) => (
               <article key={post._id} className="blog-card">
                 <Link
-                  to={`/blogs/${blogHandle}/${post.urlHandle}`}
+                  to={blogArticleHref(blogHandle, post.urlHandle)}
                   className="blog-card-link"
                 >
                   {post.featuredImageUrl ? (

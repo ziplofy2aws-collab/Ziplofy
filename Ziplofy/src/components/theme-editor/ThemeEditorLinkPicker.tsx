@@ -61,7 +61,7 @@ export const THEME_LINK_ROOT_OPTIONS: LinkPickerOption[] = [
   {
     id: 'blog-posts',
     label: 'Blog posts',
-    value: '/blogs/news',
+    value: '/blogs',
     icon: PencilSquareIcon,
     hasChildren: true,
   },

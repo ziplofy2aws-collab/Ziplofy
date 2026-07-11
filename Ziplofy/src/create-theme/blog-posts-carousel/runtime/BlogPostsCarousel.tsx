@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import {
   useThemeConfig,
   useStorefront,
@@ -15,7 +16,17 @@ import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRich
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
+import { blogListingPath, normalizeBlogPathHandle } from '../../runtime/shared/blogPaths';
 import { readBlogPostsCarouselLayout, scopedBlogPostsCarouselCss } from './blogPostsCarouselStyles';
+
+function BlogPostCardLink({ href, children }: { href: string; children: ReactNode }) {
+  if (!href) return <>{children}</>;
+  return (
+    <Link to={href} style={{ display: 'block', color: 'inherit', textDecoration: 'none' }}>
+      {children}
+    </Link>
+  );
+}
 
 function NavButton({
   label,
@@ -126,25 +137,27 @@ function BlogPostCarouselCard({
         data-codiic-kind="block"
         style={cardStyle}
       >
-        <div style={imageBox}>{image}</div>
-        <h3 style={titleStyle}>{card.title}</h3>
-        <p style={metaStyle}>
-          {card.date}
-          {card.date && card.author ? ' | ' : ''}
-          {card.author}
-        </p>
-        {card.excerpt ? (
-          <ThemeEditorRichTextContent
-            html={card.excerpt}
-            style={{
-              ...excerptStyle,
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
-          />
-        ) : null}
+        <BlogPostCardLink href={card.href}>
+          <div style={imageBox}>{image}</div>
+          <h3 style={titleStyle}>{card.title}</h3>
+          <p style={metaStyle}>
+            {card.date}
+            {card.date && card.author ? ' | ' : ''}
+            {card.author}
+          </p>
+          {card.excerpt ? (
+            <ThemeEditorRichTextContent
+              html={card.excerpt}
+              style={{
+                ...excerptStyle,
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            />
+          ) : null}
+        </BlogPostCardLink>
       </article>
     );
   }
@@ -215,7 +228,8 @@ export function BlogPostsCarousel({
   );
 
   const storeId = storeFrontMeta?.storeId ?? '';
-  const blogHandle = style.blogHandle;
+  const blogHandle = normalizeBlogPathHandle(style.blogHandle);
+  const blogHref = blogHandle ? blogListingPath(blogHandle) : '';
 
   useEffect(() => {
     let cancelled = false;
@@ -225,7 +239,7 @@ export function BlogPostsCarousel({
     }
     fetchVisiblePostsByBlogUrlHandle(storeId, blogHandle, { page: 1, limit: 12 })
       .then((posts: StorefrontBlogPost[]) => {
-        if (!cancelled) setLivePosts(posts);
+        if (!cancelled) setLivePosts(Array.isArray(posts) ? posts : []);
       })
       .catch(() => {
         if (!cancelled) setLivePosts([]);
@@ -236,8 +250,8 @@ export function BlogPostsCarousel({
   }, [storeId, blogHandle, fetchVisiblePostsByBlogUrlHandle]);
 
   const liveCards = useMemo(
-    () => mapBlogPostsToCards(livePosts, style.postCount),
-    [livePosts, style.postCount]
+    () => mapBlogPostsToCards(livePosts, style.postCount, blogHandle),
+    [livePosts, style.postCount, blogHandle]
   );
 
   const usingLive = liveCards.length > 0;
@@ -347,9 +361,17 @@ export function BlogPostsCarousel({
           `}
         </style>
         <div style={stage}>
-          <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
-            {style.heading}
-          </EditorField>
+          {usingLive && blogHref ? (
+            <Link to={blogHref} style={{ color: 'inherit', textDecoration: 'none' }}>
+              <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
+                {style.heading}
+              </EditorField>
+            </Link>
+          ) : (
+            <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
+              {style.heading}
+            </EditorField>
+          )}
 
           <div style={rowWrap}>
             {showNav ? (

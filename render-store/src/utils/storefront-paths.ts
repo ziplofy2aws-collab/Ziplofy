@@ -19,6 +19,25 @@ export function collectionPath(urlHandle: string): string {
   return `/collection/${encodeURIComponent(handle)}`;
 }
 
+/** `/blogs/{blogHandle}` using the blog URL handle field. */
+export function blogPath(blogHandle: string): string {
+  const handle = blogHandle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return handle ? `/blogs/${handle}` : '/blogs';
+}
+
+/** `/blogs/{blogHandle}/{articleHandle}` using blog + article URL handle fields. */
+export function blogArticlePath(blogHandle: string, articleHandle: string): string {
+  const blog = blogHandle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const article = articleHandle
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  if (!blog) return '/blogs';
+  if (!article) return `/blogs/${blog}`;
+  return `/blogs/${blog}/${article}`;
+}
+
 export function isAllProductsPath(pathname: string): boolean {
   return pathname === STOREFRONT_PATHS.allProducts;
 }

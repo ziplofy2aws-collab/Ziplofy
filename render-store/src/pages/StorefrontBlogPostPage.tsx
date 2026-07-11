@@ -2,6 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { StorefrontBlogCommentsSection } from '@/components/StorefrontBlogCommentsSection';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
+import { normalizeStorefrontPathHandle } from '@/utils/storefront-path-handle.util';
 
 function formatPostDate(iso: string): string {
   try {
@@ -70,7 +71,9 @@ export function StorefrontBlogPostPage() {
           </div>
         ) : null}
         <nav className="blog-detail-breadcrumb" aria-label="Breadcrumb">
-          <Link to={`/blogs/${activeBlog.urlHandle}`}>{activeBlog.title}</Link>
+          <Link to={`/blogs/${normalizeStorefrontPathHandle(activeBlog.urlHandle)}`}>
+            {activeBlog.title}
+          </Link>
           <span className="blog-detail-breadcrumb-sep">/</span>
           <span className="blog-detail-breadcrumb-current">{activePost.title}</span>
         </nav>

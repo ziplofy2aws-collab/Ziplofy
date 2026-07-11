@@ -29,6 +29,11 @@ type Props = {
   onInspectorEnabledChange?: (enabled: boolean) => void;
   /** Live storefront URL — used by the ⋮ menu “View” action. */
   storeUrl?: string | null;
+  /** Apply this editor theme to the active store’s live storefront. */
+  onApplyTheme?: () => void;
+  applyThemeDisabled?: boolean;
+  applyingTheme?: boolean;
+  themeAlreadyApplied?: boolean;
 };
 
 export function CreateThemeHeader({
@@ -52,6 +57,10 @@ export function CreateThemeHeader({
   inspectorEnabled = true,
   onInspectorEnabledChange,
   storeUrl,
+  onApplyTheme,
+  applyThemeDisabled = false,
+  applyingTheme = false,
+  themeAlreadyApplied = false,
 }: Props) {
   const [moreMenuAnchor, setMoreMenuAnchor] = useState<HTMLElement | null>(null);
   const moreMenuOpen = Boolean(moreMenuAnchor);
@@ -64,6 +73,12 @@ export function CreateThemeHeader({
     window.open(storefrontHref, '_blank', 'noopener,noreferrer');
     closeMoreMenu();
   }, [storefrontHref, closeMoreMenu]);
+
+  const handleApplyTheme = useCallback(() => {
+    if (applyThemeDisabled || applyingTheme) return;
+    onApplyTheme?.();
+    closeMoreMenu();
+  }, [applyThemeDisabled, applyingTheme, onApplyTheme, closeMoreMenu]);
 
   return (
     <header className="relative grid h-14 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-gray-200 bg-white px-3">
@@ -161,6 +176,18 @@ export function CreateThemeHeader({
           <DropdownMenuItem onClick={handleViewStore} disabled={!storefrontHref}>
             View
           </DropdownMenuItem>
+          {onApplyTheme ? (
+            <DropdownMenuItem
+              onClick={handleApplyTheme}
+              disabled={applyThemeDisabled || applyingTheme}
+            >
+              {applyingTheme
+                ? 'Applying…'
+                : themeAlreadyApplied
+                  ? 'Apply theme (live)'
+                  : 'Apply theme'}
+            </DropdownMenuItem>
+          ) : null}
         </DropdownMenu>
         <button
           type="button"

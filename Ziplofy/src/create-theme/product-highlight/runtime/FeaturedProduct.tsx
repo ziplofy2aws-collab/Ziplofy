@@ -237,7 +237,6 @@ export function FeaturedProduct({
     `${addToCartSettingsBase}.buttonLabel`,
     cfgString(config, `${settingsBase}.buttonLabel`, 'Add to cart')
   );
-  const configSoldOut = cfgBool(config, `${settingsBase}.soldOut`, true);
 
   const mediaCornerRadius = cfgNumber(config, `${mediaSettingsBase}.cornerRadius`, 0);
   const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'cover');
@@ -312,11 +311,8 @@ export function FeaturedProduct({
     : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
-  const soldOut = useMemo(() => {
-    if (isEditorPreview) return configSoldOut;
-    if (resolvedProduct) return resolvedProduct.status !== 'active';
-    return configSoldOut;
-  }, [isEditorPreview, configSoldOut, resolvedProduct]);
+  // Skip inventory / status gating for now — always show Add to cart + Buy it now.
+  const soldOut = false;
 
   const addToCartLabel = soldOut
     ? 'Sold out'

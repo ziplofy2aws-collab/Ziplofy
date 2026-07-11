@@ -586,7 +586,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editThemeId = searchParams.get('id');
-  const { activeStoreId, stores } = useStore();
+  const { activeStoreId, stores, setStores, applyStoreCustomTheme } = useStore();
+  const [applyingTheme, setApplyingTheme] = useState(false);
   const { collections, fetchCollectionsByStoreId } = useCollections();
   const { storeSubdomain, getByStoreId: fetchStoreSubdomain, loading: subdomainLoading } = useStoreSubdomain();
   const {
@@ -2337,6 +2338,54 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     });
   }, [defaultConfig, editorSchema, savedThemeId, themeName, themeDesc, persistTheme]);
 
+  const themeAlreadyApplied = Boolean(
+    activeStoreId &&
+      savedThemeId &&
+      stores.some(
+        (s) =>
+          s._id === activeStoreId && String(s.appliedCustomThemeId ?? '') === String(savedThemeId)
+      )
+  );
+
+  const handleApplyTheme = useCallback(async () => {
+    if (!activeStoreId) {
+      toast.error('Select a store before applying a theme');
+      return;
+    }
+    if (!savedThemeId) {
+      toast.error('Save the theme first, then apply it to your store');
+      setShowSaveThemeModal(true);
+      return;
+    }
+    if (applyingTheme) return;
+    setApplyingTheme(true);
+    try {
+      const updated = await applyStoreCustomTheme(activeStoreId, savedThemeId);
+      setStores((prev) =>
+        prev.map((s) =>
+          s._id === activeStoreId
+            ? {
+                ...s,
+                ...updated,
+                appliedCustomThemeId: savedThemeId,
+                appliedTheme: null,
+              }
+            : s
+        )
+      );
+    } catch (err: unknown) {
+      toast.error((err as Error)?.message ?? 'Failed to apply theme');
+    } finally {
+      setApplyingTheme(false);
+    }
+  }, [
+    activeStoreId,
+    savedThemeId,
+    applyingTheme,
+    applyStoreCustomTheme,
+    setStores,
+  ]);
+
   const handleOnlineStoreTheme = useCallback(() => {
     openThemeCreatorForActiveStore(stores, activeStoreId);
   }, [stores, activeStoreId]);
@@ -3465,6 +3514,10 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         inspectorEnabled={inspectorEnabled}
         onInspectorEnabledChange={handleInspectorEnabledChange}
         storeUrl={storeSubdomain?.url ?? null}
+        onApplyTheme={() => void handleApplyTheme()}
+        applyThemeDisabled={applyingTheme}
+        applyingTheme={applyingTheme}
+        themeAlreadyApplied={themeAlreadyApplied}
       />
       ) : (
         <CheckoutEditorHeader
