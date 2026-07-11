@@ -58,9 +58,9 @@ const BuyXGetYTargetsCard: React.FC<BuyXGetYTargetsCardProps> = ({
   customers,
 }) => {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
       <div className="px-5 py-4 sm:px-6 sm:py-5">
-        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Targets</h2>
+        <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Targets</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <TargetBlock title="Buys – Products" chips={buysProducts.map(p => ({ key: p._id, label: p.title }))} />
           <TargetBlock title="Buys – Collections" chips={buysCollections.map(c => ({ key: c._id, label: c.title }))} />

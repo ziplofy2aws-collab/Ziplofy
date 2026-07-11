@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DiscountNotFound from '../../components/DiscountNotFound';
 import DiscountDetailsHeader from '../../components/DiscountDetailsHeader';
+import DiscountDetailsSection from '../../components/discounts/DiscountDetailsSection';
 import FreeShippingGeneralInfoCard from '../../components/FreeShippingGeneralInfoCard';
 import FreeShippingCountryRatesCard from '../../components/FreeShippingCountryRatesCard';
 import FreeShippingMinimumPurchaseCard from '../../components/FreeShippingMinimumPurchaseCard';
@@ -10,27 +11,53 @@ import FreeShippingCombinationsCard from '../../components/FreeShippingCombinati
 import FreeShippingActiveDatesCard from '../../components/FreeShippingActiveDatesCard';
 import FreeShippingTargetSegmentsCard from '../../components/FreeShippingTargetSegmentsCard';
 import FreeShippingTargetCustomersCard from '../../components/FreeShippingTargetCustomersCard';
-import { useFreeShippingDiscount } from '../../contexts/free-shipping-discount.context';
-import { useStore } from '../../contexts/store.context';
-import type { FreeShippingDiscountUsageOrder, GetOrdersByDiscountResponse } from '../../contexts/free-shipping-discount.context';
+import { discountPageContainerClass, discountPageShellClass } from '../../components/discounts/discount-ui.util';
+import {
+  useFreeShippingDiscount,
+  type FreeShippingDiscount,
+  type FreeShippingDiscountUsageOrder,
+  type GetOrdersByDiscountResponse,
+} from '../../contexts/free-shipping-discount.context';
 
 const formatINR = (amountInPaisa: number) => `₹${(amountInPaisa / 100).toFixed(2)}`;
 
 const FreeShippingDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { activeStoreId } = useStore();
-  const { discounts, fetchDiscountsByStoreId, fetchOrdersByDiscountId, deleteDiscount, loading, error } = useFreeShippingDiscount();
+  const {
+    discounts,
+    fetchDiscountById,
+    fetchOrdersByDiscountId,
+    deleteDiscount,
+    loading,
+    error,
+  } = useFreeShippingDiscount();
+  const [fetchedDiscount, setFetchedDiscount] = useState<FreeShippingDiscount | null>(null);
   const [ordersData, setOrdersData] = useState<GetOrdersByDiscountResponse | null>(null);
   const [ordersLoading, setOrdersLoading] = useState(false);
 
-  const discount = discounts.find(d => d._id === id);
+  const discountFromList = useMemo(
+    () => (id ? discounts.find((d) => d._id === id) : null),
+    [discounts, id]
+  );
+  const discount = discountFromList ?? fetchedDiscount;
 
   useEffect(() => {
-    if (activeStoreId && !discounts.length) {
-      fetchDiscountsByStoreId(activeStoreId);
-    }
-  }, [activeStoreId, discounts.length, fetchDiscountsByStoreId]);
+    if (!id || discountFromList) return;
+    let cancelled = false;
+    fetchDiscountById(id)
+      .then((res) => {
+        if (!cancelled && res?.success && res.data) {
+          setFetchedDiscount(res.data);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setFetchedDiscount(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, discountFromList, fetchDiscountById]);
 
   useEffect(() => {
     if (!id) return;
@@ -76,31 +103,30 @@ const FreeShippingDetailsPage: React.FC = () => {
     return fullName || c?.email || c?._id;
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-8">
-        <div className="w-6 h-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+  if (!discount) {
+    return id && loading ? (
+      <div className={`${discountPageShellClass} flex min-h-[60vh] flex-col items-center justify-center gap-3`}>
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
+        <p className="text-[13px] text-gray-500">Loading discount…</p>
       </div>
+    ) : (
+      <DiscountNotFound />
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-6xl mx-auto py-6 px-4">
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+      <div className={discountPageContainerClass}>
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
           <p className="text-sm text-red-800">{error}</p>
         </div>
       </div>
     );
   }
 
-  if (!discount) {
-    return <DiscountNotFound />;
-  }
-
   return (
-    <div className="min-h-screen">
-      <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6">
+    <div className={discountPageShellClass}>
+      <div className={discountPageContainerClass}>
           <div className="flex flex-col gap-4">
             {/* Header */}
             <DiscountDetailsHeader
@@ -182,12 +208,10 @@ const FreeShippingDetailsPage: React.FC = () => {
             )}
 
             {/* Orders where this discount was used */}
-            <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-200">
-                <h3 className="text-base font-semibold text-gray-900">Orders using this discount</h3>
-                <p className="text-sm text-gray-500 mt-0.5">Orders where customers applied this free shipping discount</p>
-              </div>
-              <div className="p-5">
+            <DiscountDetailsSection
+              title="Orders using this discount"
+              description="Orders where customers applied this free shipping discount"
+            >
                 {ordersLoading ? (
                   <div className="flex justify-center py-8">
                     <div className="w-6 h-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
@@ -236,7 +260,7 @@ const FreeShippingDetailsPage: React.FC = () => {
                                   <button
                                     type="button"
                                     onClick={() => navigate(`/orders/${row.order!._id}`)}
-                                    className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                                    className="text-[13px] font-medium text-gray-700 hover:text-gray-900"
                                   >
                                     View order
                                   </button>
@@ -256,8 +280,7 @@ const FreeShippingDetailsPage: React.FC = () => {
                 ) : (
                   <p className="text-sm text-gray-500 py-6 text-center">No orders have used this discount yet.</p>
                 )}
-              </div>
-            </div>
+            </DiscountDetailsSection>
           </div>
         </div>
     </div>

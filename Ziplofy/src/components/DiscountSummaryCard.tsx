@@ -29,14 +29,14 @@ const DiscountSummaryCard: React.FC<DiscountSummaryCardProps> = ({
   ];
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
       <div className="px-5 py-4 sm:px-6 sm:py-5">
-        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Summary</h2>
+        <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Summary</h2>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {rows.map(({ label, value }) => (
             <div key={label}>
               <dt className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</dt>
-              <dd className="mt-1 text-sm text-gray-900">{value}</dd>
+              <dd className="mt-1 text-[13px] text-gray-900">{value}</dd>
             </div>
           ))}
         </dl>

@@ -8,6 +8,7 @@ import {
 } from "../../contexts/amount-off-products-discount.context";
 import DiscountNotFound from "../../components/DiscountNotFound";
 import DiscountDetailsHeader from "../../components/DiscountDetailsHeader";
+import { discountPageContainerClass, discountPageShellClass } from "../../components/discounts/discount-ui.util";
 import DiscountSummaryCard from "../../components/DiscountSummaryCard";
 import DiscountValueLimitsCard from "../../components/DiscountValueLimitsCard";
 import DiscountActiveDatesCard from "../../components/DiscountActiveDatesCard";
@@ -167,9 +168,9 @@ const DiscountDetailsPage: React.FC = () => {
     return (
       <>
         {id && loading ? (
-          <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 px-4">
-            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-            <p className="text-sm text-gray-500">Loading discount…</p>
+          <div className={`${discountPageShellClass} flex min-h-[60vh] flex-col items-center justify-center gap-3`}>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
+            <p className="text-[13px] text-gray-500">Loading discount…</p>
           </div>
         ) : (
           <DiscountNotFound />
@@ -181,9 +182,9 @@ const DiscountDetailsPage: React.FC = () => {
   const value = discount.valueType === 'percentage' ? `${discount.percentage ?? 0}%` : `₹${discount.fixedAmount ?? 0}`;
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6">
-          <div className="flex flex-col gap-6">
+    <div className={discountPageShellClass}>
+      <div className={discountPageContainerClass}>
+          <div className="flex flex-col gap-4">
             <DiscountDetailsHeader
               method={discount.method}
               discountCode={discount.discountCode}
@@ -316,7 +317,7 @@ const DiscountDetailsPage: React.FC = () => {
                                   <button
                                     type="button"
                                     onClick={() => navigate(`/orders/${row.order!._id}`)}
-                                    className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                                    className="text-[13px] font-medium text-gray-700 hover:text-gray-900"
                                   >
                                     View order
                                   </button>
