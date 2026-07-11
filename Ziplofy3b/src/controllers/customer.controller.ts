@@ -129,14 +129,25 @@ export const searchCustomers = asyncErrorHandler(async (req: Request, res: Respo
 
   const skip = (Number(page) - 1) * Number(limit);
 
-  // Fuzzy search on both first name and last name
+  const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
   const searchCriteria = {
     storeId: new mongoose.Types.ObjectId(storeId),
     $or: [
-      { firstName: { $regex: q, $options: 'i' } },
-      { lastName: { $regex: q, $options: 'i' } },
-      { email: { $regex: q, $options: 'i' } }
-    ]
+      { firstName: { $regex: escapedQuery, $options: 'i' } },
+      { lastName: { $regex: escapedQuery, $options: 'i' } },
+      { email: { $regex: escapedQuery, $options: 'i' } },
+      { phoneNumber: { $regex: escapedQuery, $options: 'i' } },
+      {
+        $expr: {
+          $regexMatch: {
+            input: { $concat: ['$firstName', ' ', '$lastName'] },
+            regex: escapedQuery,
+            options: 'i',
+          },
+        },
+      },
+    ],
   };
 
   // Get customers with pagination
@@ -158,5 +169,115 @@ export const searchCustomers = asyncErrorHandler(async (req: Request, res: Respo
       totalItems: totalCustomers,
       itemsPerPage: Number(limit)
     }
+  });
+});
+
+export const getCustomerById = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new CustomError("Invalid customer ID format", 400);
+  }
+
+  const customer = await Customer.findById(id).populate('tagIds');
+
+  if (!customer) {
+    throw new CustomError("Customer not found", 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Customer retrieved successfully",
+    data: customer,
+  });
+});
+
+export const updateCustomer = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const updateData = req.body as Partial<
+    Pick<
+      ICustomer,
+      | 'firstName'
+      | 'lastName'
+      | 'language'
+      | 'email'
+      | 'phoneNumber'
+      | 'agreedToMarketingEmails'
+      | 'agreedToSmsMarketing'
+      | 'collectTax'
+      | 'notes'
+      | 'tagIds'
+    >
+  >;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new CustomError("Invalid customer ID format", 400);
+  }
+
+  const existingCustomer = await Customer.findById(id);
+  if (!existingCustomer) {
+    throw new CustomError("Customer not found", 404);
+  }
+
+  const allowedFields = [
+    'firstName',
+    'lastName',
+    'language',
+    'email',
+    'phoneNumber',
+    'agreedToMarketingEmails',
+    'agreedToSmsMarketing',
+    'collectTax',
+    'notes',
+    'tagIds',
+  ] as const;
+
+  const filteredUpdateData: Record<string, unknown> = {};
+  for (const key of allowedFields) {
+    if (updateData[key] !== undefined) {
+      filteredUpdateData[key] = updateData[key];
+    }
+  }
+
+  if (Object.keys(filteredUpdateData).length === 0) {
+    throw new CustomError("No valid fields provided for update", 400);
+  }
+
+  if (filteredUpdateData.email && filteredUpdateData.email !== existingCustomer.email) {
+    const emailExists = await Customer.findOne({
+      email: filteredUpdateData.email,
+      _id: { $ne: id },
+    });
+
+    if (emailExists) {
+      throw new CustomError("Email already exists", 400);
+    }
+  }
+
+  if (filteredUpdateData.tagIds) {
+    if (!Array.isArray(filteredUpdateData.tagIds)) {
+      throw new CustomError("tagIds must be an array", 400);
+    }
+
+    for (const tagId of filteredUpdateData.tagIds) {
+      if (!mongoose.Types.ObjectId.isValid(String(tagId))) {
+        throw new CustomError(`Invalid tag ID format: ${tagId}`, 400);
+      }
+    }
+  }
+
+  const updatedCustomer = await Customer.findByIdAndUpdate(id, filteredUpdateData, {
+    new: true,
+    runValidators: true,
+  }).populate('tagIds');
+
+  if (!updatedCustomer) {
+    throw new CustomError("Customer not found", 404);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Customer updated successfully",
+    data: updatedCustomer,
   });
 });

@@ -1,12 +1,19 @@
 import React, { useCallback } from 'react';
 import Modal from '../Modal';
+import {
+  getCustomerFromSegmentEntry,
+  segmentPrimaryButtonClass,
+  segmentSecondaryButtonClass,
+} from './customer-segment-ui.util';
 
 interface Entry {
   _id: string;
   customerId: string | {
+    _id?: string;
     fullName?: string;
     firstName?: string;
     lastName?: string;
+    email?: string;
   };
   createdAt: string | Date;
 }
@@ -24,51 +31,36 @@ const DeleteCustomerFromSegmentModal: React.FC<DeleteCustomerFromSegmentModalPro
   entry,
   onConfirm,
 }) => {
-  const getCustomerName = useCallback((customerId: any) => {
-    if (typeof customerId === 'string') {
-      return customerId;
-    }
-    return customerId.fullName || `${customerId.firstName || ''} ${customerId.lastName || ''}`.trim();
-  }, []);
-
   const handleConfirm = useCallback(() => {
     onConfirm();
-    onClose();
-  }, [onConfirm, onClose]);
+  }, [onConfirm]);
 
-  if (!isOpen || !entry) return null;
+  if (!entry) return null;
 
-  const customerName = getCustomerName(entry.customerId);
+  const customer = getCustomerFromSegmentEntry(entry.customerId);
 
   return (
     <Modal
       open={isOpen}
       onClose={onClose}
-      title="Delete Customer"
+      title="Remove customer from segment"
       maxWidth="sm"
       actions={
         <>
-          <button
-            onClick={onClose}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors"
-          >
-            No
+          <button type="button" onClick={onClose} className={segmentSecondaryButtonClass}>
+            Cancel
           </button>
-          <button
-            onClick={handleConfirm}
-            className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 transition-colors"
-          >
-            Yes
+          <button type="button" onClick={handleConfirm} className={segmentPrimaryButtonClass}>
+            Remove
           </button>
         </>
       }
     >
-      <p className="text-sm text-gray-700">
-        Do you really want to delete <span className="font-medium">{customerName}</span> from this segment?
+      <p className="text-[13px] text-gray-700">
+        Remove <span className="font-medium text-gray-900">{customer.name}</span> from this segment?
       </p>
     </Modal>
   );
 };
 
 export default DeleteCustomerFromSegmentModal;
-
