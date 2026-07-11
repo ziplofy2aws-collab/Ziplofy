@@ -36,7 +36,7 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
     handleSubmit,
     isSubmitting,
     productLoading,
-    selectedImages,
+    displayImages,
     addImageFiles,
     removeImage,
     addVariant,
@@ -105,11 +105,11 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               description={formData.description}
               category={formData.category}
               activeStoreId={activeStoreId}
-              images={selectedImages.map((image) => image.previewUrl)}
+              images={displayImages}
               onTitleChange={(value) => handleInputChange('title', value)}
               onDescriptionChange={(value) => handleInputChange('description', value)}
               onCategoryChange={(categoryId) => handleInputChange('category', categoryId)}
-              onAddImageFiles={addImageFiles}
+              onAddImageFiles={(files) => void addImageFiles(files)}
               onRemoveImage={removeImage}
               mediaDisabled={isSubmitting || productLoading}
             />

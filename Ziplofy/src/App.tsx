@@ -331,10 +331,10 @@ const AdminApp: React.FC = () => {
             <Route path="/orders/abandoned-carts/customer/:customerId" element={<AbandonedCartDetailsPage />} />
             <Route path="/orders/:id" element={<OrderDetailsPage />} />
             <Route path="/products" element={<ProductsPage />} />
-            <Route path="/products/:id" element={<ProductDetailsPage />} />
-            <Route path="/products/:id/variants/:variantId" element={<ProductVariantDetailsPage />} />
             <Route path="/products/new" element={<NewProductPage />} />
             <Route path="/products/inventory" element={<ProductsInventoryPage />} />
+            <Route path="/products/:id" element={<ProductDetailsPage />} />
+            <Route path="/products/:id/variants/:variantId" element={<ProductVariantDetailsPage />} />
             <Route path="/products/purchase-orders" element={<PurchaseOrdersListPage />} />
             <Route path="/products/purchase-orders/:id" element={<PurchaseOrderDetailsPage />} />
             <Route path="/products/purchase-orders/:id/receive" element={<PurchaseOrderReceivePage />} />

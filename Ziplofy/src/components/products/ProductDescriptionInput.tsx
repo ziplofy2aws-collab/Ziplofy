@@ -170,7 +170,13 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      // Disable StarterKit pieces we register separately to avoid TipTap
+      // "Duplicate extension names" crashes (blanks /products/new).
+      StarterKit.configure({
+        horizontalRule: false,
+        link: false,
+        underline: false,
+      }),
       TextStyle,
       Color,
       Underline,
@@ -209,6 +215,7 @@ const ProductDescriptionInput: React.FC<ProductDescriptionInputProps> = ({
       }),
     ],
     content: value || "",
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class:

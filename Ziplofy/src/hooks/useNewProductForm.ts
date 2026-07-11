@@ -5,7 +5,11 @@ import { defaultContentFilesFolder, useStoreCloudStorage } from '../contexts/sto
 import { useCategories } from '../contexts/category.context';
 import { type Product, useProducts } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
-import { uploadDescriptionImagesToCloudStorage, useProductMediaUrls } from './useProductMediaUrls';
+import {
+  uploadDescriptionImagesToCloudStorage,
+  uploadImagesToCloudStorage,
+  useProductMediaUrls,
+} from './useProductMediaUrls';
 import {
   descriptionHasPendingLocalImages,
   isDescriptionWithinMaxLength,
@@ -91,11 +95,12 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
   const { fetchBaseCategories } = useCategories();
   const { createProduct, loading: productLoading } = useProducts();
   const { activeStoreId } = useStore();
-  const { uploadFileForStore } = useStoreCloudStorage();
+  const { uploadFileForStore, uploadFilesForStore } = useStoreCloudStorage();
   const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { mediaUrls, displayImages, addImageUrl, removeImage, resetMediaUrls } = useProductMediaUrls();
+  const { mediaUrls, displayImages, addImageUrl, addImageUrls, removeImage, resetMediaUrls } =
+    useProductMediaUrls();
   const [formData, setFormData] = useState<NewProductFormData>(INITIAL_NEW_PRODUCT_FORM_DATA);
 
   useEffect(() => {
@@ -164,6 +169,26 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
       );
     },
     [activeStoreId, uploadFileForStore]
+  );
+
+  const addImageFiles = useCallback(
+    async (files: File[]) => {
+      if (!activeStoreId) {
+        toast.error('Select a store before uploading images');
+        return;
+      }
+      try {
+        const urls = await uploadImagesToCloudStorage(activeStoreId, files, (storeId, imageFiles, options) =>
+          uploadFilesForStore(storeId, imageFiles, {
+            folder: options?.folder ?? defaultContentFilesFolder(storeId),
+          })
+        );
+        if (urls.length) addImageUrls(urls);
+      } catch {
+        // uploadImagesToCloudStorage already toasts
+      }
+    },
+    [activeStoreId, addImageUrls, uploadFilesForStore]
   );
 
   const resetForm = useCallback(() => {
@@ -356,6 +381,7 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     productLoading,
     displayImages,
     addImageUrl,
+    addImageFiles,
     removeImage,
     addVariant,
     removeVariant,
