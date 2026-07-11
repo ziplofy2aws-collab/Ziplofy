@@ -397,15 +397,15 @@ const AdminApp: React.FC = () => {
             <Route path="/marketing/automations/create" element={<AutomationCreatePage />} />
             <Route path="/marketing/automations/:id" element={<AutomationDetailsPage />} />
             <Route path="/discounts" element={<DiscountsPage />} />
-            <Route path="/discounts/amount-off-products/:id" element={<DiscountDetailsPage />} />
-            <Route path="/discounts/:id" element={<DiscountDetailsPage />} />
-            <Route path="/discounts/pyxgety/:id" element={<BuyXGetYDetailsPage />} />
-            <Route path="/discounts/amount-off-order/:id" element={<AmountOffOrderDetailsPage />} />
-            <Route path="/discounts/free-shipping/:id" element={<FreeShippingDetailsPage />} />
             <Route path="/discounts/new/amount-off-products" element={<AmountOffProductsPage />} />
             <Route path="/discounts/new/buy-x-get-y" element={<BuyXGetYPage />} />
             <Route path="/discounts/new/amount-off-order" element={<AmountOffOrderPage />} />
             <Route path="/discounts/new/free-shipping" element={<FreeShippingPage />} />
+            <Route path="/discounts/amount-off-products/:id" element={<DiscountDetailsPage />} />
+            <Route path="/discounts/pyxgety/:id" element={<BuyXGetYDetailsPage />} />
+            <Route path="/discounts/amount-off-order/:id" element={<AmountOffOrderDetailsPage />} />
+            <Route path="/discounts/free-shipping/:id" element={<FreeShippingDetailsPage />} />
+            <Route path="/discounts/:id" element={<DiscountDetailsPage />} />
             <Route path="/content" element={<Navigate to="/content/articles" replace />} />
             <Route path="/content/articles" element={<ContentBlogPostsPage />} />
             <Route path="/content/articles/new" element={<BlogPostCreatePage />} />
