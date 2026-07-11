@@ -18,7 +18,7 @@ export function Theme2CategorySection({
           <ul className="m-0 list-none p-0">
             {collections.map((c, i) => (
               <li key={c._id} className="border-b-4 border-[#FFEB00]">
-                <Link to={`/collections/${c.urlHandle}`} className="block p-4 transition hover:bg-[#FFEB00] hover:text-black">
+                <Link to={`/collection/${c.urlHandle}`} className="block p-4 transition hover:bg-[#FFEB00] hover:text-black">
                   <span className="block text-[10px] font-bold opacity-70">#{String(i + 1).padStart(2, '0')}</span>
                   <span className="mt-1 block text-lg font-black uppercase leading-none">{c.title}</span>
                 </Link>

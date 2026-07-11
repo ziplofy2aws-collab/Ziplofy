@@ -321,6 +321,8 @@ export function PreviewSelectionLayer({
       const toolbar = (e.target as HTMLElement).closest('.codiic-selection-toolbar');
       if (toolbar) return;
       if ((e.target as HTMLElement).closest('[data-codiic-inline-editing]')) return;
+      // Let storefront commerce controls (product links, add to cart) run normally.
+      if ((e.target as HTMLElement).closest('[data-codiic-allow-interaction]')) return;
 
       const target = findEditableTargetFromPoint(e.clientX, e.clientY);
       if (!target) {

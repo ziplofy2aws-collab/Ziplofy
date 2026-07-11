@@ -57,7 +57,7 @@ export function CollectionTemplatePreviewCard({
             {loading && !active ? 'Loading…' : active?.title ?? 'No collections'}
           </p>
           {active?.urlHandle ? (
-            <p className="truncate text-[12px] text-gray-500">/collections/{active.urlHandle}</p>
+            <p className="truncate text-[12px] text-gray-500">/collection/{active.urlHandle}</p>
           ) : null}
         </div>
         <select

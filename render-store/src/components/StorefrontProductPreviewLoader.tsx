@@ -5,11 +5,13 @@ import { useStorefrontProducts } from '@/contexts/product.context';
 import { useStorefrontProductVariants } from '@/contexts/product-variant.context';
 
 /**
- * Resolves `/products/preview` (and missing catalog) to the first public product
+ * Resolves `/product/preview` (and missing catalog) to the first public product
  * so the product template preview can render live storefront data.
+ * Also supports legacy `/products/:id` param name.
  */
 export function StorefrontProductPreviewLoader() {
-  const { id: paramId } = useParams<{ id: string }>();
+  const params = useParams<{ id?: string; urlHandle?: string }>();
+  const paramId = params.urlHandle ?? params.id;
   const { storeFrontMeta } = useStorefront();
   const {
     products,

@@ -7,6 +7,7 @@ import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
 import { layout, useThemeColors, useThemeLayout } from '../../runtime/shared/tokens';
 import { useCollectionPageData } from '../../runtime/shared/useCollectionPageData';
 import type { SectionRuntimeProps } from '../../runtime/types';
+import { productPath } from '../../../utils/storefront-paths';
 
 function secBase(templateId: string, sectionId: string): string {
   return `templates.${templateId}.sections.${sectionId}`;
@@ -208,7 +209,7 @@ export function MainCollection({
               price={product.price}
               imageUrl={product.imageUrl}
               soldOut={product.soldOut}
-              href={`/products/${product.id}`}
+              href={productPath(product.id)}
             />
           ))}
         </div>

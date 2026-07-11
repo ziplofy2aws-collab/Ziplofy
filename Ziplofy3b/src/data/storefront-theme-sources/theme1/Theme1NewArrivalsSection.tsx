@@ -19,7 +19,7 @@ export function Theme1NewArrivalsSection({
           {products.map((p) => (
             <Link
               key={p._id}
-              to={`/products/${p._id}`}
+              to={`/product/${p._id}`}
               className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-teal-300 hover:shadow-md"
             >
               <div className="aspect-[4/3] bg-slate-100">

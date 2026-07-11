@@ -1,5 +1,11 @@
-import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import { useCallback, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  useStorefront,
+  useStorefrontCart,
+  useStorefrontProductVariants,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
@@ -23,6 +29,7 @@ import { readViewAllButtonStyle, viewAllButtonAnchorCss, viewAllButtonWrapperCss
 import { resolveThemeTypographyStyle } from '../../runtime/shared/themeTypographyRuntime';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
+import { productPath } from '../../../utils/storefront-paths';
 import { useFeaturedCollectionProducts } from '../../runtime/shared/useFeaturedCollectionProducts';
 import type { SectionRuntimeProps } from '../../runtime/types';
 
@@ -32,8 +39,15 @@ type GridProduct = {
   price: number;
   compareAtPrice?: number | null;
   imageUrls?: string[];
+  urlHandle?: string;
   placeholder?: boolean;
 };
+
+function resolveFeaturedProductHref(product: GridProduct): string | null {
+  if (product.placeholder) return null;
+  const handle = product.urlHandle?.trim() || product._id.trim();
+  return handle ? productPath(handle) : null;
+}
 
 const PRICE_TYPOGRAPHY_PRESETS: Record<
   string,
@@ -52,6 +66,11 @@ export function FeaturedCollection({
   placement = 'template',
 }: SectionRuntimeProps) {
   const config = useThemeConfig();
+  const { storeFrontMeta } = useStorefront();
+  const storeId = storeFrontMeta?.storeId ?? '';
+  const { createCartEntry } = useStorefrontCart();
+  const { fetchVariantsByProductId } = useStorefrontProductVariants();
+  const [addingProductId, setAddingProductId] = useState<string | null>(null);
   const { fontBody, fontHeading, background, text, muted, primary } = useThemeColors();
   const { maxWidth } = useThemeLayout();
 
@@ -243,7 +262,14 @@ export function FeaturedCollection({
   const products = useFeaturedCollectionProducts({ collectionHandle, limit });
 
   const cards: GridProduct[] = useMemo(() => {
-    const list = (products as GridProduct[]).slice(0, limit);
+    const list = products.slice(0, limit).map((p) => ({
+      _id: p._id,
+      title: p.title,
+      price: p.price,
+      compareAtPrice: p.compareAtPrice ?? null,
+      imageUrls: p.imageUrls,
+      urlHandle: p.urlHandle,
+    }));
     if (list.length > 0) return list;
     const count = Math.max(columns * 2, 8);
     return Array.from({ length: count }, (_, index) => ({
@@ -255,6 +281,27 @@ export function FeaturedCollection({
       placeholder: true,
     }));
   }, [products, limit, columns]);
+
+  const handleQuickAdd = useCallback(
+    async (event: MouseEvent<HTMLButtonElement>, product: GridProduct) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (product.placeholder || !storeId || addingProductId) return;
+      try {
+        setAddingProductId(product._id);
+        const variants = await fetchVariantsByProductId(product._id);
+        const variant = variants[0];
+        if (!variant) return;
+        await createCartEntry(
+          { storeId, productVariantId: variant._id, quantity: 1 },
+          variant
+        );
+      } finally {
+        setAddingProductId(null);
+      }
+    },
+    [addingProductId, createCartEntry, fetchVariantsByProductId, storeId]
+  );
 
   const scopeClass = sectionScopeClass('codiic-featured-collection', sectionId);
   const gridClass = `${scopeClass}-grid`;
@@ -500,10 +547,30 @@ export function FeaturedCollection({
     </EditorBlock>
   );
 
-  const renderCardNested = (product: GridProduct, nestedId: string): ReactNode => {
+  const renderCardNested = (product: GridProduct, nestedId: string, productHref: string | null): ReactNode => {
     if (nestedId === 'media') {
       if (!showMedia) return null;
       const image = product.imageUrls?.[0];
+      const media = (
+        <div
+          className="codiic-fc-media"
+          style={{
+            width: '100%',
+            overflow: 'hidden',
+            borderRadius: mediaBorder.radius,
+            border: mediaBorder.border,
+            boxSizing: 'border-box',
+            background: image ? `center / cover no-repeat url(${image})` : '#f3f4f6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {image ? null : <FeaturedProductShirtIllustration />}
+        </div>
+      );
+      const canQuickAdd =
+        quickAddFlags.quickAdd && !product.placeholder && Boolean(storeId);
       return (
         <EditorBlock
           key={nestedId}
@@ -511,31 +578,30 @@ export function FeaturedCollection({
           label="Media"
           style={{ position: 'relative' }}
         >
-          <div
-            className="codiic-fc-media"
-            style={{
-              width: '100%',
-              overflow: 'hidden',
-              borderRadius: mediaBorder.radius,
-              border: mediaBorder.border,
-              boxSizing: 'border-box',
-              background: image ? `center / cover no-repeat url(${image})` : '#f3f4f6',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {image ? null : <FeaturedProductShirtIllustration />}
-          </div>
+          {productHref ? (
+            <Link
+              to={productHref}
+              data-codiic-allow-interaction=""
+              style={{ display: 'block', color: 'inherit', textDecoration: 'none' }}
+            >
+              {media}
+            </Link>
+          ) : (
+            media
+          )}
           {quickAddFlags.quickAdd ? (
             <button
               type="button"
               className="codiic-fc-quick-add"
+              data-codiic-allow-interaction=""
+              disabled={!canQuickAdd || addingProductId === product._id}
+              onClick={(e) => void handleQuickAdd(e, product)}
               style={{
                 position: 'absolute',
                 left: 10,
                 right: 10,
                 bottom: 10,
+                zIndex: 2,
                 border: 'none',
                 borderRadius: 8,
                 padding: '8px 12px',
@@ -544,11 +610,12 @@ export function FeaturedCollection({
                 fontFamily: fontBody,
                 fontSize: 13,
                 fontWeight: 600,
-                cursor: 'pointer',
+                cursor: canQuickAdd ? 'pointer' : 'default',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                opacity: addingProductId === product._id ? 0.7 : undefined,
               }}
             >
-              Add to cart
+              {addingProductId === product._id ? 'Adding…' : 'Add to cart'}
             </button>
           ) : null}
         </EditorBlock>
@@ -556,13 +623,24 @@ export function FeaturedCollection({
     }
     if (nestedId === 'product_title') {
       if (!showTitle) return null;
+      const titleNode = <h3 style={productTitleStyle}>{product.title}</h3>;
       return (
         <EditorBlock
           key={nestedId}
           nodeId={`${editorNodeId}:block:product_card:nested:product_title`}
           label="Product title"
         >
-          <h3 style={productTitleStyle}>{product.title}</h3>
+          {productHref ? (
+            <Link
+              to={productHref}
+              data-codiic-allow-interaction=""
+              style={{ display: 'block', color: 'inherit', textDecoration: 'none' }}
+            >
+              {titleNode}
+            </Link>
+          ) : (
+            titleNode
+          )}
         </EditorBlock>
       );
     }
@@ -579,58 +657,99 @@ export function FeaturedCollection({
           ? compareRaw
           : currentLabel
         : '';
+      const priceBody = (
+        <div
+          style={{
+            width: priceStyle.width,
+            textAlign: priceStyle.textAlign,
+            paddingTop: 4 + priceStyle.paddingTop,
+            paddingBottom: 12 + priceStyle.paddingBottom,
+            paddingLeft: 4 + priceStyle.paddingLeft,
+            paddingRight: 4 + priceStyle.paddingRight,
+            boxSizing: 'border-box',
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontFamily: fontBody,
+              fontSize: priceStyle.fontSize,
+              fontWeight: priceStyle.fontWeight,
+              lineHeight: priceStyle.lineHeight,
+              color: priceStyle.color,
+            }}
+          >
+            <span>{primaryLabel}</span>
+            {strikeLabel ? (
+              <span
+                style={{
+                  marginLeft: 8,
+                  fontWeight: 400,
+                  color: muted,
+                  textDecoration: 'line-through',
+                }}
+              >
+                {strikeLabel}
+              </span>
+            ) : null}
+          </p>
+          {priceStyle.showInstallments ? (
+            <p style={{ margin: '4px 0 0', fontSize: 12, color: muted }}>Pay in installments</p>
+          ) : null}
+          {priceStyle.showTaxInfo ? (
+            <p style={{ margin: '2px 0 0', fontSize: 11, color: muted }}>Tax included</p>
+          ) : null}
+        </div>
+      );
       return (
         <EditorBlock
           key={nestedId}
           nodeId={`${editorNodeId}:block:product_card:nested:price`}
           label="Price"
         >
-          <div
-            style={{
-              width: priceStyle.width,
-              textAlign: priceStyle.textAlign,
-              paddingTop: 4 + priceStyle.paddingTop,
-              paddingBottom: 12 + priceStyle.paddingBottom,
-              paddingLeft: 4 + priceStyle.paddingLeft,
-              paddingRight: 4 + priceStyle.paddingRight,
-              boxSizing: 'border-box',
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                fontFamily: fontBody,
-                fontSize: priceStyle.fontSize,
-                fontWeight: priceStyle.fontWeight,
-                lineHeight: priceStyle.lineHeight,
-                color: priceStyle.color,
-              }}
+          {productHref ? (
+            <Link
+              to={productHref}
+              data-codiic-allow-interaction=""
+              style={{ display: 'block', color: 'inherit', textDecoration: 'none' }}
             >
-              <span>{primaryLabel}</span>
-              {strikeLabel ? (
-                <span
-                  style={{
-                    marginLeft: 8,
-                    fontWeight: 400,
-                    color: muted,
-                    textDecoration: 'line-through',
-                  }}
-                >
-                  {strikeLabel}
-                </span>
-              ) : null}
-            </p>
-            {priceStyle.showInstallments ? (
-              <p style={{ margin: '4px 0 0', fontSize: 12, color: muted }}>Pay in installments</p>
-            ) : null}
-            {priceStyle.showTaxInfo ? (
-              <p style={{ margin: '2px 0 0', fontSize: 11, color: muted }}>Tax included</p>
-            ) : null}
-          </div>
+              {priceBody}
+            </Link>
+          ) : (
+            priceBody
+          )}
         </EditorBlock>
       );
     }
     return null;
+  };
+
+  const renderProductCard = (product: GridProduct) => {
+    const productHref = resolveFeaturedProductHref(product);
+    return (
+      <article
+        key={product._id}
+        className="codiic-fc-card"
+        style={{
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          gap: productCardBlockStyle.gap,
+          border: productCardBlockStyle.border,
+          borderRadius: productCardBlockStyle.borderRadius,
+          background: productCardBlockStyle.background,
+          color: productCardBlockStyle.color,
+          paddingTop: productCardBlockStyle.paddingTop,
+          paddingBottom: productCardBlockStyle.paddingBottom,
+          paddingLeft: productCardBlockStyle.paddingLeft,
+          paddingRight: productCardBlockStyle.paddingRight,
+          boxSizing: 'border-box',
+        }}
+      >
+        {productNestedOrder.map((nestedId) => renderCardNested(product, nestedId, productHref))}
+      </article>
+    );
   };
 
   const productCardBlock = (
@@ -644,30 +763,7 @@ export function FeaturedCollection({
       ) : isCarousel ? (
         <div className="codiic-fc-carousel">
           <div className={gridClass} ref={trackRef}>
-            {cards.map((product) => (
-              <article
-                key={product._id}
-                className="codiic-fc-card"
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  overflow: 'hidden',
-                  gap: productCardBlockStyle.gap,
-                  border: productCardBlockStyle.border,
-                  borderRadius: productCardBlockStyle.borderRadius,
-                  background: productCardBlockStyle.background,
-                  color: productCardBlockStyle.color,
-                  paddingTop: productCardBlockStyle.paddingTop,
-                  paddingBottom: productCardBlockStyle.paddingBottom,
-                  paddingLeft: productCardBlockStyle.paddingLeft,
-                  paddingRight: productCardBlockStyle.paddingRight,
-                  boxSizing: 'border-box',
-                }}
-              >
-                {productNestedOrder.map((nestedId) => renderCardNested(product, nestedId))}
-              </article>
-            ))}
+            {cards.map((product) => renderProductCard(product))}
           </div>
           {navIcon !== 'none' && cards.length > 1 ? (
             <>
@@ -678,30 +774,7 @@ export function FeaturedCollection({
         </div>
       ) : (
         <div className={gridClass}>
-          {cards.map((product) => (
-            <article
-              key={product._id}
-              className="codiic-fc-card"
-              style={{
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                gap: productCardBlockStyle.gap,
-                border: productCardBlockStyle.border,
-                borderRadius: productCardBlockStyle.borderRadius,
-                background: productCardBlockStyle.background,
-                color: productCardBlockStyle.color,
-                paddingTop: productCardBlockStyle.paddingTop,
-                paddingBottom: productCardBlockStyle.paddingBottom,
-                paddingLeft: productCardBlockStyle.paddingLeft,
-                paddingRight: productCardBlockStyle.paddingRight,
-                boxSizing: 'border-box',
-              }}
-            >
-              {productNestedOrder.map((nestedId) => renderCardNested(product, nestedId))}
-            </article>
-          ))}
+          {cards.map((product) => renderProductCard(product))}
         </div>
       )}
     </EditorBlock>

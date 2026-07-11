@@ -44,7 +44,7 @@
         "enabled": true,
         "message": "Free shipping on orders over ₹999 — Shop the new collection",
         "linkLabel": "Shop now",
-        "linkHref": "/products",
+        "linkHref": "/collections/all",
         "timeToNext": 5,
         "sectionWidth": "page",
         "colorScheme": "scheme-4",
@@ -120,7 +120,7 @@
         "defaultLogoUrl": "",
         "cartType": "drawer",
         "productTitleCase": "default",
-        "emptyCartLink": "/products",
+        "emptyCartLink": "/collections/all",
         "cartDrawerAutoOpen": false,
         "cartLabel": "Cart",
         "customCss": ""
@@ -162,7 +162,7 @@
               },
               {
                 "label": "Catalog",
-                "href": "/products"
+                "href": "/collections/all"
               },
               {
                 "label": "Contact",
@@ -2094,7 +2094,7 @@
               "type": "button",
               "settings": {
                 "label": "Shop all",
-                "href": "/products",
+                "href": "/collections/all",
                 "openInNewTab": false,
                 "buttonStyle": "primary",
                 "desktopWidth": "fit",
@@ -2205,7 +2205,7 @@
                 "titlePaddingLeft": 0,
                 "titlePaddingRight": 0,
                 "viewAllLabel": "View all",
-                "viewAllHref": "/products",
+                "viewAllHref": "/collections/all",
                 "viewAllOpenInNewTab": false,
                 "viewAllStyle": "link",
                 "viewAllLinkTextColor": "default",
@@ -2500,7 +2500,7 @@
             "descriptionPaddingLeft": 0,
             "descriptionPaddingRight": 0,
             "linkLabel": "Shop now",
-            "linkUrl": "/products",
+            "linkUrl": "/collections/all",
             "linkOpenInNewTab": false,
             "linkStyle": "link",
             "linkTextColor": "default",
@@ -2618,7 +2618,7 @@
             "button1MobileWidth": "fit",
             "button1MobileCustomWidth": 100,
             "button2Label": "Shop now",
-            "button2Url": "/products",
+            "button2Url": "/collections/all",
             "button2OpenInNewTab": false,
             "button2Style": "secondary",
             "button2DesktopWidth": "fit",
@@ -2773,7 +2773,7 @@
             "descriptionPaddingLeft": 0,
             "descriptionPaddingRight": 0,
             "buttonLabel": "Shop now",
-            "buttonUrl": "/products",
+            "buttonUrl": "/collections/all",
             "buttonOpenInNewTab": false,
             "buttonStyle": "primary",
             "buttonLinkTextColor": "",
@@ -5854,7 +5854,7 @@
               "settings": {
                 "message": "No orders yet.",
                 "ctaLabel": "Start shopping",
-                "ctaHref": "/products"
+                "ctaHref": "/collections/all"
               }
             },
             "order_card": {

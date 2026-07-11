@@ -95,7 +95,7 @@ export function readCollectionLinks(
     const hrefFromSettings = String(settings.href ?? '').trim();
     const href =
       hrefFromSettings ||
-      (handle ? `/collections/${handle}` : '/collections/all');
+      (handle ? `/collection/${handle}` : '/collections/all');
     return {
       id,
       title: String(settings.title ?? 'Collection title'),

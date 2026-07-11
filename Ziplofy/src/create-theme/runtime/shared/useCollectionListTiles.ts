@@ -59,14 +59,16 @@ function mapStorefrontCollectionsToTiles(
 ): CollectionTileData[] {
   const existingByHandle = new Map(
     configTiles.map((tile) => {
-      const handle = tile.href.replace(/^\/collections\//, '');
+      const handle = tile.href
+        .replace(/^\/collections\//, '')
+        .replace(/^\/collection\//, '');
       return [handle, tile] as const;
     })
   );
 
   return collections.map((col, index) => {
     const handle = col.urlHandle?.trim() || '';
-    const href = handle ? `/collections/${handle}` : '/collections/all';
+    const href = handle ? `/collection/${handle}` : '/collections/all';
     const existing = handle ? existingByHandle.get(handle) : undefined;
     const id = existing?.id ?? `tile_${index + 1}`;
     const columnSpan =

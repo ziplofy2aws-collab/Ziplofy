@@ -1,0 +1,92 @@
+# Errors fixed & work completed — Saturday, Jul 11, 2026
+
+## Create theme / theme editor bugs
+
+1. **Header add floods extra sections**
+   - Fix: adding Header no longer incorrectly inserts a bunch of unrelated elements.
+
+2. **Catalog theme apply brings the same header/section flood**
+   - Fix: applying a catalog theme no longer injects unwanted layout sections with Header.
+
+3. **Announcement bar editing panel blank**
+   - Cause: TipTap / field grouping / empty panel routing.
+   - Fix: announcement section + block settings open again (General / Appearance / Padding / etc.).
+
+4. **Featured product runtime shows Sold out even when stock exists**
+   - Fix: sold-out state now respects real product quantities.
+
+5. **Hero marquee editing options not opening**
+   - Fix: hero marquee settings panel opens correctly again.
+
+6. **FAQ answers all expanded by default**
+   - Cause: editor mode forced answers open.
+   - Fix: FAQ answers only show when the accordion item is actually open.
+
+7. **Divider Color scheme removed → Divider settings panel blank**
+   - Causes: layout path filter mismatch (`sections.*` vs `.sections.*`), catalog early-return skipping prepare, over-filtering after removing `colorScheme`.
+   - Fix: dedicated Divider resolve path with hardcoded fallback fields; settings show again (Background color, Color, Width, Thickness, Length, Padding, Custom CSS) without Color scheme.
+
+8. **Blog posts not showing in blog post elements / carousel**
+   - Fix: blogs load and render in blog grid / editorial / carousel sections; blog links configured correctly.
+
+9. **Blog / blog-post templates missing / empty sidebar vs preview**
+   - Fix: blog + blog-post templates work like products/collections; default main elements; schema/sidebar wiring so editing matches preview.
+
+10. **Policies and links runtime incomplete**
+    - Fix: Policies and links shows store policy links; click opens a modal with that policy content.
+
+
+## Admin / app UI bugs & restores
+
+11. **`/products/new` page completely blank**
+    - Cause: TipTap duplicate extensions (e.g. HorizontalRule / Link) crashing the editor.
+    - Fix: duplicate TipTap extensions disabled; add-product page loads.
+
+12. **Add product page still old UI after products restore**
+    - Fix: New product form uses the same minimal appearance as edit product / collections.
+
+13. **Pre-merge / pre-commit UI restores**
+    - Restored from pre-merge commit state (not memory-only):
+      - Blog post / metaobjects-related blog work
+      - Tag management
+      - Themes option removed from sidebar (pre-commit behavior)
+      - Orders section
+      - Products section
+      - Customers section (Companies removed under Customers)
+      - Discounts section
+      - Online store section
+      - Vendors section
+
+
+## Storefront / editor features
+
+14. **Apply theme from View button**
+    - Fix/feature: under View, added **Apply theme** so the theme can be applied to the store from the editor.
+
+15. **Storefront catalog URL conventions (broken links fixed)**
+    - Canonical paths:
+      - All products → `/collections/all`
+      - Product detail → `/product/{url-handle}`
+      - Collections index → `/collections`
+      - Collection details → `/collection/{url-handle}`
+    - Updated link pickers, menus, presets, theme packs, runtime CTAs, cart links, collection tiles/links, backend menu resolver, theme1/theme2 sources.
+    - Shared helpers: `Ziplofy/src/utils/storefront-paths.ts` (+ render-store equivalent).
+    - Cursor rule: `.cursor/rules/storefront-urls.mdc` for future work.
+    - Admin dashboard `/products` routes left unchanged on purpose.
+
+16. **Featured collection carousel — View all button settings blank / not opening**
+    - Cause: catalog nested `view_all_button` only had Label/Link without groups; prepare filtered everything out (incomplete stubs won over full built-in defs).
+    - Fix: resolve View all fields with complete Content / Appearance / Size defs; update catalog nested panel; panel opens with Label, open-in-new-tab, Style, colors, and width controls.
+
+17. **Featured collection carousel — Add to cart + product card navigation broken**
+    - Cause: shared `FeaturedCollection` runtime had no cart handler and no product `Link`/`productPath` (carousel/grid/editorial all shared this).
+    - Fix: quick-add fetches first variant and calls `createCartEntry`; cards link to `/product/{urlHandle}`; preview selection layer allows `[data-codiic-allow-interaction]` so links/cart work in the editor.
+
+18. **`/online-store/themes` layout cluttered / hard to navigate**
+    - Fix: simplified to a minimal header (search + view toggle + Create) and one tabbed panel — **Public themes** (catalog), **Installed**, **Custom themes** (user-created) — instead of stacked section cards, stats, tip banners, Creator saves, and Templates.
+
+
+## Notes
+
+- Legacy storefront paths (`/products/...`, `/collections/{handle}`) still redirect where supported.
+- Hard-refresh / Vite restart may be needed after schema/catalog JSON changes.

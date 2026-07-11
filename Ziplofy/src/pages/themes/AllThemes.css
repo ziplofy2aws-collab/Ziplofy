@@ -466,10 +466,8 @@
 
 .theme-card:hover {
   box-shadow:
-    0 4px 6px rgba(15, 23, 42, 0.05),
-    0 10px 24px rgba(15, 23, 42, 0.08);
-  border-color: rgba(59, 130, 246, 0.28);
-  transform: translateY(-1px);
+    0 2px 8px rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.12);
 }
 
 .themes-layout.grid .theme-thumbnail {

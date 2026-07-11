@@ -22,7 +22,7 @@ export function Theme2TrendingNowSection({
             {products.map((p) => (
               <Link
                 key={p._id}
-                to={`/products/${p._id}`}
+                to={`/product/${p._id}`}
                 className="flex h-full w-[200px] shrink-0 flex-col border-r-4 border-black bg-[#FFEB00] hover:bg-black hover:text-[#FFEB00]"
               >
                 <div className="aspect-square border-b-4 border-black bg-white">

@@ -103,7 +103,7 @@ export function CartPage() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
                           <div>
                             {v ? (
-                              <Link to={`/products/${v.productId}`} style={{ color: text, fontWeight: 600 }} onClick={(e) => isEditorPreview && e.preventDefault()}>
+                              <Link to={`/product/${v.productId}`} style={{ color: text, fontWeight: 600 }} onClick={(e) => isEditorPreview && e.preventDefault()}>
                                 {v.sku}
                               </Link>
                             ) : (

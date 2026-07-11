@@ -44,7 +44,7 @@
         "enabled": true,
         "message": "Bloom — Complimentary shipping on orders over ₹799",
         "linkLabel": "Shop blooms",
-        "linkHref": "/products",
+        "linkHref": "/collections/all",
         "timeToNext": 5,
         "sectionWidth": "page",
         "colorScheme": "scheme-4",
@@ -88,11 +88,11 @@
             "items": [
               {
                 "label": "Shop",
-                "href": "/products"
+                "href": "/collections/all"
               },
               {
                 "label": "Collections",
-                "href": "/collection"
+                "href": "/collections"
               },
               {
                 "label": "About",
@@ -193,7 +193,7 @@
               "type": "button",
               "settings": {
                 "label": "Shop now",
-                "href": "/products"
+                "href": "/collections/all"
               },
               "settings_field_order": [
                 "templates.index.sections.hero_main.blocks.primary_button.settings.label",
@@ -237,7 +237,7 @@
               "settings": {
                 "title": "Featured products",
                 "viewAllLabel": "View all",
-                "viewAllHref": "/products",
+                "viewAllHref": "/collections/all",
                 "subtitle": "Curated selection"
               },
               "nested_block_order": [
@@ -921,7 +921,7 @@
               "settings": {
                 "message": "No orders yet.",
                 "ctaLabel": "Start shopping",
-                "ctaHref": "/products"
+                "ctaHref": "/collections/all"
               }
             },
             "order_card": {

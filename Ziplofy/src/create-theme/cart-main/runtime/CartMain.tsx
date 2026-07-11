@@ -14,6 +14,7 @@ import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/ed
 import { PREVIEW_CART_LINES } from '../../runtime/shared/editorPreviewFixtures';
 import { inputStyle, layout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
+import { productPath } from '../../../utils/storefront-paths';
 
 function variantOf(item: StorefrontCartItem | GuestCartItem) {
   const v = item.productVariantId;
@@ -176,7 +177,7 @@ export function CartMain({
                         <div>
                           {v ? (
                             <Link
-                              to={`/products/${v.productId}`}
+                              to={productPath(String(v.productId ?? ''))}
                               style={{ color: text, fontWeight: 600 }}
                               onClick={(e) => isEditorPreview && e.preventDefault()}
                             >

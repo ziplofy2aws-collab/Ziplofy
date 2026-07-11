@@ -9,7 +9,7 @@ export function Theme1TrendingNowSection({ featured }: { featured?: StorefrontPr
     <section aria-label="Trending now section">
       <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Trending now section</h2>
       <Link
-        to={`/products/${featured._id}`}
+        to={`/product/${featured._id}`}
         className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm sm:grid sm:grid-cols-2"
       >
         <div className="aspect-[16/10] bg-slate-100 sm:aspect-auto sm:min-h-[220px]">

@@ -2371,14 +2371,14 @@ export type InsertBlockResult = {
 const HERO_TEXT_DEFAULT =
   'Made with care and unconditionally loved by our customers.';
 const HERO_HEADING_DEFAULT = 'Browse our latest products';
-const HERO_BUTTON_DEFAULT = { label: 'Shop all', href: '/products' };
+const HERO_BUTTON_DEFAULT = { label: 'Shop all', href: '/collections/all' };
 const HERO_IMAGE_DEFAULT = 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80';
 const FEATURED_COLLECTION_HEADER_DEFAULT = {
   type: 'collection-header',
   settings: {
     title: 'Products',
     viewAllLabel: '',
-    viewAllHref: '/products',
+    viewAllHref: '/collections/all',
   },
 };
 const FEATURED_COLLECTION_PRODUCT_CARD_DEFAULT = {

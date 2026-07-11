@@ -169,7 +169,7 @@ export function Theme2ProductDetail({ detail: d }: { detail: ReactProductDetailV
               {d.relatedProducts.map((rel) => (
                 <Link
                   key={rel._id}
-                  to={`/products/${rel._id}`}
+                  to={`/product/${rel._id}`}
                   className="flex w-[160px] shrink-0 flex-col border-4 border-[#FFEB00] bg-[#FFEB00] text-black hover:bg-white"
                 >
                   <div className="aspect-square border-b-4 border-black bg-white">

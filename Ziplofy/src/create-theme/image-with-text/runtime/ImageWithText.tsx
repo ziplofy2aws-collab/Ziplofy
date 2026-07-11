@@ -68,7 +68,7 @@ export function ImageWithText({
   const buttonUrl = cfgString(
     config,
     `${settingsBase}.buttonUrl`,
-    cfgString(config, `${settingsBase}.linkUrl`, '/products')
+    cfgString(config, `${settingsBase}.linkUrl`, '/collections/all')
   );
 
   const scheme = style.scheme;

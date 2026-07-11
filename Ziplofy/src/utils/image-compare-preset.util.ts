@@ -34,7 +34,7 @@ export function applyImageComparePreset(section: Record<string, unknown>): void 
   settings.button1MobileWidth = 'fit';
   settings.button1MobileCustomWidth = 100;
   settings.button2Label = 'Shop now';
-  settings.button2Url = '/products';
+  settings.button2Url = '/collections/all';
   settings.button2OpenInNewTab = false;
   settings.button2Style = 'secondary';
   settings.button2DesktopWidth = 'fit';

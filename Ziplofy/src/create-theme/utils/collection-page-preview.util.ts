@@ -1,13 +1,14 @@
 import { isCollectionTemplatePreviewPage } from './collection-templates.util';
 import type { Collection } from '../../contexts/collection.context';
+import { collectionPath } from '../../utils/storefront-paths';
 
 /** Default storefront path for collection template editor preview. */
-export const COLLECTION_PREVIEW_ROUTE_PLACEHOLDER = '/collections/preview';
+export const COLLECTION_PREVIEW_ROUTE_PLACEHOLDER = '/collection/preview';
 
 export function collectionPreviewRouteFromHandle(urlHandle: string | null | undefined): string {
   const handle = urlHandle?.trim();
   if (!handle) return COLLECTION_PREVIEW_ROUTE_PLACEHOLDER;
-  return `/collections/${encodeURIComponent(handle.toLowerCase())}`;
+  return collectionPath(handle);
 }
 
 export function pickDefaultPreviewCollection(

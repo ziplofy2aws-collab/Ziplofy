@@ -46,7 +46,7 @@ export function Editorial({
     'Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.'
   );
   const linkLabel = cfgString(config, `${settingsBase}.linkLabel`, 'Shop now');
-  const linkUrl = cfgString(config, `${settingsBase}.linkUrl`, '/products');
+  const linkUrl = cfgString(config, `${settingsBase}.linkUrl`, '/collections/all');
   const mediaPosition = cfgString(config, `${settingsBase}.mediaPosition`, 'left');
 
   const scheme = style.scheme;

@@ -48,7 +48,7 @@ interface FetchProductsInCollectionApiResponse {
 
 interface StorefrontCollectionsContextType {
 	collections: StorefrontCollection[];
-	/** Collection resolved from the current `/collections/:urlHandle` route, if any. */
+	/** Collection resolved from the current `/collection/:urlHandle` route, if any. */
 	activeCollection: StorefrontCollection | null;
 	products: StorefrontProductItem[];
 	orderDiscount: OrderDiscount | null;

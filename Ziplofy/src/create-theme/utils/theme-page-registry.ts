@@ -42,7 +42,7 @@ export type ThemePageRouteSpec = {
   withCollectionLoader?: boolean;
   /** Fixed collection urlHandle, e.g. "all" for /collections/all (all products) */
   loadCollectionUrlHandle?: string;
-  /** Load product detail for `/products/:id` (preview uses first catalog product when id is `preview`) */
+  /** Load product detail for `/product/:urlHandle` (preview uses first catalog product when id is `preview`) */
   withProductLoader?: boolean;
   /** Load blog + visible posts for `/blogs/:blogHandle` */
   withBlogLoader?: boolean;
@@ -91,8 +91,14 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'product',
     label: 'Default product',
     icon: 'product',
-    previewPath: '/products/preview',
+    previewPath: '/product/preview',
     routes: [
+      {
+        path: '/product/:urlHandle',
+        templateId: 'product',
+        fallbackSectionIds: ['product_main'],
+        withProductLoader: true,
+      },
       {
         path: '/products/:id',
         templateId: 'product',
@@ -115,8 +121,19 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'collection',
     label: 'Default collection',
     icon: 'collection',
-    previewPath: '/collections/preview',
+    previewPath: '/collection/preview',
     routes: [
+      {
+        path: '/collection/preview',
+        templateId: 'collection',
+        withCollectionLoader: true,
+        loadCollectionUrlHandle: 'preview',
+      },
+      {
+        path: '/collection/:urlHandle',
+        templateId: 'collection',
+        withCollectionLoader: true,
+      },
       {
         path: '/collections/preview',
         templateId: 'collection',
@@ -135,7 +152,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'collections',
     label: 'Collections',
     icon: 'collection',
-    previewPath: '/collections/preview',
+    previewPath: '/collection/preview',
     routes: [],
   },
   {
@@ -301,8 +318,8 @@ export function previewPageToTemplateId(page: string): string {
 }
 
 export function previewPageToRoute(page: string): string {
-  if (isProductTemplatePreviewPage(page)) return '/products/preview';
-  if (isCollectionTemplatePreviewPage(page)) return '/collections/preview';
+  if (isProductTemplatePreviewPage(page)) return '/product/preview';
+  if (isCollectionTemplatePreviewPage(page)) return '/collection/preview';
   if (isBlogsTemplatePreviewPage(page)) return '/blogs/preview';
   if (isBlogPostsTemplatePreviewPage(page)) return '/blogs/preview/preview';
   return PAGE_BY_ID.get(page || 'index')?.previewPath ?? '/';

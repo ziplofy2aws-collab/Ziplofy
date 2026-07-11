@@ -185,7 +185,7 @@ export function Theme1ProductDetail({ detail: d }: { detail: ReactProductDetailV
               {d.relatedProducts.map((rel) => (
                 <Link
                   key={rel._id}
-                  to={`/products/${rel._id}`}
+                  to={`/product/${rel._id}`}
                   className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-teal-300 hover:shadow-md"
                 >
                   <div className="aspect-square bg-slate-100">

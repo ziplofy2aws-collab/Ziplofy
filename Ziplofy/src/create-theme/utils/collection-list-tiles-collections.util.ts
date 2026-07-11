@@ -84,7 +84,7 @@ export function collectionTileBlocksFromCollections(
     const id = `tile_${index + 1}`;
     const existing = existingBlocks[id]?.settings;
     const handle = col.urlHandle?.trim() || '';
-    const href = handle ? `/collections/${handle}` : '/collections/all';
+    const href = handle ? `/collection/${handle}` : '/collections/all';
     const decor = tileDecor(index, sectionType, existing);
 
     const settings: CollectionTileBlockSettings = {

@@ -46,8 +46,8 @@
           "settings": {
             "menuLabel": "Main menu",
             "items": [
-              { "label": "Shop", "href": "/products" },
-              { "label": "Collections", "href": "/collection" },
+              { "label": "Shop", "href": "/collections/all" },
+              { "label": "Collections", "href": "/collections" },
               { "label": "About", "href": "/#about" }
             ]
           }
@@ -72,9 +72,9 @@
           "settings": {
             "title": "Shop",
             "links": [
-              { "label": "All products", "href": "/products" },
-              { "label": "Best sellers", "href": "/products" },
-              { "label": "Gift sets", "href": "/products" }
+              { "label": "All products", "href": "/collections/all" },
+              { "label": "Best sellers", "href": "/collections/all" },
+              { "label": "Gift sets", "href": "/collections/all" }
             ]
           }
         },
@@ -117,9 +117,9 @@
             "title": "Radiance begins with you",
             "subtitle": "Luxury makeup crafted for every skin tone. Clean ingredients, professional results.",
             "ctaLabel": "Shop the collection",
-            "ctaHref": "/products",
+            "ctaHref": "/collections/all",
             "secondaryCtaLabel": "Explore bestsellers",
-            "secondaryCtaHref": "/products",
+            "secondaryCtaHref": "/collections/all",
             "imageUrl": "",
             "overlayOpacity": 0.35,
             "textAlign": "left",
@@ -147,7 +147,7 @@
             "title": "The velvet lip collection",
             "subtitle": "12 new shades · Limited edition packaging",
             "ctaLabel": "Discover lips",
-            "ctaHref": "/products",
+            "ctaHref": "/collections/all",
             "backgroundGradient": "linear-gradient(135deg, #831843 0%, #be185d 50%, #fbcfe8 100%)"
           }
         },

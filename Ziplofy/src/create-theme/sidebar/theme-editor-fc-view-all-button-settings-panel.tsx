@@ -322,7 +322,7 @@ export function ViewAllButtonSettingsPanel({
 
   const labelField = pickViewAllButtonPanelField(panelFields, 'viewAllLabel');
   const openTabField = pickViewAllButtonPanelField(panelFields, 'viewAllOpenInNewTab');
-  const styleFieldRaw = pickViewAllButtonPanelField(fields, 'viewAllStyle');
+  const styleFieldRaw = pickViewAllButtonPanelField(panelFields, 'viewAllStyle');
   const settingsBase = styleFieldRaw?.path.replace(/\.viewAllStyle$/, '') ?? '';
   const styleField = styleFieldRaw
     ? {
@@ -332,12 +332,12 @@ export function ViewAllButtonSettingsPanel({
       }
     : null;
   const linkColorField =
-    pickViewAllButtonPanelField(fields, 'viewAllLinkTextColor') ??
+    pickViewAllButtonPanelField(panelFields, 'viewAllLinkTextColor') ??
     (settingsBase
       ? resolveViewAllButtonColorField(
           'viewAllLinkTextColor',
           settingsBase,
-          fields,
+          panelFields,
           'Link text color'
         )
       : undefined);
@@ -371,7 +371,7 @@ export function ViewAllButtonSettingsPanel({
       ) : null}
       {showCustomColors ? (
         <ViewAllButtonCustomColorsSettingsGroup
-          fields={fields}
+          fields={panelFields}
           values={values}
           colorPalette={colorPalette}
           onFieldChange={onFieldChange}

@@ -32,7 +32,7 @@
         "enabled": true,
         "message": "VOLT — Limited signal drop live now",
         "linkLabel": "Enter",
-        "linkHref": "/products",
+        "linkHref": "/collections/all",
         "speed": 28
       }
     },
@@ -58,11 +58,11 @@
             "items": [
               {
                 "label": "Catalog",
-                "href": "/products"
+                "href": "/collections/all"
               },
               {
                 "label": "Lab",
-                "href": "/collection"
+                "href": "/collections"
               },
               {
                 "label": "Support",
@@ -111,7 +111,7 @@
               "settings": {
                 "title": "Shop",
                 "link1Label": "All products",
-                "link1Href": "/products"
+                "link1Href": "/collections/all"
               }
             },
             "col_info": {
@@ -204,7 +204,7 @@
               "type": "cta",
               "settings": {
                 "label": "Shop catalog",
-                "href": "/products"
+                "href": "/collections/all"
               }
             },
             "cta_secondary": {
@@ -259,7 +259,7 @@
               "type": "tile",
               "settings": {
                 "title": "Core collection",
-                "href": "/products"
+                "href": "/collections/all"
               }
             },
             "tile_signal": {
@@ -919,7 +919,7 @@
               "settings": {
                 "message": "No transmissions yet.",
                 "ctaLabel": "Browse catalog",
-                "ctaHref": "/products"
+                "ctaHref": "/collections/all"
               }
             },
             "timeline_card": {

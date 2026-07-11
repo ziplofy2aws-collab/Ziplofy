@@ -577,7 +577,10 @@ import {
 import {
   isDividerSectionType,
   isDividerSettingsPanelFields,
+  isDividerSectionNodeId,
   prepareDividerSettingsNode,
+  resolveDividerSectionPanelFields,
+  findDividerSectionInTree,
 } from './theme-editor-divider-panel.utils';
 import {
   copyrightBlockFieldDefsFromSchema,
@@ -674,13 +677,9 @@ import {
   prepareCollectionTitleSettingsNode,
 } from './theme-editor-fc-collection-title-panel.utils';
 import {
-  extendValuesForViewAllButtonBlock,
   isViewAllButtonNestedNodeId,
-  isViewAllButtonPanelField,
   prepareViewAllButtonSettingsNode,
-  viewAllButtonFieldDefs,
-  viewAllButtonFieldDefsFromSchema,
-  viewAllButtonSettingsBaseFromNodeId,
+  resolveViewAllButtonPanelFields,
 } from './theme-editor-fc-view-all-button-panel.utils';
 import {
   isProductCardBlockNodeId,
@@ -4779,16 +4778,13 @@ export function settingsNodeForSelection(
 
   if (isViewAllButtonNestedNodeId(node.id)) {
     const catalogBlock = resolveEditingPanelForNode(node.id);
-    let fields = catalogBlock?.fields.length ? catalogBlock.fields : [];
-    const settingsBase = viewAllButtonSettingsBaseFromNodeId(node.id);
-    if (!fields.length && settingsBase) fields = viewAllButtonFieldDefs(settingsBase);
-    if (!fields.length && editorSchema) fields = viewAllButtonFieldDefsFromSchema(editorSchema, node.id);
-    if (!fields.length) {
-      fields = (node.fields ?? []).filter(isViewAllButtonPanelField);
-    }
-    if (fields.length) {
-      return prepareViewAllButtonSettingsNode({ ...node, fields });
-    }
+    const fields = resolveViewAllButtonPanelFields(
+      node.id,
+      editorSchema,
+      // Prefer tree fields (built-ins) over incomplete catalog stubs.
+      (node.fields?.length ? node.fields : catalogBlock?.fields) ?? []
+    );
+    return prepareViewAllButtonSettingsNode({ ...node, fields });
   }
 
   if (isFeaturedCollectionHeaderBlockNodeId(node.id)) {
@@ -4921,10 +4917,29 @@ export function settingsNodeForSelection(
     return prepareFaqSettingsNode(node);
   }
 
+  const dividerSection =
+    node.kind === 'section' && isDividerSectionNodeId(node.id)
+      ? node
+      : findDividerSectionInTree(node.id, tree);
+  if (
+    dividerSection &&
+    (node.kind === 'section' || isDividerSectionNodeId(node.id) || node.label === 'Divider')
+  ) {
+    const sectionFields = resolveDividerSectionPanelFields(
+      dividerSection.id,
+      editorSchema,
+      dividerSection.fields ?? node.fields
+    );
+    return prepareDividerSettingsNode({ ...dividerSection, fields: sectionFields });
+  }
+
   const catalogNode = settingsNodeFromCatalog(node);
   if (catalogNode) {
     if (isCollectionLinksSpotlightSettingsPanelFields(catalogNode.fields ?? [])) {
       return prepareCollectionLinksSpotlightSettingsNode(catalogNode);
+    }
+    if (catalogNode.label === 'Divider' || isDividerSettingsPanelFields(catalogNode.fields ?? [])) {
+      return prepareDividerSettingsNode(catalogNode);
     }
     return catalogNode;
   }
@@ -5039,7 +5054,8 @@ export function settingsNodeForSelection(
   }
 
   if (node.fields?.length && isDividerSettingsPanelFields(node.fields)) {
-    return prepareDividerSettingsNode(node);
+    const prepared = prepareDividerSettingsNode(node);
+    if (prepared.fields?.length) return prepared;
   }
 
   if (isFeaturedProductMediaBlockNodeId(node.id)) {

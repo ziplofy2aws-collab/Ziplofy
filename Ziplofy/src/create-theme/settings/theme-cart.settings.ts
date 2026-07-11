@@ -41,7 +41,7 @@ export const THEME_DEFAULT_CART = {
   allowDiscounts: true,
   installments: true,
   acceleratedCheckout: true,
-  emptyCartLink: '/products',
+  emptyCartLink: '/collections/all',
   emptyCartLinkLabel: 'All Products',
 };
 
@@ -293,16 +293,25 @@ export function resolveCartEmptyLinkLabel(url: string, storedLabel?: unknown): s
   if (
     trimmed === '/products' ||
     trimmed === '/collections/all' ||
-    trimmed.endsWith('/products')
+    trimmed.endsWith('/products') ||
+    trimmed.endsWith('/collections/all')
   ) {
     return 'All Products';
   }
   if (trimmed === '/collections' || trimmed.endsWith('/collections')) return 'Collections';
   if (trimmed === '/cart') return 'Cart';
   if (trimmed === '/search') return 'Search';
+  if (trimmed.startsWith('/collection/')) {
+    const handle = trimmed.slice('/collection/'.length);
+    return handle ? handle.replace(/-/g, ' ') : 'Collection';
+  }
   if (trimmed.startsWith('/collections/')) {
     const handle = trimmed.slice('/collections/'.length);
     return handle ? handle.replace(/-/g, ' ') : 'Collection';
+  }
+  if (trimmed.startsWith('/product/')) {
+    const handle = trimmed.slice('/product/'.length);
+    return handle ? handle.replace(/-/g, ' ') : 'Product';
   }
   if (trimmed.startsWith('/products/')) {
     const handle = trimmed.slice('/products/'.length);

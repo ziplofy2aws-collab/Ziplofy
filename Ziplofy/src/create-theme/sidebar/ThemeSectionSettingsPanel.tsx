@@ -176,6 +176,7 @@ import {
 import {
   DIVIDER_PANEL_GROUP_ORDER,
   groupDividerPanelFields,
+  isDividerSectionNodeId,
   isDividerSettingsPanelFields,
 } from './theme-editor-divider-panel.utils';
 import {
@@ -4992,6 +4993,20 @@ function DividerGroupedSettingsPanel({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupDividerPanelFields(fields), [fields]);
+  const hasVisible = DIVIDER_PANEL_GROUP_ORDER.some((label) => (grouped.get(label)?.length ?? 0) > 0);
+
+  if (!hasVisible) {
+    if (!fields.length) {
+      return <p className="px-1 py-3 text-[13px] text-gray-500">No settings for this item.</p>;
+    }
+    return (
+      <div className="space-y-1 px-1 py-3">
+        {fields.map((field) => (
+          <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -18210,7 +18225,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isStorytellingCarouselCardHeadingBlockPanel &&
     (node.label === 'Carousel' || isStorytellingCarouselSettingsPanelFields(fields));
   const isDividerPanel =
-    node.label === 'Divider' || isDividerSettingsPanelFields(fields);
+    isDividerSectionNodeId(node.id) ||
+    node.label === 'Divider' ||
+    isDividerSettingsPanelFields(fields);
   const isBlogPostsGridSectionTitleBlockPanel =
     node.kind === 'block' &&
     (isBlogPostsGridTitleBlockNodeId(node.id) ||
@@ -18579,6 +18596,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <FeaturedProductAddToCartGroupedSettingsPanel
             fields={fields}
             values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isDividerPanel ? (
+          <DividerGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : fields.length === 0 ? (
@@ -19597,13 +19621,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <StorytellingCarouselGroupedSettingsPanel
             fields={fields}
             values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : isDividerPanel ? (
-          <DividerGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isFooterUtilitiesPanel ? (

@@ -421,7 +421,7 @@ export const IMAGE_COMPARE_BUTTON_DEFAULTS: Record<string, string | boolean> = {
   button1MobileWidth: 'fit',
   button1MobileCustomWidth: 100,
   button2Label: 'Shop now',
-  button2Url: '/products',
+  button2Url: '/collections/all',
   button2OpenInNewTab: false,
   button2Style: 'secondary',
   button2DesktopWidth: 'fit',

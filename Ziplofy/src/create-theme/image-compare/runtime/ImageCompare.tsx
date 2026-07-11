@@ -84,7 +84,7 @@ export function ImageCompare({
   const button1Label = cfgString(config, `${settingsBase}.button1Label`, 'View all');
   const button1Url = cfgString(config, `${settingsBase}.button1Url`, '/collections');
   const button2Label = cfgString(config, `${settingsBase}.button2Label`, 'Shop now');
-  const button2Url = cfgString(config, `${settingsBase}.button2Url`, '/products');
+  const button2Url = cfgString(config, `${settingsBase}.button2Url`, '/collections/all');
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;

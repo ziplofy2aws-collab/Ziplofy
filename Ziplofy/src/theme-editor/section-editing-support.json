@@ -11056,23 +11056,131 @@
                 {
                   "key": "viewAllLabel",
                   "type": "text",
-                  "label": "Label"
+                  "label": "Label",
+                  "group": "Content"
                 },
                 {
-                  "key": "viewAllHref",
+                  "key": "viewAllOpenInNewTab",
+                  "type": "boolean",
+                  "label": "Open link in new tab",
+                  "group": "Content"
+                },
+                {
+                  "key": "viewAllStyle",
+                  "type": "select",
+                  "label": "Style",
+                  "group": "Appearance",
+                  "widget": "select",
+                  "options": [
+                    { "value": "primary", "label": "Primary" },
+                    { "value": "secondary", "label": "Secondary" },
+                    { "value": "link", "label": "Link" },
+                    { "value": "custom", "label": "Custom" }
+                  ]
+                },
+                {
+                  "key": "viewAllLinkTextColor",
                   "type": "text",
-                  "label": "Link"
+                  "label": "Link text color",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllCustomBackgroundColor",
+                  "type": "text",
+                  "label": "Background",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllCustomTextColor",
+                  "type": "text",
+                  "label": "Text",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllCustomBorderColor",
+                  "type": "text",
+                  "label": "Borders",
+                  "group": "Appearance",
+                  "widget": "color"
+                },
+                {
+                  "key": "viewAllDesktopWidth",
+                  "type": "select",
+                  "label": "Desktop width",
+                  "group": "Size",
+                  "widget": "segmented",
+                  "options": [
+                    { "value": "fit", "label": "Fit" },
+                    { "value": "custom", "label": "Custom" }
+                  ]
+                },
+                {
+                  "key": "viewAllDesktopCustomWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
+                },
+                {
+                  "key": "viewAllMobileWidth",
+                  "type": "select",
+                  "label": "Mobile width",
+                  "group": "Size",
+                  "widget": "segmented",
+                  "options": [
+                    { "value": "fit", "label": "Fit" },
+                    { "value": "custom", "label": "Custom" }
+                  ]
+                },
+                {
+                  "key": "viewAllMobileCustomWidth",
+                  "type": "number",
+                  "label": "Custom width",
+                  "group": "Size",
+                  "min": 1,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%"
                 }
               ],
               "panels": {
                 "default": {
+                  "includeGroups": [
+                    "Content",
+                    "Appearance",
+                    "Size"
+                  ],
                   "includeKeys": [
                     "viewAllLabel",
-                    "viewAllHref"
+                    "viewAllOpenInNewTab",
+                    "viewAllStyle",
+                    "viewAllLinkTextColor",
+                    "viewAllCustomBackgroundColor",
+                    "viewAllCustomTextColor",
+                    "viewAllCustomBorderColor",
+                    "viewAllDesktopWidth",
+                    "viewAllDesktopCustomWidth",
+                    "viewAllMobileWidth",
+                    "viewAllMobileCustomWidth"
                   ],
                   "fieldOrder": [
                     "viewAllLabel",
-                    "viewAllHref"
+                    "viewAllOpenInNewTab",
+                    "viewAllStyle",
+                    "viewAllLinkTextColor",
+                    "viewAllCustomBackgroundColor",
+                    "viewAllCustomTextColor",
+                    "viewAllCustomBorderColor",
+                    "viewAllDesktopWidth",
+                    "viewAllDesktopCustomWidth",
+                    "viewAllMobileWidth",
+                    "viewAllMobileCustomWidth"
                   ]
                 }
               }
@@ -11098,7 +11206,17 @@
                 "titlePaddingLeft",
                 "titlePaddingRight",
                 "viewAllLabel",
-                "viewAllHref"
+                "viewAllHref",
+                "viewAllOpenInNewTab",
+                "viewAllStyle",
+                "viewAllLinkTextColor",
+                "viewAllCustomBackgroundColor",
+                "viewAllCustomTextColor",
+                "viewAllCustomBorderColor",
+                "viewAllDesktopWidth",
+                "viewAllDesktopCustomWidth",
+                "viewAllMobileWidth",
+                "viewAllMobileCustomWidth"
               ],
               "fieldOrder": [
                 "headerWidth",

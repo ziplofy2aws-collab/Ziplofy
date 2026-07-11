@@ -58,7 +58,7 @@ export function collectionLinkBlocksFromCollections(
   collections.forEach((col, index) => {
     const id = `link_${index + 1}`;
     const handle = col.urlHandle?.trim() || '';
-    const href = handle ? `/collections/${handle}` : '/collections/all';
+    const href = handle ? `/collection/${handle}` : '/collections/all';
     blocks[id] = {
       type: 'collection-link',
       settings: {

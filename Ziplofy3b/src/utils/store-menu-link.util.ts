@@ -20,11 +20,11 @@ export function resolveStoreMenuItemHref(input: MenuLinkResolveInput): string {
       return "/collections/all";
     case "specific-collection": {
       const urlHandle = handle(input.collectionId?.urlHandle);
-      return urlHandle ? `/collections/${urlHandle}` : "/collections";
+      return urlHandle ? `/collection/${urlHandle}` : "/collections";
     }
     case "specific-product": {
       const urlHandle = handle(input.productId?.urlHandle);
-      return urlHandle ? `/products/${urlHandle}` : "/products";
+      return urlHandle ? `/product/${urlHandle}` : "/collections/all";
     }
     case "custom":
       return input.link?.trim() || "/";

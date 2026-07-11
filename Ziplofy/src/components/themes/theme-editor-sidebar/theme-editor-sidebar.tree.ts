@@ -2290,7 +2290,8 @@ export function settingsNodeForSelection(
   }
 
   if (node.fields?.length && isDividerSettingsPanelFields(node.fields)) {
-    return prepareDividerSettingsNode(node);
+    const prepared = prepareDividerSettingsNode(node);
+    if (prepared.fields?.length) return prepared;
   }
 
   if (isFeaturedProductMediaBlockNodeId(node.id)) {

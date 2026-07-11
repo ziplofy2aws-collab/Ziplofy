@@ -24,6 +24,7 @@ import { useProducts, type Product } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreMenus } from '../contexts/store-menu.context';
 import { menuItemDraftsToApiInputs, type MenuItemDraft } from '../utils/store-menu-draft.util';
+import { collectionPath, productPath } from '../utils/storefront-paths';
 
 type LinkPickerOption = {
   id: string;
@@ -47,7 +48,7 @@ const LINK_PICKER_SECTIONS: LinkPickerSection[] = [
       { id: 'home', label: 'Home page', value: '/', icon: HomeIcon },
       { id: 'search', label: 'Search', value: '/search', icon: MagnifyingGlassIcon },
       { id: 'collections', label: 'Collections', value: '/collections', icon: TagIcon, hasChildren: true },
-      { id: 'products', label: 'Products', value: '/products', icon: TagIcon, hasChildren: true },
+      { id: 'products', label: 'Products', value: '/collections/all', icon: TagIcon, hasChildren: true },
       { id: 'pages', label: 'Pages', value: '/pages', icon: DocumentTextIcon, hasChildren: true },
       { id: 'blogs', label: 'Blogs', value: '/blogs', icon: PencilSquareIcon, hasChildren: true },
       { id: 'blog-posts', label: 'Blog posts', value: '/blogs', icon: PencilSquareIcon, hasChildren: true },
@@ -90,13 +91,13 @@ type LinkPickerSelection = {
 type LinkPickerView = 'root' | 'collections' | 'products';
 
 function collectionLinkPath(collection: Collection): string {
-  const handle = collection.urlHandle?.trim();
-  return handle ? `/collections/${handle}` : `/collections/${collection._id}`;
+  const handle = collection.urlHandle?.trim() || collection._id;
+  return collectionPath(handle);
 }
 
 function productLinkPath(product: Product): string {
-  const handle = product.urlHandle?.trim();
-  return handle ? `/products/${handle}` : `/products/${product._id}`;
+  const handle = product.urlHandle?.trim() || product._id;
+  return productPath(handle);
 }
 
 function LinkPickerDropdown({

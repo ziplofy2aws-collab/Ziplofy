@@ -35,7 +35,7 @@ export function applyHeaderPreset(section: Record<string, unknown>): void {
   menu.textCase = menu.textCase ?? 'default';
   menu.items = menu.items ?? [
     { label: 'Home', href: '/' },
-    { label: 'Catalog', href: '/products' },
+    { label: 'Catalog', href: '/collections/all' },
     { label: 'Contact', href: '/#contact' },
   ];
   if (blocks.menu) blocks.menu.settings = menu;

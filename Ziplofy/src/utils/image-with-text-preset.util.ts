@@ -58,7 +58,7 @@ export function applyImageWithTextPreset(section: Record<string, unknown>): void
   settings.descriptionPaddingLeft = settings.descriptionPaddingLeft ?? 0;
   settings.descriptionPaddingRight = settings.descriptionPaddingRight ?? 0;
   settings.buttonLabel = settings.buttonLabel ?? 'Shop now';
-  settings.buttonUrl = settings.buttonUrl ?? '/products';
+  settings.buttonUrl = settings.buttonUrl ?? '/collections/all';
   settings.buttonOpenInNewTab = settings.buttonOpenInNewTab ?? false;
   settings.buttonStyle = settings.buttonStyle ?? 'primary';
   settings.buttonLinkTextColor = settings.buttonLinkTextColor ?? '';

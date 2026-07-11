@@ -155,7 +155,7 @@ export function applyHeroMarqueePreset(section: Record<string, unknown>, blocksP
   if (!blocks.primary_button) {
     blocks.primary_button = {
       type: 'button',
-      settings: { label: 'Shop now', href: '/products', openInNewTab: false, buttonStyle: 'primary' },
+      settings: { label: 'Shop now', href: '/collections/all', openInNewTab: false, buttonStyle: 'primary' },
       settings_field_order: [
         `${blocksPath}.primary_button.settings.label`,
         `${blocksPath}.primary_button.settings.href`,
@@ -246,7 +246,7 @@ export function applySplitShowcasePreset(section: Record<string, unknown>, block
   };
   blocks.primary_button = {
     type: 'button',
-    settings: { label: 'Shop now', href: '/products', openInNewTab: false, buttonStyle: 'primary' },
+    settings: { label: 'Shop now', href: '/collections/all', openInNewTab: false, buttonStyle: 'primary' },
     settings_field_order: [
       `${blocksPath}.primary_button.settings.label`,
       `${blocksPath}.primary_button.settings.href`,
@@ -254,7 +254,7 @@ export function applySplitShowcasePreset(section: Record<string, unknown>, block
   };
   blocks.secondary_button = {
     type: 'button',
-    settings: { label: 'Shop now', href: '/products', openInNewTab: false, buttonStyle: 'secondary' },
+    settings: { label: 'Shop now', href: '/collections/all', openInNewTab: false, buttonStyle: 'secondary' },
     settings_field_order: [
       `${blocksPath}.secondary_button.settings.label`,
       `${blocksPath}.secondary_button.settings.href`,

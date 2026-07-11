@@ -82,7 +82,7 @@ function SplitShowcaseTile({
   const config = useThemeConfig();
   const buttonBase = `${blocksBase}.${buttonBlockId}.settings`;
   const label = cfgString(config, `${buttonBase}.label`, 'Shop now');
-  const href = cfgString(config, `${buttonBase}.href`, '/products');
+  const href = cfgString(config, `${buttonBase}.href`, '/collections/all');
   const buttonStyleMode = cfgString(config, `${buttonBase}.buttonStyle`, 'primary');
   const linkTextColorRaw = cfgString(config, `${buttonBase}.linkTextColor`, '');
 

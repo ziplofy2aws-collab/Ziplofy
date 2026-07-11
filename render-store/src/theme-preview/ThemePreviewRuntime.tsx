@@ -155,6 +155,8 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/collection/:urlHandle" element={<Home />} />
         <Route path="/collections/:urlHandle" element={<Home />} />
         <Route path="/product/:urlHandle" element={<Product />} />
+        <Route path="/product/preview" element={<Product />} />
+        <Route path="/collection/preview" element={<Home />} />
         <Route path="/products" element={<Home />} />
         <Route path="/products/:id" element={<Product />} />
         <Route path="/collections/preview" element={<Home />} />

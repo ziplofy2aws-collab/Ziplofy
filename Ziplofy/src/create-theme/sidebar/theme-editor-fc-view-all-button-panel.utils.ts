@@ -107,18 +107,41 @@ function fieldSortKey(path: string): number {
   return rank[key] ?? 50;
 }
 
+function inferViewAllButtonFieldGroup(key: string): (typeof VIEW_ALL_BUTTON_PANEL_GROUP_ORDER)[number] {
+  if (key === 'viewAllLabel' || key === 'viewAllOpenInNewTab') return 'Content';
+  if (
+    key === 'viewAllDesktopWidth' ||
+    key === 'viewAllDesktopCustomWidth' ||
+    key === 'viewAllMobileWidth' ||
+    key === 'viewAllMobileCustomWidth'
+  ) {
+    return 'Size';
+  }
+  return 'Appearance';
+}
+
+export function normalizeViewAllButtonPanelField(field: EditorFieldDef): EditorFieldDef {
+  const key = field.path.split('.').pop() ?? '';
+  const group =
+    field.group && PANEL_GROUPS.has(field.group)
+      ? field.group
+      : inferViewAllButtonFieldGroup(key);
+  return { ...field, group };
+}
+
 export function isViewAllButtonPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
   if (!VIEW_ALL_BUTTON_PANEL_KEYS.has(key)) return false;
+  // Accept both template + layout prefixes; nested catalog paths still live on collection_header.settings.
   if (!/\.blocks\.collection_header\.settings\./.test(field.path)) return false;
-  if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;
 }
 
 export function isViewAllButtonPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('viewAllLabel') && (keys.has('viewAllStyle') || keys.has('viewAllOpenInNewTab'));
+  // Incomplete catalog stubs (label/href only) must not count as a full panel.
+  return keys.has('viewAllLabel') && keys.has('viewAllStyle') && keys.has('viewAllOpenInNewTab');
 }
 
 export function sortViewAllButtonPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -135,7 +158,7 @@ export function groupViewAllButtonPanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields.filter(isViewAllButtonPanelField)) {
+  for (const field of fields.filter(isViewAllButtonPanelField).map(normalizeViewAllButtonPanelField)) {
     const group = field.group ?? 'Settings';
     const list = map.get(group) ?? [];
     list.push(field);
@@ -147,10 +170,39 @@ export function groupViewAllButtonPanelFields(
   return map;
 }
 
-export function prepareViewAllButtonSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortViewAllButtonPanelFields(
-    (node.fields ?? []).filter(isViewAllButtonPanelField)
+function filterAndNormalizeViewAllButtonFields(fields: EditorFieldDef[]): EditorFieldDef[] {
+  return sortViewAllButtonPanelFields(
+    fields.filter(isViewAllButtonPanelField).map(normalizeViewAllButtonPanelField)
   );
+}
+
+/** Prefer complete built-in defs when catalog only has Label/Link stubs. */
+export function resolveViewAllButtonPanelFields(
+  nodeId: string,
+  editorSchema?: EditorSchemaDoc | null,
+  existingFields?: EditorFieldDef[]
+): EditorFieldDef[] {
+  const settingsBase = viewAllButtonSettingsBaseFromNodeId(nodeId);
+
+  let panel = filterAndNormalizeViewAllButtonFields(existingFields ?? []);
+  if (isViewAllButtonPanelFields(panel)) return panel;
+
+  if (editorSchema) {
+    panel = filterAndNormalizeViewAllButtonFields(
+      viewAllButtonFieldDefsFromSchema(editorSchema, nodeId)
+    );
+    if (isViewAllButtonPanelFields(panel)) return panel;
+  }
+
+  if (settingsBase) return viewAllButtonFieldDefs(settingsBase);
+  return panel;
+}
+
+export function prepareViewAllButtonSettingsNode(node: SidebarNode): SidebarNode {
+  const fromNode = filterAndNormalizeViewAllButtonFields(node.fields ?? []);
+  const fields = isViewAllButtonPanelFields(fromNode)
+    ? fromNode
+    : resolveViewAllButtonPanelFields(node.id, null, node.fields);
   return { ...node, label: 'View all button', kind: 'block', fields };
 }
 

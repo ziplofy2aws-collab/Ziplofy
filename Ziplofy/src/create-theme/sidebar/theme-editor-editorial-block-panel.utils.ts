@@ -120,7 +120,7 @@ export function editorialTextDefaultSettings(): Record<string, string | boolean>
 export function editorialButtonDefaultSettings(): Record<string, string | boolean> {
   return {
     linkLabel: 'Shop now',
-    linkUrl: '/products',
+    linkUrl: '/collections/all',
     linkOpenInNewTab: false,
     linkStyle: 'link',
     linkTextColor: 'default',

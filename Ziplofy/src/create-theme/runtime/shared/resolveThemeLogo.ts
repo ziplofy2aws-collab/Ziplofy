@@ -28,8 +28,10 @@ export function shouldUseInverseThemeLogo(
 ): boolean {
   const settingsBase = `sections.${sectionId}.settings`;
   const isHome = pathname === '/' || pathname === '';
-  const isProduct = pathname.startsWith('/products/');
-  const isCollection = pathname.startsWith('/collections/');
+  const isProduct = pathname.startsWith('/product/') || pathname.startsWith('/products/');
+  const isCollection =
+    pathname.startsWith('/collection/') ||
+    (pathname.startsWith('/collections/') && pathname !== '/collections/all');
 
   if (isHome && cfgBool(config, `${settingsBase}.homeTransparentBackground`, false)) {
     return true;

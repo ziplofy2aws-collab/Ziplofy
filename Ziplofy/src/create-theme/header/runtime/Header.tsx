@@ -459,7 +459,7 @@ export function Header({ sectionId = 'header' }: Props) {
 
   const searchNode: ReactNode = searchOn ? (
     <Link
-      to="/products"
+      to="/search"
       title={searchPlaceholder}
       style={{
         display: 'flex',

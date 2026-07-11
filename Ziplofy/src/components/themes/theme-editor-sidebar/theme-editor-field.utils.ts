@@ -25,7 +25,7 @@ export function fieldValueAsString(
 
 /** Matches layout + template section setting paths (`sections.{id}.settings.*`). */
 export function isSectionSettingsFieldPath(path: string): boolean {
-  return /\.sections\.[^.]+\.settings\./.test(path);
+  return /(^|\.)sections\.[^.]+\.settings\./.test(path);
 }
 
 /** Prefer typed panel fields; fall back to any sidebar-visible section settings field. */

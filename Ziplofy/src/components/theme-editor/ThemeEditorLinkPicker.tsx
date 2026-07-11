@@ -29,6 +29,7 @@ import {
   buildStorefrontBlogPath,
   buildStorefrontBlogPostPath,
 } from '../../utils/storefront-url.util';
+import { collectionPath, productPath } from '../../utils/storefront-paths';
 
 export type LinkPickerOption = {
   id: string;
@@ -55,7 +56,7 @@ type LinkPickerView =
 /** Root menu — matches Shopify-style link picker categories. */
 export const THEME_LINK_ROOT_OPTIONS: LinkPickerOption[] = [
   { id: 'collections', label: 'Collections', value: '/collections', icon: TagIcon, hasChildren: true },
-  { id: 'products', label: 'Products', value: '/products', icon: TagIcon, hasChildren: true },
+  { id: 'products', label: 'Products', value: '/collections/all', icon: TagIcon, hasChildren: true },
   { id: 'pages', label: 'Pages', value: '/pages', icon: DocumentTextIcon, hasChildren: true },
   { id: 'blogs', label: 'Blogs', value: '/blogs', icon: PencilSquareIcon, hasChildren: true },
   {
@@ -82,13 +83,13 @@ const STATIC_POLICY_OPTIONS: LinkPickerOption[] = [
 ];
 
 export function collectionLinkPath(collection: Collection): string {
-  const handle = collection.urlHandle?.trim();
-  return handle ? `/collections/${handle}` : `/collections/${collection._id}`;
+  const handle = collection.urlHandle?.trim() || collection._id;
+  return collectionPath(handle);
 }
 
 export function productLinkPath(product: Product): string {
-  const handle = product.urlHandle?.trim();
-  return handle ? `/products/${handle}` : `/products/${product._id}`;
+  const handle = product.urlHandle?.trim() || product._id;
+  return productPath(handle);
 }
 
 export function blogLinkPath(blog: Blog): string {
