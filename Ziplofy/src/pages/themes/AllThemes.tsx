@@ -9,13 +9,19 @@ import {
   MagnifyingGlassIcon,
   PlusIcon,
   Squares2X2Icon,
+  SwatchIcon,
 } from "@heroicons/react/24/outline";
 import React, { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useThemes } from "../../contexts/themes.context";
 import { useInstalledThemes } from "../../contexts/installed-themes.context";
 import { useStore } from "../../contexts/store.context";
 import { useCustomThemes } from "../../contexts/custom-themes.context";
+import {
+  useStoreCustomThemes,
+  type StoreCustomTheme,
+} from "../../contexts/store-custom-themes.context";
 import ThemePreviewModal from "../../components/ThemePreviewModal";
 import ThemeEditChoiceModal from "../../components/ThemeEditChoiceModal";
 import { axiosi } from "../../config/axios.config";
@@ -69,13 +75,25 @@ const AllThemes: React.FC = () => {
     uninstallTheme,
     fetchByStoreId,
   } = useInstalledThemes();
-  const { activeStoreId, stores, setStores } = useStore();
+  const { activeStoreId, stores, setStores, applyStoreCustomTheme } = useStore();
   const appliedThemeId = useMemo(() => {
     const store = stores.find((s) => s._id === activeStoreId);
     if (!store?.appliedTheme) return null;
     return String(store.appliedTheme);
   }, [stores, activeStoreId]);
+  const appliedStoreCustomThemeId = useMemo(() => {
+    const store = stores.find((s) => s._id === activeStoreId);
+    if (!store?.appliedCustomThemeId) return null;
+    return String(store.appliedCustomThemeId);
+  }, [stores, activeStoreId]);
+  const [applyingStoreCustomThemeId, setApplyingStoreCustomThemeId] = useState<string | null>(null);
   const { customThemes, loading: customThemesLoading, fetchAll: fetchCustomThemes, deleteTheme: deleteCustomTheme, installTheme: installCustomTheme, uninstallTheme: uninstallCustomTheme, updateTheme } = useCustomThemes();
+  const {
+    themes: storeCustomThemes,
+    loading: storeCustomThemesLoading,
+    getByStoreId: fetchStoreCustomThemes,
+    deleteTheme: deleteStoreCustomTheme,
+  } = useStoreCustomThemes();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [thumbnailUpdateModal, setThumbnailUpdateModal] = useState<{
     isOpen: boolean;
@@ -363,6 +381,13 @@ const AllThemes: React.FC = () => {
     }
   }, [activeStoreId, fetchByStoreId]);
 
+  useEffect(() => {
+    if (!activeStoreId) return;
+    fetchStoreCustomThemes(activeStoreId).catch(() => {
+      /* errors surfaced via context */
+    });
+  }, [activeStoreId, fetchStoreCustomThemes]);
+
   // Close dropdown menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -417,16 +442,85 @@ const AllThemes: React.FC = () => {
     const name = String(it.name || it.themeName || '').toLowerCase();
     return name.includes(q);
   });
-  const filteredCustomThemes = customThemes.filter((ct: any) => {
-    if (!q) return true;
-    return String(ct.name || '').toLowerCase().includes(q);
-  });
+  // Themes saved from /themes/create (JSON theme creator) — this is what "Custom themes" means.
+  const filteredCustomThemes = storeCustomThemes.filter((t) =>
+    t.themeName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const tabs: { id: ThemesTab; label: string; count: number }[] = [
     { id: 'public', label: 'Public themes', count: filteredThemes.length },
     { id: 'installed', label: 'Installed', count: installedForStore.length },
     { id: 'custom', label: 'Custom themes', count: filteredCustomThemes.length },
   ];
+
+  const handleOpenStoreCustomTheme = (themeId: string) => {
+    const url = new URL('/themes/create', window.location.origin);
+    url.searchParams.set('id', themeId);
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
+  };
+
+  const handleInstallStoreCustomTheme = async (theme: StoreCustomTheme) => {
+    if (!activeStoreId) {
+      toast.error('Select a store before installing a theme');
+      return;
+    }
+    try {
+      setApplyingStoreCustomThemeId(theme._id);
+      const updated = await applyStoreCustomTheme(activeStoreId, theme._id);
+      setStores((prev) =>
+        prev.map((s) =>
+          s._id === activeStoreId
+            ? {
+                ...s,
+                ...updated,
+                appliedCustomThemeId: theme._id,
+                appliedTheme: null,
+              }
+            : s
+        )
+      );
+      toast.success(`Installed “${theme.themeName}”`);
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (err as Error)?.message ||
+        'Failed to install theme';
+      toast.error(msg);
+    } finally {
+      setApplyingStoreCustomThemeId(null);
+    }
+  };
+
+  const handleDeleteStoreCustomTheme = async (theme: StoreCustomTheme) => {
+    if (
+      !window.confirm(
+        `Delete "${theme.themeName}"? This removes the saved theme design and cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    try {
+      await deleteStoreCustomTheme(theme._id);
+      if (activeStoreId) {
+        await fetchStoreCustomThemes(activeStoreId);
+      }
+    } catch {
+      /* toast from context / axios */
+    }
+  };
+
+  const formatThemeDate = (iso?: string) => {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    } catch {
+      return '';
+    }
+  };
 
   return (
     <div className="w-full space-y-5 pb-8">
@@ -668,7 +762,11 @@ const AllThemes: React.FC = () => {
 
           {activeTab === 'custom' && (
             <>
-              {customThemesLoading ? (
+              {!activeStoreId ? (
+                <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-gray-200 px-4 py-8 text-sm text-gray-500">
+                  Select a store to see your custom themes.
+                </div>
+              ) : storeCustomThemesLoading ? (
                 <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 py-10">
                   <div
                     className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
@@ -688,157 +786,64 @@ const AllThemes: React.FC = () => {
                 </div>
               ) : (
                 <div className={`themes-layout ${viewMode}`}>
-                  {filteredCustomThemes.map((ct) => {
-                    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(ct._id);
-                    const isInstalled = installedThemes.some((it: any) => {
-                      const isCustomTheme = it.isCustomTheme || it._id?.startsWith('custom-');
-                      const actualThemeId =
-                        isCustomTheme && it.customThemeId ? it.customThemeId : null;
-                      return isCustomTheme && actualThemeId === ct._id;
-                    });
+                  {filteredCustomThemes.map((theme) => {
+                    const isApplied =
+                      appliedStoreCustomThemeId != null &&
+                      String(appliedStoreCustomThemeId) === String(theme._id);
+                    const isApplying = applyingStoreCustomThemeId === theme._id;
 
                     return (
-                      <div key={ct._id} className="theme-card" style={{ position: 'relative' }}>
-                        {isValidObjectId && (
-                          <div className="theme-card-menu">
-                            <button
-                              className="theme-card-menu-button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setOpenMenuId(openMenuId === ct._id ? null : ct._id);
-                              }}
-                              aria-label="Theme options"
-                            >
-                              <MoreVertIcon fontSize="small" />
-                            </button>
-                            {openMenuId === ct._id && (
-                              <>
-                                <div
-                                  className="theme-card-menu-overlay"
-                                  onClick={() => setOpenMenuId(null)}
-                                />
-                                <div className="theme-card-menu-dropdown">
-                                  <button
-                                    className="theme-card-menu-item"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setThumbnailUpdateModal({
-                                        isOpen: true,
-                                        themeId: ct._id,
-                                        themeName: ct.name,
-                                      });
-                                      setOpenMenuId(null);
-                                    }}
-                                  >
-                                    <ImageIcon fontSize="small" style={{ marginRight: '8px' }} />
-                                    Update Thumbnail
-                                  </button>
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        )}
+                      <div key={theme._id} className="theme-card">
                         <div className="theme-thumbnail">
-                          {(() => {
-                            const previewUrl = thumbnailPreviews[ct._id];
-                            const serverThumbnailUrl = (ct as any).thumbnailUrl;
-                            const thumbnailUrl =
-                              previewUrl ||
-                              (serverThumbnailUrl
-                                ? `${serverThumbnailUrl}${serverThumbnailUrl.includes('?') ? '&' : '?'}v=${Date.now()}`
-                                : null);
-
-                            return thumbnailUrl ? (
-                              <img
-                                key={`${ct._id}-${previewUrl ? 'preview' : 'server'}`}
-                                src={thumbnailUrl}
-                                alt={ct.name || ''}
-                                className="theme-image"
-                                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                                  e.currentTarget.style.display = 'none';
-                                  const placeholder = e.currentTarget
-                                    .nextElementSibling as HTMLElement;
-                                  if (placeholder) placeholder.style.display = 'flex';
-                                }}
-                              />
-                            ) : null;
-                          })()}
-                          <div
-                            className="theme-image-placeholder"
-                            style={{
-                              display:
-                                thumbnailPreviews[ct._id] || (ct as any).thumbnailUrl
-                                  ? 'none'
-                                  : 'flex',
-                            }}
-                          >
-                            <span>{ct.name}</span>
+                          <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-linear-to-br from-violet-50 to-blue-50 px-4 text-center">
+                            <SwatchIcon className="h-10 w-10 text-violet-500/80" aria-hidden />
+                            <span className="text-xs font-medium text-violet-900/70">
+                              Custom theme
+                            </span>
                           </div>
-                          {isValidObjectId && (
-                            <div className="theme-overlay">
-                              <button
-                                className="overlay-btn preview-btn"
-                                onClick={() => handlePreviewClick(ct._id, ct.name, false, true)}
-                              >
-                                <EyeIcon fontSize="small" />
-                                <span>Preview</span>
-                              </button>
-                            </div>
-                          )}
                         </div>
                         <div className="theme-info">
                           <div className="theme-header-info">
-                            <h3 className="theme-name">{ct.name}</h3>
-                            {(ct as any).status === 'draft' ? (
-                              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
-                                Draft
+                            <h3 className="theme-name">{theme.themeName}</h3>
+                            {isApplied ? (
+                              <span className="rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
+                                Live
+                              </span>
+                            ) : formatThemeDate(theme.updatedAt || theme.createdAt) ? (
+                              <span className="text-[11px] font-medium text-gray-500">
+                                {formatThemeDate(theme.updatedAt || theme.createdAt)}
                               </span>
                             ) : null}
                           </div>
+                          {theme.themeDesc ? (
+                            <p className="theme-description">{theme.themeDesc}</p>
+                          ) : null}
                           <div className="theme-actions">
                             <button
+                              type="button"
                               className="action-btn primary"
-                              onClick={() => {
-                                if (!isValidObjectId) {
-                                  alert(
-                                    'Invalid theme ID. This theme may have been created with an old format. Please delete and recreate it.'
-                                  );
-                                  return;
-                                }
-                                handleEditTheme(ct._id, false, true);
-                              }}
+                              onClick={() => handleOpenStoreCustomTheme(theme._id)}
                             >
                               Edit
                             </button>
-                            {isInstalled ? (
-                              <button className="action-btn installed" disabled>
+                            {isApplied ? (
+                              <button type="button" className="action-btn installed" disabled>
                                 Installed
                               </button>
                             ) : (
                               <button
+                                type="button"
                                 className="action-btn secondary"
-                                onClick={async () => {
-                                  if (!isValidObjectId) {
-                                    alert('Invalid theme ID. Please recreate this theme.');
-                                    return;
-                                  }
-                                  if (!activeStoreId) {
-                                    alert('Please select a store first.');
-                                    return;
-                                  }
-                                  const success = await installCustomTheme(ct._id, activeStoreId);
-                                  if (success) {
-                                    await new Promise((resolve) => setTimeout(resolve, 500));
-                                    await fetchByStoreId(activeStoreId);
-                                  }
-                                }}
+                                disabled={isApplying || !activeStoreId}
+                                onClick={() => handleInstallStoreCustomTheme(theme)}
                               >
-                                Apply
+                                {isApplying ? 'Installing…' : 'Install'}
                               </button>
                             )}
                             <button
+                              type="button"
                               className="action-btn secondary"
-                              onClick={() => handleDeleteCustomTheme(ct._id)}
+                              onClick={() => handleDeleteStoreCustomTheme(theme)}
                             >
                               <DeleteIcon fontSize="small" style={{ marginRight: 4 }} />
                               Delete

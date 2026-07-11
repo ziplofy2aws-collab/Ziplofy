@@ -85,6 +85,26 @@
 18. **`/online-store/themes` layout cluttered / hard to navigate**
     - Fix: simplified to a minimal header (search + view toggle + Create) and one tabbed panel — **Public themes** (catalog), **Installed**, **Custom themes** (user-created) — instead of stacked section cards, stats, tip banners, Creator saves, and Templates.
 
+19. **Admin header search was decorative / no-op**
+    - Fix: navbar search now returns rich results — pages & quick actions (products, add product, collections, inventory, etc.), plus live product and collection matches. Click / Enter navigates; Ctrl+K focuses search.
+
+20. **Admin header chrome cleanup**
+    - Removed Show Tour button, question-mark setup guide, and bell/notifications from the navbar.
+
+21. **`/online-store/themes` Custom themes tab empty**
+    - Cause: tab listed legacy HTML `/custom-themes` instead of theme-creator saves (`store-custom-themes`).
+    - Fix: Custom themes now loads and shows themes saved from Create theme (Open / Install / Delete).
+
+22. **Admin search results missing nav hierarchy**
+    - Searching e.g. “inventory” only showed the leaf title.
+    - Fix: catalog items include `navPath`; results show breadcrumb trails like `Products › Inventory` (and nested Settings/Content/etc.). Live product/collection hits show their path too.
+
+23. **Custom theme cards — Open → Edit**
+    - Custom themes tab primary action label changed from “Open” to “Edit”.
+
+24. **`/online-store` page — placeholder / non-functional**
+    - Rebuilt as a minimal overview: live storefront iframe preview (real store URL), current live theme with Customize/Change, and Manage links (Themes / Pages / Preference). Removed fake images, theme gallery fluff, and dead CTAs.
+
 
 ## Notes
 
