@@ -404,6 +404,10 @@ import {
 import { isCollectionHeadingSectionType } from './theme-editor-collection-heading-panel.utils';
 import { isMainCollectionSectionType } from './theme-editor-main-collection-panel.utils';
 import {
+  isBlogPostMainSectionType,
+  isMainBlogSectionType,
+} from './theme-editor-blog-post-main-panel.utils';
+import {
   isRecommendedProductsHeaderNodeId,
   recommendedProductsHeaderFieldDefsFromNodeId,
   prepareRecommendedProductsHeaderSettingsNode,
@@ -508,6 +512,10 @@ import {
   mapCollectionHeadingBlockNodes,
   mapMainCollectionBlockNodes,
 } from '../../utils/collection-page-sidebar.util';
+import {
+  mapBlogPostMainBlockNodes,
+  mapMainBlogBlockNodes,
+} from '../../utils/blog-post-main-sidebar.util';
 import { mapFaqBlockNodes } from '../../utils/faq-sidebar.util';
 import { mapIconsWithTextBlockNodes } from '../../utils/icons-with-text-sidebar.util';
 import {
@@ -3394,7 +3402,17 @@ function layoutHeroSectionNode(
   const blockNodes = visibleBlocks.length
     ? catalogVariant === 'split-showcase'
       ? mapSplitShowcaseGroupNodes(visibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
-      : mapHeroBlockNodes(visibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
+      : catalogVariant === 'hero-marquee'
+        ? mapHeroMarqueeGroupNodes(
+            visibleBlocks,
+            prefix,
+            `${prefix}:add-block`,
+            values,
+            itemOrder,
+            childrenListKey,
+            config
+          )
+        : mapHeroBlockNodes(visibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
     : [];
 
   const children = reorderSidebarChildren(blockNodes, childrenListKey, itemOrder);
@@ -3466,6 +3484,8 @@ function sectionToNode(
   const isRecommendedProducts = isRecommendedProductsSectionType(sec.type, catalogVariantEarly);
   const isCollectionHeading = isCollectionHeadingSectionType(sec.type);
   const isMainCollection = isMainCollectionSectionType(sec.type);
+  const isBlogPostMain = isBlogPostMainSectionType(sec.type);
+  const isMainBlog = isMainBlogSectionType(sec.type);
   const isCollectionLinksSpotlight = isCollectionLinksSpotlightSectionType(
     sec.type,
     catalogVariantEarly
@@ -3527,6 +3547,8 @@ function sectionToNode(
     isRecommendedProducts ||
     isCollectionHeading ||
     isMainCollection ||
+    isBlogPostMain ||
+    isMainBlog ||
     isCollectionLinksSpotlight ||
     isCollectionListBento ||
     isCollectionListCarousel ||
@@ -3591,6 +3613,8 @@ function sectionToNode(
     isRecommendedProducts ||
     isCollectionHeading ||
     isMainCollection ||
+    isBlogPostMain ||
+    isMainBlog ||
     isCollectionLinksSpotlight ||
     isCollectionListBento ||
     isCollectionListCarousel ||
@@ -3778,6 +3802,10 @@ function sectionToNode(
             itemOrder,
             childrenListKey
           )
+      : isBlogPostMain
+        ? mapBlogPostMainBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isMainBlog
+        ? mapMainBlogBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isCollectionListBento ||
           isCollectionListCarousel ||
           isCollectionListEditorial ||
@@ -3848,6 +3876,8 @@ function sectionToNode(
       isRecommendedProducts ||
       isCollectionHeading ||
       isMainCollection ||
+      isBlogPostMain ||
+      isMainBlog ||
       isCollectionLinksSpotlight ||
       isCollectionListBento ||
       isCollectionListCarousel ||
@@ -3882,6 +3912,10 @@ function sectionToNode(
                   ? 'Collection heading'
                   : isMainCollectionSectionType(sec.type)
                     ? 'Collection'
+                    : isBlogPostMainSectionType(sec.type)
+                      ? 'Blog posts'
+                      : isMainBlogSectionType(sec.type)
+                        ? 'Blog'
                     : isProductHotspotsSectionType(sec.type, catalogVariant)
                   ? 'Product hotspots'
                   : isFeaturedProductSectionType(sec.type, catalogVariant)
@@ -4010,6 +4044,8 @@ function sectionToNode(
         isRecommendedProducts ||
         isCollectionHeading ||
         isMainCollection ||
+        isBlogPostMain ||
+        isMainBlog ||
         isCollectionLinksSpotlight ||
         isCollectionListBento ||
         isCollectionListCarousel ||
@@ -4489,6 +4525,14 @@ function prepareSectionPanelNode(
   }
   const prepareByLabel = SECTION_PANEL_BY_LABEL[node.label ?? ''];
   if (!prepareByLabel) return null;
+  // Hero: Marquee's nested "Marquee" folder shares the Text Marquee section label —
+  // never route it through the standalone text-marquee section panel.
+  if (
+    prepareByLabel === prepareTextMarqueeSettingsNode &&
+    /:hero_main(?:_\d+)?:/.test(node.id)
+  ) {
+    return null;
+  }
   if (prepareByLabel === prepareFeaturedCollectionSettingsNode) {
     return prepareFeaturedCollectionSettingsNode(node, values, config);
   }
@@ -4792,6 +4836,17 @@ export function settingsNodeForSelection(
       fields = (node.fields ?? []).filter(isHeroButtonPanelField);
     }
     return prepareHeroButtonSettingsNode({ ...node, fields });
+  }
+
+  /** Hero: Marquee virtual blocks (Marquee folder / Spacer / Text) — keep tree fields as-is. */
+  if (
+    /:hero_main(?:_\d+)?:(?:group:(?:marquee:text|spacer:spacer)|marquee)$/.test(node.id)
+  ) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    if (blockNode.fields?.length) {
+      return { ...blockNode, kind: 'block' };
+    }
+    return { ...blockNode, kind: 'block', fields: node.fields ?? [] };
   }
 
   if (isHeroTextBlockNodeId(node.id)) {
@@ -5422,7 +5477,9 @@ export function settingsNodeForSelection(
     return prepareRichTextSettingsNode(node);
   }
   if (node.fields?.length && isTextMarqueeSettingsPanelFields(node.fields)) {
-    return prepareTextMarqueeSettingsNode(node);
+    if (!/:hero_main(?:_\d+)?:/.test(node.id)) {
+      return prepareTextMarqueeSettingsNode(node);
+    }
   }
   if (isBlogPostsCarouselSectionNodeId(node.id)) {
     return prepareBlogPostsCarouselSettingsNode(node);

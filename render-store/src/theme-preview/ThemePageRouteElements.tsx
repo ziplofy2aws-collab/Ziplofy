@@ -103,7 +103,18 @@ type ThemePageRouteOptions = {
   excludeCheckoutAuth?: boolean;
   /** Omit customer account routes that use checkout editor UI. */
   excludeCheckoutProfile?: boolean;
+  /**
+   * When the editor is on an alternate template (`product.foo`, `blog-posts.bar`),
+   * use that config key for matching base routes (`product`, `blog-posts`, …).
+   */
+  activeTemplateId?: string;
 };
+
+function resolveRouteTemplateId(specTemplateId: string, activeTemplateId?: string): string {
+  if (!activeTemplateId || activeTemplateId === specTemplateId) return specTemplateId;
+  if (activeTemplateId.startsWith(`${specTemplateId}.`)) return activeTemplateId;
+  return specTemplateId;
+}
 
 /** Direct <Route> children for <Routes> — cannot wrap in a custom component (react-router v6). */
 export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactElement[] {
@@ -114,9 +125,10 @@ export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactEle
   });
 
   return specs.map((spec) => {
+    const templateId = resolveRouteTemplateId(spec.templateId, options?.activeTemplateId);
     const page = (
       <CustomThemeTemplatePage
-        templateId={spec.templateId}
+        templateId={templateId}
         fallbackSectionIds={spec.fallbackSectionIds}
       />
     );

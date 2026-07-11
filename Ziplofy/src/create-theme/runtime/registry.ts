@@ -25,6 +25,8 @@ import { EmailSignup } from '../email-signup/runtime/EmailSignup';
 import { ProductMain } from '../product-main/runtime/ProductMain';
 import { CollectionHeading } from '../collection-heading/runtime/CollectionHeading';
 import { MainCollection } from '../main-collection/runtime/MainCollection';
+import { BlogPostMain } from '../blog-post-main/runtime/BlogPostMain';
+import { MainBlog } from '../main-blog/runtime/MainBlog';
 import { CartMain } from '../cart-main/runtime/CartMain';
 import { ProductHighlight } from '../product-highlight/runtime/ProductHighlight';
 import {
@@ -62,6 +64,8 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
   'product-main': ProductMain,
   'collection-heading': CollectionHeading,
   'main-collection': MainCollection,
+  'blog-post-main': BlogPostMain,
+  'main-blog': MainBlog,
   'cart-main': CartMain,
   faq: Faq,
   'icons-with-text': IconsWithText,
@@ -114,6 +118,8 @@ export function blueprintIdFromInstanceId(instanceId: string): string {
     'product_main',
     'collection_heading',
     'main_collection',
+    'blog_post_main',
+    'main_blog',
     'cart_main',
     'storytelling_video',
     'storytelling_logo',

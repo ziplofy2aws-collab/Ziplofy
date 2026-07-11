@@ -446,6 +446,10 @@ import {
   ensureAllProductsPageTemplateBlocks,
   ALL_PRODUCTS_TEMPLATE_ID,
 } from '../utils/collection-page-preset.util';
+import {
+  ensureBlogPostsPageTemplateBlocks,
+  ensureBlogsPageTemplateBlocks,
+} from '../utils/blog-page-preset.util';
 import { resolveCollectionTemplatePreviewRoute } from './utils/collection-page-preview.util';
 import { isCollectionTemplatePreviewPage } from './utils/collection-templates.util';
 import { CollectionTemplatePreviewCard } from './sidebar/CollectionTemplatePreviewCard';
@@ -826,6 +830,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           ensureCollectionsListTemplateBlocks(config) ||
           ensureCollectionPageTemplateBlocks(config) ||
           ensureAllProductsPageTemplateBlocks(config) ||
+          ensureBlogsPageTemplateBlocks(config) ||
+          ensureBlogPostsPageTemplateBlocks(config) ||
           ensureFeaturedProductSectionBlocks(config) ||
           ensureProductHighlightSectionBlocks(config) ||
           ensureProductHotspotsSectionBlocks(config) ||
@@ -2516,6 +2522,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     (next: Record<string, unknown>, nextPreviewPage?: ThemePreviewPage) => {
       normalizeCreatorThemeConfig(next);
       ensureAllAlternateTemplateRegistries(next);
+      ensureBlogsPageTemplateBlocks(next);
+      ensureBlogPostsPageTemplateBlocks(next);
       setDefaultConfig(next);
 
       const page = nextPreviewPage ?? previewPage;
@@ -2578,6 +2586,11 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         let seeded = false;
         if (tplId === ALL_PRODUCTS_TEMPLATE_ID) {
           seeded = ensureAllProductsPageTemplateBlocks(next);
+        }
+        if (tplId === 'blogs' || tplId.startsWith('blogs.')) {
+          seeded = ensureBlogsPageTemplateBlocks(next);
+        } else if (tplId === 'blog-posts' || tplId.startsWith('blog-posts.')) {
+          seeded = ensureBlogPostsPageTemplateBlocks(next);
         }
         if (!seeded) {
           seeded = seedTemplateFromPackIfEmpty(next, tplId, pack);

@@ -50,6 +50,12 @@ import {
   collectionTemplateDisplayName,
   isCollectionTemplatePreviewPage,
 } from './collection-templates.util';
+import {
+  blogPostsTemplateDisplayName,
+  blogsTemplateDisplayName,
+  isBlogPostsTemplatePreviewPage,
+  isBlogsTemplatePreviewPage,
+} from './blog-templates.util';
 import { previewPageToTemplateId } from '../../utils/preview-page-template';
 
 export { previewPageToTemplateId };
@@ -224,6 +230,28 @@ export function findPageMenuItemByPreviewWithConfig(
         previewPage,
         label,
         icon: 'collection',
+      };
+    }
+  }
+  if (isBlogsTemplatePreviewPage(previewPage)) {
+    const label = blogsTemplateDisplayName(config, previewPage);
+    if (label) {
+      return {
+        menuId: `page:${previewPage}`,
+        previewPage,
+        label,
+        icon: 'blog',
+      };
+    }
+  }
+  if (isBlogPostsTemplatePreviewPage(previewPage)) {
+    const label = blogPostsTemplateDisplayName(config, previewPage);
+    if (label) {
+      return {
+        menuId: `page:${previewPage}`,
+        previewPage,
+        label,
+        icon: 'blog',
       };
     }
   }

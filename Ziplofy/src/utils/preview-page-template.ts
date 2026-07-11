@@ -1,24 +1,19 @@
 import {
   previewPageToTemplateId as registryPreviewPageToTemplateId,
-  previewPageToRoute,
+  previewPageToRoute as registryPreviewPageToRoute,
   PREVIEW_PAGE_ROUTES,
   type ThemePageIcon,
 } from '../create-theme/utils/theme-page-registry';
-import {
-  collectionTemplateIdFromPreviewPage,
-} from '../create-theme/utils/collection-templates.util';
-import {
-  productTemplateIdFromPreviewPage,
-} from '../create-theme/utils/product-templates.util';
 
-export { previewPageToRoute, PREVIEW_PAGE_ROUTES, type ThemePageIcon };
+export { PREVIEW_PAGE_ROUTES, type ThemePageIcon };
 
+/** Resolves editor preview page ids (incl. alternate templates) to config template keys. */
 export function previewPageToTemplateId(page: string): string {
-  const productTemplateId = productTemplateIdFromPreviewPage(page);
-  if (productTemplateId) return productTemplateId;
-  const collectionTemplateId = collectionTemplateIdFromPreviewPage(page);
-  if (collectionTemplateId) return collectionTemplateId;
   return registryPreviewPageToTemplateId(page);
+}
+
+export function previewPageToRoute(page: string): string {
+  return registryPreviewPageToRoute(page);
 }
 
 /** @deprecated Prefer previewPageToTemplateId */

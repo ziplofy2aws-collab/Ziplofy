@@ -3,6 +3,21 @@
  * Used by codiic create-theme and render-store preview / custom-theme routes.
  */
 
+import {
+  blogPostsTemplateIdFromPreviewPage,
+  blogsTemplateIdFromPreviewPage,
+  isBlogPostsTemplatePreviewPage,
+  isBlogsTemplatePreviewPage,
+} from './blog-templates.util';
+import {
+  collectionTemplateIdFromPreviewPage,
+  isCollectionTemplatePreviewPage,
+} from './collection-templates.util';
+import {
+  productTemplateIdFromPreviewPage,
+  isProductTemplatePreviewPage,
+} from './product-templates.util';
+
 export type ThemePageIcon =
   | 'home'
   | 'product'
@@ -158,7 +173,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
   {
     pageId: 'blogs',
     templateId: 'blogs',
-    label: 'Blogs',
+    label: 'Default blog',
     icon: 'blog',
     previewPath: '/blogs/preview',
     routes: [
@@ -166,13 +181,14 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
         path: '/blogs/:blogHandle',
         templateId: 'blogs',
         withBlogLoader: true,
+        fallbackSectionIds: ['main_blog'],
       },
     ],
   },
   {
     pageId: 'blog-posts',
     templateId: 'blog-posts',
-    label: 'Blog posts',
+    label: 'Default blog post',
     icon: 'blog',
     previewPath: '/blogs/preview/preview',
     routes: [
@@ -180,6 +196,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
         path: '/blogs/:blogHandle/:articleHandle',
         templateId: 'blog-posts',
         withBlogPostLoader: true,
+        fallbackSectionIds: ['blog_post_main'],
       },
     ],
   },
@@ -265,6 +282,15 @@ const MANIFEST_TEMPLATE_IDS = new Set([
 ]);
 
 export function previewPageToTemplateId(page: string): string {
+  const productTemplateId = productTemplateIdFromPreviewPage(page);
+  if (productTemplateId) return productTemplateId;
+  const collectionTemplateId = collectionTemplateIdFromPreviewPage(page);
+  if (collectionTemplateId) return collectionTemplateId;
+  const blogsTemplateId = blogsTemplateIdFromPreviewPage(page);
+  if (blogsTemplateId) return blogsTemplateId;
+  const blogPostsTemplateId = blogPostsTemplateIdFromPreviewPage(page);
+  if (blogPostsTemplateId) return blogPostsTemplateId;
+
   const entry = PAGE_BY_ID.get(page || 'index');
   if (entry) return entry.templateId;
   const p = page || 'index';
@@ -275,6 +301,10 @@ export function previewPageToTemplateId(page: string): string {
 }
 
 export function previewPageToRoute(page: string): string {
+  if (isProductTemplatePreviewPage(page)) return '/products/preview';
+  if (isCollectionTemplatePreviewPage(page)) return '/collections/preview';
+  if (isBlogsTemplatePreviewPage(page)) return '/blogs/preview';
+  if (isBlogPostsTemplatePreviewPage(page)) return '/blogs/preview/preview';
   return PAGE_BY_ID.get(page || 'index')?.previewPath ?? '/';
 }
 
@@ -347,9 +377,15 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     label: 'Blogs',
     icon: 'blog',
     hasSubmenu: true,
-    children: [{ previewPage: 'blog-posts', label: 'Blog posts', icon: 'blog' }],
+    children: [{ previewPage: 'blogs', label: 'Default blog', icon: 'blog' }],
   },
-  { previewPage: 'blog-posts', label: 'Blog posts', icon: 'blog' },
+  {
+    previewPage: 'blog-posts',
+    label: 'Blog posts',
+    icon: 'blog',
+    hasSubmenu: true,
+    children: [{ previewPage: 'blog-posts', label: 'Default blog post', icon: 'blog' }],
+  },
   { previewPage: 'search', label: 'Search', icon: 'search', dividerBefore: true },
   { previewPage: 'password', label: 'Password', icon: 'lock' },
 ];

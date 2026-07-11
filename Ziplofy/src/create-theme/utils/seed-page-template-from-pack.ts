@@ -1,5 +1,9 @@
 import type { EditorSchemaDoc } from '../../components/themes/theme-editor-sidebar/theme-editor-sidebar.types';
 import { ensureCollectionPageTemplateBlocks, ensureAllProductsPageTemplateBlocks } from '../../utils/collection-page-preset.util';
+import {
+  ensureBlogPostsPageTemplateBlocks,
+  ensureBlogsPageTemplateBlocks,
+} from '../../utils/blog-page-preset.util';
 import { creatorTemplateHasSections } from '../../utils/theme-editor-static-pack';
 import {
   extendValuesForTemplateInstance,
@@ -13,11 +17,15 @@ export const PACK_STARTER_TEMPLATE_IDS = new Set([
   'products',
   'cart',
   'collections-list',
+  'blogs',
+  'blog-posts',
 ]);
 
 function packKeyForTemplateId(templateId: string): string {
   if (templateId.startsWith('product.')) return 'product';
   if (templateId.startsWith('collection.')) return 'collection';
+  if (templateId.startsWith('blogs.')) return 'blogs';
+  if (templateId.startsWith('blog-posts.')) return 'blog-posts';
   return templateId;
 }
 
@@ -54,6 +62,8 @@ export function seedTemplateFromPackIfEmpty(
     }
     if (packKey === 'collection') return ensureCollectionPageTemplateBlocks(config);
     if (packKey === 'products') return ensureAllProductsPageTemplateBlocks(config);
+    if (packKey === 'blogs') return ensureBlogsPageTemplateBlocks(config);
+    if (packKey === 'blog-posts') return ensureBlogPostsPageTemplateBlocks(config);
     return false;
   }
 
@@ -72,6 +82,16 @@ export function seedTemplateFromPackIfEmpty(
     seeded.name = existing?.name ?? templateId.replace(/^collection\./, '');
     seeded.basedOn = existing?.basedOn ?? 'collection';
     seeded.assignedCollectionCount = existing?.assignedCollectionCount ?? 0;
+  } else if (templateId.startsWith('blogs.')) {
+    const existing = templates[templateId];
+    seeded.name = existing?.name ?? templateId.replace(/^blogs\./, '');
+    seeded.basedOn = existing?.basedOn ?? 'blogs';
+    seeded.assignedBlogCount = existing?.assignedBlogCount ?? 0;
+  } else if (templateId.startsWith('blog-posts.')) {
+    const existing = templates[templateId];
+    seeded.name = existing?.name ?? templateId.replace(/^blog-posts\./, '');
+    seeded.basedOn = existing?.basedOn ?? 'blog-posts';
+    seeded.assignedBlogPostCount = existing?.assignedBlogPostCount ?? 0;
   }
   templates[templateId] = seeded;
   const tpl = templates[templateId];

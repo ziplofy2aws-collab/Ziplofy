@@ -22,7 +22,7 @@ export function CustomThemeComposerPreview({ page, pageRevision, previewRoute }:
     () => previewRoute ?? previewPageToRoute(page),
     [page, previewRoute]
   );
-  const fallbackTemplateId = previewPageToTemplateId(page);
+  const activeTemplateId = previewPageToTemplateId(page);
 
   return (
     <MemoryRouter key={routeKey} initialEntries={[initialEntry]}>
@@ -30,10 +30,14 @@ export function CustomThemeComposerPreview({ page, pageRevision, previewRoute }:
         {renderCheckoutAuthRoutes()}
         {renderCheckoutProfileRoutes()}
         {renderCheckoutPageRoutes()}
-        {renderThemePageRoutes({ excludeCheckoutAuth: true, excludeCheckoutProfile: true })}
+        {renderThemePageRoutes({
+          excludeCheckoutAuth: true,
+          excludeCheckoutProfile: true,
+          activeTemplateId,
+        })}
         <Route
           path="*"
-          element={<CustomThemeTemplatePage templateId={fallbackTemplateId} />}
+          element={<CustomThemeTemplatePage templateId={activeTemplateId} />}
         />
       </Routes>
     </MemoryRouter>

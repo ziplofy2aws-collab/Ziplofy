@@ -17626,9 +17626,17 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind !== 'block' &&
     (node.label === 'Split showcase' || isSplitShowcaseSettingsPanelFields(fields));
   const isSpacerBlockPanel =
-    node.kind === 'block' && /:group:[^:]+:spacer$/.test(node.id);
+    node.kind === 'block' &&
+    /:group:[^:]+:spacer$/.test(node.id) &&
+    !/:hero_main(?:_\d+)?:group:spacer:spacer$/.test(node.id);
+  const isHeroMarqueeSpacerPanel =
+    node.kind === 'block' && /:hero_main(?:_\d+)?:group:spacer:spacer$/.test(node.id);
+  const isHeroMarqueeTextPanel =
+    node.kind === 'block' && /:hero_main(?:_\d+)?:group:marquee:text$/.test(node.id);
   const isSplitShowcaseTextBlockPanel =
-    node.kind === 'block' && /:group:[^:]+:text$/.test(node.id);
+    node.kind === 'block' &&
+    /:group:[^:]+:text$/.test(node.id) &&
+    !isHeroMarqueeTextPanel;
   const isSplitShowcaseGroupPanel =
     node.kind === 'block' && /:group:[^:]+$/.test(node.id);
   const isHeroBottomGroupPanel =
@@ -18058,10 +18066,10 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     isRichTextBlockPanel && isRichTextTextPanelFields(fields);
   const isRichTextHeadingPanel =
     isRichTextBlockPanel && isRichTextHeadingPanelFields(fields);
-  const isHeroMarqueeFolderPanel =
-    node.kind === 'block' && /:hero_main(?:_\d+)?:marquee$/.test(node.id);
+  const isHeroMarqueeFolderPanel = /:hero_main(?:_\d+)?:marquee$/.test(node.id);
   const isTextMarqueePanel =
     !isHeroMarqueeFolderPanel &&
+    !/:hero_main(?:_\d+)?(?::|$)/.test(node.id) &&
     (node.label === 'Marquee' || isTextMarqueeSettingsPanelFields(fields));
   const isFeaturedCollectionSectionPanel =
     isFeaturedCollectionSectionNodeId(node.id) ||
@@ -18420,6 +18428,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isFaqAccordionRowBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
     !isHeroTextBlockPanel &&
+    !isHeroMarqueeFolderPanel &&
+    !isHeroMarqueeTextPanel &&
+    !isHeroMarqueeSpacerPanel &&
     !isIconsWithTextBlockPanel &&
     !isMulticolumnBlockPanel &&
     !isMulticolumnColumnBlockPanel &&
@@ -18520,9 +18531,16 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        {isSpacerBlockPanel ? (
+        {isHeroMarqueeFolderPanel ? (
+          <HeroMarqueeFolderSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isHeroMarqueeSpacerPanel || isSpacerBlockPanel ? (
           <SpacerBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isSplitShowcaseTextBlockPanel || isHeroBottomTextBlockPanel ? (
+        ) : isHeroMarqueeTextPanel || isSplitShowcaseTextBlockPanel || isHeroBottomTextBlockPanel ? (
           <TextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isSplitShowcaseGroupPanel || isHeroBottomGroupPanel ? (
           <MulticolumnColumnBlockSettingsPanel

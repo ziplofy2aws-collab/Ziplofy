@@ -45,8 +45,12 @@ export function isHeroBottomAlignedSectionConfig(
   settingsBase: string,
   blocksBase: string
 ): boolean {
-  if (isHeroBottomAlignedVariant(config, settingsBase)) return true;
   if (!config) return false;
+  const variant = readNested(config, `${settingsBase}.catalogVariant`);
+  if (typeof variant === 'string' && variant && variant !== 'hero-bottom-aligned') {
+    return false;
+  }
+  if (isHeroBottomAlignedVariant(config, settingsBase)) return true;
   const blocks = readNested(config, blocksBase);
   if (!blocks || typeof blocks !== 'object') return false;
   if ('content_group' in (blocks as Record<string, unknown>)) return true;

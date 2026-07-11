@@ -5,8 +5,8 @@ import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
 import { normalizeStorefrontPathHandle } from '@/utils/storefront-path-handle.util';
 
 /**
- * When the route is `/blogs/:blogHandle/:articleHandle`, loads the visible post
- * via storefront API (storeId + blog/post url handles).
+ * When the route is `/blogs/:blogHandle/:articleHandle`, loads the visible post.
+ * Handle `preview` resolves to the first blog + first visible post (theme editor).
  */
 export function StorefrontBlogPostByUrlHandleLoader() {
   const { blogHandle, articleHandle } = useParams<{
@@ -15,7 +15,13 @@ export function StorefrontBlogPostByUrlHandleLoader() {
   }>();
   const [searchParams] = useSearchParams();
   const { storeFrontMeta } = useStorefront();
-  const { getVisiblePostByUrlHandles, clearActivePost, clearActiveBlog } = useStorefrontBlogs();
+  const {
+    getVisiblePostByUrlHandles,
+    listBlogsByStoreId,
+    fetchVisiblePostsByBlogUrlHandle,
+    clearActivePost,
+    clearActiveBlog,
+  } = useStorefrontBlogs();
 
   const storeId = storeFrontMeta?.storeId;
   const preview = searchParams.get('preview') === '1' || searchParams.get('preview') === 'true';
@@ -24,7 +30,7 @@ export function StorefrontBlogPostByUrlHandleLoader() {
     const blog = normalizeStorefrontPathHandle(blogHandle ?? '');
     const post = normalizeStorefrontPathHandle(articleHandle ?? '');
 
-    if (!storeId || !blog || !post || blog === 'preview' || post === 'preview') {
+    if (!storeId) {
       clearActivePost();
       clearActiveBlog();
       return;
@@ -32,7 +38,33 @@ export function StorefrontBlogPostByUrlHandleLoader() {
 
     void (async () => {
       try {
-        await getVisiblePostByUrlHandles(storeId, blog, post, { preview });
+        let blogResolved = blog && blog !== 'preview' ? blog : '';
+        let postResolved = post && post !== 'preview' ? post : '';
+
+        if (!blogResolved || !postResolved) {
+          const blogs = await listBlogsByStoreId(storeId);
+          blogResolved = blogResolved || normalizeStorefrontPathHandle(blogs[0]?.urlHandle ?? '');
+          if (!blogResolved) {
+            clearActivePost();
+            clearActiveBlog();
+            return;
+          }
+          if (!postResolved) {
+            const posts = await fetchVisiblePostsByBlogUrlHandle(storeId, blogResolved, {
+              page: 1,
+              limit: 1,
+            });
+            postResolved = normalizeStorefrontPathHandle(posts[0]?.urlHandle ?? '');
+          }
+        }
+
+        if (!blogResolved || !postResolved) {
+          clearActivePost();
+          clearActiveBlog();
+          return;
+        }
+
+        await getVisiblePostByUrlHandles(storeId, blogResolved, postResolved, { preview });
       } catch {
         /* errors surfaced via context.error */
       }
@@ -48,6 +80,8 @@ export function StorefrontBlogPostByUrlHandleLoader() {
     articleHandle,
     preview,
     getVisiblePostByUrlHandles,
+    listBlogsByStoreId,
+    fetchVisiblePostsByBlogUrlHandle,
     clearActivePost,
     clearActiveBlog,
   ]);
