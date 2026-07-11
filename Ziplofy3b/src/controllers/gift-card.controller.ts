@@ -5,7 +5,7 @@ import { asyncErrorHandler, CustomError } from '../utils/error.utils';
 
 // Create gift card
 export const createGiftCard = asyncErrorHandler(async (req: Request, res: Response) => {
-  const { storeId, code, initialValue, expirationDate, notes, isActive } = req.body;
+  const { storeId, code, initialValue, expirationDate, notes, isActive, customerId } = req.body;
 
   if (!storeId || !code || initialValue === undefined) {
     throw new CustomError('storeId, code and initialValue are required', 400);
@@ -24,12 +24,17 @@ export const createGiftCard = asyncErrorHandler(async (req: Request, res: Respon
     throw new CustomError('expirationDate must be in the future', 400);
   }
 
+  if (customerId !== undefined && customerId !== null && customerId !== '' && !mongoose.isValidObjectId(customerId)) {
+    throw new CustomError('Invalid customerId', 400);
+  }
+
   const giftCard = await GiftCard.create({
     storeId,
     code,
     initialValue,
     expirationDate: expirationDate ? new Date(expirationDate) : undefined,
     notes,
+    customerId: customerId && mongoose.isValidObjectId(customerId) ? customerId : undefined,
     isActive: isActive !== undefined ? isActive : true
   });
 
@@ -65,7 +70,7 @@ export const getGiftCardsByStoreId = asyncErrorHandler(async (req: Request, res:
 // Update gift card
 export const updateGiftCard = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { code, initialValue, expirationDate, notes, isActive } = req.body;
+  const { code, initialValue, expirationDate, notes, isActive, customerId } = req.body;
 
   if (!mongoose.isValidObjectId(id)) {
     throw new CustomError('Invalid gift card id', 400);
@@ -94,6 +99,10 @@ export const updateGiftCard = asyncErrorHandler(async (req: Request, res: Respon
     throw new CustomError('expirationDate must be in the future', 400);
   }
 
+  if (customerId !== undefined && customerId !== null && customerId !== '' && !mongoose.isValidObjectId(customerId)) {
+    throw new CustomError('Invalid customerId', 400);
+  }
+
   const updateData: any = {};
   if (code !== undefined) updateData.code = code;
   if (initialValue !== undefined) updateData.initialValue = initialValue;
@@ -102,6 +111,9 @@ export const updateGiftCard = asyncErrorHandler(async (req: Request, res: Respon
   }
   if (notes !== undefined) updateData.notes = notes;
   if (isActive !== undefined) updateData.isActive = isActive;
+  if (customerId !== undefined) {
+    updateData.customerId = customerId && mongoose.isValidObjectId(customerId) ? customerId : null;
+  }
 
   const giftCard = await GiftCard.findByIdAndUpdate(
     id,

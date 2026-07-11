@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { axiosi } from '../config/axios.config';
+import { buildDuplicateProductPayload } from '../utils/product-duplicate.util';
 
 // Product interface (matches API shape at creation and list)
 export interface Product {
@@ -195,6 +196,7 @@ export interface CreateProductPayload {
   status: 'active' | 'draft';
   onlineStorePublishing: boolean;
   pointOfSalePublishing: boolean;
+  images?: string[];
   imageUrls?: string[];
   isDeleted?: boolean;
   productType: string;
@@ -229,6 +231,7 @@ interface ProductContextType {
   transferProductSearchResult: ProductSearchWithVariantsItem[];
   transferProductSearchPagination: ProductSearchPagination | null;
   createProduct: (payload: CreateProductPayload) => Promise<Product>;
+  duplicateProduct: (product: Product, storeId: string) => Promise<Product>;
   updateProduct: (productId: string, payload: UpdateProductPayload) => Promise<Product>;
   fetchProductsByStoreId: (storeId: string) => Promise<void>;
   fetchProductById: (productId: string) => Promise<Product>;
@@ -254,6 +257,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [error, setError] = useState<string | null>(null);
   const [transferProductSearchResult, setTransferProductSearchResult] = useState<ProductSearchWithVariantsItem[]>([]);
   const [transferProductSearchPagination, setTransferProductSearchPagination] = useState<ProductSearchPagination | null>(null);
+  const activeProductFetchRef = useRef(0);
 
   const extractApiErrorMessage = useCallback((err: any, fallback: string) => {
     const apiMessage =
@@ -284,9 +288,16 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [extractApiErrorMessage]);
 
+  const duplicateProduct = useCallback(
+    async (product: Product, storeId: string) => {
+      const payload = buildDuplicateProductPayload(product, storeId);
+      return createProduct(payload);
+    },
+    [createProduct]
+  );
+
   const updateProduct = useCallback(async (productId: string, payload: UpdateProductPayload) => {
     try {
-      setLoading(true);
       setError(null);
       const res = await axiosi.patch<CreateProductResponse>(`/products/${productId}`, payload);
       const { success, data } = res.data;
@@ -298,8 +309,6 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const msg = extractApiErrorMessage(err, 'Failed to update product');
       setError(msg);
       throw new Error(msg);
-    } finally {
-      setLoading(false);
     }
   }, [extractApiErrorMessage]);
 
@@ -320,12 +329,14 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [extractApiErrorMessage]);
 
   const fetchProductById = useCallback(async (productId: string): Promise<Product> => {
+    const fetchId = ++activeProductFetchRef.current;
     try {
       setActiveProductLoading(true);
       setError(null);
       const res = await axiosi.get<CreateProductResponse>(`/products/${productId}`);
       const { success, data } = res.data;
       if (!success) throw new Error('Failed to fetch product details');
+      if (fetchId !== activeProductFetchRef.current) return data;
       setActiveProduct(data);
       setProducts((prev) => {
         const exists = prev.some((product) => product._id === data._id);
@@ -336,12 +347,16 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       });
       return data;
     } catch (err: any) {
-      const msg = extractApiErrorMessage(err, 'Failed to fetch product details');
-      setError(msg);
-      setActiveProduct(null);
-      throw new Error(msg);
+      if (fetchId === activeProductFetchRef.current) {
+        const msg = extractApiErrorMessage(err, 'Failed to fetch product details');
+        setError(msg);
+        setActiveProduct(null);
+      }
+      throw new Error(extractApiErrorMessage(err, 'Failed to fetch product details'));
     } finally {
-      setActiveProductLoading(false);
+      if (fetchId === activeProductFetchRef.current) {
+        setActiveProductLoading(false);
+      }
     }
   }, [extractApiErrorMessage]);
 
@@ -352,6 +367,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const clearActiveProduct = useCallback(() => {
+    activeProductFetchRef.current += 1;
     setActiveProduct(null);
     setActiveProductLoading(false);
   }, []);
@@ -549,6 +565,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       transferProductSearchResult,
       transferProductSearchPagination,
       createProduct,
+      duplicateProduct,
       updateProduct,
       fetchProductsByStoreId,
       fetchProductById,
@@ -572,6 +589,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       transferProductSearchResult,
       transferProductSearchPagination,
       createProduct,
+      duplicateProduct,
       updateProduct,
       fetchProductsByStoreId,
       fetchProductById,

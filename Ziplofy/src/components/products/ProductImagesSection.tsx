@@ -1,64 +1,105 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useStore } from "../../contexts/store.context";
+import {
+  defaultContentFilesFolder,
+  useStoreCloudStorage,
+} from "../../contexts/store-cloud-storage.context";
+import { uploadImagesToCloudStorage } from "../../hooks/useProductMediaUrls";
+import {
+  SelectImageModal,
+  type SelectedImageAsset,
+} from "../SelectImageModal";
 import ProductImageList from "./ProductImageList";
+import {
+  type ProductFormAppearance,
+  productFormCardClass,
+  productFormSectionTitleClass,
+} from "./product-form-appearance";
 
 interface ProductImagesSectionProps {
   images: string[];
-  onAddImageFiles: (files: File[]) => void;
+  onAddImageUrl: (url: string) => void;
   onRemoveImage: (index: number) => void;
   disabled?: boolean;
   /** Omit outer card + border when nested inside another section (e.g. Basic Information). */
   embedded?: boolean;
+  appearance?: ProductFormAppearance;
 }
 
 const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
   images,
-  onAddImageFiles,
+  onAddImageUrl,
   onRemoveImage,
   disabled = false,
   embedded = false,
+  appearance = 'default',
 }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { activeStoreId } = useStore();
+  const { uploadFilesForStore } = useStoreCloudStorage();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
-  const addImageFilesFromList = useCallback(
-    (files: File[]) => {
-      const imageFiles = files.filter((f) => f.type.startsWith("image/"));
-      const rejected = files.length - imageFiles.length;
-      if (rejected > 0) {
-        toast.error(
-          "Only images are supported for product media right now."
-        );
+  const uploadFilesToCloud = useCallback(
+    async (files: File[]) => {
+      if (disabled || uploading) return;
+      if (!activeStoreId) {
+        toast.error('Select a store before uploading files');
+        return;
       }
-      if (imageFiles.length > 0) {
-        onAddImageFiles(imageFiles);
+      setUploading(true);
+      try {
+        const urls = await uploadImagesToCloudStorage(
+          activeStoreId,
+          files,
+          (storeId, imageFiles, options) =>
+            uploadFilesForStore(storeId, imageFiles, {
+              folder: options?.folder ?? defaultContentFilesFolder(storeId),
+            })
+        );
+        urls.forEach((url) => onAddImageUrl(url));
+      } catch {
+        // toast shown in helper
+      } finally {
+        setUploading(false);
       }
     },
-    [onAddImageFiles]
+    [activeStoreId, disabled, onAddImageUrl, uploadFilesForStore, uploading]
   );
 
   const handlePickImages = useCallback(() => {
-    if (disabled) return;
+    if (disabled || uploading) return;
     fileInputRef.current?.click();
-  }, [disabled]);
+  }, [disabled, uploading]);
+
+  const handleOpenPicker = useCallback(() => {
+    if (disabled || uploading) return;
+    if (!activeStoreId) {
+      toast.error('Select a store before choosing files');
+      return;
+    }
+    setPickerOpen(true);
+  }, [activeStoreId, disabled, uploading]);
 
   const handleFileSelection = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files ? Array.from(e.target.files) : [];
       e.target.value = "";
       if (!files.length) return;
-      addImageFilesFromList(files);
+      void uploadFilesToCloud(files);
     },
-    [addImageFilesFromList]
+    [uploadFilesToCloud]
   );
 
   const handleDragOver = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      if (!disabled) setIsDragOver(true);
+      if (!disabled && !uploading) setIsDragOver(true);
     },
-    [disabled]
+    [disabled, uploading]
   );
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
@@ -72,19 +113,46 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
       e.preventDefault();
       e.stopPropagation();
       setIsDragOver(false);
-      if (disabled) return;
+      if (disabled || uploading) return;
       const files = Array.from(e.dataTransfer.files);
-      if (files.length) addImageFilesFromList(files);
+      if (files.length) void uploadFilesToCloud(files);
     },
-    [disabled, addImageFilesFromList]
+    [disabled, uploadFilesToCloud, uploading]
   );
+
+  const handleCloudImageSelected = useCallback(
+    (asset: SelectedImageAsset) => {
+      onAddImageUrl(asset.url);
+      setPickerOpen(false);
+    },
+    [onAddImageUrl]
+  );
+
+  const mediaTitleClass = productFormSectionTitleClass(appearance);
+  const dropZoneClass =
+    appearance === 'minimal'
+      ? disabled || uploading
+        ? "cursor-not-allowed border-gray-200/60 bg-gray-50/40 opacity-60"
+        : isDragOver
+          ? "border-gray-300 bg-gray-50"
+          : "border-gray-200/70 bg-white"
+      : disabled || uploading
+        ? "cursor-not-allowed border-gray-200 bg-gray-50/50 opacity-60"
+        : isDragOver
+          ? "border-blue-400 bg-blue-50/40"
+          : "border-gray-200 bg-white";
+
+  const actionButtonClass =
+    appearance === 'minimal'
+      ? 'rounded-md border border-gray-200/70 bg-white px-3.5 py-1.5 text-sm font-normal text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50'
+      : 'rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50';
 
   const body = (
     <>
       {!embedded ? (
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Media</h2>
+        <h2 className={mediaTitleClass}>Media</h2>
       ) : (
-        <h3 className="mb-4 text-base font-semibold text-gray-900">Media</h3>
+        <h3 className={mediaTitleClass}>Media</h3>
       )}
 
       <input
@@ -100,13 +168,7 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`flex min-h-[220px] flex-col rounded-lg border-2 border-dashed px-4 py-4 transition-colors ${
-          disabled
-            ? "cursor-not-allowed border-gray-200 bg-gray-50/50 opacity-60"
-            : isDragOver
-              ? "border-blue-400 bg-blue-50/40"
-              : "border-gray-200 bg-white"
-        }`}
+        className={`flex min-h-[200px] flex-col rounded-md border border-dashed px-4 py-4 transition-colors ${dropZoneClass}`}
       >
         {images.length > 0 ? (
           <div className="mb-4 max-h-[300px] w-full overflow-y-auto pr-1">
@@ -116,20 +178,36 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
           <div className="flex flex-1 items-center justify-center" />
         )}
 
-        <div className="mt-auto flex w-full flex-col items-center justify-center pb-2 pt-1">
-        <button
-          type="button"
-          onClick={handlePickImages}
-          disabled={disabled}
-          className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Upload new
-        </button>
-        <p className="mt-4 max-w-md text-center text-sm text-gray-500">
-          Accepts images, videos, or 3D models
-        </p>
+        <div className="mt-auto flex w-full flex-col items-center justify-center gap-2 pb-2 pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={handlePickImages}
+              disabled={disabled || uploading}
+              className={actionButtonClass}
+            >
+              {uploading ? 'Uploading…' : 'Upload new'}
+            </button>
+            <button
+              type="button"
+              onClick={handleOpenPicker}
+              disabled={disabled || uploading}
+              className={actionButtonClass}
+            >
+              Select existing
+            </button>
+          </div>
+          <p className={`max-w-md text-center ${appearance === 'minimal' ? 'text-[13px] text-gray-400' : 'text-sm text-gray-500'}`}>
+            Images are chosen from your store files. Removing media here does not delete the file.
+          </p>
         </div>
       </div>
+
+      <SelectImageModal
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelect={handleCloudImageSelected}
+      />
     </>
   );
 
@@ -138,7 +216,7 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
   }
 
   return (
-    <div className="rounded-xl border border-gray-200/80 bg-white p-6 shadow-sm">
+    <div className={productFormCardClass(appearance)}>
       {body}
     </div>
   );

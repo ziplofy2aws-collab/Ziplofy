@@ -1,7 +1,13 @@
-import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import {
+  productFormCardClass,
+  productFormInputClass,
+  productFormSectionTitleClass,
+} from '../products/product-form-appearance';
 import ProductSearchTable from './ProductSearchTable';
 import SelectedItemsTable from './SelectedItemsTable';
+import { PO_FORM_APPEARANCE, poPrimaryButtonClass } from './purchase-order-ui.util';
 
 interface ProductItem {
   variantId: string;
@@ -39,23 +45,24 @@ const AddProductsSection: React.FC<AddProductsSectionProps> = ({
   onItemsChange,
 }) => {
   const handleSupplierSkuChange = (idx: number, value: string) => {
-    onItemsChange(items.map((r, i) => i === idx ? { ...r, supplierSku: value } : r));
+    onItemsChange(items.map((row, i) => (i === idx ? { ...row, supplierSku: value } : row)));
   };
 
   const handleQtyChange = (idx: number, value: number) => {
-    const n = Math.max(1, value || 1);
-    onItemsChange(items.map((r, i) => i === idx ? { ...r, qty: n } : r));
+    const next = Math.max(1, value || 1);
+    onItemsChange(items.map((row, i) => (i === idx ? { ...row, qty: next } : row)));
   };
 
   const handleCostChange = (idx: number, value: number) => {
-    const n = Math.max(0, value || 0);
-    onItemsChange(items.map((r, i) => i === idx ? { ...r, cost: n } : r));
+    const next = Math.max(0, value || 0);
+    onItemsChange(items.map((row, i) => (i === idx ? { ...row, cost: next } : row)));
   };
 
   const handleTaxPctChange = (idx: number, value: number) => {
-    let n = value;
-    if (isNaN(n)) n = 0; else n = Math.min(100, Math.max(0, n));
-    onItemsChange(items.map((r, i) => i === idx ? { ...r, taxPct: n } : r));
+    let next = value;
+    if (Number.isNaN(next)) next = 0;
+    else next = Math.min(100, Math.max(0, next));
+    onItemsChange(items.map((row, i) => (i === idx ? { ...row, taxPct: next } : row)));
   };
 
   const handleRemoveItem = (idx: number) => {
@@ -63,56 +70,56 @@ const AddProductsSection: React.FC<AddProductsSectionProps> = ({
   };
 
   return (
-    <div className="border border-gray-200 p-4 bg-white/95">
-      <h2 className="text-base font-medium text-gray-900 mb-3">Add products</h2>
-      <input
-        type="text"
-        placeholder="Search products"
-        value={search}
-        onChange={(e) => onSearchChange(e.target.value)}
-        className="w-full px-3 py-1.5 text-sm border border-gray-200 mb-3 focus:outline-none focus:ring-1 focus:ring-gray-400"
-      />
-      <div className="flex justify-end mb-2">
+    <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
+      <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Products</h2>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className="relative min-w-[220px] flex-1">
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="search"
+            placeholder="Search products"
+            value={search}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className={`${productFormInputClass(PO_FORM_APPEARANCE)} pl-9`}
+          />
+        </div>
         <button
+          type="button"
           onClick={onAddSelected}
           disabled={selectedVariantIds.size === 0}
-          className="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          className={poPrimaryButtonClass}
         >
           Add selected
         </button>
       </div>
-      <div className="border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <ProductSearchTable
-            searching={searching}
-            results={results}
-            selectedVariantIds={selectedVariantIds}
-            onVariantToggle={onVariantToggle}
-          />
-        </div>
+
+      <div className="mt-4 overflow-hidden rounded-lg border border-gray-100">
+        <ProductSearchTable
+          searching={searching}
+          results={results}
+          selectedVariantIds={selectedVariantIds}
+          onVariantToggle={onVariantToggle}
+        />
       </div>
 
-      {/* Added items table */}
-      {items.length > 0 && (
-        <div className="mt-4">
-          <h3 className="text-sm font-medium text-gray-900 mb-2">Selected items</h3>
-          <div className="border border-gray-200 overflow-hidden">
-            <div className="overflow-x-auto">
-              <SelectedItemsTable
-                items={items}
-                onSupplierSkuChange={handleSupplierSkuChange}
-                onQtyChange={handleQtyChange}
-                onCostChange={handleCostChange}
-                onTaxPctChange={handleTaxPctChange}
-                onRemove={handleRemoveItem}
-              />
-            </div>
+      {items.length > 0 ? (
+        <div className="mt-5">
+          <h3 className="mb-2 text-[13px] font-medium text-gray-600">Selected items</h3>
+          <div className="overflow-hidden rounded-lg border border-gray-100">
+            <SelectedItemsTable
+              items={items}
+              onSupplierSkuChange={handleSupplierSkuChange}
+              onQtyChange={handleQtyChange}
+              onCostChange={handleCostChange}
+              onTaxPctChange={handleTaxPctChange}
+              onRemove={handleRemoveItem}
+            />
           </div>
         </div>
-      )}
-    </div>
+      ) : null}
+    </section>
   );
 };
 
 export default AddProductsSection;
-

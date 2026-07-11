@@ -1,6 +1,5 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { axiosi } from '../config/axios.config';
-import { toast } from 'react-hot-toast';
 
 export interface ProductVariantPackage {
   _id: string;
@@ -82,6 +81,7 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
   const [activeVariant, setActiveVariant] = useState<ProductVariant | null>(null);
   const [activeVariantLoading, setActiveVariantLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const activeVariantFetchRef = useRef(0);
 
   const fetchVariantsByProductId = useCallback(async (productId: string) => {
     try {
@@ -100,6 +100,7 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
   }, []);
 
   const fetchProductVariantDetailsById = useCallback(async (variantId: string, productId?: string) => {
+    const fetchId = ++activeVariantFetchRef.current;
     try {
       setActiveVariantLoading(true);
       setError(null);
@@ -109,6 +110,7 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
       );
       const { success, data } = res.data;
       if (!success || !data) throw new Error('Failed to fetch variant details');
+      if (fetchId !== activeVariantFetchRef.current) return data;
       setActiveVariant(data);
       setVariants((prev) => {
         const exists = prev.some((variant) => variant._id === data._id);
@@ -117,18 +119,21 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
       });
       return data;
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to fetch variant details';
-      setError(msg);
-      setActiveVariant(null);
+      if (fetchId === activeVariantFetchRef.current) {
+        const msg = err?.response?.data?.message || err?.message || 'Failed to fetch variant details';
+        setError(msg);
+        setActiveVariant(null);
+      }
       return null;
     } finally {
-      setActiveVariantLoading(false);
+      if (fetchId === activeVariantFetchRef.current) {
+        setActiveVariantLoading(false);
+      }
     }
   }, []);
 
   const updateVariant = useCallback(async (variantId: string, update: Partial<ProductVariant>) => {
     try {
-      setLoading(true);
       setError(null);
       const res = await axiosi.patch<{ success: boolean; data: ProductVariant; message?: string }>(
         `/product-variants/${variantId}`,
@@ -148,12 +153,11 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
       const msg = err?.response?.data?.message || err?.message || 'Failed to update variant';
       setError(msg);
       throw err;
-    } finally {
-      setLoading(false);
     }
   }, []);
 
   const clearActiveVariant = useCallback(() => {
+    activeVariantFetchRef.current += 1;
     setActiveVariant(null);
     setActiveVariantLoading(false);
   }, []);

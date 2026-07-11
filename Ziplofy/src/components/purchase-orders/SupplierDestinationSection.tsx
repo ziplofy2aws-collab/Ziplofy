@@ -1,6 +1,10 @@
-import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import Select from '../Select';
+import {
+  productFormCardClass,
+  productFormSectionTitleClass,
+} from '../products/product-form-appearance';
+import { PO_FORM_APPEARANCE } from './purchase-order-ui.util';
 
 interface SelectOption {
   value: string;
@@ -37,9 +41,9 @@ const SupplierDestinationSection: React.FC<SupplierDestinationSectionProps> = ({
   currencyOptions,
 }) => {
   return (
-    <div className="border border-gray-200 p-4 bg-white/95">
-      <h2 className="text-base font-medium text-gray-900 mb-3">Supplier & Destination</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <section className={productFormCardClass(PO_FORM_APPEARANCE)}>
+      <h2 className={productFormSectionTitleClass(PO_FORM_APPEARANCE)}>Supplier & destination</h2>
+      <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
         <Select
           label="Supplier"
           value={supplierId}
@@ -55,7 +59,7 @@ const SupplierDestinationSection: React.FC<SupplierDestinationSectionProps> = ({
           placeholder="Select destination"
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+      <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
         <Select
           label="Payment terms (optional)"
           value={paymentTerms}
@@ -71,9 +75,8 @@ const SupplierDestinationSection: React.FC<SupplierDestinationSectionProps> = ({
           placeholder="Select currency"
         />
       </div>
-    </div>
+    </section>
   );
 };
 
 export default SupplierDestinationSection;
-
