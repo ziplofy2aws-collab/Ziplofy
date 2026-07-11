@@ -352,7 +352,7 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
     >
       {items.map((item, index) => {
         const open = openIds.has(item.id);
-        const showAnswerContent = open || editorMode;
+        const showAnswerContent = open;
         const blockNodeId =
           placement === 'template'
             ? `template:${templateId}:${sectionId}:block:accordion:nested:${item.id}`
@@ -436,9 +436,6 @@ export function Faq({ sectionId = 'faq_section', templateId = 'index', placement
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 12,
-                  ...(!open && editorMode
-                    ? { opacity: 0.72, borderLeft: `2px dashed ${scheme.border}` }
-                    : undefined),
                 }}
               >
                 {item.textBlocks.map((textBlock) => {

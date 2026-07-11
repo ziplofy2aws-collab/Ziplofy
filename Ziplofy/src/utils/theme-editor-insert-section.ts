@@ -379,6 +379,8 @@ export function templateBlueprintKey(sectionId: string): string {
     sectionId === 'collection_list_grid' ||
     sectionId === 'collection_heading' ||
     sectionId === 'main_collection' ||
+    sectionId === 'main_blog' ||
+    sectionId === 'blog_post_main' ||
     sectionId === 'layered_slideshow' ||
     sectionId === 'slideshow_full_frame'
   ) {
@@ -414,7 +416,10 @@ export function templateBlueprintKey(sectionId: string): string {
   if (sectionId.startsWith('collection_list_bento')) return 'collection_list_bento';
   if (sectionId.startsWith('collection_list_carousel')) return 'collection_list_carousel';
   if (sectionId.startsWith('collection_list_editorial')) return 'collection_list_editorial';
-  if (sectionId.startsWith('collection_list_grid')) return 'collection_list_grid';
+  if (sectionId.startsWith('collection_heading')) return 'collection_heading';
+  if (sectionId.startsWith('main_collection')) return 'main_collection';
+  if (sectionId.startsWith('main_blog')) return 'main_blog';
+  if (sectionId.startsWith('blog_post_main')) return 'blog_post_main';
   if (sectionId.startsWith('layered_slideshow')) return 'layered_slideshow';
   if (sectionId.startsWith('slideshow_full_frame')) return 'slideshow_full_frame';
   if (sectionId.startsWith('slideshow_inset')) return 'slideshow_inset';

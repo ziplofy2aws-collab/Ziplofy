@@ -4149,14 +4149,37 @@ export function buildShopifySidebarTree(
     : [];
 
   const templateSectionNodes: SidebarNode[] = [];
-  if (tpl?.sections?.length) {
-    const tplSections = (tplConfig?.sections ?? {}) as Record<string, unknown>;
+  if (tpl?.sections?.length || templateSectionOrder.length) {
+    const tplSections = (tplConfig?.sections ?? {}) as Record<
+      string,
+      { type?: string; label?: string } | undefined
+    >;
+    const schemaSections = tpl?.sections ?? [];
     for (const instanceId of templateSectionOrder) {
       if (!tplSections[instanceId]) continue;
       const blueprintId = templateBlueprintKey(instanceId);
-      const sec = tpl.sections.find((s) => (s.id ?? '') === blueprintId);
-      if (!sec) continue;
-      templateSectionNodes.push(sectionToNode(sec, templateId, values, itemOrder, instanceId, config, schema));
+      const fromSchema = schemaSections.find((s) => (s.id ?? '') === blueprintId);
+      const cfgSec = tplSections[instanceId];
+      const sec =
+        fromSchema ??
+        ({
+          id: blueprintId,
+          type: typeof cfgSec?.type === 'string' ? cfgSec.type : blueprintId.replace(/_/g, '-'),
+          label:
+            typeof cfgSec?.label === 'string'
+              ? cfgSec.label
+              : blueprintId === 'main_blog'
+                ? 'Blog'
+                : blueprintId === 'blog_post_main'
+                  ? 'Blog posts'
+                  : blueprintId.replace(/_/g, ' '),
+          hasBlocks: true,
+          settingsFields: [],
+          blocks: [],
+        } as NonNullable<NonNullable<EditorSchemaDoc['templates']>[0]['sections']>[0]);
+      templateSectionNodes.push(
+        sectionToNode(sec, templateId, values, itemOrder, instanceId, config, schema)
+      );
     }
     tree.push({
       id: 'group:template',

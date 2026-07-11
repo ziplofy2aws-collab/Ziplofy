@@ -24,6 +24,7 @@ import { seedBottomAlignedHeroValues } from './hero-bottom-aligned.util';
 import { seedSectionEnabledValues } from './theme-editor-section-visibility.util';
 import { THEME_PAGE_REGISTRY } from '../create-theme/utils/theme-page-registry';
 import { withAllProductsPageSchema } from './all-products-page-schema.util';
+import { withBlogPageSchemas } from './blog-page-schema.util';
 import { ensureCartPageTemplateBlocks } from './cart-page-preset.util';
 import {
   ensureThemeLogoFaviconDefaults,
@@ -471,7 +472,8 @@ export function normalizeCreatorThemeConfig(config: Record<string, unknown>): vo
 }
 
 export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchemaDoc {
-  return withAllProductsPageSchema(
+  return withBlogPageSchemas(
+    withAllProductsPageSchema(
     withThemeVariantPickersSchema(
     withThemeSwatchesSchema(
       withThemeSearchSchema(
@@ -501,6 +503,7 @@ export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchem
           )
         )
       )
+    )
     )
     )
   );
