@@ -72,11 +72,7 @@ const NAV: NavItem[] = [
     text: 'Customers',
     icon: UserGroupIcon,
     path: '/customers',
-    relatedPaths: ['/companies'],
-    children: [
-      { text: 'Segments', path: '/customers/segments' },
-      { text: 'Companies', path: '/companies' },
-    ],
+    children: [{ text: 'Segments', path: '/customers/segments' }],
   },
   {
     text: 'Marketing',

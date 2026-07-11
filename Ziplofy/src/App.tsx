@@ -42,6 +42,9 @@ const CustomerDetailsPage = lazy(() => import("./pages/CustomerDetailsPage"));
 const CustomerSegmentDetailsPage = lazy(() => import("./pages/CustomerSegmentDetailsPage"));
 const CustomersPage = lazy(() => import("./pages/CustomersPage"));
 const CustomersSegmentsPage = lazy(() => import("./pages/CustomersSegmentsPage"));
+const CustomerCompaniesPage = lazy(() => import("./pages/CustomerCompaniesPage"));
+const CompanyCreatePage = lazy(() => import("./pages/CompanyCreatePage"));
+const CompanyDetailPage = lazy(() => import("./pages/CompanyDetailPage"));
 const DiscountsPage = lazy(() => import("./pages/DiscountsPage"));
 const GiftCardDetailPage = lazy(() => import("./pages/GiftCardDetailPage"));
 const GiftCardsPage = lazy(() => import("./pages/GiftCardsPage"));
@@ -202,6 +205,7 @@ import { CatalogProvider } from "./contexts/catalog.context";
 import { CheckoutSettingsProvider } from "./contexts/checkout-settings.context";
 import { CollectionEntriesProvider } from "./contexts/collection-entries.context";
 import { CollectionProvider } from "./contexts/collection.context";
+import { CompanyProvider } from "./contexts/company.context";
 import { BlogProvider } from "./contexts/blog.context";
 import { BlogCommentsProvider } from "./contexts/blog-comment.context";
 import { BlogPostProvider } from "./contexts/blog-post.context";
@@ -376,6 +380,9 @@ const AdminApp: React.FC = () => {
             <Route path="/products/transfers/:id" element={<TransferDetailsPage />} />
             <Route path="/products/:id/variants/:variantId" element={<ProductVariantDetailsPage />} />
             <Route path="/products/:id" element={<ProductDetailsPage />} />
+            <Route path="/companies/new" element={<CompanyCreatePage />} />
+            <Route path="/companies" element={<CustomerCompaniesPage />} />
+            <Route path="/company/:id" element={<CompanyDetailPage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/customers/segments" element={<CustomersSegmentsPage />} />
             <Route path="/customers/segments/:id" element={<CustomerSegmentDetailsPage />} />
@@ -566,6 +573,7 @@ const App: React.FC = () => {
         <CollectionProvider>
         <StoreMenuProvider>
         <BlogProvider>
+        <CompanyProvider>
         <BlogPostProvider>
         <BlogCommentsProvider>
         <BlogTagsProvider>
@@ -752,6 +760,7 @@ const App: React.FC = () => {
         </BlogTagsProvider>
         </BlogCommentsProvider>
         </BlogPostProvider>
+        </CompanyProvider>
         </BlogProvider>
         </StoreMenuProvider>
         </CollectionProvider>
