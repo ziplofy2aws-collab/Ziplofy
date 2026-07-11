@@ -259,12 +259,16 @@ export function ThemeEditorRichTextField({
 
   const editor = useEditor({
     extensions: [
+      // Disable StarterKit pieces we register separately — TipTap v3 StarterKit
+      // includes link/underline; duplicates blank the announcement settings panel.
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4, 5, 6] },
         codeBlock: false,
         blockquote: false,
         horizontalRule: false,
         code: false,
+        link: false,
+        underline: false,
       }),
       Link.configure({
         openOnClick: false,
@@ -339,7 +343,13 @@ export function ThemeEditorRichTextField({
         openLinkModalRef.current();
       }
     };
-    const el = editor.view.dom;
+    // TipTap v3 + immediatelyRender:false — view proxy throws until EditorContent mounts.
+    let el: HTMLElement;
+    try {
+      el = editor.view.dom;
+    } catch {
+      return;
+    }
     el.addEventListener('keydown', onKeyDown);
     return () => el.removeEventListener('keydown', onKeyDown);
   }, [editor]);

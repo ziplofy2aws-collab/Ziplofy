@@ -59,15 +59,40 @@ export function isAnnouncementLayoutNodeId(nodeId: string): boolean {
   return Boolean(m && layoutBlueprintKey(m[1]) === 'announcement_bar');
 }
 
+/** Infer Shopify-style group when schema/catalog omitted `group` (avoids blank panel). */
+function inferredAnnouncementGroup(field: EditorFieldDef): string | undefined {
+  if (field.group && PANEL_GROUPS.has(field.group)) return field.group;
+  if (field.group === 'Content') return undefined;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'timeToNext') return 'General';
+  if (
+    key === 'sectionWidth' ||
+    key === 'backgroundColor' ||
+    key === 'dividerThickness' ||
+    key === 'dividerColor'
+  ) {
+    return 'Appearance';
+  }
+  if (key === 'paddingTop' || key === 'paddingBottom') return 'Padding';
+  if (key === 'colorScheme') return 'Theme Settings';
+  if (key === 'customCss') return 'Custom CSS';
+  return undefined;
+}
+
 /** Section settings for the bottom panel (excludes legacy Content + enabled; visibility uses sidebar eye). */
 export function filterAnnouncementPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  return fields.filter((f) => {
-    if (f.group === 'Content') return false;
-    const key = f.path.split('.').pop() ?? '';
-    if (key === 'enabled') return false;
-    if (!f.group) return false;
-    return PANEL_GROUPS.has(f.group);
-  });
+  return fields
+    .map((f) => {
+      const group = inferredAnnouncementGroup(f);
+      return group ? { ...f, group } : f;
+    })
+    .filter((f) => {
+      if (f.group === 'Content') return false;
+      const key = f.path.split('.').pop() ?? '';
+      if (key === 'enabled') return false;
+      if (!f.group) return false;
+      return PANEL_GROUPS.has(f.group);
+    });
 }
 
 export function sortAnnouncementPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -90,10 +115,19 @@ export function prepareAnnouncementSettingsNode(
   node: SidebarNode,
   prependFields: EditorFieldDef[] = []
 ): SidebarNode {
+  const instanceId = node.id.replace(/^layout:/, '') || 'announcement_bar';
   const fields = node.fields ?? [];
-  const panelFields = sortAnnouncementPanelFields(filterAnnouncementPanelFields(fields));
-  const merged = [...prependFields, ...(panelFields.length ? panelFields : fields)];
-  return { ...node, label: 'Announcement bar', kind: 'section', fields: merged };
+  let panelFields = sortAnnouncementPanelFields(filterAnnouncementPanelFields(fields));
+  // Never fall back to Content-only / ungrouped fields — that yields an empty grouped panel.
+  if (!panelFields.length) {
+    panelFields = collectAnnouncementPanelFieldDefs({ settingsFields: [] }, instanceId);
+  }
+  return {
+    ...node,
+    label: 'Announcement bar',
+    kind: 'section',
+    fields: [...prependFields, ...panelFields],
+  };
 }
 
 function remapAnnouncementSchemaFields(
@@ -116,7 +150,10 @@ export function collectAnnouncementPanelFieldDefs(
 ): EditorFieldDef[] {
   const remapped = remapAnnouncementSchemaFields(sec.settingsFields, instanceId);
   const panelFields = sortAnnouncementPanelFields(filterAnnouncementPanelFields(remapped));
-  return panelFields.length ? panelFields : remapped;
+  if (panelFields.length) return panelFields;
+  return sortAnnouncementPanelFields(
+    filterAnnouncementPanelFields(remapAnnouncementSchemaFields(undefined, instanceId))
+  );
 }
 
 /** Resolve announcement bar section panel fields from tree, schema, catalog, or defaults. */
@@ -125,24 +162,29 @@ export function resolveAnnouncementSectionPanelFields(
   editorSchema?: EditorSchemaDoc | null,
   existingFields?: EditorFieldDef[]
 ): EditorFieldDef[] {
-  let fields = existingFields ?? [];
-  if (!fields.length) {
-    const catalog = resolveEditingPanelForNode(sectionNodeId);
-    if (catalog?.fields.length) fields = catalog.fields;
+  const instanceId = sectionNodeId.replace(/^layout:/, '') || 'announcement_bar';
+  const asPanel = (fields: EditorFieldDef[]) =>
+    sortAnnouncementPanelFields(filterAnnouncementPanelFields(fields));
+
+  let panel = asPanel(existingFields ?? []);
+  if (panel.length) return panel;
+
+  const catalog = resolveEditingPanelForNode(sectionNodeId);
+  if (catalog?.fields.length) {
+    panel = asPanel(catalog.fields);
+    if (panel.length) return panel;
   }
-  if (!fields.length && editorSchema) {
-    const instanceId = sectionNodeId.replace(/^layout:/, '');
+
+  if (editorSchema) {
     const blueprint = layoutBlueprintKey(instanceId);
     const sec = editorSchema.layout?.[blueprint];
     if (sec) {
-      fields = collectAnnouncementPanelFieldDefs(sec, instanceId);
+      panel = collectAnnouncementPanelFieldDefs(sec, instanceId);
+      if (panel.length) return panel;
     }
   }
-  if (!fields.length) {
-    const instanceId = sectionNodeId.replace(/^layout:/, '');
-    fields = collectAnnouncementPanelFieldDefs({ settingsFields: [] }, instanceId);
-  }
-  return fields;
+
+  return collectAnnouncementPanelFieldDefs({ settingsFields: [] }, instanceId);
 }
 
 /** Find the layout announcement section node when a child row is selected. */

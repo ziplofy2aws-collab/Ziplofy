@@ -119,9 +119,34 @@ export function sortAnnouncementBlockPanelFields(fields: EditorFieldDef[]): Edit
 }
 
 export function prepareAnnouncementBlockSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortAnnouncementBlockPanelFields(
+  const filtered = sortAnnouncementBlockPanelFields(
     (node.fields ?? []).filter((f) => !f.group || BLOCK_PANEL_GROUPS.has(f.group))
   );
+  const instanceId =
+    instanceIdFromAnnouncementBlockNodeId(node.id) ??
+    node.id.replace(/^layout:/, '').split(':')[0] ??
+    'announcement_bar';
+  const blockInstanceId = blockInstanceIdFromAnnouncementBlockNodeId(node.id) ?? 'announcement';
+  const fields =
+    filtered.length > 0
+      ? filtered
+      : sortAnnouncementBlockPanelFields([
+          {
+            path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.text`,
+            type: 'textarea',
+            label: 'Text',
+            group: 'Content',
+            widget: 'richtext',
+          },
+          {
+            path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.link`,
+            type: 'text',
+            label: 'Link',
+            group: 'Content',
+            widget: 'link',
+            placeholder: 'Paste a link or search',
+          },
+        ]);
   return {
     ...node,
     label: 'Announcement',

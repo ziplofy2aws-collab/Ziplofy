@@ -771,6 +771,7 @@ import {
 import {
   ANNOUNCEMENT_PANEL_GROUP_ORDER,
   groupAnnouncementPanelFields,
+  isAnnouncementLayoutNodeId,
   isAnnouncementSettingsPanelFields,
 } from './theme-editor-announcement-panel.utils';
 import {
@@ -4889,6 +4890,23 @@ function AnnouncementBarGroupedSettingsPanel({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupAnnouncementPanelFields(fields), [fields]);
+  const hasVisible = ANNOUNCEMENT_PANEL_GROUP_ORDER.some((label) => (grouped.get(label)?.length ?? 0) > 0);
+
+  if (!hasVisible) {
+    // Last-resort: show raw fields so the sheet is never an empty white panel.
+    if (!fields.length) {
+      return (
+        <p className="px-1 py-3 text-[13px] text-gray-500">No settings for this item.</p>
+      );
+    }
+    return (
+      <div className="space-y-1 px-1 py-3">
+        {fields.map((field) => (
+          <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -18324,7 +18342,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       node.label === 'Announcement' ||
       (fields.length > 0 && isAnnouncementBlockPanelFields(fields)));
   const isAnnouncementBarPanel =
-    node.label === 'Announcement bar' || isAnnouncementSettingsPanelFields(fields);
+    isAnnouncementLayoutNodeId(node.id) ||
+    node.label === 'Announcement bar' ||
+    isAnnouncementSettingsPanelFields(fields);
   const isFooterPanel =
     !isFooterUtilitiesPanel &&
     !isContactFormPanel &&
@@ -18545,6 +18565,20 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : fields.length === 0 ? (
           <p className="text-[13px] text-gray-500">No settings for this item.</p>
+        ) : isAnnouncementBlockPanel ? (
+          <AnnouncementBlockSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isAnnouncementBarPanel ? (
+          <AnnouncementBarGroupedSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
         ) : isHeaderSectionPanel ? (
           <HeaderSettingsPanel
             fields={fields}
@@ -18816,13 +18850,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <FaqGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isHeroPanel ? (
           <HeroGroupedSettingsPanel fields={fields} values={values} colorPalette={colorPalette} onFieldChange={onFieldChange} />
-        ) : isAnnouncementBlockPanel ? (
-          <AnnouncementBlockSettingsPanel
-            fields={fields}
-            values={values}
-            colorPalette={colorPalette}
-            onFieldChange={onFieldChange}
-          />
         ) : isLargeLogoPanel ? (
           <LargeLogoGroupedSettingsPanel
             fields={fields}
@@ -19552,13 +19579,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <StorytellingCarouselGroupedSettingsPanel
             fields={fields}
             values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : isAnnouncementBarPanel ? (
-          <AnnouncementBarGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isDividerPanel ? (

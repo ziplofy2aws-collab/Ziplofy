@@ -8,7 +8,6 @@ import {
   type ThemeEditorFieldType,
 } from './create-theme-field.utils';
 import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
-import { ThemeEditorRichTextField } from '../../components/theme-editor/ThemeEditorRichTextField';
 import { pickAnnouncementBlockField } from './theme-editor-announcement-block-panel.utils';
 import { CheckoutColorPickerPopover } from '../checkout/settings/CheckoutColorPickerPopover';
 import {
@@ -29,13 +28,22 @@ function AnnouncementRichTextFieldRow({
   const id = fieldInputId(field.path);
   const value = fieldValueAsString(values, field);
 
+  // Plain textarea — TipTap in the shared rich-text field has blanked this panel after
+  // TipTap v3 upgrades; announcement text is short and does not need the full toolbar.
   return (
-    <ThemeEditorRichTextField
-      id={id}
-      label={field.label}
-      value={value}
-      onChange={(html) => onFieldChange(field.path, 'textarea', html)}
-    />
+    <div className="space-y-1.5 py-1">
+      <label htmlFor={id} className="text-[13px] font-medium text-gray-800">
+        {field.label}
+      </label>
+      <textarea
+        id={id}
+        rows={4}
+        value={value}
+        onChange={(e) => onFieldChange(field.path, 'textarea', e.target.value)}
+        placeholder="Announcement text"
+        className="w-full resize-y rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] leading-relaxed text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+      />
+    </div>
   );
 }
 

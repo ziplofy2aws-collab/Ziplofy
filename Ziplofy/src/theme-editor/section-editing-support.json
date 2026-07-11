@@ -283,7 +283,8 @@
             "default": {
               "includeGroups": [
                 "Content",
-                "Typography"
+                "Typography",
+                "Appearance"
               ],
               "fieldOrder": [
                 "text",
@@ -292,7 +293,8 @@
                 "fontSize",
                 "fontWeight",
                 "letterSpacing",
-                "textCase"
+                "textCase",
+                "textColor"
               ]
             }
           }
@@ -304,6 +306,7 @@
             "General",
             "Appearance",
             "Padding",
+            "Theme Settings",
             "Custom CSS"
           ],
           "excludeGroups": [
@@ -313,8 +316,10 @@
             "enabled",
             "timeToNext",
             "sectionWidth",
-            "colorScheme",
+            "backgroundColor",
             "dividerThickness",
+            "dividerColor",
+            "colorScheme",
             "paddingTop",
             "paddingBottom",
             "customCss"
