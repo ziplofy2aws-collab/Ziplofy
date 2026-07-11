@@ -178,6 +178,7 @@ const MarketsPage = lazy(() => import("./pages/markets/MarketsPage"));
 const AbandonedCartsPage = lazy(() => import("./pages/orders/AbandonedCartPage"));
 const AbandonedCartDetailsPage = lazy(() => import("./pages/orders/AbondonedCartDetailsPage"));
 const DraftsPage = lazy(() => import("./pages/orders/DraftsPage"));
+const CreateDraftOrderPage = lazy(() => import("./pages/orders/CreateDraftOrderPage"));
 const CustomerEventPixelDetailsPage = lazy(() => import("./pages/settings/CustomerEventPixelDetailsPage"));
 const CustomerEventsPage = lazy(() => import("./pages/settings/CustomerEventsPage"));
 const ShippingProfileCreatePage = lazy(() => import("./pages/settings/ShippingProfileCreatePage"));
@@ -190,6 +191,7 @@ import { CustomerSegmentsEntryProvider } from "./contexts/CustomerSegmentsEntry.
 import { AbandonedCartProvider } from "./contexts/abandoned-cart.context";
 import { ActionProvider } from "./contexts/action.context";
 import { AdminOrderProvider } from "./contexts/admin-order.context";
+import { OrderTimelineProvider } from "./contexts/order-timeline.context";
 import { AmountOffOrderDiscountProvider } from "./contexts/amount-off-order-discount.context";
 import { AutomationFlowProvider } from "./contexts/automation-flow.context";
 import { BuyXGetYDiscountProvider } from "./contexts/buy-x-get-y-discount.context";
@@ -346,6 +348,8 @@ const AdminApp: React.FC = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/orders/create" element={<CreateOrderPage />} />
+            <Route path="/orders/drafts/new" element={<CreateDraftOrderPage />} />
+            <Route path="/orders/drafts" element={<DraftsPage />} />
             <Route path="/orders/abandoned-carts" element={<AbandonedCartsPage />} />
             <Route path="/orders/abandoned-carts/customer/:customerId" element={<AbandonedCartDetailsPage />} />
             <Route path="/orders/:id" element={<OrderDetailsPage />} />
@@ -487,10 +491,6 @@ const AdminApp: React.FC = () => {
               <Route path="policies/manage-return-rules/new" element={<CreateReturnRules />} />
             </Route>
 
-            {/* Orders subsections */}
-            <Route path="/orders/drafts" element={<DraftsPage />} />
-            
-
             {/* Themes Subsection */}
             <Route path="/themes/all-themes" element={<AllThemes />} />
             <Route
@@ -624,6 +624,7 @@ const App: React.FC = () => {
         <AutomationFlowProvider>
         <PixelProvider>
         <AdminOrderProvider>
+        <OrderTimelineProvider>
         <NotificationCategoriesProvider>
         <NotificationOptionsProvider>
         <NotificationOverridesProvider>
@@ -684,6 +685,7 @@ const App: React.FC = () => {
         </NotificationOverridesProvider>
         </NotificationOptionsProvider>
         </NotificationCategoriesProvider>
+        </OrderTimelineProvider>
         </AdminOrderProvider>
         </PixelProvider>
         </AutomationFlowProvider>
