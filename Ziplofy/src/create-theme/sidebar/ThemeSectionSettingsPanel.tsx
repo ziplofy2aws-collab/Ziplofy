@@ -4754,6 +4754,9 @@ function DividerStylingSettingsGroup({
     <div className="space-y-1 px-1 py-3">
       {ordered.map((field) => {
         const key = field.path.split('.').pop() ?? '';
+        if (field.widget === 'color-scheme' || key === 'colorScheme') {
+          return null;
+        }
         if (field.widget === 'color' || field.type === 'color' || key === 'backgroundColor' || key === 'color') {
           return (
             <ThemeDefaultColorField
@@ -4763,16 +4766,6 @@ function DividerStylingSettingsGroup({
               values={values}
               colorPalette={colorPalette}
               defaultPaletteIndex={key === 'backgroundColor' ? 0 : 1}
-              onFieldChange={onFieldChange}
-            />
-          );
-        }
-        if (field.widget === 'color-scheme' || key === 'colorScheme') {
-          return (
-            <ColorSchemeFieldRow
-              key={field.path}
-              field={field}
-              values={values}
               onFieldChange={onFieldChange}
             />
           );

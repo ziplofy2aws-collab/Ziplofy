@@ -5,7 +5,9 @@ export function applyDividerPreset(section: Record<string, unknown>): void {
 
   const settings = (section.settings ?? {}) as Record<string, unknown>;
   settings.catalogVariant = 'divider';
-  settings.colorScheme = 'scheme-1';
+  delete settings.colorScheme;
+  if (settings.backgroundColor === undefined) settings.backgroundColor = '';
+  if (settings.color === undefined) settings.color = '';
   settings.sectionWidth = 'page';
   settings.thickness = 1;
   settings.length = 100;

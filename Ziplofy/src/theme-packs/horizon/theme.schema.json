@@ -32178,29 +32178,19 @@
           "label": "Divider",
           "settingsFields": [
             {
-              "path": "templates.cart.sections.divider.settings.colorScheme",
-              "type": "select",
-              "label": "Color scheme",
+              "path": "templates.cart.sections.divider.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
               "group": "General",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ],
+              "widget": "color",
+              "sidebar": false
+            },
+            {
+              "path": "templates.cart.sections.divider.settings.color",
+              "type": "color",
+              "label": "Color",
+              "group": "General",
+              "widget": "color",
               "sidebar": false
             },
             {
@@ -32456,29 +32446,19 @@
           "label": "Divider",
           "settingsFields": [
             {
-              "path": "templates.login.sections.divider.settings.colorScheme",
-              "type": "select",
-              "label": "Color scheme",
+              "path": "templates.login.sections.divider.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
               "group": "General",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ],
+              "widget": "color",
+              "sidebar": false
+            },
+            {
+              "path": "templates.login.sections.divider.settings.color",
+              "type": "color",
+              "label": "Color",
+              "group": "General",
+              "widget": "color",
               "sidebar": false
             },
             {
@@ -32732,29 +32712,19 @@
           "label": "Divider",
           "settingsFields": [
             {
-              "path": "templates.signup.sections.divider.settings.colorScheme",
-              "type": "select",
-              "label": "Color scheme",
+              "path": "templates.signup.sections.divider.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
               "group": "General",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ],
+              "widget": "color",
+              "sidebar": false
+            },
+            {
+              "path": "templates.signup.sections.divider.settings.color",
+              "type": "color",
+              "label": "Color",
+              "group": "General",
+              "widget": "color",
               "sidebar": false
             },
             {
@@ -32954,29 +32924,19 @@
           "label": "Divider",
           "settingsFields": [
             {
-              "path": "templates.forgot_password.sections.divider.settings.colorScheme",
-              "type": "select",
-              "label": "Color scheme",
+              "path": "templates.forgot_password.sections.divider.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
               "group": "General",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ],
+              "widget": "color",
+              "sidebar": false
+            },
+            {
+              "path": "templates.forgot_password.sections.divider.settings.color",
+              "type": "color",
+              "label": "Color",
+              "group": "General",
+              "widget": "color",
               "sidebar": false
             },
             {
@@ -33235,29 +33195,19 @@
           "label": "Divider",
           "settingsFields": [
             {
-              "path": "templates.profile.sections.divider.settings.colorScheme",
-              "type": "select",
-              "label": "Color scheme",
+              "path": "templates.profile.sections.divider.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
               "group": "General",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ],
+              "widget": "color",
+              "sidebar": false
+            },
+            {
+              "path": "templates.profile.sections.divider.settings.color",
+              "type": "color",
+              "label": "Color",
+              "group": "General",
+              "widget": "color",
               "sidebar": false
             },
             {
@@ -33474,29 +33424,19 @@
           "label": "Divider",
           "settingsFields": [
             {
-              "path": "templates.orders.sections.divider.settings.colorScheme",
-              "type": "select",
-              "label": "Color scheme",
+              "path": "templates.orders.sections.divider.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
               "group": "General",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ],
+              "widget": "color",
+              "sidebar": false
+            },
+            {
+              "path": "templates.orders.sections.divider.settings.color",
+              "type": "color",
+              "label": "Color",
+              "group": "General",
+              "widget": "color",
               "sidebar": false
             },
             {
@@ -33718,29 +33658,19 @@
           "label": "Divider",
           "settingsFields": [
             {
-              "path": "templates.preferences.sections.divider.settings.colorScheme",
-              "type": "select",
-              "label": "Color scheme",
+              "path": "templates.preferences.sections.divider.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
               "group": "General",
-              "widget": "color-scheme",
-              "options": [
-                {
-                  "value": "scheme-1",
-                  "label": "Scheme 1"
-                },
-                {
-                  "value": "scheme-2",
-                  "label": "Scheme 2"
-                },
-                {
-                  "value": "scheme-3",
-                  "label": "Scheme 3"
-                },
-                {
-                  "value": "scheme-4",
-                  "label": "Scheme 4"
-                }
-              ],
+              "widget": "color",
+              "sidebar": false
+            },
+            {
+              "path": "templates.preferences.sections.divider.settings.color",
+              "type": "color",
+              "label": "Color",
+              "group": "General",
+              "widget": "color",
               "sidebar": false
             },
             {

@@ -28,6 +28,7 @@ import { MainCollection } from '../main-collection/runtime/MainCollection';
 import { BlogPostMain } from '../blog-post-main/runtime/BlogPostMain';
 import { MainBlog } from '../main-blog/runtime/MainBlog';
 import { CartMain } from '../cart-main/runtime/CartMain';
+import { FooterUtilities } from '../policies-links/runtime/FooterUtilities';
 import { ProductHighlight } from '../product-highlight/runtime/ProductHighlight';
 import {
   CollectionListBento,
@@ -48,6 +49,7 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
   'announcement-bar': AnnouncementBar,
   hero: Hero,
   footer: Footer,
+  'footer-utilities': FooterUtilities,
   divider: Divider,
   'collection-links-spotlight': CollectionLinksSpotlight,
   'collection-list-bento': CollectionListBento,

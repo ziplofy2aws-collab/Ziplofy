@@ -2068,29 +2068,18 @@
       "layoutBlueprint": "divider",
       "fields": [
         {
-          "key": "colorScheme",
-          "type": "select",
-          "label": "Color scheme",
+          "key": "backgroundColor",
+          "type": "color",
+          "label": "Background color",
           "group": "General",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
-            }
-          ]
+          "widget": "color"
+        },
+        {
+          "key": "color",
+          "type": "color",
+          "label": "Color",
+          "group": "General",
+          "widget": "color"
         },
         {
           "key": "sectionWidth",
@@ -2165,7 +2154,8 @@
       "panels": {
         "default": {
           "includeKeys": [
-            "colorScheme",
+            "backgroundColor",
+            "color",
             "sectionWidth",
             "thickness",
             "length",
@@ -2174,7 +2164,8 @@
             "customCss"
           ],
           "fieldOrder": [
-            "colorScheme",
+            "backgroundColor",
+            "color",
             "sectionWidth",
             "thickness",
             "length",

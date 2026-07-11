@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontPolicies, type StorefrontPolicyType } from '@/contexts/storefront-policies.context';
 import { STOREFRONT_POLICY_LINKS } from './storefront-policy-links.config';
@@ -10,6 +10,8 @@ type Props = {
   disabled?: boolean;
   className?: string;
   linkClassName?: string;
+  /** Inline styles applied to each policy link button (theme footer typography). */
+  linkStyle?: CSSProperties;
 };
 
 export function StorefrontPolicyLinks({
@@ -18,6 +20,7 @@ export function StorefrontPolicyLinks({
   disabled = false,
   className = '',
   linkClassName,
+  linkStyle,
 }: Props) {
   const { storeFrontMeta } = useStorefront();
   const storeId = storeIdProp ?? storeFrontMeta?.storeId ?? null;
@@ -32,7 +35,11 @@ export function StorefrontPolicyLinks({
       setActiveType(type);
       setActiveTitle(title);
       setModalOpen(true);
-      await fetchPolicyByType(storeId, type);
+      try {
+        await fetchPolicyByType(storeId, type);
+      } catch {
+        /* error surfaced via context */
+      }
     },
     [disabled, storeId, fetchPolicyByType]
   );
@@ -46,20 +53,28 @@ export function StorefrontPolicyLinks({
   const isMobile = device === 'mobile';
   const linkClass =
     linkClassName ??
-    `text-[#1773b0] underline decoration-[#1773b0] ${
-      isMobile ? 'text-[13px]' : 'text-[14px]'
-    } ${disabled || !storeId ? 'cursor-default' : 'cursor-pointer hover:opacity-90'}`;
+    (linkStyle
+      ? `border-0 bg-transparent p-0 font-inherit underline ${
+          disabled || !storeId ? 'cursor-default' : 'cursor-pointer hover:opacity-90'
+        }`
+      : `text-[#1773b0] underline decoration-[#1773b0] ${
+          isMobile ? 'text-[13px]' : 'text-[14px]'
+        } ${disabled || !storeId ? 'cursor-default' : 'cursor-pointer hover:opacity-90'}`);
 
   const modalContent = activeType ? getPolicyByType(activeType)?.content ?? null : null;
 
   return (
     <>
-      <div className={`flex flex-wrap items-center gap-x-5 gap-y-2 ${className} ${isMobile ? 'gap-x-3 gap-y-1.5' : ''}`}>
+      <div
+        className={`flex flex-wrap items-center gap-x-5 gap-y-2 ${className} ${isMobile ? 'gap-x-3 gap-y-1.5' : ''}`}
+        style={linkStyle ? { gap: isMobile ? '6px 12px' : '8px 20px' } : undefined}
+      >
         {STOREFRONT_POLICY_LINKS.map((link) => (
           <button
             key={link.type}
             type="button"
             className={`${linkClass} border-0 bg-transparent p-0 font-inherit`}
+            style={linkStyle}
             disabled={disabled || !storeId}
             onClick={(e) => {
               e.stopPropagation();

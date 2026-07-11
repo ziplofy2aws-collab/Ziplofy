@@ -6,10 +6,11 @@ export const DIVIDER_PANEL_GROUP_ORDER = ['General', 'Padding', 'Custom CSS'] as
 const PANEL_GROUPS = new Set<string>(DIVIDER_PANEL_GROUP_ORDER);
 
 const FIELD_SORT: Record<string, number> = {
-  colorScheme: 0,
-  sectionWidth: 1,
-  thickness: 2,
-  length: 3,
+  backgroundColor: 0,
+  color: 1,
+  sectionWidth: 2,
+  thickness: 3,
+  length: 4,
   paddingTop: 10,
   paddingBottom: 11,
   customCss: 20,
@@ -25,6 +26,8 @@ export function isDividerSectionType(secType: string | undefined, catalogVariant
 
 export function isDividerPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'colorScheme' || field.widget === 'color-scheme') return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -52,12 +55,15 @@ export function groupDividerPanelFields(fields: EditorFieldDef[]): Map<string, E
 export function isDividerSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('thickness') && keys.has('length') && keys.has('colorScheme');
+  return keys.has('thickness') && keys.has('length') && (keys.has('sectionWidth') || keys.has('colorScheme'));
 }
 
 export function prepareDividerSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortDividerPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isDividerPanelField)
+    filterSidebarSectionPanelFields(node.fields ?? [], isDividerPanelField).filter((f) => {
+      const key = f.path.split('.').pop() ?? '';
+      return key !== 'colorScheme' && f.widget !== 'color-scheme';
+    })
   );
   return { ...node, label: 'Divider', kind: 'section', fields };
 }

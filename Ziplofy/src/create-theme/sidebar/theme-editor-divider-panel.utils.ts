@@ -26,6 +26,8 @@ export function isDividerSectionType(secType: string | undefined, catalogVariant
 
 export function isDividerPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'colorScheme' || field.widget === 'color-scheme') return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -58,7 +60,10 @@ export function isDividerSettingsPanelFields(fields: EditorFieldDef[]): boolean 
 
 export function prepareDividerSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortDividerPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isDividerPanelField)
+    filterSidebarSectionPanelFields(node.fields ?? [], isDividerPanelField).filter((f) => {
+      const key = f.path.split('.').pop() ?? '';
+      return key !== 'colorScheme' && f.widget !== 'color-scheme';
+    })
   );
   return { ...node, label: 'Divider', kind: 'section', fields };
 }
