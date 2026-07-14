@@ -12,7 +12,7 @@ export type ContactFormScheme = {
 
 const SCHEMES: Record<string, ContactFormScheme> = {
   'scheme-1': {
-    background: '#f0f4f8',
+    background: '#ffffff',
     color: '#111827',
     border: '#d1d5db',
     inputBg: '#ffffff',

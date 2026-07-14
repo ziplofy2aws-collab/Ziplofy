@@ -97,7 +97,14 @@ export function ContactFormSection({
     minHeight: style.minHeight != null ? style.minHeight - style.paddingTop - style.paddingBottom : undefined,
     display: 'flex',
     flexDirection: style.direction === 'horizontal' ? 'row' : 'column',
-    alignItems: style.direction === 'horizontal' ? 'center' : undefined,
+    alignItems:
+      style.direction === 'horizontal'
+        ? 'center'
+        : style.alignment === 'left'
+          ? 'flex-start'
+          : style.alignment === 'right'
+            ? 'flex-end'
+            : 'center',
     justifyContent,
     gap: style.gap,
     textAlign,
@@ -110,6 +117,7 @@ export function ContactFormSection({
     marginLeft: style.alignment === 'right' ? 'auto' : undefined,
     marginRight: style.alignment === 'left' ? 'auto' : undefined,
     flex: style.direction === 'horizontal' ? '1 1 320px' : undefined,
+    textAlign,
   };
 
   return (

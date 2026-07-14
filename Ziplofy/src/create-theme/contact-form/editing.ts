@@ -102,11 +102,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": []

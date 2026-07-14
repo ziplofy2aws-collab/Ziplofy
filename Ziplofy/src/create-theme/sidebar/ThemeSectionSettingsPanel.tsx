@@ -3350,7 +3350,7 @@ function ContactFormAppearanceSettingsGroup({
 
   const ordered = [...fields].filter((f) => {
     const key = f.path.split('.').pop() ?? '';
-    return key !== 'backgroundImageUrl' && key !== 'colorScheme';
+    return key !== 'backgroundImageUrl';
   });
 
   return (
@@ -4625,7 +4625,7 @@ function ContactFormSubmitButtonSettingsPanel({
   );
 }
 
-/** Contact form: Layout → Size → Appearance → Padding → Custom CSS. */
+/** Contact form: Layout → Size → Appearance → Borders → Padding. */
 function ContactFormGroupedSettingsPanel({
   fields,
   values,
@@ -4702,21 +4702,6 @@ function ContactFormGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -16583,7 +16568,7 @@ function EditorialJumboJumboTextBlockSettingsPanel({
   );
 }
 
-/** Email signup: Layout → Size → Appearance → Padding → Custom CSS. */
+/** Email signup: Layout → Size → Appearance → Borders → Padding. */
 function EmailSignupGroupedSettingsPanel({
   fields,
   values,
@@ -16660,38 +16645,6 @@ function EmailSignupGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Theme Settings') {
-          const colorScheme = groupFields.find(
-            (f) => f.path.endsWith('colorScheme') || f.widget === 'color-scheme'
-          );
-          return (
-            <ShopifySettingsSection key={label} title="Theme Settings" collapsible>
-              {colorScheme ? (
-                <ColorSchemeFieldRow
-                  field={colorScheme}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ) : null}
-            </ShopifySettingsSection>
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 

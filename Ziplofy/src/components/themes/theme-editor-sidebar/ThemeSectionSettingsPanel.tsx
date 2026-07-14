@@ -1704,7 +1704,7 @@ function ContactFormAppearanceSettingsGroup({
   );
 }
 
-/** Contact form: Layout → Size → Appearance → Padding → Custom CSS. */
+/** Contact form: Layout → Size → Appearance → Padding. */
 function ContactFormGroupedSettingsPanel({
   fields,
   values,
@@ -1763,21 +1763,6 @@ function ContactFormGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 

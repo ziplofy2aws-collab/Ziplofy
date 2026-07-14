@@ -13,6 +13,7 @@ export function applyContactFormPreset(section: Record<string, unknown>): void {
   settings.submitLabel = 'Submit';
   settings.direction = 'vertical';
   settings.layoutAlignment = 'center';
+  settings.headingAlignment = 'center';
   settings.position = 'center';
   settings.layoutGap = 32;
   settings.sectionWidth = 'page';

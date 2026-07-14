@@ -8,7 +8,6 @@ export const CONTACT_FORM_PANEL_GROUP_ORDER = [
   'Appearance',
   'Borders',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(CONTACT_FORM_PANEL_GROUP_ORDER);
@@ -28,7 +27,6 @@ const FIELD_SORT: Record<string, number> = {
   backgroundOverlay: 25,
   paddingTop: 30,
   paddingBottom: 31,
-  customCss: 40,
 };
 
 function fieldSortKey(path: string): number {
@@ -43,6 +41,7 @@ export function isContactFormPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   if (field.sidebar === false) return false;
   const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
   if (key.startsWith('heading') || key.startsWith('form') || key.startsWith('submit')) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
@@ -54,7 +53,6 @@ export function sortContactFormPanelFields(fields: EditorFieldDef[]): EditorFiel
     Appearance: 2,
     Borders: 3,
     Padding: 4,
-    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

@@ -7,7 +7,6 @@ export const EMAIL_SIGNUP_PANEL_GROUP_ORDER = [
   'Size',
   'Appearance',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(EMAIL_SIGNUP_PANEL_GROUP_ORDER);
@@ -27,7 +26,6 @@ const FIELD_SORT: Record<string, number> = {
   backgroundOverlay: 25,
   paddingTop: 30,
   paddingBottom: 31,
-  customCss: 40,
 };
 
 function fieldSortKey(path: string): number {
@@ -40,6 +38,8 @@ export function isEmailSignupSectionType(secType: string | undefined, catalogVar
 
 export function isEmailSignupPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -49,7 +49,6 @@ export function sortEmailSignupPanelFields(fields: EditorFieldDef[]): EditorFiel
     Size: 1,
     Appearance: 2,
     Padding: 3,
-    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -61,7 +60,7 @@ export function sortEmailSignupPanelFields(fields: EditorFieldDef[]): EditorFiel
 
 export function groupEmailSignupPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
-  for (const field of fields) {
+  for (const field of fields.filter(isEmailSignupPanelField)) {
     const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
     const list = map.get(group) ?? [];
     list.push(field);

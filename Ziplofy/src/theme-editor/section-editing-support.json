@@ -5667,13 +5667,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -5699,8 +5692,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -5946,13 +5938,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -5975,8 +5960,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -11115,10 +11099,22 @@
                   "group": "Appearance",
                   "widget": "select",
                   "options": [
-                    { "value": "primary", "label": "Primary" },
-                    { "value": "secondary", "label": "Secondary" },
-                    { "value": "link", "label": "Link" },
-                    { "value": "custom", "label": "Custom" }
+                    {
+                      "value": "primary",
+                      "label": "Primary"
+                    },
+                    {
+                      "value": "secondary",
+                      "label": "Secondary"
+                    },
+                    {
+                      "value": "link",
+                      "label": "Link"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
+                    }
                   ]
                 },
                 {
@@ -11156,8 +11152,14 @@
                   "group": "Size",
                   "widget": "segmented",
                   "options": [
-                    { "value": "fit", "label": "Fit" },
-                    { "value": "custom", "label": "Custom" }
+                    {
+                      "value": "fit",
+                      "label": "Fit"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
+                    }
                   ]
                 },
                 {
@@ -11177,8 +11179,14 @@
                   "group": "Size",
                   "widget": "segmented",
                   "options": [
-                    { "value": "fit", "label": "Fit" },
-                    { "value": "custom", "label": "Custom" }
+                    {
+                      "value": "fit",
+                      "label": "Fit"
+                    },
+                    {
+                      "value": "custom",
+                      "label": "Custom"
+                    }
                   ]
                 },
                 {
@@ -12236,13 +12244,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -12268,8 +12269,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -12517,13 +12517,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -12546,8 +12539,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }

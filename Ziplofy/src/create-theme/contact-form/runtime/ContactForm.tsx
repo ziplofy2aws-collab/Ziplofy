@@ -134,7 +134,14 @@ export function ContactForm({
       style.minHeight != null ? style.minHeight - style.paddingTop - style.paddingBottom : undefined,
     display: 'flex',
     flexDirection: style.direction === 'horizontal' ? 'row' : 'column',
-    alignItems: style.direction === 'horizontal' ? 'center' : undefined,
+    alignItems:
+      style.direction === 'horizontal'
+        ? 'center'
+        : style.alignment === 'left'
+          ? 'flex-start'
+          : style.alignment === 'right'
+            ? 'flex-end'
+            : 'center',
     justifyContent,
     gap: style.gap,
     textAlign,
@@ -170,6 +177,7 @@ export function ContactForm({
     paddingLeft: formGroup.paddingLeft || undefined,
     paddingRight: formGroup.paddingRight || undefined,
     boxSizing: 'border-box',
+    textAlign,
   };
 
   const submitBtn = useMemo(
@@ -305,7 +313,7 @@ export function ContactForm({
       ) : null}
       {style.backgroundOverlay && style.backgroundMedia === 'image' ? (
         <div
-          aria-hidden131
+          aria-hidden
           style={{
             position: 'absolute',
             inset: 0,

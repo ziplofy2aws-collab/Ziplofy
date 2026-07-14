@@ -17,3 +17,7 @@ text elements
 - Featured collection editorial ✅
 - featured collection grid ✅
 - 
+
+forms
+- contact form ✅
+- email signup ✅

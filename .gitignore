@@ -21,6 +21,7 @@ build/
 
 # Scratch / temp files
 *.tmp
+*.txt
 
 # Built theme bundles (theme sources remain tracked)
 **/theme-packs/**/preview/dist/
@@ -30,3 +31,5 @@ remote-themes/
 
 # Personal notes / scratch work
 my-work/
+
+covered-elements.txt

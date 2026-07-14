@@ -5710,13 +5710,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -5742,8 +5735,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -5989,13 +5981,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -6018,8 +6003,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -12121,13 +12105,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -12153,8 +12130,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -12402,13 +12378,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -12431,8 +12400,7 @@
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -27807,13 +27775,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           }
         ],
         "blocks": {},
@@ -27839,8 +27800,7 @@
               "cornerRadius",
               "backgroundOverlay",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -28113,13 +28073,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           }
         ],
         "blocks": {},
@@ -28142,8 +28095,7 @@
               "cornerRadius",
               "backgroundOverlay",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -44002,13 +43954,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           }
         ],
         "blocks": {},
@@ -44034,8 +43979,7 @@
               "cornerRadius",
               "backgroundOverlay",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -44308,13 +44252,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           }
         ],
         "blocks": {},
@@ -44337,8 +44274,7 @@
               "cornerRadius",
               "backgroundOverlay",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -53556,13 +53492,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           }
         ],
         "blocks": {},
@@ -53588,8 +53517,7 @@
               "cornerRadius",
               "backgroundOverlay",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -53855,13 +53783,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           }
         ],
         "blocks": {},
@@ -53884,8 +53805,7 @@
               "cornerRadius",
               "backgroundOverlay",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
