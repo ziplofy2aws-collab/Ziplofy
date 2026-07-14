@@ -333,23 +333,24 @@ export function FeaturedCollection({
     );
 
     if (isCarousel) {
-      // Show a fractional number of cards so the next card always peeks and the
-      // track overflows (and can scroll) whenever there is more than one card —
-      // even when the product count equals the configured column count.
-      const visibleColumns = Math.min(columns + 0.25, Math.max(1.2, cardCount - 0.15));
-      const mobileVisible = Math.min(mobileColumns + 0.2, Math.max(1.1, cardCount - 0.1));
-      const cardBasis = `calc((100% - ${columns * hGap}px) / ${visibleColumns})`;
-      const mobileBasis = `calc((100% - ${mobileColumns * hGap}px) / ${mobileVisible})`;
+      // Size by configured columns so 1 product stays a normal card width
+      // (not ~full track). Peek only when there is another card to show.
+      const desktopPeek = cardCount > columns ? 0.25 : 0;
+      const mobilePeek = cardCount > mobileColumns ? 0.2 : 0;
+      const visibleColumns = columns + desktopPeek;
+      const mobileVisible = mobileColumns + mobilePeek;
+      const cardBasis = `calc((100% - ${(columns - 1) * hGap}px) / ${visibleColumns})`;
+      const mobileBasis = `calc((100% - ${(mobileColumns - 1) * hGap}px) / ${mobileVisible})`;
       const layoutCss = combineResponsiveCss(
         `.${scopeClass} .codiic-fc-carousel { position: relative; }`,
         `.${gridClass} { display: flex; flex-wrap: nowrap; column-gap: ${hGap}px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; }`,
         `.${gridClass}::-webkit-scrollbar { display: none; }`,
-        `.${gridClass} > .codiic-fc-card { flex: 0 0 ${cardBasis}; scroll-snap-align: start; }`,
+        `.${gridClass} > .codiic-fc-card { flex: 0 0 ${cardBasis}; max-width: ${cardBasis}; min-width: 0; scroll-snap-align: start; }`,
         `.${scopeClass} .codiic-fc-nav { opacity: 0; transform: translateY(-50%) scale(0.92); transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }`,
         `.${scopeClass} .codiic-fc-carousel:hover .codiic-fc-nav, .${scopeClass} .codiic-fc-carousel:focus-within .codiic-fc-nav { opacity: 1; transform: translateY(-50%) scale(1); pointer-events: auto; }`,
         `.${scopeClass} .codiic-fc-nav:disabled { opacity: 0 !important; pointer-events: none !important; }`,
         mobileMedia(
-          `.${gridClass} > .codiic-fc-card { flex-basis: ${mobileBasis} !important; }` +
+          `.${gridClass} > .codiic-fc-card { flex-basis: ${mobileBasis} !important; max-width: ${mobileBasis} !important; }` +
             `.${scopeClass} .codiic-fc-nav { display: none !important; }`
         )
       );
