@@ -1900,7 +1900,7 @@ function AnnouncementAppearanceSettingsGroup({
   );
 }
 
-/** Announcement bar: time → Appearance → Padding → Custom CSS (Shopify order). */
+/** Announcement bar: time → Appearance → Padding. */
 function AnnouncementBarGroupedSettingsPanel({
   fields,
   values,
@@ -1954,21 +1954,6 @@ function AnnouncementBarGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -3205,7 +3190,7 @@ function FeaturedProductMediaGroupedSettingsPanel({
   );
 }
 
-/** Featured product: Product → Layout → Padding → Custom CSS. */
+/** Featured product: Product → Layout → Padding. */
 function FeaturedProductGroupedSettingsPanel({
   fields,
   values,
@@ -3302,21 +3287,6 @@ function FeaturedProductGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -6134,6 +6104,7 @@ function FeaturedCollectionGroupedSettingsPanel({
         }
 
         if (label === 'Theme settings') {
+          if (variant === 'grid') return null;
           return (
             <CollapsibleSettingsGroup
               key={label}
@@ -6146,6 +6117,7 @@ function FeaturedCollectionGroupedSettingsPanel({
         }
 
         if (label === 'Custom CSS') {
+          if (variant === 'grid') return null;
           return (
             <div key={label} className="px-1 py-1">
               {groupFields.map((field) => (
@@ -6369,7 +6341,7 @@ function TextMarqueeGroupedSettingsPanel({
   );
 }
 
-/** Rich text: Layout → Size → Appearance → Padding → Custom CSS. */
+/** Rich text: Layout → Size → Appearance → Borders → Padding. */
 function RichTextGroupedSettingsPanel({
   fields,
   values,
@@ -6428,21 +6400,6 @@ function RichTextGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 

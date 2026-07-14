@@ -5,8 +5,8 @@ export const RICH_TEXT_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(RICH_TEXT_PANEL_GROUP_ORDER);
@@ -21,12 +21,15 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
+  backgroundImagePosition: 23,
+  backgroundColor: 24,
   backgroundOverlay: 25,
+  overlayColor: 26,
+  overlayOpacity: 27,
+  borderStyle: 28,
+  cornerRadius: 29,
   paddingTop: 30,
   paddingBottom: 31,
-  customCss: 40,
 };
 
 function fieldSortKey(path: string): number {
@@ -39,6 +42,8 @@ export function isRichTextSectionType(secType: string | undefined, catalogVarian
 
 export function isRichTextPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -47,8 +52,8 @@ export function sortRichTextPanelFields(fields: EditorFieldDef[]): EditorFieldDe
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -74,9 +79,9 @@ export function isRichTextSettingsPanelFields(fields: EditorFieldDef[]): boolean
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   const path = fields[0]?.path ?? '';
   return (
-    keys.has('heading') &&
-    keys.has('text') &&
-    keys.has('buttonLabel') &&
+    keys.has('layoutGap') &&
+    keys.has('direction') &&
+    keys.has('layoutAlignment') &&
     !keys.has('quote') &&
     path.includes('rich_text')
   );

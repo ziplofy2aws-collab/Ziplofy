@@ -20,6 +20,8 @@ const HEIGHT_PX: Record<string, number> = {
   large: 360,
 };
 
+export type RichTextImageFit = 'cover' | 'fit' | 'stretch';
+
 export type RichTextLayout = {
   scheme: RichTextScheme;
   direction: 'vertical' | 'horizontal';
@@ -31,13 +33,57 @@ export type RichTextLayout = {
   minHeightPx: number;
   backgroundMedia: string;
   backgroundImageUrl: string;
+  backgroundImagePosition: RichTextImageFit;
   borderStyle: string;
   cornerRadius: number;
   backgroundOverlay: boolean;
+  overlayColor: string;
+  overlayOpacity: number;
   paddingTop: number;
   paddingBottom: number;
   customCss: string;
 };
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const normalized = hex.replace('#', '').trim();
+  if (normalized.length === 3) {
+    const r = parseInt(normalized[0] + normalized[0], 16);
+    const g = parseInt(normalized[1] + normalized[1], 16);
+    const b = parseInt(normalized[2] + normalized[2], 16);
+    if ([r, g, b].every((n) => Number.isFinite(n))) return { r, g, b };
+  }
+  if (normalized.length === 6 || normalized.length === 8) {
+    const r = parseInt(normalized.slice(0, 2), 16);
+    const g = parseInt(normalized.slice(2, 4), 16);
+    const b = parseInt(normalized.slice(4, 6), 16);
+    if ([r, g, b].every((n) => Number.isFinite(n))) return { r, g, b };
+  }
+  return null;
+}
+
+function readImageFit(raw: string): RichTextImageFit {
+  if (raw === 'fit' || raw === 'stretch') return raw;
+  return 'cover';
+}
+
+export function richTextBackgroundImageCss(
+  fit: RichTextImageFit
+): { backgroundSize: string; backgroundRepeat: string } {
+  if (fit === 'fit') return { backgroundSize: 'contain', backgroundRepeat: 'no-repeat' };
+  if (fit === 'stretch') return { backgroundSize: '100% 100%', backgroundRepeat: 'no-repeat' };
+  return { backgroundSize: 'cover', backgroundRepeat: 'no-repeat' };
+}
+
+export function richTextOverlayBackground(
+  overlayColor: string,
+  overlayOpacity: number
+): string {
+  const base = overlayColor.startsWith('#') ? overlayColor : '#000000';
+  const rgb = hexToRgb(base);
+  const alpha = Math.min(100, Math.max(0, overlayOpacity)) / 100;
+  if (rgb) return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+  return `rgba(0, 0, 0, ${alpha})`;
+}
 
 export function readRichTextLayout(
   config: Record<string, unknown> | null,
@@ -58,9 +104,14 @@ export function readRichTextLayout(
     minHeightPx: HEIGHT_PX[height] ?? 0,
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
+    backgroundImagePosition: readImageFit(
+      cfgString(config, `${settingsBase}.backgroundImagePosition`, 'cover')
+    ),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
     backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
+    overlayColor: cfgString(config, `${settingsBase}.overlayColor`, '#000000'),
+    overlayOpacity: cfgNumber(config, `${settingsBase}.overlayOpacity`, 35),
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 48),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 48),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),

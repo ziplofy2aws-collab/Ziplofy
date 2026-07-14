@@ -36,21 +36,22 @@ export function resolveStoreMenuItemHref(input: MenuLinkResolveInput): string {
 /** Short label for admin menu list (Shopify-style comma-separated summary). */
 export function menuItemListSummaryLabel(linkType: MenuItemLinkType, label?: string): string {
   const trimmed = label?.trim();
+  if (trimmed) return trimmed;
   switch (linkType) {
     case "homepage":
       return "Home page";
     case "all-collections":
-      return "collections";
+      return "Collections";
     case "all-products":
-      return "products";
+      return "Products";
     case "specific-collection":
-      return trimmed || "specific-collection";
+      return "Collection";
     case "specific-product":
-      return trimmed || "specific-product";
+      return "Product";
     case "custom":
-      return trimmed || "custom";
+      return "Custom link";
     default:
-      return trimmed || linkType;
+      return "Link";
   }
 }
 

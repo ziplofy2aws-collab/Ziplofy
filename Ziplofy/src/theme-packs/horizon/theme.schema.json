@@ -170,32 +170,6 @@
           "sidebar": false
         },
         {
-          "path": "sections.announcement_bar.settings.colorScheme",
-          "type": "select",
-          "label": "Color scheme",
-          "group": "Theme Settings",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
-            }
-          ],
-          "sidebar": false
-        },
-        {
           "path": "sections.announcement_bar.settings.paddingTop",
           "type": "number",
           "label": "Top",
@@ -217,14 +191,6 @@
           "max": 80,
           "step": 1,
           "unit": "px",
-          "sidebar": false
-        },
-        {
-          "path": "sections.announcement_bar.settings.customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion",
           "sidebar": false
         },
         {
@@ -8230,6 +8196,28 @@
           "placeholder": "Paste image URL or upload"
         },
         {
+          "path": "sections.rich_text_section.settings.backgroundImagePosition",
+          "type": "select",
+          "label": "Image fit",
+          "group": "Appearance",
+          "widget": "segmented",
+          "sidebar": true,
+          "options": [
+            {
+              "value": "cover",
+              "label": "Cover"
+            },
+            {
+              "value": "fit",
+              "label": "Fit"
+            },
+            {
+              "value": "stretch",
+              "label": "Stretch"
+            }
+          ]
+        },
+        {
           "path": "sections.rich_text_section.settings.backgroundColor",
           "type": "color",
           "label": "Background color",
@@ -8242,6 +8230,26 @@
           "type": "boolean",
           "label": "Background overlay",
           "group": "Appearance",
+          "sidebar": true
+        },
+        {
+          "path": "sections.rich_text_section.settings.overlayColor",
+          "type": "text",
+          "label": "Overlay color",
+          "group": "Appearance",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.rich_text_section.settings.overlayOpacity",
+          "type": "number",
+          "label": "Overlay opacity",
+          "group": "Appearance",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
           "sidebar": true
         },
         {
@@ -8304,7 +8312,7 @@
           "label": "Custom CSS",
           "group": "Custom CSS",
           "widget": "accordion",
-          "sidebar": true
+          "sidebar": false
         }
       ]
     },
@@ -27147,6 +27155,36 @@
               "placeholder": "Paste image URL or upload"
             },
             {
+              "path": "templates.index.sections.rich_text_section.settings.backgroundImagePosition",
+              "type": "select",
+              "label": "Image fit",
+              "group": "Appearance",
+              "widget": "segmented",
+              "sidebar": true,
+              "options": [
+                {
+                  "value": "cover",
+                  "label": "Cover"
+                },
+                {
+                  "value": "fit",
+                  "label": "Fit"
+                },
+                {
+                  "value": "stretch",
+                  "label": "Stretch"
+                }
+              ]
+            },
+            {
+              "path": "templates.index.sections.rich_text_section.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.rich_text_section.settings.borderStyle",
               "type": "select",
               "label": "Borders",
@@ -27184,6 +27222,26 @@
               "sidebar": true
             },
             {
+              "path": "templates.index.sections.rich_text_section.settings.overlayColor",
+              "type": "text",
+              "label": "Overlay color",
+              "group": "Appearance",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.rich_text_section.settings.overlayOpacity",
+              "type": "number",
+              "label": "Overlay opacity",
+              "group": "Appearance",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.rich_text_section.settings.paddingTop",
               "type": "number",
               "label": "Top",
@@ -27213,7 +27271,7 @@
               "label": "Custom CSS",
               "group": "Custom CSS",
               "widget": "accordion",
-              "sidebar": true
+              "sidebar": false
             }
           ]
         },

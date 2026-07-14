@@ -12,14 +12,21 @@ const HEADER_PANEL_GROUPS = new Set([
   'Colors',
   'Cart bubble',
   'Page backgrounds',
-  'Theme settings',
-  'Custom CSS',
 ]);
 
 const LAYOUT_ONLY_BLOCK_KEYS = new Set(['position', 'row']);
 
 /** Keys excluded from the Header element sheet (theme settings / internal only). */
-const HEADER_ELEMENT_EXCLUDED_KEYS = new Set(['searchPlaceholder', 'cartLabel']);
+const HEADER_ELEMENT_EXCLUDED_KEYS = new Set([
+  'searchPlaceholder',
+  'cartLabel',
+  'defaultLogoUrl',
+  'cartType',
+  'productTitleCase',
+  'emptyCartLink',
+  'cartDrawerAutoOpen',
+  'customCss',
+]);
 
 const FIELD_SORT: Record<string, number> = {
   position: 0,
@@ -57,12 +64,6 @@ const FIELD_SORT: Record<string, number> = {
   homeTransparentBackground: 70,
   productTransparentBackground: 71,
   collectionTransparentBackground: 72,
-  defaultLogoUrl: 80,
-  cartType: 81,
-  productTitleCase: 82,
-  emptyCartLink: 83,
-  cartDrawerAutoOpen: 84,
-  customCss: 100,
 };
 
 export function isHeaderLayoutNodeId(nodeId: string): boolean {
@@ -128,8 +129,6 @@ export const HEADER_ELEMENT_GROUP_ORDER = [
   '__page_home__',
   '__page_product__',
   '__page_collection__',
-  'Theme settings',
-  'Custom CSS',
 ] as const;
 
 export function headerPanelGroupKey(field: EditorFieldDef): string {
@@ -172,8 +171,6 @@ export function sortHeaderPanelFields(fields: EditorFieldDef[]): EditorFieldDef[
     __page_home__: 9,
     __page_product__: 10,
     __page_collection__: 11,
-    'Theme settings': 12,
-    'Custom CSS': 13,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[headerPanelGroupKey(a)] ?? 99;

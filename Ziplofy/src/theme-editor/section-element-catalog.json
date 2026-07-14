@@ -350,21 +350,20 @@
           "includeGroups": [
             "General",
             "Appearance",
-            "Padding",
-            "Custom CSS"
+            "Padding"
           ],
           "excludeGroups": [
-            "Content"
+            "Content",
+            "Theme Settings",
+            "Custom CSS"
           ],
           "fieldOrder": [
             "enabled",
             "timeToNext",
             "sectionWidth",
-            "colorScheme",
             "dividerThickness",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -803,11 +802,15 @@
           "panels": {
             "default": {
               "includeKeys": [
+                "text",
+                "tagline",
                 "hideLogoOnHomePage",
                 "paddingTop",
                 "paddingBottom"
               ],
               "fieldOrder": [
+                "text",
+                "tagline",
                 "hideLogoOnHomePage",
                 "paddingTop",
                 "paddingBottom"
@@ -5317,6 +5320,27 @@
           "placeholder": "Paste image URL or upload"
         },
         {
+          "key": "backgroundImagePosition",
+          "type": "select",
+          "label": "Image fit",
+          "group": "Appearance",
+          "widget": "segmented",
+          "options": [
+            {
+              "value": "cover",
+              "label": "Cover"
+            },
+            {
+              "value": "fit",
+              "label": "Fit"
+            },
+            {
+              "value": "stretch",
+              "label": "Stretch"
+            }
+          ]
+        },
+        {
           "key": "borderStyle",
           "type": "select",
           "label": "Borders",
@@ -5349,6 +5373,24 @@
           "type": "boolean",
           "label": "Background overlay",
           "group": "Appearance"
+        },
+        {
+          "key": "overlayColor",
+          "type": "text",
+          "label": "Overlay color",
+          "group": "Appearance",
+          "widget": "color"
+        },
+        {
+          "key": "overlayOpacity",
+          "type": "number",
+          "label": "Overlay opacity",
+          "group": "Appearance",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%"
         },
         {
           "key": "paddingTop",
@@ -5397,12 +5439,14 @@
             "colorScheme",
             "backgroundMedia",
             "backgroundImageUrl",
+            "backgroundImagePosition",
             "borderStyle",
             "cornerRadius",
             "backgroundOverlay",
+            "overlayColor",
+            "overlayOpacity",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -32432,31 +32476,6 @@
             "unit": "px"
           },
           {
-            "key": "colorScheme",
-            "type": "select",
-            "label": "Color scheme",
-            "group": "Section layout",
-            "widget": "color-scheme",
-            "options": [
-              {
-                "value": "scheme-1",
-                "label": "Scheme 1"
-              },
-              {
-                "value": "scheme-2",
-                "label": "Scheme 2"
-              },
-              {
-                "value": "scheme-3",
-                "label": "Scheme 3"
-              },
-              {
-                "value": "scheme-4",
-                "label": "Scheme 4"
-              }
-            ]
-          },
-          {
             "key": "paddingTop",
             "type": "number",
             "label": "Top",
@@ -32477,13 +32496,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           }
         ],
         "blocks": {
@@ -33687,8 +33699,7 @@
             "includeGroups": [
               "Collection",
               "Section layout",
-              "Padding",
-              "Custom CSS"
+              "Padding"
             ],
             "fieldOrder": [
               "collectionHandle",
@@ -33702,10 +33713,8 @@
               "sectionWidth",
               "alignment",
               "sectionGap",
-              "colorScheme",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -33786,31 +33795,6 @@
             ]
           },
           {
-            "key": "colorScheme",
-            "type": "select",
-            "label": "Color scheme",
-            "group": "Layout",
-            "widget": "color-scheme",
-            "options": [
-              {
-                "value": "scheme-1",
-                "label": "Scheme 1"
-              },
-              {
-                "value": "scheme-2",
-                "label": "Scheme 2"
-              },
-              {
-                "value": "scheme-3",
-                "label": "Scheme 3"
-              },
-              {
-                "value": "scheme-4",
-                "label": "Scheme 4"
-              }
-            ]
-          },
-          {
             "key": "paddingTop",
             "type": "number",
             "label": "Top",
@@ -33831,13 +33815,6 @@
             "max": 120,
             "step": 1,
             "unit": "px"
-          },
-          {
-            "key": "customCss",
-            "type": "textarea",
-            "label": "Custom CSS",
-            "group": "Custom CSS",
-            "widget": "accordion"
           },
           {
             "key": "sectionWidth",
@@ -33931,10 +33908,8 @@
               "price",
               "productImageUrl",
               "mediaPosition",
-              "colorScheme",
               "paddingTop",
               "paddingBottom",
-              "customCss",
               "sectionWidth",
               "equalColumns",
               "limitProductDetailsWidth",
@@ -33946,7 +33921,9 @@
               "taxNote",
               "buttonLabel",
               "soldOut"
-            ]
+            ],
+            "includeGroups": [],
+            "fieldOrder": []
           }
         }
       }
@@ -39268,6 +39245,27 @@
             "placeholder": "Paste image URL or upload"
           },
           {
+            "key": "backgroundImagePosition",
+            "type": "select",
+            "label": "Image fit",
+            "group": "Appearance",
+            "widget": "segmented",
+            "options": [
+              {
+                "value": "cover",
+                "label": "Cover"
+              },
+              {
+                "value": "fit",
+                "label": "Fit"
+              },
+              {
+                "value": "stretch",
+                "label": "Stretch"
+              }
+            ]
+          },
+          {
             "key": "borderStyle",
             "type": "select",
             "label": "Borders",
@@ -39300,6 +39298,24 @@
             "type": "boolean",
             "label": "Background overlay",
             "group": "Appearance"
+          },
+          {
+            "key": "overlayColor",
+            "type": "text",
+            "label": "Overlay color",
+            "group": "Appearance",
+            "widget": "color"
+          },
+          {
+            "key": "overlayOpacity",
+            "type": "number",
+            "label": "Overlay opacity",
+            "group": "Appearance",
+            "widget": "slider",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%"
           },
           {
             "key": "paddingTop",
@@ -39348,12 +39364,14 @@
               "colorScheme",
               "backgroundMedia",
               "backgroundImageUrl",
+              "backgroundImagePosition",
               "borderStyle",
               "cornerRadius",
               "backgroundOverlay",
+              "overlayColor",
+              "overlayOpacity",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -48792,6 +48810,27 @@
             "placeholder": "Paste image URL or upload"
           },
           {
+            "key": "backgroundImagePosition",
+            "type": "select",
+            "label": "Image fit",
+            "group": "Appearance",
+            "widget": "segmented",
+            "options": [
+              {
+                "value": "cover",
+                "label": "Cover"
+              },
+              {
+                "value": "fit",
+                "label": "Fit"
+              },
+              {
+                "value": "stretch",
+                "label": "Stretch"
+              }
+            ]
+          },
+          {
             "key": "borderStyle",
             "type": "select",
             "label": "Borders",
@@ -48824,6 +48863,24 @@
             "type": "boolean",
             "label": "Background overlay",
             "group": "Appearance"
+          },
+          {
+            "key": "overlayColor",
+            "type": "text",
+            "label": "Overlay color",
+            "group": "Appearance",
+            "widget": "color"
+          },
+          {
+            "key": "overlayOpacity",
+            "type": "number",
+            "label": "Overlay opacity",
+            "group": "Appearance",
+            "widget": "slider",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%"
           },
           {
             "key": "paddingTop",
@@ -48872,12 +48929,14 @@
               "colorScheme",
               "backgroundMedia",
               "backgroundImageUrl",
+              "backgroundImagePosition",
               "borderStyle",
               "cornerRadius",
               "backgroundOverlay",
+              "overlayColor",
+              "overlayOpacity",
               "paddingTop",
-              "paddingBottom",
-              "customCss"
+              "paddingBottom"
             ]
           }
         }
@@ -49336,11 +49395,15 @@
             "panels": {
               "default": {
                 "includeKeys": [
+                  "text",
+                  "tagline",
                   "hideLogoOnHomePage",
                   "paddingTop",
                   "paddingBottom"
                 ],
                 "fieldOrder": [
+                  "text",
+                  "tagline",
                   "hideLogoOnHomePage",
                   "paddingTop",
                   "paddingBottom"
@@ -60242,11 +60305,15 @@
             "panels": {
               "default": {
                 "includeKeys": [
+                  "text",
+                  "tagline",
                   "hideLogoOnHomePage",
                   "paddingTop",
                   "paddingBottom"
                 ],
                 "fieldOrder": [
+                  "text",
+                  "tagline",
                   "hideLogoOnHomePage",
                   "paddingTop",
                   "paddingBottom"
@@ -60322,11 +60389,15 @@
         "panels": {
           "default": {
             "includeKeys": [
+              "text",
+              "tagline",
               "hideLogoOnHomePage",
               "paddingTop",
               "paddingBottom"
             ],
             "fieldOrder": [
+              "text",
+              "tagline",
               "hideLogoOnHomePage",
               "paddingTop",
               "paddingBottom"
@@ -61987,11 +62058,15 @@
         "panels": {
           "default": {
             "includeKeys": [
+              "text",
+              "tagline",
               "hideLogoOnHomePage",
               "paddingTop",
               "paddingBottom"
             ],
             "fieldOrder": [
+              "text",
+              "tagline",
               "hideLogoOnHomePage",
               "paddingTop",
               "paddingBottom"

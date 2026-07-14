@@ -481,6 +481,9 @@ export function groupFaqPanelFields(fields: EditorFieldDef[]): Map<string, Edito
 
 export function isFaqSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
+  const path = fields[0]?.path ?? '';
+  // Contact form / email signup share Layout–Size keys with FAQ; never treat them as FAQ.
+  if (path.includes('contact_form') || path.includes('email_signup')) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   if (
     keys.has('caption') ||

@@ -10,8 +10,6 @@ export const editing: CreateThemeEditing = {
     { key: 'dividerColor', label: 'Divider color', type: 'text' },
     { key: 'paddingTop', label: 'Top', type: 'number' },
     { key: 'paddingBottom', label: 'Bottom', type: 'number' },
-    { key: 'colorScheme', label: 'Color scheme', type: 'select' },
-    { key: 'customCss', label: 'Custom CSS', type: 'textarea' },
   ],
   blocks: [
     {

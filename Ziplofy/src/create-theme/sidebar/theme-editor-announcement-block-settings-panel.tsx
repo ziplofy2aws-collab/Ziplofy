@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import type { EditorFieldDef } from './create-theme-sidebar.types';
 import {
@@ -15,6 +15,50 @@ import {
   parseThemePaletteColorSetting,
   themePaletteColorValue,
 } from '../settings/theme-color-palette.settings';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
+
+const ANNOUNCEMENT_TEXT_DEBOUNCE_MS = 350;
+
+function blockSettingKey(path: string): string {
+  return path.split('.').pop() ?? '';
+}
+
+/** Fallback when schema/catalog omits select options (keeps typography controls usable). */
+const ANNOUNCEMENT_TYPOGRAPHY_FALLBACK_OPTIONS: Record<string, { value: string; label: string }[]> = {
+  font: [
+    { value: 'body', label: 'Body' },
+    { value: 'subheading', label: 'Subheading' },
+    { value: 'heading', label: 'Heading' },
+    { value: 'accent', label: 'Accent' },
+  ],
+  fontSize: [
+    { value: 'default', label: 'Default' },
+    { value: '10px', label: '10px' },
+    { value: '12px', label: '12px' },
+    { value: '14px', label: '14px' },
+    { value: '16px', label: '16px' },
+    { value: '18px', label: '18px' },
+    { value: '20px', label: '20px' },
+    { value: '24px', label: '24px' },
+  ],
+  fontWeight: [
+    { value: 'default', label: 'Default' },
+    { value: '300', label: 'Light' },
+    { value: '400', label: 'Regular' },
+    { value: '500', label: 'Medium' },
+    { value: '600', label: 'Semibold' },
+    { value: '700', label: 'Bold' },
+  ],
+  letterSpacing: [
+    { value: 'tight', label: 'Tight' },
+    { value: 'normal', label: 'Normal' },
+    { value: 'wide', label: 'Wide' },
+  ],
+  textCase: [
+    { value: 'default', label: 'Default' },
+    { value: 'uppercase', label: 'Uppercase' },
+  ],
+};
 
 function AnnouncementRichTextFieldRow({
   field,
@@ -26,7 +70,32 @@ function AnnouncementRichTextFieldRow({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const id = fieldInputId(field.path);
-  const value = fieldValueAsString(values, field);
+  const external = fieldValueAsString(values, field);
+  const [draft, setDraft] = useState(external);
+  const debouncedDraft = useDebouncedValue(draft, ANNOUNCEMENT_TEXT_DEBOUNCE_MS);
+  const focusedRef = useRef(false);
+
+  useEffect(() => {
+    setDraft(external);
+    focusedRef.current = false;
+  }, [field.path]);
+
+  useEffect(() => {
+    if (!focusedRef.current) {
+      setDraft(external);
+    }
+  }, [external]);
+
+  useEffect(() => {
+    if (debouncedDraft === external) return;
+    onFieldChange(field.path, 'textarea', debouncedDraft);
+  }, [debouncedDraft, external, field.path, onFieldChange]);
+
+  const flushDraft = () => {
+    if (draft !== external) {
+      onFieldChange(field.path, 'textarea', draft);
+    }
+  };
 
   // Plain textarea — TipTap in the shared rich-text field has blanked this panel after
   // TipTap v3 upgrades; announcement text is short and does not need the full toolbar.
@@ -38,8 +107,15 @@ function AnnouncementRichTextFieldRow({
       <textarea
         id={id}
         rows={4}
-        value={value}
-        onChange={(e) => onFieldChange(field.path, 'textarea', e.target.value)}
+        value={draft}
+        onFocus={() => {
+          focusedRef.current = true;
+        }}
+        onBlur={() => {
+          focusedRef.current = false;
+          flushDraft();
+        }}
+        onChange={(e) => setDraft(e.target.value)}
         placeholder="Announcement text"
         className="w-full resize-y rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] leading-relaxed text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
       />
@@ -77,7 +153,15 @@ function AnnouncementInlineSelectFieldRow({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const current = fieldValueAsString(values, field) || field.options?.[0]?.value || '';
+  const options =
+    field.options && field.options.length > 0
+      ? field.options
+      : ANNOUNCEMENT_TYPOGRAPHY_FALLBACK_OPTIONS[blockSettingKey(field.path)] ?? [];
+  const current =
+    fieldValueAsString(values, field) ||
+    options.find((o) => o.value === 'subheading')?.value ||
+    options[0]?.value ||
+    '';
 
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
@@ -85,10 +169,10 @@ function AnnouncementInlineSelectFieldRow({
       <div className="relative min-w-[140px]">
         <select
           value={current}
-          onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
+          onChange={(e) => onFieldChange(field.path, fieldTypeFromSchema(field.type), e.target.value)}
           className="w-full appearance-none rounded-lg border border-[#c9cccf] bg-white py-2 pl-3 pr-8 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
         >
-          {(field.options ?? []).map((opt) => (
+          {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>

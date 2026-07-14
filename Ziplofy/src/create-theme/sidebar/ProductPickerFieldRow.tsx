@@ -105,6 +105,7 @@ export function ProductPickerFieldRow({ field, values, onFieldChange, variant = 
 
   const applyProduct = useCallback(
     (product: Product) => {
+      // Batch sibling paths in one update so title/price/image land with productId.
       onFieldChange(field.path, 'text', product._id);
       onFieldChange(titlePath, 'text', product.title);
       onFieldChange(pricePath, 'text', formatProductPrice(product.price));

@@ -154,6 +154,12 @@ const BlogPostEditPage = lazy(() => import("./pages/BlogPostEditPage").then(m =>
 const BlogPostCommentsPage = lazy(() =>
   import("./pages/BlogPostCommentsPage").then(m => ({ default: m.BlogPostCommentsPage }))
 );
+const ContactFormSubmissionsPage = lazy(() =>
+  import("./pages/ContactFormSubmissionsPage").then(m => ({ default: m.ContactFormSubmissionsPage }))
+);
+const NewsletterSubscriptionsPage = lazy(() =>
+  import("./pages/NewsletterSubscriptionsPage").then(m => ({ default: m.NewsletterSubscriptionsPage }))
+);
 const ContentBlogPostsPage = lazy(() => import("./pages/ContentBlogPostsPage").then(m => ({ default: m.ContentBlogPostsPage })));
 const ContentFilesPage = lazy(() => import("./pages/ContentFilesPage").then(m => ({ default: m.ContentFilesPage })));
 const ContentMenusPage = lazy(() => import("./pages/ContentMenusPage").then(m => ({ default: m.ContentMenusPage })));
@@ -208,6 +214,8 @@ import { CollectionProvider } from "./contexts/collection.context";
 import { CompanyProvider } from "./contexts/company.context";
 import { BlogProvider } from "./contexts/blog.context";
 import { BlogCommentsProvider } from "./contexts/blog-comment.context";
+import { ContactFormSubmissionProvider } from "./contexts/contact-form-submission.context";
+import { NewsletterSubscriptionProvider } from "./contexts/newsletter-subscription.context";
 import { BlogPostProvider } from "./contexts/blog-post.context";
 import { BlogTagsProvider } from "./contexts/blog-tags.context";
 import { StoreMenuProvider } from "./contexts/store-menu.context";
@@ -411,6 +419,8 @@ const AdminApp: React.FC = () => {
             <Route path="/content/articles/new" element={<BlogPostCreatePage />} />
             <Route path="/content/articles/:articleId" element={<BlogPostEditPage />} />
             <Route path="/content/comments/article/:articleId" element={<BlogPostCommentsPage />} />
+            <Route path="/content/contact-submissions" element={<ContactFormSubmissionsPage />} />
+            <Route path="/content/newsletter-subscriptions" element={<NewsletterSubscriptionsPage />} />
             <Route path="/content/blogs" element={<ContentBlogsPage />} />
             <Route path="/content/blogs/new" element={<ContentBlogCreatePage />} />
             <Route path="/content/blogs/:blogId" element={<ContentBlogEditPage />} />
@@ -576,6 +586,8 @@ const App: React.FC = () => {
         <CompanyProvider>
         <BlogPostProvider>
         <BlogCommentsProvider>
+        <ContactFormSubmissionProvider>
+        <NewsletterSubscriptionProvider>
         <BlogTagsProvider>
         <CustomerTagsProvider>
         <ProductTagsProvider>
@@ -758,6 +770,8 @@ const App: React.FC = () => {
         </ProductTagsProvider>
         </CustomerTagsProvider>
         </BlogTagsProvider>
+        </NewsletterSubscriptionProvider>
+        </ContactFormSubmissionProvider>
         </BlogCommentsProvider>
         </BlogPostProvider>
         </CompanyProvider>

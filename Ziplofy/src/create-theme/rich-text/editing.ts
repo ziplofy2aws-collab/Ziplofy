@@ -69,6 +69,26 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
+      "key": "backgroundImagePosition",
+      "label": "Image fit",
+      "type": "text"
+    },
+    {
+      "key": "backgroundOverlay",
+      "label": "Background overlay",
+      "type": "boolean"
+    },
+    {
+      "key": "overlayColor",
+      "label": "Overlay color",
+      "type": "text"
+    },
+    {
+      "key": "overlayOpacity",
+      "label": "Overlay opacity",
+      "type": "number"
+    },
+    {
       "key": "borderStyle",
       "label": "Borders",
       "type": "text"
@@ -79,11 +99,6 @@ export const editing: CreateThemeEditing = {
       "type": "number"
     },
     {
-      "key": "backgroundOverlay",
-      "label": "Background overlay",
-      "type": "boolean"
-    },
-    {
       "key": "paddingTop",
       "label": "Top",
       "type": "number"
@@ -92,11 +107,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": []

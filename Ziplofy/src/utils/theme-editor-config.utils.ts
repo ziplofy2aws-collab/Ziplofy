@@ -1538,8 +1538,13 @@ function resolveFieldTypeForPath(
     const [, tplId, instanceId, rest] = tpl;
     const blueprint = templateBlueprintKey(instanceId);
     if (blueprint !== instanceId) {
-      return typeByPath.get(`templates.${tplId}.sections.${blueprint}.${rest}`);
+      const fromBlueprint = typeByPath.get(`templates.${tplId}.sections.${blueprint}.${rest}`);
+      if (fromBlueprint) return fromBlueprint;
     }
+    // Template settingsFields are sometimes thinner than layout; reuse layout types
+    // (e.g. rich_text backgroundColor lives on sections.rich_text_section).
+    const fromLayout = typeByPath.get(`sections.${blueprint}.${rest}`);
+    if (fromLayout) return fromLayout;
   }
 
   const tplBlockHeading = path.match(
@@ -1715,13 +1720,42 @@ export function applyValuesToThemeConfig(
   for (const [path, raw] of Object.entries(values)) {
     // Never create layout/template sections that were not explicitly inserted.
     if (!valuePathTargetsExistingSection(config, path)) continue;
-    const type = resolveFieldTypeForPath(path, typeByPath);
+    let type = resolveFieldTypeForPath(path, typeByPath);
     if (!type) {
-      if (path.endsWith('.enabled')) {
-        const coerced = coerceFieldValue(raw, 'boolean');
-        if (coerced !== undefined) setConfigAtPath(config, path, coerced);
+      // Synthesized / remapped instance paths can miss schema types (e.g. rich text
+      // backgroundColor on a template instance). Fall back so preview still updates.
+      const key = path.split('.').pop() ?? '';
+      if (key === 'enabled') type = 'boolean';
+      else if (
+        key === 'backgroundColor' ||
+        key === 'overlayColor' ||
+        key === 'color' ||
+        key.endsWith('Color')
+      ) {
+        type = 'text';
+      } else if (key === 'overlayOpacity' || key.endsWith('Opacity')) {
+        type = 'number';
+      } else if (
+        key === 'headingFont' ||
+        key === 'headingFontSize' ||
+        key === 'headingLineHeight' ||
+        key === 'headingLetterSpacing' ||
+        key === 'headingTextCase' ||
+        key === 'headingWrap' ||
+        key === 'headingTypographyPreset'
+      ) {
+        type = 'text';
+      } else if (
+        key === 'productId' ||
+        key === 'productTitle' ||
+        key === 'productImageUrl' ||
+        key === 'price' ||
+        key === 'catalogVariant'
+      ) {
+        type = 'text';
+      } else {
+        continue;
       }
-      continue;
     }
     const coerced = coerceFieldValue(raw, type);
     if (coerced === undefined) continue;

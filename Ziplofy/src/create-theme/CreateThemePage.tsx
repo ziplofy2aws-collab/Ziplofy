@@ -242,6 +242,17 @@ import {
   syntheticEmailSignupSidebarNode,
 } from './utils/email-signup-sidebar.util';
 import {
+  extendValuesForRichTextContentBlock,
+  pruneValuesForRichTextContentBlock,
+  removeRichTextContentBlockFromSection,
+  richTextParentSectionNodeId,
+} from '../utils/rich-text-sidebar.util';
+import {
+  isRichTextBlockNodeId,
+  richTextBlockKindFromNodeId,
+  richTextSectionBaseFromNodeId,
+} from './sidebar/theme-editor-rich-text-panel.utils';
+import {
   editorialJumboSidebarSelectionId,
   syntheticEditorialJumboSidebarNode,
 } from './utils/editorial-jumbo-sidebar.util';
@@ -405,7 +416,7 @@ import {
   readFeaturedCollectionCatalogVariant,
   resolveFeaturedCollectionVariant,
 } from './sidebar/theme-editor-featured-collection-panel.utils';
-import { applyStoreMenuSelectionToConfig } from './utils/store-menu-header.util';
+import { applyStoreMenuSelectionToConfig, pruneStaleHeaderMenuItemValues } from './utils/store-menu-header.util';
 import { useStoreCustomThemes } from '../contexts/store-custom-themes.context';
 import { useStoreCheckoutConfigurations } from '../contexts/store-checkout-configurations.context';
 import {
@@ -2644,15 +2655,18 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     (menuFieldPath: string, menu: StoreMenu, items: StoreMenuItem[]) => {
       setDefaultConfig((prev) => {
         if (!prev) return prev;
-        const { config, itemValuePaths } = applyStoreMenuSelectionToConfig(
+        const { config, itemValuePaths, itemsPath, navItemCount } = applyStoreMenuSelectionToConfig(
           prev,
           menuFieldPath,
           menu,
           items
         );
-        startTransition(() => {
-          setValues((v) => ({ ...v, ...itemValuePaths }));
-        });
+        // Sync values immediately (not startTransition) so preview merge cannot
+        // re-apply stale items.N.label/href paths and resurrect phantom links.
+        setValues((v) => ({
+          ...pruneStaleHeaderMenuItemValues(v, itemsPath, navItemCount),
+          ...itemValuePaths,
+        }));
         commitPreviewNow();
         setStructureSyncKey((k) => k + 1);
         return config;
@@ -2836,9 +2850,19 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       const faqRowText = /:block:accordion:nested:[^:]+:nested:[^:]+$/.test(result.nodeId);
       const faqRow = /:block:accordion:nested:[^:]+$/.test(result.nodeId);
       const faqSectionBlock = /:block:(heading|accordion)$/.test(result.nodeId);
+      const richTextContentBlock =
+        isRichTextBlockNodeId(result.nodeId) &&
+        (block.id === 'heading' || block.id === 'text' || block.id === 'button');
       if (result.scope === 'template') {
         const hero = templateBlueprintKey(result.sectionInstanceId) === 'hero_main';
         setValues((prev) => {
+          if (richTextContentBlock) {
+            const sectionBase = richTextSectionBaseFromNodeId(result.nodeId);
+            const kind = richTextBlockKindFromNodeId(result.nodeId);
+            if (sectionBase && kind) {
+              return extendValuesForRichTextContentBlock(prev, sectionBase, kind, result.config);
+            }
+          }
           if (faqRowText) {
             return extendValuesForFaqNestedBlock(
               prev,
@@ -2896,6 +2920,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         });
       } else {
         setValues((prev) => {
+          if (richTextContentBlock) {
+            const sectionBase = richTextSectionBaseFromNodeId(result.nodeId);
+            const kind = richTextBlockKindFromNodeId(result.nodeId);
+            if (sectionBase && kind) {
+              return extendValuesForRichTextContentBlock(prev, sectionBase, kind, result.config);
+            }
+          }
           if (faqRowText) {
             return extendValuesForFaqNestedBlock(
               prev,
@@ -3045,6 +3076,47 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         return;
       }
 
+      // Rich text Heading / Text / Button are settings-backed virtual blocks.
+      if (isRichTextBlockNodeId(nodeId)) {
+        const sectionBase = richTextSectionBaseFromNodeId(nodeId);
+        const kind = richTextBlockKindFromNodeId(nodeId);
+        const parentId = richTextParentSectionNodeId(nodeId);
+        if (!sectionBase || !kind || !parentId) {
+          toast.error('This block cannot be removed');
+          return;
+        }
+        const next = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+        const layoutMatch = nodeId.match(/^layout:([^:]+):block:/);
+        const tplMatch = nodeId.match(/^template:([^:]+):([^:]+):block:/);
+        let section: Record<string, unknown> | undefined;
+        if (layoutMatch) {
+          const sectionInstanceId = layoutMatch[1]!;
+          section = (next.sections as Record<string, Record<string, unknown>>)?.[sectionInstanceId];
+        } else if (tplMatch) {
+          const [, tplId, sectionInstanceId] = tplMatch;
+          section = (
+            (next.templates as Record<string, { sections?: Record<string, Record<string, unknown>> }>)?.[
+              tplId!
+            ]?.sections ?? {}
+          )[sectionInstanceId!];
+        }
+        if (!section || typeof section !== 'object') {
+          toast.error('This block cannot be removed');
+          return;
+        }
+        removeRichTextContentBlockFromSection(section, kind);
+        setDefaultConfig(next);
+        setValues((prev) => pruneValuesForRichTextContentBlock(prev, sectionBase, kind));
+        setItemOrder(readStructureOrderFromConfig(next, previewPage));
+        if (selectedNodeId === nodeId || selectedNodeId.startsWith(`${nodeId}:`)) {
+          setSelectedNodeId(parentId);
+        }
+        setStructureSyncKey((k) => k + 1);
+        commitPreviewNow();
+        toast.success('Block removed');
+        return;
+      }
+
       const layoutBlock = nodeId.match(/^layout:([^:]+):block:(.+)$/);
       if (layoutBlock) {
         const [, sectionInstanceId, blockId] = layoutBlock;
@@ -3145,7 +3217,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
       toast.error('This section cannot be removed');
     },
-    [defaultConfig, selectedNodeId, commitPreviewNow]
+    [defaultConfig, selectedNodeId, commitPreviewNow, previewPage]
   );
 
   const closeSettings = useCallback(() => {

@@ -20,11 +20,17 @@ export function applyRichTextPreset(section: Record<string, unknown>): void {
   settings.colorScheme = settings.colorScheme ?? 'scheme-1';
   settings.backgroundMedia = settings.backgroundMedia ?? 'none';
   settings.backgroundImageUrl = settings.backgroundImageUrl ?? '';
+  settings.backgroundImagePosition = settings.backgroundImagePosition ?? 'cover';
   settings.borderStyle = settings.borderStyle ?? 'none';
   settings.cornerRadius = settings.cornerRadius ?? 0;
   settings.backgroundOverlay = settings.backgroundOverlay ?? false;
+  settings.overlayColor = settings.overlayColor ?? '#000000';
+  settings.overlayOpacity = settings.overlayOpacity ?? 35;
   settings.paddingTop = settings.paddingTop ?? 48;
   settings.paddingBottom = settings.paddingBottom ?? 48;
   settings.customCss = settings.customCss ?? '';
+  if (!Array.isArray(settings.contentBlocks)) {
+    settings.contentBlocks = ['heading', 'text', 'button'];
+  }
   section.settings = settings;
 }

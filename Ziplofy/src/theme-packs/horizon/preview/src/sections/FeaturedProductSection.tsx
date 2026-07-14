@@ -76,9 +76,8 @@ export function FeaturedProductSection({
 
   useEffect(() => {
     if (!productId) return;
-    const inList = products.some((p) => p._id === productId);
-    if (!inList) void fetchProductById(productId);
-  }, [productId, products, fetchProductById]);
+    void fetchProductById(productId);
+  }, [productId, fetchProductById]);
 
   const resolvedProduct = useMemo(() => {
     if (!productId) return null;
@@ -86,7 +85,10 @@ export function FeaturedProductSection({
     return products.find((p) => p._id === productId) ?? null;
   }, [productId, productDetail, products]);
 
-  const productTitle = resolvedProduct?.title ?? cachedTitle;
+  const productTitle =
+    (cachedTitle && cachedTitle.trim() ? cachedTitle : null) ??
+    resolvedProduct?.title ??
+    cachedTitle;
   const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 

@@ -28,20 +28,27 @@ export function headerColorScheme(
 
 /**
  * Menu block colors from explicit `backgroundColor` / `textColor` settings
- * (`sections.*.blocks.menu.settings.*`). Empty background falls back to the
- * theme palette base; empty text color inherits the header text color.
+ * (`sections.*.blocks.menu.settings.*`). Empty / "default" background means
+ * transparent (inherit header); empty text inherits the header text color.
  */
 export function menuBlockColorScheme(
   config: Record<string, unknown> | null,
   menuSettingsBase: string,
   fallback: HeaderScheme
 ): HeaderScheme {
-  const bgRaw = cfgString(config, `${menuSettingsBase}.backgroundColor`, '');
-  const textRaw = cfgString(config, `${menuSettingsBase}.textColor`, '');
-  const background = resolveThemePaletteColorSetting(config, bgRaw, 0, fallback.background);
-  const color = textRaw
-    ? resolveThemePaletteColorSetting(config, textRaw, 1, fallback.color)
-    : fallback.color;
+  const bgRaw = cfgString(config, `${menuSettingsBase}.backgroundColor`, '').trim();
+  const textRaw = cfgString(config, `${menuSettingsBase}.textColor`, '').trim();
+  const bgUnset =
+    !bgRaw || bgRaw === 'default' || bgRaw === 'transparent' || bgRaw === 'none';
+  const textUnset =
+    !textRaw || textRaw === 'default' || textRaw === 'transparent' || textRaw === 'none';
+
+  const background = bgUnset
+    ? ''
+    : resolveThemePaletteColorSetting(config, bgRaw, 0, fallback.background);
+  const color = textUnset
+    ? fallback.color
+    : resolveThemePaletteColorSetting(config, textRaw, 1, fallback.color);
   return { background, color, border: fallback.border };
 }
 

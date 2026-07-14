@@ -105,6 +105,107 @@
 24. **`/online-store` page — placeholder / non-functional**
     - Rebuilt as a minimal overview: live storefront iframe preview (real store URL), current live theme with Customize/Change, and Manage links (Themes / Pages / Preference). Removed fake images, theme gallery fluff, and dead CTAs.
 
+25. **Announcement bar — remove Theme Settings & Custom CSS**
+    - Editing panel no longer shows Theme Settings (color scheme) or Custom CSS; keeps General / Appearance / Padding only.
+
+26. **Announcement block Typography Font options not applying**
+    - Font role mapping ignored Subheading/Accent in horizon preview; Size was overridden by mobile `font-size: 13px !important`.
+    - Fix: resolve Body/Subheading/Heading/Accent via shared font helpers (with role weight/style), stop forcing 13px on mobile, ensure Font select always has options.
+
+27. **Announcement text textarea lag while typing**
+    - Debounced announcement block text field (350ms local draft + flush on blur) so typing no longer thrashes preview updates.
+
+28. **Header menu — Create menu from Select menu**
+   - Menu picker dropdown now includes a **Create menu** action; opens a bottom sheet to name the menu, add items, save, and auto-select it for the header.
+
+29. **Header logo — Store name not editable**
+   - Logo settings only showed visibility/padding; store name was hardcoded as “My Store”.
+   - Fix: Logo panel now includes Store name (+ Tagline) fields wired to `sections.header.blocks.logo.settings.text`.
+
+30. **Create menu sheet — free-text links**
+   - Theme-editor Create menu bottom sheet used a plain text link input.
+   - Fix: reuse the same prefixed link picker as `/content/menus` (Home, Collections, Products, etc.).
+
+31. **Header menu — phantom “specific product/collection” links after apply**
+   - Applying a store menu updated config, but stale `items.N.label/href` sidebar values (schema still declares 4 nested link slots) were merged back via `applyValuesToThemeConfig`, re-expanding the nav with leftover links. A `startTransition` race made this worse.
+   - Fix: prune stale item value paths to the applied menu length, sync values immediately, resolve nav labels from collection/product titles (never raw linkType strings), and clear stale linkType when editing links.
+
+32. **Header Cart bubble Custom colors not applying in editor**
+   - Bubble only rendered when live cart count &gt; 0, so Custom background/text colors never appeared in the empty editor preview.
+   - Fix: show a sample cart count in editor preview; seed default Custom colors when switching to Custom; write hex fields as `color` type.
+
+33. **Header editing — remove Theme Settings & Custom CSS**
+   - Header settings panel no longer shows Theme Settings or Custom CSS; keeps Logo / Menu / Colors / Cart bubble / Page backgrounds / etc.
+
+34. **Header Menu background color not applying**
+   - Menu Appearance background was resolved from config but never painted on the nav.
+   - Fix: apply menu background (and padding) to desktop + mobile menu surfaces; treat `default`/empty as transparent inherit.
+
+35. **Rich text — image fit + overlay controls**
+   - Background image had no Cover / Fit / Stretch control; overlay toggle used a hardcoded dark wash with no color or opacity.
+   - Fix: add Image fit (cover / fit / stretch) when media is Image; when Background overlay is on, show Overlay color + Overlay opacity and apply them in the Rich text runtime.
+
+36. **Rich text Heading/Text shows raw HTML in preview**
+   - Richtext editor stores values like `<p>f</p>`, but preview rendered them as plain text children.
+   - Fix: render heading and text via `ThemeEditorRichTextContent` so HTML is parsed in the live preview.
+
+37. **Rich text — cannot remove Heading / Text / Button**
+   - Those items are settings-backed virtual blocks; delete tried to remove non-existent `blocks.*` entries, so they always came back.
+   - Fix: track active items in `settings.contentBlocks`, remove/add updates that list, sidebar + preview respect it, and Add block can restore Heading / Text / Button.
+
+38. **Rich text Background color not applying**
+   - Home-page (template) schema omitted `backgroundColor`, so picker values never merged into preview config.
+   - Fix: add the field to the template schema, fall back to layout field types when merging values, and ensure the Appearance panel always exposes Background color on the correct section path.
+
+39. **Rich text — remove Custom CSS**
+   - Custom CSS option removed from the Rich text settings panel (schema sidebar + panel groups).
+
+40. **Rich text Background color still not updating in preview**
+   - Cause: picker values could be skipped when schema type lookup missed remapped/instance paths; horizon preview `RichTextSection` also ignored `backgroundColor` and always used the color scheme.
+   - Fix: fall back to text/color types when merging unknown `*Color` paths; apply `backgroundColor` in both create-theme and horizon preview runtimes; keep Appearance field matching on `.backgroundColor`; surface Color scheme in Appearance again.
+
+41. **Rich text Heading — Custom typography preset**
+   - Heading Preset only had Default / H1–H4 with no freeform controls.
+   - Fix: add **Custom** preset under Rich text → Heading → Typography with Font, Size, Line height, Letter spacing, Case, and Wrap; apply those settings in the Rich text runtime.
+
+42. **Featured collection Product card → Media settings ignored**
+   - Sidebar Media options (aspect ratio, borders, padding) saved to `product_card.settings.media*`, but Featured Collection runtime used global theme product-media + a hardcoded 1:1 CSS aspect ratio.
+   - Fix: read and apply card media aspect ratio, border style/radius, and padding on carousel/grid/editorial product cards.
+
+43. **Featured collection product card links used Mongo ids / old paths**
+   - Storefront collection (and public store) product list APIs omitted `urlHandle`, so cards linked to `/product/{_id}` instead of `/product/{urlHandle}`.
+   - Fix: include `urlHandle` (and SEO fields) in those list projections so carousel cards use handle URLs.
+
+44. **Featured collection grid — remove Theme Settings & Custom CSS**
+   - Grid editing sequence no longer shows Theme Settings (color scheme) or Custom CSS; keeps Collection / Section layout / Padding.
+
+45. **Featured collection grid — Theme Settings still visible**
+   - Stale "Carousel" sidebar label / shared `navIcon` field defs made the panel miss the grid variant and fall through to the generic groups (which still show Theme Settings).
+   - Fix: resolve variant from layoutType/catalogVariant first; always strip Theme Settings & Custom CSS for grid; keep featured-collection sections out of the generic grouped panel.
+
+46. **Featured collection grid — Theme Settings accordion still showing**
+   - Color scheme was still in the shared field defs and grid sometimes remapped away from the hide path.
+   - Fix: remove Theme Settings / Custom CSS from the base Featured collection field defs; only inject them for carousel/editorial; grid panel group order ends at Padding.
+
+47. **Featured product — remove Theme Settings & Custom CSS**
+   - Featured product section settings no longer show Theme Settings (color scheme) or Custom CSS; keeps Product / Layout / Padding.
+
+48. **Featured product — selected product / variant data not shown in runtime**
+   - Picker cache fields (`productTitle` / `price` / `productImageUrl`) could be dropped when schema types missed remapped paths; editor also skipped variant fetch/clicks.
+   - Fix: always merge those product picker fields into config; always fetch product + variants by id; allow variant selection in preview; show price/image from the selected variant.
+
+49. **Featured product — fake color swatches showing**
+   - Variant picker Swatches defaulted on and rendered hardcoded placeholder circles (`#111827` / `#6b7280` / `#d1d5db`), not real product colors.
+   - Fix: remove the placeholder swatch UI; default Swatches to off.
+
+50. **Featured product — remove recipient email & message fields**
+   - Buy buttons showed a gift card form (recipient email + optional message) when `giftCardForm` was enabled.
+   - Fix: remove the gift card form from runtime; drop Gift card products settings from the Buy buttons panel.
+
+51. **Contact form section settings mislabeled as FAQ**
+   - Contact form shares Layout/Size fields with FAQ, so FAQ detection ran first and relabeled the panel “FAQ”.
+   - Fix: exclude `contact_form`/`email_signup` paths from FAQ field detection; resolve Contact form / Email signup before FAQ in sidebar prepare; detect Contact form panel before FAQ in the settings panel.
+
 
 ## Notes
 

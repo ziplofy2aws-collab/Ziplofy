@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import {
   resolveThemeButtonVariantStyle,
   themeButtonInlineStyle,
@@ -16,11 +17,21 @@ import {
   scopedMobileHorizontalPadCss,
 } from '../../runtime/shared/responsive';
 import {
+  letterSpacingCss,
+  lineHeightMultiplier,
+  resolveThemeFontFamily,
+  resolveThemeFontWeightAndStyle,
+  themeFontsFromConfig,
+} from '../../runtime/shared/themeTypographyRuntime';
+import {
   readRichTextLayout,
+  richTextBackgroundImageCss,
   richTextContentAlign,
   richTextJustifyContent,
+  richTextOverlayBackground,
   scopedRichTextCss,
 } from './richTextStyles';
+import { readRichTextContentBlocks } from '../../../utils/rich-text-sidebar.util';
 
 const DEFAULT_HEADING = 'New arrivals';
 const DEFAULT_TEXT =
@@ -44,6 +55,14 @@ export function RichText({
     placement === 'template' ? `template:${templateId}:${sectionId}` : `layout:${sectionId}`;
 
   const style = useMemo(() => readRichTextLayout(config, settingsBase), [config, settingsBase]);
+  const sectionBase = settingsBase.replace(/\.settings$/, '');
+  const contentBlocks = useMemo(
+    () => readRichTextContentBlocks(config, sectionBase),
+    [config, sectionBase]
+  );
+  const showHeading = contentBlocks.includes('heading');
+  const showText = contentBlocks.includes('text');
+  const showButton = contentBlocks.includes('button');
 
   const heading = cfgString(config, `${settingsBase}.heading`, DEFAULT_HEADING) || DEFAULT_HEADING;
   const text = cfgString(config, `${settingsBase}.text`, DEFAULT_TEXT) || DEFAULT_TEXT;
@@ -106,6 +125,7 @@ export function RichText({
   const shell: CSSProperties = {
     position: 'relative',
     background: sectionBackground,
+    backgroundColor: sectionBackground,
     color: scheme.color,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
@@ -167,13 +187,42 @@ export function RichText({
       ? scheme.color
       : resolveThemePaletteColorSetting(config, headingColorRaw, 1, scheme.color);
 
+  const headingIsCustom = headingPreset === 'custom';
+  const themeFonts = themeFontsFromConfig(config);
+  const customHeadingFont = cfgString(config, `${settingsBase}.headingFont`, 'heading');
+  const customHeadingSizeRaw = cfgString(config, `${settingsBase}.headingFontSize`, '32px');
+  const customHeadingSizePx = (() => {
+    const n = parseFloat(customHeadingSizeRaw);
+    return Number.isFinite(n) && n > 0 ? n : 32;
+  })();
+  const customHeadingWeightStyle = resolveThemeFontWeightAndStyle(customHeadingFont);
+  const customHeadingWrap = cfgString(config, `${settingsBase}.headingWrap`, 'pretty');
+  const customHeadingCase = cfgString(config, `${settingsBase}.headingTextCase`, 'default');
+
   const headingStyle: CSSProperties = {
     margin: 0,
-    fontFamily: fontHeading,
-    fontSize: headingPresetStyle.fontSize,
-    fontWeight: headingPresetStyle.fontWeight,
-    lineHeight: headingPresetStyle.lineHeight,
-    letterSpacing: '-0.02em',
+    fontFamily: headingIsCustom
+      ? resolveThemeFontFamily(customHeadingFont, themeFonts)
+      : fontHeading,
+    fontSize: headingIsCustom ? customHeadingSizePx : headingPresetStyle.fontSize,
+    fontWeight: headingIsCustom
+      ? (customHeadingWeightStyle.fontWeight ?? 700)
+      : headingPresetStyle.fontWeight,
+    fontStyle: headingIsCustom ? customHeadingWeightStyle.fontStyle : undefined,
+    lineHeight: headingIsCustom
+      ? lineHeightMultiplier(cfgString(config, `${settingsBase}.headingLineHeight`, 'normal'))
+      : headingPresetStyle.lineHeight,
+    letterSpacing: headingIsCustom
+      ? letterSpacingCss(cfgString(config, `${settingsBase}.headingLetterSpacing`, 'normal'))
+      : '-0.02em',
+    textTransform: headingIsCustom && customHeadingCase === 'uppercase' ? 'uppercase' : undefined,
+    textWrap: headingIsCustom
+      ? ((customHeadingWrap === 'nowrap'
+          ? 'nowrap'
+          : customHeadingWrap === 'balance'
+            ? 'balance'
+            : 'pretty') as CSSProperties['textWrap'])
+      : undefined,
     width: headingWidthMode === 'fill' ? '100%' : 'fit-content',
     maxWidth: headingMaxWidthPx,
     color: headingColor,
@@ -283,7 +332,7 @@ export function RichText({
             position: 'absolute',
             inset: 0,
             backgroundImage: `url(${bgImage})`,
-            backgroundSize: 'cover',
+            ...richTextBackgroundImageCss(style.backgroundImagePosition),
             backgroundPosition: 'center',
             zIndex: 0,
           }}
@@ -295,19 +344,23 @@ export function RichText({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(0,0,0,0.35)',
+            background: richTextOverlayBackground(style.overlayColor, style.overlayOpacity),
             zIndex: 1,
           }}
         />
       ) : null}
       <div className={scopeClass} style={stage}>
-        <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
-          {heading}
-        </EditorField>
-        <EditorField fieldPath={`${settingsBase}.text`} label="Text" as="p" style={bodyStyle}>
-          {text}
-        </EditorField>
-        {buttonLabel ? (
+        {showHeading ? (
+          <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
+            <ThemeEditorRichTextContent html={heading} />
+          </EditorField>
+        ) : null}
+        {showText ? (
+          <EditorField fieldPath={`${settingsBase}.text`} label="Text" as="div" style={bodyStyle}>
+            <ThemeEditorRichTextContent html={text} />
+          </EditorField>
+        ) : null}
+        {showButton && buttonLabel ? (
           <EditorBlock
             nodeId={`${editorNodeId}:block:button`}
             label="Button"

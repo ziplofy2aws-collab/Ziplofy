@@ -51,7 +51,7 @@ function blocksBaseFromNodeId(nodeId: string): string | null {
 export function featuredProductVariantPickerDefaultSettings(): Record<string, string | number | boolean> {
   return {
     style: 'buttons',
-    swatches: true,
+    swatches: false,
     textColor: 'default',
     variantStyle: 'default',
     selectedVariantStyle: 'default',

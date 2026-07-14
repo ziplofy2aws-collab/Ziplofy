@@ -1,6 +1,7 @@
 import { useMemo, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
+import { resolveThemePaletteColorSetting } from '../../../../../create-theme/settings/theme-color-palette.settings';
 import { cfgString } from '../lib/config';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
 import {
@@ -45,6 +46,11 @@ export function RichTextSection({
   const buttonUrl = cfgString(config, `${settingsBase}.buttonUrl`, '/collections');
 
   const scheme = style.scheme;
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+  const sectionBackground =
+    backgroundColorRaw === '' || backgroundColorRaw === 'default'
+      ? scheme.background
+      : resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background);
   const textAlign = richTextContentAlign(style.layoutAlignment);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
@@ -53,7 +59,8 @@ export function RichTextSection({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: scheme.background,
+    background: sectionBackground,
+    backgroundColor: sectionBackground,
     color: scheme.color,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,

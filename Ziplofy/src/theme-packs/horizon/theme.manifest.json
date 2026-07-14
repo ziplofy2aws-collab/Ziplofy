@@ -118,7 +118,11 @@
       "multicolumn-item"
     ],
     "pull-quote": [],
-    "rich-text": [],
+    "rich-text": [
+      "heading",
+      "text",
+      "button"
+    ],
     "text-marquee": [],
     "blog-posts-carousel": [
       "blog-post-card"

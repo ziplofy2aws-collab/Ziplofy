@@ -121,7 +121,14 @@ export function sortAnnouncementBlockPanelFields(fields: EditorFieldDef[]): Edit
 export function prepareAnnouncementBlockSettingsNode(node: SidebarNode): SidebarNode {
   const filtered = sortAnnouncementBlockPanelFields(
     (node.fields ?? []).filter((f) => !f.group || BLOCK_PANEL_GROUPS.has(f.group))
-  );
+  ).map((field) => {
+    const key = blockSettingKey(field.path);
+    const fallback = ANNOUNCEMENT_BLOCK_FALLBACK_OPTIONS[key];
+    if ((!field.options || field.options.length === 0) && fallback) {
+      return { ...field, options: fallback };
+    }
+    return field;
+  });
   const instanceId =
     instanceIdFromAnnouncementBlockNodeId(node.id) ??
     node.id.replace(/^layout:/, '').split(':')[0] ??
@@ -130,29 +137,107 @@ export function prepareAnnouncementBlockSettingsNode(node: SidebarNode): Sidebar
   const fields =
     filtered.length > 0
       ? filtered
-      : sortAnnouncementBlockPanelFields([
-          {
-            path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.text`,
-            type: 'textarea',
-            label: 'Text',
-            group: 'Content',
-            widget: 'richtext',
-          },
-          {
-            path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.link`,
-            type: 'text',
-            label: 'Link',
-            group: 'Content',
-            widget: 'link',
-            placeholder: 'Paste a link or search',
-          },
-        ]);
+      : sortAnnouncementBlockPanelFields(defaultAnnouncementBlockFields(instanceId, blockInstanceId));
   return {
     ...node,
     label: 'Announcement',
     kind: 'block',
     fields,
   };
+}
+
+const ANNOUNCEMENT_BLOCK_FALLBACK_OPTIONS: Record<string, { value: string; label: string }[]> = {
+  font: [
+    { value: 'body', label: 'Body' },
+    { value: 'subheading', label: 'Subheading' },
+    { value: 'heading', label: 'Heading' },
+    { value: 'accent', label: 'Accent' },
+  ],
+  fontSize: [
+    { value: 'default', label: 'Default' },
+    { value: '10px', label: '10px' },
+    { value: '12px', label: '12px' },
+    { value: '14px', label: '14px' },
+    { value: '16px', label: '16px' },
+    { value: '18px', label: '18px' },
+  ],
+  fontWeight: [
+    { value: 'default', label: 'Default' },
+    { value: '300', label: 'Light' },
+    { value: '400', label: 'Regular' },
+    { value: '500', label: 'Medium' },
+    { value: '600', label: 'Semibold' },
+    { value: '700', label: 'Bold' },
+  ],
+  letterSpacing: [
+    { value: 'tight', label: 'Tight' },
+    { value: 'normal', label: 'Normal' },
+    { value: 'wide', label: 'Wide' },
+  ],
+  textCase: [
+    { value: 'default', label: 'Default' },
+    { value: 'uppercase', label: 'Uppercase' },
+  ],
+};
+
+function defaultAnnouncementBlockFields(instanceId: string, blockInstanceId: string): EditorFieldDef[] {
+  return [
+    {
+      path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.text`,
+      type: 'textarea',
+      label: 'Text',
+      group: 'Content',
+      widget: 'richtext',
+    },
+    {
+      path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.link`,
+      type: 'text',
+      label: 'Link',
+      group: 'Content',
+      widget: 'link',
+      placeholder: 'Paste a link or search',
+    },
+    {
+      path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.font`,
+      type: 'select',
+      label: 'Font',
+      group: 'Typography',
+      widget: 'select',
+      options: ANNOUNCEMENT_BLOCK_FALLBACK_OPTIONS.font,
+    },
+    {
+      path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.fontSize`,
+      type: 'select',
+      label: 'Size',
+      group: 'Typography',
+      widget: 'select',
+      options: ANNOUNCEMENT_BLOCK_FALLBACK_OPTIONS.fontSize,
+    },
+    {
+      path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.fontWeight`,
+      type: 'select',
+      label: 'Weight',
+      group: 'Typography',
+      widget: 'select',
+      options: ANNOUNCEMENT_BLOCK_FALLBACK_OPTIONS.fontWeight,
+    },
+    {
+      path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.letterSpacing`,
+      type: 'select',
+      label: 'Letter spacing',
+      group: 'Typography',
+      widget: 'select',
+      options: ANNOUNCEMENT_BLOCK_FALLBACK_OPTIONS.letterSpacing,
+    },
+    {
+      path: `sections.${instanceId}.blocks.${blockInstanceId}.settings.textCase`,
+      type: 'select',
+      label: 'Case',
+      group: 'Typography',
+      widget: 'segmented',
+      options: ANNOUNCEMENT_BLOCK_FALLBACK_OPTIONS.textCase,
+    },
+  ];
 }
 
 /** Resolve the announcement block sidebar node from a block or field selection. */

@@ -231,107 +231,6 @@ function PageBackgroundSection({
   );
 }
 
-function ThemeSettingsAccordion({
-  fields,
-  values,
-  onFieldChange,
-}: PanelProps & { fields: EditorFieldDef[] }) {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <div className="border-t border-[#e1e1e1] px-1 py-1">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between py-2 text-left text-[13px] font-medium text-gray-800"
-      >
-        Theme Settings
-        <ChevronDownIcon className={`h-4 w-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open ? (
-        <div className="space-y-1 pb-2">
-          {fields.map((field) => {
-            if (field.widget === 'segmented') {
-              return (
-                <SegmentedRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-              );
-            }
-            if (field.widget === 'link') {
-              return (
-                <div key={field.path} className="py-1">
-                  <span className="mb-1 block text-[13px] text-gray-800">{field.label}</span>
-                  <input
-                    type="text"
-                    value={fieldValueAsString(values, field)}
-                    onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
-                    placeholder={field.placeholder}
-                    className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-                  />
-                </div>
-              );
-            }
-            if (field.type === 'boolean') {
-              return (
-                <ToggleRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-              );
-            }
-            return (
-              <div key={field.path} className="py-1">
-                <span className="mb-1 block text-[13px] text-gray-800">{field.label}</span>
-                <input
-                  type="text"
-                  value={fieldValueAsString(values, field)}
-                  onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
-                  placeholder={field.placeholder}
-                  className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-                />
-              </div>
-            );
-          })}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function CustomCssAccordion({
-  field,
-  values,
-  onFieldChange,
-}: {
-  field: EditorFieldDef;
-  values: Record<string, string | boolean>;
-  onFieldChange: PanelProps['onFieldChange'];
-}) {
-  const [open, setOpen] = React.useState(false);
-  const id = fieldInputId(field.path);
-
-  return (
-    <div className="border-t border-[#e1e1e1] px-1 py-1">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between py-2 text-left text-[13px] font-medium text-gray-800"
-      >
-        Custom CSS
-        <ChevronDownIcon className={`h-4 w-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open ? (
-        <div className="pb-2">
-          <textarea
-            id={id}
-            rows={6}
-            value={fieldValueAsString(values, field)}
-            onChange={(e) => onFieldChange(field.path, 'textarea', e.target.value)}
-            className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 font-mono text-[12px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-            placeholder="Add custom CSS for this section"
-          />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 function DefaultSection({
   title,
   fields,
@@ -533,10 +432,41 @@ export function HeaderSettingsPanel({
           const bubbleBackground = groupFields.find((f) => f.path.endsWith('cartBubbleBackground'));
           const bubbleText = groupFields.find((f) => f.path.endsWith('cartBubbleText'));
           const isCustom = fieldValueAsString(values, bubble) === 'custom';
+          const setBubbleStyle = (next: string) => {
+            onFieldChange(bubble.path, fieldTypeFromSchema(bubble.type), next);
+            // Seed visible defaults when switching to Custom so preview colors apply immediately.
+            if (next === 'custom') {
+              if (bubbleBackground && !fieldValueAsString(values, bubbleBackground).trim()) {
+                onFieldChange(bubbleBackground.path, 'color', '#000000');
+              }
+              if (bubbleText && !fieldValueAsString(values, bubbleText).trim()) {
+                onFieldChange(bubbleText.path, 'color', '#ffffff');
+              }
+            }
+          };
           return (
             <div key={key} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Cart bubble</h3>
-              <SegmentedRow field={bubble} values={values} onFieldChange={onFieldChange} />
+              <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
+                <span className="text-[13px] text-gray-800">{bubble.label}</span>
+                <div className="inline-flex rounded-lg border border-[#c9cccf] bg-[#f1f1f1] p-0.5">
+                  {(bubble.options ?? []).map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setBubbleStyle(opt.value)}
+                      className={`rounded-md px-3 py-1 text-[12px] font-medium transition-colors ${
+                        (fieldValueAsString(values, bubble) || bubble.options?.[0]?.value || '') ===
+                        opt.value
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               {isCustom ? (
                 <div className="mt-2 space-y-0.5">
                   {bubbleBackground ? (
@@ -578,22 +508,6 @@ export function HeaderSettingsPanel({
               onFieldChange={onFieldChange}
             />
           );
-        }
-        if (key === 'Theme settings') {
-          return (
-            <ThemeSettingsAccordion
-              key={key}
-              fields={groupFields}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
-          );
-        }
-        if (key === 'Custom CSS') {
-          const css = groupFields[0];
-          return css ? (
-            <CustomCssAccordion key={key} field={css} values={values} onFieldChange={onFieldChange} />
-          ) : null;
         }
 
         return (

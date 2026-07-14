@@ -10,6 +10,8 @@ export { useStorefrontCheckoutConfiguration } from '@/contexts/storefront-checko
 export { StorefrontPolicyLinks } from '@/components/policies/StorefrontPolicyLinks';
 export { StorefrontPolicyModal } from '@/components/policies/StorefrontPolicyModal';
 export { useStorefrontOrder } from '@/contexts/storefront-order.context';
+export { useStorefrontContactForm } from '@/contexts/storefront-contact-form.context';
+export { useStorefrontNewsletter } from '@/contexts/storefront-newsletter.context';
 export { useStorefrontCart } from '@/contexts/storefront-cart.context';
 export { useStorefrontProductVariants } from '@/contexts/product-variant.context';
 export { formatINR } from '@/utils/currency';
@@ -48,6 +50,16 @@ export type {
 export type {
   StorefrontOrder,
 } from '@/contexts/storefront-order.context';
+
+export type {
+  CreateContactFormSubmissionPayload,
+  ContactFormSubmissionResult,
+} from '@/contexts/storefront-contact-form.context';
+
+export type {
+  CreateNewsletterSubscriptionPayload,
+  NewsletterSubscriptionResult,
+} from '@/contexts/storefront-newsletter.context';
 
 export type {
   StorefrontCartItem,

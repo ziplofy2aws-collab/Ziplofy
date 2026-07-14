@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArchiveBoxIcon,
   ArrowLeftIcon,
@@ -23,8 +24,15 @@ import { useCollections, type Collection } from '../contexts/collection.context'
 import { useProducts, type Product } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreMenus } from '../contexts/store-menu.context';
-import { menuItemDraftsToApiInputs, type MenuItemDraft } from '../utils/store-menu-draft.util';
+import {
+  createMenuItem,
+  menuItemDraftsToApiInputs,
+  slugifyMenuHandle,
+  type MenuItemDraft,
+} from '../utils/store-menu-draft.util';
 import { collectionPath, productPath } from '../utils/storefront-paths';
+
+export { createMenuItem, slugifyMenuHandle } from '../utils/store-menu-draft.util';
 
 type LinkPickerOption = {
   id: string;
@@ -67,19 +75,6 @@ const LINK_PICKER_SECTIONS: LinkPickerSection[] = [
   },
 ];
 
-export function slugifyMenuHandle(name: string): string {
-  const slug = name
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  return slug || 'menu';
-}
-
-export function createMenuItem(): MenuItemDraft {
-  return { id: `item-${Date.now()}-${Math.random().toString(36).slice(2)}`, label: '', link: '' };
-}
-
 type LinkPickerSelection = {
   link: string;
   label?: string;
@@ -106,14 +101,20 @@ function LinkPickerDropdown({
   searchQuery,
   onSelect,
   onClose,
+  anchorRef,
+  boundaryRef,
 }: {
   open: boolean;
   storeId: string | null;
   searchQuery: string;
   onSelect: (selection: LinkPickerSelection) => void;
   onClose: () => void;
+  /** When set, picker portals with fixed position (needed inside overflow sheets). */
+  anchorRef?: RefObject<HTMLElement | null>;
+  boundaryRef?: RefObject<HTMLElement | null>;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const [portalStyle, setPortalStyle] = useState<CSSProperties | null>(null);
   const { collections, loading: collectionsLoading, fetchCollectionsByStoreId } = useCollections();
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
   const [view, setView] = useState<LinkPickerView>('root');
@@ -125,13 +126,48 @@ function LinkPickerDropdown({
   useEffect(() => {
     if (!open) return;
     const onDocClick = (e: MouseEvent) => {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        onClose();
-      }
+      const target = e.target as Node;
+      if (panelRef.current?.contains(target)) return;
+      if (boundaryRef?.current?.contains(target)) return;
+      onClose();
     };
     document.addEventListener('mousedown', onDocClick);
     return () => document.removeEventListener('mousedown', onDocClick);
-  }, [open, onClose]);
+  }, [open, onClose, boundaryRef]);
+
+  useEffect(() => {
+    if (!open || !anchorRef) {
+      setPortalStyle(null);
+      return;
+    }
+    const update = () => {
+      const el = anchorRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const gap = 6;
+      const viewportH = window.innerHeight;
+      const spaceBelow = viewportH - rect.bottom - gap;
+      const spaceAbove = rect.top - gap;
+      const useAbove = spaceBelow < 200 && spaceAbove > spaceBelow;
+      const avail = useAbove ? spaceAbove : spaceBelow;
+      const maxHeight = Math.max(160, Math.min(320, avail));
+      setPortalStyle({
+        position: 'fixed',
+        left: rect.left,
+        width: Math.max(rect.width, 260),
+        maxHeight,
+        zIndex: 16000,
+        ...(useAbove ? { bottom: viewportH - rect.top + gap } : { top: rect.bottom + gap }),
+      });
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [open, anchorRef, view]);
 
   const filteredCollections = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -191,11 +227,18 @@ function LinkPickerDropdown({
 
   const collectionsResultCount = filteredCollections.length + 1;
   const productsResultCount = filteredProducts.length + 1;
+  const usePortal = Boolean(anchorRef);
+  if (usePortal && !portalStyle) return null;
 
-  return (
+  const panel = (
     <div
       ref={panelRef}
-      className="absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-gray-200 bg-white py-1 shadow-lg"
+      style={usePortal ? portalStyle ?? undefined : undefined}
+      className={
+        usePortal
+          ? 'overflow-y-auto rounded-xl border border-gray-200 bg-white py-1 shadow-lg'
+          : 'absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-gray-200 bg-white py-1 shadow-lg'
+      }
     >
       {view === 'collections' || view === 'products' ? (
         <>
@@ -368,6 +411,8 @@ function LinkPickerDropdown({
       )}
     </div>
   );
+
+  return usePortal ? createPortal(panel, document.body) : panel;
 }
 
 export function MenuItemRow({
@@ -376,14 +421,19 @@ export function MenuItemRow({
   onChange,
   onRemove,
   onConfirm,
+  portalLinkPicker = false,
 }: {
   item: MenuItemDraft;
   storeId: string | null;
   onChange: (patch: Partial<MenuItemDraft>) => void;
   onRemove: () => void;
   onConfirm: () => void;
+  /** Portal the link picker (use inside overflow-clipped containers like bottom sheets). */
+  portalLinkPicker?: boolean;
 }) {
   const [linkPickerOpen, setLinkPickerOpen] = useState(false);
+  const linkFieldRef = useRef<HTMLDivElement>(null);
+  const linkInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
@@ -408,15 +458,19 @@ export function MenuItemRow({
             />
           </div>
 
-          <div className="relative">
+          <div className="relative" ref={linkFieldRef}>
             <label className="mb-1 block text-sm font-medium text-gray-800">Link</label>
             <input
+              ref={linkInputRef}
               type="text"
               value={item.linkLabel ?? item.link}
               onChange={(e) =>
                 onChange({
                   link: e.target.value,
                   linkLabel: undefined,
+                  linkType: e.target.value.trim() ? 'custom' : undefined,
+                  collectionId: undefined,
+                  productId: undefined,
                 })
               }
               onFocus={() => setLinkPickerOpen(true)}
@@ -428,16 +482,27 @@ export function MenuItemRow({
               storeId={storeId}
               searchQuery={item.linkLabel ?? item.link}
               onClose={() => setLinkPickerOpen(false)}
-              onSelect={({ link, label, linkType, collectionId, productId }) =>
+              anchorRef={portalLinkPicker ? linkInputRef : undefined}
+              boundaryRef={portalLinkPicker ? linkFieldRef : undefined}
+              onSelect={({ link, label, linkType, collectionId, productId }) => {
+                const resolvedType = linkType ?? (link.trim() ? 'custom' : undefined);
                 onChange({
                   link,
                   linkLabel: label,
-                  linkType: linkType ?? (link.trim() ? 'custom' : undefined),
-                  collectionId,
-                  productId,
-                  ...(label && !item.label.trim() ? { label } : {}),
-                })
-              }
+                  linkType: resolvedType,
+                  collectionId:
+                    resolvedType === 'specific-collection' ? collectionId : undefined,
+                  productId: resolvedType === 'specific-product' ? productId : undefined,
+                  // Prefer the picked resource title when the row has no real label yet,
+                  // or when the label is still a raw linkType leftover.
+                  ...((!item.label.trim() ||
+                    item.label.trim() === 'specific-collection' ||
+                    item.label.trim() === 'specific-product') &&
+                  label
+                    ? { label }
+                    : {}),
+                });
+              }}
             />
           </div>
         </div>

@@ -10,7 +10,6 @@ import {
 import { pickHeaderMenuBlockField } from './theme-editor-header-menu-block-panel.utils';
 import type { StoreMenu, StoreMenuItem } from '../../contexts/store-menu.context';
 import { StoreMenuSelectFieldRow } from './StoreMenuSelectFieldRow';
-import { ThemePaletteColorField } from '../settings/ThemePaletteColorField';
 import { ThemeDefaultColorField } from '../settings/ThemeDefaultColorField';
 
 function numValue(values: Record<string, string | boolean>, field: EditorFieldDef, fallback: number): number {
@@ -248,16 +247,18 @@ export function HeaderMenuBlockSettingsPanel({
         <div className="px-1 py-3">
           <h3 className="text-[13px] font-semibold text-gray-900">Appearance</h3>
           <p className="mb-2 mt-1 text-[12px] leading-snug text-gray-500">
-            Affects submenus on desktop and the main menu on mobile.
+            Colors the menu links area on desktop and the main menu on mobile.
           </p>
           <div className="space-y-0.5">
             {backgroundColorField ? (
-              <ThemePaletteColorField
+              <ThemeDefaultColorField
                 label={backgroundColorField.label}
                 path={backgroundColorField.path}
                 values={values}
                 colorPalette={colorPalette}
                 defaultPaletteIndex={0}
+                fallbackColor="#ffffff"
+                emptyLabel="Default"
                 onFieldChange={onFieldChange}
               />
             ) : null}

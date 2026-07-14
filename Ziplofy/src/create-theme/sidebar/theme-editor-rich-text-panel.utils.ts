@@ -7,7 +7,6 @@ export const RICH_TEXT_PANEL_GROUP_ORDER = [
   'Appearance',
   'Borders',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(RICH_TEXT_PANEL_GROUP_ORDER);
@@ -22,13 +21,15 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  backgroundColor: 23,
-  backgroundOverlay: 24,
-  borderStyle: 26,
-  cornerRadius: 27,
+  backgroundImagePosition: 23,
+  backgroundColor: 24,
+  backgroundOverlay: 25,
+  overlayColor: 26,
+  overlayOpacity: 27,
+  borderStyle: 28,
+  cornerRadius: 29,
   paddingTop: 30,
   paddingBottom: 31,
-  customCss: 40,
 };
 
 function fieldSortKey(path: string): number {
@@ -41,6 +42,8 @@ export function isRichTextSectionType(secType: string | undefined, catalogVarian
 
 export function isRichTextPanelField(field: EditorFieldDef): boolean {
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -51,7 +54,6 @@ export function sortRichTextPanelFields(fields: EditorFieldDef[]): EditorFieldDe
     Appearance: 2,
     Borders: 3,
     Padding: 4,
-    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -183,6 +185,91 @@ export function richTextBlockFieldDefs(
           { value: 'heading-2', label: 'Heading 2' },
           { value: 'heading-3', label: 'Heading 3' },
           { value: 'heading-4', label: 'Heading 4' },
+          { value: 'custom', label: 'Custom' },
+        ],
+      },
+      {
+        path: s('headingFont'),
+        type: 'select',
+        label: 'Font',
+        group: 'Typography',
+        widget: 'select',
+        options: [
+          { value: 'body', label: 'Body' },
+          { value: 'subheading', label: 'Subheading' },
+          { value: 'heading', label: 'Heading' },
+          { value: 'accent', label: 'Accent' },
+        ],
+      },
+      {
+        path: s('headingFontSize'),
+        type: 'select',
+        label: 'Size',
+        group: 'Typography',
+        widget: 'select',
+        options: [
+          '10px',
+          '12px',
+          '14px',
+          '16px',
+          '18px',
+          '20px',
+          '24px',
+          '28px',
+          '32px',
+          '36px',
+          '40px',
+          '48px',
+          '56px',
+          '64px',
+          '72px',
+        ].map((value) => ({ value, label: value })),
+      },
+      {
+        path: s('headingLineHeight'),
+        type: 'select',
+        label: 'Line height',
+        group: 'Typography',
+        widget: 'segmented',
+        options: [
+          { value: 'tight', label: 'Tight' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'loose', label: 'Loose' },
+        ],
+      },
+      {
+        path: s('headingLetterSpacing'),
+        type: 'select',
+        label: 'Letter spacing',
+        group: 'Typography',
+        widget: 'segmented',
+        options: [
+          { value: 'tight', label: 'Tight' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'loose', label: 'Loose' },
+        ],
+      },
+      {
+        path: s('headingTextCase'),
+        type: 'select',
+        label: 'Case',
+        group: 'Typography',
+        widget: 'segmented',
+        options: [
+          { value: 'default', label: 'Default' },
+          { value: 'uppercase', label: 'Uppercase' },
+        ],
+      },
+      {
+        path: s('headingWrap'),
+        type: 'select',
+        label: 'Wrap',
+        group: 'Typography',
+        widget: 'select',
+        options: [
+          { value: 'pretty', label: 'Pretty' },
+          { value: 'balance', label: 'Balance' },
+          { value: 'nowrap', label: 'No wrap' },
         ],
       },
       {
@@ -488,6 +575,12 @@ const RICH_TEXT_HEADING_KEYS = new Set([
   'headingWidth',
   'headingMaxWidth',
   'headingTypographyPreset',
+  'headingFont',
+  'headingFontSize',
+  'headingLineHeight',
+  'headingLetterSpacing',
+  'headingTextCase',
+  'headingWrap',
   'headingColor',
   'headingBackgroundEnabled',
   'headingPaddingTop',
@@ -509,6 +602,84 @@ export function richTextBlockFieldDefsFromNodeId(nodeId: string): EditorFieldDef
   return richTextBlockFieldDefs(sectionBase, blockKind);
 }
 
+export function richTextSettingsBaseFromSectionNodeId(nodeId: string): string | null {
+  const layout = nodeId.match(/^layout:([^:]+)$/);
+  if (layout) {
+    const secId = layout[1]!;
+    if (!isRichTextSectionInstanceId(secId)) return null;
+    return `sections.${secId}.settings`;
+  }
+  const tpl = nodeId.match(/^template:([^:]+):([^:]+)$/);
+  if (tpl) {
+    const secId = tpl[2]!;
+    if (!isRichTextSectionInstanceId(secId)) return null;
+    return `templates.${tpl[1]}.sections.${secId}.settings`;
+  }
+  return null;
+}
+
+/** Ensure Appearance fields exist even when template schema omits them. */
+export function ensureRichTextAppearanceFields(
+  sectionNodeId: string,
+  fields: EditorFieldDef[]
+): EditorFieldDef[] {
+  const settingsBase = richTextSettingsBaseFromSectionNodeId(sectionNodeId);
+  if (!settingsBase) return fields;
+  const has = (key: string) => fields.some((f) => f.path.endsWith(`.${key}`) || f.path.endsWith(key));
+  const extras: EditorFieldDef[] = [];
+  if (!has('backgroundColor')) {
+    extras.push({
+      path: `${settingsBase}.backgroundColor`,
+      type: 'color',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    });
+  }
+  if (!has('overlayColor')) {
+    extras.push({
+      path: `${settingsBase}.overlayColor`,
+      type: 'text',
+      label: 'Overlay color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    });
+  }
+  if (!has('overlayOpacity')) {
+    extras.push({
+      path: `${settingsBase}.overlayOpacity`,
+      type: 'number',
+      label: 'Overlay opacity',
+      group: 'Appearance',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    });
+  }
+  if (!has('backgroundImagePosition')) {
+    extras.push({
+      path: `${settingsBase}.backgroundImagePosition`,
+      type: 'select',
+      label: 'Image fit',
+      group: 'Appearance',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'cover', label: 'Cover' },
+        { value: 'fit', label: 'Fit' },
+        { value: 'stretch', label: 'Stretch' },
+      ],
+    });
+  }
+  if (!extras.length) return fields;
+  return sortRichTextPanelFields([...fields, ...extras]);
+}
+
 export function prepareRichTextBlockSettingsNode(node: SidebarNode): SidebarNode {
   const blockKind = richTextBlockKindFromNodeId(node.id);
   const label =
@@ -519,8 +690,9 @@ export function prepareRichTextBlockSettingsNode(node: SidebarNode): SidebarNode
 }
 
 export function prepareRichTextSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortRichTextPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isRichTextPanelField)
+  const fields = ensureRichTextAppearanceFields(
+    node.id,
+    sortRichTextPanelFields(filterSidebarSectionPanelFields(node.fields ?? [], isRichTextPanelField))
   );
   return { ...node, label: 'Rich text', kind: 'section', fields };
 }

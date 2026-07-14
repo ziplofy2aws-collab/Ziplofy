@@ -305,12 +305,12 @@
           "includeGroups": [
             "General",
             "Appearance",
-            "Padding",
-            "Theme Settings",
-            "Custom CSS"
+            "Padding"
           ],
           "excludeGroups": [
-            "Content"
+            "Content",
+            "Theme Settings",
+            "Custom CSS"
           ],
           "fieldOrder": [
             "enabled",
@@ -319,10 +319,8 @@
             "backgroundColor",
             "dividerThickness",
             "dividerColor",
-            "colorScheme",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -761,11 +759,15 @@
           "panels": {
             "default": {
               "includeKeys": [
+                "text",
+                "tagline",
                 "hideLogoOnHomePage",
                 "paddingTop",
                 "paddingBottom"
               ],
               "fieldOrder": [
+                "text",
+                "tagline",
                 "hideLogoOnHomePage",
                 "paddingTop",
                 "paddingBottom"
@@ -5275,6 +5277,27 @@
           "placeholder": "Paste image URL or upload"
         },
         {
+          "key": "backgroundImagePosition",
+          "type": "select",
+          "label": "Image fit",
+          "group": "Appearance",
+          "widget": "segmented",
+          "options": [
+            {
+              "value": "cover",
+              "label": "Cover"
+            },
+            {
+              "value": "fit",
+              "label": "Fit"
+            },
+            {
+              "value": "stretch",
+              "label": "Stretch"
+            }
+          ]
+        },
+        {
           "key": "borderStyle",
           "type": "select",
           "label": "Borders",
@@ -5307,6 +5330,24 @@
           "type": "boolean",
           "label": "Background overlay",
           "group": "Appearance"
+        },
+        {
+          "key": "overlayColor",
+          "type": "text",
+          "label": "Overlay color",
+          "group": "Appearance",
+          "widget": "color"
+        },
+        {
+          "key": "overlayOpacity",
+          "type": "number",
+          "label": "Overlay opacity",
+          "group": "Appearance",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%"
         },
         {
           "key": "paddingTop",
@@ -5355,12 +5396,14 @@
             "colorScheme",
             "backgroundMedia",
             "backgroundImageUrl",
+            "backgroundImagePosition",
             "borderStyle",
             "cornerRadius",
             "backgroundOverlay",
+            "overlayColor",
+            "overlayOpacity",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -15777,6 +15820,27 @@
           "placeholder": "Paste image URL or upload"
         },
         {
+          "key": "backgroundImagePosition",
+          "type": "select",
+          "label": "Image fit",
+          "group": "Appearance",
+          "widget": "segmented",
+          "options": [
+            {
+              "value": "cover",
+              "label": "Cover"
+            },
+            {
+              "value": "fit",
+              "label": "Fit"
+            },
+            {
+              "value": "stretch",
+              "label": "Stretch"
+            }
+          ]
+        },
+        {
           "key": "borderStyle",
           "type": "select",
           "label": "Borders",
@@ -15809,6 +15873,24 @@
           "type": "boolean",
           "label": "Background overlay",
           "group": "Appearance"
+        },
+        {
+          "key": "overlayColor",
+          "type": "text",
+          "label": "Overlay color",
+          "group": "Appearance",
+          "widget": "color"
+        },
+        {
+          "key": "overlayOpacity",
+          "type": "number",
+          "label": "Overlay opacity",
+          "group": "Appearance",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%"
         },
         {
           "key": "paddingTop",
@@ -15857,12 +15939,14 @@
             "colorScheme",
             "backgroundMedia",
             "backgroundImageUrl",
+            "backgroundImagePosition",
             "borderStyle",
             "cornerRadius",
             "backgroundOverlay",
+            "overlayColor",
+            "overlayOpacity",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }

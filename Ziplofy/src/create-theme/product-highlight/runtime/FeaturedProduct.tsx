@@ -12,9 +12,7 @@ import {
 import { FEATURED_PRODUCT_BUY_BUTTONS_NESTED_ORDER } from '../../../utils/featured-product-sidebar.util';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
-import { resolveThemeSwatchInlineStyle } from '../../runtime/shared/themeSwatchesRuntime';
 import { resolveThemeVariantPickerOptionStyle } from '../../runtime/shared/themeVariantPickersRuntime';
-import { readThemeSwatchesSettings } from '../../settings/theme-swatches.settings';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
@@ -285,14 +283,15 @@ export function FeaturedProduct({
 
   useEffect(() => {
     if (!productId) return;
-    const inList = products.some((p) => p._id === productId);
-    if (!inList) void fetchProductById(productId);
-  }, [productId, products, fetchProductById]);
+    // Always fetch by id so picker selection shows even when the product is
+    // outside PreviewProductsLoader's first page / shared list.
+    void fetchProductById(productId);
+  }, [productId, fetchProductById]);
 
   useEffect(() => {
-    if (!productId || isEditorPreview) return;
+    if (!productId) return;
     void fetchVariantsByProductId(productId);
-  }, [productId, isEditorPreview, fetchVariantsByProductId]);
+  }, [productId, fetchVariantsByProductId]);
 
   useEffect(() => {
     setSelectedVariantIndex(0);
@@ -305,11 +304,54 @@ export function FeaturedProduct({
     return products.find((p) => p._id === productId) ?? null;
   }, [productId, productDetail, products]);
 
-  const productTitle = resolvedProduct?.title ?? cachedTitle;
-  const price = resolvedProduct
-    ? formatThemePrice(config, resolvedProduct.price, 'productCards')
-    : cachedPrice;
-  const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
+  const variantOptions = useMemo(() => {
+    if (variants.length > 0) {
+      return variants.map((variant, index) => ({
+        key: variant._id,
+        label:
+          Object.values(variant.optionValues ?? {})
+            .filter(Boolean)
+            .join(' / ') || `Option ${index + 1}`,
+      }));
+    }
+    if (productDetail?._id === productId && productDetail.variantDetails?.length) {
+      return productDetail.variantDetails.map((variant, index) => ({
+        key: variant._id,
+        label:
+          Object.values(variant.optionValues ?? {})
+            .filter(Boolean)
+            .join(' / ') || `Option ${index + 1}`,
+      }));
+    }
+    // Editor placeholder only when no product is selected yet.
+    if (!productId) {
+      return ['S', 'M', 'L'].map((size) => ({ key: size, label: size }));
+    }
+    return [];
+  }, [variants, productDetail, productId]);
+
+  const selectedVariant = useMemo(() => {
+    if (variants.length > 0) return variants[selectedVariantIndex] ?? variants[0] ?? null;
+    if (productDetail?._id === productId && productDetail.variantDetails?.length) {
+      return productDetail.variantDetails[selectedVariantIndex] ?? productDetail.variantDetails[0] ?? null;
+    }
+    return null;
+  }, [variants, productDetail, productId, selectedVariantIndex]);
+
+  // Prefer picker-written cache fields immediately; fall back to live product / variant data.
+  const productTitle =
+    (cachedTitle && cachedTitle !== 'Product title' ? cachedTitle : null) ??
+    resolvedProduct?.title ??
+    cachedTitle;
+  const price = selectedVariant
+    ? formatThemePrice(config, selectedVariant.price, 'productCards')
+    : resolvedProduct
+      ? formatThemePrice(config, resolvedProduct.price, 'productCards')
+      : cachedPrice;
+  const productImageUrl =
+    selectedVariant?.images?.[0] ??
+    resolvedProduct?.imageUrls?.[0] ??
+    cachedImageUrl;
 
   // Skip inventory / status gating for now — always show Add to cart + Buy it now.
   const soldOut = false;
@@ -330,36 +372,6 @@ export function FeaturedProduct({
   const showBuyItNowBlock =
     buyButtonsBlockOrder.includes('accelerated_checkout') &&
     cfgBool(config, `${acceleratedCheckoutSettingsBase}.enabled`, true);
-
-  const variantOptions = useMemo(() => {
-    if (variants.length > 0) {
-      return variants.map((variant, index) => ({
-        key: variant._id,
-        label:
-          Object.values(variant.optionValues ?? {})
-            .filter(Boolean)
-            .join(' / ') || `Option ${index + 1}`,
-      }));
-    }
-    if (productDetail?.variantDetails?.length) {
-      return productDetail.variantDetails.map((variant, index) => ({
-        key: variant._id,
-        label:
-          Object.values(variant.optionValues ?? {})
-            .filter(Boolean)
-            .join(' / ') || `Option ${index + 1}`,
-      }));
-    }
-    return ['S', 'M', 'L'].map((size) => ({ key: size, label: size }));
-  }, [variants, productDetail]);
-
-  const selectedVariant = useMemo(() => {
-    if (variants.length > 0) return variants[selectedVariantIndex] ?? variants[0];
-    if (productDetail?.variantDetails?.length) {
-      return productDetail.variantDetails[selectedVariantIndex] ?? productDetail.variantDetails[0];
-    }
-    return null;
-  }, [variants, productDetail, selectedVariantIndex]);
 
   const canPurchase = Boolean(!soldOut && !isEditorPreview && storeId && selectedVariant);
 
@@ -541,9 +553,6 @@ export function FeaturedProduct({
     () => readFeaturedProductVariantPickerStyle(config, variantPickerSettingsBase),
     [config, variantPickerSettingsBase]
   );
-
-  const themeSwatches = useMemo(() => readThemeSwatchesSettings(config), [config]);
-  const themeSwatchBaseStyle = useMemo(() => resolveThemeSwatchInlineStyle(config), [config]);
 
   const buyButtonsStyle = useMemo(
     () => readFeaturedProductBuyButtonsStyle(config, buyButtonsSettingsBase),
@@ -743,26 +752,6 @@ export function FeaturedProduct({
     width: '100%',
   };
 
-  const giftCardFormStyle: CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-    width: '100%',
-    marginTop: 4,
-  };
-
-  const giftCardInputStyle: CSSProperties = {
-    width: '100%',
-    padding: '10px 12px',
-    border: `1px solid ${scheme.muted}55`,
-    borderRadius: 8,
-    fontSize: 14,
-    fontFamily: fontBody,
-    boxSizing: 'border-box',
-    background: scheme.background,
-    color: scheme.color,
-  };
-
   const quantityWrapStyle: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -811,20 +800,6 @@ export function FeaturedProduct({
     fontFamily: fontBody,
     cursor: isEditorPreview ? 'default' : 'pointer',
     ...resolveThemeVariantPickerOptionStyle(config, selected),
-  });
-
-  const variantSwatchStyle = (color: string, selected: boolean, imageUrl?: string): CSSProperties => ({
-    ...themeSwatchBaseStyle,
-    border: selected
-      ? `2px solid ${scheme.color}`
-      : themeSwatchBaseStyle.border ?? `1px solid ${scheme.muted}55`,
-    background:
-      themeSwatches.variantImages && imageUrl
-        ? `url(${imageUrl}) center/cover no-repeat`
-        : color,
-    boxShadow: selected ? undefined : `inset 0 0 0 1px ${scheme.muted}55`,
-    cursor: 'default',
-    flexShrink: 0,
   });
 
   return (
@@ -914,35 +889,10 @@ export function FeaturedProduct({
                 style={variantPickerWrap}
                 data-fp-variant-picker
               >
-                {variantPickerStyle.swatches ? (
-                  <div
-                    style={{
-                      display: 'inline-flex',
-                      gap: 10,
-                      justifyContent:
-                        variantPickerStyle.alignment === 'center'
-                          ? 'center'
-                          : variantPickerStyle.alignment === 'right'
-                            ? 'flex-end'
-                            : 'flex-start',
-                      width: '100%',
-                      marginBottom: 12,
-                    }}
-                  >
-                    {['#111827', '#6b7280', '#d1d5db'].map((color, index) => (
-                      <span
-                        key={color}
-                        aria-hidden
-                        className="codiic-theme-swatch"
-                        style={variantSwatchStyle(color, index === 0)}
-                      />
-                    ))}
-                  </div>
-                ) : null}
                 <p style={{ margin: '0 0 8px', fontSize: 13, color: scheme.muted }}>Size</p>
                 {variantPickerStyle.style === 'dropdown' ? (
                   <select
-                    disabled
+                    aria-label="Variant"
                     style={{
                       width: '100%',
                       maxWidth: 280,
@@ -954,11 +904,21 @@ export function FeaturedProduct({
                       background: scheme.background,
                       color: scheme.color,
                     }}
-                    defaultValue="m"
+                    value={variantOptions[selectedVariantIndex]?.key ?? ''}
+                    onChange={(e) => {
+                      const next = variantOptions.findIndex((option) => option.key === e.target.value);
+                      if (next >= 0) setSelectedVariantIndex(next);
+                    }}
                   >
-                    <option value="s">Small</option>
-                    <option value="m">Medium</option>
-                    <option value="l">Large</option>
+                    {variantOptions.length ? (
+                      variantOptions.map((option) => (
+                        <option key={option.key} value={option.key}>
+                          {option.label}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">No variants</option>
+                    )}
                   </select>
                 ) : (
                   <div
@@ -985,9 +945,7 @@ export function FeaturedProduct({
                             : ''
                         }`}
                         style={variantOptionStyle(index === selectedVariantIndex)}
-                        onClick={() => {
-                          if (!isEditorPreview) setSelectedVariantIndex(index);
-                        }}
+                        onClick={() => setSelectedVariantIndex(index)}
                       >
                         {option.label}
                       </button>
@@ -1073,29 +1031,6 @@ export function FeaturedProduct({
                     </EditorField>
                   ) : null}
                 </div>
-                {buyButtonsStyle.giftCardForm ? (
-                  <EditorField
-                    fieldPath={`${buyButtonsSettingsBase}.giftCardForm`}
-                    label="Gift card form"
-                    as="div"
-                    style={giftCardFormStyle}
-                  >
-                    <input
-                      type="email"
-                      readOnly
-                      placeholder="Recipient email"
-                      style={giftCardInputStyle}
-                      aria-label="Recipient email"
-                    />
-                    <textarea
-                      readOnly
-                      rows={2}
-                      placeholder="Message (optional)"
-                      style={{ ...giftCardInputStyle, resize: 'vertical' }}
-                      aria-label="Gift message"
-                    />
-                  </EditorField>
-                ) : null}
               </div>
             </div>
           </div>

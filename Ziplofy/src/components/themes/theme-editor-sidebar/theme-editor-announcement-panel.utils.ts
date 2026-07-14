@@ -6,19 +6,18 @@ export const ANNOUNCEMENT_PANEL_GROUP_ORDER = [
   'General',
   'Appearance',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(ANNOUNCEMENT_PANEL_GROUP_ORDER);
 
+const HIDDEN_ANNOUNCEMENT_PANEL_KEYS = new Set(['colorScheme', 'customCss', 'enabled']);
+
 const FIELD_SORT_KEYS: Record<string, number> = {
   timeToNext: 0,
   sectionWidth: 10,
-  colorScheme: 11,
   dividerThickness: 12,
   paddingTop: 20,
   paddingBottom: 21,
-  customCss: 30,
 };
 
 function fieldSortKey(path: string): number {
@@ -57,9 +56,11 @@ export function isAnnouncementLayoutNodeId(nodeId: string): boolean {
 /** Section settings for the bottom panel (excludes legacy Content + enabled; visibility uses sidebar eye). */
 export function filterAnnouncementPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
   return fields.filter((f) => {
-    if (f.group === 'Content') return false;
+    if (f.group === 'Content' || f.group === 'Theme Settings' || f.group === 'Custom CSS') {
+      return false;
+    }
     const key = f.path.split('.').pop() ?? '';
-    if (key === 'enabled') return false;
+    if (HIDDEN_ANNOUNCEMENT_PANEL_KEYS.has(key)) return false;
     if (!f.group) return false;
     return PANEL_GROUPS.has(f.group);
   });
@@ -70,7 +71,6 @@ export function sortAnnouncementPanelFields(fields: EditorFieldDef[]): EditorFie
     General: 0,
     Appearance: 1,
     Padding: 2,
-    'Custom CSS': 3,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

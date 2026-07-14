@@ -93,6 +93,8 @@ const NAV: NavItem[] = [
       { text: 'Files', path: '/content/files' },
       { text: 'Menus', path: '/content/menus' },
       { text: 'Blog posts', path: '/content/articles' },
+      { text: 'Contact submissions', path: '/content/contact-submissions' },
+      { text: 'Newsletter subscriptions', path: '/content/newsletter-subscriptions' },
     ],
   },
   {

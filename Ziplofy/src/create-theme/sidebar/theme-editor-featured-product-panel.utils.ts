@@ -5,8 +5,6 @@ export const FEATURED_PRODUCT_PANEL_GROUP_ORDER = [
   'Product',
   'Layout',
   'Padding',
-  'Theme Settings',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(FEATURED_PRODUCT_PANEL_GROUP_ORDER);
@@ -20,7 +18,7 @@ export const FEATURED_PRODUCT_LAYOUT_FIELD_ORDER = [
   'backgroundColor',
 ] as const;
 
-const HIDDEN_PANEL_KEYS = new Set(['colorScheme']);
+const HIDDEN_PANEL_KEYS = new Set(['colorScheme', 'customCss']);
 
 const FIELD_SORT: Record<string, number> = {
   productId: 0,
@@ -32,7 +30,6 @@ const FIELD_SORT: Record<string, number> = {
   backgroundColor: 6,
   paddingTop: 20,
   paddingBottom: 21,
-  customCss: 30,
 };
 
 export function featuredProductSectionDefaultSettings(): Record<string, string | number | boolean> {
@@ -146,8 +143,6 @@ export function sortFeaturedProductPanelFields(fields: EditorFieldDef[]): Editor
     Product: 0,
     Layout: 1,
     Padding: 2,
-    'Theme Settings': 3,
-    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -166,7 +161,6 @@ export function prepareFeaturedProductSettingsNode(
     const key = f.path.split('.').pop() ?? '';
     if (LAYOUT_KEYS_FROM_GENERAL.has(key)) return { ...f, group: 'Layout' };
     if (key === 'paddingTop' || key === 'paddingBottom') return { ...f, group: 'Padding' };
-    if (key === 'customCss') return { ...f, group: 'Custom CSS' };
     return f;
   });
   const fields = sortFeaturedProductPanelFields([

@@ -83,7 +83,7 @@ export function ThemeHexColorField({
         color={pickerColor}
         anchorRect={anchorRect}
         onClose={closePicker}
-        onChange={(hex) => onFieldChange(path, 'text', hex)}
+        onChange={(hex) => onFieldChange(path, 'color', hex)}
       />
     </>
   );

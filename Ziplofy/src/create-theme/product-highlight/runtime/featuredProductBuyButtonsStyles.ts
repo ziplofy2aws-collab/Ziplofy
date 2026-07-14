@@ -3,7 +3,6 @@ import { cfgBool, cfgNumber } from '../../runtime/shared/config';
 export type FeaturedProductBuyButtonsStyle = {
   alwaysStackButtons: boolean;
   showPickupAvailability: boolean;
-  giftCardForm: boolean;
   paddingTop: number;
   paddingBottom: number;
   paddingLeft: number;
@@ -17,7 +16,6 @@ export function readFeaturedProductBuyButtonsStyle(
   return {
     alwaysStackButtons: cfgBool(config, `${settingsBase}.alwaysStackButtons`, false),
     showPickupAvailability: cfgBool(config, `${settingsBase}.showPickupAvailability`, true),
-    giftCardForm: cfgBool(config, `${settingsBase}.giftCardForm`, true),
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 0),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 0),
     paddingLeft: cfgNumber(config, `${settingsBase}.paddingLeft`, 0),

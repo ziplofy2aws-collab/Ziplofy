@@ -1,8 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useStorefrontAuth, useStorefrontCart } from '@render-store/sdk';
-import { useThemeConfig } from '@render-store/sdk';
+import { useStorefrontAuth, useStorefrontCart, useThemeConfig, useThemeEditorPreview } from '@render-store/sdk';
 import { cfgBool, cfgMenuItems, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { useThemeIconStrokeWidth } from '../../runtime/shared/themeIconsRuntime';
 import {
@@ -23,6 +22,7 @@ import {
 } from './headerStyles';
 import { HeaderAccountPanel } from './HeaderAccountPanel';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { PREVIEW_CART_LINES } from '../../runtime/shared/editorPreviewFixtures';
 import { scopedHeaderResponsiveCss } from '../../runtime/shared/responsive';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
@@ -80,7 +80,12 @@ export function Header({ sectionId = 'header' }: Props) {
   const { fontHeading, fontBody, fontSubheading, primary, background: themeBg } = themeColors;
   const { user, logout } = useStorefrontAuth();
   const { getAllItems } = useStorefrontCart();
-  const cartCount = getAllItems().reduce((s, i) => s + i.quantity, 0);
+  const isEditorPreview = useThemeEditorPreview();
+  const liveCartCount = getAllItems().reduce((s, i) => s + i.quantity, 0);
+  // Editor cart is usually empty — show sample qty so cart-bubble colors are visible while editing.
+  const previewSampleCount = PREVIEW_CART_LINES.reduce((s, i) => s + i.quantity, 0);
+  const cartCount =
+    isEditorPreview && liveCartCount === 0 ? Math.max(1, previewSampleCount) : liveCartCount;
 
   const base = `sections.${sectionId}`;
   const settingsBase = `${base}.settings`;
@@ -214,6 +219,7 @@ export function Header({ sectionId = 'header' }: Props) {
 
   const { color: text, background, border } = scheme;
   const menuText = menuScheme.color;
+  const menuBg = menuScheme.background.trim();
   const iconColor = text;
   const scopedCss = scopedHeaderCss(sectionId, customCss);
   const headerResponsiveCss = scopedHeaderResponsiveCss(sectionId);
@@ -236,6 +242,13 @@ export function Header({ sectionId = 'header' }: Props) {
     letterSpacing: menuTextCase === 'uppercase' ? '0.06em' : undefined,
     whiteSpace: 'nowrap',
   };
+  const menuSurfaceStyle: CSSProperties = menuBg
+    ? {
+        background: menuBg,
+        padding: '8px 14px',
+        borderRadius: 8,
+      }
+    : {};
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -362,6 +375,7 @@ export function Header({ sectionId = 'header' }: Props) {
           gap: 24,
           margin: 0,
           padding: 0,
+          ...menuSurfaceStyle,
         }}
         aria-label="Main"
       >
@@ -380,8 +394,10 @@ export function Header({ sectionId = 'header' }: Props) {
           alignItems: 'stretch',
           gap: 12,
           margin: 0,
-          padding: '12px 0 4px',
+          padding: menuBg ? '12px 14px' : '12px 0 4px',
           borderTop: `1px solid ${border}`,
+          borderRadius: menuBg ? 8 : undefined,
+          ...(menuBg ? { background: menuBg } : null),
         }}
         aria-label="Main mobile"
       >
@@ -540,6 +556,7 @@ export function Header({ sectionId = 'header' }: Props) {
         )}
         {useIcons && cartCount > 0 ? (
           <span
+            aria-hidden={isEditorPreview && liveCartCount === 0}
             style={{
               position: 'absolute',
               top: -4,
@@ -547,14 +564,22 @@ export function Header({ sectionId = 'header' }: Props) {
               minWidth: 14,
               height: 14,
               borderRadius: 7,
-              background: cartBubbleStyle === 'custom' && cartBubbleBackground ? cartBubbleBackground : primary,
-              color: cartBubbleStyle === 'custom' && cartBubbleText ? cartBubbleText : themeBg,
+              background:
+                cartBubbleStyle === 'custom' && cartBubbleBackground.trim()
+                  ? cartBubbleBackground.trim()
+                  : primary,
+              color:
+                cartBubbleStyle === 'custom' && cartBubbleText.trim()
+                  ? cartBubbleText.trim()
+                  : themeBg,
               fontSize: 9,
               fontWeight: 700,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               padding: '0 3px',
+              lineHeight: 1,
+              boxSizing: 'border-box',
             }}
           >
             {cartCount > 9 ? '9+' : cartCount}

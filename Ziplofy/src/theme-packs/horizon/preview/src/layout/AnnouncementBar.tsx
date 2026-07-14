@@ -36,7 +36,12 @@ function collectSlides(
   config: Record<string, unknown> | null,
   base: string,
   blockOrder: string[],
-  themeFonts: { fontHeading: string; fontBody: string }
+  themeFonts: {
+    fontHeading: string;
+    fontBody: string;
+    fontSubheading?: string;
+    fontAccent?: string;
+  }
 ): AnnouncementSlide[] {
   const out: AnnouncementSlide[] = [];
   for (const blockId of blockOrder) {
@@ -89,6 +94,8 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
       collectSlides(config, base, blockOrder, {
         fontHeading: themeColors.fontHeading,
         fontBody: themeColors.fontBody,
+        fontSubheading: (themeColors as { fontSubheading?: string }).fontSubheading,
+        fontAccent: (themeColors as { fontAccent?: string }).fontAccent,
       }),
     [config, base, blockOrder, themeColors.fontHeading, themeColors.fontBody]
   );
@@ -195,13 +202,13 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
         background: scheme.background,
         color: scheme.color,
         fontFamily: themeColors.fontBody,
-        fontSize: 13,
         textAlign: 'center',
         paddingTop,
         paddingBottom,
         borderBottom: dividerPx > 0 ? `${dividerPx}px solid rgba(0,0,0,0.15)` : undefined,
         width: '100%',
         boxSizing: 'border-box',
+        lineHeight: 1.35,
       }}
     >
       {scopedCss ? <style>{scopedCss}</style> : null}

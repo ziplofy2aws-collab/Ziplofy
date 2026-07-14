@@ -94,8 +94,7 @@ export function scopedFooterMobileCss(scopeClass: string): string {
 
 export function scopedAnnouncementMobileCss(scopeClass: string): string {
   return mobileMedia(
-    `.${scopeClass} { padding-left: 16px !important; padding-right: 16px !important; }` +
-      `.${scopeClass} .codiic-announcement-message { font-size: 13px !important; line-height: 1.35 !important; }`
+    `.${scopeClass} { padding-left: 16px !important; padding-right: 16px !important; }`
   );
 }
 

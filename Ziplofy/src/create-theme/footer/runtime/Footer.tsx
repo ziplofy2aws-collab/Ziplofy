@@ -1,5 +1,9 @@
 import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  isThemeEditorPreview,
+  useStorefrontNewsletter,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
@@ -27,6 +31,7 @@ function NewsletterSubmit({
   colors,
   fontFamily,
   borderRadius,
+  disabled = false,
 }: {
   label: string;
   display: 'text' | 'arrow';
@@ -34,13 +39,15 @@ function NewsletterSubmit({
   colors: { color: string; background: string; border: string };
   fontFamily: string;
   borderRadius: number;
+  disabled?: boolean;
 }) {
-  const content = display === 'arrow' ? '→' : label;
+  const content = display === 'arrow' ? '→' : disabled ? 'Subscribing…' : label;
 
   if (style === 'link') {
     return (
       <button
         type="submit"
+        disabled={disabled}
         aria-label={display === 'arrow' ? label : undefined}
         style={{
           flexShrink: 0,
@@ -50,7 +57,8 @@ function NewsletterSubmit({
           fontFamily,
           fontSize: display === 'arrow' ? 20 : 15,
           fontWeight: 600,
-          cursor: 'pointer',
+          cursor: disabled ? 'wait' : 'pointer',
+          opacity: disabled ? 0.75 : 1,
           padding: '8px 14px',
           textDecoration: display === 'text' ? 'underline' : 'none',
           lineHeight: 1,
@@ -64,6 +72,7 @@ function NewsletterSubmit({
   return (
     <button
       type="submit"
+      disabled={disabled}
       aria-label={display === 'arrow' ? label : undefined}
       style={{
         flexShrink: 0,
@@ -74,7 +83,8 @@ function NewsletterSubmit({
         fontFamily,
         fontSize: 15,
         fontWeight: 600,
-        cursor: 'pointer',
+        cursor: disabled ? 'wait' : 'pointer',
+        opacity: disabled ? 0.75 : 1,
         padding: '12px 24px',
         lineHeight: 1,
         whiteSpace: 'nowrap',
@@ -89,6 +99,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontHeading, fontBody, text, background, primary } = useThemeColors();
+  const { submitting, subscribeToNewsletter } = useStorefrontNewsletter();
   const [email, setEmail] = useState('');
 
   const settingsBase = `sections.${sectionId}.settings`;
@@ -140,7 +151,19 @@ export function Footer({ sectionId = 'footer' }: Props) {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setEmail('');
+    if (isThemeEditorPreview() || submitting) {
+      setEmail('');
+      return;
+    }
+
+    void (async () => {
+      try {
+        await subscribeToNewsletter({ email });
+        setEmail('');
+      } catch {
+        // Toast handled in context
+      }
+    })();
   };
 
   const innerMaxWidth = sectionStyle.widthMode === 'full' ? '100%' : maxWidth;
@@ -329,6 +352,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
                         colors={newsletterStyle.colors}
                         fontFamily={fontBody}
                         borderRadius={pillRadius}
+                        disabled={submitting}
                       />
                     </EditorField>
                   </div>
@@ -355,6 +379,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
                       colors={submitButtonColors}
                       fontFamily={fontBody}
                       borderRadius={pillRadius}
+                      disabled={submitting}
                     />
                   </EditorField>
                 </>

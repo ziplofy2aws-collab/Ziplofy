@@ -15,6 +15,28 @@ export type MenuItemDraft = {
   productId?: string;
 };
 
+export function slugifyMenuHandle(name: string): string {
+  const slug = name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return slug || 'menu';
+}
+
+export function createMenuItemDraft(): MenuItemDraft {
+  return {
+    id: `item-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    label: '',
+    link: '',
+  };
+}
+
+/** @deprecated Prefer createMenuItemDraft */
+export function createMenuItem(): MenuItemDraft {
+  return createMenuItemDraft();
+}
+
 export function menuItemDraftToApiInput(
   draft: MenuItemDraft,
   position: number

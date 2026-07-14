@@ -45,6 +45,8 @@ export { StoreBillingAddress } from './store-billing-address/store-billing-addre
 export { ReturnRules } from './return-rules/return-rules.model';
 export { FinalSaleItem } from './final-sale-item/final-sale-item.model';
 export { StoreContactInfo } from './store-contact-info/store-contact-info.model';
+export { ContactFormSubmission } from './contact-form-submission/contact-form-submission.model';
+export { NewsletterSubscription } from './newsletter-subscription/newsletter-subscription.model';
 export { StoreNotificationEmail } from './store-notification-email/store-notification-email.model';
 export { StoreShippingPolicy } from './store-shipping-policy/store-shipping-policy.model';
 export { StoreTermsPolicy } from './store-terms-policy/store-terms-policy.model';
@@ -132,6 +134,14 @@ export type { IStoreBillingAddress } from './store-billing-address/store-billing
 export type { IReturnRules } from './return-rules/return-rules.model';
 export type { IFinalSaleItem } from './final-sale-item/final-sale-item.model';
 export type { IStoreContactInfo } from './store-contact-info/store-contact-info.model';
+export type {
+  IContactFormSubmission,
+  ContactFormSubmissionStatus,
+} from './contact-form-submission/contact-form-submission.model';
+export type {
+  INewsletterSubscription,
+  NewsletterSubscriptionStatus,
+} from './newsletter-subscription/newsletter-subscription.model';
 export type { IStoreNotificationEmail } from './store-notification-email/store-notification-email.model';
 export type { IStoreShippingPolicy } from './store-shipping-policy/store-shipping-policy.model';
 export type { IStoreTermsPolicy } from './store-terms-policy/store-terms-policy.model';

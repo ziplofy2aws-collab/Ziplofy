@@ -239,20 +239,6 @@ export function featuredCollectionFieldDefs(settingsBase: string): EditorFieldDe
       sidebar: true,
     },
     {
-      path: s(settingsBase, 'colorScheme'),
-      type: 'select',
-      label: 'Color scheme',
-      group: 'Theme settings',
-      widget: 'color-scheme',
-      sidebar: true,
-      options: [
-        { value: 'scheme-1', label: 'Scheme 1' },
-        { value: 'scheme-2', label: 'Scheme 2' },
-        { value: 'scheme-3', label: 'Scheme 3' },
-        { value: 'scheme-4', label: 'Scheme 4' },
-      ],
-    },
-    {
       path: s(settingsBase, 'paddingTop'),
       type: 'number',
       label: 'Top',
@@ -275,6 +261,26 @@ export function featuredCollectionFieldDefs(settingsBase: string): EditorFieldDe
       step: 1,
       unit: 'px',
       sidebar: true,
+    },
+  ];
+}
+
+/** Theme settings + Custom CSS — carousel / editorial only (not grid). */
+export function featuredCollectionThemeCssFieldDefs(settingsBase: string): EditorFieldDef[] {
+  return [
+    {
+      path: s(settingsBase, 'colorScheme'),
+      type: 'select',
+      label: 'Color scheme',
+      group: 'Theme settings',
+      widget: 'color-scheme',
+      sidebar: true,
+      options: [
+        { value: 'scheme-1', label: 'Scheme 1' },
+        { value: 'scheme-2', label: 'Scheme 2' },
+        { value: 'scheme-3', label: 'Scheme 3' },
+        { value: 'scheme-4', label: 'Scheme 4' },
+      ],
     },
     {
       path: s(settingsBase, 'customCss'),
@@ -351,6 +357,13 @@ export const FEATURED_COLLECTION_PANEL_GROUP_ORDER = [
   'Custom CSS',
 ] as const;
 
+export const FEATURED_COLLECTION_GRID_PANEL_GROUP_ORDER = [
+  'Collection',
+  'Carousel navigation',
+  'Section layout',
+  'Padding',
+] as const;
+
 const EDITORIAL_COLLECTION_FIELD_KEYS = new Set([
   'collectionHandle',
   'layoutType',
@@ -419,24 +432,30 @@ export function resolveFeaturedCollectionVariant(opts: {
   catalogVariant?: string;
   fields?: EditorFieldDef[];
 }): FeaturedCollectionVariant {
+  // Prefer live settings over sidebar label — a stale "Carousel" label previously
+  // overrode catalogVariant/layoutType=grid and kept Theme settings visible.
+  const layoutType = opts.layoutType ?? '';
+  if (layoutType === 'carousel' || layoutType === 'editorial' || layoutType === 'grid') {
+    return layoutType;
+  }
+
+  const catalogVariant = opts.catalogVariant ?? '';
+  if (catalogVariant === 'featured-collection-carousel') return 'carousel';
+  if (catalogVariant === 'featured-collection-editorial') return 'editorial';
+  if (
+    catalogVariant === 'featured-collection-grid' ||
+    catalogVariant === 'featured-collection'
+  ) {
+    return 'grid';
+  }
+
   const label = opts.label ?? '';
   if (label.includes('Carousel')) return 'carousel';
   if (label.includes('Editorial')) return 'editorial';
   if (label.includes('Grid')) return 'grid';
 
-  const layoutType = opts.layoutType ?? '';
-  // Non-grid layout types reflect an explicit user layout change.
-  if (layoutType === 'carousel' || layoutType === 'editorial') return layoutType;
-
-  const catalogVariant = opts.catalogVariant ?? '';
-  if (catalogVariant === 'featured-collection-carousel') return 'carousel';
-  if (catalogVariant === 'featured-collection-editorial') return 'editorial';
-  if (catalogVariant === 'featured-collection-grid') return 'grid';
-
-  if (layoutType === 'grid') return 'grid';
-
+  // Shared field defs include navIcon for every variant, so field heuristics are unreliable.
   const raw = opts.fields ?? [];
-  if (isFeaturedCollectionCarouselSettingsPanelFields(raw)) return 'carousel';
   if (isFeaturedCollectionEditorialSettingsPanelFields(raw)) return 'editorial';
   if (isFeaturedCollectionGridSettingsPanelFields(raw)) return 'grid';
   return 'default';
@@ -481,9 +500,15 @@ export function filterFeaturedCollectionPanelFieldsForVariant(
         return EDITORIAL_COLLECTION_FIELD_KEYS.has(key);
       });
   }
-  return fields.filter(
-    (f) => !f.path.endsWith('.navIcon') && !f.path.endsWith('.navIconBackground')
-  );
+  // Grid (and unknown/default treated as grid UI): never expose Theme settings / Custom CSS.
+  return fields.filter((f) => {
+    if (f.path.endsWith('.navIcon') || f.path.endsWith('.navIconBackground')) return false;
+    const key = f.path.split('.').pop() ?? '';
+    if (key === 'customCss' || key === 'colorScheme') return false;
+    const group = (f.group ?? '').toLowerCase();
+    if (group === 'theme settings' || group === 'custom css') return false;
+    return true;
+  });
 }
 
 export function sortFeaturedCollectionPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -542,7 +567,11 @@ export function prepareFeaturedCollectionSettingsNode(
     catalogVariant,
     fields: raw,
   });
-  const fields = filterFeaturedCollectionPanelFieldsForVariant(raw, variant);
+  const withTheme =
+    settingsBase && (variant === 'carousel' || variant === 'editorial')
+      ? [...raw, ...featuredCollectionThemeCssFieldDefs(settingsBase)]
+      : raw;
+  const fields = filterFeaturedCollectionPanelFieldsForVariant(withTheme, variant);
   const label = featuredCollectionVariantLabel(variant);
   return { ...node, label, kind: 'section', fields };
 }

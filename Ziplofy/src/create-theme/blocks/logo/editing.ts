@@ -5,6 +5,16 @@ export const editing: CreateThemeBlockEditing = {
   "label": "Logo",
   "settingsOrder": [
     {
+      "key": "text",
+      "label": "Store name",
+      "type": "text"
+    },
+    {
+      "key": "tagline",
+      "label": "Tagline",
+      "type": "text"
+    },
+    {
       "key": "hideLogoOnHomePage",
       "label": "Hide logo on home page",
       "type": "boolean"

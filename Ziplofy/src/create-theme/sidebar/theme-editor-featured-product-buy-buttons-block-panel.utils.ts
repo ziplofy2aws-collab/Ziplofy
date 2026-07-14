@@ -4,7 +4,6 @@ import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme
 export const FEATURED_PRODUCT_BUY_BUTTONS_PANEL_GROUP_ORDER = [
   'General',
   'Local pickup',
-  'Gift card products',
   'Padding',
 ] as const;
 
@@ -14,25 +13,11 @@ const BUY_BUTTONS_FIELD_KEYS = new Set([
   'alwaysStackButtons',
   'textColor',
   'showPickupAvailability',
-  'giftCardForm',
-  'giftCardButtonStyle',
-  'giftCardSelectedButtonStyle',
-  'giftCardInputStyle',
   'paddingTop',
   'paddingBottom',
   'paddingLeft',
   'paddingRight',
 ]);
-
-const DEFAULT_CUSTOM_STYLE_OPTIONS = [
-  { value: 'default', label: 'Default' },
-  { value: 'custom', label: 'Custom' },
-] as const;
-
-const GIFT_CARD_INPUT_STYLE_OPTIONS = [
-  { value: 'input-field', label: 'Input field' },
-  { value: 'custom', label: 'Custom' },
-] as const;
 
 export function isFeaturedProductBuyButtonsBlockNodeId(nodeId: string): boolean {
   return /^template:[^:]+:[^:]+:block:details:nested:buy_buttons$/.test(nodeId);
@@ -49,10 +34,6 @@ export function featuredProductBuyButtonsDefaultSettings(): Record<string, strin
     alwaysStackButtons: false,
     textColor: 'default',
     showPickupAvailability: true,
-    giftCardForm: true,
-    giftCardButtonStyle: 'default',
-    giftCardSelectedButtonStyle: 'default',
-    giftCardInputStyle: 'input-field',
     paddingTop: 0,
     paddingBottom: 0,
     paddingLeft: 0,
@@ -86,42 +67,6 @@ export function featuredProductBuyButtonsFieldDefs(blocksBase: string): EditorFi
       sidebar: false,
       description:
         'Show nearby pickup locations when online store local pickup is set up.',
-    },
-    {
-      path: s('giftCardForm'),
-      type: 'boolean',
-      label: 'Gift card form',
-      group: 'Gift card products',
-      sidebar: false,
-      description:
-        "Customers can send gift cards to a recipient's email with a personal message.",
-    },
-    {
-      path: s('giftCardButtonStyle'),
-      type: 'select',
-      label: 'Button style',
-      group: 'Gift card products',
-      widget: 'segmented',
-      sidebar: false,
-      options: [...DEFAULT_CUSTOM_STYLE_OPTIONS],
-    },
-    {
-      path: s('giftCardSelectedButtonStyle'),
-      type: 'select',
-      label: 'Selected button style',
-      group: 'Gift card products',
-      widget: 'segmented',
-      sidebar: false,
-      options: [...DEFAULT_CUSTOM_STYLE_OPTIONS],
-    },
-    {
-      path: s('giftCardInputStyle'),
-      type: 'select',
-      label: 'Input style',
-      group: 'Gift card products',
-      widget: 'segmented',
-      sidebar: false,
-      options: [...GIFT_CARD_INPUT_STYLE_OPTIONS],
     },
     {
       path: s('paddingTop'),
@@ -226,10 +171,6 @@ function fieldSortKey(path: string): number {
     alwaysStackButtons: 0,
     textColor: 1,
     showPickupAvailability: 0,
-    giftCardForm: 0,
-    giftCardButtonStyle: 1,
-    giftCardSelectedButtonStyle: 2,
-    giftCardInputStyle: 3,
     paddingTop: 10,
     paddingBottom: 11,
     paddingLeft: 12,

@@ -8,11 +8,11 @@ export const ANNOUNCEMENT_PANEL_GROUP_ORDER = [
   'General',
   'Appearance',
   'Padding',
-  'Theme Settings',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(ANNOUNCEMENT_PANEL_GROUP_ORDER);
+
+const HIDDEN_ANNOUNCEMENT_PANEL_KEYS = new Set(['colorScheme', 'customCss', 'enabled']);
 
 const FIELD_SORT_KEYS: Record<string, number> = {
   timeToNext: 0,
@@ -22,8 +22,6 @@ const FIELD_SORT_KEYS: Record<string, number> = {
   dividerColor: 13,
   paddingTop: 20,
   paddingBottom: 21,
-  colorScheme: 25,
-  customCss: 30,
 };
 
 function fieldSortKey(path: string): number {
@@ -74,8 +72,6 @@ function inferredAnnouncementGroup(field: EditorFieldDef): string | undefined {
     return 'Appearance';
   }
   if (key === 'paddingTop' || key === 'paddingBottom') return 'Padding';
-  if (key === 'colorScheme') return 'Theme Settings';
-  if (key === 'customCss') return 'Custom CSS';
   return undefined;
 }
 
@@ -87,9 +83,11 @@ export function filterAnnouncementPanelFields(fields: EditorFieldDef[]): EditorF
       return group ? { ...f, group } : f;
     })
     .filter((f) => {
-      if (f.group === 'Content') return false;
+      if (f.group === 'Content' || f.group === 'Theme Settings' || f.group === 'Custom CSS') {
+        return false;
+      }
       const key = f.path.split('.').pop() ?? '';
-      if (key === 'enabled') return false;
+      if (HIDDEN_ANNOUNCEMENT_PANEL_KEYS.has(key)) return false;
       if (!f.group) return false;
       return PANEL_GROUPS.has(f.group);
     });
@@ -100,8 +98,6 @@ export function sortAnnouncementPanelFields(fields: EditorFieldDef[]): EditorFie
     General: 0,
     Appearance: 1,
     Padding: 2,
-    'Theme Settings': 3,
-    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

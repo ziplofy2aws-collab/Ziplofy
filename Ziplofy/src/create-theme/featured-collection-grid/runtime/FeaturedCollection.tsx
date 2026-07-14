@@ -17,8 +17,6 @@ import {
   readThemeProductCardsQuickAddFlags,
   resolveThemeProductCardInlineStyle,
 } from '../../runtime/shared/themeProductCardsRuntime';
-import { resolveThemeProductMediaBorderCss } from '../../runtime/shared/themeProductMediaRuntime';
-import { readThemeProductMediaSettings } from '../../settings/theme-product-media.settings';
 import { FeaturedProductShirtIllustration } from '../../product-highlight/runtime/FeaturedProductArt';
 import { readCollectionTitleStyle } from '../../runtime/shared/collectionTitleStyles';
 import {
@@ -45,8 +43,11 @@ type GridProduct = {
 
 function resolveFeaturedProductHref(product: GridProduct): string | null {
   if (product.placeholder) return null;
-  const handle = product.urlHandle?.trim() || product._id.trim();
-  return handle ? productPath(handle) : null;
+  const handle = product.urlHandle?.trim();
+  if (handle) return productPath(handle);
+  // Last resort if API omitted handle (legacy); prefer never linking by bare id in UI when possible.
+  const id = product._id?.trim();
+  return id ? productPath(id) : null;
 }
 
 const PRICE_TYPOGRAPHY_PRESETS: Record<
@@ -251,13 +252,22 @@ export function FeaturedCollection({
   }, [config, blocksBase, fontHeading, fontBody, text]);
 
   const quickAddFlags = useMemo(() => readThemeProductCardsQuickAddFlags(config), [config]);
-  const mediaBorder = useMemo(() => {
-    const media = readThemeProductMediaSettings(config);
+  const productCardMediaStyle = useMemo(() => {
+    const base = `${blocksBase}.product_card.settings`;
+    const aspectRaw = cfgString(config, `${base}.mediaAspectRatio`, 'auto');
+    const aspectRatio =
+      aspectRaw && aspectRaw !== 'auto' ? aspectRaw.replace(':', ' / ') : '1 / 1';
+    const borderStyle = cfgString(config, `${base}.mediaBorderStyle`, 'none');
     return {
-      border: resolveThemeProductMediaBorderCss(config, media),
-      radius: media.cornerRadius,
+      aspectRatio,
+      border: borderStyle === 'solid' ? `1px solid ${muted}` : 'none',
+      borderRadius: cfgNumber(config, `${base}.mediaCornerRadius`, 0),
+      paddingTop: cfgNumber(config, `${base}.mediaPaddingTop`, 0),
+      paddingBottom: cfgNumber(config, `${base}.mediaPaddingBottom`, 0),
+      paddingLeft: cfgNumber(config, `${base}.mediaPaddingLeft`, 0),
+      paddingRight: cfgNumber(config, `${base}.mediaPaddingRight`, 0),
     };
-  }, [config]);
+  }, [config, blocksBase, muted]);
 
   const products = useFeaturedCollectionProducts({ collectionHandle, limit });
 
@@ -315,7 +325,6 @@ export function FeaturedCollection({
       headerLayout.mobileCustomWidth
     );
     const sharedCss = combineResponsiveCss(
-      `.${scopeClass} .codiic-fc-media { aspect-ratio: 1 / 1; }`,
       `.${scopeClass} .codiic-fc-quick-add { opacity: 0; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease; pointer-events: none; }`,
       `.${scopeClass} .codiic-fc-card:hover .codiic-fc-quick-add, .${scopeClass} .codiic-fc-card:focus-within .codiic-fc-quick-add { opacity: 1; transform: translateY(0); pointer-events: auto; }`,
       mobileMedia(
@@ -557,8 +566,9 @@ export function FeaturedCollection({
           style={{
             width: '100%',
             overflow: 'hidden',
-            borderRadius: mediaBorder.radius,
-            border: mediaBorder.border,
+            aspectRatio: productCardMediaStyle.aspectRatio,
+            borderRadius: productCardMediaStyle.borderRadius,
+            border: productCardMediaStyle.border,
             boxSizing: 'border-box',
             background: image ? `center / cover no-repeat url(${image})` : '#f3f4f6',
             display: 'flex',
@@ -576,7 +586,14 @@ export function FeaturedCollection({
           key={nestedId}
           nodeId={`${editorNodeId}:block:product_card:nested:media`}
           label="Media"
-          style={{ position: 'relative' }}
+          style={{
+            position: 'relative',
+            paddingTop: productCardMediaStyle.paddingTop || undefined,
+            paddingBottom: productCardMediaStyle.paddingBottom || undefined,
+            paddingLeft: productCardMediaStyle.paddingLeft || undefined,
+            paddingRight: productCardMediaStyle.paddingRight || undefined,
+            boxSizing: 'border-box',
+          }}
         >
           {productHref ? (
             <Link

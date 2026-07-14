@@ -1,5 +1,9 @@
 import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  isThemeEditorPreview,
+  useStorefrontContactForm,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { resolveThemeInputFieldInlineStyle } from '../../runtime/shared/themeInputFieldsRuntime';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
@@ -31,6 +35,7 @@ export function ContactForm({
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
+  const { submitting, submitContactForm } = useStorefrontContactForm();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -79,10 +84,30 @@ export function ContactForm({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setName('');
-    setEmail('');
-    setPhone('');
-    setComment('');
+    if (isThemeEditorPreview() || submitting) {
+      setName('');
+      setEmail('');
+      setPhone('');
+      setComment('');
+      return;
+    }
+
+    void (async () => {
+      try {
+        await submitContactForm({
+          name,
+          email,
+          phone: phone || undefined,
+          message: comment,
+        });
+        setName('');
+        setEmail('');
+        setPhone('');
+        setComment('');
+      } catch {
+        // Toast handled in context
+      }
+    })();
   };
 
   const sectionShell: CSSProperties = {
@@ -363,8 +388,17 @@ export function ContactForm({
 
           {submitResponsiveCss ? <style>{submitResponsiveCss}</style> : null}
           <EditorField fieldPath={`${settingsBase}.submitLabel`} label="Submit button" as="span">
-            <button type="submit" className={submitScopeClass} style={submitButtonStyle}>
-              {submitLabel}
+            <button
+              type="submit"
+              className={submitScopeClass}
+              style={{
+                ...submitButtonStyle,
+                opacity: submitting ? 0.75 : submitButtonStyle.opacity,
+                cursor: submitting ? 'wait' : submitButtonStyle.cursor,
+              }}
+              disabled={submitting}
+            >
+              {submitting ? 'Sending…' : submitLabel}
             </button>
           </EditorField>
         </form>

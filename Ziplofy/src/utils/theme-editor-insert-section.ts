@@ -534,6 +534,7 @@ import { applyIconsWithTextPreset } from './icons-with-text-preset.util';
 import { applyMulticolumnPreset } from './multicolumn-preset.util';
 import { applyPullQuotePreset } from './pull-quote-preset.util';
 import { applyRichTextPreset } from './rich-text-preset.util';
+import { addRichTextContentBlockToSection } from './rich-text-sidebar.util';
 import { applyTextMarqueePreset } from './text-marquee-preset.util';
 import { applyFeaturedCollectionCatalogPreset } from './featured-collection-preset.util';
 import { applyBlogPostsCarouselPreset } from './blog-posts-carousel-preset.util';
@@ -2838,6 +2839,23 @@ function sectionIsMulticolumn(
   return blueprint === 'multicolumn_section';
 }
 
+function sectionIsRichText(
+  sec: Record<string, unknown>,
+  sectionInstanceId: string,
+  scope: AddBlockTarget['scope']
+): boolean {
+  if (sec.type === 'rich-text') return true;
+  const catalogVariant = String(
+    ((sec.settings as Record<string, unknown> | undefined)?.catalogVariant as string) ?? ''
+  );
+  if (catalogVariant === 'rich-text') return true;
+  const blueprint =
+    scope === 'layout'
+      ? layoutBlueprintKey(sectionInstanceId)
+      : templateBlueprintKey(sectionInstanceId);
+  return blueprint === 'rich_text_section';
+}
+
 function nextIconsWithTextBlockId(order: string[], blocks: Record<string, unknown>): string {
   const existing = new Set([...order, ...Object.keys(blocks)]);
   let n = 1;
@@ -3158,6 +3176,19 @@ export function insertBlockFromCatalog(
         nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
       };
     }
+    if (sectionIsRichText(sec, target.sectionInstanceId, 'layout')) {
+      const inserted = addRichTextContentBlockToSection(sec, catalogBlockId);
+      if (!inserted) return null;
+      sections[target.sectionInstanceId] = sec;
+      next.sections = sections;
+      return {
+        config: next,
+        blockInstanceId: inserted.blockInstanceId,
+        sectionInstanceId: target.sectionInstanceId,
+        scope: 'layout',
+        nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+      };
+    }
     return null;
   }
 
@@ -3236,6 +3267,22 @@ export function insertBlockFromCatalog(
   }
   if (sectionIsMulticolumn(sec, target.sectionInstanceId, 'template')) {
     const inserted = insertMulticolumnBlock(sec, catalogBlockId);
+    if (!inserted) return null;
+    sections[target.sectionInstanceId] = sec;
+    tpl.sections = sections;
+    templates[tplId] = tpl;
+    next.templates = templates;
+    return {
+      config: next,
+      blockInstanceId: inserted.blockInstanceId,
+      sectionInstanceId: target.sectionInstanceId,
+      scope: 'template',
+      templateId: tplId,
+      nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+    };
+  }
+  if (sectionIsRichText(sec, target.sectionInstanceId, 'template')) {
+    const inserted = addRichTextContentBlockToSection(sec, catalogBlockId);
     if (!inserted) return null;
     sections[target.sectionInstanceId] = sec;
     tpl.sections = sections;

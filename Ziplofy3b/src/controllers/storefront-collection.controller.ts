@@ -89,6 +89,9 @@ async function sendStorefrontCollectionProductsResponse(
       .select({
         title: 1,
         description: 1,
+        pageTitle: 1,
+        metaDescription: 1,
+        urlHandle: 1,
         category: 1,
         price: 1,
         compareAtPrice: 1,

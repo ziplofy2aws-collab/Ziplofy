@@ -1,5 +1,9 @@
 import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  isThemeEditorPreview,
+  useStorefrontNewsletter,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
@@ -44,6 +48,7 @@ export function EmailSignup({
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
+  const { submitting, subscribeToNewsletter } = useStorefrontNewsletter();
   const [email, setEmail] = useState('');
 
   const settingsBase =
@@ -349,6 +354,7 @@ export function EmailSignup({
   const blockSubmitButton = (
     <button
       type="submit"
+      disabled={submitting}
       style={{
         ...submitButtonBaseStyle,
         display: 'inline-flex',
@@ -359,15 +365,29 @@ export function EmailSignup({
         padding: form.submitStyle === 'link' ? '0 4px' : '0 24px',
         borderRadius: form.submitStyle === 'link' ? 0 : 9999,
         alignSelf: 'stretch',
+        opacity: submitting ? 0.75 : undefined,
+        cursor: submitting ? 'wait' : submitButtonBaseStyle.cursor,
       }}
     >
-      {renderSubmitContent()}
+      {submitting && !showArrow ? 'Subscribing…' : renderSubmitContent()}
     </button>
   );
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setEmail('');
+    if (isThemeEditorPreview() || submitting) {
+      setEmail('');
+      return;
+    }
+
+    void (async () => {
+      try {
+        await subscribeToNewsletter({ email });
+        setEmail('');
+      } catch {
+        // Toast handled in context
+      }
+    })();
   };
 
   const scopedCss = scopedEmailSignupCss(sectionId, style.customCss);
@@ -481,6 +501,7 @@ export function EmailSignup({
                   showArrow ? (
                     <button
                       type="submit"
+                      disabled={submitting}
                       aria-label="Subscribe"
                       style={{
                         flexShrink: 0,
@@ -494,7 +515,8 @@ export function EmailSignup({
                         borderRadius: '50%',
                         background: 'transparent',
                         color: submitLinkColor,
-                        cursor: 'pointer',
+                        cursor: submitting ? 'wait' : 'pointer',
+                        opacity: submitting ? 0.75 : 1,
                         padding: 0,
                       }}
                     >
@@ -503,6 +525,7 @@ export function EmailSignup({
                   ) : (
                     <button
                       type="submit"
+                      disabled={submitting}
                       style={{
                         flexShrink: 0,
                         ...submitButtonBaseStyle,
@@ -510,9 +533,11 @@ export function EmailSignup({
                         marginRight: 4,
                         padding: form.submitStyle === 'link' ? '0 12px' : '0 18px',
                         borderRadius: form.submitStyle === 'link' ? 0 : 9999,
+                        opacity: submitting ? 0.75 : undefined,
+                        cursor: submitting ? 'wait' : submitButtonBaseStyle.cursor,
                       }}
                     >
-                      Subscribe
+                      {submitting ? 'Subscribing…' : 'Subscribe'}
                     </button>
                   )
                 ) : null}

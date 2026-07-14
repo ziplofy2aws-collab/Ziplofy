@@ -3078,7 +3078,8 @@ function layoutSectionNode(
       `sections.${instanceId}`,
       values,
       itemOrder,
-      layoutChildrenKey
+      layoutChildrenKey,
+      config
     );
   } else if (isTextMarqueeLayout) {
     blockNodes = mapTextMarqueeBlockNodes(
@@ -3702,7 +3703,8 @@ function sectionToNode(
             `templates.${tplId}.sections.${secId}`,
             values,
             itemOrder,
-            childrenListKey
+            childrenListKey,
+            config
           )
       : isTextMarquee
         ? mapTextMarqueeBlockNodes(
@@ -5012,8 +5014,8 @@ export function settingsNodeForSelection(
     return prepareFooterUtilitiesSettingsNode(footerUtilitiesSection);
   }
 
-  // Rich text shares the generic Layout/Size fields that FAQ detection keys on,
-  // so it must be resolved before the FAQ fallback to avoid a "FAQ" mislabel.
+  // Rich text / contact form / email signup share generic Layout–Size fields that FAQ
+  // detection keys on, so they must resolve before the FAQ fallback to avoid a "FAQ" mislabel.
   if (
     node.label === 'Rich text' ||
     (node.fields?.length && isRichTextSettingsPanelFields(node.fields))
@@ -5021,14 +5023,10 @@ export function settingsNodeForSelection(
     return prepareRichTextSettingsNode(node);
   }
 
-  if (node.fields?.length && isFaqSettingsPanelFields(node.fields)) {
-    return prepareFaqSettingsNode(node);
-  }
-
   if (
     !isHeroSectionSettingsNode(node) &&
-    node.fields?.length &&
-    isContactFormSettingsPanelFields(node.fields)
+    (node.label === 'Contact form' ||
+      (node.fields?.length && isContactFormSettingsPanelFields(node.fields)))
   ) {
     return prepareContactFormSettingsNode(node);
   }
@@ -5039,6 +5037,10 @@ export function settingsNodeForSelection(
     isEmailSignupSettingsPanelFields(node.fields)
   ) {
     return prepareEmailSignupSettingsNode(node);
+  }
+
+  if (node.fields?.length && isFaqSettingsPanelFields(node.fields)) {
+    return prepareFaqSettingsNode(node);
   }
 
   if (node.fields?.length && isImageCompareSettingsPanelFields(node.fields)) {

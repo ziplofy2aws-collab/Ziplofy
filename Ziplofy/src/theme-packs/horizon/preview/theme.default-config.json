@@ -3673,13 +3673,27 @@
             "colorScheme": "scheme-1",
             "backgroundMedia": "none",
             "backgroundImageUrl": "",
+            "backgroundImagePosition": "cover",
             "backgroundColor": "",
             "borderStyle": "none",
             "cornerRadius": 0,
             "backgroundOverlay": false,
+            "overlayColor": "#000000",
+            "overlayOpacity": 35,
+            "contentBlocks": [
+              "heading",
+              "text",
+              "button"
+            ],
             "paddingTop": 48,
             "paddingBottom": 48,
-            "customCss": ""
+            "customCss": "",
+            "headingFont": "heading",
+            "headingFontSize": "32px",
+            "headingLineHeight": "normal",
+            "headingLetterSpacing": "normal",
+            "headingTextCase": "default",
+            "headingWrap": "pretty"
           }
         },
         "text_marquee_section": {

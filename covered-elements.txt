@@ -1,0 +1,19 @@
+annoucement bar ✅
+header ✅
+divider ✅
+
+
+text elements
+- faq 
+- icons with text
+- marquee
+- multicolumns
+- pull quote
+- rich text
+
+
+- Products 
+- Featured collection carousel ✅
+- Featured collection editorial ✅
+- featured collection grid ✅
+- 

@@ -474,7 +474,15 @@ export function readStructureOrderFromConfig(
       (sec as { type?: string }).type === 'rich-text' || catalogVariant === 'rich-text';
     if (isRichText) {
       const sectionPrefix = `template:${tplId}:${secId}`;
-      Object.assign(out, richTextStructureOrder(sectionPrefix, listKey));
+      Object.assign(
+        out,
+        richTextStructureOrder(
+          sectionPrefix,
+          listKey,
+          config,
+          `templates.${tplId}.sections.${secId}`
+        )
+      );
       continue;
     }
 
@@ -667,7 +675,7 @@ export function readStructureOrderFromConfig(
     if (isRichText) {
       Object.assign(
         out,
-        richTextLayoutStructureOrder(`layout:${layoutKey}`, secListKey)
+        richTextLayoutStructureOrder(`layout:${layoutKey}`, secListKey, config, layoutKey)
       );
       continue;
     }

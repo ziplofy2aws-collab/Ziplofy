@@ -148,6 +148,16 @@ export function filterFeaturedCollectionPanelFieldsForVariant(
         return EDITORIAL_COLLECTION_FIELD_KEYS.has(key);
       });
   }
+  if (variant === 'grid') {
+    return fields.filter((f) => {
+      if (f.path.endsWith('.navIcon') || f.path.endsWith('.navIconBackground')) return false;
+      const key = f.path.split('.').pop() ?? '';
+      if (key === 'customCss' || key === 'colorScheme') return false;
+      const group = (f.group ?? '').toLowerCase();
+      if (group === 'theme settings' || group === 'custom css') return false;
+      return true;
+    });
+  }
   return fields.filter(
     (f) => !f.path.endsWith('.navIcon') && !f.path.endsWith('.navIconBackground')
   );

@@ -26,6 +26,7 @@ import { scopedAnnouncementMobileCss, sectionScopeClass } from '../../runtime/sh
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { useThemeColors } from '../../runtime/shared/tokens';
+import type { ThemeFonts } from '../../runtime/shared/themeTypographyRuntime';
 
 type Props = { sectionId?: string };
 
@@ -40,12 +41,7 @@ function collectSlides(
   config: Record<string, unknown> | null,
   base: string,
   blockOrder: string[],
-  themeFonts: {
-    fontHeading: string;
-    fontBody: string;
-    fontSubheading?: string;
-    fontAccent?: string;
-  }
+  themeFonts: ThemeFonts
 ): AnnouncementSlide[] {
   const out: AnnouncementSlide[] = [];
   for (const blockId of blockOrder) {
@@ -227,13 +223,13 @@ export function AnnouncementBar({ sectionId = 'announcement_bar' }: Props) {
         background,
         color: scheme.color,
         fontFamily: themeColors.fontBody,
-        fontSize: 13,
         textAlign: 'center',
         paddingTop,
         paddingBottom,
         borderBottom: dividerPx > 0 ? `${dividerPx}px solid ${dividerColor}` : undefined,
         width: '100%',
         boxSizing: 'border-box',
+        lineHeight: 1.35,
       }}
     >
       {scopedCss ? <style>{scopedCss}</style> : null}

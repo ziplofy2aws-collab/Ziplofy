@@ -322,107 +322,6 @@ function PageBackgroundSection({
   );
 }
 
-function ThemeSettingsAccordion({
-  fields,
-  values,
-  onFieldChange,
-}: PanelProps & { fields: EditorFieldDef[] }) {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <div className="border-t border-[#e1e1e1] px-1 py-1">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between py-2 text-left text-[13px] font-medium text-gray-800"
-      >
-        Theme Settings
-        <ChevronDownIcon className={`h-4 w-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open ? (
-        <div className="space-y-1 pb-2">
-          {fields.map((field) => {
-            if (field.widget === 'segmented') {
-              return (
-                <SegmentedRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-              );
-            }
-            if (field.widget === 'link') {
-              return (
-                <div key={field.path} className="py-1">
-                  <span className="mb-1 block text-[13px] text-gray-800">{field.label}</span>
-                  <input
-                    type="text"
-                    value={fieldValueAsString(values, field)}
-                    onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
-                    placeholder={field.placeholder}
-                    className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-                  />
-                </div>
-              );
-            }
-            if (field.type === 'boolean') {
-              return (
-                <ToggleRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-              );
-            }
-            return (
-              <div key={field.path} className="py-1">
-                <span className="mb-1 block text-[13px] text-gray-800">{field.label}</span>
-                <input
-                  type="text"
-                  value={fieldValueAsString(values, field)}
-                  onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
-                  placeholder={field.placeholder}
-                  className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-                />
-              </div>
-            );
-          })}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function CustomCssAccordion({
-  field,
-  values,
-  onFieldChange,
-}: {
-  field: EditorFieldDef;
-  values: Record<string, string | boolean>;
-  onFieldChange: PanelProps['onFieldChange'];
-}) {
-  const [open, setOpen] = React.useState(false);
-  const id = fieldInputId(field.path);
-
-  return (
-    <div className="border-t border-[#e1e1e1] px-1 py-1">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between py-2 text-left text-[13px] font-medium text-gray-800"
-      >
-        Custom CSS
-        <ChevronDownIcon className={`h-4 w-4 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open ? (
-        <div className="pb-2">
-          <textarea
-            id={id}
-            rows={6}
-            value={fieldValueAsString(values, field)}
-            onChange={(e) => onFieldChange(field.path, 'textarea', e.target.value)}
-            className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 font-mono text-[12px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
-            placeholder="Add custom CSS for this section"
-          />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 function DefaultSection({
   title,
   fields,
@@ -569,22 +468,6 @@ export function HeaderSettingsPanel({ fields, values, onFieldChange }: PanelProp
               onFieldChange={onFieldChange}
             />
           );
-        }
-        if (key === 'Theme settings') {
-          return (
-            <ThemeSettingsAccordion
-              key={key}
-              fields={groupFields}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
-          );
-        }
-        if (key === 'Custom CSS') {
-          const css = groupFields[0];
-          return css ? (
-            <CustomCssAccordion key={key} field={css} values={values} onFieldChange={onFieldChange} />
-          ) : null;
         }
 
         return (

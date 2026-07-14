@@ -104,6 +104,16 @@ export const editing: CreateThemeEditing = {
       "type": "select"
     },
     {
+      "key": "cartBubbleBackground",
+      "label": "Background",
+      "type": "color"
+    },
+    {
+      "key": "cartBubbleText",
+      "label": "Text",
+      "type": "color"
+    },
+    {
       "key": "homeTransparentBackground",
       "label": "Home page",
       "type": "boolean"
@@ -159,6 +169,16 @@ export const editing: CreateThemeEditing = {
       "blockId": "logo",
       "label": "Logo",
       "settingsOrder": [
+        {
+          "key": "text",
+          "label": "Store name",
+          "type": "text"
+        },
+        {
+          "key": "tagline",
+          "label": "Tagline",
+          "type": "text"
+        },
         {
           "key": "hideLogoOnHomePage",
           "label": "Hide logo on home page",

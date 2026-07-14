@@ -30,20 +30,6 @@ export const ANNOUNCEMENT_BAR_SETTINGS_FIELDS: EditorFieldDef[] = [
     sidebar: false,
   },
   {
-    path: 'sections.announcement_bar.settings.colorScheme',
-    type: 'select',
-    label: 'Color scheme',
-    group: 'Appearance',
-    widget: 'color-scheme',
-    options: [
-      { value: 'scheme-1', label: 'Scheme 1' },
-      { value: 'scheme-2', label: 'Scheme 2' },
-      { value: 'scheme-3', label: 'Scheme 3' },
-      { value: 'scheme-4', label: 'Scheme 4' },
-    ],
-    sidebar: false,
-  },
-  {
     path: 'sections.announcement_bar.settings.dividerThickness',
     type: 'number',
     label: 'Divider thickness',
@@ -77,14 +63,6 @@ export const ANNOUNCEMENT_BAR_SETTINGS_FIELDS: EditorFieldDef[] = [
     max: 80,
     step: 1,
     unit: 'px',
-    sidebar: false,
-  },
-  {
-    path: 'sections.announcement_bar.settings.customCss',
-    type: 'textarea',
-    label: 'Custom CSS',
-    group: 'Custom CSS',
-    widget: 'accordion',
     sidebar: false,
   },
   {

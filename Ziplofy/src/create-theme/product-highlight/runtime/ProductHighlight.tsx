@@ -51,9 +51,8 @@ function ProductHighlightDefault({
 
   useEffect(() => {
     if (!productId) return;
-    const inList = products.some((p) => p._id === productId);
-    if (!inList) void fetchProductById(productId);
-  }, [productId, products, fetchProductById]);
+    void fetchProductById(productId);
+  }, [productId, fetchProductById]);
 
   const resolvedProduct = useMemo(() => {
     if (!productId) return null;
@@ -61,10 +60,13 @@ function ProductHighlightDefault({
     return products.find((p) => p._id === productId) ?? null;
   }, [productId, productDetail, products]);
 
-  const productTitle = resolvedProduct?.title ?? cachedTitle;
+  const productTitle =
+    (cachedTitle && cachedTitle !== 'Product title' ? cachedTitle : null) ??
+    resolvedProduct?.title ??
+    (cachedTitle || 'Product title');
   const price = resolvedProduct
     ? formatThemePrice(config, resolvedProduct.price, 'productCards')
-    : cachedPrice;
+    : cachedPrice || 'Rs. 19.99';
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
   const scheme = style.scheme;

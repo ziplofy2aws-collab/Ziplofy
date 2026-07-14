@@ -17,6 +17,8 @@ import { StorefrontSearchProvider } from './contexts/storefront-search.context';
 import { BuyXGetYProvider } from './contexts/buy-x-get-y.context';
 import { FreeShippingProvider } from './contexts/storefront-free-shipping.context';
 import { StorefrontOrderProvider } from './contexts/storefront-order.context';
+import { StorefrontContactFormProvider } from './contexts/storefront-contact-form.context';
+import { StorefrontNewsletterProvider } from './contexts/storefront-newsletter.context';
 import { PaymentProvider } from './contexts/payment.context';
 import { ProductOffersProvider } from './contexts/product-offers.context';
 
@@ -33,6 +35,8 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
         <StorefrontProductVariantProvider>
           <StorefrontCartProvider>
             <StorefrontOrderProvider>
+              <StorefrontContactFormProvider>
+              <StorefrontNewsletterProvider>
               <CustomerAddressProvider>
                 <StorefrontCountryProvider>
                   <StorefrontCollectionsProvider>
@@ -58,6 +62,8 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
                   </StorefrontCollectionsProvider>
                 </StorefrontCountryProvider>
               </CustomerAddressProvider>
+              </StorefrontNewsletterProvider>
+              </StorefrontContactFormProvider>
             </StorefrontOrderProvider>
           </StorefrontCartProvider>
         </StorefrontProductVariantProvider>
