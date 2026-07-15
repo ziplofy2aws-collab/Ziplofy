@@ -75,7 +75,7 @@ export function scopedCollectionLinksSpotlightMobileCss(scopeClass: string): str
   return mobileMedia(
     `.${scopeClass} .codiic-cl-spotlight-row { flex-direction: column !important; }` +
       `.${scopeClass} .codiic-cl-links-col { padding: 24px 20px !important; border: none !important; }` +
-      `.${scopeClass} .codiic-cl-media-col { min-height: 200px !important; padding: 16px !important; }`
+      `.${scopeClass} .codiic-cl-media-col { min-height: 260px !important; padding: 0 !important; }`
   );
 }
 

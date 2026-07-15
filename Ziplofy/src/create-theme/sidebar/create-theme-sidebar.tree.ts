@@ -467,7 +467,6 @@ import {
 import {
   collectionLinkTitleFieldDefsFromSchema,
   isCollectionLinkTitleFieldNodeId,
-  isCollectionLinkTitlePanelField,
   prepareCollectionLinkTitleSettingsNode,
 } from './theme-editor-collection-link-title-panel.utils';
 import {
@@ -5567,7 +5566,10 @@ export function settingsNodeForSelection(
   if (node.kind === 'field' && isCollectionLinkTitleFieldNodeId(node.id)) {
     let fields = editorSchema ? collectionLinkTitleFieldDefsFromSchema(editorSchema, node.id) : [];
     if (!fields.length) {
-      fields = (node.fields ?? []).filter(isCollectionLinkTitlePanelField);
+      fields = collectionLinkTitleFieldDefsFromSchema(
+        { templates: [], layout: {} } as EditorSchemaDoc,
+        node.id
+      );
     }
     return prepareCollectionLinkTitleSettingsNode({ ...node, fields });
   }

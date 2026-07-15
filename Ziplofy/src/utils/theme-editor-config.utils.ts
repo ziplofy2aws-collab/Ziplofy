@@ -810,6 +810,34 @@ const COLLECTION_HEADER_TITLE_SETTING_TYPES: Record<string, string> = {
   paddingRight: 'number',
 };
 
+const COLLECTION_LINK_TITLE_SETTING_TYPES: Record<string, string> = {
+  typographyPreset: 'select',
+  font: 'select',
+  fontSize: 'select',
+  lineHeight: 'select',
+  letterSpacing: 'select',
+  textCase: 'select',
+  wrap: 'select',
+  titleFont: 'select',
+  titleWeight: 'select',
+  titleLineHeight: 'select',
+  titleLetterSpacing: 'select',
+  titleCase: 'select',
+};
+
+/** Collection links Title typography (block instance ids like link_1, not blueprint collection_link). */
+function resolveCollectionLinkTitleSettingType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.[^.]+\.sections\.((?:collection_links_spotlight|collection_links_text)(?:_\d+)?)\.blocks\.[^.]+\.settings\.([^.]+)$/
+  );
+  if (tpl) return COLLECTION_LINK_TITLE_SETTING_TYPES[tpl[2]!];
+  const layout = path.match(
+    /^sections\.((?:collection_links_spotlight|collection_links_text)(?:_\d+)?)\.blocks\.[^.]+\.settings\.([^.]+)$/
+  );
+  if (layout) return COLLECTION_LINK_TITLE_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
 function resolveCollectionHeaderTitleSettingType(
   path: string,
   typeByPath: Map<string, string>
@@ -1367,6 +1395,9 @@ function resolveFieldTypeForPath(
   const collectionTitle = resolveCollectionHeaderTitleSettingType(path, typeByPath);
   if (collectionTitle) return collectionTitle;
 
+  const collectionLinkTitle = resolveCollectionLinkTitleSettingType(path);
+  if (collectionLinkTitle) return collectionLinkTitle;
+
   const faqSection = resolveFaqSectionSettingType(path, typeByPath);
   if (faqSection) return faqSection;
 
@@ -1742,7 +1773,19 @@ export function applyValuesToThemeConfig(
         key === 'headingLetterSpacing' ||
         key === 'headingTextCase' ||
         key === 'headingWrap' ||
-        key === 'headingTypographyPreset'
+        key === 'headingTypographyPreset' ||
+        key === 'typographyPreset' ||
+        key === 'font' ||
+        key === 'fontSize' ||
+        key === 'lineHeight' ||
+        key === 'letterSpacing' ||
+        key === 'textCase' ||
+        key === 'wrap' ||
+        key === 'titleFont' ||
+        key === 'titleWeight' ||
+        key === 'titleLineHeight' ||
+        key === 'titleLetterSpacing' ||
+        key === 'titleCase'
       ) {
         type = 'text';
       } else if (

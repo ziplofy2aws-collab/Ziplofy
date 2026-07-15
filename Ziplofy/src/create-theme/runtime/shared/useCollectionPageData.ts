@@ -7,36 +7,40 @@ import {
 export type CollectionPageProduct = {
   id: string;
   title: string;
+  urlHandle?: string;
   price: number;
   compareAtPrice?: number | null;
   imageUrl: string;
   soldOut: boolean;
 };
 
+function toMoney(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
 function mapProduct(item: StorefrontProductItem): CollectionPageProduct {
-  const variants = item.variants;
-  const firstVariant = Array.isArray(variants) && variants.length ? variants[0] : null;
-  const price =
-    typeof firstVariant?.price === 'number'
-      ? firstVariant.price
-      : typeof item.price === 'number'
-        ? item.price
-        : 0;
-  const compareAtPrice =
-    typeof firstVariant?.compareAtPrice === 'number' ? firstVariant.compareAtPrice : null;
-  const qty = typeof firstVariant?.quantity === 'number' ? firstVariant.quantity : null;
+  const price = toMoney(item.price) ?? 0;
+  const compareAtPrice = toMoney(item.compareAtPrice);
   const imageUrl =
     (Array.isArray(item.imageUrls) && item.imageUrls[0]) ||
-    (typeof item.imageUrl === 'string' ? item.imageUrl : '') ||
+    (typeof (item as { imageUrl?: string }).imageUrl === 'string'
+      ? (item as { imageUrl?: string }).imageUrl!
+      : '') ||
     '';
 
   return {
     id: item._id,
-    title: item.title?.trim() || 'Product title',
+    title: item.title?.trim() || 'Product',
+    urlHandle: item.urlHandle?.trim() || undefined,
     price,
     compareAtPrice,
     imageUrl,
-    soldOut: qty !== null ? qty <= 0 : false,
+    soldOut: false,
   };
 }
 

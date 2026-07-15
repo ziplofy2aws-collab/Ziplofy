@@ -9,11 +9,6 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
-      "key": "layoutMode",
-      "label": "Layout",
-      "type": "text"
-    },
-    {
       "key": "sectionWidth",
       "label": "Width",
       "type": "text"
@@ -34,9 +29,14 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
-      "key": "colorScheme",
-      "label": "Color scheme",
-      "type": "text"
+      "key": "backgroundColor",
+      "label": "Background color",
+      "type": "color"
+    },
+    {
+      "key": "textColor",
+      "label": "Text color",
+      "type": "color"
     },
     {
       "key": "paddingTop",
@@ -47,11 +47,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": [
@@ -68,6 +63,61 @@ export const editing: CreateThemeEditing = {
           "key": "imageUrl",
           "label": "Image",
           "type": "text"
+        },
+        {
+          "key": "typographyPreset",
+          "label": "Preset",
+          "type": "select"
+        },
+        {
+          "key": "font",
+          "label": "Font",
+          "type": "select"
+        },
+        {
+          "key": "fontSize",
+          "label": "Size",
+          "type": "select"
+        },
+        {
+          "key": "lineHeight",
+          "label": "Line height",
+          "type": "select"
+        },
+        {
+          "key": "letterSpacing",
+          "label": "Letter spacing",
+          "type": "select"
+        },
+        {
+          "key": "textCase",
+          "label": "Case",
+          "type": "select"
+        },
+        {
+          "key": "wrap",
+          "label": "Wrap",
+          "type": "select"
+        },
+        {
+          "key": "imageHeight",
+          "label": "Height",
+          "type": "select"
+        },
+        {
+          "key": "imageRatio",
+          "label": "Ratio",
+          "type": "select"
+        },
+        {
+          "key": "imageCornerRadius",
+          "label": "Corner radius",
+          "type": "number"
+        },
+        {
+          "key": "showCount",
+          "label": "Show product count",
+          "type": "boolean"
         }
       ]
     }

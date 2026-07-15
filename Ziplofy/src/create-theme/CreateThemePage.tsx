@@ -1,7 +1,6 @@
 import React, { startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import ThemeEditorLiveConfigModal from '../components/themes/ThemeEditorLiveConfigModal';
 import {
   CreateThemeEditorSidebar,
   buildEmptyShopifySidebarTree,
@@ -596,7 +595,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     location.pathname.startsWith('/checkout/editor') ||
     /^\/themes\/editor\/checkout\/[^/]+/.test(location.pathname);
   const exitPath = isCheckoutProfile ? '/settings/checkout' : '/online-store/themes';
-  const headerPackLabel = isCheckoutProfile ? 'Checkout' : 'Horizon';
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -679,7 +677,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const [blockCatalog, setBlockCatalog] = useState<ThemeBlockCatalogApi | null>(null);
   const [themeRuntime, setThemeRuntime] = useState<{ jsUrl?: string | null; cssUrl?: string | null }>({});
 
-  const [showViewTheme, setShowViewTheme] = useState(false);
   const [previewPage, setPreviewPage] = useState<ThemePreviewPage>(
     isCheckoutProfile ? 'checkout' : 'index'
   );
@@ -693,6 +690,19 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const [hiddenNodes, setHiddenNodes] = useState<Record<string, boolean>>({});
   const [itemOrder, setItemOrder] = useState<Record<string, string[]>>({});
   const [structureSyncKey, setStructureSyncKey] = useState(0);
+  const [structureDragging, setStructureDragging] = useState(false);
+
+  useEffect(() => {
+    if (!structureDragging) return;
+    const end = () => setStructureDragging(false);
+    window.addEventListener('dragend', end);
+    window.addEventListener('drop', end);
+    return () => {
+      window.removeEventListener('dragend', end);
+      window.removeEventListener('drop', end);
+    };
+  }, [structureDragging]);
+
   const {
     committedValues,
     previewBarRunKey,
@@ -2177,7 +2187,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     });
   }, [selectedNodeId, editorSchema, defaultConfig]);
 
-  /** Seed collection link Title/Image field paths (link_1.titleFont, etc.). */
+  /** Seed collection link Title/Image field paths (typography + image layout). */
   useEffect(() => {
     if (!editorSchema || !defaultConfig) return;
     const isTitle = isCollectionLinkTitleFieldNodeId(selectedNodeId);
@@ -2199,11 +2209,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         imageCornerRadius: '0',
       };
       const titleDefaults: Record<string, string> = {
-        titleFont: 'subheading',
-        titleWeight: 'default',
-        titleLineHeight: 'normal',
-        titleLetterSpacing: 'normal',
-        titleCase: 'default',
+        typographyPreset: 'heading-5',
+        font: 'body',
+        fontSize: 'default',
+        lineHeight: 'normal',
+        letterSpacing: 'normal',
+        textCase: 'default',
+        wrap: 'pretty',
       };
       const next = { ...prev };
       let changed = false;
@@ -2271,11 +2283,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       ])
     );
   }, [editorSchema, defaultConfig]);
-
-  const liveThemeJson = useMemo(() => {
-    if (!defaultConfig || !editorSchema) return {};
-    return mergedConfigFromFormValues({ ...defaultConfig, themeName }, values, editorSchema);
-  }, [defaultConfig, values, editorSchema, themeName]);
 
   const persistTheme = useCallback(
     async (opts: { themeName: string; themeDesc?: string; isCreate: boolean }) => {
@@ -3581,7 +3588,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       <CreateThemeHeader
         themeName={themeName}
         onThemeNameChange={setThemeName}
-        packLabel={headerPackLabel}
         previewPage={previewPage}
         onPreviewPageChange={handlePreviewPageChange}
         onOpenCheckoutEditor={handleOpenCheckoutEditor}
@@ -3591,8 +3597,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         onThemeConfigChange={handleThemeConfigFromPicker}
         device={device}
         onDeviceChange={setDevice}
-        onViewJson={() => setShowViewTheme(true)}
-        viewJsonDisabled={!defaultConfig || !editorSchema}
         onSave={handleSave}
         saveDisabled={!defaultConfig || !editorSchema || loading}
         saving={savingTheme}
@@ -3706,6 +3710,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           }}
           onDeleteNode={handleDeleteSidebarNode}
           onReorder={handleReorder}
+          onStructureDragChange={setStructureDragging}
           onInsertSection={openAddSectionModal}
           onInsertHoverChange={setInsertHoverHighlight}
           loading={isCheckoutProfile ? false : loading}
@@ -3726,7 +3731,11 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         />
 
       <div className="relative z-0 flex min-h-0 min-w-0 flex-1 overflow-hidden">
-        <div className="pointer-events-auto flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white">
+        <div
+          className={`pointer-events-auto flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden transition-colors duration-300 ease-out ${
+            structureDragging ? 'bg-[#cfcfcf]' : 'bg-white'
+          }`}
+        >
           {isCheckoutProfile ? (
             <CheckoutProfilePreview
               device={device}
@@ -3751,10 +3760,15 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             />
           ) : (
           <div
-            className={`create-theme-preview-canvas relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
-              device === 'mobile' ? 'mx-auto w-full max-w-[390px] border-x border-gray-200' : 'h-full w-full'
+            className={`create-theme-preview-stage relative flex min-h-0 flex-1 flex-col overflow-auto ${
+              structureDragging ? 'create-theme-preview-stage--squeezed' : ''
             }`}
           >
+            <div
+              className={`create-theme-preview-canvas relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
+                device === 'mobile' ? 'mx-auto w-full max-w-[390px] border-x border-gray-200' : 'h-full w-full'
+              } ${structureDragging ? 'create-theme-preview-canvas--squeezed' : ''}`}
+            >
             <CreateThemeLivePreview
               key={themeRuntime.jsUrl ?? 'composer'}
               className="h-full min-h-0 w-full flex-1"
@@ -3785,6 +3799,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
                 openAddSectionModal({ ...group, ...payload });
               }}
             />
+            </div>
           </div>
           )}
         </div>
@@ -3822,19 +3837,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         />
       ) : null}
 
-      {showViewTheme ? (
-        <ThemeEditorLiveConfigModal
-          open={showViewTheme}
-          onClose={() => setShowViewTheme(false)}
-          staticDevMode
-          packId="horizon"
-          mergedConfig={liveThemeJson}
-          formValues={values}
-          baseConfig={defaultConfig}
-          title="View theme JSON"
-          description="Live document from create-theme structure and settings."
-        />
-      ) : null}
     </div>
   );
 };

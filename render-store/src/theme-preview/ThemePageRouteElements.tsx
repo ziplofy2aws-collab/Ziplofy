@@ -152,7 +152,7 @@ export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactEle
       element = (
         <>
           <StorefrontCollectionByUrlHandleLoader urlHandleOverride={spec.loadCollectionUrlHandle} />
-          {page}
+          {element}
         </>
       );
     }

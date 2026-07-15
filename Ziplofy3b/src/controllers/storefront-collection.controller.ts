@@ -288,15 +288,238 @@ async function sendStorefrontCollectionProductsResponse(
   });
 }
 
+async function sendStorefrontAllProductsResponse(
+  req: Request,
+  res: Response,
+  storeId: mongoose.Types.ObjectId
+): Promise<void> {
+  const { page = 1, limit = 24, q } = req.query as Record<string, any>;
+
+  const pageNum = Math.max(1, Number(page) || 1);
+  const limitNum = Math.min(100, Math.max(1, Number(limit) || 24));
+  const skip = (pageNum - 1) * limitNum;
+
+  const filter: Record<string, unknown> = {
+    storeId,
+    status: "active",
+    isDeleted: { $ne: true },
+  };
+  if (q && typeof q === "string" && q.trim()) {
+    const rx = new RegExp(q.trim(), "i");
+    filter.$or = [{ title: rx }, { sku: rx }];
+  }
+
+  const [products, total] = await Promise.all([
+    Product.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .select({
+        title: 1,
+        description: 1,
+        pageTitle: 1,
+        metaDescription: 1,
+        urlHandle: 1,
+        category: 1,
+        price: 1,
+        compareAtPrice: 1,
+        sku: 1,
+        status: 1,
+        vendor: 1,
+        imageUrls: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      })
+      .populate({ path: "vendor", select: "name" })
+      .populate({ path: "category", select: "name" })
+      .lean(),
+    Product.countDocuments(filter),
+  ]);
+
+  // Reuse discount enrichment from collection products by calling through the same pipeline:
+  // temporarily pass a dummy collection lookup path — enrich products in-place below.
+  const now = new Date();
+  const nowDateStr = now.toISOString().split("T")[0];
+  const nowTimeStr = now.toISOString().split("T")[1].substring(0, 5);
+
+  const isDiscountActive = (d: any): boolean => {
+    if (d.startDate && d.startDate > nowDateStr) return false;
+    if (d.startDate === nowDateStr && d.startTime && d.startTime > nowTimeStr) return false;
+    if (!d.setEndDate || !d.endDate) return true;
+    if (d.endDate > nowDateStr) return true;
+    if (d.endDate === nowDateStr && d.endTime && d.endTime >= nowTimeStr) return true;
+    if (d.endDate === nowDateStr && !d.endTime) return true;
+    return false;
+  };
+
+  const activeProductDiscounts = await AmountOffProductsDiscount.find({
+    storeId,
+    status: "active",
+  }).lean();
+  const validProductDiscounts = activeProductDiscounts.filter(isDiscountActive);
+  const productDiscountIds = validProductDiscounts.map((d: any) => d._id);
+  const productDiscountEntries =
+    productDiscountIds.length > 0
+      ? await AmountOffProductsEntry.find({
+          storeId,
+          discountId: { $in: productDiscountIds },
+        }).lean()
+      : [];
+
+  const entriesByDiscount = new Map<string, any[]>();
+  for (const entry of productDiscountEntries) {
+    const key = String(entry.discountId);
+    if (!entriesByDiscount.has(key)) entriesByDiscount.set(key, []);
+    entriesByDiscount.get(key)!.push(entry);
+  }
+
+  const collectionIdsInEntries = productDiscountEntries
+    .filter((e: any) => e.collectionId)
+    .map((e: any) => e.collectionId);
+  const collectionProductMap = new Map<string, string[]>();
+  if (collectionIdsInEntries.length > 0) {
+    const collectionEntries = await CollectionEntry.find({
+      collectionId: { $in: collectionIdsInEntries },
+    }).lean();
+    for (const ce of collectionEntries) {
+      const colKey = String(ce.collectionId);
+      if (!collectionProductMap.has(colKey)) collectionProductMap.set(colKey, []);
+      collectionProductMap.get(colKey)!.push(String(ce.productId));
+    }
+  }
+
+  const productDiscountMap = new Map<
+    string,
+    {
+      valueType: "percentage" | "fixed-amount";
+      percentage?: number;
+      fixedAmount?: number;
+      title?: string;
+      method: "automatic" | "discount-code";
+      discountCode?: string;
+    }
+  >();
+
+  for (const discount of validProductDiscounts) {
+    const discountId = String(discount._id);
+    const entries = entriesByDiscount.get(discountId) || [];
+    const applicableProductIds: string[] = [];
+    for (const entry of entries) {
+      if (entry.productId) applicableProductIds.push(String(entry.productId));
+      else if (entry.collectionId) {
+        applicableProductIds.push(
+          ...(collectionProductMap.get(String(entry.collectionId)) || [])
+        );
+      }
+    }
+    for (const productId of applicableProductIds) {
+      const existing = productDiscountMap.get(productId);
+      const newDiscount = {
+        valueType: (discount as any).valueType as "percentage" | "fixed-amount",
+        percentage: (discount as any).percentage,
+        fixedAmount: (discount as any).fixedAmount,
+        title: (discount as any).title,
+        method: (discount as any).method as "automatic" | "discount-code",
+        discountCode: (discount as any).discountCode,
+      };
+      if (!existing) {
+        productDiscountMap.set(productId, newDiscount);
+      } else {
+        const existingValue =
+          existing.valueType === "percentage" ? existing.percentage || 0 : existing.fixedAmount || 0;
+        const newValue =
+          newDiscount.valueType === "percentage"
+            ? newDiscount.percentage || 0
+            : newDiscount.fixedAmount || 0;
+        if (existing.valueType === newDiscount.valueType && newValue > existingValue) {
+          productDiscountMap.set(productId, newDiscount);
+        } else if (newDiscount.valueType === "fixed-amount" && newValue > existingValue) {
+          productDiscountMap.set(productId, newDiscount);
+        }
+      }
+    }
+  }
+
+  const activeOrderDiscounts = await AmountOffOrderDiscount.find({
+    storeId,
+    status: "active",
+    method: "automatic",
+  }).lean();
+  const validOrderDiscounts = activeOrderDiscounts.filter(isDiscountActive);
+  let bestOrderDiscount: {
+    valueType: "percentage" | "fixed-amount";
+    percentage?: number;
+    fixedAmount?: number;
+    title?: string;
+    minimumPurchase?: string;
+    minimumAmount?: number;
+    minimumQuantity?: number;
+  } | null = null;
+  for (const discount of validOrderDiscounts) {
+    const d = discount as any;
+    const newDiscount = {
+      valueType: d.valueType as "percentage" | "fixed-amount",
+      percentage: d.percentage,
+      fixedAmount: d.fixedAmount,
+      title: d.title,
+      minimumPurchase: d.minimumPurchase,
+      minimumAmount: d.minimumAmount,
+      minimumQuantity: d.minimumQuantity,
+    };
+    if (!bestOrderDiscount) {
+      bestOrderDiscount = newDiscount;
+    } else {
+      const existingValue =
+        bestOrderDiscount.valueType === "percentage"
+          ? bestOrderDiscount.percentage || 0
+          : bestOrderDiscount.fixedAmount || 0;
+      const newValue =
+        newDiscount.valueType === "percentage"
+          ? newDiscount.percentage || 0
+          : newDiscount.fixedAmount || 0;
+      if (newValue > existingValue) bestOrderDiscount = newDiscount;
+    }
+  }
+
+  const publicOrigin = publicOriginFromRequest(req);
+  const enrichedProducts = products.map((product: any) => {
+    const productId = String(product._id);
+    return {
+      ...product,
+      imageUrls: absolutizeImageUrlsArray(publicOrigin, product.imageUrls),
+      productDiscount: productDiscountMap.get(productId) || null,
+    };
+  });
+
+  res.status(200).json({
+    success: true,
+    data: enrichedProducts,
+    pagination: {
+      currentPage: pageNum,
+      totalPages: Math.ceil(total / limitNum),
+      totalItems: total,
+      itemsPerPage: limitNum,
+    },
+    orderDiscount: bestOrderDiscount,
+  });
+}
+
 // Get products inside a collection by url handle (storefront)
 export const getProductsInCollectionByUrlHandle = asyncErrorHandler(async (req: Request, res: Response) => {
   const { storeId, urlHandle } = req.params;
   assertValidStoreId(storeId);
   if (!urlHandle?.trim()) throw new CustomError("urlHandle is required", 400);
 
+  const handle = normalizeUrlHandle(urlHandle);
+  /** Catalog page `/collections/all` — every active product in the store. */
+  if (handle === "all") {
+    await sendStorefrontAllProductsResponse(req, res, new mongoose.Types.ObjectId(storeId));
+    return;
+  }
+
   const collection = await Collections.findOne({
     storeId,
-    urlHandle: normalizeUrlHandle(urlHandle),
+    urlHandle: handle,
     status: "published",
   })
     .select("_id storeId")

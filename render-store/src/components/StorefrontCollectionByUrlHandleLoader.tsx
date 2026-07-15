@@ -53,8 +53,13 @@ export function StorefrontCollectionByUrlHandleLoader({ urlHandleOverride }: Pro
 
         if (handle !== 'all') {
           await getCollectionDetailsByUrlHandle(storeId, handle);
+        } else {
+          clearActiveCollection();
         }
-        await fetchProductsInCollectionByUrlHandle(storeId, handle);
+        await fetchProductsInCollectionByUrlHandle(storeId, handle, {
+          page: 1,
+          limit: handle === 'all' ? 48 : 24,
+        });
       } catch {
         /* errors surfaced via context.error */
       }

@@ -730,11 +730,11 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex min-w-[200px] max-w-[min(92vw,300px)] items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-medium text-gray-900 shadow-sm transition-colors hover:bg-gray-50"
+        className="flex min-w-[180px] max-w-[min(92vw,280px)] items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100"
         aria-expanded={open}
         aria-haspopup="listbox"
       >
-        <PageIcon icon={current.icon} className="h-[18px] w-[18px] shrink-0 text-gray-800" />
+        <PageIcon icon={current.icon} className="h-[18px] w-[18px] shrink-0 text-gray-600" />
         <span className="truncate">{current.label}</span>
         <ChevronDownIcon
           className={`h-4 w-4 shrink-0 text-gray-500 transition-transform ${open ? 'rotate-180' : ''}`}

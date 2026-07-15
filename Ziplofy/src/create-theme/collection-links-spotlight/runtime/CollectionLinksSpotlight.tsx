@@ -53,8 +53,7 @@ export function CollectionLinksSpotlight({
     `${settingsBase}.catalogVariant`,
     'collection-links-spotlight'
   );
-  const isTextLayout =
-    layoutStyle.layoutMode === 'text' || catalogVariant === 'collection-links-text';
+  const isTextLayout = catalogVariant === 'collection-links-text' || layoutStyle.layoutMode === 'text';
   const sectionLabel = isTextLayout ? 'Collection links: Text' : 'Collection links: Spotlight';
 
   const links = useMemo(
@@ -237,14 +236,21 @@ export function CollectionLinksSpotlight({
                 ...linkItemStyle,
                 fontFamily: titleStyle.fontFamily,
                 fontSize: titleStyle.fontSize,
-                fontWeight: isSpotlightActive ? 600 : titleStyle.fontWeight,
+                fontWeight: isSpotlightActive ? Math.max(600, titleStyle.fontWeight) : titleStyle.fontWeight,
+                fontStyle: titleStyle.fontStyle,
                 lineHeight: titleStyle.lineHeight,
                 letterSpacing: titleStyle.letterSpacing,
                 textTransform: titleStyle.textTransform,
+                ...(titleStyle.textWrap ? { textWrap: titleStyle.textWrap as CSSProperties['textWrap'] } : null),
                 ...(isTextLayout
                   ? {
-                      color: isTextActive ? layoutStyle.scheme.color : layoutStyle.scheme.muted,
-                      transition: 'color 0.15s ease',
+                      // Text color must apply to every link; hover only emphasizes weight.
+                      color: layoutStyle.scheme.color,
+                      opacity: isTextActive ? 1 : 0.62,
+                      fontWeight: isTextActive
+                        ? Math.max(600, titleStyle.fontWeight)
+                        : titleStyle.fontWeight,
+                      transition: 'opacity 0.15s ease, font-weight 0.15s ease',
                     }
                   : {
                       opacity: isSpotlightActive ? 1 : 0.72,
@@ -269,6 +275,9 @@ export function CollectionLinksSpotlight({
     </div>
   );
 
+  const mediaMinHeight = spotlightMedia?.imageStyle.maxHeight ?? 400;
+  const imageStyle = spotlightMedia?.imageStyle;
+
   const mediaColumn = (
     <div
       className="codiic-cl-media-col"
@@ -277,30 +286,51 @@ export function CollectionLinksSpotlight({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#ececec',
-        minHeight: 280,
-        padding: 24,
+        alignSelf: 'stretch',
+        minHeight: mediaMinHeight,
+        overflow: 'hidden',
+        position: 'relative',
       }}
     >
-      {spotlightMedia?.imageUrl ? (
-        <EditorField fieldPath={spotlightMedia.imageFieldPath} label="Image">
+      {spotlightMedia?.imageUrl && imageStyle ? (
+        <EditorField
+          fieldPath={spotlightMedia.imageFieldPath}
+          label="Image"
+          as="div"
+          style={{
+            display: 'block',
+            height: imageStyle.maxHeight,
+            aspectRatio: imageStyle.aspectRatio,
+            maxWidth: '100%',
+            borderRadius: imageStyle.borderRadius,
+            overflow: 'hidden',
+          }}
+        >
           <img
             key={spotlightMedia.imageUrl}
             src={spotlightMedia.imageUrl}
             alt=""
             style={{
+              display: 'block',
               width: '100%',
-              maxWidth: '100%',
-              maxHeight: spotlightMedia.imageStyle.maxHeight,
-              aspectRatio: spotlightMedia.imageStyle.aspectRatio,
-              borderRadius: spotlightMedia.imageStyle.borderRadius,
-              objectFit: spotlightMedia.imageStyle.objectFit,
+              height: '100%',
+              objectFit: imageStyle.objectFit,
               transition: 'opacity 0.25s ease',
             }}
           />
         </EditorField>
       ) : (
-        <CollectionLinksSpotlightArt />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            minHeight: mediaMinHeight,
+          }}
+        >
+          <CollectionLinksSpotlightArt />
+        </div>
       )}
     </div>
   );
@@ -344,7 +374,8 @@ export function CollectionLinksSpotlight({
             style={{
               display: 'flex',
               flexDirection: layoutStyle.imagePosition === 'left' ? 'row-reverse' : 'row',
-              minHeight: 280,
+              alignItems: 'stretch',
+              minHeight: mediaMinHeight,
               overflow: 'hidden',
               borderRadius: 2,
             }}

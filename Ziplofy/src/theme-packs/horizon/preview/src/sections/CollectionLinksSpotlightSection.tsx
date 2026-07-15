@@ -152,21 +152,38 @@ export function CollectionLinksSpotlightSection({
       style={{
         flex: '1 1 52%',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#ececec',
-        minHeight: 280,
-        padding: 24,
+        alignItems: 'stretch',
+        justifyContent: 'stretch',
+        alignSelf: 'stretch',
+        minHeight: 400,
+        overflow: 'hidden',
+        position: 'relative',
       }}
     >
       {layoutStyle.imageUrl ? (
         <img
           src={layoutStyle.imageUrl}
           alt=""
-          style={{ maxWidth: '100%', maxHeight: 240, objectFit: 'contain' }}
+          style={{
+            display: 'block',
+            width: '100%',
+            height: '100%',
+            minHeight: 400,
+            objectFit: 'cover',
+          }}
         />
       ) : (
-        <CollectionLinksSpotlightArt />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            minHeight: 400,
+          }}
+        >
+          <CollectionLinksSpotlightArt />
+        </div>
       )}
     </div>
   );
@@ -203,7 +220,8 @@ export function CollectionLinksSpotlightSection({
             style={{
               display: 'flex',
               flexDirection: layoutStyle.imagePosition === 'left' ? 'row-reverse' : 'row',
-              minHeight: 280,
+              alignItems: 'stretch',
+              minHeight: 400,
               overflow: 'hidden',
               borderRadius: 2,
             }}

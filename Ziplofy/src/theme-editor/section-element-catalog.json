@@ -7647,23 +7647,6 @@
           "widget": "collections"
         },
         {
-          "key": "layoutMode",
-          "type": "select",
-          "label": "Layout",
-          "group": "Layout",
-          "widget": "segmented",
-          "options": [
-            {
-              "value": "spotlight",
-              "label": "Spotlight"
-            },
-            {
-              "value": "text",
-              "label": "Text"
-            }
-          ]
-        },
-        {
           "key": "sectionWidth",
           "type": "select",
           "label": "Width",
@@ -7726,31 +7709,6 @@
           "widget": "image"
         },
         {
-          "key": "colorScheme",
-          "type": "select",
-          "label": "Color scheme",
-          "group": "Layout",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
-            }
-          ]
-        },
-        {
           "key": "paddingTop",
           "type": "number",
           "label": "Top",
@@ -7773,11 +7731,18 @@
           "unit": "px"
         },
         {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
+          "key": "backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "Appearance",
+          "widget": "color"
+        },
+        {
+          "key": "textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "Appearance",
+          "widget": "color"
         }
       ],
       "blocks": {
@@ -7793,13 +7758,112 @@
               "key": "productCount",
               "type": "number",
               "label": "Product count"
+            },
+            {
+              "key": "typographyPreset",
+              "type": "select",
+              "label": "Preset",
+              "group": "Typography",
+              "widget": "select",
+              "description": "Edit presets in theme settings",
+              "options": [
+                {
+                  "value": "default",
+                  "label": "Default"
+                },
+                {
+                  "value": "paragraph",
+                  "label": "Paragraph"
+                },
+                {
+                  "value": "body",
+                  "label": "Body"
+                },
+                {
+                  "value": "heading-1",
+                  "label": "Heading 1"
+                },
+                {
+                  "value": "heading-2",
+                  "label": "Heading 2"
+                },
+                {
+                  "value": "heading-3",
+                  "label": "Heading 3"
+                },
+                {
+                  "value": "heading-4",
+                  "label": "Heading 4"
+                },
+                {
+                  "value": "heading-5",
+                  "label": "Heading 5"
+                },
+                {
+                  "value": "heading-6",
+                  "label": "Heading 6"
+                },
+                {
+                  "value": "custom",
+                  "label": "Custom"
+                }
+              ]
+            },
+            {
+              "key": "font",
+              "type": "select",
+              "label": "Font",
+              "group": "Typography",
+              "widget": "select"
+            },
+            {
+              "key": "fontSize",
+              "type": "select",
+              "label": "Size",
+              "group": "Typography",
+              "widget": "select"
+            },
+            {
+              "key": "lineHeight",
+              "type": "select",
+              "label": "Line height",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "letterSpacing",
+              "type": "select",
+              "label": "Letter spacing",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "textCase",
+              "type": "select",
+              "label": "Case",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "wrap",
+              "type": "select",
+              "label": "Wrap",
+              "group": "Typography",
+              "widget": "select"
             }
           ],
           "panels": {
             "default": {
               "includeKeys": [
                 "title",
-                "productCount"
+                "productCount",
+                "typographyPreset",
+                "font",
+                "fontSize",
+                "lineHeight",
+                "letterSpacing",
+                "textCase",
+                "wrap"
               ]
             }
           }
@@ -7809,15 +7873,14 @@
         "default": {
           "includeKeys": [
             "collectionsPicker",
-            "layoutMode",
             "sectionWidth",
             "alignment",
             "imagePosition",
             "imageUrl",
-            "colorScheme",
             "paddingTop",
             "paddingBottom",
-            "customCss"
+            "backgroundColor",
+            "textColor"
           ]
         }
       }
@@ -7837,23 +7900,6 @@
           "widget": "collections"
         },
         {
-          "key": "layoutMode",
-          "type": "select",
-          "label": "Layout",
-          "group": "Layout",
-          "widget": "segmented",
-          "options": [
-            {
-              "value": "spotlight",
-              "label": "Spotlight"
-            },
-            {
-              "value": "text",
-              "label": "Text"
-            }
-          ]
-        },
-        {
           "key": "sectionWidth",
           "type": "select",
           "label": "Width",
@@ -7916,31 +7962,6 @@
           "widget": "image"
         },
         {
-          "key": "colorScheme",
-          "type": "select",
-          "label": "Color scheme",
-          "group": "Layout",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
-            }
-          ]
-        },
-        {
           "key": "paddingTop",
           "type": "number",
           "label": "Top",
@@ -7963,11 +7984,18 @@
           "unit": "px"
         },
         {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
+          "key": "backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "Appearance",
+          "widget": "color"
+        },
+        {
+          "key": "textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "Appearance",
+          "widget": "color"
         }
       ],
       "blocks": {
@@ -7992,6 +8020,98 @@
               "type": "text",
               "label": "Collection",
               "widget": "collection"
+            },
+            {
+              "key": "typographyPreset",
+              "type": "select",
+              "label": "Preset",
+              "group": "Typography",
+              "widget": "select",
+              "description": "Edit presets in theme settings",
+              "options": [
+                {
+                  "value": "default",
+                  "label": "Default"
+                },
+                {
+                  "value": "paragraph",
+                  "label": "Paragraph"
+                },
+                {
+                  "value": "body",
+                  "label": "Body"
+                },
+                {
+                  "value": "heading-1",
+                  "label": "Heading 1"
+                },
+                {
+                  "value": "heading-2",
+                  "label": "Heading 2"
+                },
+                {
+                  "value": "heading-3",
+                  "label": "Heading 3"
+                },
+                {
+                  "value": "heading-4",
+                  "label": "Heading 4"
+                },
+                {
+                  "value": "heading-5",
+                  "label": "Heading 5"
+                },
+                {
+                  "value": "heading-6",
+                  "label": "Heading 6"
+                },
+                {
+                  "value": "custom",
+                  "label": "Custom"
+                }
+              ]
+            },
+            {
+              "key": "font",
+              "type": "select",
+              "label": "Font",
+              "group": "Typography",
+              "widget": "select"
+            },
+            {
+              "key": "fontSize",
+              "type": "select",
+              "label": "Size",
+              "group": "Typography",
+              "widget": "select"
+            },
+            {
+              "key": "lineHeight",
+              "type": "select",
+              "label": "Line height",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "letterSpacing",
+              "type": "select",
+              "label": "Letter spacing",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "textCase",
+              "type": "select",
+              "label": "Case",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "wrap",
+              "type": "select",
+              "label": "Wrap",
+              "group": "Typography",
+              "widget": "select"
             }
           ],
           "panels": {
@@ -7999,7 +8119,14 @@
               "includeKeys": [
                 "title",
                 "productCount",
-                "collectionHandle"
+                "collectionHandle",
+                "typographyPreset",
+                "font",
+                "fontSize",
+                "lineHeight",
+                "letterSpacing",
+                "textCase",
+                "wrap"
               ]
             }
           }
@@ -8009,15 +8136,12 @@
         "default": {
           "includeKeys": [
             "collectionsPicker",
-            "layoutMode",
             "sectionWidth",
             "alignment",
-            "imagePosition",
-            "imageUrl",
-            "colorScheme",
             "paddingTop",
             "paddingBottom",
-            "customCss"
+            "backgroundColor",
+            "textColor"
           ]
         }
       }
@@ -17418,23 +17542,6 @@
           "widget": "collections"
         },
         {
-          "key": "layoutMode",
-          "type": "select",
-          "label": "Layout",
-          "group": "Layout",
-          "widget": "segmented",
-          "options": [
-            {
-              "value": "spotlight",
-              "label": "Spotlight"
-            },
-            {
-              "value": "text",
-              "label": "Text"
-            }
-          ]
-        },
-        {
           "key": "sectionWidth",
           "type": "select",
           "label": "Width",
@@ -17497,31 +17604,6 @@
           "widget": "image"
         },
         {
-          "key": "colorScheme",
-          "type": "select",
-          "label": "Color scheme",
-          "group": "Layout",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
-            }
-          ]
-        },
-        {
           "key": "paddingTop",
           "type": "number",
           "label": "Top",
@@ -17544,11 +17626,18 @@
           "unit": "px"
         },
         {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
+          "key": "backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "Appearance",
+          "widget": "color"
+        },
+        {
+          "key": "textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "Appearance",
+          "widget": "color"
         }
       ],
       "blocks": {
@@ -17564,13 +17653,112 @@
               "key": "productCount",
               "type": "number",
               "label": "Product count"
+            },
+            {
+              "key": "typographyPreset",
+              "type": "select",
+              "label": "Preset",
+              "group": "Typography",
+              "widget": "select",
+              "description": "Edit presets in theme settings",
+              "options": [
+                {
+                  "value": "default",
+                  "label": "Default"
+                },
+                {
+                  "value": "paragraph",
+                  "label": "Paragraph"
+                },
+                {
+                  "value": "body",
+                  "label": "Body"
+                },
+                {
+                  "value": "heading-1",
+                  "label": "Heading 1"
+                },
+                {
+                  "value": "heading-2",
+                  "label": "Heading 2"
+                },
+                {
+                  "value": "heading-3",
+                  "label": "Heading 3"
+                },
+                {
+                  "value": "heading-4",
+                  "label": "Heading 4"
+                },
+                {
+                  "value": "heading-5",
+                  "label": "Heading 5"
+                },
+                {
+                  "value": "heading-6",
+                  "label": "Heading 6"
+                },
+                {
+                  "value": "custom",
+                  "label": "Custom"
+                }
+              ]
+            },
+            {
+              "key": "font",
+              "type": "select",
+              "label": "Font",
+              "group": "Typography",
+              "widget": "select"
+            },
+            {
+              "key": "fontSize",
+              "type": "select",
+              "label": "Size",
+              "group": "Typography",
+              "widget": "select"
+            },
+            {
+              "key": "lineHeight",
+              "type": "select",
+              "label": "Line height",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "letterSpacing",
+              "type": "select",
+              "label": "Letter spacing",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "textCase",
+              "type": "select",
+              "label": "Case",
+              "group": "Typography",
+              "widget": "segmented"
+            },
+            {
+              "key": "wrap",
+              "type": "select",
+              "label": "Wrap",
+              "group": "Typography",
+              "widget": "select"
             }
           ],
           "panels": {
             "default": {
               "includeKeys": [
                 "title",
-                "productCount"
+                "productCount",
+                "typographyPreset",
+                "font",
+                "fontSize",
+                "lineHeight",
+                "letterSpacing",
+                "textCase",
+                "wrap"
               ]
             }
           }
@@ -17580,15 +17768,14 @@
         "default": {
           "includeKeys": [
             "collectionsPicker",
-            "layoutMode",
             "sectionWidth",
             "alignment",
             "imagePosition",
             "imageUrl",
-            "colorScheme",
             "paddingTop",
             "paddingBottom",
-            "customCss"
+            "backgroundColor",
+            "textColor"
           ]
         }
       }

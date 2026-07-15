@@ -5,7 +5,6 @@ export const COLLECTION_LINKS_SPOTLIGHT_PANEL_GROUP_ORDER = [
   'Collections',
   'Layout',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(COLLECTION_LINKS_SPOTLIGHT_PANEL_GROUP_ORDER);
@@ -19,7 +18,6 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 4,
   paddingTop: 0,
   paddingBottom: 1,
-  customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
@@ -46,6 +44,8 @@ export function isCollectionLinksSpotlightPanelSectionSettingsPath(path: string)
 
 export function isCollectionLinksSpotlightPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss' || key === 'layoutMode' || key === 'colorScheme') return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return isCollectionLinksSpotlightPanelSectionSettingsPath(field.path);
 }
@@ -55,7 +55,6 @@ export function sortCollectionLinksSpotlightPanelFields(fields: EditorFieldDef[]
     Collections: 0,
     Layout: 1,
     Padding: 2,
-    'Custom CSS': 3,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -81,7 +80,15 @@ export function groupCollectionLinksSpotlightPanelFields(
 export function isCollectionLinksSpotlightSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('collectionsPicker') && keys.has('alignment') && keys.has('layoutMode');
+  return keys.has('collectionsPicker') && keys.has('alignment');
+}
+
+export function isCollectionLinksTextSectionFromFields(fields: EditorFieldDef[]): boolean {
+  return fields.some(
+    (f) =>
+      f.path.includes('.collection_links_text.') ||
+      /\.sections\.collection_links_text(?:_\d+)?\.settings\./.test(f.path)
+  );
 }
 
 export function prepareCollectionLinksSpotlightSettingsNode(node: SidebarNode): SidebarNode {

@@ -32,11 +32,13 @@ export function serializeCollectionLinksPicker(handles: string[]): string {
 
 export type CollectionLinkBlockSettings = {
   title: string;
-  titleFont: string;
-  titleWeight: string;
-  titleLineHeight: string;
-  titleLetterSpacing: string;
-  titleCase: string;
+  typographyPreset: string;
+  font: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textCase: string;
+  wrap: string;
   productCount: number;
   collectionHandle: string;
   href: string;
@@ -63,11 +65,13 @@ export function collectionLinkBlocksFromCollections(
       type: 'collection-link',
       settings: {
         title: col.title?.trim() || 'Collection title',
-        titleFont: 'subheading',
-        titleWeight: 'default',
-        titleLineHeight: 'normal',
-        titleLetterSpacing: 'normal',
-        titleCase: 'default',
+        typographyPreset: 'heading-5',
+        font: 'body',
+        fontSize: 'default',
+        lineHeight: 'normal',
+        letterSpacing: 'normal',
+        textCase: 'default',
+        wrap: 'pretty',
         productCount: Math.max(0, Number(col.productCount ?? 0)),
         collectionHandle: handle,
         href,
@@ -94,11 +98,13 @@ export function valuePathsForCollectionLinkBlocks(
     if (!settings) continue;
     const base = `${sectionBase}.blocks.${id}.settings`;
     out[`${base}.title`] = settings.title;
-    out[`${base}.titleFont`] = settings.titleFont;
-    out[`${base}.titleWeight`] = settings.titleWeight;
-    out[`${base}.titleLineHeight`] = settings.titleLineHeight;
-    out[`${base}.titleLetterSpacing`] = settings.titleLetterSpacing;
-    out[`${base}.titleCase`] = settings.titleCase;
+    out[`${base}.typographyPreset`] = settings.typographyPreset;
+    out[`${base}.font`] = settings.font;
+    out[`${base}.fontSize`] = settings.fontSize;
+    out[`${base}.lineHeight`] = settings.lineHeight;
+    out[`${base}.letterSpacing`] = settings.letterSpacing;
+    out[`${base}.textCase`] = settings.textCase;
+    out[`${base}.wrap`] = settings.wrap;
     out[`${base}.productCount`] = String(settings.productCount);
     out[`${base}.collectionHandle`] = settings.collectionHandle;
     out[`${base}.href`] = settings.href;

@@ -1,6 +1,11 @@
 import { getThemeConfigValue } from '@render-store/sdk';
 import { cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/structureOrder';
+import {
+  resolveTextBlockTypographyStyle,
+  type ThemeFonts,
+} from '../../runtime/shared/themeTypographyRuntime';
 
 export type CollectionLinksScheme = {
   background: string;
@@ -8,12 +13,29 @@ export type CollectionLinksScheme = {
   muted: string;
 };
 
-const SCHEMES: Record<string, CollectionLinksScheme> = {
+const SCHEME_FALLBACKS: Record<string, CollectionLinksScheme> = {
   'scheme-1': { background: '#ffffff', color: '#111827', muted: '#6b7280' },
   'scheme-2': { background: '#f6f6f7', color: '#111827', muted: '#6b7280' },
   'scheme-3': { background: '#eef6fb', color: '#0f172a', muted: '#64748b' },
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#6b7280' },
 };
+
+/** Soften a resolved CSS color for idle Collection Links: Text titles. */
+function colorWithAlpha(color: string, alpha: number): string {
+  const c = color.trim();
+  const rgbMatch = c.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+  if (rgbMatch) {
+    return `rgba(${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}, ${alpha})`;
+  }
+  let hex = c.startsWith('#') ? c.slice(1) : '';
+  if (hex.length === 3) hex = hex.split('').map((ch) => ch + ch).join('');
+  if (hex.length !== 6) return c;
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  if (![r, g, b].every((n) => Number.isFinite(n))) return c;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 export type CollectionLinkData = {
   id: string;
@@ -40,21 +62,41 @@ export function readCollectionLinksSpotlightLayout(
   config: Record<string, unknown> | null,
   settingsBase: string
 ): CollectionLinksSpotlightLayout {
-  const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   const catalogVariant = cfgString(config, `${settingsBase}.catalogVariant`, 'collection-links-spotlight');
-  const layoutModeRaw = cfgString(config, `${settingsBase}.layoutMode`, 'spotlight');
   const layoutMode =
     catalogVariant === 'collection-links-text'
       ? 'text'
-      : layoutModeRaw === 'text'
-        ? 'text'
-        : 'spotlight';
+      : catalogVariant === 'collection-links-spotlight'
+        ? 'spotlight'
+        : cfgString(config, `${settingsBase}.layoutMode`, 'spotlight') === 'text'
+          ? 'text'
+          : 'spotlight';
   const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'page');
   const alignment = cfgString(config, `${settingsBase}.alignment`, 'left');
   const imagePosition = cfgString(config, `${settingsBase}.imagePosition`, 'right');
 
+  const legacySchemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  const legacy = SCHEME_FALLBACKS[legacySchemeKey] ?? SCHEME_FALLBACKS['scheme-1'];
+
+  const bgRaw = cfgString(config, `${settingsBase}.backgroundColor`, '').trim();
+  const textRaw = cfgString(config, `${settingsBase}.textColor`, '').trim();
+  const hasCustomText = Boolean(textRaw && textRaw !== 'default' && !textRaw.startsWith('scheme-'));
+  const hasCustomBg = Boolean(bgRaw && bgRaw !== 'default' && !bgRaw.startsWith('scheme-'));
+  const background = hasCustomBg
+    ? resolveThemePaletteColorSetting(config, bgRaw, 0, legacy.background)
+    : legacy.background;
+  const color = hasCustomText
+    ? resolveThemePaletteColorSetting(config, textRaw, 1, legacy.color)
+    : legacy.color;
+  // Idle text links must still reflect Text color (not a fixed scheme gray).
+  const muted = hasCustomText ? colorWithAlpha(color, 0.5) : legacy.muted;
+
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme: {
+      background,
+      color,
+      muted,
+    },
     layoutMode,
     sectionWidth: sectionWidth === 'full' ? 'full' : 'page',
     alignment:
@@ -136,9 +178,11 @@ export type CollectionLinkTitleStyle = {
   fontFamily: string;
   fontSize: number;
   fontWeight: number;
+  fontStyle?: string;
   lineHeight: number;
   letterSpacing: string;
   textTransform: 'none' | 'uppercase';
+  textWrap?: string;
 };
 
 export function readCollectionLinkTitleStyle(
@@ -147,47 +191,72 @@ export function readCollectionLinkTitleStyle(
   isTextLayout: boolean,
   themeFonts?: { fontHeading: string; fontBody: string }
 ): CollectionLinkTitleStyle {
-  const fontKey = cfgString(config, `${blockSettingsBase}.titleFont`, 'subheading');
-  const weightKey = cfgString(config, `${blockSettingsBase}.titleWeight`, 'default');
-  const lineHeightKey = cfgString(config, `${blockSettingsBase}.titleLineHeight`, 'normal');
-  const letterSpacingKey = cfgString(config, `${blockSettingsBase}.titleLetterSpacing`, 'normal');
-  const caseKey = cfgString(config, `${blockSettingsBase}.titleCase`, 'default');
-
-  const fontSizes: Record<string, number> = {
-    body: isTextLayout ? 28 : 18,
-    subheading: isTextLayout ? 32 : 20,
-    heading: isTextLayout ? 40 : 24,
-    accent: isTextLayout ? 30 : 22,
-  };
-  const weights: Record<string, number> = {
-    default: 500,
-    '300': 300,
-    '400': 400,
-    '500': 500,
-    '600': 600,
-    '700': 700,
-  };
-  const lineHeights: Record<string, number> = { normal: 1.25, tight: 1.1, loose: 1.4 };
-  const letterSpacings: Record<string, string> = {
-    normal: '0',
-    tight: '-0.02em',
-    wide: '0.04em',
+  const fonts: ThemeFonts = {
+    fontBody: themeFonts?.fontBody ?? 'inherit',
+    fontHeading: themeFonts?.fontHeading ?? 'inherit',
   };
 
-  const fontFamily =
-    fontKey === 'heading'
-      ? (themeFonts?.fontHeading ?? 'inherit')
-      : fontKey === 'accent'
-        ? (themeFonts?.fontBody ?? 'inherit')
-        : (themeFonts?.fontBody ?? 'inherit');
+  const presetRaw = cfgString(config, `${blockSettingsBase}.typographyPreset`, '');
+  // Prefer modern typographyPreset whenever present; only fall back to legacy titleFont*.
+  if (!presetRaw) {
+    const legacyFont = cfgString(config, `${blockSettingsBase}.titleFont`, '');
+    if (legacyFont) {
+      const weightKey = cfgString(config, `${blockSettingsBase}.titleWeight`, 'default');
+      const lineHeightKey = cfgString(config, `${blockSettingsBase}.titleLineHeight`, 'normal');
+      const letterSpacingKey = cfgString(config, `${blockSettingsBase}.titleLetterSpacing`, 'normal');
+      const caseKey = cfgString(config, `${blockSettingsBase}.titleCase`, 'default');
+      const fontSizes: Record<string, number> = {
+        body: isTextLayout ? 28 : 18,
+        subheading: isTextLayout ? 32 : 20,
+        heading: isTextLayout ? 40 : 24,
+        accent: isTextLayout ? 30 : 22,
+      };
+      const weights: Record<string, number> = {
+        default: 500,
+        '300': 300,
+        '400': 400,
+        '500': 500,
+        '600': 600,
+        '700': 700,
+      };
+      const lineHeights: Record<string, number> = { normal: 1.25, tight: 1.1, loose: 1.4 };
+      const letterSpacings: Record<string, string> = {
+        normal: '0',
+        tight: '-0.02em',
+        wide: '0.04em',
+      };
+      return {
+        fontFamily:
+          legacyFont === 'heading'
+            ? fonts.fontHeading
+            : legacyFont === 'accent'
+              ? fonts.fontBody
+              : fonts.fontBody,
+        fontSize: fontSizes[legacyFont] ?? (isTextLayout ? 32 : 22),
+        fontWeight: weights[weightKey] ?? 500,
+        lineHeight: lineHeights[lineHeightKey] ?? 1.25,
+        letterSpacing: letterSpacings[letterSpacingKey] ?? '0',
+        textTransform: caseKey === 'uppercase' ? 'uppercase' : 'none',
+      };
+    }
+  }
+
+  const typo = resolveTextBlockTypographyStyle(
+    config,
+    blockSettingsBase,
+    presetRaw || (isTextLayout ? 'heading-3' : 'heading-5'),
+    fonts
+  );
 
   return {
-    fontFamily,
-    fontSize: fontSizes[fontKey] ?? (isTextLayout ? 18 : 22),
-    fontWeight: weights[weightKey] ?? 500,
-    lineHeight: lineHeights[lineHeightKey] ?? 1.25,
-    letterSpacing: letterSpacings[letterSpacingKey] ?? '0',
-    textTransform: caseKey === 'uppercase' ? 'uppercase' : 'none',
+    fontFamily: typo.fontFamily,
+    fontSize: typo.fontSize,
+    fontWeight: typo.fontWeight,
+    fontStyle: typo.fontStyle as string | undefined,
+    lineHeight: typo.lineHeight,
+    letterSpacing: typo.letterSpacing,
+    textTransform: typo.textTransform === 'uppercase' ? 'uppercase' : 'none',
+    textWrap: typo.textWrap as string | undefined,
   };
 }
 
@@ -245,7 +314,7 @@ export function readCollectionLinkImageStyle(
   const ratioKey = cfgString(config, `${blockSettingsBase}.imageRatio`, 'square');
   const borderRadius = cfgNumber(config, `${blockSettingsBase}.imageCornerRadius`, 0);
 
-  const heights: Record<string, number> = { small: 140, medium: 180, large: 220 };
+  const heights: Record<string, number> = { small: 280, medium: 400, large: 520 };
   const ratios: Record<string, string> = {
     square: '1 / 1',
     portrait: '4 / 5',
@@ -256,7 +325,7 @@ export function readCollectionLinkImageStyle(
     portrait: [4, 5],
     landscape: [16, 9],
   };
-  const maxHeight = heights[heightKey] ?? 220;
+  const maxHeight = heights[heightKey] ?? 520;
   const [rw, rh] = ratioParts[ratioKey] ?? [1, 1];
   const width = Math.round(maxHeight * (rw / rh));
 

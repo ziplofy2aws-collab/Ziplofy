@@ -4,24 +4,42 @@ import {
   remapTemplateSchemaPath,
   templateBlueprintKey,
 } from '../../utils/theme-editor-insert-section';
+import {
+  TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
+  TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS,
+  resolveTextBlockTypographyField,
+} from './theme-editor-text-block-panel.utils';
+import {
+  HEADING_FONT_OPTIONS,
+  HEADING_FONT_SIZE_OPTIONS,
+  HEADING_LETTER_SPACING_OPTIONS,
+  HEADING_LINE_HEIGHT_OPTIONS,
+  HEADING_TEXT_CASE_OPTIONS,
+  HEADING_WRAP_OPTIONS,
+} from './theme-editor-heading-block-panel.utils';
 
+/** Typography keys for Collection link Title (preset + custom when Custom is selected). */
 export const COLLECTION_LINK_TITLE_TYPOGRAPHY_KEYS = [
-  'titleFont',
-  'titleWeight',
-  'titleLineHeight',
-  'titleLetterSpacing',
-  'titleCase',
+  'typographyPreset',
+  ...TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
 ] as const;
 
 const TYPOGRAPHY_KEY_SET = new Set<string>(COLLECTION_LINK_TITLE_TYPOGRAPHY_KEYS);
 
 const FIELD_SORT: Record<string, number> = {
-  titleFont: 0,
-  titleWeight: 1,
-  titleLineHeight: 2,
-  titleLetterSpacing: 3,
-  titleCase: 4,
+  typographyPreset: 0,
+  font: 1,
+  fontSize: 2,
+  lineHeight: 3,
+  letterSpacing: 4,
+  textCase: 5,
+  wrap: 6,
 };
+
+const FONT_SIZE_OPTIONS = [
+  { value: 'default', label: 'Default' },
+  ...HEADING_FONT_SIZE_OPTIONS,
+];
 
 export function isCollectionLinkTitleFieldNodeId(nodeId: string): boolean {
   if (!nodeId.startsWith('field:')) return false;
@@ -49,81 +67,70 @@ export function sortCollectionLinkTitlePanelFields(fields: EditorFieldDef[]): Ed
   );
 }
 
-const TITLE_FONT_OPTIONS = [
-  { value: 'body', label: 'Body' },
-  { value: 'subheading', label: 'Subheading' },
-  { value: 'heading', label: 'Heading' },
-  { value: 'accent', label: 'Accent' },
-] as const;
-
-const TITLE_WEIGHT_OPTIONS = [
-  { value: 'default', label: 'Default' },
-  { value: '300', label: 'Light' },
-  { value: '400', label: 'Regular' },
-  { value: '500', label: 'Medium' },
-  { value: '600', label: 'Semibold' },
-  { value: '700', label: 'Bold' },
-] as const;
-
-const TITLE_LINE_HEIGHT_OPTIONS = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'tight', label: 'Tight' },
-  { value: 'loose', label: 'Loose' },
-] as const;
-
-const TITLE_LETTER_SPACING_OPTIONS = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'tight', label: 'Tight' },
-  { value: 'wide', label: 'Wide' },
-] as const;
-
-const TITLE_CASE_OPTIONS = [
-  { value: 'default', label: 'Default' },
-  { value: 'uppercase', label: 'Uppercase' },
-] as const;
-
-/** Build Title typography panel fields from a block settings base (fallback when schema lookup misses). */
-function collectionLinkTitleFieldDefsFromSettingsBase(settingsBase: string): EditorFieldDef[] {
+/** Build Title typography panel fields from a block settings base. */
+export function collectionLinkTitleFieldDefsFromSettingsBase(settingsBase: string): EditorFieldDef[] {
   return sortCollectionLinkTitlePanelFields([
     {
-      path: `${settingsBase}.titleFont`,
+      path: `${settingsBase}.typographyPreset`,
+      type: 'select',
+      label: 'Preset',
+      group: 'Typography',
+      widget: 'select',
+      description: 'Edit presets in theme settings',
+      options: [...TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.font`,
       type: 'select',
       label: 'Font',
+      group: 'Typography',
       widget: 'select',
-      options: [...TITLE_FONT_OPTIONS],
+      options: [...HEADING_FONT_OPTIONS],
     },
     {
-      path: `${settingsBase}.titleWeight`,
+      path: `${settingsBase}.fontSize`,
       type: 'select',
-      label: 'Weight',
+      label: 'Size',
+      group: 'Typography',
       widget: 'select',
-      options: [...TITLE_WEIGHT_OPTIONS],
+      options: [...FONT_SIZE_OPTIONS],
     },
     {
-      path: `${settingsBase}.titleLineHeight`,
+      path: `${settingsBase}.lineHeight`,
       type: 'select',
       label: 'Line height',
-      widget: 'select',
-      options: [...TITLE_LINE_HEIGHT_OPTIONS],
+      group: 'Typography',
+      widget: 'segmented',
+      options: [...HEADING_LINE_HEIGHT_OPTIONS],
     },
     {
-      path: `${settingsBase}.titleLetterSpacing`,
+      path: `${settingsBase}.letterSpacing`,
       type: 'select',
       label: 'Letter spacing',
-      widget: 'select',
-      options: [...TITLE_LETTER_SPACING_OPTIONS],
+      group: 'Typography',
+      widget: 'segmented',
+      options: [...HEADING_LETTER_SPACING_OPTIONS],
     },
     {
-      path: `${settingsBase}.titleCase`,
+      path: `${settingsBase}.textCase`,
       type: 'select',
       label: 'Case',
+      group: 'Typography',
       widget: 'segmented',
-      options: [...TITLE_CASE_OPTIONS],
+      options: [...HEADING_TEXT_CASE_OPTIONS],
+    },
+    {
+      path: `${settingsBase}.wrap`,
+      type: 'select',
+      label: 'Wrap',
+      group: 'Typography',
+      widget: 'select',
+      options: [...HEADING_WRAP_OPTIONS],
     },
   ]);
 }
 
-function settingsBaseFromTitleFieldPath(path: string): string | null {
+export function settingsBaseFromTitleFieldPath(path: string): string | null {
   const tpl = path.match(/^templates\.[^.]+\.sections\.[^.]+\.blocks\.[^.]+\.settings\.title$/);
   if (tpl) return path.replace(/\.title$/, '');
   const layout = path.match(/^sections\.[^.]+\.blocks\.[^.]+\.settings\.title$/);
@@ -168,6 +175,9 @@ export function collectionLinkTitleFieldDefsFromSchema(
   fieldNodeId: string
 ): EditorFieldDef[] {
   const path = fieldNodeId.startsWith('field:') ? fieldNodeId.slice('field:'.length) : fieldNodeId;
+  const settingsBase = settingsBaseFromTitleFieldPath(path);
+  /** Always build typography controls from the title path (schema may still use legacy titleFont*). */
+  const built = settingsBase ? collectionLinkTitleFieldDefsFromSettingsBase(settingsBase) : [];
 
   const tplMatch = path.match(
     /^templates\.([^.]+)\.sections\.([^.]+)\.blocks\.([^.]+)\.settings\.title$/
@@ -182,7 +192,7 @@ export function collectionLinkTitleFieldDefsFromSchema(
       tplId
     );
     if (settingsFields.length) {
-      return sortCollectionLinkTitlePanelFields(
+      const fromSchema = sortCollectionLinkTitlePanelFields(
         settingsFields
           .filter((f) => TYPOGRAPHY_KEY_SET.has(f.path.split('.').pop() ?? ''))
           .map((f) => ({
@@ -193,6 +203,13 @@ export function collectionLinkTitleFieldDefsFromSchema(
             ),
           }))
       );
+      if (fromSchema.length) {
+        const schemaKeys = new Set(fromSchema.map((f) => f.path.split('.').pop() ?? ''));
+        return sortCollectionLinkTitlePanelFields([
+          ...fromSchema,
+          ...built.filter((f) => !schemaKeys.has(f.path.split('.').pop() ?? '')),
+        ]);
+      }
     }
   }
 
@@ -202,7 +219,7 @@ export function collectionLinkTitleFieldDefsFromSchema(
     const blueprint = layoutBlueprintKey(secId);
     const settingsFields = collectionLinkBlueprintSettingsFields(editorSchema, blueprint, 'layout');
     if (settingsFields.length) {
-      return sortCollectionLinkTitlePanelFields(
+      const fromSchema = sortCollectionLinkTitlePanelFields(
         settingsFields
           .filter((f) => TYPOGRAPHY_KEY_SET.has(f.path.split('.').pop() ?? ''))
           .map((f) => ({
@@ -212,18 +229,58 @@ export function collectionLinkTitleFieldDefsFromSchema(
               .replace(/\.blocks\.collection_link\./, `.blocks.${blockId}.`),
           }))
       );
+      if (fromSchema.length) {
+        const schemaKeys = new Set(fromSchema.map((f) => f.path.split('.').pop() ?? ''));
+        return sortCollectionLinkTitlePanelFields([
+          ...fromSchema,
+          ...built.filter((f) => !schemaKeys.has(f.path.split('.').pop() ?? '')),
+        ]);
+      }
     }
   }
 
-  const settingsBase = settingsBaseFromTitleFieldPath(path);
-  if (settingsBase) return collectionLinkTitleFieldDefsFromSettingsBase(settingsBase);
-
-  return [];
+  return built;
 }
 
 export function prepareCollectionLinkTitleSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortCollectionLinkTitlePanelFields(
+  let fields = sortCollectionLinkTitlePanelFields(
     (node.fields ?? []).filter(isCollectionLinkTitlePanelField)
   );
+  if (!fields.length && isCollectionLinkTitleFieldNodeId(node.id)) {
+    fields = collectionLinkTitleFieldDefsFromSchema(
+      { templates: [], layout: {} } as EditorSchemaDoc,
+      node.id
+    );
+  }
   return { ...node, label: 'Title', kind: 'field', icon: 'title', fields };
+}
+
+/** Resolve typography field defs for the Title settings sheet (fallback-safe). */
+export function resolveCollectionLinkTitlePanelFields(
+  nodeId: string,
+  fields: EditorFieldDef[],
+  editorSchema?: EditorSchemaDoc | null
+): EditorFieldDef[] {
+  const filtered = sortCollectionLinkTitlePanelFields(
+    (fields ?? []).filter(isCollectionLinkTitlePanelField)
+  );
+  if (filtered.length) return filtered;
+
+  if (editorSchema) {
+    const fromSchema = collectionLinkTitleFieldDefsFromSchema(editorSchema, nodeId);
+    if (fromSchema.length) return fromSchema;
+  }
+
+  return collectionLinkTitleFieldDefsFromSchema(
+    { templates: [], layout: {} } as EditorSchemaDoc,
+    nodeId
+  );
+}
+
+export function resolveCollectionLinkTitleTypographyField(
+  key: (typeof TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS)[number],
+  settingsBase: string,
+  fields: EditorFieldDef[]
+): EditorFieldDef {
+  return resolveTextBlockTypographyField(key, settingsBase, fields);
 }

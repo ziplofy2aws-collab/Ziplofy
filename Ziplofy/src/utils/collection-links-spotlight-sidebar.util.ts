@@ -1,4 +1,6 @@
-import type { EditorFieldDef, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
+import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
+import { collectionLinkTitleFieldDefsFromSettingsBase } from '../create-theme/sidebar/theme-editor-collection-link-title-panel.utils';
+import { collectionLinkImageFieldDefsFromSchema } from '../create-theme/sidebar/theme-editor-collection-link-image-panel.utils';
 
 function listKeyBlockChildren(blockPrefix: string): string {
   return `fields:${blockPrefix}`;
@@ -90,12 +92,18 @@ export function mapCollectionLinksSpotlightBlockNodes(
     const blockPrefix = `${prefix}:block:${blockId}`;
     const paths = collectionLinkBlockPaths(blocksBase, blockId);
 
-    const titleField: EditorFieldDef = {
+    const settingsBase = `${blocksBase}.${blockId}.settings`;
+    const titleTypographyFields = collectionLinkTitleFieldDefsFromSettingsBase(settingsBase);
+    const imageLayoutFields = collectionLinkImageFieldDefsFromSchema(
+      { templates: [], layout: {} } as EditorSchemaDoc,
+      `field:${paths.imageUrl}`
+    );
+    const titlePreviewField: EditorFieldDef = {
       path: paths.title,
       type: 'text',
       label: 'Title',
     };
-    const imageField: EditorFieldDef = {
+    const imagePreviewField: EditorFieldDef = {
       path: paths.imageUrl,
       type: 'text',
       label: 'Image',
@@ -108,16 +116,16 @@ export function mapCollectionLinksSpotlightBlockNodes(
         label: 'Title',
         kind: 'field',
         icon: 'title',
-        fields: [titleField],
-        preview: fieldPreview(titleField, values),
+        fields: titleTypographyFields,
+        preview: fieldPreview(titlePreviewField, values),
       },
       {
         id: `field:${paths.imageUrl}`,
         label: 'Image',
         kind: 'field',
         icon: 'image',
-        fields: [imageField],
-        preview: fieldPreview(imageField, values),
+        fields: imageLayoutFields.length ? imageLayoutFields : [imagePreviewField],
+        preview: fieldPreview(imagePreviewField, values),
       },
     ];
 

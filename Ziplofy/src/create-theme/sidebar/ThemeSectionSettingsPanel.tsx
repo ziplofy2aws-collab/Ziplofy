@@ -9,7 +9,7 @@ import {
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
+import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import {
   fieldInputId,
   fieldTypeFromSchema,
@@ -726,9 +726,10 @@ import {
 import {
   isCollectionLinkTitleFieldNodeId,
   isCollectionLinkTitlePanelFields,
-  prepareCollectionLinkTitleSettingsNode,
+  resolveCollectionLinkTitlePanelFields,
 } from './theme-editor-collection-link-title-panel.utils';
 import {
+  collectionLinkImageFieldDefsFromSchema,
   isCollectionLinkImageFieldNodeId,
   isCollectionLinkImagePanelFields,
   prepareCollectionLinkImageSettingsNode,
@@ -8391,20 +8392,33 @@ function ProductHotspotsHotspotBlockSettingsPanel({
 
 /** Collection link Title field: typography only (title text comes from the collection). */
 function CollectionLinkTitleSettingsPanel({
+  nodeId,
   fields,
   values,
   onFieldChange,
 }: {
+  nodeId: string;
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const prepared = prepareCollectionLinkTitleSettingsNode({
-    id: '',
-    label: 'Title',
-    kind: 'field',
-    fields,
-  });
+  const resolvedFields = useMemo(
+    () => resolveCollectionLinkTitlePanelFields(nodeId, fields),
+    [nodeId, fields]
+  );
+
+  const preset = resolvedFields.find((f) => f.path.endsWith('.typographyPreset'));
+  const presetField = preset
+    ? {
+        ...preset,
+        options: [...TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS],
+        description: preset.description ?? 'Edit presets in theme settings',
+      }
+    : null;
+  const isCustom = presetField
+    ? isTextBlockTypographyCustomPreset(values, presetField.path)
+    : false;
+  const settingsBase = presetField?.path.replace(/\.typographyPreset$/, '') ?? '';
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -8412,23 +8426,46 @@ function CollectionLinkTitleSettingsPanel({
       <div className="px-1 py-3">
         <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
         <div className="space-y-1">
-          {(prepared.fields ?? []).map((field) =>
-            field.widget === 'segmented' || field.path.endsWith('.titleCase') ? (
-              <SegmentedFieldRow
-                key={field.path}
-                field={field}
-                values={values}
-                onFieldChange={onFieldChange}
-              />
-            ) : (
+          {presetField ? (
+            <div>
               <InlineSelectFieldRow
-                key={field.path}
-                field={field}
+                field={presetField}
                 values={values}
                 onFieldChange={onFieldChange}
               />
-            )
+              <p className="pb-1 text-[12px] text-gray-500">
+                Edit presets in{' '}
+                <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                  theme settings
+                </a>
+              </p>
+            </div>
+          ) : (
+            <p className="text-[13px] text-gray-500">No typography settings available.</p>
           )}
+          {isCustom && settingsBase
+            ? TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS.map((key) => {
+                const field = resolveTextBlockTypographyField(key, settingsBase, resolvedFields);
+                if (field.widget === 'segmented') {
+                  return (
+                    <SegmentedFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                return (
+                  <InlineSelectFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                );
+              })
+            : null}
         </div>
       </div>
     </div>
@@ -8437,26 +8474,35 @@ function CollectionLinkTitleSettingsPanel({
 
 /** Collection link Image field: layout only (image comes from the collection). */
 function CollectionLinkImageSettingsPanel({
+  nodeId,
   fields,
   values,
   onFieldChange,
 }: {
+  nodeId: string;
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const prepared = prepareCollectionLinkImageSettingsNode({
-    id: '',
-    label: 'Image',
-    kind: 'field',
-    fields,
-  });
+  const resolvedFields = useMemo(() => {
+    const prepared = prepareCollectionLinkImageSettingsNode({
+      id: nodeId,
+      label: 'Image',
+      kind: 'field',
+      fields,
+    });
+    if (prepared.fields?.length) return prepared.fields;
+    return collectionLinkImageFieldDefsFromSchema(
+      { templates: [], layout: {} } as EditorSchemaDoc,
+      nodeId
+    );
+  }, [nodeId, fields]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       <p className="px-1 py-3 text-[13px] text-gray-600">Displays image from parent collection</p>
       <div className="space-y-1 px-1 py-3">
-        {(prepared.fields ?? []).map((field) =>
+        {resolvedFields.map((field) =>
           field.widget === 'slider' ? (
             <SliderFieldRow
               key={field.path}
@@ -10015,27 +10061,24 @@ function SlideshowInsetSlideBlockSettingsPanel({
   );
 }
 
-/** Collection links (Spotlight + Text): Collections → Layout → Padding → Custom CSS. */
+/** Collection links (Spotlight + Text): Collections → Layout → Appearance → Padding. */
 function CollectionLinksSpotlightGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
   onCollectionLinksApply,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
   onCollectionLinksApply?: (settingsPath: string, collections: Collection[]) => void;
 }) {
   const grouped = useMemo(() => groupCollectionLinksSpotlightPanelFields(fields), [fields]);
-  const layoutModeField = fields.find((f) => f.path.endsWith('.layoutMode'));
   const isTextCatalogSection = isCollectionLinksTextSectionFromFields(fields);
-  const layoutMode = layoutModeField
-    ? fieldValueAsString(values, layoutModeField) || (isTextCatalogSection ? 'text' : 'spotlight')
-    : isTextCatalogSection
-      ? 'text'
-      : 'spotlight';
-  const isTextLayout = layoutMode === 'text';
+  // Spotlight and Text are separate catalog sections — never switch via layoutMode.
+  const isTextLayout = isTextCatalogSection;
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -10068,9 +10111,22 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
         }
 
         if (label === 'Layout') {
-          const visibleFields = isTextLayout
-            ? groupFields.filter((f) => !f.path.endsWith('imagePosition'))
-            : groupFields;
+          const visibleFields = (isTextLayout
+            ? groupFields.filter(
+                (f) =>
+                  !f.path.endsWith('imagePosition') &&
+                  !f.path.endsWith('imageUrl') &&
+                  !f.path.endsWith('layoutMode')
+              )
+            : groupFields.filter((f) => !f.path.endsWith('layoutMode'))
+          ).filter(
+            (f) =>
+              !f.path.endsWith('.colorScheme') &&
+              !f.path.endsWith('.backgroundColor') &&
+              !f.path.endsWith('.textColor') &&
+              f.widget !== 'color-scheme'
+          );
+          if (!visibleFields.length) return null;
           return (
             <div key={label} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
@@ -10083,26 +10139,6 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
                         field={field}
                         values={values}
                         onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  if (field.widget === 'color-scheme') {
-                    const schemeValue = fieldValueAsString(values, field) || 'scheme-1';
-                    const isDefaultScheme = schemeValue === 'scheme-1' || schemeValue === 'default';
-                    return (
-                      <ColorSchemeFieldRow
-                        key={field.path}
-                        field={field}
-                        values={
-                          isDefaultScheme
-                            ? { ...values, [field.path]: 'transparent' }
-                            : values
-                        }
-                        onFieldChange={(path, type, value) => {
-                          const next =
-                            value === 'transparent' || value === 'default' ? 'scheme-1' : value;
-                          onFieldChange(path, type, next);
-                        }}
                       />
                     );
                   }
@@ -10120,6 +10156,40 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
           );
         }
 
+        if (label === 'Appearance') {
+          const backgroundColor = groupFields.find((f) => f.path.endsWith('.backgroundColor'));
+          const textColor = groupFields.find((f) => f.path.endsWith('.textColor'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {backgroundColor ? (
+                  <ThemeDefaultColorField
+                    label={backgroundColor.label}
+                    path={backgroundColor.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={0}
+                    fallbackColor="#ffffff"
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {textColor ? (
+                  <ThemeDefaultColorField
+                    label={textColor.label}
+                    path={textColor.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={1}
+                    fallbackColor="#111827"
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+              </div>
+            </div>
+          );
+        }
+
         if (label === 'Padding') {
           return (
             <HeroPaddingSettingsGroup
@@ -10128,21 +10198,6 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -18190,14 +18245,14 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' &&
     /(slideshow_(inset|full_frame)|layered_slideshow)[^:]*:block:[^:]+$/.test(node.id);
   const isCollectionLinkTitlePanel =
-    node.label === 'Title' &&
     !isBlogPostsGridTitleBlockNodeId(node.id) &&
     !isBlogPostsGridCardTitleBlockNodeId(node.id) &&
-    (isCollectionLinkTitleFieldNodeId(node.id) || isCollectionLinkTitlePanelFields(fields));
+    (isCollectionLinkTitleFieldNodeId(node.id) ||
+      (node.label === 'Title' && isCollectionLinkTitlePanelFields(fields)));
   const isCollectionLinkImagePanel =
-    node.label === 'Image' &&
     !isBlogPostsGridCardImageBlockNodeId(node.id) &&
-    (isCollectionLinkImageFieldNodeId(node.id) || isCollectionLinkImagePanelFields(fields));
+    (isCollectionLinkImageFieldNodeId(node.id) ||
+      (node.label === 'Image' && isCollectionLinkImagePanelFields(fields)));
   const isCollectionListHeaderTextPanel = isCollectionListHeaderTextPanelNode(node, fields);
   const isCollectionListCardPanel = isCollectionListCardPanelNode(node, fields);
   const isCollectionListCardImagePanel = isCollectionListCardImagePanelNode(node, fields);
@@ -18636,6 +18691,20 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             fields={fields}
             values={values}
             colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isCollectionLinkTitlePanel ? (
+          <CollectionLinkTitleSettingsPanel
+            nodeId={node.id}
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isCollectionLinkImagePanel ? (
+          <CollectionLinkImageSettingsPanel
+            nodeId={node.id}
+            fields={fields}
+            values={values}
             onFieldChange={onFieldChange}
           />
         ) : fields.length === 0 ? (
@@ -19177,6 +19246,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <CollectionLinksSpotlightGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
             onCollectionLinksApply={onCollectionLinksApply}
           />
@@ -19238,12 +19308,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
           />
-        ) : isCollectionLinkTitlePanel ? (
-          <CollectionLinkTitleSettingsPanel
-            fields={fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
         ) : isCollectionListCardPanel ? (
           <CollectionListCardGroupedSettingsPanel
             fields={fields}
@@ -19263,12 +19327,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             onFieldChange={onFieldChange}
             colorPalette={colorPalette}
-          />
-        ) : isCollectionLinkImagePanel ? (
-          <CollectionLinkImageSettingsPanel
-            fields={fields}
-            values={values}
-            onFieldChange={onFieldChange}
           />
         ) : isCollectionTileBlockPanel ? (
           <CollectionTileBlockSettingsPanel

@@ -236,7 +236,44 @@ type DragState = {
   listKey: string | null;
   nodeId: string | null;
   overId: string | null;
+  /** Insert relative to `overId` — guides the blue drop line. */
+  edge: 'before' | 'after' | null;
 };
+
+const EMPTY_DRAG_STATE: DragState = {
+  listKey: null,
+  nodeId: null,
+  overId: null,
+  edge: null,
+};
+
+/** Blue “drop here” rule between sortable rows while dragging. */
+function ReorderDropIndicator({ paddingLeft }: { paddingLeft: number }) {
+  return (
+    <div
+      className="pointer-events-none relative z-[2] -my-0.5 flex h-3 w-full items-center"
+      style={{ paddingLeft, paddingRight: 12 }}
+      aria-hidden
+    >
+      <div className="absolute inset-x-3 top-1/2 flex -translate-y-1/2 items-center gap-2">
+        <div
+          className="h-[3px] flex-1 rounded-full shadow-[0_0_0_2px_rgba(0,91,211,0.12)]"
+          style={{ backgroundColor: SHOPIFY_BLUE }}
+        />
+        <span
+          className="shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm"
+          style={{ backgroundColor: SHOPIFY_BLUE }}
+        >
+          Drop
+        </span>
+        <div
+          className="h-[3px] flex-1 rounded-full shadow-[0_0_0_2px_rgba(0,91,211,0.12)]"
+          style={{ backgroundColor: SHOPIFY_BLUE }}
+        />
+      </div>
+    </div>
+  );
+}
 
 function isCheckoutDisabledRow(node: SidebarNode): boolean {
   return Boolean(
@@ -368,21 +405,33 @@ function SortableSiblingList({
   const canSort = Boolean(listKey && sortableIds.length > 1);
 
   const finishReorder = useCallback(
-    (targetId: string) => {
-      if (!listKey || !dragState.nodeId || dragState.nodeId === targetId) return;
-      const from = sortableIds.indexOf(dragState.nodeId);
-      const to = sortableIds.indexOf(targetId);
-      if (from < 0 || to < 0) return;
-      const next = [...sortableIds];
-      next.splice(from, 1);
-      next.splice(to, 0, dragState.nodeId);
+    (targetId: string, edge: 'before' | 'after' = 'before') => {
+      if (!listKey || !dragState.nodeId || !edge) return;
+      if (dragState.nodeId === targetId) return;
+      const targetIndex = sortableIds.indexOf(targetId);
+      if (sortableIds.indexOf(dragState.nodeId) < 0 || targetIndex < 0) return;
+
+      const without = sortableIds.filter((id) => id !== dragState.nodeId);
+      const toInWithout = without.indexOf(targetId);
+      if (toInWithout < 0) return;
+      const insertAt = edge === 'before' ? toInWithout : toInWithout + 1;
+      const next = [...without];
+      next.splice(insertAt, 0, dragState.nodeId);
+      // No-op if order unchanged
+      if (next.every((id, i) => id === sortableIds[i])) {
+        setDragState(EMPTY_DRAG_STATE);
+        return;
+      }
       onReorder(listKey, next);
-      setDragState({ listKey: null, nodeId: null, overId: null });
+      setDragState(EMPTY_DRAG_STATE);
     },
     [dragState.nodeId, listKey, onReorder, setDragState, sortableIds]
   );
 
   const insertPadding = sidebarContentPadding(depth);
+  const isListDragActive = Boolean(
+    listKey && dragState.listKey === listKey && dragState.nodeId
+  );
 
   return (
     <>
@@ -393,7 +442,22 @@ function SortableSiblingList({
           sectionInsertLabel &&
           onInsertSection &&
           prev &&
-          allowsSectionInsertGap(prev, child);
+          allowsSectionInsertGap(prev, child) &&
+          !isListDragActive;
+
+        const showDropBefore =
+          isListDragActive &&
+          isSortableSidebarNode(child) &&
+          dragState.overId === child.id &&
+          dragState.edge === 'before' &&
+          dragState.nodeId !== child.id;
+
+        const showDropAfter =
+          isListDragActive &&
+          isSortableSidebarNode(child) &&
+          dragState.overId === child.id &&
+          dragState.edge === 'after' &&
+          dragState.nodeId !== child.id;
 
         return (
           <Fragment key={child.id}>
@@ -414,6 +478,7 @@ function SortableSiblingList({
                 onHoverChange={onInsertHoverChange}
               />
             ) : null}
+            {showDropBefore ? <ReorderDropIndicator paddingLeft={insertPadding} /> : null}
             <SidebarTreeRow
               node={child}
               depth={depth}
@@ -433,6 +498,7 @@ function SortableSiblingList({
               sortableListKey={canSort ? listKey : undefined}
               onDropOn={canSort ? finishReorder : undefined}
             />
+            {showDropAfter ? <ReorderDropIndicator paddingLeft={insertPadding} /> : null}
           </Fragment>
         );
       })}
@@ -545,7 +611,7 @@ function SidebarTreeRow({
   onDropOn,
 }: TreeRowProps & {
   sortableListKey?: string;
-  onDropOn?: (targetId: string) => void;
+  onDropOn?: (targetId: string, edge: 'before' | 'after') => void;
 }) {
   if (node.kind === 'group-label') {
     return (
@@ -581,7 +647,11 @@ function SidebarTreeRow({
   const indent = SIDEBAR_BASE_PADDING + depth * SIDEBAR_DEPTH_STEP;
   const isDraggable = Boolean(sortableListKey && isSortableSidebarNode(node));
   const isDragOver =
-    isDraggable && dragState.overId === node.id && dragState.listKey === sortableListKey;
+    isDraggable &&
+    dragState.overId === node.id &&
+    dragState.listKey === sortableListKey &&
+    dragState.nodeId !== node.id &&
+    Boolean(dragState.edge);
 
   if (isAdd) {
     return (
@@ -738,25 +808,48 @@ function SidebarTreeRow({
         onDeleteNode={onDeleteNode}
         onDragHandleStart={
           isDraggable && sortableListKey
-            ? () => setDragState({ listKey: sortableListKey, nodeId: node.id, overId: null })
+            ? () =>
+                setDragState({
+                  listKey: sortableListKey,
+                  nodeId: node.id,
+                  overId: null,
+                  edge: null,
+                })
             : undefined
         }
-        onDragHandleEnd={() => setDragState({ listKey: null, nodeId: null, overId: null })}
+        onDragHandleEnd={() => setDragState(EMPTY_DRAG_STATE)}
         onDragEnter={
           isDraggable && onDropOn
-            ? () => setDragState((s) => ({ ...s, overId: node.id }))
+            ? (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }
             : undefined
         }
         onDragLeave={
           isDraggable
-            ? () => setDragState((s) => (s.overId === node.id ? { ...s, overId: null } : s))
+            ? (e) => {
+                const related = e.relatedTarget as Node | null;
+                if (related && e.currentTarget.contains(related)) return;
+                setDragState((s) =>
+                  s.overId === node.id ? { ...s, overId: null, edge: null } : s
+                );
+              }
             : undefined
         }
         onDrop={
           isDraggable && onDropOn
             ? (e) => {
                 e.preventDefault();
-                onDropOn(node.id);
+                e.stopPropagation();
+                const edge =
+                  dragState.overId === node.id && dragState.edge
+                    ? dragState.edge
+                    : (() => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        return e.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+                      })();
+                onDropOn(node.id, edge);
               }
             : undefined
         }
@@ -764,6 +857,20 @@ function SidebarTreeRow({
           isDraggable && onDropOn
             ? (e) => {
                 e.preventDefault();
+                e.stopPropagation();
+                e.dataTransfer.dropEffect = 'move';
+                const rect = e.currentTarget.getBoundingClientRect();
+                const edge: 'before' | 'after' =
+                  e.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+                setDragState((s) => {
+                  if (s.listKey !== sortableListKey || !s.nodeId || s.nodeId === node.id) {
+                    return s.overId === null && s.edge === null
+                      ? s
+                      : { ...s, overId: null, edge: null };
+                  }
+                  if (s.overId === node.id && s.edge === edge) return s;
+                  return { ...s, overId: node.id, edge };
+                });
               }
             : undefined
         }
@@ -883,19 +990,21 @@ function SidebarRow({
   onDeleteNode?: (nodeId: string) => void;
   onDragHandleStart?: () => void;
   onDragHandleEnd?: () => void;
-  onDragEnter?: () => void;
-  onDragLeave?: () => void;
+  onDragEnter?: (e: React.DragEvent) => void;
+  onDragLeave?: (e: React.DragEvent) => void;
   onDrop?: (e: React.DragEvent) => void;
   onDragOver?: (e: React.DragEvent) => void;
 }) {
   return (
     <div
       data-sidebar-node-id={node.id}
-      className={`group flex items-center gap-0.5 pr-1 text-[13px] transition-colors duration-150 ${
+      className={`group relative flex items-center gap-0.5 pr-1 text-[13px] transition-[background-color,opacity,box-shadow] duration-150 ease-out ${
         isSelected
           ? 'bg-[#005bd3] font-medium text-white'
           : 'text-gray-800 hover:bg-[#ededed]'
-      } ${isHidden ? 'opacity-50' : ''} ${isDragOver && !isSelected ? 'bg-[#dfe7f7]' : ''} ${isDragging ? 'opacity-40' : ''}`}
+      } ${isHidden ? 'opacity-50' : ''} ${
+        isDragOver && !isSelected ? 'bg-[#edf3ff] ring-1 ring-inset ring-[#005bd3]/30' : ''
+      } ${isDragging ? 'opacity-35 scale-[0.99]' : ''}`}
       style={{ paddingLeft: indent - 4 }}
       onDragEnter={onDragEnter}
       onDragLeave={onDragLeave}
@@ -910,6 +1019,22 @@ function SidebarRow({
             onDragHandleStart?.();
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', node.id);
+            const row = e.currentTarget.closest('[data-sidebar-node-id]') as HTMLElement | null;
+            if (row) {
+              const ghost = row.cloneNode(true) as HTMLElement;
+              ghost.style.position = 'absolute';
+              ghost.style.top = '-9999px';
+              ghost.style.left = '-9999px';
+              ghost.style.width = `${row.offsetWidth}px`;
+              ghost.style.opacity = '0.92';
+              ghost.style.pointerEvents = 'none';
+              ghost.style.boxShadow = '0 8px 24px rgba(0,0,0,0.18)';
+              ghost.style.borderRadius = '8px';
+              ghost.style.background = '#fff';
+              document.body.appendChild(ghost);
+              e.dataTransfer.setDragImage(ghost, 24, 16);
+              requestAnimationFrame(() => ghost.remove());
+            }
           }}
           onDragEnd={() => onDragHandleEnd?.()}
           className="flex h-7 w-5 shrink-0 cursor-grab items-center justify-center text-gray-400 hover:text-gray-600 active:cursor-grabbing"
@@ -1018,6 +1143,8 @@ export type CreateThemeEditorSidebarProps = {
   onToggleHidden: (id: string) => void;
   onDeleteNode?: (nodeId: string) => void;
   onReorder: (listKey: string, orderedIds: string[]) => void;
+  /** Fired when structure drag starts/ends — used to squeeze the live preview canvas. */
+  onStructureDragChange?: (active: boolean) => void;
   onInsertSection?: (ctx: SectionInsertContext) => void;
   onInsertHoverChange?: (ctx: SectionInsertContext | null) => void;
   loading?: boolean;
@@ -1058,6 +1185,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   onToggleHidden,
   onDeleteNode,
   onReorder,
+  onStructureDragChange,
   onInsertSection,
   onInsertHoverChange,
   loading,
@@ -1077,11 +1205,20 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   themeColorPalette,
   sectionsHeaderSlot,
 }) => {
-  const [dragState, setDragState] = useState<DragState>({
-    listKey: null,
-    nodeId: null,
-    overId: null,
-  });
+  const [dragState, setDragState] = useState<DragState>(EMPTY_DRAG_STATE);
+
+  const setDragStateAndNotify = useCallback(
+    (next: React.SetStateAction<DragState>) => {
+      setDragState((prev) => {
+        const resolved = typeof next === 'function' ? next(prev) : next;
+        const wasActive = Boolean(prev.nodeId);
+        const isActive = Boolean(resolved.nodeId);
+        if (wasActive !== isActive) onStructureDragChange?.(isActive);
+        return resolved;
+      });
+    },
+    [onStructureDragChange]
+  );
 
   const title =
     sidebarTab === 'sections'
@@ -1194,7 +1331,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
                     onInsertSection={onInsertSection}
                     onInsertHoverChange={onInsertHoverChange}
                     dragState={dragState}
-                    setDragState={setDragState}
+                    setDragState={setDragStateAndNotify}
                     childrenListKey={node.childrenListKey}
                     checkoutMainGroup={node.checkoutMainGroup}
                     groupNode={node}
@@ -1214,7 +1351,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
                     onReorder={onReorder}
                     onInsertHoverChange={onInsertHoverChange}
                     dragState={dragState}
-                    setDragState={setDragState}
+                    setDragState={setDragStateAndNotify}
                   />
                 )}
               </Fragment>

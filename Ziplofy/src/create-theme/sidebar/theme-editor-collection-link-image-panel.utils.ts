@@ -117,7 +117,7 @@ export function collectionLinkImageFieldDefsFromSchema(
       tplId
     );
     if (settingsFields.length) {
-      return sortCollectionLinkImagePanelFields(
+      const fromSchema = sortCollectionLinkImagePanelFields(
         settingsFields
           .filter((f) => IMAGE_KEY_SET.has(f.path.split('.').pop() ?? ''))
           .map((f) => ({
@@ -128,6 +128,7 @@ export function collectionLinkImageFieldDefsFromSchema(
             ),
           }))
       );
+      if (fromSchema.length) return fromSchema;
     }
   }
 
@@ -137,7 +138,7 @@ export function collectionLinkImageFieldDefsFromSchema(
     const blueprint = layoutBlueprintKey(secId);
     const settingsFields = collectionLinkBlueprintSettingsFields(editorSchema, blueprint, 'layout');
     if (settingsFields.length) {
-      return sortCollectionLinkImagePanelFields(
+      const fromSchema = sortCollectionLinkImagePanelFields(
         settingsFields
           .filter((f) => IMAGE_KEY_SET.has(f.path.split('.').pop() ?? ''))
           .map((f) => ({
@@ -147,6 +148,7 @@ export function collectionLinkImageFieldDefsFromSchema(
               .replace(/\.blocks\.collection_link\./, `.blocks.${blockId}.`),
           }))
       );
+      if (fromSchema.length) return fromSchema;
     }
   }
 

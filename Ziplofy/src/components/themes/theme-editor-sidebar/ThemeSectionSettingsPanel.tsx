@@ -250,6 +250,7 @@ import {
   groupCollectionLinksSpotlightPanelFields,
   COLLECTION_LINKS_SPOTLIGHT_PANEL_GROUP_ORDER,
   isCollectionLinksSpotlightSettingsPanelFields,
+  isCollectionLinksTextSectionFromFields,
 } from './theme-editor-collection-links-spotlight-panel.utils';
 import {
   groupCollectionListBentoPanelFields,
@@ -4494,9 +4495,7 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupCollectionLinksSpotlightPanelFields(fields), [fields]);
-  const layoutModeField = fields.find((f) => f.path.endsWith('.layoutMode'));
-  const layoutMode = layoutModeField ? fieldValueAsString(values, layoutModeField) : 'spotlight';
-  const isTextLayout = layoutMode === 'text';
+  const isTextLayout = isCollectionLinksTextSectionFromFields(fields);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -4529,9 +4528,16 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
         }
 
         if (label === 'Layout') {
-          const visibleFields = isTextLayout
-            ? groupFields.filter((f) => !f.path.endsWith('imagePosition'))
-            : groupFields;
+          const visibleFields = (isTextLayout
+            ? groupFields.filter(
+                (f) =>
+                  !f.path.endsWith('imagePosition') &&
+                  !f.path.endsWith('imageUrl') &&
+                  !f.path.endsWith('layoutMode')
+              )
+            : groupFields.filter((f) => !f.path.endsWith('layoutMode'))
+          ).filter((f) => f.widget !== 'color-scheme' && !f.path.endsWith('.colorScheme'));
+          if (!visibleFields.length) return null;
           return (
             <div key={label} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
@@ -4540,16 +4546,6 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
                   if (field.widget === 'segmented') {
                     return (
                       <SegmentedFieldRow
-                        key={field.path}
-                        field={field}
-                        values={values}
-                        onFieldChange={onFieldChange}
-                      />
-                    );
-                  }
-                  if (field.widget === 'color-scheme') {
-                    return (
-                      <ColorSchemeFieldRow
                         key={field.path}
                         field={field}
                         values={values}

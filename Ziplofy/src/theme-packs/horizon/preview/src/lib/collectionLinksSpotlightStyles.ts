@@ -38,21 +38,41 @@ export function readCollectionLinksSpotlightLayout(
   config: Record<string, unknown> | null,
   settingsBase: string
 ): CollectionLinksSpotlightLayout {
-  const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   const catalogVariant = cfgString(config, `${settingsBase}.catalogVariant`, 'collection-links-spotlight');
-  const layoutModeRaw = cfgString(config, `${settingsBase}.layoutMode`, 'spotlight');
   const layoutMode =
     catalogVariant === 'collection-links-text'
       ? 'text'
-      : layoutModeRaw === 'text'
-        ? 'text'
-        : 'spotlight';
+      : catalogVariant === 'collection-links-spotlight'
+        ? 'spotlight'
+        : cfgString(config, `${settingsBase}.layoutMode`, 'spotlight') === 'text'
+          ? 'text'
+          : 'spotlight';
   const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'page');
   const alignment = cfgString(config, `${settingsBase}.alignment`, 'left');
   const imagePosition = cfgString(config, `${settingsBase}.imagePosition`, 'right');
 
+  const legacySchemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
+  const legacy = SCHEMES[legacySchemeKey] ?? SCHEMES['scheme-1'];
+  const bgRaw = cfgString(config, `${settingsBase}.backgroundColor`, '').trim();
+  const textRaw = cfgString(config, `${settingsBase}.textColor`, '').trim();
+  const hasCustomText = Boolean(textRaw && textRaw !== 'default' && !textRaw.startsWith('scheme-'));
+  const hasCustomBg = Boolean(bgRaw && bgRaw !== 'default' && !bgRaw.startsWith('scheme-'));
+  const background = hasCustomBg ? bgRaw : legacy.background;
+  const color = hasCustomText ? textRaw : legacy.color;
+  let muted = legacy.muted;
+  if (hasCustomText) {
+    const hex = color.startsWith('#') ? color.slice(1) : '';
+    const full = hex.length === 3 ? hex.split('').map((ch) => ch + ch).join('') : hex;
+    if (full.length === 6) {
+      const r = parseInt(full.slice(0, 2), 16);
+      const g = parseInt(full.slice(2, 4), 16);
+      const b = parseInt(full.slice(4, 6), 16);
+      if ([r, g, b].every((n) => Number.isFinite(n))) muted = `rgba(${r}, ${g}, ${b}, 0.5)`;
+    }
+  }
+
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme: { background, color, muted },
     layoutMode,
     sectionWidth: sectionWidth === 'full' ? 'full' : 'page',
     alignment:

@@ -1381,18 +1381,15 @@
         "colorScheme": "scheme-1",
         "paddingTop": 40,
         "paddingBottom": 40,
-        "customCss": ""
+        "customCss": "",
+        "backgroundColor": "",
+        "textColor": ""
       },
       "blocks": {
         "link_1": {
           "type": "collection-link",
           "settings": {
             "title": "Collection title",
-            "titleFont": "subheading",
-            "titleWeight": "default",
-            "titleLineHeight": "normal",
-            "titleLetterSpacing": "normal",
-            "titleCase": "default",
             "productCount": 5,
             "collectionHandle": "",
             "href": "/collections/all",
@@ -1400,7 +1397,14 @@
             "imageHeight": "medium",
             "imageRatio": "portrait",
             "imageCornerRadius": 0,
-            "showCount": false
+            "showCount": false,
+            "typographyPreset": "heading-5",
+            "font": "body",
+            "fontSize": "default",
+            "lineHeight": "normal",
+            "letterSpacing": "normal",
+            "textCase": "default",
+            "wrap": "pretty"
           }
         }
       },
@@ -1423,18 +1427,15 @@
         "colorScheme": "scheme-1",
         "paddingTop": 40,
         "paddingBottom": 40,
-        "customCss": ""
+        "customCss": "",
+        "backgroundColor": "",
+        "textColor": ""
       },
       "blocks": {
         "link_1": {
           "type": "collection-link",
           "settings": {
             "title": "Collection title",
-            "titleFont": "subheading",
-            "titleWeight": "default",
-            "titleLineHeight": "normal",
-            "titleLetterSpacing": "normal",
-            "titleCase": "default",
             "productCount": 5,
             "collectionHandle": "",
             "href": "/collections/all",
@@ -1442,7 +1443,14 @@
             "imageHeight": "medium",
             "imageRatio": "portrait",
             "imageCornerRadius": 0,
-            "showCount": false
+            "showCount": false,
+            "typographyPreset": "heading-5",
+            "font": "body",
+            "fontSize": "default",
+            "lineHeight": "normal",
+            "letterSpacing": "normal",
+            "textCase": "default",
+            "wrap": "pretty"
           }
         }
       },
@@ -4640,18 +4648,15 @@
             "colorScheme": "scheme-1",
             "paddingTop": 40,
             "paddingBottom": 40,
-            "customCss": ""
+            "customCss": "",
+            "backgroundColor": "",
+            "textColor": ""
           },
           "blocks": {
             "link_1": {
               "type": "collection-link",
               "settings": {
                 "title": "Collection title",
-                "titleFont": "subheading",
-                "titleWeight": "default",
-                "titleLineHeight": "normal",
-                "titleLetterSpacing": "normal",
-                "titleCase": "default",
                 "productCount": 5,
                 "collectionHandle": "",
                 "href": "/collections/all",
@@ -4659,7 +4664,14 @@
                 "imageHeight": "medium",
                 "imageRatio": "portrait",
                 "imageCornerRadius": 0,
-                "showCount": false
+                "showCount": false,
+                "typographyPreset": "heading-5",
+                "font": "body",
+                "fontSize": "default",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "textCase": "default",
+                "wrap": "pretty"
               }
             }
           },
@@ -4681,18 +4693,15 @@
             "colorScheme": "scheme-1",
             "paddingTop": 40,
             "paddingBottom": 40,
-            "customCss": ""
+            "customCss": "",
+            "backgroundColor": "",
+            "textColor": ""
           },
           "blocks": {
             "link_1": {
               "type": "collection-link",
               "settings": {
                 "title": "Collection title",
-                "titleFont": "subheading",
-                "titleWeight": "default",
-                "titleLineHeight": "normal",
-                "titleLetterSpacing": "normal",
-                "titleCase": "default",
                 "productCount": 5,
                 "collectionHandle": "",
                 "href": "/collections/all",
@@ -4700,7 +4709,14 @@
                 "imageHeight": "medium",
                 "imageRatio": "portrait",
                 "imageCornerRadius": 0,
-                "showCount": false
+                "showCount": false,
+                "typographyPreset": "heading-5",
+                "font": "body",
+                "fontSize": "default",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "textCase": "default",
+                "wrap": "pretty"
               }
             }
           },

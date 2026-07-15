@@ -5,11 +5,13 @@ function makeLink() {
     type: 'collection-link',
     settings: {
       title: 'Collection title',
-      titleFont: 'subheading',
-      titleWeight: 'default',
-      titleLineHeight: 'normal',
-      titleLetterSpacing: 'normal',
-      titleCase: 'default',
+      typographyPreset: 'heading-5',
+      font: 'body',
+      fontSize: 'default',
+      lineHeight: 'normal',
+      letterSpacing: 'normal',
+      textCase: 'default',
+      wrap: 'pretty',
       productCount: 5,
       collectionHandle: '',
       href: '/collections/all',
@@ -30,12 +32,13 @@ export function applyCollectionLinksSpotlightPreset(section: Record<string, unkn
   settings.catalogVariant = catalogVariant;
   settings.collectionsPicker = settings.collectionsPicker ?? '';
   const isText = catalogVariant === 'collection-links-text';
-  settings.layoutMode = isText ? 'text' : (settings.layoutMode ?? 'spotlight');
+  settings.layoutMode = isText ? 'text' : 'spotlight';
   settings.sectionWidth = settings.sectionWidth ?? 'page';
   settings.alignment = isText ? (settings.alignment ?? 'center') : (settings.alignment ?? 'left');
   settings.imagePosition = settings.imagePosition ?? 'right';
   settings.imageUrl = settings.imageUrl ?? '';
-  settings.colorScheme = settings.colorScheme ?? 'scheme-1';
+  settings.backgroundColor = settings.backgroundColor ?? '';
+  settings.textColor = settings.textColor ?? '';
   settings.paddingTop = settings.paddingTop ?? 40;
   settings.paddingBottom = settings.paddingBottom ?? 40;
   settings.customCss = settings.customCss ?? '';
