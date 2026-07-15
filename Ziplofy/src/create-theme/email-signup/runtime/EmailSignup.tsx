@@ -5,6 +5,7 @@ import {
   useThemeConfig,
 } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
+import { notifyEmailSignupEditorPreview } from '../../runtime/shared/editorPreviewNotice';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
@@ -376,6 +377,7 @@ export function EmailSignup({
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (isThemeEditorPreview() || submitting) {
+      if (isThemeEditorPreview()) notifyEmailSignupEditorPreview();
       setEmail('');
       return;
     }

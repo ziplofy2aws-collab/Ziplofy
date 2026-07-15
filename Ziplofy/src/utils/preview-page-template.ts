@@ -6,6 +6,7 @@ import {
 } from '../create-theme/utils/theme-page-registry';
 
 export { PREVIEW_PAGE_ROUTES, type ThemePageIcon };
+export { isPasswordPreviewPage, isPasswordTemplateId } from '../create-theme/utils/theme-page-registry';
 
 /** Resolves editor preview page ids (incl. alternate templates) to config template keys. */
 export function previewPageToTemplateId(page: string): string {

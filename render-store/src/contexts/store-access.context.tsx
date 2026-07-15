@@ -70,9 +70,8 @@ export const StorefrontAccessProvider: React.FC<{ children: React.ReactNode }> =
         error: null,
       });
 
-      if (!passwordProtectionEnabled || unlocked) {
-        await loadStoreAssets();
-      }
+      // Load theme assets even when locked so the password page can use the theme template.
+      await loadStoreAssets();
     } catch {
       clearStorefrontUnlockToken();
       setState({
@@ -159,6 +158,11 @@ export const useStorefrontAccess = (): StorefrontAccessContextType => {
     throw new Error('useStorefrontAccess must be used within a StorefrontAccessProvider');
   }
   return ctx;
+};
+
+/** Safe in theme-editor preview where StorefrontAccessProvider may be absent. */
+export const useOptionalStorefrontAccess = (): StorefrontAccessContextType | null => {
+  return useContext(StorefrontAccessContext) ?? null;
 };
 
 export default StorefrontAccessContext;

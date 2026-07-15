@@ -1,4 +1,4 @@
-import { StorePasswordGate } from './components/StorePasswordGate';
+import { StorePasswordThemeGate } from './components/StorePasswordThemeGate';
 import { useStorefrontAccess } from './contexts/store-access.context';
 import { useStorefront } from './contexts/store.context';
 import { shouldUseComposerRuntime } from './utils/themeComposer';
@@ -55,16 +55,16 @@ export const IsValidStorefront = () => {
     );
   }
 
-  if (passwordProtectionEnabled && !unlocked) {
-    return <StorePasswordGate />;
-  }
-
   if (storeAssetsLoading || !storeAssetsReady) {
     return (
       <div style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
         <p style={{ margin: 0 }}>Loading store…</p>
       </div>
     );
+  }
+
+  if (passwordProtectionEnabled && !unlocked) {
+    return <StorePasswordThemeGate />;
   }
 
   const useComposer = shouldUseComposerRuntime({

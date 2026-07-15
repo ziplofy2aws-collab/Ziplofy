@@ -252,7 +252,7 @@ export function ThemePreviewApp() {
       previewDevice={previewDevice}
     >
       <PreviewErrorBoundary>
-        {init.jsUrl ? (
+        {init.jsUrl && page !== 'password' ? (
           <ThemePreviewRuntime
             jsUrl={init.jsUrl}
             cssUrl={init.cssUrl}

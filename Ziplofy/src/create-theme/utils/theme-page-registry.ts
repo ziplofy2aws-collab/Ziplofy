@@ -227,11 +227,26 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
   },
   {
     pageId: 'password',
-    templateId: 'forgot_password',
+    templateId: 'password',
     label: 'Password',
     icon: 'lock',
-    previewPath: '/auth/login',
-    routes: [],
+    /** Store password-protection gate — not account forgot-password */
+    previewPath: '/password',
+    routes: [
+      {
+        path: '/password',
+        templateId: 'password',
+        fallbackSectionIds: ['password_main', 'email_signup'],
+      },
+    ],
+  },
+  {
+    pageId: '404',
+    templateId: '404',
+    label: '404 page',
+    icon: 'page',
+    previewPath: '/404',
+    routes: [{ path: '/404', templateId: '404' }],
   },
   {
     pageId: 'login',
@@ -298,6 +313,15 @@ const MANIFEST_TEMPLATE_IDS = new Set([
   'preferences',
 ]);
 
+/** Store password gate — no global header/footer chrome. */
+export function isPasswordTemplateId(templateId: string): boolean {
+  return templateId === 'password' || templateId.startsWith('password.');
+}
+
+export function isPasswordPreviewPage(page: string): boolean {
+  return page === 'password' || isPasswordTemplateId(previewPageToTemplateId(page));
+}
+
 export function previewPageToTemplateId(page: string): string {
   const productTemplateId = productTemplateIdFromPreviewPage(page);
   if (productTemplateId) return productTemplateId;
@@ -313,7 +337,7 @@ export function previewPageToTemplateId(page: string): string {
   const p = page || 'index';
   if (MANIFEST_TEMPLATE_IDS.has(p)) return p;
   if (p === 'checkout') return 'login';
-  if (p === 'password') return 'forgot_password';
+  if (p === 'password') return 'password';
   return p;
 }
 
@@ -405,6 +429,7 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
   },
   { previewPage: 'search', label: 'Search', icon: 'search', dividerBefore: true },
   { previewPage: 'password', label: 'Password', icon: 'lock' },
+  { previewPage: '404', label: '404 page', icon: 'page' },
 ];
 
 export function allRegistryPageIds(): Set<string> {

@@ -5393,6 +5393,81 @@
         "product_main"
       ]
     },
+    "password": {
+      "name": "Password",
+      "sections": {
+        "password_main": {
+          "type": "password-main",
+          "enabled": true,
+          "settings": {},
+          "blocks": {
+            "logo": {
+              "type": "logo",
+              "settings": {
+                "text": ""
+              }
+            },
+            "text": {
+              "type": "text",
+              "settings": {
+                "message": "This store is password protected. Enter the password to continue shopping."
+              }
+            },
+            "password_field": {
+              "type": "password",
+              "settings": {
+                "label": "Password",
+                "placeholder": "Enter store password"
+              }
+            },
+            "primary_button": {
+              "type": "primary-button",
+              "settings": {
+                "label": "Enter",
+                "loadingLabel": "Checking…"
+              }
+            }
+          },
+          "block_order": [
+            "logo",
+            "text",
+            "password_field",
+            "primary_button"
+          ]
+        },
+        "email_signup": {
+          "type": "email-signup",
+          "enabled": true,
+          "settings": {
+            "catalogVariant": "email-signup",
+            "title": "Get notified",
+            "subtitle": "Leave your email and we will let you know when we open.",
+            "placeholder": "Email address",
+            "direction": "vertical",
+            "layoutAlignment": "center",
+            "position": "center",
+            "layoutGap": 16,
+            "sectionWidth": "page",
+            "height": "auto",
+            "colorScheme": "scheme-1",
+            "backgroundMedia": "none",
+            "backgroundImageUrl": "",
+            "borderStyle": "none",
+            "cornerRadius": 0,
+            "backgroundOverlay": false,
+            "paddingTop": 8,
+            "paddingBottom": 48,
+            "customCss": ""
+          },
+          "blocks": {},
+          "block_order": []
+        }
+      },
+      "section_order": [
+        "password_main",
+        "email_signup"
+      ]
+    },
     "cart": {
       "name": "Cart",
       "sections": {

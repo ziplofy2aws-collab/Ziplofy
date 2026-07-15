@@ -713,7 +713,7 @@ import {
   catalogSidebarBlocksForSectionType,
   settingsNodeFromCatalog,
 } from '../../theme-editor/catalog-sidebar.util';
-import { previewPageToTemplateId } from '../../utils/preview-page-template';
+import { previewPageToTemplateId, isPasswordPreviewPage } from '../../utils/preview-page-template';
 import { schemaTemplateIdForConfigKey } from '../utils/product-templates.util';
 
 type LayoutSectionDef = NonNullable<EditorSchemaDoc['layout']>[string];
@@ -4064,6 +4064,22 @@ export function buildEmptyShopifySidebarTree(
   previewPage: ThemePreviewPage = 'index'
 ): SidebarNode[] {
   const templateId = previewPageToTemplateId(previewPage);
+  const hideLayoutChrome = isPasswordPreviewPage(previewPage);
+
+  const templateGroup: SidebarNode = {
+    id: 'group:template',
+    label: 'Template',
+    kind: 'group-label',
+    children: [
+      { id: `template:${templateId}:add-section`, label: 'Add section', kind: 'add-section' },
+    ],
+    childrenListKey: listKeyTemplateSections(templateId),
+  };
+
+  if (hideLayoutChrome) {
+    return [templateGroup];
+  }
+
   return [
     {
       id: 'group:header',
@@ -4072,15 +4088,7 @@ export function buildEmptyShopifySidebarTree(
       children: [{ id: 'layout:add-section', label: 'Add section', kind: 'add-section' }],
       childrenListKey: listKeyHeaderSections(),
     },
-    {
-      id: 'group:template',
-      label: 'Template',
-      kind: 'group-label',
-      children: [
-        { id: `template:${templateId}:add-section`, label: 'Add section', kind: 'add-section' },
-      ],
-      childrenListKey: listKeyTemplateSections(templateId),
-    },
+    templateGroup,
     {
       id: 'group:footer',
       label: 'Footer',
@@ -4103,6 +4111,7 @@ export function buildShopifySidebarTree(
 ): SidebarNode[] {
   const tree: SidebarNode[] = [];
   const templateId = previewPageToTemplateId(previewPage);
+  const hideLayoutChrome = isPasswordPreviewPage(previewPage);
   const layout = schema.layout ?? {};
   const cfg = config ?? {};
 
@@ -4113,29 +4122,31 @@ export function buildShopifySidebarTree(
     ensureLayoutOrder(cfgClone);
   }
 
-  const headerOrder = config
-    ? existingLayoutSectionIds(cfg as Record<string, unknown>, 'header')
-    : ['announcement_bar', 'header'];
+  if (!hideLayoutChrome) {
+    const headerOrder = config
+      ? existingLayoutSectionIds(cfg as Record<string, unknown>, 'header')
+      : ['announcement_bar', 'header'];
 
-  const headerNodes: SidebarNode[] = [];
-  for (const instanceId of headerOrder) {
-    const blueprint = layoutBlueprintKey(instanceId);
-    const sec = layout[blueprint];
-    if (sec) headerNodes.push(layoutSectionNode(instanceId, sec, values, itemOrder, config));
+    const headerNodes: SidebarNode[] = [];
+    for (const instanceId of headerOrder) {
+      const blueprint = layoutBlueprintKey(instanceId);
+      const sec = layout[blueprint];
+      if (sec) headerNodes.push(layoutSectionNode(instanceId, sec, values, itemOrder, config));
+    }
+    const headerChildren = reorderSidebarChildren(
+      [...headerNodes, { id: 'layout:add-section', label: 'Add section', kind: 'add-section' }],
+      listKeyHeaderSections(),
+      itemOrder
+    );
+
+    tree.push({
+      id: 'group:header',
+      label: 'Header',
+      kind: 'group-label',
+      children: headerChildren,
+      childrenListKey: listKeyHeaderSections(),
+    });
   }
-  const headerChildren = reorderSidebarChildren(
-    [...headerNodes, { id: 'layout:add-section', label: 'Add section', kind: 'add-section' }],
-    listKeyHeaderSections(),
-    itemOrder
-  );
-
-  tree.push({
-    id: 'group:header',
-    label: 'Header',
-    kind: 'group-label',
-    children: headerChildren,
-    childrenListKey: listKeyHeaderSections(),
-  });
 
   const tpl = schema.templates?.find((t) => t.id === schemaTemplateId) ?? schema.templates?.[0];
   const tplSectionsListKey = listKeyTemplateSections(templateId);
@@ -4193,40 +4204,42 @@ export function buildShopifySidebarTree(
     });
   }
 
-  const footerOrder = config
-    ? existingLayoutSectionIds(cfg as Record<string, unknown>, 'footer')
-    : [];
+  if (!hideLayoutChrome) {
+    const footerOrder = config
+      ? existingLayoutSectionIds(cfg as Record<string, unknown>, 'footer')
+      : [];
 
-  const footerNodes: SidebarNode[] = [];
-  const indexTpl = schema.templates?.find((t) => t.id === 'index');
-  const heroBlueprint = indexTpl?.sections?.find((s) => s.id === 'hero_main');
-  const layoutSectionsCfg = (cfg.sections ?? {}) as Record<string, { type?: string } | undefined>;
-  for (const instanceId of footerOrder) {
-    const blueprint = layoutBlueprintKey(instanceId);
-    const layoutSecType = layoutSectionsCfg[instanceId]?.type;
-    if ((blueprint === 'hero_main' || layoutSecType === 'hero') && heroBlueprint) {
-      footerNodes.push(layoutHeroSectionNode(instanceId, heroBlueprint, values, itemOrder, config));
-      continue;
+    const footerNodes: SidebarNode[] = [];
+    const indexTpl = schema.templates?.find((t) => t.id === 'index');
+    const heroBlueprint = indexTpl?.sections?.find((s) => s.id === 'hero_main');
+    const layoutSectionsCfg = (cfg.sections ?? {}) as Record<string, { type?: string } | undefined>;
+    for (const instanceId of footerOrder) {
+      const blueprint = layoutBlueprintKey(instanceId);
+      const layoutSecType = layoutSectionsCfg[instanceId]?.type;
+      if ((blueprint === 'hero_main' || layoutSecType === 'hero') && heroBlueprint) {
+        footerNodes.push(layoutHeroSectionNode(instanceId, heroBlueprint, values, itemOrder, config));
+        continue;
+      }
+      const sec = layout[blueprint];
+      if (sec) footerNodes.push(layoutSectionNode(instanceId, sec, values, itemOrder, config));
     }
-    const sec = layout[blueprint];
-    if (sec) footerNodes.push(layoutSectionNode(instanceId, sec, values, itemOrder, config));
-  }
-  const footerChildren = reorderSidebarChildren(
-    [
-      { id: 'layout:footer-group:add-section', label: 'Add section', kind: 'add-section' },
-      ...footerNodes,
-    ],
-    listKeyFooterSections(),
-    itemOrder
-  );
+    const footerChildren = reorderSidebarChildren(
+      [
+        { id: 'layout:footer-group:add-section', label: 'Add section', kind: 'add-section' },
+        ...footerNodes,
+      ],
+      listKeyFooterSections(),
+      itemOrder
+    );
 
-  tree.push({
-    id: 'group:footer',
-    label: 'Footer',
-    kind: 'group-label',
-    children: footerChildren,
-    childrenListKey: listKeyFooterSections(),
-  });
+    tree.push({
+      id: 'group:footer',
+      label: 'Footer',
+      kind: 'group-label',
+      children: footerChildren,
+      childrenListKey: listKeyFooterSections(),
+    });
+  }
 
   return tree;
 }

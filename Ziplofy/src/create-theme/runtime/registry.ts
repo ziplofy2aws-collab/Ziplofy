@@ -22,6 +22,7 @@ import { BlogPostsEditorial } from '../blog-posts-editorial/runtime/BlogPostsEdi
 import { BlogPostsCarousel } from '../blog-posts-carousel/runtime/BlogPostsCarousel';
 import { ContactForm } from '../contact-form/runtime/ContactForm';
 import { EmailSignup } from '../email-signup/runtime/EmailSignup';
+import { PasswordMain } from '../password-main/runtime/PasswordMain';
 import { ProductMain } from '../product-main/runtime/ProductMain';
 import { CollectionHeading } from '../collection-heading/runtime/CollectionHeading';
 import { MainCollection } from '../main-collection/runtime/MainCollection';
@@ -64,6 +65,7 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
   'product-hotspots': ProductHotspots,
   'recommended-products': RecommendedProducts,
   'product-main': ProductMain,
+  'password-main': PasswordMain,
   'collection-heading': CollectionHeading,
   'main-collection': MainCollection,
   'blog-post-main': BlogPostMain,
@@ -118,6 +120,7 @@ export function blueprintIdFromInstanceId(instanceId: string): string {
     'product_hotspots',
     'recommended_products',
     'product_main',
+    'password_main',
     'collection_heading',
     'main_collection',
     'blog_post_main',

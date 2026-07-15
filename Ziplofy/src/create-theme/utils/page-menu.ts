@@ -77,6 +77,7 @@ function iconForTemplate(id: string): ThemePageIcon {
   if (id === 'checkout') return 'checkout';
   if (id === 'search') return 'search';
   if (id === 'password') return 'lock';
+  if (id === '404') return 'page';
   if (id === 'login' || id === 'signup' || id === 'forgot_password') return 'login';
   if (id === 'profile' || id === 'preferences') return 'user';
   if (id === 'orders') return 'orders';

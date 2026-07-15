@@ -4,6 +4,7 @@ import {
   ensureBlogPostsPageTemplateBlocks,
   ensureBlogsPageTemplateBlocks,
 } from '../../utils/blog-page-preset.util';
+import { ensurePasswordPageTemplateBlocks } from '../../utils/password-page-preset.util';
 import { creatorTemplateHasSections } from '../../utils/theme-editor-static-pack';
 import {
   extendValuesForTemplateInstance,
@@ -19,6 +20,7 @@ export const PACK_STARTER_TEMPLATE_IDS = new Set([
   'collections-list',
   'blogs',
   'blog-posts',
+  'password',
 ]);
 
 function packKeyForTemplateId(templateId: string): string {
@@ -64,6 +66,7 @@ export function seedTemplateFromPackIfEmpty(
     if (packKey === 'products') return ensureAllProductsPageTemplateBlocks(config);
     if (packKey === 'blogs') return ensureBlogsPageTemplateBlocks(config);
     if (packKey === 'blog-posts') return ensureBlogPostsPageTemplateBlocks(config);
+    if (packKey === 'password') return ensurePasswordPageTemplateBlocks(config);
     return false;
   }
 

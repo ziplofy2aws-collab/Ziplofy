@@ -460,6 +460,10 @@ import {
   ensureBlogPostsPageTemplateBlocks,
   ensureBlogsPageTemplateBlocks,
 } from '../utils/blog-page-preset.util';
+import {
+  ensurePasswordPageTemplateBlocks,
+  PASSWORD_TEMPLATE_ID,
+} from '../utils/password-page-preset.util';
 import { resolveCollectionTemplatePreviewRoute } from './utils/collection-page-preview.util';
 import { isCollectionTemplatePreviewPage } from './utils/collection-templates.util';
 import { CollectionTemplatePreviewCard } from './sidebar/CollectionTemplatePreviewCard';
@@ -853,6 +857,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           ensureAllProductsPageTemplateBlocks(config) ||
           ensureBlogsPageTemplateBlocks(config) ||
           ensureBlogPostsPageTemplateBlocks(config) ||
+          ensurePasswordPageTemplateBlocks(config) ||
           ensureFeaturedProductSectionBlocks(config) ||
           ensureProductHighlightSectionBlocks(config) ||
           ensureProductHotspotsSectionBlocks(config) ||
@@ -2609,6 +2614,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           seeded = ensureBlogsPageTemplateBlocks(next);
         } else if (tplId === 'blog-posts' || tplId.startsWith('blog-posts.')) {
           seeded = ensureBlogPostsPageTemplateBlocks(next);
+        } else if (tplId === PASSWORD_TEMPLATE_ID) {
+          seeded = ensurePasswordPageTemplateBlocks(next);
         }
         if (!seeded) {
           seeded = seedTemplateFromPackIfEmpty(next, tplId, pack);

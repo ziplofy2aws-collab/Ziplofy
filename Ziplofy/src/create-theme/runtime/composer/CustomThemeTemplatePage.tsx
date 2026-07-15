@@ -1,4 +1,5 @@
 import { useThemeConfig } from '@render-store/sdk';
+import { isPasswordTemplateId } from '../../utils/theme-page-registry';
 import { templateSectionOrder } from '../shared/structureOrder';
 import { isTemplateSectionEnabled } from '../shared/sectionEnabled';
 import { CustomThemePageShell } from './CustomThemePageShell';
@@ -12,9 +13,10 @@ type Props = {
 export function CustomThemeTemplatePage({ templateId, fallbackSectionIds = [] }: Props) {
   const config = useThemeConfig();
   const order = templateSectionOrder(config, templateId, fallbackSectionIds);
+  const hideChrome = isPasswordTemplateId(templateId);
 
   return (
-    <CustomThemePageShell>
+    <CustomThemePageShell hideChrome={hideChrome}>
       {order.map((sectionId) =>
         isTemplateSectionEnabled(config, templateId, sectionId) ? (
           <SectionRuntimeNode

@@ -13,7 +13,7 @@ import {
   remapTemplateSchemaPath,
   templateBlueprintKey,
 } from '../../utils/theme-editor-insert-section';
-import { previewPageToTemplateId } from '../../utils/preview-page-template';
+import { previewPageToTemplateId, isPasswordPreviewPage } from '../../utils/preview-page-template';
 
 type SchemaBlock = {
   id?: string;
@@ -256,9 +256,10 @@ export function buildThemeEditorSelectionHints(
   const hints: ThemePreviewSelectionHint[] = [];
   const seen = new Set<string>();
   const tplId = previewPageToTemplateId(page);
+  const hideLayoutChrome = isPasswordPreviewPage(page);
 
-  const headerIds = existingLayoutSectionIds(config, 'header');
-  const footerIds = existingLayoutSectionIds(config, 'footer');
+  const headerIds = hideLayoutChrome ? [] : existingLayoutSectionIds(config, 'header');
+  const footerIds = hideLayoutChrome ? [] : existingLayoutSectionIds(config, 'footer');
   const instanceIds = [...headerIds, ...footerIds];
 
   const indexHeroSchema = schema.templates?.find((t) => t.id === 'index')?.sections?.find((s) => s.id === 'hero_main');

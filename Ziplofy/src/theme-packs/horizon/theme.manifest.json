@@ -17,6 +17,7 @@
     "login",
     "signup",
     "forgot_password",
+    "password",
     "profile",
     "orders",
     "preferences"

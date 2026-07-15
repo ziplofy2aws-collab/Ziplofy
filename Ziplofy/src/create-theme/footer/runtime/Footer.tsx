@@ -5,6 +5,7 @@ import {
   useThemeConfig,
 } from '@render-store/sdk';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
+import { notifyEmailSignupEditorPreview } from '../../runtime/shared/editorPreviewNotice';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layoutBlockOrder } from '../../runtime/shared/structureOrder';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
@@ -152,6 +153,7 @@ export function Footer({ sectionId = 'footer' }: Props) {
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (isThemeEditorPreview() || submitting) {
+      if (isThemeEditorPreview()) notifyEmailSignupEditorPreview();
       setEmail('');
       return;
     }

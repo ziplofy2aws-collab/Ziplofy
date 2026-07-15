@@ -38,7 +38,14 @@ import { isLayoutSectionEnabled } from '../shared/sectionEnabled';
 import { useThemeColors } from '../shared/tokens';
 import { SectionRuntimeNode } from './SectionRuntimeNode';
 
-export function CustomThemePageShell({ children }: { children: ReactNode }) {
+export function CustomThemePageShell({
+  children,
+  hideChrome = false,
+}: {
+  children: ReactNode;
+  /** Password gate (and similar) should not render store header/footer. */
+  hideChrome?: boolean;
+}) {
   const config = useThemeConfig();
   const { background, text } = useThemeColors();
   const animations = readThemeAnimationsSettings(config);
@@ -50,8 +57,8 @@ export function CustomThemePageShell({ children }: { children: ReactNode }) {
   const productCards = readThemeProductCardsSettings(config);
   const swatches = readThemeSwatchesSettings(config);
   const variantPickers = readThemeVariantPickersSettings(config);
-  const headerOrder = headerLayoutOrder(config);
-  const footerOrder = footerLayoutOrder(config);
+  const headerOrder = hideChrome ? [] : headerLayoutOrder(config);
+  const footerOrder = hideChrome ? [] : footerLayoutOrder(config);
 
   return (
     <div

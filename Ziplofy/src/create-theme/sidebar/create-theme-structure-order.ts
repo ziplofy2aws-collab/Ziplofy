@@ -108,7 +108,7 @@ function collectionLinksSpotlightStructureOrder(
   return out;
 }
 import { existingLayoutSectionIds } from '../../utils/theme-editor-insert-section';
-import { previewPageToTemplateId } from '../../utils/preview-page-template';
+import { previewPageToTemplateId, isPasswordPreviewPage } from '../../utils/preview-page-template';
 import type { SidebarNode } from './create-theme-sidebar.types';
 
 export function listKeyTemplateSections(tplId: string): string {
@@ -276,15 +276,18 @@ export function readStructureOrderFromConfig(
   if (!config) return {};
   const tplId = previewPageToTemplateId(page);
   const out: Record<string, string[]> = {};
+  const hideLayoutChrome = isPasswordPreviewPage(page);
 
-  const headerIds = existingLayoutSectionIds(config, 'header');
-  if (headerIds.length) {
-    out[listKeyHeaderSections()] = headerIds.map((id) => `layout:${id}`);
-  }
+  if (!hideLayoutChrome) {
+    const headerIds = existingLayoutSectionIds(config, 'header');
+    if (headerIds.length) {
+      out[listKeyHeaderSections()] = headerIds.map((id) => `layout:${id}`);
+    }
 
-  const footerIds = existingLayoutSectionIds(config, 'footer');
-  if (footerIds.length) {
-    out[listKeyFooterSections()] = footerIds.map((id) => `layout:${id}`);
+    const footerIds = existingLayoutSectionIds(config, 'footer');
+    if (footerIds.length) {
+      out[listKeyFooterSections()] = footerIds.map((id) => `layout:${id}`);
+    }
   }
 
   const tpl = getNested(config, ['templates', tplId]) as

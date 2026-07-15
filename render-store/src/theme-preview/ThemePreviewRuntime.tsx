@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
 import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
 import { CheckoutOrderStatusPage } from '@/pages/checkout-profile/CheckoutOrderStatusPage';
@@ -171,6 +172,15 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
         <Route path="/search" element={<Home />} />
+        <Route
+          path="/password"
+          element={
+            <CustomThemeTemplatePage
+              templateId="password"
+              fallbackSectionIds={['password_main', 'email_signup']}
+            />
+          }
+        />
         <Route path="*" element={<Home />} />
       </Routes>
     </MemoryRouter>
