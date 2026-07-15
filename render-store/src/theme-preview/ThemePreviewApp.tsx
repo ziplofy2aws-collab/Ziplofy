@@ -2,6 +2,7 @@ import { startTransition, useCallback, useEffect, useRef, useState } from 'react
 import { PreviewProviders } from './PreviewProviders';
 import { PreviewErrorBoundary } from './PreviewErrorBoundary';
 import { CustomThemeComposerPreview } from './CustomThemeComposerPreview';
+import { usesCreateThemeComposerPreview } from '@codiic/create-theme/utils/theme-page-registry';
 import { ThemePreviewRuntime } from './ThemePreviewRuntime';
 import { PreviewSelectionLayer } from './PreviewSelectionLayer';
 import {
@@ -252,7 +253,7 @@ export function ThemePreviewApp() {
       previewDevice={previewDevice}
     >
       <PreviewErrorBoundary>
-        {init.jsUrl && page !== 'password' ? (
+        {init.jsUrl && !usesCreateThemeComposerPreview(page) ? (
           <ThemePreviewRuntime
             jsUrl={init.jsUrl}
             cssUrl={init.cssUrl}

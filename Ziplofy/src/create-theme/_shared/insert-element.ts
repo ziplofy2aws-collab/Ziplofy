@@ -235,6 +235,12 @@ export function insertCreateThemeElement(
 ): CreateThemeInsertResult | null {
   const element = getCreateThemeElement(elementId);
   if (!element) return null;
+  if (
+    element.allowedPreviewPages?.length &&
+    !element.allowedPreviewPages.includes(previewPage)
+  ) {
+    return null;
+  }
   if (element.insert.placement === 'layout') {
     return insertCreateThemeLayoutSection(config, element, ctx, packDefault);
   }

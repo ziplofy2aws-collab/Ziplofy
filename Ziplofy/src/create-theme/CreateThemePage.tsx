@@ -179,6 +179,12 @@ import {
   extendValuesForHeroTextBlock,
   isHeroTextBlockNodeId,
 } from './sidebar/theme-editor-hero-text-block-panel.utils';
+import {
+  extendValuesForNotFoundMainMessage,
+  extendValuesForNotFoundMainSection,
+  isNotFoundMainMessageBlockNodeId,
+  isNotFoundMainSectionNodeId,
+} from './sidebar/theme-editor-not-found-main-panel.utils';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { THEME_EDITOR_STATIC_CONFIG } from '../config/theme-editor-static.config';
 import { useStore } from '../contexts/store.context';
@@ -464,6 +470,10 @@ import {
   ensurePasswordPageTemplateBlocks,
   PASSWORD_TEMPLATE_ID,
 } from '../utils/password-page-preset.util';
+import {
+  ensureNotFoundPageTemplateBlocks,
+  NOT_FOUND_TEMPLATE_ID,
+} from '../utils/not-found-page-preset.util';
 import { resolveCollectionTemplatePreviewRoute } from './utils/collection-page-preview.util';
 import { isCollectionTemplatePreviewPage } from './utils/collection-templates.util';
 import { CollectionTemplatePreviewCard } from './sidebar/CollectionTemplatePreviewCard';
@@ -858,6 +868,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           ensureBlogsPageTemplateBlocks(config) ||
           ensureBlogPostsPageTemplateBlocks(config) ||
           ensurePasswordPageTemplateBlocks(config) ||
+          ensureNotFoundPageTemplateBlocks(config) ||
           ensureFeaturedProductSectionBlocks(config) ||
           ensureProductHighlightSectionBlocks(config) ||
           ensureProductHotspotsSectionBlocks(config) ||
@@ -1283,6 +1294,36 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     setValues((prev) => {
       const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
       const next = extendValuesForHeroTextBlock(prev, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed 404 message text block panel values from merged config. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isNotFoundMainMessageBlockNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForNotFoundMainMessage(prev, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed 404 section container panel values from merged config. */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isNotFoundMainSectionNodeId(selectedNodeId)) return;
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForNotFoundMainSection(prev, selectedNodeId, merged);
       if (next === prev) return prev;
       for (const key of Object.keys(next)) {
         if (next[key] !== prev[key]) return next;
@@ -2616,6 +2657,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           seeded = ensureBlogPostsPageTemplateBlocks(next);
         } else if (tplId === PASSWORD_TEMPLATE_ID) {
           seeded = ensurePasswordPageTemplateBlocks(next);
+        } else if (tplId === NOT_FOUND_TEMPLATE_ID) {
+          seeded = ensureNotFoundPageTemplateBlocks(next);
         }
         if (!seeded) {
           seeded = seedTemplateFromPackIfEmpty(next, tplId, pack);
@@ -3839,6 +3882,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           open
           groupId={addSectionTarget.groupId}
           groupLabel={addSectionTarget.groupLabel}
+          previewPage={previewPage}
           onClose={() => setAddSectionTarget(null)}
           onSelect={handleInsertElement}
         />

@@ -798,6 +798,10 @@ import {
   LARGE_LOGO_BLOCK_PANEL_GROUP_ORDER,
 } from './theme-editor-large-logo-block-panel.utils';
 import { isHeroTextBlockNodeId } from './theme-editor-hero-text-block-panel.utils';
+import {
+  isNotFoundMainMessageBlockNodeId,
+  isNotFoundMainSectionNodeId,
+} from './theme-editor-not-found-main-panel.utils';
 import { isHeaderMenuBlockPanelFields } from './theme-editor-header-menu-block-panel.utils';
 
 function SectionIcon({ className }: { className?: string }) {
@@ -14338,6 +14342,7 @@ function RichTextAppearanceSettingsGroup({
   const bgImageField = fields.find((f) => f.path.endsWith('.backgroundImageUrl'));
   const bgImagePositionField = fields.find((f) => f.path.endsWith('.backgroundImagePosition'));
   const bgColorField = fields.find((f) => f.path.endsWith('.backgroundColor'));
+  const textColorField = fields.find((f) => f.path.endsWith('.textColor'));
   const overlayField = fields.find((f) => f.path.endsWith('.backgroundOverlay'));
   const overlayColorField = fields.find((f) => f.path.endsWith('.overlayColor'));
   const overlayOpacityField = fields.find((f) => f.path.endsWith('.overlayOpacity'));
@@ -14375,6 +14380,17 @@ function RichTextAppearanceSettingsGroup({
             values={values}
             colorPalette={colorPalette}
             defaultPaletteIndex={0}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {textColorField ? (
+          <ThemeDefaultColorField
+            label={textColorField.label || 'Text color'}
+            path={textColorField.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={1}
+            fallbackColor="#111827"
             onFieldChange={onFieldChange}
           />
         ) : null}
@@ -18148,6 +18164,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' && isPullQuoteTextPanelFields(fields);
   const isRichTextPanel =
     node.label === 'Rich text' || isRichTextSettingsPanelFields(fields);
+  const isNotFoundMainSectionPanel =
+    node.kind === 'section' &&
+    (node.label === '404' || isNotFoundMainSectionNodeId(node.id));
   const isRichTextBlockPanel =
     node.kind === 'block' &&
     (isRichTextBlockNodeId(node.id) ||
@@ -18423,6 +18442,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' &&
     isHeroTextBlockNodeId(node.id) &&
     (node.label === 'Text' || isTextBlockPanelFields(fields));
+  const isNotFoundMainMessageBlockPanel =
+    !isRichTextBlockPanel &&
+    !isStorytellingVideoBlockPanel &&
+    !isFaqAccordionRowTextBlockPanel &&
+    !isHeroTextBlockPanel &&
+    node.kind === 'block' &&
+    isNotFoundMainMessageBlockNodeId(node.id);
   const isHeroButtonBlockPanel =
     !isSlideshowInsetNestedBlockPanel &&
     node.kind === 'block' &&
@@ -18439,6 +18465,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isFaqAccordionRowBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
     !isHeroTextBlockPanel &&
+    !isNotFoundMainMessageBlockPanel &&
     !isIconsWithTextBlockPanel &&
     !isMulticolumnBlockPanel &&
     !isMulticolumnColumnBlockPanel &&
@@ -18479,6 +18506,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isMulticolumnPanel &&
     !isPullQuotePanel &&
     !isRichTextPanel &&
+    !isNotFoundMainSectionPanel &&
     !isTextMarqueePanel &&
     !isFeaturedCollectionGridPanel &&
     !isFeaturedCollectionCarouselPanel &&
@@ -18524,6 +18552,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isFaqAccordionRowBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
     !isHeroTextBlockPanel &&
+    !isNotFoundMainMessageBlockPanel &&
     !isHeroMarqueeFolderPanel &&
     !isHeroMarqueeTextPanel &&
     !isHeroMarqueeSpacerPanel &&
@@ -18561,6 +18590,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isMulticolumnPanel &&
     !isPullQuotePanel &&
     !isRichTextPanel &&
+    !isNotFoundMainSectionPanel &&
     !isTextMarqueePanel &&
     !isFeaturedCollectionGridPanel &&
     !isFeaturedCollectionCarouselPanel &&
@@ -18956,6 +18986,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isFaqAccordionRowTextBlockPanel ||
           isHeroTextBlockPanel ||
+          isNotFoundMainMessageBlockPanel ||
           isCollectionListHeaderTextPanel ? (
           <TextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isIconsWithTextBlockPanel ? (
@@ -19642,7 +19673,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
-        ) : isRichTextPanel ? (
+        ) : isRichTextPanel || isNotFoundMainSectionPanel ? (
           <RichTextGroupedSettingsPanel
             fields={fields}
             values={values}

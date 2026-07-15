@@ -640,6 +640,14 @@ import {
   isHeroTextBlockNodeId,
   prepareHeroTextBlockSettingsNode,
 } from './theme-editor-hero-text-block-panel.utils';
+import {
+  isNotFoundMainMessageBlockNodeId,
+  isNotFoundMainSectionNodeId,
+  notFoundMainContainerFieldDefsFromNodeId,
+  notFoundMainMessageFieldDefsFromNodeId,
+  prepareNotFoundMainMessageSettingsNode,
+  prepareNotFoundMainSettingsNode,
+} from './theme-editor-not-found-main-panel.utils';
 import { textBlockFieldDefs } from './theme-editor-text-block-panel.utils';
 import {
   headingBlockCanonicalFieldDefsForNodeId,
@@ -1485,6 +1493,71 @@ function mapHeroBlockNodes(
           ? blockSettingsFields
           : undefined,
       preview: heroBlockPreview(blockId, block, prefix, values),
+      showVisibilityToggle: true,
+      showDeleteButton: true,
+      children: undefined,
+    };
+  });
+
+  const addBlock: SidebarNode = { id: sectionAddBlockId, label: 'Add block', kind: 'add-block' };
+  return reorderSidebarChildren([addBlock, ...blockNodes], blocksListKey, itemOrder);
+}
+
+/**
+ * Atomic section blocks (404 Text / Button, etc.) — leaf rows only.
+ * No nested field children under each block; settings open in the panel on select.
+ */
+function mapAtomicSectionBlockNodes(
+  blocks: BlockDef[],
+  prefix: string,
+  sectionAddBlockId: string,
+  values: Record<string, string | boolean>,
+  itemOrder: Record<string, string[]>,
+  blocksListKey: string
+): SidebarNode[] {
+  const blockNodes: SidebarNode[] = blocks.map((block) => {
+    const blockId = block.id ?? block.label ?? 'block';
+    const layoutInstance = prefix.startsWith('layout:') ? prefix.slice('layout:'.length) : '';
+    const blockSettingsFields = layoutInstance
+      ? remapFields(block.settingsFields, layoutInstance)
+      : (block.settingsFields ?? []);
+
+    const isHeadingBlock = blockId === 'heading' || blockId.startsWith('heading_');
+
+    const previewField = blockSettingsFields.find(
+      (f) =>
+        f.path.endsWith('.settings.text') ||
+        f.path.endsWith('.settings.message') ||
+        f.path.endsWith('.settings.label') ||
+        f.path.endsWith('.settings.heading')
+    );
+
+    let preview = previewField ? fieldPreview(previewField, values) : undefined;
+    if (!preview && isHeadingBlock) {
+      const tpl = prefix.match(/^template:([^:]+):(.+)$/);
+      const titlePath = tpl
+        ? `templates.${tpl[1]}.sections.${tpl[2]}.settings.title`
+        : layoutInstance
+          ? `sections.${layoutInstance}.settings.title`
+          : '';
+      if (titlePath) {
+        preview = fieldPreview({ path: titlePath, type: 'text', label: 'Text' }, values);
+      }
+    }
+
+    return {
+      id: `${prefix}:block:${blockId}`,
+      label: block.label ?? blockId,
+      kind: 'block' as const,
+      icon: iconForBlockLabel(block.label ?? blockId),
+      // Heading panel is prepared from canonical defs on select; keep button/message fields.
+      fields:
+        isHeadingBlock
+          ? undefined
+          : blockSettingsFields.length
+            ? blockSettingsFields
+            : undefined,
+      preview,
       showVisibilityToggle: true,
       showDeleteButton: true,
       children: undefined,
@@ -3457,6 +3530,7 @@ function sectionToNode(
     catalogVariantEarly
   );
   const isHero = sec.type === 'hero' || sec.id === 'hero_main';
+  const isNotFoundMain = sec.type === 'not-found-main' || sec.id === 'not_found_main';
   const isDivider = sec.type === 'divider';
   const isContactForm = isContactFormSectionType(sec.type, catalogVariantEarly);
   const isEmailSignup = isEmailSignupSectionType(sec.type, catalogVariantEarly);
@@ -3588,6 +3662,7 @@ function sectionToNode(
     isFeaturedCollection ||
     isFeaturedCollectionGrouped ||
     isHero ||
+    isNotFoundMain ||
     isDividerSection ||
     isContactForm ||
     isEmailSignup ||
@@ -3844,6 +3919,15 @@ function sectionToNode(
           : catalogVariant === 'hero-marquee'
             ? mapHeroMarqueeGroupNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey, config)
             : mapHeroBlockNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)
+        : isNotFoundMain
+          ? mapAtomicSectionBlockNodes(
+              heroVisibleBlocks,
+              prefix,
+              `${prefix}:add-block`,
+              values,
+              itemOrder,
+              childrenListKey
+            )
         : mapBlockNodes(
             heroVisibleBlocks,
             prefix,
@@ -3857,6 +3941,7 @@ function sectionToNode(
 
   const children = reorderSidebarChildren(
     isHero ||
+      isNotFoundMain ||
       isFaq ||
       isIconsWithText ||
       isMulticolumn ||
@@ -4019,6 +4104,7 @@ function sectionToNode(
     showDeleteButton:
       (isFeaturedCollection ||
         isHero ||
+        isNotFoundMain ||
         isDividerSection ||
         isContactForm ||
         isEmailSignup ||
@@ -4501,6 +4587,7 @@ const SECTION_PANEL_BY_LABEL: Record<string, (node: SidebarNode) => SidebarNode>
   Multicolumn: prepareMulticolumnSettingsNode,
   'Pull quote': preparePullQuoteSettingsNode,
   'Rich text': prepareRichTextSettingsNode,
+  '404': prepareNotFoundMainSettingsNode,
   Marquee: prepareTextMarqueeSettingsNode,
   'Featured collection': prepareFeaturedCollectionSettingsNode,
   'Featured collection: Carousel': prepareFeaturedCollectionSettingsNode,
@@ -4759,7 +4846,9 @@ export function settingsNodeForSelection(
     const treeNode = findSidebarNode(tree, node.id);
     if (treeNode) node = { ...treeNode, ...node, fields: node.fields ?? treeNode.fields };
     let fields = editorSchema ? headingBlockFieldDefsFromSchema(editorSchema, node.id) : [];
-    if (!fields.length) {
+    const isNotFoundHeading = /:not_found_main(?:_\d+)?:block:heading/.test(node.id);
+    // 404 heading: always use full canonical panel so Appearance Text color is never omitted.
+    if (isNotFoundHeading || !fields.length) {
       fields = headingBlockCanonicalFieldDefsForNodeId(node.id);
     } else if (
       node.headingPanel === 'collection-title' ||
@@ -4774,6 +4863,24 @@ export function settingsNodeForSelection(
       node.headingPanel ??
       (isFaqSectionHeadingBlockNodeId(node.id) ? ('collection-title' as const) : undefined);
     return prepareHeadingBlockSettingsNode({ ...node, headingPanel, fields });
+  }
+
+  if (isNotFoundMainMessageBlockNodeId(node.id)) {
+    const treeNode = findSidebarNode(tree, node.id) ?? node;
+    const fields = notFoundMainMessageFieldDefsFromNodeId(node.id);
+    return prepareNotFoundMainMessageSettingsNode({
+      ...treeNode,
+      fields: fields.length ? fields : treeNode.fields,
+    });
+  }
+
+  if (isNotFoundMainSectionNodeId(node.id)) {
+    const treeNode = findSidebarNode(tree, node.id) ?? node;
+    const fields = notFoundMainContainerFieldDefsFromNodeId(node.id);
+    return prepareNotFoundMainSettingsNode({
+      ...treeNode,
+      fields: fields.length ? fields : treeNode.fields,
+    });
   }
 
   if (isCollectionTitleNestedNodeId(node.id)) {
@@ -5028,6 +5135,10 @@ export function settingsNodeForSelection(
 
   // Rich text / contact form / email signup share generic Layout–Size fields that FAQ
   // detection keys on, so they must resolve before the FAQ fallback to avoid a "FAQ" mislabel.
+  if (isNotFoundMainSectionNodeId(node.id) || node.label === '404') {
+    return prepareNotFoundMainSettingsNode(node);
+  }
+
   if (
     node.label === 'Rich text' ||
     (node.fields?.length && isRichTextSettingsPanelFields(node.fields))

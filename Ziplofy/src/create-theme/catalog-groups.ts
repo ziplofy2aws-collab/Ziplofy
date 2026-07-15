@@ -59,7 +59,8 @@ export const CREATE_THEME_CATALOG_GROUPS: Record<CreateThemeCatalogGroup, Create
         "label": "Forms",
         "itemIds": [
           "contact-form",
-          "email-signup"
+          "email-signup",
+          "not-found-main"
         ]
       },
         "layout": {

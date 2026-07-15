@@ -181,6 +181,15 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
             />
           }
         />
+        <Route
+          path="/404"
+          element={
+            <CustomThemeTemplatePage
+              templateId="404"
+              fallbackSectionIds={['not_found_main', 'featured_collection']}
+            />
+          }
+        />
         <Route path="*" element={<Home />} />
       </Routes>
     </MemoryRouter>

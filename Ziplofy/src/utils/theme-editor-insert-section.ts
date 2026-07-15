@@ -49,6 +49,7 @@ const CATALOG_BLUEPRINT: Record<string, { blueprintId: string; type: string; lab
   footer: { blueprintId: 'footer', type: 'footer', label: 'Footer' },
   'contact-form': { blueprintId: 'contact_form', type: 'contact-form', label: 'Contact form' },
   'email-signup': { blueprintId: 'email_signup', type: 'email-signup', label: 'Email signup' },
+  'not-found-main': { blueprintId: 'not_found_main', type: 'not-found-main', label: '404' },
   'custom-section': { blueprintId: 'custom_section', type: 'custom-section', label: 'Custom section' },
   'product-highlight': { blueprintId: 'product_highlight', type: 'product-highlight', label: 'Product highlight' },
   'featured-product': { blueprintId: 'product_highlight', type: 'product-highlight', label: 'Featured product' },

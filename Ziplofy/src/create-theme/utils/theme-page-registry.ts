@@ -246,7 +246,7 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     label: '404 page',
     icon: 'page',
     previewPath: '/404',
-    routes: [{ path: '/404', templateId: '404' }],
+    routes: [{ path: '/404', templateId: '404', fallbackSectionIds: ['not_found_main', 'featured_collection'] }],
   },
   {
     pageId: 'login',
@@ -320,6 +320,11 @@ export function isPasswordTemplateId(templateId: string): boolean {
 
 export function isPasswordPreviewPage(page: string): boolean {
   return page === 'password' || isPasswordTemplateId(previewPageToTemplateId(page));
+}
+
+/** Pages that must use create-theme composer preview (not remote theme.js). */
+export function usesCreateThemeComposerPreview(page: string): boolean {
+  return isPasswordPreviewPage(page) || page === '404';
 }
 
 export function previewPageToTemplateId(page: string): string {

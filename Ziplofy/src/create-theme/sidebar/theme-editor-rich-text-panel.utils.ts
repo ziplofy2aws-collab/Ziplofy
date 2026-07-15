@@ -23,13 +23,14 @@ const FIELD_SORT: Record<string, number> = {
   backgroundImageUrl: 22,
   backgroundImagePosition: 23,
   backgroundColor: 24,
-  backgroundOverlay: 25,
-  overlayColor: 26,
-  overlayOpacity: 27,
-  borderStyle: 28,
-  cornerRadius: 29,
-  paddingTop: 30,
-  paddingBottom: 31,
+  textColor: 25,
+  backgroundOverlay: 26,
+  overlayColor: 27,
+  overlayOpacity: 28,
+  borderStyle: 29,
+  cornerRadius: 30,
+  paddingTop: 31,
+  paddingBottom: 32,
 };
 
 function fieldSortKey(path: string): number {

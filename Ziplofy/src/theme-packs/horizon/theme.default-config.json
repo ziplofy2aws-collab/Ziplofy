@@ -2000,6 +2000,274 @@
     }
   },
   "templates": {
+    "404": {
+      "name": "404 page",
+      "sections": {
+        "featured_collection": {
+          "type": "featured-collection",
+          "enabled": true,
+          "settings": {
+            "collectionHandle": "products",
+            "layoutType": "carousel",
+            "carouselOnMobile": true,
+            "productsToShow": 6,
+            "columns": 4,
+            "mobileColumns": "1",
+            "horizontalGap": 8,
+            "verticalGap": 8,
+            "sectionWidth": "page",
+            "alignment": "left",
+            "sectionGap": 28,
+            "backgroundColor": "default",
+            "colorScheme": "scheme-1",
+            "paddingTop": 48,
+            "paddingBottom": 48,
+            "customCss": "",
+            "subtitle": "",
+            "showRating": false,
+            "emptyMessage": "No products yet.",
+            "gap": 24,
+            "navIcon": "arrows",
+            "navIconBackground": "circle",
+            "catalogVariant": "featured-collection-carousel"
+          },
+          "settings_field_order": [
+            "templates.404.sections.featured_collection.settings.productsToShow"
+          ],
+          "blocks": {
+            "collection_header": {
+              "type": "collection-header",
+              "settings": {
+                "direction": "horizontal",
+                "verticalOnMobile": false,
+                "layoutAlignment": "space-between",
+                "position": "bottom",
+                "alignTextBaseline": true,
+                "layoutGap": 12,
+                "width": "fill",
+                "customWidth": 100,
+                "mobileWidth": "fill",
+                "mobileCustomWidth": 100,
+                "height": "fit",
+                "customHeight": 100,
+                "inheritColorScheme": true,
+                "backgroundMedia": "none",
+                "backgroundImageUrl": "",
+                "backgroundImagePosition": "cover",
+                "backgroundColor": "default",
+                "borderStyle": "none",
+                "borderThickness": 1,
+                "borderOpacity": 100,
+                "borderColor": "default",
+                "cornerRadius": 0,
+                "paddingTop": 0,
+                "paddingBottom": 0,
+                "paddingLeft": 0,
+                "paddingRight": 0,
+                "title": "Products",
+                "titleWidth": "fit",
+                "titleMaxWidth": "normal",
+                "titleTypographyPreset": "default",
+                "titleColor": "default",
+                "titleBackgroundEnabled": false,
+                "titlePaddingTop": 0,
+                "titlePaddingBottom": 0,
+                "titlePaddingLeft": 0,
+                "titlePaddingRight": 0,
+                "viewAllLabel": "View all",
+                "viewAllHref": "/collections/all",
+                "viewAllOpenInNewTab": false,
+                "viewAllStyle": "link",
+                "viewAllLinkTextColor": "default",
+                "viewAllCustomBackgroundColor": "palette:0",
+                "viewAllCustomTextColor": "palette:1",
+                "viewAllCustomBorderColor": "palette:1",
+                "viewAllDesktopWidth": "fit",
+                "viewAllDesktopCustomWidth": 100,
+                "viewAllMobileWidth": "fit",
+                "viewAllMobileCustomWidth": 100,
+                "subtitle": ""
+              },
+              "nested_block_order": [
+                "collection_title",
+                "view_all_button"
+              ]
+            },
+            "product_card": {
+              "type": "product-card",
+              "settings": {
+                "verticalGap": 4,
+                "inheritColorScheme": true,
+                "backgroundColor": "default",
+                "borderStyle": "none",
+                "cornerRadius": 0,
+                "paddingTop": 0,
+                "paddingBottom": 0,
+                "paddingLeft": 0,
+                "paddingRight": 0,
+                "mediaAspectRatio": "auto",
+                "mediaBorderStyle": "none",
+                "mediaCornerRadius": 0,
+                "mediaPaddingTop": 0,
+                "mediaPaddingBottom": 0,
+                "mediaPaddingLeft": 0,
+                "mediaPaddingRight": 0,
+                "productTitleWidth": "fit",
+                "productTitleMaxWidth": "normal",
+                "productTitleAlignment": "left",
+                "productTitleTypographyPreset": "paragraph",
+                "productTitleColor": "default",
+                "productTitleBackgroundEnabled": false,
+                "productTitlePaddingTop": 4,
+                "productTitlePaddingBottom": 0,
+                "productTitlePaddingLeft": 0,
+                "productTitlePaddingRight": 0,
+                "priceShowSaleFirst": true,
+                "priceInstallments": false,
+                "priceTaxInfo": false,
+                "priceTypographyPreset": "heading-6",
+                "priceWidth": "fill",
+                "priceAlignment": "left",
+                "priceColor": "default",
+                "pricePaddingTop": 0,
+                "pricePaddingBottom": 0,
+                "pricePaddingLeft": 0,
+                "pricePaddingRight": 0,
+                "showMedia": true,
+                "showTitle": true,
+                "showPrice": true
+              },
+              "nested_block_order": [
+                "media",
+                "product_title",
+                "price",
+                "quick_view",
+                "badge"
+              ],
+              "blocks": {
+                "quick_view": {
+                  "type": "quick-view",
+                  "settings": {
+                    "label": "Quick view",
+                    "show": true
+                  }
+                },
+                "badge": {
+                  "type": "badge",
+                  "settings": {
+                    "saleLabel": "Sale",
+                    "newLabel": "New"
+                  }
+                }
+              },
+              "block_order": [
+                "media",
+                "product_title",
+                "price",
+                "quick_view",
+                "badge"
+              ]
+            }
+          },
+          "block_order": [
+            "collection_header",
+            "product_card"
+          ]
+        },
+        "not_found_main": {
+          "type": "not-found-main",
+          "enabled": true,
+          "settings": {
+            "direction": "vertical",
+            "layoutAlignment": "center",
+            "position": "center",
+            "layoutGap": 16,
+            "sectionWidth": "page",
+            "height": "auto",
+            "colorScheme": "scheme-1",
+            "backgroundMedia": "none",
+            "backgroundImageUrl": "",
+            "backgroundImagePosition": "cover",
+            "backgroundColor": "default",
+            "textColor": "default",
+            "backgroundOverlay": false,
+            "headingWidth": "fill",
+            "headingMaxWidth": "normal",
+            "headingAlignment": "center",
+            "headingTypographyPreset": "heading-1",
+            "headingFont": "body",
+            "headingFontSize": "default",
+            "headingLineHeight": "normal",
+            "headingLetterSpacing": "normal",
+            "headingTextCase": "default",
+            "headingWrap": "pretty",
+            "headingColor": "heading",
+            "headingBackgroundEnabled": false,
+            "headingBackgroundColor": "#00000026",
+            "headingCornerRadius": 0,
+            "headingPaddingTop": 0,
+            "headingPaddingBottom": 0,
+            "headingPaddingLeft": 0,
+            "headingPaddingRight": 0
+          },
+          "blocks": {
+            "heading": {
+              "type": "heading",
+              "settings": {
+                "heading": "Page not found",
+                "text": "Page not found"
+              }
+            },
+            "message": {
+              "type": "text",
+              "settings": {
+                "text": "The link may be incorrect, or the page has been removed.",
+                "width": "fill",
+                "maxWidth": "normal",
+                "alignment": "center",
+                "typographyPreset": "paragraph",
+                "font": "body",
+                "fontSize": "default",
+                "lineHeight": "normal",
+                "letterSpacing": "normal",
+                "textCase": "default",
+                "wrap": "pretty",
+                "textColor": "default",
+                "backgroundEnabled": false,
+                "backgroundColor": "#00000026",
+                "cornerRadius": 0,
+                "paddingTop": 0,
+                "paddingBottom": 0,
+                "paddingLeft": 0,
+                "paddingRight": 0
+              }
+            },
+            "primary_button": {
+              "type": "primary-button",
+              "settings": {
+                "label": "Continue shopping",
+                "href": "/",
+                "openInNewTab": false,
+                "buttonStyle": "primary",
+                "desktopWidth": "fit",
+                "desktopCustomWidth": 100,
+                "mobileWidth": "fit",
+                "mobileCustomWidth": 100
+              }
+            }
+          },
+          "block_order": [
+            "heading",
+            "message",
+            "primary_button"
+          ]
+        }
+      },
+      "section_order": [
+        "not_found_main",
+        "featured_collection"
+      ]
+    },
     "index": {
       "name": "Home page",
       "sections": {

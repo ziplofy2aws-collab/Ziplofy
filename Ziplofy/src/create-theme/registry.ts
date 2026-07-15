@@ -3,6 +3,7 @@ import { headerElement } from './header';
 import { dividerElement } from './divider';
 import { footerElement } from './footer';
 import { policiesLinksElement } from './policies-links';
+import { notFoundMainElement } from './not-found-main';
 import {
   GENERATED_CREATE_THEME_ELEMENTS,
   GENERATED_SECTION_TYPE_TO_ELEMENT_ID,
@@ -21,6 +22,7 @@ const HANDCRAFTED_OVERRIDES: Record<string, CreateThemeElement> = {
   divider: dividerElement,
   footer: footerElement,
   'policies-links': policiesLinksElement,
+  'not-found-main': notFoundMainElement,
 };
 
 export const CREATE_THEME_ELEMENTS: Record<string, CreateThemeElement> = {
@@ -44,7 +46,10 @@ export function getElementForSectionType(sectionType: string): CreateThemeElemen
   return id ? CREATE_THEME_ELEMENTS[id] : undefined;
 }
 
-export function listCreateThemeCatalogItems(group: CreateThemeCatalogGroup): CreateThemeCatalogListItem[] {
+export function listCreateThemeCatalogItems(
+  group: CreateThemeCatalogGroup,
+  previewPage?: string
+): CreateThemeCatalogListItem[] {
   const groupDef = CREATE_THEME_CATALOG_GROUPS[group];
   if (!groupDef) return [];
 
@@ -60,6 +65,11 @@ export function listCreateThemeCatalogItems(group: CreateThemeCatalogGroup): Cre
     if (!element) {
       console.warn(`[create-theme] missing element folder: ${elementId}`);
       return;
+    }
+    if (element.allowedPreviewPages?.length) {
+      if (!previewPage || !element.allowedPreviewPages.includes(previewPage)) {
+        return;
+      }
     }
     out.push({ element, categoryId, categoryLabel, standalone });
   };

@@ -44,6 +44,8 @@ export type CreateThemeElement = {
   previewVariant?: string;
   catalogIcon?: string;
   previewCaption?: string;
+  /** When set, element only appears in Add section for these editor preview pages. */
+  allowedPreviewPages?: string[];
   Preview: ComponentType;
   editing: CreateThemeEditing;
   insert: CreateThemeInsert;

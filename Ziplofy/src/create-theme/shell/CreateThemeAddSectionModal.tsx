@@ -20,11 +20,13 @@ import {
   listCreateThemeCatalogItems,
 } from '../registry';
 import type { CreateThemeCatalogGroup, CreateThemeCatalogListItem, CreateThemeElement } from '../types';
+import type { ThemePreviewPage } from '../chrome/CreateThemeLivePreview';
 
 type Props = {
   open: boolean;
   groupId: CreateThemeCatalogGroup;
   groupLabel: string;
+  previewPage?: ThemePreviewPage;
   onClose: () => void;
   onSelect: (elementId: string) => void;
 };
@@ -88,7 +90,14 @@ function catalogIconFor(element: CreateThemeElement): SectionCatalogIcon {
   return 'section';
 }
 
-export function CreateThemeAddSectionModal({ open, groupId, groupLabel, onClose, onSelect }: Props) {
+export function CreateThemeAddSectionModal({
+  open,
+  groupId,
+  groupLabel,
+  previewPage,
+  onClose,
+  onSelect,
+}: Props) {
   const [mounted, setMounted] = useState(false);
   const [search, setSearch] = useState('');
   const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>(() =>
@@ -98,9 +107,9 @@ export function CreateThemeAddSectionModal({ open, groupId, groupLabel, onClose,
   const [slideIndex, setSlideIndex] = useState(0);
 
   const items = useMemo(() => {
-    const all = listCreateThemeCatalogItems(groupId);
+    const all = listCreateThemeCatalogItems(groupId, previewPage);
     return filterCreateThemeCatalogItems(all, search);
-  }, [groupId, search]);
+  }, [groupId, previewPage, search]);
 
   const entries = useMemo(() => buildCatalogEntries(items, groupId), [items, groupId]);
 
@@ -134,7 +143,7 @@ export function CreateThemeAddSectionModal({ open, groupId, groupLabel, onClose,
     const expanded = defaultExpandedCategoriesForGroup(groupId);
     setExpandedCats(expanded);
     let preview: CreateThemeElement | null = null;
-    for (const entry of buildCatalogEntries(listCreateThemeCatalogItems(groupId))) {
+    for (const entry of buildCatalogEntries(listCreateThemeCatalogItems(groupId, previewPage))) {
       if (entry.type === 'category' && expanded[entry.id] && entry.elements[0]) {
         preview = entry.elements[0];
         break;
@@ -145,7 +154,7 @@ export function CreateThemeAddSectionModal({ open, groupId, groupLabel, onClose,
       }
     }
     setHovered(preview);
-  }, [open, groupId]);
+  }, [open, groupId, previewPage]);
 
   if (!open || !mounted) return null;
 

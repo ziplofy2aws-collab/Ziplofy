@@ -18,6 +18,7 @@
     "signup",
     "forgot_password",
     "password",
+    "404",
     "profile",
     "orders",
     "preferences"
