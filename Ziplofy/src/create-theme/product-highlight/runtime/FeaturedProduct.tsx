@@ -230,11 +230,12 @@ export function FeaturedProduct({
   const reviewCount = cfgNumber(config, `${settingsBase}.reviewCount`, 3);
   const showTaxNote = cfgBool(config, `${settingsBase}.showTaxNote`, true);
   const taxNote = cfgString(config, `${settingsBase}.taxNote`, 'Taxes included.');
-  const configuredAddToCartLabel = cfgString(
-    config,
-    `${addToCartSettingsBase}.buttonLabel`,
-    cfgString(config, `${settingsBase}.buttonLabel`, 'Add to cart')
-  );
+  const configuredAddToCartLabel =
+    cfgString(
+      config,
+      `${addToCartSettingsBase}.buttonLabel`,
+      cfgString(config, `${settingsBase}.buttonLabel`, 'Add to cart')
+    ).trim() || 'Add to cart';
 
   const mediaCornerRadius = cfgNumber(config, `${mediaSettingsBase}.cornerRadius`, 0);
   const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'cover');
@@ -725,6 +726,10 @@ export function FeaturedProduct({
 
   const addToCartButtonStyle: CSSProperties = {
     ...actionButtonBase,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
     border: soldOut
       ? 'none'
       : addToCartStyle.style === 'secondary'
@@ -1009,7 +1014,7 @@ export function FeaturedProduct({
                         onClick={() => void handleAddToCart()}
                       >
                         {!soldOut ? <AddToCartBagIcon /> : null}
-                        {addToCartLabel}
+                        <span style={{ color: 'inherit', fontWeight: 600 }}>{addToCartLabel}</span>
                       </button>
                     </EditorField>
                   ) : null}
