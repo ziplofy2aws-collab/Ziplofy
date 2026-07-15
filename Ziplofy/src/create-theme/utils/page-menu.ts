@@ -39,7 +39,6 @@ type MenuSeed = {
 
 import {
   allRegistryPageIds,
-  registryLabel,
   THEME_PAGE_MENU_SEEDS,
 } from './theme-page-registry';
 import {
@@ -62,27 +61,6 @@ export { previewPageToTemplateId };
 
 /** Shopify-style online store page list — kept in sync via theme-page-registry. */
 const SHOPIFY_PAGE_MENU: MenuSeed[] = THEME_PAGE_MENU_SEEDS as MenuSeed[];
-
-function formatLabel(id: string): string {
-  return registryLabel(id);
-}
-
-function iconForTemplate(id: string): ThemePageIcon {
-  if (id === 'index') return 'home';
-  if (id === 'product' || id === 'products') return 'product';
-  if (id.includes('collection')) return 'collection';
-  if (id.includes('blog')) return 'blog';
-  if (id === 'cart') return 'cart';
-  if (id === 'gift-card') return 'gift';
-  if (id === 'checkout') return 'checkout';
-  if (id === 'search') return 'search';
-  if (id === 'password') return 'lock';
-  if (id === '404') return 'page';
-  if (id === 'login' || id === 'signup' || id === 'forgot_password') return 'login';
-  if (id === 'profile' || id === 'preferences') return 'user';
-  if (id === 'orders') return 'orders';
-  return 'page';
-}
 
 function availableTemplateIds(
   manifest: Record<string, unknown> | null,
@@ -145,47 +123,14 @@ function seedToItem(seed: MenuSeed, available: Set<string>): ThemeEditorPageMenu
   };
 }
 
-function appendManifestOnlyPages(
-  items: ThemeEditorPageMenuItem[],
-  manifest: Record<string, unknown> | null,
-  editorSchema: EditorSchemaDoc | null,
-  available: Set<string>
-): ThemeEditorPageMenuItem[] {
-  const listed = new Set<string>();
-  const walk = (list: ThemeEditorPageMenuItem[]) => {
-    for (const item of list) {
-      listed.add(item.previewPage);
-      item.children?.forEach((c) => listed.add(c.previewPage));
-    }
-  };
-  walk(items);
-
-  const schemaTemplates = editorSchema?.templates ?? [];
-  const extras: ThemeEditorPageMenuItem[] = [];
-  for (const id of available) {
-    if (listed.has(id)) continue;
-    if (SHOPIFY_PAGE_MENU.some((s) => s.previewPage === id)) continue;
-    extras.push({
-      menuId: `page:${id}`,
-      previewPage: id,
-      label: schemaTemplates.find((t) => t.id === id)?.label ?? formatLabel(id),
-      icon: iconForTemplate(id),
-      dividerBefore: extras.length === 0 && items.length > 0,
-    });
-    listed.add(id);
-  }
-  return extras.length ? [...items, ...extras] : items;
-}
-
 export function buildThemeEditorPageMenu(
   manifest: Record<string, unknown> | null,
   editorSchema: EditorSchemaDoc | null
 ): ThemeEditorPageMenuItem[] {
   const available = availableTemplateIds(manifest, editorSchema);
-  const items = SHOPIFY_PAGE_MENU.map((seed) => seedToItem(seed, available)).filter(
+  return SHOPIFY_PAGE_MENU.map((seed) => seedToItem(seed, available)).filter(
     (item): item is ThemeEditorPageMenuItem => Boolean(item)
   );
-  return appendManifestOnlyPages(items, manifest, editorSchema, available);
 }
 
 export function flattenPageMenuItems(items: ThemeEditorPageMenuItem[]): ThemeEditorPageMenuItem[] {
