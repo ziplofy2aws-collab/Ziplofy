@@ -195,6 +195,8 @@ export const StorefrontCollectionsProvider: React.FC<{ children: React.ReactNode
 
 	const clearActiveCollection = useCallback(() => {
 		setActiveCollection(null);
+		setProducts([]);
+		setOrderDiscount(null);
 	}, []);
 
 	const clear = useCallback(() => {

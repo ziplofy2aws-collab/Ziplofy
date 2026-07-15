@@ -16,30 +16,55 @@ function secBase(templateId: string, sectionId: string): string {
   return `templates.${templateId}.sections.${sectionId}`;
 }
 
+function isMeaningfulText(value: string): boolean {
+  const plain = value
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return plain.length > 0;
+}
+
 export function CollectionHeading({
   sectionId = 'collection_heading',
   templateId = 'collection',
 }: SectionRuntimeProps) {
   const config = useThemeConfig();
   const { maxWidth, padX, padXMobile } = useThemeLayout();
-  const { text, background, fontHeading, fontBody } = useThemeColors();
-  const { collection } = useCollectionPageData();
+  const { text, background, muted, border, fontHeading, fontBody } = useThemeColors();
+  const { collection, loading } = useCollectionPageData();
   const base = secBase(templateId, sectionId);
   const scopeClass = sectionScopeClass('codiic-collection-heading', sectionId);
   const isAllProductsPage = templateId === 'products';
+  const editorNodeId = `template:${templateId}:${sectionId}`;
 
   const configTitle = cfgString(config, `${base}.blocks.title.settings.text`, '');
   const configDescription = cfgString(config, `${base}.blocks.description.settings.text`, '');
-  const paddingTop = cfgNumber(config, `${base}.settings.paddingTop`, 32);
-  const paddingBottom = cfgNumber(config, `${base}.settings.paddingBottom`, 8);
+  const paddingTop = cfgNumber(config, `${base}.settings.paddingTop`, 40);
+  const paddingBottom = cfgNumber(config, `${base}.settings.paddingBottom`, 12);
   const sectionWidth = cfgString(config, `${base}.settings.sectionWidth`, 'page');
 
-  const title = isAllProductsPage
-    ? configTitle.trim() || 'All products'
-    : collection?.title?.trim() || configTitle || 'Collection';
-  const description = isAllProductsPage
-    ? configDescription.trim()
-    : collection?.description?.trim() || configDescription;
+  const title = (() => {
+    if (isAllProductsPage) return configTitle.trim() || 'All products';
+    const live = collection?.title?.trim();
+    if (live) return live;
+    if (loading) return configTitle.trim() || 'Collection';
+    const fallback = configTitle.trim();
+    if (fallback && fallback.toLowerCase() !== 'collection title') return fallback;
+    return 'Collection';
+  })();
+
+  const description = (() => {
+    if (isAllProductsPage) {
+      return isMeaningfulText(configDescription) ? configDescription : '';
+    }
+    const live = collection?.description?.trim() || '';
+    if (isMeaningfulText(live)) return live;
+    return isMeaningfulText(configDescription) ? configDescription : '';
+  })();
+
+  const imageUrl = !isAllProductsPage ? collection?.imageUrl?.trim() || '' : '';
+  const imageAlt = collection?.imageAltText?.trim() || title;
 
   const shellStyle = useMemo<CSSProperties>(
     () => ({
@@ -73,47 +98,102 @@ export function CollectionHeading({
         padding-left: ${padXMobile}px !important;
         padding-right: ${padXMobile}px !important;
       }
+      .${scopeClass} .codiic-ch-hero {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+      .${scopeClass} .codiic-ch-image {
+        max-height: 220px !important;
+      }
     `)
   );
 
   return (
     <EditorSection
-      nodeId={`template:${templateId}:${sectionId}`}
+      sectionId={sectionId}
+      label="Collection heading"
+      editorNodeId={editorNodeId}
       className={scopeClass}
       style={shellStyle}
     >
       <style>{responsiveCss}</style>
       <div style={innerStyle}>
-        <EditorBlock nodeId={`template:${templateId}:${sectionId}:block:title`}>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: fontHeading,
-              fontSize: 'clamp(1.75rem, 2.5vw, 2.25rem)',
-              fontWeight: 600,
-              lineHeight: 1.15,
-              letterSpacing: '-0.02em',
-              wordBreak: 'break-word',
-            }}
-          >
-            <ThemeEditorRichTextContent html={title} />
-          </h1>
-        </EditorBlock>
-        {description ? (
-          <EditorBlock nodeId={`template:${templateId}:${sectionId}:block:description`}>
+        <div
+          className="codiic-ch-hero"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: imageUrl ? 'minmax(0, 1.4fr) minmax(0, 1fr)' : '1fr',
+            gap: 32,
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ minWidth: 0 }}>
+            <EditorBlock
+              nodeId={`${editorNodeId}:block:title`}
+              label="Title"
+            >
+              <h1
+                style={{
+                  margin: 0,
+                  fontFamily: fontHeading,
+                  fontSize: 'clamp(1.85rem, 3vw, 2.5rem)',
+                  fontWeight: 600,
+                  lineHeight: 1.12,
+                  letterSpacing: '-0.025em',
+                  wordBreak: 'break-word',
+                  color: text,
+                }}
+              >
+                <ThemeEditorRichTextContent html={title} />
+              </h1>
+            </EditorBlock>
+            {description ? (
+              <EditorBlock
+                nodeId={`${editorNodeId}:block:description`}
+                label="Description"
+              >
+                <div
+                  style={{
+                    marginTop: 14,
+                    fontSize: '1.02rem',
+                    lineHeight: 1.6,
+                    color: muted || text,
+                    opacity: 0.9,
+                    maxWidth: 640,
+                  }}
+                >
+                  <ThemeEditorRichTextContent html={description} />
+                </div>
+              </EditorBlock>
+            ) : null}
+          </div>
+
+          {imageUrl ? (
             <div
+              className="codiic-ch-image"
               style={{
-                marginTop: 12,
-                fontSize: '1rem',
-                lineHeight: 1.55,
-                opacity: 0.82,
-                maxWidth: 720,
+                borderRadius: 14,
+                overflow: 'hidden',
+                border: `1px solid ${border || 'rgba(17,24,39,0.08)'}`,
+                background: '#f4f4f5',
+                aspectRatio: '4 / 3',
+                maxHeight: 320,
+                width: '100%',
               }}
             >
-              <ThemeEditorRichTextContent html={description} />
+              <img
+                src={imageUrl}
+                alt={imageAlt}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
             </div>
-          </EditorBlock>
-        ) : null}
+          ) : null}
+        </div>
       </div>
     </EditorSection>
   );

@@ -47,7 +47,10 @@ export function StorefrontCollectionByUrlHandleLoader({ urlHandleOverride }: Pro
           if (!first?.urlHandle?.trim()) return;
           const resolved = first.urlHandle.trim().toLowerCase();
           await getCollectionDetailsByUrlHandle(storeId, resolved);
-          await fetchProductsInCollectionByUrlHandle(storeId, resolved);
+          await fetchProductsInCollectionByUrlHandle(storeId, resolved, {
+            page: 1,
+            limit: 48,
+          });
           return;
         }
 
@@ -58,7 +61,7 @@ export function StorefrontCollectionByUrlHandleLoader({ urlHandleOverride }: Pro
         }
         await fetchProductsInCollectionByUrlHandle(storeId, handle, {
           page: 1,
-          limit: handle === 'all' ? 48 : 24,
+          limit: 48,
         });
       } catch {
         /* errors surfaced via context.error */
