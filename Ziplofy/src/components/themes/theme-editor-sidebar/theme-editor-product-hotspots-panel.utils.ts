@@ -7,7 +7,6 @@ export const PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER = [
   'Colors',
   'Popover',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER);
@@ -19,13 +18,11 @@ const FIELD_SORT: Record<string, number> = {
   sectionHeight: 1,
   hotspotColor: 0,
   innerColor: 1,
-  colorScheme: 2,
   popoverGap: 0,
   titleTypography: 1,
   priceTypography: 2,
   paddingTop: 0,
   paddingBottom: 1,
-  customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
@@ -41,6 +38,8 @@ export function isProductHotspotsSectionType(
 
 export function isProductHotspotsPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'colorScheme' || key === 'customCss') return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
@@ -52,7 +51,6 @@ export function sortProductHotspotsPanelFields(fields: EditorFieldDef[]): Editor
     Colors: 2,
     Popover: 3,
     Padding: 4,
-    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

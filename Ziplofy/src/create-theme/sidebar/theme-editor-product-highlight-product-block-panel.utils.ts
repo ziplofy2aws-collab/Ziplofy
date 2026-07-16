@@ -1,5 +1,4 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
-import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
 
 const PRODUCT_NESTED_BLOCK_ID = '(title|price|image|swatches)';
 
@@ -321,33 +320,12 @@ export function productHighlightProductBlockFieldDefsFromNodeId(nodeId: string):
   return [];
 }
 
-function schemaBlockIdFromNodeId(nodeId: string): string | null {
-  const m = nodeId.match(
-    new RegExp(`^template:([^:]+):([^:]+):block:product:nested:(${PRODUCT_NESTED_BLOCK_ID})$`)
-  );
-  return m?.[3] ?? null;
-}
-
 export function productHighlightProductBlockFieldDefsFromSchema(
-  editorSchema: EditorSchemaDoc,
+  _editorSchema: EditorSchemaDoc,
   nodeId: string
 ): EditorFieldDef[] {
-  const blockId = schemaBlockIdFromNodeId(nodeId);
-  const m = nodeId.match(/^template:([^:]+):([^:]+):block:product:nested:/);
-  if (!blockId || !m) return productHighlightProductBlockFieldDefsFromNodeId(nodeId);
-  const [, tplId, secId] = m;
-  const blueprint = templateBlueprintKey(secId);
-  const tpl = editorSchema.templates?.find((t) => t.id === tplId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
-  const productBlock = sec?.blocks?.find((b) => b.id === 'product');
-  const nested = productBlock?.blocks?.find((b) => b.id === blockId);
-  const schemaFields = nested?.settingsFields ?? [];
-  if (schemaFields.length) {
-    return schemaFields.map((f) => ({
-      ...f,
-      path: remapTemplateSchemaPath(f.path, tplId, secId),
-    }));
-  }
+  // Always use Product highlight nested field defs. Shared schema still carries
+  // Featured product media keys on product_media, not Product → Image.
   return productHighlightProductBlockFieldDefsFromNodeId(nodeId);
 }
 
@@ -469,7 +447,11 @@ export function prepareProductHighlightProductPriceSettingsNode(node: SidebarNod
 }
 
 export function prepareProductHighlightProductImageSettingsNode(node: SidebarNode): SidebarNode {
-  return { ...node, label: 'Image', kind: 'block', fields: filterImageFields(node.fields ?? []) };
+  const fromDefs = productHighlightProductImageFieldDefs(
+    blocksBaseFromNodeId(node.id) ?? ''
+  );
+  const fields = fromDefs.length ? fromDefs : filterImageFields(node.fields ?? []);
+  return { ...node, label: 'Image', kind: 'block', fields };
 }
 
 export function prepareProductHighlightProductSwatchesSettingsNode(node: SidebarNode): SidebarNode {

@@ -33,7 +33,12 @@ import {
   scopedProductSplitMobileCss,
   sectionScopeClass,
 } from '../../runtime/shared/responsive';
-import { readProductHighlightLayout, scopedProductHighlightCss } from './productHighlightStyles';
+import {
+  featuredProductMediaObjectFit,
+  readProductHighlightLayout,
+  resolveProductHighlightPanelBackground,
+  scopedProductHighlightCss,
+} from './productHighlightStyles';
 
 function AddToCartBagIcon() {
   return (
@@ -240,6 +245,11 @@ export function FeaturedProduct({
   const mediaCornerRadius = cfgNumber(config, `${mediaSettingsBase}.cornerRadius`, 0);
   const mediaFit = cfgString(config, `${mediaSettingsBase}.mediaFit`, 'cover');
   const mediaAspectRatio = cfgString(config, `${mediaSettingsBase}.aspectRatio`, 'auto');
+  const mediaConstrainToScreenHeight = cfgBool(
+    config,
+    `${mediaSettingsBase}.constrainToScreenHeight`,
+    true
+  );
   const mediaPaddingTop = cfgNumber(config, `${mediaSettingsBase}.paddingTop`, 0);
   const mediaPaddingBottom = cfgNumber(config, `${mediaSettingsBase}.paddingBottom`, 0);
   const mediaPaddingLeft = cfgNumber(config, `${mediaSettingsBase}.paddingLeft`, 0);
@@ -404,9 +414,18 @@ export function FeaturedProduct({
   }, [adding, canPurchase, createCartEntry, navigate, quantity, selectedVariant, storeId]);
 
   const scheme = style.scheme;
-  const detailsResolvedBackground =
-    detailsShowBgImage || !detailsBgColor || detailsBgColor === 'default'
-      ? scheme.panelRight
+  const mediaPanelBackground = resolveProductHighlightPanelBackground(
+    style.mediaPanelBackgroundColor,
+    scheme.panelLeft
+  );
+  const sectionDetailsPanelBackground = resolveProductHighlightPanelBackground(
+    style.detailsPanelBackgroundColor,
+    scheme.panelRight
+  );
+  const detailsResolvedBackground = detailsShowBgImage
+    ? sectionDetailsPanelBackground
+    : !detailsBgColor || detailsBgColor === 'default'
+      ? sectionDetailsPanelBackground
       : detailsBgColor;
   const mediaOnLeft = mediaPosition !== 'right';
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
@@ -449,7 +468,7 @@ export function FeaturedProduct({
   };
 
   const mediaPanel: CSSProperties = {
-    background: scheme.panelLeft,
+    background: mediaPanelBackground,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -460,14 +479,30 @@ export function FeaturedProduct({
     overflow: mediaCornerRadius > 0 ? 'hidden' : undefined,
   };
 
-  const mediaImageStyle: CSSProperties = {
-    maxWidth: '100%',
-    maxHeight: 320,
+  const mediaFrameStyle: CSSProperties = {
+    position: 'relative',
     width: '100%',
-    objectFit: mediaFit === 'cover' ? 'cover' : 'contain',
+    maxWidth: '100%',
+    overflow: 'hidden',
+    borderRadius: mediaCornerRadius,
+    ...(mediaAspectRatio !== 'auto'
+      ? {
+          aspectRatio: mediaAspectRatio,
+          ...(mediaConstrainToScreenHeight ? { maxHeight: 'min(70vh, 520px)' } : {}),
+        }
+      : {
+          height: mediaConstrainToScreenHeight ? 'min(70vh, 520px)' : 320,
+        }),
+  };
+
+  const mediaImageStyle: CSSProperties = {
+    position: 'absolute',
+    inset: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: featuredProductMediaObjectFit(mediaFit),
     display: 'block',
     borderRadius: mediaCornerRadius,
-    ...(mediaAspectRatio !== 'auto' ? { aspectRatio: mediaAspectRatio } : {}),
   };
 
   const detailsAlignSelf = detailsHeightFill
@@ -823,8 +858,14 @@ export function FeaturedProduct({
         <div className={splitClass} style={split}>
           <div style={mediaPanel}>
             {productImageUrl ? (
-              <EditorField fieldPath={`${settingsBase}.productImageUrl`} label="Product image">
-                <img src={productImageUrl} alt="" style={mediaImageStyle} />
+              <EditorField
+                fieldPath={`${settingsBase}.productImageUrl`}
+                label="Product image"
+                style={{ display: 'block', width: '100%' }}
+              >
+                <div style={mediaFrameStyle}>
+                  <img src={productImageUrl} alt="" style={mediaImageStyle} />
+                </div>
               </EditorField>
             ) : (
               <div style={mediaAspectRatio !== 'auto' ? { aspectRatio: mediaAspectRatio, width: '100%' } : undefined}>

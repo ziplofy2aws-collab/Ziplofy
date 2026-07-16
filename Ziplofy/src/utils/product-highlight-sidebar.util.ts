@@ -59,38 +59,68 @@ function getNested(
   return cur;
 }
 
+function resolveOrder(order: string[], fallback: readonly string[]): string[] {
+  return order.length > 0 ? order : [...fallback];
+}
+
+function sectionBlocksBasePath(tplId: string | null, secId: string): string[] {
+  return tplId != null
+    ? ['templates', tplId, 'sections', secId]
+    : ['sections', secId];
+}
+
 function readSectionBlockOrder(
   config: Record<string, unknown> | null,
-  tplId: string,
+  tplId: string | null,
   secId: string
 ): string[] {
   if (!config) return [];
-  const order = getNested(config, ['templates', tplId, 'sections', secId, 'block_order']);
+  const sectionBase = sectionBlocksBasePath(tplId, secId);
+  const order = getNested(config, [...sectionBase, 'block_order']);
   if (!Array.isArray(order)) return [];
-  const blocks = getNested(config, ['templates', tplId, 'sections', secId, 'blocks']) as
-    | Record<string, unknown>
-    | undefined;
+  const blocks = getNested(config, [...sectionBase, 'blocks']) as Record<string, unknown> | undefined;
   return order.filter((id): id is string => typeof id === 'string' && Boolean(blocks?.[id]));
 }
 
 function readProductNestedBlockOrder(
   config: Record<string, unknown> | null,
-  tplId: string,
+  tplId: string | null,
   secId: string
 ): string[] {
   if (!config) return [];
-  const product = getNested(config, [
-    'templates',
-    tplId,
-    'sections',
-    secId,
-    'blocks',
-    'product',
-  ]) as Record<string, unknown> | undefined;
+  const product = getNested(config, [...sectionBlocksBasePath(tplId, secId), 'blocks', 'product']) as
+    | Record<string, unknown>
+    | undefined;
   const order = product?.block_order;
   if (!Array.isArray(order)) return [];
   const blocks = (product?.blocks ?? {}) as Record<string, unknown>;
   return order.filter((id): id is string => typeof id === 'string' && id in blocks);
+}
+
+function canonicalSectionBlockOrder(
+  config: Record<string, unknown> | null,
+  tplId: string | null,
+  secId: string
+): string[] {
+  const configured = readSectionBlockOrder(config, tplId, secId);
+  const canonical = configured.filter(
+    (id): id is (typeof PRODUCT_HIGHLIGHT_SECTION_BLOCK_ORDER)[number] =>
+      (PRODUCT_HIGHLIGHT_SECTION_BLOCK_ORDER as readonly string[]).includes(id)
+  );
+  return resolveOrder(canonical, PRODUCT_HIGHLIGHT_SECTION_BLOCK_ORDER);
+}
+
+function canonicalProductNestedBlockOrder(
+  config: Record<string, unknown> | null,
+  tplId: string | null,
+  secId: string
+): string[] {
+  const configured = readProductNestedBlockOrder(config, tplId, secId);
+  const canonical = configured.filter(
+    (id): id is (typeof PRODUCT_HIGHLIGHT_PRODUCT_NESTED_ORDER)[number] =>
+      (PRODUCT_HIGHLIGHT_PRODUCT_NESTED_ORDER as readonly string[]).includes(id)
+  );
+  return resolveOrder(canonical, PRODUCT_HIGHLIGHT_PRODUCT_NESTED_ORDER);
 }
 
 function productMediaBlockNode(prefix: string, blocksBase: string): SidebarNode {
@@ -107,13 +137,12 @@ function productGroupBlockNode(
   prefix: string,
   blocksBase: string,
   config: Record<string, unknown> | null,
-  tplId: string,
+  tplId: string | null,
   secId: string,
   itemOrder: Record<string, string[]>
 ): SidebarNode {
   const productPrefix = `${prefix}:block:product`;
-  const nestedOrder =
-    readProductNestedBlockOrder(config, tplId, secId) || [...PRODUCT_HIGHLIGHT_PRODUCT_NESTED_ORDER];
+  const nestedOrder = canonicalProductNestedBlockOrder(config, tplId, secId);
 
   const nestedChildren = nestedOrder.map((blockId) => {
     const nodeId = `${productPrefix}:nested:${blockId}`;
@@ -159,11 +188,10 @@ export function mapProductHighlightBlockNodes(
   itemOrder: Record<string, string[]>,
   sectionChildrenListKey: string,
   config: Record<string, unknown> | null,
-  tplId: string,
+  tplId: string | null,
   secId: string
 ): SidebarNode[] {
-  const blockOrder =
-    readSectionBlockOrder(config, tplId, secId) || [...PRODUCT_HIGHLIGHT_SECTION_BLOCK_ORDER];
+  const blockOrder = canonicalSectionBlockOrder(config, tplId, secId);
 
   const blockNodes: SidebarNode[] = blockOrder.map((blockId) => {
     if (blockId === 'product_media') return productMediaBlockNode(prefix, blocksBase);
@@ -185,14 +213,12 @@ export function productHighlightStructureOrder(
   prefix: string,
   sectionChildrenListKey: string,
   config: Record<string, unknown> | null,
-  tplId: string,
+  tplId: string | null,
   secId: string
 ): Record<string, string[]> {
-  const sectionBlockOrder =
-    readSectionBlockOrder(config, tplId, secId) || [...PRODUCT_HIGHLIGHT_SECTION_BLOCK_ORDER];
+  const sectionBlockOrder = canonicalSectionBlockOrder(config, tplId, secId);
   const productPrefix = `${prefix}:block:product`;
-  const nestedOrder =
-    readProductNestedBlockOrder(config, tplId, secId) || [...PRODUCT_HIGHLIGHT_PRODUCT_NESTED_ORDER];
+  const nestedOrder = canonicalProductNestedBlockOrder(config, tplId, secId);
 
   return {
     [sectionChildrenListKey]: sectionBlockOrder.map((id) => `${prefix}:block:${id}`),

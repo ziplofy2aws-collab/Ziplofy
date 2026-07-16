@@ -13,11 +13,14 @@ import {
   ViewColumnsIcon,
 } from '@heroicons/react/24/outline';
 import {
+  BLOCK_CATALOG_CATEGORIES_COMPACT,
+  BLOCK_CATALOG_CATEGORIES_EXTENDED,
   BLOCK_CATALOG_CATEGORIES_SHOPIFY,
   BLOCK_PREVIEW_SLIDES,
   blocksForSection,
   filterBlockCatalog,
   getCatalogSections,
+  type BlockCatalogCategory,
   type BlockCatalogIcon,
   type BlockCatalogItem,
   type BlockPreviewSlide,
@@ -214,7 +217,75 @@ function ContactFormField({ label, tall = false }: { label: string; tall?: boole
   );
 }
 
+function catalogSectionsFromItems(items: BlockCatalogItem[]): CatalogSection[] {
+  const categoryDefs = [
+    ...BLOCK_CATALOG_CATEGORIES_COMPACT,
+    ...BLOCK_CATALOG_CATEGORIES_EXTENDED,
+    ...BLOCK_CATALOG_CATEGORIES_SHOPIFY,
+  ];
+  const seen = new Set<string>();
+  const sections: CatalogSection[] = [];
+  for (const cat of categoryDefs) {
+    if (seen.has(cat.id)) continue;
+    seen.add(cat.id);
+    if (items.some((b) => b.category === cat.id)) {
+      sections.push({ type: 'category', id: cat.id as BlockCatalogCategory, label: cat.label });
+    }
+  }
+  const known = new Set(categoryDefs.map((c) => c.id));
+  const orphanCats = [...new Set(items.map((b) => b.category).filter((id) => !known.has(id)))];
+  for (const id of orphanCats) {
+    sections.push({
+      type: 'category',
+      id: id as BlockCatalogCategory,
+      label: id.charAt(0).toUpperCase() + id.slice(1),
+    });
+  }
+  return sections;
+}
+
 function PreviewVisual({ variant }: { variant: BlockPreviewSlide['variant'] }) {
+  if (variant === 'product-hotspot') {
+    return (
+      <div className="relative mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl shadow-md">
+        <div
+          className="relative flex min-h-[220px] items-center justify-center px-6 py-10"
+          style={{
+            background:
+              'linear-gradient(135deg, #1a4a42 0%, #2d6b5f 28%, #c45c3a 55%, #8b3a2a 78%, #1e3d38 100%)',
+          }}
+        >
+          <div className="relative flex items-center gap-3">
+            <span
+              className="h-5 w-5 shrink-0 rounded-full border-[2.5px] border-white bg-white/30 shadow-[0_0_0_1px_rgba(0,0,0,0.12)]"
+              aria-hidden
+            />
+            <div className="flex min-w-[220px] items-stretch gap-2.5 rounded-2xl bg-white p-2.5 shadow-lg">
+              <div
+                className="h-[72px] w-[72px] shrink-0 overflow-hidden rounded-lg"
+                style={{
+                  background:
+                    'linear-gradient(160deg, #f0c48a 0%, #d97b4a 35%, #6b9e8a 70%, #2a4a5c 100%)',
+                }}
+                aria-hidden
+              />
+              <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                <div>
+                  <p className="truncate text-[13px] font-semibold leading-tight text-gray-900">
+                    hello-world
+                  </p>
+                  <p className="mt-0.5 text-[12px] text-gray-800">Rs. 500.00</p>
+                </div>
+                <span className="self-end rounded bg-[#e8e8e8] px-2 py-1 text-[9px] font-semibold uppercase tracking-wide text-gray-600">
+                  Sold out
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (variant === 'before-after') {
     return (
       <div className="relative mx-auto w-full max-w-[340px] overflow-hidden rounded-2xl bg-[#e8e4df] shadow-md">
@@ -683,6 +754,8 @@ function previewSlideForBlock(block: BlockCatalogItem): BlockPreviewSlide | null
     description: 'text-block',
     price: 'price-only',
     'product-card': 'product-card',
+    'product-hotspot': 'product-hotspot',
+    hotspot: 'product-hotspot',
     'product-inventory': 'inventory-only',
     'recommended-products': 'recommended-only',
     'review-stars': 'review-stars-only',
@@ -696,9 +769,12 @@ function previewSlideForBlock(block: BlockCatalogItem): BlockPreviewSlide | null
   if (!variant) return null;
   return {
     id: `block-${block.id}`,
-    headline: `${block.label} block`,
-    headlineAccent: 'Preview',
-    caption: `Add ${block.label.toLowerCase()} to this section.`,
+    headline: 'Have an idea?',
+    headlineAccent: "Let's bring it to life",
+    caption:
+      normalizedId === 'product-hotspot' || normalizedId === 'hotspot'
+        ? 'A product hotspot on your image'
+        : `Add ${block.label.toLowerCase()} to this section.`,
     variant,
   };
 }
@@ -811,7 +887,12 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
       }
       return items;
     }
-    return filterBlockCatalog(search, effectiveShowAll);
+    let items = filterBlockCatalog(search, effectiveShowAll);
+    if (addBlockNodeId) {
+      const st = resolveSectionTypeForAddBlock(editorSchema ?? null, addBlockNodeId);
+      items = filterBlocksForSection(themeBlockCatalog ?? null, st, items);
+    }
+    return items;
   }, [
     shopifyFullPicker,
     usesThemeCatalog,
@@ -823,6 +904,11 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
   ]);
 
   const sections = useMemo(() => {
+    // Section-scoped pickers (e.g. Product hotspots → Hotspot) must list from
+    // filtered items so extended categories like "product" are not hidden.
+    if (addBlockNodeId && !shopifyFullPicker && filtered.length > 0) {
+      return catalogSectionsFromItems(filtered);
+    }
     if (shopifyFullPicker) {
       return getCatalogSections(effectiveShowAll, search, { shopifyFull: true });
     }
@@ -830,7 +916,15 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
       return getThemeCatalogSections(themeBlockCatalog, effectiveShowAll, search);
     }
     return getCatalogSections(effectiveShowAll, search);
-  }, [shopifyFullPicker, usesThemeCatalog, themeBlockCatalog, effectiveShowAll, search]);
+  }, [
+    shopifyFullPicker,
+    usesThemeCatalog,
+    themeBlockCatalog,
+    effectiveShowAll,
+    search,
+    addBlockNodeId,
+    filtered,
+  ]);
 
   const previewBlock = selectedBlock ?? hoveredBlock;
 
@@ -900,7 +994,17 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
           <p className="px-3 py-6 text-center text-sm text-gray-500">No blocks match your search</p>
         ) : (
           <>
-            {sections.map((section) => {
+            {sections.length === 0
+              ? filtered.map((block) => (
+                  <BlockRow
+                    key={block.id}
+                    block={block}
+                    selected={selectedBlock?.id === block.id}
+                    onHover={() => setHoveredBlock(block)}
+                    onSelect={() => handleRowClick(block)}
+                  />
+                ))
+              : sections.map((section) => {
               if (section.type === 'standalone') {
                 const items = blocksForSection(section, filtered);
                 if (!items.length) return null;

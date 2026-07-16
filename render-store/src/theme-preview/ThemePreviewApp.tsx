@@ -104,10 +104,28 @@ export function ThemePreviewApp() {
       const base = configRef.current;
       if (!base) return;
       const next = JSON.parse(JSON.stringify(base)) as Record<string, unknown>;
-      setNested(next, fieldPath, value);
-      applyConfigSoft(next);
+      const isHotspotPosition = /\.position[XY]$/.test(fieldPath);
+      const coerced =
+        isHotspotPosition && value !== '' && Number.isFinite(Number(value))
+          ? Number(value)
+          : value;
+      setNested(next, fieldPath, coerced);
+      const json = JSON.stringify(next);
+      if (json === lastConfigJsonRef.current) return;
+      lastConfigJsonRef.current = json;
+      configRef.current = next;
+      // Hotspot position scrubbing needs frame-accurate updates (no startTransition).
+      if (isHotspotPosition) {
+        if (configDebounceRef.current !== undefined) {
+          window.clearTimeout(configDebounceRef.current);
+          configDebounceRef.current = undefined;
+        }
+        setConfig(next);
+        return;
+      }
+      startTransition(() => setConfig(next));
     },
-    [applyConfigSoft]
+    []
   );
 
   useEffect(() => {

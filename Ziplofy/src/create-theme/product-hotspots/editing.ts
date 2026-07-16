@@ -39,11 +39,6 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
-      "key": "colorScheme",
-      "label": "Color scheme",
-      "type": "text"
-    },
-    {
       "key": "popoverGap",
       "label": "Vertical gap",
       "type": "number"
@@ -67,11 +62,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": [
@@ -80,8 +70,18 @@ export const editing: CreateThemeEditing = {
       "label": "Hotspot",
       "settingsOrder": [
         {
+          "key": "productId",
+          "label": "Product",
+          "type": "text"
+        },
+        {
           "key": "productTitle",
           "label": "Product title",
+          "type": "text"
+        },
+        {
+          "key": "productImageUrl",
+          "label": "Product image",
           "type": "text"
         },
         {

@@ -1,5 +1,6 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
+import { FEATURED_PRODUCT_MEDIA_FIT_OPTIONS } from '../product-highlight/runtime/productHighlightStyles';
 
 export const FEATURED_PRODUCT_MEDIA_PANEL_GROUP_ORDER = ['General', 'Carousel', 'Padding'] as const;
 
@@ -66,10 +67,7 @@ export function featuredProductMediaFieldDefs(blocksBase: string): EditorFieldDe
       group: 'General',
       widget: 'segmented',
       sidebar: false,
-      options: [
-        { value: 'cover', label: 'Cover' },
-        { value: 'contain', label: 'Contain' },
-      ],
+      options: [...FEATURED_PRODUCT_MEDIA_FIT_OPTIONS],
     },
     {
       path: s('cornerRadius'),
@@ -343,6 +341,14 @@ export function groupFeaturedProductMediaPanelFields(
 export function prepareFeaturedProductMediaSettingsNode(node: SidebarNode): SidebarNode {
   const fields = [...(node.fields ?? [])]
     .filter(isFeaturedProductMediaPanelField)
+    .map((field) => {
+      if (!field.path.endsWith('.mediaFit')) return field;
+      return {
+        ...field,
+        widget: 'segmented' as const,
+        options: [...FEATURED_PRODUCT_MEDIA_FIT_OPTIONS],
+      };
+    })
     .sort((a, b) => {
       const ga =
         FEATURED_PRODUCT_MEDIA_PANEL_GROUP_ORDER.indexOf(

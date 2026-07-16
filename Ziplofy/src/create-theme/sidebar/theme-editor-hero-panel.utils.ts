@@ -57,6 +57,51 @@ const HERO_PANEL_KEYS = new Set([
   'customCss',
 ]);
 
+function heroPanelGroupForKey(key: string): string | undefined {
+  if (key === 'media1Type' || key === 'media1ImageUrl') return 'Media 1';
+  if (key === 'media2Type' || key === 'media2ImageUrl') return 'Media 2';
+  if (
+    key === 'mobileStackMedia' ||
+    key === 'mobileDifferentMedia' ||
+    key === 'mobileImageUrl' ||
+    key === 'mobileMedia1Type' ||
+    key === 'mobileMedia1ImageUrl' ||
+    key === 'mobileMedia2Type' ||
+    key === 'mobileMedia2ImageUrl'
+  ) {
+    return 'Mobile media';
+  }
+  if (key === 'sectionLink' || key === 'sectionLinkNewTab') return 'Section link';
+  if (
+    key === 'direction' ||
+    key === 'verticalOnMobile' ||
+    key === 'alignTextBaseline' ||
+    key === 'layoutAlignment' ||
+    key === 'position' ||
+    key === 'layoutGap' ||
+    key === 'sectionWidth' ||
+    key === 'height' ||
+    key === 'customHeight'
+  ) {
+    return 'Layout';
+  }
+  if (
+    key === 'colorScheme' ||
+    key === 'backgroundColor' ||
+    key === 'mediaOverlay' ||
+    key === 'overlayColor' ||
+    key === 'overlayStyle' ||
+    key === 'overlayGradientDirection' ||
+    key === 'blurredReflection' ||
+    key === 'reflectionOpacity'
+  ) {
+    return 'Appearance';
+  }
+  if (key === 'paddingTop' || key === 'paddingBottom') return 'Padding';
+  if (key === 'customCss') return 'Custom CSS';
+  return undefined;
+}
+
 export const HERO_PANEL_GROUP_ORDER = [
   'Media 1',
   'Media 2',
@@ -149,12 +194,15 @@ export function isHeroPanelField(field: EditorFieldDef): boolean {
   if (HEADING_SETTING_KEYS.has(key)) return false;
   if (!HERO_PANEL_KEYS.has(key)) return false;
   if (!isHeroSettingsPath(field.path)) return false;
-  if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  const group = heroPanelGroupForKey(key) ?? field.group;
+  if (!group || !PANEL_GROUPS.has(group)) return false;
   return true;
 }
 
 export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
   const key = field.path.split('.').pop() ?? '';
+  const normalizedGroup = heroPanelGroupForKey(key) ?? field.group;
+  const normalizedField = normalizedGroup ? { ...field, group: normalizedGroup } : field;
   if (
     key === 'media1ImageUrl' ||
     key === 'media2ImageUrl' ||
@@ -162,7 +210,7 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
     key === 'mobileMedia1ImageUrl' ||
     key === 'mobileMedia2ImageUrl'
   ) {
-    return { ...field, widget: 'image', label: 'Image' };
+    return { ...normalizedField, widget: 'image', label: 'Image' };
   }
   if (
     key === 'mobileStackMedia' ||
@@ -173,16 +221,16 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
     key === 'mediaOverlay' ||
     key === 'blurredReflection'
   ) {
-    return { ...field, widget: 'toggle' };
+    return { ...normalizedField, widget: 'toggle' };
   }
   if (key === 'overlayColor') {
-    return { ...field, widget: 'color' };
+    return { ...normalizedField, widget: 'color' };
   }
   if (key === 'reflectionOpacity' && !field.widget) {
-    return { ...field, widget: 'slider' };
+    return { ...normalizedField, widget: 'slider' };
   }
   if (key === 'colorScheme') {
-    return { ...field, label: 'Background color', widget: 'color' };
+    return { ...normalizedField, label: 'Background color', widget: 'color' };
   }
   if (
     key === 'media1Type' ||
@@ -191,27 +239,27 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
     key === 'mobileMedia2Type' ||
     key === 'overlayGradientDirection'
   ) {
-    return { ...field, widget: 'segmented' };
+    return { ...normalizedField, widget: 'segmented' };
   }
   if (key === 'overlayStyle' && !field.widget) {
-    return { ...field, widget: 'segmented' };
+    return { ...normalizedField, widget: 'segmented' };
   }
   if (key === 'customCss') {
-    return { ...field, widget: 'accordion' };
+    return { ...normalizedField, widget: 'accordion' };
   }
   if ((key === 'direction' || key === 'sectionWidth') && !field.widget) {
-    return { ...field, widget: 'segmented' };
+    return { ...normalizedField, widget: 'segmented' };
   }
   if (key === 'layoutAlignment' && !field.widget) {
-    return { ...field, widget: 'segmented' };
+    return { ...normalizedField, widget: 'segmented' };
   }
   if ((key === 'position' || key === 'height') && !field.widget) {
-    return { ...field, widget: 'select-inline' };
+    return { ...normalizedField, widget: 'select-inline' };
   }
   if (key === 'verticalOnMobile') {
-    return { ...field, label: 'Vertical on mobile', widget: 'toggle' };
+    return { ...normalizedField, label: 'Vertical on mobile', widget: 'toggle' };
   }
-  return field;
+  return normalizedField;
 }
 
 export function enrichHeroPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {

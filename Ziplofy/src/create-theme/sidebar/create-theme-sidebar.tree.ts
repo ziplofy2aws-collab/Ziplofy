@@ -3122,6 +3122,21 @@ function layoutSectionNode(
       layoutChildrenKey,
       itemOrder
     );
+  } else if (
+    isProductHighlightLayout &&
+    !isFeaturedProductSectionType(sec.type, productHighlightCatalogVariant) &&
+    isProductHighlightSectionType(sec.type, productHighlightCatalogVariant)
+  ) {
+    blockNodes = mapProductHighlightBlockNodes(
+      id,
+      `sections.${instanceId}.blocks`,
+      values,
+      itemOrder,
+      layoutChildrenKey,
+      config,
+      null,
+      instanceId
+    );
   } else if (isIconsWithTextLayout) {
     blockNodes = mapIconsWithTextBlockNodes(
       id,
@@ -3303,6 +3318,9 @@ function layoutSectionNode(
     isAnnouncement ||
       isHeader ||
       isFaqLayout ||
+      (isProductHighlightLayout &&
+        !isFeaturedProductSectionType(sec.type, productHighlightCatalogVariant) &&
+        isProductHighlightSectionType(sec.type, productHighlightCatalogVariant)) ||
       isIconsWithTextLayout ||
       isMulticolumnLayout ||
       isRichTextLayout ||
@@ -4513,6 +4531,12 @@ export function defaultExpandedSidebar(nodes: SidebarNode[]): Record<string, boo
       if (node.kind === 'section' && node.label?.startsWith('Collection list:')) {
         out[node.id] = true;
       }
+      if (node.kind === 'section' && node.label === 'Product highlight') {
+        out[node.id] = true;
+      }
+      if (node.kind === 'block' && node.label === 'Product' && parent?.label === 'Product highlight') {
+        out[node.id] = true;
+      }
       if (node.kind === 'block' && node.label === 'Accordion') {
         out[node.id] = true;
       }
@@ -4666,6 +4690,70 @@ function prepareSectionPanelNode(
     return prepareFeaturedProductSettingsNode(node, values, config);
   }
   return prepareByLabel(node);
+}
+
+function heroSettingsBaseFromNodeId(nodeId: string): string | null {
+  const templateMatch = nodeId.match(/^template:([^:]+):([^:]+)/);
+  if (templateMatch) {
+    return `templates.${templateMatch[1]}.sections.${templateMatch[2]}.settings`;
+  }
+  const layoutMatch = nodeId.match(/^layout:([^:]+)/);
+  if (layoutMatch) {
+    return `sections.${layoutMatch[1]}.settings`;
+  }
+  return null;
+}
+
+function fallbackHeroSectionFieldDefs(nodeId: string): EditorFieldDef[] {
+  const base = heroSettingsBaseFromNodeId(nodeId);
+  if (!base) return [];
+  const mk = (
+    key: string,
+    label: string,
+    group: string,
+    type: EditorFieldDef['type'],
+    extra: Partial<EditorFieldDef> = {}
+  ): EditorFieldDef => ({
+    path: `${base}.${key}`,
+    label,
+    group,
+    type,
+    ...extra,
+  });
+  return [
+    mk('media1Type', 'Type', 'Media 1', 'select', {
+      options: [
+        { value: 'image', label: 'Image' },
+        { value: 'video', label: 'Video' },
+      ],
+      widget: 'segmented',
+    }),
+    mk('media1ImageUrl', 'Image', 'Media 1', 'text', { widget: 'image' }),
+    mk('media2Type', 'Type', 'Media 2', 'select', {
+      options: [
+        { value: 'image', label: 'Image' },
+        { value: 'video', label: 'Video' },
+      ],
+      widget: 'segmented',
+    }),
+    mk('media2ImageUrl', 'Image', 'Media 2', 'text', { widget: 'image' }),
+    mk('mobileMedia1Type', 'Type', 'Mobile media', 'select', {
+      options: [
+        { value: 'image', label: 'Image' },
+        { value: 'video', label: 'Video' },
+      ],
+      widget: 'segmented',
+    }),
+    mk('mobileMedia1ImageUrl', 'Image', 'Mobile media', 'text', { widget: 'image' }),
+    mk('sectionLink', 'Section link', 'Section link', 'text'),
+    mk('sectionLinkNewTab', 'Open in new tab', 'Section link', 'boolean', { widget: 'toggle' }),
+    mk('layoutAlignment', 'Alignment', 'Layout', 'select', { widget: 'segmented' }),
+    mk('height', 'Height', 'Layout', 'select', { widget: 'select-inline' }),
+    mk('colorScheme', 'Background color', 'Appearance', 'color', { widget: 'color' }),
+    mk('paddingTop', 'Top', 'Padding', 'range'),
+    mk('paddingBottom', 'Bottom', 'Padding', 'range'),
+    mk('customCss', 'Custom CSS', 'Custom CSS', 'text', { widget: 'accordion' }),
+  ];
 }
 
 export function settingsNodeForSelection(
@@ -5798,6 +5886,19 @@ export function settingsNodeForSelection(
     node.kind === 'section' && isHeroSectionNodeId(node.id)
       ? node
       : findHeroSectionInTree(node.id, tree);
+
+  if (node.kind === 'section' && heroSection) {
+    const heroFieldsFromSchema =
+      editorSchema ? heroSectionFieldDefsFromSchema(editorSchema, heroSection.id) : [];
+    const heroFields =
+      heroFieldsFromSchema.length > 0
+        ? heroFieldsFromSchema
+        : (heroSection.fields?.length ? heroSection.fields : node.fields) ?? [];
+    const fallbackFields = heroFields.length ? heroFields : fallbackHeroSectionFieldDefs(heroSection.id);
+    if (fallbackFields.length) {
+      return prepareHeroSectionSettingsForNode({ ...heroSection, fields: fallbackFields }, fallbackFields);
+    }
+  }
 
   if (node.kind === 'section' && node.fields?.length) {
     const prepared = prepareSectionPanelNode(node, values, config);

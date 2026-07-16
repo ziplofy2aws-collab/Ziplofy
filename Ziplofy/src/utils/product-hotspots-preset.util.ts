@@ -16,6 +16,7 @@ function makeHotspot(x: number, y: number) {
     positionX: x,
     positionY: y,
     productId: '',
+    productImageUrl: '',
     productTitle: 'Product title',
     price: 'Rs. 19.99',
   };
@@ -52,7 +53,9 @@ export function applyProductHotspotsPreset(section: Record<string, unknown>): vo
   const blocks = (section.blocks ?? {}) as Record<string, Record<string, unknown>>;
   const order = Array.isArray(section.block_order) ? [...(section.block_order as string[])] : [];
 
-  if (!order.length) {
+  // Only seed default hotspots on first create (block_order never set).
+  // An explicit empty array means the merchant deleted all hotspots — keep it empty.
+  if (!Array.isArray(section.block_order)) {
     const nextBlocks: Record<string, Record<string, unknown>> = {};
     const nextOrder: string[] = [];
     DEFAULT_POSITIONS.forEach((p, i) => {

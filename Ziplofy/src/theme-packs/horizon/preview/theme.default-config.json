@@ -2454,6 +2454,35 @@
         "product_highlight": {
           "type": "product-highlight",
           "enabled": true,
+          "block_order": ["product_media", "product"],
+          "blocks": {
+            "product_media": {
+              "type": "product-media",
+              "settings": {
+                "mediaType": "image",
+                "imageUrl": "",
+                "videoUrl": "",
+                "link": "",
+                "imagePosition": "cover"
+              }
+            },
+            "product": {
+              "type": "group",
+              "block_order": ["title", "price", "image", "swatches"],
+              "blocks": {
+                "title": { "type": "title", "settings": { "typographyPreset": "heading-3" } },
+                "price": { "type": "price", "settings": { "typographyPreset": "default" } },
+                "image": {
+                  "type": "image",
+                  "settings": {
+                    "aspectRatio": "auto",
+                    "constrainToScreenHeight": "maintain-aspect-ratio"
+                  }
+                },
+                "swatches": { "type": "swatches", "settings": { "alignment": "left" } }
+              }
+            }
+          },
           "settings": {
             "catalogVariant": "product-highlight",
             "productId": "",

@@ -1,5 +1,4 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
-import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
 
 export function isProductHighlightMediaBlockNodeId(nodeId: string): boolean {
   return /^template:[^:]+:[^:]+:block:product_media$/.test(nodeId);
@@ -86,26 +85,11 @@ export function productHighlightMediaFieldDefsFromNodeId(nodeId: string): Editor
 }
 
 export function productHighlightMediaFieldDefsFromSchema(
-  editorSchema: EditorSchemaDoc,
+  _editorSchema: EditorSchemaDoc,
   nodeId: string
 ): EditorFieldDef[] {
-  const m = nodeId.match(/^template:([^:]+):([^:]+):block:product_media$/);
-  if (!m) return productHighlightMediaFieldDefsFromNodeId(nodeId);
-  const [, tplId, secId] = m;
-  const blueprint = templateBlueprintKey(secId);
-  const tpl = editorSchema.templates?.find((t) => t.id === tplId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
-  const block = sec?.blocks?.find((b) => b.id === 'product_media');
-  const schemaFields = block?.settingsFields ?? [];
-  if (schemaFields.length) {
-    const fromSchema = schemaFields.map((f) => ({
-      ...f,
-      path: remapTemplateSchemaPath(f.path, tplId, secId),
-    }));
-    if (fromSchema.some((f) => f.path.endsWith('.mediaType') || f.path.endsWith('.imagePosition'))) {
-      return fromSchema;
-    }
-  }
+  // Always use Product highlight media fields (Type / Image / Link / Position).
+  // The shared schema block still carries Featured product media keys.
   return productHighlightMediaFieldDefsFromNodeId(nodeId);
 }
 
@@ -157,11 +141,14 @@ export function extendProductHighlightMediaBlockValues(
 }
 
 export function prepareProductHighlightMediaSettingsNode(node: SidebarNode): SidebarNode {
+  const filtered = filterProductHighlightMediaPanelFields(node.fields ?? []);
+  const fields =
+    filtered.length >= 3 ? filtered : productHighlightMediaFieldDefsFromNodeId(node.id);
   return {
     ...node,
     label: 'Product media',
     kind: 'block',
-    fields: filterProductHighlightMediaPanelFields(node.fields ?? []),
+    fields: fields.length ? fields : productHighlightMediaFieldDefsFromNodeId(node.id),
   };
 }
 

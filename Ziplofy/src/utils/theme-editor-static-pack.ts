@@ -380,7 +380,12 @@ export function buildBlockCatalogFromManifest(
       const secType = sec.type ?? sec.id ?? '';
       if (sectionBlockAllowlist[secType]?.length) continue;
       if (sec.blocks?.length) {
-        sectionBlockAllowlist[secType] = sec.blocks.map((b) => b.id ?? '').filter(Boolean);
+        sectionBlockAllowlist[secType] = sec.blocks
+          .map((b) => {
+            const raw = (b as { type?: string; id?: string }).type ?? b.id ?? '';
+            return raw.replace(/_/g, '-');
+          })
+          .filter(Boolean);
       }
     }
   }

@@ -1,4 +1,13 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { buildThemePreviewSrc, resolveThemePreviewOrigin } from '../../components/themes/ThemeLivePreviewFrame';
 import { PreviewLoadingOverlay } from './PreviewStatus';
 
@@ -62,28 +71,39 @@ export type CreateThemeLivePreviewProps = {
   className?: string;
 };
 
-const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
-  storeId,
-  storeName,
-  storefrontOrigin,
-  jsUrl,
-  cssUrl,
-  config,
-  page = 'index',
-  previewRoute,
-  device = 'desktop',
-  selectionHints = [],
-  onPreviewSelect,
-  onPreviewDeselect,
-  onPreviewFieldChange,
-  onPreviewAction,
-  onPreviewInsertSection,
-  insertHoverHighlight = null,
-  highlightNodeId,
-  inspectorEnabled = true,
-  structureSyncKey = 0,
-  className = '',
-}) => {
+export type CreateThemeLivePreviewHandle = {
+  /** Immediate single-field patch into the preview iframe (skips full-config debounce). */
+  patchField: (fieldPath: string, value: string) => void;
+};
+
+const CreateThemeLivePreviewInner = forwardRef<
+  CreateThemeLivePreviewHandle,
+  CreateThemeLivePreviewProps
+>(function CreateThemeLivePreviewInner(
+  {
+    storeId,
+    storeName,
+    storefrontOrigin,
+    jsUrl,
+    cssUrl,
+    config,
+    page = 'index',
+    previewRoute,
+    device = 'desktop',
+    selectionHints = [],
+    onPreviewSelect,
+    onPreviewDeselect,
+    onPreviewFieldChange,
+    onPreviewAction,
+    onPreviewInsertSection,
+    insertHoverHighlight = null,
+    highlightNodeId,
+    inspectorEnabled = true,
+    structureSyncKey = 0,
+    className = '',
+  },
+  ref
+) {
   const previewSrc = useMemo(() => buildThemePreviewSrc(storefrontOrigin), [storefrontOrigin]);
   const previewDisplayUrl = useMemo(
     () => resolveThemePreviewOrigin(storefrontOrigin),
@@ -141,6 +161,8 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
       '*'
     );
   }, []);
+
+  useImperativeHandle(ref, () => ({ patchField: postPatch }), [postPatch]);
 
   /** INIT only when runtime identity changes — never on every config keystroke. */
   const postInit = useCallback(() => {
@@ -448,7 +470,7 @@ const CreateThemeLivePreviewInner: React.FC<CreateThemeLivePreviewProps> = ({
       />
     </div>
   );
-};
+});
 
 /** @deprecated Use CreateThemePreviewPage */
 export type CreateThemePreviewPage = ThemePreviewPage;

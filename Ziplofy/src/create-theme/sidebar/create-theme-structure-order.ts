@@ -396,7 +396,9 @@ export function readStructureOrderFromConfig(
       continue;
     }
 
-    const isProductHighlight = catalogVariant === 'product-highlight';
+    const isProductHighlight =
+      catalogVariant === 'product-highlight' ||
+      ((sec as { type?: string }).type === 'product-highlight' && catalogVariant !== 'featured-product');
     if (isProductHighlight) {
       const sectionPrefix = `template:${tplId}:${secId}`;
       Object.assign(

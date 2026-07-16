@@ -50,6 +50,10 @@
       {
         "id": "logo",
         "label": "Logo"
+      },
+      {
+        "id": "product-hotspot",
+        "label": "Hotspot"
       }
     ],
     "product": [
@@ -137,6 +141,9 @@
     ],
     "storytelling-carousel": [
       "carousel-slide"
+    ],
+    "product-hotspots": [
+      "product-hotspot"
     ]
   },
   "benchmark": true

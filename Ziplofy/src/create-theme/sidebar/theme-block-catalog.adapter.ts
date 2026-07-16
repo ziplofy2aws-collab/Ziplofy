@@ -128,17 +128,42 @@ export function usesShopifyFullBlockPicker(sectionType: string | undefined): boo
   return sectionType === 'hero' || sectionType === 'custom-section';
 }
 
+/** Known section → block allowlists when pack catalog omit/mismatch them. */
+const SECTION_BLOCK_ALLOWLIST_FALLBACK: Record<string, string[]> = {
+  'product-hotspots': ['product-hotspot'],
+};
+
+function normalizeCatalogBlockId(id: string): string {
+  return id.trim().toLowerCase().replace(/_/g, '-');
+}
+
 export function filterBlocksForSection(
   catalog: ThemeBlockCatalogApi | null,
   sectionKey: string | undefined,
   blocks: BlockCatalogItem[]
 ): BlockCatalogItem[] {
   if (usesShopifyFullBlockPicker(sectionKey)) return blocks;
-  if (!catalog?.sectionBlockAllowlist || !sectionKey) return blocks;
-  const allow = catalog.sectionBlockAllowlist[sectionKey];
+  if (!sectionKey) return blocks;
+  const allow =
+    catalog?.sectionBlockAllowlist?.[sectionKey] ?? SECTION_BLOCK_ALLOWLIST_FALLBACK[sectionKey];
   if (allow === undefined) return blocks;
-  const set = new Set(allow);
-  return blocks.filter((b) => set.has(b.id));
+  const set = new Set(allow.map(normalizeCatalogBlockId));
+  const filtered = blocks.filter((b) => set.has(normalizeCatalogBlockId(b.id)));
+  // Ensure Hotspot appears even if the pack catalog omitted the block type.
+  if (sectionKey === 'product-hotspots' && !filtered.some((b) => normalizeCatalogBlockId(b.id) === 'product-hotspot')) {
+    return [
+      {
+        id: 'product-hotspot',
+        label: 'Hotspot',
+        category: 'basic',
+        icon: 'product-card',
+        keywords: ['product-hotspot', 'hotspot'],
+      },
+    ];
+  }
+  return filtered.map((b) =>
+    normalizeCatalogBlockId(b.id) === 'product-hotspot' ? { ...b, label: 'Hotspot', category: 'basic' as const } : b
+  );
 }
 
 export function resolveSectionKeyFromAddBlockNodeId(nodeId: string): string | undefined {
@@ -180,14 +205,17 @@ export function resolveSectionTypeForAddBlock(
   const secId = resolveSectionKeyFromAddBlockNodeId(addBlockNodeId);
   if (!secId) return undefined;
 
+  const blueprint = layoutBlueprintFromInstanceId(secId);
+
   if (addBlockNodeId.startsWith('layout:')) {
-    const blueprint = layoutBlueprintFromInstanceId(secId);
     return layoutSectionTypeFromBlueprint(blueprint);
   }
 
   for (const tpl of editorSchema?.templates ?? []) {
-    const sec = tpl.sections?.find((s) => s.id === secId);
+    const sec =
+      tpl.sections?.find((s) => s.id === secId) ??
+      tpl.sections?.find((s) => s.id === blueprint);
     if (sec?.type) return sec.type;
   }
-  return secId;
+  return layoutSectionTypeFromBlueprint(blueprint);
 }

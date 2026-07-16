@@ -48,6 +48,8 @@ export type ProductHighlightLayout = {
   equalColumns: boolean;
   limitProductDetailsWidth: boolean;
   backgroundColor: string;
+  mediaPanelBackgroundColor: string;
+  detailsPanelBackgroundColor: string;
   customCss: string;
 };
 
@@ -57,6 +59,16 @@ export function readProductHighlightLayout(
 ): ProductHighlightLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
   const backgroundColor = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
+  const mediaPanelBackgroundColor = cfgString(
+    config,
+    `${settingsBase}.mediaPanelBackgroundColor`,
+    'default'
+  );
+  const detailsPanelBackgroundColor = cfgString(
+    config,
+    `${settingsBase}.detailsPanelBackgroundColor`,
+    'default'
+  );
   return {
     scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
@@ -66,9 +78,41 @@ export function readProductHighlightLayout(
     equalColumns: cfgBool(config, `${settingsBase}.equalColumns`, true),
     limitProductDetailsWidth: cfgBool(config, `${settingsBase}.limitProductDetailsWidth`, false),
     backgroundColor,
+    mediaPanelBackgroundColor,
+    detailsPanelBackgroundColor,
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
   };
 }
+
+export function resolveProductHighlightPanelBackground(
+  customColor: string,
+  schemeFallback: string
+): string {
+  return !customColor || customColor === 'default' ? schemeFallback : customColor;
+}
+
+export type FeaturedProductMediaFitMode = 'cover' | 'fit' | 'stretch';
+
+/** Normalize legacy/saved media fit values to the editor + runtime modes. */
+export function normalizeFeaturedProductMediaFit(value: string): FeaturedProductMediaFitMode {
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'stretch' || normalized === 'fill') return 'stretch';
+  if (normalized === 'fit' || normalized === 'contain') return 'fit';
+  return 'cover';
+}
+
+export function featuredProductMediaObjectFit(value: string): 'cover' | 'contain' | 'fill' {
+  const mode = normalizeFeaturedProductMediaFit(value);
+  if (mode === 'stretch') return 'fill';
+  if (mode === 'fit') return 'contain';
+  return 'cover';
+}
+
+export const FEATURED_PRODUCT_MEDIA_FIT_OPTIONS = [
+  { value: 'cover', label: 'Cover' },
+  { value: 'fit', label: 'Fit' },
+  { value: 'stretch', label: 'Stretch' },
+] as const;
 
 export function scopedProductHighlightCss(sectionId: string, css: string): string {
   const trimmed = css.trim();

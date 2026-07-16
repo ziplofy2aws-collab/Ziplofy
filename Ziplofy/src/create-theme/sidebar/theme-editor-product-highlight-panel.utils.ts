@@ -7,13 +7,13 @@ export const PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER = [
   'General',
   'Layout',
   'Padding',
-  'Theme Settings',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER);
 
 const PRODUCT_HIGHLIGHT_LAYOUT_KEYS = new Set(['mediaPosition', 'backgroundColor']);
+
+const HIDDEN_PANEL_KEYS = new Set(['customCss', 'colorScheme']);
 
 const FIELD_SORT: Record<string, number> = {
   productId: 0,
@@ -21,7 +21,6 @@ const FIELD_SORT: Record<string, number> = {
   backgroundColor: 2,
   paddingTop: 20,
   paddingBottom: 21,
-  customCss: 40,
 };
 
 function fieldSortKey(path: string): number {
@@ -38,11 +37,11 @@ export function isProductHighlightSectionNodeId(nodeId: string): boolean {
 }
 
 export function productHighlightSettingsBaseFromNodeId(nodeId: string): string | null {
-  const templateMatch = nodeId.match(/^template:([^:]+):(product_highlight(?:_\d+)?)$/);
+  const templateMatch = nodeId.match(/^template:([^:]+):(product_highlight(?:_\d+)?)(?::|$)/);
   if (templateMatch) {
     return `templates.${templateMatch[1]}.sections.${templateMatch[2]}.settings`;
   }
-  const layoutMatch = nodeId.match(/^layout:(product_highlight(?:_\d+)?)$/);
+  const layoutMatch = nodeId.match(/^layout:(product_highlight(?:_\d+)?)(?::|$)/);
   if (layoutMatch) {
     return `sections.${layoutMatch[1]}.settings`;
   }
@@ -128,6 +127,10 @@ export function isProductHighlightPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
   if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
   const key = field.path.split('.').pop() ?? '';
+  if (HIDDEN_PANEL_KEYS.has(key)) return false;
+  if (field.group === 'Theme Settings' || field.group === 'Theme settings' || field.group === 'Custom CSS') {
+    return false;
+  }
   if (key === 'productId') return field.group === 'Product' || field.group === 'General';
   if (field.group === 'Layout') return PRODUCT_HIGHLIGHT_LAYOUT_KEYS.has(key);
   if (field.group === 'Product') return key === 'productId';
@@ -138,7 +141,6 @@ export function isProductHighlightPanelField(field: EditorFieldDef): boolean {
 function panelGroupForField(field: EditorFieldDef): string {
   if (field.path.endsWith('.productId') || field.group === 'Product') return 'General';
   if (field.group === 'Layout') return 'Layout';
-  if (field.group === 'Theme settings') return 'Theme Settings';
   if (field.group && PANEL_GROUPS.has(field.group)) return field.group;
   return 'General';
 }
@@ -148,8 +150,6 @@ export function sortProductHighlightPanelFields(fields: EditorFieldDef[]): Edito
     General: 0,
     Layout: 1,
     Padding: 2,
-    'Theme Settings': 3,
-    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[panelGroupForField(a)] ?? 9;

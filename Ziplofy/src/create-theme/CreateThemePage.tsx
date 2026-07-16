@@ -21,7 +21,10 @@ import {
   type SectionInsertContext,
 } from './sidebar';
 import { CreateThemeHeader } from './chrome/CreateThemeHeader';
-import CreateThemeLivePreview, { type ThemePreviewPage } from './chrome/CreateThemeLivePreview';
+import CreateThemeLivePreview, {
+  type CreateThemeLivePreviewHandle,
+  type ThemePreviewPage,
+} from './chrome/CreateThemeLivePreview';
 import { PreviewSyncProgressBar } from './chrome/PreviewStatus';
 import { usePreviewEditSync } from './chrome/usePreviewEditSync';
 import { CreateThemePoweredByLoader } from './chrome/CreateThemePoweredByLoader';
@@ -739,6 +742,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const [themeDesc, setThemeDesc] = useState('');
 
   const treeInitRef = useRef(false);
+  const livePreviewRef = useRef<CreateThemeLivePreviewHandle>(null);
   const previewStoreId = activeStoreId || THEME_EDITOR_STATIC_CONFIG.devStoreId;
   const activeStoreName =
     stores.find((s) => s._id === previewStoreId)?.storeName ?? 'Preview store';
@@ -2689,6 +2693,15 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const handleFieldChange = useCallback(
     (path: string, type: FieldType, raw: string | boolean) => {
       const value = type === 'boolean' ? Boolean(raw) : String(raw);
+      const isHotspotPosition = path.endsWith('.positionX') || path.endsWith('.positionY');
+
+      // Hotspot sliders need urgent preview updates — skip startTransition + post a field patch.
+      if (isHotspotPosition) {
+        setValues((prev) => ({ ...prev, [path]: value }));
+        livePreviewRef.current?.patchField(path, String(value));
+        return;
+      }
+
       startTransition(() => {
         setValues((prev) => {
           let next: Record<string, string | boolean> = { ...prev, [path]: value };
@@ -2904,6 +2917,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         return;
       }
       setDefaultConfig(result.config);
+      setItemOrder(readStructureOrderFromConfig(result.config, previewPage));
       const faqRowText = /:block:accordion:nested:[^:]+:nested:[^:]+$/.test(result.nodeId);
       const faqRow = /:block:accordion:nested:[^:]+$/.test(result.nodeId);
       const faqSectionBlock = /:block:(heading|accordion)$/.test(result.nodeId);
@@ -2955,25 +2969,25 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           }
           if (hero) {
             return extendValuesForHeroBlock(
-              prev,
-              editorSchema,
-              'template',
-              result.templateId,
-              result.sectionInstanceId,
-              result.blockInstanceId,
-              block.id,
-              result.config
+                prev,
+                editorSchema,
+                'template',
+                result.templateId,
+                result.sectionInstanceId,
+                result.blockInstanceId,
+                block.id,
+                result.config
             );
           }
           return extendValuesForTemplateBlock(
-            prev,
-            editorSchema,
-            result.templateId ?? templateIdForPage(previewPage),
-            result.sectionInstanceId,
-            result.blockInstanceId,
-            block.id,
-            result.config
-          );
+                prev,
+                editorSchema,
+                result.templateId ?? templateIdForPage(previewPage),
+                result.sectionInstanceId,
+                result.blockInstanceId,
+                block.id,
+                result.config
+        );
         });
       } else {
         setValues((prev) => {
@@ -3024,7 +3038,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             result.blockInstanceId,
             block.id,
             result.config
-          );
+        );
         });
       }
       setSelectedNodeId(result.nodeId);
@@ -3191,6 +3205,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             ? pruneValuesForFaqSectionBlock(prev, 'layout', undefined, sectionInstanceId, blockId)
             : pruneValuesForLayoutBlock(prev, sectionInstanceId, blockId)
         );
+        setItemOrder(readStructureOrderFromConfig(next, previewPage));
         setStructureSyncKey((k) => k + 1);
         toast.success('Block removed');
         return;
@@ -3217,6 +3232,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             ? pruneValuesForFaqSectionBlock(prev, 'template', tplId, sectionInstanceId, blockId)
             : pruneValuesForTemplateBlock(prev, tplId, sectionInstanceId, blockId)
         );
+        setItemOrder(readStructureOrderFromConfig(next, previewPage));
         setStructureSyncKey((k) => k + 1);
         toast.success('Block removed');
         return;
@@ -3628,10 +3644,10 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   return (
     <div className="fixed inset-0 z-[1310] flex flex-col bg-[#1e1e1e]">
       {!isCheckoutProfile ? (
-        <PreviewSyncProgressBar
-          runKey={previewBarRunKey}
-          onComplete={onPreviewBarComplete}
-        />
+      <PreviewSyncProgressBar
+        runKey={previewBarRunKey}
+        onComplete={onPreviewBarComplete}
+      />
       ) : null}
 
       {!isCheckoutProfile ? (
@@ -3814,12 +3830,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               structureDragging ? 'create-theme-preview-stage--squeezed' : ''
             }`}
           >
-            <div
-              className={`create-theme-preview-canvas relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
-                device === 'mobile' ? 'mx-auto w-full max-w-[390px] border-x border-gray-200' : 'h-full w-full'
+          <div
+            className={`create-theme-preview-canvas relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
+              device === 'mobile' ? 'mx-auto w-full max-w-[390px] border-x border-gray-200' : 'h-full w-full'
               } ${structureDragging ? 'create-theme-preview-canvas--squeezed' : ''}`}
-            >
+          >
             <CreateThemeLivePreview
+              ref={livePreviewRef}
               key={themeRuntime.jsUrl ?? 'composer'}
               className="h-full min-h-0 w-full flex-1"
               device={device}
@@ -3852,8 +3869,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
             </div>
           </div>
           )}
+          </div>
         </div>
-      </div>
       </div>
 
       <AddBlockModal

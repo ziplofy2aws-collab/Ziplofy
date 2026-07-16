@@ -542,10 +542,10 @@ const AllThemes: React.FC = () => {
       ) : null}
 
       <header className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-        <div className="min-w-0">
+            <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Themes</h1>
           <p className="mt-0.5 text-sm text-gray-500">Manage your storefront look and feel.</p>
-        </div>
+            </div>
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:max-w-xl sm:justify-end lg:max-w-2xl">
           <div className="relative min-w-[160px] flex-1 sm:max-w-xs">
             <MagnifyingGlassIcon
@@ -561,8 +561,8 @@ const AllThemes: React.FC = () => {
             />
           </div>
           <div className="flex overflow-hidden rounded-lg border border-gray-200 bg-white p-0.5">
-            <button
-              type="button"
+          <button
+            type="button"
               className={`rounded-md px-2.5 py-1.5 transition-colors ${
                 viewMode === 'grid' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-800'
               }`}
@@ -617,123 +617,123 @@ const AllThemes: React.FC = () => {
               </span>
             </button>
           ))}
-        </div>
+      </div>
 
         <div className="p-4 sm:p-5">
           {activeTab === 'installed' && (
             <>
-              {installedForStore.length > 0 ? (
-                <div className={`themes-layout ${viewMode}`}>
-                  {installedForStore.map((it: any) => {
+          {installedForStore.length > 0 ? (
+          <div className={`themes-layout ${viewMode}`}>
+            {installedForStore.map((it: any) => {
                     const t = it;
-                    const isCustomTheme = Boolean(t.isCustomTheme || t._id?.startsWith('custom-'));
-                    const actualThemeId = isCustomTheme && t.customThemeId ? t.customThemeId : t._id;
-                    const themeIdForApply = isCustomTheme ? actualThemeId : t._id;
-                    const isApplied =
-                      appliedThemeId != null && String(appliedThemeId) === String(themeIdForApply);
+              const isCustomTheme = Boolean(t.isCustomTheme || t._id?.startsWith('custom-'));
+              const actualThemeId = isCustomTheme && t.customThemeId ? t.customThemeId : t._id;
+              const themeIdForApply = isCustomTheme ? actualThemeId : t._id;
+              const isApplied =
+                appliedThemeId != null && String(appliedThemeId) === String(themeIdForApply);
 
-                    return (
-                      <div key={it._id} className="theme-card">
-                        <div className="theme-thumbnail">
-                          {t.thumbnailUrl ? (
-                            <img
-                              src={t.thumbnailUrl}
-                              alt={t.name || ''}
-                              className="theme-image"
-                              onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                                e.currentTarget.src =
-                                  'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="%23f3f4f6"/><text x="150" y="100" text-anchor="middle" fill="%236b7280" font-family="Arial" font-size="14">No Preview</text></svg>';
-                              }}
-                            />
-                          ) : (
-                            <div className="theme-image-placeholder">
-                              <span>No Preview</span>
-                            </div>
-                          )}
-                          <div className="theme-overlay">
-                            <button
-                              className="overlay-btn preview-btn"
-                              onClick={() => handlePreviewClick(t._id, t.name, true, isCustomTheme)}
-                            >
-                              <EyeIcon fontSize="small" />
-                              <span>Preview</span>
-                            </button>
-                          </div>
-                        </div>
+              return (
+              <div key={it._id} className="theme-card">
+                <div className="theme-thumbnail">
+                  {t.thumbnailUrl ? (
+                    <img
+                      src={t.thumbnailUrl}
+                      alt={t.name || ''}
+                      className="theme-image"
+                      onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                        e.currentTarget.src =
+                          'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="%23f3f4f6"/><text x="150" y="100" text-anchor="middle" fill="%236b7280" font-family="Arial" font-size="14">No Preview</text></svg>';
+                      }}
+                    />
+                  ) : (
+                    <div className="theme-image-placeholder">
+                      <span>No Preview</span>
+                    </div>
+                  )}
+                  <div className="theme-overlay">
+                    <button 
+                      className="overlay-btn preview-btn"
+                      onClick={() => handlePreviewClick(t._id, t.name, true, isCustomTheme)}
+                    >
+                      <EyeIcon fontSize="small" />
+                      <span>Preview</span>
+                    </button>
+                  </div>
+                </div>
 
-                        <div className="theme-info">
-                          <div className="theme-header-info">
-                            <h3 className="theme-name">{t.name}</h3>
+                <div className="theme-info">
+                  <div className="theme-header-info">
+                    <h3 className="theme-name">{t.name}</h3>
                             {isApplied ? (
                               <span className="rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
                                 Live
                               </span>
                             ) : null}
-                          </div>
+                  </div>
 
-                          <div className="theme-actions">
-                            <button
-                              className="action-btn primary"
-                              onClick={() => handleOpenTheme(t._id, isCustomTheme)}
-                            >
-                              Open
-                            </button>
-                            {isApplied ? (
+                  <div className="theme-actions">
+                    <button 
+                      className="action-btn primary" 
+                      onClick={() => handleOpenTheme(t._id, isCustomTheme)}
+                    >
+                      Open
+                    </button>
+                    {isApplied ? (
                               <button type="button" className="action-btn installed" disabled>
-                                Applied
-                              </button>
-                            ) : (
-                              <button
-                                type="button"
-                                className="action-btn secondary"
-                                disabled={String(applyingThemeId) === String(themeIdForApply)}
-                                onClick={async () => {
-                                  if (!activeStoreId) {
-                                    alert('Please select a store first.');
-                                    return;
-                                  }
-                                  const ok = await applyTheme(activeStoreId, themeIdForApply, t.name);
-                                  if (ok) {
-                                    setStores((prev) =>
-                                      prev.map((s) =>
-                                        s._id === activeStoreId
+                        Applied
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="action-btn secondary"
+                        disabled={String(applyingThemeId) === String(themeIdForApply)}
+                        onClick={async () => {
+                          if (!activeStoreId) {
+                            alert('Please select a store first.');
+                            return;
+                          }
+                          const ok = await applyTheme(activeStoreId, themeIdForApply, t.name);
+                          if (ok) {
+                            setStores((prev) =>
+                              prev.map((s) =>
+                                s._id === activeStoreId
                                           ? {
                                               ...s,
                                               appliedTheme: themeIdForApply,
                                               appliedCustomThemeId: null,
                                             }
-                                          : s
-                                      )
-                                    );
-                                  }
-                                }}
-                              >
-                                {String(applyingThemeId) === String(themeIdForApply)
-                                  ? 'Applying…'
+                                  : s
+                              )
+                            );
+                          }
+                        }}
+                      >
+                        {String(applyingThemeId) === String(themeIdForApply)
+                          ? 'Applying…'
                                   : 'Apply'}
-                              </button>
-                            )}
-                            <button
-                              className="action-btn secondary"
-                              onClick={() => {
+                      </button>
+                    )}
+                      <button 
+                        className="action-btn secondary" 
+                        onClick={() => {
                                 if (isCustomTheme) {
                                   if (actualThemeId) handleEditTheme(actualThemeId, false, true);
                                 } else {
                                   handleEditTheme(t._id, true);
-                                }
-                              }}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="action-btn secondary"
+                          }
+                        }}
+                      >
+                        Edit
+                      </button>
+                    <button 
+                      className="action-btn secondary" 
                               onClick={
                                 isCustomTheme
                                   ? async () => {
-                                      if (!activeStoreId) {
-                                        alert('Please select a store first.');
-                                        return;
-                                      }
+                        if (!activeStoreId) {
+                          alert('Please select a store first.');
+                          return;
+                        }
                                       const success = await uninstallCustomTheme(
                                         actualThemeId,
                                         activeStoreId
@@ -742,223 +742,223 @@ const AllThemes: React.FC = () => {
                                     }
                                   : () => handleUninstall(it.installedThemeId)
                               }
-                            >
-                              Uninstall
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                    >
+                      Uninstall
+                    </button>
+                  </div>
+                </div>
+              </div>
                     );
                   })}
-                </div>
-              ) : (
+          </div>
+          ) : (
                 <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-gray-200 px-4 py-8 text-sm text-gray-500">
                   No themes installed yet. Browse Public themes to install one.
-                </div>
-              )}
+            </div>
+          )}
             </>
           )}
 
 
           {activeTab === 'custom' && (
             <>
-              {!activeStoreId ? (
+            {!activeStoreId ? (
                 <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-gray-200 px-4 py-8 text-sm text-gray-500">
                   Select a store to see your custom themes.
-                </div>
-              ) : storeCustomThemesLoading ? (
+              </div>
+            ) : storeCustomThemesLoading ? (
                 <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 py-10">
-                  <div
+                <div
                     className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
-                    aria-hidden
-                  />
+                  aria-hidden
+                />
                   <p className="text-sm text-gray-500">Loading…</p>
-                </div>
+              </div>
               ) : filteredCustomThemes.length === 0 ? (
                 <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-gray-200 px-4 py-8 text-center">
                   <p className="text-sm text-gray-500">No custom themes yet.</p>
-                  <Link
-                    to="/themes/create"
+                <Link
+                  to="/themes/create"
                     className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-                  >
+                >
                     Create a theme
-                  </Link>
-                </div>
-              ) : (
-                <div className={`themes-layout ${viewMode}`}>
+                </Link>
+              </div>
+            ) : (
+              <div className={`themes-layout ${viewMode}`}>
                   {filteredCustomThemes.map((theme) => {
-                    const isApplied =
-                      appliedStoreCustomThemeId != null &&
-                      String(appliedStoreCustomThemeId) === String(theme._id);
-                    const isApplying = applyingStoreCustomThemeId === theme._id;
+                  const isApplied =
+                    appliedStoreCustomThemeId != null &&
+                    String(appliedStoreCustomThemeId) === String(theme._id);
+                  const isApplying = applyingStoreCustomThemeId === theme._id;
 
-                    return (
-                      <div key={theme._id} className="theme-card">
-                        <div className="theme-thumbnail">
-                          <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-linear-to-br from-violet-50 to-blue-50 px-4 text-center">
-                            <SwatchIcon className="h-10 w-10 text-violet-500/80" aria-hidden />
+                  return (
+                  <div key={theme._id} className="theme-card">
+                    <div className="theme-thumbnail">
+                      <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-linear-to-br from-violet-50 to-blue-50 px-4 text-center">
+                        <SwatchIcon className="h-10 w-10 text-violet-500/80" aria-hidden />
                             <span className="text-xs font-medium text-violet-900/70">
                               Custom theme
                             </span>
-                          </div>
-                        </div>
-                        <div className="theme-info">
-                          <div className="theme-header-info">
-                            <h3 className="theme-name">{theme.themeName}</h3>
+                      </div>
+                    </div>
+                    <div className="theme-info">
+                      <div className="theme-header-info">
+                        <h3 className="theme-name">{theme.themeName}</h3>
                             {isApplied ? (
                               <span className="rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
                                 Live
                               </span>
                             ) : formatThemeDate(theme.updatedAt || theme.createdAt) ? (
-                              <span className="text-[11px] font-medium text-gray-500">
+                          <span className="text-[11px] font-medium text-gray-500">
                                 {formatThemeDate(theme.updatedAt || theme.createdAt)}
-                              </span>
-                            ) : null}
-                          </div>
+                          </span>
+                        ) : null}
+                      </div>
                           {theme.themeDesc ? (
                             <p className="theme-description">{theme.themeDesc}</p>
                           ) : null}
-                          <div className="theme-actions">
-                            <button
-                              type="button"
-                              className="action-btn primary"
-                              onClick={() => handleOpenStoreCustomTheme(theme._id)}
-                            >
+                      <div className="theme-actions">
+                        <button
+                          type="button"
+                          className="action-btn primary"
+                          onClick={() => handleOpenStoreCustomTheme(theme._id)}
+                        >
                               Edit
-                            </button>
-                            {isApplied ? (
+                        </button>
+                        {isApplied ? (
                               <button type="button" className="action-btn installed" disabled>
-                                Installed
-                              </button>
-                            ) : (
-                              <button
-                                type="button"
-                                className="action-btn secondary"
-                                disabled={isApplying || !activeStoreId}
-                                onClick={() => handleInstallStoreCustomTheme(theme)}
-                              >
+                            Installed
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="action-btn secondary"
+                            disabled={isApplying || !activeStoreId}
+                            onClick={() => handleInstallStoreCustomTheme(theme)}
+                          >
                                 {isApplying ? 'Installing…' : 'Install'}
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              className="action-btn secondary"
-                              onClick={() => handleDeleteStoreCustomTheme(theme)}
-                            >
-                              <DeleteIcon fontSize="small" style={{ marginRight: 4 }} />
-                              Delete
-                            </button>
-                          </div>
-                        </div>
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="action-btn secondary"
+                          onClick={() => handleDeleteStoreCustomTheme(theme)}
+                        >
+                          <DeleteIcon fontSize="small" style={{ marginRight: 4 }} />
+                          Delete
+                        </button>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
+                    </div>
+                  </div>
+                  );
+                })}
+              </div>
+            )}
             </>
           )}
 
           {activeTab === 'public' && (
             <>
-              <div className={`themes-layout ${viewMode}`}>
-                {themesLoading && (
+      <div className={`themes-layout ${viewMode}`}>
+        {themesLoading && (
                   <div className="col-span-full flex min-h-[160px] flex-col items-center justify-center gap-3 py-12">
-                    <div
+            <div
                       className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
-                      aria-hidden
-                    />
+              aria-hidden
+            />
                     <p className="text-sm text-gray-500">Loading public themes…</p>
-                  </div>
-                )}
-                {themesError && (
+          </div>
+        )}
+        {themesError && (
                   <div className="col-span-full rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
                     <p className="font-medium">Could not load themes</p>
                     <p className="mt-0.5">{themesError}</p>
-                  </div>
-                )}
-                {filteredThemes.map((theme) => (
-                  <div key={theme._id} className="theme-card">
-                    <div className="theme-thumbnail">
-                      <img
-                        src={theme.thumbnailUrl || ''}
-                        alt={theme.name}
-                        className="theme-image"
-                        onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                          e.currentTarget.src =
-                            'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="%23f3f4f6"/><text x="150" y="100" text-anchor="middle" fill="%236b7280" font-family="Arial" font-size="14">No Preview</text></svg>';
-                        }}
-                      />
-                      <div className="theme-overlay">
-                        <button
-                          className="overlay-btn preview-btn"
-                          onClick={() => handlePreviewClick(theme._id, theme.name)}
-                        >
-                          <EyeIcon fontSize="small" />
-                          <span>Preview</span>
-                        </button>
-                      </div>
-                    </div>
+          </div>
+        )}
+        {filteredThemes.map((theme) => (
+          <div key={theme._id} className="theme-card">
+            <div className="theme-thumbnail">
+              <img
+                src={theme.thumbnailUrl || ''}
+                alt={theme.name}
+                className="theme-image"
+                onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                  e.currentTarget.src =
+                    'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="%23f3f4f6"/><text x="150" y="100" text-anchor="middle" fill="%236b7280" font-family="Arial" font-size="14">No Preview</text></svg>';
+                }}
+              />
+              <div className="theme-overlay">
+                <button 
+                  className="overlay-btn preview-btn"
+                  onClick={() => handlePreviewClick(theme._id, theme.name)}
+                >
+                  <EyeIcon fontSize="small" />
+                  <span>Preview</span>
+                </button>
+              </div>
+            </div>
 
-                    <div className="theme-info">
-                      <div className="theme-header-info">
-                        <h3 className="theme-name">{theme.name}</h3>
-                      </div>
+            <div className="theme-info">
+              <div className="theme-header-info">
+                <h3 className="theme-name">{theme.name}</h3>
+                    </div>
                       {theme.description ? (
                         <p className="theme-description">{theme.description}</p>
                       ) : null}
-                      <div className="theme-actions">
-                        {isThemeInstalled(theme._id) ? (
-                          <button className="action-btn installed" disabled>
-                            Installed
-                          </button>
-                        ) : (
-                          <button
-                            className="action-btn primary"
-                            disabled={String(installingThemeId) === String(theme._id)}
-                            onClick={() => handleInstallClick(theme._id)}
-                          >
+              <div className="theme-actions">
+                {isThemeInstalled(theme._id) ? (
+                  <button className="action-btn installed" disabled>
+                    Installed
+                  </button>
+                ) : (
+                  <button
+                    className="action-btn primary"
+                    disabled={String(installingThemeId) === String(theme._id)}
+                    onClick={() => handleInstallClick(theme._id)}
+                  >
                             {String(installingThemeId) === String(theme._id)
                               ? 'Installing…'
                               : 'Install'}
-                          </button>
-                        )}
-                        <button
-                          className="action-btn secondary"
-                          onClick={() => handlePreviewClick(theme._id, theme.name)}
-                        >
+                  </button>
+                )}
+                <button 
+                  className="action-btn secondary"
+                  onClick={() => handlePreviewClick(theme._id, theme.name)}
+                >
                           Preview
-                        </button>
-                        {isThemeInstalled(theme._id) ? (
-                          <button
-                            className="action-btn secondary"
-                            onClick={() => handleEditTheme(theme._id, true)}
-                          >
-                            Edit
-                          </button>
-                        ) : null}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                </button>
+                {isThemeInstalled(theme._id) ? (
+                  <button
+                    className="action-btn secondary"
+                    onClick={() => handleEditTheme(theme._id, true)}
+                  >
+                    Edit
+                  </button>
+                ) : null}
               </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
-              {!themesLoading && !themesError && filteredThemes.length === 0 && (
+      {!themesLoading && !themesError && filteredThemes.length === 0 && (
                 <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-200 px-4 py-8 text-center">
                   <p className="text-sm text-gray-500">No public themes match your search.</p>
-                  {searchTerm ? (
-                    <button
-                      type="button"
-                      onClick={() => setSearchTerm('')}
+          {searchTerm ? (
+            <button
+              type="button"
+              onClick={() => setSearchTerm('')}
                       className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-                    >
-                      Clear search
-                    </button>
-                  ) : null}
-                </div>
+            >
+              Clear search
+            </button>
+          ) : null}
+        </div>
               )}
             </>
-          )}
-        </div>
+      )}
+          </div>
       </div>
 
       <ThemePreviewModal

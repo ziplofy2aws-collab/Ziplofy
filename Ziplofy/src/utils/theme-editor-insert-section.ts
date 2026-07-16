@@ -510,6 +510,7 @@ import { applyCustomSectionPreset } from './custom-section-preset.util';
 import { applyDividerPreset } from './divider-preset.util';
 import { applyFeaturedProductPreset } from './featured-product-preset.util';
 import { applyProductHotspotsPreset } from './product-hotspots-preset.util';
+import { mergeProductHotspotsHotspotSettings } from '../create-theme/sidebar/theme-editor-product-hotspots-block-panel.utils';
 import { applyRecommendedProductsPreset } from './recommended-products-preset.util';
 import { applyCollectionLinksSpotlightPreset } from './collection-links-spotlight-preset.util';
 import { applyCollectionListBentoPreset } from './collection-list-bento-preset.util';
@@ -2857,6 +2858,60 @@ function sectionIsRichText(
   return blueprint === 'rich_text_section';
 }
 
+function sectionIsProductHotspots(
+  sec: Record<string, unknown>,
+  sectionInstanceId: string,
+  scope: AddBlockTarget['scope']
+): boolean {
+  if (sec.type === 'product-hotspots') return true;
+  const catalogVariant = String(
+    ((sec.settings as Record<string, unknown> | undefined)?.catalogVariant as string) ?? ''
+  );
+  if (catalogVariant === 'product-hotspots') return true;
+  const blueprint =
+    scope === 'layout'
+      ? layoutBlueprintKey(sectionInstanceId)
+      : templateBlueprintKey(sectionInstanceId);
+  return blueprint === 'product_hotspots';
+}
+
+function nextProductHotspotBlockId(order: string[], blocks: Record<string, unknown>): string {
+  const existing = new Set([...order, ...Object.keys(blocks)]);
+  let n = 1;
+  while (existing.has(`hotspot_${n}`)) n += 1;
+  return `hotspot_${n}`;
+}
+
+function insertProductHotspotBlock(
+  sec: Record<string, unknown>,
+  catalogBlockId: string
+): { blockInstanceId: string } | null {
+  const normalized = normalizeCatalogBlockId(catalogBlockId);
+  if (normalized !== 'product-hotspot' && normalized !== 'hotspot') return null;
+  const blocks = { ...((sec.blocks ?? {}) as Record<string, Record<string, unknown>>) };
+  const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [];
+  const blockId = nextProductHotspotBlockId(order, blocks);
+  const index = order.length;
+  const settings: Record<string, unknown> = {
+    positionX: Math.min(90, 20 + (index % 5) * 15),
+    positionY: Math.min(85, 25 + Math.floor(index / 5) * 20),
+    productId: '',
+    productImageUrl: '',
+    productTitle: 'Product title',
+    price: 'Rs. 19.99',
+  };
+  mergeProductHotspotsHotspotSettings(settings);
+  blocks[blockId] = {
+    type: 'product-hotspot',
+    enabled: true,
+    settings,
+  };
+  order.push(blockId);
+  sec.blocks = blocks;
+  sec.block_order = order;
+  return { blockInstanceId: blockId };
+}
+
 function nextIconsWithTextBlockId(order: string[], blocks: Record<string, unknown>): string {
   const existing = new Set([...order, ...Object.keys(blocks)]);
   let n = 1;
@@ -3164,6 +3219,19 @@ export function insertBlockFromCatalog(
         nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
       };
     }
+    if (sectionIsProductHotspots(sec, target.sectionInstanceId, 'layout')) {
+      const inserted = insertProductHotspotBlock(sec, catalogBlockId);
+      if (!inserted) return null;
+      sections[target.sectionInstanceId] = sec;
+      next.sections = sections;
+      return {
+        config: next,
+        blockInstanceId: inserted.blockInstanceId,
+        sectionInstanceId: target.sectionInstanceId,
+        scope: 'layout',
+        nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+      };
+    }
     if (sectionIsMulticolumn(sec, target.sectionInstanceId, 'layout')) {
       const inserted = insertMulticolumnBlock(sec, catalogBlockId);
       if (!inserted) return null;
@@ -3252,6 +3320,22 @@ export function insertBlockFromCatalog(
   }
   if (sectionIsIconsWithText(sec, target.sectionInstanceId, 'template')) {
     const inserted = insertIconsWithTextBlock(sec, catalogBlockId);
+    if (!inserted) return null;
+    sections[target.sectionInstanceId] = sec;
+    tpl.sections = sections;
+    templates[tplId] = tpl;
+    next.templates = templates;
+    return {
+      config: next,
+      blockInstanceId: inserted.blockInstanceId,
+      sectionInstanceId: target.sectionInstanceId,
+      scope: 'template',
+      templateId: tplId,
+      nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+    };
+  }
+  if (sectionIsProductHotspots(sec, target.sectionInstanceId, 'template')) {
+    const inserted = insertProductHotspotBlock(sec, catalogBlockId);
     if (!inserted) return null;
     sections[target.sectionInstanceId] = sec;
     tpl.sections = sections;
@@ -3379,9 +3463,27 @@ export function extendValuesForLayoutBlock(
   blockTypeId: string,
   config: Record<string, unknown>
 ): Record<string, string | boolean> {
+  const normalizedType = normalizeCatalogBlockId(blockTypeId);
+  if (normalizedType === 'product-hotspot' || normalizedType === 'hotspot') {
+    return extendValuesForProductHotspotBlock(
+      values,
+      'layout',
+      undefined,
+      sectionInstanceId,
+      blockInstanceId,
+      config
+    );
+  }
+
   const blueprint = layoutBlueprintKey(sectionInstanceId);
+  const altIds = [
+    blockTypeId,
+    normalizeCatalogBlockId(blockTypeId),
+    blockTypeId.replace(/-/g, '_'),
+    blockInstanceId,
+  ];
   const blockDef =
-    schema.layout?.[blueprint]?.blocks?.find((b) => (b.id ?? '') === blockTypeId) ??
+    schema.layout?.[blueprint]?.blocks?.find((b) => altIds.includes(b.id ?? '')) ??
     schema.layout?.[blueprint]?.blocks?.find((b) => (b.id ?? '') === blockInstanceId);
   if (!blockDef?.settingsFields?.length) return values;
 
@@ -3410,11 +3512,29 @@ export function extendValuesForTemplateBlock(
   blockTypeId: string,
   config: Record<string, unknown>
 ): Record<string, string | boolean> {
+  const normalizedType = normalizeCatalogBlockId(blockTypeId);
+  if (normalizedType === 'product-hotspot' || normalizedType === 'hotspot') {
+    return extendValuesForProductHotspotBlock(
+      values,
+      'template',
+      tplId,
+      sectionInstanceId,
+      blockInstanceId,
+      config
+    );
+  }
+
   const blueprint = templateBlueprintKey(sectionInstanceId);
   const tpl = schema.templates?.find((t) => t.id === tplId);
   const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
+  const altIds = [
+    blockTypeId,
+    normalizeCatalogBlockId(blockTypeId),
+    blockTypeId.replace(/-/g, '_'),
+    blockInstanceId,
+  ];
   const blockDef =
-    sec?.blocks?.find((b) => (b.id ?? '') === blockTypeId) ??
+    sec?.blocks?.find((b) => altIds.includes(b.id ?? '')) ??
     sec?.blocks?.find((b) => (b.id ?? '') === blockInstanceId);
   if (!blockDef?.settingsFields?.length) return values;
 
@@ -3428,6 +3548,43 @@ export function extendValuesForTemplateBlock(
     const raw = getNested(config, remapped.split('.').filter(Boolean));
     if (raw === undefined) continue;
     next[remapped] = field.type === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);
+  }
+  return next;
+}
+
+/** Seed form values for a newly added Product hotspots → Hotspot block. */
+export function extendValuesForProductHotspotBlock(
+  values: Record<string, string | boolean>,
+  scope: AddBlockTarget['scope'],
+  tplId: string | undefined,
+  sectionInstanceId: string,
+  blockInstanceId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const sectionBase =
+    scope === 'template' && tplId
+      ? `templates.${tplId}.sections.${sectionInstanceId}`
+      : `sections.${sectionInstanceId}`;
+  const settingsBase = `${sectionBase}.blocks.${blockInstanceId}.settings`;
+  const enabledPath = `${sectionBase}.blocks.${blockInstanceId}.enabled`;
+  const next = { ...values, [enabledPath]: true };
+
+  const defaults = {
+    productId: '',
+    positionX: 50,
+    positionY: 50,
+    productTitle: 'Product title',
+    price: 'Rs. 19.99',
+  } as const;
+
+  for (const [key, fallback] of Object.entries(defaults)) {
+    const path = `${settingsBase}.${key}`;
+    const raw = getNested(config, path.split('.'));
+    if (raw !== undefined && raw !== null) {
+      next[path] = typeof fallback === 'number' ? String(raw) : String(raw);
+    } else {
+      next[path] = String(fallback);
+    }
   }
   return next;
 }

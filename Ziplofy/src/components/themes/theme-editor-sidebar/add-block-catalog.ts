@@ -41,6 +41,7 @@ export type BlockPreviewSlide = {
   variant:
     | 'before-after'
     | 'product-card'
+    | 'product-hotspot'
     | 'featured-collection-carousel'
     | 'featured-collection-editorial'
     | 'featured-collection-grid'

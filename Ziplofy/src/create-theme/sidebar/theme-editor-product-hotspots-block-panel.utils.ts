@@ -48,6 +48,7 @@ export function isProductHotspotsHotspotBlockNodeId(nodeId: string): boolean {
 export function productHotspotsHotspotDefaultSettings(): Record<string, string | number> {
   return {
     productId: '',
+    productImageUrl: '',
     positionX: 50,
     positionY: 50,
     productTitle: 'Product title',
@@ -74,7 +75,7 @@ export function productHotspotsHotspotFieldDefs(blockSettingsBase: string): Edit
       widget: 'slider',
       min: 0,
       max: 100,
-      step: 1,
+      step: 0.1,
       sidebar: true,
     },
     {
@@ -85,7 +86,7 @@ export function productHotspotsHotspotFieldDefs(blockSettingsBase: string): Edit
       widget: 'slider',
       min: 0,
       max: 100,
-      step: 1,
+      step: 0.1,
       sidebar: true,
     },
   ];

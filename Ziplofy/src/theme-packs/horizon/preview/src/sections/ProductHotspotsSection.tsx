@@ -3,11 +3,16 @@ import { useThemeConfig } from '@render-store/sdk';
 import {
   readProductHotspots,
   readProductHotspotsLayout,
+  productHotspotsHeadingCss,
   sceneMinHeight,
   scopedProductHotspotsCss,
 } from '../lib/productHotspotsStyles';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
 import { layout, useThemeColors } from '../tokens';
+import {
+  prepareRichTextHtmlForPreview,
+  richTextHasBlockMarkup,
+} from '../../../../../utils/theme-editor-rich-text.util';
 
 type Props = {
   sectionId?: string;
@@ -160,13 +165,32 @@ export function ProductHotspotsSection({
   };
 
   const headingPath = `${settingsBase}.heading`;
+  const headingHtml = layoutStyle.heading;
+  const headingHasBlocks = richTextHasBlockMarkup(headingHtml);
+  const headingStyle = productHotspotsHeadingCss(
+    layoutStyle.headingStyle,
+    layoutStyle.scheme.color,
+    fontHeading
+  );
 
   return (
     <EditorSection sectionId={sectionId} label="Product hotspots" editorNodeId={editorNodeId} style={outerPad}>
       {customCss ? <style>{customCss}</style> : null}
       <div className={scopeClass} style={innerMax}>
-        <EditorField fieldPath={headingPath} label="Heading" as="h2" style={{ margin: '0 0 20px', fontSize: 28, fontWeight: 700, fontFamily: fontHeading }}>
-          {layoutStyle.heading}
+        <EditorField
+          fieldPath={headingPath}
+          label="Heading"
+          as={headingHasBlocks ? 'div' : 'h2'}
+          style={headingStyle}
+        >
+          {/<[a-z]/i.test(headingHtml.trim()) ? (
+            <span
+              className="theme-editor-rich-text-content"
+              dangerouslySetInnerHTML={{ __html: prepareRichTextHtmlForPreview(headingHtml) }}
+            />
+          ) : (
+            headingHtml
+          )}
         </EditorField>
 
         <div style={sceneStyle}>
@@ -196,6 +220,7 @@ export function ProductHotspotsSection({
                 ? `template:${templateId}:${sectionId}:block:${hotspot.id}`
                 : `layout:${sectionId}:block:${hotspot.id}`;
             const isActive = activeId === hotspot.id;
+            const openUpward = hotspot.positionY > 65;
 
             const dotStyle: CSSProperties = {
               position: 'relative',
@@ -212,21 +237,27 @@ export function ProductHotspotsSection({
             const popoverStyle: CSSProperties = {
               position: 'absolute',
               left: '50%',
-              top: '100%',
               transform: 'translateX(-50%)',
-              marginTop: layoutStyle.popoverGap,
+              [openUpward ? 'bottom' : 'top']: '100%',
+              [openUpward ? 'marginBottom' : 'marginTop']: layoutStyle.popoverGap,
               display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              padding: '8px 12px',
-              borderRadius: 8,
-              background: 'rgba(255,255,255,0.96)',
+              alignItems: 'stretch',
+              gap: 10,
+              minWidth: 220,
+              maxWidth: 280,
+              padding: 10,
+              borderRadius: 16,
+              background: '#ffffff',
               color: '#111827',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.14)',
-              whiteSpace: 'nowrap',
-              fontSize: 13,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
               pointerEvents: 'none',
+              zIndex: 5,
+              textAlign: 'left',
             };
+
+            const showSoldOut = !hotspot.productId;
+            const placeholderBg =
+              'linear-gradient(160deg, #f0c48a 0%, #d97b4a 35%, #6b9e8a 70%, #2a4a5c 100%)';
 
             return (
               <EditorBlock
@@ -237,8 +268,10 @@ export function ProductHotspotsSection({
                   position: 'absolute',
                   left: `${hotspot.positionX}%`,
                   top: `${hotspot.positionY}%`,
-                  transform: 'translate(-50%, -50%)',
+                  transform: 'translate3d(-50%, -50%, 0)',
                   zIndex: isActive ? 12 : 10,
+                  transition: 'left 90ms linear, top 90ms linear',
+                  willChange: 'left, top',
                 }}
               >
                 <button
@@ -265,8 +298,86 @@ export function ProductHotspotsSection({
                   />
                   {isActive ? (
                     <span style={popoverStyle}>
-                      <span style={{ fontWeight: 600 }}>{hotspot.productTitle}</span>
-                      <span style={{ color: '#6b7280', fontSize: 12 }}>{hotspot.price}</span>
+                      {hotspot.productImageUrl ? (
+                        <img
+                          src={hotspot.productImageUrl}
+                          alt=""
+                          style={{
+                            width: 72,
+                            height: 72,
+                            flexShrink: 0,
+                            borderRadius: 8,
+                            objectFit: 'cover',
+                            background: '#f3f4f6',
+                          }}
+                        />
+                      ) : (
+                        <span
+                          aria-hidden
+                          style={{
+                            width: 72,
+                            height: 72,
+                            flexShrink: 0,
+                            borderRadius: 8,
+                            background: placeholderBg,
+                          }}
+                        />
+                      )}
+                      <span
+                        style={{
+                          display: 'flex',
+                          minWidth: 0,
+                          flex: 1,
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          paddingTop: 2,
+                          paddingBottom: 2,
+                        }}
+                      >
+                        <span>
+                          <span
+                            style={{
+                              display: 'block',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              fontSize: 13,
+                              fontWeight: 600,
+                              lineHeight: 1.25,
+                              color: '#111827',
+                            }}
+                          >
+                            {hotspot.productTitle}
+                          </span>
+                          <span
+                            style={{
+                              display: 'block',
+                              marginTop: 2,
+                              fontSize: 12,
+                              color: '#1f2937',
+                            }}
+                          >
+                            {hotspot.price}
+                          </span>
+                        </span>
+                        {showSoldOut ? (
+                          <span
+                            style={{
+                              alignSelf: 'flex-end',
+                              borderRadius: 4,
+                              background: '#e8e8e8',
+                              padding: '4px 8px',
+                              fontSize: 9,
+                              fontWeight: 600,
+                              letterSpacing: '0.04em',
+                              textTransform: 'uppercase',
+                              color: '#4b5563',
+                            }}
+                          >
+                            Sold out
+                          </span>
+                        ) : null}
+                      </span>
                     </span>
                   ) : null}
                 </button>

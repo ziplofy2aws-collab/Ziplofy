@@ -7,8 +7,6 @@ export const PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER = [
   'Colors',
   'Popover',
   'Padding',
-  'Theme Settings',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(PRODUCT_HOTSPOTS_PANEL_GROUP_ORDER);
@@ -28,8 +26,6 @@ const FIELD_SORT: Record<string, number> = {
   priceTypography: 2,
   paddingTop: 0,
   paddingBottom: 1,
-  colorScheme: 0,
-  customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
@@ -45,7 +41,6 @@ export function isProductHotspotsSectionType(
 
 function panelGroupForField(field: EditorFieldDef): string {
   const key = field.path.split('.').pop() ?? '';
-  if (key === 'colorScheme' || field.group === 'Theme settings') return 'Theme Settings';
   if (COLORS_KEYS.has(key)) return 'Colors';
   if (field.group && PANEL_GROUPS.has(field.group)) return field.group;
   return 'General';
@@ -56,7 +51,7 @@ export function isProductHotspotsPanelField(field: EditorFieldDef): boolean {
   if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
   const key = field.path.split('.').pop() ?? '';
   if (key === 'heading' || key.startsWith('heading')) return false;
-  if (key === 'colorScheme') return true;
+  if (key === 'colorScheme' || key === 'customCss') return false;
   if (COLORS_KEYS.has(key)) return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;
@@ -85,16 +80,16 @@ export function augmentProductHotspotsPanelFields(fields: EditorFieldDef[]): Edi
     });
   }
 
-  for (const field of byKey.values()) {
-    const key = field.path.split('.').pop() ?? '';
+  for (const [key, field] of [...byKey.entries()]) {
+    if (key === 'colorScheme' || key === 'customCss') {
+      byKey.delete(key);
+      continue;
+    }
     if (key === 'titleTypography' || key === 'priceTypography') {
       byKey.set(key, {
         ...field,
         description: field.description ?? 'Edit presets in theme settings',
       });
-    }
-    if (key === 'colorScheme') {
-      byKey.set(key, { ...field, group: 'Theme settings', sidebar: true });
     }
   }
 
@@ -108,8 +103,6 @@ export function sortProductHotspotsPanelFields(fields: EditorFieldDef[]): Editor
     Colors: 2,
     Popover: 3,
     Padding: 4,
-    'Theme Settings': 5,
-    'Custom CSS': 6,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[panelGroupForField(a)] ?? 9;

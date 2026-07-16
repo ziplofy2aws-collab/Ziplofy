@@ -987,6 +987,41 @@ const FEATURED_PRODUCT_MEDIA_SETTING_TYPES: Record<string, string> = {
   paddingBottom: 'number',
   paddingLeft: 'number',
   paddingRight: 'number',
+  // Product highlight — Product media block (same path, different fields)
+  mediaType: 'select',
+  imageUrl: 'text',
+  videoUrl: 'text',
+  link: 'text',
+  imagePosition: 'select',
+};
+
+/** Product highlight — Product → Title / Price / Image / Swatches nested settings. */
+const PRODUCT_HIGHLIGHT_PRODUCT_NESTED_SETTING_TYPES: Record<string, Record<string, string>> = {
+  title: {
+    width: 'select',
+    maxWidth: 'select',
+    alignment: 'select',
+    typographyPreset: 'select',
+    textColor: 'text',
+    backgroundEnabled: 'boolean',
+    paddingTop: 'number',
+    paddingBottom: 'number',
+    paddingLeft: 'number',
+    paddingRight: 'number',
+  },
+  price: {
+    showSalePriceFirst: 'boolean',
+    typographyPreset: 'select',
+  },
+  image: {
+    aspectRatio: 'select',
+    constrainToScreenHeight: 'select',
+  },
+  swatches: {
+    enabled: 'boolean',
+    alignment: 'select',
+    mobileAlignment: 'select',
+  },
 };
 
 const HEADER_MENU_BLOCK_SETTING_TYPES: Record<string, string> = {
@@ -1460,6 +1495,17 @@ function resolveFieldTypeForPath(
     if (inferred) return inferred;
   }
 
+  const productHighlightNested = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.blocks\.product\.blocks\.(title|price|image|swatches)\.settings\.([^.]+)$/
+  );
+  if (productHighlightNested) {
+    const inferred =
+      PRODUCT_HIGHLIGHT_PRODUCT_NESTED_SETTING_TYPES[productHighlightNested[1]]?.[
+        productHighlightNested[2]
+      ];
+    if (inferred) return inferred;
+  }
+
   const productDetailsSetting = path.match(
     /^templates\.[^.]+\.sections\.[^.]+\.blocks\.details\.settings\.([^.]+)$/
   );
@@ -1793,9 +1839,33 @@ export function applyValuesToThemeConfig(
         key === 'productTitle' ||
         key === 'productImageUrl' ||
         key === 'price' ||
-        key === 'catalogVariant'
+        key === 'catalogVariant' ||
+        key === 'mediaType' ||
+        key === 'imageUrl' ||
+        key === 'videoUrl' ||
+        key === 'link' ||
+        key === 'imagePosition' ||
+        key === 'aspectRatio' ||
+        key === 'constrainToScreenHeight' ||
+        key === 'mediaFit' ||
+        key === 'mediaPosition' ||
+        key === 'width' ||
+        key === 'maxWidth' ||
+        key === 'alignment' ||
+        key === 'mobileAlignment'
       ) {
         type = 'text';
+      } else if (key === 'positionX' || key === 'positionY' || key === 'popoverGap') {
+        type = 'number';
+      } else if (key === 'backgroundEnabled' || key === 'showSalePriceFirst') {
+        type = 'boolean';
+      } else if (
+        key === 'paddingTop' ||
+        key === 'paddingBottom' ||
+        key === 'paddingLeft' ||
+        key === 'paddingRight'
+      ) {
+        type = 'number';
       } else {
         continue;
       }
