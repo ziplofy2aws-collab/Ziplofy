@@ -512,6 +512,12 @@ import {
   mapMainCollectionBlockNodes,
 } from '../../utils/collection-page-sidebar.util';
 import {
+  isSearchResultsSectionType,
+  isSearchSectionType,
+  mapSearchBlockNodes,
+  mapSearchResultsBlockNodes,
+} from '../../utils/search-page-sidebar.util';
+import {
   mapBlogPostMainBlockNodes,
   mapMainBlogBlockNodes,
 } from '../../utils/blog-post-main-sidebar.util';
@@ -3575,6 +3581,8 @@ function sectionToNode(
   const isRecommendedProducts = isRecommendedProductsSectionType(sec.type, catalogVariantEarly);
   const isCollectionHeading = isCollectionHeadingSectionType(sec.type);
   const isMainCollection = isMainCollectionSectionType(sec.type);
+  const isSearch = isSearchSectionType(sec.type);
+  const isSearchResults = isSearchResultsSectionType(sec.type);
   const isBlogPostMain = isBlogPostMainSectionType(sec.type);
   const isMainBlog = isMainBlogSectionType(sec.type);
   const isCollectionLinksSpotlight = isCollectionLinksSpotlightSectionType(
@@ -3638,6 +3646,8 @@ function sectionToNode(
     isRecommendedProducts ||
     isCollectionHeading ||
     isMainCollection ||
+    isSearch ||
+    isSearchResults ||
     isBlogPostMain ||
     isMainBlog ||
     isCollectionLinksSpotlight ||
@@ -3705,6 +3715,8 @@ function sectionToNode(
     isRecommendedProducts ||
     isCollectionHeading ||
     isMainCollection ||
+    isSearch ||
+    isSearchResults ||
     isBlogPostMain ||
     isMainBlog ||
     isCollectionLinksSpotlight ||
@@ -3895,6 +3907,16 @@ function sectionToNode(
             itemOrder,
             childrenListKey
           )
+      : isSearch
+        ? mapSearchBlockNodes(prefix, values, itemOrder, childrenListKey)
+      : isSearchResults
+        ? mapSearchResultsBlockNodes(
+            prefix,
+            `templates.${tplId}.sections.${secId}.settings`,
+            values,
+            itemOrder,
+            childrenListKey
+          )
       : isBlogPostMain
         ? mapBlogPostMainBlockNodes(prefix, values, itemOrder, childrenListKey)
       : isMainBlog
@@ -3979,6 +4001,8 @@ function sectionToNode(
       isRecommendedProducts ||
       isCollectionHeading ||
       isMainCollection ||
+      isSearch ||
+      isSearchResults ||
       isBlogPostMain ||
       isMainBlog ||
       isCollectionLinksSpotlight ||
@@ -4015,6 +4039,10 @@ function sectionToNode(
                   ? 'Collection heading'
                   : isMainCollectionSectionType(sec.type)
                     ? 'Collection'
+                    : isSearchSectionType(sec.type)
+                      ? 'Search'
+                      : isSearchResultsSectionType(sec.type)
+                        ? 'Search results'
                     : isBlogPostMainSectionType(sec.type)
                       ? 'Blog posts'
                       : isMainBlogSectionType(sec.type)
@@ -4108,7 +4136,7 @@ function sectionToNode(
                                                   )
                                                 : sec.label ?? blueprintId,
     kind: 'section',
-    icon: isCollectionLinksSpotlight ? 'link' : 'section',
+    icon: isSearchResults ? 'search' : isCollectionLinksSpotlight ? 'link' : 'section',
     fields:
       isHero || isCollectionLinksSpotlight || isFaq
         ? undefined
@@ -4148,6 +4176,8 @@ function sectionToNode(
         isRecommendedProducts ||
         isCollectionHeading ||
         isMainCollection ||
+        isSearch ||
+        isSearchResults ||
         isBlogPostMain ||
         isMainBlog ||
         isCollectionLinksSpotlight ||

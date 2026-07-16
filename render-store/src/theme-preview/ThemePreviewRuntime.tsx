@@ -171,7 +171,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
-        <Route path="/search" element={<Home />} />
+        <Route path="/search" element={<CustomThemeTemplatePage templateId="search" fallbackSectionIds={['search', 'search_results']} />} />
         <Route
           path="/password"
           element={

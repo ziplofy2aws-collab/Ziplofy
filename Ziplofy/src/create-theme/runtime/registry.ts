@@ -27,6 +27,8 @@ import { NotFoundMain } from '../not-found-main/runtime/NotFoundMain';
 import { ProductMain } from '../product-main/runtime/ProductMain';
 import { CollectionHeading } from '../collection-heading/runtime/CollectionHeading';
 import { MainCollection } from '../main-collection/runtime/MainCollection';
+import { Search } from '../search/runtime/Search';
+import { SearchResults } from '../search-results/runtime/SearchResults';
 import { BlogPostMain } from '../blog-post-main/runtime/BlogPostMain';
 import { MainBlog } from '../main-blog/runtime/MainBlog';
 import { CartMain } from '../cart-main/runtime/CartMain';
@@ -70,6 +72,8 @@ export const SECTION_RUNTIME_BY_TYPE: Record<string, SectionRuntimeComponent> = 
   'not-found-main': NotFoundMain,
   'collection-heading': CollectionHeading,
   'main-collection': MainCollection,
+  search: Search,
+  'search-results': SearchResults,
   'blog-post-main': BlogPostMain,
   'main-blog': MainBlog,
   'cart-main': CartMain,

@@ -477,6 +477,7 @@ import {
   ensureNotFoundPageTemplateBlocks,
   NOT_FOUND_TEMPLATE_ID,
 } from '../utils/not-found-page-preset.util';
+import { ensureSearchPageTemplateBlocks, SEARCH_TEMPLATE_ID } from '../utils/search-page-preset.util';
 import { resolveCollectionTemplatePreviewRoute } from './utils/collection-page-preview.util';
 import { isCollectionTemplatePreviewPage } from './utils/collection-templates.util';
 import { CollectionTemplatePreviewCard } from './sidebar/CollectionTemplatePreviewCard';
@@ -869,6 +870,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           ensureCollectionsListTemplateBlocks(config) ||
           ensureCollectionPageTemplateBlocks(config) ||
           ensureAllProductsPageTemplateBlocks(config) ||
+          ensureSearchPageTemplateBlocks(config) ||
           ensureBlogsPageTemplateBlocks(config) ||
           ensureBlogPostsPageTemplateBlocks(config) ||
           ensurePasswordPageTemplateBlocks(config) ||
@@ -2654,6 +2656,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         let seeded = false;
         if (tplId === ALL_PRODUCTS_TEMPLATE_ID) {
           seeded = ensureAllProductsPageTemplateBlocks(next);
+        }
+        if (tplId === SEARCH_TEMPLATE_ID) {
+          seeded = ensureSearchPageTemplateBlocks(next);
         }
         if (tplId === 'blogs' || tplId.startsWith('blogs.')) {
           seeded = ensureBlogsPageTemplateBlocks(next);

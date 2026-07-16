@@ -13,6 +13,10 @@ import {
   collectionHeadingTemplateStructureOrder,
   mainCollectionTemplateStructureOrder,
 } from '../../utils/collection-page-sidebar.util';
+import {
+  searchResultsTemplateStructureOrder,
+  searchTemplateStructureOrder,
+} from '../../utils/search-page-sidebar.util';
 import { faqLayoutStructureOrder, faqStructureOrder } from '../../utils/faq-sidebar.util';
 import {
   iconsWithTextLayoutStructureOrder,
@@ -449,6 +453,20 @@ export function readStructureOrderFromConfig(
     if (isMainCollection) {
       const sectionPrefix = `template:${tplId}:${secId}`;
       Object.assign(out, mainCollectionTemplateStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isSearch = (sec as { type?: string }).type === 'search';
+    if (isSearch) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, searchTemplateStructureOrder(sectionPrefix, listKey));
+      continue;
+    }
+
+    const isSearchResults = (sec as { type?: string }).type === 'search-results';
+    if (isSearchResults) {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(out, searchResultsTemplateStructureOrder(sectionPrefix, listKey));
       continue;
     }
 

@@ -18,6 +18,7 @@ export type SidebarIcon =
   | 'product-card'
   | 'group'
   | 'link'
+  | 'search'
   | 'contact'
   | 'delivery'
   | 'payment'

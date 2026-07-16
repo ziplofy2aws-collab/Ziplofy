@@ -27,6 +27,7 @@ import { withAllProductsPageSchema } from './all-products-page-schema.util';
 import { withBlogPageSchemas } from './blog-page-schema.util';
 import { withPasswordPageSchema } from './password-page-schema.util';
 import { withNotFoundPageSchema } from './not-found-page-schema.util';
+import { withSearchPageSchema } from './search-page-schema.util';
 import { ensureCartPageTemplateBlocks } from './cart-page-preset.util';
 import {
   ensureThemeLogoFaviconDefaults,
@@ -481,6 +482,7 @@ export function normalizeCreatorThemeConfig(config: Record<string, unknown>): vo
 export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchemaDoc {
   return withNotFoundPageSchema(
     withPasswordPageSchema(
+    withSearchPageSchema(
     withBlogPageSchemas(
     withAllProductsPageSchema(
     withThemeVariantPickersSchema(
@@ -515,6 +517,7 @@ export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchem
     )
     )
     )
+  )
   )
   )
   );

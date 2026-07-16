@@ -13,6 +13,7 @@ import {
   EyeIcon,
   EyeSlashIcon,
   LinkIcon,
+  MagnifyingGlassIcon,
   MegaphoneIcon,
   PhotoIcon,
   PlusCircleIcon,
@@ -160,6 +161,8 @@ function SidebarRowIcon({ icon, muted }: { icon?: SidebarIcon; muted?: boolean }
       return <TagIcon className={cls} />;
     case 'product-card':
       return <ArrowPathIcon className={cls} />;
+    case 'search':
+      return <MagnifyingGlassIcon className={cls} />;
     case 'group':
       return (
         <svg className={cls} viewBox="0 0 20 20" fill="none" aria-hidden>

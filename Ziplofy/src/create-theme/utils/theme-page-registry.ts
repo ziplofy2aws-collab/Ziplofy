@@ -223,7 +223,13 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     label: 'Search',
     icon: 'search',
     previewPath: '/search',
-    routes: [{ path: '/search', templateId: 'search' }],
+    routes: [
+      {
+        path: '/search',
+        templateId: 'search',
+        fallbackSectionIds: ['search', 'search_results'],
+      },
+    ],
   },
   {
     pageId: 'password',
