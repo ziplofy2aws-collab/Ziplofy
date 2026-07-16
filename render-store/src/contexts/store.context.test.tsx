@@ -32,11 +32,27 @@ describe('StorefrontProvider', () => {
 
   it('resolves valid subdomain and sets store meta', async () => {
     const { axiosi } = await import('../config/axios.config');
-    (axiosi.get as ReturnType<typeof vi.fn>).mockResolvedValue({
-      data: {
-        success: true,
-        data: { storeId: 's1', name: 'My Store', description: 'Desc' },
-      },
+    (axiosi.get as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
+      if (String(url).includes('/theme-runtime')) {
+        return {
+          data: {
+            success: true,
+            data: {
+              themeId: 't1',
+              themeName: 'Custom',
+              themeKind: 'store-custom',
+              isStoreCustomTheme: true,
+              themeConfig: { templates: {} },
+            },
+          },
+        };
+      }
+      return {
+        data: {
+          success: true,
+          data: { storeId: 's1', name: 'My Store', description: 'Desc', themeKind: 'store-custom' },
+        },
+      };
     });
 
     render(

@@ -19,6 +19,9 @@ import { StorefrontProductSeoLoader } from './components/StorefrontProductSeoLoa
 import { StorefrontBlogPage } from './pages/StorefrontBlogPage.tsx';
 import { StorefrontBlogPostPage } from './pages/StorefrontBlogPostPage.tsx';
 import { StorefrontSeoManager } from './seo/StorefrontSeoManager.tsx';
+import { StorefrontNotFoundPage } from './components/StorefrontNotFoundPage';
+import { useStorefront } from './contexts/store.context';
+import { shouldUseComposerRuntime } from './utils/themeComposer';
 import { useLoadedThemeContract } from './themes/RemoteThemeProvider.tsx';
 
 const StorefrontHomeRoute = () => {
@@ -79,6 +82,30 @@ const StorefrontCartRoute = () => {
   const theme = useLoadedThemeContract();
   const Page = theme.CartPage;
   return <Page />;
+};
+
+/** Prefer theme 404 when composer config is present; otherwise a minimal fallback. */
+const StorefrontCatchAllRoute = () => {
+  const { isStoreCustomTheme, themeConfig, remoteThemeJsUrl } = useStorefront();
+  const useComposer = shouldUseComposerRuntime({
+    isStoreCustomTheme,
+    themeConfig,
+    remoteThemeJsUrl,
+  });
+  if (useComposer && themeConfig) {
+    return <StorefrontNotFoundPage />;
+  }
+  return (
+    <div style={{ padding: 48, fontFamily: 'system-ui, sans-serif', textAlign: 'center' }}>
+      <h1 style={{ fontSize: 28, margin: '0 0 12px' }}>Page not found</h1>
+      <p style={{ margin: '0 0 20px', color: '#555' }}>
+        The page you requested could not be found.
+      </p>
+      <a href="/" style={{ color: '#005bd3' }}>
+        Continue shopping
+      </a>
+    </div>
+  );
 };
 
 export const StorefrontRoutes = () => (
@@ -167,7 +194,8 @@ export const StorefrontRoutes = () => (
           </StorefrontBlogContentShell>
         }
       />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/404" element={<StorefrontCatchAllRoute />} />
+      <Route path="*" element={<StorefrontCatchAllRoute />} />
     </Routes>
   </Router>
 );

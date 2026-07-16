@@ -6,8 +6,6 @@ export const RECOMMENDED_PRODUCTS_PANEL_GROUP_ORDER = [
   'Cards layout',
   'Section layout',
   'Padding',
-  'Theme Settings',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(RECOMMENDED_PRODUCTS_PANEL_GROUP_ORDER);
@@ -27,8 +25,6 @@ const FIELD_SORT: Record<string, number> = {
   backgroundColor: 2,
   paddingTop: 0,
   paddingBottom: 1,
-  colorScheme: 0,
-  customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
@@ -37,7 +33,6 @@ function fieldSortKey(path: string): number {
 
 function panelGroupForField(field: EditorFieldDef): string {
   const key = field.path.split('.').pop() ?? '';
-  if (key === 'colorScheme' || field.group === 'Theme settings') return 'Theme Settings';
   if (key === 'backgroundColor') return 'Section layout';
   if (field.group && PANEL_GROUPS.has(field.group)) return field.group;
   return 'Product';
@@ -55,7 +50,11 @@ export function isRecommendedProductsPanelField(field: EditorFieldDef): boolean 
   if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
   const key = field.path.split('.').pop() ?? '';
   if (key === 'heading' || key.startsWith('heading')) return false;
-  if (key === 'colorScheme' || key === 'backgroundColor') return true;
+  if (key === 'colorScheme' || key === 'customCss') return false;
+  if (field.group === 'Theme settings' || field.group === 'Theme Settings' || field.group === 'Custom CSS') {
+    return false;
+  }
+  if (key === 'backgroundColor') return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;
 }
@@ -69,7 +68,9 @@ export function augmentRecommendedProductsPanelFields(fields: EditorFieldDef[]):
 
   const byKey = new Map<string, EditorFieldDef>();
   for (const field of fields) {
-    byKey.set(field.path.split('.').pop() ?? '', field);
+    const key = field.path.split('.').pop() ?? '';
+    if (key === 'colorScheme' || key === 'customCss') continue;
+    byKey.set(key, field);
   }
 
   if (!byKey.has('backgroundColor')) {
@@ -83,13 +84,6 @@ export function augmentRecommendedProductsPanelFields(fields: EditorFieldDef[]):
     });
   }
 
-  for (const field of byKey.values()) {
-    const key = field.path.split('.').pop() ?? '';
-    if (key === 'colorScheme') {
-      byKey.set(key, { ...field, group: 'Theme settings', sidebar: true });
-    }
-  }
-
   return Array.from(byKey.values());
 }
 
@@ -99,8 +93,6 @@ export function sortRecommendedProductsPanelFields(fields: EditorFieldDef[]): Ed
     'Cards layout': 1,
     'Section layout': 2,
     Padding: 3,
-    'Theme Settings': 4,
-    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[panelGroupForField(a)] ?? 9;

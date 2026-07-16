@@ -4599,7 +4599,7 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
   );
 }
 
-/** Recommended products: Product → Cards layout → Section layout → Padding → Custom CSS. */
+/** Recommended products: Product → Cards layout → Section layout → Padding. */
 function RecommendedProductsGroupedSettingsPanel({
   fields,
   values,
@@ -4719,21 +4719,6 @@ function RecommendedProductsGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 

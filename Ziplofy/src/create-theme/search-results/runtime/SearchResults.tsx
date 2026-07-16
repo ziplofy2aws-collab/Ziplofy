@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   useStorefront,
-  useStorefrontProducts,
+  useStorefrontSearch,
   useThemeConfig,
 } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
@@ -217,22 +217,18 @@ export function SearchResults({
 }: SectionRuntimeProps) {
   const config = useThemeConfig();
   const { storeFrontMeta } = useStorefront();
-  const { products, fetchProductsByStoreId, loading } = useStorefrontProducts();
+  const { products, searchProducts, loading, error } = useStorefrontSearch();
   const { maxWidth, padX, padXMobile } = useThemeLayout();
   const { text, background, fontBody, fontHeading, muted, border } = useThemeColors();
   const [searchParams] = useSearchParams();
-  const query = (searchParams.get('q') ?? '').trim().toLowerCase();
+  const query = (searchParams.get('q') ?? '').trim();
   const [sort, setSort] = useState<SortKey>('featured');
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
 
   const base = secBase(templateId, sectionId);
   const scopeClass = sectionScopeClass('codiic-search-results', sectionId);
   const editorNodeId = `template:${templateId}:${sectionId}`;
   const storeId = storeFrontMeta?.storeId ?? '';
-
-  useEffect(() => {
-    if (!storeId) return;
-    void fetchProductsByStoreId({ storeId, page: 1, limit: 48 });
-  }, [storeId, fetchProductsByStoreId]);
 
   const resultsHeading = cfgString(config, `${base}.settings.resultsHeading`, 'Products');
   const columns = Math.max(1, Math.min(6, cfgNumber(config, `${base}.settings.columns`, 4)));
@@ -271,6 +267,17 @@ export function SearchResults({
     cfgNumber(config, `${base}.blocks.product_card.settings.mediaCornerRadius`, 0)
   );
 
+  // Keep a short debounce here too so rapid URL updates (submit + debounce flush) coalesce.
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedQuery(query), 50);
+    return () => window.clearTimeout(timer);
+  }, [query]);
+
+  useEffect(() => {
+    if (!storeId) return;
+    void searchProducts({ storeId, q: debouncedQuery, page: 1, limit: productsPerPage });
+  }, [storeId, debouncedQuery, productsPerPage, searchProducts]);
+
   const mappedProducts = useMemo<SearchProduct[]>(() => {
     return products.map((item) => ({
       id: item._id,
@@ -280,17 +287,14 @@ export function SearchResults({
       compareAtPrice:
         typeof item.compareAtPrice === 'number' ? item.compareAtPrice : null,
       imageUrl: item.imageUrls?.[0] ?? '',
-      // Preview: mark first product sold out when no live inventory signal exists.
       soldOut: false,
     }));
   }, [products]);
 
-  const displayProducts = useMemo(() => {
-    const filtered = query
-      ? mappedProducts.filter((p) => p.title.toLowerCase().includes(query))
-      : mappedProducts;
-    return sortProducts(filtered, sort).slice(0, productsPerPage);
-  }, [mappedProducts, productsPerPage, query, sort]);
+  const displayProducts = useMemo(
+    () => sortProducts(mappedProducts, sort),
+    [mappedProducts, sort]
+  );
 
   const shellStyle = useMemo<CSSProperties>(
     () => ({
@@ -408,6 +412,8 @@ export function SearchResults({
 
         {loading && displayProducts.length === 0 ? (
           <p style={{ margin: 0, color: muted || '#6b7280', fontSize: 14 }}>Loading products…</p>
+        ) : error && displayProducts.length === 0 ? (
+          <p style={{ margin: 0, color: muted || '#6b7280', fontSize: 14 }}>{error}</p>
         ) : displayProducts.length === 0 ? (
           <p style={{ margin: 0, color: muted || '#6b7280', fontSize: 14 }}>
             {query ? 'No products found' : 'No products yet'}

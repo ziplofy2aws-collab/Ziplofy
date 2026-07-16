@@ -504,6 +504,10 @@ import {
 import { mapImageWithTextBlockNodes } from '../utils/image-with-text-sidebar.util';
 import { mapStorytellingVideoBlockNodes } from '../utils/storytelling-video-sidebar.util';
 import { mapFeaturedProductBlockNodes } from '../../utils/featured-product-sidebar.util';
+import {
+  isProductMainSectionType,
+  mapProductPageBlockNodes,
+} from '../../utils/product-page-sidebar.util';
 import { mapProductHighlightBlockNodes } from '../../utils/product-highlight-sidebar.util';
 import { mapProductHotspotsBlockNodes } from '../../utils/product-hotspots-sidebar.util';
 import { mapRecommendedProductsBlockNodes } from '../../utils/recommended-products-sidebar.util';
@@ -3560,6 +3564,7 @@ function sectionToNode(
   const isEmailSignup = isEmailSignupSectionType(sec.type, catalogVariantEarly);
   const isCustomSection = isCustomSectionType(sec.type, catalogVariantEarly);
   const isFeaturedProduct = isFeaturedProductSectionType(sec.type, catalogVariantEarly);
+  const isProductMain = isProductMainSectionType(sec.type);
   const isProductHighlight =
     !isFeaturedProduct && isProductHighlightSectionType(sec.type, catalogVariantEarly);
   const isEditorial = isEditorialSectionType(sec.type, catalogVariantEarly);
@@ -3626,6 +3631,7 @@ function sectionToNode(
     isEmailSignup ||
     isCustomSection ||
     isFeaturedProduct ||
+    isProductMain ||
     isProductHighlight ||
     isEditorial ||
     isEditorialJumbo ||
@@ -3696,6 +3702,7 @@ function sectionToNode(
     isEmailSignup ||
     isCustomSection ||
     isFeaturedProduct ||
+    isProductMain ||
     isProductHighlight ||
     isEditorial ||
     isEditorialJumbo ||
@@ -3755,6 +3762,17 @@ function sectionToNode(
         )
     : isFeaturedProduct
       ? mapFeaturedProductBlockNodes(
+          prefix,
+          blocksBase,
+          values,
+          itemOrder,
+          childrenListKey,
+          config,
+          tplId,
+          secId
+        )
+    : isProductMain
+      ? mapProductPageBlockNodes(
           prefix,
           blocksBase,
           values,
@@ -4051,6 +4069,8 @@ function sectionToNode(
                   ? 'Product hotspots'
                   : isFeaturedProductSectionType(sec.type, catalogVariant)
                     ? 'Featured product'
+                    : isProductMainSectionType(sec.type)
+                      ? 'Product information'
                     : isProductHighlightSectionType(sec.type, catalogVariant)
                   ? productHighlightSidebarLabel(catalogVariant, 'Product highlight')
                   : isEditorialSectionType(sec.type, catalogVariant)

@@ -5295,123 +5295,115 @@
           "enabled": true,
           "settings": {
             "layoutMode": "split",
-            "showSku": false,
-            "stickyBuyBox": true
+            "paddingTop": 48,
+            "paddingBottom": 56,
+            "sectionWidth": "page"
           },
+          "block_order": [
+            "product_media",
+            "details",
+            "disclosures"
+          ],
           "blocks": {
             "product_media": {
               "type": "product-media",
+              "enabled": true,
               "settings": {
                 "showImage": true
               }
             },
-            "product_header": {
-              "type": "product-header",
+            "details": {
+              "type": "group",
+              "enabled": true,
+              "settings": {},
+              "block_order": [
+                "header",
+                "divider",
+                "variant_picker",
+                "buy_buttons",
+                "description"
+              ],
               "blocks": {
-                "vendor_line": {
-                  "type": "vendor-line",
-                  "settings": {
-                    "showVendor": true,
-                    "vendorPrefix": "Sold by"
+                "header": {
+                  "type": "group",
+                  "enabled": true,
+                  "settings": {},
+                  "block_order": [
+                    "title",
+                    "price"
+                  ],
+                  "blocks": {
+                    "title": {
+                      "type": "title",
+                      "enabled": true,
+                      "settings": {}
+                    },
+                    "price": {
+                      "type": "price",
+                      "enabled": true,
+                      "settings": {}
+                    }
                   }
                 },
-                "product_title": {
-                  "type": "product-title",
-                  "settings": {
-                    "loadingLabel": "Loading…"
+                "divider": {
+                  "type": "divider",
+                  "enabled": true,
+                  "settings": {}
+                },
+                "variant_picker": {
+                  "type": "variant-picker",
+                  "enabled": true,
+                  "settings": {}
+                },
+                "buy_buttons": {
+                  "type": "buy-buttons",
+                  "enabled": true,
+                  "settings": {},
+                  "block_order": [
+                    "quantity",
+                    "add_to_cart",
+                    "accelerated_checkout"
+                  ],
+                  "blocks": {
+                    "quantity": {
+                      "type": "quantity",
+                      "enabled": true,
+                      "settings": {
+                        "inputStyle": "default"
+                      }
+                    },
+                    "add_to_cart": {
+                      "type": "add-to-cart",
+                      "enabled": true,
+                      "settings": {
+                        "buttonLabel": "Add to cart"
+                      }
+                    },
+                    "accelerated_checkout": {
+                      "type": "accelerated-checkout",
+                      "enabled": true,
+                      "settings": {}
+                    }
                   }
-                }
-              },
-              "block_order": [
-                "vendor_line",
-                "product_title"
-              ],
-              "nested_block_order": [
-                "vendor_line",
-                "product_title"
-              ]
-            },
-            "product_content": {
-              "type": "product-content",
-              "blocks": {
+                },
                 "description": {
                   "type": "description",
+                  "enabled": true,
                   "settings": {
                     "showDescription": true
                   }
-                },
-                "price_line": {
-                  "type": "price-line",
-                  "settings": {
-                    "priceFallback": "—"
-                  }
                 }
-              },
-              "block_order": [
-                "description",
-                "price_line"
-              ]
+              }
             },
-            "buy_box": {
-              "type": "buy-box",
-              "blocks": {
-                "add_to_cart_button": {
-                  "type": "add-to-cart",
-                  "settings": {
-                    "label": "Add to cart",
-                    "addingLabel": "Adding…"
-                  }
-                },
-                "quantity_field": {
-                  "type": "qty",
-                  "settings": {
-                    "label": "Quantity",
-                    "min": 1
-                  }
-                },
-                "buy_now_button": {
-                  "type": "buy-now",
-                  "settings": {
-                    "label": "Buy now",
-                    "href": ""
-                  }
-                }
-              },
-              "block_order": [
-                "quantity_field",
-                "add_to_cart_button",
-                "buy_now_button"
-              ]
-            },
-            "trust_badges": {
-              "type": "trust",
-              "blocks": {
-                "shipping_badge": {
-                  "type": "badge",
-                  "settings": {
-                    "text": "Free shipping over ₹799"
-                  }
-                },
-                "returns_badge": {
-                  "type": "badge",
-                  "settings": {
-                    "text": "30-day returns"
-                  }
-                }
-              },
-              "block_order": [
-                "shipping_badge",
-                "returns_badge"
-              ]
+            "disclosures": {
+              "type": "disclosures",
+              "enabled": true,
+              "settings": {
+                "title": "Disclosures",
+                "body": ""
+              }
             }
-          },
-          "block_order": [
-            "product_media",
-            "product_header",
-            "product_content",
-            "buy_box",
-            "trust_badges"
-          ]
+          }
         }
       },
       "section_order": [

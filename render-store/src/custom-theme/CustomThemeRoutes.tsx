@@ -1,5 +1,6 @@
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { StorefrontSeoManager } from '../seo/StorefrontSeoManager.tsx';
+import { StorefrontNotFoundPage } from '../components/StorefrontNotFoundPage';
 import {
   renderCheckoutAuthRoutes,
   renderCheckoutProfileRoutes,
@@ -15,8 +16,14 @@ export function CustomThemeRoutes() {
         {renderCheckoutAuthRoutes()}
         {renderCheckoutProfileRoutes()}
         {renderCheckoutPageRoutes()}
-        {renderThemePageRoutes({ excludeCheckoutAuth: true, excludeCheckoutProfile: true })}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {renderThemePageRoutes({
+          excludeCheckoutAuth: true,
+          excludeCheckoutProfile: true,
+          excludePaths: ['/404'],
+        })}
+        {/* Explicit + catch-all so unknown URLs show the theme 404 (not home). */}
+        <Route path="/404" element={<StorefrontNotFoundPage />} />
+        <Route path="*" element={<StorefrontNotFoundPage />} />
       </Routes>
     </Router>
   );

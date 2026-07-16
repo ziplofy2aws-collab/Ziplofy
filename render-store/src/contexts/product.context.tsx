@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { axiosi } from "../config/axios.config";
 
 export interface StorefrontProductVariant {
@@ -120,46 +120,67 @@ export const StorefrontProductProvider: React.FC<{ children: React.ReactNode }> 
   const [productDetailError, setProductDetailError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<StorefrontProductsResponse["pagination"] | null>(null);
   const [orderDiscount, setOrderDiscount] = useState<OrderDiscount | null>(null);
+  const productsInflightRef = useRef<Map<string, Promise<void>>>(new Map());
+  const productDetailInflightRef = useRef<Map<string, Promise<StorefrontProductDetailItem | null>>>(new Map());
 
   const fetchProductsByStoreId = useCallback(async (args: { storeId: string; page?: number; limit?: number }) => {
     const { storeId, page = 1, limit = 10 } = args;
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await axiosi.get<StorefrontProductsResponse>(`/products/public/store/${storeId}`, {
-        params: { page, limit },
-      });
-      if (!res.data.success) throw new Error("Failed to fetch products");
-      setProducts(res.data.data || []);
-      setPagination(res.data.pagination || null);
-      setOrderDiscount(res.data.orderDiscount || null);
-    } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string }; message?: string }; message?: string })?.response?.data?.message ?? (err as { message?: string })?.message ?? "Failed to fetch products";
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
+    const key = `${storeId}:${page}:${limit}`;
+    const existing = productsInflightRef.current.get(key);
+    if (existing) return existing;
+
+    const run = (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await axiosi.get<StorefrontProductsResponse>(`/products/public/store/${storeId}`, {
+          params: { page, limit },
+        });
+        if (!res.data.success) throw new Error("Failed to fetch products");
+        setProducts(res.data.data || []);
+        setPagination(res.data.pagination || null);
+        setOrderDiscount(res.data.orderDiscount || null);
+      } catch (err: unknown) {
+        const msg = (err as { response?: { data?: { message?: string }; message?: string }; message?: string })?.response?.data?.message ?? (err as { message?: string })?.message ?? "Failed to fetch products";
+        setError(msg);
+      } finally {
+        setLoading(false);
+        productsInflightRef.current.delete(key);
+      }
+    })();
+
+    productsInflightRef.current.set(key, run);
+    return run;
   }, []);
 
   const fetchProductById = useCallback(async (productId: string): Promise<StorefrontProductDetailItem | null> => {
-    try {
-      setProductDetailLoading(true);
-      setProductDetailError(null);
-      const res = await axiosi.get<StorefrontProductDetailResponse>(`/products/public/${productId}`);
-      if (!res.data.success || !res.data.data) return null;
-      const detail = mapProductDetailResponse(
-        res.data.data as StorefrontProductDetailItem & { variants?: StorefrontProductVariant[] }
-      );
-      setProductDetail(detail);
-      return detail;
-    } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string }; message?: string }; message?: string })?.response?.data?.message ?? (err as { message?: string })?.message ?? "Failed to fetch product";
-      setProductDetailError(msg);
-      setProductDetail(null);
-      return null;
-    } finally {
-      setProductDetailLoading(false);
-    }
+    const existing = productDetailInflightRef.current.get(productId);
+    if (existing) return existing;
+
+    const run = (async () => {
+      try {
+        setProductDetailLoading(true);
+        setProductDetailError(null);
+        const res = await axiosi.get<StorefrontProductDetailResponse>(`/products/public/${productId}`);
+        if (!res.data.success || !res.data.data) return null;
+        const detail = mapProductDetailResponse(
+          res.data.data as StorefrontProductDetailItem & { variants?: StorefrontProductVariant[] }
+        );
+        setProductDetail(detail);
+        return detail;
+      } catch (err: unknown) {
+        const msg = (err as { response?: { data?: { message?: string }; message?: string }; message?: string })?.response?.data?.message ?? (err as { message?: string })?.message ?? "Failed to fetch product";
+        setProductDetailError(msg);
+        setProductDetail(null);
+        return null;
+      } finally {
+        setProductDetailLoading(false);
+        productDetailInflightRef.current.delete(productId);
+      }
+    })();
+
+    productDetailInflightRef.current.set(productId, run);
+    return run;
   }, []);
 
   const fetchProductForRoute = useCallback(

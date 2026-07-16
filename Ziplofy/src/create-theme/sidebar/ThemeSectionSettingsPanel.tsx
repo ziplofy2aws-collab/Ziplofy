@@ -10266,7 +10266,7 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
   );
 }
 
-/** Recommended products: Product → Cards layout → Section layout → Padding → Theme Settings → Custom CSS. */
+/** Recommended products: Product → Cards layout → Section layout → Padding. */
 function RecommendedProductsGroupedSettingsPanel({
   fields,
   values,
@@ -10287,7 +10287,7 @@ function RecommendedProductsGroupedSettingsPanel({
     <div className="divide-y divide-[#e1e1e1]">
       {RECOMMENDED_PRODUCTS_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length && label !== 'Theme Settings') return null;
+        if (!groupFields?.length) return null;
 
         if (label === 'Product') {
           return (
@@ -10401,18 +10401,6 @@ function RecommendedProductsGroupedSettingsPanel({
           );
         }
 
-        if (label === 'Theme Settings') {
-          return (
-            <CollapsibleSettingsGroup
-              key={label}
-              label="Theme Settings"
-              fields={groupFields ?? []}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
-          );
-        }
-
         if (label === 'Padding') {
           return (
             <HeroPaddingSettingsGroup
@@ -10421,21 +10409,6 @@ function RecommendedProductsGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 

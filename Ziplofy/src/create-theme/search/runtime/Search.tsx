@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useThemeConfig } from '@render-store/sdk';
+import { useStorefrontSearch, useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
@@ -17,6 +17,8 @@ import {
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
 
+const SEARCH_DEBOUNCE_MS = 300;
+
 function secBase(templateId: string, sectionId: string): string {
   return `templates.${templateId}.sections.${sectionId}`;
 }
@@ -30,20 +32,49 @@ function SearchIcon({ color }: { color: string }) {
   );
 }
 
+function writeSearchQueryParam(
+  searchParams: URLSearchParams,
+  setSearchParams: ReturnType<typeof useSearchParams>[1],
+  next: string
+) {
+  const trimmed = next.trim();
+  const current = (searchParams.get('q') ?? '').trim();
+  if (trimmed === current) return;
+  const params = new URLSearchParams(searchParams);
+  if (trimmed) params.set('q', trimmed);
+  else params.delete('q');
+  setSearchParams(params, { replace: true });
+}
+
 export function Search({
   sectionId = 'search',
   templateId = 'search',
 }: SectionRuntimeProps) {
   const config = useThemeConfig();
+  const { setSearchValue } = useStorefrontSearch();
   const { maxWidth, padX, padXMobile } = useThemeLayout();
   const { text, background, muted, border, fontBody, fontHeading } = useThemeColors();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryFromUrl = searchParams.get('q') ?? '';
   const [draft, setDraft] = useState(queryFromUrl);
+  const typingRef = useRef(false);
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
 
   useEffect(() => {
+    if (typingRef.current) return;
     setDraft(queryFromUrl);
   }, [queryFromUrl]);
+
+  // Debounced live search: sync URL `q` while typing so SearchResults hits the API.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      typingRef.current = false;
+      writeSearchQueryParam(searchParamsRef.current, setSearchParams, draft);
+      setSearchValue(draft.trim());
+    }, SEARCH_DEBOUNCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [draft, setSearchParams, setSearchValue]);
 
   const base = secBase(templateId, sectionId);
   const scopeClass = sectionScopeClass('codiic-search', sectionId);
@@ -108,11 +139,10 @@ export function Search({
 
   const submitSearch = (event?: FormEvent) => {
     event?.preventDefault();
+    typingRef.current = false;
     const next = draft.trim();
-    const params = new URLSearchParams(searchParams);
-    if (next) params.set('q', next);
-    else params.delete('q');
-    setSearchParams(params, { replace: true });
+    setSearchValue(next);
+    writeSearchQueryParam(searchParamsRef.current, setSearchParams, next);
   };
 
   return (
@@ -167,9 +197,13 @@ export function Search({
                 <input
                   type="search"
                   value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
+                  onChange={(e) => {
+                    typingRef.current = true;
+                    setDraft(e.target.value);
+                  }}
                   placeholder={placeholder}
                   aria-label={placeholder || 'Search'}
+                  autoComplete="off"
                   style={{
                     flex: 1,
                     minWidth: 0,

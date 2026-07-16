@@ -166,8 +166,29 @@ export function RemoteThemeProvider({ children }: { children: ReactNode }) {
 
   if (blockingLoad) {
     return (
-      <div style={{ padding: 48, textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
-        <p style={{ margin: 0 }}>Loading storefront theme…</p>
+      <div
+        aria-busy="true"
+        aria-label="Loading"
+        style={{
+          minHeight: '100vh',
+          background: '#fff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <span
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: '50%',
+            border: '2px solid rgba(17, 24, 39, 0.08)',
+            borderTopColor: 'rgba(17, 24, 39, 0.35)',
+            animation: 'codiic-store-spin 0.7s linear infinite',
+            boxSizing: 'border-box',
+          }}
+        />
+        <style>{`@keyframes codiic-store-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }

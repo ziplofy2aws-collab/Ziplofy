@@ -43,7 +43,10 @@ export function CustomThemePageShell({
   hideChrome = false,
 }: {
   children: ReactNode;
-  /** Password gate (and similar) should not render store header/footer. */
+  /**
+   * Password gate (and similar) should not render store header/footer.
+   * All other pages share the homepage layout chrome from root `layout_order`.
+   */
   hideChrome?: boolean;
 }) {
   const config = useThemeConfig();

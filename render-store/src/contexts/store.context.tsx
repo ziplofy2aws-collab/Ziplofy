@@ -147,6 +147,10 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [storeAssetsReady, setStoreAssetsReady] = useState(false);
   const storeAssetsLoadingRef = useRef(false);
   const storeAssetsReadyRef = useRef(false);
+  /** Shared in-flight promise so parallel callers await the same load. */
+  const storeAssetsPromiseRef = useRef<Promise<void> | null>(null);
+  /** Hint from subdomain resolve — lets catalog pack fetch run in parallel with theme-runtime. */
+  const themeKindHintRef = useRef<'store-custom' | 'catalog' | 'none'>('none');
   const resolvedStoreRef = useRef<{
     storeId: string;
     name: string;
@@ -237,70 +241,105 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const loadStoreAssets = useCallback(async () => {
     const resolved = resolvedStoreRef.current;
     if (!resolved) return;
-    if (storeAssetsReadyRef.current || storeAssetsLoadingRef.current) return;
+    if (storeAssetsReadyRef.current) return;
+    if (storeAssetsPromiseRef.current) return storeAssetsPromiseRef.current;
 
-    storeAssetsLoadingRef.current = true;
-    setStoreAssetsLoading(true);
+    const run = async () => {
+      storeAssetsLoadingRef.current = true;
+      setStoreAssetsLoading(true);
 
-    const installedRuntimeClear = {
-      setActiveThemeEntryHtmlUrl,
-      setActiveThemeCssUrls,
-      setActiveThemeJsUrls,
-      setActiveThemeHtmlUrls,
-      setThemeRuntimeBaseUrl,
-      setRemoteThemeJsUrl,
-      setRemoteThemeCssUrl,
-      setLiquidThemeEnabled,
-      setLiquidRenderPagePath,
-      setLiquidTemplateNames,
-      setLiquidTemplatesListProvided,
-      setActiveReactThemePackId,
-      setReactThemePacks,
-    };
+      const installedRuntimeClear = {
+        setActiveThemeEntryHtmlUrl,
+        setActiveThemeCssUrls,
+        setActiveThemeJsUrls,
+        setActiveThemeHtmlUrls,
+        setThemeRuntimeBaseUrl,
+        setRemoteThemeJsUrl,
+        setRemoteThemeCssUrl,
+        setLiquidThemeEnabled,
+        setLiquidRenderPagePath,
+        setLiquidTemplateNames,
+        setLiquidTemplatesListProvided,
+        setActiveReactThemePackId,
+        setReactThemePacks,
+      };
 
-    try {
-      let resolvedKind: 'store-custom' | 'catalog' | 'none' = 'none';
       try {
-        const runtimeRes = await axiosi.get<{
-          success: boolean;
-          data?: ThemeRuntimePayload | null;
-        }>(`/storefront/${resolved.storeId}/theme-runtime`, {
-          params: { _t: Date.now() },
-        });
-        resolvedKind = applyThemeRuntimePayload(runtimeRes.data?.data, installedRuntimeClear);
-      } catch {
-        resolvedKind = applyThemeRuntimePayload(null, installedRuntimeClear);
-        toast.error('Failed to load store theme');
-      }
+        let resolvedKind: 'store-custom' | 'catalog' | 'none' = 'none';
+        const hint = themeKindHintRef.current;
+        const runtimeUrl = `/storefront/${resolved.storeId}/theme-runtime`;
+        const packUrl = `/storefront/${resolved.storeId}/react-theme-pack`;
 
-      if (resolvedKind !== 'store-custom') {
+        type PackPayload = {
+          success: boolean;
+          data?: {
+            activePackId: 'theme1' | 'theme2';
+            packs: StorefrontContextType['reactThemePacks'];
+          };
+        };
+
+        const applyPack = (packRes: { data?: PackPayload } | null) => {
+          setActiveReactThemePackId(packRes?.data?.data?.activePackId || null);
+          setReactThemePacks(packRes?.data?.data?.packs || []);
+        };
+
         try {
-          const reactPackRes = await axiosi.get<{
-            success: boolean;
-            data?: {
-              activePackId: 'theme1' | 'theme2';
-              packs: StorefrontContextType['reactThemePacks'];
-            };
-          }>(`/storefront/${resolved.storeId}/react-theme-pack`, {
-            params: { _t: Date.now() },
-          });
-          setActiveReactThemePackId(reactPackRes.data?.data?.activePackId || null);
-          setReactThemePacks(reactPackRes.data?.data?.packs || []);
+          // Catalog: fetch theme-runtime + react-theme-pack together (one RTT).
+          // Custom / unknown: theme-runtime first; skip pack for store-custom.
+          if (hint === 'catalog') {
+            const [runtimeRes, packRes] = await Promise.all([
+              axiosi.get<{ success: boolean; data?: ThemeRuntimePayload | null }>(runtimeUrl),
+              axiosi.get<PackPayload>(packUrl).catch(() => null),
+            ]);
+            resolvedKind = applyThemeRuntimePayload(runtimeRes.data?.data, installedRuntimeClear);
+            if (resolvedKind === 'store-custom') {
+              setActiveReactThemePackId(null);
+              setReactThemePacks([]);
+            } else if (packRes) {
+              applyPack(packRes);
+            } else {
+              setActiveReactThemePackId(null);
+              setReactThemePacks([]);
+            }
+          } else {
+            const runtimeRes = await axiosi.get<{
+              success: boolean;
+              data?: ThemeRuntimePayload | null;
+            }>(runtimeUrl);
+            resolvedKind = applyThemeRuntimePayload(runtimeRes.data?.data, installedRuntimeClear);
+
+            if (resolvedKind === 'store-custom') {
+              setActiveReactThemePackId(null);
+              setReactThemePacks([]);
+            } else {
+              try {
+                const reactPackRes = await axiosi.get<PackPayload>(packUrl);
+                applyPack(reactPackRes);
+              } catch {
+                setActiveReactThemePackId(null);
+                setReactThemePacks([]);
+              }
+            }
+          }
         } catch {
+          resolvedKind = applyThemeRuntimePayload(null, installedRuntimeClear);
           setActiveReactThemePackId(null);
           setReactThemePacks([]);
+          toast.error('Failed to load store theme');
         }
-      } else {
-        setActiveReactThemePackId(null);
-        setReactThemePacks([]);
-      }
 
-      setStoreAssetsReady(true);
-      storeAssetsReadyRef.current = true;
-    } finally {
-      storeAssetsLoadingRef.current = false;
-      setStoreAssetsLoading(false);
-    }
+        setStoreAssetsReady(true);
+        storeAssetsReadyRef.current = true;
+      } finally {
+        storeAssetsLoadingRef.current = false;
+        setStoreAssetsLoading(false);
+        storeAssetsPromiseRef.current = null;
+      }
+    };
+
+    const promise = run();
+    storeAssetsPromiseRef.current = promise;
+    return promise;
   }, []);
 
   useEffect(() => {
@@ -377,17 +416,22 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             catalogId && data.data.appliedThemeName ? String(data.data.appliedThemeName) : null
           );
           setThemeKind(resolvedThemeKind);
+          themeKindHintRef.current = resolvedThemeKind;
 
           resolvedStoreRef.current = {
             storeId: String(data.data.storeId),
             name: data.data.name,
             description: data.data.description,
           };
+          // Start theme load immediately — overlaps with access check in StorefrontAccessProvider.
+          void loadStoreAssets();
         }
       } catch {
         resolvedStoreRef.current = null;
         storeAssetsReadyRef.current = false;
         storeAssetsLoadingRef.current = false;
+        storeAssetsPromiseRef.current = null;
+        themeKindHintRef.current = 'none';
         setStoreAssetsReady(false);
         setIsStoreFront(false);
         setStoreFrontMeta(null);
@@ -417,7 +461,7 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setStoreFrontChecked(true);
       }
     })();
-  }, []);
+  }, [loadStoreAssets]);
 
   const value: StorefrontContextType = {
     isStoreFront,

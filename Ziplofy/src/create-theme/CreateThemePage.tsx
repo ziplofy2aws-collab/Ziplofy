@@ -439,6 +439,7 @@ import {
   extendValuesForTemplateBlock,
   extendValuesForTemplateInstance,
   getLayoutOrder,
+  ensureLayoutOrder,
   insertBlockFromCatalog,
   pruneValuesForLayoutBlock,
   pruneValuesForLayoutInstance,
@@ -478,6 +479,10 @@ import {
   NOT_FOUND_TEMPLATE_ID,
 } from '../utils/not-found-page-preset.util';
 import { ensureSearchPageTemplateBlocks, SEARCH_TEMPLATE_ID } from '../utils/search-page-preset.util';
+import {
+  ensureProductPageTemplateBlocks,
+  PRODUCT_TEMPLATE_ID,
+} from '../utils/product-page-preset.util';
 import { resolveCollectionTemplatePreviewRoute } from './utils/collection-page-preview.util';
 import { isCollectionTemplatePreviewPage } from './utils/collection-templates.util';
 import { CollectionTemplatePreviewCard } from './sidebar/CollectionTemplatePreviewCard';
@@ -866,11 +871,14 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         }
 
         normalizeCreatorThemeConfig(config);
+        // Shared homepage header/footer layout — keep layout_order populated for all pages.
+        ensureLayoutOrder(config);
         if (
           ensureCollectionsListTemplateBlocks(config) ||
           ensureCollectionPageTemplateBlocks(config) ||
           ensureAllProductsPageTemplateBlocks(config) ||
           ensureSearchPageTemplateBlocks(config) ||
+          ensureProductPageTemplateBlocks(config) ||
           ensureBlogsPageTemplateBlocks(config) ||
           ensureBlogPostsPageTemplateBlocks(config) ||
           ensurePasswordPageTemplateBlocks(config) ||
@@ -2660,6 +2668,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         if (tplId === SEARCH_TEMPLATE_ID) {
           seeded = ensureSearchPageTemplateBlocks(next);
         }
+        if (tplId === PRODUCT_TEMPLATE_ID || tplId.startsWith('product.')) {
+          seeded = ensureProductPageTemplateBlocks(next) || seeded;
+        }
         if (tplId === 'blogs' || tplId.startsWith('blogs.')) {
           seeded = ensureBlogsPageTemplateBlocks(next);
         } else if (tplId === 'blog-posts' || tplId.startsWith('blog-posts.')) {
@@ -2805,8 +2816,17 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     }
   }, [defaultConfig, collections, handleCollectionLinksApply]);
 
+  const livePreviewConfigRef = useRef(livePreviewConfig);
+  livePreviewConfigRef.current = livePreviewConfig;
+  const provisionalOrderKeyRef = useRef('');
+  const skipProvisionalClearRef = useRef(false);
+  const provisionalPreviewRafRef = useRef(0);
+
   const handleReorder = useCallback(
     (listKey: string, orderedIds: string[]) => {
+      // Drop commits permanently — skip provisional restore so we don't flash the old order.
+      skipProvisionalClearRef.current = true;
+      provisionalOrderKeyRef.current = '';
       setItemOrder((prev) => mergeItemOrder(prev, listKey, orderedIds));
       setDefaultConfig((prev) => {
         if (!prev) return prev;
@@ -2818,6 +2838,46 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     },
     [previewPage]
   );
+
+  const handleReorderPreview = useCallback(
+    (listKey: string, orderedIds: string[]) => {
+      const key = `${listKey}:${orderedIds.join(',')}`;
+      if (key === provisionalOrderKeyRef.current) return;
+      provisionalOrderKeyRef.current = key;
+      const base = livePreviewConfigRef.current;
+      if (!base || typeof base !== 'object') return;
+
+      if (provisionalPreviewRafRef.current) {
+        cancelAnimationFrame(provisionalPreviewRafRef.current);
+      }
+      provisionalPreviewRafRef.current = requestAnimationFrame(() => {
+        provisionalPreviewRafRef.current = 0;
+        try {
+          const next = JSON.parse(JSON.stringify(base)) as Record<string, unknown>;
+          applyStructureOrderToConfig(next, listKey, orderedIds, previewPage);
+          livePreviewRef.current?.postProvisionalConfig(next);
+        } catch {
+          // ignore clone/apply failures during drag
+        }
+      });
+    },
+    [previewPage]
+  );
+
+  const handleReorderPreviewClear = useCallback(() => {
+    if (provisionalPreviewRafRef.current) {
+      cancelAnimationFrame(provisionalPreviewRafRef.current);
+      provisionalPreviewRafRef.current = 0;
+    }
+    if (skipProvisionalClearRef.current) {
+      skipProvisionalClearRef.current = false;
+      provisionalOrderKeyRef.current = '';
+      return;
+    }
+    if (!provisionalOrderKeyRef.current) return;
+    provisionalOrderKeyRef.current = '';
+    livePreviewRef.current?.clearProvisionalConfig();
+  }, []);
 
   const handlePreviewSelect = useCallback(
     (nodeId: string) => {
@@ -3781,6 +3841,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           }}
           onDeleteNode={handleDeleteSidebarNode}
           onReorder={handleReorder}
+          onReorderPreview={handleReorderPreview}
+          onReorderPreviewClear={handleReorderPreviewClear}
           onStructureDragChange={setStructureDragging}
           onInsertSection={openAddSectionModal}
           onInsertHoverChange={setInsertHoverHighlight}

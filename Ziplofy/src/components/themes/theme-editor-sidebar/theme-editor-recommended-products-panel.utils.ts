@@ -6,7 +6,6 @@ export const RECOMMENDED_PRODUCTS_PANEL_GROUP_ORDER = [
   'Cards layout',
   'Section layout',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(RECOMMENDED_PRODUCTS_PANEL_GROUP_ORDER);
@@ -23,10 +22,8 @@ const FIELD_SORT: Record<string, number> = {
   verticalGap: 6,
   sectionWidth: 0,
   layoutGap: 1,
-  colorScheme: 2,
   paddingTop: 0,
   paddingBottom: 1,
-  customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
@@ -42,8 +39,14 @@ export function isRecommendedProductsSectionType(
 
 export function isRecommendedProductsPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
+  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'colorScheme' || key === 'customCss') return false;
+  if (field.group === 'Theme settings' || field.group === 'Theme Settings' || field.group === 'Custom CSS') {
+    return false;
+  }
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return /\.sections\.[^.]+\.settings\./.test(field.path);
+  return true;
 }
 
 export function sortRecommendedProductsPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -52,7 +55,6 @@ export function sortRecommendedProductsPanelFields(fields: EditorFieldDef[]): Ed
     'Cards layout': 1,
     'Section layout': 2,
     Padding: 3,
-    'Custom CSS': 4,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

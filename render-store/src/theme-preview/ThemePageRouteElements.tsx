@@ -103,6 +103,8 @@ type ThemePageRouteOptions = {
   excludeCheckoutAuth?: boolean;
   /** Omit customer account routes that use checkout editor UI. */
   excludeCheckoutProfile?: boolean;
+  /** Skip these pathnames (e.g. `/404` when a dedicated storefront not-found route is registered). */
+  excludePaths?: string[];
   /**
    * When the editor is on an alternate template (`product.foo`, `blog-posts.bar`),
    * use that config key for matching base routes (`product`, `blog-posts`, …).
@@ -118,7 +120,9 @@ function resolveRouteTemplateId(specTemplateId: string, activeTemplateId?: strin
 
 /** Direct <Route> children for <Routes> — cannot wrap in a custom component (react-router v6). */
 export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactElement[] {
+  const excludePaths = new Set(options?.excludePaths ?? []);
   const specs = ROUTE_SPECS.filter((spec) => {
+    if (excludePaths.has(spec.path)) return false;
     if (options?.excludeCheckoutAuth && CHECKOUT_AUTH_PATHS.has(spec.path)) return false;
     if (options?.excludeCheckoutProfile && CHECKOUT_PROFILE_PATHS.has(spec.path)) return false;
     return true;

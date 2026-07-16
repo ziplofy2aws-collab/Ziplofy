@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeftIcon,
   ArrowPathIcon,
@@ -25,7 +25,7 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline';
 import type { SidebarIcon, SidebarNode, ThemeEditorSidebarTab } from './create-theme-sidebar.types';
-import { isSortableSidebarNode } from './create-theme-structure-order';
+import { computeSidebarReorderOrder, isSortableSidebarNode } from './create-theme-structure-order';
 import { ThemeEditorSettingsSheet } from './ThemeEditorSettingsSheet';
 import { ThemeSettingsNav } from './ThemeSettingsNav';
 import { SectionInsertZone } from './CreateThemeSectionInsertZone';
@@ -227,6 +227,9 @@ type TreeRowProps = {
   onToggleHidden: (id: string) => void;
   onDeleteNode?: (nodeId: string) => void;
   onReorder: (listKey: string, orderedIds: string[]) => void;
+  /** Live canvas preview while dragging (non-committing). */
+  onReorderPreview?: (listKey: string, orderedIds: string[]) => void;
+  onReorderPreviewClear?: () => void;
   onInsertSection?: (ctx: SectionInsertContext) => void;
   onInsertHoverChange?: (ctx: SectionInsertContext | null) => void;
   sectionInsertGroup?: SectionCatalogGroup;
@@ -302,6 +305,8 @@ function SidebarGroup({
   onToggleHidden,
   onDeleteNode,
   onReorder,
+  onReorderPreview,
+  onReorderPreviewClear,
   onInsertSection,
   onInsertHoverChange,
   dragState,
@@ -356,6 +361,8 @@ function SidebarGroup({
         onToggleHidden={onToggleHidden}
         onDeleteNode={onDeleteNode}
         onReorder={onReorder}
+        onReorderPreview={onReorderPreview}
+        onReorderPreviewClear={onReorderPreviewClear}
         onInsertSection={onInsertSection}
         onInsertHoverChange={onInsertHoverChange}
         sectionInsertGroup={insertGroup}
@@ -380,6 +387,8 @@ function SortableSiblingList({
   onToggleHidden,
   onDeleteNode,
   onReorder,
+  onReorderPreview,
+  onReorderPreviewClear,
   onInsertSection,
   onInsertHoverChange,
   sectionInsertGroup,
@@ -401,27 +410,23 @@ function SortableSiblingList({
   | 'sectionInsertLabel'
 > & {
   onReorder: (listKey: string, orderedIds: string[]) => void;
+  onReorderPreview?: (listKey: string, orderedIds: string[]) => void;
+  onReorderPreviewClear?: () => void;
   dragState: DragState;
   setDragState: React.Dispatch<React.SetStateAction<DragState>>;
 }) {
-  const sortableIds = nodes.filter(isSortableSidebarNode).map((n) => n.id);
+  const sortableIds = useMemo(
+    () => nodes.filter(isSortableSidebarNode).map((n) => n.id),
+    [nodes]
+  );
   const canSort = Boolean(listKey && sortableIds.length > 1);
+  const lastPreviewKeyRef = React.useRef('');
 
   const finishReorder = useCallback(
     (targetId: string, edge: 'before' | 'after' = 'before') => {
       if (!listKey || !dragState.nodeId || !edge) return;
-      if (dragState.nodeId === targetId) return;
-      const targetIndex = sortableIds.indexOf(targetId);
-      if (sortableIds.indexOf(dragState.nodeId) < 0 || targetIndex < 0) return;
-
-      const without = sortableIds.filter((id) => id !== dragState.nodeId);
-      const toInWithout = without.indexOf(targetId);
-      if (toInWithout < 0) return;
-      const insertAt = edge === 'before' ? toInWithout : toInWithout + 1;
-      const next = [...without];
-      next.splice(insertAt, 0, dragState.nodeId);
-      // No-op if order unchanged
-      if (next.every((id, i) => id === sortableIds[i])) {
+      const next = computeSidebarReorderOrder(sortableIds, dragState.nodeId, targetId, edge);
+      if (!next) {
         setDragState(EMPTY_DRAG_STATE);
         return;
       }
@@ -430,6 +435,48 @@ function SortableSiblingList({
     },
     [dragState.nodeId, listKey, onReorder, setDragState, sortableIds]
   );
+
+  // Live canvas preview while the sidebar drop indicator is active (non-committing).
+  useEffect(() => {
+    if (!listKey || !onReorderPreview) return;
+    if (dragState.listKey !== listKey || !dragState.nodeId) {
+      lastPreviewKeyRef.current = '';
+      return;
+    }
+    if (!dragState.overId || !dragState.edge) {
+      if (lastPreviewKeyRef.current) {
+        lastPreviewKeyRef.current = '';
+        onReorderPreviewClear?.();
+      }
+      return;
+    }
+    const next = computeSidebarReorderOrder(
+      sortableIds,
+      dragState.nodeId,
+      dragState.overId,
+      dragState.edge
+    );
+    if (!next) {
+      if (lastPreviewKeyRef.current) {
+        lastPreviewKeyRef.current = '';
+        onReorderPreviewClear?.();
+      }
+      return;
+    }
+    const key = next.join('\0');
+    if (key === lastPreviewKeyRef.current) return;
+    lastPreviewKeyRef.current = key;
+    onReorderPreview(listKey, next);
+  }, [
+    dragState.edge,
+    dragState.listKey,
+    dragState.nodeId,
+    dragState.overId,
+    listKey,
+    onReorderPreview,
+    onReorderPreviewClear,
+    sortableIds,
+  ]);
 
   const insertPadding = sidebarContentPadding(depth);
   const isListDragActive = Boolean(
@@ -494,6 +541,8 @@ function SortableSiblingList({
               onToggleHidden={onToggleHidden}
               onDeleteNode={onDeleteNode}
               onReorder={onReorder}
+              onReorderPreview={onReorderPreview}
+              onReorderPreviewClear={onReorderPreviewClear}
               onInsertSection={onInsertSection}
               onInsertHoverChange={onInsertHoverChange}
               dragState={dragState}
@@ -522,6 +571,8 @@ function CheckoutDisabledTreeRow({
   onToggleHidden,
   onDeleteNode,
   onReorder,
+  onReorderPreview,
+  onReorderPreviewClear,
   dragState,
   setDragState,
 }: {
@@ -586,6 +637,8 @@ function CheckoutDisabledTreeRow({
           onToggleHidden={onToggleHidden}
           onDeleteNode={onDeleteNode}
           onReorder={onReorder}
+          onReorderPreview={onReorderPreview}
+          onReorderPreviewClear={onReorderPreviewClear}
           dragState={dragState}
           setDragState={setDragState}
         />
@@ -606,6 +659,8 @@ function SidebarTreeRow({
   onToggleHidden,
   onDeleteNode,
   onReorder,
+  onReorderPreview,
+  onReorderPreviewClear,
   onInsertSection,
   onInsertHoverChange,
   dragState,
@@ -631,6 +686,8 @@ function SidebarTreeRow({
         onToggleHidden={onToggleHidden}
         onDeleteNode={onDeleteNode}
         onReorder={onReorder}
+        onReorderPreview={onReorderPreview}
+        onReorderPreviewClear={onReorderPreviewClear}
         onInsertSection={onInsertSection}
         onInsertHoverChange={onInsertHoverChange}
         dragState={dragState}
@@ -708,6 +765,8 @@ function SidebarTreeRow({
             onToggleHidden={onToggleHidden}
             onDeleteNode={onDeleteNode}
             onReorder={onReorder}
+            onReorderPreview={onReorderPreview}
+            onReorderPreviewClear={onReorderPreviewClear}
             onInsertSection={onInsertSection}
             onInsertHoverChange={onInsertHoverChange}
             dragState={dragState}
@@ -733,6 +792,8 @@ function SidebarTreeRow({
         onToggleHidden={onToggleHidden}
         onDeleteNode={onDeleteNode}
         onReorder={onReorder}
+        onReorderPreview={onReorderPreview}
+        onReorderPreviewClear={onReorderPreviewClear}
         dragState={dragState}
         setDragState={setDragState}
       />
@@ -785,6 +846,8 @@ function SidebarTreeRow({
             onToggleHidden={onToggleHidden}
             onDeleteNode={onDeleteNode}
             onReorder={onReorder}
+            onReorderPreview={onReorderPreview}
+            onReorderPreviewClear={onReorderPreviewClear}
             dragState={dragState}
             setDragState={setDragState}
           />
@@ -892,6 +955,8 @@ function SidebarTreeRow({
           onToggleHidden={onToggleHidden}
           onDeleteNode={onDeleteNode}
           onReorder={onReorder}
+          onReorderPreview={onReorderPreview}
+          onReorderPreviewClear={onReorderPreviewClear}
           dragState={dragState}
           setDragState={setDragState}
         />
@@ -1146,6 +1211,9 @@ export type CreateThemeEditorSidebarProps = {
   onToggleHidden: (id: string) => void;
   onDeleteNode?: (nodeId: string) => void;
   onReorder: (listKey: string, orderedIds: string[]) => void;
+  /** Live non-committing canvas preview while a structure drag drop target is active. */
+  onReorderPreview?: (listKey: string, orderedIds: string[]) => void;
+  onReorderPreviewClear?: () => void;
   /** Fired when structure drag starts/ends — used to squeeze the live preview canvas. */
   onStructureDragChange?: (active: boolean) => void;
   onInsertSection?: (ctx: SectionInsertContext) => void;
@@ -1188,6 +1256,8 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   onToggleHidden,
   onDeleteNode,
   onReorder,
+  onReorderPreview,
+  onReorderPreviewClear,
   onStructureDragChange,
   onInsertSection,
   onInsertHoverChange,
@@ -1216,11 +1286,14 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
         const resolved = typeof next === 'function' ? next(prev) : next;
         const wasActive = Boolean(prev.nodeId);
         const isActive = Boolean(resolved.nodeId);
-        if (wasActive !== isActive) onStructureDragChange?.(isActive);
+        if (wasActive !== isActive) {
+          onStructureDragChange?.(isActive);
+          if (wasActive && !isActive) onReorderPreviewClear?.();
+        }
         return resolved;
       });
     },
-    [onStructureDragChange]
+    [onReorderPreviewClear, onStructureDragChange]
   );
 
   const title =
@@ -1331,6 +1404,8 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
                     onToggleHidden={onToggleHidden}
                     onDeleteNode={onDeleteNode}
                     onReorder={onReorder}
+                    onReorderPreview={onReorderPreview}
+                    onReorderPreviewClear={onReorderPreviewClear}
                     onInsertSection={onInsertSection}
                     onInsertHoverChange={onInsertHoverChange}
                     dragState={dragState}
@@ -1352,6 +1427,9 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
                     onToggleHidden={onToggleHidden}
                     onDeleteNode={onDeleteNode}
                     onReorder={onReorder}
+                    onReorderPreview={onReorderPreview}
+                    onReorderPreviewClear={onReorderPreviewClear}
+                    onInsertSection={onInsertSection}
                     onInsertHoverChange={onInsertHoverChange}
                     dragState={dragState}
                     setDragState={setDragStateAndNotify}

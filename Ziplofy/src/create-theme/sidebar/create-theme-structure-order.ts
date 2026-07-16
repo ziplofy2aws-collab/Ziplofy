@@ -3,6 +3,7 @@ import {
   collectionLinkBlockPaths,
 } from '../../utils/collection-links-spotlight-sidebar.util';
 import { featuredProductStructureOrder } from '../../utils/featured-product-sidebar.util';
+import { productPageStructureOrder } from '../../utils/product-page-sidebar.util';
 import { productHighlightStructureOrder } from '../../utils/product-highlight-sidebar.util';
 import { productHotspotsStructureOrder } from '../../utils/product-hotspots-sidebar.util';
 import {
@@ -396,6 +397,15 @@ export function readStructureOrderFromConfig(
       Object.assign(
         out,
         featuredProductStructureOrder(sectionPrefix, listKey, config, tplId, secId)
+      );
+      continue;
+    }
+
+    if ((sec as { type?: string }).type === 'product-main') {
+      const sectionPrefix = `template:${tplId}:${secId}`;
+      Object.assign(
+        out,
+        productPageStructureOrder(sectionPrefix, listKey, config, tplId, secId)
       );
       continue;
     }
@@ -873,6 +883,29 @@ export function readStructureOrderFromConfig(
   }
 
   return out;
+}
+
+/**
+ * Compute the sibling id order after moving `dragId` before/after `targetId`.
+ * Returns null when the move is invalid or would not change order.
+ */
+export function computeSidebarReorderOrder(
+  sortableIds: string[],
+  dragId: string,
+  targetId: string,
+  edge: 'before' | 'after'
+): string[] | null {
+  if (!dragId || !targetId || dragId === targetId) return null;
+  if (sortableIds.indexOf(dragId) < 0 || sortableIds.indexOf(targetId) < 0) return null;
+
+  const without = sortableIds.filter((id) => id !== dragId);
+  const toInWithout = without.indexOf(targetId);
+  if (toInWithout < 0) return null;
+  const insertAt = edge === 'before' ? toInWithout : toInWithout + 1;
+  const next = [...without];
+  next.splice(insertAt, 0, dragId);
+  if (next.every((id, i) => id === sortableIds[i])) return null;
+  return next;
 }
 
 /** Apply a reorder action to in-memory config (mutates clone). */

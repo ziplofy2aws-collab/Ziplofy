@@ -74,6 +74,13 @@ export type CreateThemeLivePreviewProps = {
 export type CreateThemeLivePreviewHandle = {
   /** Immediate single-field patch into the preview iframe (skips full-config debounce). */
   patchField: (fieldPath: string, value: string) => void;
+  /**
+   * Push a temporary theme config to the canvas (e.g. while dragging to reorder).
+   * Does not change the React `config` prop — clear with `clearProvisionalConfig`.
+   */
+  postProvisionalConfig: (config: Record<string, unknown>) => void;
+  /** Restore the committed `config` prop in the iframe after a provisional preview. */
+  clearProvisionalConfig: () => void;
 };
 
 const CreateThemeLivePreviewInner = forwardRef<
@@ -162,7 +169,50 @@ const CreateThemeLivePreviewInner = forwardRef<
     );
   }, []);
 
-  useImperativeHandle(ref, () => ({ patchField: postPatch }), [postPatch]);
+  const postConfigPayload = useCallback((nextConfig: Record<string, unknown>, immediate = true) => {
+    const frame = iframeRef.current?.contentWindow;
+    if (!frame || !initSentRef.current) return;
+    const json = JSON.stringify(nextConfig);
+    if (!immediate && json === lastPostedConfigRef.current) return;
+    lastPostedConfigRef.current = json;
+    frame.postMessage(
+      {
+        source: EDITOR_SOURCE,
+        type: 'codiic_PREVIEW_CONFIG',
+        payload: { config: nextConfig, immediate },
+      },
+      '*'
+    );
+  }, []);
+
+  const postProvisionalConfig = useCallback(
+    (nextConfig: Record<string, unknown>) => {
+      if (configPostTimerRef.current !== undefined) {
+        window.clearTimeout(configPostTimerRef.current);
+        configPostTimerRef.current = undefined;
+      }
+      postConfigPayload(nextConfig, true);
+    },
+    [postConfigPayload]
+  );
+
+  const clearProvisionalConfig = useCallback(() => {
+    if (configPostTimerRef.current !== undefined) {
+      window.clearTimeout(configPostTimerRef.current);
+      configPostTimerRef.current = undefined;
+    }
+    postConfigPayload(configRef.current, true);
+  }, [postConfigPayload]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      patchField: postPatch,
+      postProvisionalConfig,
+      clearProvisionalConfig,
+    }),
+    [postPatch, postProvisionalConfig, clearProvisionalConfig]
+  );
 
   /** INIT only when runtime identity changes — never on every config keystroke. */
   const postInit = useCallback(() => {
@@ -216,21 +266,12 @@ const CreateThemeLivePreviewInner = forwardRef<
     );
   }, []);
 
-  const postConfigNow = useCallback((immediate = false) => {
-    const frame = iframeRef.current?.contentWindow;
-    if (!frame || !initSentRef.current) return;
-    const json = JSON.stringify(configRef.current);
-    if (!immediate && json === lastPostedConfigRef.current) return;
-    lastPostedConfigRef.current = json;
-    frame.postMessage(
-      {
-        source: EDITOR_SOURCE,
-        type: 'codiic_PREVIEW_CONFIG',
-        payload: { config: configRef.current, immediate },
-      },
-      '*'
-    );
-  }, []);
+  const postConfigNow = useCallback(
+    (immediate = false) => {
+      postConfigPayload(configRef.current, immediate);
+    },
+    [postConfigPayload]
+  );
 
   const schedulePostConfig = useCallback(
     (immediate = false) => {

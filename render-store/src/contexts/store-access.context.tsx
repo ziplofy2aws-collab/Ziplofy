@@ -47,16 +47,20 @@ export const StorefrontAccessProvider: React.FC<{ children: React.ReactNode }> =
     setState((prev) => ({ ...prev, loading: true, error: null, unlocked: false }));
 
     try {
-      const { data } = await axiosi.get<{
-        success: boolean;
-        data?: {
-          passwordProtectionEnabled: boolean;
-          messageToYourVisitors?: string;
-          unlocked: boolean;
-        };
-      }>(`/storefront/${storeId}/access`);
+      // Access + theme assets in parallel (theme may already be in-flight from subdomain resolve).
+      const [accessResult] = await Promise.all([
+        axiosi.get<{
+          success: boolean;
+          data?: {
+            passwordProtectionEnabled: boolean;
+            messageToYourVisitors?: string;
+            unlocked: boolean;
+          };
+        }>(`/storefront/${storeId}/access`),
+        loadStoreAssets(),
+      ]);
 
-      const access = data.data;
+      const access = accessResult.data.data;
       const passwordProtectionEnabled = Boolean(access?.passwordProtectionEnabled);
       const unlocked = passwordProtectionEnabled ? Boolean(access?.unlocked) : true;
 
@@ -69,11 +73,10 @@ export const StorefrontAccessProvider: React.FC<{ children: React.ReactNode }> =
         verifying: false,
         error: null,
       });
-
-      // Load theme assets even when locked so the password page can use the theme template.
-      await loadStoreAssets();
     } catch {
       clearStorefrontUnlockToken();
+      // Still try to load theme so the password page can render if needed.
+      void loadStoreAssets();
       setState({
         checked: true,
         loading: false,
@@ -89,7 +92,7 @@ export const StorefrontAccessProvider: React.FC<{ children: React.ReactNode }> =
   useEffect(() => {
     if (!storeFrontMeta?.storeId || !isStoreFront) return;
     void refreshAccess();
-  }, [storeFrontMeta?.storeId, isStoreFront]);
+  }, [storeFrontMeta?.storeId, isStoreFront, refreshAccess]);
 
   const verifyPassword = useCallback(
     async (password: string) => {

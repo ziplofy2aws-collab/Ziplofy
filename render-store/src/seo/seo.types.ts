@@ -4,6 +4,7 @@ export type StorefrontSeoPayload = {
   canonicalUrl?: string;
   ogType?: 'website' | 'product' | 'collection';
   ogImage?: string;
+  robots?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 };
 

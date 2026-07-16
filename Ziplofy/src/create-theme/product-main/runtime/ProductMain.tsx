@@ -9,7 +9,7 @@ import {
 } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { formatThemePrice } from '../../runtime/shared/themePricesRuntime';
-import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { EditorBlock, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
@@ -23,8 +23,12 @@ function secBase(templateId: string, sectionId: string): string {
   return `templates.${templateId}.sections.${sectionId}`;
 }
 
-function blockNodeId(templateId: string, sectionId: string, ...parts: string[]): string {
-  return `template:${templateId}:${sectionId}:block:${parts.join(':block:')}`;
+function blockEnabled(
+  config: Record<string, unknown> | null,
+  path: string,
+  fallback = true
+): boolean {
+  return cfgBool(config, `${path}.enabled`, fallback);
 }
 
 function AddToCartBagIcon() {
@@ -56,6 +60,7 @@ function contrastOn(bg: string): string {
   return luminance > 0.55 ? '#111827' : '#ffffff';
 }
 
+/** Product information — media + details (header/title/price, divider, variants, buy buttons, description) + disclosures. */
 export function ProductMain({
   sectionId = 'product_main',
   templateId = 'product',
@@ -74,63 +79,56 @@ export function ProductMain({
 
   const base = secBase(templateId, sectionId);
   const scopeClass = sectionScopeClass('codiic-product-main', sectionId);
+  const editorNodeId = `template:${templateId}:${sectionId}`;
 
-  const showImage = cfgBool(config, `${base}.blocks.product_media.settings.showImage`, true);
-  const showVendor = cfgBool(
+  const showMedia = blockEnabled(config, `${base}.blocks.product_media`);
+  const showDetails = blockEnabled(config, `${base}.blocks.details`);
+  const showDisclosures = blockEnabled(config, `${base}.blocks.disclosures`);
+  const showHeader = blockEnabled(config, `${base}.blocks.details.blocks.header`);
+  const showTitle = blockEnabled(config, `${base}.blocks.details.blocks.header.blocks.title`);
+  const showPrice = blockEnabled(config, `${base}.blocks.details.blocks.header.blocks.price`);
+  const showDivider = blockEnabled(config, `${base}.blocks.details.blocks.divider`);
+  const showVariantPicker = blockEnabled(config, `${base}.blocks.details.blocks.variant_picker`);
+  const showBuyButtons = blockEnabled(config, `${base}.blocks.details.blocks.buy_buttons`);
+  const showQuantity = blockEnabled(
     config,
-    `${base}.blocks.product_header.blocks.vendor_line.settings.showVendor`,
+    `${base}.blocks.details.blocks.buy_buttons.blocks.quantity`
+  );
+  const showAddToCart = blockEnabled(
+    config,
+    `${base}.blocks.details.blocks.buy_buttons.blocks.add_to_cart`
+  );
+  const showAccelerated = blockEnabled(
+    config,
+    `${base}.blocks.details.blocks.buy_buttons.blocks.accelerated_checkout`
+  );
+  const showDescription = blockEnabled(config, `${base}.blocks.details.blocks.description`);
+  const descriptionVisible = cfgBool(
+    config,
+    `${base}.blocks.details.blocks.description.settings.showDescription`,
     true
   );
-  const vendorPrefix = cfgString(
-    config,
-    `${base}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`,
-    'Sold by'
-  );
-  const loadingLabel = cfgString(
-    config,
-    `${base}.blocks.product_header.blocks.product_title.settings.loadingLabel`,
-    'Loading…'
-  );
-  const showDescription = cfgBool(
-    config,
-    `${base}.blocks.product_content.blocks.description.settings.showDescription`,
-    true
-  );
-  const priceFallback = cfgString(
-    config,
-    `${base}.blocks.product_content.blocks.price_line.settings.priceFallback`,
-    '—'
-  );
+
   const addLabel =
-    cfgString(config, `${base}.blocks.buy_box.blocks.add_to_cart_button.settings.label`, '').trim() ||
-    'Add to cart';
-  const addingLabel =
     cfgString(
       config,
-      `${base}.blocks.buy_box.blocks.add_to_cart_button.settings.addingLabel`,
+      `${base}.blocks.details.blocks.buy_buttons.blocks.add_to_cart.settings.buttonLabel`,
       ''
-    ).trim() || 'Adding…';
-  const qtyLabel = cfgString(
+    ).trim() ||
+    cfgString(
+      config,
+      `${base}.blocks.details.blocks.buy_buttons.blocks.add_to_cart.settings.label`,
+      ''
+    ).trim() ||
+    'Add to cart';
+  const disclosuresTitle = cfgString(
     config,
-    `${base}.blocks.buy_box.blocks.quantity_field.settings.label`,
-    'Quantity'
+    `${base}.blocks.disclosures.settings.title`,
+    'Disclosures'
   );
-  const buyNowLabel =
-    cfgString(config, `${base}.blocks.buy_box.blocks.buy_now_button.settings.label`, '').trim() ||
-    'Buy now';
-  const buyNowHref = cfgString(config, `${base}.blocks.buy_box.blocks.buy_now_button.settings.href`, '');
-  const shippingBadge = cfgString(
-    config,
-    `${base}.blocks.trust_badges.blocks.shipping_badge.settings.text`,
-    ''
-  );
-  const returnsBadge = cfgString(
-    config,
-    `${base}.blocks.trust_badges.blocks.returns_badge.settings.text`,
-    ''
-  );
+  const disclosuresBody = cfgString(config, `${base}.blocks.disclosures.settings.body`, '');
   const paddingTop = cfgNumber(config, `${base}.settings.paddingTop`, 48);
-  const paddingBottom = cfgNumber(config, `${base}.settings.paddingBottom`, 48);
+  const paddingBottom = cfgNumber(config, `${base}.settings.paddingBottom`, 56);
 
   const storeId = storeFrontMeta?.storeId;
 
@@ -174,10 +172,51 @@ export function ProductMain({
   };
 
   const image = productDetail?.imageUrls?.[0];
-  const sectionNodeId = `template:${templateId}:${sectionId}`;
+  const title = productDetail?.title?.trim() || 'Product';
+  const price = typeof selectedVariant?.price === 'number'
+    ? selectedVariant.price
+    : typeof productDetail?.price === 'number'
+      ? productDetail.price
+      : 0;
+  const compareAt =
+    typeof selectedVariant?.compareAtPrice === 'number'
+      ? selectedVariant.compareAtPrice
+      : typeof productDetail?.compareAtPrice === 'number'
+        ? productDetail.compareAtPrice
+        : null;
+  const priceLabel = formatThemePrice(config, price, 'productCards');
+  const compareLabel =
+    compareAt != null && compareAt > price
+      ? formatThemePrice(config, compareAt, 'productCards')
+      : null;
+  const descriptionHtml = productDetail?.description?.trim() || '';
   const buttonBg = primary || '#111827';
   const buttonFg = contrastOn(buttonBg);
   const canAdd = Boolean(selectedVariant) && !adding;
+
+  const optionGroups = useMemo(() => {
+    if (productDetail?.variants?.length) {
+      return productDetail.variants
+        .filter((v) => Boolean(v.optionName) && Array.isArray(v.values) && v.values.length > 0)
+        .map((v) => ({ name: v.optionName, values: v.values }));
+    }
+    const names = new Set<string>();
+    for (const variant of variants) {
+      for (const key of Object.keys(variant.optionValues ?? {})) {
+        if (key) names.add(key);
+      }
+    }
+    return Array.from(names).map((name) => ({
+      name,
+      values: Array.from(
+        new Set(
+          variants
+            .map((v) => v.optionValues?.[name])
+            .filter((v): v is string => Boolean(v))
+        )
+      ),
+    }));
+  }, [productDetail?.variants, variants]);
 
   const shellStyle = useMemo<CSSProperties>(
     () => ({
@@ -226,31 +265,14 @@ export function ProductMain({
     opacity: canAdd ? 1 : 0.55,
     fontFamily: fontBody,
     boxSizing: 'border-box',
-  };
-
-  const secondaryButtonStyle: CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 48,
-    padding: '14px 28px',
-    borderRadius: 10,
-    border: `1px solid ${border || 'rgba(17,24,39,0.16)'}`,
-    background: '#ffffff',
-    color: text || '#111827',
-    fontWeight: 600,
-    fontSize: 15,
-    lineHeight: 1.2,
-    textDecoration: 'none',
-    fontFamily: fontBody,
-    boxSizing: 'border-box',
+    width: '100%',
   };
 
   return (
     <EditorSection
       sectionId={sectionId}
-      label="Product details"
-      editorNodeId={sectionNodeId}
+      label="Product information"
+      editorNodeId={editorNodeId}
       className={scopeClass}
       style={shellStyle}
     >
@@ -265,273 +287,293 @@ export function ProductMain({
           gap: 40,
           width: '100%',
           boxSizing: 'border-box',
+          alignItems: 'start',
         }}
       >
-        <EditorBlock nodeId={blockNodeId(templateId, sectionId, 'product_media')} label="Media">
-          {showImage ? (
+        {showMedia ? (
+          <EditorBlock nodeId={`${editorNodeId}:block:product_media`} label="Product media">
             <div
               style={{
-                aspectRatio: '3 / 4',
-                borderRadius: 12,
-                border: `1px solid ${border || 'rgba(17,24,39,0.12)'}`,
+                borderRadius: 0,
                 overflow: 'hidden',
-                background: image
-                  ? `center / cover no-repeat url(${image})`
-                  : 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-                width: '100%',
+                background: '#f4f4f5',
+                border: border ? `1px solid ${border}` : '1px solid rgba(17,24,39,0.06)',
+                aspectRatio: '1 / 1',
               }}
-            />
-          ) : null}
-        </EditorBlock>
-
-        <div style={{ minWidth: 0 }}>
-          <EditorBlock nodeId={blockNodeId(templateId, sectionId, 'product_header')} label="Header">
-            {showVendor && productDetail?.vendor?.name ? (
-              <EditorBlock
-                nodeId={blockNodeId(templateId, sectionId, 'product_header', 'vendor_line')}
-                label="Vendor"
-              >
-                <p
-                  style={{
-                    fontSize: 12,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    opacity: 0.6,
-                    margin: 0,
-                  }}
-                >
-                  <EditorField
-                    fieldPath={`${base}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`}
-                    label="Vendor prefix"
-                    as="span"
-                  >
-                    {vendorPrefix}
-                  </EditorField>{' '}
-                  {productDetail.vendor.name}
-                </p>
-              </EditorBlock>
-            ) : null}
-            <EditorBlock
-              nodeId={blockNodeId(templateId, sectionId, 'product_header', 'product_title')}
-              label="Product title"
             >
-              <h1
-                style={{
-                  fontFamily: fontHeading,
-                  fontSize: 'clamp(1.75rem, 2.4vw, 2rem)',
-                  margin: '8px 0 16px',
-                  fontWeight: 600,
-                  lineHeight: 1.2,
-                  wordBreak: 'break-word',
-                }}
-              >
-                {productDetail?.title ?? (
-                  <EditorField
-                    fieldPath={`${base}.blocks.product_header.blocks.product_title.settings.loadingLabel`}
-                    label="Loading label"
-                  >
-                    {loadingLabel}
-                  </EditorField>
-                )}
-              </h1>
-            </EditorBlock>
-          </EditorBlock>
-
-          <EditorBlock nodeId={blockNodeId(templateId, sectionId, 'product_content')} label="Content">
-            {showDescription && productDetail?.description ? (
-              <EditorBlock
-                nodeId={blockNodeId(templateId, sectionId, 'product_content', 'description')}
-                label="Description"
-              >
-                <ThemeEditorRichTextContent
-                  html={productDetail.description}
-                  style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}
+              {image ? (
+                <img
+                  src={image}
+                  alt=""
+                  style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
                 />
-              </EditorBlock>
-            ) : null}
-            <EditorBlock
-              nodeId={blockNodeId(templateId, sectionId, 'product_content', 'price_line')}
-              label="Price"
-            >
-              <p style={{ fontSize: 24, fontWeight: 600, margin: '0 0 24px' }}>
-                {productDetail
-                  ? formatThemePrice(config, productDetail.price, 'productPages')
-                  : priceFallback}
-              </p>
-            </EditorBlock>
-          </EditorBlock>
-
-          <EditorBlock nodeId={blockNodeId(templateId, sectionId, 'buy_box')} label="Buy box">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <EditorBlock
-                nodeId={blockNodeId(templateId, sectionId, 'buy_box', 'quantity_field')}
-                label="Quantity"
-              >
-                <label style={{ display: 'block', fontSize: 14 }}>
-                  <EditorField
-                    fieldPath={`${base}.blocks.buy_box.blocks.quantity_field.settings.label`}
-                    label="Quantity label"
-                    as="span"
-                  >
-                    {qtyLabel}
-                  </EditorField>
-                  <span
-                    style={{
-                      marginTop: 8,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      border: `1px solid ${border || 'rgba(17,24,39,0.16)'}`,
-                      borderRadius: 10,
-                      overflow: 'hidden',
-                      height: 44,
-                    }}
-                  >
-                    <button
-                      type="button"
-                      aria-label="Decrease quantity"
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      style={{
-                        width: 40,
-                        height: '100%',
-                        border: 'none',
-                        background: 'transparent',
-                        color: text,
-                        fontSize: 18,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      −
-                    </button>
-                    <span
-                      style={{
-                        minWidth: 36,
-                        textAlign: 'center',
-                        fontWeight: 600,
-                        color: text,
-                      }}
-                    >
-                      {quantity}
-                    </span>
-                    <button
-                      type="button"
-                      aria-label="Increase quantity"
-                      onClick={() => setQuantity((q) => q + 1)}
-                      style={{
-                        width: 40,
-                        height: '100%',
-                        border: 'none',
-                        background: 'transparent',
-                        color: text,
-                        fontSize: 18,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      +
-                    </button>
-                  </span>
-                </label>
-              </EditorBlock>
-
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 12,
-                  alignItems: 'stretch',
-                }}
-              >
-                <EditorBlock
-                  nodeId={blockNodeId(templateId, sectionId, 'buy_box', 'add_to_cart_button')}
-                  label="Add to cart button"
-                  style={{ flex: '1 1 180px' }}
-                >
-                  <button
-                    type="button"
-                    disabled={!canAdd}
-                    onClick={() => void handleAdd()}
-                    style={{ ...primaryButtonStyle, width: '100%' }}
-                  >
-                    {!adding ? <AddToCartBagIcon /> : null}
-                    <EditorField
-                      fieldPath={`${base}.blocks.buy_box.blocks.add_to_cart_button.settings.label`}
-                      label="Button label"
-                      as="span"
-                      style={{ color: 'inherit', fontWeight: 600 }}
-                    >
-                      {adding ? addingLabel : addLabel}
-                    </EditorField>
-                  </button>
-                </EditorBlock>
-
-                <EditorBlock
-                  nodeId={blockNodeId(templateId, sectionId, 'buy_box', 'buy_now_button')}
-                  label="Buy now button"
-                  style={{ flex: '1 1 140px' }}
-                >
-                  <a
-                    href={buyNowHref || '/checkout'}
-                    style={{ ...secondaryButtonStyle, width: '100%' }}
-                  >
-                    <EditorField
-                      fieldPath={`${base}.blocks.buy_box.blocks.buy_now_button.settings.label`}
-                      label="Buy now label"
-                      as="span"
-                      style={{ color: 'inherit', fontWeight: 600 }}
-                    >
-                      {buyNowLabel}
-                    </EditorField>
-                  </a>
-                </EditorBlock>
-              </div>
+              ) : (
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(160deg, #f4f4f5 0%, #e4e4e7 100%)',
+                  }}
+                />
+              )}
             </div>
           </EditorBlock>
+        ) : null}
 
-          {(shippingBadge || returnsBadge) && (
-            <EditorBlock nodeId={blockNodeId(templateId, sectionId, 'trust_badges')} label="Trust badges">
-              <div
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 12,
-                  marginTop: 24,
-                  fontSize: 13,
-                  color: muted || text,
-                  opacity: 0.85,
-                }}
-              >
-                {shippingBadge ? (
-                  <EditorBlock
-                    nodeId={blockNodeId(templateId, sectionId, 'trust_badges', 'shipping_badge')}
-                    label="Shipping badge"
+        {showDetails ? (
+          <EditorBlock nodeId={`${editorNodeId}:block:details`} label="Details">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, minWidth: 0 }}>
+              {showHeader ? (
+                <EditorBlock
+                  nodeId={`${editorNodeId}:block:details:nested:header`}
+                  label="Header"
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {showTitle ? (
+                      <EditorBlock
+                        nodeId={`${editorNodeId}:block:details:nested:header:nested:title`}
+                        label="Product title"
+                      >
+                        <h1
+                          style={{
+                            margin: 0,
+                            fontFamily: fontHeading,
+                            fontSize: 32,
+                            fontWeight: 700,
+                            lineHeight: 1.2,
+                            color: text,
+                          }}
+                        >
+                          {title}
+                        </h1>
+                      </EditorBlock>
+                    ) : null}
+                    {showPrice ? (
+                      <EditorBlock
+                        nodeId={`${editorNodeId}:block:details:nested:header:nested:price`}
+                        label="Price"
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            gap: 10,
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <span style={{ fontSize: 18, fontWeight: 700, color: text }}>
+                            {priceLabel}
+                          </span>
+                          {compareLabel ? (
+                            <span
+                              style={{
+                                fontSize: 15,
+                                color: muted || text,
+                                textDecoration: 'line-through',
+                                opacity: 0.6,
+                              }}
+                            >
+                              {compareLabel}
+                            </span>
+                          ) : null}
+                        </div>
+                      </EditorBlock>
+                    ) : null}
+                  </div>
+                </EditorBlock>
+              ) : null}
+
+              {showDivider ? (
+                <EditorBlock
+                  nodeId={`${editorNodeId}:block:details:nested:divider`}
+                  label="Divider"
+                >
+                  <hr
+                    style={{
+                      margin: 0,
+                      border: 0,
+                      borderTop: `1px solid ${border || 'rgba(17,24,39,0.12)'}`,
+                    }}
+                  />
+                </EditorBlock>
+              ) : null}
+
+              {showVariantPicker && optionGroups.length > 0 ? (
+                <EditorBlock
+                  nodeId={`${editorNodeId}:block:details:nested:variant_picker`}
+                  label="Variant picker"
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {optionGroups.map(({ name, values }) => (
+                      <div key={name}>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 600,
+                            marginBottom: 8,
+                            color: text,
+                          }}
+                        >
+                          {name}
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                          {values.map((value) => (
+                            <span
+                              key={value}
+                              style={{
+                                border: `1px solid ${border || '#d1d5db'}`,
+                                borderRadius: 6,
+                                padding: '8px 12px',
+                                fontSize: 13,
+                                background: '#fff',
+                              }}
+                            >
+                              {value}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </EditorBlock>
+              ) : null}
+
+              {showBuyButtons ? (
+                <EditorBlock
+                  nodeId={`${editorNodeId}:block:details:nested:buy_buttons`}
+                  label="Buy buttons"
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {showQuantity ? (
+                      <EditorBlock
+                        nodeId={`${editorNodeId}:block:details:nested:buy_buttons:nested:quantity`}
+                        label="Quantity"
+                      >
+                        <label
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            fontSize: 13,
+                          }}
+                        >
+                          <span style={{ color: muted || text }}>Quantity</span>
+                          <input
+                            type="number"
+                            min={1}
+                            value={quantity}
+                            onChange={(e) =>
+                              setQuantity(Math.max(1, Number(e.target.value) || 1))
+                            }
+                            style={{
+                              width: 72,
+                              border: `1px solid ${border || '#d1d5db'}`,
+                              borderRadius: 6,
+                              padding: '8px 10px',
+                              fontSize: 14,
+                            }}
+                          />
+                        </label>
+                      </EditorBlock>
+                    ) : null}
+
+                    {showAddToCart ? (
+                      <EditorBlock
+                        nodeId={`${editorNodeId}:block:details:nested:buy_buttons:nested:add_to_cart`}
+                        label="Add to cart"
+                      >
+                        <button
+                          type="button"
+                          disabled={!canAdd}
+                          onClick={() => void handleAdd()}
+                          style={primaryButtonStyle}
+                        >
+                          <AddToCartBagIcon />
+                          {adding ? 'Adding…' : addLabel}
+                        </button>
+                      </EditorBlock>
+                    ) : null}
+
+                    {showAccelerated ? (
+                      <EditorBlock
+                        nodeId={`${editorNodeId}:block:details:nested:buy_buttons:nested:accelerated_checkout`}
+                        label="Accelerated checkout"
+                      >
+                        <button
+                          type="button"
+                          disabled={!canAdd}
+                          onClick={() => void handleAdd()}
+                          style={{
+                            ...primaryButtonStyle,
+                            background: '#111827',
+                            color: '#fff',
+                          }}
+                        >
+                          Buy it now
+                        </button>
+                      </EditorBlock>
+                    ) : null}
+                  </div>
+                </EditorBlock>
+              ) : null}
+
+              {showDescription && descriptionVisible ? (
+                <EditorBlock
+                  nodeId={`${editorNodeId}:block:details:nested:description`}
+                  label="Product description"
+                >
+                  <div
+                    style={{
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      color: muted || text,
+                    }}
                   >
-                    <EditorField
-                      fieldPath={`${base}.blocks.trust_badges.blocks.shipping_badge.settings.text`}
-                      label="Shipping badge text"
-                      as="span"
-                    >
-                      {shippingBadge}
-                    </EditorField>
-                  </EditorBlock>
-                ) : null}
-                {returnsBadge ? (
-                  <EditorBlock
-                    nodeId={blockNodeId(templateId, sectionId, 'trust_badges', 'returns_badge')}
-                    label="Returns badge"
-                  >
-                    <EditorField
-                      fieldPath={`${base}.blocks.trust_badges.blocks.returns_badge.settings.text`}
-                      label="Returns badge text"
-                      as="span"
-                    >
-                      {returnsBadge}
-                    </EditorField>
-                  </EditorBlock>
-                ) : null}
-              </div>
-            </EditorBlock>
-          )}
-        </div>
+                    {descriptionHtml ? (
+                      <ThemeEditorRichTextContent html={descriptionHtml} />
+                    ) : (
+                      <p style={{ margin: 0 }}>No description yet.</p>
+                    )}
+                  </div>
+                </EditorBlock>
+              ) : null}
+            </div>
+          </EditorBlock>
+        ) : null}
       </div>
+
+      {showDisclosures ? (
+        <EditorBlock
+          nodeId={`${editorNodeId}:block:disclosures`}
+          label="Disclosures"
+        >
+          <div
+            style={{
+              maxWidth,
+              margin: '40px auto 0',
+              paddingTop: 24,
+              borderTop: `1px solid ${border || 'rgba(17,24,39,0.1)'}`,
+            }}
+          >
+            <h2
+              style={{
+                margin: '0 0 8px',
+                fontSize: 16,
+                fontWeight: 700,
+                fontFamily: fontHeading,
+                color: text,
+              }}
+            >
+              {disclosuresTitle}
+            </h2>
+            {disclosuresBody ? (
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: muted || text }}>
+                {disclosuresBody}
+              </p>
+            ) : null}
+          </div>
+        </EditorBlock>
+      ) : null}
     </EditorSection>
   );
 }

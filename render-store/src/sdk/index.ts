@@ -9,6 +9,7 @@ export {
 export { useStorefrontProducts } from '@/contexts/product.context';
 export { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
 export { useStorefrontCollections } from '@/contexts/storefront-collections.context';
+export { useStorefrontSearch } from '@/contexts/storefront-search.context';
 export { useStorefrontPolicies } from '@/contexts/storefront-policies.context';
 export { useStorefrontCheckoutConfiguration } from '@/contexts/storefront-checkout-configuration.context';
 export { StorefrontPolicyLinks } from '@/components/policies/StorefrontPolicyLinks';
@@ -35,6 +36,11 @@ export type {
   StorefrontProductItem,
   StorefrontProductDetailItem,
 } from '@/contexts/product.context';
+
+export type {
+  StorefrontSearchPagination,
+  SearchStorefrontProductsArgs,
+} from '@/contexts/storefront-search.context';
 
 export type {
   StorefrontCollection,

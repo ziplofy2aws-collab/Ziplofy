@@ -57,6 +57,12 @@ export function applyStorefrontSeoToDocument(seo: StorefrontSeoPayload): void {
     removeMeta('name', 'description');
   }
 
+  if (seo.robots) {
+    upsertMeta('name', 'robots', seo.robots);
+  } else {
+    removeMeta('name', 'robots');
+  }
+
   if (seo.canonicalUrl) {
     upsertCanonical(seo.canonicalUrl);
   }

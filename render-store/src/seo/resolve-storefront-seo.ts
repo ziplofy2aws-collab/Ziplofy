@@ -54,6 +54,13 @@ function routeSuffixTitle(pathname: string, storeName: string): StorefrontSeoPay
   if (pathname === '/search') {
     return { title: joinTitle(['Search', storeName]), ogType: 'website' };
   }
+  if (pathname === '/404') {
+    return {
+      title: joinTitle(['Page not found', storeName]),
+      ogType: 'website',
+      robots: 'noindex, follow',
+    };
+  }
   return null;
 }
 

@@ -39,18 +39,18 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Theme scripts (served from public/assets) -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/add-to-cart.js"></script>
-    <script src="/assets/js/products-carousel.js"></script>
-    <script src="/assets/js/cart.js"></script>
-    <script src="/assets/js/checkout.js"></script>
-    <script src="/assets/js/wishlist.js"></script>
-    <script src="/assets/js/account.js"></script>
-    <script src="/assets/js/blog.js"></script>
-    <script src="/assets/js/blog-detail.js"></script>
-    <script src="/assets/js/contact.js"></script>
+    <!-- Theme scripts (served from public/assets) — defer so they don't compete with React boot -->
+    <script defer src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script defer src="/assets/js/main.js"></script>
+    <script defer src="/assets/js/add-to-cart.js"></script>
+    <script defer src="/assets/js/products-carousel.js"></script>
+    <script defer src="/assets/js/cart.js"></script>
+    <script defer src="/assets/js/checkout.js"></script>
+    <script defer src="/assets/js/wishlist.js"></script>
+    <script defer src="/assets/js/account.js"></script>
+    <script defer src="/assets/js/blog.js"></script>
+    <script defer src="/assets/js/blog-detail.js"></script>
+    <script defer src="/assets/js/contact.js"></script>
   </body>
 </html>
