@@ -4,6 +4,7 @@ import {
   deleteCollection,
   getCollectionById,
   getCollectionsByStoreId,
+  listCollectionThemeTemplates,
   searchCollections,
   searchProductsInCollection,
   updateCollection,
@@ -15,6 +16,7 @@ export const collectionsRouter = Router();
 collectionsRouter.use(protect);
 
 // GET collections by store
+collectionsRouter.get("/store/:storeId/theme-templates", listCollectionThemeTemplates);
 collectionsRouter.get("/store/:storeId", getCollectionsByStoreId);
 
 // SEARCH collections with product count

@@ -10,6 +10,7 @@ import {
   getProductsByStoreId,
   getProductsByStoreIdPublic,
   getStorePreviewProduct,
+  listProductThemeTemplates,
   searchProductsBasic,
   searchProductsWithAvailability,
   searchProductsWithVariantAndDestination,
@@ -44,6 +45,7 @@ productRouter.delete("/:id", softDeleteProductById);
 
 // Get products by store id
 productRouter.get("/store/:storeId/preview", getStorePreviewProduct);
+productRouter.get("/store/:storeId/theme-templates", listProductThemeTemplates);
 productRouter.get("/store/:storeId", getProductsByStoreId);
 
 // add variants to product

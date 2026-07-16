@@ -13,6 +13,11 @@ import { absolutizeImageUrlsArray, publicOriginFromRequest } from "../utils/publ
 import { assertStoreAccess } from "../utils/store-access.util";
 import { assertStoreCloudImageUrls } from "../utils/cloud-storage-image.util";
 import { sanitizeRichTextHtml } from "../utils/sanitize-html.util";
+import {
+  isValidProductThemeTemplate,
+  listProductThemeTemplatesForStore,
+  normalizeProductThemeTemplate,
+} from "../utils/product-theme-template.util";
 
 const PUBLIC_PRODUCT_DETAIL_SELECT = {
   title: 1,
@@ -29,6 +34,7 @@ const PUBLIC_PRODUCT_DETAIL_SELECT = {
   vendor: 1,
   storeId: 1,
   variants: 1,
+  themeTemplate: 1,
   createdAt: 1,
   updatedAt: 1,
 } as const;
@@ -131,6 +137,9 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
       vendor: body.vendor,
       tagIds: body.tagIds ?? [],
       imageUrls: body.imageUrls ?? [],
+      themeTemplate: isValidProductThemeTemplate(body.themeTemplate)
+        ? normalizeProductThemeTemplate(body.themeTemplate)
+        : "default",
     });
   } catch (error: any) {
     const validationMessage =
@@ -345,12 +354,20 @@ export const updateProductById = asyncErrorHandler(async (req: Request, res: Res
     "tagIds",
     "imageUrls",
     "isDeleted",
+    "themeTemplate",
   ] as const;
 
   for (const field of allowedFields) {
     if (Object.prototype.hasOwnProperty.call(body, field)) {
       updatePayload[field] = body[field];
     }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "themeTemplate")) {
+    if (!isValidProductThemeTemplate(updatePayload.themeTemplate)) {
+      throw new CustomError("Invalid theme template value", 400);
+    }
+    updatePayload.themeTemplate = normalizeProductThemeTemplate(updatePayload.themeTemplate);
   }
 
   // Backward compatibility with existing client payload naming
@@ -427,6 +444,25 @@ export const getProductsByStoreId = asyncErrorHandler(async (req: Request, res: 
     data: products,
     count: products.length,
   });
+});
+
+/** GET /products/store/:storeId/theme-templates — options for product theme template select. */
+export const listProductThemeTemplates = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+  if (!storeId || !mongoose.isValidObjectId(storeId)) {
+    throw new CustomError("Valid storeId is required", 400);
+  }
+  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
+  try {
+    const data = await listProductThemeTemplatesForStore(storeId);
+    res.status(200).json({ success: true, data });
+  } catch (err) {
+    console.error("[listProductThemeTemplates]", err);
+    res.status(200).json({
+      success: true,
+      data: [{ value: "default", label: "Default product" }],
+    });
+  }
 });
 
 /** Latest active product for checkout editor order-summary preview. */

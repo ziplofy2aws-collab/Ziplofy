@@ -20,6 +20,8 @@ export interface BlogPost {
   featuredImageUrl: string;
   featuredImageKey: string;
   featuredImageUploadId: string;
+  /** Theme creator template: `default` or `blog-posts.{slug}`. */
+  themeTemplate?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -39,6 +41,7 @@ export interface CreateBlogPostPayload {
   featuredImageUrl?: string;
   featuredImageKey?: string;
   featuredImageUploadId?: string;
+  themeTemplate?: string;
 }
 
 export interface UpdateBlogPostPayload {
@@ -56,6 +59,7 @@ export interface UpdateBlogPostPayload {
   featuredImageUrl?: string;
   featuredImageKey?: string;
   featuredImageUploadId?: string;
+  themeTemplate?: string;
 }
 
 interface BlogPostsListResponse {

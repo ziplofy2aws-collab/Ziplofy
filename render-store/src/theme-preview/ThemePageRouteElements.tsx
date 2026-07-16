@@ -14,6 +14,10 @@ import { listThemePageRouteSpecs } from '@codiic/create-theme/utils/theme-page-r
 import { StorefrontBlogByUrlHandleLoader } from '../components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from '../components/StorefrontBlogPostByUrlHandleLoader.tsx';
 import { StorefrontCollectionByUrlHandleLoader } from '../components/StorefrontCollectionByUrlHandleLoader.tsx';
+import { ProductTemplateRoute } from '../components/ProductTemplateRoute.tsx';
+import { CollectionTemplateRoute } from '../components/CollectionTemplateRoute.tsx';
+import { BlogTemplateRoute } from '../components/BlogTemplateRoute.tsx';
+import { BlogPostTemplateRoute } from '../components/BlogPostTemplateRoute.tsx';
 import { StorefrontProductPreviewLoader } from '../components/StorefrontProductPreviewLoader.tsx';
 
 const ROUTE_SPECS = listThemePageRouteSpecs();
@@ -130,6 +134,96 @@ export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactEle
 
   return specs.map((spec) => {
     const templateId = resolveRouteTemplateId(spec.templateId, options?.activeTemplateId);
+    const isProductRoute = spec.templateId === 'product';
+    const isCollectionRoute = spec.templateId === 'collection';
+    const isBlogRoute = spec.templateId === 'blogs';
+    const isBlogPostRoute = spec.templateId === 'blog-posts';
+
+    if (isProductRoute) {
+      return (
+        <Route
+          key={spec.path}
+          path={spec.path}
+          element={
+            <ProductTemplateRoute
+              activeTemplateId={
+                options?.activeTemplateId &&
+                (options.activeTemplateId === 'product' ||
+                  options.activeTemplateId.startsWith('product.'))
+                  ? options.activeTemplateId
+                  : undefined
+              }
+              fallbackSectionIds={spec.fallbackSectionIds}
+            />
+          }
+        />
+      );
+    }
+
+    if (isCollectionRoute) {
+      return (
+        <Route
+          key={spec.path}
+          path={spec.path}
+          element={
+            <CollectionTemplateRoute
+              activeTemplateId={
+                options?.activeTemplateId &&
+                (options.activeTemplateId === 'collection' ||
+                  options.activeTemplateId.startsWith('collection.'))
+                  ? options.activeTemplateId
+                  : undefined
+              }
+              fallbackSectionIds={spec.fallbackSectionIds}
+              urlHandleOverride={spec.loadCollectionUrlHandle}
+            />
+          }
+        />
+      );
+    }
+
+    if (isBlogRoute) {
+      return (
+        <Route
+          key={spec.path}
+          path={spec.path}
+          element={
+            <BlogTemplateRoute
+              activeTemplateId={
+                options?.activeTemplateId &&
+                (options.activeTemplateId === 'blogs' ||
+                  options.activeTemplateId.startsWith('blogs.'))
+                  ? options.activeTemplateId
+                  : undefined
+              }
+              fallbackSectionIds={spec.fallbackSectionIds}
+            />
+          }
+        />
+      );
+    }
+
+    if (isBlogPostRoute) {
+      return (
+        <Route
+          key={spec.path}
+          path={spec.path}
+          element={
+            <BlogPostTemplateRoute
+              activeTemplateId={
+                options?.activeTemplateId &&
+                (options.activeTemplateId === 'blog-posts' ||
+                  options.activeTemplateId.startsWith('blog-posts.'))
+                  ? options.activeTemplateId
+                  : undefined
+              }
+              fallbackSectionIds={spec.fallbackSectionIds}
+            />
+          }
+        />
+      );
+    }
+
     const page = (
       <CustomThemeTemplatePage
         templateId={templateId}

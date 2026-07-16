@@ -4,6 +4,7 @@ import {
   deleteBlogPost,
   getBlogPostById,
   getBlogPostsByStoreId,
+  listBlogPostThemeTemplates,
   updateBlogPost,
 } from "../controllers/blog-post.controller";
 import { protect } from "../middlewares/auth.middleware";
@@ -12,6 +13,7 @@ export const blogPostRouter = Router();
 
 blogPostRouter.use(protect);
 
+blogPostRouter.get("/store/:storeId/theme-templates", listBlogPostThemeTemplates);
 blogPostRouter.get("/store/:storeId", getBlogPostsByStoreId);
 blogPostRouter.get("/:id", getBlogPostById);
 blogPostRouter.post("/", createBlogPost);

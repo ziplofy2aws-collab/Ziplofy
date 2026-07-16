@@ -8,6 +8,11 @@ import { Product } from "../models/product/product.model";
 import { assertOptionalStoreCloudImageUrl } from "../utils/cloud-storage-image.util";
 import { sanitizeRichTextHtml } from "../utils/sanitize-html.util";
 import { assertStoreAccess } from "../utils/store-access.util";
+import {
+  isValidCollectionThemeTemplate,
+  listCollectionThemeTemplatesForStore,
+  normalizeCollectionThemeTemplate,
+} from "../utils/collection-theme-template.util";
 
 const COLLECTION_UPDATE_FIELDS = [
   "title",
@@ -19,6 +24,7 @@ const COLLECTION_UPDATE_FIELDS = [
   "urlHandle",
   "productSort",
   "status",
+  "themeTemplate",
 ] as const;
 
 const ALLOWED_SORTS = ["manual", "title-asc", "title-desc", "price-high", "price-low", "newest", "oldest"] as const;
@@ -73,6 +79,7 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
     productIds,
     productSort,
     status,
+    themeTemplate,
   } = req.body as Partial<ICollection> & Record<string, any>;
 
   if (!storeId || !title || !description || !pageTitle || !metaDescription || !urlHandle) {
@@ -82,6 +89,10 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
   await assertStoreAccess(storeId.toString(), req.user as SecureUserInfo | undefined);
   validateCollectionStatus(status);
   validateProductSort(productSort);
+
+  if (typeof themeTemplate !== "undefined" && !isValidCollectionThemeTemplate(themeTemplate)) {
+    throw new CustomError("Invalid theme template value", 400);
+  }
 
   const sanitizedDescription = sanitizeRichTextHtml(String(description));
   await assertOptionalStoreCloudImageUrl(storeId.toString(), imageUrl);
@@ -123,6 +134,9 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
             pageTitle,
             metaDescription,
             urlHandle,
+            themeTemplate: isValidCollectionThemeTemplate(themeTemplate)
+              ? normalizeCollectionThemeTemplate(themeTemplate)
+              : "default",
             ...(typeof productSort !== "undefined" ? { productSort } : {}),
             ...(typeof status !== "undefined" ? { status } : {}),
           },
@@ -182,6 +196,25 @@ export const getCollectionsByStoreId = asyncErrorHandler(async (req: Request, re
   res.status(200).json({ success: true, data, count: data.length });
 });
 
+/** GET /collections/store/:storeId/theme-templates */
+export const listCollectionThemeTemplates = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+  if (!storeId || !mongoose.isValidObjectId(storeId)) {
+    throw new CustomError("Valid storeId is required", 400);
+  }
+  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
+  try {
+    const data = await listCollectionThemeTemplatesForStore(storeId);
+    res.status(200).json({ success: true, data });
+  } catch (err) {
+    console.error("[listCollectionThemeTemplates]", err);
+    res.status(200).json({
+      success: true,
+      data: [{ value: "default", label: "Default collection" }],
+    });
+  }
+});
+
 // Get collection by id
 export const getCollectionById = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -223,6 +256,13 @@ export const updateCollection = asyncErrorHandler(async (req: Request, res: Resp
 
   validateCollectionStatus(updatePayload.status);
   validateProductSort(updatePayload.productSort);
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "themeTemplate")) {
+    if (!isValidCollectionThemeTemplate(updatePayload.themeTemplate)) {
+      throw new CustomError("Invalid theme template value", 400);
+    }
+    updatePayload.themeTemplate = normalizeCollectionThemeTemplate(updatePayload.themeTemplate);
+  }
 
   if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
     updatePayload.description = sanitizeRichTextHtml(String(updatePayload.description ?? ""));

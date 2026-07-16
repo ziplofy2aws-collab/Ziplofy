@@ -5,6 +5,11 @@ import { BlogPost, BLOG_POST_VISIBILITY, type BlogPostVisibility } from "../mode
 import { BlogTags } from "../models/blog-tags/blog-tags.model";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { slugifyMenuHandle } from "../utils/store-menu-link.util";
+import {
+  isValidBlogPostThemeTemplate,
+  listBlogPostThemeTemplatesForStore,
+  normalizeBlogPostThemeTemplate,
+} from "../utils/blog-post-theme-template.util";
 
 function normalizeUrlHandle(raw: string | undefined, title: string): string {
   const handle = (raw?.trim() || slugifyMenuHandle(title)).toLowerCase();
@@ -72,6 +77,7 @@ export const createBlogPost = asyncErrorHandler(async (req: Request, res: Respon
     featuredImageUrl,
     featuredImageKey,
     featuredImageUploadId,
+    themeTemplate,
   } = req.body;
 
   if (!storeId || !mongoose.isValidObjectId(storeId)) {
@@ -82,6 +88,9 @@ export const createBlogPost = asyncErrorHandler(async (req: Request, res: Respon
   }
   if (!title?.trim()) {
     throw new CustomError("title is required", 400);
+  }
+  if (typeof themeTemplate !== "undefined" && !isValidBlogPostThemeTemplate(themeTemplate)) {
+    throw new CustomError("Invalid themeTemplate value", 400);
   }
 
   await assertBlogBelongsToStore(blogId, storeId);
@@ -112,6 +121,9 @@ export const createBlogPost = asyncErrorHandler(async (req: Request, res: Respon
     featuredImageKey: typeof featuredImageKey === "string" ? featuredImageKey.trim() : "",
     featuredImageUploadId:
       typeof featuredImageUploadId === "string" ? featuredImageUploadId.trim() : "",
+    themeTemplate: isValidBlogPostThemeTemplate(themeTemplate)
+      ? normalizeBlogPostThemeTemplate(themeTemplate)
+      : "default",
   });
 
   res.status(201).json({
@@ -143,6 +155,21 @@ export const getBlogPostsByStoreId = asyncErrorHandler(async (req: Request, res:
     success: true,
     data: posts,
     count: posts.length,
+  });
+});
+
+export const listBlogPostThemeTemplates = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+
+  if (!storeId || !mongoose.isValidObjectId(storeId)) {
+    throw new CustomError("Valid storeId is required", 400);
+  }
+
+  const data = await listBlogPostThemeTemplatesForStore(storeId);
+
+  res.status(200).json({
+    success: true,
+    data,
   });
 });
 
@@ -191,6 +218,7 @@ export const updateBlogPost = asyncErrorHandler(async (req: Request, res: Respon
     featuredImageUrl,
     featuredImageKey,
     featuredImageUploadId,
+    themeTemplate,
   } = req.body;
 
   if (!mongoose.isValidObjectId(id)) {
@@ -267,6 +295,13 @@ export const updateBlogPost = asyncErrorHandler(async (req: Request, res: Respon
   if (featuredImageUploadId !== undefined) {
     updateData.featuredImageUploadId =
       typeof featuredImageUploadId === "string" ? featuredImageUploadId.trim() : "";
+  }
+
+  if (themeTemplate !== undefined) {
+    if (!isValidBlogPostThemeTemplate(themeTemplate)) {
+      throw new CustomError("Invalid themeTemplate value", 400);
+    }
+    updateData.themeTemplate = normalizeBlogPostThemeTemplate(themeTemplate);
   }
 
   if (urlHandle !== undefined || title !== undefined) {

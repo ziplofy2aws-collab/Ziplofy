@@ -86,6 +86,8 @@ export interface Product {
   }[];
   imageUrls?: string[];
   isDeleted?: boolean;
+  /** `default` or `product.{slug}` — which product template the storefront uses. */
+  themeTemplate?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -202,6 +204,7 @@ export interface CreateProductPayload {
   productType: string;
   vendor: string;
   tagIds: string[];
+  themeTemplate?: string;
 }
 
 export type UpdateProductPayload = Partial<CreateProductPayload>;

@@ -44,6 +44,7 @@ export type NewProductFormData = {
   metaDescription: string;
   urlHandle: string;
   images: string[];
+  themeTemplate: string;
 };
 
 export const INITIAL_NEW_PRODUCT_FORM_DATA: NewProductFormData = {
@@ -78,6 +79,7 @@ export const INITIAL_NEW_PRODUCT_FORM_DATA: NewProductFormData = {
   metaDescription: '',
   urlHandle: '',
   images: [],
+  themeTemplate: 'default',
 };
 
 type UseNewProductFormOptions = {
@@ -263,6 +265,7 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
         productType: effectiveFormData.productType,
         vendor: effectiveFormData.vendor,
         tagIds: effectiveFormData.tags || [],
+        themeTemplate: effectiveFormData.themeTemplate || 'default',
       };
 
       const created = await createProduct(requestBody);

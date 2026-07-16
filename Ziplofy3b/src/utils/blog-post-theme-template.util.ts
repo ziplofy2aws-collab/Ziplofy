@@ -12,40 +12,39 @@ import {
 } from "./storefront-liquid.util";
 import { resolveStorefrontThemeSource } from "./storefront-theme-resolution.util";
 
-export type CollectionThemeTemplateOption = {
+export type BlogPostThemeTemplateOption = {
   value: string;
   label: string;
 };
 
-const DEFAULT_OPTION: CollectionThemeTemplateOption = {
+const DEFAULT_OPTION: BlogPostThemeTemplateOption = {
   value: "default",
-  label: "Default collection",
+  label: "Default blog post",
 };
 
-export function isValidCollectionThemeTemplate(value: unknown): value is string {
+const TEMPLATE_PREFIX = "blog-posts";
+
+export function isValidBlogPostThemeTemplate(value: unknown): value is string {
   if (typeof value !== "string") return false;
   const normalized = value.trim().toLowerCase();
   if (!normalized) return false;
-  if (normalized === "default" || normalized === "collection") return true;
-  if (!normalized.startsWith("collection.")) return false;
-  const slug = normalized.slice("collection.".length);
-  return isSafeLiquidTemplateName(slug);
+  if (normalized === "default" || normalized === TEMPLATE_PREFIX) return true;
+  if (!normalized.startsWith(`${TEMPLATE_PREFIX}.`)) return false;
+  return isSafeLiquidTemplateName(normalized.slice(`${TEMPLATE_PREFIX}.`.length));
 }
 
-export function normalizeCollectionThemeTemplate(value: unknown): string {
+export function normalizeBlogPostThemeTemplate(value: unknown): string {
   if (typeof value !== "string") return DEFAULT_OPTION.value;
   const normalized = value.trim().toLowerCase();
-  if (!normalized || normalized === "collection") return DEFAULT_OPTION.value;
+  if (!normalized || normalized === TEMPLATE_PREFIX) return DEFAULT_OPTION.value;
   return normalized;
 }
 
-export function formatCollectionThemeTemplateLabel(templateId: string): string {
+export function formatBlogPostThemeTemplateLabel(templateId: string): string {
   const normalized = templateId.trim().toLowerCase();
-  if (normalized === "default" || normalized === "collection") {
-    return DEFAULT_OPTION.label;
-  }
-  const suffix = normalized.startsWith("collection.")
-    ? normalized.slice("collection.".length)
+  if (normalized === "default" || normalized === TEMPLATE_PREFIX) return DEFAULT_OPTION.label;
+  const suffix = normalized.startsWith(`${TEMPLATE_PREFIX}.`)
+    ? normalized.slice(`${TEMPLATE_PREFIX}.`.length)
     : normalized;
   const words = suffix
     .split(/[-_.]+/)
@@ -54,44 +53,41 @@ export function formatCollectionThemeTemplateLabel(templateId: string): string {
   return words.length ? words.join(" ") : DEFAULT_OPTION.label;
 }
 
-export function resolveCollectionLiquidTemplate(themeTemplate?: string | null): string {
-  const normalized = normalizeCollectionThemeTemplate(themeTemplate ?? DEFAULT_OPTION.value);
-  if (normalized === DEFAULT_OPTION.value) return "collection";
+export function resolveBlogPostJsonTemplateId(themeTemplate?: string | null): string {
+  const normalized = normalizeBlogPostThemeTemplate(themeTemplate ?? DEFAULT_OPTION.value);
+  if (normalized === DEFAULT_OPTION.value) return TEMPLATE_PREFIX;
   return normalized;
 }
 
-export function resolveCollectionJsonTemplateId(themeTemplate?: string | null): string {
-  return resolveCollectionLiquidTemplate(themeTemplate);
-}
-
 function addTemplateOption(
-  options: CollectionThemeTemplateOption[],
+  options: BlogPostThemeTemplateOption[],
   seen: Set<string>,
   templateId: string,
   label?: string
 ): void {
-  const normalized = normalizeCollectionThemeTemplate(
-    templateId === "collection" ? "default" : templateId
+  const normalized = normalizeBlogPostThemeTemplate(
+    templateId === TEMPLATE_PREFIX ? "default" : templateId
   );
   if (seen.has(normalized)) return;
   seen.add(normalized);
   options.push({
     value: normalized,
-    label: label?.trim() || formatCollectionThemeTemplateLabel(normalized),
+    label: label?.trim() || formatBlogPostThemeTemplateLabel(normalized),
   });
 }
 
 function collectJsonTemplateOptions(
   themeConfig: Record<string, unknown> | null | undefined,
-  options: CollectionThemeTemplateOption[],
+  options: BlogPostThemeTemplateOption[],
   seen: Set<string>
 ): void {
   const templates = themeConfig?.templates;
   if (!templates || typeof templates !== "object") return;
-
   for (const [key, rawValue] of Object.entries(templates as Record<string, unknown>)) {
     const normalizedKey = key.trim().toLowerCase();
-    if (normalizedKey !== "collection" && !normalizedKey.startsWith("collection.")) continue;
+    if (normalizedKey !== TEMPLATE_PREFIX && !normalizedKey.startsWith(`${TEMPLATE_PREFIX}.`)) {
+      continue;
+    }
     const label =
       rawValue && typeof rawValue === "object" && "name" in rawValue
         ? String((rawValue as { name?: unknown }).name ?? "")
@@ -100,15 +96,12 @@ function collectJsonTemplateOptions(
   }
 }
 
-export async function listCollectionThemeTemplatesForStore(
+export async function listBlogPostThemeTemplatesForStore(
   storeId: string
-): Promise<CollectionThemeTemplateOption[]> {
-  const options: CollectionThemeTemplateOption[] = [DEFAULT_OPTION];
+): Promise<BlogPostThemeTemplateOption[]> {
+  const options: BlogPostThemeTemplateOption[] = [DEFAULT_OPTION];
   const seen = new Set<string>([DEFAULT_OPTION.value]);
-
-  if (!storeId || !mongoose.isValidObjectId(storeId)) {
-    return options;
-  }
+  if (!storeId || !mongoose.isValidObjectId(storeId)) return options;
 
   const source = await resolveStorefrontThemeSource(storeId);
   const storeObjectId = new Types.ObjectId(storeId);
@@ -130,24 +123,20 @@ export async function listCollectionThemeTemplatesForStore(
     if (resolved?.s3Assets) {
       const liquidTemplates = await listLiquidTemplateNamesFromS3(resolved.s3Assets);
       for (const templateName of liquidTemplates) {
-        if (templateName === "collection") {
+        if (templateName === TEMPLATE_PREFIX) {
           addTemplateOption(options, seen, "default");
           continue;
         }
-        if (templateName.startsWith("collection.")) {
-          const slug = templateName.slice("collection.".length);
-          if (isSafeLiquidTemplateName(slug)) {
-            addTemplateOption(options, seen, templateName);
-          }
+        if (templateName.startsWith(`${TEMPLATE_PREFIX}.`)) {
+          const slug = templateName.slice(`${TEMPLATE_PREFIX}.`.length);
+          if (isSafeLiquidTemplateName(slug)) addTemplateOption(options, seen, templateName);
         }
       }
     }
-
     const configRow = await StoreThemeConfig.findOne({
       store: storeObjectId,
       theme: new Types.ObjectId(source.catalogThemeId),
     }).lean();
-
     const theme = await Theme.findById(source.catalogThemeId).lean();
     const themePath = theme ? String((theme as { themePath?: string }).themePath ?? "") : null;
     const s3Assets = theme ? (theme as { s3Assets?: Record<string, unknown> }).s3Assets : null;

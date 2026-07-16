@@ -12,6 +12,8 @@ export interface Blog {
   metaDescription: string;
   urlHandle: string;
   comments: BlogCommentsMode;
+  /** Theme creator template: `default` or `blogs.{slug}`. */
+  themeTemplate?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,6 +25,7 @@ export interface CreateBlogPayload {
   metaDescription?: string;
   urlHandle?: string;
   comments?: BlogCommentsMode;
+  themeTemplate?: string;
 }
 
 export interface UpdateBlogPayload {
@@ -32,6 +35,7 @@ export interface UpdateBlogPayload {
   metaDescription?: string;
   urlHandle?: string;
   comments?: BlogCommentsMode;
+  themeTemplate?: string;
 }
 
 interface BlogsListResponse {

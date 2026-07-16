@@ -20,6 +20,7 @@ import {
   RectangleStackIcon,
   TagIcon,
   StarIcon,
+  AdjustmentsHorizontalIcon,
 } from '@heroicons/react/24/outline';
 import type { ThemePreviewPage } from './CreateThemeLivePreview';
 import { CreateAlternateTemplateModal } from './CreateAlternateTemplateModal';
@@ -53,6 +54,10 @@ import {
   type BlogTemplateEntry,
 } from '../utils/blog-templates.util';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
+import {
+  ManageThemeTemplatesSheet,
+  type ManageThemeTemplatesKind,
+} from './ManageThemeTemplatesSheet';
 import './create-theme-page-picker.css';
 
 type PickerView = 'root' | 'products' | 'collections' | 'blogs' | 'blog-posts';
@@ -172,6 +177,22 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
   const [menuPos, setMenuPos] = useState<{ top: number; left: number; width: number } | null>(null);
   const [createModalKind, setCreateModalKind] = useState<CreateTemplateKind | null>(null);
   const [createTemplateError, setCreateTemplateError] = useState('');
+  const [manageSheetKind, setManageSheetKind] = useState<ManageThemeTemplatesKind | null>(null);
+  const [manageSheetOpen, setManageSheetOpen] = useState(false);
+  const [manageSheetSession, setManageSheetSession] = useState(0);
+  /** Live assignment counts from Manage templates sheet (overrides stale theme-config counts). */
+  const [liveProductAssignmentCounts, setLiveProductAssignmentCounts] = useState<
+    Record<string, number> | null
+  >(null);
+  const [liveCollectionAssignmentCounts, setLiveCollectionAssignmentCounts] = useState<
+    Record<string, number> | null
+  >(null);
+  const [liveBlogsAssignmentCounts, setLiveBlogsAssignmentCounts] = useState<
+    Record<string, number> | null
+  >(null);
+  const [liveBlogPostsAssignmentCounts, setLiveBlogPostsAssignmentCounts] = useState<
+    Record<string, number> | null
+  >(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -180,22 +201,41 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     [manifest, editorSchema]
   );
 
-  const productTemplates = useMemo(
-    () => listProductTemplates(themeConfig ?? null),
-    [themeConfig]
-  );
+  const productTemplates = useMemo(() => {
+    const list = listProductTemplates(themeConfig ?? null);
+    if (!liveProductAssignmentCounts) return list;
+    return list.map((t) => ({
+      ...t,
+      assignedProductCount: liveProductAssignmentCounts[t.id] ?? 0,
+    }));
+  }, [themeConfig, liveProductAssignmentCounts]);
 
-  const collectionTemplates = useMemo(
-    () => listCollectionTemplates(themeConfig ?? null),
-    [themeConfig]
-  );
+  const collectionTemplates = useMemo(() => {
+    const list = listCollectionTemplates(themeConfig ?? null);
+    if (!liveCollectionAssignmentCounts) return list;
+    return list.map((t) => ({
+      ...t,
+      assignedCollectionCount: liveCollectionAssignmentCounts[t.id] ?? 0,
+    }));
+  }, [themeConfig, liveCollectionAssignmentCounts]);
 
-  const blogsTemplates = useMemo(() => listBlogsTemplates(themeConfig ?? null), [themeConfig]);
+  const blogsTemplates = useMemo(() => {
+    const list = listBlogsTemplates(themeConfig ?? null);
+    if (!liveBlogsAssignmentCounts) return list;
+    return list.map((t) => ({
+      ...t,
+      assignedBlogCount: liveBlogsAssignmentCounts[t.id] ?? 0,
+    }));
+  }, [themeConfig, liveBlogsAssignmentCounts]);
 
-  const blogPostsTemplates = useMemo(
-    () => listBlogPostsTemplates(themeConfig ?? null),
-    [themeConfig]
-  );
+  const blogPostsTemplates = useMemo(() => {
+    const list = listBlogPostsTemplates(themeConfig ?? null);
+    if (!liveBlogPostsAssignmentCounts) return list;
+    return list.map((t) => ({
+      ...t,
+      assignedBlogPostCount: liveBlogPostsAssignmentCounts[t.id] ?? 0,
+    }));
+  }, [themeConfig, liveBlogPostsAssignmentCounts]);
 
   const filteredProductTemplates = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -451,6 +491,23 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     setCreateModalKind(kind);
   }, []);
 
+  const openManageTemplates = useCallback((kind: ManageThemeTemplatesKind) => {
+    setOpen(false);
+    setManageSheetKind(kind);
+    setManageSheetSession((n) => n + 1);
+    setManageSheetOpen(true);
+  }, []);
+
+  const applyAssignmentCountsToThemeConfig = useCallback(
+    (kind: ManageThemeTemplatesKind, counts: Record<string, number>) => {
+      if (kind === 'product') setLiveProductAssignmentCounts(counts);
+      else if (kind === 'collection') setLiveCollectionAssignmentCounts(counts);
+      else if (kind === 'blogs') setLiveBlogsAssignmentCounts(counts);
+      else setLiveBlogPostsAssignmentCounts(counts);
+    },
+    []
+  );
+
   const renderTemplateDrillDown = (
     title: string,
     templates: Array<{ id: string; name: string; isDefault: boolean; assignedCount: number }>,
@@ -493,8 +550,16 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
         )}
       </div>
 
-      {onThemeConfigChange ? (
-        <div className="border-t border-[#e8e8e8] p-2">
+      <div className="border-t border-[#e8e8e8] p-2">
+        <button
+          type="button"
+          onClick={() => openManageTemplates(createKind)}
+          className="mb-1 flex w-full items-center gap-2 rounded-[8px] px-2.5 py-2 text-left text-[13px] font-medium text-gray-900 hover:bg-[#f1f1f1]"
+        >
+          <AdjustmentsHorizontalIcon className="h-[18px] w-[18px] shrink-0 text-gray-700" />
+          Manage templates
+        </button>
+        {onThemeConfigChange ? (
           <button
             type="button"
             onClick={() => openCreateModal(createKind)}
@@ -503,8 +568,33 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
             <PlusCircleIcon className="h-[18px] w-[18px] shrink-0" />
             Create template
           </button>
-        </div>
-      ) : null}
+        ) : null}
+        {createKind === 'product' ? (
+          <p className="mt-1.5 px-2.5 pb-1 text-[11px] leading-snug text-gray-500">
+            Assign templates to products with{' '}
+            <span className="font-medium text-gray-700">Manage templates</span>, or open a product
+            and choose under Theme template.
+          </p>
+        ) : createKind === 'collection' ? (
+          <p className="mt-1.5 px-2.5 pb-1 text-[11px] leading-snug text-gray-500">
+            Assign templates to collections with{' '}
+            <span className="font-medium text-gray-700">Manage templates</span>, or open a
+            collection and choose under Theme template.
+          </p>
+        ) : createKind === 'blogs' ? (
+          <p className="mt-1.5 px-2.5 pb-1 text-[11px] leading-snug text-gray-500">
+            Assign templates to blogs with{' '}
+            <span className="font-medium text-gray-700">Manage templates</span>, or open a blog and
+            choose under Theme template.
+          </p>
+        ) : (
+          <p className="mt-1.5 px-2.5 pb-1 text-[11px] leading-snug text-gray-500">
+            Assign templates to blog posts with{' '}
+            <span className="font-medium text-gray-700">Manage templates</span>, or open a blog post
+            and choose under Theme template.
+          </p>
+        )}
+      </div>
     </>
   );
 
@@ -752,6 +842,19 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
         }}
         onCreate={handleCreateTemplate}
       />
+      {manageSheetKind ? (
+        <ManageThemeTemplatesSheet
+          key={`${manageSheetKind}-${manageSheetSession}`}
+          open={manageSheetOpen}
+          kind={manageSheetKind}
+          themeConfig={themeConfig}
+          onClose={() => setManageSheetOpen(false)}
+          onExited={() => setManageSheetKind(null)}
+          onAssignmentsChanged={(counts) =>
+            applyAssignmentCountsToThemeConfig(manageSheetKind, counts)
+          }
+        />
+      ) : null}
     </>
   );
 };

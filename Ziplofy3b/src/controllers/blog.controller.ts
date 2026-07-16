@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { Blog, BLOG_COMMENTS_MODES, type BlogCommentsMode } from "../models/blog/blog.model";
 import { slugifyMenuHandle } from "../utils/store-menu-link.util";
+import {
+  isValidBlogThemeTemplate,
+  listBlogThemeTemplatesForStore,
+  normalizeBlogThemeTemplate,
+} from "../utils/blog-theme-template.util";
 
 function normalizeUrlHandle(raw: string | undefined, title: string): string {
   const handle = (raw?.trim() || slugifyMenuHandle(title)).toLowerCase();
@@ -20,13 +25,17 @@ function normalizeCommentsMode(value: unknown): BlogCommentsMode {
 }
 
 export const createBlog = asyncErrorHandler(async (req: Request, res: Response) => {
-  const { storeId, title, pageTitle, metaDescription, urlHandle, comments } = req.body;
+  const { storeId, title, pageTitle, metaDescription, urlHandle, comments, themeTemplate } =
+    req.body;
 
   if (!storeId || !mongoose.isValidObjectId(storeId)) {
     throw new CustomError("Valid storeId is required", 400);
   }
   if (!title?.trim()) {
     throw new CustomError("title is required", 400);
+  }
+  if (typeof themeTemplate !== "undefined" && !isValidBlogThemeTemplate(themeTemplate)) {
+    throw new CustomError("Invalid themeTemplate value", 400);
   }
 
   const trimmedTitle = title.trim();
@@ -44,6 +53,9 @@ export const createBlog = asyncErrorHandler(async (req: Request, res: Response) 
     metaDescription: typeof metaDescription === "string" ? metaDescription.trim() : "",
     urlHandle: handle,
     comments: normalizeCommentsMode(comments),
+    themeTemplate: isValidBlogThemeTemplate(themeTemplate)
+      ? normalizeBlogThemeTemplate(themeTemplate)
+      : "default",
   });
 
   res.status(201).json({
@@ -66,6 +78,21 @@ export const getBlogsByStoreId = asyncErrorHandler(async (req: Request, res: Res
     success: true,
     data: blogs,
     count: blogs.length,
+  });
+});
+
+export const listBlogThemeTemplates = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+
+  if (!storeId || !mongoose.isValidObjectId(storeId)) {
+    throw new CustomError("Valid storeId is required", 400);
+  }
+
+  const data = await listBlogThemeTemplatesForStore(storeId);
+
+  res.status(200).json({
+    success: true,
+    data,
   });
 });
 
@@ -99,7 +126,8 @@ export const getBlogById = asyncErrorHandler(async (req: Request, res: Response)
 
 export const updateBlog = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { storeId, title, pageTitle, metaDescription, urlHandle, comments } = req.body;
+  const { storeId, title, pageTitle, metaDescription, urlHandle, comments, themeTemplate } =
+    req.body;
 
   if (!mongoose.isValidObjectId(id)) {
     throw new CustomError("Valid blog id is required", 400);
@@ -138,6 +166,13 @@ export const updateBlog = asyncErrorHandler(async (req: Request, res: Response) 
 
   if (comments !== undefined) {
     updateData.comments = normalizeCommentsMode(comments);
+  }
+
+  if (themeTemplate !== undefined) {
+    if (!isValidBlogThemeTemplate(themeTemplate)) {
+      throw new CustomError("Invalid themeTemplate value", 400);
+    }
+    updateData.themeTemplate = normalizeBlogThemeTemplate(themeTemplate);
   }
 
   if (urlHandle !== undefined || title !== undefined) {

@@ -14,6 +14,7 @@ import CollectionFormHeader from '../components/collections/CollectionFormHeader
 import CollectionImageSidebarSection from '../components/collections/CollectionImageSidebarSection';
 import CollectionPublishingSection from '../components/collections/CollectionPublishingSection';
 import CollectionSeoSection from '../components/collections/CollectionSeoSection';
+import CollectionThemeTemplateSection from '../components/collections/CollectionThemeTemplateSection';
 import DeleteCollectionModal from '../components/collections/DeleteCollectionModal';
 import {
   collectionInputClass,
@@ -56,6 +57,7 @@ type CollectionFormState = {
   urlHandle: string;
   productSort: CollectionProductSort;
   status: 'draft' | 'published';
+  themeTemplate: string;
 };
 
 type SearchProduct = {
@@ -138,6 +140,7 @@ const ProductCollectionDetailsPage: React.FC = () => {
       urlHandle: collection?.urlHandle || '',
       productSort: (collection?.productSort as CollectionProductSort) || 'manual',
       status: (collection?.status as 'draft' | 'published') || 'published',
+      themeTemplate: collection?.themeTemplate || 'default',
     }),
     [collection]
   );
@@ -623,6 +626,13 @@ const ProductCollectionDetailsPage: React.FC = () => {
             <CollectionPublishingSection
               status={form.status}
               onStatusChange={(status) => handleChange('status', status)}
+            />
+
+            <CollectionThemeTemplateSection
+              storeId={collection?.storeId}
+              value={form.themeTemplate || 'default'}
+              onChange={(themeTemplate) => handleChange('themeTemplate', themeTemplate)}
+              appearance={FORM_APPEARANCE}
             />
 
             <CollectionImageSidebarSection

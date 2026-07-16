@@ -17,6 +17,8 @@ export interface StorefrontCollection {
 	productCount?: number;
 	onlineStorePublishing?: boolean;
 	pointOfSalePublishing?: boolean;
+	/** `default` or `collection.{slug}` — which collection template the storefront uses. */
+	themeTemplate?: string;
 	createdAt: string;
 	updatedAt: string;
 }

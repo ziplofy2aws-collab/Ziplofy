@@ -15,6 +15,7 @@ import {
   SelectImageModal,
   type SelectedImageAsset,
 } from '../components/SelectImageModal';
+import { BlogPostThemeTemplateSection } from '../components/blog-posts/BlogPostThemeTemplateSection';
 import { useBlogPosts } from '../contexts/blog-post.context';
 import { useBlogs } from '../contexts/blog.context';
 import { useStore } from '../contexts/store.context';
@@ -72,6 +73,7 @@ export const BlogPostCreatePage = () => {
   const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [featuredImageKey, setFeaturedImageKey] = useState('');
   const [featuredImageUploadId, setFeaturedImageUploadId] = useState('');
+  const [themeTemplate, setThemeTemplate] = useState('default');
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -137,6 +139,7 @@ export const BlogPostCreatePage = () => {
         featuredImageUrl: featuredImageUrl || undefined,
         featuredImageKey: featuredImageKey || undefined,
         featuredImageUploadId: featuredImageUploadId || undefined,
+        themeTemplate,
       });
       toast.success('Blog post saved');
       navigate(`/content/articles/${created._id}`, { state: { articleJustCreated: true } });
@@ -340,6 +343,12 @@ export const BlogPostCreatePage = () => {
                 </div>
               )}
             </BlogPostCard>
+
+            <BlogPostThemeTemplateSection
+              storeId={activeStoreId}
+              value={themeTemplate}
+              onChange={setThemeTemplate}
+            />
 
             <BlogPostCard title="Organization">
               <div className="space-y-3">

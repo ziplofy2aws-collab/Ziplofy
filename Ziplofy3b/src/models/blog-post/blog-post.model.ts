@@ -19,6 +19,8 @@ export interface IBlogPost {
   featuredImageUrl: string;
   featuredImageKey: string;
   featuredImageUploadId: string;
+  /** Theme creator template: `default` or `blog-posts.{slug}`. */
+  themeTemplate: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -103,6 +105,14 @@ const blogPostSchema = new Schema<IBlogPost & Document>(
       type: String,
       trim: true,
       default: "",
+    },
+    themeTemplate: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "default",
+      maxLength: [80, "Theme template cannot exceed 80 characters"],
+      match: [/^(default|blog-posts(?:\.[a-z][a-z0-9_-]*)?)$/, "Invalid theme template value"],
     },
   },
   {

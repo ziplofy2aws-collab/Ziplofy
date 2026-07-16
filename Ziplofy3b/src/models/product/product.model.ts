@@ -55,6 +55,8 @@ export interface IProduct {
   tagIds: mongoose.Types.ObjectId[];
   imageUrls: string[];
   isDeleted: boolean;
+  /** Theme creator / Liquid product template: `default` or `product.{slug}`. */
+  themeTemplate: string;
 
   createdAt: Date;
   updatedAt: Date;
@@ -271,7 +273,14 @@ const productSchema = new Schema<IProduct & Document>({
     default: false,
     index: true,
   },
-  // removed themeTemplate
+  themeTemplate: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    default: "default",
+    maxLength: [80, "Theme template cannot exceed 80 characters"],
+    match: [/^(default|product(?:\.[a-z][a-z0-9_-]*)?)$/, "Invalid theme template value"],
+  },
 }, {
   timestamps: true,
   versionKey: false

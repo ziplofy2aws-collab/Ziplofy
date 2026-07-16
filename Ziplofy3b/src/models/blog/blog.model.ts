@@ -11,6 +11,8 @@ export interface IBlog {
   metaDescription: string;
   urlHandle: string;
   comments: BlogCommentsMode;
+  /** Theme creator template: `default` or `blogs.{slug}`. */
+  themeTemplate: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,6 +58,14 @@ const blogSchema = new Schema<IBlog & Document>(
       type: String,
       enum: BLOG_COMMENTS_MODES,
       default: "disabled",
+    },
+    themeTemplate: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "default",
+      maxLength: [80, "Theme template cannot exceed 80 characters"],
+      match: [/^(default|blogs(?:\.[a-z][a-z0-9_-]*)?)$/, "Invalid theme template value"],
     },
   },
   {

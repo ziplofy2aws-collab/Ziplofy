@@ -45,6 +45,8 @@ export interface StorefrontProductItem {
   status: "active" | "draft";
   vendor: { _id: string; name: string } | null;
   imageUrls?: string[];
+  /** `default` or `product.{slug}` — which product template the storefront uses. */
+  themeTemplate?: string;
   createdAt: string;
   updatedAt: string;
   productDiscount?: ProductDiscount | null;

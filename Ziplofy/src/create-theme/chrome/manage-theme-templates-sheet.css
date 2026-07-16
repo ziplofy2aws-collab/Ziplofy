@@ -1,0 +1,89 @@
+@keyframes manage-theme-templates-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes manage-theme-templates-backdrop-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes manage-theme-templates-sheet-up {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes manage-theme-templates-sheet-down {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+.manage-theme-templates-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+}
+
+.manage-theme-templates-sheet__backdrop.is-enter {
+  animation: manage-theme-templates-backdrop-in 0.38s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.manage-theme-templates-sheet__backdrop.is-shown {
+  opacity: 1;
+}
+
+.manage-theme-templates-sheet__backdrop.is-exit {
+  animation: manage-theme-templates-backdrop-out 0.32s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.manage-theme-templates-sheet__panel {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-height: min(88vh, 760px);
+  min-height: min(52vh, 420px);
+  flex-direction: column;
+  border-radius: 1rem 1rem 0 0;
+  background: #fff;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
+  will-change: transform;
+  transform: translate3d(0, 100%, 0);
+}
+
+.manage-theme-templates-sheet__panel.is-enter {
+  animation: manage-theme-templates-sheet-up 0.38s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.manage-theme-templates-sheet__panel.is-shown {
+  transform: translate3d(0, 0, 0);
+}
+
+.manage-theme-templates-sheet__panel.is-exit {
+  animation: manage-theme-templates-sheet-down 0.32s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manage-theme-templates-sheet__backdrop.is-enter,
+  .manage-theme-templates-sheet__backdrop.is-exit,
+  .manage-theme-templates-sheet__panel.is-enter,
+  .manage-theme-templates-sheet__panel.is-exit {
+    animation-duration: 0.01ms;
+  }
+}

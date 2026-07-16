@@ -13,6 +13,8 @@ export interface Collection {
   urlHandle: string;
   productSort: 'manual' | 'title-asc' | 'title-desc' | 'price-high' | 'price-low' | 'newest' | 'oldest';
   status: 'draft' | 'published';
+  /** `default` or `collection.{slug}` — which collection template the storefront uses. */
+  themeTemplate?: string;
   createdAt: string;
   updatedAt: string;
   productCount?: number;
@@ -30,6 +32,7 @@ export interface CreateCollectionPayload {
   productSort?: 'manual' | 'title-asc' | 'title-desc' | 'price-high' | 'price-low' | 'newest' | 'oldest';
   productIds?: string[];
   status?: 'draft' | 'published';
+  themeTemplate?: string;
 }
 
 export interface UpdateCollectionPayload {
@@ -42,6 +45,7 @@ export interface UpdateCollectionPayload {
   urlHandle?: string;
   productSort?: 'manual' | 'title-asc' | 'title-desc' | 'price-high' | 'price-low' | 'newest' | 'oldest';
   status?: 'draft' | 'published';
+  themeTemplate?: string;
 }
 
 interface CreateCollectionResponse {

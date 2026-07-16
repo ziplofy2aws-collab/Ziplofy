@@ -10,6 +10,8 @@ export interface StorefrontBlog {
 	metaDescription: string;
 	urlHandle: string;
 	comments?: string;
+	/** Theme creator template: `default` or `blogs.{slug}`. */
+	themeTemplate?: string;
 	postCount?: number;
 	createdAt: string;
 	updatedAt: string;
@@ -28,6 +30,8 @@ export interface StorefrontBlogPost {
 	visibility: 'visible' | 'hidden';
 	author: string;
 	featuredImageUrl?: string;
+	/** Theme creator template: `default` or `blog-posts.{slug}`. */
+	themeTemplate?: string;
 	createdAt: string;
 	updatedAt: string;
 }

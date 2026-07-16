@@ -2,6 +2,7 @@ import { ChevronRightIcon, PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useId, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
+import { BlogThemeTemplateSection } from '../components/blogs/BlogThemeTemplateSection';
 import { useBlogs, type BlogCommentsMode } from '../contexts/blog.context';
 import { useStore } from '../contexts/store.context';
 import { SearchEngineListingEditor } from '../seo/SearchEngineListingEditor';
@@ -32,6 +33,7 @@ export const ContentBlogCreatePage = () => {
   const [metaDescription, setMetaDescription] = useState('');
   const [urlHandle, setUrlHandle] = useState('');
   const [comments, setComments] = useState<BlogComments>('disabled');
+  const [themeTemplate, setThemeTemplate] = useState('default');
   const [saving, setSaving] = useState(false);
 
   const canSave = blogTitle.trim().length > 0 && !saving && !loading;
@@ -55,6 +57,7 @@ export const ContentBlogCreatePage = () => {
         metaDescription: metaDescription.trim() || undefined,
         urlHandle: urlHandle.trim() || undefined,
         comments,
+        themeTemplate,
       });
       toast.success('Blog saved');
       navigate('/content/blogs');
@@ -164,6 +167,12 @@ export const ContentBlogCreatePage = () => {
                 </label>
               </div>
             </BlogCreateCard>
+
+            <BlogThemeTemplateSection
+              storeId={activeStoreId}
+              value={themeTemplate}
+              onChange={setThemeTemplate}
+            />
           </div>
         </div>
 
