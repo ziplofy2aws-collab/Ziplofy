@@ -5,6 +5,7 @@ import {
 } from './codiix-knowledge';
 import {
   agenticSuggestionsForCategory,
+  getCodiixCategoryLabel,
   matchAgenticCommand,
   type CodiixAgenticAction,
 } from './codiix-elements-catalog';
@@ -47,6 +48,9 @@ export type CodiixMatch = {
   answer: string;
   relatedSuggestions: { id: string; label: string }[];
   actions?: CodiixAgenticAction[];
+  relatedActions?: CodiixAgenticAction[];
+  relatedCategoryLabel?: string;
+  previewElementId?: string;
 };
 
 export function matchCodiixIntent(
@@ -74,10 +78,13 @@ export function matchCodiixIntent(
         answer: agenticHit.answer,
         relatedSuggestions: [
           { id: 'product-elements', label: 'What are product elements?' },
-          { id: 'form-elements', label: 'What are the forms?' },
+          { id: 'banner-elements', label: 'What are banner elements?' },
           { id: 'agentic-mode', label: 'What is Agentic mode?' },
         ],
         actions: [agenticHit.action],
+        relatedActions: agenticHit.relatedActions,
+        relatedCategoryLabel: agenticHit.relatedCategoryLabel,
+        previewElementId: agenticHit.previewElementId,
       };
     }
   }
@@ -92,7 +99,7 @@ export function matchCodiixIntent(
     return {
       intentId: null,
       answer: agentic
-        ? `${CODIX_FALLBACK}\n\n**Agentic tip:** try “add header”, “add footer”, or “add hero”.`
+        ? `${CODIX_FALLBACK}\n\n**Agentic tip:** try “add header”, “hero”, “faq”, or “contact form”.`
         : CODIX_FALLBACK,
       relatedSuggestions: CODIX_INTENTS.filter((i) => i.suggestion)
         .slice(0, 4)
@@ -112,19 +119,27 @@ export function matchCodiixIntent(
       : undefined;
 
   let answer = best.intent.answer;
+  let relatedCategoryLabel: string | undefined;
+  let previewElementId: string | undefined;
+
   if (agentic && actions && actions.length > 0) {
+    relatedCategoryLabel = getCodiixCategoryLabel(best.intent.categoryId!);
+    previewElementId = actions[0]?.elementId;
     answer +=
-      '\n\n**Agentic mode is on** — tap a button below and I’ll add that section for you.';
+      `\n\n**Agentic mode is on** — here’s a preview of **${actions[0]?.label.replace(/^Add\s+/i, '')}**, plus more from **${relatedCategoryLabel}**.`;
   } else if (!agentic && /\b(add|insert|create)\b/.test(query)) {
     answer +=
-      '\n\nWant me to do it? Turn on **Agentic** in the Codiix header, then ask again.';
+      '\n\nWant me to do it? Turn on **Agentic** in the Codiix header, then ask again (even just “hero” or “add faq”).';
   }
 
   return {
     intentId: best.intent.id,
     answer,
     relatedSuggestions: related,
-    actions,
+    actions: actions?.slice(0, 1),
+    relatedActions: actions && actions.length > 1 ? actions.slice(1) : undefined,
+    relatedCategoryLabel,
+    previewElementId,
   };
 }
 

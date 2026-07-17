@@ -11,6 +11,14 @@ export type CodiixAgenticAction = {
   elementId: string;
 };
 
+export type CodiixAgenticMatch = {
+  answer: string;
+  action: CodiixAgenticAction;
+  relatedActions: CodiixAgenticAction[];
+  relatedCategoryLabel: string;
+  previewElementId: string;
+};
+
 type CodiixElementDef = {
   elementId: string;
   name: string;
@@ -151,8 +159,14 @@ const CODIX_ELEMENTS: CodiixElementDef[] = [
     elementId: 'faq',
     name: 'FAQ',
     categoryId: 'text',
-    phrases: ['add faq', 'add a faq'],
-    keywords: ['faq', 'accordion'],
+    phrases: [
+      'add faq',
+      'add a faq',
+      'add collapsible',
+      'add collapsible content',
+      'collapsible content',
+    ],
+    keywords: ['faq', 'accordion', 'collapsible', 'collapsible content'],
   },
   {
     elementId: 'icons-with-text',
@@ -297,8 +311,15 @@ const CODIX_ELEMENTS: CodiixElementDef[] = [
     elementId: 'email-signup',
     name: 'Email signup',
     categoryId: 'forms',
-    phrases: ['add email signup', 'add newsletter', 'add signup'],
-    keywords: ['email signup', 'newsletter', 'signup'],
+    phrases: [
+      'add email signup',
+      'add newsletter',
+      'add signup',
+      'newsletter',
+      'email signup',
+      'newsletter signup',
+    ],
+    keywords: ['email signup', 'newsletter', 'signup', 'subscribe', 'mailing list'],
   },
   {
     elementId: 'not-found-main',
@@ -466,7 +487,46 @@ function autoPhrases(name: string, elementId: string): string[] {
     `insert ${lower}`,
     `create ${lower}`,
     `add ${idWords}`,
+    lower,
+    idWords,
   ];
+}
+
+function normalize(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[’']/g, "'")
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Strip filler so “can you please add a hero section” → “hero”. */
+function extractElementCore(query: string): string {
+  return normalize(query)
+    .replace(
+      /\b(please|pls|can you|could you|would you|i want|i need|i'd like|id like|give me|gimme|add|insert|create|put|place|include|drop|make|use|with|a|an|the|my|me|to|for|in|on|of|section|element|block|component|into|onto|theme|page|store|homepage|site)\b/g,
+      ' ',
+    )
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function wantsToAdd(query: string): boolean {
+  return /\b(add|insert|create|put|place|want|need|give me|gimme|include|drop|make me|set up|setup)\b/.test(
+    query,
+  );
+}
+
+function tokenOverlapScore(a: string, b: string): number {
+  const at = new Set(a.split(' ').filter((t) => t.length > 1));
+  const bt = b.split(' ').filter((t) => t.length > 1);
+  if (!at.size || !bt.length) return 0;
+  let hits = 0;
+  for (const t of bt) {
+    if (at.has(t)) hits += 1;
+  }
+  return hits;
 }
 
 /** Phrases that map to one-click add actions in agentic mode. */
@@ -488,62 +548,121 @@ export const CODIX_AGENTIC_COMMANDS = CODIX_ELEMENTS.filter((e) => e.ready !== f
     phrases,
     keywords,
     elementId: e.elementId,
+    name: e.name,
+    categoryId: e.categoryId,
     label: `Add ${e.name}`,
-    answer:
-      `I can add **${e.name}** for you.\n\n` +
-      'Tap the button below and I’ll insert it into the right place in your theme.',
   };
 });
 
-function normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[’']/g, "'")
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+export function getCodiixElementCategoryId(elementId: string): string | undefined {
+  return CODIX_ELEMENTS.find((e) => e.elementId === elementId)?.categoryId;
 }
 
-export function matchAgenticCommand(raw: string): {
-  answer: string;
-  action: CodiixAgenticAction;
-} | null {
+export function getCodiixCategoryLabel(categoryId: string): string {
+  return CATEGORY_META[categoryId]?.label ?? categoryId;
+}
+
+export function relatedActionsForElement(
+  elementId: string,
+  limit = 4,
+): { actions: CodiixAgenticAction[]; categoryLabel: string; categoryId: string | null } {
+  const categoryId = getCodiixElementCategoryId(elementId);
+  if (!categoryId) return { actions: [], categoryLabel: '', categoryId: null };
+  const cat = CODIX_ELEMENT_CATEGORIES.find((c) => c.id === categoryId);
+  if (!cat) return { actions: [], categoryLabel: '', categoryId: null };
+  const actions = cat.items
+    .filter((i) => i.ready && i.elementId && i.elementId !== elementId)
+    .slice(0, limit)
+    .map((i) => ({
+      id: `add-${i.elementId}`,
+      label: `Add ${i.name}`,
+      elementId: i.elementId!,
+    }));
+  return {
+    actions,
+    categoryLabel: cat.label,
+    categoryId,
+  };
+}
+
+export function matchAgenticCommand(raw: string): CodiixAgenticMatch | null {
   const query = normalize(raw);
   if (!query) return null;
+
+  const core = extractElementCore(query);
+  const softAdd = wantsToAdd(query);
+  const bareNameQuery = !softAdd && core.length >= 3 && core.split(' ').length <= 4;
 
   let best: (typeof CODIX_AGENTIC_COMMANDS)[number] | null = null;
   let bestScore = 0;
 
   for (const cmd of CODIX_AGENTIC_COMMANDS) {
     let score = 0;
+    const name = normalize(cmd.name);
+    const idWords = normalize(cmd.elementId.replace(/-/g, ' '));
+
     for (const phrase of cmd.phrases) {
       const p = normalize(phrase);
       if (!p) continue;
-      if (query === p) score += 20;
-      else if (query.includes(p)) score += 14;
+      if (query === p) score += 24;
+      else if (query.includes(p)) score += 16;
     }
-    const wantsAdd = /\b(add|insert|create|put|place)\b/.test(query);
-    if (wantsAdd) {
+
+    if (core) {
+      if (core === name || core === idWords) score += 28;
+      else if (name.startsWith(core) || idWords.startsWith(core)) score += 18;
+      else if (name.includes(core) || core.includes(name) || idWords.includes(core)) score += 14;
+      score += tokenOverlapScore(core, name) * 6;
+      score += tokenOverlapScore(core, idWords) * 5;
+    }
+
+    if (softAdd || bareNameQuery) {
       for (const kw of cmd.keywords) {
         const k = normalize(kw);
         if (!k) continue;
-        if (k.includes(' ')) {
-          if (query.includes(k)) score += 8;
-        } else if (new RegExp(`\\b${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(query)) {
-          score += 5;
+        const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (k === core || k === query) {
+          score += 22;
+        } else if (k.includes(' ')) {
+          if (query.includes(k) || core.includes(k)) score += 10;
+        } else if (
+          new RegExp(`\\b${escaped}\\b`).test(query) ||
+          new RegExp(`\\b${escaped}\\b`).test(core)
+        ) {
+          score += 8;
         }
       }
     }
+
+    if (score > 0) score += Math.min(4, name.split(' ').length);
+
     if (score > bestScore) {
       bestScore = score;
       best = cmd;
     }
   }
 
-  if (!best || bestScore < 10) return null;
+  const minScore = softAdd || bareNameQuery ? 8 : 12;
+  if (!best || bestScore < minScore) return null;
+
+  const related = relatedActionsForElement(best.elementId, 4);
+  const categoryLabel = related.categoryLabel || getCodiixCategoryLabel(best.categoryId);
+
+  let answer =
+    `I can add **${best.name}** for you.\n\n` +
+    `Here's how this element looks in the catalog preview.\n\n` +
+    `Tap **${best.label}** below to insert it.`;
+
+  if (related.actions.length > 0) {
+    answer += `\n\nWant more from **${categoryLabel}** as well? I listed a few options under the preview.`;
+  }
+
   return {
-    answer: best.answer,
+    answer,
     action: { id: best.id, label: best.label, elementId: best.elementId },
+    relatedActions: related.actions,
+    relatedCategoryLabel: categoryLabel,
+    previewElementId: best.elementId,
   };
 }
 

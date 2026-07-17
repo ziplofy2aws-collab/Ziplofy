@@ -4,8 +4,11 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { CodiixFaceIcon } from './CodiixFaceIcon';
+import { CodiixElementPreview } from './CodiixElementPreview';
 import {
   agenticSuggestionsForCategory,
+  getCodiixCategoryLabel,
+  relatedActionsForElement,
   type CodiixAgenticAction,
 } from './codiix-elements-catalog';
 import { CODIX_SUGGESTIONS } from './codiix-knowledge';
@@ -14,15 +17,19 @@ import {
   categoryIdForIntent,
   matchCodiixIntent,
 } from './match-codiix-intent';
+import {
+  getCodiixSessionAgenticMode,
+  getCodiixSessionDraft,
+  getCodiixSessionHasIntroduced,
+  getCodiixSessionMessages,
+  setCodiixSessionAgenticMode,
+  setCodiixSessionDraft,
+  setCodiixSessionHasIntroduced,
+  setCodiixSessionMessages,
+  type CodiixMessage,
+} from './codiix-session';
 
-export type CodiixMessage = {
-  id: string;
-  role: 'user' | 'assistant';
-  text: string;
-  suggestions?: { id: string; label: string }[];
-  actions?: CodiixAgenticAction[];
-};
-
+export type { CodiixMessage };
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -153,15 +160,15 @@ function CodiixFormattedMessage({ text }: { text: string }) {
 export function CodiixChatPanel({
   open,
   onClose,
-  expanded = false,
+  expanded = true,
   onExpandedChange,
   onAgenticInsert,
 }: Props) {
-  const [draft, setDraft] = useState('');
-  const [messages, setMessages] = useState<CodiixMessage[]>([]);
+  const [draft, setDraftState] = useState(() => getCodiixSessionDraft());
+  const [messages, setMessagesState] = useState<CodiixMessage[]>(() => getCodiixSessionMessages());
   const [thinking, setThinking] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
-  const [agenticMode, setAgenticMode] = useState(false);
+  const [agenticMode, setAgenticModeState] = useState(() => getCodiixSessionAgenticMode());
   const [busyActionId, setBusyActionId] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -169,8 +176,35 @@ export function CodiixChatPanel({
   const streamTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const introTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wasOpen = useRef(false);
-  const hasIntroduced = useRef(false);
+  const hasIntroduced = useRef(getCodiixSessionHasIntroduced());
   const [introducing, setIntroducing] = useState(false);
+
+  const setDraft = useCallback((value: string | ((prev: string) => string)) => {
+    setDraftState((prev) => {
+      const next = typeof value === 'function' ? value(prev) : value;
+      setCodiixSessionDraft(next);
+      return next;
+    });
+  }, []);
+
+  const setMessages = useCallback(
+    (value: CodiixMessage[] | ((prev: CodiixMessage[]) => CodiixMessage[])) => {
+      setMessagesState((prev) => {
+        const next = typeof value === 'function' ? value(prev) : value;
+        setCodiixSessionMessages(next);
+        return next;
+      });
+    },
+    [],
+  );
+
+  const setAgenticMode = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    setAgenticModeState((prev) => {
+      const next = typeof value === 'function' ? value(prev) : value;
+      setCodiixSessionAgenticMode(next);
+      return next;
+    });
+  }, []);
 
   const empty = messages.length === 0;
   const greeting = useMemo(() => greetingForNow(), [open]);
@@ -189,6 +223,7 @@ export function CodiixChatPanel({
       wasOpen.current = true;
       if (!hasIntroduced.current) {
         hasIntroduced.current = true;
+        setCodiixSessionHasIntroduced(true);
         setIntroducing(true);
         if (introTimer.current) clearTimeout(introTimer.current);
         introTimer.current = setTimeout(() => setIntroducing(false), 1850);
@@ -219,6 +254,11 @@ export function CodiixChatPanel({
     text: string,
     suggestions?: CodiixMessage['suggestions'],
     actions?: CodiixMessage['actions'],
+    extras?: {
+      relatedActions?: CodiixMessage['relatedActions'];
+      relatedCategoryLabel?: string;
+      previewElementId?: string;
+    },
   ) => {
     const messageId = uid();
     let visibleCharacters = 0;
@@ -242,6 +282,9 @@ export function CodiixChatPanel({
                 text: text.slice(0, visibleCharacters),
                 suggestions: complete ? suggestions : undefined,
                 actions: complete ? actions : undefined,
+                relatedActions: complete ? extras?.relatedActions : undefined,
+                relatedCategoryLabel: complete ? extras?.relatedCategoryLabel : undefined,
+                previewElementId: complete ? extras?.previewElementId : undefined,
               }
             : message,
         ),
@@ -253,7 +296,7 @@ export function CodiixChatPanel({
         setStreamingMessageId(null);
       }
     }, 26);
-  }, []);
+  }, [setMessages]);
 
   const runAgenticAction = useCallback(
     (action: CodiixAgenticAction) => {
@@ -261,16 +304,28 @@ export function CodiixChatPanel({
       setBusyActionId(action.id);
       const ok = onAgenticInsert(action.elementId);
       const success = ok !== false;
+      const related = success
+        ? relatedActionsForElement(action.elementId, 4)
+        : { actions: [] as CodiixAgenticAction[], categoryLabel: '' };
       streamAssistant(
         success
           ? `Done — I added **${action.label.replace(/^Add\s+/i, '')}** to your theme.\n\n` +
-              'Select it in the sidebar to edit settings, or ask me to add something else.'
+              (related.actions.length
+                ? `Want more from **${related.categoryLabel}** as well?`
+                : 'Select it in the sidebar to edit settings, or ask me to add something else.')
           : `I couldn’t add **${action.label.replace(/^Add\s+/i, '')}** right now.\n\n` +
               'Make sure the theme is loaded, then try again — or use **Add section** in the sidebar.',
         [
           { id: 'product-elements', label: 'What are product elements?' },
           { id: 'add-section', label: 'How do I add a section?' },
         ],
+        undefined,
+        success && related.actions.length
+          ? {
+              relatedActions: related.actions,
+              relatedCategoryLabel: related.categoryLabel,
+            }
+          : undefined,
       );
       setBusyActionId(null);
     },
@@ -294,10 +349,14 @@ export function CodiixChatPanel({
           match.relatedSuggestions.length > 0
             ? match.relatedSuggestions
             : CODIX_SUGGESTIONS.slice(0, 3).map((s) => ({ id: s.id, label: s.label }));
-        streamAssistant(match.answer, followUps, match.actions);
+        streamAssistant(match.answer, followUps, match.actions, {
+          relatedActions: match.relatedActions,
+          relatedCategoryLabel: match.relatedCategoryLabel,
+          previewElementId: match.previewElementId,
+        });
       }, delay);
     },
-    [thinking, streamingMessageId, streamAssistant, agenticMode],
+    [thinking, streamingMessageId, streamAssistant, agenticMode, setMessages, setDraft],
   );
 
   const respondFromSuggestion = useCallback(
@@ -309,14 +368,16 @@ export function CodiixChatPanel({
       thinkTimer.current = setTimeout(() => {
         const canned = answerForIntentId(id);
         const categoryId = categoryIdForIntent(id);
+        const categoryActions =
+          agenticMode && categoryId ? agenticSuggestionsForCategory(categoryId) : undefined;
         const match = canned
           ? {
               answer: canned,
               relatedSuggestions: [] as { id: string; label: string }[],
-              actions:
-                agenticMode && categoryId
-                  ? agenticSuggestionsForCategory(categoryId)
-                  : undefined,
+              actions: categoryActions?.slice(0, 1),
+              relatedActions: categoryActions?.slice(1),
+              relatedCategoryLabel: categoryId ? getCodiixCategoryLabel(categoryId) : undefined,
+              previewElementId: categoryActions?.[0]?.elementId,
             }
           : matchCodiixIntent(label, { agentic: agenticMode });
         const followUps =
@@ -329,16 +390,21 @@ export function CodiixChatPanel({
         let answer = match.answer;
         if (
           agenticMode &&
-          actions?.length &&
-          !answer.includes('Agentic mode is on')
+          (actions?.length || match.relatedActions?.length) &&
+          !answer.includes('Agentic mode is on') &&
+          !answer.includes('catalog preview')
         ) {
           answer +=
             '\n\n**Agentic mode is on** — tap a button below and I’ll add that section for you.';
         }
-        streamAssistant(answer, followUps, actions);
+        streamAssistant(answer, followUps, actions, {
+          relatedActions: match.relatedActions,
+          relatedCategoryLabel: match.relatedCategoryLabel,
+          previewElementId: match.previewElementId,
+        });
       }, 380);
     },
-    [thinking, streamingMessageId, streamAssistant, agenticMode],
+    [thinking, streamingMessageId, streamAssistant, agenticMode, setMessages],
   );
 
   const onSubmit = useCallback(
@@ -432,7 +498,9 @@ export function CodiixChatPanel({
             <p className="codiix-empty__greet">{greeting}</p>
             <h2 className="codiix-empty__ask">How can I help?</h2>
             {agenticMode ? (
-              <p className="codiix-empty__agentic">Agentic mode on — try “add header”</p>
+              <p className="codiix-empty__agentic">
+                Agentic on — try “hero”, “add faq”, or “contact form”
+              </p>
             ) : null}
             <div className="codiix-chips">
               {(agenticMode
@@ -480,6 +548,9 @@ export function CodiixChatPanel({
                   ) : (
                     <p className="codiix-msg__text">{m.text}</p>
                   )}
+                  {m.previewElementId ? (
+                    <CodiixElementPreview elementId={m.previewElementId} />
+                  ) : null}
                   {m.actions && m.actions.length > 0 ? (
                     <div className="codiix-actions">
                       {m.actions.map((action) => (
@@ -493,6 +564,28 @@ export function CodiixChatPanel({
                           {busyActionId === action.id ? 'Adding…' : action.label}
                         </button>
                       ))}
+                    </div>
+                  ) : null}
+                  {m.relatedActions && m.relatedActions.length > 0 ? (
+                    <div className="codiix-related">
+                      <p className="codiix-related__label">
+                        {m.relatedCategoryLabel
+                          ? `Want these from ${m.relatedCategoryLabel.replace(/\s+elements$/i, '').trim()} as well?`
+                          : 'Want related elements as well?'}
+                      </p>
+                      <div className="codiix-actions codiix-actions--related">
+                        {m.relatedActions.map((action) => (
+                          <button
+                            key={action.id}
+                            type="button"
+                            className="codiix-action-btn codiix-action-btn--ghost"
+                            disabled={Boolean(busyActionId) || !onAgenticInsert}
+                            onClick={() => runAgenticAction(action)}
+                          >
+                            {busyActionId === action.id ? 'Adding…' : action.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   ) : null}
                   {m.suggestions && m.suggestions.length > 0 ? (
@@ -543,7 +636,7 @@ export function CodiixChatPanel({
           onKeyDown={onKeyDown}
           placeholder={
             agenticMode
-              ? 'Try “add header” or ask about elements…'
+              ? 'Try “hero”, “add faq”, “multicolumn”…'
               : 'Ask about elements, forms, banners…'
           }
           className="codiix-composer__input"

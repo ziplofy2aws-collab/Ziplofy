@@ -68,7 +68,7 @@ export function CreateThemeHeader({
 }: Props) {
   const [moreMenuAnchor, setMoreMenuAnchor] = useState<HTMLElement | null>(null);
   const [codiixOpen, setCodiixOpen] = useState(false);
-  const [codiixExpanded, setCodiixExpanded] = useState(false);
+  const [codiixExpanded, setCodiixExpanded] = useState(true);
   const moreMenuOpen = Boolean(moreMenuAnchor);
   const storefrontHref = storeUrl?.trim() || '';
 
