@@ -8,4 +8,5 @@ export {
   CODIX_ELEMENT_CATEGORIES,
   CODIX_AGENTIC_COMMANDS,
   matchAgenticCommand,
+  listCodiixAgenticElementIds,
 } from './codiix-elements-catalog';

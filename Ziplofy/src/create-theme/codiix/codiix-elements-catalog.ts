@@ -5,80 +5,440 @@ export type CodiixElementCategory = {
   items: { name: string; elementId?: string; ready: boolean }[];
 };
 
-/** Ground-truth catalog for Codiix Q&A (aligned with covered-elements + registry). */
-export const CODIX_ELEMENT_CATEGORIES: CodiixElementCategory[] = [
-  {
-    id: 'header',
+export type CodiixAgenticAction = {
+  id: string;
+  label: string;
+  elementId: string;
+};
+
+type CodiixElementDef = {
+  elementId: string;
+  name: string;
+  categoryId: string;
+  ready?: boolean;
+  /** Extra spoken phrases beyond auto-generated “add {name}” variants */
+  phrases?: string[];
+  keywords?: string[];
+};
+
+const CATEGORY_META: Record<string, { label: string; where: string }> = {
+  header: {
     label: 'Header elements',
     where: 'Left sidebar → Header group → Add section',
-    items: [
-      { name: 'Announcement bar', elementId: 'announcement-bar', ready: true },
-      { name: 'Header', elementId: 'header', ready: true },
-      { name: 'Divider', elementId: 'divider', ready: true },
-    ],
   },
-  {
-    id: 'banner',
+  banners: {
     label: 'Banner elements',
-    where: 'Left sidebar → Template → Add section (look for Hero / banner styles)',
-    items: [{ name: 'Hero', elementId: 'hero', ready: true }],
+    where: 'Left sidebar → Template → Add section → Banners',
   },
-  {
-    id: 'text',
+  text: {
     label: 'Text elements',
-    where: 'Left sidebar → Template → Add section → Text category',
-    items: [
-      { name: 'FAQ', elementId: 'faq', ready: true },
-      { name: 'Icons with text', elementId: 'icons-with-text', ready: true },
-      { name: 'Marquee', elementId: 'text-marquee', ready: true },
-      { name: 'Multicolumn', elementId: 'multicolumn', ready: true },
-      { name: 'Pull quote', elementId: 'pull-quote', ready: true },
-      { name: 'Rich text', elementId: 'rich-text', ready: true },
-    ],
+    where: 'Left sidebar → Template → Add section → Text',
   },
-  {
-    id: 'products',
+  products: {
     label: 'Product elements',
-    where: 'Left sidebar → Template → Add section → Products category',
-    items: [
-      { name: 'Featured collection carousel', elementId: 'featured-collection-carousel', ready: true },
-      { name: 'Featured collection editorial', elementId: 'featured-collection-editorial', ready: true },
-      { name: 'Featured collection grid', elementId: 'featured-collection-grid', ready: true },
-      { name: 'Featured product', elementId: 'featured-product', ready: true },
-      { name: 'Product highlight', elementId: 'product-highlight', ready: true },
-      { name: 'Product hotspot', elementId: 'product-hotspots', ready: true },
-      { name: 'Recommended products', elementId: 'recommended-products', ready: false },
-    ],
+    where: 'Left sidebar → Template → Add section → Products',
   },
-  {
-    id: 'collections',
+  collections: {
     label: 'Collection elements',
-    where: 'Left sidebar → Template → Add section → Collections category',
-    items: [
-      { name: 'Collection links spotlight', elementId: 'collection-links-spotlight', ready: true },
-      { name: 'Collection links text', elementId: 'collection-links-text', ready: true },
-    ],
+    where: 'Left sidebar → Template → Add section → Collections',
   },
-  {
-    id: 'forms',
+  forms: {
     label: 'Forms',
     where: 'Left sidebar → Template or Footer → Add section → Forms',
-    items: [
-      { name: 'Contact form', elementId: 'contact-form', ready: true },
-      { name: 'Email signup', elementId: 'email-signup', ready: true },
-    ],
   },
-  {
-    id: 'footer',
+  storytelling: {
+    label: 'Storytelling elements',
+    where: 'Left sidebar → Template → Add section → Storytelling',
+  },
+  layout: {
+    label: 'Layout elements',
+    where: 'Left sidebar → Template / Footer → Add section → Layout',
+  },
+  footer: {
     label: 'Footer elements',
     where: 'Left sidebar → Footer group → Add section',
-    items: [
-      { name: 'Footer', elementId: 'footer', ready: true },
-      { name: 'Email signup', elementId: 'email-signup', ready: true },
-      { name: 'Policies / links', elementId: 'policies-links', ready: true },
-    ],
+  },
+};
+
+/**
+ * Single source of truth for Codiix — every create-theme section id + how to ask for it.
+ * Aligns with CREATE_THEME_ELEMENTS / catalog-groups.
+ */
+const CODIX_ELEMENTS: CodiixElementDef[] = [
+  // Header
+  {
+    elementId: 'announcement-bar',
+    name: 'Announcement bar',
+    categoryId: 'header',
+    phrases: ['add announcement', 'add announcement bar'],
+    keywords: ['announcement', 'announcement bar'],
+  },
+  {
+    elementId: 'header',
+    name: 'Header',
+    categoryId: 'header',
+    phrases: ['add header', 'add a header', 'insert header'],
+    keywords: ['header', 'navigation'],
+  },
+  {
+    elementId: 'divider',
+    name: 'Divider',
+    categoryId: 'header',
+    phrases: ['add divider', 'add a divider'],
+    keywords: ['divider', 'separator'],
+  },
+
+  // Banners
+  {
+    elementId: 'hero',
+    name: 'Hero',
+    categoryId: 'banners',
+    phrases: ['add hero', 'add a hero', 'add banner', 'add a banner'],
+    keywords: ['hero', 'banner'],
+  },
+  {
+    elementId: 'hero-bottom-aligned',
+    name: 'Hero: Bottom aligned',
+    categoryId: 'banners',
+    phrases: ['add hero bottom aligned', 'add bottom aligned hero'],
+    keywords: ['hero bottom', 'bottom aligned'],
+  },
+  {
+    elementId: 'hero-marquee',
+    name: 'Hero: Marquee',
+    categoryId: 'banners',
+    phrases: ['add hero marquee'],
+    keywords: ['hero marquee'],
+  },
+  {
+    elementId: 'large-logo',
+    name: 'Large logo',
+    categoryId: 'banners',
+    phrases: ['add large logo'],
+    keywords: ['large logo'],
+  },
+  {
+    elementId: 'layered-slideshow',
+    name: 'Layered slideshow',
+    categoryId: 'banners',
+    phrases: ['add layered slideshow', 'add slideshow'],
+    keywords: ['layered slideshow', 'slideshow'],
+  },
+  {
+    elementId: 'slideshow-full-frame',
+    name: 'Slideshow: Full frame',
+    categoryId: 'banners',
+    phrases: ['add full frame slideshow', 'add slideshow full frame'],
+    keywords: ['full frame', 'slideshow full'],
+  },
+  {
+    elementId: 'slideshow-inset',
+    name: 'Slideshow: Inset',
+    categoryId: 'banners',
+    phrases: ['add inset slideshow', 'add slideshow inset'],
+    keywords: ['inset slideshow', 'slideshow inset'],
+  },
+  {
+    elementId: 'split-showcase',
+    name: 'Split showcase',
+    categoryId: 'banners',
+    phrases: ['add split showcase'],
+    keywords: ['split showcase', 'split'],
+  },
+
+  // Text
+  {
+    elementId: 'faq',
+    name: 'FAQ',
+    categoryId: 'text',
+    phrases: ['add faq', 'add a faq'],
+    keywords: ['faq', 'accordion'],
+  },
+  {
+    elementId: 'icons-with-text',
+    name: 'Icons with text',
+    categoryId: 'text',
+    phrases: ['add icons with text', 'add icons'],
+    keywords: ['icons with text', 'icons'],
+  },
+  {
+    elementId: 'text-marquee',
+    name: 'Marquee',
+    categoryId: 'text',
+    phrases: ['add marquee', 'add text marquee'],
+    keywords: ['marquee', 'scrolling text'],
+  },
+  {
+    elementId: 'multicolumn',
+    name: 'Multicolumn',
+    categoryId: 'text',
+    phrases: ['add multicolumn', 'add multi column', 'add columns'],
+    keywords: ['multicolumn', 'columns'],
+  },
+  {
+    elementId: 'pull-quote',
+    name: 'Pull quote',
+    categoryId: 'text',
+    phrases: ['add pull quote', 'add quote'],
+    keywords: ['pull quote', 'quote'],
+  },
+  {
+    elementId: 'rich-text',
+    name: 'Rich text',
+    categoryId: 'text',
+    phrases: ['add rich text', 'add text section'],
+    keywords: ['rich text'],
+  },
+
+  // Products
+  {
+    elementId: 'featured-collection-carousel',
+    name: 'Featured collection: Carousel',
+    categoryId: 'products',
+    phrases: ['add featured collection carousel', 'add collection carousel'],
+    keywords: ['featured collection carousel', 'collection carousel'],
+  },
+  {
+    elementId: 'featured-collection-editorial',
+    name: 'Featured collection: Editorial',
+    categoryId: 'products',
+    phrases: ['add featured collection editorial', 'add collection editorial'],
+    keywords: ['featured collection editorial', 'collection editorial'],
+  },
+  {
+    elementId: 'featured-collection-grid',
+    name: 'Featured collection: Grid',
+    categoryId: 'products',
+    phrases: ['add featured collection', 'add featured collection grid', 'add collection grid', 'add product grid'],
+    keywords: ['featured collection grid', 'featured collection', 'product grid'],
+  },
+  {
+    elementId: 'featured-product',
+    name: 'Featured product',
+    categoryId: 'products',
+    phrases: ['add featured product'],
+    keywords: ['featured product'],
+  },
+  {
+    elementId: 'product-highlight',
+    name: 'Product highlight',
+    categoryId: 'products',
+    phrases: ['add product highlight'],
+    keywords: ['product highlight'],
+  },
+  {
+    elementId: 'product-hotspots',
+    name: 'Product hotspots',
+    categoryId: 'products',
+    phrases: ['add product hotspots', 'add product hotspot', 'add hotspots'],
+    keywords: ['product hotspot', 'product hotspots', 'hotspots'],
+  },
+  {
+    elementId: 'recommended-products',
+    name: 'Recommended products',
+    categoryId: 'products',
+    phrases: ['add recommended products'],
+    keywords: ['recommended products', 'recommended'],
+  },
+
+  // Collections
+  {
+    elementId: 'collection-links-spotlight',
+    name: 'Collection links: Spotlight',
+    categoryId: 'collections',
+    phrases: ['add collection links spotlight', 'add collection spotlight'],
+    keywords: ['collection links spotlight', 'collection spotlight'],
+  },
+  {
+    elementId: 'collection-links-text',
+    name: 'Collection links: Text',
+    categoryId: 'collections',
+    phrases: ['add collection links text', 'add collection links'],
+    keywords: ['collection links text', 'collection links'],
+  },
+  {
+    elementId: 'collection-list-bento',
+    name: 'Collection list: Bento',
+    categoryId: 'collections',
+    phrases: ['add collection list bento', 'add bento'],
+    keywords: ['collection list bento', 'bento'],
+  },
+  {
+    elementId: 'collection-list-carousel',
+    name: 'Collection list: Carousel',
+    categoryId: 'collections',
+    phrases: ['add collection list carousel'],
+    keywords: ['collection list carousel'],
+  },
+  {
+    elementId: 'collection-list-editorial',
+    name: 'Collection list: Editorial',
+    categoryId: 'collections',
+    phrases: ['add collection list editorial'],
+    keywords: ['collection list editorial'],
+  },
+  {
+    elementId: 'collection-list-grid',
+    name: 'Collection list: Grid',
+    categoryId: 'collections',
+    phrases: ['add collection list grid', 'add collection list'],
+    keywords: ['collection list grid', 'collection list'],
+  },
+
+  // Forms
+  {
+    elementId: 'contact-form',
+    name: 'Contact form',
+    categoryId: 'forms',
+    phrases: ['add contact form', 'add contact'],
+    keywords: ['contact form', 'contact'],
+  },
+  {
+    elementId: 'email-signup',
+    name: 'Email signup',
+    categoryId: 'forms',
+    phrases: ['add email signup', 'add newsletter', 'add signup'],
+    keywords: ['email signup', 'newsletter', 'signup'],
+  },
+  {
+    elementId: 'not-found-main',
+    name: '404',
+    categoryId: 'forms',
+    phrases: ['add 404', 'add not found', 'add 404 page'],
+    keywords: ['404', 'not found'],
+  },
+
+  // Storytelling
+  {
+    elementId: 'blog-posts-carousel',
+    name: 'Blog posts: Carousel',
+    categoryId: 'storytelling',
+    phrases: ['add blog posts carousel', 'add blog carousel'],
+    keywords: ['blog posts carousel', 'blog carousel'],
+  },
+  {
+    elementId: 'blog-posts-editorial',
+    name: 'Blog posts: Editorial',
+    categoryId: 'storytelling',
+    phrases: ['add blog posts editorial', 'add blog editorial'],
+    keywords: ['blog posts editorial', 'blog editorial'],
+  },
+  {
+    elementId: 'blog-posts-grid',
+    name: 'Blog posts: Grid',
+    categoryId: 'storytelling',
+    phrases: ['add blog posts grid', 'add blog grid', 'add blog posts'],
+    keywords: ['blog posts grid', 'blog posts', 'blog grid'],
+  },
+  {
+    elementId: 'storytelling-carousel',
+    name: 'Carousel',
+    categoryId: 'storytelling',
+    phrases: ['add storytelling carousel', 'add carousel'],
+    keywords: ['storytelling carousel', 'carousel'],
+  },
+  {
+    elementId: 'editorial',
+    name: 'Editorial',
+    categoryId: 'storytelling',
+    phrases: ['add editorial'],
+    keywords: ['editorial'],
+  },
+  {
+    elementId: 'editorial-jumbo',
+    name: 'Editorial: Jumbo text',
+    categoryId: 'storytelling',
+    phrases: ['add editorial jumbo', 'add jumbo text'],
+    keywords: ['editorial jumbo', 'jumbo text'],
+  },
+  {
+    elementId: 'image-compare',
+    name: 'Image compare',
+    categoryId: 'storytelling',
+    phrases: ['add image compare', 'add before after'],
+    keywords: ['image compare', 'before after'],
+  },
+  {
+    elementId: 'image-with-text',
+    name: 'Image with text',
+    categoryId: 'storytelling',
+    phrases: ['add image with text'],
+    keywords: ['image with text'],
+  },
+  {
+    elementId: 'logo',
+    name: 'Logo',
+    categoryId: 'storytelling',
+    phrases: ['add logo'],
+    keywords: ['logo'],
+  },
+  {
+    elementId: 'video',
+    name: 'Video',
+    categoryId: 'storytelling',
+    phrases: ['add video'],
+    keywords: ['video'],
+  },
+
+  // Layout
+  {
+    elementId: 'custom-section',
+    name: 'Custom section',
+    categoryId: 'layout',
+    phrases: ['add custom section'],
+    keywords: ['custom section'],
+  },
+  {
+    elementId: 'custom-liquid',
+    name: 'Custom Liquid',
+    categoryId: 'layout',
+    phrases: ['add custom liquid', 'add liquid'],
+    keywords: ['custom liquid', 'liquid'],
+  },
+
+  // Footer
+  {
+    elementId: 'footer',
+    name: 'Footer',
+    categoryId: 'footer',
+    phrases: ['add footer', 'add a footer', 'insert footer'],
+    keywords: ['footer'],
+  },
+  {
+    elementId: 'policies-links',
+    name: 'Policies and links',
+    categoryId: 'footer',
+    phrases: ['add policies and links', 'add policies', 'add policy links'],
+    keywords: ['policies', 'policies and links', 'policy links'],
   },
 ];
+
+const CATEGORY_ORDER = [
+  'header',
+  'banners',
+  'text',
+  'products',
+  'collections',
+  'forms',
+  'storytelling',
+  'layout',
+  'footer',
+] as const;
+
+/** Ground-truth catalog for Codiix Q&A (aligned with covered-elements + registry). */
+export const CODIX_ELEMENT_CATEGORIES: CodiixElementCategory[] = CATEGORY_ORDER.map((id) => {
+  const meta = CATEGORY_META[id];
+  return {
+    id,
+    label: meta.label,
+    where: meta.where,
+    items: CODIX_ELEMENTS.filter((e) => e.categoryId === id).map((e) => ({
+      name: e.name,
+      elementId: e.elementId,
+      ready: e.ready !== false,
+    })),
+  };
+});
 
 export function formatCategoryAnswer(categoryId: string): string | null {
   const cat = CODIX_ELEMENT_CATEGORIES.find((c) => c.id === categoryId);
@@ -97,158 +457,43 @@ export function formatCategoryAnswer(categoryId: string): string | null {
   return lines.join('\n');
 }
 
-export type CodiixAgenticAction = {
-  id: string;
-  label: string;
-  elementId: string;
-};
+function autoPhrases(name: string, elementId: string): string[] {
+  const lower = name.toLowerCase();
+  const idWords = elementId.replace(/-/g, ' ');
+  return [
+    `add ${lower}`,
+    `add a ${lower}`,
+    `insert ${lower}`,
+    `create ${lower}`,
+    `add ${idWords}`,
+  ];
+}
 
 /** Phrases that map to one-click add actions in agentic mode. */
-export const CODIX_AGENTIC_COMMANDS: Array<{
-  id: string;
-  phrases: string[];
-  keywords: string[];
-  elementId: string;
-  label: string;
-  answer: string;
-}> = [
-  {
-    id: 'add-header',
-    phrases: ['add header', 'add a header', 'insert header', 'create header'],
-    keywords: ['header'],
-    elementId: 'header',
-    label: 'Add Header',
+export const CODIX_AGENTIC_COMMANDS = CODIX_ELEMENTS.filter((e) => e.ready !== false).map((e) => {
+  const phrases = Array.from(
+    new Set([...(e.phrases ?? []), ...autoPhrases(e.name, e.elementId)]),
+  );
+  const keywords = Array.from(
+    new Set([
+      ...(e.keywords ?? []),
+      e.name.toLowerCase(),
+      e.elementId.replace(/-/g, ' '),
+      ...e.elementId.split('-'),
+    ]),
+  );
+
+  return {
+    id: `add-${e.elementId}`,
+    phrases,
+    keywords,
+    elementId: e.elementId,
+    label: `Add ${e.name}`,
     answer:
-      'I can add a **Header** to your layout for you.\n\n' +
-      'Tap the button below and I’ll place it in the Header group.',
-  },
-  {
-    id: 'add-announcement',
-    phrases: ['add announcement', 'add announcement bar', 'add a announcement bar'],
-    keywords: ['announcement'],
-    elementId: 'announcement-bar',
-    label: 'Add Announcement bar',
-    answer:
-      'I can add an **Announcement bar** at the top of your store.\n\n' +
-      'Tap below to drop it into the Header group.',
-  },
-  {
-    id: 'add-footer',
-    phrases: ['add footer', 'add a footer', 'insert footer', 'create footer'],
-    keywords: ['footer'],
-    elementId: 'footer',
-    label: 'Add Footer',
-    answer:
-      'I can add a **Footer** to your layout.\n\n' +
-      'Tap the button below and I’ll place it in the Footer group.',
-  },
-  {
-    id: 'add-hero',
-    phrases: ['add hero', 'add a hero', 'add banner', 'add a banner'],
-    keywords: ['hero', 'banner'],
-    elementId: 'hero',
-    label: 'Add Hero',
-    answer:
-      'I can add a **Hero** banner to your template.\n\n' +
-      'Tap below to insert it into the Template group.',
-  },
-  {
-    id: 'add-multicolumn',
-    phrases: ['add multicolumn', 'add multi column', 'add columns'],
-    keywords: ['multicolumn'],
-    elementId: 'multicolumn',
-    label: 'Add Multicolumn',
-    answer: 'Ready to add **Multicolumn**. Tap below and I’ll insert it into the template.',
-  },
-  {
-    id: 'add-faq',
-    phrases: ['add faq', 'add a faq'],
-    keywords: ['faq'],
-    elementId: 'faq',
-    label: 'Add FAQ',
-    answer: 'I can add an **FAQ** section for you. Tap below to insert it.',
-  },
-  {
-    id: 'add-rich-text',
-    phrases: ['add rich text', 'add text section'],
-    keywords: ['rich text'],
-    elementId: 'rich-text',
-    label: 'Add Rich text',
-    answer: 'I can add a **Rich text** section. Tap below to insert it.',
-  },
-  {
-    id: 'add-pull-quote',
-    phrases: ['add pull quote', 'add quote'],
-    keywords: ['pull quote'],
-    elementId: 'pull-quote',
-    label: 'Add Pull quote',
-    answer: 'I can add a **Pull quote**. Tap below to insert it.',
-  },
-  {
-    id: 'add-marquee',
-    phrases: ['add marquee'],
-    keywords: ['marquee'],
-    elementId: 'text-marquee',
-    label: 'Add Marquee',
-    answer: 'I can add a **Marquee** text strip. Tap below to insert it.',
-  },
-  {
-    id: 'add-icons-with-text',
-    phrases: ['add icons with text', 'add icons'],
-    keywords: ['icons with text'],
-    elementId: 'icons-with-text',
-    label: 'Add Icons with text',
-    answer: 'I can add **Icons with text**. Tap below to insert it.',
-  },
-  {
-    id: 'add-contact-form',
-    phrases: ['add contact form', 'add contact'],
-    keywords: ['contact form'],
-    elementId: 'contact-form',
-    label: 'Add Contact form',
-    answer: 'I can add a **Contact form**. Tap below to insert it.',
-  },
-  {
-    id: 'add-email-signup',
-    phrases: ['add email signup', 'add newsletter', 'add signup'],
-    keywords: ['email signup', 'newsletter'],
-    elementId: 'email-signup',
-    label: 'Add Email signup',
-    answer: 'I can add an **Email signup** form. Tap below to insert it.',
-  },
-  {
-    id: 'add-featured-product',
-    phrases: ['add featured product'],
-    keywords: ['featured product'],
-    elementId: 'featured-product',
-    label: 'Add Featured product',
-    answer: 'I can add a **Featured product** section. Tap below to insert it.',
-  },
-  {
-    id: 'add-featured-collection-grid',
-    phrases: ['add featured collection', 'add collection grid', 'add product grid'],
-    keywords: ['featured collection grid'],
-    elementId: 'featured-collection-grid',
-    label: 'Add Featured collection grid',
-    answer: 'I can add a **Featured collection grid**. Tap below to insert it.',
-  },
-  {
-    id: 'add-featured-collection-carousel',
-    phrases: ['add collection carousel', 'add featured carousel'],
-    keywords: ['featured collection carousel'],
-    elementId: 'featured-collection-carousel',
-    label: 'Add Featured collection carousel',
-    answer: 'I can add a **Featured collection carousel**. Tap below to insert it.',
-  },
-  {
-    id: 'add-divider',
-    phrases: ['add divider'],
-    keywords: ['divider'],
-    elementId: 'divider',
-    label: 'Add Divider',
-    answer: 'I can add a **Divider**. Tap below to insert it into the Header group.',
-  },
-];
+      `I can add **${e.name}** for you.\n\n` +
+      'Tap the button below and I’ll insert it into the right place in your theme.',
+  };
+});
 
 function normalize(text: string): string {
   return text
@@ -273,15 +518,20 @@ export function matchAgenticCommand(raw: string): {
     let score = 0;
     for (const phrase of cmd.phrases) {
       const p = normalize(phrase);
+      if (!p) continue;
       if (query === p) score += 20;
       else if (query.includes(p)) score += 14;
     }
-    // Prefer explicit "add/insert/create" + keyword
     const wantsAdd = /\b(add|insert|create|put|place)\b/.test(query);
     if (wantsAdd) {
       for (const kw of cmd.keywords) {
         const k = normalize(kw);
-        if (query.includes(k)) score += 6;
+        if (!k) continue;
+        if (k.includes(' ')) {
+          if (query.includes(k)) score += 8;
+        } else if (new RegExp(`\\b${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(query)) {
+          score += 5;
+        }
       }
     }
     if (score > bestScore) {
@@ -302,10 +552,15 @@ export function agenticSuggestionsForCategory(categoryId: string): CodiixAgentic
   if (!cat) return [];
   return cat.items
     .filter((i) => i.ready && i.elementId)
-    .slice(0, 4)
+    .slice(0, 6)
     .map((i) => ({
       id: `add-${i.elementId}`,
       label: `Add ${i.name}`,
       elementId: i.elementId!,
     }));
+}
+
+/** All registered element ids Codiix can add in agentic mode. */
+export function listCodiixAgenticElementIds(): string[] {
+  return CODIX_AGENTIC_COMMANDS.map((c) => c.elementId);
 }
