@@ -130,6 +130,10 @@ function settingKeyFromBlueprintFieldPath(path: string): string | null {
   return m ? m[1] : null;
 }
 
+function normalizeBlockTypeKey(value: string): string {
+  return value.trim().toLowerCase().replace(/_/g, '-');
+}
+
 function schemaBlockForConfigBlock(
   schemaBlocks: BlockLike[] | undefined,
   blockInstanceId: string,
@@ -140,7 +144,17 @@ function schemaBlockForConfigBlock(
   if (byId) return byId;
   const blockType = String(configBlock.type ?? '').trim();
   if (!blockType) return undefined;
-  return schemaBlocks.find((b) => b.type === blockType || (b.id ?? '') === blockType);
+  const normalizedType = normalizeBlockTypeKey(blockType);
+  return schemaBlocks.find((b) => {
+    const id = b.id ?? '';
+    const type = b.type ?? '';
+    return (
+      type === blockType ||
+      id === blockType ||
+      normalizeBlockTypeKey(type) === normalizedType ||
+      normalizeBlockTypeKey(id) === normalizedType
+    );
+  });
 }
 
 function pushLayoutBlockInstanceFields(
@@ -1067,6 +1081,30 @@ const FAQ_SECTION_SETTING_TYPES: Record<string, string> = {
   customCss: 'textarea',
 };
 
+const MULTICOLUMN_SECTION_SETTING_TYPES: Record<string, string> = {
+  direction: 'select',
+  verticalOnMobile: 'boolean',
+  layoutAlignment: 'select',
+  position: 'select',
+  layoutGap: 'number',
+  columns: 'number',
+  sectionWidth: 'select',
+  height: 'select',
+  colorScheme: 'text',
+  backgroundMedia: 'select',
+  backgroundImageUrl: 'text',
+  backgroundColor: 'text',
+  backgroundOverlay: 'boolean',
+  borderStyle: 'select',
+  borderThickness: 'number',
+  borderOpacity: 'number',
+  borderColor: 'text',
+  cornerRadius: 'number',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  customCss: 'textarea',
+};
+
 function resolveFaqSectionSettingType(
   path: string,
   typeByPath: Map<string, string>
@@ -1089,6 +1127,33 @@ function resolveFaqSectionSettingType(
       typeByPath.get(`templates.index.sections.faq_section.settings.${key}`) ??
       typeByPath.get(`sections.faq_section.settings.${key}`) ??
       FAQ_SECTION_SETTING_TYPES[key]
+    );
+  }
+  return undefined;
+}
+
+function resolveMulticolumnSectionSettingType(
+  path: string,
+  typeByPath: Map<string, string>
+): string | undefined {
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) {
+    const key = tpl[3]!;
+    if (!MULTICOLUMN_SECTION_SETTING_TYPES[key]) return undefined;
+    return (
+      typeByPath.get(`templates.index.sections.multicolumn_section.settings.${key}`) ??
+      typeByPath.get(`sections.multicolumn_section.settings.${key}`) ??
+      MULTICOLUMN_SECTION_SETTING_TYPES[key]
+    );
+  }
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) {
+    const key = layout[2]!;
+    if (!MULTICOLUMN_SECTION_SETTING_TYPES[key]) return undefined;
+    return (
+      typeByPath.get(`templates.index.sections.multicolumn_section.settings.${key}`) ??
+      typeByPath.get(`sections.multicolumn_section.settings.${key}`) ??
+      MULTICOLUMN_SECTION_SETTING_TYPES[key]
     );
   }
   return undefined;
@@ -1436,6 +1501,9 @@ function resolveFieldTypeForPath(
   const faqSection = resolveFaqSectionSettingType(path, typeByPath);
   if (faqSection) return faqSection;
 
+  const multicolumnSection = resolveMulticolumnSectionSettingType(path, typeByPath);
+  if (multicolumnSection) return multicolumnSection;
+
   const collectionCardTitle = resolveCollectionCardTitleSettingType(path);
   if (collectionCardTitle) return collectionCardTitle;
 
@@ -1598,6 +1666,30 @@ function resolveFieldTypeForPath(
     if (fromBlueprint) return fromBlueprint;
     const faqSection = resolveFaqSectionSettingType(path, typeByPath);
     if (faqSection) return faqSection;
+  }
+
+  const layoutMulticolumn = path.match(/^sections\.(multicolumn_section(?:_\d+)?)\.(.+)$/);
+  if (layoutMulticolumn) {
+    const fromTemplate = typeByPath.get(
+      `templates.index.sections.multicolumn_section.${layoutMulticolumn[2]}`
+    );
+    if (fromTemplate) return fromTemplate;
+    const fromLayout = typeByPath.get(`sections.multicolumn_section.${layoutMulticolumn[2]}`);
+    if (fromLayout) return fromLayout;
+    const multicolumnSection = resolveMulticolumnSectionSettingType(path, typeByPath);
+    if (multicolumnSection) return multicolumnSection;
+  }
+
+  const tplMulticolumn = path.match(
+    /^templates\.([^.]+)\.sections\.(multicolumn_section(?:_\d+)?)\.(.+)$/
+  );
+  if (tplMulticolumn) {
+    const fromBlueprint = typeByPath.get(
+      `templates.${tplMulticolumn[1]}.sections.multicolumn_section.${tplMulticolumn[3]}`
+    );
+    if (fromBlueprint) return fromBlueprint;
+    const multicolumnSection = resolveMulticolumnSectionSettingType(path, typeByPath);
+    if (multicolumnSection) return multicolumnSection;
   }
 
   const m = path.match(/^sections\.([^.]+)\.(.+)$/);
@@ -1820,6 +1912,19 @@ export function applyValuesToThemeConfig(
         key === 'headingTextCase' ||
         key === 'headingWrap' ||
         key === 'headingTypographyPreset' ||
+        key === 'headingWidth' ||
+        key === 'headingMaxWidth' ||
+        key === 'headingAlignment' ||
+        key === 'descFont' ||
+        key === 'descFontSize' ||
+        key === 'descLineHeight' ||
+        key === 'descLetterSpacing' ||
+        key === 'descTextCase' ||
+        key === 'descWrap' ||
+        key === 'descTypographyPreset' ||
+        key === 'descWidth' ||
+        key === 'descMaxWidth' ||
+        key === 'descAlignment' ||
         key === 'quoteFont' ||
         key === 'quoteFontSize' ||
         key === 'quoteLineHeight' ||
@@ -1842,6 +1947,53 @@ export function applyValuesToThemeConfig(
       ) {
         type = 'text';
       } else if (
+        key === 'headingBackgroundEnabled' ||
+        key === 'descBackgroundEnabled' ||
+        key === 'backgroundEnabled' ||
+        key === 'showSalePriceFirst'
+      ) {
+        type = 'boolean';
+      } else if (
+        key === 'headingCornerRadius' ||
+        key === 'headingPaddingTop' ||
+        key === 'headingPaddingBottom' ||
+        key === 'headingPaddingLeft' ||
+        key === 'headingPaddingRight' ||
+        key === 'descCornerRadius' ||
+        key === 'descPaddingTop' ||
+        key === 'descPaddingBottom' ||
+        key === 'descPaddingLeft' ||
+        key === 'descPaddingRight' ||
+        key === 'paddingTop' ||
+        key === 'paddingBottom' ||
+        key === 'paddingLeft' ||
+        key === 'paddingRight' ||
+        key === 'borderThickness' ||
+        key === 'cornerRadius'
+      ) {
+        type = 'number';
+      } else if (
+        key === 'direction' ||
+        key === 'layoutAlignment' ||
+        key === 'position' ||
+        key === 'sectionWidth' ||
+        key === 'height' ||
+        key === 'backgroundMedia' ||
+        key === 'backgroundImageUrl' ||
+        key === 'borderStyle' ||
+        key === 'colorScheme' ||
+        key === 'customCss'
+      ) {
+        type = 'text';
+      } else if (
+        key === 'verticalOnMobile' ||
+        key === 'backgroundOverlay' ||
+        key === 'mediaOverlay'
+      ) {
+        type = 'boolean';
+      } else if (
+        key === 'layoutGap' ||
+        key === 'columns' ||
         key === 'productId' ||
         key === 'productTitle' ||
         key === 'productImageUrl' ||
@@ -1861,19 +2013,8 @@ export function applyValuesToThemeConfig(
         key === 'alignment' ||
         key === 'mobileAlignment'
       ) {
-        type = 'text';
+        type = key === 'layoutGap' || key === 'columns' ? 'number' : 'text';
       } else if (key === 'positionX' || key === 'positionY' || key === 'popoverGap') {
-        type = 'number';
-      } else if (key === 'backgroundEnabled' || key === 'showSalePriceFirst') {
-        type = 'boolean';
-      } else if (
-        key === 'paddingTop' ||
-        key === 'paddingBottom' ||
-        key === 'paddingLeft' ||
-        key === 'paddingRight' ||
-        key === 'borderThickness' ||
-        key === 'cornerRadius'
-      ) {
         type = 'number';
       } else {
         continue;

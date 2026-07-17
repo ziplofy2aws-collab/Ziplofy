@@ -5,11 +5,19 @@ export const MULTICOLUMN_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(MULTICOLUMN_PANEL_GROUP_ORDER);
+
+const BORDER_KEYS = new Set([
+  'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
+  'cornerRadius',
+]);
 
 const FIELD_SORT: Record<string, number> = {
   direction: 0,
@@ -22,12 +30,15 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
-  backgroundOverlay: 25,
-  paddingTop: 30,
-  paddingBottom: 31,
-  customCss: 40,
+  backgroundColor: 23,
+  backgroundOverlay: 24,
+  borderStyle: 30,
+  borderThickness: 31,
+  borderOpacity: 32,
+  borderColor: 33,
+  cornerRadius: 34,
+  paddingTop: 40,
+  paddingBottom: 41,
 };
 
 function fieldSortKey(path: string): number {
@@ -39,8 +50,11 @@ export function isMulticolumnSectionType(secType: string | undefined, catalogVar
 }
 
 export function isMulticolumnPanelField(field: EditorFieldDef): boolean {
-  if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return /\.sections\.[^.]+\.settings\./.test(field.path);
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
+  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
+  if (BORDER_KEYS.has(key)) return true;
+  return Boolean(field.group && PANEL_GROUPS.has(field.group));
 }
 
 export function isMulticolumnBlockField(field: EditorFieldDef): boolean {
@@ -58,12 +72,14 @@ export function sortMulticolumnPanelFields(fields: EditorFieldDef[]): EditorFiel
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
   };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[a.group ?? ''] ?? 9;
-    const gb = groupRank[b.group ?? ''] ?? 9;
+    const keyA = a.path.split('.').pop() ?? '';
+    const keyB = b.path.split('.').pop() ?? '';
+    const ga = groupRank[BORDER_KEYS.has(keyA) ? 'Borders' : (a.group ?? '')] ?? 9;
+    const gb = groupRank[BORDER_KEYS.has(keyB) ? 'Borders' : (b.group ?? '')] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -72,9 +88,20 @@ export function sortMulticolumnPanelFields(fields: EditorFieldDef[]): EditorFiel
 export function groupMulticolumnPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
+    const key = field.path.split('.').pop() ?? '';
+    const group = BORDER_KEYS.has(key)
+      ? 'Borders'
+      : field.group && PANEL_GROUPS.has(field.group)
+        ? field.group
+        : 'Layout';
     const list = map.get(group) ?? [];
-    list.push(field);
+    list.push(
+      key === 'borderStyle'
+        ? { ...field, label: 'Style', group: 'Borders' }
+        : BORDER_KEYS.has(key)
+          ? { ...field, group: 'Borders' }
+          : field
+    );
     map.set(group, list);
   }
   return map;
@@ -96,9 +123,52 @@ export function isMulticolumnSettingsPanelFields(fields: EditorFieldDef[]): bool
 }
 
 export function prepareMulticolumnSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortMulticolumnPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isMulticolumnPanelField)
-  );
+  const filtered = filterSidebarSectionPanelFields(node.fields ?? [], isMulticolumnPanelField);
+  const settingsBase =
+    filtered
+      .find((field) => !field.path.includes('.blocks.'))
+      ?.path.match(/^(.*?\.settings)\./)?.[1] ?? null;
+  const hasSectionKey = (key: string) =>
+    filtered.some(
+      (field) =>
+        !field.path.includes('.blocks.') &&
+        field.path === `${settingsBase}.${key}`
+    );
+  const extra: EditorFieldDef[] = [];
+  const add = (key: string, field: Omit<EditorFieldDef, 'path'>) => {
+    if (settingsBase && !hasSectionKey(key)) {
+      extra.push({ path: `${settingsBase}.${key}`, ...field });
+    }
+  };
+
+  add('borderStyle', {
+    type: 'select',
+    label: 'Style',
+    group: 'Borders',
+    widget: 'segmented',
+    sidebar: true,
+    options: [
+      { value: 'none', label: 'None' },
+      { value: 'solid', label: 'Solid' },
+    ],
+  });
+  add('borderThickness', {
+    type: 'number', label: 'Thickness', group: 'Borders', widget: 'slider',
+    min: 0, max: 10, step: 1, unit: 'px', sidebar: true,
+  });
+  add('borderOpacity', {
+    type: 'number', label: 'Opacity', group: 'Borders', widget: 'slider',
+    min: 0, max: 100, step: 1, unit: '%', sidebar: true,
+  });
+  add('borderColor', {
+    type: 'color', label: 'Color', group: 'Borders', widget: 'color', sidebar: true,
+  });
+  add('cornerRadius', {
+    type: 'number', label: 'Corner radius', group: 'Borders', widget: 'slider',
+    min: 0, max: 40, step: 1, unit: 'px', sidebar: true,
+  });
+
+  const fields = sortMulticolumnPanelFields([...filtered, ...extra]);
   return { ...node, label: 'Multicolumn', kind: 'section', fields };
 }
 

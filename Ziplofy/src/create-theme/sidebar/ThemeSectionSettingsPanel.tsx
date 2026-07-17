@@ -527,7 +527,11 @@ import {
   groupIconsWithTextPanelFields,
   ICONS_WITH_TEXT_PANEL_GROUP_ORDER,
   isIconsWithTextBlockField,
-  isIconsWithTextBlockNodeId,
+  isIconsWithTextGroupNodeId,
+  isIconsWithTextNestedHeadingNodeId,
+  isIconsWithTextNestedIconNodeId,
+  isIconsWithTextNestedTextGroupNodeId,
+  isIconsWithTextNestedTextNodeId,
   isIconsWithTextSettingsPanelFields,
   ensureIconsWithTextBorderFieldDefs,
   iconsWithTextSectionSettingsBaseFromFields,
@@ -546,6 +550,10 @@ import {
   groupMulticolumnDescriptionPanelFields,
   MULTICOLUMN_DESCRIPTION_PANEL_GROUP_ORDER,
   filterMulticolumnDescriptionFieldsForPreset,
+  ensureMulticolumnBorderFieldDefs,
+  prepareMulticolumnSettingsNode,
+  isMulticolumnSectionNodeId,
+  multicolumnSectionSettingsBaseFromFields,
 } from './theme-editor-multicolumn-panel.utils';
 import {
   groupMarqueeTextPanelFields,
@@ -11564,13 +11572,13 @@ function MulticolumnColumnBlockSettingsPanel({
     <div className="divide-y divide-[#e1e1e1]">
       {MULTICOLUMN_COLUMN_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        if (!groupFields?.length && label !== 'Borders') return null;
 
         if (label === 'Layout') {
           return (
             <PullQuoteLayoutSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -11578,12 +11586,12 @@ function MulticolumnColumnBlockSettingsPanel({
         }
 
         if (label === 'Size') {
-          const width = pickMulticolumnColumnField(groupFields, 'width');
-          const widthCustom = pickMulticolumnColumnField(groupFields, 'customWidth');
-          const mobileWidth = pickMulticolumnColumnField(groupFields, 'mobileWidth');
-          const mobileWidthCustom = pickMulticolumnColumnField(groupFields, 'mobileCustomWidth');
-          const height = pickMulticolumnColumnField(groupFields, 'height');
-          const heightCustom = pickMulticolumnColumnField(groupFields, 'customHeight');
+          const width = pickMulticolumnColumnField(groupFields!, 'width');
+          const widthCustom = pickMulticolumnColumnField(groupFields!, 'customWidth');
+          const mobileWidth = pickMulticolumnColumnField(groupFields!, 'mobileWidth');
+          const mobileWidthCustom = pickMulticolumnColumnField(groupFields!, 'mobileCustomWidth');
+          const height = pickMulticolumnColumnField(groupFields!, 'height');
+          const heightCustom = pickMulticolumnColumnField(groupFields!, 'customHeight');
           const widthMode = width ? fieldValueAsString(values, width) || 'fit' : 'fit';
           const mobileWidthMode = mobileWidth ? fieldValueAsString(values, mobileWidth) || 'fit' : 'fit';
           const heightMode = height ? fieldValueAsString(values, height) || 'fit' : 'fit';
@@ -11629,7 +11637,7 @@ function MulticolumnColumnBlockSettingsPanel({
           return (
             <RichTextAppearanceSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               colorPalette={colorPalette}
               onFieldChange={onFieldChange}
@@ -11639,10 +11647,12 @@ function MulticolumnColumnBlockSettingsPanel({
 
         if (label === 'Borders') {
           return (
-            <RichTextBordersSettingsGroup
+            <MulticolumnBordersSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
+              allFields={fields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -12615,33 +12625,80 @@ function RichTextBlockSettingsPanel({
   );
 }
 
-/** Multicolumn: Layout → Size → Appearance → Borders → Padding → Custom CSS. */
+/** Multicolumn: Layout → Size → Appearance → Borders → Padding. */
 function MulticolumnGroupedSettingsPanel({
+  nodeId,
   fields,
   values,
+  themeConfig,
   colorPalette,
   onFieldChange,
 }: {
+  nodeId: string;
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  themeConfig?: Record<string, unknown> | null;
   colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const grouped = useMemo(() => groupMulticolumnPanelFields(fields), [fields]);
+  const panelFields = useMemo(() => {
+    const prepared =
+      prepareMulticolumnSettingsNode({
+        id: nodeId,
+        label: 'Multicolumn',
+        kind: 'section',
+        fields,
+      }).fields ?? fields;
+    return ensureMulticolumnBorderFieldDefs(prepared);
+  }, [nodeId, fields]);
+  const grouped = useMemo(() => groupMulticolumnPanelFields(panelFields), [panelFields]);
+
+  const handleLayoutFieldChange = (
+    path: string,
+    type: ThemeEditorFieldType,
+    value: string | boolean
+  ) => {
+    onFieldChange(path, type, value);
+    const key = path.split('.').pop() ?? '';
+    if (key !== 'layoutAlignment' && key !== 'position') return;
+    const settingsBase = path.replace(/\.(layoutAlignment|position)$/, '');
+    const sectionBase = settingsBase.replace(/\.settings$/, '');
+    const blocksPath = `${sectionBase}.blocks`;
+    let cur: unknown = themeConfig ?? null;
+    for (const part of blocksPath.split('.')) {
+      if (cur == null || typeof cur !== 'object') {
+        cur = null;
+        break;
+      }
+      cur = (cur as Record<string, unknown>)[part];
+    }
+    const blocks = cur && typeof cur === 'object' && !Array.isArray(cur)
+      ? (cur as Record<string, unknown>)
+      : null;
+    if (!blocks) return;
+    for (const blockId of Object.keys(blocks)) {
+      if (!/column/i.test(blockId)) continue;
+      onFieldChange(`${blocksPath}.${blockId}.settings.${key}`, type, value);
+      if (key === 'layoutAlignment') {
+        onFieldChange(`${blocksPath}.${blockId}.settings.headingAlignment`, type, value);
+        onFieldChange(`${blocksPath}.${blockId}.settings.descAlignment`, type, value);
+      }
+    }
+  };
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {MULTICOLUMN_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        if (!groupFields?.length && label !== 'Borders') return null;
 
         if (label === 'Layout') {
           return (
-            <SplitShowcaseLayoutSettingsGroup
+            <PullQuoteLayoutSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
-              onFieldChange={onFieldChange}
+              onFieldChange={handleLayoutFieldChange}
             />
           );
         }
@@ -12650,7 +12707,7 @@ function MulticolumnGroupedSettingsPanel({
           return (
             <LargeLogoSizeSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -12658,10 +12715,21 @@ function MulticolumnGroupedSettingsPanel({
         }
 
         if (label === 'Appearance') {
+          const appearanceFields = (groupFields ?? []).filter((f) => {
+            const key = f.path.split('.').pop() ?? '';
+            return (
+              key !== 'borderStyle' &&
+              key !== 'borderThickness' &&
+              key !== 'borderOpacity' &&
+              key !== 'borderColor' &&
+              key !== 'cornerRadius'
+            );
+          });
+          if (!appearanceFields.length) return null;
           return (
-            <RichTextAppearanceSettingsGroup
+            <ContactFormAppearanceSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={appearanceFields}
               values={values}
               colorPalette={colorPalette}
               onFieldChange={onFieldChange}
@@ -12671,10 +12739,12 @@ function MulticolumnGroupedSettingsPanel({
 
         if (label === 'Borders') {
           return (
-            <RichTextBordersSettingsGroup
+            <MulticolumnBordersSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
+              allFields={panelFields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -12684,30 +12754,160 @@ function MulticolumnGroupedSettingsPanel({
           return (
             <HeroPaddingSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
           );
         }
 
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
-          );
-        }
-
         return null;
       })}
+    </div>
+  );
+}
+
+/** Borders: Style → Thickness / Opacity / Color (when Solid) → Corner radius.
+ *  Same behavior as Icons with text / Column — always synthesize Solid controls. */
+function MulticolumnBordersSettingsGroup({
+  fields,
+  allFields = [],
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  allFields?: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const panelFields = useMemo(
+    () => ensureMulticolumnBorderFieldDefs([...fields, ...allFields]),
+    [fields, allFields]
+  );
+  const settingsBase = useMemo(
+    () => multicolumnSectionSettingsBaseFromFields(panelFields),
+    [panelFields]
+  );
+
+  const byKey = useMemo(() => {
+    const map = new Map<string, EditorFieldDef>();
+    for (const field of panelFields) {
+      const key = field.path.split('.').pop() ?? '';
+      if (!key || map.has(key)) continue;
+      if (field.path.includes('.blocks.') && settingsBase && !field.path.startsWith(`${settingsBase}.`)) {
+        continue;
+      }
+      map.set(key, field);
+    }
+    return map;
+  }, [panelFields, settingsBase]);
+
+  const styleField = byKey.get('borderStyle') ?? null;
+  const thicknessField = byKey.get('borderThickness') ?? null;
+  const opacityField = byKey.get('borderOpacity') ?? null;
+  const colorField = byKey.get('borderColor') ?? null;
+  const radiusField = byKey.get('cornerRadius') ?? null;
+
+  if (!styleField && !radiusField) return null;
+
+  const borderStyleRaw = styleField ? fieldValueAsString(values, styleField) : '';
+  const borderStyle = borderStyleRaw.trim().toLowerCase() || 'none';
+  const solidBorders = borderStyle === 'solid';
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Borders</h3>
+      <div className="space-y-1">
+        {styleField ? (
+          <SegmentedFieldRow
+            field={{
+              ...styleField,
+              label: 'Style',
+              type: 'select',
+              widget: 'segmented',
+              options: [
+                { value: 'none', label: 'None' },
+                { value: 'solid', label: 'Solid' },
+              ],
+            }}
+            values={values}
+            onFieldChange={(path, type, value) => {
+              onFieldChange(path, type, value);
+              if (String(value).trim().toLowerCase() !== 'solid' || !settingsBase) return;
+              if (values[`${settingsBase}.borderThickness`] === undefined) {
+                onFieldChange(`${settingsBase}.borderThickness`, 'number', '1');
+              }
+              if (values[`${settingsBase}.borderOpacity`] === undefined) {
+                onFieldChange(`${settingsBase}.borderOpacity`, 'number', '100');
+              }
+              if (
+                values[`${settingsBase}.borderColor`] === undefined ||
+                values[`${settingsBase}.borderColor`] === ''
+              ) {
+                onFieldChange(`${settingsBase}.borderColor`, 'text', 'default');
+              }
+            }}
+          />
+        ) : null}
+        {solidBorders && thicknessField ? (
+          <SliderFieldRow
+            field={{
+              ...thicknessField,
+              label: 'Thickness',
+              widget: 'slider',
+              min: thicknessField.min ?? 0,
+              max: thicknessField.max ?? 10,
+              step: thicknessField.step ?? 1,
+              unit: thicknessField.unit ?? 'px',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {solidBorders && opacityField ? (
+          <SliderFieldRow
+            field={{
+              ...opacityField,
+              label: 'Opacity',
+              widget: 'slider',
+              min: opacityField.min ?? 0,
+              max: opacityField.max ?? 100,
+              step: opacityField.step ?? 1,
+              unit: opacityField.unit ?? '%',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {solidBorders && colorField ? (
+          <ThemePaletteColorField
+            label="Color"
+            path={colorField.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={1}
+            fallbackColor="#111827"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {radiusField ? (
+          <SliderFieldRow
+            field={{
+              ...radiusField,
+              label: 'Corner radius',
+              widget: 'slider',
+              min: radiusField.min ?? 0,
+              max: radiusField.max ?? 40,
+              step: radiusField.step ?? 1,
+              unit: radiusField.unit ?? 'px',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -14944,6 +15144,25 @@ function IconsWithTextDebouncedTextFieldRow({
           className={inputClassName}
         />
       )}
+    </div>
+  );
+}
+
+/** Icon with text nested Icon block. */
+function IconsWithTextNestedIconSettingsPanel({
+  fields,
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const field = fields.find((f) => f.path.endsWith('.icon'));
+  if (!field) return null;
+  return (
+    <div className="px-1 py-3">
+      <InlineSelectFieldRow field={field} values={values} onFieldChange={onFieldChange} />
     </div>
   );
 }
@@ -18381,6 +18600,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isPullQuoteSectionNodeId(node.id) &&
     !isPullQuoteSettingsPanelFields(fields) &&
     node.label !== 'Pull quote' &&
+    !isMulticolumnSectionNodeId(node.id) &&
+    !isMulticolumnSettingsPanelFields(fields) &&
+    node.label !== 'Multicolumn' &&
     (node.label === 'FAQ' || isFaqSectionNodeId(node.id) || isFaqSettingsPanelFields(fields));
   const isEmailSignupHeadingBlockPanel =
     node.kind === 'block' &&
@@ -18735,12 +18957,28 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
       (fields.length > 0 && isStorytellingVideoBlockFieldsOnly(fields)));
   const isIconsWithTextPanel =
     node.label === 'Icons with text' || isIconsWithTextSettingsPanelFields(fields);
+  const isIconsWithTextGroupPanel = node.kind === 'block' && isIconsWithTextGroupNodeId(node.id);
+  const isIconsWithTextNestedIconPanel =
+    node.kind === 'block' && isIconsWithTextNestedIconNodeId(node.id);
+  const isIconsWithTextNestedTextGroupPanel =
+    node.kind === 'block' && isIconsWithTextNestedTextGroupNodeId(node.id);
+  const isIconsWithTextNestedHeadingPanel =
+    node.kind === 'block' && isIconsWithTextNestedHeadingNodeId(node.id);
+  const isIconsWithTextNestedTextPanel =
+    node.kind === 'block' && isIconsWithTextNestedTextNodeId(node.id);
   const isIconsWithTextBlockPanel =
+    !isIconsWithTextGroupPanel &&
+    !isIconsWithTextNestedIconPanel &&
+    !isIconsWithTextNestedTextGroupPanel &&
+    !isIconsWithTextNestedHeadingPanel &&
+    !isIconsWithTextNestedTextPanel &&
     node.kind === 'block' &&
-    (isIconsWithTextBlockNodeId(node.id) ||
-      (fields.length > 0 && fields.every(isIconsWithTextBlockField)));
+    (fields.length > 0 && fields.every(isIconsWithTextBlockField));
   const isMulticolumnPanel =
-    node.label === 'Multicolumn' || isMulticolumnSettingsPanelFields(fields);
+    node.kind !== 'block' &&
+    (node.label === 'Multicolumn' ||
+      isMulticolumnSectionNodeId(node.id) ||
+      isMulticolumnSettingsPanelFields(fields));
   const isMulticolumnColumnBlockPanel =
     node.kind === 'block' && isMulticolumnColumnNodeId(node.id);
   const isMulticolumnDescriptionBlockPanel =
@@ -19008,6 +19246,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isStorytellingVideoBlockPanel &&
     !isStorytellingCarouselCardHeadingBlockPanel &&
     !faqHeadingBlockPanel &&
+    !isIconsWithTextNestedHeadingNodeId(node.id) &&
+    !isIconsWithTextNestedTextNodeId(node.id) &&
     node.kind === 'block' &&
     (node.label === 'Heading' ||
       isHeadingBlockNodeId(node.id) ||
@@ -19094,6 +19334,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isHeroTextBlockPanel &&
     !isNotFoundMainMessageBlockPanel &&
     !isIconsWithTextBlockPanel &&
+    !isIconsWithTextGroupPanel &&
+    !isIconsWithTextNestedIconPanel &&
+    !isIconsWithTextNestedTextGroupPanel &&
+    !isIconsWithTextNestedHeadingPanel &&
+    !isIconsWithTextNestedTextPanel &&
     !isMulticolumnBlockPanel &&
     !isMulticolumnColumnBlockPanel &&
     !isMulticolumnDescriptionBlockPanel &&
@@ -19184,6 +19429,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isHeroMarqueeTextPanel &&
     !isHeroMarqueeSpacerPanel &&
     !isIconsWithTextBlockPanel &&
+    !isIconsWithTextGroupPanel &&
+    !isIconsWithTextNestedIconPanel &&
+    !isIconsWithTextNestedTextGroupPanel &&
+    !isIconsWithTextNestedHeadingPanel &&
+    !isIconsWithTextNestedTextPanel &&
     !isMulticolumnBlockPanel &&
     !isMulticolumnColumnBlockPanel &&
     !isMulticolumnDescriptionBlockPanel &&
@@ -19642,7 +19892,25 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           isNotFoundMainMessageBlockPanel ||
           isCollectionListHeaderTextPanel ? (
           <TextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isIconsWithTextBlockPanel ? (
+        ) : isIconsWithTextNestedIconPanel ? (
+          <IconsWithTextNestedIconSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isIconsWithTextNestedHeadingPanel ? (
+          <HeadingBlockSettingsPanel
+            nodeId={node.id}
+            nodeLabel={node.label}
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            colorPalette={colorPalette}
+          />
+        ) : isIconsWithTextNestedTextPanel ? (
+          <MulticolumnDescriptionBlockSettingsPanel
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isIconsWithTextGroupPanel || isIconsWithTextNestedTextGroupPanel ? null : isIconsWithTextBlockPanel ? (
           <IconsWithTextBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isMarqueeTextBlockPanel ? (
           <MarqueeTextBlockSettingsPanel
@@ -19667,6 +19935,15 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isMulticolumnBlockPanel ? (
           <MulticolumnBlockSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
+        ) : isMulticolumnPanel ? (
+          <MulticolumnGroupedSettingsPanel
+            nodeId={node.id}
+            fields={fields}
+            values={values}
+            themeConfig={themeConfig}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
         ) : isHeroButtonBlockPanel ? (
           <HeroButtonSettingsPanel
             fields={fields}
@@ -20336,13 +20613,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isIconsWithTextPanel ? (
           <IconsWithTextGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            colorPalette={colorPalette}
-            onFieldChange={onFieldChange}
-          />
-        ) : isMulticolumnPanel ? (
-          <MulticolumnGroupedSettingsPanel
             fields={fields}
             values={values}
             colorPalette={colorPalette}

@@ -1,5 +1,19 @@
-import type { EditorFieldDef, SidebarIcon, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
-import { iconWithTextBlockFieldDefs } from '../create-theme/sidebar/theme-editor-icons-with-text-panel.utils';
+import type { EditorFieldDef, EditorSchemaDoc, SidebarIcon, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
+import {
+  iconWithTextBlockFieldDefs,
+  iconsWithTextNestedHeadingFieldDefs,
+  iconsWithTextNestedTextFieldDefs,
+  isIconsWithTextGroupNodeId,
+  isIconsWithTextNestedHeadingNodeId,
+  isIconsWithTextNestedIconNodeId,
+  isIconsWithTextNestedTextGroupNodeId,
+  isIconsWithTextNestedTextNodeId,
+  prepareIconsWithTextGroupSettingsNode,
+  prepareIconsWithTextNestedHeadingSettingsNode,
+  prepareIconsWithTextNestedIconSettingsNode,
+  prepareIconsWithTextNestedTextGroupSettingsNode,
+  prepareIconsWithTextNestedTextSettingsNode,
+} from '../create-theme/sidebar/theme-editor-icons-with-text-panel.utils';
 
 /** Mirror of create-theme-structure-order.listKeyBlockChildren (avoids a circular import). */
 function listKeyBlockChildren(blockPrefix: string): string {
@@ -94,8 +108,8 @@ export function mapIconsWithTextBlockNodes(
     const textPath = `${blocksBase}.blocks.${blockId}.settings.text`;
     const fields = iconWithTextBlockFieldDefs(blocksBase, blockId);
     const iconField = fields.find((field) => field.path.endsWith('.icon'));
-    const headingField = fields.find((field) => field.path.endsWith('.heading'));
-    const textField = fields.find((field) => field.path.endsWith('.text'));
+    const headingDefs = iconsWithTextNestedHeadingFieldDefs(blocksBase, blockId);
+    const textDefs = iconsWithTextNestedTextFieldDefs(blocksBase, blockId);
     const headingPreview = previewFromValues(values, headingPath);
     const textPreview = previewFromValues(values, textPath);
 
@@ -107,30 +121,22 @@ export function mapIconsWithTextBlockNodes(
           label: 'Add block',
           kind: 'add-block' as const,
         },
-        ...(headingField
-          ? [
-              {
-                id: `${textGroupId}:nested:heading`,
-                label: 'Text',
-                kind: 'block' as const,
-                icon: 'text' as SidebarIcon,
-                fields: [headingField],
-                preview: headingPreview,
-              },
-            ]
-          : []),
-        ...(textField
-          ? [
-              {
-                id: `${textGroupId}:nested:text`,
-                label: 'Text',
-                kind: 'block' as const,
-                icon: 'text' as SidebarIcon,
-                fields: [textField],
-                preview: textPreview,
-              },
-            ]
-          : []),
+        {
+          id: `${textGroupId}:nested:heading`,
+          label: 'Text',
+          kind: 'block' as const,
+          icon: 'text' as SidebarIcon,
+          fields: headingDefs,
+          preview: headingPreview,
+        },
+        {
+          id: `${textGroupId}:nested:text`,
+          label: 'Text',
+          kind: 'block' as const,
+          icon: 'text' as SidebarIcon,
+          fields: textDefs,
+          preview: textPreview,
+        },
       ],
       listKeyBlockChildren(textGroupId),
       itemOrder
@@ -159,9 +165,6 @@ export function mapIconsWithTextBlockNodes(
           label: 'Group',
           kind: 'block' as const,
           icon: 'group' as SidebarIcon,
-          fields: [headingField, textField].filter(
-            (field): field is EditorFieldDef => Boolean(field)
-          ),
           children: textGroupChildren,
           childrenListKey: listKeyBlockChildren(textGroupId),
         },
@@ -175,7 +178,6 @@ export function mapIconsWithTextBlockNodes(
       label: 'Group',
       kind: 'block' as const,
       icon: 'group' as SidebarIcon,
-      fields,
       children: groupChildren,
       childrenListKey: listKeyBlockChildren(blockPrefix),
       showVisibilityToggle: true,
@@ -216,4 +218,90 @@ export function iconsWithTextLayoutStructureOrder(
       ...blockOrder.map((id) => `${prefix}:block:${id}`),
     ],
   };
+}
+
+const ICONS_WITH_TEXT_FIELD_TO_NESTED_SUFFIX: Record<string, string> = {
+  icon: 'nested:icon',
+  heading: 'nested:group:nested:heading',
+  text: 'nested:group:nested:text',
+};
+
+export function isIconsWithTextContentFieldPath(path: string): boolean {
+  if (!/icons_with_text/.test(path)) return false;
+  const key = path.split('.').pop() ?? '';
+  return key in ICONS_WITH_TEXT_FIELD_TO_NESTED_SUFFIX;
+}
+
+export function iconsWithTextFieldSidebarNodeId(settingsFieldPath: string): string | null {
+  const key = settingsFieldPath.split('.').pop() ?? '';
+  const suffix = ICONS_WITH_TEXT_FIELD_TO_NESTED_SUFFIX[key];
+  if (!suffix) return null;
+
+  const tpl = settingsFieldPath.match(/templates\.([^.]+)\.sections\.([^.]+)\.blocks\.(icon_\d+)/);
+  if (tpl) {
+    return `template:${tpl[1]}:${tpl[2]}:block:${tpl[3]}:${suffix}`;
+  }
+  const layout = settingsFieldPath.match(/sections\.([^.]+)\.blocks\.(icon_\d+)/);
+  if (layout) {
+    return `layout:${layout[1]}:block:${layout[2]}:${suffix}`;
+  }
+  return null;
+}
+
+export function iconsWithTextSidebarSelectionId(nodeId: string): string {
+  if (!nodeId.startsWith('field:')) return nodeId;
+  const path = nodeId.slice('field:'.length);
+  if (!isIconsWithTextContentFieldPath(path)) return nodeId;
+  return iconsWithTextFieldSidebarNodeId(path) ?? nodeId;
+}
+
+export function syntheticIconsWithTextSidebarNode(
+  nodeId: string,
+  _editorSchema?: EditorSchemaDoc | null
+): SidebarNode | null {
+  if (isIconsWithTextNestedIconNodeId(nodeId)) {
+    return prepareIconsWithTextNestedIconSettingsNode({
+      id: nodeId,
+      label: 'Icon',
+      kind: 'block',
+      icon: 'image' as SidebarIcon,
+    });
+  }
+  if (isIconsWithTextNestedHeadingNodeId(nodeId)) {
+    return prepareIconsWithTextNestedHeadingSettingsNode({
+      id: nodeId,
+      label: 'Text',
+      kind: 'block',
+      icon: 'text' as SidebarIcon,
+    });
+  }
+  if (isIconsWithTextNestedTextNodeId(nodeId)) {
+    return prepareIconsWithTextNestedTextSettingsNode({
+      id: nodeId,
+      label: 'Text',
+      kind: 'block',
+      icon: 'text' as SidebarIcon,
+    });
+  }
+  if (isIconsWithTextNestedTextGroupNodeId(nodeId)) {
+    return prepareIconsWithTextNestedTextGroupSettingsNode({
+      id: nodeId,
+      label: 'Group',
+      kind: 'block',
+      icon: 'group' as SidebarIcon,
+    });
+  }
+  if (isIconsWithTextGroupNodeId(nodeId)) {
+    return prepareIconsWithTextGroupSettingsNode({
+      id: nodeId,
+      label: 'Group',
+      kind: 'block',
+      icon: 'group' as SidebarIcon,
+    });
+  }
+  if (nodeId.startsWith('field:') && isIconsWithTextContentFieldPath(nodeId.slice('field:'.length))) {
+    const mapped = iconsWithTextSidebarSelectionId(nodeId);
+    if (mapped !== nodeId) return syntheticIconsWithTextSidebarNode(mapped, _editorSchema);
+  }
+  return null;
 }

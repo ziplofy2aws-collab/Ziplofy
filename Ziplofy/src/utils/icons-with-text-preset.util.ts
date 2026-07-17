@@ -1,5 +1,44 @@
 /** Shopify-style defaults for Icons with text sections. */
 
+const DEFAULT_TEXT_STYLE_SETTINGS = {
+  headingWidth: 'fill',
+  headingMaxWidth: 'normal',
+  headingAlignment: 'center',
+  headingTypographyPreset: 'heading-4',
+  headingFont: 'heading',
+  headingFontSize: '20px',
+  headingLineHeight: 'normal',
+  headingLetterSpacing: 'normal',
+  headingTextCase: 'default',
+  headingWrap: 'pretty',
+  headingColor: '',
+  headingBackgroundEnabled: false,
+  headingBackgroundColor: '',
+  headingCornerRadius: 0,
+  headingPaddingTop: 0,
+  headingPaddingBottom: 0,
+  headingPaddingLeft: 0,
+  headingPaddingRight: 0,
+  descWidth: 'fill',
+  descMaxWidth: 'normal',
+  descAlignment: 'center',
+  descTypographyPreset: 'default',
+  descFont: 'body',
+  descFontSize: 'default',
+  descLineHeight: 'normal',
+  descLetterSpacing: 'normal',
+  descTextCase: 'default',
+  descWrap: 'pretty',
+  descColor: '',
+  descBackgroundEnabled: false,
+  descBackgroundColor: '',
+  descCornerRadius: 0,
+  descPaddingTop: 0,
+  descPaddingBottom: 0,
+  descPaddingLeft: 0,
+  descPaddingRight: 0,
+} as const;
+
 const DEFAULT_ITEMS: { icon: string; heading: string; text: string }[] = [
   {
     icon: 'eye',
@@ -52,7 +91,7 @@ export function applyIconsWithTextPreset(section: Record<string, unknown>): void
     const id = `icon_${i + 1}`;
     blocks[id] = {
       type: 'icon-with-text-item',
-      settings: { icon: item.icon, heading: item.heading, text: item.text },
+      settings: { icon: item.icon, heading: item.heading, text: item.text, ...DEFAULT_TEXT_STYLE_SETTINGS },
     };
     block_order.push(id);
   });

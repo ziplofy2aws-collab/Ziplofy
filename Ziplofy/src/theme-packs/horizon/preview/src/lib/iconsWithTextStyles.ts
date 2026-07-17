@@ -15,11 +15,55 @@ const SCHEMES: Record<string, IconsWithTextScheme> = {
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6' },
 };
 
+export type IconWithTextHeadingSettings = {
+  width: string;
+  maxWidth: string;
+  alignment: string;
+  preset: string;
+  font: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textCase: string;
+  wrap: string;
+  color: string;
+  backgroundEnabled: boolean;
+  backgroundColor: string;
+  cornerRadius: number;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
+export type IconWithTextDescriptionSettings = {
+  width: string;
+  maxWidth: string;
+  alignment: string;
+  preset: string;
+  font: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textCase: string;
+  wrap: string;
+  color: string;
+  backgroundEnabled: boolean;
+  backgroundColor: string;
+  cornerRadius: number;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+};
+
 export type IconWithTextItem = {
   id: string;
   icon: string;
   heading: string;
   text: string;
+  headingSettings: IconWithTextHeadingSettings;
+  descriptionSettings: IconWithTextDescriptionSettings;
 };
 
 export type IconsWithTextLayout = {
@@ -119,11 +163,67 @@ export function readIconWithTextItems(
       const settings = (block.settings ?? {}) as Record<string, unknown>;
       const heading = String(settings.heading ?? settings.title ?? '').trim();
       if (!heading) return null;
+      const str = (key: string, fallback: string) => {
+        const v = settings[key];
+        return typeof v === 'string' && v !== '' ? v : fallback;
+      };
+      const num = (key: string, fallback: number) => {
+        const v = settings[key];
+        return typeof v === 'number'
+          ? v
+          : typeof v === 'string' && v !== ''
+            ? Number(v) || fallback
+            : fallback;
+      };
       return {
         id,
         icon: String(settings.icon ?? 'eye'),
         heading,
         text: String(settings.text ?? ''),
+        headingSettings: {
+          width: str('headingWidth', 'fill'),
+          maxWidth: str('headingMaxWidth', 'normal'),
+          alignment: str('headingAlignment', 'center'),
+          preset: str('headingTypographyPreset', 'heading-4'),
+          font: str('headingFont', 'heading'),
+          fontSize: str('headingFontSize', '20px'),
+          lineHeight: str('headingLineHeight', 'normal'),
+          letterSpacing: str('headingLetterSpacing', 'normal'),
+          textCase: str('headingTextCase', 'default'),
+          wrap: str('headingWrap', 'pretty'),
+          color: typeof settings.headingColor === 'string' ? settings.headingColor : '',
+          backgroundEnabled: settings.headingBackgroundEnabled === true,
+          backgroundColor:
+            typeof settings.headingBackgroundColor === 'string'
+              ? settings.headingBackgroundColor
+              : '',
+          cornerRadius: num('headingCornerRadius', 0),
+          paddingTop: num('headingPaddingTop', 0),
+          paddingBottom: num('headingPaddingBottom', 0),
+          paddingLeft: num('headingPaddingLeft', 0),
+          paddingRight: num('headingPaddingRight', 0),
+        },
+        descriptionSettings: {
+          width: str('descWidth', 'fill'),
+          maxWidth: str('descMaxWidth', 'normal'),
+          alignment: str('descAlignment', 'center'),
+          preset: str('descTypographyPreset', 'default'),
+          font: str('descFont', 'body'),
+          fontSize: str('descFontSize', 'default'),
+          lineHeight: str('descLineHeight', 'normal'),
+          letterSpacing: str('descLetterSpacing', 'normal'),
+          textCase: str('descTextCase', 'default'),
+          wrap: str('descWrap', 'pretty'),
+          color: typeof settings.descColor === 'string' ? settings.descColor : '',
+          backgroundEnabled: settings.descBackgroundEnabled === true,
+          backgroundColor:
+            typeof settings.descBackgroundColor === 'string' ? settings.descBackgroundColor : '',
+          cornerRadius: num('descCornerRadius', 0),
+          paddingTop: num('descPaddingTop', 0),
+          paddingBottom: num('descPaddingBottom', 0),
+          paddingLeft: num('descPaddingLeft', 0),
+          paddingRight: num('descPaddingRight', 0),
+        },
       };
     })
     .filter((x): x is IconWithTextItem => x != null);

@@ -1,6 +1,5 @@
 import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
-import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
@@ -24,6 +23,7 @@ import {
   multicolumnMobileStackCss,
   readMulticolumnItems,
   readMulticolumnLayout,
+  resolveMulticolumnBorderCss,
   scopedMulticolumnCss,
 } from './multicolumnStyles';
 
@@ -49,20 +49,29 @@ export function Multicolumn({
   );
 
   const scheme = style.scheme;
-  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
   const sectionBackground =
-    backgroundColorRaw === '' || backgroundColorRaw === 'default'
+    !style.backgroundColor || style.backgroundColor === 'default'
       ? scheme.background
-      : resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background);
+      : resolveThemePaletteColorSetting(config, style.backgroundColor, 0, scheme.background);
+  const schemeBorder = scheme.muted ?? scheme.color;
+  const borderColorHex =
+    !style.borderColor || style.borderColor === 'default'
+      ? schemeBorder
+      : resolveThemePaletteColorSetting(config, style.borderColor, 1, schemeBorder);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `codiic-multicolumn-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const colCount = Math.max(items.length, style.columns);
   const isHorizontal = style.direction === 'horizontal';
   const shellClass = `${scopeClass}-shell`;
-  const mobileStackClass = isHorizontal
-    ? `codiic-multicolumn-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
-    : '';
+  const mobileStackClass =
+    style.verticalOnMobile && isHorizontal
+      ? `codiic-multicolumn-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
+      : '';
+  const minHeightPx =
+    style.height === 'small' ? 240 : style.height === 'medium' ? 360 : style.height === 'large' ? 480 : 0;
+  const gridAlignItems =
+    style.position === 'top' ? 'start' : style.position === 'bottom' ? 'end' : 'center';
 
   const shell: CSSProperties = {
     position: 'relative',
@@ -73,7 +82,14 @@ export function Multicolumn({
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}33` : undefined,
+    minHeight: minHeightPx > 0 ? minHeightPx : undefined,
+    border: resolveMulticolumnBorderCss(
+      style.borderStyle,
+      style.borderThickness,
+      style.borderOpacity,
+      borderColorHex,
+      schemeBorder
+    ),
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: style.cornerRadius > 0 ? 'hidden' : undefined,
   };
@@ -88,7 +104,10 @@ export function Multicolumn({
     gridTemplateColumns: isHorizontal ? `repeat(${colCount}, minmax(0, 1fr))` : '1fr',
     gap: style.layoutGap,
     width: '100%',
+    minHeight: minHeightPx > 0 ? minHeightPx : undefined,
+    height: minHeightPx > 0 ? '100%' : undefined,
     justifyItems: justifyItemsForAlignment(style.layoutAlignment),
+    alignItems: isHorizontal ? gridAlignItems : undefined,
     alignContent: alignContentForPosition(style.position),
   };
 
@@ -172,10 +191,13 @@ export function Multicolumn({
                 : `layout:${sectionId}:block:${item.id}`;
 
             const s = item.settings;
+            // Section Layout → Alignment controls content alignment across columns.
+            // Column Alignment still controls justifySelf when the column is not full-width.
+            const contentAlign = style.layoutAlignment;
             const alignItems =
-              s.layoutAlignment === 'left'
+              contentAlign === 'left'
                 ? 'flex-start'
-                : s.layoutAlignment === 'right'
+                : contentAlign === 'right'
                   ? 'flex-end'
                   : 'center';
             const justifyContent =
@@ -198,22 +220,28 @@ export function Multicolumn({
                 : undefined;
             const colBgImage =
               s.backgroundMedia === 'image' && s.backgroundImageUrl ? s.backgroundImageUrl : null;
+            const colBorderColorHex =
+              !s.borderColor || s.borderColor === 'default'
+                ? schemeBorder
+                : resolveThemePaletteColorSetting(config, s.borderColor, 1, schemeBorder);
 
             const columnStyle: CSSProperties = {
               display: 'flex',
               flexDirection: s.direction === 'horizontal' ? 'row' : 'column',
               alignItems,
               justifyContent,
-              textAlign: s.layoutAlignment,
+              textAlign: contentAlign,
               gap: s.layoutGap,
               width: colWidth,
               height: colHeight,
               justifySelf:
-                s.layoutAlignment === 'left'
-                  ? 'start'
-                  : s.layoutAlignment === 'right'
-                    ? 'end'
-                    : 'center',
+                s.width === 'fill'
+                  ? 'stretch'
+                  : s.layoutAlignment === 'left'
+                    ? 'start'
+                    : s.layoutAlignment === 'right'
+                      ? 'end'
+                      : 'center',
               background: colBg,
               backgroundImage: colBgImage
                 ? s.backgroundOverlay
@@ -222,7 +250,13 @@ export function Multicolumn({
                 : undefined,
               backgroundSize: colBgImage ? 'cover' : undefined,
               backgroundPosition: colBgImage ? 'center' : undefined,
-              border: s.borderStyle === 'solid' ? `1px solid ${scheme.muted}33` : undefined,
+              border: resolveMulticolumnBorderCss(
+                s.borderStyle,
+                s.borderThickness,
+                s.borderOpacity,
+                colBorderColorHex,
+                schemeBorder
+              ),
               borderRadius: s.cornerRadius > 0 ? s.cornerRadius : undefined,
               overflow: s.cornerRadius > 0 ? 'hidden' : undefined,
               paddingTop: s.paddingTop || undefined,
@@ -234,7 +268,58 @@ export function Multicolumn({
             };
 
             const h = item.headingSettings;
-            const headingPreset = HEADING_PRESETS[h.preset] ?? HEADING_PRESETS.default;
+            const headingNormalizedPreset = h.preset === 'body' ? 'paragraph' : h.preset;
+            let headingTypo: CSSProperties;
+            if (headingNormalizedPreset === 'custom') {
+              const weightStyle = resolveThemeFontWeightAndStyle(h.font);
+              const sizePx =
+                h.fontSize && h.fontSize !== 'default' ? Number.parseInt(h.fontSize, 10) : NaN;
+              headingTypo = {
+                fontFamily: resolveThemeFontFamily(h.font, fonts),
+                fontSize: Number.isFinite(sizePx) ? `${sizePx}px` : '1.0625rem',
+                fontWeight: weightStyle.fontWeight ?? 700,
+                fontStyle: weightStyle.fontStyle,
+                lineHeight: lineHeightMultiplier(h.lineHeight),
+                letterSpacing: letterSpacingCss(h.letterSpacing),
+                textTransform: textTransformFor(h.textCase),
+                textWrap:
+                  h.wrap === 'balance' ? 'balance' : h.wrap === 'nowrap' ? 'nowrap' : 'pretty',
+              };
+            } else if (
+              headingNormalizedPreset === 'default' ||
+              headingNormalizedPreset === 'paragraph' ||
+              headingNormalizedPreset.startsWith('heading-')
+            ) {
+              const fromTheme =
+                headingNormalizedPreset !== 'default'
+                  ? resolveThemeTypographyStyle(config, headingNormalizedPreset, fonts)
+                  : null;
+              const headingPreset = HEADING_PRESETS[h.preset] ?? HEADING_PRESETS.default;
+              headingTypo = fromTheme
+                ? {
+                    fontFamily: fromTheme.fontFamily,
+                    fontSize: `${fromTheme.fontSize}px`,
+                    fontWeight: fromTheme.fontWeight,
+                    fontStyle: fromTheme.fontStyle,
+                    lineHeight: fromTheme.lineHeight,
+                    letterSpacing: fromTheme.letterSpacing,
+                    textTransform: fromTheme.textTransform,
+                  }
+                : {
+                    fontSize: headingPreset.fontSize,
+                    fontWeight: headingPreset.fontWeight,
+                    lineHeight: headingPreset.lineHeight,
+                    letterSpacing: '-0.01em',
+                  };
+            } else {
+              const headingPreset = HEADING_PRESETS.default;
+              headingTypo = {
+                fontSize: headingPreset.fontSize,
+                fontWeight: headingPreset.fontWeight,
+                lineHeight: headingPreset.lineHeight,
+                letterSpacing: '-0.01em',
+              };
+            }
             const headingColor =
               h.color === '' || h.color === 'default'
                 ? scheme.color
@@ -246,13 +331,10 @@ export function Multicolumn({
               : undefined;
             const headingStyle: CSSProperties = {
               margin: 0,
-              fontSize: headingPreset.fontSize,
-              fontWeight: headingPreset.fontWeight,
-              lineHeight: headingPreset.lineHeight,
-              letterSpacing: '-0.01em',
+              ...headingTypo,
               width: h.width === 'fill' ? '100%' : 'fit-content',
               maxWidth: headingMaxWidthPx(h.maxWidth),
-              textAlign: h.alignment as CSSProperties['textAlign'],
+              textAlign: contentAlign as CSSProperties['textAlign'],
               color: headingColor,
               background: headingBg,
               borderRadius: h.backgroundEnabled && h.cornerRadius > 0 ? h.cornerRadius : undefined,
@@ -309,7 +391,7 @@ export function Multicolumn({
               ...descTypo,
               width: d.width === 'fill' ? '100%' : 'fit-content',
               maxWidth: descMaxWidthPx(d.maxWidth),
-              textAlign: d.alignment as CSSProperties['textAlign'],
+              textAlign: contentAlign as CSSProperties['textAlign'],
               color: descColor,
               background: descBg,
               borderRadius: d.backgroundEnabled && d.cornerRadius > 0 ? d.cornerRadius : undefined,

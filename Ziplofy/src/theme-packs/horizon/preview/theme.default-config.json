@@ -42,7 +42,7 @@
       "enabled": true,
       "settings": {
         "enabled": true,
-        "message": "Free shipping on orders over ₹999 — Shop the new collection",
+        "message": "Free shipping on orders over \u20b9999 \u2014 Shop the new collection",
         "linkLabel": "Shop now",
         "linkHref": "/collections/all",
         "timeToNext": 5,
@@ -61,7 +61,7 @@
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Free shipping on orders over ₹999 — Shop the new collection",
+            "text": "Free shipping on orders over \u20b9999 \u2014 Shop the new collection",
             "link": "",
             "font": "subheading",
             "fontSize": "12px",
@@ -85,9 +85,9 @@
         "searchIcon": true,
         "searchPosition": "right",
         "searchRow": "top",
-        "searchPlaceholder": "Search products…",
+        "searchPlaceholder": "Search products\u2026",
         "countryRegionEnabled": false,
-        "countryRegionLabel": "IN · USD",
+        "countryRegionLabel": "IN \u00b7 USD",
         "showFlag": false,
         "languageSelectorEnabled": false,
         "languageLabel": "English",
@@ -236,7 +236,7 @@
             "poweredByLabel": "Powered by codiic",
             "fontSize": "12px",
             "textCase": "default",
-            "text": "© 2026 My Store"
+            "text": "\u00a9 2026 My Store"
           }
         },
         "policy_links": {
@@ -2454,7 +2454,10 @@
         "product_highlight": {
           "type": "product-highlight",
           "enabled": true,
-          "block_order": ["product_media", "product"],
+          "block_order": [
+            "product_media",
+            "product"
+          ],
           "blocks": {
             "product_media": {
               "type": "product-media",
@@ -2468,10 +2471,25 @@
             },
             "product": {
               "type": "group",
-              "block_order": ["title", "price", "image", "swatches"],
+              "block_order": [
+                "title",
+                "price",
+                "image",
+                "swatches"
+              ],
               "blocks": {
-                "title": { "type": "title", "settings": { "typographyPreset": "heading-3" } },
-                "price": { "type": "price", "settings": { "typographyPreset": "default" } },
+                "title": {
+                  "type": "title",
+                  "settings": {
+                    "typographyPreset": "heading-3"
+                  }
+                },
+                "price": {
+                  "type": "price",
+                  "settings": {
+                    "typographyPreset": "default"
+                  }
+                },
                 "image": {
                   "type": "image",
                   "settings": {
@@ -2479,7 +2497,12 @@
                     "constrainToScreenHeight": "maintain-aspect-ratio"
                   }
                 },
-                "swatches": { "type": "swatches", "settings": { "alignment": "left" } }
+                "swatches": {
+                  "type": "swatches",
+                  "settings": {
+                    "alignment": "left"
+                  }
+                }
               }
             }
           },
@@ -3223,7 +3246,7 @@
                     "text": {
                       "type": "text",
                       "settings": {
-                        "text": "Most orders ship within 2–3 business days. Delivery times vary by location.",
+                        "text": "Most orders ship within 2\u20133 business days. Delivery times vary by location.",
                         "width": "fill",
                         "maxWidth": "normal",
                         "alignment": "left",
@@ -3372,7 +3395,43 @@
               "settings": {
                 "icon": "eye",
                 "heading": "Intentional design",
-                "text": "Everything we do starts with why"
+                "text": "Everything we do starts with why",
+                "headingWidth": "fill",
+                "headingMaxWidth": "normal",
+                "headingAlignment": "center",
+                "headingTypographyPreset": "heading-4",
+                "headingFont": "heading",
+                "headingFontSize": "20px",
+                "headingLineHeight": "normal",
+                "headingLetterSpacing": "normal",
+                "headingTextCase": "default",
+                "headingWrap": "pretty",
+                "headingColor": "",
+                "headingBackgroundEnabled": false,
+                "headingBackgroundColor": "",
+                "headingCornerRadius": 0,
+                "headingPaddingTop": 0,
+                "headingPaddingBottom": 0,
+                "headingPaddingLeft": 0,
+                "headingPaddingRight": 0,
+                "descWidth": "fill",
+                "descMaxWidth": "normal",
+                "descAlignment": "center",
+                "descTypographyPreset": "default",
+                "descFont": "body",
+                "descFontSize": "default",
+                "descLineHeight": "normal",
+                "descLetterSpacing": "normal",
+                "descTextCase": "default",
+                "descWrap": "pretty",
+                "descColor": "",
+                "descBackgroundEnabled": false,
+                "descBackgroundColor": "",
+                "descCornerRadius": 0,
+                "descPaddingTop": 0,
+                "descPaddingBottom": 0,
+                "descPaddingLeft": 0,
+                "descPaddingRight": 0
               }
             },
             "icon_2": {
@@ -3380,7 +3439,43 @@
               "settings": {
                 "icon": "heart",
                 "heading": "Made with care",
-                "text": "We believe in building better"
+                "text": "We believe in building better",
+                "headingWidth": "fill",
+                "headingMaxWidth": "normal",
+                "headingAlignment": "center",
+                "headingTypographyPreset": "heading-4",
+                "headingFont": "heading",
+                "headingFontSize": "20px",
+                "headingLineHeight": "normal",
+                "headingLetterSpacing": "normal",
+                "headingTextCase": "default",
+                "headingWrap": "pretty",
+                "headingColor": "",
+                "headingBackgroundEnabled": false,
+                "headingBackgroundColor": "",
+                "headingCornerRadius": 0,
+                "headingPaddingTop": 0,
+                "headingPaddingBottom": 0,
+                "headingPaddingLeft": 0,
+                "headingPaddingRight": 0,
+                "descWidth": "fill",
+                "descMaxWidth": "normal",
+                "descAlignment": "center",
+                "descTypographyPreset": "default",
+                "descFont": "body",
+                "descFontSize": "default",
+                "descLineHeight": "normal",
+                "descLetterSpacing": "normal",
+                "descTextCase": "default",
+                "descWrap": "pretty",
+                "descColor": "",
+                "descBackgroundEnabled": false,
+                "descBackgroundColor": "",
+                "descCornerRadius": 0,
+                "descPaddingTop": 0,
+                "descPaddingBottom": 0,
+                "descPaddingLeft": 0,
+                "descPaddingRight": 0
               }
             },
             "icon_3": {
@@ -3388,7 +3483,43 @@
               "settings": {
                 "icon": "person",
                 "heading": "A team with a goal",
-                "text": "Real people making great products"
+                "text": "Real people making great products",
+                "headingWidth": "fill",
+                "headingMaxWidth": "normal",
+                "headingAlignment": "center",
+                "headingTypographyPreset": "heading-4",
+                "headingFont": "heading",
+                "headingFontSize": "20px",
+                "headingLineHeight": "normal",
+                "headingLetterSpacing": "normal",
+                "headingTextCase": "default",
+                "headingWrap": "pretty",
+                "headingColor": "",
+                "headingBackgroundEnabled": false,
+                "headingBackgroundColor": "",
+                "headingCornerRadius": 0,
+                "headingPaddingTop": 0,
+                "headingPaddingBottom": 0,
+                "headingPaddingLeft": 0,
+                "headingPaddingRight": 0,
+                "descWidth": "fill",
+                "descMaxWidth": "normal",
+                "descAlignment": "center",
+                "descTypographyPreset": "default",
+                "descFont": "body",
+                "descFontSize": "default",
+                "descLineHeight": "normal",
+                "descLetterSpacing": "normal",
+                "descTextCase": "default",
+                "descWrap": "pretty",
+                "descColor": "",
+                "descBackgroundEnabled": false,
+                "descBackgroundColor": "",
+                "descCornerRadius": 0,
+                "descPaddingTop": 0,
+                "descPaddingBottom": 0,
+                "descPaddingLeft": 0,
+                "descPaddingRight": 0
               }
             }
           },
@@ -3416,6 +3547,9 @@
             "backgroundImageUrl": "",
             "backgroundColor": "",
             "borderStyle": "none",
+            "borderThickness": 1,
+            "borderOpacity": 100,
+            "borderColor": "default",
             "cornerRadius": 0,
             "backgroundOverlay": false,
             "paddingTop": 48,
@@ -5465,7 +5599,7 @@
                   "type": "item-actions",
                   "settings": {
                     "removeLabel": "Remove",
-                    "loadingLabel": "Loading…"
+                    "loadingLabel": "Loading\u2026"
                   }
                 }
               },
@@ -5524,7 +5658,7 @@
           "settings": {
             "eyebrow": "Account",
             "title": "Sign in",
-            "subtitle": "Welcome back — enter your details to continue.",
+            "subtitle": "Welcome back \u2014 enter your details to continue.",
             "backgroundStyle": "split",
             "sidePanelTitle": "Welcome back"
           },
@@ -5558,7 +5692,7 @@
               "type": "primary-button",
               "settings": {
                 "label": "Continue",
-                "loadingLabel": "Please wait…"
+                "loadingLabel": "Please wait\u2026"
               }
             },
             "footer_link": {
@@ -5669,7 +5803,7 @@
               "type": "primary-button",
               "settings": {
                 "label": "Create account",
-                "loadingLabel": "Please wait…"
+                "loadingLabel": "Please wait\u2026"
               }
             },
             "footer_link": {
@@ -5873,7 +6007,7 @@
               "type": "save-button",
               "settings": {
                 "label": "Save",
-                "savingLabel": "Saving…"
+                "savingLabel": "Saving\u2026"
               }
             },
             "avatar": {
@@ -5910,7 +6044,7 @@
             "loading_state": {
               "type": "loading",
               "settings": {
-                "message": "Loading orders…"
+                "message": "Loading orders\u2026"
               }
             },
             "empty_state": {
@@ -6036,7 +6170,7 @@
               "type": "save-button",
               "settings": {
                 "label": "Save preferences",
-                "savingLabel": "Saving…"
+                "savingLabel": "Saving\u2026"
               }
             },
             "privacy_options": {

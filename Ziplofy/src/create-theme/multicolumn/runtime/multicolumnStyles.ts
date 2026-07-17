@@ -32,6 +32,9 @@ export type MulticolumnItemSettings = {
   backgroundColor: string;
   backgroundOverlay: boolean;
   borderStyle: string;
+  borderThickness: number;
+  borderOpacity: number;
+  borderColor: string;
   cornerRadius: number;
   link: string;
   linkOpenInNewTab: boolean;
@@ -46,6 +49,12 @@ export type MulticolumnHeadingSettings = {
   maxWidth: string;
   alignment: string;
   preset: string;
+  font: string;
+  fontSize: string;
+  lineHeight: string;
+  letterSpacing: string;
+  textCase: string;
+  wrap: string;
   color: string;
   backgroundEnabled: boolean;
   backgroundColor: string;
@@ -100,6 +109,12 @@ function readHeadingSettings(settings: Record<string, unknown>): MulticolumnHead
     maxWidth: str('headingMaxWidth', 'normal'),
     alignment: str('headingAlignment', 'center'),
     preset: str('headingTypographyPreset', 'heading-4'),
+    font: str('headingFont', 'heading'),
+    fontSize: str('headingFontSize', '20px'),
+    lineHeight: str('headingLineHeight', 'normal'),
+    letterSpacing: str('headingLetterSpacing', 'normal'),
+    textCase: str('headingTextCase', 'default'),
+    wrap: str('headingWrap', 'pretty'),
     color: typeof settings.headingColor === 'string' ? settings.headingColor : '',
     backgroundEnabled: settings.headingBackgroundEnabled === true,
     backgroundColor:
@@ -177,6 +192,9 @@ function readColumnSettings(settings: Record<string, unknown>): MulticolumnItemS
     backgroundColor: typeof settings.backgroundColor === 'string' ? settings.backgroundColor : '',
     backgroundOverlay: bool('backgroundOverlay', false),
     borderStyle: str('borderStyle', 'none'),
+    borderThickness: num('borderThickness', 1),
+    borderOpacity: num('borderOpacity', 100),
+    borderColor: typeof settings.borderColor === 'string' ? settings.borderColor : 'default',
     cornerRadius: num('cornerRadius', 0),
     link: typeof settings.link === 'string' ? settings.link : '',
     linkOpenInNewTab: bool('linkOpenInNewTab', false),
@@ -199,7 +217,11 @@ export type MulticolumnLayout = {
   height: string;
   backgroundMedia: string;
   backgroundImageUrl: string;
+  backgroundColor: string;
   borderStyle: string;
+  borderThickness: number;
+  borderOpacity: number;
+  borderColor: string;
   cornerRadius: number;
   backgroundOverlay: boolean;
   paddingTop: number;
@@ -239,7 +261,11 @@ export function readMulticolumnLayout(
     height: cfgString(config, `${settingsBase}.height`, 'auto'),
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
+    backgroundColor: cfgString(config, `${settingsBase}.backgroundColor`, ''),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),
+    borderThickness: cfgNumber(config, `${settingsBase}.borderThickness`, 1),
+    borderOpacity: cfgNumber(config, `${settingsBase}.borderOpacity`, 100),
+    borderColor: cfgString(config, `${settingsBase}.borderColor`, 'default'),
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
     backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 48),
@@ -290,6 +316,39 @@ export function scopedMulticolumnCss(sectionId: string, customCss: string): stri
   const scope = `.codiic-multicolumn-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
+}
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const raw = hex.trim().replace(/^#/, '');
+  const normalized =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => `${c}${c}`)
+          .join('')
+      : raw;
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return null;
+  return {
+    r: parseInt(normalized.slice(0, 2), 16),
+    g: parseInt(normalized.slice(2, 4), 16),
+    b: parseInt(normalized.slice(4, 6), 16),
+  };
+}
+
+/** Build CSS border from Style / Thickness / Opacity / Color (Shopify-style). */
+export function resolveMulticolumnBorderCss(
+  borderStyle: string,
+  thickness: number,
+  opacity: number,
+  borderColorHex: string,
+  schemeBorder: string
+): string | undefined {
+  if (borderStyle !== 'solid' || thickness <= 0) return undefined;
+  const base = borderColorHex?.startsWith('#') ? borderColorHex : schemeBorder;
+  const rgb = hexToRgb(base);
+  const alpha = Math.min(100, Math.max(0, opacity)) / 100;
+  if (!rgb) return `${thickness}px solid ${schemeBorder}`;
+  return `${thickness}px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
 }
 
 export function multicolumnMobileStackCss(sectionId: string): string {

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "themeId": "horizon",
-  "description": "Horizon benchmark theme schema — full editor tree for theme-packs/horizon. Use as reference when generating new theme packs.",
+  "description": "Horizon benchmark theme schema \u2014 full editor tree for theme-packs/horizon. Use as reference when generating new theme packs.",
   "globalSettings": {
     "label": "Theme settings",
     "groups": [
@@ -508,7 +508,7 @@
           "label": "Search placeholder",
           "group": "Search",
           "sidebar": false,
-          "placeholder": "Search products…"
+          "placeholder": "Search products\u2026"
         },
         {
           "path": "sections.header.settings.countryRegionEnabled",
@@ -982,7 +982,7 @@
           ]
         }
       ],
-      "description": "Store header — logo, navigation, search, localization, and appearance. Select Header in the sidebar for layout settings; open Logo or Menu blocks for content."
+      "description": "Store header \u2014 logo, navigation, search, localization, and appearance. Select Header in the sidebar for layout settings; open Logo or Menu blocks for content."
     },
     "footer": {
       "label": "Footer",
@@ -1050,7 +1050,7 @@
           ]
         }
       ],
-      "description": "Site footer — layout, spacing, and color scheme. Open Email signup or other blocks for content.",
+      "description": "Site footer \u2014 layout, spacing, and color scheme. Open Email signup or other blocks for content.",
       "settingsFields": [
         {
           "path": "sections.footer.settings.sectionWidth",
@@ -1414,7 +1414,7 @@
           ]
         }
       ],
-      "description": "Footer utilities bar — copyright, policy links, and social icons. Section settings control layout and appearance.",
+      "description": "Footer utilities bar \u2014 copyright, policy links, and social icons. Section settings control layout and appearance.",
       "settingsFields": [
         {
           "path": "sections.footer_utilities.settings.sectionWidth",
@@ -5687,19 +5687,274 @@
             },
             {
               "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.heading",
-              "type": "text",
-              "label": "Heading",
-              "group": "Content",
-              "sidebar": true
+              "type": "textarea",
+              "label": "Text",
+              "group": "Text",
+              "sidebar": true,
+              "widget": "richtext"
             },
             {
               "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.text",
               "type": "textarea",
-              "label": "Description",
-              "group": "Content",
+              "label": "Text",
+              "group": "Text",
+              "sidebar": true,
+              "widget": "richtext"
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingWidth",
+              "type": "select",
+              "label": "Width",
+              "group": "Layout",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingMaxWidth",
+              "type": "select",
+              "label": "Max width",
+              "group": "Layout",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingAlignment",
+              "type": "select",
+              "label": "Alignment",
+              "group": "Layout",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingTypographyPreset",
+              "type": "select",
+              "label": "Preset",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingFont",
+              "type": "select",
+              "label": "Font",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingFontSize",
+              "type": "select",
+              "label": "Size",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingLineHeight",
+              "type": "select",
+              "label": "Line height",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingLetterSpacing",
+              "type": "select",
+              "label": "Letter spacing",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingTextCase",
+              "type": "select",
+              "label": "Case",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingWrap",
+              "type": "select",
+              "label": "Wrap",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingColor",
+              "type": "color",
+              "label": "Text color",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingBackgroundEnabled",
+              "type": "boolean",
+              "label": "Background",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingBackgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingCornerRadius",
+              "type": "number",
+              "label": "Corner radius",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingTop",
+              "type": "number",
+              "label": "Top",
+              "group": "Padding",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingBottom",
+              "type": "number",
+              "label": "Bottom",
+              "group": "Padding",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingLeft",
+              "type": "number",
+              "label": "Left",
+              "group": "Padding",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingRight",
+              "type": "number",
+              "label": "Right",
+              "group": "Padding",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descWidth",
+              "type": "select",
+              "label": "Width",
+              "group": "Layout",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descMaxWidth",
+              "type": "select",
+              "label": "Max width",
+              "group": "Layout",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descAlignment",
+              "type": "select",
+              "label": "Alignment",
+              "group": "Layout",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descTypographyPreset",
+              "type": "select",
+              "label": "Preset",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descFont",
+              "type": "select",
+              "label": "Font",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descFontSize",
+              "type": "select",
+              "label": "Size",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descLineHeight",
+              "type": "select",
+              "label": "Line height",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descLetterSpacing",
+              "type": "select",
+              "label": "Letter spacing",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descTextCase",
+              "type": "select",
+              "label": "Case",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descWrap",
+              "type": "select",
+              "label": "Wrap",
+              "group": "Typography",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descColor",
+              "type": "color",
+              "label": "Text color",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descBackgroundEnabled",
+              "type": "boolean",
+              "label": "Background",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descBackgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descCornerRadius",
+              "type": "number",
+              "label": "Corner radius",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingTop",
+              "type": "number",
+              "label": "Top",
+              "group": "Padding",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingBottom",
+              "type": "number",
+              "label": "Bottom",
+              "group": "Padding",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingLeft",
+              "type": "number",
+              "label": "Left",
+              "group": "Padding",
+              "sidebar": true
+            },
+            {
+              "path": "sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingRight",
+              "type": "number",
+              "label": "Right",
+              "group": "Padding",
               "sidebar": true
             }
-          ]
+          ],
+          "type": "icon-with-text-item"
         }
       ]
     },
@@ -5929,6 +6184,38 @@
           ]
         },
         {
+          "path": "sections.multicolumn_section.settings.borderThickness",
+          "type": "number",
+          "label": "Thickness",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "unit": "px",
+          "sidebar": true
+        },
+        {
+          "path": "sections.multicolumn_section.settings.borderOpacity",
+          "type": "number",
+          "label": "Opacity",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "sidebar": true
+        },
+        {
+          "path": "sections.multicolumn_section.settings.borderColor",
+          "type": "text",
+          "label": "Color",
+          "group": "Borders",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
           "path": "sections.multicolumn_section.settings.cornerRadius",
           "type": "number",
           "label": "Corner radius",
@@ -5962,14 +6249,6 @@
           "max": 120,
           "step": 1,
           "unit": "px",
-          "sidebar": true
-        },
-        {
-          "path": "sections.multicolumn_section.settings.customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion",
           "sidebar": true
         }
       ],
@@ -6226,6 +6505,38 @@
                   "label": "Solid"
                 }
               ]
+            },
+            {
+              "path": "sections.multicolumn_section.blocks.multicolumn_item.settings.borderThickness",
+              "type": "number",
+              "label": "Thickness",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "unit": "px",
+              "sidebar": true
+            },
+            {
+              "path": "sections.multicolumn_section.blocks.multicolumn_item.settings.borderOpacity",
+              "type": "number",
+              "label": "Opacity",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": true
+            },
+            {
+              "path": "sections.multicolumn_section.blocks.multicolumn_item.settings.borderColor",
+              "type": "text",
+              "label": "Color",
+              "group": "Borders",
+              "widget": "color",
+              "sidebar": true
             },
             {
               "path": "sections.multicolumn_section.blocks.multicolumn_item.settings.cornerRadius",
@@ -6555,7 +6866,8 @@
               "group": "Padding",
               "sidebar": true
             }
-          ]
+          ],
+          "type": "multicolumn-item"
         }
       ]
     },
@@ -6814,10 +7126,22 @@
           "widget": "select",
           "sidebar": false,
           "options": [
-            { "value": "body", "label": "Body" },
-            { "value": "subheading", "label": "Subheading" },
-            { "value": "heading", "label": "Heading" },
-            { "value": "accent", "label": "Accent" }
+            {
+              "value": "body",
+              "label": "Body"
+            },
+            {
+              "value": "subheading",
+              "label": "Subheading"
+            },
+            {
+              "value": "heading",
+              "label": "Heading"
+            },
+            {
+              "value": "accent",
+              "label": "Accent"
+            }
           ]
         },
         {
@@ -6828,21 +7152,66 @@
           "widget": "select",
           "sidebar": false,
           "options": [
-            { "value": "10px", "label": "10px" },
-            { "value": "12px", "label": "12px" },
-            { "value": "14px", "label": "14px" },
-            { "value": "16px", "label": "16px" },
-            { "value": "18px", "label": "18px" },
-            { "value": "20px", "label": "20px" },
-            { "value": "24px", "label": "24px" },
-            { "value": "28px", "label": "28px" },
-            { "value": "32px", "label": "32px" },
-            { "value": "36px", "label": "36px" },
-            { "value": "40px", "label": "40px" },
-            { "value": "48px", "label": "48px" },
-            { "value": "56px", "label": "56px" },
-            { "value": "64px", "label": "64px" },
-            { "value": "72px", "label": "72px" }
+            {
+              "value": "10px",
+              "label": "10px"
+            },
+            {
+              "value": "12px",
+              "label": "12px"
+            },
+            {
+              "value": "14px",
+              "label": "14px"
+            },
+            {
+              "value": "16px",
+              "label": "16px"
+            },
+            {
+              "value": "18px",
+              "label": "18px"
+            },
+            {
+              "value": "20px",
+              "label": "20px"
+            },
+            {
+              "value": "24px",
+              "label": "24px"
+            },
+            {
+              "value": "28px",
+              "label": "28px"
+            },
+            {
+              "value": "32px",
+              "label": "32px"
+            },
+            {
+              "value": "36px",
+              "label": "36px"
+            },
+            {
+              "value": "40px",
+              "label": "40px"
+            },
+            {
+              "value": "48px",
+              "label": "48px"
+            },
+            {
+              "value": "56px",
+              "label": "56px"
+            },
+            {
+              "value": "64px",
+              "label": "64px"
+            },
+            {
+              "value": "72px",
+              "label": "72px"
+            }
           ]
         },
         {
@@ -6853,9 +7222,18 @@
           "widget": "segmented",
           "sidebar": false,
           "options": [
-            { "value": "tight", "label": "Tight" },
-            { "value": "normal", "label": "Normal" },
-            { "value": "loose", "label": "Loose" }
+            {
+              "value": "tight",
+              "label": "Tight"
+            },
+            {
+              "value": "normal",
+              "label": "Normal"
+            },
+            {
+              "value": "loose",
+              "label": "Loose"
+            }
           ]
         },
         {
@@ -6866,9 +7244,18 @@
           "widget": "segmented",
           "sidebar": false,
           "options": [
-            { "value": "tight", "label": "Tight" },
-            { "value": "normal", "label": "Normal" },
-            { "value": "loose", "label": "Loose" }
+            {
+              "value": "tight",
+              "label": "Tight"
+            },
+            {
+              "value": "normal",
+              "label": "Normal"
+            },
+            {
+              "value": "loose",
+              "label": "Loose"
+            }
           ]
         },
         {
@@ -6879,8 +7266,14 @@
           "widget": "segmented",
           "sidebar": false,
           "options": [
-            { "value": "default", "label": "Default" },
-            { "value": "uppercase", "label": "Uppercase" }
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "uppercase",
+              "label": "Uppercase"
+            }
           ]
         },
         {
@@ -6891,9 +7284,18 @@
           "widget": "select",
           "sidebar": false,
           "options": [
-            { "value": "pretty", "label": "Pretty" },
-            { "value": "balance", "label": "Balance" },
-            { "value": "nowrap", "label": "No wrap" }
+            {
+              "value": "pretty",
+              "label": "Pretty"
+            },
+            {
+              "value": "balance",
+              "label": "Balance"
+            },
+            {
+              "value": "nowrap",
+              "label": "No wrap"
+            }
           ]
         },
         {
@@ -16542,7 +16944,7 @@
                   "group": "Appearance",
                   "widget": "image",
                   "sidebar": false,
-                  "placeholder": "https://…"
+                  "placeholder": "https://\u2026"
                 },
                 {
                   "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.backgroundImagePosition",
@@ -20298,7 +20700,7 @@
                   "group": "Appearance",
                   "widget": "image",
                   "sidebar": false,
-                  "placeholder": "https://…"
+                  "placeholder": "https://\u2026"
                 },
                 {
                   "path": "templates.index.sections.product_highlight.blocks.details.settings.backgroundImagePosition",
@@ -20947,7 +21349,7 @@
                       "group": "Appearance",
                       "widget": "image",
                       "sidebar": false,
-                      "placeholder": "https://…"
+                      "placeholder": "https://\u2026"
                     },
                     {
                       "path": "templates.index.sections.product_highlight.blocks.details.blocks.header.settings.backgroundImagePosition",
@@ -25218,19 +25620,274 @@
                 },
                 {
                   "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.heading",
-                  "type": "text",
-                  "label": "Heading",
-                  "group": "Content",
-                  "sidebar": true
+                  "type": "textarea",
+                  "label": "Text",
+                  "group": "Text",
+                  "sidebar": true,
+                  "widget": "richtext"
                 },
                 {
                   "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.text",
                   "type": "textarea",
-                  "label": "Description",
-                  "group": "Content",
+                  "label": "Text",
+                  "group": "Text",
+                  "sidebar": true,
+                  "widget": "richtext"
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingWidth",
+                  "type": "select",
+                  "label": "Width",
+                  "group": "Layout",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingMaxWidth",
+                  "type": "select",
+                  "label": "Max width",
+                  "group": "Layout",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingAlignment",
+                  "type": "select",
+                  "label": "Alignment",
+                  "group": "Layout",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingTypographyPreset",
+                  "type": "select",
+                  "label": "Preset",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingFont",
+                  "type": "select",
+                  "label": "Font",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingFontSize",
+                  "type": "select",
+                  "label": "Size",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingLineHeight",
+                  "type": "select",
+                  "label": "Line height",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingLetterSpacing",
+                  "type": "select",
+                  "label": "Letter spacing",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingTextCase",
+                  "type": "select",
+                  "label": "Case",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingWrap",
+                  "type": "select",
+                  "label": "Wrap",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingColor",
+                  "type": "color",
+                  "label": "Text color",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingBackgroundEnabled",
+                  "type": "boolean",
+                  "label": "Background",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingBackgroundColor",
+                  "type": "color",
+                  "label": "Background color",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingCornerRadius",
+                  "type": "number",
+                  "label": "Corner radius",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingTop",
+                  "type": "number",
+                  "label": "Top",
+                  "group": "Padding",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingBottom",
+                  "type": "number",
+                  "label": "Bottom",
+                  "group": "Padding",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingLeft",
+                  "type": "number",
+                  "label": "Left",
+                  "group": "Padding",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.headingPaddingRight",
+                  "type": "number",
+                  "label": "Right",
+                  "group": "Padding",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descWidth",
+                  "type": "select",
+                  "label": "Width",
+                  "group": "Layout",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descMaxWidth",
+                  "type": "select",
+                  "label": "Max width",
+                  "group": "Layout",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descAlignment",
+                  "type": "select",
+                  "label": "Alignment",
+                  "group": "Layout",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descTypographyPreset",
+                  "type": "select",
+                  "label": "Preset",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descFont",
+                  "type": "select",
+                  "label": "Font",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descFontSize",
+                  "type": "select",
+                  "label": "Size",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descLineHeight",
+                  "type": "select",
+                  "label": "Line height",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descLetterSpacing",
+                  "type": "select",
+                  "label": "Letter spacing",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descTextCase",
+                  "type": "select",
+                  "label": "Case",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descWrap",
+                  "type": "select",
+                  "label": "Wrap",
+                  "group": "Typography",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descColor",
+                  "type": "color",
+                  "label": "Text color",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descBackgroundEnabled",
+                  "type": "boolean",
+                  "label": "Background",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descBackgroundColor",
+                  "type": "color",
+                  "label": "Background color",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descCornerRadius",
+                  "type": "number",
+                  "label": "Corner radius",
+                  "group": "Appearance",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingTop",
+                  "type": "number",
+                  "label": "Top",
+                  "group": "Padding",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingBottom",
+                  "type": "number",
+                  "label": "Bottom",
+                  "group": "Padding",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingLeft",
+                  "type": "number",
+                  "label": "Left",
+                  "group": "Padding",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.icons_with_text.blocks.icon_with_text_item.settings.descPaddingRight",
+                  "type": "number",
+                  "label": "Right",
+                  "group": "Padding",
                   "sidebar": true
                 }
-              ]
+              ],
+              "type": "icon-with-text-item"
             }
           ]
         },
@@ -25429,10 +26086,18 @@
               "placeholder": "Paste image URL or upload"
             },
             {
+              "path": "templates.index.sections.multicolumn_section.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.multicolumn_section.settings.borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "sidebar": true,
               "options": [
@@ -25447,10 +26112,42 @@
               ]
             },
             {
+              "path": "templates.index.sections.multicolumn_section.settings.borderThickness",
+              "type": "number",
+              "label": "Thickness",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "unit": "px",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.multicolumn_section.settings.borderOpacity",
+              "type": "number",
+              "label": "Opacity",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.multicolumn_section.settings.borderColor",
+              "type": "text",
+              "label": "Color",
+              "group": "Borders",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.multicolumn_section.settings.cornerRadius",
               "type": "number",
               "label": "Corner radius",
-              "group": "Appearance",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
               "max": 40,
@@ -25487,14 +26184,6 @@
               "max": 120,
               "step": 1,
               "unit": "px",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.multicolumn_section.settings.customCss",
-              "type": "textarea",
-              "label": "Custom CSS",
-              "group": "Custom CSS",
-              "widget": "accordion",
               "sidebar": true
             }
           ],
@@ -25751,6 +26440,38 @@
                       "label": "Solid"
                     }
                   ]
+                },
+                {
+                  "path": "templates.index.sections.multicolumn_section.blocks.multicolumn_item.settings.borderThickness",
+                  "type": "number",
+                  "label": "Thickness",
+                  "group": "Borders",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 10,
+                  "step": 1,
+                  "unit": "px",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.multicolumn_section.blocks.multicolumn_item.settings.borderOpacity",
+                  "type": "number",
+                  "label": "Opacity",
+                  "group": "Borders",
+                  "widget": "slider",
+                  "min": 0,
+                  "max": 100,
+                  "step": 1,
+                  "unit": "%",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.index.sections.multicolumn_section.blocks.multicolumn_item.settings.borderColor",
+                  "type": "text",
+                  "label": "Color",
+                  "group": "Borders",
+                  "widget": "color",
+                  "sidebar": true
                 },
                 {
                   "path": "templates.index.sections.multicolumn_section.blocks.multicolumn_item.settings.cornerRadius",
@@ -26080,7 +26801,8 @@
                   "group": "Padding",
                   "sidebar": true
                 }
-              ]
+              ],
+              "type": "multicolumn-item"
             }
           ]
         },

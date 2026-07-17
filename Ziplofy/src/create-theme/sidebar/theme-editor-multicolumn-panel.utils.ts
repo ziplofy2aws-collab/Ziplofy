@@ -1,5 +1,6 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
+import { layoutBlueprintKey, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
 import {
   HEADING_FONT_OPTIONS,
   HEADING_FONT_SIZE_OPTIONS,
@@ -15,10 +16,17 @@ export const MULTICOLUMN_PANEL_GROUP_ORDER = [
   'Appearance',
   'Borders',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(MULTICOLUMN_PANEL_GROUP_ORDER);
+
+const BORDER_KEYS = new Set([
+  'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
+  'cornerRadius',
+]);
 
 const FIELD_SORT: Record<string, number> = {
   direction: 0,
@@ -33,24 +41,273 @@ const FIELD_SORT: Record<string, number> = {
   backgroundImageUrl: 22,
   backgroundColor: 23,
   backgroundOverlay: 24,
-  borderStyle: 26,
-  cornerRadius: 27,
-  paddingTop: 30,
-  paddingBottom: 31,
-  customCss: 40,
+  borderStyle: 30,
+  borderThickness: 31,
+  borderOpacity: 32,
+  borderColor: 33,
+  cornerRadius: 34,
+  paddingTop: 40,
+  paddingBottom: 41,
 };
 
 function fieldSortKey(path: string): number {
   return FIELD_SORT[path.split('.').pop() ?? ''] ?? 50;
 }
 
+function multicolumnPanelGroupForKey(key: string, fallback?: string): string {
+  if (BORDER_KEYS.has(key)) return 'Borders';
+  if (fallback && PANEL_GROUPS.has(fallback)) return fallback;
+  return 'Layout';
+}
+
 export function isMulticolumnSectionType(secType: string | undefined, catalogVariant: string): boolean {
   return secType === 'multicolumn' || catalogVariant === 'multicolumn';
 }
 
+export function isMulticolumnSectionNodeId(nodeId: string): boolean {
+  const templateMatch = nodeId.match(/^template:[^:]+:([^:]+)$/);
+  if (templateMatch) {
+    return templateBlueprintKey(templateMatch[1]!) === 'multicolumn_section';
+  }
+  const layoutMatch = nodeId.match(/^layout:([^:]+)$/);
+  if (layoutMatch) {
+    return layoutBlueprintKey(layoutMatch[1]!) === 'multicolumn_section';
+  }
+  return false;
+}
+
+export function multicolumnSettingsBaseFromNodeId(nodeId: string): string | null {
+  const templateMatch = nodeId.match(/^template:([^:]+):([^:]+)$/);
+  if (templateMatch) {
+    const secId = templateMatch[2]!;
+    if (templateBlueprintKey(secId) !== 'multicolumn_section') return null;
+    return `templates.${templateMatch[1]}.sections.${secId}.settings`;
+  }
+  const layoutMatch = nodeId.match(/^layout:([^:]+)$/);
+  if (layoutMatch) {
+    const secId = layoutMatch[1]!;
+    if (layoutBlueprintKey(secId) !== 'multicolumn_section') return null;
+    return `sections.${secId}.settings`;
+  }
+  return null;
+}
+
+function s(settingsBase: string, key: string): string {
+  return `${settingsBase}.${key}`;
+}
+
+/** Canonical section settings so Borders / Padding stay present even if schema drifts. */
+export function multicolumnFieldDefs(settingsBase: string): EditorFieldDef[] {
+  return [
+    {
+      path: s(settingsBase, 'direction'),
+      type: 'select',
+      label: 'Direction',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'vertical', label: 'Vertical' },
+        { value: 'horizontal', label: 'Horizontal' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'verticalOnMobile'),
+      type: 'boolean',
+      label: 'Vertical on mobile',
+      group: 'Layout',
+      widget: 'toggle',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'layoutAlignment'),
+      type: 'select',
+      label: 'Alignment',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'left', label: 'Left' },
+        { value: 'center', label: 'Center' },
+        { value: 'right', label: 'Right' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'position'),
+      type: 'select',
+      label: 'Position',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'top', label: 'Top' },
+        { value: 'center', label: 'Center' },
+        { value: 'bottom', label: 'Bottom' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'layoutGap'),
+      type: 'number',
+      label: 'Gap',
+      group: 'Layout',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'sectionWidth'),
+      type: 'select',
+      label: 'Width',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'page', label: 'Page' },
+        { value: 'full', label: 'Full' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'height'),
+      type: 'select',
+      label: 'Height',
+      group: 'Size',
+      widget: 'select-inline',
+      sidebar: true,
+      options: [
+        { value: 'auto', label: 'Auto' },
+        { value: 'small', label: 'Small' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'large', label: 'Large' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'backgroundMedia'),
+      type: 'select',
+      label: 'Background media',
+      group: 'Appearance',
+      widget: 'select-inline',
+      sidebar: true,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'image', label: 'Image' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'backgroundImageUrl'),
+      type: 'text',
+      label: 'Background image',
+      group: 'Appearance',
+      sidebar: true,
+      placeholder: 'Paste image URL or upload',
+    },
+    {
+      path: s(settingsBase, 'backgroundColor'),
+      type: 'color',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'backgroundOverlay'),
+      type: 'boolean',
+      label: 'Background overlay',
+      group: 'Appearance',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'borderStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Borders',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'solid', label: 'Solid' },
+      ],
+    },
+    {
+      path: s(settingsBase, 'borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'cornerRadius'),
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 40,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'paddingTop'),
+      type: 'number',
+      label: 'Top',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 120,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s(settingsBase, 'paddingBottom'),
+      type: 'number',
+      label: 'Bottom',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 120,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+  ];
+}
+
 export function isMulticolumnPanelField(field: EditorFieldDef): boolean {
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
+  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
+  if (BORDER_KEYS.has(key)) return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return /\.sections\.[^.]+\.settings\./.test(field.path);
+  return true;
 }
 
 export function isMulticolumnBlockField(field: EditorFieldDef): boolean {
@@ -70,11 +327,12 @@ export function sortMulticolumnPanelFields(fields: EditorFieldDef[]): EditorFiel
     Appearance: 2,
     Borders: 3,
     Padding: 4,
-    'Custom CSS': 5,
   };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[a.group ?? ''] ?? 9;
-    const gb = groupRank[b.group ?? ''] ?? 9;
+    const keyA = a.path.split('.').pop() ?? '';
+    const keyB = b.path.split('.').pop() ?? '';
+    const ga = groupRank[multicolumnPanelGroupForKey(keyA, a.group)] ?? 9;
+    const gb = groupRank[multicolumnPanelGroupForKey(keyB, b.group)] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -83,7 +341,8 @@ export function sortMulticolumnPanelFields(fields: EditorFieldDef[]): EditorFiel
 export function groupMulticolumnPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
+    const key = field.path.split('.').pop() ?? '';
+    const group = multicolumnPanelGroupForKey(key, field.group);
     const list = map.get(group) ?? [];
     list.push(field);
     map.set(group, list);
@@ -98,11 +357,14 @@ export function isMulticolumnSettingsPanelFields(fields: EditorFieldDef[]): bool
     return false;
   }
   const path = fields[0]?.path ?? '';
+  if (path.includes('faq') || path.includes('pull_quote') || path.includes('icons_with_text')) {
+    return false;
+  }
   return (
     keys.has('verticalOnMobile') &&
     keys.has('direction') &&
     keys.has('layoutGap') &&
-    path.includes('multicolumn')
+    (path.includes('multicolumn') || keys.has('columns'))
   );
 }
 
@@ -158,10 +420,129 @@ export function multicolumnBlockFieldDefsFromNodeId(nodeId: string): EditorField
 }
 
 export function prepareMulticolumnSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortMulticolumnPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isMulticolumnPanelField)
+  const settingsBase =
+    multicolumnSettingsBaseFromNodeId(node.id) ??
+    multicolumnSectionSettingsBaseFromFields(node.fields ?? []);
+  const canonical = settingsBase ? multicolumnFieldDefs(settingsBase) : [];
+  if (canonical.length) {
+    return {
+      ...node,
+      label: 'Multicolumn',
+      kind: 'section',
+      fields: sortMulticolumnPanelFields(canonical),
+    };
+  }
+  const filtered = filterSidebarSectionPanelFields(node.fields ?? [], isMulticolumnPanelField).map(
+    (field) => {
+      const key = field.path.split('.').pop() ?? '';
+      if (key === 'borderStyle') {
+        return { ...field, label: 'Style', group: 'Borders' };
+      }
+      if (BORDER_KEYS.has(key)) {
+        return { ...field, group: 'Borders' };
+      }
+      return field;
+    }
   );
+  const fields = sortMulticolumnPanelFields(ensureMulticolumnBorderFieldDefs(filtered));
   return { ...node, label: 'Multicolumn', kind: 'section', fields };
+}
+
+/** Section `.settings` base from field paths (skips block settings). */
+export function multicolumnSectionSettingsBaseFromFields(
+  fields: EditorFieldDef[]
+): string | null {
+  for (const field of fields) {
+    const path = field.path ?? '';
+    if (path.includes('.blocks.')) continue;
+    const match = path.match(/^(.*?\.settings)\./);
+    if (match) return match[1];
+  }
+  for (const field of fields) {
+    const path = field.path ?? '';
+    const match = path.match(/^(.*?\.settings)\./);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+/** Ensure Borders has Style / Thickness / Opacity / Color / Corner radius defs. */
+export function ensureMulticolumnBorderFieldDefs(fields: EditorFieldDef[]): EditorFieldDef[] {
+  const settingsBase = multicolumnSectionSettingsBaseFromFields(fields);
+  if (!settingsBase) return fields;
+
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  const extra: EditorFieldDef[] = [];
+  const pathFor = (key: string) => `${settingsBase}.${key}`;
+
+  if (!keys.has('borderStyle')) {
+    extra.push({
+      path: pathFor('borderStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Borders',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'solid', label: 'Solid' },
+      ],
+    });
+  }
+  if (!keys.has('borderThickness')) {
+    extra.push({
+      path: pathFor('borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('borderOpacity')) {
+    extra.push({
+      path: pathFor('borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('borderColor')) {
+    extra.push({
+      path: pathFor('borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('cornerRadius')) {
+    extra.push({
+      path: pathFor('cornerRadius'),
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 40,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    });
+  }
+
+  return extra.length ? [...fields, ...extra] : fields;
 }
 
 export function prepareMulticolumnBlockSettingsNode(node: SidebarNode): SidebarNode {
@@ -412,6 +793,38 @@ export function multicolumnColumnBlockFieldDefs(
         { value: 'none', label: 'None' },
         { value: 'solid', label: 'Solid' },
       ],
+    },
+    {
+      path: s('borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s('borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    },
+    {
+      path: s('borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: true,
     },
     {
       path: s('cornerRadius'),
@@ -800,6 +1213,65 @@ export function multicolumnHeadingBlockFieldDefsFromNodeId(nodeId: string): Edit
     return multicolumnHeadingBlockFieldDefs(`sections.${layout[1]}`, layout[2]);
   }
   return [];
+}
+
+const MULTICOLUMN_HEADING_STYLE_DEFAULTS: Record<string, string | boolean> = {
+  headingWidth: 'fill',
+  headingMaxWidth: 'normal',
+  headingAlignment: 'center',
+  headingTypographyPreset: 'heading-4',
+  headingFont: 'heading',
+  headingFontSize: '20px',
+  headingLineHeight: 'normal',
+  headingLetterSpacing: 'normal',
+  headingTextCase: 'default',
+  headingWrap: 'pretty',
+  headingColor: '',
+  headingBackgroundEnabled: false,
+  headingBackgroundColor: '',
+  headingCornerRadius: '0',
+  headingPaddingTop: '0',
+  headingPaddingBottom: '0',
+  headingPaddingLeft: '0',
+  headingPaddingRight: '0',
+};
+
+function getNestedConfigValue(config: Record<string, unknown>, path: string): unknown {
+  const parts = path.split('.');
+  let cur: unknown = config;
+  for (const part of parts) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[part];
+  }
+  return cur;
+}
+
+/** Seed sidebar values for Multicolumn nested Heading fields (incl. Custom typography). */
+export function extendValuesForMulticolumnNestedHeading(
+  values: Record<string, string | boolean>,
+  nodeId: string,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  const defs = multicolumnHeadingBlockFieldDefsFromNodeId(nodeId);
+  if (!defs.length) return values;
+
+  const next = { ...values };
+  let changed = false;
+  for (const field of defs) {
+    if (next[field.path] !== undefined) continue;
+    const key = field.path.split('.').pop() ?? '';
+    const raw = getNestedConfigValue(config, field.path);
+    const fallback = MULTICOLUMN_HEADING_STYLE_DEFAULTS[key];
+    const source = raw !== undefined ? raw : fallback;
+    if (source === undefined) continue;
+    if (field.type === 'boolean') {
+      next[field.path] = source === true || source === 'true';
+    } else {
+      next[field.path] = source == null ? '' : String(source);
+    }
+    changed = true;
+  }
+  return changed ? next : values;
 }
 
 /* -------------------------------------------------------------------------- */

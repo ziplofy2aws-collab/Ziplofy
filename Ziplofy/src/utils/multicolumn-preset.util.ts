@@ -32,6 +32,9 @@ export function applyMulticolumnPreset(section: Record<string, unknown>): void {
   settings.backgroundMedia = settings.backgroundMedia ?? 'none';
   settings.backgroundImageUrl = settings.backgroundImageUrl ?? '';
   settings.borderStyle = settings.borderStyle ?? 'none';
+  settings.borderThickness = settings.borderThickness ?? 1;
+  settings.borderOpacity = settings.borderOpacity ?? 100;
+  settings.borderColor = settings.borderColor ?? 'default';
   settings.cornerRadius = settings.cornerRadius ?? 0;
   settings.backgroundOverlay = settings.backgroundOverlay ?? false;
   settings.paddingTop = settings.paddingTop ?? 48;

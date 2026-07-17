@@ -160,6 +160,15 @@ import {
   parseHeadingBlockNodeId,
 } from './sidebar/theme-editor-heading-block-panel.utils';
 import {
+  extendValuesForIconsWithTextNestedText,
+  isIconsWithTextNestedHeadingNodeId,
+  isIconsWithTextNestedTextNodeId,
+} from './sidebar/theme-editor-icons-with-text-panel.utils';
+import {
+  extendValuesForMulticolumnNestedHeading,
+  isMulticolumnNestedHeadingNodeId,
+} from './sidebar/theme-editor-multicolumn-panel.utils';
+import {
   extendValuesForFaqAccordionBlock,
   isFaqAccordionBlockNodeId,
 } from './sidebar/theme-editor-faq-accordion-block-panel.utils';
@@ -292,6 +301,10 @@ import {
   imageWithTextSidebarSelectionId,
   syntheticImageWithTextSidebarNode,
 } from './utils/image-with-text-sidebar.util';
+import {
+  iconsWithTextSidebarSelectionId,
+  syntheticIconsWithTextSidebarNode,
+} from '../utils/icons-with-text-sidebar.util';
 import {
   storytellingVideoSidebarPathsFromNodeId,
   storytellingVideoSidebarSelectionId,
@@ -1103,6 +1116,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       syntheticBlogPostsEditorialSidebarNode(selectedNodeId, editorSchema) ??
       syntheticBlogPostsCarouselSidebarNode(selectedNodeId, editorSchema) ??
       syntheticImageWithTextSidebarNode(selectedNodeId, editorSchema) ??
+      syntheticIconsWithTextSidebarNode(selectedNodeId, editorSchema) ??
       syntheticStorytellingVideoSidebarNode(selectedNodeId, editorSchema)
     );
   }, [activeTree, selectedNodeId, editorSchema]);
@@ -1138,6 +1152,45 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       } else if (block === undefined && title !== undefined) {
         next = mirrorHeadingTextInValues(next, titlePath, title);
       }
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Icons with text nested Text (heading / description) panel values from merged config. */
+  useEffect(() => {
+    if (
+      !editorSchema ||
+      !defaultConfig ||
+      (!isIconsWithTextNestedHeadingNodeId(selectedNodeId) &&
+        !isIconsWithTextNestedTextNodeId(selectedNodeId))
+    ) {
+      return;
+    }
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForIconsWithTextNestedText(prev, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Multicolumn nested Heading panel values (Custom typography keys included). */
+  useEffect(() => {
+    if (!editorSchema || !defaultConfig || !isMulticolumnNestedHeadingNodeId(selectedNodeId)) {
+      return;
+    }
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForMulticolumnNestedHeading(prev, selectedNodeId, merged);
       if (next === prev) return prev;
       for (const key of Object.keys(next)) {
         if (next[key] !== prev[key]) return next;
@@ -2894,6 +2947,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         blogPostsEditorialSidebarSelectionId(nodeId) ??
         blogPostsCarouselSidebarSelectionId(nodeId) ??
         imageWithTextSidebarSelectionId(nodeId) ??
+        iconsWithTextSidebarSelectionId(nodeId) ??
         storytellingVideoSidebarSelectionId(nodeId) ??
         nodeId;
       if (selectedNodeId === sidebarNodeId) {

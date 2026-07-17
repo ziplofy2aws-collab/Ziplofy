@@ -109,21 +109,45 @@ export const editing: CreateThemeEditing = {
       "blockId": "icon_with_text_item",
       "label": "Icon with text",
       "settingsOrder": [
-        {
-          "key": "icon",
-          "label": "Icon",
-          "type": "text"
-        },
-        {
-          "key": "heading",
-          "label": "Heading",
-          "type": "text"
-        },
-        {
-          "key": "text",
-          "label": "Description",
-          "type": "textarea"
-        }
+        { "key": "icon", "label": "Icon", "type": "text" },
+        { "key": "heading", "label": "Text", "type": "textarea" },
+        { "key": "headingWidth", "label": "Width", "type": "text" },
+        { "key": "headingMaxWidth", "label": "Max width", "type": "text" },
+        { "key": "headingAlignment", "label": "Alignment", "type": "text" },
+        { "key": "headingTypographyPreset", "label": "Preset", "type": "text" },
+        { "key": "headingFont", "label": "Font", "type": "text" },
+        { "key": "headingFontSize", "label": "Size", "type": "text" },
+        { "key": "headingLineHeight", "label": "Line height", "type": "text" },
+        { "key": "headingLetterSpacing", "label": "Letter spacing", "type": "text" },
+        { "key": "headingTextCase", "label": "Case", "type": "text" },
+        { "key": "headingWrap", "label": "Wrap", "type": "text" },
+        { "key": "headingColor", "label": "Text color", "type": "text" },
+        { "key": "headingBackgroundEnabled", "label": "Background", "type": "boolean" },
+        { "key": "headingBackgroundColor", "label": "Background color", "type": "text" },
+        { "key": "headingCornerRadius", "label": "Corner radius", "type": "number" },
+        { "key": "headingPaddingTop", "label": "Top", "type": "number" },
+        { "key": "headingPaddingBottom", "label": "Bottom", "type": "number" },
+        { "key": "headingPaddingLeft", "label": "Left", "type": "number" },
+        { "key": "headingPaddingRight", "label": "Right", "type": "number" },
+        { "key": "text", "label": "Text", "type": "textarea" },
+        { "key": "descWidth", "label": "Width", "type": "text" },
+        { "key": "descMaxWidth", "label": "Max width", "type": "text" },
+        { "key": "descAlignment", "label": "Alignment", "type": "text" },
+        { "key": "descTypographyPreset", "label": "Preset", "type": "text" },
+        { "key": "descFont", "label": "Font", "type": "text" },
+        { "key": "descFontSize", "label": "Size", "type": "text" },
+        { "key": "descLineHeight", "label": "Line height", "type": "text" },
+        { "key": "descLetterSpacing", "label": "Letter spacing", "type": "text" },
+        { "key": "descTextCase", "label": "Case", "type": "text" },
+        { "key": "descWrap", "label": "Wrap", "type": "text" },
+        { "key": "descColor", "label": "Text color", "type": "text" },
+        { "key": "descBackgroundEnabled", "label": "Background", "type": "boolean" },
+        { "key": "descBackgroundColor", "label": "Background color", "type": "text" },
+        { "key": "descCornerRadius", "label": "Corner radius", "type": "number" },
+        { "key": "descPaddingTop", "label": "Top", "type": "number" },
+        { "key": "descPaddingBottom", "label": "Bottom", "type": "number" },
+        { "key": "descPaddingLeft", "label": "Left", "type": "number" },
+        { "key": "descPaddingRight", "label": "Right", "type": "number" }
       ]
     }
   ]

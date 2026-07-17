@@ -513,7 +513,8 @@ export function isFaqSettingsPanelFields(fields: EditorFieldDef[]): boolean {
     keys.has('imageUrl') ||
     keys.has('jumboText') ||
     keys.has('quote') ||
-    keys.has('linkLabel')
+    keys.has('linkLabel') ||
+    keys.has('columns')
   ) {
     return false;
   }

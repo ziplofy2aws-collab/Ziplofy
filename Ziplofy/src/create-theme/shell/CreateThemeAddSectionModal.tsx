@@ -99,6 +99,7 @@ export function CreateThemeAddSectionModal({
   onSelect,
 }: Props) {
   const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [search, setSearch] = useState('');
   const [expandedCats, setExpandedCats] = useState<Record<string, boolean>>(() =>
     defaultExpandedCategoriesForGroup(groupId)
@@ -125,12 +126,15 @@ export function CreateThemeAddSectionModal({
 
   useEffect(() => {
     if (!open) return;
+    setIsVisible(false);
+    const frame = window.requestAnimationFrame(() => setIsVisible(true));
     document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => {
+      window.cancelAnimationFrame(frame);
       document.body.style.overflow = '';
       window.removeEventListener('keydown', onKey);
     };
@@ -162,13 +166,19 @@ export function CreateThemeAddSectionModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[6000] bg-black/20"
+      className={`fixed inset-0 z-[6000] bg-black/20 transition-opacity duration-200 ease-out motion-reduce:transition-none ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
       onClick={onClose}
       role="presentation"
     >
       <div
-        className={`absolute left-[min(calc(300px+12px),92vw)] top-[8%] flex w-[min(920px,calc(100vw-320px))] max-w-[920px] overflow-hidden rounded-2xl bg-[#f6f6f7] shadow-2xl ring-1 ring-black/10 ${
+        className={`absolute left-[min(calc(300px+12px),92vw)] top-[8%] flex w-[min(920px,calc(100vw-320px))] max-w-[920px] overflow-hidden rounded-2xl bg-[#f6f6f7] shadow-2xl ring-1 ring-black/10 transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none ${
           groupId === 'footer' ? 'h-[min(640px,82vh)]' : 'h-[min(560px,80vh)]'
+        } ${
+          isVisible
+            ? 'translate-y-0 scale-100 opacity-100'
+            : 'translate-y-1.5 scale-[0.992] opacity-0'
         }`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"

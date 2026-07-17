@@ -60,7 +60,22 @@ export const editing: CreateThemeEditing = {
     },
     {
       "key": "borderStyle",
-      "label": "Borders",
+      "label": "Style",
+      "type": "text"
+    },
+    {
+      "key": "borderThickness",
+      "label": "Thickness",
+      "type": "number"
+    },
+    {
+      "key": "borderOpacity",
+      "label": "Opacity",
+      "type": "number"
+    },
+    {
+      "key": "borderColor",
+      "label": "Color",
       "type": "text"
     },
     {
@@ -82,11 +97,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": [

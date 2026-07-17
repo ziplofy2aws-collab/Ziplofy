@@ -200,6 +200,7 @@ import {
   groupMulticolumnPanelFields,
   MULTICOLUMN_PANEL_GROUP_ORDER,
   isMulticolumnSettingsPanelFields,
+  prepareMulticolumnSettingsNode,
 } from './theme-editor-multicolumn-panel.utils';
 import {
   groupPullQuotePanelFields,
@@ -5174,7 +5175,162 @@ function StorytellingVideoGroupedSettingsPanel({
   );
 }
 
-/** Multicolumn: Layout → Size → Appearance → Padding → Custom CSS. */
+function MulticolumnBordersSettingsGroup({
+  fields,
+  allFields = [],
+  values,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  allFields?: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const pool = [...fields, ...allFields];
+  const pick = (key: string) =>
+    pool.find((field) => field.path.endsWith(`.${key}`)) ??
+    pool.find((field) => field.path.endsWith(key));
+
+  const styleField = pick('borderStyle');
+  const settingsBase = styleField
+    ? styleField.path.replace(/\.borderStyle$/, '')
+    : (() => {
+        for (const field of pool) {
+          const idx = field.path.indexOf('.settings.');
+          if (idx > -1) return field.path.slice(0, idx + '.settings'.length);
+        }
+        return null;
+      })();
+
+  const ensure = (
+    key: string,
+    synth: Omit<EditorFieldDef, 'path'>
+  ): EditorFieldDef | null => {
+    const existing = pick(key);
+    if (existing) return existing;
+    if (!settingsBase) return null;
+    return { ...synth, path: `${settingsBase}.${key}` };
+  };
+
+  const resolvedStyle =
+    styleField ??
+    (settingsBase
+      ? {
+          path: `${settingsBase}.borderStyle`,
+          type: 'select',
+          label: 'Style',
+          group: 'Borders',
+          widget: 'segmented' as const,
+          sidebar: true,
+          options: [
+            { value: 'none', label: 'None' },
+            { value: 'solid', label: 'Solid' },
+          ],
+        }
+      : null);
+
+  const thicknessField = ensure('borderThickness', {
+    type: 'number',
+    label: 'Thickness',
+    group: 'Borders',
+    widget: 'slider',
+    min: 0,
+    max: 10,
+    step: 1,
+    unit: 'px',
+    sidebar: true,
+  });
+  const opacityField = ensure('borderOpacity', {
+    type: 'number',
+    label: 'Opacity',
+    group: 'Borders',
+    widget: 'slider',
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: '%',
+    sidebar: true,
+  });
+  const colorField = ensure('borderColor', {
+    type: 'color',
+    label: 'Color',
+    group: 'Borders',
+    widget: 'color',
+    sidebar: true,
+  });
+  const radiusField = ensure('cornerRadius', {
+    type: 'number',
+    label: 'Corner radius',
+    group: 'Borders',
+    widget: 'slider',
+    min: 0,
+    max: 40,
+    step: 1,
+    unit: 'px',
+    sidebar: true,
+  });
+
+  if (!resolvedStyle && !radiusField) return null;
+
+  const stylePath = resolvedStyle?.path ?? '';
+  const borderStyle =
+    (stylePath ? String(values[stylePath] ?? '') : '').trim().toLowerCase() ||
+    (resolvedStyle ? fieldValueAsString(values, resolvedStyle).trim().toLowerCase() : '') ||
+    'none';
+  const solidBorders = borderStyle === 'solid';
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Borders</h3>
+      <div className="space-y-1">
+        {resolvedStyle ? (
+          <SegmentedFieldRow
+            field={{
+              ...resolvedStyle,
+              label: 'Style',
+              type: 'select',
+              widget: 'segmented',
+              options: [
+                { value: 'none', label: 'None' },
+                { value: 'solid', label: 'Solid' },
+              ],
+            }}
+            values={values}
+            onFieldChange={(path, type, value) => {
+              onFieldChange(path, type, value);
+              if (String(value).toLowerCase() !== 'solid') return;
+              const base = path.replace(/\.borderStyle$/, '');
+              if (!base) return;
+              if (values[`${base}.borderThickness`] === undefined) {
+                onFieldChange(`${base}.borderThickness`, 'number', '1');
+              }
+              if (values[`${base}.borderOpacity`] === undefined) {
+                onFieldChange(`${base}.borderOpacity`, 'number', '100');
+              }
+              if (!values[`${base}.borderColor`]) {
+                onFieldChange(`${base}.borderColor`, 'color', '#6b7280');
+              }
+            }}
+          />
+        ) : null}
+        {solidBorders && thicknessField ? (
+          <SliderFieldRow field={thicknessField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {solidBorders && opacityField ? (
+          <SliderFieldRow field={opacityField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {solidBorders && colorField ? (
+          <ColorPickerFieldRow field={colorField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {radiusField ? (
+          <SliderFieldRow field={radiusField} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Multicolumn: Layout → Size → Appearance → Borders → Padding. */
 function MulticolumnGroupedSettingsPanel({
   fields,
   values,
@@ -5184,19 +5340,29 @@ function MulticolumnGroupedSettingsPanel({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const grouped = useMemo(() => groupMulticolumnPanelFields(fields), [fields]);
+  const panelFields = useMemo(
+    () =>
+      prepareMulticolumnSettingsNode({
+        id: 'multicolumn',
+        label: 'Multicolumn',
+        kind: 'section',
+        fields,
+      }).fields ?? fields,
+    [fields]
+  );
+  const grouped = useMemo(() => groupMulticolumnPanelFields(panelFields), [panelFields]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {MULTICOLUMN_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        if (!groupFields?.length && label !== 'Borders') return null;
 
         if (label === 'Layout') {
           return (
             <SplitShowcaseLayoutSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -5207,7 +5373,7 @@ function MulticolumnGroupedSettingsPanel({
           return (
             <LargeLogoSizeSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -5215,10 +5381,33 @@ function MulticolumnGroupedSettingsPanel({
         }
 
         if (label === 'Appearance') {
+          const appearanceFields = (groupFields ?? []).filter(
+            (field) =>
+              ![
+                'borderStyle',
+                'borderThickness',
+                'borderOpacity',
+                'borderColor',
+                'cornerRadius',
+              ].includes(field.path.split('.').pop() ?? '')
+          );
+          if (!appearanceFields.length) return null;
           return (
             <ContactFormAppearanceSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={appearanceFields}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Borders') {
+          return (
+            <MulticolumnBordersSettingsGroup
+              key={label}
+              fields={groupFields ?? []}
+              allFields={panelFields}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -5229,25 +5418,10 @@ function MulticolumnGroupedSettingsPanel({
           return (
             <HeroPaddingSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 

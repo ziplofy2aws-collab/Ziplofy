@@ -14,6 +14,11 @@ export function cfgString(config: Record<string, unknown> | null, path: string, 
 export function cfgBool(config: Record<string, unknown> | null, path: string, fallback = false): boolean {
   const v = getThemeConfigValue(config, path);
   if (v == null) return fallback;
+  if (typeof v === 'boolean') return v;
+  if (typeof v === 'number') return v !== 0;
+  const raw = String(v).trim().toLowerCase();
+  if (raw === 'false' || raw === '0' || raw === '') return false;
+  if (raw === 'true' || raw === '1') return true;
   return Boolean(v);
 }
 

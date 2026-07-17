@@ -1,3 +1,4 @@
+import { CREATE_THEME_CATALOG_GROUPS } from '../catalog-groups';
 import type { CreateThemeElement } from '../types';
 import { resolveCreateThemePreviewVariant } from './preview-variant-resolver';
 import { BLOCK_PREVIEW_SLIDES, type BlockPreviewSlide } from './section-preview-slides';
@@ -18,31 +19,17 @@ export function defaultPreviewForElement(element: CreateThemeElement | null): Bl
   return base;
 }
 
+/** Expand every category in the Add section popup by default. */
 export function defaultExpandedCategoriesForGroup(
   groupId: 'header' | 'template' | 'footer'
 ): Record<string, boolean> {
-  if (groupId === 'footer') {
-    return {
-      banners: false,
-      footer: true,
-      forms: false,
-      layout: false,
-      products: false,
-      storytelling: false,
-      text: false,
-      collections: false,
-    };
+  const group = CREATE_THEME_CATALOG_GROUPS[groupId];
+  const expanded: Record<string, boolean> = {};
+  for (const categoryId of group?.categoryOrder ?? []) {
+    expanded[categoryId] = true;
   }
-  if (groupId === 'template') {
-    return {
-      banners: true,
-      collections: false,
-      forms: true,
-      layout: false,
-      products: false,
-      storytelling: false,
-      text: false,
-    };
+  for (const categoryId of Object.keys(group?.categories ?? {})) {
+    expanded[categoryId] = true;
   }
-  return { layout: true };
+  return expanded;
 }

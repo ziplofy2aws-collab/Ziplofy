@@ -314,9 +314,20 @@ import {
   isIconsWithTextSectionType,
   isIconsWithTextSettingsPanelFields,
   isIconsWithTextBlockField,
-  isIconsWithTextBlockNodeId,
-  iconWithTextBlockFieldDefsFromNodeId,
+  isIconsWithTextGroupNodeId,
+  isIconsWithTextNestedIconNodeId,
+  isIconsWithTextNestedTextGroupNodeId,
+  isIconsWithTextNestedHeadingNodeId,
+  isIconsWithTextNestedTextNodeId,
+  iconsWithTextNestedIconFieldDefsFromNodeId,
+  iconsWithTextNestedHeadingFieldDefsFromNodeId,
+  iconsWithTextNestedTextFieldDefsFromNodeId,
   prepareIconsWithTextSettingsNode,
+  prepareIconsWithTextGroupSettingsNode,
+  prepareIconsWithTextNestedIconSettingsNode,
+  prepareIconsWithTextNestedHeadingSettingsNode,
+  prepareIconsWithTextNestedTextSettingsNode,
+  prepareIconsWithTextNestedTextGroupSettingsNode,
   prepareIconsWithTextBlockSettingsNode,
 } from './theme-editor-icons-with-text-panel.utils';
 import {
@@ -3157,7 +3168,7 @@ function layoutSectionNode(
   } else if (isIconsWithTextLayout) {
     blockNodes = mapIconsWithTextBlockNodes(
       id,
-      `sections.${instanceId}.blocks`,
+      `sections.${instanceId}`,
       values,
       itemOrder,
       layoutChildrenKey,
@@ -3818,7 +3829,7 @@ function sectionToNode(
       : isMulticolumn
         ? mapMulticolumnBlockNodes(
             prefix,
-            blocksBase,
+            `templates.${tplId}.sections.${secId}`,
             values,
             itemOrder,
             childrenListKey,
@@ -5670,13 +5681,33 @@ export function settingsNodeForSelection(
     }
   }
 
-  if (isIconsWithTextBlockNodeId(node.id)) {
-    const fields = node.fields?.length
-      ? node.fields
-      : iconWithTextBlockFieldDefsFromNodeId(node.id);
+  if (isIconsWithTextNestedHeadingNodeId(node.id)) {
+    const fields = iconsWithTextNestedHeadingFieldDefsFromNodeId(node.id);
     if (fields.length) {
-      return prepareIconsWithTextBlockSettingsNode({ ...node, fields });
+      return prepareIconsWithTextNestedHeadingSettingsNode({ ...node, fields });
     }
+  }
+
+  if (isIconsWithTextNestedTextNodeId(node.id)) {
+    const fields = iconsWithTextNestedTextFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareIconsWithTextNestedTextSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isIconsWithTextNestedIconNodeId(node.id)) {
+    const fields = iconsWithTextNestedIconFieldDefsFromNodeId(node.id);
+    if (fields.length) {
+      return prepareIconsWithTextNestedIconSettingsNode({ ...node, fields });
+    }
+  }
+
+  if (isIconsWithTextNestedTextGroupNodeId(node.id)) {
+    return prepareIconsWithTextNestedTextGroupSettingsNode(node);
+  }
+
+  if (isIconsWithTextGroupNodeId(node.id)) {
+    return prepareIconsWithTextGroupSettingsNode(node);
   }
 
   if (isTextMarqueeTextBlockNodeId(node.id) && node.fields?.length) {
