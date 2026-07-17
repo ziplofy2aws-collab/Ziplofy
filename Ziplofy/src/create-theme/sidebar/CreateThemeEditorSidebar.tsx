@@ -139,7 +139,7 @@ function DragHandleIcon({ className }: { className?: string }) {
 }
 
 function SidebarRowIcon({ icon, muted }: { icon?: SidebarIcon; muted?: boolean }) {
-  const cls = `h-4 w-4 shrink-0 ${muted ? 'text-white/80' : 'text-gray-500'}`;
+  const cls = `h-4 w-4 shrink-0 ${muted ? 'text-[#005bd3]' : 'text-gray-400'}`;
   switch (icon) {
     case 'section':
       return <SectionIcon className={cls} />;
@@ -325,8 +325,8 @@ function SidebarGroup({
   const isMainGroupSelected = Boolean(groupNode && selectedNodeId === groupNode.id);
   const labelPaddingLeft = SIDEBAR_BASE_PADDING + depth * SIDEBAR_DEPTH_STEP;
   const mainGroupLabelClassName = checkoutMainGroup
-    ? 'px-3 pb-1 pt-3 text-[13px] font-semibold text-gray-900'
-    : 'px-3 pb-1.5 pt-4 text-[15px] font-semibold text-gray-900';
+    ? 'px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-500'
+    : 'px-3 pb-1.5 pt-5 text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-500';
 
   return (
     <>
@@ -336,8 +336,8 @@ function SidebarGroup({
           onClick={() => onSelect(groupNode)}
           className={`block w-full text-left transition-colors duration-150 ${
             isMainGroupSelected
-              ? 'bg-[#005bd3] text-white'
-              : 'text-gray-900 hover:bg-[#ededed]'
+              ? 'bg-[#eaf2ff] text-[#005bd3]'
+              : 'text-gray-500 hover:bg-gray-100'
           } ${mainGroupLabelClassName}`}
           style={{ paddingLeft: labelPaddingLeft }}
         >
@@ -718,7 +718,7 @@ function SidebarTreeRow({
       <button
         type="button"
         disabled={node.disabled}
-        className="flex w-full items-center gap-1.5 py-1.5 pr-3 text-left text-[13px] font-medium hover:underline"
+        className="mx-2 flex w-[calc(100%_-_1rem)] items-center gap-2 rounded-lg py-2 pr-3 text-left text-[13px] font-medium transition-colors hover:bg-[#f1f6ff]"
         style={{
           paddingLeft: sidebarContentPadding(depth),
           color: node.disabled ? '#9ca3af' : SHOPIFY_BLUE,
@@ -987,10 +987,10 @@ function CheckoutSidebarSectionRow({
   return (
     <div
       data-sidebar-node-id={node.id}
-      className={`group flex items-center gap-0.5 pr-2 text-[13px] transition-colors duration-150 ${
+      className={`group mx-2 my-0.5 flex items-center gap-0.5 rounded-lg pr-2 text-[13px] transition-colors duration-150 ${
         isSelected
-          ? 'bg-[#005bd3] font-medium text-white'
-          : 'text-gray-900 hover:bg-[#ededed]'
+          ? 'bg-[#eaf2ff] font-medium text-[#005bd3]'
+          : 'text-gray-800 hover:bg-gray-100'
       } ${isHidden ? 'opacity-50' : ''}`}
       style={{ paddingLeft: indent - 4 }}
     >
@@ -1007,7 +1007,7 @@ function CheckoutSidebarSectionRow({
           type="button"
           onClick={() => onToggleExpand(node.id)}
           className={`flex h-7 w-5 shrink-0 items-center justify-center ${
-            isSelected ? 'text-white/90 hover:text-white' : 'text-gray-500 hover:text-gray-800'
+            isSelected ? 'text-[#005bd3]' : 'text-gray-400 hover:text-gray-700'
           }`}
           aria-label={isOpen ? 'Collapse' : 'Expand'}
         >
@@ -1066,10 +1066,10 @@ function SidebarRow({
   return (
     <div
       data-sidebar-node-id={node.id}
-      className={`group relative flex items-center gap-0.5 pr-1 text-[13px] transition-[background-color,opacity,box-shadow] duration-150 ease-out ${
+      className={`group relative mx-2 my-0.5 flex items-center gap-0.5 rounded-lg pr-1 text-[13px] transition-[background-color,opacity,box-shadow] duration-150 ease-out ${
         isSelected
-          ? 'bg-[#005bd3] font-medium text-white'
-          : 'text-gray-800 hover:bg-[#ededed]'
+          ? 'bg-[#eaf2ff] font-medium text-[#005bd3] shadow-[inset_3px_0_0_#005bd3]'
+          : 'text-gray-700 hover:bg-gray-100'
       } ${isHidden ? 'opacity-50' : ''} ${
         isDragOver && !isSelected ? 'bg-[#edf3ff] ring-1 ring-inset ring-[#005bd3]/30' : ''
       } ${isDragging ? 'opacity-35 scale-[0.99]' : ''}`}
@@ -1119,7 +1119,7 @@ function SidebarRow({
           type="button"
           onClick={() => onToggleExpand(node.id)}
           className={`flex h-7 w-5 shrink-0 items-center justify-center ${
-            isSelected ? 'text-white/90 hover:text-white' : 'text-gray-500 hover:text-gray-800'
+            isSelected ? 'text-[#005bd3]' : 'text-gray-400 hover:text-gray-700'
           }`}
           aria-label={isOpen ? 'Collapse' : 'Expand'}
         >
@@ -1148,7 +1148,7 @@ function SidebarRow({
         {node.preview ? (
           <span
             className={`min-w-0 flex-1 truncate text-xs font-normal italic ${
-              isSelected ? 'text-white/75' : 'text-gray-500'
+              isSelected ? 'text-[#005bd3]/70' : 'text-gray-400'
             }`}
           >
             – {node.preview}
@@ -1164,8 +1164,8 @@ function SidebarRow({
           }}
           className={`mr-1 flex h-7 w-7 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 ${
             isSelected
-              ? 'text-white/90 opacity-100 hover:bg-white/20 hover:text-white'
-              : 'text-gray-500 hover:bg-red-50 hover:text-red-600'
+              ? 'text-[#005bd3] opacity-100 hover:bg-white hover:text-red-600'
+              : 'text-gray-400 hover:bg-red-50 hover:text-red-600'
           }`}
           title={node.kind === 'block' ? 'Remove block' : 'Remove section'}
           aria-label={`Remove ${node.label}`}
@@ -1182,8 +1182,8 @@ function SidebarRow({
           }}
           className={`mr-1 flex h-7 w-7 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 ${
             isSelected
-              ? 'text-white/90 opacity-100 hover:bg-white/20'
-              : 'text-gray-500 hover:bg-gray-200/80 hover:text-gray-800'
+              ? 'text-[#005bd3] opacity-100 hover:bg-white'
+              : 'text-gray-400 hover:bg-white hover:text-gray-700'
           }`}
           title={isHidden ? 'Show' : 'Hide'}
         >
@@ -1312,12 +1312,12 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   }, [selectedNodeId, tree]);
 
   return (
-    <aside className="relative flex h-full min-h-0 w-[300px] shrink-0 flex-col border-r border-[#e1e1e1] bg-[#f6f6f7]">
-      <div className="flex items-center gap-0.5 border-b border-[#e1e1e1] bg-[#f6f6f7] px-2 py-2">
+    <aside className="relative flex h-full min-h-0 w-[300px] shrink-0 flex-col border-r border-gray-200 bg-white">
+      <div className="flex items-center gap-1 border-b border-gray-200 bg-white px-3 py-2.5">
         <button
           type="button"
           onClick={onExit}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-700 shadow-sm hover:bg-gray-50"
+          className="mr-1 flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
           title="Exit editor"
         >
           <ArrowLeftIcon className="h-4 w-4" />
@@ -1325,10 +1325,10 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
         <button
           type="button"
           onClick={() => onSidebarTabChange('sections')}
-          className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+          className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
             sidebarTab === 'sections'
-              ? 'bg-[#d4e3ff] text-[#005bd3]'
-              : 'text-gray-600 hover:bg-[#ededed]'
+              ? 'bg-[#eaf2ff] text-[#005bd3]'
+              : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
           }`}
           title="Sections"
         >
@@ -1337,10 +1337,10 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
         <button
           type="button"
           onClick={() => onSidebarTabChange('theme-settings')}
-          className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+          className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
             sidebarTab === 'theme-settings'
-              ? 'bg-[#d4e3ff] text-[#005bd3]'
-              : 'text-gray-600 hover:bg-[#ededed]'
+              ? 'bg-[#eaf2ff] text-[#005bd3]'
+              : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
           }`}
           title="Theme settings"
         >
@@ -1348,17 +1348,18 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
         </button>
       </div>
 
-      <h2 className="border-b border-[#e1e1e1] bg-[#f6f6f7] px-3 py-3 text-[13px] font-medium text-gray-500">
+      <h2 className="border-b border-gray-100 bg-white px-4 py-3.5 text-[12px] font-medium text-gray-400">
         {sidebarTab === 'sections' ? (
           sidebarTitleMode === 'plain' ? (
-            <span className="font-semibold text-gray-900">{pageLabel}</span>
+            <span className="text-[14px] font-semibold text-gray-900">{pageLabel}</span>
           ) : (
             <>
-              Editing: <span className="font-semibold text-gray-900">{pageLabel}</span>
+              <span className="mr-1">Editing</span>
+              <span className="text-[14px] font-semibold text-gray-900">{pageLabel}</span>
             </>
           )
         ) : sidebarTitleMode === 'plain' ? (
-          <span className="font-semibold text-gray-900">{title}</span>
+          <span className="text-[14px] font-semibold text-gray-900">{title}</span>
         ) : (
           title
         )}
@@ -1380,7 +1381,7 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
           )
         ) : null}
         {!loading && sidebarTab === 'sections' && tree.length > 0 ? (
-          <div className="pb-3 pt-1">
+          <div className="pb-5 pt-1">
             {tree.map((node, index) => (
               <Fragment key={node.id}>
                 {sidebarTitleMode === 'plain' && index > 0 ? (
