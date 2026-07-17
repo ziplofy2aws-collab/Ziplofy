@@ -2452,19 +2452,19 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     ]
   );
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback((): 'saving' | 'modal' | 'loading' | 'needs-name' => {
     if (!defaultConfig || !editorSchema) {
       toast.error('Theme is still loading');
-      return;
+      return 'loading';
     }
     if (!savedThemeId) {
       setShowSaveThemeModal(true);
-      return;
+      return 'modal';
     }
     const name = themeName.trim();
     if (!name) {
       toast.error('Theme name is required');
-      return;
+      return 'needs-name';
     }
     void persistTheme({
       themeName: name,
@@ -2473,6 +2473,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     }).catch((err: unknown) => {
       toast.error((err as Error)?.message ?? 'Failed to save theme');
     });
+    return 'saving';
   }, [defaultConfig, editorSchema, savedThemeId, themeName, themeDesc, persistTheme]);
 
   const themeAlreadyApplied = Boolean(

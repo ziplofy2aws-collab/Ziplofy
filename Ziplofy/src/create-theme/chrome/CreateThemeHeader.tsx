@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/24/outline';
 import DropdownMenu from '../../components/DropdownMenu';
 import DropdownMenuItem from '../../components/DropdownMenuItem';
-import { CodiixChatPanel, CodiixFaceIcon } from '../codiix';
+import { CodiixChatPanel, CodiixFaceIcon, type CodiixSaveResult } from '../codiix';
 import { CreateThemePagePicker } from './CreateThemePagePicker';
 import { InspectorToggleIcon } from './InspectorToggleIcon';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
@@ -23,7 +23,7 @@ type Props = {
   onThemeConfigChange?: (config: Record<string, unknown>, previewPage?: ThemePreviewPage) => void;
   device: 'desktop' | 'mobile';
   onDeviceChange: (device: 'desktop' | 'mobile') => void;
-  onSave?: () => void;
+  onSave?: () => CodiixSaveResult | void;
   saveDisabled?: boolean;
   saving?: boolean;
   inspectorEnabled?: boolean;
@@ -203,6 +203,8 @@ export function CreateThemeHeader({
         expanded={codiixExpanded}
         onExpandedChange={setCodiixExpanded}
         onAgenticInsert={onAgenticInsert}
+        onSave={onSave}
+        saveDisabled={saveDisabled}
       />
     </header>
   );

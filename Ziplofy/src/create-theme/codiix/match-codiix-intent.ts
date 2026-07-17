@@ -43,6 +43,9 @@ function scoreIntent(query: string, intent: CodiixIntent): number {
   return score;
 }
 
+/** Global editor commands — work in any mode (not Agentic-only). */
+export type CodiixSystemAction = 'save';
+
 export type CodiixMatch = {
   intentId: string | null;
   answer: string;
@@ -51,7 +54,39 @@ export type CodiixMatch = {
   relatedActions?: CodiixAgenticAction[];
   relatedCategoryLabel?: string;
   previewElementId?: string;
+  /** Editor command to run after answering (any mode). */
+  systemAction?: CodiixSystemAction;
 };
+
+/** “Save my changes” / “please save” — not “what is save” / “save vs apply”. */
+export function matchSaveCommand(raw: string): boolean {
+  const query = normalize(raw);
+  if (!query) return false;
+
+  // Explanatory / comparison questions → FAQ, not the save API.
+  if (
+    /\b(vs|versus|difference|differ|mean|means|explain|how (do|does|to)|what (is|does)|when (do|should)|why)\b/.test(
+      query,
+    )
+  ) {
+    return false;
+  }
+  if (/\b(apply|publish|live|deploy)\b/.test(query) && !/\bsave\b/.test(query)) {
+    return false;
+  }
+
+  if (
+    /^(save|save please|please save|save now|save it|save this|save theme|save changes)$/.test(
+      query,
+    )
+  ) {
+    return true;
+  }
+
+  return /\b(save\s+(my\s+)?(changes|work|theme|progress|edits|everything)|save\s+now|please\s+save|can you save|could you save|save\s+it|save\s+this|save\s+the\s+theme)\b/.test(
+    query,
+  );
+}
 
 export function matchCodiixIntent(
   raw: string,
@@ -67,6 +102,21 @@ export function matchCodiixIntent(
       relatedSuggestions: CODIX_INTENTS.filter((i) => i.suggestion)
         .slice(0, 4)
         .map((i) => ({ id: i.id, label: i.suggestion! })),
+    };
+  }
+
+  // Save works in normal + Agentic — always checked first.
+  if (matchSaveCommand(query)) {
+    return {
+      intentId: 'save-command',
+      answer:
+        'On it — saving your theme changes now (same as the **Save** button in the header).',
+      relatedSuggestions: [
+        { id: 'save-apply', label: 'Save vs Apply theme' },
+        { id: 'agentic-mode', label: 'What is Agentic mode?' },
+        { id: 'add-section', label: 'How do I add a section?' },
+      ],
+      systemAction: 'save',
     };
   }
 

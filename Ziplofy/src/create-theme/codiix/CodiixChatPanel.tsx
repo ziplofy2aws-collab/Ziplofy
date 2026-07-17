@@ -30,6 +30,8 @@ import {
 } from './codiix-session';
 
 export type { CodiixMessage };
+export type CodiixSaveResult = 'saving' | 'modal' | 'loading' | 'needs-name';
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -37,6 +39,9 @@ type Props = {
   onExpandedChange?: (expanded: boolean) => void;
   /** When set, Agentic mode can insert real sections into the theme. */
   onAgenticInsert?: (elementId: string) => boolean | void;
+  /** Works in any mode — same path as the header Save button / save API. */
+  onSave?: () => CodiixSaveResult | void;
+  saveDisabled?: boolean;
 };
 
 function greetingForNow(): string {
@@ -163,6 +168,8 @@ export function CodiixChatPanel({
   expanded = true,
   onExpandedChange,
   onAgenticInsert,
+  onSave,
+  saveDisabled = false,
 }: Props) {
   const [draft, setDraftState] = useState(() => getCodiixSessionDraft());
   const [messages, setMessagesState] = useState<CodiixMessage[]>(() => getCodiixSessionMessages());
@@ -332,6 +339,38 @@ export function CodiixChatPanel({
     [onAgenticInsert, busyActionId, thinking, streamingMessageId, streamAssistant],
   );
 
+  const runSaveCommand = useCallback((): string => {
+    if (saveDisabled || !onSave) {
+      return (
+        'I can’t save just yet — the theme is still loading.\n\n' +
+        'Wait a moment, then say **“save my changes”** again (or tap **Save** in the header).'
+      );
+    }
+    const result = onSave() ?? 'saving';
+    if (result === 'loading') {
+      return (
+        'Theme is still loading, so I couldn’t save yet.\n\n' +
+        'Give it a second, then ask me again.'
+      );
+    }
+    if (result === 'modal') {
+      return (
+        'This theme isn’t saved yet — I opened the **Save theme** dialog so you can name it.\n\n' +
+        'Confirm there and you’re good.'
+      );
+    }
+    if (result === 'needs-name') {
+      return (
+        'I need a **theme name** before saving.\n\n' +
+        'Type a name in the header, then say **“save my changes”** again.'
+      );
+    }
+    return (
+      'Done — I hit **Save** for you (same API as the header button).\n\n' +
+      'Remember: **Save** stores editor work; **Apply theme** (⋮ menu) makes it live.'
+    );
+  }, [onSave, saveDisabled]);
+
   const respond = useCallback(
     (raw: string) => {
       const trimmed = raw.trim();
@@ -349,14 +388,28 @@ export function CodiixChatPanel({
           match.relatedSuggestions.length > 0
             ? match.relatedSuggestions
             : CODIX_SUGGESTIONS.slice(0, 3).map((s) => ({ id: s.id, label: s.label }));
-        streamAssistant(match.answer, followUps, match.actions, {
+
+        let answer = match.answer;
+        if (match.systemAction === 'save') {
+          answer = runSaveCommand();
+        }
+
+        streamAssistant(answer, followUps, match.actions, {
           relatedActions: match.relatedActions,
           relatedCategoryLabel: match.relatedCategoryLabel,
           previewElementId: match.previewElementId,
         });
       }, delay);
     },
-    [thinking, streamingMessageId, streamAssistant, agenticMode, setMessages, setDraft],
+    [
+      thinking,
+      streamingMessageId,
+      streamAssistant,
+      agenticMode,
+      setMessages,
+      setDraft,
+      runSaveCommand,
+    ],
   );
 
   const respondFromSuggestion = useCallback(

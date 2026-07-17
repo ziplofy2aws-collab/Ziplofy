@@ -421,12 +421,20 @@ export const CODIX_INTENTS: CodiixIntent[] = [
   {
     id: 'save-apply',
     suggestion: 'Save vs Apply theme',
-    keywords: ['save', 'apply', 'publish', 'live', 'deploy'],
-    phrases: ['apply theme', 'save theme', 'make it live', 'publish'],
+    keywords: ['apply', 'publish', 'live', 'deploy', 'save vs apply'],
+    phrases: [
+      'apply theme',
+      'make it live',
+      'publish',
+      'save vs apply',
+      'difference between save and apply',
+      'what does save do',
+    ],
     answer:
       '• **Save** — stores your theme editor work.\n' +
       '• **Apply theme** (⋮ menu) — pushes this theme to the live storefront.\n\n' +
-      'Save often while editing. Apply when you’re ready for customers to see the changes.',
+      'Save often while editing. Apply when you’re ready for customers to see the changes.\n\n' +
+      'Tip: tell me **“save my changes”** anytime and I’ll hit Save for you.',
   },
   {
     id: 'reorder',
