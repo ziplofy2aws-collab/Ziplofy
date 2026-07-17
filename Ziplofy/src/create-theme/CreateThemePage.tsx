@@ -3021,6 +3021,80 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     [defaultConfig, editorSchema, addSectionTarget, previewPage]
   );
 
+  const handleAgenticInsert = useCallback(
+    (elementId: string): boolean => {
+      if (!defaultConfig || !editorSchema || !packDefaultRef.current) {
+        toast.error('Theme is still loading');
+        return false;
+      }
+      const el = getCreateThemeElement(elementId);
+      if (!el) {
+        toast.error('Unknown section');
+        return false;
+      }
+
+      const groupId = el.insert.group;
+      const groupLabel =
+        groupId === 'header' ? 'Header' : groupId === 'footer' ? 'Footer' : 'Template';
+      let afterNodeId: string | undefined;
+      let beforeNodeId: string | undefined;
+      if (groupId === 'header') {
+        const order = itemOrder['sections:header'] ?? [];
+        afterNodeId = order[order.length - 1];
+      } else if (groupId === 'footer') {
+        const order = itemOrder['sections:footer'] ?? [];
+        beforeNodeId = order[0];
+      } else {
+        const order = itemOrder[`sections:template:${tplId}`] ?? [];
+        afterNodeId = order[order.length - 1];
+      }
+
+      const result = insertCreateThemeElement(
+        defaultConfig,
+        elementId,
+        { groupId, groupLabel, afterNodeId, beforeNodeId },
+        packDefaultRef.current,
+        previewPage
+      );
+      if (!result) {
+        toast.error('Could not add this section yet');
+        return false;
+      }
+
+      normalizeCreatorThemeConfig(result.config);
+      setDefaultConfig(result.config);
+      if (el.insert.placement === 'layout') {
+        setValues((prev) =>
+          extendValuesForLayoutInstance(
+            prev,
+            editorSchema,
+            el.insert.blueprintId,
+            result.instanceId,
+            result.config
+          )
+        );
+      } else if (el.insert.placement === 'template') {
+        setValues((prev) =>
+          extendValuesForTemplateInstance(
+            prev,
+            editorSchema,
+            templateIdForPage(previewPage),
+            templateBlueprintKey(result.instanceId),
+            result.instanceId,
+            result.config
+          )
+        );
+      }
+      setItemOrder(readStructureOrderFromConfig(result.config, previewPage));
+      setSelectedNodeId(result.nodeId);
+      setAddSectionTarget(null);
+      setStructureSyncKey((k) => k + 1);
+      toast.success(`${el.label} added`);
+      return true;
+    },
+    [defaultConfig, editorSchema, itemOrder, tplId, previewPage]
+  );
+
   const handleInsertBlock = useCallback(
     (block: BlockCatalogItem) => {
       if (!defaultConfig || !editorSchema || !addBlockTarget) return;
@@ -3792,6 +3866,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         applyThemeDisabled={applyingTheme}
         applyingTheme={applyingTheme}
         themeAlreadyApplied={themeAlreadyApplied}
+        onAgenticInsert={handleAgenticInsert}
       />
       ) : (
         <CheckoutEditorHeader
@@ -3948,12 +4023,15 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           ) : (
           <div
             className={`create-theme-preview-stage relative flex min-h-0 flex-1 flex-col overflow-auto ${
-              structureDragging ? 'create-theme-preview-stage--squeezed' : ''
+              device === 'mobile' ? 'create-theme-preview-stage--mobile' : ''
+            } ${structureDragging ? 'create-theme-preview-stage--squeezed' : ''
             }`}
           >
           <div
-            className={`create-theme-preview-canvas relative flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
-              device === 'mobile' ? 'mx-auto w-full max-w-[390px] border-x border-gray-200' : 'h-full w-full'
+            className={`create-theme-preview-canvas relative mx-auto flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
+              device === 'mobile'
+                ? 'create-theme-preview-canvas--mobile'
+                : 'create-theme-preview-canvas--desktop'
               } ${structureDragging ? 'create-theme-preview-canvas--squeezed' : ''}`}
           >
             <CreateThemeLivePreview

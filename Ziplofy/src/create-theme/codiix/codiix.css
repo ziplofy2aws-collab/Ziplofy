@@ -1,0 +1,787 @@
+.codiix-intro {
+  position: fixed;
+  top: 4rem;
+  right: 0.75rem;
+  z-index: 1400;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.8rem;
+  width: min(318px, calc(100vw - 1.5rem));
+  min-height: 86px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 0.9rem 1rem;
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.14),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(12px);
+  transform-origin: top right;
+  animation: codiix-intro-arrive 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.codiix-intro__glow {
+  position: absolute;
+  left: -2.5rem;
+  bottom: -3.5rem;
+  width: 9rem;
+  height: 9rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  filter: blur(22px);
+  pointer-events: none;
+}
+
+.codiix-intro__face {
+  position: relative;
+  z-index: 1;
+  width: 3.4rem;
+  height: 3.4rem;
+  filter: drop-shadow(0 7px 12px rgba(0, 0, 0, 0.2));
+  animation: codiix-intro-face 0.55s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.codiix-intro__copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.codiix-intro__hello,
+.codiix-intro__byline {
+  margin: 0;
+}
+
+.codiix-intro__hello {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #111827;
+  animation: codiix-intro-copy 0.35s 0.22s ease-out both;
+}
+
+.codiix-intro__byline {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  animation: codiix-intro-copy 0.35s 0.32s ease-out both;
+}
+
+.codiix-intro__wave {
+  display: inline-block;
+  margin-left: 0.15rem;
+  transform-origin: 72% 72%;
+  animation: codiix-hand-wave 0.72s 0.42s ease-in-out 2;
+}
+
+.codiix-intro__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #111111, #a3a3a3);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: codiix-intro-progress 1.65s 0.15s linear forwards;
+}
+
+@keyframes codiix-intro-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes codiix-intro-face {
+  from {
+    opacity: 0;
+    transform: translateX(10px) rotate(8deg) scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes codiix-intro-copy {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes codiix-hand-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(18deg);
+  }
+  50% {
+    transform: rotate(-9deg);
+  }
+  75% {
+    transform: rotate(15deg);
+  }
+}
+
+@keyframes codiix-intro-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.codiix-panel {
+  position: fixed;
+  top: 3.75rem;
+  right: 0.75rem;
+  z-index: 1400;
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100vw - 1.5rem));
+  height: min(560px, calc(100vh - 4.5rem));
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow:
+    0 18px 48px rgba(15, 23, 42, 0.16),
+    0 0 0 1px rgba(15, 23, 42, 0.04);
+  transform-origin: top right;
+  animation: codiix-in 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.codiix-panel--expanded {
+  width: min(520px, calc(100vw - 1.5rem));
+  height: min(720px, calc(100vh - 4.5rem));
+}
+
+@keyframes codiix-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.codiix-panel__chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid #f0f0f0;
+  animation: codiix-content-in 0.3s 0.08s ease-out both;
+}
+
+.codiix-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.codiix-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.codiix-agentic-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-right: 0.25rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0.22rem 0.55rem 0.22rem 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #525252;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.codiix-agentic-toggle__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: #a3a3a3;
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.codiix-agentic-toggle--on {
+  border-color: #111111;
+  background: #111111;
+  color: #fff;
+}
+
+.codiix-agentic-toggle--on .codiix-agentic-toggle__dot {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+}
+
+.codiix-empty__agentic {
+  margin: -0.55rem 0 0.95rem;
+  font-size: 0.75rem;
+  color: #737373;
+}
+
+.codiix-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.codiix-action-btn {
+  border: 1px solid #111111;
+  border-radius: 999px;
+  background: #111111;
+  padding: 0.42rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.codiix-action-btn:hover:not(:disabled) {
+  background: #262626;
+  transform: translateY(-1px);
+}
+
+.codiix-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.codiix-icon-btn {
+  display: inline-flex;
+  height: 1.85rem;
+  width: 1.85rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.codiix-icon-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.codiix-panel__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 1rem 1rem 0.5rem;
+  animation: codiix-content-in 0.35s 0.13s ease-out both;
+}
+
+.codiix-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 1.5rem 0.5rem 2rem;
+  text-align: center;
+}
+
+.codiix-empty__face {
+  width: 4.25rem;
+  height: 4.25rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.22));
+  animation:
+    codiix-face-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    codiix-face-float 3.8s 0.55s ease-in-out infinite;
+}
+
+@keyframes codiix-face-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes codiix-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes codiix-face-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.codiix-empty__greet {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.codiix-empty__ask {
+  margin: 0.25rem 0 1.15rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+
+.codiix-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.codiix-chips--inline {
+  justify-content: flex-start;
+  margin-top: 0.65rem;
+}
+
+.codiix-chip {
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+  animation: codiix-content-in 0.3s ease-out both;
+}
+
+.codiix-chip:hover {
+  border-color: #a3a3a3;
+  background: #f5f5f5;
+  color: #111111;
+  transform: translateY(-1px);
+}
+
+.codiix-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-bottom: 0.75rem;
+}
+
+.codiix-msg {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  animation: codiix-message-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes codiix-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.codiix-msg--user {
+  justify-content: flex-end;
+}
+
+.codiix-msg__avatar {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.codiix-msg__bubble {
+  max-width: 88%;
+  border-radius: 12px;
+  padding: 0.65rem 0.8rem;
+  background: #f4f4f5;
+}
+
+.codiix-msg--user .codiix-msg__bubble {
+  background: #111111;
+  color: #fff;
+}
+
+.codiix-msg__text {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: inherit;
+}
+
+.codiix-markdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.62rem;
+  font-size: 0.8125rem;
+  line-height: 1.52;
+  color: #1f2937;
+}
+
+.codiix-markdown__heading,
+.codiix-markdown__paragraph,
+.codiix-markdown__list {
+  margin: 0;
+}
+
+.codiix-markdown__heading {
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #0f172a;
+}
+
+.codiix-markdown__paragraph:first-child {
+  font-weight: 500;
+  color: #111827;
+}
+
+.codiix-markdown strong {
+  font-weight: 700;
+  color: #111111;
+}
+
+.codiix-markdown__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  padding: 0;
+  list-style: none;
+}
+
+.codiix-markdown__list li {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.codiix-markdown__list:not(.codiix-markdown__list--ordered) li::before {
+  position: absolute;
+  top: 0.55em;
+  left: 0.1rem;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #111111, #737373);
+  content: '';
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.08);
+}
+
+.codiix-markdown__list--ordered {
+  counter-reset: codiix-step;
+}
+
+.codiix-markdown__list--ordered li {
+  min-height: 1.3rem;
+  padding-left: 1.65rem;
+  counter-increment: codiix-step;
+}
+
+.codiix-markdown__list--ordered li::before {
+  position: absolute;
+  top: 0.05rem;
+  left: 0;
+  display: inline-flex;
+  width: 1.18rem;
+  height: 1.18rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #e5e5e5;
+  color: #111111;
+  content: counter(codiix-step);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.codiix-msg--bot .codiix-msg__text {
+  color: #1f2937;
+}
+
+.codiix-msg__bubble--thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 142px;
+  padding: 0.65rem 0.8rem;
+  overflow: hidden;
+}
+
+.codiix-thinking {
+  position: relative;
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.codiix-thinking__aura {
+  position: absolute;
+  inset: 0.12rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.12);
+  filter: blur(5px);
+  animation: codiix-thinking-aura 1.8s ease-in-out infinite;
+}
+
+.codiix-thinking__blob {
+  position: relative;
+  z-index: 1;
+  width: 1.28rem;
+  height: 1.28rem;
+  border-radius: 44% 56% 58% 42% / 48% 42% 58% 52%;
+  background: linear-gradient(135deg, #050505 8%, #404040 52%, #d4d4d4 100%);
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    0 3px 8px rgba(0, 0, 0, 0.24);
+  animation:
+    codiix-thinking-morph 1.45s ease-in-out infinite alternate,
+    codiix-thinking-turn 2.8s linear infinite;
+}
+
+.codiix-thinking__orbit {
+  position: absolute;
+  z-index: 2;
+  width: 0.23rem;
+  height: 0.23rem;
+  border-radius: 999px;
+  background: #525252;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  animation: codiix-thinking-orbit 1.6s linear infinite;
+}
+
+.codiix-thinking__orbit--two {
+  width: 0.17rem;
+  height: 0.17rem;
+  background: #111111;
+  animation-duration: 2.1s;
+  animation-direction: reverse;
+}
+
+.codiix-thinking__label {
+  position: relative;
+  background: linear-gradient(90deg, #737373 25%, #111111 50%, #737373 75%);
+  background-size: 200% auto;
+  background-clip: text;
+  color: transparent;
+  font-size: 0.72rem;
+  font-weight: 600;
+  animation: codiix-thinking-shimmer 1.6s linear infinite;
+}
+
+@keyframes codiix-thinking-aura {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.86);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes codiix-thinking-morph {
+  0% {
+    border-radius: 44% 56% 58% 42% / 48% 42% 58% 52%;
+    transform: scale(0.92);
+  }
+  100% {
+    border-radius: 58% 42% 44% 56% / 40% 57% 43% 60%;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes codiix-thinking-turn {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes codiix-thinking-orbit {
+  from {
+    transform: rotate(0deg) translateX(0.86rem) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(0.86rem) rotate(-360deg);
+  }
+}
+
+@keyframes codiix-thinking-shimmer {
+  to {
+    background-position: -200% center;
+  }
+}
+
+.codiix-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 0.85rem 0.9rem;
+  border-top: 1px solid #f0f0f0;
+  background: #fff;
+  animation: codiix-content-in 0.35s 0.18s ease-out both;
+}
+
+.codiix-composer__input {
+  flex: 1;
+  min-height: 2.5rem;
+  max-height: 6rem;
+  resize: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: #111827;
+  outline: none;
+  background: #fafafa;
+}
+
+.codiix-composer__input:focus {
+  border-color: #111111;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.codiix-composer__send {
+  height: 2.5rem;
+  border: 0;
+  border-radius: 10px;
+  background: #111111;
+  padding: 0 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+}
+
+.codiix-composer__send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.codiix-composer__send:not(:disabled):hover {
+  background: #262626;
+}
+
+.codiix-header-btn {
+  display: inline-flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex: 0 0 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.codiix-header-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.codiix-header-btn--active {
+  background: #ededed;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.16);
+}
+
+.codiix-header-btn--active svg {
+  animation: codiix-header-breathe 2.2s ease-in-out infinite;
+}
+
+@keyframes codiix-header-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .codiix-intro,
+  .codiix-intro__face,
+  .codiix-intro__hello,
+  .codiix-intro__byline,
+  .codiix-intro__wave,
+  .codiix-intro__progress,
+  .codiix-panel,
+  .codiix-panel__chrome,
+  .codiix-panel__body,
+  .codiix-empty__face,
+  .codiix-chip,
+  .codiix-msg,
+  .codiix-thinking__aura,
+  .codiix-thinking__blob,
+  .codiix-thinking__orbit,
+  .codiix-thinking__label,
+  .codiix-composer,
+  .codiix-header-btn--active svg {
+    animation: none !important;
+  }
+}

@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import {
-  ComputerDesktopIcon,
   DevicePhoneMobileIcon,
   EllipsisHorizontalIcon,
 } from '@heroicons/react/24/outline';
 import DropdownMenu from '../../components/DropdownMenu';
 import DropdownMenuItem from '../../components/DropdownMenuItem';
+import { CodiixChatPanel, CodiixFaceIcon } from '../codiix';
 import { CreateThemePagePicker } from './CreateThemePagePicker';
 import { InspectorToggleIcon } from './InspectorToggleIcon';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
@@ -35,10 +35,12 @@ type Props = {
   applyThemeDisabled?: boolean;
   applyingTheme?: boolean;
   themeAlreadyApplied?: boolean;
+  /** Agentic Codiix — insert a create-theme element by id. */
+  onAgenticInsert?: (elementId: string) => boolean | void;
 };
 
 const iconBtn =
-  'flex h-9 w-9 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800';
+  'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800';
 
 export function CreateThemeHeader({
   themeName,
@@ -62,12 +64,17 @@ export function CreateThemeHeader({
   applyThemeDisabled = false,
   applyingTheme = false,
   themeAlreadyApplied = false,
+  onAgenticInsert,
 }: Props) {
   const [moreMenuAnchor, setMoreMenuAnchor] = useState<HTMLElement | null>(null);
+  const [codiixOpen, setCodiixOpen] = useState(false);
+  const [codiixExpanded, setCodiixExpanded] = useState(false);
   const moreMenuOpen = Boolean(moreMenuAnchor);
   const storefrontHref = storeUrl?.trim() || '';
 
   const closeMoreMenu = useCallback(() => setMoreMenuAnchor(null), []);
+  const toggleCodiix = useCallback(() => setCodiixOpen((v) => !v), []);
+  const closeCodiix = useCallback(() => setCodiixOpen(false), []);
 
   const handleViewStore = useCallback(() => {
     if (!storefrontHref) return;
@@ -108,7 +115,19 @@ export function CreateThemeHeader({
         />
       </div>
 
-      <div className="flex items-center gap-0.5 justify-self-end">
+      <div className="flex items-center gap-1 justify-self-end">
+        <button
+          type="button"
+          onClick={toggleCodiix}
+          className={`codiix-header-btn ${codiixOpen ? 'codiix-header-btn--active' : ''}`}
+          title="Ask Codiix"
+          aria-label="Ask Codiix"
+          aria-pressed={codiixOpen}
+          aria-haspopup="dialog"
+        >
+          <CodiixFaceIcon className="h-7 w-7" title="Codiix" />
+        </button>
+
         {onInspectorEnabledChange ? (
           <button
             type="button"
@@ -124,28 +143,18 @@ export function CreateThemeHeader({
           </button>
         ) : null}
 
-        <div className="mx-1 flex items-center gap-0.5">
-          <button
-            type="button"
-            onClick={() => onDeviceChange('desktop')}
-            className={`${iconBtn} ${device === 'desktop' ? 'bg-gray-100 text-gray-900' : ''}`}
-            title="Desktop preview"
-            aria-pressed={device === 'desktop'}
-            aria-label="Desktop preview"
-          >
-            <ComputerDesktopIcon className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onDeviceChange('mobile')}
-            className={`${iconBtn} ${device === 'mobile' ? 'bg-gray-100 text-gray-900' : ''}`}
-            title="Mobile preview"
-            aria-pressed={device === 'mobile'}
-            aria-label="Mobile preview"
-          >
-            <DevicePhoneMobileIcon className="h-5 w-5" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => onDeviceChange(device === 'mobile' ? 'desktop' : 'mobile')}
+          className={`${iconBtn} create-theme-device-toggle ${
+            device === 'mobile' ? 'create-theme-device-toggle--mobile bg-gray-100 text-gray-900' : ''
+          }`}
+          title={device === 'mobile' ? 'Return to desktop preview' : 'Switch to mobile preview'}
+          aria-pressed={device === 'mobile'}
+          aria-label={device === 'mobile' ? 'Return to desktop preview' : 'Switch to mobile preview'}
+        >
+          <DevicePhoneMobileIcon className="h-5 w-5" />
+        </button>
 
         <button
           type="button"
@@ -176,15 +185,25 @@ export function CreateThemeHeader({
           ) : null}
         </DropdownMenu>
 
+        <div className="mx-1 h-6 w-px shrink-0 bg-gray-200" aria-hidden="true" />
+
         <button
           type="button"
           onClick={onSave}
           disabled={saveDisabled || saving}
-          className="ml-2 h-9 rounded-md bg-gray-900 px-4 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
+          className="h-10 rounded-lg bg-gray-900 px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {saving ? 'Saving…' : 'Save'}
         </button>
       </div>
+
+      <CodiixChatPanel
+        open={codiixOpen}
+        onClose={closeCodiix}
+        expanded={codiixExpanded}
+        onExpandedChange={setCodiixExpanded}
+        onAgenticInsert={onAgenticInsert}
+      />
     </header>
   );
 }
