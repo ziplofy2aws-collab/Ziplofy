@@ -51,6 +51,8 @@ function sidebarNodeIsHidden(
 }
 
 const SHOPIFY_BLUE = '#005bd3';
+const SIDEBAR_MIN_WIDTH = 180;
+const SIDEBAR_DEFAULT_WIDTH = 300;
 const SIDEBAR_DEPTH_STEP = 12;
 const SIDEBAR_BASE_PADDING = 12;
 /** Matches drag-handle + chevron columns on section rows (w-5 + w-5). */
@@ -58,6 +60,12 @@ const SIDEBAR_ROW_GUTTER = 36;
 
 function sidebarContentPadding(depth: number): number {
   return SIDEBAR_BASE_PADDING + depth * SIDEBAR_DEPTH_STEP - 4 + SIDEBAR_ROW_GUTTER;
+}
+
+function sidebarMaxWidth(): number {
+  return typeof window === 'undefined'
+    ? 1600
+    : Math.max(SIDEBAR_MIN_WIDTH, window.innerWidth);
 }
 
 function sectionInsertGroupForLabel(label: string): SectionCatalogGroup | undefined {
@@ -257,7 +265,7 @@ const EMPTY_DRAG_STATE: DragState = {
 function ReorderDropIndicator({ paddingLeft }: { paddingLeft: number }) {
   return (
     <div
-      className="pointer-events-none relative z-[2] -my-0.5 flex h-3 w-full items-center"
+      className="pointer-events-none relative z-2 -my-0.5 flex h-3 w-full items-center"
       style={{ paddingLeft, paddingRight: 12 }}
       aria-hidden
     >
@@ -718,7 +726,7 @@ function SidebarTreeRow({
       <button
         type="button"
         disabled={node.disabled}
-        className="mx-2 flex w-[calc(100%_-_1rem)] items-center gap-2 rounded-lg py-2 pr-3 text-left text-[13px] font-medium transition-colors hover:bg-[#f1f6ff]"
+        className="mx-2 flex items-center gap-2 rounded-lg py-2 pr-3 text-left text-[13px] font-medium transition-colors hover:bg-[#f1f6ff]"
         style={{
           paddingLeft: sidebarContentPadding(depth),
           color: node.disabled ? '#9ca3af' : SHOPIFY_BLUE,
@@ -1279,6 +1287,8 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   sectionsHeaderSlot,
 }) => {
   const [dragState, setDragState] = useState<DragState>(EMPTY_DRAG_STATE);
+  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+  const [isResizingSidebar, setIsResizingSidebar] = useState(false);
 
   const setDragStateAndNotify = useCallback(
     (next: React.SetStateAction<DragState>) => {
@@ -1312,7 +1322,63 @@ const CreateThemeEditorSidebarInner: React.FC<CreateThemeEditorSidebarProps> = (
   }, [selectedNodeId, tree]);
 
   return (
-    <aside className="relative flex h-full min-h-0 w-[300px] shrink-0 flex-col border-r border-gray-200 bg-white">
+    <aside
+      className={`relative flex h-full min-h-0 shrink-0 flex-col border-r border-gray-200 bg-white ${
+        isResizingSidebar ? 'select-none' : ''
+      }`}
+      style={{ width: sidebarWidth }}
+    >
+      <div
+        role="separator"
+        aria-label="Resize sidebar"
+        aria-orientation="vertical"
+        aria-valuemin={SIDEBAR_MIN_WIDTH}
+        aria-valuemax={sidebarMaxWidth()}
+        aria-valuenow={sidebarWidth}
+        tabIndex={0}
+        className={`absolute inset-y-0 -right-1 z-30 w-2 cursor-col-resize transition-colors ${
+          isResizingSidebar ? 'bg-[#005bd3]/20' : 'hover:bg-[#005bd3]/15'
+        }`}
+        onPointerDown={(event) => {
+          event.preventDefault();
+          event.currentTarget.setPointerCapture(event.pointerId);
+          setIsResizingSidebar(true);
+          document.body.style.cursor = 'col-resize';
+          document.body.style.userSelect = 'none';
+        }}
+        onPointerMove={(event) => {
+          if (!isResizingSidebar) return;
+          const sidebarLeft = event.currentTarget.parentElement?.getBoundingClientRect().left ?? 0;
+          setSidebarWidth(
+            Math.min(
+              sidebarMaxWidth(),
+              Math.max(SIDEBAR_MIN_WIDTH, event.clientX - sidebarLeft)
+            )
+          );
+        }}
+        onPointerUp={(event) => {
+          if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }
+          setIsResizingSidebar(false);
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+        }}
+        onPointerCancel={() => {
+          setIsResizingSidebar(false);
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+        }}
+        onDoubleClick={() => setSidebarWidth(SIDEBAR_DEFAULT_WIDTH)}
+        onKeyDown={(event) => {
+          if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+          event.preventDefault();
+          const delta = event.key === 'ArrowRight' ? 16 : -16;
+          setSidebarWidth((width) =>
+            Math.min(sidebarMaxWidth(), Math.max(SIDEBAR_MIN_WIDTH, width + delta))
+          );
+        }}
+      />
       <div className="flex items-center gap-1 border-b border-gray-200 bg-white px-3 py-2.5">
         <button
           type="button"
