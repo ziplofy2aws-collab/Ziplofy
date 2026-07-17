@@ -2485,37 +2485,40 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       )
   );
 
-  const handleApplyTheme = useCallback(async () => {
+  const handleApplyTheme = useCallback((): 'applying' | 'no-store' | 'needs-save' | 'busy' => {
     if (!activeStoreId) {
       toast.error('Select a store before applying a theme');
-      return;
+      return 'no-store';
     }
     if (!savedThemeId) {
       toast.error('Save the theme first, then apply it to your store');
       setShowSaveThemeModal(true);
-      return;
+      return 'needs-save';
     }
-    if (applyingTheme) return;
+    if (applyingTheme) return 'busy';
     setApplyingTheme(true);
-    try {
-      const updated = await applyStoreCustomTheme(activeStoreId, savedThemeId);
-      setStores((prev) =>
-        prev.map((s) =>
-          s._id === activeStoreId
-            ? {
-                ...s,
-                ...updated,
-                appliedCustomThemeId: savedThemeId,
-                appliedTheme: null,
-              }
-            : s
-        )
-      );
-    } catch (err: unknown) {
-      toast.error((err as Error)?.message ?? 'Failed to apply theme');
-    } finally {
-      setApplyingTheme(false);
-    }
+    void (async () => {
+      try {
+        const updated = await applyStoreCustomTheme(activeStoreId, savedThemeId);
+        setStores((prev) =>
+          prev.map((s) =>
+            s._id === activeStoreId
+              ? {
+                  ...s,
+                  ...updated,
+                  appliedCustomThemeId: savedThemeId,
+                  appliedTheme: null,
+                }
+              : s
+          )
+        );
+      } catch (err: unknown) {
+        toast.error((err as Error)?.message ?? 'Failed to apply theme');
+      } finally {
+        setApplyingTheme(false);
+      }
+    })();
+    return 'applying';
   }, [
     activeStoreId,
     savedThemeId,
@@ -3863,7 +3866,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         inspectorEnabled={inspectorEnabled}
         onInspectorEnabledChange={handleInspectorEnabledChange}
         storeUrl={storeSubdomain?.url ?? null}
-        onApplyTheme={() => void handleApplyTheme()}
+        onApplyTheme={handleApplyTheme}
         applyThemeDisabled={applyingTheme}
         applyingTheme={applyingTheme}
         themeAlreadyApplied={themeAlreadyApplied}

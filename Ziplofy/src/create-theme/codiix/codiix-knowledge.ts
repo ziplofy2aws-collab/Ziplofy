@@ -41,7 +41,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       '2. Click a section to open its settings.\n' +
       '3. Watch the live preview update as you edit.\n' +
       '4. Use the page picker in the top bar to switch templates.\n' +
-      '5. Hit **Save**, then **Apply theme** when you want it live.\n\n' +
+      '5. **Save** your work, then **Apply theme** to show it to customers on your storefront.\n\n' +
       'Tip: use the inspector (dashed square) to click preview elements, or turn on **Agentic mode** in Codiix to add sections with one tap.',
   },
   {
@@ -361,13 +361,26 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'product page',
       'collection page',
       'blog',
+      'switch page',
+      'change page',
     ],
-    phrases: ['404 page', 'search page', 'switch page', 'page picker'],
+    phrases: [
+      '404 page',
+      'search page',
+      'switch page',
+      'change page',
+      'page picker',
+      'what pages',
+      'which pages',
+    ],
     answer:
-      'Use the page picker in the top bar to switch templates.\n\n' +
-      'Ready today: Home, product/collection templates, Search, and 404.\n' +
-      'More page types (password, blog, article, etc.) are on the roadmap.\n\n' +
-      'Remember: header/footer from home are shared by default.',
+      'Use the **page selector** in the top bar — or just tell me where to go.\n\n' +
+      'Examples:\n' +
+      '• “take me to home”\n' +
+      '• “switch to cart”\n' +
+      '• “open the product page”\n' +
+      '• “go back”\n\n' +
+      'I’ll switch the preview to that template for you.',
   },
   {
     id: 'theme-settings',
@@ -416,25 +429,24 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       '1. Toggle **Agentic** on in the Codiix panel header.\n' +
       '2. Ask something like “add a header” or “add contact form”.\n' +
       '3. Tap the action button — I’ll insert the section into the right group for you.\n\n' +
-      'It feels like AI doing the work; under the hood it’s a guided action button wired to the real editor.',
+      'Turn it on when you want me to help build the page, not just explain it.',
   },
   {
     id: 'save-apply',
     suggestion: 'Save vs Apply theme',
-    keywords: ['apply', 'publish', 'live', 'deploy', 'save vs apply'],
+    keywords: ['save vs apply', 'difference save apply'],
     phrases: [
-      'apply theme',
-      'make it live',
-      'publish',
       'save vs apply',
       'difference between save and apply',
       'what does save do',
+      'what does apply do',
+      'save or apply',
     ],
     answer:
-      '• **Save** — stores your theme editor work.\n' +
-      '• **Apply theme** (⋮ menu) — pushes this theme to the live storefront.\n\n' +
-      'Save often while editing. Apply when you’re ready for customers to see the changes.\n\n' +
-      'Tip: tell me **“save my changes”** anytime and I’ll hit Save for you.',
+      '• **Save** — saves the work/changes you’re doing on your theme.\n' +
+      '• **Apply theme** — applies this theme to your storefront so your customers can see it.\n\n' +
+      'If the theme is already applied to your store, applying again does nothing. If it isn’t applied yet, it goes live so customers see it.\n\n' +
+      'Tip: tell me **“save my changes”** or **“apply theme”** and I’ll do it for you.',
   },
   {
     id: 'reorder',
@@ -1086,7 +1098,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
     ],
     answer:
       'If something went wrong:\n\n' +
-      '1. Don’t Apply yet if you haven’t — Save only stores editor work.\n' +
+      '1. Don’t Apply yet if you haven’t — Save only saves your theme work; Apply is what customers see.\n' +
       '2. Re-add a deleted section from **Add section** (or Agentic mode).\n' +
       '3. Restore visibility if you only hid something.\n' +
       '4. For big experiments, duplicate your mental checklist: note what you changed before applying live.\n\n' +
@@ -1106,8 +1118,8 @@ export const CODIX_INTENTS: CodiixIntent[] = [
     ],
     answer:
       'Preview and live can diverge for one main reason: **Save ≠ Apply**.\n\n' +
-      '• **Save** — keeps your editor draft/work.\n' +
-      '• **Apply theme** (⋮ menu) — pushes this theme to the live storefront.\n\n' +
+      '• **Save** — saves the work/changes you’re doing on your theme.\n' +
+      '• **Apply theme** — applies this theme to your storefront so customers can see it.\n\n' +
       'Also check:\n\n' +
       '1. You applied the correct theme.\n' +
       '2. You’re viewing the same page type (Home vs Product).\n' +
@@ -1247,7 +1259,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
     phrases: ['bye', 'goodbye', 'see you', 'catch you later', 'thats all'],
     answer:
       'See you later — I’ll be here in the theme editor whenever you need me.\n\n' +
-      'Don’t forget to **Save**, and **Apply theme** when you’re ready for the live store.',
+      'Don’t forget to **Save** your work, and **Apply theme** when you want customers to see it on your storefront.',
   },
   {
     id: 'privacy-data',
@@ -1342,9 +1354,9 @@ export const CODIX_INTENTS: CodiixIntent[] = [
     answer:
       'I’m **Codiix** — your theme-creator helper inside Ziplofy.\n\n' +
       '• I help you understand sections, layout, forms, products, and settings.\n' +
-      '• I answer from a curated playbook of what this editor can actually do.\n' +
+      '• I stay focused on what this theme editor can actually do.\n' +
       '• I’m not a living person — I can’t breathe, see you, or feel the world.\n' +
-      '• What I *can* do is guide you clearly, and (with **Agentic mode**) offer one-tap actions like adding a Header or Hero.\n\n' +
+      '• What I *can* do is guide you clearly, and (with **Agentic mode**) help you add sections like a Header or Hero.\n\n' +
       'Ask me anything about the theme creator — or say “who built you?” if you’re curious about my makers.',
   },
   {

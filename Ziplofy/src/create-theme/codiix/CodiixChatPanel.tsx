@@ -11,11 +11,16 @@ import {
   relatedActionsForElement,
   type CodiixAgenticAction,
 } from './codiix-elements-catalog';
+import {
+  type CodiixPageAction,
+  type CodiixPageOption,
+} from './codiix-pages';
 import { CODIX_SUGGESTIONS } from './codiix-knowledge';
 import {
   answerForIntentId,
   categoryIdForIntent,
   matchCodiixIntent,
+  type CodiixMatch,
 } from './match-codiix-intent';
 import {
   getCodiixSessionAgenticMode,
@@ -31,6 +36,8 @@ import {
 
 export type { CodiixMessage };
 export type CodiixSaveResult = 'saving' | 'modal' | 'loading' | 'needs-name';
+export type CodiixNavigateResult = 'ok' | 'same' | 'checkout' | 'unavailable';
+export type CodiixApplyResult = 'applying' | 'no-store' | 'needs-save' | 'busy';
 
 type Props = {
   open: boolean;
@@ -42,6 +49,13 @@ type Props = {
   /** Works in any mode — same path as the header Save button / save API. */
   onSave?: () => CodiixSaveResult | void;
   saveDisabled?: boolean;
+  /** Works in any mode — same as ⋮ → Apply theme. */
+  onApplyTheme?: () => CodiixApplyResult | void;
+  applyThemeDisabled?: boolean;
+  /** Pages from the top page selector (any mode). */
+  pages?: CodiixPageOption[];
+  currentPageId?: string;
+  onNavigatePage?: (pageId: string) => CodiixNavigateResult | void;
 };
 
 function greetingForNow(): string {
@@ -170,6 +184,11 @@ export function CodiixChatPanel({
   onAgenticInsert,
   onSave,
   saveDisabled = false,
+  onApplyTheme,
+  applyThemeDisabled = false,
+  pages = [],
+  currentPageId,
+  onNavigatePage,
 }: Props) {
   const [draft, setDraftState] = useState(() => getCodiixSessionDraft());
   const [messages, setMessagesState] = useState<CodiixMessage[]>(() => getCodiixSessionMessages());
@@ -177,6 +196,7 @@ export function CodiixChatPanel({
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
   const [agenticMode, setAgenticModeState] = useState(() => getCodiixSessionAgenticMode());
   const [busyActionId, setBusyActionId] = useState<string | null>(null);
+  const previousPageId = useRef<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const thinkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -265,6 +285,8 @@ export function CodiixChatPanel({
       relatedActions?: CodiixMessage['relatedActions'];
       relatedCategoryLabel?: string;
       previewElementId?: string;
+      pageActions?: CodiixMessage['pageActions'];
+      editorActions?: CodiixMessage['editorActions'];
     },
   ) => {
     const messageId = uid();
@@ -292,6 +314,8 @@ export function CodiixChatPanel({
                 relatedActions: complete ? extras?.relatedActions : undefined,
                 relatedCategoryLabel: complete ? extras?.relatedCategoryLabel : undefined,
                 previewElementId: complete ? extras?.previewElementId : undefined,
+                pageActions: complete ? extras?.pageActions : undefined,
+                editorActions: complete ? extras?.editorActions : undefined,
               }
             : message,
         ),
@@ -339,37 +363,160 @@ export function CodiixChatPanel({
     [onAgenticInsert, busyActionId, thinking, streamingMessageId, streamAssistant],
   );
 
-  const runSaveCommand = useCallback((): string => {
+  const runSaveCommand = useCallback((): {
+    answer: string;
+    editorActions?: CodiixMessage['editorActions'];
+  } => {
     if (saveDisabled || !onSave) {
-      return (
-        'I can’t save just yet — the theme is still loading.\n\n' +
-        'Wait a moment, then say **“save my changes”** again (or tap **Save** in the header).'
-      );
+      return {
+        answer:
+          'I can’t save just yet — the theme is still loading.\n\n' +
+          'Wait a moment, then say **“save my changes”** again (or tap **Save** in the header).',
+      };
     }
     const result = onSave() ?? 'saving';
     if (result === 'loading') {
-      return (
-        'Theme is still loading, so I couldn’t save yet.\n\n' +
-        'Give it a second, then ask me again.'
-      );
+      return {
+        answer:
+          'Theme is still loading, so I couldn’t save yet.\n\n' +
+          'Give it a second, then ask me again.',
+      };
     }
     if (result === 'modal') {
-      return (
-        'This theme isn’t saved yet — I opened the **Save theme** dialog so you can name it.\n\n' +
-        'Confirm there and you’re good.'
-      );
+      return {
+        answer:
+          'This theme isn’t saved yet — I opened the **Save theme** dialog so you can name it.\n\n' +
+          'Confirm there and you’re good.',
+      };
     }
     if (result === 'needs-name') {
+      return {
+        answer:
+          'I need a **theme name** before saving.\n\n' +
+          'Type a name in the header, then say **“save my changes”** again.',
+      };
+    }
+    return {
+      answer:
+        'Done — I saved the work you’re doing on your theme.\n\n' +
+        'Want your customers to see it? Tap **Apply theme** below to apply it to your storefront.',
+      editorActions: onApplyTheme
+        ? [{ id: 'apply-theme', label: 'Apply theme', action: 'apply' as const }]
+        : undefined,
+    };
+  }, [onSave, saveDisabled, onApplyTheme]);
+
+  const runApplyCommand = useCallback((): string => {
+    if (!onApplyTheme) {
       return (
-        'I need a **theme name** before saving.\n\n' +
-        'Type a name in the header, then say **“save my changes”** again.'
+        'Apply theme isn’t available right now.\n\n' +
+        'Use **Apply theme** in the ⋮ menu in the header.'
       );
     }
+    if (applyThemeDisabled) {
+      return 'I’m already applying the theme — hang tight a second.';
+    }
+    const result = onApplyTheme() ?? 'applying';
+    if (result === 'no-store') {
+      return (
+        'Select a store first, then say **“apply theme”** again.\n\n' +
+        'I need an active store to push this theme live.'
+      );
+    }
+    if (result === 'needs-save') {
+      return (
+        'Save the theme first, then I can apply it.\n\n' +
+        'Say **“save my changes”** (or tap **Save**), then **“apply theme”**.'
+      );
+    }
+    if (result === 'busy') {
+      return 'I’m already applying the theme — hang tight a second.';
+    }
     return (
-      'Done — I hit **Save** for you (same API as the header button).\n\n' +
-      'Remember: **Save** stores editor work; **Apply theme** (⋮ menu) makes it live.'
+      'Done — I applied this theme to your storefront, so your customers can see it now.\n\n' +
+      'If it was already applied, nothing changes. **Save** stores the work on your theme; **Apply theme** puts it live for customers.'
     );
-  }, [onSave, saveDisabled]);
+  }, [onApplyTheme, applyThemeDisabled]);
+
+  const runEditorAction = useCallback(
+    (action: NonNullable<CodiixMessage['editorActions']>[number]) => {
+      if (busyActionId || thinking || streamingMessageId) return;
+      if (action.action !== 'apply') return;
+      setBusyActionId(action.id);
+      const answer = runApplyCommand();
+      streamAssistant(answer, [
+        { id: 'save-apply', label: 'Save vs Apply theme' },
+        { id: 'pages-templates', label: 'Pages & templates' },
+      ]);
+      setBusyActionId(null);
+    },
+    [busyActionId, thinking, streamingMessageId, runApplyCommand, streamAssistant],
+  );
+
+  const runNavigateCommand = useCallback(
+    (pageId: string): string => {
+      const page = pages.find((p) => p.id === pageId);
+      const label = page?.label ?? pageId;
+      if (!onNavigatePage) {
+        return (
+          `I found **${label}**, but page switching isn’t available right now.\n\n` +
+          'Use the page selector in the top bar instead.'
+        );
+      }
+      if (pageId === currentPageId) {
+        return `You’re already on **${label}**.`;
+      }
+      if (currentPageId) previousPageId.current = currentPageId;
+      const result = onNavigatePage(pageId) ?? 'ok';
+      if (result === 'unavailable') {
+        return `I couldn’t open **${label}** right now. Try the page selector in the top bar.`;
+      }
+      if (result === 'same') {
+        return `You’re already on **${label}**.`;
+      }
+      if (result === 'checkout') {
+        return `Opening **${label}** for you.`;
+      }
+      return `Done — you’re now on **${label}**.`;
+    },
+    [pages, onNavigatePage, currentPageId],
+  );
+
+  const runPageAction = useCallback(
+    (action: CodiixPageAction) => {
+      if (busyActionId || thinking || streamingMessageId) return;
+      setBusyActionId(action.id);
+      const answer = runNavigateCommand(action.pageId);
+      const more = pages
+        .filter((p) => p.id !== action.pageId && p.id !== currentPageId)
+        .slice(0, 5)
+        .map((p) => ({
+          id: `page-${p.id}`,
+          label: `Go to ${p.label}`,
+          pageId: p.id,
+          kind: p.kind,
+        }));
+      streamAssistant(
+        answer,
+        [
+          { id: 'pages-templates', label: 'Pages & templates' },
+          { id: 'save-apply', label: 'Save vs Apply theme' },
+        ],
+        undefined,
+        { pageActions: more },
+      );
+      setBusyActionId(null);
+    },
+    [
+      busyActionId,
+      thinking,
+      streamingMessageId,
+      runNavigateCommand,
+      pages,
+      currentPageId,
+      streamAssistant,
+    ],
+  );
 
   const respond = useCallback(
     (raw: string) => {
@@ -383,21 +530,36 @@ export function CodiixChatPanel({
       const delay = 420 + Math.min(900, trimmed.length * 18);
       if (thinkTimer.current) clearTimeout(thinkTimer.current);
       thinkTimer.current = setTimeout(() => {
-        const match = matchCodiixIntent(trimmed, { agentic: agenticMode });
+        const match = matchCodiixIntent(trimmed, {
+          agentic: agenticMode,
+          pages,
+          currentPageId,
+          previousPageId: previousPageId.current,
+        });
         const followUps =
           match.relatedSuggestions.length > 0
             ? match.relatedSuggestions
             : CODIX_SUGGESTIONS.slice(0, 3).map((s) => ({ id: s.id, label: s.label }));
 
         let answer = match.answer;
+        let editorActions = match.editorActions;
         if (match.systemAction === 'save') {
-          answer = runSaveCommand();
+          const saved = runSaveCommand();
+          answer = saved.answer;
+          editorActions = saved.editorActions ?? editorActions;
+        } else if (match.systemAction === 'apply') {
+          answer = runApplyCommand();
+          editorActions = undefined;
+        } else if (match.systemAction === 'navigate' && match.pageTargetId) {
+          answer = runNavigateCommand(match.pageTargetId);
         }
 
         streamAssistant(answer, followUps, match.actions, {
           relatedActions: match.relatedActions,
           relatedCategoryLabel: match.relatedCategoryLabel,
           previewElementId: match.previewElementId,
+          pageActions: match.pageActions,
+          editorActions,
         });
       }, delay);
     },
@@ -409,6 +571,10 @@ export function CodiixChatPanel({
       setMessages,
       setDraft,
       runSaveCommand,
+      runApplyCommand,
+      runNavigateCommand,
+      pages,
+      currentPageId,
     ],
   );
 
@@ -423,16 +589,38 @@ export function CodiixChatPanel({
         const categoryId = categoryIdForIntent(id);
         const categoryActions =
           agenticMode && categoryId ? agenticSuggestionsForCategory(categoryId) : undefined;
-        const match = canned
-          ? {
-              answer: canned,
-              relatedSuggestions: [] as { id: string; label: string }[],
-              actions: categoryActions?.slice(0, 1),
-              relatedActions: categoryActions?.slice(1),
-              relatedCategoryLabel: categoryId ? getCodiixCategoryLabel(categoryId) : undefined,
-              previewElementId: categoryActions?.[0]?.elementId,
-            }
-          : matchCodiixIntent(label, { agentic: agenticMode });
+        let match: CodiixMatch;
+        if (canned) {
+          match = {
+            intentId: id,
+            answer: canned,
+            relatedSuggestions: [],
+            actions: categoryActions?.slice(0, 1),
+            relatedActions: categoryActions?.slice(1),
+            relatedCategoryLabel: categoryId ? getCodiixCategoryLabel(categoryId) : undefined,
+            previewElementId: categoryActions?.[0]?.elementId,
+            pageActions:
+              id === 'pages-templates'
+                ? pages
+                    .filter((p) => p.id !== currentPageId)
+                    .slice(0, 6)
+                    .map((p) => ({
+                      id: `page-${p.id}`,
+                      label: `Go to ${p.label}`,
+                      pageId: p.id,
+                      kind: p.kind,
+                    }))
+                : undefined,
+            systemAction: id === 'pages-templates' ? 'list-pages' : undefined,
+          };
+        } else {
+          match = matchCodiixIntent(label, {
+            agentic: agenticMode,
+            pages,
+            currentPageId,
+            previousPageId: previousPageId.current,
+          });
+        }
         const followUps =
           match.relatedSuggestions.length > 0
             ? match.relatedSuggestions
@@ -450,14 +638,36 @@ export function CodiixChatPanel({
           answer +=
             '\n\n**Agentic mode is on** — tap a button below and I’ll add that section for you.';
         }
+        if (id === 'pages-templates' && match.pageActions?.length) {
+          answer +=
+            '\n\nOr just tell me — e.g. **“take me to cart”**, **“switch to product page”**, or **“go back”**.';
+        }
+        if (match.systemAction === 'navigate' && match.pageTargetId) {
+          answer = runNavigateCommand(match.pageTargetId);
+        }
+        if (match.systemAction === 'apply') {
+          answer = runApplyCommand();
+        }
         streamAssistant(answer, followUps, actions, {
           relatedActions: match.relatedActions,
           relatedCategoryLabel: match.relatedCategoryLabel,
           previewElementId: match.previewElementId,
+          pageActions: match.pageActions,
+          editorActions: match.editorActions,
         });
       }, 380);
     },
-    [thinking, streamingMessageId, streamAssistant, agenticMode, setMessages],
+    [
+      thinking,
+      streamingMessageId,
+      streamAssistant,
+      agenticMode,
+      setMessages,
+      pages,
+      currentPageId,
+      runNavigateCommand,
+      runApplyCommand,
+    ],
   );
 
   const onSubmit = useCallback(
@@ -552,26 +762,38 @@ export function CodiixChatPanel({
             <h2 className="codiix-empty__ask">How can I help?</h2>
             {agenticMode ? (
               <p className="codiix-empty__agentic">
-                Agentic on — try “hero”, “add faq”, or “contact form”
+                Agentic on — try “hero”, “add faq”, or “take me to cart”
               </p>
-            ) : null}
+            ) : (
+              <p className="codiix-empty__agentic">
+                Try “take me to cart”, “switch to home”, or “change page”
+              </p>
+            )}
             <div className="codiix-chips">
               {(agenticMode
                 ? [
                     { id: 'add-header', label: 'Add Header' },
+                    { id: 'go-home', label: 'Take me to home' },
                     { id: 'product-elements', label: 'What are product elements?' },
-                    { id: 'form-elements', label: 'What are the forms?' },
-                    { id: 'banner-elements', label: 'What are banner elements?' },
+                    { id: 'pages-templates', label: 'Pages & templates' },
                     { id: 'agentic-mode', label: 'What is Agentic mode?' },
                   ]
-                : CODIX_SUGGESTIONS.slice(0, 5)
+                : [
+                    { id: 'go-home', label: 'Take me to home' },
+                    { id: 'go-cart', label: 'Switch to cart' },
+                    { id: 'apply-theme', label: 'Apply theme' },
+                    { id: 'pages-templates', label: 'Pages & templates' },
+                    ...CODIX_SUGGESTIONS.filter((s) => s.id !== 'pages-templates').slice(0, 1),
+                  ]
               ).map((s) => (
                 <button
                   key={s.id}
                   type="button"
                   className="codiix-chip"
                   onClick={() =>
-                    agenticMode && s.id.startsWith('add-')
+                    s.id.startsWith('go-') ||
+                    s.id === 'apply-theme' ||
+                    (agenticMode && s.id.startsWith('add-'))
                       ? respond(s.label)
                       : respondFromSuggestion(s.id, s.label)
                   }
@@ -619,6 +841,25 @@ export function CodiixChatPanel({
                       ))}
                     </div>
                   ) : null}
+                  {m.editorActions && m.editorActions.length > 0 ? (
+                    <div className="codiix-actions">
+                      {m.editorActions.map((action) => (
+                        <button
+                          key={action.id}
+                          type="button"
+                          className="codiix-action-btn"
+                          disabled={
+                            Boolean(busyActionId) ||
+                            !onApplyTheme ||
+                            (action.action === 'apply' && applyThemeDisabled)
+                          }
+                          onClick={() => runEditorAction(action)}
+                        >
+                          {busyActionId === action.id ? 'Applying…' : action.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                   {m.relatedActions && m.relatedActions.length > 0 ? (
                     <div className="codiix-related">
                       <p className="codiix-related__label">
@@ -636,6 +877,24 @@ export function CodiixChatPanel({
                             onClick={() => runAgenticAction(action)}
                           >
                             {busyActionId === action.id ? 'Adding…' : action.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {m.pageActions && m.pageActions.length > 0 ? (
+                    <div className="codiix-related">
+                      <p className="codiix-related__label">Pages from the selector</p>
+                      <div className="codiix-actions codiix-actions--related">
+                        {m.pageActions.map((action) => (
+                          <button
+                            key={action.id}
+                            type="button"
+                            className="codiix-action-btn codiix-action-btn--page"
+                            disabled={Boolean(busyActionId) || !onNavigatePage}
+                            onClick={() => runPageAction(action)}
+                          >
+                            {busyActionId === action.id ? 'Switching…' : action.label}
                           </button>
                         ))}
                       </div>
@@ -689,8 +948,8 @@ export function CodiixChatPanel({
           onKeyDown={onKeyDown}
           placeholder={
             agenticMode
-              ? 'Try “hero”, “add faq”, “multicolumn”…'
-              : 'Ask about elements, forms, banners…'
+              ? 'Try “hero”, “take me to cart”, “apply theme”…'
+              : 'Try “save my work”, “apply theme”, “switch page”…'
           }
           className="codiix-composer__input"
           disabled={thinking || Boolean(streamingMessageId)}

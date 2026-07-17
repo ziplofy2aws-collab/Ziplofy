@@ -1,4 +1,11 @@
 import type { CodiixAgenticAction } from './codiix-elements-catalog';
+import type { CodiixPageAction } from './codiix-pages';
+
+export type CodiixEditorAction = {
+  id: string;
+  label: string;
+  action: 'apply';
+};
 
 export type CodiixMessage = {
   id: string;
@@ -9,6 +16,8 @@ export type CodiixMessage = {
   relatedActions?: CodiixAgenticAction[];
   relatedCategoryLabel?: string;
   previewElementId?: string;
+  pageActions?: CodiixPageAction[];
+  editorActions?: CodiixEditorAction[];
 };
 
 /**

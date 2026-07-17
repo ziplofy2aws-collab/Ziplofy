@@ -6,10 +6,11 @@ export type { CodiixMessage } from './codiix-session';
 export {
   matchCodiixIntent,
   matchSaveCommand,
+  matchApplyCommand,
   answerForIntentId,
   categoryIdForIntent,
 } from './match-codiix-intent';
-export type { CodiixSaveResult } from './CodiixChatPanel';
+export type { CodiixSaveResult, CodiixNavigateResult, CodiixApplyResult } from './CodiixChatPanel';
 export { CODIX_INTENTS, CODIX_SUGGESTIONS, CODIX_FALLBACK } from './codiix-knowledge';
 export {
   CODIX_ELEMENT_CATEGORIES,
@@ -18,4 +19,8 @@ export {
   listCodiixAgenticElementIds,
   relatedActionsForElement,
 } from './codiix-elements-catalog';
+export {
+  buildCodiixPageOptions,
+  matchPageCommand,
+} from './codiix-pages';
 export { CodiixElementPreview } from './CodiixElementPreview';

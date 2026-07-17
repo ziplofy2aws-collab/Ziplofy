@@ -289,6 +289,17 @@
   background: #f5f5f5;
 }
 
+.codiix-action-btn--page {
+  background: #fff;
+  color: #111111;
+  border-color: #d4d4d4;
+}
+
+.codiix-action-btn--page:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #111111;
+}
+
 .codiix-action-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;

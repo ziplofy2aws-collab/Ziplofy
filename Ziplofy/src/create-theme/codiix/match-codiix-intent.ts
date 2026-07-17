@@ -9,6 +9,11 @@ import {
   matchAgenticCommand,
   type CodiixAgenticAction,
 } from './codiix-elements-catalog';
+import {
+  matchPageCommand,
+  type CodiixPageAction,
+  type CodiixPageOption,
+} from './codiix-pages';
 
 function normalize(text: string): string {
   return text
@@ -44,7 +49,7 @@ function scoreIntent(query: string, intent: CodiixIntent): number {
 }
 
 /** Global editor commands — work in any mode (not Agentic-only). */
-export type CodiixSystemAction = 'save';
+export type CodiixSystemAction = 'save' | 'apply' | 'navigate' | 'list-pages';
 
 export type CodiixMatch = {
   intentId: string | null;
@@ -56,12 +61,23 @@ export type CodiixMatch = {
   previewElementId?: string;
   /** Editor command to run after answering (any mode). */
   systemAction?: CodiixSystemAction;
+  pageTargetId?: string;
+  pageActions?: CodiixPageAction[];
+  /** One-tap editor actions (e.g. Apply theme after save). */
+  editorActions?: { id: string; label: string; action: 'apply' }[];
 };
 
-/** “Save my changes” / “please save” — not “what is save” / “save vs apply”. */
+export type CodiixMatchOptions = {
+  agentic?: boolean;
+  pages?: CodiixPageOption[];
+  currentPageId?: string;
+  previousPageId?: string | null;
+};
+
+/** “Save my changes” / “alright save” — not “what is save” / “save vs apply”. */
 export function matchSaveCommand(raw: string): boolean {
   const query = normalize(raw);
-  if (!query) return false;
+  if (!query || !/\bsave\b/.test(query)) return false;
 
   // Explanatory / comparison questions → FAQ, not the save API.
   if (
@@ -71,29 +87,90 @@ export function matchSaveCommand(raw: string): boolean {
   ) {
     return false;
   }
-  if (/\b(apply|publish|live|deploy)\b/.test(query) && !/\bsave\b/.test(query)) {
-    return false;
-  }
 
+  // Strip casual filler so “alright save”, “ok please save it” → “save” / “save it”.
+  const core = query
+    .replace(
+      /\b(alright|all right|allright|ok|okay|k|yeah|yep|yup|yes|sure|please|pls|just|now|then|also|too|again|can you|could you|would you|will you|go ahead( and)?|for me|thanks|thank you|thx|man|bro|dude|mate)\b/g,
+      ' ',
+    )
+    .replace(
+      /\b(i want( you)?( to)?|i need( you)?( to)?|i'd like( you)?( to)?|id like( you)?( to)?|hit|do)\b/g,
+      ' ',
+    )
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!core || !/\bsave\b/.test(core)) return false;
+
+  // Pure / near-pure save commands after filler strip.
   if (
-    /^(save|save please|please save|save now|save it|save this|save theme|save changes)$/.test(
-      query,
+    /^(save|save (it|this|that|them|now|changes|work|theme|progress|edits|everything|stuff)|save (my )?(changes|work|theme|progress|edits|stuff)|save the theme)$/.test(
+      core,
     )
   ) {
     return true;
   }
 
-  return /\b(save\s+(my\s+)?(changes|work|theme|progress|edits|everything)|save\s+now|please\s+save|can you save|could you save|save\s+it|save\s+this|save\s+the\s+theme)\b/.test(
+  // Short imperative with “save” as the main verb (covers “save my work”, “save for later”, etc.).
+  const words = core.split(' ');
+  if (
+    words.length <= 5 &&
+    /\bsave\b/.test(core) &&
+    !/\b(section|header|hero|banner|product|form|apply|publish|live|deploy)\b/.test(core)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/** “Apply theme” / “make it live” — not “save vs apply” FAQ. */
+export function matchApplyCommand(raw: string): boolean {
+  const query = normalize(raw);
+  if (!query) return false;
+
+  // Explanatory / comparison → FAQ.
+  if (
+    /\b(vs|versus|difference|differ|mean|means|explain|how (do|does|to)|what (is|does)|when (do|should)|why)\b/.test(
+      query,
+    )
+  ) {
+    return false;
+  }
+
+  const core = query
+    .replace(
+      /\b(alright|all right|allright|ok|okay|k|yeah|yep|yup|yes|sure|please|pls|just|now|then|also|too|again|can you|could you|would you|will you|go ahead( and)?|for me|thanks|thank you|thx|man|bro|dude|mate)\b/g,
+      ' ',
+    )
+    .replace(
+      /\b(i want( you)?( to)?|i need( you)?( to)?|i'd like( you)?( to)?|id like( you)?( to)?|hit|do)\b/g,
+      ' ',
+    )
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (
+    /^(apply|apply theme|apply it|apply this|apply now|apply my theme|apply the theme|publish|publish theme|publish it|make it live|go live|push live|deploy|deploy theme)$/.test(
+      core,
+    )
+  ) {
+    return true;
+  }
+
+  return /\b(apply\s+(my\s+)?(theme|it|this|now)|apply\s+the\s+theme|make\s+it\s+live|go\s+live|publish(\s+theme)?|push\s+(it\s+)?live|deploy(\s+theme)?)\b/.test(
     query,
   );
 }
 
 export function matchCodiixIntent(
   raw: string,
-  options?: { agentic?: boolean },
+  options?: CodiixMatchOptions,
 ): CodiixMatch {
   const query = normalize(raw);
   const agentic = Boolean(options?.agentic);
+  const pages = options?.pages ?? [];
 
   if (!query) {
     return {
@@ -110,32 +187,78 @@ export function matchCodiixIntent(
     return {
       intentId: 'save-command',
       answer:
-        'On it — saving your theme changes now (same as the **Save** button in the header).',
+        'On it — saving the work you’re doing on your theme now.',
       relatedSuggestions: [
         { id: 'save-apply', label: 'Save vs Apply theme' },
         { id: 'agentic-mode', label: 'What is Agentic mode?' },
         { id: 'add-section', label: 'How do I add a section?' },
       ],
       systemAction: 'save',
+      editorActions: [{ id: 'apply-theme', label: 'Apply theme', action: 'apply' }],
     };
   }
 
-  if (agentic) {
-    const agenticHit = matchAgenticCommand(query);
-    if (agenticHit) {
+  // Apply theme — any mode (same as ⋮ → Apply theme).
+  if (matchApplyCommand(query)) {
+    return {
+      intentId: 'apply-command',
+      answer:
+        'On it — applying this theme to your storefront so your customers can see it. If it’s already applied, nothing changes.',
+      relatedSuggestions: [
+        { id: 'save-apply', label: 'Save vs Apply theme' },
+        { id: 'pages-templates', label: 'Pages & templates' },
+        { id: 'agentic-mode', label: 'What is Agentic mode?' },
+      ],
+      systemAction: 'apply',
+    };
+  }
+
+  // Page navigation — any mode, using the same pages as the top selector.
+  if (pages.length) {
+    const pageHit = matchPageCommand(
+      query,
+      pages,
+      options?.currentPageId,
+      options?.previousPageId,
+    );
+    if (pageHit) {
       return {
-        intentId: agenticHit.action.id,
-        answer: agenticHit.answer,
+        intentId: pageHit.mode === 'navigate' ? 'page-navigate' : 'page-list',
+        answer: pageHit.answer,
         relatedSuggestions: [
-          { id: 'product-elements', label: 'What are product elements?' },
-          { id: 'banner-elements', label: 'What are banner elements?' },
+          { id: 'pages-templates', label: 'Pages & templates' },
+          { id: 'save-apply', label: 'Save vs Apply theme' },
           { id: 'agentic-mode', label: 'What is Agentic mode?' },
         ],
-        actions: [agenticHit.action],
-        relatedActions: agenticHit.relatedActions,
-        relatedCategoryLabel: agenticHit.relatedCategoryLabel,
-        previewElementId: agenticHit.previewElementId,
+        systemAction: pageHit.mode === 'navigate' ? 'navigate' : 'list-pages',
+        pageTargetId: pageHit.target?.id,
+        pageActions: pageHit.suggestions,
       };
+    }
+  }
+
+  if (agentic) {
+    // Don’t let “add product” matching steal FAQ questions like “what are product elements?”
+    const looksLikeQuestion =
+      /\b(what|how|why|which|where|who|explain|tell me about)\b/.test(query) ||
+      /\?$/.test(raw.trim());
+    if (!looksLikeQuestion) {
+      const agenticHit = matchAgenticCommand(query);
+      if (agenticHit) {
+        return {
+          intentId: agenticHit.action.id,
+          answer: agenticHit.answer,
+          relatedSuggestions: [
+            { id: 'product-elements', label: 'What are product elements?' },
+            { id: 'banner-elements', label: 'What are banner elements?' },
+            { id: 'agentic-mode', label: 'What is Agentic mode?' },
+          ],
+          actions: [agenticHit.action],
+          relatedActions: agenticHit.relatedActions,
+          relatedCategoryLabel: agenticHit.relatedCategoryLabel,
+          previewElementId: agenticHit.previewElementId,
+        };
+      }
     }
   }
 
@@ -149,8 +272,8 @@ export function matchCodiixIntent(
     return {
       intentId: null,
       answer: agentic
-        ? `${CODIX_FALLBACK}\n\n**Agentic tip:** try “add header”, “hero”, “faq”, or “contact form”.`
-        : CODIX_FALLBACK,
+        ? `${CODIX_FALLBACK}\n\n**Agentic tip:** try “add header”, “hero”, “faq”, or “contact form”.\n**Pages:** try “take me to cart” or “switch to home”.`
+        : `${CODIX_FALLBACK}\n\nTip: say **“take me to cart”** or **“change page”** to switch templates.`,
       relatedSuggestions: CODIX_INTENTS.filter((i) => i.suggestion)
         .slice(0, 4)
         .map((i) => ({ id: i.id, label: i.suggestion! })),
@@ -171,6 +294,8 @@ export function matchCodiixIntent(
   let answer = best.intent.answer;
   let relatedCategoryLabel: string | undefined;
   let previewElementId: string | undefined;
+  let pageActions: CodiixPageAction[] | undefined;
+  let systemAction: CodiixSystemAction | undefined;
 
   if (agentic && actions && actions.length > 0) {
     relatedCategoryLabel = getCodiixCategoryLabel(best.intent.categoryId!);
@@ -182,6 +307,22 @@ export function matchCodiixIntent(
       '\n\nWant me to do it? Turn on **Agentic** in the Codiix header, then ask again (even just “hero” or “add faq”).';
   }
 
+  // When talking about pages/templates, attach quick page jumps from the picker.
+  if (best.intent.id === 'pages-templates' && pages.length) {
+    pageActions = pages
+      .filter((p) => p.id !== options?.currentPageId)
+      .slice(0, 6)
+      .map((p) => ({
+        id: `page-${p.id}`,
+        label: `Go to ${p.label}`,
+        pageId: p.id,
+        kind: p.kind,
+      }));
+    systemAction = 'list-pages';
+    answer +=
+      '\n\nOr just tell me — e.g. **“take me to cart”**, **“switch to product page”**, or **“go back”**.';
+  }
+
   return {
     intentId: best.intent.id,
     answer,
@@ -190,6 +331,8 @@ export function matchCodiixIntent(
     relatedActions: actions && actions.length > 1 ? actions.slice(1) : undefined,
     relatedCategoryLabel,
     previewElementId,
+    systemAction,
+    pageActions,
   };
 }
 

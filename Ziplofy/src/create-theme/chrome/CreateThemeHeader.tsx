@@ -1,11 +1,18 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DevicePhoneMobileIcon,
   EllipsisHorizontalIcon,
 } from '@heroicons/react/24/outline';
 import DropdownMenu from '../../components/DropdownMenu';
 import DropdownMenuItem from '../../components/DropdownMenuItem';
-import { CodiixChatPanel, CodiixFaceIcon, type CodiixSaveResult } from '../codiix';
+import {
+  CodiixChatPanel,
+  CodiixFaceIcon,
+  buildCodiixPageOptions,
+  type CodiixApplyResult,
+  type CodiixNavigateResult,
+  type CodiixSaveResult,
+} from '../codiix';
 import { CreateThemePagePicker } from './CreateThemePagePicker';
 import { InspectorToggleIcon } from './InspectorToggleIcon';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
@@ -31,7 +38,7 @@ type Props = {
   /** Live storefront URL — used by the ⋮ menu “View” action. */
   storeUrl?: string | null;
   /** Apply this editor theme to the active store’s live storefront. */
-  onApplyTheme?: () => void;
+  onApplyTheme?: () => CodiixApplyResult | void;
   applyThemeDisabled?: boolean;
   applyingTheme?: boolean;
   themeAlreadyApplied?: boolean;
@@ -72,6 +79,11 @@ export function CreateThemeHeader({
   const moreMenuOpen = Boolean(moreMenuAnchor);
   const storefrontHref = storeUrl?.trim() || '';
 
+  const codiixPages = useMemo(
+    () => buildCodiixPageOptions(manifest, editorSchema, themeConfig),
+    [manifest, editorSchema, themeConfig],
+  );
+
   const closeMoreMenu = useCallback(() => setMoreMenuAnchor(null), []);
   const toggleCodiix = useCallback(() => setCodiixOpen((v) => !v), []);
   const closeCodiix = useCallback(() => setCodiixOpen(false), []);
@@ -82,11 +94,29 @@ export function CreateThemeHeader({
     closeMoreMenu();
   }, [storefrontHref, closeMoreMenu]);
 
-  const handleApplyTheme = useCallback(() => {
+  const handleApplyTheme = useCallback((): CodiixApplyResult | void => {
+    if (applyThemeDisabled || applyingTheme) return 'busy';
+    return onApplyTheme?.();
+  }, [applyThemeDisabled, applyingTheme, onApplyTheme]);
+
+  const handleApplyThemeMenu = useCallback(() => {
     if (applyThemeDisabled || applyingTheme) return;
     onApplyTheme?.();
     closeMoreMenu();
   }, [applyThemeDisabled, applyingTheme, onApplyTheme, closeMoreMenu]);
+
+  const handleCodiixNavigate = useCallback(
+    (pageId: string): CodiixNavigateResult => {
+      if (pageId === 'checkout') {
+        onOpenCheckoutEditor?.();
+        return 'checkout';
+      }
+      if (pageId === previewPage) return 'same';
+      onPreviewPageChange(pageId);
+      return 'ok';
+    },
+    [onOpenCheckoutEditor, onPreviewPageChange, previewPage],
+  );
 
   return (
     <header className="relative grid h-14 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-[#e5e5e5] bg-white px-4">
@@ -173,7 +203,7 @@ export function CreateThemeHeader({
           </DropdownMenuItem>
           {onApplyTheme ? (
             <DropdownMenuItem
-              onClick={handleApplyTheme}
+              onClick={handleApplyThemeMenu}
               disabled={applyThemeDisabled || applyingTheme}
             >
               {applyingTheme
@@ -205,6 +235,11 @@ export function CreateThemeHeader({
         onAgenticInsert={onAgenticInsert}
         onSave={onSave}
         saveDisabled={saveDisabled}
+        onApplyTheme={handleApplyTheme}
+        applyThemeDisabled={applyThemeDisabled || applyingTheme}
+        pages={codiixPages}
+        currentPageId={previewPage}
+        onNavigatePage={handleCodiixNavigate}
       />
     </header>
   );
