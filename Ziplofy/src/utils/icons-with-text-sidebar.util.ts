@@ -1,6 +1,11 @@
 import type { EditorFieldDef, SidebarIcon, SidebarNode } from '../create-theme/sidebar/create-theme-sidebar.types';
 import { iconWithTextBlockFieldDefs } from '../create-theme/sidebar/theme-editor-icons-with-text-panel.utils';
 
+/** Mirror of create-theme-structure-order.listKeyBlockChildren (avoids a circular import). */
+function listKeyBlockChildren(blockPrefix: string): string {
+  return `fields:${blockPrefix}`;
+}
+
 function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
   let cur: unknown = obj;
   for (const p of path) {
@@ -67,11 +72,7 @@ function readLayoutBlockOrder(
   return order.filter((id): id is string => typeof id === 'string' && Boolean(blocks?.[id]));
 }
 
-function blockIcon(): SidebarIcon {
-  return 'text';
-}
-
-/** Sidebar block rows from config `block_order` (icon_1, icon_2, …). */
+/** Shopify-style hierarchy: Group → Icon + Group → Text + Text. */
 export function mapIconsWithTextBlockNodes(
   prefix: string,
   blocksBase: string,
@@ -88,22 +89,102 @@ export function mapIconsWithTextBlockNodes(
       : readLayoutBlockOrder(config, secId);
 
   const blockNodes: SidebarNode[] = blockOrder.map((blockId) => {
+    const blockPrefix = `${prefix}:block:${blockId}`;
     const headingPath = `${blocksBase}.blocks.${blockId}.settings.heading`;
-    const preview = previewFromValues(values, headingPath);
+    const textPath = `${blocksBase}.blocks.${blockId}.settings.text`;
+    const fields = iconWithTextBlockFieldDefs(blocksBase, blockId);
+    const iconField = fields.find((field) => field.path.endsWith('.icon'));
+    const headingField = fields.find((field) => field.path.endsWith('.heading'));
+    const textField = fields.find((field) => field.path.endsWith('.text'));
+    const headingPreview = previewFromValues(values, headingPath);
+    const textPreview = previewFromValues(values, textPath);
+
+    const textGroupId = `${blockPrefix}:nested:group`;
+    const textGroupChildren = reorderSidebarChildren(
+      [
+        {
+          id: `${textGroupId}:inner-add-block`,
+          label: 'Add block',
+          kind: 'add-block' as const,
+        },
+        ...(headingField
+          ? [
+              {
+                id: `${textGroupId}:nested:heading`,
+                label: 'Text',
+                kind: 'block' as const,
+                icon: 'text' as SidebarIcon,
+                fields: [headingField],
+                preview: headingPreview,
+              },
+            ]
+          : []),
+        ...(textField
+          ? [
+              {
+                id: `${textGroupId}:nested:text`,
+                label: 'Text',
+                kind: 'block' as const,
+                icon: 'text' as SidebarIcon,
+                fields: [textField],
+                preview: textPreview,
+              },
+            ]
+          : []),
+      ],
+      listKeyBlockChildren(textGroupId),
+      itemOrder
+    );
+
+    const groupChildren = reorderSidebarChildren(
+      [
+        {
+          id: `${blockPrefix}:inner-add-block`,
+          label: 'Add block',
+          kind: 'add-block' as const,
+        },
+        ...(iconField
+          ? [
+              {
+                id: `${blockPrefix}:nested:icon`,
+                label: 'Icon',
+                kind: 'block' as const,
+                icon: 'image' as SidebarIcon,
+                fields: [iconField],
+              },
+            ]
+          : []),
+        {
+          id: textGroupId,
+          label: 'Group',
+          kind: 'block' as const,
+          icon: 'group' as SidebarIcon,
+          fields: [headingField, textField].filter(
+            (field): field is EditorFieldDef => Boolean(field)
+          ),
+          children: textGroupChildren,
+          childrenListKey: listKeyBlockChildren(textGroupId),
+        },
+      ],
+      listKeyBlockChildren(blockPrefix),
+      itemOrder
+    );
+
     return {
-      id: `${prefix}:block:${blockId}`,
-      label: preview ?? 'Icon with text',
+      id: blockPrefix,
+      label: 'Group',
       kind: 'block' as const,
-      icon: blockIcon(),
-      fields: iconWithTextBlockFieldDefs(blocksBase, blockId),
-      preview,
+      icon: 'group' as SidebarIcon,
+      fields,
+      children: groupChildren,
+      childrenListKey: listKeyBlockChildren(blockPrefix),
       showVisibilityToggle: true,
       showDeleteButton: true,
     };
   });
 
   const addBlock: SidebarNode = { id: `${prefix}:add-block`, label: 'Add block', kind: 'add-block' };
-  return reorderSidebarChildren([...blockNodes, addBlock], sectionChildrenListKey, itemOrder);
+  return reorderSidebarChildren([addBlock, ...blockNodes], sectionChildrenListKey, itemOrder);
 }
 
 export function iconsWithTextStructureOrder(

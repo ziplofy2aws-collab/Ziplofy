@@ -16,11 +16,19 @@ export const ICONS_WITH_TEXT_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(ICONS_WITH_TEXT_PANEL_GROUP_ORDER);
+
+const BORDER_KEYS = new Set([
+  'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
+  'cornerRadius',
+]);
 
 const FIELD_SORT: Record<string, number> = {
   direction: 0,
@@ -33,16 +41,25 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
-  backgroundOverlay: 25,
-  paddingTop: 30,
-  paddingBottom: 31,
-  customCss: 40,
+  backgroundColor: 23,
+  backgroundOverlay: 24,
+  borderStyle: 30,
+  borderThickness: 31,
+  borderOpacity: 32,
+  borderColor: 33,
+  cornerRadius: 34,
+  paddingTop: 40,
+  paddingBottom: 41,
 };
 
 function fieldSortKey(path: string): number {
   return FIELD_SORT[path.split('.').pop() ?? ''] ?? 50;
+}
+
+function iconsWithTextPanelGroupForKey(key: string, fallback?: string): string {
+  if (BORDER_KEYS.has(key)) return 'Borders';
+  if (fallback && PANEL_GROUPS.has(fallback)) return fallback;
+  return 'Layout';
 }
 
 export function isIconsWithTextSectionType(secType: string | undefined, catalogVariant: string): boolean {
@@ -50,8 +67,12 @@ export function isIconsWithTextSectionType(secType: string | undefined, catalogV
 }
 
 export function isIconsWithTextPanelField(field: EditorFieldDef): boolean {
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
+  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
+  if (BORDER_KEYS.has(key)) return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return /\.sections\.[^.]+\.settings\./.test(field.path);
+  return true;
 }
 
 export function isIconsWithTextBlockField(field: EditorFieldDef): boolean {
@@ -64,12 +85,14 @@ export function sortIconsWithTextPanelFields(fields: EditorFieldDef[]): EditorFi
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
   };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[a.group ?? ''] ?? 9;
-    const gb = groupRank[b.group ?? ''] ?? 9;
+    const keyA = a.path.split('.').pop() ?? '';
+    const keyB = b.path.split('.').pop() ?? '';
+    const ga = groupRank[iconsWithTextPanelGroupForKey(keyA, a.group)] ?? 9;
+    const gb = groupRank[iconsWithTextPanelGroupForKey(keyB, b.group)] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -80,9 +103,16 @@ export function groupIconsWithTextPanelFields(
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
+    const key = field.path.split('.').pop() ?? '';
+    const group = iconsWithTextPanelGroupForKey(key, field.group);
     const list = map.get(group) ?? [];
-    list.push(field);
+    list.push(
+      key === 'borderStyle'
+        ? { ...field, label: 'Style', group: 'Borders' }
+        : BORDER_KEYS.has(key)
+          ? { ...field, group: 'Borders' }
+          : field
+    );
     map.set(group, list);
   }
   return map;
@@ -119,7 +149,7 @@ export function iconsWithTextBlocksBaseFromNodeId(nodeId: string): string | null
 }
 
 export function iconsWithTextBlockInstanceIdFromNodeId(nodeId: string): string | null {
-  const m = nodeId.match(/:block:(.+)$/);
+  const m = nodeId.match(/:block:([^:]+)/);
   return m?.[1] ?? null;
 }
 
@@ -170,17 +200,124 @@ export function iconWithTextBlockFieldDefsFromNodeId(nodeId: string): EditorFiel
 }
 
 export function prepareIconsWithTextSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortIconsWithTextPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isIconsWithTextPanelField)
+  const filtered = filterSidebarSectionPanelFields(node.fields ?? [], isIconsWithTextPanelField).map(
+    (field) => {
+      const key = field.path.split('.').pop() ?? '';
+      if (key === 'borderStyle') {
+        return { ...field, label: 'Style', group: 'Borders' };
+      }
+      if (BORDER_KEYS.has(key)) {
+        return { ...field, group: 'Borders' };
+      }
+      return field;
+    }
   );
+  const fields = sortIconsWithTextPanelFields(ensureIconsWithTextBorderFieldDefs(filtered));
   return { ...node, label: 'Icons with text', kind: 'section', fields };
+}
+
+/** Section `.settings` base from field paths (skips block settings). */
+export function iconsWithTextSectionSettingsBaseFromFields(
+  fields: EditorFieldDef[]
+): string | null {
+  for (const field of fields) {
+    const path = field.path ?? '';
+    if (path.includes('.blocks.')) continue;
+    const match = path.match(/^(.*?\.settings)\./);
+    if (match) return match[1];
+  }
+  for (const field of fields) {
+    const path = field.path ?? '';
+    const match = path.match(/^(.*?\.settings)\./);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+/** Ensure Borders has Style / Thickness / Opacity / Color / Corner radius defs. */
+export function ensureIconsWithTextBorderFieldDefs(fields: EditorFieldDef[]): EditorFieldDef[] {
+  const settingsBase = iconsWithTextSectionSettingsBaseFromFields(fields);
+  if (!settingsBase) return fields;
+
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  const extra: EditorFieldDef[] = [];
+  const s = (key: string) => `${settingsBase}.${key}`;
+
+  if (!keys.has('borderStyle')) {
+    extra.push({
+      path: s('borderStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Borders',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'solid', label: 'Solid' },
+      ],
+    });
+  }
+  if (!keys.has('borderThickness')) {
+    extra.push({
+      path: s('borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('borderOpacity')) {
+    extra.push({
+      path: s('borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('borderColor')) {
+    extra.push({
+      path: s('borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('cornerRadius')) {
+    extra.push({
+      path: s('cornerRadius'),
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 40,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    });
+  }
+
+  return extra.length ? [...fields, ...extra] : fields;
 }
 
 export function prepareIconsWithTextBlockSettingsNode(node: SidebarNode): SidebarNode {
   const fromNode = iconWithTextBlockFieldDefsFromNodeId(node.id);
   const fields =
-    fromNode.length > 0
-      ? fromNode
-      : (node.fields ?? []).filter(isIconsWithTextBlockField);
+    node.fields?.length
+      ? node.fields.filter(isIconsWithTextBlockField)
+      : fromNode;
   return { ...node, label: node.label || 'Icon with text', kind: 'block', fields };
 }

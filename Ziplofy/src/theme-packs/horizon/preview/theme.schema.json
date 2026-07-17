@@ -5537,10 +5537,25 @@
           "placeholder": "Paste image URL or upload"
         },
         {
+          "path": "sections.icons_with_text.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "Appearance",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.icons_with_text.settings.backgroundOverlay",
+          "type": "boolean",
+          "label": "Background overlay",
+          "group": "Appearance",
+          "sidebar": true
+        },
+        {
           "path": "sections.icons_with_text.settings.borderStyle",
           "type": "select",
-          "label": "Borders",
-          "group": "Appearance",
+          "label": "Style",
+          "group": "Borders",
           "widget": "segmented",
           "sidebar": true,
           "options": [
@@ -5555,22 +5570,47 @@
           ]
         },
         {
-          "path": "sections.icons_with_text.settings.cornerRadius",
+          "path": "sections.icons_with_text.settings.borderThickness",
           "type": "number",
-          "label": "Corner radius",
-          "group": "Appearance",
+          "label": "Thickness",
+          "group": "Borders",
           "widget": "slider",
           "min": 0,
-          "max": 40,
+          "max": 10,
           "step": 1,
           "unit": "px",
           "sidebar": true
         },
         {
-          "path": "sections.icons_with_text.settings.backgroundOverlay",
-          "type": "boolean",
-          "label": "Background overlay",
-          "group": "Appearance",
+          "path": "sections.icons_with_text.settings.borderOpacity",
+          "type": "number",
+          "label": "Opacity",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "sidebar": true
+        },
+        {
+          "path": "sections.icons_with_text.settings.borderColor",
+          "type": "text",
+          "label": "Color",
+          "group": "Borders",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.icons_with_text.settings.cornerRadius",
+          "type": "number",
+          "label": "Corner radius",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
           "sidebar": true
         },
         {
@@ -5595,14 +5635,6 @@
           "max": 120,
           "step": 1,
           "unit": "px",
-          "sidebar": true
-        },
-        {
-          "path": "sections.icons_with_text.settings.customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion",
           "sidebar": true
         }
       ],
@@ -6758,9 +6790,111 @@
             {
               "value": "heading-4",
               "label": "Heading 4"
+            },
+            {
+              "value": "heading-5",
+              "label": "Heading 5"
+            },
+            {
+              "value": "heading-6",
+              "label": "Heading 6"
+            },
+            {
+              "value": "custom",
+              "label": "Custom"
             }
           ],
           "sidebar": false
+        },
+        {
+          "path": "sections.pull_quote_section.settings.quoteFont",
+          "type": "select",
+          "label": "Font",
+          "group": "Typography",
+          "widget": "select",
+          "sidebar": false,
+          "options": [
+            { "value": "body", "label": "Body" },
+            { "value": "subheading", "label": "Subheading" },
+            { "value": "heading", "label": "Heading" },
+            { "value": "accent", "label": "Accent" }
+          ]
+        },
+        {
+          "path": "sections.pull_quote_section.settings.quoteFontSize",
+          "type": "select",
+          "label": "Size",
+          "group": "Typography",
+          "widget": "select",
+          "sidebar": false,
+          "options": [
+            { "value": "10px", "label": "10px" },
+            { "value": "12px", "label": "12px" },
+            { "value": "14px", "label": "14px" },
+            { "value": "16px", "label": "16px" },
+            { "value": "18px", "label": "18px" },
+            { "value": "20px", "label": "20px" },
+            { "value": "24px", "label": "24px" },
+            { "value": "28px", "label": "28px" },
+            { "value": "32px", "label": "32px" },
+            { "value": "36px", "label": "36px" },
+            { "value": "40px", "label": "40px" },
+            { "value": "48px", "label": "48px" },
+            { "value": "56px", "label": "56px" },
+            { "value": "64px", "label": "64px" },
+            { "value": "72px", "label": "72px" }
+          ]
+        },
+        {
+          "path": "sections.pull_quote_section.settings.quoteLineHeight",
+          "type": "select",
+          "label": "Line height",
+          "group": "Typography",
+          "widget": "segmented",
+          "sidebar": false,
+          "options": [
+            { "value": "tight", "label": "Tight" },
+            { "value": "normal", "label": "Normal" },
+            { "value": "loose", "label": "Loose" }
+          ]
+        },
+        {
+          "path": "sections.pull_quote_section.settings.quoteLetterSpacing",
+          "type": "select",
+          "label": "Letter spacing",
+          "group": "Typography",
+          "widget": "segmented",
+          "sidebar": false,
+          "options": [
+            { "value": "tight", "label": "Tight" },
+            { "value": "normal", "label": "Normal" },
+            { "value": "loose", "label": "Loose" }
+          ]
+        },
+        {
+          "path": "sections.pull_quote_section.settings.quoteTextCase",
+          "type": "select",
+          "label": "Case",
+          "group": "Typography",
+          "widget": "segmented",
+          "sidebar": false,
+          "options": [
+            { "value": "default", "label": "Default" },
+            { "value": "uppercase", "label": "Uppercase" }
+          ]
+        },
+        {
+          "path": "sections.pull_quote_section.settings.quoteWrap",
+          "type": "select",
+          "label": "Wrap",
+          "group": "Typography",
+          "widget": "select",
+          "sidebar": false,
+          "options": [
+            { "value": "pretty", "label": "Pretty" },
+            { "value": "balance", "label": "Balance" },
+            { "value": "nowrap", "label": "No wrap" }
+          ]
         },
         {
           "path": "sections.pull_quote_section.settings.quoteColor",
@@ -6775,6 +6909,14 @@
           "type": "boolean",
           "label": "Background",
           "group": "General",
+          "sidebar": false
+        },
+        {
+          "path": "sections.pull_quote_section.settings.quoteBackgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
           "sidebar": false
         },
         {
@@ -6926,10 +7068,6 @@
           "sidebar": true,
           "options": [
             {
-              "value": "auto",
-              "label": "Auto"
-            },
-            {
               "value": "small",
               "label": "Small"
             },
@@ -6947,9 +7085,9 @@
           "path": "sections.pull_quote_section.settings.colorScheme",
           "type": "select",
           "label": "Color scheme",
-          "group": "Theme",
+          "group": "Appearance",
           "widget": "color-scheme",
-          "sidebar": true,
+          "sidebar": false,
           "options": [
             {
               "value": "scheme-1",
@@ -7029,6 +7167,38 @@
           ]
         },
         {
+          "path": "sections.pull_quote_section.settings.borderThickness",
+          "type": "number",
+          "label": "Thickness",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "unit": "px",
+          "sidebar": true
+        },
+        {
+          "path": "sections.pull_quote_section.settings.borderOpacity",
+          "type": "number",
+          "label": "Opacity",
+          "group": "Borders",
+          "widget": "slider",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "sidebar": true
+        },
+        {
+          "path": "sections.pull_quote_section.settings.borderColor",
+          "type": "text",
+          "label": "Color",
+          "group": "Borders",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
           "path": "sections.pull_quote_section.settings.cornerRadius",
           "type": "number",
           "label": "Corner radius",
@@ -7070,7 +7240,7 @@
           "label": "Custom CSS",
           "group": "Custom CSS",
           "widget": "accordion",
-          "sidebar": true
+          "sidebar": false
         }
       ]
     },
@@ -7302,6 +7472,14 @@
           "sidebar": false
         },
         {
+          "path": "sections.rich_text_section.settings.textBackgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": false
+        },
+        {
           "path": "sections.rich_text_section.settings.textPaddingTop",
           "type": "number",
           "label": "Top",
@@ -7415,6 +7593,18 @@
             {
               "value": "heading-4",
               "label": "Heading 4"
+            },
+            {
+              "value": "heading-5",
+              "label": "Heading 5"
+            },
+            {
+              "value": "heading-6",
+              "label": "Heading 6"
+            },
+            {
+              "value": "custom",
+              "label": "Custom"
             }
           ],
           "sidebar": false
@@ -7432,6 +7622,14 @@
           "type": "boolean",
           "label": "Background",
           "group": "General",
+          "sidebar": false
+        },
+        {
+          "path": "sections.rich_text_section.settings.headingBackgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
           "sidebar": false
         },
         {
@@ -9954,6 +10152,7 @@
           "type": "textarea",
           "label": "Text",
           "group": "General",
+          "widget": "richtext",
           "sidebar": false
         },
         {
@@ -10034,14 +10233,6 @@
           "max": 120,
           "step": 1,
           "unit": "px",
-          "sidebar": true
-        },
-        {
-          "path": "sections.text_marquee_section.settings.customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion",
           "sidebar": true
         },
         {
@@ -24877,10 +25068,25 @@
               "placeholder": "Paste image URL or upload"
             },
             {
+              "path": "templates.index.sections.icons_with_text.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "group": "Appearance",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons_with_text.settings.backgroundOverlay",
+              "type": "boolean",
+              "label": "Background overlay",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.icons_with_text.settings.borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "sidebar": true,
               "options": [
@@ -24895,22 +25101,47 @@
               ]
             },
             {
-              "path": "templates.index.sections.icons_with_text.settings.cornerRadius",
+              "path": "templates.index.sections.icons_with_text.settings.borderThickness",
               "type": "number",
-              "label": "Corner radius",
-              "group": "Appearance",
+              "label": "Thickness",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
-              "max": 40,
+              "max": 10,
               "step": 1,
               "unit": "px",
               "sidebar": true
             },
             {
-              "path": "templates.index.sections.icons_with_text.settings.backgroundOverlay",
-              "type": "boolean",
-              "label": "Background overlay",
-              "group": "Appearance",
+              "path": "templates.index.sections.icons_with_text.settings.borderOpacity",
+              "type": "number",
+              "label": "Opacity",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons_with_text.settings.borderColor",
+              "type": "text",
+              "label": "Color",
+              "group": "Borders",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons_with_text.settings.cornerRadius",
+              "type": "number",
+              "label": "Corner radius",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 40,
+              "step": 1,
+              "unit": "px",
               "sidebar": true
             },
             {
@@ -24935,14 +25166,6 @@
               "max": 120,
               "step": 1,
               "unit": "px",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.icons_with_text.settings.customCss",
-              "type": "textarea",
-              "label": "Custom CSS",
-              "group": "Custom CSS",
-              "widget": "accordion",
               "sidebar": true
             }
           ],
@@ -25990,10 +26213,6 @@
               "sidebar": true,
               "options": [
                 {
-                  "value": "auto",
-                  "label": "Auto"
-                },
-                {
                   "value": "small",
                   "label": "Small"
                 },
@@ -26013,7 +26232,7 @@
               "label": "Color scheme",
               "group": "Appearance",
               "widget": "color-scheme",
-              "sidebar": true,
+              "sidebar": false,
               "options": [
                 {
                   "value": "scheme-1",
@@ -26062,8 +26281,8 @@
             {
               "path": "templates.index.sections.pull_quote_section.settings.borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "sidebar": true,
               "options": [
@@ -26078,10 +26297,42 @@
               ]
             },
             {
+              "path": "templates.index.sections.pull_quote_section.settings.borderThickness",
+              "type": "number",
+              "label": "Thickness",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 10,
+              "step": 1,
+              "unit": "px",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.pull_quote_section.settings.borderOpacity",
+              "type": "number",
+              "label": "Opacity",
+              "group": "Borders",
+              "widget": "slider",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.pull_quote_section.settings.borderColor",
+              "type": "text",
+              "label": "Color",
+              "group": "Borders",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.pull_quote_section.settings.cornerRadius",
               "type": "number",
               "label": "Corner radius",
-              "group": "Appearance",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
               "max": 40,
@@ -26126,7 +26377,7 @@
               "label": "Custom CSS",
               "group": "Custom CSS",
               "widget": "accordion",
-              "sidebar": true
+              "sidebar": false
             }
           ]
         },
@@ -26477,8 +26728,8 @@
             {
               "path": "templates.index.sections.rich_text_section.settings.borderStyle",
               "type": "select",
-              "label": "Borders",
-              "group": "Appearance",
+              "label": "Style",
+              "group": "Borders",
               "widget": "segmented",
               "sidebar": true,
               "options": [
@@ -26496,7 +26747,7 @@
               "path": "templates.index.sections.rich_text_section.settings.cornerRadius",
               "type": "number",
               "label": "Corner radius",
-              "group": "Appearance",
+              "group": "Borders",
               "widget": "slider",
               "min": 0,
               "max": 40,
@@ -26576,6 +26827,7 @@
               "type": "textarea",
               "label": "Text",
               "group": "General",
+              "widget": "richtext",
               "sidebar": false
             },
             {
@@ -26656,14 +26908,6 @@
               "max": 120,
               "step": 1,
               "unit": "px",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.text_marquee_section.settings.customCss",
-              "type": "textarea",
-              "label": "Custom CSS",
-              "group": "Custom CSS",
-              "widget": "accordion",
               "sidebar": true
             },
             {

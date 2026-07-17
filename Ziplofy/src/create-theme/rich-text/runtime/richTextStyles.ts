@@ -13,11 +13,15 @@ const SCHEMES: Record<string, RichTextScheme> = {
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6' },
 };
 
-const HEIGHT_PX: Record<string, number> = {
-  auto: 0,
-  small: 200,
-  medium: 280,
-  large: 360,
+/**
+ * Fixed pixel floors (same approach as contact form / email signup).
+ * Must clear typical heading + text + button + padding (~250–350px) so presets are visible.
+ */
+const HEIGHT_MIN_PX: Record<string, number | undefined> = {
+  auto: undefined,
+  small: 320,
+  medium: 480,
+  large: 640,
 };
 
 export type RichTextImageFit = 'cover' | 'fit' | 'stretch';
@@ -30,7 +34,8 @@ export type RichTextLayout = {
   layoutGap: number;
   sectionWidth: 'page' | 'full';
   height: string;
-  minHeightPx: number;
+  /** Pixel min-height for the section shell, or undefined for Auto. */
+  minHeightPx: number | undefined;
   backgroundMedia: string;
   backgroundImageUrl: string;
   backgroundImagePosition: RichTextImageFit;
@@ -64,6 +69,10 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 function readImageFit(raw: string): RichTextImageFit {
   if (raw === 'fit' || raw === 'stretch') return raw;
   return 'cover';
+}
+
+export function resolveRichTextMinHeightPx(heightKey: string): number | undefined {
+  return HEIGHT_MIN_PX[heightKey];
 }
 
 export function richTextBackgroundImageCss(
@@ -101,7 +110,7 @@ export function readRichTextLayout(
     layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 25),
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
     height,
-    minHeightPx: HEIGHT_PX[height] ?? 0,
+    minHeightPx: resolveRichTextMinHeightPx(height),
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
     backgroundImagePosition: readImageFit(

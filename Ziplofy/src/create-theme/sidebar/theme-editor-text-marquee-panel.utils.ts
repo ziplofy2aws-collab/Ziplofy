@@ -13,7 +13,6 @@ export const TEXT_MARQUEE_PANEL_GROUP_ORDER = [
   'Layout',
   'Appearance',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(TEXT_MARQUEE_PANEL_GROUP_ORDER);
@@ -24,7 +23,6 @@ const FIELD_SORT: Record<string, number> = {
   paddingTop: 20,
   paddingBottom: 21,
   layoutGap: 22,
-  customCss: 30,
 };
 
 function fieldSortKey(path: string): number {
@@ -40,6 +38,7 @@ export function isTextMarqueePanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
   // `mq*` keys belong to the nested Text block panel, not the section panel.
   if (key.startsWith('mq')) return false;
+  if (key === 'customCss') return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
@@ -48,7 +47,6 @@ export function sortTextMarqueePanelFields(fields: EditorFieldDef[]): EditorFiel
     Layout: 0,
     Appearance: 1,
     Padding: 2,
-    'Custom CSS': 3,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

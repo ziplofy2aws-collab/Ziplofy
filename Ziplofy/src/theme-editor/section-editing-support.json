@@ -4927,10 +4927,6 @@
           "widget": "select-inline",
           "options": [
             {
-              "value": "auto",
-              "label": "Auto"
-            },
-            {
               "value": "small",
               "label": "Small"
             },
@@ -4941,31 +4937,6 @@
             {
               "value": "large",
               "label": "Large"
-            }
-          ]
-        },
-        {
-          "key": "colorScheme",
-          "type": "select",
-          "label": "Color scheme",
-          "group": "Appearance",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
             }
           ]
         },
@@ -4996,8 +4967,8 @@
         {
           "key": "borderStyle",
           "type": "select",
-          "label": "Borders",
-          "group": "Appearance",
+          "label": "Style",
+          "group": "Borders",
           "widget": "segmented",
           "options": [
             {
@@ -5014,7 +4985,7 @@
           "key": "cornerRadius",
           "type": "number",
           "label": "Corner radius",
-          "group": "Appearance",
+          "group": "Borders",
           "widget": "slider",
           "min": 0,
           "max": 40,
@@ -5048,13 +5019,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -5070,15 +5034,13 @@
             "layoutGap",
             "sectionWidth",
             "height",
-            "colorScheme",
             "backgroundMedia",
             "backgroundImageUrl",
             "borderStyle",
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }
@@ -15586,10 +15548,6 @@
           "widget": "select-inline",
           "options": [
             {
-              "value": "auto",
-              "label": "Auto"
-            },
-            {
               "value": "small",
               "label": "Small"
             },
@@ -15600,31 +15558,6 @@
             {
               "value": "large",
               "label": "Large"
-            }
-          ]
-        },
-        {
-          "key": "colorScheme",
-          "type": "select",
-          "label": "Color scheme",
-          "group": "Appearance",
-          "widget": "color-scheme",
-          "options": [
-            {
-              "value": "scheme-1",
-              "label": "Scheme 1"
-            },
-            {
-              "value": "scheme-2",
-              "label": "Scheme 2"
-            },
-            {
-              "value": "scheme-3",
-              "label": "Scheme 3"
-            },
-            {
-              "value": "scheme-4",
-              "label": "Scheme 4"
             }
           ]
         },
@@ -15655,8 +15588,8 @@
         {
           "key": "borderStyle",
           "type": "select",
-          "label": "Borders",
-          "group": "Appearance",
+          "label": "Style",
+          "group": "Borders",
           "widget": "segmented",
           "options": [
             {
@@ -15673,7 +15606,7 @@
           "key": "cornerRadius",
           "type": "number",
           "label": "Corner radius",
-          "group": "Appearance",
+          "group": "Borders",
           "widget": "slider",
           "min": 0,
           "max": 40,
@@ -15707,13 +15640,6 @@
           "max": 120,
           "step": 1,
           "unit": "px"
-        },
-        {
-          "key": "customCss",
-          "type": "textarea",
-          "label": "Custom CSS",
-          "group": "Custom CSS",
-          "widget": "accordion"
         }
       ],
       "blocks": {},
@@ -15729,15 +15655,13 @@
             "layoutGap",
             "sectionWidth",
             "height",
-            "colorScheme",
             "backgroundMedia",
             "backgroundImageUrl",
             "borderStyle",
             "cornerRadius",
             "backgroundOverlay",
             "paddingTop",
-            "paddingBottom",
-            "customCss"
+            "paddingBottom"
           ]
         }
       }

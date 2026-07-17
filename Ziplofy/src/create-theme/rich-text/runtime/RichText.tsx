@@ -94,6 +94,7 @@ export function RichText({
   const textPreset = cfgString(config, `${settingsBase}.textTypographyPreset`, 'default');
   const textColorRaw = cfgString(config, `${settingsBase}.textColor`, '');
   const textBackgroundEnabled = cfgBool(config, `${settingsBase}.textBackgroundEnabled`, false);
+  const textBackgroundColor = cfgString(config, `${settingsBase}.textBackgroundColor`, '#f3f4f6');
   const textPaddingTop = cfgNumber(config, `${settingsBase}.textPaddingTop`, 0);
   const textPaddingBottom = cfgNumber(config, `${settingsBase}.textPaddingBottom`, 0);
   const textPaddingLeft = cfgNumber(config, `${settingsBase}.textPaddingLeft`, 0);
@@ -104,6 +105,11 @@ export function RichText({
   const headingPreset = cfgString(config, `${settingsBase}.headingTypographyPreset`, 'default');
   const headingColorRaw = cfgString(config, `${settingsBase}.headingColor`, '');
   const headingBackgroundEnabled = cfgBool(config, `${settingsBase}.headingBackgroundEnabled`, false);
+  const headingBackgroundColor = cfgString(
+    config,
+    `${settingsBase}.headingBackgroundColor`,
+    '#f3f4f6'
+  );
   const headingPaddingTop = cfgNumber(config, `${settingsBase}.headingPaddingTop`, 0);
   const headingPaddingBottom = cfgNumber(config, `${settingsBase}.headingPaddingBottom`, 0);
   const headingPaddingLeft = cfgNumber(config, `${settingsBase}.headingPaddingLeft`, 0);
@@ -122,8 +128,12 @@ export function RichText({
   const shellClass = `${scopeClass}-shell`;
   const isHorizontal = style.direction === 'horizontal';
 
+  const hasFixedHeight = style.minHeightPx != null && style.minHeightPx > 0;
+
   const shell: CSSProperties = {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
     background: sectionBackground,
     backgroundColor: sectionBackground,
     color: scheme.color,
@@ -132,8 +142,8 @@ export function RichText({
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    minHeight: style.minHeightPx > 0 ? style.minHeightPx : undefined,
-    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}33` : undefined,
+    ...(hasFixedHeight ? { minHeight: style.minHeightPx } : {}),
+    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}` : undefined,
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: style.cornerRadius > 0 ? 'hidden' : undefined,
   };
@@ -147,8 +157,10 @@ export function RichText({
     maxWidth: innerMaxWidth,
     margin: '0 auto',
     width: '100%',
-    minHeight:
-      style.minHeightPx > 0 ? style.minHeightPx - style.paddingTop - style.paddingBottom : undefined,
+    flex: hasFixedHeight ? '1 1 auto' : undefined,
+    minHeight: hasFixedHeight
+      ? Math.max(0, (style.minHeightPx as number) - style.paddingTop - style.paddingBottom)
+      : undefined,
     display: 'flex',
     flexDirection: isHorizontal ? 'row' : 'column',
     flexWrap: isHorizontal ? 'wrap' : undefined,
@@ -178,6 +190,8 @@ export function RichText({
     'heading-2': { fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700, lineHeight: 1.15 },
     'heading-3': { fontSize: 'clamp(1.5rem, 3.2vw, 2rem)', fontWeight: 700, lineHeight: 1.2 },
     'heading-4': { fontSize: 'clamp(1.25rem, 2.6vw, 1.625rem)', fontWeight: 600, lineHeight: 1.25 },
+    'heading-5': { fontSize: 'clamp(1.125rem, 2.2vw, 1.375rem)', fontWeight: 600, lineHeight: 1.3 },
+    'heading-6': { fontSize: 'clamp(1rem, 2vw, 1.125rem)', fontWeight: 600, lineHeight: 1.35 },
   };
   const headingPresetStyle = HEADING_PRESETS[headingPreset] ?? HEADING_PRESETS.default;
   const headingMaxWidthPx =
@@ -230,7 +244,7 @@ export function RichText({
     paddingBottom: headingPaddingBottom || undefined,
     paddingLeft: headingPaddingLeft || undefined,
     paddingRight: headingPaddingRight || undefined,
-    background: headingBackgroundEnabled ? 'rgba(0, 0, 0, 0.04)' : undefined,
+    background: headingBackgroundEnabled ? headingBackgroundColor || 'rgba(0, 0, 0, 0.04)' : undefined,
     borderRadius: headingBackgroundEnabled ? 8 : undefined,
     boxSizing: 'border-box',
   };
@@ -263,7 +277,7 @@ export function RichText({
     paddingBottom: textPaddingBottom || undefined,
     paddingLeft: textPaddingLeft || undefined,
     paddingRight: textPaddingRight || undefined,
-    background: textBackgroundEnabled ? 'rgba(0, 0, 0, 0.04)' : undefined,
+    background: textBackgroundEnabled ? textBackgroundColor || 'rgba(0, 0, 0, 0.04)' : undefined,
     borderRadius: textBackgroundEnabled ? 8 : undefined,
     boxSizing: 'border-box',
   };

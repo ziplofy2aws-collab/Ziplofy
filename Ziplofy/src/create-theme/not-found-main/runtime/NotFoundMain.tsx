@@ -26,7 +26,7 @@ import {
   richTextOverlayBackground,
 } from '../../rich-text/runtime/richTextStyles';
 
-/** Section height presets sized for 404 content (rich-text presets are too small to notice). */
+/** Section height presets sized for 404 content (fixed px floors for this page). */
 const NOT_FOUND_HEIGHT_MIN: Record<string, number | undefined> = {
   auto: undefined,
   small: 420,

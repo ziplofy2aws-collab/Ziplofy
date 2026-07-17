@@ -32,11 +32,6 @@ export const editing: CreateThemeEditing = {
       "key": "layoutGap",
       "label": "Gap",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": []

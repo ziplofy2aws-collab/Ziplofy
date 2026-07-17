@@ -11,7 +11,7 @@ type SectionProps = {
 };
 
 /** Section root — matches editor `layout:*` / `template:*` section hints. */
-export function EditorSection({ sectionId, label, style, children, editorNodeId }: SectionProps) {
+export function EditorSection({ sectionId, label, className, style, children, editorNodeId }: SectionProps) {
   const layoutNodeId = editorNodeId ?? `layout:${sectionId}`;
   return (
     <section
@@ -20,6 +20,7 @@ export function EditorSection({ sectionId, label, style, children, editorNodeId 
       data-codiic-node={layoutNodeId}
       data-codiic-label={label ?? sectionId}
       data-codiic-kind="section"
+      className={className}
       style={style}
     >
       {children}

@@ -59,19 +59,39 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
+      "key": "backgroundColor",
+      "label": "Background color",
+      "type": "text"
+    },
+    {
+      "key": "backgroundOverlay",
+      "label": "Background overlay",
+      "type": "boolean"
+    },
+    {
       "key": "borderStyle",
-      "label": "Borders",
+      "label": "Style",
+      "type": "text"
+    },
+    {
+      "key": "borderThickness",
+      "label": "Thickness",
+      "type": "number"
+    },
+    {
+      "key": "borderOpacity",
+      "label": "Opacity",
+      "type": "number"
+    },
+    {
+      "key": "borderColor",
+      "label": "Color",
       "type": "text"
     },
     {
       "key": "cornerRadius",
       "label": "Corner radius",
       "type": "number"
-    },
-    {
-      "key": "backgroundOverlay",
-      "label": "Background overlay",
-      "type": "boolean"
     },
     {
       "key": "paddingTop",
@@ -82,11 +102,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": [

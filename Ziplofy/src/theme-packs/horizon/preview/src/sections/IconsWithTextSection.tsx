@@ -1,5 +1,6 @@
 import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
+import { resolveThemePaletteColorSetting } from '../../../../../create-theme/settings/theme-color-palette.settings';
 import { IconGlyph } from '../components/IconGlyph';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
 import {
@@ -8,6 +9,7 @@ import {
   justifyItemsForAlignment,
   readIconWithTextItems,
   readIconsWithTextLayout,
+  resolveIconsWithTextBorderCss,
   scopedIconsWithTextCss,
 } from '../lib/iconsWithTextStyles';
 import { layout } from '../tokens';
@@ -42,6 +44,15 @@ export function IconsWithTextSection({
   );
 
   const scheme = style.scheme;
+  const sectionBackground =
+    !style.backgroundColor || style.backgroundColor === 'default'
+      ? scheme.background
+      : resolveThemePaletteColorSetting(config, style.backgroundColor, 0, scheme.background);
+  const schemeBorder = scheme.muted ?? scheme.color;
+  const borderColorHex =
+    !style.borderColor || style.borderColor === 'default'
+      ? schemeBorder
+      : resolveThemePaletteColorSetting(config, style.borderColor, 1, schemeBorder);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
   const scopeClass = `codiic-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
@@ -54,14 +65,20 @@ export function IconsWithTextSection({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: scheme.background,
+    background: sectionBackground,
     color: scheme.color,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}33` : undefined,
+    border: resolveIconsWithTextBorderCss(
+      style.borderStyle,
+      style.borderThickness,
+      style.borderOpacity,
+      borderColorHex,
+      schemeBorder
+    ),
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: style.cornerRadius > 0 ? 'hidden' : undefined,
   };

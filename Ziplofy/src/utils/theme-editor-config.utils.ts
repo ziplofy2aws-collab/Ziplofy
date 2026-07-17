@@ -1820,6 +1820,13 @@ export function applyValuesToThemeConfig(
         key === 'headingTextCase' ||
         key === 'headingWrap' ||
         key === 'headingTypographyPreset' ||
+        key === 'quoteFont' ||
+        key === 'quoteFontSize' ||
+        key === 'quoteLineHeight' ||
+        key === 'quoteLetterSpacing' ||
+        key === 'quoteTextCase' ||
+        key === 'quoteWrap' ||
+        key === 'quoteTypographyPreset' ||
         key === 'typographyPreset' ||
         key === 'font' ||
         key === 'fontSize' ||
@@ -1863,7 +1870,9 @@ export function applyValuesToThemeConfig(
         key === 'paddingTop' ||
         key === 'paddingBottom' ||
         key === 'paddingLeft' ||
-        key === 'paddingRight'
+        key === 'paddingRight' ||
+        key === 'borderThickness' ||
+        key === 'cornerRadius'
       ) {
         type = 'number';
       } else {

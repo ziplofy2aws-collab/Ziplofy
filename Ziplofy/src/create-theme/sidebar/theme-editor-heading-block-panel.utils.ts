@@ -734,8 +734,8 @@ export function isHeadingTypographyCustomPreset(
   presetPath: string
 ): boolean {
   const raw = values[presetPath];
-  const preset =
-    typeof raw === 'string' ? raw : raw === undefined || raw === null ? 'default' : String(raw);
+  if (raw === undefined || raw === null || raw === '') return false;
+  const preset = String(raw).trim().toLowerCase();
   const normalized = preset === 'body' ? 'paragraph' : preset;
   return normalized === 'custom';
 }
@@ -749,7 +749,14 @@ export function filterHeadingPanelFieldsForTypographyPreset(
   const presetPath =
     presetField?.path ??
     Object.keys(values).find((path) => path.endsWith('.headingTypographyPreset'));
-  if (!presetPath || isHeadingTypographyCustomPreset(values, presetPath)) {
+  // No preset path → hide custom controls (safer than showing them openly).
+  if (!presetPath) {
+    return fields.filter((f) => {
+      const key = f.path.split('.').pop() ?? '';
+      return !HEADING_CUSTOM_TYPOGRAPHY_KEY_SET.has(key);
+    });
+  }
+  if (isHeadingTypographyCustomPreset(values, presetPath)) {
     return fields;
   }
   return fields.filter((f) => {
@@ -876,6 +883,33 @@ export function resolveHeadingTypographyField(
   const fromSchema = fields.find((f) => f.path.endsWith(key));
   if (fromSchema) {
     // Schema heading fields carry only `type`, so backfill the widget/options the panel needs.
+    return {
+      ...fromSchema,
+      label: fromSchema.label ?? fallback.label,
+      group: fromSchema.group ?? fallback.group,
+      widget: fromSchema.widget ?? fallback.widget,
+      options:
+        fromSchema.options && fromSchema.options.length ? fromSchema.options : fallback.options,
+    };
+  }
+  return { ...fallback, path: `${settingsBase}.${key}` };
+}
+
+/**
+ * Resolve custom typography controls for a prefixed block (heading / quote).
+ * Reuses heading field fallbacks with the given prefix substituted into the path/key.
+ */
+export function resolvePrefixedTypographyCustomField(
+  prefix: 'heading' | 'quote',
+  headingKey: (typeof HEADING_CUSTOM_TYPOGRAPHY_KEYS)[number],
+  settingsBase: string,
+  fields: EditorFieldDef[]
+): EditorFieldDef {
+  const key =
+    prefix === 'heading' ? headingKey : (headingKey.replace(/^heading/, 'quote') as string);
+  const fallback = HEADING_TYPO_FIELD_FALLBACKS[headingKey];
+  const fromSchema = fields.find((f) => f.path.split('.').pop() === key);
+  if (fromSchema) {
     return {
       ...fromSchema,
       label: fromSchema.label ?? fallback.label,

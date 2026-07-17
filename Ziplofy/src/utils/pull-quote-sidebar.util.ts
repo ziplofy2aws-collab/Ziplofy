@@ -107,6 +107,93 @@ export function pullQuoteBlockFieldDefs(
           { value: 'heading-2', label: 'Heading 2' },
           { value: 'heading-3', label: 'Heading 3' },
           { value: 'heading-4', label: 'Heading 4' },
+          { value: 'heading-5', label: 'Heading 5' },
+          { value: 'heading-6', label: 'Heading 6' },
+          { value: 'custom', label: 'Custom' },
+        ],
+      },
+      {
+        path: s('quoteFont'),
+        type: 'select',
+        label: 'Font',
+        group: 'Typography',
+        widget: 'select',
+        options: [
+          { value: 'body', label: 'Body' },
+          { value: 'subheading', label: 'Subheading' },
+          { value: 'heading', label: 'Heading' },
+          { value: 'accent', label: 'Accent' },
+        ],
+      },
+      {
+        path: s('quoteFontSize'),
+        type: 'select',
+        label: 'Size',
+        group: 'Typography',
+        widget: 'select',
+        options: [
+          '10px',
+          '12px',
+          '14px',
+          '16px',
+          '18px',
+          '20px',
+          '24px',
+          '28px',
+          '32px',
+          '36px',
+          '40px',
+          '48px',
+          '56px',
+          '64px',
+          '72px',
+        ].map((value) => ({ value, label: value })),
+      },
+      {
+        path: s('quoteLineHeight'),
+        type: 'select',
+        label: 'Line height',
+        group: 'Typography',
+        widget: 'segmented',
+        options: [
+          { value: 'tight', label: 'Tight' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'loose', label: 'Loose' },
+        ],
+      },
+      {
+        path: s('quoteLetterSpacing'),
+        type: 'select',
+        label: 'Letter spacing',
+        group: 'Typography',
+        widget: 'segmented',
+        options: [
+          { value: 'tight', label: 'Tight' },
+          { value: 'normal', label: 'Normal' },
+          { value: 'loose', label: 'Loose' },
+        ],
+      },
+      {
+        path: s('quoteTextCase'),
+        type: 'select',
+        label: 'Case',
+        group: 'Typography',
+        widget: 'segmented',
+        options: [
+          { value: 'default', label: 'Default' },
+          { value: 'uppercase', label: 'Uppercase' },
+        ],
+      },
+      {
+        path: s('quoteWrap'),
+        type: 'select',
+        label: 'Wrap',
+        group: 'Typography',
+        widget: 'select',
+        options: [
+          { value: 'pretty', label: 'Pretty' },
+          { value: 'balance', label: 'Balance' },
+          { value: 'nowrap', label: 'No wrap' },
         ],
       },
       {
@@ -121,6 +208,13 @@ export function pullQuoteBlockFieldDefs(
         type: 'boolean',
         label: 'Background',
         group: 'Appearance',
+      },
+      {
+        path: s('quoteBackgroundColor'),
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
       },
       {
         path: s('quotePaddingTop'),
@@ -293,7 +387,65 @@ export function isPullQuoteTextPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   const path = fields[0]?.path ?? '';
-  return keys.has('quote') && keys.has('quoteWidth') && path.includes('pull_quote');
+  return (
+    path.includes('pull_quote') &&
+    (keys.has('quote') || keys.has('quoteWidth') || keys.has('quoteTypographyPreset'))
+  );
+}
+
+export function isPullQuoteSectionInstanceId(secId: string): boolean {
+  return secId.includes('pull_quote');
+}
+
+export function pullQuoteSectionBaseFromBlockNodeId(nodeId: string): string | null {
+  const layout = nodeId.match(/^layout:(.+):block:(?:text|button)$/);
+  if (layout) {
+    const secId = layout[1]!;
+    if (!isPullQuoteSectionInstanceId(secId)) return null;
+    return `sections.${secId}`;
+  }
+  const tpl = nodeId.match(/^template:([^:]+):([^:]+):block:(?:text|button)$/);
+  if (tpl) {
+    const secId = tpl[2]!;
+    if (!isPullQuoteSectionInstanceId(secId)) return null;
+    return `templates.${tpl[1]}.sections.${secId}`;
+  }
+  return null;
+}
+
+export function isPullQuoteTextBlockNodeId(nodeId: string): boolean {
+  return /:block:text$/.test(nodeId) && pullQuoteSectionBaseFromBlockNodeId(nodeId) !== null;
+}
+
+export function isPullQuoteButtonBlockNodeId(nodeId: string): boolean {
+  return /:block:button$/.test(nodeId) && pullQuoteSectionBaseFromBlockNodeId(nodeId) !== null;
+}
+
+export function preparePullQuoteTextBlockSettingsNode(node: SidebarNode): SidebarNode {
+  const sectionBase = pullQuoteSectionBaseFromBlockNodeId(node.id);
+  const fields = sectionBase
+    ? pullQuoteBlockFieldDefs(sectionBase, 'text')
+    : (node.fields ?? []).filter((f) => {
+        const key = f.path.split('.').pop() ?? '';
+        return key === 'quote' || key.startsWith('quote');
+      });
+  return { ...node, label: 'Text', kind: 'block', fields };
+}
+
+export function preparePullQuoteButtonBlockSettingsNode(node: SidebarNode): SidebarNode {
+  const sectionBase = pullQuoteSectionBaseFromBlockNodeId(node.id);
+  const fields = sectionBase
+    ? pullQuoteBlockFieldDefs(sectionBase, 'button')
+    : (node.fields ?? []).filter((f) => {
+        const key = f.path.split('.').pop() ?? '';
+        return (
+          key === 'linkLabel' ||
+          key === 'linkUrl' ||
+          key === 'linkOpenInNewTab' ||
+          key.startsWith('button')
+        );
+      });
+  return { ...node, label: 'Button', kind: 'block', fields };
 }
 
 function pullQuoteBlockNode(

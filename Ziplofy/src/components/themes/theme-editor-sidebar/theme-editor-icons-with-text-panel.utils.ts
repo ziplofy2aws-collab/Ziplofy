@@ -5,11 +5,19 @@ export const ICONS_WITH_TEXT_PANEL_GROUP_ORDER = [
   'Layout',
   'Size',
   'Appearance',
+  'Borders',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(ICONS_WITH_TEXT_PANEL_GROUP_ORDER);
+
+const BORDER_KEYS = new Set([
+  'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
+  'cornerRadius',
+]);
 
 const FIELD_SORT: Record<string, number> = {
   direction: 0,
@@ -22,16 +30,25 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 20,
   backgroundMedia: 21,
   backgroundImageUrl: 22,
-  borderStyle: 23,
-  cornerRadius: 24,
-  backgroundOverlay: 25,
-  paddingTop: 30,
-  paddingBottom: 31,
-  customCss: 40,
+  backgroundColor: 23,
+  backgroundOverlay: 24,
+  borderStyle: 30,
+  borderThickness: 31,
+  borderOpacity: 32,
+  borderColor: 33,
+  cornerRadius: 34,
+  paddingTop: 40,
+  paddingBottom: 41,
 };
 
 function fieldSortKey(path: string): number {
   return FIELD_SORT[path.split('.').pop() ?? ''] ?? 50;
+}
+
+function iconsWithTextPanelGroupForKey(key: string, fallback?: string): string {
+  if (BORDER_KEYS.has(key)) return 'Borders';
+  if (fallback && PANEL_GROUPS.has(fallback)) return fallback;
+  return 'Layout';
 }
 
 export function isIconsWithTextSectionType(secType: string | undefined, catalogVariant: string): boolean {
@@ -39,8 +56,12 @@ export function isIconsWithTextSectionType(secType: string | undefined, catalogV
 }
 
 export function isIconsWithTextPanelField(field: EditorFieldDef): boolean {
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
+  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
+  if (BORDER_KEYS.has(key)) return true;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
-  return /\.sections\.[^.]+\.settings\./.test(field.path);
+  return true;
 }
 
 export function isIconsWithTextBlockField(field: EditorFieldDef): boolean {
@@ -53,12 +74,14 @@ export function sortIconsWithTextPanelFields(fields: EditorFieldDef[]): EditorFi
     Layout: 0,
     Size: 1,
     Appearance: 2,
-    Padding: 3,
-    'Custom CSS': 4,
+    Borders: 3,
+    Padding: 4,
   };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[a.group ?? ''] ?? 9;
-    const gb = groupRank[b.group ?? ''] ?? 9;
+    const keyA = a.path.split('.').pop() ?? '';
+    const keyB = b.path.split('.').pop() ?? '';
+    const ga = groupRank[iconsWithTextPanelGroupForKey(keyA, a.group)] ?? 9;
+    const gb = groupRank[iconsWithTextPanelGroupForKey(keyB, b.group)] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -69,9 +92,16 @@ export function groupIconsWithTextPanelFields(
 ): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
+    const key = field.path.split('.').pop() ?? '';
+    const group = iconsWithTextPanelGroupForKey(key, field.group);
     const list = map.get(group) ?? [];
-    list.push(field);
+    list.push(
+      key === 'borderStyle'
+        ? { ...field, label: 'Style', group: 'Borders' }
+        : BORDER_KEYS.has(key)
+          ? { ...field, group: 'Borders' }
+          : field
+    );
     map.set(group, list);
   }
   return map;
@@ -80,15 +110,6 @@ export function groupIconsWithTextPanelFields(
 export function isIconsWithTextSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  if (
-    keys.has('caption') ||
-    keys.has('videoUrl') ||
-    keys.has('heading') ||
-    keys.has('openFirstItem') ||
-    keys.has('logoText')
-  ) {
-    return false;
-  }
   const path = fields[0]?.path ?? '';
   return (
     keys.has('verticalOnMobile') &&
@@ -100,12 +121,17 @@ export function isIconsWithTextSettingsPanelFields(fields: EditorFieldDef[]): bo
 
 export function prepareIconsWithTextSettingsNode(node: SidebarNode): SidebarNode {
   const fields = sortIconsWithTextPanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isIconsWithTextPanelField)
+    filterSidebarSectionPanelFields(node.fields ?? [], isIconsWithTextPanelField).map((field) => {
+      const key = field.path.split('.').pop() ?? '';
+      if (key === 'borderStyle') return { ...field, label: 'Style', group: 'Borders' };
+      if (BORDER_KEYS.has(key)) return { ...field, group: 'Borders' };
+      return field;
+    })
   );
   return { ...node, label: 'Icons with text', kind: 'section', fields };
 }
 
 export function prepareIconsWithTextBlockSettingsNode(node: SidebarNode): SidebarNode {
   const fields = (node.fields ?? []).filter(isIconsWithTextBlockField);
-  return { ...node, label: node.label || 'Icon', kind: 'block', fields };
+  return { ...node, label: node.label || 'Icon with text', kind: 'block', fields };
 }

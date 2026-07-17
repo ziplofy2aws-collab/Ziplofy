@@ -419,8 +419,15 @@ export function isFaqPanelField(field: EditorFieldDef): boolean {
 /** Layout fields unique to the FAQ section panel (not hero media layout). */
 export function isFaqLayoutPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
+  const path = fields[0]?.path ?? '';
+  if (path.includes('pull_quote') || path.includes('rich_text')) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('direction') && keys.has('layoutGap') && !keys.has('media1Type');
+  return (
+    keys.has('direction') &&
+    keys.has('layoutGap') &&
+    keys.has('verticalOnMobile') &&
+    !keys.has('media1Type')
+  );
 }
 
 export function isFaqBlockField(field: EditorFieldDef): boolean {
@@ -482,8 +489,21 @@ export function groupFaqPanelFields(fields: EditorFieldDef[]): Map<string, Edito
 export function isFaqSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const path = fields[0]?.path ?? '';
-  // Contact form / email signup share Layout–Size keys with FAQ; never treat them as FAQ.
-  if (path.includes('contact_form') || path.includes('email_signup')) return false;
+  // These sections share Layout–Size keys with FAQ; never treat them as FAQ.
+  if (
+    path.includes('contact_form') ||
+    path.includes('email_signup') ||
+    path.includes('pull_quote') ||
+    path.includes('rich_text') ||
+    path.includes('multicolumn') ||
+    path.includes('icons_with_text') ||
+    path.includes('image_with_text') ||
+    path.includes('image_compare') ||
+    path.includes('custom_section') ||
+    path.includes('not_found')
+  ) {
+    return false;
+  }
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   if (
     keys.has('caption') ||
@@ -491,15 +511,20 @@ export function isFaqSettingsPanelFields(fields: EditorFieldDef[]): boolean {
     keys.has('logoText') ||
     keys.has('imageBeforeUrl') ||
     keys.has('imageUrl') ||
-    keys.has('jumboText')
+    keys.has('jumboText') ||
+    keys.has('quote') ||
+    keys.has('linkLabel')
   ) {
     return false;
   }
+  // Require FAQ-specific layout toggle so Pull quote / Rich text section settings
+  // (direction + gap + width only) are not mislabeled as FAQ.
   return (
     keys.has('direction') &&
     keys.has('layoutGap') &&
     keys.has('layoutAlignment') &&
-    keys.has('sectionWidth')
+    keys.has('sectionWidth') &&
+    keys.has('verticalOnMobile')
   );
 }
 

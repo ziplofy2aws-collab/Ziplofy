@@ -1,5 +1,6 @@
 import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
+import { ThemeEditorRichTextContent } from '../../../../../create-theme/runtime/shared/ThemeEditorRichTextContent';
 import { cfgString } from '../lib/config';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
 import {
@@ -17,6 +18,14 @@ type Props = {
 
 const DEFAULT_TEXT = 'We make things that work better and last longer.';
 const PHRASE_COPIES = 6;
+
+const MARQUEE_RICH_TEXT_STYLE: CSSProperties = {
+  display: 'inline',
+};
+
+function MarqueePhraseContent({ text }: { text: string }) {
+  return <ThemeEditorRichTextContent html={text} style={MARQUEE_RICH_TEXT_STYLE} />;
+}
 
 function MarqueePhrases({
   text,
@@ -39,10 +48,10 @@ function MarqueePhrases({
         >
           {index === 0 && !ariaHidden ? (
             <EditorField fieldPath={textPath} label="Text">
-              {text}
+              <MarqueePhraseContent text={text} />
             </EditorField>
           ) : (
-            text
+            <MarqueePhraseContent text={text} />
           )}
         </span>
       ))}
@@ -112,6 +121,11 @@ export function TextMarqueeSection({
       <section className={scopeClass} style={shell} data-section-type="text-marquee">
         <style>
           {keyframes}
+          {`.${scopeClass} .theme-editor-rich-text-content,
+.${scopeClass} .theme-editor-rich-text-content p {
+  display: inline;
+  margin: 0;
+}`}
           {customCss ? customCss : ''}
         </style>
         <div className={`${scopeClass}__viewport`} style={viewport}>

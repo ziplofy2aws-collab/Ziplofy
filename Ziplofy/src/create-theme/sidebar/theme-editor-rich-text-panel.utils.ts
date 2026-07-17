@@ -42,10 +42,13 @@ export function isRichTextSectionType(secType: string | undefined, catalogVarian
 }
 
 export function isRichTextPanelField(field: EditorFieldDef): boolean {
-  if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   const key = field.path.split('.').pop() ?? '';
   if (key === 'customCss') return false;
-  return /\.sections\.[^.]+\.settings\./.test(field.path);
+  if (!/\.sections\.[^.]+\.settings\./.test(field.path)) return false;
+  // Template schema may put these under Appearance; still include them for Borders.
+  if (key === 'borderStyle' || key === 'cornerRadius') return true;
+  if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
+  return true;
 }
 
 export function sortRichTextPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
@@ -56,9 +59,14 @@ export function sortRichTextPanelFields(fields: EditorFieldDef[]): EditorFieldDe
     Borders: 3,
     Padding: 4,
   };
+  const effectiveGroup = (field: EditorFieldDef) => {
+    const key = field.path.split('.').pop() ?? '';
+    if (key === 'borderStyle' || key === 'cornerRadius') return 'Borders';
+    return field.group ?? '';
+  };
   return [...fields].sort((a, b) => {
-    const ga = groupRank[a.group ?? ''] ?? 9;
-    const gb = groupRank[b.group ?? ''] ?? 9;
+    const ga = groupRank[effectiveGroup(a)] ?? 9;
+    const gb = groupRank[effectiveGroup(b)] ?? 9;
     if (ga !== gb) return ga - gb;
     return fieldSortKey(a.path) - fieldSortKey(b.path);
   });
@@ -67,9 +75,18 @@ export function sortRichTextPanelFields(fields: EditorFieldDef[]): EditorFieldDe
 export function groupRichTextPanelFields(fields: EditorFieldDef[]): Map<string, EditorFieldDef[]> {
   const map = new Map<string, EditorFieldDef[]>();
   for (const field of fields) {
-    const group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
+    const key = field.path.split('.').pop() ?? '';
+    let group = field.group && PANEL_GROUPS.has(field.group) ? field.group : 'Layout';
+    let panelField = field;
+    if (key === 'borderStyle') {
+      group = 'Borders';
+      panelField = { ...field, label: 'Style', group: 'Borders' };
+    } else if (key === 'cornerRadius') {
+      group = 'Borders';
+      panelField = { ...field, group: 'Borders' };
+    }
     const list = map.get(group) ?? [];
-    list.push(field);
+    list.push(panelField);
     map.set(group, list);
   }
   return map;
@@ -186,6 +203,8 @@ export function richTextBlockFieldDefs(
           { value: 'heading-2', label: 'Heading 2' },
           { value: 'heading-3', label: 'Heading 3' },
           { value: 'heading-4', label: 'Heading 4' },
+          { value: 'heading-5', label: 'Heading 5' },
+          { value: 'heading-6', label: 'Heading 6' },
           { value: 'custom', label: 'Custom' },
         ],
       },
@@ -285,6 +304,13 @@ export function richTextBlockFieldDefs(
         type: 'boolean',
         label: 'Background',
         group: 'Appearance',
+      },
+      {
+        path: s('headingBackgroundColor'),
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
       },
       {
         path: s('headingPaddingTop'),
@@ -392,6 +418,13 @@ export function richTextBlockFieldDefs(
         type: 'boolean',
         label: 'Background',
         group: 'Appearance',
+      },
+      {
+        path: s('textBackgroundColor'),
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
       },
       {
         path: s('textPaddingTop'),
@@ -560,6 +593,7 @@ const RICH_TEXT_TEXT_KEYS = new Set([
   'textTypographyPreset',
   'textColor',
   'textBackgroundEnabled',
+  'textBackgroundColor',
   'textPaddingTop',
   'textPaddingBottom',
   'textPaddingLeft',
@@ -584,6 +618,7 @@ const RICH_TEXT_HEADING_KEYS = new Set([
   'headingWrap',
   'headingColor',
   'headingBackgroundEnabled',
+  'headingBackgroundColor',
   'headingPaddingTop',
   'headingPaddingBottom',
   'headingPaddingLeft',

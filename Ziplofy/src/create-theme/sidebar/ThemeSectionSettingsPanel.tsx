@@ -52,6 +52,7 @@ import {
   isHeadingTypographyCustomPreset,
   prepareHeadingBlockSettingsNode,
   resolveHeadingTypographyField,
+  resolvePrefixedTypographyCustomField,
 } from './theme-editor-heading-block-panel.utils';
 import {
   COLLECTION_TITLE_CUSTOM_TYPOGRAPHY_KEYS,
@@ -528,6 +529,8 @@ import {
   isIconsWithTextBlockField,
   isIconsWithTextBlockNodeId,
   isIconsWithTextSettingsPanelFields,
+  ensureIconsWithTextBorderFieldDefs,
+  iconsWithTextSectionSettingsBaseFromFields,
 } from './theme-editor-icons-with-text-panel.utils';
 import {
   groupMulticolumnPanelFields,
@@ -553,11 +556,17 @@ import { isTextMarqueeTextBlockNodeId } from '../../utils/text-marquee-sidebar.u
 import {
   groupPullQuotePanelFields,
   PULL_QUOTE_PANEL_GROUP_ORDER,
+  isPullQuoteSectionNodeId,
   isPullQuoteSettingsPanelFields,
+  preparePullQuoteSettingsNode,
 } from './theme-editor-pull-quote-panel.utils';
 import {
   isPullQuoteButtonPanelFields,
   isPullQuoteTextPanelFields,
+  isPullQuoteTextBlockNodeId,
+  isPullQuoteButtonBlockNodeId,
+  preparePullQuoteTextBlockSettingsNode,
+  preparePullQuoteButtonBlockSettingsNode,
 } from '../../utils/pull-quote-sidebar.util';
 import {
   groupRichTextPanelFields,
@@ -3009,8 +3018,8 @@ function LargeLogoSizeSettingsGroup({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const width = fields.find((f) => f.path.endsWith('sectionWidth'));
-  const height = fields.find((f) => f.path.endsWith('height'));
+  const width = fields.find((f) => f.path.split('.').pop() === 'sectionWidth');
+  const height = fields.find((f) => f.path.split('.').pop() === 'height');
 
   return (
     <div className="px-1 py-3">
@@ -3405,7 +3414,18 @@ function ContactFormAppearanceSettingsGroup({
 
   const ordered = [...fields].filter((f) => {
     const key = f.path.split('.').pop() ?? '';
-    return key !== 'backgroundImageUrl';
+    if (key === 'backgroundImageUrl') return false;
+    // Borders belong in the Borders group (Style / Thickness / Opacity / Color / Radius).
+    if (
+      key === 'borderStyle' ||
+      key === 'borderThickness' ||
+      key === 'borderOpacity' ||
+      key === 'borderColor' ||
+      key === 'cornerRadius'
+    ) {
+      return false;
+    }
+    return true;
   });
 
   return (
@@ -12257,53 +12277,115 @@ function RichTextTypographyBlockSettingsPanel({
   const preset = find(`${contentKey}TypographyPreset`);
   const color = find(`${contentKey}Color`);
   const background = find(`${contentKey}BackgroundEnabled`);
+  const backgroundColor =
+    find(`${contentKey}BackgroundColor`) ??
+    (background
+      ? {
+          path: background.path.replace(/BackgroundEnabled$/, 'BackgroundColor'),
+          type: 'color' as const,
+          label: 'Background color',
+          group: 'Appearance',
+          widget: 'color' as const,
+        }
+      : null);
   const paddingTop = find(`${contentKey}PaddingTop`);
   const paddingBottom = find(`${contentKey}PaddingBottom`);
   const paddingLeft = find(`${contentKey}PaddingLeft`);
   const paddingRight = find(`${contentKey}PaddingRight`);
-  const headingPresetField =
-    contentKey === 'heading' && preset
+
+  const RICH_TEXT_HEADING_PRESET_OPTIONS = [
+    { value: 'default', label: 'Default' },
+    { value: 'heading-1', label: 'Heading 1' },
+    { value: 'heading-2', label: 'Heading 2' },
+    { value: 'heading-3', label: 'Heading 3' },
+    { value: 'heading-4', label: 'Heading 4' },
+    { value: 'heading-5', label: 'Heading 5' },
+    { value: 'heading-6', label: 'Heading 6' },
+    { value: 'custom', label: 'Custom' },
+  ] as const;
+
+  /** Heading (rich text) and quote (pull quote) share Default / H1–H6 / Custom typography. */
+  const typoPrefix =
+    contentKey === 'heading' || contentKey === 'quote' ? contentKey : null;
+  const typoSettingsBase = typoPrefix
+    ? (preset?.path.replace(new RegExp(`\\.${typoPrefix}TypographyPreset$`), '') ||
+        find(typoPrefix)?.path.replace(/\.[^.]+$/, '') ||
+        find(`${typoPrefix}Width`)?.path.replace(/\.[^.]+$/, '') ||
+        '')
+    : '';
+  const typoPresetPath =
+    (typoPrefix && preset?.path) ||
+    (typoPrefix && typoSettingsBase ? `${typoSettingsBase}.${typoPrefix}TypographyPreset` : '');
+  const typoPresetField =
+    typoPrefix && typoPresetPath
       ? {
-          ...preset,
-          options: [
-            { value: 'default', label: 'Default' },
-            { value: 'heading-1', label: 'Heading 1' },
-            { value: 'heading-2', label: 'Heading 2' },
-            { value: 'heading-3', label: 'Heading 3' },
-            { value: 'heading-4', label: 'Heading 4' },
-            { value: 'custom', label: 'Custom' },
-          ],
+          path: typoPresetPath,
+          type: 'select' as const,
+          label: 'Preset',
+          group: 'Typography',
+          widget: 'select-inline' as const,
+          options: [...RICH_TEXT_HEADING_PRESET_OPTIONS],
+          description: preset?.description ?? 'Edit presets in theme settings',
         }
-      : preset;
-  const headingCustom =
-    contentKey === 'heading' && headingPresetField
-      ? isHeadingTypographyCustomPreset(values, headingPresetField.path)
-      : false;
-  const headingSettingsBase =
-    contentKey === 'heading' && headingPresetField
-      ? headingPresetField.path.replace(/\.headingTypographyPreset$/, '')
-      : '';
-  const headingCustomDefaults: Record<string, string> = {
-    headingFont: 'heading',
-    headingFontSize: '32px',
-    headingLineHeight: 'normal',
-    headingLetterSpacing: 'normal',
-    headingTextCase: 'default',
-    headingWrap: 'pretty',
-  };
-  const headingTypoValues =
-    headingCustom && headingSettingsBase
+      : typoPrefix
+        ? null
+        : preset;
+
+  const typoPresetCandidates = typoPrefix
+    ? Array.from(
+        new Set(
+          [
+            typoPresetPath,
+            preset?.path,
+            typoSettingsBase ? `${typoSettingsBase}.${typoPrefix}TypographyPreset` : '',
+          ].filter((p): p is string => Boolean(p))
+        )
+      )
+    : [];
+  const typoCustom =
+    Boolean(typoPrefix) &&
+    typoPresetCandidates.some(
+      (path) => String(values[path] ?? '').trim().toLowerCase() === 'custom'
+    );
+  const resolvedTypoSettingsBase =
+    typoSettingsBase ||
+    (typoPresetPath && typoPrefix
+      ? typoPresetPath.replace(new RegExp(`\\.${typoPrefix}TypographyPreset$`), '')
+      : '');
+
+  const typoCustomDefaults: Record<string, string> = typoPrefix
+    ? {
+        [`${typoPrefix}Font`]: 'heading',
+        [`${typoPrefix}FontSize`]: '32px',
+        [`${typoPrefix}LineHeight`]: 'normal',
+        [`${typoPrefix}LetterSpacing`]: 'normal',
+        [`${typoPrefix}TextCase`]: 'default',
+        [`${typoPrefix}Wrap`]: 'pretty',
+      }
+    : {};
+  const typoValues =
+    typoCustom && resolvedTypoSettingsBase
       ? {
           ...values,
           ...Object.fromEntries(
-            Object.entries(headingCustomDefaults).map(([key, fallback]) => {
-              const path = `${headingSettingsBase}.${key}`;
+            Object.entries(typoCustomDefaults).map(([key, fallback]) => {
+              const path = `${resolvedTypoSettingsBase}.${key}`;
               const raw = values[path];
               return [path, raw === undefined || raw === '' ? fallback : raw];
             })
           ),
         }
       : values;
+
+  const backgroundOn = background
+    ? values[background.path] === true ||
+      values[background.path] === 'true' ||
+      values[background.path] === 1 ||
+      values[background.path] === '1' ||
+      (Boolean(values[background.path]) &&
+        values[background.path] !== 'false' &&
+        values[background.path] !== '0')
+    : false;
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -12333,31 +12415,31 @@ function RichTextTypographyBlockSettingsPanel({
           </div>
         </div>
       ) : null}
-      {headingPresetField ? (
+      {typoPresetField ? (
         <div className="px-1 py-3">
           <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
           <div className="space-y-1">
             <InlineSelectFieldRow
-              field={headingPresetField}
+              field={typoPresetField}
               values={values}
               onFieldChange={(path, type, value) => {
                 onFieldChange(path, type, value);
-                if (
-                  contentKey === 'heading' &&
-                  path.endsWith('.headingTypographyPreset') &&
-                  String(value) === 'custom' &&
-                  headingSettingsBase
-                ) {
-                  for (const [key, fallback] of Object.entries(headingCustomDefaults)) {
-                    const fieldPath = `${headingSettingsBase}.${key}`;
-                    if (values[fieldPath] === undefined || values[fieldPath] === '') {
-                      onFieldChange(fieldPath, 'text', fallback);
+                if (typoPrefix && String(value).trim().toLowerCase() === 'custom') {
+                  for (const alt of typoPresetCandidates) {
+                    if (alt !== path) onFieldChange(alt, 'text', 'custom');
+                  }
+                  if (resolvedTypoSettingsBase) {
+                    for (const [key, fallback] of Object.entries(typoCustomDefaults)) {
+                      const fieldPath = `${resolvedTypoSettingsBase}.${key}`;
+                      if (values[fieldPath] === undefined || values[fieldPath] === '') {
+                        onFieldChange(fieldPath, 'text', fallback);
+                      }
                     }
                   }
                 }
               }}
             />
-            {headingPresetField.description && !headingCustom ? (
+            {typoPrefix && typoPresetField.description && !typoCustom ? (
               <p className="mt-1 text-right text-[12px] text-gray-500">
                 Edit presets in{' '}
                 <button
@@ -12369,24 +12451,39 @@ function RichTextTypographyBlockSettingsPanel({
                 </button>
               </p>
             ) : null}
-            {headingCustom && headingSettingsBase
-              ? HEADING_CUSTOM_TYPOGRAPHY_KEYS.map((key) => {
-                  const field = resolveHeadingTypographyField(key, headingSettingsBase, fields);
+            {typoCustom && typoPrefix && resolvedTypoSettingsBase
+              ? HEADING_CUSTOM_TYPOGRAPHY_KEYS.map((headingKey) => {
+                  const field = resolvePrefixedTypographyCustomField(
+                    typoPrefix,
+                    headingKey,
+                    resolvedTypoSettingsBase,
+                    fields
+                  );
                   if (field.widget === 'segmented') {
                     return (
                       <SegmentedFieldRow
                         key={field.path}
                         field={field}
-                        values={headingTypoValues}
+                        values={typoValues}
+                        onFieldChange={onFieldChange}
+                      />
+                    );
+                  }
+                  if (field.widget === 'select-inline') {
+                    return (
+                      <InlineSelectFieldRow
+                        key={field.path}
+                        field={field}
+                        values={typoValues}
                         onFieldChange={onFieldChange}
                       />
                     );
                   }
                   return (
-                    <InlineSelectFieldRow
+                    <SelectFieldRow
                       key={field.path}
                       field={field}
-                      values={headingTypoValues}
+                      values={typoValues}
                       onFieldChange={onFieldChange}
                     />
                   );
@@ -12410,7 +12507,38 @@ function RichTextTypographyBlockSettingsPanel({
               />
             ) : null}
             {background ? (
-              <ToggleSwitchFieldRow field={background} values={values} onFieldChange={onFieldChange} />
+              <ToggleSwitchFieldRow
+                field={background}
+                values={values}
+                onFieldChange={(path, type, value) => {
+                  onFieldChange(path, type, value);
+                  if (
+                    value === true ||
+                    value === 'true' ||
+                    value === 1 ||
+                    value === '1'
+                  ) {
+                    const colorPath =
+                      backgroundColor?.path ??
+                      path.replace(/BackgroundEnabled$/, 'BackgroundColor');
+                    if (
+                      colorPath &&
+                      (values[colorPath] === undefined || values[colorPath] === '')
+                    ) {
+                      onFieldChange(colorPath, 'text', '#f3f4f6');
+                    }
+                  }
+                }}
+              />
+            ) : null}
+            {backgroundOn && backgroundColor ? (
+              <ThemeHexColorField
+                label={backgroundColor.label || 'Background color'}
+                path={backgroundColor.path}
+                values={values}
+                defaultColor="#f3f4f6"
+                onFieldChange={onFieldChange}
+              />
             ) : null}
           </div>
         </div>
@@ -12447,10 +12575,12 @@ function RichTextBlockSettingsPanel({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
+  const visibleFields = filterHeadingPanelFieldsForTypographyPreset(fields, values);
+
   return (
     <div className="px-1 py-3">
       <div className="space-y-1">
-        {fields.map((field) => {
+        {visibleFields.map((field) => {
           const key = field.path.split('.').pop() ?? '';
           if (field.widget === 'richtext' || key === 'heading' || key === 'text') {
             return (
@@ -12665,8 +12795,7 @@ function PullQuoteLayoutSettingsGroup({
   );
 }
 
-/** Pull quote appearance: Color scheme → Background media → Borders → Corner radius → Overlay. */
-/** Pull quote: Layout → Size → Appearance → Borders → Padding → Custom CSS. */
+/** Pull quote: Layout → Size → Appearance → Borders → Padding. */
 function PullQuoteGroupedSettingsPanel({
   fields,
   values,
@@ -12683,10 +12812,10 @@ function PullQuoteGroupedSettingsPanel({
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {PULL_QUOTE_PANEL_GROUP_ORDER.map((label) => {
-        const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        const groupFields = grouped.get(label) ?? [];
 
         if (label === 'Layout') {
+          if (!groupFields.length) return null;
           return (
             <PullQuoteLayoutSettingsGroup
               key={label}
@@ -12698,6 +12827,7 @@ function PullQuoteGroupedSettingsPanel({
         }
 
         if (label === 'Size') {
+          if (!groupFields.length) return null;
           return (
             <LargeLogoSizeSettingsGroup
               key={label}
@@ -12709,6 +12839,7 @@ function PullQuoteGroupedSettingsPanel({
         }
 
         if (label === 'Appearance') {
+          if (!groupFields.length) return null;
           return (
             <RichTextAppearanceSettingsGroup
               key={label}
@@ -12722,16 +12853,19 @@ function PullQuoteGroupedSettingsPanel({
 
         if (label === 'Borders') {
           return (
-            <RichTextBordersSettingsGroup
+            <PullQuoteBordersSettingsGroup
               key={label}
               fields={groupFields}
+              allFields={fields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
         }
 
         if (label === 'Padding') {
+          if (!groupFields.length) return null;
           return (
             <HeroPaddingSettingsGroup
               key={label}
@@ -12742,23 +12876,228 @@ function PullQuoteGroupedSettingsPanel({
           );
         }
 
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
-          );
-        }
-
         return null;
       })}
+    </div>
+  );
+}
+
+/** Always render complete Borders controls (synthesize paths if schema omitted them). */
+function PullQuoteBordersSettingsGroup({
+  fields,
+  allFields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  allFields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const settingsBase = useMemo(() => {
+    for (const field of [...fields, ...allFields]) {
+      const marker = '.settings.';
+      const idx = field.path.indexOf(marker);
+      if (idx > -1) return field.path.slice(0, idx + '.settings'.length);
+    }
+    return null;
+  }, [fields, allFields]);
+
+  const findOrSynth = (
+    key: string,
+    synth: EditorFieldDef | null
+  ): EditorFieldDef | null =>
+    fields.find((f) => f.path.endsWith(`.${key}`) || f.path.endsWith(key)) ??
+    allFields.find((f) => f.path.endsWith(`.${key}`) || f.path.endsWith(key)) ??
+    synth;
+
+  const styleField = findOrSynth(
+    'borderStyle',
+    settingsBase
+      ? {
+          path: `${settingsBase}.borderStyle`,
+          type: 'select',
+          label: 'Style',
+          group: 'Borders',
+          widget: 'segmented',
+          sidebar: true,
+          options: [
+            { value: 'none', label: 'None' },
+            { value: 'solid', label: 'Solid' },
+          ],
+        }
+      : null
+  );
+
+  const thicknessField = findOrSynth(
+    'borderThickness',
+    settingsBase
+      ? {
+          path: `${settingsBase}.borderThickness`,
+          type: 'number',
+          label: 'Thickness',
+          group: 'Borders',
+          widget: 'slider',
+          min: 0,
+          max: 10,
+          step: 1,
+          unit: 'px',
+          sidebar: true,
+        }
+      : null
+  );
+
+  const opacityField = findOrSynth(
+    'borderOpacity',
+    settingsBase
+      ? {
+          path: `${settingsBase}.borderOpacity`,
+          type: 'number',
+          label: 'Opacity',
+          group: 'Borders',
+          widget: 'slider',
+          min: 0,
+          max: 100,
+          step: 1,
+          unit: '%',
+          sidebar: true,
+        }
+      : null
+  );
+
+  const colorField = findOrSynth(
+    'borderColor',
+    settingsBase
+      ? {
+          path: `${settingsBase}.borderColor`,
+          type: 'text',
+          label: 'Color',
+          group: 'Borders',
+          widget: 'color',
+          sidebar: true,
+        }
+      : null
+  );
+
+  const radiusField = findOrSynth(
+    'cornerRadius',
+    settingsBase
+      ? {
+          path: `${settingsBase}.cornerRadius`,
+          type: 'number',
+          label: 'Corner radius',
+          group: 'Borders',
+          widget: 'slider',
+          min: 0,
+          max: 40,
+          step: 1,
+          unit: 'px',
+          sidebar: true,
+        }
+      : null
+  );
+
+  if (!styleField && !radiusField) return null;
+
+  const borderStyle = styleField ? fieldValueAsString(values, styleField) || 'none' : 'none';
+  const solidBorders = borderStyle === 'solid';
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Borders</h3>
+      <div className="space-y-1">
+        {styleField ? (
+          <SegmentedFieldRow
+            field={{
+              ...styleField,
+              label: 'Style',
+              widget: 'segmented',
+              options: styleField.options?.length
+                ? styleField.options
+                : [
+                    { value: 'none', label: 'None' },
+                    { value: 'solid', label: 'Solid' },
+                  ],
+            }}
+            values={values}
+            onFieldChange={(path, type, value) => {
+              onFieldChange(path, type, value);
+              if (String(value).trim().toLowerCase() === 'solid' && settingsBase) {
+                if (values[`${settingsBase}.borderThickness`] === undefined) {
+                  onFieldChange(`${settingsBase}.borderThickness`, 'number', '1');
+                }
+                if (values[`${settingsBase}.borderOpacity`] === undefined) {
+                  onFieldChange(`${settingsBase}.borderOpacity`, 'number', '100');
+                }
+                if (
+                  values[`${settingsBase}.borderColor`] === undefined ||
+                  values[`${settingsBase}.borderColor`] === ''
+                ) {
+                  onFieldChange(`${settingsBase}.borderColor`, 'text', 'default');
+                }
+              }
+            }}
+          />
+        ) : null}
+        {solidBorders && thicknessField ? (
+          <SliderFieldRow
+            field={{
+              ...thicknessField,
+              label: 'Thickness',
+              widget: 'slider',
+              min: thicknessField.min ?? 0,
+              max: thicknessField.max ?? 10,
+              step: thicknessField.step ?? 1,
+              unit: thicknessField.unit ?? 'px',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {solidBorders && opacityField ? (
+          <SliderFieldRow
+            field={{
+              ...opacityField,
+              label: 'Opacity',
+              widget: 'slider',
+              min: opacityField.min ?? 0,
+              max: opacityField.max ?? 100,
+              step: opacityField.step ?? 1,
+              unit: opacityField.unit ?? '%',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {solidBorders && colorField ? (
+          <ThemeDefaultColorField
+            label={colorField.label || 'Color'}
+            path={colorField.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={1}
+            fallbackColor="#111827"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {radiusField ? (
+          <SliderFieldRow
+            field={{
+              ...radiusField,
+              label: 'Corner radius',
+              widget: 'slider',
+              min: radiusField.min ?? 0,
+              max: radiusField.max ?? 40,
+              step: radiusField.step ?? 1,
+              unit: radiusField.unit ?? 'px',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -14197,7 +14536,7 @@ function BlogPostsCarouselGroupedSettingsPanel({
   );
 }
 
-/** Marquee: Motion + Background color → Padding → Custom CSS (matches Shopify). */
+/** Marquee: Motion + Background color → Padding. */
 function TextMarqueeGroupedSettingsPanel({
   fields,
   values,
@@ -14213,7 +14552,6 @@ function TextMarqueeGroupedSettingsPanel({
   const layoutFields = grouped.get('Layout') ?? [];
   const appearanceFields = grouped.get('Appearance') ?? [];
   const paddingFields = grouped.get('Padding') ?? [];
-  const customCssFields = grouped.get('Custom CSS') ?? [];
   const backgroundColorField = appearanceFields.find((f) => f.path.endsWith('backgroundColor'));
 
   return (
@@ -14251,19 +14589,6 @@ function TextMarqueeGroupedSettingsPanel({
           values={values}
           onFieldChange={onFieldChange}
         />
-      ) : null}
-
-      {customCssFields.length ? (
-        <div className="px-1 py-1">
-          {customCssFields.map((field) => (
-            <AccordionFieldRow
-              key={field.path}
-              field={field}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
-          ))}
-        </div>
       ) : null}
     </div>
   );
@@ -14532,6 +14857,97 @@ function RichTextGroupedSettingsPanel({
   );
 }
 
+/** Icon with text block text/textarea — local draft + debounce so typing stays smooth. */
+const ICONS_WITH_TEXT_TEXT_DEBOUNCE_MS = 350;
+
+function IconsWithTextDebouncedTextFieldRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const id = fieldInputId(field.path);
+  const type = fieldTypeFromSchema(field.type);
+  const changeType: ThemeEditorFieldType = type === 'textarea' ? 'textarea' : 'text';
+  const external = fieldValueAsString(values, field);
+  const [draft, setDraft] = useState(external);
+  const debouncedDraft = useDebouncedValue(draft, ICONS_WITH_TEXT_TEXT_DEBOUNCE_MS);
+  const focusedRef = useRef(false);
+
+  useEffect(() => {
+    setDraft(external);
+    focusedRef.current = false;
+  }, [field.path]);
+
+  useEffect(() => {
+    if (!focusedRef.current) {
+      setDraft(external);
+    }
+  }, [external]);
+
+  useEffect(() => {
+    if (debouncedDraft === external) return;
+    onFieldChange(field.path, changeType, debouncedDraft);
+  }, [debouncedDraft, external, field.path, changeType, onFieldChange]);
+
+  const flushDraft = () => {
+    if (draft !== external) {
+      onFieldChange(field.path, changeType, draft);
+    }
+  };
+
+  const inputClassName =
+    'w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]';
+
+  return (
+    <div className="space-y-1.5 py-1">
+      <label htmlFor={id} className="block text-[13px] font-medium text-gray-800">
+        {field.label}
+      </label>
+      {changeType === 'textarea' ? (
+        <textarea
+          id={id}
+          rows={3}
+          value={draft}
+          onFocus={() => {
+            focusedRef.current = true;
+          }}
+          onBlur={() => {
+            focusedRef.current = false;
+            flushDraft();
+          }}
+          onChange={(e) => setDraft(e.target.value)}
+          className={`${inputClassName} resize-y`}
+        />
+      ) : (
+        <input
+          id={id}
+          type="text"
+          value={draft}
+          onFocus={() => {
+            focusedRef.current = true;
+          }}
+          onBlur={() => {
+            focusedRef.current = false;
+            flushDraft();
+          }}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              flushDraft();
+            }
+          }}
+          className={inputClassName}
+        />
+      )}
+    </div>
+  );
+}
+
 /** Icon with text block: Icon → Heading → Description. */
 function IconsWithTextBlockSettingsPanel({
   fields,
@@ -14550,9 +14966,20 @@ function IconsWithTextBlockSettingsPanel({
     <div className="px-1 py-3">
       <div className="space-y-1">
         {ordered.map((field) => {
-          if (field.widget === 'select') {
+          const key = field.path.split('.').pop() ?? '';
+          if (field.widget === 'select' || key === 'icon') {
             return (
               <InlineSelectFieldRow
+                key={field.path}
+                field={field}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            );
+          }
+          if (key === 'heading' || key === 'text') {
+            return (
+              <IconsWithTextDebouncedTextFieldRow
                 key={field.path}
                 field={field}
                 values={values}
@@ -14569,29 +14996,177 @@ function IconsWithTextBlockSettingsPanel({
   );
 }
 
-/** Icons with text: Layout → Size → Appearance → Padding → Custom CSS. */
+/** Icons with text — Borders: Style → Thickness / Opacity / Color (when Solid) → Corner radius. */
+function IconsWithTextBordersSettingsGroup({
+  fields,
+  allFields,
+  values,
+  colorPalette,
+  onFieldChange,
+}: {
+  fields: EditorFieldDef[];
+  allFields: EditorFieldDef[];
+  values: Record<string, string | boolean>;
+  colorPalette: string[];
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const panelFields = useMemo(
+    () => ensureIconsWithTextBorderFieldDefs([...fields, ...allFields]),
+    [fields, allFields]
+  );
+  const settingsBase = useMemo(
+    () => iconsWithTextSectionSettingsBaseFromFields(panelFields),
+    [panelFields]
+  );
+
+  const byKey = useMemo(() => {
+    const map = new Map<string, EditorFieldDef>();
+    for (const field of panelFields) {
+      const key = field.path.split('.').pop() ?? '';
+      if (!key || map.has(key)) continue;
+      // Prefer section settings paths over block settings.
+      if (field.path.includes('.blocks.') && settingsBase && !field.path.startsWith(`${settingsBase}.`)) {
+        continue;
+      }
+      map.set(key, field);
+    }
+    return map;
+  }, [panelFields, settingsBase]);
+
+  const styleField = byKey.get('borderStyle') ?? null;
+  const thicknessField = byKey.get('borderThickness') ?? null;
+  const opacityField = byKey.get('borderOpacity') ?? null;
+  const colorField = byKey.get('borderColor') ?? null;
+  const radiusField = byKey.get('cornerRadius') ?? null;
+
+  if (!styleField && !radiusField) return null;
+
+  const borderStyleRaw = styleField ? fieldValueAsString(values, styleField) : '';
+  const borderStyle = borderStyleRaw.trim().toLowerCase() || 'none';
+  const solidBorders = borderStyle === 'solid';
+
+  return (
+    <div className="px-1 py-3">
+      <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Borders</h3>
+      <div className="space-y-1">
+        {styleField ? (
+          <SegmentedFieldRow
+            field={{
+              ...styleField,
+              label: 'Style',
+              type: 'select',
+              widget: 'segmented',
+              options: [
+                { value: 'none', label: 'None' },
+                { value: 'solid', label: 'Solid' },
+              ],
+            }}
+            values={values}
+            onFieldChange={(path, type, value) => {
+              onFieldChange(path, type, value);
+              if (String(value).trim().toLowerCase() !== 'solid' || !settingsBase) return;
+              if (values[`${settingsBase}.borderThickness`] === undefined) {
+                onFieldChange(`${settingsBase}.borderThickness`, 'number', '1');
+              }
+              if (values[`${settingsBase}.borderOpacity`] === undefined) {
+                onFieldChange(`${settingsBase}.borderOpacity`, 'number', '100');
+              }
+              if (
+                values[`${settingsBase}.borderColor`] === undefined ||
+                values[`${settingsBase}.borderColor`] === ''
+              ) {
+                onFieldChange(`${settingsBase}.borderColor`, 'text', 'default');
+              }
+            }}
+          />
+        ) : null}
+        {solidBorders && thicknessField ? (
+          <SliderFieldRow
+            field={{
+              ...thicknessField,
+              label: 'Thickness',
+              widget: 'slider',
+              min: thicknessField.min ?? 0,
+              max: thicknessField.max ?? 10,
+              step: thicknessField.step ?? 1,
+              unit: thicknessField.unit ?? 'px',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {solidBorders && opacityField ? (
+          <SliderFieldRow
+            field={{
+              ...opacityField,
+              label: 'Opacity',
+              widget: 'slider',
+              min: opacityField.min ?? 0,
+              max: opacityField.max ?? 100,
+              step: opacityField.step ?? 1,
+              unit: opacityField.unit ?? '%',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {solidBorders && colorField ? (
+          <ThemeDefaultColorField
+            label={colorField.label || 'Color'}
+            path={colorField.path}
+            values={values}
+            colorPalette={colorPalette}
+            defaultPaletteIndex={1}
+            fallbackColor="#111827"
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+        {radiusField ? (
+          <SliderFieldRow
+            field={{
+              ...radiusField,
+              label: 'Corner radius',
+              widget: 'slider',
+              min: radiusField.min ?? 0,
+              max: radiusField.max ?? 40,
+              step: radiusField.step ?? 1,
+              unit: radiusField.unit ?? 'px',
+            }}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Icons with text: Layout → Size → Appearance → Borders → Padding. */
 function IconsWithTextGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const grouped = useMemo(() => groupIconsWithTextPanelFields(fields), [fields]);
+  const panelFields = useMemo(() => ensureIconsWithTextBorderFieldDefs(fields), [fields]);
+  const grouped = useMemo(() => groupIconsWithTextPanelFields(panelFields), [panelFields]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {ICONS_WITH_TEXT_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        if (!groupFields?.length && label !== 'Borders') return null;
 
         if (label === 'Layout') {
           return (
             <SplitShowcaseLayoutSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -14602,7 +15177,7 @@ function IconsWithTextGroupedSettingsPanel({
           return (
             <LargeLogoSizeSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -14610,11 +15185,36 @@ function IconsWithTextGroupedSettingsPanel({
         }
 
         if (label === 'Appearance') {
+          const appearanceFields = (groupFields ?? []).filter((f) => {
+            const key = f.path.split('.').pop() ?? '';
+            return (
+              key !== 'borderStyle' &&
+              key !== 'borderThickness' &&
+              key !== 'borderOpacity' &&
+              key !== 'borderColor' &&
+              key !== 'cornerRadius'
+            );
+          });
+          if (!appearanceFields.length) return null;
           return (
             <ContactFormAppearanceSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={appearanceFields}
               values={values}
+              colorPalette={colorPalette}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+
+        if (label === 'Borders') {
+          return (
+            <IconsWithTextBordersSettingsGroup
+              key={label}
+              fields={groupFields ?? []}
+              allFields={panelFields}
+              values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -14624,25 +15224,10 @@ function IconsWithTextGroupedSettingsPanel({
           return (
             <HeroPaddingSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -17793,6 +18378,9 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isContactFormTextBlockPanel &&
     !isContactFormFormGroupPanel &&
     !isContactFormSubmitButtonPanel &&
+    !isPullQuoteSectionNodeId(node.id) &&
+    !isPullQuoteSettingsPanelFields(fields) &&
+    node.label !== 'Pull quote' &&
     (node.label === 'FAQ' || isFaqSectionNodeId(node.id) || isFaqSettingsPanelFields(fields));
   const isEmailSignupHeadingBlockPanel =
     node.kind === 'block' &&
@@ -18166,11 +18754,32 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     (isMulticolumnBlockNodeId(node.id) ||
       (fields.length > 0 && fields.every(isMulticolumnBlockField)));
   const isPullQuotePanel =
-    node.label === 'Pull quote' || isPullQuoteSettingsPanelFields(fields);
+    node.kind !== 'block' &&
+    (node.label === 'Pull quote' ||
+      isPullQuoteSectionNodeId(node.id) ||
+      isPullQuoteSettingsPanelFields(fields));
   const isPullQuoteButtonPanel =
-    node.kind === 'block' && isPullQuoteButtonPanelFields(fields);
+    node.kind === 'block' &&
+    (isPullQuoteButtonBlockNodeId(node.id) || isPullQuoteButtonPanelFields(fields));
   const isPullQuoteTextPanel =
-    node.kind === 'block' && isPullQuoteTextPanelFields(fields);
+    node.kind === 'block' &&
+    (isPullQuoteTextBlockNodeId(node.id) || isPullQuoteTextPanelFields(fields));
+  const pullQuoteTextFields = isPullQuoteTextPanel
+    ? preparePullQuoteTextBlockSettingsNode({
+        id: node.id,
+        label: 'Text',
+        kind: 'block',
+        fields,
+      }).fields ?? fields
+    : fields;
+  const pullQuoteButtonFields = isPullQuoteButtonPanel
+    ? preparePullQuoteButtonBlockSettingsNode({
+        id: node.id,
+        label: 'Button',
+        kind: 'block',
+        fields,
+      }).fields ?? fields
+    : fields;
   const isRichTextPanel =
     node.label === 'Rich text' || isRichTextSettingsPanelFields(fields);
   const isNotFoundMainSectionPanel =
@@ -18450,6 +19059,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isRichTextBlockPanel &&
     !isStorytellingVideoBlockPanel &&
     !isFaqAccordionRowTextBlockPanel &&
+    !isPullQuoteTextPanel &&
     node.kind === 'block' &&
     isHeroTextBlockNodeId(node.id) &&
     (node.label === 'Text' || isTextBlockPanelFields(fields));
@@ -18462,6 +19072,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     isNotFoundMainMessageBlockNodeId(node.id);
   const isHeroButtonBlockPanel =
     !isSlideshowInsetNestedBlockPanel &&
+    !isPullQuoteButtonPanel &&
+    !isRichTextButtonPanel &&
+    !isEditorialButtonBlockPanel &&
+    !isImageCompareButtonBlockPanel &&
+    !isImageWithTextButtonBlockPanel &&
+    !isStorytellingVideoCaptionButtonPanel &&
     node.kind === 'block' &&
     (node.label === 'Button' ||
       isHeroButtonBlockNodeId(node.id) ||
@@ -18647,7 +19263,15 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             <SectionIcon className="h-4 w-4 shrink-0 opacity-90" />
           )}
           <span className="truncate text-[13px] font-semibold">
-            {productHighlightHeaderLabel ?? featuredCollectionHeaderLabel ?? node.label}
+            {productHighlightHeaderLabel ??
+              featuredCollectionHeaderLabel ??
+              (isPullQuotePanel || isPullQuoteSectionNodeId(node.id)
+                ? 'Pull quote'
+                : isPullQuoteTextPanel
+                  ? 'Text'
+                  : isPullQuoteButtonPanel
+                    ? 'Button'
+                    : node.label)}
           </span>
         </div>
         <button
@@ -18746,6 +19370,24 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             nodeId={node.id}
             fields={fields}
             values={values}
+            onFieldChange={onFieldChange}
+          />
+        ) : isPullQuoteTextPanel ? (
+          <RichTextTypographyBlockSettingsPanel
+            fields={pullQuoteTextFields}
+            values={values}
+            colorPalette={colorPalette}
+            contentKey="quote"
+            onFieldChange={onFieldChange}
+          />
+        ) : isPullQuoteButtonPanel ? (
+          <RichTextButtonSettingsPanel
+            fields={pullQuoteButtonFields}
+            values={values}
+            colorPalette={colorPalette}
+            labelKey="linkLabel"
+            linkKey="linkUrl"
+            openTabKey="linkOpenInNewTab"
             onFieldChange={onFieldChange}
           />
         ) : fields.length === 0 ? (
@@ -19028,6 +19670,20 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
         ) : isHeroButtonBlockPanel ? (
           <HeroButtonSettingsPanel
             fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            onFieldChange={onFieldChange}
+          />
+        ) : isPullQuotePanel ? (
+          <PullQuoteGroupedSettingsPanel
+            fields={
+              preparePullQuoteSettingsNode({
+                id: node.id,
+                label: 'Pull quote',
+                kind: 'section',
+                fields,
+              }).fields ?? fields
+            }
             values={values}
             colorPalette={colorPalette}
             onFieldChange={onFieldChange}
@@ -19682,17 +20338,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <IconsWithTextGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isMulticolumnPanel ? (
           <MulticolumnGroupedSettingsPanel
-            fields={fields}
-            values={values}
-            colorPalette={colorPalette}
-            onFieldChange={onFieldChange}
-          />
-        ) : isPullQuotePanel ? (
-          <PullQuoteGroupedSettingsPanel
             fields={fields}
             values={values}
             colorPalette={colorPalette}
@@ -19786,24 +20436,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isFooterPanel ? (
           <FooterGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
-        ) : isPullQuoteButtonPanel ? (
-          <RichTextButtonSettingsPanel
-            fields={fields}
-            values={values}
-            colorPalette={colorPalette}
-            labelKey="linkLabel"
-            linkKey="linkUrl"
-            openTabKey="linkOpenInNewTab"
-            onFieldChange={onFieldChange}
-          />
-        ) : isPullQuoteTextPanel ? (
-          <RichTextTypographyBlockSettingsPanel
-            fields={fields}
-            values={values}
-            colorPalette={colorPalette}
-            contentKey="quote"
-            onFieldChange={onFieldChange}
-          />
         ) : useGrouped ? (
           <GroupedSettingsFields
             nodeId={node.id}

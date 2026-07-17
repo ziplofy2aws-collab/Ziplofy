@@ -57,8 +57,12 @@ export function RichTextSection({
   const scopeClass = `codiic-rich-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const isHorizontal = style.direction === 'horizontal';
 
+  const hasFixedHeight = style.minHeightPx != null && style.minHeightPx > 0;
+
   const shell: CSSProperties = {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
     background: sectionBackground,
     backgroundColor: sectionBackground,
     color: scheme.color,
@@ -67,8 +71,8 @@ export function RichTextSection({
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    minHeight: style.minHeightPx > 0 ? style.minHeightPx : undefined,
-    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}33` : undefined,
+    ...(hasFixedHeight ? { minHeight: style.minHeightPx } : {}),
+    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}` : undefined,
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: style.cornerRadius > 0 ? 'hidden' : undefined,
   };
@@ -82,8 +86,10 @@ export function RichTextSection({
     maxWidth: innerMaxWidth,
     margin: '0 auto',
     width: '100%',
-    minHeight:
-      style.minHeightPx > 0 ? style.minHeightPx - style.paddingTop - style.paddingBottom : undefined,
+    flex: hasFixedHeight ? '1 1 auto' : undefined,
+    minHeight: hasFixedHeight
+      ? Math.max(0, (style.minHeightPx as number) - style.paddingTop - style.paddingBottom)
+      : undefined,
     display: 'flex',
     flexDirection: isHorizontal ? 'row' : 'column',
     flexWrap: isHorizontal ? 'wrap' : undefined,

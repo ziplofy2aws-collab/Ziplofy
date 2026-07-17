@@ -12,11 +12,12 @@ const SCHEMES: Record<string, PullQuoteScheme> = {
   'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#5b21b6' },
 };
 
-const HEIGHT_PX: Record<string, number> = {
-  auto: 0,
-  small: 200,
-  medium: 280,
-  large: 360,
+/** Fixed pixel floors so Small / Medium / Large clear typical rich-text content. */
+const HEIGHT_MIN_PX: Record<string, number | undefined> = {
+  auto: undefined,
+  small: 320,
+  medium: 480,
+  large: 640,
 };
 
 export type RichTextLayout = {
@@ -27,7 +28,7 @@ export type RichTextLayout = {
   layoutGap: number;
   sectionWidth: 'page' | 'full';
   height: string;
-  minHeightPx: number;
+  minHeightPx: number | undefined;
   backgroundMedia: string;
   backgroundImageUrl: string;
   borderStyle: string;
@@ -37,6 +38,10 @@ export type RichTextLayout = {
   paddingBottom: number;
   customCss: string;
 };
+
+export function resolveRichTextMinHeightPx(heightKey: string): number | undefined {
+  return HEIGHT_MIN_PX[heightKey];
+}
 
 export function readRichTextLayout(
   config: Record<string, unknown> | null,
@@ -54,7 +59,7 @@ export function readRichTextLayout(
     layoutGap: cfgNumber(config, `${settingsBase}.layoutGap`, 25),
     sectionWidth: cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
     height,
-    minHeightPx: HEIGHT_PX[height] ?? 0,
+    minHeightPx: resolveRichTextMinHeightPx(height),
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),

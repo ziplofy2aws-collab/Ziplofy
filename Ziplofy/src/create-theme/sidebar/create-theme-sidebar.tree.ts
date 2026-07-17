@@ -339,7 +339,13 @@ import {
 } from './theme-editor-multicolumn-panel.utils';
 import { mapMulticolumnBlockNodes } from '../../utils/multicolumn-sidebar.util';
 import { mapRichTextBlockNodes } from '../../utils/rich-text-sidebar.util';
-import { mapPullQuoteBlockNodes } from '../../utils/pull-quote-sidebar.util';
+import {
+  mapPullQuoteBlockNodes,
+  isPullQuoteTextBlockNodeId,
+  isPullQuoteButtonBlockNodeId,
+  preparePullQuoteTextBlockSettingsNode,
+  preparePullQuoteButtonBlockSettingsNode,
+} from '../../utils/pull-quote-sidebar.util';
 import {
   mapTextMarqueeBlockNodes,
   isTextMarqueeTextBlockNodeId,
@@ -347,6 +353,7 @@ import {
 } from '../../utils/text-marquee-sidebar.util';
 import {
   isPullQuoteSectionType,
+  isPullQuoteSectionNodeId,
   isPullQuoteSettingsPanelFields,
   preparePullQuoteSettingsNode,
 } from './theme-editor-pull-quote-panel.utils';
@@ -5172,7 +5179,28 @@ export function settingsNodeForSelection(
     return prepareFeaturedCollectionSettingsNode(node, values, config);
   }
 
-  if (node.label === 'FAQ' || (node.kind === 'section' && isFaqSectionNodeId(node.id))) {
+  if (isPullQuoteTextBlockNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    return preparePullQuoteTextBlockSettingsNode(blockNode);
+  }
+
+  if (isPullQuoteButtonBlockNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    return preparePullQuoteButtonBlockSettingsNode(blockNode);
+  }
+
+  if (
+    node.label === 'Pull quote' ||
+    isPullQuoteSectionNodeId(node.id) ||
+    (node.fields?.length && isPullQuoteSettingsPanelFields(node.fields))
+  ) {
+    return preparePullQuoteSettingsNode(node);
+  }
+
+  if (
+    (node.label === 'FAQ' || (node.kind === 'section' && isFaqSectionNodeId(node.id))) &&
+    !isPullQuoteSectionNodeId(node.id)
+  ) {
     return prepareFaqSettingsNode(node);
   }
 
@@ -5271,10 +5299,18 @@ export function settingsNodeForSelection(
     return prepareFooterUtilitiesSettingsNode(footerUtilitiesSection);
   }
 
-  // Rich text / contact form / email signup share generic Layout–Size fields that FAQ
-  // detection keys on, so they must resolve before the FAQ fallback to avoid a "FAQ" mislabel.
+  // Rich text / pull quote / contact form / email signup share generic Layout–Size
+  // fields that FAQ detection keys on, so they must resolve before the FAQ fallback.
   if (isNotFoundMainSectionNodeId(node.id) || node.label === '404') {
     return prepareNotFoundMainSettingsNode(node);
+  }
+
+  if (
+    node.label === 'Pull quote' ||
+    isPullQuoteSectionNodeId(node.id) ||
+    (node.fields?.length && isPullQuoteSettingsPanelFields(node.fields))
+  ) {
+    return preparePullQuoteSettingsNode(node);
   }
 
   if (
@@ -5300,7 +5336,10 @@ export function settingsNodeForSelection(
     return prepareEmailSignupSettingsNode(node);
   }
 
-  if (node.fields?.length && isFaqSettingsPanelFields(node.fields)) {
+  if (
+    (node.label === 'FAQ' || isFaqSectionNodeId(node.id) || (node.fields?.length && isFaqSettingsPanelFields(node.fields))) &&
+    !isPullQuoteSectionNodeId(node.id)
+  ) {
     return prepareFaqSettingsNode(node);
   }
 
@@ -5632,7 +5671,9 @@ export function settingsNodeForSelection(
   }
 
   if (isIconsWithTextBlockNodeId(node.id)) {
-    const fields = iconWithTextBlockFieldDefsFromNodeId(node.id);
+    const fields = node.fields?.length
+      ? node.fields
+      : iconWithTextBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
       return prepareIconsWithTextBlockSettingsNode({ ...node, fields });
     }

@@ -2,6 +2,7 @@ import { useMemo, type CSSProperties } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { IconGlyph } from './IconGlyph';
 import {
   combineResponsiveCss,
@@ -14,6 +15,7 @@ import {
   justifyItemsForAlignment,
   readIconWithTextItems,
   readIconsWithTextLayout,
+  resolveIconsWithTextBorderCss,
   scopedIconsWithTextCss,
 } from './iconsWithTextStyles';
 
@@ -57,6 +59,15 @@ export function IconsWithText({
   );
 
   const scheme = style.scheme;
+  const sectionBackground =
+    !style.backgroundColor || style.backgroundColor === 'default'
+      ? scheme.background
+      : resolveThemePaletteColorSetting(config, style.backgroundColor, 0, scheme.background);
+  const schemeBorder = scheme.color;
+  const borderColorHex =
+    !style.borderColor || style.borderColor === 'default'
+      ? schemeBorder
+      : resolveThemePaletteColorSetting(config, style.borderColor, 1, schemeBorder);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `codiic-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
@@ -75,7 +86,7 @@ export function IconsWithText({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: scheme.background,
+    background: sectionBackground,
     color: scheme.color,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
@@ -83,7 +94,13 @@ export function IconsWithText({
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
     minHeight: style.minHeightPx > 0 ? style.minHeightPx : undefined,
-    border: style.borderStyle === 'solid' ? `1px solid rgba(17, 24, 39, 0.12)` : undefined,
+    border: resolveIconsWithTextBorderCss(
+      style.borderStyle,
+      style.borderThickness,
+      style.borderOpacity,
+      borderColorHex,
+      schemeBorder
+    ),
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: style.cornerRadius > 0 ? 'hidden' : undefined,
   };

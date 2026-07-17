@@ -36,7 +36,11 @@ export type IconsWithTextLayout = {
   minHeightPx: number;
   backgroundMedia: string;
   backgroundImageUrl: string;
+  backgroundColor: string;
   borderStyle: string;
+  borderThickness: number;
+  borderOpacity: number;
+  borderColor: string;
   cornerRadius: number;
   backgroundOverlay: boolean;
   paddingTop: number;
@@ -87,7 +91,11 @@ export function readIconsWithTextLayout(
     minHeightPx: HEIGHT_PX[height] ?? 0,
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
+    backgroundColor: cfgString(config, `${settingsBase}.backgroundColor`, ''),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),
+    borderThickness: cfgNumber(config, `${settingsBase}.borderThickness`, 1),
+    borderOpacity: cfgNumber(config, `${settingsBase}.borderOpacity`, 100),
+    borderColor: cfgString(config, `${settingsBase}.borderColor`, 'default'),
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
     backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 48),
@@ -136,6 +144,39 @@ export function scopedIconsWithTextCss(sectionId: string, customCss: string): st
   const scope = `.codiic-icons-with-text-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   if (!customCss.trim()) return '';
   return `${scope} { ${customCss} }`;
+}
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const raw = hex.trim().replace(/^#/, '');
+  const normalized =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => `${c}${c}`)
+          .join('')
+      : raw;
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return null;
+  return {
+    r: parseInt(normalized.slice(0, 2), 16),
+    g: parseInt(normalized.slice(2, 4), 16),
+    b: parseInt(normalized.slice(4, 6), 16),
+  };
+}
+
+/** Build CSS border from Style / Thickness / Opacity / Color (Shopify-style). */
+export function resolveIconsWithTextBorderCss(
+  borderStyle: string,
+  thickness: number,
+  opacity: number,
+  borderColorHex: string,
+  schemeBorder: string
+): string | undefined {
+  if (borderStyle !== 'solid' || thickness <= 0) return undefined;
+  const base = borderColorHex?.startsWith('#') ? borderColorHex : schemeBorder;
+  const rgb = hexToRgb(base);
+  const alpha = Math.min(100, Math.max(0, opacity)) / 100;
+  if (!rgb) return `${thickness}px solid ${schemeBorder}`;
+  return `${thickness}px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
 }
 
 export function iconsWithTextMobileStackCss(sectionId: string): string {

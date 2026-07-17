@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import {
   resolveThemeButtonVariantStyle,
   themeButtonInlineStyle,
@@ -16,9 +17,17 @@ import {
   scopedMobileHorizontalPadCss,
 } from '../../runtime/shared/responsive';
 import {
+  letterSpacingCss,
+  lineHeightMultiplier,
+  resolveThemeFontFamily,
+  resolveThemeFontWeightAndStyle,
+  themeFontsFromConfig,
+} from '../../runtime/shared/themeTypographyRuntime';
+import {
   pullQuoteContentAlign,
   pullQuoteJustifyContent,
   readPullQuoteLayout,
+  resolvePullQuoteBorderCss,
   scopedPullQuoteCss,
 } from './pullQuoteStyles';
 
@@ -32,7 +41,7 @@ export function PullQuote({
 }: SectionRuntimeProps) {
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
-  const { fontHeading } = useThemeColors();
+  const { fontHeading, fontBody } = useThemeColors();
 
   const settingsBase =
     placement === 'template'
@@ -76,6 +85,7 @@ export function PullQuote({
   const quotePreset = cfgString(config, `${settingsBase}.quoteTypographyPreset`, 'default');
   const quoteColorRaw = cfgString(config, `${settingsBase}.quoteColor`, '');
   const quoteBackgroundEnabled = cfgBool(config, `${settingsBase}.quoteBackgroundEnabled`, false);
+  const quoteBackgroundColor = cfgString(config, `${settingsBase}.quoteBackgroundColor`, '#f3f4f6');
   const quotePaddingTop = cfgNumber(config, `${settingsBase}.quotePaddingTop`, 0);
   const quotePaddingBottom = cfgNumber(config, `${settingsBase}.quotePaddingBottom`, 0);
   const quotePaddingLeft = cfgNumber(config, `${settingsBase}.quotePaddingLeft`, 0);
@@ -92,9 +102,13 @@ export function PullQuote({
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `codiic-pull-quote-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const shellClass = `${scopeClass}-shell`;
+  const isHorizontal = style.direction === 'horizontal';
+  const hasFixedHeight = style.minHeightPx != null && style.minHeightPx > 0;
 
   const shell: CSSProperties = {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
     background: sectionBackground,
     color: scheme.color,
     paddingTop: style.paddingTop,
@@ -102,8 +116,14 @@ export function PullQuote({
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    minHeight: style.minHeightPx > 0 ? style.minHeightPx : undefined,
-    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}33` : undefined,
+    ...(hasFixedHeight ? { minHeight: style.minHeightPx } : {}),
+    border: resolvePullQuoteBorderCss(
+      style.borderStyle,
+      style.borderThickness,
+      style.borderOpacity,
+      style.borderColor,
+      scheme.muted
+    ),
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: style.cornerRadius > 0 ? 'hidden' : undefined,
   };
@@ -113,18 +133,18 @@ export function PullQuote({
       ? style.backgroundImageUrl
       : null;
 
-  const isHorizontal = style.direction === 'horizontal';
   const stage: CSSProperties = {
     maxWidth: innerMaxWidth,
     margin: '0 auto',
     width: '100%',
-    minHeight:
-      style.minHeightPx > 0
-        ? style.minHeightPx - style.paddingTop - style.paddingBottom
-        : undefined,
+    flex: hasFixedHeight ? '1 1 auto' : undefined,
+    minHeight: hasFixedHeight
+      ? Math.max(0, (style.minHeightPx as number) - style.paddingTop - style.paddingBottom)
+      : undefined,
     display: 'flex',
     flexDirection: isHorizontal ? 'row' : 'column',
-    flexWrap: isHorizontal ? 'wrap' : undefined,
+    // Keep quote + button on one row for horizontal; mobile CSS stacks them.
+    flexWrap: 'nowrap',
     alignItems: isHorizontal
       ? pullQuoteJustifyContent(style.position)
       : textAlign === 'center'
@@ -151,6 +171,8 @@ export function PullQuote({
     'heading-2': { fontSize: 'clamp(1.875rem, 4.2vw, 2.75rem)', fontWeight: 700, lineHeight: 1.15 },
     'heading-3': { fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)', fontWeight: 700, lineHeight: 1.25 },
     'heading-4': { fontSize: 'clamp(1.25rem, 2.8vw, 1.75rem)', fontWeight: 600, lineHeight: 1.3 },
+    'heading-5': { fontSize: 'clamp(1.125rem, 2.2vw, 1.375rem)', fontWeight: 600, lineHeight: 1.35 },
+    'heading-6': { fontSize: 'clamp(1rem, 2vw, 1.125rem)', fontWeight: 600, lineHeight: 1.4 },
   };
   const quotePresetStyle = QUOTE_PRESETS[quotePreset] ?? QUOTE_PRESETS.default;
   const quoteMaxWidthPx =
@@ -168,14 +190,47 @@ export function PullQuote({
           ? 'center'
           : undefined;
 
+  const quoteIsCustom = quotePreset === 'custom';
+  const themeFonts = themeFontsFromConfig(config);
+  const customQuoteFont = cfgString(config, `${settingsBase}.quoteFont`, 'heading');
+  const customQuoteSizeRaw = cfgString(config, `${settingsBase}.quoteFontSize`, '32px');
+  const customQuoteSizePx = (() => {
+    const n = parseFloat(customQuoteSizeRaw);
+    return Number.isFinite(n) && n > 0 ? n : 32;
+  })();
+  const customQuoteWeightStyle = resolveThemeFontWeightAndStyle(customQuoteFont);
+  const customQuoteWrap = cfgString(config, `${settingsBase}.quoteWrap`, 'pretty');
+  const customQuoteCase = cfgString(config, `${settingsBase}.quoteTextCase`, 'default');
+
+  const quoteFillsRow = quoteWidthMode === 'fill';
   const quoteStyle: CSSProperties = {
     margin: 0,
-    fontFamily: fontHeading,
-    fontSize: quotePresetStyle.fontSize,
-    fontWeight: quotePresetStyle.fontWeight,
-    lineHeight: quotePresetStyle.lineHeight,
-    letterSpacing: '-0.02em',
-    width: quoteWidthMode === 'fill' ? '100%' : 'fit-content',
+    fontFamily: quoteIsCustom
+      ? resolveThemeFontFamily(customQuoteFont, themeFonts)
+      : fontHeading || fontBody,
+    fontSize: quoteIsCustom ? customQuoteSizePx : quotePresetStyle.fontSize,
+    fontWeight: quoteIsCustom
+      ? (customQuoteWeightStyle.fontWeight ?? 700)
+      : quotePresetStyle.fontWeight,
+    fontStyle: quoteIsCustom ? customQuoteWeightStyle.fontStyle : undefined,
+    lineHeight: quoteIsCustom
+      ? lineHeightMultiplier(cfgString(config, `${settingsBase}.quoteLineHeight`, 'normal'))
+      : quotePresetStyle.lineHeight,
+    letterSpacing: quoteIsCustom
+      ? letterSpacingCss(cfgString(config, `${settingsBase}.quoteLetterSpacing`, 'normal'))
+      : '-0.02em',
+    textTransform: quoteIsCustom && customQuoteCase === 'uppercase' ? 'uppercase' : undefined,
+    textWrap: quoteIsCustom
+      ? ((customQuoteWrap === 'nowrap'
+          ? 'nowrap'
+          : customQuoteWrap === 'balance'
+            ? 'balance'
+            : 'pretty') as CSSProperties['textWrap'])
+      : undefined,
+    // Horizontal: grow into remaining space instead of width:100% (which forces a wrap).
+    width: isHorizontal ? (quoteFillsRow ? 'auto' : 'fit-content') : quoteFillsRow ? '100%' : 'fit-content',
+    flex: isHorizontal ? (quoteFillsRow ? '1 1 0' : '0 1 auto') : undefined,
+    minWidth: isHorizontal ? 0 : undefined,
     maxWidth: quoteMaxWidthPx,
     color: quoteColor,
     textAlign: quoteTextAlign,
@@ -183,7 +238,7 @@ export function PullQuote({
     paddingBottom: quotePaddingBottom || undefined,
     paddingLeft: quotePaddingLeft || undefined,
     paddingRight: quotePaddingRight || undefined,
-    background: quoteBackgroundEnabled ? 'rgba(0, 0, 0, 0.04)' : undefined,
+    background: quoteBackgroundEnabled ? quoteBackgroundColor || 'rgba(0, 0, 0, 0.04)' : undefined,
     borderRadius: quoteBackgroundEnabled ? 8 : undefined,
     boxSizing: 'border-box',
   };
@@ -273,15 +328,16 @@ export function PullQuote({
         />
       ) : null}
       <div className={scopeClass} style={stage}>
-        <EditorField fieldPath={`${settingsBase}.quote`} label="Quote" as="p" style={quoteStyle}>
-          {quote}
+        <EditorField fieldPath={`${settingsBase}.quote`} label="Quote" as="div" style={quoteStyle}>
+          <ThemeEditorRichTextContent html={quote} />
         </EditorField>
         {linkLabel ? (
           <EditorBlock
             nodeId={`${editorNodeId}:block:button`}
             label="Button"
             style={{
-              width: '100%',
+              width: isHorizontal ? 'auto' : '100%',
+              flexShrink: 0,
               display: 'flex',
               justifyContent:
                 textAlign === 'center' ? 'center' : textAlign === 'right' ? 'flex-end' : 'flex-start',
