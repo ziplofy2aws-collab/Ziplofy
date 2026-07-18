@@ -1253,6 +1253,27 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'Want a homepage recipe? Ask “homepage structure tips”.',
   },
   {
+    id: 'compliment',
+    suggestion: undefined,
+    keywords: ['awesome', 'amazing', 'excellent', 'brilliant', 'impressive', 'helpful'],
+    phrases: [
+      'good job',
+      'great job',
+      'nice job',
+      'well done',
+      'great work',
+      'nice work',
+      'love your work',
+      'you are awesome',
+      'you are amazing',
+      'you are the best',
+      'that was helpful',
+    ],
+    answer:
+      'Thank you! 😊 That’s very kind of you to say. I’m glad I could help.\n\n' +
+      'Whenever you’re ready, we can keep improving your theme together 🚀',
+  },
+  {
     id: 'thanks',
     suggestion: undefined,
     keywords: ['thanks', 'thank', 'thx', 'ty', 'grateful'],
