@@ -519,9 +519,23 @@ import {
   ensureProductPageTemplateBlocks,
   PRODUCT_TEMPLATE_ID,
 } from '../utils/product-page-preset.util';
+import { ProductTemplatePreviewCard } from './sidebar/ProductTemplatePreviewCard';
+import { resolveProductTemplatePreviewRoute } from './utils/product-page-preview.util';
+import { isProductTemplatePreviewPage } from './utils/product-templates.util';
 import { resolveCollectionTemplatePreviewRoute } from './utils/collection-page-preview.util';
 import { isCollectionTemplatePreviewPage } from './utils/collection-templates.util';
 import { CollectionTemplatePreviewCard } from './sidebar/CollectionTemplatePreviewCard';
+import { BlogTemplatePreviewCard } from './sidebar/BlogTemplatePreviewCard';
+import { BlogPostTemplatePreviewCard } from './sidebar/BlogPostTemplatePreviewCard';
+import {
+  resolveBlogPostsTemplatePreviewRoute,
+  resolveBlogsTemplatePreviewRoute,
+  type BlogPostPreviewSelection,
+} from './utils/blog-page-preview.util';
+import {
+  isBlogPostsTemplatePreviewPage,
+  isBlogsTemplatePreviewPage,
+} from './utils/blog-templates.util';
 import { ensureFeaturedProductSectionBlocks } from '../utils/featured-product-preset.util';
 import { ensureProductHighlightSectionBlocks } from '../utils/product-highlight-preset.util';
 import { ensureProductHotspotsSectionBlocks } from '../utils/product-hotspots-preset.util';
@@ -740,7 +754,11 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const [previewPage, setPreviewPage] = useState<ThemePreviewPage>(
     isCheckoutProfile ? 'checkout' : 'index'
   );
+  const [previewProductHandle, setPreviewProductHandle] = useState<string | null>(null);
   const [previewCollectionHandle, setPreviewCollectionHandle] = useState<string | null>(null);
+  const [previewBlogHandle, setPreviewBlogHandle] = useState<string | null>(null);
+  const [previewBlogPostSelection, setPreviewBlogPostSelection] =
+    useState<BlogPostPreviewSelection | null>(null);
   const [checkoutPreviewPage, setCheckoutPreviewPage] = useState<CheckoutEditorPage>('checkout');
 
   // Flash a full-screen gradient border whenever the previewed page changes.
@@ -2477,10 +2495,28 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     [editorSchema, debouncedConfigForHints, previewPage, structureSyncKey]
   );
 
+  const productPreviewRoute = useMemo(
+    () => resolveProductTemplatePreviewRoute(previewPage, previewProductHandle),
+    [previewPage, previewProductHandle]
+  );
+
   const collectionPreviewRoute = useMemo(
     () => resolveCollectionTemplatePreviewRoute(previewPage, previewCollectionHandle),
     [previewPage, previewCollectionHandle]
   );
+
+  const blogsPreviewRoute = useMemo(
+    () => resolveBlogsTemplatePreviewRoute(previewPage, previewBlogHandle),
+    [previewPage, previewBlogHandle]
+  );
+
+  const blogPostsPreviewRoute = useMemo(
+    () => resolveBlogPostsTemplatePreviewRoute(previewPage, previewBlogPostSelection),
+    [previewPage, previewBlogPostSelection]
+  );
+
+  const entityPreviewRoute =
+    productPreviewRoute ?? collectionPreviewRoute ?? blogsPreviewRoute ?? blogPostsPreviewRoute;
 
   const schemaFieldTypes = useMemo(() => {
     if (!editorSchema || !defaultConfig) return new Map<string, string>();
@@ -2758,7 +2794,6 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
       const page = nextPreviewPage ?? previewPage;
       if (nextPreviewPage && nextPreviewPage !== previewPage) {
-        flashPageSwitchGlow();
         setPreviewPage(nextPreviewPage);
         setSelectedNodeId('');
         setAddSectionTarget(null);
@@ -2802,13 +2837,12 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         });
       }
     },
-    [previewPage, editorSchema, values, savedThemeId, themeName, updateStoreCustomTheme, flashPageSwitchGlow]
+    [previewPage, editorSchema, values, savedThemeId, themeName, updateStoreCustomTheme]
   );
 
   const handlePreviewPageChange = useCallback(
     (page: ThemePreviewPage) => {
       if (page === previewPage) return;
-      flashPageSwitchGlow();
       setPreviewPage(page);
       setSelectedNodeId('');
       setAddSectionTarget(null);
@@ -2858,7 +2892,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         setItemOrder(readStructureOrderFromConfig(defaultConfig, page));
       }
     },
-    [defaultConfig, previewPage, editorSchema, flashPageSwitchGlow]
+    [defaultConfig, previewPage, editorSchema]
   );
 
   const toggleExpand = useCallback((id: string) => {
@@ -4029,16 +4063,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         onReorderSections={handleAgenticReorder}
         itemOrder={itemOrder}
         onEditField={handleCodiixEditField}
+        onCodiixPageSwitch={flashPageSwitchGlow}
       />
       ) : (
         <CheckoutEditorHeader
           configurationName={checkoutConfigurationName}
           previewPage={checkoutPreviewPage}
-          onPreviewPageChange={(page) => {
-            if (page === checkoutPreviewPage) return;
-            flashPageSwitchGlow();
-            setCheckoutPreviewPage(page);
-          }}
+          onPreviewPageChange={setCheckoutPreviewPage}
           onOnlineStoreTheme={handleOnlineStoreTheme}
           device={device}
           onDeviceChange={setDevice}
@@ -4056,10 +4087,29 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           pageLabel={pageLabel}
           sidebarTitleMode={isCheckoutProfile ? 'plain' : 'editing'}
           sectionsHeaderSlot={
-            !isCheckoutProfile && isCollectionTemplatePreviewPage(previewPage) ? (
+            !isCheckoutProfile && isProductTemplatePreviewPage(previewPage) ? (
+              <ProductTemplatePreviewCard
+                previewProductHandle={previewProductHandle}
+                onPreviewProductHandleChange={setPreviewProductHandle}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : !isCheckoutProfile && isCollectionTemplatePreviewPage(previewPage) ? (
               <CollectionTemplatePreviewCard
                 previewCollectionHandle={previewCollectionHandle}
                 onPreviewCollectionHandleChange={setPreviewCollectionHandle}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : !isCheckoutProfile && isBlogsTemplatePreviewPage(previewPage) ? (
+              <BlogTemplatePreviewCard
+                previewBlogHandle={previewBlogHandle}
+                onPreviewBlogHandleChange={setPreviewBlogHandle}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : !isCheckoutProfile && isBlogPostsTemplatePreviewPage(previewPage) ? (
+              <BlogPostTemplatePreviewCard
+                previewSelection={previewBlogPostSelection}
+                onPreviewSelectionChange={setPreviewBlogPostSelection}
+                storefrontOrigin={storeSubdomain?.url ?? null}
               />
             ) : null
           }
@@ -4213,7 +4263,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
               config={livePreviewConfig}
               structureSyncKey={structureSyncKey}
               page={previewPage}
-              previewRoute={collectionPreviewRoute}
+              previewRoute={entityPreviewRoute}
               selectionHints={selectionHints}
               highlightNodeId={inspectorEnabled ? selectedNodeId || null : null}
               inspectorEnabled={inspectorEnabled}

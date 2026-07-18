@@ -60,6 +60,8 @@ type Props = {
     value: string | boolean,
     selectNodeId?: string,
   ) => boolean | void;
+  /** Shown only when Codiix switches pages — not for manual page picker changes. */
+  onCodiixPageSwitch?: () => void;
 };
 
 const iconBtn =
@@ -92,6 +94,7 @@ export function CreateThemeHeader({
   onReorderSections,
   itemOrder,
   onEditField,
+  onCodiixPageSwitch,
 }: Props) {
   const [moreMenuAnchor, setMoreMenuAnchor] = useState<HTMLElement | null>(null);
   const [codiixOpen, setCodiixOpen] = useState(false);
@@ -143,10 +146,11 @@ export function CreateThemeHeader({
         return 'checkout';
       }
       if (pageId === previewPage) return 'same';
+      onCodiixPageSwitch?.();
       onPreviewPageChange(pageId);
       return 'ok';
     },
-    [onOpenCheckoutEditor, onPreviewPageChange, previewPage],
+    [onOpenCheckoutEditor, onPreviewPageChange, onCodiixPageSwitch, previewPage],
   );
 
   return (

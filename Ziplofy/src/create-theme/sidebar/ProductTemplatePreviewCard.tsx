@@ -5,104 +5,110 @@ import {
   PhotoIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import { useCollections, type Collection } from '../../contexts/collection.context';
+import { useProducts, type Product } from '../../contexts/product.context';
 import { useStore } from '../../contexts/store.context';
-import { collectionPath } from '../../utils/storefront-paths';
+import { productPath } from '../../utils/storefront-paths';
 import { normalizeStorefrontOrigin } from '../../utils/storefront-url.util';
-import { pickDefaultPreviewCollection } from '../utils/collection-page-preview.util';
-import { ThemeEditorCreateCollectionSheet } from './ThemeEditorCreateCollectionSheet';
+import { pickDefaultPreviewProduct } from '../utils/product-page-preview.util';
+import { ThemeEditorCreateProductSheet } from './ThemeEditorCreateProductSheet';
 
 type Props = {
-  previewCollectionHandle: string | null;
-  onPreviewCollectionHandleChange: (handle: string) => void;
+  previewProductHandle: string | null;
+  onPreviewProductHandleChange: (handle: string) => void;
   storefrontOrigin?: string | null;
 };
 
-export function CollectionTemplatePreviewCard({
-  previewCollectionHandle,
-  onPreviewCollectionHandleChange,
+export function ProductTemplatePreviewCard({
+  previewProductHandle,
+  onPreviewProductHandleChange,
   storefrontOrigin,
 }: Props) {
   const { activeStoreId } = useStore();
-  const { collections, fetchCollectionsByStoreId, loading } = useCollections();
+  const { products, fetchProductsByStoreId, loading } = useProducts();
   const rootRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
 
+  const availableProducts = useMemo(
+    () => products.filter((product) => !product.isDeleted && product.urlHandle?.trim()),
+    [products]
+  );
+
   useEffect(() => {
     if (!activeStoreId) return;
-    void fetchCollectionsByStoreId(activeStoreId);
-  }, [activeStoreId, fetchCollectionsByStoreId]);
+    void fetchProductsByStoreId(activeStoreId);
+  }, [activeStoreId, fetchProductsByStoreId]);
 
   useEffect(() => {
-    if (previewCollectionHandle || !collections.length) return;
-    const fallback = pickDefaultPreviewCollection(collections);
+    if (previewProductHandle || !availableProducts.length) return;
+    const fallback = pickDefaultPreviewProduct(availableProducts);
     if (fallback?.urlHandle) {
-      onPreviewCollectionHandleChange(fallback.urlHandle);
+      onPreviewProductHandleChange(fallback.urlHandle);
     }
-  }, [collections, previewCollectionHandle, onPreviewCollectionHandleChange]);
-
-  const active = useMemo(() => {
-    if (!previewCollectionHandle) return pickDefaultPreviewCollection(collections);
-    return (
-      collections.find((c) => c.urlHandle === previewCollectionHandle) ??
-      pickDefaultPreviewCollection(collections)
-    );
-  }, [collections, previewCollectionHandle]);
+  }, [availableProducts, previewProductHandle, onPreviewProductHandleChange]);
 
   useEffect(() => {
     if (!open) return;
-    const onDoc = (event: MouseEvent) => {
+    const onDocumentMouseDown = (event: MouseEvent) => {
       if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     };
-    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('mousedown', onDocumentMouseDown);
     const focusTimer = window.setTimeout(() => searchRef.current?.focus(), 40);
     return () => {
-      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('mousedown', onDocumentMouseDown);
       window.clearTimeout(focusTimer);
     };
   }, [open]);
 
+  const active = useMemo(() => {
+    if (!previewProductHandle) return pickDefaultPreviewProduct(availableProducts);
+    return (
+      availableProducts.find((product) => product.urlHandle === previewProductHandle) ??
+      pickDefaultPreviewProduct(availableProducts)
+    );
+  }, [availableProducts, previewProductHandle]);
+
   const filtered = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return collections;
-    return collections.filter(
-      (collection) =>
-        collection.title.toLowerCase().includes(normalizedQuery) ||
-        collection.urlHandle.toLowerCase().includes(normalizedQuery)
+    if (!normalizedQuery) return availableProducts;
+    return availableProducts.filter(
+      (product) =>
+        product.title.toLowerCase().includes(normalizedQuery) ||
+        product.urlHandle.toLowerCase().includes(normalizedQuery) ||
+        product.sku?.toLowerCase().includes(normalizedQuery)
     );
-  }, [collections, query]);
+  }, [availableProducts, query]);
 
   const viewHref = useMemo(() => {
     const origin = normalizeStorefrontOrigin(storefrontOrigin);
     const handle = active?.urlHandle?.trim();
-    return origin && handle ? `${origin}${collectionPath(handle)}` : null;
+    return origin && handle ? `${origin}${productPath(handle)}` : null;
   }, [active?.urlHandle, storefrontOrigin]);
 
-  const selectCollection = useCallback(
-    (collection: Collection) => {
-      const handle = collection.urlHandle?.trim();
+  const selectProduct = useCallback(
+    (product: Product) => {
+      const handle = product.urlHandle?.trim();
       if (!handle) return;
-      onPreviewCollectionHandleChange(handle);
+      onPreviewProductHandleChange(handle);
       setOpen(false);
       setQuery('');
     },
-    [onPreviewCollectionHandleChange]
+    [onPreviewProductHandleChange]
   );
 
   const handleCreated = useCallback(
-    (collection: Collection) => {
+    (product: Product) => {
       if (activeStoreId) {
-        void fetchCollectionsByStoreId(activeStoreId);
+        void fetchProductsByStoreId(activeStoreId);
       }
-      const handle = collection.urlHandle?.trim();
-      if (handle) onPreviewCollectionHandleChange(handle);
+      const handle = product.urlHandle?.trim();
+      if (handle) onPreviewProductHandleChange(handle);
     },
-    [activeStoreId, fetchCollectionsByStoreId, onPreviewCollectionHandleChange]
+    [activeStoreId, fetchProductsByStoreId, onPreviewProductHandleChange]
   );
 
   return (
@@ -118,9 +124,9 @@ export function CollectionTemplatePreviewCard({
         onClick={() => setOpen((current) => !current)}
         className="flex w-full items-center gap-3 rounded-lg border border-[#e1e1e1] bg-[#fafafa] px-3 py-2.5 text-left transition-colors hover:border-[#c9cccf] hover:bg-white"
       >
-        {active?.imageUrl ? (
+        {active?.imageUrls?.[0] ? (
           <img
-            src={active.imageUrl}
+            src={active.imageUrls[0]}
             alt=""
             className="h-10 w-10 shrink-0 rounded bg-gray-100 object-cover"
           />
@@ -131,13 +137,15 @@ export function CollectionTemplatePreviewCard({
         )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-[13px] font-medium text-gray-900">
-            {loading && !active ? 'Loading…' : active?.title ?? 'Select a collection'}
+            {loading && !active ? 'Loading…' : active?.title ?? 'Select a product'}
           </p>
           {active?.urlHandle ? (
-            <p className="truncate text-[12px] text-gray-500">/collection/{active.urlHandle}</p>
+            <p className="truncate text-[12px] text-gray-500">
+              /product/{active.urlHandle}
+            </p>
           ) : (
             <p className="truncate text-[12px] text-gray-500">
-              Choose which collection to preview
+              Choose which product to preview
             </p>
           )}
         </div>
@@ -146,7 +154,7 @@ export function CollectionTemplatePreviewCard({
             href={viewHref}
             target="_blank"
             rel="noopener noreferrer"
-            title="View collection on storefront"
+            title="View product on storefront"
             onClick={(event) => event.stopPropagation()}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-white hover:text-gray-800"
           >
@@ -172,7 +180,7 @@ export function CollectionTemplatePreviewCard({
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search"
-                aria-label="Search collections"
+                aria-label="Search products"
                 className="w-full rounded-lg border border-[#8c9196] bg-white py-2 pl-8 pr-3 text-[13px] text-gray-900 outline-none focus:border-[#005bd3] focus:ring-2 focus:ring-[#005bd3]/20"
               />
             </div>
@@ -182,29 +190,29 @@ export function CollectionTemplatePreviewCard({
             {filtered.length === 0 ? (
               <li className="px-3 py-3 text-[12px] text-gray-500">
                 {loading
-                  ? 'Loading collections…'
+                  ? 'Loading products…'
                   : query.trim()
-                    ? 'No collections match'
-                    : 'No collections yet'}
+                    ? 'No products match'
+                    : 'No products yet'}
               </li>
             ) : (
-              filtered.map((collection) => {
+              filtered.map((product) => {
                 const selected =
-                  collection.urlHandle === (previewCollectionHandle ?? active?.urlHandle);
+                  product.urlHandle === (previewProductHandle ?? active?.urlHandle);
                 return (
-                  <li key={collection._id}>
+                  <li key={product._id}>
                     <button
                       type="button"
                       role="option"
                       aria-selected={selected}
-                      onClick={() => selectCollection(collection)}
+                      onClick={() => selectProduct(product)}
                       className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-[13px] hover:bg-gray-50 ${
                         selected ? 'bg-gray-100 font-medium text-gray-900' : 'text-gray-900'
                       }`}
                     >
-                      {collection.imageUrl ? (
+                      {product.imageUrls?.[0] ? (
                         <img
-                          src={collection.imageUrl}
+                          src={product.imageUrls[0]}
                           alt=""
                           className="h-7 w-7 shrink-0 rounded bg-gray-100 object-cover"
                         />
@@ -213,7 +221,7 @@ export function CollectionTemplatePreviewCard({
                           <PhotoIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden />
                         </span>
                       )}
-                      <span className="min-w-0 flex-1 truncate">{collection.title}</span>
+                      <span className="min-w-0 flex-1 truncate">{product.title}</span>
                     </button>
                   </li>
                 );
@@ -231,13 +239,13 @@ export function CollectionTemplatePreviewCard({
               className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-[13px] font-medium text-[#005bd3] hover:bg-blue-50"
             >
               <PlusIcon className="h-4 w-4 shrink-0" aria-hidden />
-              Create collection
+              Create product
             </button>
           </div>
         </div>
       ) : null}
 
-      <ThemeEditorCreateCollectionSheet
+      <ThemeEditorCreateProductSheet
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         onCreated={handleCreated}

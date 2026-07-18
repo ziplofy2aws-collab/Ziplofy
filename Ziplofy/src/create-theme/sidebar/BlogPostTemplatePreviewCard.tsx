@@ -5,26 +5,27 @@ import {
   PhotoIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import { useCollections, type Collection } from '../../contexts/collection.context';
+import { useBlogs } from '../../contexts/blog.context';
+import { useBlogPosts, type BlogPost } from '../../contexts/blog-post.context';
 import { useStore } from '../../contexts/store.context';
-import { collectionPath } from '../../utils/storefront-paths';
-import { normalizeStorefrontOrigin } from '../../utils/storefront-url.util';
-import { pickDefaultPreviewCollection } from '../utils/collection-page-preview.util';
-import { ThemeEditorCreateCollectionSheet } from './ThemeEditorCreateCollectionSheet';
+import { buildStorefrontBlogPostUrl } from '../../utils/storefront-url.util';
+import type { BlogPostPreviewSelection } from '../utils/blog-page-preview.util';
+import { ThemeEditorCreateBlogPostSheet } from './ThemeEditorCreateBlogPostSheet';
 
 type Props = {
-  previewCollectionHandle: string | null;
-  onPreviewCollectionHandleChange: (handle: string) => void;
+  previewSelection: BlogPostPreviewSelection | null;
+  onPreviewSelectionChange: (selection: BlogPostPreviewSelection) => void;
   storefrontOrigin?: string | null;
 };
 
-export function CollectionTemplatePreviewCard({
-  previewCollectionHandle,
-  onPreviewCollectionHandleChange,
+export function BlogPostTemplatePreviewCard({
+  previewSelection,
+  onPreviewSelectionChange,
   storefrontOrigin,
 }: Props) {
   const { activeStoreId } = useStore();
-  const { collections, fetchCollectionsByStoreId, loading } = useCollections();
+  const { blogs, fetchBlogsByStoreId } = useBlogs();
+  const { blogPosts, fetchBlogPostsByStoreId, loading } = useBlogPosts();
   const rootRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -33,29 +34,45 @@ export function CollectionTemplatePreviewCard({
 
   useEffect(() => {
     if (!activeStoreId) return;
-    void fetchCollectionsByStoreId(activeStoreId);
-  }, [activeStoreId, fetchCollectionsByStoreId]);
+    void fetchBlogsByStoreId(activeStoreId);
+    void fetchBlogPostsByStoreId(activeStoreId);
+  }, [activeStoreId, fetchBlogsByStoreId, fetchBlogPostsByStoreId]);
+
+  const blogHandleById = useMemo(() => {
+    const out = new Map<string, string>();
+    for (const blog of blogs) {
+      const handle = blog.urlHandle?.trim();
+      if (handle) out.set(blog._id, handle);
+    }
+    return out;
+  }, [blogs]);
+
+  const selectionForPost = useCallback(
+    (post: BlogPost): BlogPostPreviewSelection | null => {
+      const blogHandle = blogHandleById.get(post.blogId);
+      const postHandle = post.urlHandle?.trim();
+      if (!blogHandle || !postHandle) return null;
+      return { blogHandle, postHandle };
+    },
+    [blogHandleById]
+  );
+
+  /** Visible posts only — hidden posts don’t render on the storefront. */
+  const selectablePosts = useMemo(
+    () => blogPosts.filter((p) => p.visibility !== 'hidden' && selectionForPost(p)),
+    [blogPosts, selectionForPost]
+  );
 
   useEffect(() => {
-    if (previewCollectionHandle || !collections.length) return;
-    const fallback = pickDefaultPreviewCollection(collections);
-    if (fallback?.urlHandle) {
-      onPreviewCollectionHandleChange(fallback.urlHandle);
-    }
-  }, [collections, previewCollectionHandle, onPreviewCollectionHandleChange]);
-
-  const active = useMemo(() => {
-    if (!previewCollectionHandle) return pickDefaultPreviewCollection(collections);
-    return (
-      collections.find((c) => c.urlHandle === previewCollectionHandle) ??
-      pickDefaultPreviewCollection(collections)
-    );
-  }, [collections, previewCollectionHandle]);
+    if (previewSelection || !selectablePosts.length) return;
+    const fallback = selectionForPost(selectablePosts[0]!);
+    if (fallback) onPreviewSelectionChange(fallback);
+  }, [previewSelection, selectablePosts, selectionForPost, onPreviewSelectionChange]);
 
   useEffect(() => {
     if (!open) return;
-    const onDoc = (event: MouseEvent) => {
-      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+    const onDoc = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
@@ -67,60 +84,79 @@ export function CollectionTemplatePreviewCard({
     };
   }, [open]);
 
+  const activePost = useMemo(() => {
+    if (previewSelection) {
+      const match = selectablePosts.find((post) => {
+        const sel = selectionForPost(post);
+        return (
+          sel?.blogHandle === previewSelection.blogHandle &&
+          sel?.postHandle === previewSelection.postHandle
+        );
+      });
+      if (match) return match;
+    }
+    return selectablePosts[0] ?? null;
+  }, [previewSelection, selectablePosts, selectionForPost]);
+
+  const activeSelection = activePost ? selectionForPost(activePost) : null;
+
   const filtered = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return collections;
-    return collections.filter(
-      (collection) =>
-        collection.title.toLowerCase().includes(normalizedQuery) ||
-        collection.urlHandle.toLowerCase().includes(normalizedQuery)
+    const q = query.trim().toLowerCase();
+    if (!q) return selectablePosts;
+    return selectablePosts.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.urlHandle.toLowerCase().includes(q)
     );
-  }, [collections, query]);
+  }, [selectablePosts, query]);
 
   const viewHref = useMemo(() => {
-    const origin = normalizeStorefrontOrigin(storefrontOrigin);
-    const handle = active?.urlHandle?.trim();
-    return origin && handle ? `${origin}${collectionPath(handle)}` : null;
-  }, [active?.urlHandle, storefrontOrigin]);
+    if (!activeSelection) return null;
+    return buildStorefrontBlogPostUrl(
+      storefrontOrigin ?? null,
+      activeSelection.blogHandle,
+      activeSelection.postHandle
+    );
+  }, [activeSelection, storefrontOrigin]);
 
-  const selectCollection = useCallback(
-    (collection: Collection) => {
-      const handle = collection.urlHandle?.trim();
-      if (!handle) return;
-      onPreviewCollectionHandleChange(handle);
+  const selectPost = useCallback(
+    (post: BlogPost) => {
+      const selection = selectionForPost(post);
+      if (!selection) return;
+      onPreviewSelectionChange(selection);
       setOpen(false);
       setQuery('');
     },
-    [onPreviewCollectionHandleChange]
+    [selectionForPost, onPreviewSelectionChange]
   );
 
   const handleCreated = useCallback(
-    (collection: Collection) => {
+    (post: BlogPost) => {
       if (activeStoreId) {
-        void fetchCollectionsByStoreId(activeStoreId);
+        void fetchBlogPostsByStoreId(activeStoreId);
       }
-      const handle = collection.urlHandle?.trim();
-      if (handle) onPreviewCollectionHandleChange(handle);
+      const blogHandle = blogHandleById.get(post.blogId);
+      const postHandle = post.urlHandle?.trim();
+      if (blogHandle && postHandle) {
+        onPreviewSelectionChange({ blogHandle, postHandle });
+      }
     },
-    [activeStoreId, fetchCollectionsByStoreId, onPreviewCollectionHandleChange]
+    [activeStoreId, fetchBlogPostsByStoreId, blogHandleById, onPreviewSelectionChange]
   );
 
   return (
-    <div
-      ref={rootRef}
-      className="relative border-b border-[#e1e1e1] bg-white px-3 py-3"
-    >
+    <div className="relative border-b border-[#e1e1e1] bg-white px-3 py-3" ref={rootRef}>
       <p className="mb-2 text-[12px] font-medium text-gray-600">Preview</p>
       <button
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center gap-3 rounded-lg border border-[#e1e1e1] bg-[#fafafa] px-3 py-2.5 text-left transition-colors hover:border-[#c9cccf] hover:bg-white"
       >
-        {active?.imageUrl ? (
+        {activePost?.featuredImageUrl ? (
           <img
-            src={active.imageUrl}
+            src={activePost.featuredImageUrl}
             alt=""
             className="h-10 w-10 shrink-0 rounded bg-gray-100 object-cover"
           />
@@ -131,14 +167,14 @@ export function CollectionTemplatePreviewCard({
         )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-[13px] font-medium text-gray-900">
-            {loading && !active ? 'Loading…' : active?.title ?? 'Select a collection'}
+            {loading && !activePost ? 'Loading…' : activePost?.title ?? 'Select a blog post'}
           </p>
-          {active?.urlHandle ? (
-            <p className="truncate text-[12px] text-gray-500">/collection/{active.urlHandle}</p>
-          ) : (
+          {activeSelection ? (
             <p className="truncate text-[12px] text-gray-500">
-              Choose which collection to preview
+              /blogs/{activeSelection.blogHandle}/{activeSelection.postHandle}
             </p>
+          ) : (
+            <p className="truncate text-[12px] text-gray-500">Choose which post to preview</p>
           )}
         </div>
         {viewHref ? (
@@ -146,8 +182,8 @@ export function CollectionTemplatePreviewCard({
             href={viewHref}
             target="_blank"
             rel="noopener noreferrer"
-            title="View collection on storefront"
-            onClick={(event) => event.stopPropagation()}
+            title="View post on storefront"
+            onClick={(e) => e.stopPropagation()}
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-white hover:text-gray-800"
           >
             <ArrowTopRightOnSquareIcon className="h-4 w-4" aria-hidden />
@@ -170,10 +206,10 @@ export function CollectionTemplatePreviewCard({
                 ref={searchRef}
                 type="search"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search"
-                aria-label="Search collections"
                 className="w-full rounded-lg border border-[#8c9196] bg-white py-2 pl-8 pr-3 text-[13px] text-gray-900 outline-none focus:border-[#005bd3] focus:ring-2 focus:ring-[#005bd3]/20"
+                aria-label="Search blog posts"
               />
             </div>
           </div>
@@ -182,29 +218,31 @@ export function CollectionTemplatePreviewCard({
             {filtered.length === 0 ? (
               <li className="px-3 py-3 text-[12px] text-gray-500">
                 {loading
-                  ? 'Loading collections…'
+                  ? 'Loading blog posts…'
                   : query.trim()
-                    ? 'No collections match'
-                    : 'No collections yet'}
+                    ? 'No posts match'
+                    : 'No blog posts yet'}
               </li>
             ) : (
-              filtered.map((collection) => {
+              filtered.map((post) => {
+                const sel = selectionForPost(post);
                 const selected =
-                  collection.urlHandle === (previewCollectionHandle ?? active?.urlHandle);
+                  sel?.blogHandle === activeSelection?.blogHandle &&
+                  sel?.postHandle === activeSelection?.postHandle;
                 return (
-                  <li key={collection._id}>
+                  <li key={post._id}>
                     <button
                       type="button"
                       role="option"
                       aria-selected={selected}
-                      onClick={() => selectCollection(collection)}
+                      onClick={() => selectPost(post)}
                       className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-[13px] hover:bg-gray-50 ${
                         selected ? 'bg-gray-100 font-medium text-gray-900' : 'text-gray-900'
                       }`}
                     >
-                      {collection.imageUrl ? (
+                      {post.featuredImageUrl ? (
                         <img
-                          src={collection.imageUrl}
+                          src={post.featuredImageUrl}
                           alt=""
                           className="h-7 w-7 shrink-0 rounded bg-gray-100 object-cover"
                         />
@@ -213,7 +251,7 @@ export function CollectionTemplatePreviewCard({
                           <PhotoIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden />
                         </span>
                       )}
-                      <span className="min-w-0 flex-1 truncate">{collection.title}</span>
+                      <span className="min-w-0 flex-1 truncate">{post.title}</span>
                     </button>
                   </li>
                 );
@@ -231,15 +269,16 @@ export function CollectionTemplatePreviewCard({
               className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-[13px] font-medium text-[#005bd3] hover:bg-blue-50"
             >
               <PlusIcon className="h-4 w-4 shrink-0" aria-hidden />
-              Create collection
+              Create blog post
             </button>
           </div>
         </div>
       ) : null}
 
-      <ThemeEditorCreateCollectionSheet
+      <ThemeEditorCreateBlogPostSheet
         open={createOpen}
         onClose={() => setCreateOpen(false)}
+        defaultBlogId={activePost?.blogId ?? null}
         onCreated={handleCreated}
       />
     </div>
