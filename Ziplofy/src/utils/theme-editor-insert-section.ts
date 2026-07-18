@@ -149,6 +149,7 @@ const CATALOG_BLUEPRINT: Record<string, { blueprintId: string; type: string; lab
 
 import { previewPageToTemplateId, templateIdForPage } from './preview-page-template';
 export { previewPageToTemplateId, templateIdForPage };
+import { schemaTemplateIdForConfigKey } from '../create-theme/utils/product-templates.util';
 
 function getNested(obj: Record<string, unknown>, path: string[]): unknown {
   let cur: unknown = obj;
@@ -157,6 +158,27 @@ function getNested(obj: Record<string, unknown>, path: string[]): unknown {
     cur = (cur as Record<string, unknown>)[p];
   }
   return cur;
+}
+
+/** Read a values/config dot path; template ids may contain dots (`pages.about`). */
+function getNestedDotPath(obj: Record<string, unknown>, dotPath: string): unknown {
+  if (dotPath.startsWith('templates.')) {
+    const templates = obj.templates as Record<string, unknown> | undefined;
+    if (templates && typeof templates === 'object') {
+      const rest = dotPath.slice('templates.'.length);
+      const keys = Object.keys(templates).sort((a, b) => b.length - a.length);
+      for (const key of keys) {
+        if (rest === key) return templates[key];
+        if (rest.startsWith(`${key}.`)) {
+          return getNested(
+            templates[key] as Record<string, unknown>,
+            rest.slice(key.length + 1).split('.').filter(Boolean)
+          );
+        }
+      }
+    }
+  }
+  return getNested(obj, dotPath.split('.').filter(Boolean));
 }
 
 function setNested(obj: Record<string, unknown>, path: string[], value: unknown): void {
@@ -433,11 +455,18 @@ export function templateBlueprintKey(sectionId: string): string {
 
 export function remapTemplateSchemaPath(path: string, tplId: string, instanceId: string): string {
   const blueprint = templateBlueprintKey(instanceId);
-  if (blueprint === instanceId) return path;
-  return path.replace(
-    `templates.${tplId}.sections.${blueprint}.`,
-    `templates.${tplId}.sections.${instanceId}.`
-  );
+  const schemaTplId = schemaTemplateIdForConfigKey(tplId);
+  let next = path;
+  if (schemaTplId !== tplId) {
+    next = next.split(`templates.${schemaTplId}.`).join(`templates.${tplId}.`);
+  }
+  if (blueprint !== instanceId) {
+    next = next.replace(
+      `templates.${tplId}.sections.${blueprint}.`,
+      `templates.${tplId}.sections.${instanceId}.`
+    );
+  }
+  return next;
 }
 
 export function layoutBlueprintKey(sectionId: string): string {
@@ -1947,17 +1976,18 @@ export function extendValuesForTemplateInstance(
   config: Record<string, unknown>
 ): Record<string, string | boolean> {
   const blueprint = templateBlueprintKey(blueprintId);
-  const template = schema.templates?.find((t) => t.id === tplId);
+  const schemaTplId = schemaTemplateIdForConfigKey(tplId);
+  const template = schema.templates?.find((t) => t.id === schemaTplId);
   const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
   if (!sec) return values;
 
   const next = { ...values };
-  const prefix = `templates.${tplId}.sections.${blueprint}.`;
+  const prefix = `templates.${schemaTplId}.sections.${blueprint}.`;
   const walkFields = (fields: { path: string; type: string }[] | undefined) => {
     for (const field of fields ?? []) {
       if (!field.path?.startsWith(prefix)) continue;
       const newPath = remapTemplateSchemaPath(field.path, tplId, instanceId);
-      const raw = getNested(config, newPath.split('.').filter(Boolean));
+      const raw = getNestedDotPath(config, newPath);
       if (raw === undefined) continue;
       next[newPath] =
         field.type === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);

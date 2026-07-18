@@ -1798,8 +1798,54 @@ function syncHeroHeadingTextPaths(
   }
 }
 
-/** Write a value at a dot path; numeric segments use real arrays when the parent is a list. */
+/** Write a value at a dot path; numeric segments use real arrays when the parent is a list.
+ * Template keys may contain dots (`pages.about`) — resolve against existing `config.templates` keys.
+ */
 export function setConfigAtPath(
+  obj: Record<string, unknown>,
+  dotPath: string,
+  value: unknown
+): void {
+  if (dotPath.startsWith('templates.')) {
+    const templatesRaw = obj.templates;
+    if (!templatesRaw || typeof templatesRaw !== 'object' || Array.isArray(templatesRaw)) {
+      obj.templates = {};
+    }
+    const templates = obj.templates as Record<string, unknown>;
+    const rest = dotPath.slice('templates.'.length);
+    const keys = Object.keys(templates).sort((a, b) => b.length - a.length);
+    for (const key of keys) {
+      if (rest === key) {
+        templates[key] = value;
+        return;
+      }
+      if (rest.startsWith(`${key}.`)) {
+        if (templates[key] == null || typeof templates[key] !== 'object') {
+          templates[key] = {};
+        }
+        setConfigAtPathSimple(templates[key] as Record<string, unknown>, rest.slice(key.length + 1), value);
+        return;
+      }
+    }
+    // No existing key match — first segment is the template id (no dots in new keys from callers).
+    const firstDot = rest.indexOf('.');
+    if (firstDot < 0) {
+      templates[rest] = value;
+      return;
+    }
+    const tplId = rest.slice(0, firstDot);
+    const after = rest.slice(firstDot + 1);
+    if (templates[tplId] == null || typeof templates[tplId] !== 'object') {
+      templates[tplId] = {};
+    }
+    setConfigAtPathSimple(templates[tplId] as Record<string, unknown>, after, value);
+    return;
+  }
+
+  setConfigAtPathSimple(obj, dotPath, value);
+}
+
+function setConfigAtPathSimple(
   obj: Record<string, unknown>,
   dotPath: string,
   value: unknown
@@ -1860,13 +1906,20 @@ function valuePathTargetsExistingSection(
   path: string
 ): boolean {
   if (path.startsWith('settings.')) return true;
-  const templateMatch = path.match(/^templates\.([^.]+)\.sections\.([^.]+)(?:\.|$)/);
-  if (templateMatch) {
-    const [, tplId, sectionId] = templateMatch;
-    const sections = (
-      config.templates as Record<string, { sections?: Record<string, unknown> }> | undefined
-    )?.[tplId]?.sections;
-    return Boolean(sections && sectionId in sections);
+  if (path.startsWith('templates.')) {
+    const templates = config.templates as Record<string, { sections?: Record<string, unknown> }> | undefined;
+    if (!templates || typeof templates !== 'object') return false;
+    const rest = path.slice('templates.'.length);
+    const keys = Object.keys(templates).sort((a, b) => b.length - a.length);
+    for (const tplId of keys) {
+      if (!rest.startsWith(`${tplId}.sections.`)) continue;
+      const afterSections = rest.slice(`${tplId}.sections.`.length);
+      const sectionId = afterSections.split('.')[0];
+      if (!sectionId) return false;
+      const sections = templates[tplId]?.sections;
+      return Boolean(sections && sectionId in sections);
+    }
+    return false;
   }
   const layoutMatch = path.match(/^sections\.([^.]+)(?:\.|$)/);
   if (layoutMatch) {

@@ -13,8 +13,6 @@ import {
   ArrowLeftIcon,
   ChevronRightIcon,
   DocumentTextIcon,
-  HomeIcon,
-  MagnifyingGlassIcon,
   PencilSquareIcon,
   PhotoIcon,
   TagIcon,
@@ -24,12 +22,13 @@ import { useBlogs, type Blog } from '../../contexts/blog.context';
 import { useBlogPosts, type BlogPost } from '../../contexts/blog-post.context';
 import { useCollections, type Collection } from '../../contexts/collection.context';
 import { useProducts, type Product } from '../../contexts/product.context';
+import { useStorePages, type StorePage } from '../../contexts/store-page.context';
 import { useStore } from '../../contexts/store.context';
 import {
   buildStorefrontBlogPath,
   buildStorefrontBlogPostPath,
 } from '../../utils/storefront-url.util';
-import { collectionPath, productPath } from '../../utils/storefront-paths';
+import { collectionPath, pagePath, productPath } from '../../utils/storefront-paths';
 
 export type LinkPickerOption = {
   id: string;
@@ -69,12 +68,6 @@ export const THEME_LINK_ROOT_OPTIONS: LinkPickerOption[] = [
   { id: 'policies', label: 'Policies', value: '/policies', icon: DocumentTextIcon, hasChildren: true },
 ];
 
-const STATIC_PAGE_OPTIONS: LinkPickerOption[] = [
-  { id: 'home', label: 'Home page', value: '/', icon: HomeIcon },
-  { id: 'search', label: 'Search', value: '/search', icon: MagnifyingGlassIcon },
-  { id: 'cart', label: 'Cart', value: '/cart', icon: DocumentTextIcon },
-];
-
 const STATIC_POLICY_OPTIONS: LinkPickerOption[] = [
   { id: 'privacy', label: 'Privacy policy', value: '/policies/privacy', icon: DocumentTextIcon },
   { id: 'terms', label: 'Terms of service', value: '/policies/terms', icon: DocumentTextIcon },
@@ -90,6 +83,10 @@ export function collectionLinkPath(collection: Collection): string {
 export function productLinkPath(product: Product): string {
   const handle = product.urlHandle?.trim() || product._id;
   return productPath(handle);
+}
+
+export function storePageLinkPath(page: StorePage): string {
+  return pagePath(page.urlHandle?.trim() || page._id);
 }
 
 export function blogLinkPath(blog: Blog): string {
@@ -144,6 +141,7 @@ export function ThemeEditorLinkPickerDropdown({
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
   const { blogs, loading: blogsLoading, fetchBlogsByStoreId } = useBlogs();
   const { blogPosts, loading: blogPostsLoading, fetchBlogPostsByStoreId } = useBlogPosts();
+  const { pages, loading: pagesLoading, fetchPagesByStoreId } = useStorePages();
   const [view, setView] = useState<LinkPickerView>('root');
 
   useEffect(() => {
@@ -216,6 +214,16 @@ export function ThemeEditorLinkPickerDropdown({
     );
   }, [products, searchQuery]);
 
+  const filteredPages = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return pages;
+    return pages.filter(
+      (page) =>
+        page.title.toLowerCase().includes(q) ||
+        page.urlHandle.toLowerCase().includes(q)
+    );
+  }, [pages, searchQuery]);
+
   const filteredBlogs = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return blogs;
@@ -271,6 +279,19 @@ export function ThemeEditorLinkPickerDropdown({
       toast.error('Failed to load products');
     }
   }, [storeId, fetchProductsByStoreId]);
+
+  const openPagesPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing pages');
+      return;
+    }
+    setView('pages');
+    try {
+      await fetchPagesByStoreId(storeId);
+    } catch {
+      toast.error('Failed to load pages');
+    }
+  }, [storeId, fetchPagesByStoreId]);
 
   const openBlogsPicker = useCallback(async () => {
     if (!storeId) {
@@ -340,14 +361,13 @@ export function ThemeEditorLinkPickerDropdown({
       ? collectionsResultCount
       : view === 'products'
         ? productsResultCount
+        : view === 'pages'
+          ? filteredPages.length
         : view === 'blogs'
           ? filteredBlogs.length
           : view === 'blog-posts'
             ? filteredBlogPosts.length
-            : filterOptions(
-                view === 'pages' ? STATIC_PAGE_OPTIONS : STATIC_POLICY_OPTIONS,
-                searchQuery
-              ).length;
+            : filterOptions(STATIC_POLICY_OPTIONS, searchQuery).length;
 
   const usePortal = Boolean(anchorRef);
   const positionClass = usePortal
@@ -384,6 +404,8 @@ export function ThemeEditorLinkPickerDropdown({
                   : view === 'blogs' && blogsLoading
                     ? 'Loading…'
                     : view === 'blog-posts' && blogPostsLoading
+                      ? 'Loading…'
+                    : view === 'pages' && pagesLoading
                       ? 'Loading…'
                       : `${drillResultCount} result${drillResultCount === 1 ? '' : 's'}`}
             </span>
@@ -485,7 +507,36 @@ export function ThemeEditorLinkPickerDropdown({
               </>
             )
           ) : view === 'pages' ? (
-            renderStaticList(STATIC_PAGE_OPTIONS)
+            pagesLoading ? (
+              <p className="px-3 py-4 text-center text-[13px] text-gray-500">Loading pages…</p>
+            ) : (
+              <>
+                {filteredPages.map((page) => (
+                  <button
+                    key={page._id}
+                    type="button"
+                    onClick={() =>
+                      pickAndClose({
+                        link: storePageLinkPath(page),
+                        label: page.title,
+                      })
+                    }
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
+                  >
+                    <DocumentTextIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                    <span className="min-w-0 flex-1 truncate">{page.title}</span>
+                    <span className="max-w-[45%] truncate text-[11px] text-gray-400">
+                      {storePageLinkPath(page)}
+                    </span>
+                  </button>
+                ))}
+                {filteredPages.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-[13px] text-gray-500">
+                    No pages found
+                  </p>
+                ) : null}
+              </>
+            )
           ) : view === 'blogs' ? (
             blogsLoading ? (
               <p className="px-3 py-4 text-center text-[13px] text-gray-500">Loading blogs…</p>
@@ -564,7 +615,7 @@ export function ThemeEditorLinkPickerDropdown({
                     return;
                   }
                   if (opt.id === 'pages') {
-                    setView('pages');
+                    void openPagesPicker();
                     return;
                   }
                   if (opt.id === 'blogs') {

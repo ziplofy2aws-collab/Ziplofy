@@ -51,7 +51,7 @@ export function PreviewProviders({
       jsUrl={jsUrl}
       cssUrl={cssUrl}
     >
-      <Toaster position="top-right" />
+      <Toaster position="bottom-right" />
       <StorefrontAuthProvider>
         <PaymentProvider>
           <StorefrontProductVariantProvider>

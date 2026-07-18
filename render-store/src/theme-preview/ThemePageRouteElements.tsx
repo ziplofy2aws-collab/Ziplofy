@@ -18,6 +18,7 @@ import { ProductTemplateRoute } from '../components/ProductTemplateRoute.tsx';
 import { CollectionTemplateRoute } from '../components/CollectionTemplateRoute.tsx';
 import { BlogTemplateRoute } from '../components/BlogTemplateRoute.tsx';
 import { BlogPostTemplateRoute } from '../components/BlogPostTemplateRoute.tsx';
+import { PageTemplateRoute } from '../components/PageTemplateRoute.tsx';
 import { StorefrontProductPreviewLoader } from '../components/StorefrontProductPreviewLoader.tsx';
 
 const ROUTE_SPECS = listThemePageRouteSpecs();
@@ -138,6 +139,7 @@ export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactEle
     const isCollectionRoute = spec.templateId === 'collection';
     const isBlogRoute = spec.templateId === 'blogs';
     const isBlogPostRoute = spec.templateId === 'blog-posts';
+    const isPagesRoute = spec.templateId === 'pages';
 
     if (isProductRoute) {
       return (
@@ -214,6 +216,27 @@ export function renderThemePageRoutes(options?: ThemePageRouteOptions): ReactEle
                 options?.activeTemplateId &&
                 (options.activeTemplateId === 'blog-posts' ||
                   options.activeTemplateId.startsWith('blog-posts.'))
+                  ? options.activeTemplateId
+                  : undefined
+              }
+              fallbackSectionIds={spec.fallbackSectionIds}
+            />
+          }
+        />
+      );
+    }
+
+    if (isPagesRoute) {
+      return (
+        <Route
+          key={spec.path}
+          path={spec.path}
+          element={
+            <PageTemplateRoute
+              activeTemplateId={
+                options?.activeTemplateId &&
+                (options.activeTemplateId === 'pages' ||
+                  options.activeTemplateId.startsWith('pages.'))
                   ? options.activeTemplateId
                   : undefined
               }

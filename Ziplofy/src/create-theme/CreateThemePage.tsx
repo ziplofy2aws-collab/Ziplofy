@@ -2754,7 +2754,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       setItemOrder(readStructureOrderFromConfig(next, page));
       setStructureSyncKey((k) => k + 1);
 
-      if (nextPreviewPage && savedThemeId && editorSchema) {
+      if (savedThemeId && editorSchema) {
         const themeConfig = mergedConfigFromFormValues(
           { ...next, themeName },
           mergedValues,
@@ -2765,9 +2765,14 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           themeName: themeName.trim() || 'Untitled theme',
           themeConfig,
         })
-          .then(() => toast.success(alternateTemplateSavedToastLabel(nextPreviewPage)))
+          .then(() => {
+            // Creating an alternate template — toast. Assignment maps toast from Manage sheet.
+            if (nextPreviewPage) {
+              toast.success(alternateTemplateSavedToastLabel(nextPreviewPage));
+            }
+          })
           .catch((err: unknown) => {
-            toast.error((err as Error)?.message ?? 'Failed to save template');
+            toast.error((err as Error)?.message ?? 'Failed to save theme');
           });
       } else if (nextPreviewPage) {
         toast(alternateTemplateCreatedToastMessage(nextPreviewPage), {

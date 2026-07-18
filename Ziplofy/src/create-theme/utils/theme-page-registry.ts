@@ -180,8 +180,13 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     templateId: 'pages',
     label: 'Pages',
     icon: 'page',
-    previewPath: '/',
-    routes: [],
+    previewPath: '/pages/preview',
+    routes: [
+      {
+        path: '/pages/:urlHandle',
+        templateId: 'pages',
+      },
+    ],
   },
   {
     pageId: 'blogs',
@@ -326,7 +331,11 @@ export function isPasswordPreviewPage(page: string): boolean {
 
 /** Pages that must use create-theme composer preview (not remote theme.js). */
 export function usesCreateThemeComposerPreview(page: string): boolean {
-  return isPasswordPreviewPage(page) || page === '404';
+  return (
+    isPasswordPreviewPage(page) ||
+    page === '404' ||
+    isPageTemplatePreviewPage(page)
+  );
 }
 
 export function previewPageToTemplateId(page: string): string {
@@ -355,7 +364,7 @@ export function previewPageToRoute(page: string): string {
   if (isCollectionTemplatePreviewPage(page)) return '/collection/preview';
   if (isBlogsTemplatePreviewPage(page)) return '/blogs/preview';
   if (isBlogPostsTemplatePreviewPage(page)) return '/blogs/preview/preview';
-  if (isPageTemplatePreviewPage(page)) return '/';
+  if (isPageTemplatePreviewPage(page)) return '/pages/preview';
   return PAGE_BY_ID.get(page || 'index')?.previewPath ?? '/';
 }
 

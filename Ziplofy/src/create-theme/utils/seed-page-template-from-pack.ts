@@ -30,6 +30,7 @@ function packKeyForTemplateId(templateId: string): string {
   if (templateId.startsWith('collection.')) return 'collection';
   if (templateId.startsWith('blogs.')) return 'blogs';
   if (templateId.startsWith('blog-posts.')) return 'blog-posts';
+  if (templateId.startsWith('pages.')) return 'pages';
   return templateId;
 }
 

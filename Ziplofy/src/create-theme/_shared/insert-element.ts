@@ -4,6 +4,7 @@ import { getCreateThemeElement } from '../registry';
 import type { CreateThemeElement, CreateThemeInsertContext, CreateThemeInsertResult } from '../types';
 import { getLayoutOrder } from '../../utils/theme-editor-insert-section';
 import { appendToLayoutOrder, layoutListKey } from './layout-order';
+import { schemaTemplateIdForConfigKey } from '../utils/product-templates.util';
 
 function newInstanceId(config: Record<string, unknown>, blueprintId: string): string {
   const sections = (config.sections ?? {}) as Record<string, unknown>;
@@ -68,9 +69,14 @@ function cloneTemplateFromPack(
   instanceId: string,
   sectionType: string
 ): Record<string, unknown> {
-  const defTpl = (
-    packDefault.templates as Record<string, { sections?: Record<string, Record<string, unknown>> }> | undefined
-  )?.[templateId]?.sections?.[blueprintId];
+  const packTplId = schemaTemplateIdForConfigKey(templateId);
+  const defTpl =
+    (
+      packDefault.templates as Record<string, { sections?: Record<string, Record<string, unknown>> }> | undefined
+    )?.[templateId]?.sections?.[blueprintId] ??
+    (
+      packDefault.templates as Record<string, { sections?: Record<string, Record<string, unknown>> }> | undefined
+    )?.[packTplId]?.sections?.[blueprintId];
   if (defTpl && typeof defTpl === 'object') {
     const clone = JSON.parse(JSON.stringify(defTpl)) as Record<string, unknown>;
     clone.id = instanceId;
@@ -98,9 +104,12 @@ function ensureTemplateInConfig(
   }
   const templates = config.templates as Record<string, Record<string, unknown>>;
   if (!templates[templateId]) {
-    const defTpl = (
-      packDefault.templates as Record<string, Record<string, unknown>> | undefined
-    )?.[templateId];
+    const packTplId = schemaTemplateIdForConfigKey(templateId);
+    const defTpl =
+      (packDefault.templates as Record<string, Record<string, unknown>> | undefined)?.[templateId] ??
+      (packTplId !== templateId
+        ? (packDefault.templates as Record<string, Record<string, unknown>> | undefined)?.[packTplId]
+        : undefined);
     templates[templateId] = defTpl
       ? (JSON.parse(JSON.stringify(defTpl)) as Record<string, unknown>)
       : { sections: {}, section_order: [] };
@@ -113,8 +122,18 @@ function ensureTemplateInConfig(
 
 function insertIntoTemplateOrder(order: string[], instanceId: string, ctx: CreateThemeInsertContext): string[] {
   const next = [...order];
-  const anchorBefore = ctx.beforeNodeId?.match(/^template:[^:]+:(.+)$/)?.[1];
-  const anchorAfter = ctx.afterNodeId?.match(/^template:[^:]+:(.+)$/)?.[1];
+  const sectionFromNode = (nodeId?: string) => {
+    if (!nodeId?.startsWith('template:')) return undefined;
+    // template:{templateId}:{sectionId} — templateId may contain dots (pages.about)
+    const rest = nodeId.slice('template:'.length);
+    const lastColon = rest.lastIndexOf(':');
+    if (lastColon < 0) return undefined;
+    const sectionId = rest.slice(lastColon + 1);
+    if (!sectionId || sectionId === 'add-section') return undefined;
+    return sectionId;
+  };
+  const anchorBefore = sectionFromNode(ctx.beforeNodeId);
+  const anchorAfter = sectionFromNode(ctx.afterNodeId);
   if (anchorBefore) {
     const idx = next.indexOf(anchorBefore);
     if (idx >= 0) {

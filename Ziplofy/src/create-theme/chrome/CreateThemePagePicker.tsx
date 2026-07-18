@@ -57,6 +57,7 @@ import {
   createPageTemplateInConfig,
   listPageTemplates,
   pageTemplatePreviewPage,
+  writePageTemplateAssignments,
   type PageTemplateEntry,
 } from '../utils/page-templates.util';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
@@ -557,6 +558,21 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     []
   );
 
+  const applyPageHandleAssignmentsToThemeConfig = useCallback(
+    (assignments: Record<string, string>) => {
+      if (!themeConfig || !onThemeConfigChange) return;
+      const next = JSON.parse(JSON.stringify(themeConfig)) as Record<string, unknown>;
+      writePageTemplateAssignments(next, assignments);
+      setLivePagesAssignmentCounts(
+        Object.fromEntries(
+          listPageTemplates(next).map((t) => [t.id, t.assignedPageCount] as const)
+        )
+      );
+      onThemeConfigChange(next);
+    },
+    [themeConfig, onThemeConfigChange]
+  );
+
   const renderTemplateDrillDown = (
     title: string,
     templates: Array<{ id: string; name: string; isDefault: boolean; assignedCount: number }>,
@@ -926,6 +942,7 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
           onAssignmentsChanged={(counts) =>
             applyAssignmentCountsToThemeConfig(manageSheetKind, counts)
           }
+          onPageHandleAssignmentsSaved={applyPageHandleAssignmentsToThemeConfig}
         />
       ) : null}
     </>

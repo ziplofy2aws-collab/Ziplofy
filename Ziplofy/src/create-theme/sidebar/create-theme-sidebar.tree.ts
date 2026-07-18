@@ -4333,49 +4333,48 @@ export function buildShopifySidebarTree(
     : [];
 
   const templateSectionNodes: SidebarNode[] = [];
-  if (tpl?.sections?.length || templateSectionOrder.length) {
-    const tplSections = (tplConfig?.sections ?? {}) as Record<
-      string,
-      { type?: string; label?: string } | undefined
-    >;
-    const schemaSections = tpl?.sections ?? [];
-    for (const instanceId of templateSectionOrder) {
-      if (!tplSections[instanceId]) continue;
-      const blueprintId = templateBlueprintKey(instanceId);
-      const fromSchema = schemaSections.find((s) => (s.id ?? '') === blueprintId);
-      const cfgSec = tplSections[instanceId];
-      const sec =
-        fromSchema ??
-        ({
-          id: blueprintId,
-          type: typeof cfgSec?.type === 'string' ? cfgSec.type : blueprintId.replace(/_/g, '-'),
-          label:
-            typeof cfgSec?.label === 'string'
-              ? cfgSec.label
-              : blueprintId === 'main_blog'
-                ? 'Blog'
-                : blueprintId === 'blog_post_main'
-                  ? 'Blog posts'
-                  : blueprintId.replace(/_/g, ' '),
-          hasBlocks: true,
-          settingsFields: [],
-          blocks: [],
-        } as NonNullable<NonNullable<EditorSchemaDoc['templates']>[0]['sections']>[0]);
-      templateSectionNodes.push(
-        sectionToNode(sec, templateId, values, itemOrder, instanceId, config, schema)
-      );
-    }
-    tree.push({
-      id: 'group:template',
-      label: 'Template',
-      kind: 'group-label',
-      children: [
-        ...reorderSidebarChildren(templateSectionNodes, tplSectionsListKey, itemOrder),
-        { id: `template:${templateId}:add-section`, label: 'Add section', kind: 'add-section' },
-      ],
-      childrenListKey: tplSectionsListKey,
-    });
+  const tplSections = (tplConfig?.sections ?? {}) as Record<
+    string,
+    { type?: string; label?: string } | undefined
+  >;
+  const schemaSections = tpl?.sections ?? [];
+  for (const instanceId of templateSectionOrder) {
+    if (!tplSections[instanceId]) continue;
+    const blueprintId = templateBlueprintKey(instanceId);
+    const fromSchema = schemaSections.find((s) => (s.id ?? '') === blueprintId);
+    const cfgSec = tplSections[instanceId];
+    const sec =
+      fromSchema ??
+      ({
+        id: blueprintId,
+        type: typeof cfgSec?.type === 'string' ? cfgSec.type : blueprintId.replace(/_/g, '-'),
+        label:
+          typeof cfgSec?.label === 'string'
+            ? cfgSec.label
+            : blueprintId === 'main_blog'
+              ? 'Blog'
+              : blueprintId === 'blog_post_main'
+                ? 'Blog posts'
+                : blueprintId.replace(/_/g, ' '),
+        hasBlocks: true,
+        settingsFields: [],
+        blocks: [],
+      } as NonNullable<NonNullable<EditorSchemaDoc['templates']>[0]['sections']>[0]);
+    templateSectionNodes.push(
+      sectionToNode(sec, templateId, values, itemOrder, instanceId, config, schema)
+    );
   }
+  // Always show Template + Add section (empty page/product canvases must stay editable).
+  tree.push({
+    id: 'group:template',
+    label: 'Template',
+    kind: 'group-label',
+    children: [
+      ...reorderSidebarChildren(templateSectionNodes, tplSectionsListKey, itemOrder),
+      { id: `template:${templateId}:add-section`, label: 'Add section', kind: 'add-section' },
+    ],
+    childrenListKey: tplSectionsListKey,
+  });
 
   if (!hideLayoutChrome) {
     const footerOrder = config

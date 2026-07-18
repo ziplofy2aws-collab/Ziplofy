@@ -1,6 +1,8 @@
 /** Alternate page templates stored under `config.templates` (Shopify-style `pages.{slug}` keys). */
 
 export const PAGE_TEMPLATE_ORDER_KEY = 'page_template_order';
+/** urlHandle → stored themeTemplate value (`default` | `pages.{slug}`). Used by storefront with no extra API. */
+export const PAGE_TEMPLATE_ASSIGNMENTS_KEY = 'page_template_assignments';
 export const DEFAULT_PAGE_TEMPLATE_ID = 'pages';
 
 export type PageTemplateEntry = {
@@ -44,6 +46,84 @@ export function pageTemplateIdFromPreviewPage(page: string): string | null {
 
 export function isPageTemplatePreviewPage(page: string): boolean {
   return pageTemplateIdFromPreviewPage(page) !== null;
+}
+
+/** Map stored themeTemplate (`default` / `pages.foo`) → config template key. */
+export function pageThemeTemplateToConfigId(themeTemplate?: string | null): string {
+  const normalized = (themeTemplate ?? 'default').trim().toLowerCase();
+  if (!normalized || normalized === 'default' || normalized === DEFAULT_PAGE_TEMPLATE_ID) {
+    return DEFAULT_PAGE_TEMPLATE_ID;
+  }
+  if (normalized.startsWith(`${DEFAULT_PAGE_TEMPLATE_ID}.`)) return normalized;
+  return DEFAULT_PAGE_TEMPLATE_ID;
+}
+
+/** Read urlHandle → themeTemplate assignments from theme JSON. */
+export function readPageTemplateAssignments(
+  config: Record<string, unknown> | null | undefined
+): Record<string, string> {
+  if (!config) return {};
+  const raw = config[PAGE_TEMPLATE_ASSIGNMENTS_KEY];
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  const out: Record<string, string> = {};
+  for (const [handle, value] of Object.entries(raw as Record<string, unknown>)) {
+    const key = handle.trim().toLowerCase();
+    if (!key || typeof value !== 'string') continue;
+    const normalized = value.trim().toLowerCase();
+    if (!normalized) continue;
+    out[key] = normalized;
+  }
+  return out;
+}
+
+/**
+ * Replace page template assignments in theme JSON.
+ * `assignments` maps urlHandle → `default` | `pages.{slug}`.
+ * Also refreshes `assignedPageCount` on each page template bucket.
+ */
+export function writePageTemplateAssignments(
+  config: Record<string, unknown>,
+  assignments: Record<string, string>
+): void {
+  ensurePageTemplateRegistry(config);
+  const cleaned: Record<string, string> = {};
+  for (const [handle, value] of Object.entries(assignments)) {
+    const key = handle.trim().toLowerCase();
+    if (!key) continue;
+    const normalized = (value ?? 'default').trim().toLowerCase() || 'default';
+    cleaned[key] = normalized === DEFAULT_PAGE_TEMPLATE_ID ? 'default' : normalized;
+  }
+  config[PAGE_TEMPLATE_ASSIGNMENTS_KEY] = cleaned;
+
+  const counts: Record<string, number> = {};
+  for (const value of Object.values(cleaned)) {
+    const id = pageThemeTemplateToConfigId(value);
+    counts[id] = (counts[id] ?? 0) + 1;
+  }
+  const templates = templatesRecord(config);
+  for (const id of listPageTemplateOrder(config)) {
+    const tpl = templates[id];
+    if (!tpl) continue;
+    tpl.assignedPageCount = counts[id] ?? 0;
+  }
+}
+
+/**
+ * Resolve which `templates.*` key to render for a storefront `/pages/:urlHandle`
+ * using only the already-loaded theme JSON (no extra network call).
+ */
+export function resolvePageTemplateIdFromThemeConfig(
+  config: Record<string, unknown> | null | undefined,
+  urlHandle?: string | null
+): string {
+  const handle = (urlHandle ?? '').trim().toLowerCase();
+  if (!handle || handle === 'preview') return DEFAULT_PAGE_TEMPLATE_ID;
+
+  const assignments = readPageTemplateAssignments(config);
+  const requested = pageThemeTemplateToConfigId(assignments[handle]);
+  const templates = templatesRecord(config ?? {});
+  if (requested !== DEFAULT_PAGE_TEMPLATE_ID && templates[requested]) return requested;
+  return DEFAULT_PAGE_TEMPLATE_ID;
 }
 
 function readTemplateName(tpl: Record<string, unknown> | undefined, fallback: string): string {
@@ -135,6 +215,14 @@ export function ensurePageTemplateRegistry(config: Record<string, unknown>): voi
     }
   }
   config[PAGE_TEMPLATE_ORDER_KEY] = order;
+
+  if (
+    !config[PAGE_TEMPLATE_ASSIGNMENTS_KEY] ||
+    typeof config[PAGE_TEMPLATE_ASSIGNMENTS_KEY] !== 'object' ||
+    Array.isArray(config[PAGE_TEMPLATE_ASSIGNMENTS_KEY])
+  ) {
+    config[PAGE_TEMPLATE_ASSIGNMENTS_KEY] = {};
+  }
 }
 
 export type CreatePageTemplateResult =

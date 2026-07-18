@@ -40,6 +40,11 @@ type ManageThemeTemplatesSheetProps = {
   themeConfig?: Record<string, unknown> | null;
   /** Called after assignments change so the page picker can refresh counts. */
   onAssignmentsChanged?: (counts: Record<string, number>) => void;
+  /**
+   * Pages only: full urlHandle → themeTemplate map written into theme JSON
+   * (`page_template_assignments`) so the storefront can resolve without an API call.
+   */
+  onPageHandleAssignmentsSaved?: (assignments: Record<string, string>) => void;
 };
 
 const KIND_META: Record<
@@ -167,6 +172,7 @@ export function ManageThemeTemplatesSheet({
   onExited,
   themeConfig = null,
   onAssignmentsChanged,
+  onPageHandleAssignmentsSaved,
 }: ManageThemeTemplatesSheetProps) {
   const { activeStoreId } = useStore();
   const { products, fetchProductsByStoreId, updateProduct } = useProducts();
@@ -510,6 +516,17 @@ export function ManageThemeTemplatesSheet({
 
     setDirtyIds(new Set());
     emitCounts(rows);
+
+    if (kind === 'pages') {
+      const assignments: Record<string, string> = {};
+      for (const row of rows) {
+        const handle = row.subtitle?.trim().toLowerCase();
+        if (!handle) continue;
+        assignments[handle] = row.themeTemplate?.trim().toLowerCase() || 'default';
+      }
+      onPageHandleAssignmentsSaved?.(assignments);
+    }
+
     toast.success(
       toSave.length === 1
         ? 'Template assignment saved'
@@ -529,6 +546,7 @@ export function ManageThemeTemplatesSheet({
     activeStoreId,
     entityNoun,
     emitCounts,
+    onPageHandleAssignmentsSaved,
   ]);
 
   if (!mounted || !present) return null;

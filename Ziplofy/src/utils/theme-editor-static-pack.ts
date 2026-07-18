@@ -25,6 +25,7 @@ import { seedSectionEnabledValues } from './theme-editor-section-visibility.util
 import { THEME_PAGE_REGISTRY } from '../create-theme/utils/theme-page-registry';
 import { withAllProductsPageSchema } from './all-products-page-schema.util';
 import { withBlogPageSchemas } from './blog-page-schema.util';
+import { withPagesPageSchema } from './pages-page-schema.util';
 import { withPasswordPageSchema } from './password-page-schema.util';
 import { withNotFoundPageSchema } from './not-found-page-schema.util';
 import { withSearchPageSchema } from './search-page-schema.util';
@@ -483,6 +484,7 @@ export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchem
   return withNotFoundPageSchema(
     withPasswordPageSchema(
     withSearchPageSchema(
+    withPagesPageSchema(
     withBlogPageSchemas(
     withAllProductsPageSchema(
     withThemeVariantPickersSchema(
@@ -517,6 +519,7 @@ export function prepareCreatorEditorSchema(schema: EditorSchemaDoc): EditorSchem
     )
     )
     )
+  )
   )
   )
   )

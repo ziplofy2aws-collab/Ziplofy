@@ -88,11 +88,11 @@ export function useThemeConfig(): ThemeConfig | null {
   return useContext(ThemeConfigContext);
 }
 
-/** Read nested config path, e.g. sections.header.blocks.menu.settings.items.0.label */
-export function getThemeConfigValue(config: ThemeConfig | null, dotPath: string): unknown {
-  if (!config) return undefined;
+/** Walk a simple dot path (no dotted object keys). */
+function getBySimpleDotPath(root: unknown, dotPath: string): unknown {
+  if (!dotPath) return root;
   const parts = dotPath.split('.');
-  let cur: unknown = config;
+  let cur: unknown = root;
   for (const p of parts) {
     if (cur == null || typeof cur !== 'object') return undefined;
     if (Array.isArray(cur)) {
@@ -104,4 +104,29 @@ export function getThemeConfigValue(config: ThemeConfig | null, dotPath: string)
     cur = (cur as Record<string, unknown>)[p];
   }
   return cur;
+}
+
+/**
+ * Read nested config path, e.g. sections.header.blocks.menu.settings.items.0.label
+ * Template keys may contain dots (`product.sale`, `pages.about`) — match the longest
+ * known `config.templates` key before walking the rest of the path.
+ */
+export function getThemeConfigValue(config: ThemeConfig | null, dotPath: string): unknown {
+  if (!config) return undefined;
+
+  if (dotPath.startsWith('templates.')) {
+    const templates = (config as { templates?: Record<string, unknown> }).templates;
+    if (templates && typeof templates === 'object' && !Array.isArray(templates)) {
+      const rest = dotPath.slice('templates.'.length);
+      const keys = Object.keys(templates).sort((a, b) => b.length - a.length);
+      for (const key of keys) {
+        if (rest === key) return templates[key];
+        if (rest.startsWith(`${key}.`)) {
+          return getBySimpleDotPath(templates[key], rest.slice(key.length + 1));
+        }
+      }
+    }
+  }
+
+  return getBySimpleDotPath(config, dotPath);
 }

@@ -50,5 +50,7 @@ export function normalizeStorefrontPath(path: string): string {
   if (productLegacy) return productPath(decodeURIComponent(productLegacy[1]));
   const collectionPlural = trimmed.match(/^\/collections\/(?!all$)([^/?#]+)/);
   if (collectionPlural) return collectionPath(decodeURIComponent(collectionPlural[1]));
+  const pageSingular = trimmed.match(/^\/page\/([^/?#]+)/);
+  if (pageSingular) return pagePath(decodeURIComponent(pageSingular[1]));
   return trimmed;
 }

@@ -29,7 +29,7 @@ type StorefrontProvidersProps = {
 export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
   <StorefrontProvider>
     <StorefrontAccessProvider>
-      <Toaster position="top-right" />
+      <Toaster position="bottom-right" />
       <StorefrontAuthProvider>
       <PaymentProvider>
         <StorefrontProductVariantProvider>
