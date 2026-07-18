@@ -619,6 +619,7 @@ import {
   sectionEnabledPathFromNodeId,
 } from '../utils/theme-editor-section-visibility.util';
 import './chrome/create-theme-chrome.css';
+import { PageSwitchGlow } from './chrome/PageSwitchGlow';
 import { insertCreateThemeElement } from './_shared/insert-element';
 import { AddBlockModal } from '../components/themes/theme-editor-sidebar/AddBlockModal';
 import type { BlockCatalogItem } from '../components/themes/theme-editor-sidebar/add-block-catalog';
@@ -733,6 +734,21 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   );
   const [previewCollectionHandle, setPreviewCollectionHandle] = useState<string | null>(null);
   const [checkoutPreviewPage, setCheckoutPreviewPage] = useState<CheckoutEditorPage>('checkout');
+
+  // Flash a full-screen gradient border whenever the previewed page changes.
+  const [pageSwitchGlowKey, setPageSwitchGlowKey] = useState(0);
+  const pageSwitchGlowRef = useRef<string>('');
+  useEffect(() => {
+    const current = `${previewPage}|${checkoutPreviewPage}`;
+    if (!pageSwitchGlowRef.current) {
+      pageSwitchGlowRef.current = current;
+      return;
+    }
+    if (pageSwitchGlowRef.current !== current) {
+      pageSwitchGlowRef.current = current;
+      setPageSwitchGlowKey((key) => key + 1);
+    }
+  }, [previewPage, checkoutPreviewPage]);
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [inspectorEnabled, setInspectorEnabled] = useState(true);
   const [sidebarTab, setSidebarTab] = useState<ThemeEditorSidebarTab>('sections');
@@ -3952,6 +3968,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
   return (
     <div className="fixed inset-0 z-[1310] flex flex-col bg-[#1e1e1e]">
+      <PageSwitchGlow runKey={pageSwitchGlowKey} />
       {!isCheckoutProfile ? (
       <PreviewSyncProgressBar
         runKey={previewBarRunKey}

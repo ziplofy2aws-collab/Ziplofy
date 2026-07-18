@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowsPointingOutIcon,
+  PaperAirplaneIcon,
+  StopIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { CodiixFaceIcon } from './CodiixFaceIcon';
@@ -228,9 +230,11 @@ export function CodiixChatPanel({
   const thinkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const streamTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const introTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const generationSeq = useRef(0);
   const wasOpen = useRef(false);
   const hasIntroduced = useRef(getCodiixSessionHasIntroduced());
   const [introducing, setIntroducing] = useState(false);
+  const isGenerating = thinking || Boolean(streamingMessageId);
 
   const setDraft = useCallback((value: string | ((prev: string) => string)) => {
     setDraftState((prev) => {
@@ -303,6 +307,25 @@ export function CodiixChatPanel({
     };
   }, []);
 
+  const focusComposer = useCallback(() => {
+    requestAnimationFrame(() => inputRef.current?.focus());
+  }, []);
+
+  const stopGenerating = useCallback(() => {
+    generationSeq.current += 1;
+    if (thinkTimer.current) {
+      clearTimeout(thinkTimer.current);
+      thinkTimer.current = null;
+    }
+    if (streamTimer.current) {
+      clearInterval(streamTimer.current);
+      streamTimer.current = null;
+    }
+    setThinking(false);
+    setStreamingMessageId(null);
+    focusComposer();
+  }, [focusComposer]);
+
   const streamAssistant = useCallback((
     text: string,
     suggestions?: CodiixMessage['suggestions'],
@@ -316,7 +339,11 @@ export function CodiixChatPanel({
       structureHints?: CodiixMessage['structureHints'];
       editHelpHints?: CodiixMessage['editHelpHints'];
     },
+    seq?: number,
   ) => {
+    const activeSeq = seq ?? generationSeq.current;
+    if (activeSeq !== generationSeq.current) return;
+
     const messageId = uid();
     let visibleCharacters = 0;
 
@@ -329,6 +356,12 @@ export function CodiixChatPanel({
     ]);
 
     streamTimer.current = setInterval(() => {
+      if (activeSeq !== generationSeq.current) {
+        if (streamTimer.current) clearInterval(streamTimer.current);
+        streamTimer.current = null;
+        return;
+      }
+
       visibleCharacters = Math.min(text.length, visibleCharacters + 2);
       const complete = visibleCharacters >= text.length;
       setMessages((prev) =>
@@ -592,13 +625,19 @@ export function CodiixChatPanel({
       const trimmed = raw.trim();
       if (!trimmed || thinking || streamingMessageId) return;
 
+      const seq = ++generationSeq.current;
       setMessages((prev) => [...prev, { id: uid(), role: 'user', text: trimmed }]);
       setDraft('');
       setThinking(true);
+      // Keep the composer focused after send (do not disable the textarea —
+      // disabled inputs blur and force a re-tap).
+      focusComposer();
 
       const delay = 420 + Math.min(900, trimmed.length * 18);
       if (thinkTimer.current) clearTimeout(thinkTimer.current);
       thinkTimer.current = setTimeout(() => {
+        if (seq !== generationSeq.current) return;
+
         const match = matchCodiixIntent(trimmed, {
           agentic: agenticMode,
           pages,
@@ -637,7 +676,7 @@ export function CodiixChatPanel({
           editorActions,
           structureHints: match.structureHints,
           editHelpHints: match.editHelpHints,
-        });
+        }, seq);
       }, delay);
     },
     [
@@ -647,6 +686,7 @@ export function CodiixChatPanel({
       agenticMode,
       setMessages,
       setDraft,
+      focusComposer,
       runSaveCommand,
       runApplyCommand,
       runNavigateCommand,
@@ -662,10 +702,13 @@ export function CodiixChatPanel({
   const respondFromSuggestion = useCallback(
     (id: string, label: string) => {
       if (thinking || streamingMessageId) return;
+      const seq = ++generationSeq.current;
       setMessages((prev) => [...prev, { id: uid(), role: 'user', text: label }]);
       setThinking(true);
       if (thinkTimer.current) clearTimeout(thinkTimer.current);
       thinkTimer.current = setTimeout(() => {
+        if (seq !== generationSeq.current) return;
+
         const canned = answerForIntentId(id);
         const categoryId = categoryIdForIntent(id);
         const categoryActions =
@@ -753,7 +796,7 @@ export function CodiixChatPanel({
           editorActions: match.editorActions,
           structureHints: match.structureHints,
           editHelpHints: match.editHelpHints,
-        });
+        }, seq);
       }, 380);
     },
     [
@@ -1105,17 +1148,32 @@ export function CodiixChatPanel({
               : 'Try “move Contact form above Email signup”…'
           }
           className="codiix-composer__input"
-          disabled={thinking || Boolean(streamingMessageId)}
+          aria-busy={isGenerating}
           aria-label="Message Codiix"
         />
-        <button
-          type="submit"
-          className="codiix-composer__send"
-          disabled={thinking || Boolean(streamingMessageId) || !draft.trim()}
-          aria-label="Send"
-        >
-          Send
-        </button>
+        {isGenerating ? (
+          <button
+            type="button"
+            className="codiix-composer__send codiix-composer__send--stop"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={stopGenerating}
+            aria-label="Stop generating"
+            title="Stop"
+          >
+            <StopIcon className="codiix-composer__send-icon" aria-hidden />
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="codiix-composer__send"
+            disabled={!draft.trim()}
+            onMouseDown={(e) => e.preventDefault()}
+            aria-label="Send"
+            title="Send"
+          >
+            <PaperAirplaneIcon className="codiix-composer__send-icon" aria-hidden />
+          </button>
+        )}
       </form>
     </div>
   );

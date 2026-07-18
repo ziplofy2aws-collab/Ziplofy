@@ -791,15 +791,26 @@
 }
 
 .codiix-composer__send {
+  display: inline-flex;
   height: 2.5rem;
+  width: 2.5rem;
+  flex: 0 0 2.5rem;
+  align-items: center;
+  justify-content: center;
   border: 0;
-  border-radius: 10px;
+  border-radius: 999px;
   background: #111111;
-  padding: 0 0.9rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  padding: 0;
   color: #fff;
   cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.codiix-composer__send-icon {
+  height: 1.05rem;
+  width: 1.05rem;
 }
 
 .codiix-composer__send:disabled {
@@ -808,6 +819,15 @@
 }
 
 .codiix-composer__send:not(:disabled):hover {
+  background: #262626;
+  transform: translateY(-1px);
+}
+
+.codiix-composer__send--stop {
+  background: #111111;
+}
+
+.codiix-composer__send--stop:hover {
   background: #262626;
 }
 

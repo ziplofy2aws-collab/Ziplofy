@@ -10,7 +10,7 @@ export type CodiixIntent = {
   categoryId?: string;
 };
 
-/** Curated theme-creator help — grounded in what Ziplofy can actually do. */
+/** Curated theme-creator help — grounded in what Codiic can actually do. */
 export const CODIX_INTENTS: CodiixIntent[] = [
   {
     id: 'whats-new',
@@ -891,7 +891,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       '3. **Two fonts max** — heading personality + readable body\n' +
       '4. **Consistent imagery** — same light, crop, and mood across Hero + products\n' +
       '5. **Same UI habits** — buttons, corners, spacing rhythm, Header/Footer calm and stable\n\n' +
-      'In Ziplofy, do it in this order:\n\n' +
+      'In Codiic, do it in this order:\n\n' +
       '1. **Theme settings** → colors, typography, buttons\n' +
       '2. **Header** logo + navigation (your everyday brand face)\n' +
       '3. **Hero** as the personality moment\n' +
@@ -980,7 +980,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'best practice layout',
     ],
     answer:
-      'A strong Ziplofy homepage usually flows like this:\n\n' +
+      'A strong Codiic homepage usually flows like this:\n\n' +
       '1. **Announcement bar** + **Header**\n' +
       '2. **Hero** (clear offer + CTA)\n' +
       '3. **Featured collection** (grid or carousel)\n' +
@@ -1039,7 +1039,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'see contact messages',
     ],
     answer:
-      '**Contact form** submissions are stored for your store (merchant inbox / submissions area in Ziplofy admin).\n\n' +
+      '**Contact form** submissions are stored for your store (merchant inbox / submissions area in Codiic admin).\n\n' +
       '• Add the Contact form section on a page shoppers can reach.\n' +
       '• Test with your own email once.\n' +
       '• **Email signup** is separate — that’s for newsletter / marketing capture, not full contact messages.\n\n' +
@@ -1296,7 +1296,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'yo',
     ],
     answer:
-      'Hey — I’m **Codiix**, your theme helper.\n\n' +
+      'Hey — I’m **Codiix**, an AI built by **Codiic** to help with your themes, store, and day-to-day work.\n\n' +
       'Ask me things like:\n\n' +
       '• “What are product elements?”\n' +
       '• “How do I change colors?”\n' +
@@ -1328,7 +1328,7 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       '• I’m not browsing your personal life or camera.\n' +
       '• I don’t need Agentic mode to answer questions.\n' +
       '• Agentic actions only run when **you** tap an Add button.\n\n' +
-      'Your real store data (products, orders, form submissions) stays in Ziplofy — not in this chat playbook.',
+      'Your real store data (products, orders, form submissions) stays in Codiic — not in this chat playbook.',
   },
   {
     id: 'cant-do-that',
@@ -1403,12 +1403,12 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'who is codiix',
     ],
     answer:
-      'I’m **Codiix** — your theme-creator helper inside Ziplofy.\n\n' +
-      '• I help you understand sections, layout, forms, products, and settings.\n' +
-      '• I stay focused on what this theme editor can actually do.\n' +
+      'I’m **Codiix** — an AI built by **Codiic** to help you make themes, run your store, and get things done with a simpler experience.\n\n' +
+      '• I help with theme sections, layout, forms, products, and settings.\n' +
+      '• I stay focused on what Codiic can actually do for you.\n' +
       '• I’m not a living person — I can’t breathe, see you, or feel the world.\n' +
       '• What I *can* do is guide you clearly, and (with **Agentic mode**) help you add sections like a Header or Hero.\n\n' +
-      'Ask me anything about the theme creator — or say “who built you?” if you’re curious about my makers.',
+      'Ask me anything — or say “who built you?” if you’re curious about my makers.',
   },
   {
     id: 'codiix-creator',
@@ -1429,7 +1429,6 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'company',
       'team',
       'codiic',
-      'ziplofy',
     ],
     phrases: [
       'who built you',
@@ -1449,11 +1448,10 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'made by whom',
     ],
     answer:
-      'I was built by the **Codiic** team for **Codiic**.\n\n' +
-      '• **Codiix** = the helper you chat with in the theme creator.\n' +
-      '• **Codiic** = the product team that designed and shipped me.\n' +
-      '• **Ziplofy** = the store platform where this theme editor lives.\n\n' +
-      'My job is simple: help merchants build themes faster — with clear answers, and optional Agentic actions when you want me to add sections for you.',
+      'I was built by **Codiic**.\n\n' +
+      '• **Codiic** = the platform where you build and run your store.\n' +
+      '• **Codiix** = an AI built by Codiic to help you make themes, manage your store, and keep the whole experience easy and simple.\n\n' +
+      'Whenever you need a hand — ask away, or turn on **Agentic mode** when you want me to add sections for you.',
   },
 ];
 

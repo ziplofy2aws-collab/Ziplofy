@@ -1,3 +1,79 @@
+/* Full-screen "AI is working" gradient border shown on page switches */
+@property --ctpsg-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.create-theme-page-switch-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+  animation: ctpsg-fade 2.2s ease-in-out forwards;
+}
+
+.create-theme-page-switch-glow::before,
+.create-theme-page-switch-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  /* Soft translucent hues with transparent stretches, so the ring
+     drifts like wisps of cloud instead of a solid neon band */
+  background: conic-gradient(
+    from var(--ctpsg-angle),
+    transparent 0deg,
+    rgba(129, 140, 248, 0.55) 40deg,
+    rgba(196, 181, 253, 0.35) 90deg,
+    transparent 140deg,
+    rgba(103, 232, 249, 0.45) 190deg,
+    rgba(165, 180, 252, 0.3) 240deg,
+    transparent 290deg,
+    rgba(244, 114, 182, 0.35) 330deg,
+    transparent 360deg
+  );
+  filter: blur(0.5px);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: ctpsg-rotate 6s linear infinite;
+}
+
+/* Faint haze hugging the ring */
+.create-theme-page-switch-glow::after {
+  padding: 6px;
+  filter: blur(10px);
+  opacity: 0.25;
+  animation-direction: reverse;
+}
+
+@keyframes ctpsg-rotate {
+  to {
+    --ctpsg-angle: 360deg;
+  }
+}
+
+@keyframes ctpsg-fade {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  65% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes create-theme-settings-in {
   from {
     opacity: 0;
