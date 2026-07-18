@@ -1,4 +1,12 @@
-import React, { startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  startTransition,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useNavigate, useLocation, useSearchParams, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
@@ -749,6 +757,12 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const [itemOrder, setItemOrder] = useState<Record<string, string[]>>({});
   const [structureSyncKey, setStructureSyncKey] = useState(0);
   const [structureDragging, setStructureDragging] = useState(false);
+  /** Pending flat-value sync after a store-menu apply (must not run inside setState). */
+  const pendingStoreMenuValueSyncRef = useRef<{
+    itemValuePaths: Record<string, string>;
+    itemsPath: string;
+    navItemCount: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!structureDragging) return;
@@ -2884,27 +2898,45 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
   const handleStoreMenuSelect = useCallback(
     (menuFieldPath: string, menu: StoreMenu, items: StoreMenuItem[]) => {
+      const menuMeta = {
+        _id: String(menu._id),
+        menuName: String(menu.menuName ?? ''),
+      };
       setDefaultConfig((prev) => {
         if (!prev) return prev;
         const { config, itemValuePaths, itemsPath, navItemCount } = applyStoreMenuSelectionToConfig(
           prev,
           menuFieldPath,
-          menu,
+          menuMeta,
           items
         );
-        // Sync values immediately (not startTransition) so preview merge cannot
-        // re-apply stale items.N.label/href paths and resurrect phantom links.
-        setValues((v) => ({
-          ...pruneStaleHeaderMenuItemValues(v, itemsPath, navItemCount),
-          ...itemValuePaths,
-        }));
-        commitPreviewNow();
-        setStructureSyncKey((k) => k + 1);
+        // Defer value sync to useLayoutEffect — calling setValues inside this
+        // updater races with applyValuesToThemeConfig and can leave the header
+        // on stale items.N.label/href after an in-place menu edit.
+        pendingStoreMenuValueSyncRef.current = {
+          itemValuePaths,
+          itemsPath,
+          navItemCount,
+        };
         return config;
       });
     },
-    [commitPreviewNow]
+    []
   );
+
+  useLayoutEffect(() => {
+    const pending = pendingStoreMenuValueSyncRef.current;
+    if (!pending) return;
+    pendingStoreMenuValueSyncRef.current = null;
+    setValues((v) => ({
+      ...pruneStaleHeaderMenuItemValues(v, pending.itemsPath, pending.navItemCount),
+      ...pending.itemValuePaths,
+    }));
+    if (defaultConfig) {
+      setItemOrder(readStructureOrderFromConfig(defaultConfig, previewPage));
+    }
+    setStructureSyncKey((k) => k + 1);
+  }, [defaultConfig, previewPage]);
 
   const handleCollectionLinksApply = useCallback(
     (settingsPath: string, collections: Collection[]) => {

@@ -2068,6 +2068,9 @@ export function applyValuesToThemeConfig(
         key === 'caption' ||
         key === 'linkLabel' ||
         key === 'linkUrl' ||
+        key === 'label' ||
+        key === 'href' ||
+        key === 'menuName' ||
         key === 'buttonStyle' ||
         key === 'buttonDesktopWidth' ||
         key === 'buttonMobileWidth'

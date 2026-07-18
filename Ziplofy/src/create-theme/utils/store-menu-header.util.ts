@@ -129,22 +129,24 @@ export function applyStoreMenuSelectionToConfig(
   const next = JSON.parse(JSON.stringify(config)) as Record<string, unknown>;
   const navItems = headerNavItemsFromStoreMenuItems(items);
   const itemsPath = menuItemsPathFromMenuFieldPath(menuFieldPath);
+  const menuId = String(menu._id);
+  const menuName = String(menu.menuName ?? '');
 
-  setConfigAtPath(next, menuFieldPath, menu._id);
-  setConfigAtPath(next, `${menuFieldPath.replace(/\.menu$/, '.menuName')}`, menu.menuName);
+  setConfigAtPath(next, menuFieldPath, menuId);
+  setConfigAtPath(next, `${menuFieldPath.replace(/\.menu$/, '.menuName')}`, menuName);
   setConfigAtPath(next, itemsPath, navItems);
   syncMenuNestedBlockOrder(next, menuFieldPath, navItems.length);
 
   return {
     config: next,
-    menuId: menu._id,
-    menuName: menu.menuName,
+    menuId,
+    menuName,
     itemsPath,
     navItemCount: navItems.length,
     itemValuePaths: {
       ...valuePathsForHeaderMenuItems(itemsPath, navItems),
-      [menuFieldPath]: menu._id,
-      [`${menuFieldPath.replace(/\.menu$/, '.menuName')}`]: menu.menuName,
+      [menuFieldPath]: menuId,
+      [`${menuFieldPath.replace(/\.menu$/, '.menuName')}`]: menuName,
     },
   };
 }
