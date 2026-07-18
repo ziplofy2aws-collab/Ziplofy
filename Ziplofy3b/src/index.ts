@@ -28,6 +28,7 @@ import { collectionsRouter } from './routes/collections.route';
 import { companyRouter } from './routes/company.route';
 import { storeMenuRouter } from './routes/store-menu.route';
 import { storePageRouter } from './routes/store-page.route';
+import storeCheckoutConfigurationRouter from './routes/store-checkout-configuration.route';
 import { customerAddressRouter } from './routes/customer-address.route';
 import { customerTagsRouter } from './routes/customer-tags.route';
 import { customerTimelineRouter } from './routes/customer-timeline.route';
@@ -141,6 +142,7 @@ import { storeFrontBlogCommentRouter } from './routes/storefront/storefront-blog
 import { storeFrontContactFormSubmissionRouter } from './routes/storefront/storefront-contact-form-submission.route';
 import { storeFrontNewsletterSubscriptionRouter } from './routes/storefront/storefront-newsletter-subscription.route';
 import { storeFrontPoliciesRouter } from './routes/storefront/storefront-policies.route';
+import { storeFrontCheckoutConfigurationRouter } from './routes/storefront/storefront-checkout-configuration.route';
 import { storefrontCustomerRouter } from './routes/storefront/storefront-customer.route';
 import { taxAndDutiesGlobalSettingsRouter } from './routes/tax-and-duties-global-settings.route';
 import { taxRateDefaultRouter } from './routes/tax-rate-default.route';
@@ -224,6 +226,7 @@ app.use("/api/transfer-entries", transferEntryRouter);
 app.use("/api/collections", collectionsRouter);
 app.use("/api/store-menus", storeMenuRouter);
 app.use("/api/store-pages", storePageRouter);
+app.use("/api/store-checkout-configurations", storeCheckoutConfigurationRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/blog-posts", blogPostRouter);
 app.use("/api/blog-comments", blogCommentRouter);
@@ -237,6 +240,10 @@ app.use("/api/storefront/blog-comments", storeFrontBlogCommentRouter);
 app.use("/api/storefront/contact-form-submissions", storeFrontContactFormSubmissionRouter);
 app.use("/api/storefront/newsletter-subscriptions", storeFrontNewsletterSubscriptionRouter);
 app.use("/api/storefront/policies", storeFrontPoliciesRouter);
+app.use(
+  "/api/storefront/checkout-configuration",
+  storeFrontCheckoutConfigurationRouter
+);
 app.use("/api/collection-entries", collectionEntryRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/packaging", packagingRouter);
