@@ -156,14 +156,6 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     routes: [],
   },
   {
-    pageId: 'gift-card',
-    templateId: 'gift-card',
-    label: 'Gift card',
-    icon: 'gift',
-    previewPath: '/',
-    routes: [],
-  },
-  {
     pageId: 'cart',
     templateId: 'cart',
     label: 'Cart',
@@ -415,7 +407,6 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     ],
   },
   { previewPage: 'collections-list', label: 'Collections list', icon: 'collection' },
-  { previewPage: 'gift-card', label: 'Gift card', icon: 'gift' },
   { previewPage: 'cart', label: 'Cart', icon: 'cart', dividerBefore: true },
   {
     previewPage: 'checkout',

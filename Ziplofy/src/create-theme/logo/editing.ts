@@ -69,8 +69,13 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
-      "key": "colorScheme",
-      "label": "Color scheme",
+      "key": "backgroundColor",
+      "label": "Background color",
+      "type": "text"
+    },
+    {
+      "key": "textColor",
+      "label": "Text color",
       "type": "text"
     },
     {
@@ -82,16 +87,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "defaultLogoUrl",
-      "label": "Default logo",
-      "type": "text"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": []

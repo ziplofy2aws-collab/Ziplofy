@@ -328,6 +328,11 @@ import {
   storytellingVideoSettingsBaseFromNodeId,
 } from './sidebar/theme-editor-storytelling-video-panel.utils';
 import {
+  extendStorytellingLogoAppearanceValues,
+  isStorytellingLogoSectionNodeId,
+  storytellingLogoSettingsBaseFromNodeId,
+} from './sidebar/theme-editor-storytelling-logo-panel.utils';
+import {
   extendImageWithTextContentGroupValues,
   imageWithTextContentGroupCustomSizeFieldDefs,
   imageWithTextContentGroupFieldDefs,
@@ -1711,6 +1716,21 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         ? applyValuesToThemeConfig(draft, prev, editorSchema)
         : draft;
       return extendStorytellingVideoSectionValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Storytelling Logo Content + Appearance values from merged config. */
+  useEffect(() => {
+    if (!defaultConfig || !isStorytellingLogoSectionNodeId(selectedNodeId)) return;
+    const settingsBase = storytellingLogoSettingsBaseFromNodeId(selectedNodeId);
+    if (!settingsBase) return;
+
+    setValues((prev) => {
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendStorytellingLogoAppearanceValues(prev, settingsBase, config);
     });
   }, [selectedNodeId, editorSchema, defaultConfig]);
 

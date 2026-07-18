@@ -2006,6 +2006,7 @@ export function applyValuesToThemeConfig(
         key === 'colorScheme' ||
         key === 'customCss' ||
         key === 'coverImageUrl' ||
+        key === 'logoText' ||
         key === 'videoBorderStyle' ||
         key === 'videoBorderColor' ||
         key === 'captionWidth' ||

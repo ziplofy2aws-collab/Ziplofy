@@ -4,6 +4,7 @@ import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import type { SectionRuntimeProps } from '../../runtime/types';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import {
   readStorytellingLogoLayout,
@@ -54,6 +55,17 @@ export function StorytellingLogo({
   const logoLinkUrl = cfgString(config, `${settingsBase}.logoLinkUrl`, '/');
 
   const scheme = style.scheme;
+
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
+  const textColorRaw = cfgString(config, `${settingsBase}.textColor`, '');
+  const backgroundColor =
+    backgroundColorRaw && backgroundColorRaw !== 'default'
+      ? resolveThemePaletteColorSetting(config, backgroundColorRaw, 1, scheme.background)
+      : scheme.background;
+  const textColor =
+    textColorRaw && textColorRaw !== 'default'
+      ? resolveThemePaletteColorSetting(config, textColorRaw, 1, scheme.color)
+      : scheme.color;
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : maxWidth;
   const scopeClass = `codiic-storytelling-logo-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
@@ -62,8 +74,8 @@ export function StorytellingLogo({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: scheme.background,
-    color: scheme.color,
+    background: backgroundColor,
+    color: textColor,
     paddingTop: style.paddingTop,
     paddingBottom: style.paddingBottom,
     paddingLeft: horizontalPad,
@@ -94,7 +106,7 @@ export function StorytellingLogo({
     lineHeight: 1.05,
     fontFamily: logoFontFamily(style.logoFont, { fontHeading, fontBody }),
     ...logoFontStyle(style.logoFont),
-    color: scheme.color,
+    color: textColor,
   };
 
   const logoMark = logoImageUrl ? (

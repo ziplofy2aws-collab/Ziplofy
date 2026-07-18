@@ -11083,7 +11083,6 @@ function StorytellingLogoLayoutSettingsGroup({
 }) {
   const width = fields.find((f) => f.path.endsWith('sectionWidth'));
   const alignment = fields.find((f) => f.path.endsWith('layoutAlignment'));
-  const scheme = fields.find((f) => f.path.endsWith('colorScheme'));
 
   return (
     <div className="px-1 py-3">
@@ -11095,22 +11094,76 @@ function StorytellingLogoLayoutSettingsGroup({
         {alignment ? (
           <SegmentedFieldRow field={alignment} values={values} onFieldChange={onFieldChange} />
         ) : null}
-        {scheme ? (
-          <ColorSchemeFieldRow field={scheme} values={values} onFieldChange={onFieldChange} />
-        ) : null}
       </div>
     </div>
   );
 }
 
-/** Storytelling Logo: Font → Size → Layout → Padding → Theme settings → Custom CSS. */
+const STORYTELLING_LOGO_TEXT_DEBOUNCE_MS = 300;
+
+function StorytellingLogoTextFieldRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+}) {
+  const id = fieldInputId(field.path);
+  const external = fieldValueAsString(values, field);
+  const [draft, setDraft] = useState(external);
+  const debouncedDraft = useDebouncedValue(draft, STORYTELLING_LOGO_TEXT_DEBOUNCE_MS);
+  const focusedRef = useRef(false);
+
+  useEffect(() => {
+    setDraft(external);
+    focusedRef.current = false;
+  }, [field.path]);
+
+  useEffect(() => {
+    if (!focusedRef.current) setDraft(external);
+  }, [external]);
+
+  useEffect(() => {
+    if (debouncedDraft === external) return;
+    onFieldChange(field.path, 'text', debouncedDraft);
+  }, [debouncedDraft, external, field.path, onFieldChange]);
+
+  return (
+    <div className="space-y-1.5 py-1">
+      <label htmlFor={id} className="block text-[13px] font-medium text-gray-800">
+        {field.label}
+      </label>
+      <input
+        id={id}
+        type="text"
+        value={draft}
+        placeholder={field.placeholder ?? 'My Store'}
+        onFocus={() => {
+          focusedRef.current = true;
+        }}
+        onBlur={() => {
+          focusedRef.current = false;
+          if (draft !== external) onFieldChange(field.path, 'text', draft);
+        }}
+        onChange={(event) => setDraft(event.target.value)}
+        className="w-full rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+      />
+    </div>
+  );
+}
+
+/** Storytelling Logo: Content → Font → Size → Layout → Appearance → Padding. */
 function StorytellingLogoGroupedSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupStorytellingLogoPanelFields(fields), [fields]);
@@ -11119,31 +11172,41 @@ function StorytellingLogoGroupedSettingsPanel({
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
-      {fontField ? (
-        <div className="space-y-2 px-1 py-3">
-          <SelectFieldRow field={fontField} values={values} onFieldChange={onFieldChange} />
-          <p className="text-[12px] text-gray-500">
-            Edit logo in{' '}
-            <button
-              type="button"
-              className="text-[#005bd3] underline underline-offset-2 hover:text-[#004299]"
-              onClick={() => window.open('/settings/theme', '_blank', 'noopener,noreferrer')}
-            >
-              theme settings
-            </button>
-          </p>
-        </div>
-      ) : null}
-
       {STORYTELLING_LOGO_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length || label === 'Typography') return null;
+        if (!groupFields?.length && label !== 'Typography') return null;
+
+        if (label === 'Content') {
+          const textField = groupFields?.find((f) => f.path.endsWith('logoText'));
+          if (!textField) return null;
+          return (
+            <div key={label} className="space-y-1 px-1 py-3">
+              <StorytellingLogoTextFieldRow
+                field={{
+                  ...textField,
+                  placeholder: textField.placeholder ?? 'My Store',
+                }}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            </div>
+          );
+        }
+
+        if (label === 'Typography') {
+          if (!fontField) return null;
+          return (
+            <div key={label} className="space-y-2 px-1 py-3">
+              <SelectFieldRow field={fontField} values={values} onFieldChange={onFieldChange} />
+            </div>
+          );
+        }
 
         if (label === 'Size') {
           return (
             <StorytellingLogoSizeSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -11154,10 +11217,42 @@ function StorytellingLogoGroupedSettingsPanel({
           return (
             <StorytellingLogoLayoutSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
+          );
+        }
+
+        if (label === 'Appearance') {
+          const backgroundField = groupFields!.find((f) => f.path.endsWith('backgroundColor'));
+          const textField = groupFields!.find((f) => f.path.endsWith('textColor'));
+          return (
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
+              <div className="space-y-1">
+                {backgroundField ? (
+                  <ThemeDefaultColorField
+                    label={backgroundField.label}
+                    path={backgroundField.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    emptyLabel="Default"
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {textField ? (
+                  <ThemeDefaultColorField
+                    label={textField.label}
+                    path={textField.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    emptyLabel="Default"
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+              </div>
+            </div>
           );
         }
 
@@ -11165,37 +11260,10 @@ function StorytellingLogoGroupedSettingsPanel({
           return (
             <HeroPaddingSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Theme Settings') {
-          return (
-            <CollapsibleSettingsGroup
-              key={label}
-              label="Theme settings"
-              fields={groupFields}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -20627,6 +20695,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <StorytellingLogoGroupedSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isStorytellingVideoCaptionGroupPanel ? (

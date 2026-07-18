@@ -54,7 +54,6 @@ const EXTRA_ALIASES: Record<string, string[]> = {
   '404': ['404', '404 page', 'not found', 'not found page', 'error page'],
   blogs: ['blog', 'blog page', 'default blog', 'blogs'],
   'blog-posts': ['blog post', 'blog posts', 'article', 'article page', 'post'],
-  'gift-card': ['gift card', 'giftcard', 'gift cards'],
   pages: ['pages', 'static page', 'custom page'],
 };
 
@@ -158,7 +157,6 @@ export function buildCodiixPageOptions(
     'blog-posts',
     '404',
     'password',
-    'gift-card',
     'checkout',
   ];
   options.sort((a, b) => {
