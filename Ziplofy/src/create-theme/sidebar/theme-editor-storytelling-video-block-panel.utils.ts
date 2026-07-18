@@ -123,25 +123,33 @@ export function storytellingVideoBlockFieldDefs(
         widget: 'color',
         sidebar: true,
       },
-      {
-        path: s('captionBackgroundEnabled'),
-        type: 'boolean',
-        label: 'Background',
-        group: 'Appearance',
-        sidebar: true,
-      },
-      {
-        path: s('captionPaddingTop'),
-        type: 'number',
-        label: 'Top',
-        group: 'Padding',
-        widget: 'slider',
-        min: 0,
-        max: 100,
-        step: 1,
-        unit: 'px',
-        sidebar: true,
-      },
+    {
+      path: s('captionBackgroundEnabled'),
+      type: 'boolean',
+      label: 'Background',
+      group: 'Appearance',
+      sidebar: true,
+    },
+    {
+      path: s('captionBackgroundColor'),
+      type: 'color',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s('captionPaddingTop'),
+      type: 'number',
+      label: 'Top',
+      group: 'Padding',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
       {
         path: s('captionPaddingBottom'),
         type: 'number',
@@ -300,6 +308,7 @@ const STORYTELLING_VIDEO_TEXT_FIELD_KEYS = new Set([
   'captionTypographyPreset',
   'captionColor',
   'captionBackgroundEnabled',
+  'captionBackgroundColor',
   'captionPaddingTop',
   'captionPaddingBottom',
   'captionPaddingLeft',
@@ -370,4 +379,59 @@ export function prepareStorytellingVideoBlockSettingsNode(node: SidebarNode): Si
   const fromNode = storytellingVideoBlockFieldDefsFromNodeId(node.id);
   const fields = fromNode.length > 0 ? fromNode : (node.fields ?? []).filter(isStorytellingVideoBlockField);
   return { ...node, label, kind: 'block', fields };
+}
+
+const STORYTELLING_VIDEO_CONTENT_DEFAULTS: Record<string, string | boolean> = {
+  caption: 'Take a look behind the scenes of our latest product launch.',
+  captionWidth: 'fit',
+  captionMaxWidth: 'normal',
+  captionTypographyPreset: 'default',
+  captionColor: '',
+  captionBackgroundEnabled: false,
+  captionBackgroundColor: '',
+  captionPaddingTop: '0',
+  captionPaddingBottom: '0',
+  captionPaddingLeft: '0',
+  captionPaddingRight: '0',
+  linkLabel: 'Discover the collection',
+  linkUrl: '/collections',
+  linkOpenInNewTab: false,
+  buttonStyle: 'link',
+  buttonLinkTextColor: '',
+  buttonCustomBackground: '#111827',
+  buttonCustomText: '#ffffff',
+  buttonDesktopWidth: 'fit',
+  buttonDesktopCustomWidth: '100',
+  buttonMobileWidth: 'fit',
+  buttonMobileCustomWidth: '100',
+};
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+/** Seed Text / Button field values from config (or defaults). */
+export function extendStorytellingVideoContentBlockValues(
+  values: Record<string, string | boolean>,
+  fields: EditorFieldDef[],
+  config: Record<string, unknown> | null
+): Record<string, string | boolean> {
+  const next = { ...values };
+  for (const field of fields) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw !== undefined && raw !== null) {
+      next[field.path] = field.type === 'boolean' ? Boolean(raw) : String(raw);
+      continue;
+    }
+    const key = field.path.split('.').pop() ?? '';
+    const fallback = STORYTELLING_VIDEO_CONTENT_DEFAULTS[key];
+    if (fallback !== undefined) next[field.path] = fallback;
+  }
+  return next;
 }

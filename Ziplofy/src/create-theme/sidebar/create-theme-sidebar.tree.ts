@@ -274,6 +274,7 @@ import {
 import {
   isStorytellingVideoSectionType,
   isStorytellingVideoSettingsPanelFields,
+  isStorytellingVideoSectionNodeId,
   prepareStorytellingVideoSettingsNode,
 } from './theme-editor-storytelling-video-panel.utils';
 import {
@@ -4942,6 +4943,10 @@ export function settingsNodeForSelection(
     return prepareStorytellingVideoCaptionGroupSettingsNode(node);
   }
 
+  if (isStorytellingVideoSectionNodeId(node.id)) {
+    return prepareStorytellingVideoSettingsNode(node);
+  }
+
   if (isStorytellingVideoBlockNodeId(node.id)) {
     const fields = storytellingVideoBlockFieldDefsFromNodeId(node.id);
     if (fields.length) {
@@ -5638,6 +5643,11 @@ export function settingsNodeForSelection(
     return prepareEditorialSettingsNode(node);
   }
 
+  // Video before Editorial jumbo — shared layout keys used to mislabel Video as Jumbo text.
+  if (node.fields?.length && isStorytellingVideoSettingsPanelFields(node.fields)) {
+    return prepareStorytellingVideoSettingsNode(node);
+  }
+
   if (node.fields?.length && isEditorialJumboSettingsPanelFields(node.fields)) {
     return prepareEditorialJumboSettingsNode(node);
   }
@@ -5650,9 +5660,6 @@ export function settingsNodeForSelection(
   }
   if (node.fields?.length && isStorytellingLogoSettingsPanelFields(node.fields)) {
     return prepareStorytellingLogoSettingsNode(node);
-  }
-  if (node.fields?.length && isStorytellingVideoSettingsPanelFields(node.fields)) {
-    return prepareStorytellingVideoSettingsNode(node);
   }
   if (isFaqAccordionBlockNodeId(node.id)) {
     const fields = editorSchema
@@ -5762,6 +5769,10 @@ export function settingsNodeForSelection(
 
   if (isStorytellingVideoCaptionGroupNodeId(node.id)) {
     return prepareStorytellingVideoCaptionGroupSettingsNode(node);
+  }
+
+  if (isStorytellingVideoSectionNodeId(node.id)) {
+    return prepareStorytellingVideoSettingsNode(node);
   }
 
   if (isStorytellingVideoBlockNodeId(node.id)) {

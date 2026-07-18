@@ -238,7 +238,34 @@ export const CODIX_INTENTS: CodiixIntent[] = [
       'Yes — Header and Footer act like a shared layout.\n\n' +
       'By default, other pages (product, collection, search, 404, etc.) use the homepage header and footer. ' +
       'Edit them once on the home template and they carry across.\n\n' +
-      'Announcement bar and header sit in the **Header** group; footer sections sit in **Footer**.',
+      'Announcement bar and header sit in the **Header** group; footer sections sit in **Footer**.\n\n' +
+      'Tip: You can edit the **Announcement bar** by chatting with me — e.g. “change announcement text to Free shipping”.',
+  },
+  {
+    id: 'edit-announcement-bar',
+    suggestion: 'Edit announcement bar by chat?',
+    keywords: [
+      'announcement bar',
+      'announcement text',
+      'promo bar',
+      'edit announcement',
+      'change announcement',
+    ],
+    phrases: [
+      'edit announcement bar',
+      'change announcement bar',
+      'announcement bar settings',
+      'edit the announcement',
+    ],
+    answer:
+      'Yes — I can edit the **Announcement bar** from chat (no need to open the panel).\n\n' +
+      'Try:\n' +
+      '• **change announcement text to Free shipping today**\n' +
+      '• **set announcement background to black**\n' +
+      '• **change announcement text color to white**\n' +
+      '• **hide announcement bar** / **show announcement bar**\n' +
+      '• **set announcement link to /collections/all**\n\n' +
+      'If you don’t have one yet, turn on **Agentic mode** and say **add announcement bar**.',
   },
   {
     id: 'hero',
@@ -454,9 +481,12 @@ export const CODIX_INTENTS: CodiixIntent[] = [
     keywords: ['reorder', 'drag', 'move', 'order', 'arrange'],
     phrases: ['reorder sections', 'move section', 'drag section'],
     answer:
-      'Drag sections up or down in the left sidebar tree.\n\n' +
-      'Header / Template / Footer groups stay separate — you’re reordering within each group. ' +
-      'The preview updates to match the new order.',
+      'Drag sections up or down in the left sidebar tree — or just tell me.\n\n' +
+      'Examples:\n' +
+      '• **move Contact form above Email signup**\n' +
+      '• **put Hero below Announcement bar**\n' +
+      '• **move FAQ to the top**\n\n' +
+      'I only reorder within the same group (Header, Template, or Footer).',
   },
 
   // ── Wider coverage (feels closer to a real assistant) ──

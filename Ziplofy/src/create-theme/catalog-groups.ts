@@ -66,7 +66,6 @@ export const CREATE_THEME_CATALOG_GROUPS: Record<CreateThemeCatalogGroup, Create
         "layout": {
           "label": "Layout",
           "itemIds": [
-            "custom-section",
             "divider"
           ]
         },
@@ -142,7 +141,6 @@ export const CREATE_THEME_CATALOG_GROUPS: Record<CreateThemeCatalogGroup, Create
         "layout": {
           "label": "Layout",
           "itemIds": [
-            "custom-section",
             "divider"
           ]
         },

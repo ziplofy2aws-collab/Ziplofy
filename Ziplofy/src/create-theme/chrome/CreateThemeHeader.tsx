@@ -9,6 +9,8 @@ import {
   CodiixChatPanel,
   CodiixFaceIcon,
   buildCodiixPageOptions,
+  buildCodiixStructure,
+  resolveAnnouncementContext,
   type CodiixApplyResult,
   type CodiixNavigateResult,
   type CodiixSaveResult,
@@ -17,6 +19,7 @@ import { CreateThemePagePicker } from './CreateThemePagePicker';
 import { InspectorToggleIcon } from './InspectorToggleIcon';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
 import type { ThemePreviewPage } from './CreateThemeLivePreview';
+import type { ThemeEditorFieldType } from '../sidebar/create-theme-field.utils';
 
 type Props = {
   themeName: string;
@@ -27,6 +30,8 @@ type Props = {
   manifest: Record<string, unknown> | null;
   editorSchema: EditorSchemaDoc | null;
   themeConfig?: Record<string, unknown> | null;
+  /** Live preview config (values applied) — used for Codiix edits / structure. */
+  liveThemeConfig?: Record<string, unknown> | null;
   onThemeConfigChange?: (config: Record<string, unknown>, previewPage?: ThemePreviewPage) => void;
   device: 'desktop' | 'mobile';
   onDeviceChange: (device: 'desktop' | 'mobile') => void;
@@ -44,6 +49,17 @@ type Props = {
   themeAlreadyApplied?: boolean;
   /** Agentic Codiix — insert a create-theme element by id. */
   onAgenticInsert?: (elementId: string) => boolean | void;
+  /** Codiix reorder — same path as sidebar drag (listKey + ordered node ids). */
+  onReorderSections?: (listKey: string, orderedIds: string[]) => boolean | void;
+  /** Live section order for the current page (preferred over reading config alone). */
+  itemOrder?: Record<string, string[]>;
+  /** Codiix announcement-bar field edits (same path as settings panel). */
+  onEditField?: (
+    path: string,
+    fieldType: ThemeEditorFieldType,
+    value: string | boolean,
+    selectNodeId?: string,
+  ) => boolean | void;
 };
 
 const iconBtn =
@@ -58,6 +74,7 @@ export function CreateThemeHeader({
   manifest,
   editorSchema,
   themeConfig,
+  liveThemeConfig,
   onThemeConfigChange,
   device,
   onDeviceChange,
@@ -72,6 +89,9 @@ export function CreateThemeHeader({
   applyingTheme = false,
   themeAlreadyApplied = false,
   onAgenticInsert,
+  onReorderSections,
+  itemOrder,
+  onEditField,
 }: Props) {
   const [moreMenuAnchor, setMoreMenuAnchor] = useState<HTMLElement | null>(null);
   const [codiixOpen, setCodiixOpen] = useState(false);
@@ -82,6 +102,17 @@ export function CreateThemeHeader({
   const codiixPages = useMemo(
     () => buildCodiixPageOptions(manifest, editorSchema, themeConfig),
     [manifest, editorSchema, themeConfig],
+  );
+
+  const structureConfig = liveThemeConfig ?? themeConfig;
+  const codiixStructure = useMemo(
+    () => buildCodiixStructure(structureConfig, previewPage, itemOrder),
+    [structureConfig, previewPage, itemOrder],
+  );
+
+  const announcement = useMemo(
+    () => resolveAnnouncementContext(structureConfig),
+    [structureConfig],
   );
 
   const closeMoreMenu = useCallback(() => setMoreMenuAnchor(null), []);
@@ -240,6 +271,10 @@ export function CreateThemeHeader({
         pages={codiixPages}
         currentPageId={previewPage}
         onNavigatePage={handleCodiixNavigate}
+        structure={codiixStructure}
+        onReorderSections={onReorderSections}
+        announcement={announcement}
+        onEditField={onEditField}
       />
     </header>
   );

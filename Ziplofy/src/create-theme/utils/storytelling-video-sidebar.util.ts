@@ -162,8 +162,6 @@ export function storytellingVideoLayoutStructureOrder(
 }
 
 const CONTENT_FIELD_TO_BLOCK: Record<string, string> = {
-  videoSource: 'video',
-  uploadedVideoUrl: 'video',
   videoUrl: 'video',
   coverImageUrl: 'video',
   videoAutoplay: 'video',

@@ -14,6 +14,17 @@ import {
   type CodiixPageAction,
   type CodiixPageOption,
 } from './codiix-pages';
+import {
+  matchReorderCommand,
+  type CodiixReorderPlan,
+  type CodiixStructureSection,
+} from './codiix-reorder';
+import {
+  matchAnnouncementEditCommand,
+  resolveAnnouncementContext,
+  type CodiixAnnouncementContext,
+  type CodiixEditPlan,
+} from './codiix-edit-announcement';
 
 function normalize(text: string): string {
   return text
@@ -49,7 +60,13 @@ function scoreIntent(query: string, intent: CodiixIntent): number {
 }
 
 /** Global editor commands — work in any mode (not Agentic-only). */
-export type CodiixSystemAction = 'save' | 'apply' | 'navigate' | 'list-pages';
+export type CodiixSystemAction =
+  | 'save'
+  | 'apply'
+  | 'navigate'
+  | 'list-pages'
+  | 'reorder'
+  | 'edit';
 
 export type CodiixMatch = {
   intentId: string | null;
@@ -65,6 +82,10 @@ export type CodiixMatch = {
   pageActions?: CodiixPageAction[];
   /** One-tap editor actions (e.g. Apply theme after save). */
   editorActions?: { id: string; label: string; action: 'apply' }[];
+  reorderPlan?: CodiixReorderPlan;
+  structureHints?: { id: string; label: string }[];
+  editPlan?: CodiixEditPlan;
+  editHelpHints?: { id: string; label: string }[];
 };
 
 export type CodiixMatchOptions = {
@@ -72,6 +93,8 @@ export type CodiixMatchOptions = {
   pages?: CodiixPageOption[];
   currentPageId?: string;
   previousPageId?: string | null;
+  structure?: CodiixStructureSection[];
+  announcement?: CodiixAnnouncementContext | null;
 };
 
 /** “Save my changes” / “alright save” — not “what is save” / “save vs apply”. */
@@ -211,6 +234,55 @@ export function matchCodiixIntent(
       ],
       systemAction: 'apply',
     };
+  }
+
+  // Announcement bar edits (any mode) — first element with chat editing.
+  {
+    const editHit = matchAnnouncementEditCommand(raw, options?.announcement ?? null);
+    if (editHit) {
+      return {
+        intentId:
+          editHit.mode === 'edit'
+            ? 'edit-announcement'
+            : editHit.mode === 'missing'
+              ? 'edit-announcement-missing'
+              : 'edit-announcement-help',
+        answer: editHit.answer,
+        relatedSuggestions: [
+          { id: 'header-elements', label: 'What are header elements?' },
+          { id: 'reorder', label: 'How do I reorder sections?' },
+          { id: 'save-apply', label: 'Save vs Apply theme' },
+        ],
+        systemAction: editHit.mode === 'edit' ? 'edit' : undefined,
+        editPlan: editHit.plan,
+        editHelpHints: editHit.helpHints,
+      };
+    }
+  }
+
+  // Reorder sections on the current page (any mode).
+  const structure = options?.structure ?? [];
+  if (structure.length || /\b(move|reorder|sections|structure)\b/.test(query)) {
+    const reorderHit = matchReorderCommand(query, structure);
+    if (reorderHit) {
+      return {
+        intentId:
+          reorderHit.mode === 'reorder'
+            ? 'reorder-command'
+            : reorderHit.mode === 'list'
+              ? 'structure-list'
+              : 'reorder-suggest',
+        answer: reorderHit.answer,
+        relatedSuggestions: [
+          { id: 'reorder', label: 'How do I reorder sections?' },
+          { id: 'pages-templates', label: 'Pages & templates' },
+          { id: 'agentic-mode', label: 'What is Agentic mode?' },
+        ],
+        systemAction: reorderHit.mode === 'reorder' ? 'reorder' : undefined,
+        reorderPlan: reorderHit.plan,
+        structureHints: reorderHit.structureHints,
+      };
+    }
   }
 
   // Page navigation — any mode, using the same pages as the top selector.

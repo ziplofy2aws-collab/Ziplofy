@@ -18,6 +18,9 @@ export type CodiixMessage = {
   previewElementId?: string;
   pageActions?: CodiixPageAction[];
   editorActions?: CodiixEditorAction[];
+  structureHints?: { id: string; label: string }[];
+  /** Example announcement-edit chips (tap to draft a command). */
+  editHelpHints?: { id: string; label: string }[];
 };
 
 /**

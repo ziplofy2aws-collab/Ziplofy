@@ -315,8 +315,18 @@ import {
   storytellingVideoMediaFieldDefs,
 } from './sidebar/theme-editor-storytelling-video-media-panel.utils';
 import {
+  extendStorytellingVideoContentBlockValues,
+  isStorytellingVideoCaptionButtonBlockNodeId,
+  isStorytellingVideoCaptionTextBlockNodeId,
   isStorytellingVideoMediaBlockNodeId,
+  storytellingVideoBlockFieldDefsFromNodeId,
 } from './sidebar/theme-editor-storytelling-video-block-panel.utils';
+import {
+  extendStorytellingVideoSectionValues,
+  isStorytellingVideoSectionNodeId,
+  storytellingVideoSectionFieldDefs,
+  storytellingVideoSettingsBaseFromNodeId,
+} from './sidebar/theme-editor-storytelling-video-panel.utils';
 import {
   extendImageWithTextContentGroupValues,
   imageWithTextContentGroupCustomSizeFieldDefs,
@@ -1685,6 +1695,48 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     });
   }, [selectedNodeId, editorSchema, defaultConfig]);
 
+  /** Seed Storytelling Video section settings field paths. */
+  useEffect(() => {
+    if (!defaultConfig || !isStorytellingVideoSectionNodeId(selectedNodeId)) return;
+    const settingsBase = storytellingVideoSettingsBaseFromNodeId(selectedNodeId);
+    if (!settingsBase) return;
+    const defs = storytellingVideoSectionFieldDefs(settingsBase);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendStorytellingVideoSectionValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Storytelling Video Caption → Text / Button field paths. */
+  useEffect(() => {
+    if (
+      !defaultConfig ||
+      (!isStorytellingVideoCaptionTextBlockNodeId(selectedNodeId) &&
+        !isStorytellingVideoCaptionButtonBlockNodeId(selectedNodeId))
+    ) {
+      return;
+    }
+    const defs = storytellingVideoBlockFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendStorytellingVideoContentBlockValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
   /** Seed Image with text Image block field paths. */
   useEffect(() => {
     if (!defaultConfig || !isImageWithTextImageBlockNodeIdForSeed(selectedNodeId)) return;
@@ -2057,7 +2109,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     if (!defaultConfig || !isStorytellingVideoMediaBlockNodeId(selectedNodeId)) return;
     const paths = storytellingVideoSidebarPathsFromNodeId(selectedNodeId);
     if (!paths) return;
-    const defs = storytellingVideoMediaFieldDefs(paths.settingsBase);
+    // Media field defs expect section base WITHOUT trailing `.settings`.
+    const sectionBase = paths.settingsBase.replace(/\.settings$/, '');
+    const defs = storytellingVideoMediaFieldDefs(sectionBase);
     if (!defs.length) return;
 
     setValues((prev) => {
@@ -2894,6 +2948,39 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       setStructureSyncKey((k) => k + 1);
     },
     [previewPage]
+  );
+
+  const handleAgenticReorder = useCallback(
+    (listKey: string, orderedIds: string[]): boolean => {
+      if (!defaultConfig) {
+        toast.error('Theme is still loading');
+        return false;
+      }
+      if (!listKey || !orderedIds.length) return false;
+      handleReorder(listKey, orderedIds);
+      toast.success('Section order updated');
+      return true;
+    },
+    [defaultConfig, handleReorder]
+  );
+
+  const handleCodiixEditField = useCallback(
+    (
+      path: string,
+      fieldType: ThemeEditorFieldType,
+      value: string | boolean,
+      selectNodeId?: string,
+    ): boolean => {
+      if (!defaultConfig) {
+        toast.error('Theme is still loading');
+        return false;
+      }
+      if (!path) return false;
+      handleFieldChange(path, fieldType, value);
+      if (selectNodeId) setSelectedNodeId(selectNodeId);
+      return true;
+    },
+    [defaultConfig, handleFieldChange],
   );
 
   const handleReorderPreview = useCallback(
@@ -3857,6 +3944,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         manifest={manifest}
         editorSchema={editorSchema}
         themeConfig={defaultConfig}
+        liveThemeConfig={livePreviewConfig}
         onThemeConfigChange={handleThemeConfigFromPicker}
         device={device}
         onDeviceChange={setDevice}
@@ -3871,6 +3959,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         applyingTheme={applyingTheme}
         themeAlreadyApplied={themeAlreadyApplied}
         onAgenticInsert={handleAgenticInsert}
+        onReorderSections={handleAgenticReorder}
+        itemOrder={itemOrder}
+        onEditField={handleCodiixEditField}
       />
       ) : (
         <CheckoutEditorHeader

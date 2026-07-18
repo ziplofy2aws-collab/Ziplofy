@@ -15,6 +15,15 @@ import {
   type CodiixPageAction,
   type CodiixPageOption,
 } from './codiix-pages';
+import {
+  type CodiixReorderPlan,
+  type CodiixStructureSection,
+} from './codiix-reorder';
+import {
+  type CodiixAnnouncementContext,
+  type CodiixEditPlan,
+} from './codiix-edit-announcement';
+import type { ThemeEditorFieldType } from '../sidebar/create-theme-field.utils';
 import { CODIX_SUGGESTIONS } from './codiix-knowledge';
 import {
   answerForIntentId,
@@ -56,6 +65,19 @@ type Props = {
   pages?: CodiixPageOption[];
   currentPageId?: string;
   onNavigatePage?: (pageId: string) => CodiixNavigateResult | void;
+  /** Current page section tree (header / template / footer). */
+  structure?: CodiixStructureSection[];
+  /** Reorder sections — same path as sidebar drag. */
+  onReorderSections?: (listKey: string, orderedIds: string[]) => boolean | void;
+  /** Announcement bar context for chat editing. */
+  announcement?: CodiixAnnouncementContext | null;
+  /** Patch a settings field (same as the settings panel). */
+  onEditField?: (
+    path: string,
+    fieldType: ThemeEditorFieldType,
+    value: string | boolean,
+    selectNodeId?: string,
+  ) => boolean | void;
 };
 
 function greetingForNow(): string {
@@ -189,6 +211,10 @@ export function CodiixChatPanel({
   pages = [],
   currentPageId,
   onNavigatePage,
+  structure = [],
+  onReorderSections,
+  announcement = null,
+  onEditField,
 }: Props) {
   const [draft, setDraftState] = useState(() => getCodiixSessionDraft());
   const [messages, setMessagesState] = useState<CodiixMessage[]>(() => getCodiixSessionMessages());
@@ -287,6 +313,8 @@ export function CodiixChatPanel({
       previewElementId?: string;
       pageActions?: CodiixMessage['pageActions'];
       editorActions?: CodiixMessage['editorActions'];
+      structureHints?: CodiixMessage['structureHints'];
+      editHelpHints?: CodiixMessage['editHelpHints'];
     },
   ) => {
     const messageId = uid();
@@ -316,6 +344,8 @@ export function CodiixChatPanel({
                 previewElementId: complete ? extras?.previewElementId : undefined,
                 pageActions: complete ? extras?.pageActions : undefined,
                 editorActions: complete ? extras?.editorActions : undefined,
+                structureHints: complete ? extras?.structureHints : undefined,
+                editHelpHints: complete ? extras?.editHelpHints : undefined,
               }
             : message,
         ),
@@ -438,6 +468,45 @@ export function CodiixChatPanel({
     );
   }, [onApplyTheme, applyThemeDisabled]);
 
+  const runReorderCommand = useCallback(
+    (plan: CodiixReorderPlan): string => {
+      if (!onReorderSections) {
+        return (
+          'I can’t reorder sections right now.\n\n' +
+          'Drag them in the left sidebar, or try again in a moment.'
+        );
+      }
+      const ok = onReorderSections(plan.listKey, plan.orderedIds);
+      if (ok === false) {
+        return (
+          `I couldn’t move **${plan.moveLabel}**.\n\n` +
+          'Make sure both sections are on this page and in the same group (Header, Template, or Footer).'
+        );
+      }
+      return plan.edge === 'before'
+        ? `Done — **${plan.moveLabel}** is now above **${plan.targetLabel}**.`
+        : `Done — **${plan.moveLabel}** is now below **${plan.targetLabel}**.`;
+    },
+    [onReorderSections],
+  );
+
+  const runEditCommand = useCallback(
+    (plan: CodiixEditPlan): string => {
+      if (!onEditField) {
+        return (
+          'I can’t edit settings right now.\n\n' +
+          'Select the Announcement bar in the sidebar and edit it there.'
+        );
+      }
+      const ok = onEditField(plan.path, plan.fieldType, plan.value, plan.selectNodeId);
+      if (ok === false) {
+        return `I couldn’t update **${plan.label}**. Try again in a moment.`;
+      }
+      return `Done — ${plan.summary.toLowerCase().replace(/\.$/, '')}.`;
+    },
+    [onEditField],
+  );
+
   const runEditorAction = useCallback(
     (action: NonNullable<CodiixMessage['editorActions']>[number]) => {
       if (busyActionId || thinking || streamingMessageId) return;
@@ -535,6 +604,8 @@ export function CodiixChatPanel({
           pages,
           currentPageId,
           previousPageId: previousPageId.current,
+          structure,
+          announcement,
         });
         const followUps =
           match.relatedSuggestions.length > 0
@@ -552,6 +623,10 @@ export function CodiixChatPanel({
           editorActions = undefined;
         } else if (match.systemAction === 'navigate' && match.pageTargetId) {
           answer = runNavigateCommand(match.pageTargetId);
+        } else if (match.systemAction === 'reorder' && match.reorderPlan) {
+          answer = runReorderCommand(match.reorderPlan);
+        } else if (match.systemAction === 'edit' && match.editPlan) {
+          answer = runEditCommand(match.editPlan);
         }
 
         streamAssistant(answer, followUps, match.actions, {
@@ -560,6 +635,8 @@ export function CodiixChatPanel({
           previewElementId: match.previewElementId,
           pageActions: match.pageActions,
           editorActions,
+          structureHints: match.structureHints,
+          editHelpHints: match.editHelpHints,
         });
       }, delay);
     },
@@ -573,8 +650,12 @@ export function CodiixChatPanel({
       runSaveCommand,
       runApplyCommand,
       runNavigateCommand,
+      runReorderCommand,
+      runEditCommand,
       pages,
       currentPageId,
+      structure,
+      announcement,
     ],
   );
 
@@ -619,6 +700,8 @@ export function CodiixChatPanel({
             pages,
             currentPageId,
             previousPageId: previousPageId.current,
+            structure,
+            announcement,
           });
         }
         const followUps =
@@ -642,11 +725,25 @@ export function CodiixChatPanel({
           answer +=
             '\n\nOr just tell me — e.g. **“take me to cart”**, **“switch to product page”**, or **“go back”**.';
         }
+        if (id === 'reorder' && structure.length) {
+          answer +=
+            '\n\nOr say it here — e.g. **“move Contact form above Email signup”**.';
+          match.structureHints = structure.slice(0, 8).map((s) => ({
+            id: s.nodeId,
+            label: s.label,
+          }));
+        }
         if (match.systemAction === 'navigate' && match.pageTargetId) {
           answer = runNavigateCommand(match.pageTargetId);
         }
         if (match.systemAction === 'apply') {
           answer = runApplyCommand();
+        }
+        if (match.systemAction === 'reorder' && match.reorderPlan) {
+          answer = runReorderCommand(match.reorderPlan);
+        }
+        if (match.systemAction === 'edit' && match.editPlan) {
+          answer = runEditCommand(match.editPlan);
         }
         streamAssistant(answer, followUps, actions, {
           relatedActions: match.relatedActions,
@@ -654,6 +751,8 @@ export function CodiixChatPanel({
           previewElementId: match.previewElementId,
           pageActions: match.pageActions,
           editorActions: match.editorActions,
+          structureHints: match.structureHints,
+          editHelpHints: match.editHelpHints,
         });
       }, 380);
     },
@@ -665,8 +764,12 @@ export function CodiixChatPanel({
       setMessages,
       pages,
       currentPageId,
+      structure,
+      announcement,
       runNavigateCommand,
       runApplyCommand,
+      runReorderCommand,
+      runEditCommand,
     ],
   );
 
@@ -900,6 +1003,56 @@ export function CodiixChatPanel({
                       </div>
                     </div>
                   ) : null}
+                  {m.structureHints && m.structureHints.length > 0 ? (
+                    <div className="codiix-related">
+                      <p className="codiix-related__label">On this page — tap to start a move</p>
+                      <div className="codiix-chips codiix-chips--inline">
+                        {m.structureHints.map((hint) => (
+                          <button
+                            key={hint.id}
+                            type="button"
+                            className="codiix-chip"
+                            onClick={() => {
+                              setDraft(`move ${hint.label} above `);
+                              window.setTimeout(() => inputRef.current?.focus(), 40);
+                            }}
+                            title={`Move ${hint.label}…`}
+                          >
+                            {hint.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {m.editHelpHints && m.editHelpHints.length > 0 ? (
+                    <div className="codiix-related">
+                      <p className="codiix-related__label">Try an announcement edit</p>
+                      <div className="codiix-chips codiix-chips--inline">
+                        {m.editHelpHints.map((hint) => (
+                          <button
+                            key={hint.id}
+                            type="button"
+                            className="codiix-chip"
+                            onClick={() => {
+                              const drafts: Record<string, string> = {
+                                'ann-text': 'change announcement text to ',
+                                'ann-bg': 'set announcement background to ',
+                                'ann-color': 'change announcement text color to ',
+                                'ann-hide': 'hide announcement bar',
+                                'ann-show': 'show announcement bar',
+                                'ann-link': 'set announcement link to ',
+                              };
+                              setDraft(drafts[hint.id] ?? `${hint.label} `);
+                              window.setTimeout(() => inputRef.current?.focus(), 40);
+                            }}
+                            title={hint.label}
+                          >
+                            {hint.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                   {m.suggestions && m.suggestions.length > 0 ? (
                     <div className="codiix-chips codiix-chips--inline">
                       {m.suggestions.map((s) => (
@@ -948,8 +1101,8 @@ export function CodiixChatPanel({
           onKeyDown={onKeyDown}
           placeholder={
             agenticMode
-              ? 'Try “hero”, “take me to cart”, “apply theme”…'
-              : 'Try “save my work”, “apply theme”, “switch page”…'
+              ? 'Try “hero”, “move FAQ above Hero”, “apply theme”…'
+              : 'Try “move Contact form above Email signup”…'
           }
           className="codiix-composer__input"
           disabled={thinking || Boolean(streamingMessageId)}

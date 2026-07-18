@@ -1323,6 +1323,7 @@ const COLLECTION_LIST_HEADER_GROUP_SETTING_TYPES: Record<string, string> = {
   borderStyle: 'select',
   borderThickness: 'number',
   borderOpacity: 'number',
+  borderColor: 'text',
   cornerRadius: 'number',
   backgroundOverlay: 'boolean',
   linkUrl: 'text',
@@ -1950,7 +1951,11 @@ export function applyValuesToThemeConfig(
         key === 'headingBackgroundEnabled' ||
         key === 'descBackgroundEnabled' ||
         key === 'backgroundEnabled' ||
-        key === 'showSalePriceFirst'
+        key === 'showSalePriceFirst' ||
+        key === 'captionBackgroundEnabled' ||
+        key === 'videoAutoplay' ||
+        key === 'videoLoop' ||
+        key === 'linkOpenInNewTab'
       ) {
         type = 'boolean';
       } else if (
@@ -1964,11 +1969,27 @@ export function applyValuesToThemeConfig(
         key === 'descPaddingBottom' ||
         key === 'descPaddingLeft' ||
         key === 'descPaddingRight' ||
+        key === 'captionPaddingTop' ||
+        key === 'captionPaddingBottom' ||
+        key === 'captionPaddingLeft' ||
+        key === 'captionPaddingRight' ||
+        key === 'videoWidth' ||
+        key === 'videoMobileWidth' ||
+        key === 'videoCornerRadius' ||
+        key === 'videoPaddingTop' ||
+        key === 'videoPaddingBottom' ||
+        key === 'videoPaddingLeft' ||
+        key === 'videoPaddingRight' ||
+        key === 'videoBorderThickness' ||
+        key === 'videoBorderOpacity' ||
+        key === 'buttonDesktopCustomWidth' ||
+        key === 'buttonMobileCustomWidth' ||
         key === 'paddingTop' ||
         key === 'paddingBottom' ||
         key === 'paddingLeft' ||
         key === 'paddingRight' ||
         key === 'borderThickness' ||
+        key === 'borderOpacity' ||
         key === 'cornerRadius'
       ) {
         type = 'number';
@@ -1981,8 +2002,21 @@ export function applyValuesToThemeConfig(
         key === 'backgroundMedia' ||
         key === 'backgroundImageUrl' ||
         key === 'borderStyle' ||
+        key === 'borderColor' ||
         key === 'colorScheme' ||
-        key === 'customCss'
+        key === 'customCss' ||
+        key === 'coverImageUrl' ||
+        key === 'videoBorderStyle' ||
+        key === 'videoBorderColor' ||
+        key === 'captionWidth' ||
+        key === 'captionMaxWidth' ||
+        key === 'captionTypographyPreset' ||
+        key === 'caption' ||
+        key === 'linkLabel' ||
+        key === 'linkUrl' ||
+        key === 'buttonStyle' ||
+        key === 'buttonDesktopWidth' ||
+        key === 'buttonMobileWidth'
       ) {
         type = 'text';
       } else if (

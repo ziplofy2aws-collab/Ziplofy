@@ -10,8 +10,6 @@ export const STORYTELLING_VIDEO_MEDIA_PANEL_GROUP_ORDER = [
 const PANEL_GROUPS = new Set<string>(STORYTELLING_VIDEO_MEDIA_PANEL_GROUP_ORDER);
 
 export const STORYTELLING_VIDEO_MEDIA_FIELD_KEYS = new Set([
-  'videoSource',
-  'uploadedVideoUrl',
   'videoUrl',
   'coverImageUrl',
   'videoAutoplay',
@@ -19,6 +17,9 @@ export const STORYTELLING_VIDEO_MEDIA_FIELD_KEYS = new Set([
   'videoWidth',
   'videoMobileWidth',
   'videoBorderStyle',
+  'videoBorderThickness',
+  'videoBorderOpacity',
+  'videoBorderColor',
   'videoCornerRadius',
   'videoPaddingTop',
   'videoPaddingBottom',
@@ -28,8 +29,6 @@ export const STORYTELLING_VIDEO_MEDIA_FIELD_KEYS = new Set([
 
 export function storytellingVideoMediaDefaultSettings(): Record<string, string | number | boolean> {
   return {
-    videoSource: 'uploaded',
-    uploadedVideoUrl: '',
     videoUrl: '',
     coverImageUrl: '',
     videoAutoplay: false,
@@ -37,6 +36,9 @@ export function storytellingVideoMediaDefaultSettings(): Record<string, string |
     videoWidth: 100,
     videoMobileWidth: 100,
     videoBorderStyle: 'none',
+    videoBorderThickness: 1,
+    videoBorderOpacity: 100,
+    videoBorderColor: '',
     videoCornerRadius: 0,
     videoPaddingTop: 0,
     videoPaddingBottom: 0,
@@ -49,33 +51,12 @@ export function storytellingVideoMediaFieldDefs(sectionBase: string): EditorFiel
   const s = (key: string) => `${sectionBase}.settings.${key}`;
   return [
     {
-      path: s('videoSource'),
-      type: 'select',
-      label: 'Source',
-      group: 'General',
-      widget: 'select',
-      sidebar: true,
-      options: [
-        { value: 'uploaded', label: 'Uploaded' },
-        { value: 'url', label: 'URL' },
-      ],
-    },
-    {
-      path: s('uploadedVideoUrl'),
-      type: 'text',
-      label: 'Video',
-      group: 'General',
-      widget: 'video',
-      sidebar: true,
-    },
-    {
       path: s('videoUrl'),
       type: 'text',
       label: 'Video URL',
       group: 'General',
-      widget: 'link',
       sidebar: true,
-      placeholder: 'YouTube or Vimeo URL',
+      placeholder: 'Paste a YouTube/Vimeo link or embed URL',
     },
     {
       path: s('coverImageUrl'),
@@ -135,6 +116,38 @@ export function storytellingVideoMediaFieldDefs(sectionBase: string): EditorFiel
         { value: 'none', label: 'None' },
         { value: 'solid', label: 'Solid' },
       ],
+    },
+    {
+      path: s('videoBorderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s('videoBorderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    },
+    {
+      path: s('videoBorderColor'),
+      type: 'color',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: true,
     },
     {
       path: s('videoCornerRadius'),
@@ -202,16 +215,17 @@ export function storytellingVideoMediaFieldDefs(sectionBase: string): EditorFiel
 function fieldSortKey(path: string): number {
   const key = path.split('.').pop() ?? '';
   const rank: Record<string, number> = {
-    videoSource: 0,
-    uploadedVideoUrl: 1,
-    videoUrl: 2,
-    coverImageUrl: 3,
-    videoAutoplay: 4,
-    videoLoop: 5,
+    videoUrl: 0,
+    coverImageUrl: 1,
+    videoAutoplay: 2,
+    videoLoop: 3,
     videoWidth: 10,
     videoMobileWidth: 11,
     videoBorderStyle: 20,
-    videoCornerRadius: 21,
+    videoBorderThickness: 21,
+    videoBorderOpacity: 22,
+    videoBorderColor: 23,
+    videoCornerRadius: 24,
     videoPaddingTop: 30,
     videoPaddingBottom: 31,
     videoPaddingLeft: 32,
@@ -232,7 +246,7 @@ export function isStorytellingVideoMediaPanelFields(fields: EditorFieldDef[]): b
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
   const path = fields[0]?.path ?? '';
-  return keys.has('videoSource') && keys.has('videoAutoplay') && path.includes('storytelling_video');
+  return keys.has('videoUrl') && keys.has('videoAutoplay') && path.includes('storytelling_video');
 }
 
 export function groupStorytellingVideoMediaPanelFields(

@@ -129,9 +129,17 @@ export function editorialJumboSectionFieldDefs(settingsBase: string): EditorFiel
 
 export function editorialJumboSettingsBaseFromNodeId(nodeId: string): string | null {
   const layout = nodeId.match(/^layout:([^:]+)$/);
-  if (layout) return `sections.${layout[1]}.settings`;
+  if (layout) {
+    const secId = layout[1]!;
+    if (!secId.includes('editorial_jumbo')) return null;
+    return `sections.${secId}.settings`;
+  }
   const tpl = nodeId.match(/^template:([^:]+):([^:]+)$/);
-  if (tpl) return `templates.${tpl[1]}.sections.${tpl[2]}.settings`;
+  if (tpl) {
+    const secId = tpl[2]!;
+    if (!secId.includes('editorial_jumbo')) return null;
+    return `templates.${tpl[1]}.sections.${secId}.settings`;
+  }
   return null;
 }
 
@@ -174,10 +182,14 @@ export function groupEditorialJumboPanelFields(fields: EditorFieldDef[]): Map<st
 
 export function isEditorialJumboSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
+  const path = fields[0]?.path ?? '';
+  // Video / other layout sections also have sectionWidth + backgroundColor — require jumbo-only keys.
+  if (path.includes('storytelling_video')) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  if (!keys.has('sectionWidth')) return false;
+  if (!keys.has('sectionWidth') || !keys.has('mediaPosition')) return false;
   if (keys.has('headline') || keys.has('imageUrl') || keys.has('mediaType')) return false;
-  return keys.has('mediaPosition') || keys.has('backgroundColor');
+  if (keys.has('direction') && keys.has('layoutGap')) return false;
+  return path.includes('editorial_jumbo') || keys.has('mediaWidth') || keys.has('mediaHeight');
 }
 
 export function prepareEditorialJumboSettingsNode(node: SidebarNode): SidebarNode {
@@ -191,5 +203,9 @@ export function prepareEditorialJumboSettingsNode(node: SidebarNode): SidebarNod
     byKey.set(field.path.split('.').pop() ?? field.path, field);
   }
   const fields = built.length ? built : [...byKey.values()];
+  // Never relabel unrelated sections (e.g. Video) as Editorial jumbo.
+  if (!settingsBase && !isEditorialJumboSettingsPanelFields(fields)) {
+    return node;
+  }
   return { ...node, label: 'Editorial: Jumbo text', kind: 'section', fields };
 }

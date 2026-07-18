@@ -32,6 +32,9 @@ export type StorytellingVideoLayout = {
   backgroundMedia: string;
   backgroundImageUrl: string;
   borderStyle: string;
+  borderThickness: number;
+  borderOpacity: number;
+  borderColor: string;
   cornerRadius: number;
   backgroundOverlay: boolean;
   paddingTop: number;
@@ -75,6 +78,9 @@ export function readStorytellingVideoLayout(
     backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
     backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),
+    borderThickness: cfgNumber(config, `${settingsBase}.borderThickness`, 1),
+    borderOpacity: cfgNumber(config, `${settingsBase}.borderOpacity`, 100),
+    borderColor: cfgString(config, `${settingsBase}.borderColor`, ''),
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
     backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 32),
@@ -82,6 +88,37 @@ export function readStorytellingVideoLayout(
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
     videoOnRight,
   };
+}
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const normalized = hex.replace('#', '').trim();
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return null;
+  return {
+    r: parseInt(normalized.slice(0, 2), 16),
+    g: parseInt(normalized.slice(2, 4), 16),
+    b: parseInt(normalized.slice(4, 6), 16),
+  };
+}
+
+/** Build CSS border from Style / Thickness / Opacity / Color (Shopify-style). */
+export function resolveStorytellingVideoBorderCss(
+  borderStyle: string,
+  thickness: number,
+  opacity: number,
+  borderColor: string,
+  schemeBorder: string
+): string | undefined {
+  if (borderStyle !== 'solid' || thickness <= 0) return undefined;
+  const base =
+    !borderColor || borderColor === 'default'
+      ? schemeBorder
+      : borderColor.startsWith('#')
+        ? borderColor
+        : schemeBorder;
+  const rgb = hexToRgb(base);
+  const alpha = Math.min(100, Math.max(0, opacity)) / 100;
+  if (!rgb) return `${thickness}px solid ${schemeBorder}`;
+  return `${thickness}px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
 }
 
 export function storytellingVideoMinHeight(height: string): number | undefined {

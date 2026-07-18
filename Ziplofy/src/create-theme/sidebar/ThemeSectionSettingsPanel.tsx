@@ -458,6 +458,7 @@ import {
 import {
   groupStorytellingVideoPanelFields,
   STORYTELLING_VIDEO_PANEL_GROUP_ORDER,
+  isStorytellingVideoSectionNodeId,
   isStorytellingVideoSettingsPanelFields,
 } from './theme-editor-storytelling-video-panel.utils';
 import {
@@ -6273,6 +6274,7 @@ function BlockGroupLayoutSettingsPanel({
           const solidBorders = borderStyle === 'solid';
           const borderThickness = groupFields.find((f) => f.path.endsWith('borderThickness'));
           const borderOpacity = groupFields.find((f) => f.path.endsWith('borderOpacity'));
+          const borderColor = groupFields.find((f) => f.path.endsWith('borderColor'));
           const cornerRadius = groupFields.find((f) => f.path.endsWith('cornerRadius'));
 
           return (
@@ -6295,6 +6297,17 @@ function BlockGroupLayoutSettingsPanel({
                 ) : null}
                 {solidBorders && borderOpacity ? (
                   <SliderFieldRow field={borderOpacity} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {solidBorders && borderColor ? (
+                  <ThemeDefaultColorField
+                    label={borderColor.label || 'Color'}
+                    path={borderColor.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={1}
+                    fallbackColor="#111827"
+                    onFieldChange={onFieldChange}
+                  />
                 ) : null}
                 {cornerRadius ? (
                   <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
@@ -11271,25 +11284,24 @@ function LargeLogoBlockGroupedSettingsPanel({
   );
 }
 
-/** Video block: Source → Video → Autoplay → Loop → Size → Borders → Padding. */
+/** Video block: Video URL → Cover → Autoplay → Loop → Size → Borders → Padding. */
 function StorytellingVideoMediaBlockSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupStorytellingVideoMediaPanelFields(fields), [fields]);
   const generalFields = grouped.get('General') ?? [];
-  const sourceField = generalFields.find((f) => f.path.endsWith('videoSource'));
-  const uploadedField = generalFields.find((f) => f.path.endsWith('uploadedVideoUrl'));
   const urlField = generalFields.find((f) => f.path.endsWith('videoUrl'));
   const coverField = generalFields.find((f) => f.path.endsWith('coverImageUrl'));
   const autoplayField = generalFields.find((f) => f.path.endsWith('videoAutoplay'));
   const loopField = generalFields.find((f) => f.path.endsWith('videoLoop'));
-  const source = sourceField ? fieldValueAsString(values, sourceField) || 'uploaded' : 'uploaded';
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
@@ -11300,23 +11312,17 @@ function StorytellingVideoMediaBlockSettingsPanel({
         if (label === 'General') {
           return (
             <div key={label} className="space-y-0.5 px-1 py-3">
-              {sourceField ? (
-                <InlineSelectFieldRow field={sourceField} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-              {source === 'uploaded' && uploadedField ? (
-                <ImagePickerFieldRow field={uploadedField} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-              {source === 'url' && urlField ? (
-                <ThemeEditorLinkField
-                  id={fieldInputId(urlField.path)}
-                  label={urlField.label}
-                  value={fieldValueAsString(values, urlField)}
-                  placeholder={urlField.placeholder ?? 'YouTube or Vimeo URL'}
-                  onChange={(next) => onFieldChange(urlField.path, 'text', next)}
-                  showOpenLink
+              {urlField ? (
+                <DefaultFieldRow
+                  field={{
+                    ...urlField,
+                    placeholder: urlField.placeholder ?? 'Paste a YouTube/Vimeo link or embed URL',
+                  }}
+                  values={values}
+                  onFieldChange={onFieldChange}
                 />
               ) : null}
-              {source === 'url' && coverField ? (
+              {coverField ? (
                 <ImagePickerFieldRow field={coverField} values={values} onFieldChange={onFieldChange} />
               ) : null}
               {autoplayField ? (
@@ -11340,7 +11346,14 @@ function StorytellingVideoMediaBlockSettingsPanel({
 
         if (label === 'Borders') {
           const borderStyleField = groupFields.find((f) => f.path.endsWith('videoBorderStyle'));
+          const borderThickness = groupFields.find((f) => f.path.endsWith('videoBorderThickness'));
+          const borderOpacity = groupFields.find((f) => f.path.endsWith('videoBorderOpacity'));
+          const borderColor = groupFields.find((f) => f.path.endsWith('videoBorderColor'));
           const cornerRadius = groupFields.find((f) => f.path.endsWith('videoCornerRadius'));
+          const borderStyle = borderStyleField
+            ? fieldValueAsString(values, borderStyleField) || 'none'
+            : 'none';
+          const solidBorders = borderStyle === 'solid';
           return (
             <div key={label} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
@@ -11349,6 +11362,27 @@ function StorytellingVideoMediaBlockSettingsPanel({
                   <SegmentedFieldRow
                     field={borderStyleField}
                     values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {solidBorders && borderThickness ? (
+                  <SliderFieldRow
+                    field={borderThickness}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {solidBorders && borderOpacity ? (
+                  <SliderFieldRow field={borderOpacity} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {solidBorders && borderColor ? (
+                  <ThemeDefaultColorField
+                    label={borderColor.label || 'Color'}
+                    path={borderColor.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={1}
+                    fallbackColor="#111827"
                     onFieldChange={onFieldChange}
                   />
                 ) : null}
@@ -11432,7 +11466,7 @@ function StorytellingVideoContentBlockSettingsPanel({
   );
 }
 
-/** Storytelling Video: Layout → Size → Appearance → Borders → Padding → Custom CSS. */
+/** Storytelling Video: Layout → Size → Appearance → Borders → Padding. */
 function StorytellingVideoGroupedSettingsPanel({
   fields,
   values,
@@ -11487,13 +11521,53 @@ function StorytellingVideoGroupedSettingsPanel({
         }
 
         if (label === 'Borders') {
+          const borderStyleField = groupFields.find((f) => f.path.endsWith('borderStyle'));
+          const borderThickness = groupFields.find((f) => f.path.endsWith('borderThickness'));
+          const borderOpacity = groupFields.find((f) => f.path.endsWith('borderOpacity'));
+          const borderColor = groupFields.find((f) => f.path.endsWith('borderColor'));
+          const cornerRadius = groupFields.find((f) => f.path.endsWith('cornerRadius'));
+          const borderStyle = borderStyleField
+            ? fieldValueAsString(values, borderStyleField) || 'none'
+            : 'none';
+          const solidBorders = borderStyle === 'solid';
+
           return (
-            <RichTextBordersSettingsGroup
-              key={label}
-              fields={groupFields}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
+            <div key={label} className="px-1 py-3">
+              <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{label}</h3>
+              <div className="space-y-1">
+                {borderStyleField ? (
+                  <SegmentedFieldRow
+                    field={borderStyleField}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {solidBorders && borderThickness ? (
+                  <SliderFieldRow
+                    field={borderThickness}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {solidBorders && borderOpacity ? (
+                  <SliderFieldRow field={borderOpacity} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {solidBorders && borderColor ? (
+                  <ThemeDefaultColorField
+                    label={borderColor.label || 'Color'}
+                    path={borderColor.path}
+                    values={values}
+                    colorPalette={colorPalette}
+                    defaultPaletteIndex={1}
+                    fallbackColor="#111827"
+                    onFieldChange={onFieldChange}
+                  />
+                ) : null}
+                {cornerRadius ? (
+                  <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
+            </div>
           );
         }
 
@@ -11505,21 +11579,6 @@ function StorytellingVideoGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -18838,10 +18897,17 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isEditorialJumboJumboTextBlockPanel =
     node.kind === 'block' &&
     (isEditorialJumboJumboTextBlockNodeId(node.id) || isEditorialJumboJumboTextPanelFields(fields));
+  // Detect Video before Jumbo — shared layout keys used to mislabel Video settings.
+  const isStorytellingVideoMediaBlockPanel =
+    isStorytellingVideoMediaBlockNodeId(node.id) || isStorytellingVideoMediaPanelFields(fields);
+  const isStorytellingVideoPanel =
+    isStorytellingVideoSectionNodeId(node.id) || isStorytellingVideoSettingsPanelFields(fields);
   const isEditorialJumboPanel =
     !isEditorialJumboMediaBlockPanel &&
     !isEditorialJumboContentGroupPanel &&
     !isEditorialJumboJumboTextBlockPanel &&
+    !isStorytellingVideoPanel &&
+    !isStorytellingVideoMediaBlockPanel &&
     (node.label === 'Editorial: Jumbo text' || isEditorialJumboSettingsPanelFields(fields));
   const isImageComparePanel =
     !isImageCompareSliderBlockPanel &&
@@ -18932,8 +18998,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isEmailSignupFooterBlockPanel &&
     ((node.kind === 'section' && node.label === 'Logo') ||
       isStorytellingLogoSettingsPanelFields(fields));
-  const isStorytellingVideoPanel =
-    node.label === 'Video' || isStorytellingVideoSettingsPanelFields(fields);
   const isStorytellingVideoCaptionGroupPanel =
     node.kind === 'block' &&
     (isStorytellingVideoCaptionGroupBlockNodeId(node.id) ||
@@ -18946,8 +19010,6 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' &&
     (isStorytellingVideoCaptionButtonBlockNodeId(node.id) ||
       isStorytellingVideoCaptionButtonPanelFields(fields));
-  const isStorytellingVideoMediaBlockPanel =
-    isStorytellingVideoMediaBlockNodeId(node.id) || isStorytellingVideoMediaPanelFields(fields);
   const isStorytellingVideoBlockPanel =
     !isStorytellingVideoMediaBlockPanel &&
     !isStorytellingVideoCaptionTextPanel &&
@@ -20578,6 +20640,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <StorytellingVideoMediaBlockSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isStorytellingVideoCaptionTextPanel ? (

@@ -23,4 +23,12 @@ export {
   buildCodiixPageOptions,
   matchPageCommand,
 } from './codiix-pages';
+export {
+  buildCodiixStructure,
+  matchReorderCommand,
+} from './codiix-reorder';
+export {
+  resolveAnnouncementContext,
+  matchAnnouncementEditCommand,
+} from './codiix-edit-announcement';
 export { CodiixElementPreview } from './CodiixElementPreview';

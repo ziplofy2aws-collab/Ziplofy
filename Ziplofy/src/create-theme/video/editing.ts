@@ -1,113 +1,71 @@
 import type { CreateThemeEditing } from '../types';
 
+/**
+ * Full Video (storytelling-video) editing surface — must stay aligned with
+ * sidebar specialty panels so applyValuesToThemeConfig can type every path.
+ */
 export const editing: CreateThemeEditing = {
-  "sectionLabel": "Video",
-  "sectionSettingsOrder": [
-    {
-      "key": "videoSource",
-      "label": "Source",
-      "type": "text"
-    },
-    {
-      "key": "videoUrl",
-      "label": "Video URL",
-      "type": "text"
-    },
-    {
-      "key": "coverImageUrl",
-      "label": "Cover image",
-      "type": "text"
-    },
-    {
-      "key": "caption",
-      "label": "Caption",
-      "type": "textarea"
-    },
-    {
-      "key": "linkLabel",
-      "label": "Link label",
-      "type": "text"
-    },
-    {
-      "key": "linkUrl",
-      "label": "Link",
-      "type": "text"
-    },
-    {
-      "key": "direction",
-      "label": "Direction",
-      "type": "text"
-    },
-    {
-      "key": "layoutAlignment",
-      "label": "Alignment",
-      "type": "text"
-    },
-    {
-      "key": "position",
-      "label": "Position",
-      "type": "text"
-    },
-    {
-      "key": "layoutGap",
-      "label": "Gap",
-      "type": "number"
-    },
-    {
-      "key": "sectionWidth",
-      "label": "Width",
-      "type": "text"
-    },
-    {
-      "key": "height",
-      "label": "Height",
-      "type": "text"
-    },
-    {
-      "key": "colorScheme",
-      "label": "Color scheme",
-      "type": "text"
-    },
-    {
-      "key": "backgroundMedia",
-      "label": "Background media",
-      "type": "text"
-    },
-    {
-      "key": "backgroundImageUrl",
-      "label": "Background image",
-      "type": "text"
-    },
-    {
-      "key": "borderStyle",
-      "label": "Borders",
-      "type": "text"
-    },
-    {
-      "key": "cornerRadius",
-      "label": "Corner radius",
-      "type": "number"
-    },
-    {
-      "key": "backgroundOverlay",
-      "label": "Background overlay",
-      "type": "boolean"
-    },
-    {
-      "key": "paddingTop",
-      "label": "Top",
-      "type": "number"
-    },
-    {
-      "key": "paddingBottom",
-      "label": "Bottom",
-      "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
-    }
+  sectionLabel: 'Video',
+  sectionSettingsOrder: [
+    // Media block
+    { key: 'videoUrl', label: 'Video URL', type: 'text' },
+    { key: 'coverImageUrl', label: 'Cover image', type: 'text' },
+    { key: 'videoAutoplay', label: 'Autoplay', type: 'boolean' },
+    { key: 'videoLoop', label: 'Loop video', type: 'boolean' },
+    { key: 'videoWidth', label: 'Width', type: 'number' },
+    { key: 'videoMobileWidth', label: 'Mobile width', type: 'number' },
+    { key: 'videoBorderStyle', label: 'Video border', type: 'text' },
+    { key: 'videoBorderThickness', label: 'Video border thickness', type: 'number' },
+    { key: 'videoBorderOpacity', label: 'Video border opacity', type: 'number' },
+    { key: 'videoBorderColor', label: 'Video border color', type: 'text' },
+    { key: 'videoCornerRadius', label: 'Video corner radius', type: 'number' },
+    { key: 'videoPaddingTop', label: 'Video padding top', type: 'number' },
+    { key: 'videoPaddingBottom', label: 'Video padding bottom', type: 'number' },
+    { key: 'videoPaddingLeft', label: 'Video padding left', type: 'number' },
+    { key: 'videoPaddingRight', label: 'Video padding right', type: 'number' },
+    // Caption text
+    { key: 'caption', label: 'Caption', type: 'textarea' },
+    { key: 'captionWidth', label: 'Caption width', type: 'text' },
+    { key: 'captionMaxWidth', label: 'Caption max width', type: 'text' },
+    { key: 'captionTypographyPreset', label: 'Caption typography', type: 'text' },
+    { key: 'captionColor', label: 'Caption color', type: 'text' },
+    { key: 'captionBackgroundEnabled', label: 'Caption background', type: 'boolean' },
+    { key: 'captionBackgroundColor', label: 'Caption background color', type: 'text' },
+    { key: 'captionPaddingTop', label: 'Caption padding top', type: 'number' },
+    { key: 'captionPaddingBottom', label: 'Caption padding bottom', type: 'number' },
+    { key: 'captionPaddingLeft', label: 'Caption padding left', type: 'number' },
+    { key: 'captionPaddingRight', label: 'Caption padding right', type: 'number' },
+    // Caption button
+    { key: 'linkLabel', label: 'Link label', type: 'text' },
+    { key: 'linkUrl', label: 'Link', type: 'text' },
+    { key: 'linkOpenInNewTab', label: 'Open link in new tab', type: 'boolean' },
+    { key: 'buttonStyle', label: 'Button style', type: 'text' },
+    { key: 'buttonLinkTextColor', label: 'Link text color', type: 'text' },
+    { key: 'buttonCustomBackground', label: 'Button background', type: 'text' },
+    { key: 'buttonCustomText', label: 'Button text color', type: 'text' },
+    { key: 'buttonDesktopWidth', label: 'Desktop width', type: 'text' },
+    { key: 'buttonDesktopCustomWidth', label: 'Desktop custom width', type: 'number' },
+    { key: 'buttonMobileWidth', label: 'Mobile width', type: 'text' },
+    { key: 'buttonMobileCustomWidth', label: 'Mobile custom width', type: 'number' },
+    // Section layout
+    { key: 'direction', label: 'Direction', type: 'text' },
+    { key: 'layoutAlignment', label: 'Alignment', type: 'text' },
+    { key: 'position', label: 'Position', type: 'text' },
+    { key: 'layoutGap', label: 'Gap', type: 'number' },
+    { key: 'sectionWidth', label: 'Width', type: 'text' },
+    { key: 'height', label: 'Height', type: 'text' },
+    { key: 'colorScheme', label: 'Color scheme', type: 'text' },
+    { key: 'backgroundMedia', label: 'Background media', type: 'text' },
+    { key: 'backgroundImageUrl', label: 'Background image', type: 'text' },
+    { key: 'backgroundColor', label: 'Background color', type: 'text' },
+    { key: 'borderStyle', label: 'Borders', type: 'text' },
+    { key: 'borderThickness', label: 'Border thickness', type: 'number' },
+    { key: 'borderOpacity', label: 'Border opacity', type: 'number' },
+    { key: 'borderColor', label: 'Border color', type: 'text' },
+    { key: 'cornerRadius', label: 'Corner radius', type: 'number' },
+    { key: 'backgroundOverlay', label: 'Background overlay', type: 'boolean' },
+    { key: 'paddingTop', label: 'Top', type: 'number' },
+    { key: 'paddingBottom', label: 'Bottom', type: 'number' },
   ],
-  "blocks": []
+  blocks: [],
 };
