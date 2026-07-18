@@ -737,18 +737,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
   // Flash a full-screen gradient border whenever the previewed page changes.
   const [pageSwitchGlowKey, setPageSwitchGlowKey] = useState(0);
-  const pageSwitchGlowRef = useRef<string>('');
-  useEffect(() => {
-    const current = `${previewPage}|${checkoutPreviewPage}`;
-    if (!pageSwitchGlowRef.current) {
-      pageSwitchGlowRef.current = current;
-      return;
-    }
-    if (pageSwitchGlowRef.current !== current) {
-      pageSwitchGlowRef.current = current;
-      setPageSwitchGlowKey((key) => key + 1);
-    }
-  }, [previewPage, checkoutPreviewPage]);
+  const flashPageSwitchGlow = useCallback(() => {
+    setPageSwitchGlowKey((key) => key + 1);
+  }, []);
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
   const [inspectorEnabled, setInspectorEnabled] = useState(true);
   const [sidebarTab, setSidebarTab] = useState<ThemeEditorSidebarTab>('sections');
@@ -2753,6 +2744,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
 
       const page = nextPreviewPage ?? previewPage;
       if (nextPreviewPage && nextPreviewPage !== previewPage) {
+        flashPageSwitchGlow();
         setPreviewPage(nextPreviewPage);
         setSelectedNodeId('');
         setAddSectionTarget(null);
@@ -2796,12 +2788,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         });
       }
     },
-    [previewPage, editorSchema, values, savedThemeId, themeName, updateStoreCustomTheme]
+    [previewPage, editorSchema, values, savedThemeId, themeName, updateStoreCustomTheme, flashPageSwitchGlow]
   );
 
   const handlePreviewPageChange = useCallback(
     (page: ThemePreviewPage) => {
       if (page === previewPage) return;
+      flashPageSwitchGlow();
       setPreviewPage(page);
       setSelectedNodeId('');
       setAddSectionTarget(null);
@@ -2851,7 +2844,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         setItemOrder(readStructureOrderFromConfig(defaultConfig, page));
       }
     },
-    [defaultConfig, previewPage, editorSchema]
+    [defaultConfig, previewPage, editorSchema, flashPageSwitchGlow]
   );
 
   const toggleExpand = useCallback((id: string) => {
@@ -4009,7 +4002,11 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         <CheckoutEditorHeader
           configurationName={checkoutConfigurationName}
           previewPage={checkoutPreviewPage}
-          onPreviewPageChange={setCheckoutPreviewPage}
+          onPreviewPageChange={(page) => {
+            if (page === checkoutPreviewPage) return;
+            flashPageSwitchGlow();
+            setCheckoutPreviewPage(page);
+          }}
           onOnlineStoreTheme={handleOnlineStoreTheme}
           device={device}
           onDeviceChange={setDevice}
