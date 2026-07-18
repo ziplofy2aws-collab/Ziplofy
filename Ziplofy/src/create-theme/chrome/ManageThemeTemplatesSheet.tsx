@@ -10,16 +10,18 @@ import { useBlogs, type Blog } from '../../contexts/blog.context';
 import { useBlogPosts, type BlogPost } from '../../contexts/blog-post.context';
 import { useCollections, type Collection } from '../../contexts/collection.context';
 import { useProducts, type Product } from '../../contexts/product.context';
+import { useStorePages, type StorePage } from '../../contexts/store-page.context';
 import { useStore } from '../../contexts/store.context';
 import {
   listBlogPostsTemplates,
   listBlogsTemplates,
 } from '../utils/blog-templates.util';
 import { listCollectionTemplates } from '../utils/collection-templates.util';
+import { listPageTemplates } from '../utils/page-templates.util';
 import { listProductTemplates } from '../utils/product-templates.util';
 import './manage-theme-templates-sheet.css';
 
-export type ManageThemeTemplatesKind = 'product' | 'collection' | 'blogs' | 'blog-posts';
+export type ManageThemeTemplatesKind = 'product' | 'collection' | 'blogs' | 'blog-posts' | 'pages';
 
 type SheetAnimPhase = 'enter' | 'shown' | 'exit';
 
@@ -72,6 +74,13 @@ const KIND_META: Record<
     baseId: 'blog-posts',
     defaultLabel: 'Default blog post',
   },
+  pages: {
+    title: 'Assign page templates',
+    entityNoun: 'pages',
+    entitySingular: 'page',
+    baseId: 'pages',
+    defaultLabel: 'Default page',
+  },
 };
 
 function defaultOptionFor(kind: ManageThemeTemplatesKind): ThemeTemplateOption {
@@ -100,7 +109,9 @@ function optionsFromThemeConfig(
         ? listCollectionTemplates(themeConfig)
         : kind === 'blogs'
           ? listBlogsTemplates(themeConfig)
-          : listBlogPostsTemplates(themeConfig);
+          : kind === 'blog-posts'
+            ? listBlogPostsTemplates(themeConfig)
+            : listPageTemplates(themeConfig);
 
   if (!entries.length) return [defaultOption];
 
@@ -162,6 +173,7 @@ export function ManageThemeTemplatesSheet({
   const { collections, fetchCollectionsByStoreId, updateCollection } = useCollections();
   const { blogs, fetchBlogsByStoreId, updateBlog } = useBlogs();
   const { blogPosts, fetchBlogPostsByStoreId, updateBlogPost } = useBlogPosts();
+  const { pages, fetchPagesByStoreId, updatePage } = useStorePages();
 
   const [mounted, setMounted] = useState(false);
   /** Keep portal mounted through exit animation. */
@@ -283,11 +295,13 @@ export function ManageThemeTemplatesSheet({
           await fetchCollectionsByStoreId(activeStoreId);
         } else if (kind === 'blogs') {
           await fetchBlogsByStoreId(activeStoreId);
-        } else {
+        } else if (kind === 'blog-posts') {
           await Promise.all([
             fetchBlogsByStoreId(activeStoreId),
             fetchBlogPostsByStoreId(activeStoreId),
           ]);
+        } else {
+          await fetchPagesByStoreId(activeStoreId);
         }
       } catch {
         if (!cancelled) toast.error(`Could not load ${entityNoun}`);
@@ -309,6 +323,7 @@ export function ManageThemeTemplatesSheet({
     fetchCollectionsByStoreId,
     fetchBlogsByStoreId,
     fetchBlogPostsByStoreId,
+    fetchPagesByStoreId,
   ]);
 
   useEffect(() => {
@@ -360,24 +375,38 @@ export function ManageThemeTemplatesSheet({
       return;
     }
 
+    if (kind === 'blog-posts') {
+      setRows(
+        blogPosts
+          .map((post: BlogPost) => {
+            const blog = blogsById.get(post.blogId);
+            const blogHandle = blog?.urlHandle?.trim();
+            const postHandle = post.urlHandle?.trim();
+            const path =
+              blogHandle && postHandle
+                ? `${blogHandle}/${postHandle}`
+                : postHandle || blog?.title || undefined;
+            return {
+              id: post._id,
+              title: post.title?.trim() || 'Untitled blog post',
+              subtitle: path,
+              imageUrl: post.featuredImageUrl || undefined,
+              themeTemplate: post.themeTemplate?.trim() || 'default',
+            };
+          })
+          .sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }))
+      );
+      return;
+    }
+
     setRows(
-      blogPosts
-        .map((post: BlogPost) => {
-          const blog = blogsById.get(post.blogId);
-          const blogHandle = blog?.urlHandle?.trim();
-          const postHandle = post.urlHandle?.trim();
-          const path =
-            blogHandle && postHandle
-              ? `${blogHandle}/${postHandle}`
-              : postHandle || blog?.title || undefined;
-          return {
-            id: post._id,
-            title: post.title?.trim() || 'Untitled blog post',
-            subtitle: path,
-            imageUrl: post.featuredImageUrl || undefined,
-            themeTemplate: post.themeTemplate?.trim() || 'default',
-          };
-        })
+      pages
+        .map((page: StorePage) => ({
+          id: page._id,
+          title: page.title?.trim() || 'Untitled page',
+          subtitle: page.urlHandle || undefined,
+          themeTemplate: page.themeTemplate?.trim() || 'default',
+        }))
         .sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }))
     );
   }, [
@@ -389,6 +418,7 @@ export function ManageThemeTemplatesSheet({
     blogs,
     blogPosts,
     blogsById,
+    pages,
     dirtyIds.size,
   ]);
 
@@ -447,8 +477,13 @@ export function ManageThemeTemplatesSheet({
             storeId: activeStoreId ?? undefined,
             themeTemplate: row.themeTemplate,
           });
-        } else {
+        } else if (kind === 'blog-posts') {
           await updateBlogPost(row.id, {
+            storeId: activeStoreId ?? undefined,
+            themeTemplate: row.themeTemplate,
+          });
+        } else {
+          await updatePage(row.id, {
             storeId: activeStoreId ?? undefined,
             themeTemplate: row.themeTemplate,
           });
@@ -490,6 +525,7 @@ export function ManageThemeTemplatesSheet({
     updateCollection,
     updateBlog,
     updateBlogPost,
+    updatePage,
     activeStoreId,
     entityNoun,
     emitCounts,

@@ -14,6 +14,10 @@ import {
   isCollectionTemplatePreviewPage,
 } from './collection-templates.util';
 import {
+  pageTemplateIdFromPreviewPage,
+  isPageTemplatePreviewPage,
+} from './page-templates.util';
+import {
   productTemplateIdFromPreviewPage,
   isProductTemplatePreviewPage,
 } from './product-templates.util';
@@ -334,6 +338,8 @@ export function previewPageToTemplateId(page: string): string {
   if (blogsTemplateId) return blogsTemplateId;
   const blogPostsTemplateId = blogPostsTemplateIdFromPreviewPage(page);
   if (blogPostsTemplateId) return blogPostsTemplateId;
+  const pageTemplateId = pageTemplateIdFromPreviewPage(page);
+  if (pageTemplateId) return pageTemplateId;
 
   const entry = PAGE_BY_ID.get(page || 'index');
   if (entry) return entry.templateId;
@@ -349,6 +355,7 @@ export function previewPageToRoute(page: string): string {
   if (isCollectionTemplatePreviewPage(page)) return '/collection/preview';
   if (isBlogsTemplatePreviewPage(page)) return '/blogs/preview';
   if (isBlogPostsTemplatePreviewPage(page)) return '/blogs/preview/preview';
+  if (isPageTemplatePreviewPage(page)) return '/';
   return PAGE_BY_ID.get(page || 'index')?.previewPath ?? '/';
 }
 
@@ -414,7 +421,14 @@ export const THEME_PAGE_MENU_SEEDS: ThemePageMenuSeed[] = [
     icon: 'checkout',
     openInNewTab: true,
   },
-  { previewPage: 'pages', label: 'Pages', icon: 'page', dividerBefore: true },
+  {
+    previewPage: 'pages',
+    label: 'Pages',
+    icon: 'page',
+    dividerBefore: true,
+    hasSubmenu: true,
+    children: [{ previewPage: 'pages', label: 'Default page', icon: 'page' }],
+  },
   {
     previewPage: 'blogs',
     label: 'Blogs',

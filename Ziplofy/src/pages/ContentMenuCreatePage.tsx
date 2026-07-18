@@ -24,13 +24,14 @@ import { useCollections, type Collection } from '../contexts/collection.context'
 import { useProducts, type Product } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreMenus } from '../contexts/store-menu.context';
+import { useStorePages, type StorePage } from '../contexts/store-page.context';
 import {
   createMenuItem,
   menuItemDraftsToApiInputs,
   slugifyMenuHandle,
   type MenuItemDraft,
 } from '../utils/store-menu-draft.util';
-import { collectionPath, productPath } from '../utils/storefront-paths';
+import { collectionPath, pagePath, productPath } from '../utils/storefront-paths';
 
 export { createMenuItem, slugifyMenuHandle } from '../utils/store-menu-draft.util';
 
@@ -83,7 +84,7 @@ type LinkPickerSelection = {
   productId?: string;
 };
 
-type LinkPickerView = 'root' | 'collections' | 'products';
+type LinkPickerView = 'root' | 'collections' | 'products' | 'pages';
 
 function collectionLinkPath(collection: Collection): string {
   const handle = collection.urlHandle?.trim() || collection._id;
@@ -93,6 +94,10 @@ function collectionLinkPath(collection: Collection): string {
 function productLinkPath(product: Product): string {
   const handle = product.urlHandle?.trim() || product._id;
   return productPath(handle);
+}
+
+function storePageLinkPath(page: StorePage): string {
+  return pagePath(page.urlHandle?.trim() || page._id);
 }
 
 function LinkPickerDropdown({
@@ -117,6 +122,7 @@ function LinkPickerDropdown({
   const [portalStyle, setPortalStyle] = useState<CSSProperties | null>(null);
   const { collections, loading: collectionsLoading, fetchCollectionsByStoreId } = useCollections();
   const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
+  const { pages, loading: pagesLoading, fetchPagesByStoreId } = useStorePages();
   const [view, setView] = useState<LinkPickerView>('root');
 
   useEffect(() => {
@@ -191,6 +197,16 @@ function LinkPickerDropdown({
     );
   }, [products, searchQuery]);
 
+  const filteredPages = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return pages;
+    return pages.filter(
+      (page) =>
+        page.title.toLowerCase().includes(q) ||
+        page.urlHandle.toLowerCase().includes(q)
+    );
+  }, [pages, searchQuery]);
+
   const openCollectionsPicker = useCallback(async () => {
     if (!storeId) {
       toast.error('Select a store before choosing collections');
@@ -217,6 +233,19 @@ function LinkPickerDropdown({
     }
   }, [storeId, fetchProductsByStoreId]);
 
+  const openPagesPicker = useCallback(async () => {
+    if (!storeId) {
+      toast.error('Select a store before choosing pages');
+      return;
+    }
+    setView('pages');
+    try {
+      await fetchPagesByStoreId(storeId);
+    } catch {
+      toast.error('Failed to load pages');
+    }
+  }, [storeId, fetchPagesByStoreId]);
+
   const pickAndClose = (selection: LinkPickerSelection) => {
     onSelect(selection);
     onClose();
@@ -227,6 +256,7 @@ function LinkPickerDropdown({
 
   const collectionsResultCount = filteredCollections.length + 1;
   const productsResultCount = filteredProducts.length + 1;
+  const pagesResultCount = filteredPages.length;
   const usePortal = Boolean(anchorRef);
   if (usePortal && !portalStyle) return null;
 
@@ -240,7 +270,7 @@ function LinkPickerDropdown({
           : 'absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-gray-200 bg-white py-1 shadow-lg'
       }
     >
-      {view === 'collections' || view === 'products' ? (
+      {view !== 'root' ? (
         <>
           <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-2 py-2">
             <button
@@ -256,9 +286,13 @@ function LinkPickerDropdown({
                 ? collectionsLoading
                   ? 'Loading…'
                   : `${collectionsResultCount} result${collectionsResultCount === 1 ? '' : 's'}`
-                : productsLoading
-                  ? 'Loading…'
-                  : `${productsResultCount} result${productsResultCount === 1 ? '' : 's'}`}
+                : view === 'products'
+                  ? productsLoading
+                    ? 'Loading…'
+                    : `${productsResultCount} result${productsResultCount === 1 ? '' : 's'}`
+                  : pagesLoading
+                    ? 'Loading…'
+                    : `${pagesResultCount} result${pagesResultCount === 1 ? '' : 's'}`}
             </span>
           </div>
 
@@ -312,10 +346,11 @@ function LinkPickerDropdown({
                 ) : null}
               </>
             )
-          ) : productsLoading ? (
-            <p className="px-3 py-4 text-center text-sm text-gray-500">Loading products…</p>
-          ) : (
-            <>
+          ) : view === 'products' ? (
+            productsLoading ? (
+              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading products…</p>
+            ) : (
+              <>
               <button
                 type="button"
                 onClick={() =>
@@ -362,6 +397,35 @@ function LinkPickerDropdown({
               {filteredProducts.length === 0 ? (
                 <p className="px-3 py-3 text-center text-sm text-gray-500">No products found</p>
               ) : null}
+              </>
+            )
+          ) : pagesLoading ? (
+            <p className="px-3 py-4 text-center text-sm text-gray-500">Loading pages…</p>
+          ) : (
+            <>
+              {filteredPages.map((page) => (
+                <button
+                  key={page._id}
+                  type="button"
+                  onClick={() =>
+                    pickAndClose({
+                      link: storePageLinkPath(page),
+                      label: page.title,
+                      linkType: 'custom',
+                    })
+                  }
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
+                >
+                  <DocumentTextIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                  <span className="min-w-0 flex-1 truncate">{page.title}</span>
+                  <span className="max-w-[45%] truncate text-xs text-gray-400">
+                    /pages/{page.urlHandle}
+                  </span>
+                </button>
+              ))}
+              {filteredPages.length === 0 ? (
+                <p className="px-3 py-3 text-center text-sm text-gray-500">No pages found</p>
+              ) : null}
             </>
           )}
         </>
@@ -382,6 +446,10 @@ function LinkPickerDropdown({
                     }
                     if (opt.id === 'products' && opt.hasChildren) {
                       void openProductsPicker();
+                      return;
+                    }
+                    if (opt.id === 'pages' && opt.hasChildren) {
+                      void openPagesPicker();
                       return;
                     }
                     if (opt.hasChildren) return;

@@ -33,9 +33,8 @@ export function slugFromTitle(title: string, fallback = 'page'): string {
 export function sanitizeUrlHandle(value: string): string {
   return value
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/-+/g, '-');
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-{2,}/g, '-');
 }
 
 export { META_DESCRIPTION_MAX, PAGE_TITLE_MAX, SNIPPET_MAX };

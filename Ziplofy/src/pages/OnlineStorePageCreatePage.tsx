@@ -6,14 +6,23 @@ import {
   SparklesIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ProductDescriptionInput from '../components/products/ProductDescriptionInput';
+import PageAddedBanner from '../components/store-pages/PageAddedBanner';
+import StorePageFormPageSkeleton from '../components/store-pages/StorePageFormPageSkeleton';
 import { useStorePages } from '../contexts/store-page.context';
 import { useStore } from '../contexts/store.context';
 import { SearchEngineListingEditor } from '../seo/SearchEngineListingEditor';
 import { SNIPPET_MAX } from '../seo/seo-text.util';
+import {
+  consumePageJustCreated,
+  consumeSkipPageLoadSkeleton,
+  markPageJustCreated,
+  peekPageJustCreated,
+  readPageJustCreated,
+} from '../utils/page-navigation.util';
 
 type Visibility = 'visible' | 'hidden';
 
@@ -39,10 +48,15 @@ function PageCard({
 
 export default function OnlineStorePageCreatePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { pageId } = useParams<{ pageId: string }>();
   const { activeStoreId } = useStore();
   const { createPage, updatePage, deletePage, fetchPageById, loading } = useStorePages();
   const editing = Boolean(pageId);
+  const previousPageIdRef = useRef(pageId);
+  const [showPageAddedBanner, setShowPageAddedBanner] = useState(
+    () => peekPageJustCreated(pageId) || readPageJustCreated(location.state)
+  );
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [pageTitle, setPageTitle] = useState('');
@@ -50,20 +64,60 @@ export default function OnlineStorePageCreatePage() {
   const [urlHandle, setUrlHandle] = useState('');
   const [visibility, setVisibility] = useState<Visibility>('hidden');
   const [themeTemplate, setThemeTemplate] = useState('default');
-  const [loadingPage, setLoadingPage] = useState(editing);
+  const [loadingPage, setLoadingPage] = useState(
+    () => editing && !peekPageJustCreated(pageId) && !readPageJustCreated(location.state)
+  );
 
   const canSave = useMemo(
     () => title.trim().length > 0 && Boolean(activeStoreId) && !loading && !loadingPage,
     [title, activeStoreId, loading, loadingPage]
   );
 
+  // Create + edit share this component (React often reuses the instance), so pick up
+  // the "just created" flag on every navigation — not only on first mount.
   useEffect(() => {
-    if (!pageId || !activeStoreId) {
+    const fromPending = consumePageJustCreated(pageId);
+    const fromState = readPageJustCreated(location.state);
+    if (!fromPending && !fromState) return;
+    setShowPageAddedBanner(true);
+    if (fromState) {
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [pageId, location.key, location.state, location.pathname, navigate]);
+
+  useEffect(() => {
+    if (previousPageIdRef.current === pageId) return;
+    const cameFromCreateForm = previousPageIdRef.current == null && Boolean(pageId);
+    const wentToCreateForm = Boolean(previousPageIdRef.current) && pageId == null;
+    previousPageIdRef.current = pageId;
+    if (!cameFromCreateForm) {
+      setShowPageAddedBanner(false);
+    }
+    if (wentToCreateForm) {
+      setTitle('');
+      setContent('');
+      setPageTitle('');
+      setMetaDescription('');
+      setUrlHandle('');
+      setVisibility('hidden');
+      setThemeTemplate('default');
+    }
+  }, [pageId]);
+
+  useEffect(() => {
+    if (!pageId) {
       setLoadingPage(false);
       return;
     }
+    if (!activeStoreId) {
+      setLoadingPage(true);
+      return;
+    }
     let cancelled = false;
-    setLoadingPage(true);
+    const skipSkeleton = consumeSkipPageLoadSkeleton(pageId);
+    if (!skipSkeleton) {
+      setLoadingPage(true);
+    }
     void fetchPageById(pageId, activeStoreId)
       .then((page) => {
         if (cancelled) return;
@@ -93,6 +147,14 @@ export default function OnlineStorePageCreatePage() {
     };
   }, [pageId, activeStoreId, fetchPageById, navigate]);
 
+  const handleDismissPageAddedBanner = useCallback(() => {
+    setShowPageAddedBanner(false);
+  }, []);
+
+  const handleAddAnotherPage = useCallback(() => {
+    navigate('/online-store/pages/new');
+  }, [navigate]);
+
   const handleSave = async () => {
     if (!title.trim()) {
       toast.error('Title is required');
@@ -114,11 +176,20 @@ export default function OnlineStorePageCreatePage() {
         visibility,
         themeTemplate,
       };
-      const saved = pageId
-        ? await updatePage(pageId, payload)
-        : await createPage(payload);
-      toast.success(pageId ? 'Page updated' : 'Page created');
-      navigate(`/online-store/pages/${saved._id}`, { replace: true });
+      if (pageId) {
+        await updatePage(pageId, payload);
+        toast.success('Page updated');
+        return;
+      }
+      const saved = await createPage(payload);
+      const createdId = String(saved._id);
+      toast.success('Page created');
+      markPageJustCreated(createdId);
+      setShowPageAddedBanner(true);
+      navigate(`/online-store/pages/${createdId}`, {
+        replace: true,
+        state: { pageJustCreated: true },
+      });
     } catch (error: unknown) {
       const message =
         (error as { response?: { data?: { message?: string } }; message?: string })?.response?.data
@@ -146,6 +217,18 @@ export default function OnlineStorePageCreatePage() {
     }
   };
 
+  const pageAddedBanner = showPageAddedBanner ? (
+    <PageAddedBanner
+      pageTitle={title.trim() || 'page'}
+      onDismiss={handleDismissPageAddedBanner}
+      onAddAnother={handleAddAnotherPage}
+    />
+  ) : null;
+
+  if (editing && loadingPage) {
+    return <StorePageFormPageSkeleton />;
+  }
+
   return (
     <div className="min-h-screen bg-page-background-color">
       <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
@@ -165,11 +248,8 @@ export default function OnlineStorePageCreatePage() {
           </nav>
         </div>
 
-        {loadingPage ? (
-          <div className="rounded-lg border border-gray-200/80 bg-white px-4 py-16 text-center text-[13px] text-gray-500 shadow-sm">
-            Loading page…
-          </div>
-        ) : (
+        {pageAddedBanner}
+
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
           <div className="flex flex-col gap-3">
             <section className="rounded-lg border border-gray-200/80 bg-white p-4 shadow-sm">
@@ -270,7 +350,6 @@ export default function OnlineStorePageCreatePage() {
             </PageCard>
           </div>
         </div>
-        )}
 
         <div className="mt-4 flex justify-end">
           {editing ? (

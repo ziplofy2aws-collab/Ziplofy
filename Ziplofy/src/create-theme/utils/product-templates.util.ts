@@ -22,6 +22,7 @@ import {
   DEFAULT_BLOG_POSTS_TEMPLATE_ID,
   DEFAULT_BLOGS_TEMPLATE_ID,
 } from './blog-templates.util';
+import { DEFAULT_PAGE_TEMPLATE_ID } from './page-templates.util';
 
 export function isProductTemplateKey(templateId: string): boolean {
   return templateId === DEFAULT_PRODUCT_TEMPLATE_ID || templateId.startsWith('product.');
@@ -33,6 +34,7 @@ export function schemaTemplateIdForConfigKey(templateId: string): string {
   if (templateId.startsWith('collection.')) return DEFAULT_COLLECTION_TEMPLATE_ID;
   if (templateId.startsWith(`${DEFAULT_BLOGS_TEMPLATE_ID}.`)) return DEFAULT_BLOGS_TEMPLATE_ID;
   if (templateId.startsWith(`${DEFAULT_BLOG_POSTS_TEMPLATE_ID}.`)) return DEFAULT_BLOG_POSTS_TEMPLATE_ID;
+  if (templateId.startsWith(`${DEFAULT_PAGE_TEMPLATE_ID}.`)) return DEFAULT_PAGE_TEMPLATE_ID;
   return templateId;
 }
 

@@ -53,6 +53,12 @@ import {
   type BlogPostTemplateEntry,
   type BlogTemplateEntry,
 } from '../utils/blog-templates.util';
+import {
+  createPageTemplateInConfig,
+  listPageTemplates,
+  pageTemplatePreviewPage,
+  type PageTemplateEntry,
+} from '../utils/page-templates.util';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
 import {
   ManageThemeTemplatesSheet,
@@ -60,8 +66,8 @@ import {
 } from './ManageThemeTemplatesSheet';
 import './create-theme-page-picker.css';
 
-type PickerView = 'root' | 'products' | 'collections' | 'blogs' | 'blog-posts';
-type CreateTemplateKind = 'product' | 'collection' | 'blogs' | 'blog-posts';
+type PickerView = 'root' | 'products' | 'collections' | 'blogs' | 'blog-posts' | 'pages';
+type CreateTemplateKind = 'product' | 'collection' | 'blogs' | 'blog-posts' | 'pages';
 
 type CreateThemePagePickerProps = {
   value: ThemePreviewPage;
@@ -119,6 +125,10 @@ function blogsAssignmentLabel(count: number): string {
 
 function blogPostsAssignmentLabel(count: number): string {
   return count === 1 ? 'Assigned to 1 blog post' : `Assigned to ${count} blog posts`;
+}
+
+function pagesAssignmentLabel(count: number): string {
+  return count === 1 ? 'Assigned to 1 page' : `Assigned to ${count} pages`;
 }
 
 type TemplateRowProps = {
@@ -193,6 +203,9 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
   const [liveBlogPostsAssignmentCounts, setLiveBlogPostsAssignmentCounts] = useState<
     Record<string, number> | null
   >(null);
+  const [livePagesAssignmentCounts, setLivePagesAssignmentCounts] = useState<
+    Record<string, number> | null
+  >(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -237,6 +250,15 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     }));
   }, [themeConfig, liveBlogPostsAssignmentCounts]);
 
+  const pageTemplates = useMemo(() => {
+    const list = listPageTemplates(themeConfig ?? null);
+    if (!livePagesAssignmentCounts) return list;
+    return list.map((t) => ({
+      ...t,
+      assignedPageCount: livePagesAssignmentCounts[t.id] ?? 0,
+    }));
+  }, [themeConfig, livePagesAssignmentCounts]);
+
   const filteredProductTemplates = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return productTemplates;
@@ -260,6 +282,12 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     if (!q) return blogPostsTemplates;
     return blogPostsTemplates.filter((t) => t.name.toLowerCase().includes(q));
   }, [blogPostsTemplates, query]);
+
+  const filteredPageTemplates = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return pageTemplates;
+    return pageTemplates.filter((t) => t.name.toLowerCase().includes(q));
+  }, [pageTemplates, query]);
 
   const showCollectionsListRow = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -329,7 +357,8 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
           pickerView === 'products' ||
           pickerView === 'collections' ||
           pickerView === 'blogs' ||
-          pickerView === 'blog-posts'
+          pickerView === 'blog-posts' ||
+          pickerView === 'pages'
         ) {
           setPickerView('root');
           return;
@@ -382,6 +411,11 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     setQuery('');
   }, []);
 
+  const openPagesView = useCallback(() => {
+    setPickerView('pages');
+    setQuery('');
+  }, []);
+
   const handleRowClick = useCallback(
     (item: ThemeEditorPageMenuItem, showChevron: boolean, e: React.MouseEvent) => {
       if (item.menuId === 'page:products') {
@@ -398,6 +432,10 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
       }
       if (item.menuId === 'page:blog-posts') {
         openBlogPostsView();
+        return;
+      }
+      if (item.menuId === 'page:pages') {
+        openPagesView();
         return;
       }
       if (item.openInNewTab) {
@@ -426,6 +464,7 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
       openBlogPostsView,
       openBlogsView,
       openCollectionsView,
+      openPagesView,
       openProductsView,
       selectPage,
       toggleSubmenu,
@@ -460,6 +499,13 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     [selectPage]
   );
 
+  const handleSelectPageTemplate = useCallback(
+    (entry: PageTemplateEntry) => {
+      selectPage(pageTemplatePreviewPage(entry.id));
+    },
+    [selectPage]
+  );
+
   const handleCreateTemplate = useCallback(
     (name: string, basedOnTemplateId: string) => {
       if (!themeConfig || !onThemeConfigChange || !createModalKind) return;
@@ -471,7 +517,9 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
             ? createCollectionTemplateInConfig(next, name, basedOnTemplateId)
             : createModalKind === 'blogs'
               ? createBlogsTemplateInConfig(next, name, basedOnTemplateId)
-              : createBlogPostsTemplateInConfig(next, name, basedOnTemplateId);
+              : createModalKind === 'blog-posts'
+                ? createBlogPostsTemplateInConfig(next, name, basedOnTemplateId)
+                : createPageTemplateInConfig(next, name, basedOnTemplateId);
       if (!result.ok) {
         setCreateTemplateError(result.error);
         return;
@@ -503,7 +551,8 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
       if (kind === 'product') setLiveProductAssignmentCounts(counts);
       else if (kind === 'collection') setLiveCollectionAssignmentCounts(counts);
       else if (kind === 'blogs') setLiveBlogsAssignmentCounts(counts);
-      else setLiveBlogPostsAssignmentCounts(counts);
+      else if (kind === 'blog-posts') setLiveBlogPostsAssignmentCounts(counts);
+      else setLivePagesAssignmentCounts(counts);
     },
     []
   );
@@ -587,11 +636,17 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
             <span className="font-medium text-gray-700">Manage templates</span>, or open a blog and
             choose under Theme template.
           </p>
-        ) : (
+        ) : createKind === 'blog-posts' ? (
           <p className="mt-1.5 px-2.5 pb-1 text-[11px] leading-snug text-gray-500">
             Assign templates to blog posts with{' '}
             <span className="font-medium text-gray-700">Manage templates</span>, or open a blog post
             and choose under Theme template.
+          </p>
+        ) : (
+          <p className="mt-1.5 px-2.5 pb-1 text-[11px] leading-snug text-gray-500">
+            Assign templates to pages with{' '}
+            <span className="font-medium text-gray-700">Manage templates</span>, or open a page and
+            choose under Theme template.
           </p>
         )}
       </div>
@@ -718,6 +773,18 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
                           handleSelectBlogPostsTemplate,
                           'blog-posts'
                         )
+                      : pickerView === 'pages'
+                        ? renderTemplateDrillDown(
+                            'Pages',
+                            filteredPageTemplates.map((t) => ({
+                              ...t,
+                              assignedCount: t.assignedPageCount,
+                            })),
+                            pageTemplatePreviewPage,
+                            pagesAssignmentLabel,
+                            handleSelectPageTemplate,
+                            'pages'
+                          )
                   : (
                 <div className="create-theme-page-picker-list max-h-[min(420px,55vh)] overflow-y-auto pb-1.5">
                   {visibleRows.length ? (
@@ -737,7 +804,8 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
                         item.menuId === 'page:products' ||
                         item.menuId === 'page:collections' ||
                         item.menuId === 'page:blogs' ||
-                        item.menuId === 'page:blog-posts';
+                        item.menuId === 'page:blog-posts' ||
+                        item.menuId === 'page:pages';
                       const isSelected =
                         !item.openInNewTab && !isDrillDown && item.previewPage === value;
                       const padLeft = 10 + depth * 16;
@@ -772,6 +840,7 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
                                         else if (item.menuId === 'page:blogs') openBlogsView();
                                         else if (item.menuId === 'page:blog-posts')
                                           openBlogPostsView();
+                                        else if (item.menuId === 'page:pages') openPagesView();
                                       }
                                     : (e) => toggleSubmenu(item.menuId, e)
                                 }
@@ -804,7 +873,9 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
         ? blogsTemplates
         : createModalKind === 'blog-posts'
           ? blogPostsTemplates
-          : productTemplates;
+          : createModalKind === 'pages'
+            ? pageTemplates
+            : productTemplates;
   const defaultBasedOnId =
     createModalKind === 'collection'
       ? 'collection'
@@ -812,7 +883,9 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
         ? 'blogs'
         : createModalKind === 'blog-posts'
           ? 'blog-posts'
-          : 'product';
+          : createModalKind === 'pages'
+            ? 'pages'
+            : 'product';
 
   return (
     <>

@@ -26,6 +26,12 @@ export function collectionPath(urlHandle: string): string {
   return `/collection/${encodeURIComponent(handle)}`;
 }
 
+/** Custom page detail: `/pages/{urlHandle}` */
+export function pagePath(urlHandle: string): string {
+  const handle = urlHandle.trim().toLowerCase();
+  return handle ? `/pages/${encodeURIComponent(handle)}` : '/pages';
+}
+
 export function isAllProductsPath(pathname: string): boolean {
   return pathname === STOREFRONT_PATHS.allProducts || pathname === '/products';
 }

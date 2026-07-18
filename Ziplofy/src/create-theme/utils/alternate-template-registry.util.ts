@@ -6,12 +6,14 @@ import {
   isBlogPostsTemplatePreviewPage,
   isBlogsTemplatePreviewPage,
 } from './blog-templates.util';
+import { ensurePageTemplateRegistry, isPageTemplatePreviewPage } from './page-templates.util';
 
 export function ensureAllAlternateTemplateRegistries(config: Record<string, unknown>): void {
   ensureProductTemplateRegistry(config);
   ensureCollectionTemplateRegistry(config);
   ensureBlogsTemplateRegistry(config);
   ensureBlogPostsTemplateRegistry(config);
+  ensurePageTemplateRegistry(config);
 }
 
 export function isAlternateTemplatePreviewPage(page: string): boolean {
@@ -19,7 +21,8 @@ export function isAlternateTemplatePreviewPage(page: string): boolean {
     isProductTemplatePreviewPage(page) ||
     isCollectionTemplatePreviewPage(page) ||
     isBlogsTemplatePreviewPage(page) ||
-    isBlogPostsTemplatePreviewPage(page)
+    isBlogPostsTemplatePreviewPage(page) ||
+    isPageTemplatePreviewPage(page)
   );
 }
 
@@ -28,6 +31,7 @@ export function alternateTemplateSavedToastLabel(page: string): string {
   if (isCollectionTemplatePreviewPage(page)) return 'Collection template saved';
   if (isBlogsTemplatePreviewPage(page)) return 'Blog template saved';
   if (isBlogPostsTemplatePreviewPage(page)) return 'Blog post template saved';
+  if (isPageTemplatePreviewPage(page)) return 'Page template saved';
   return 'Template saved';
 }
 
@@ -43,6 +47,9 @@ export function alternateTemplateCreatedToastMessage(page: string): string {
   }
   if (isBlogPostsTemplatePreviewPage(page)) {
     return 'Blog post template created — click Save to keep it after you leave';
+  }
+  if (isPageTemplatePreviewPage(page)) {
+    return 'Page template created — click Save to keep it after you leave';
   }
   return 'Template created — click Save to keep it after you leave';
 }

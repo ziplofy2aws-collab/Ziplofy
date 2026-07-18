@@ -55,6 +55,10 @@ import {
   isBlogPostsTemplatePreviewPage,
   isBlogsTemplatePreviewPage,
 } from './blog-templates.util';
+import {
+  isPageTemplatePreviewPage,
+  pageTemplateDisplayName,
+} from './page-templates.util';
 import { previewPageToTemplateId } from '../../utils/preview-page-template';
 
 export { previewPageToTemplateId };
@@ -198,6 +202,17 @@ export function findPageMenuItemByPreviewWithConfig(
         previewPage,
         label,
         icon: 'blog',
+      };
+    }
+  }
+  if (isPageTemplatePreviewPage(previewPage)) {
+    const label = pageTemplateDisplayName(config, previewPage);
+    if (label) {
+      return {
+        menuId: `page:${previewPage}`,
+        previewPage,
+        label,
+        icon: 'page',
       };
     }
   }

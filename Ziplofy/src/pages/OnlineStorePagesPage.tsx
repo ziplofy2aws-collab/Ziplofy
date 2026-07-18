@@ -393,14 +393,25 @@ export default function OnlineStorePagesPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loading && pages.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={5}
-                      className="px-3 py-8 text-center text-[13px] font-normal text-gray-500"
-                    >
-                      Loading pages…
-                    </td>
-                  </tr>
+                  Array.from({ length: 4 }).map((_, index) => (
+                    <tr key={index} className="animate-pulse" aria-hidden>
+                      <td className="w-10 px-3 py-2.5 text-center">
+                        <div className="mx-auto h-3.5 w-3.5 rounded bg-gray-100" />
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <div className="h-4 w-32 rounded bg-gray-200" />
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <div className="h-5 w-16 rounded-full bg-gray-100" />
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <div className="h-3.5 w-56 max-w-full rounded bg-gray-100" />
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <div className="ml-auto h-3.5 w-24 rounded bg-gray-100" />
+                      </td>
+                    </tr>
+                  ))
                 ) : error && pages.length === 0 ? (
                   <tr>
                     <td

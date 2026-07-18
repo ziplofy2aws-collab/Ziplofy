@@ -15,6 +15,61 @@ import {
   slugifyMenuHandle,
 } from './ContentMenuCreatePage';
 
+function MenuEditSkeleton() {
+  return (
+    <div className="animate-pulse" aria-busy="true" aria-label="Loading menu">
+      <div className="space-y-4">
+        <section className="rounded-2xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
+          <div className="space-y-4">
+            <div>
+              <div className="mb-1.5 h-4 w-12 rounded bg-gray-200" />
+              <div className="h-10 w-full rounded-xl bg-gray-100" />
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3.5 w-14 rounded bg-gray-200" />
+              <div className="h-3.5 w-28 rounded bg-gray-100" />
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-gray-200/80 bg-white shadow-sm">
+          <div className="border-b border-gray-100 px-5 py-4 sm:px-6">
+            <div className="h-4 w-24 rounded bg-gray-200" />
+          </div>
+          <div className="space-y-3 p-4 sm:p-5">
+            {[0, 1, 2].map((row) => (
+              <div key={row} className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <div className="mt-8 h-5 w-5 shrink-0 rounded bg-gray-100" />
+                  <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
+                    <div>
+                      <div className="mb-1 h-4 w-12 rounded bg-gray-200" />
+                      <div className="h-9 w-full rounded-lg bg-gray-100" />
+                    </div>
+                    <div>
+                      <div className="mb-1 h-4 w-10 rounded bg-gray-200" />
+                      <div className="h-9 w-full rounded-lg bg-gray-100" />
+                    </div>
+                  </div>
+                  <div className="mt-7 flex shrink-0 items-center gap-1">
+                    <div className="h-9 w-9 rounded-lg bg-gray-100" />
+                    <div className="h-9 w-9 rounded-lg bg-gray-100" />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="h-[52px] w-full rounded-xl border border-gray-200 bg-gray-50/80" />
+          </div>
+        </section>
+      </div>
+
+      <div className="mt-6 flex justify-end">
+        <div className="h-10 w-28 rounded-full bg-gray-200" />
+      </div>
+    </div>
+  );
+}
+
 export const ContentMenuEditPage = () => {
   const { menuId } = useParams<{ menuId: string }>();
   const { activeStoreId } = useStore();
@@ -123,7 +178,7 @@ export const ContentMenuEditPage = () => {
         </nav>
 
         {!loaded && loading ? (
-          <p className="text-sm text-gray-500">Loading menu…</p>
+          <MenuEditSkeleton />
         ) : (
           <>
             <div className="space-y-4">

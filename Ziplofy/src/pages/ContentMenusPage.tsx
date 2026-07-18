@@ -9,6 +9,29 @@ import { useStore } from '../contexts/store.context';
 
 type MenuSort = 'asc' | 'desc';
 
+const SKELETON_NAME_WIDTHS = ['w-32', 'w-24', 'w-40', 'w-28', 'w-36'];
+const SKELETON_SUMMARY_WIDTHS = ['w-3/4', 'w-1/2', 'w-2/3', 'w-4/5', 'w-3/5'];
+
+function MenusTableSkeletonRows() {
+  return (
+    <>
+      {SKELETON_NAME_WIDTHS.map((nameWidth, index) => (
+        <tr key={index} className="animate-pulse">
+          <td className="px-5 py-4 sm:px-6">
+            <div className="flex items-center gap-3">
+              <span className="h-9 w-9 shrink-0 rounded-lg bg-gray-100" />
+              <span className={`h-4 rounded bg-gray-200 ${nameWidth}`} />
+            </div>
+          </td>
+          <td className="px-5 py-4 sm:px-6">
+            <span className={`block h-3.5 rounded bg-gray-100 ${SKELETON_SUMMARY_WIDTHS[index]}`} />
+          </td>
+        </tr>
+      ))}
+    </>
+  );
+}
+
 export const ContentMenusPage = () => {
   const { activeStoreId } = useStore();
   const { menus, loading, fetchMenusByStoreId } = useStoreMenus();
@@ -77,11 +100,7 @@ export const ContentMenusPage = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loading && menus.length === 0 ? (
-                  <tr>
-                    <td colSpan={2} className="px-5 py-8 text-center text-sm text-gray-500 sm:px-6">
-                      Loading menus…
-                    </td>
-                  </tr>
+                  <MenusTableSkeletonRows />
                 ) : sortedMenus.length === 0 ? (
                   <tr>
                     <td colSpan={2} className="px-5 py-8 text-center text-sm text-gray-500 sm:px-6">
