@@ -19,7 +19,6 @@ import {
   type SelectedImageAsset,
 } from '../components/SelectImageModal';
 import BlogTagsInput from '../components/tags/BlogTagsInput';
-import { BlogPostThemeTemplateSection } from '../components/blog-posts/BlogPostThemeTemplateSection';
 import { useBlogPosts, type BlogPost, type BlogPostVisibility } from '../contexts/blog-post.context';
 import { useBlogs, type Blog } from '../contexts/blog.context';
 import { useStore } from '../contexts/store.context';
@@ -49,7 +48,6 @@ type BlogPostFormSnapshot = {
   featuredImageUrl: string;
   featuredImageKey: string;
   featuredImageUploadId: string;
-  themeTemplate: string;
 };
 
 function BlogPostCard({
@@ -103,7 +101,6 @@ function snapshotFromPost(post: BlogPost): BlogPostFormSnapshot {
     featuredImageUrl: post.featuredImageUrl,
     featuredImageKey: post.featuredImageKey,
     featuredImageUploadId: post.featuredImageUploadId,
-    themeTemplate: post.themeTemplate?.trim() || 'default',
   };
 }
 
@@ -121,7 +118,6 @@ function snapshotsEqual(a: BlogPostFormSnapshot, b: BlogPostFormSnapshot): boole
     a.featuredImageUrl === b.featuredImageUrl &&
     a.featuredImageKey === b.featuredImageKey &&
     a.featuredImageUploadId === b.featuredImageUploadId &&
-    a.themeTemplate === b.themeTemplate &&
     a.tagIds.length === b.tagIds.length &&
     a.tagIds.every((id, index) => id === b.tagIds[index])
   );
@@ -163,7 +159,6 @@ export const BlogPostEditPage = () => {
   const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [featuredImageKey, setFeaturedImageKey] = useState('');
   const [featuredImageUploadId, setFeaturedImageUploadId] = useState('');
-  const [themeTemplate, setThemeTemplate] = useState('default');
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const [initial, setInitial] = useState<BlogPostFormSnapshot | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -195,7 +190,6 @@ export const BlogPostEditPage = () => {
       featuredImageUrl,
       featuredImageKey,
       featuredImageUploadId,
-      themeTemplate,
     }),
     [
       title,
@@ -211,7 +205,6 @@ export const BlogPostEditPage = () => {
       featuredImageUrl,
       featuredImageKey,
       featuredImageUploadId,
-      themeTemplate,
     ]
   );
 
@@ -287,7 +280,6 @@ export const BlogPostEditPage = () => {
         setFeaturedImageUrl(snapshot.featuredImageUrl);
         setFeaturedImageKey(snapshot.featuredImageKey);
         setFeaturedImageUploadId(snapshot.featuredImageUploadId);
-        setThemeTemplate(snapshot.themeTemplate);
         setInitial(snapshot);
         setLoaded(true);
 
@@ -392,11 +384,9 @@ export const BlogPostEditPage = () => {
         featuredImageUrl,
         featuredImageKey,
         featuredImageUploadId,
-        themeTemplate,
       });
       const snapshot = snapshotFromPost(post);
       setInitial(snapshot);
-      setThemeTemplate(snapshot.themeTemplate);
       toast.success('Blog post saved');
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to save blog post';
@@ -708,12 +698,6 @@ export const BlogPostEditPage = () => {
                     </div>
                   )}
                 </BlogPostCard>
-
-                <BlogPostThemeTemplateSection
-                  storeId={activeStoreId}
-                  value={themeTemplate}
-                  onChange={setThemeTemplate}
-                />
 
                 <BlogPostCard title="Organization">
                   <div className="space-y-3">

@@ -11,7 +11,6 @@ import ProductPriceSection from './ProductPriceSection';
 import ProductSearchEngineListingSection from './ProductSearchEngineListingSection';
 import ProductShippingSection from './ProductShippingSection';
 import ProductStatusSection from './ProductStatusSection';
-import ProductThemeTemplateSection from './ProductThemeTemplateSection';
 import {
   productFormAsideStackClass,
   productFormCardClass,
@@ -257,12 +256,6 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
             <ProductStatusSection
               status={formData.status}
               onChange={(status) => handleInputChange('status', status)}
-              appearance={FORM_APPEARANCE}
-            />
-            <ProductThemeTemplateSection
-              storeId={activeStoreId}
-              value={formData.themeTemplate || 'default'}
-              onChange={(themeTemplate) => handleInputChange('themeTemplate', themeTemplate)}
               appearance={FORM_APPEARANCE}
             />
             <ProductOrganizationSection

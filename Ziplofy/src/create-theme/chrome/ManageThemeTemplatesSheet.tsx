@@ -45,6 +45,18 @@ type ManageThemeTemplatesSheetProps = {
    * (`page_template_assignments`) so the storefront can resolve without an API call.
    */
   onPageHandleAssignmentsSaved?: (assignments: Record<string, string>) => void;
+  /**
+   * Products only: full urlHandle → themeTemplate map written into theme JSON.
+   */
+  onProductHandleAssignmentsSaved?: (assignments: Record<string, string>) => void;
+  /**
+   * Collections only: full urlHandle → themeTemplate map written into theme JSON.
+   */
+  onCollectionHandleAssignmentsSaved?: (assignments: Record<string, string>) => void;
+  /** Blogs only: full urlHandle → themeTemplate map written into theme JSON. */
+  onBlogHandleAssignmentsSaved?: (assignments: Record<string, string>) => void;
+  /** Blog posts only: `blogHandle/postHandle` → themeTemplate map. */
+  onBlogPostHandleAssignmentsSaved?: (assignments: Record<string, string>) => void;
 };
 
 const KIND_META: Record<
@@ -173,6 +185,10 @@ export function ManageThemeTemplatesSheet({
   themeConfig = null,
   onAssignmentsChanged,
   onPageHandleAssignmentsSaved,
+  onProductHandleAssignmentsSaved,
+  onCollectionHandleAssignmentsSaved,
+  onBlogHandleAssignmentsSaved,
+  onBlogPostHandleAssignmentsSaved,
 }: ManageThemeTemplatesSheetProps) {
   const { activeStoreId } = useStore();
   const { products, fetchProductsByStoreId, updateProduct } = useProducts();
@@ -517,14 +533,24 @@ export function ManageThemeTemplatesSheet({
     setDirtyIds(new Set());
     emitCounts(rows);
 
-    if (kind === 'pages') {
+    if (
+      kind === 'pages' ||
+      kind === 'product' ||
+      kind === 'collection' ||
+      kind === 'blogs' ||
+      kind === 'blog-posts'
+    ) {
       const assignments: Record<string, string> = {};
       for (const row of rows) {
         const handle = row.subtitle?.trim().toLowerCase();
         if (!handle) continue;
         assignments[handle] = row.themeTemplate?.trim().toLowerCase() || 'default';
       }
-      onPageHandleAssignmentsSaved?.(assignments);
+      if (kind === 'pages') onPageHandleAssignmentsSaved?.(assignments);
+      else if (kind === 'product') onProductHandleAssignmentsSaved?.(assignments);
+      else if (kind === 'collection') onCollectionHandleAssignmentsSaved?.(assignments);
+      else if (kind === 'blogs') onBlogHandleAssignmentsSaved?.(assignments);
+      else onBlogPostHandleAssignmentsSaved?.(assignments);
     }
 
     toast.success(
@@ -547,6 +573,10 @@ export function ManageThemeTemplatesSheet({
     entityNoun,
     emitCounts,
     onPageHandleAssignmentsSaved,
+    onProductHandleAssignmentsSaved,
+    onCollectionHandleAssignmentsSaved,
+    onBlogHandleAssignmentsSaved,
+    onBlogPostHandleAssignmentsSaved,
   ]);
 
   if (!mounted || !present) return null;

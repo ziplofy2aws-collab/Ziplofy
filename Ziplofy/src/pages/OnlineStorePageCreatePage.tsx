@@ -2,7 +2,6 @@ import {
   CalendarDaysIcon,
   ChevronRightIcon,
   DocumentTextIcon,
-  EyeIcon,
   SparklesIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
@@ -63,7 +62,6 @@ export default function OnlineStorePageCreatePage() {
   const [metaDescription, setMetaDescription] = useState('');
   const [urlHandle, setUrlHandle] = useState('');
   const [visibility, setVisibility] = useState<Visibility>('hidden');
-  const [themeTemplate, setThemeTemplate] = useState('default');
   const [loadingPage, setLoadingPage] = useState(
     () => editing && !peekPageJustCreated(pageId) && !readPageJustCreated(location.state)
   );
@@ -127,7 +125,6 @@ export default function OnlineStorePageCreatePage() {
         setMetaDescription(page.metaDescription);
         setUrlHandle(page.urlHandle);
         setVisibility(page.visibility);
-        setThemeTemplate(page.themeTemplate || 'default');
       })
       .catch((error: unknown) => {
         if (cancelled) return;
@@ -174,7 +171,6 @@ export default function OnlineStorePageCreatePage() {
         metaDescription: metaDescription.trim(),
         urlHandle: urlHandle.trim() || undefined,
         visibility,
-        themeTemplate,
       };
       if (pageId) {
         await updatePage(pageId, payload);
@@ -333,20 +329,6 @@ export default function OnlineStorePageCreatePage() {
                   Hidden
                 </label>
               </div>
-            </PageCard>
-
-            <PageCard
-              title="Template"
-              action={<EyeIcon className="h-4 w-4 text-gray-400" aria-hidden />}
-            >
-              <select
-                value={themeTemplate}
-                onChange={(e) => setThemeTemplate(e.target.value)}
-                aria-label="Page template"
-                className="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
-              >
-                <option value="default">Default page</option>
-              </select>
             </PageCard>
           </div>
         </div>

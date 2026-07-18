@@ -1,26 +1,20 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
+import { resolveBlogsTemplateIdFromThemeConfig } from '@codiic/create-theme/utils/blog-templates.util';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
 import { StorefrontBlogByUrlHandleLoader } from './StorefrontBlogByUrlHandleLoader';
 
-function resolveBlogJsonTemplateId(themeTemplate?: string | null): string {
-  const normalized = (themeTemplate ?? 'default').trim().toLowerCase();
-  if (!normalized || normalized === 'default' || normalized === 'blogs') return 'blogs';
-  if (normalized.startsWith('blogs.')) return normalized;
-  return 'blogs';
-}
-
 type BlogTemplateRouteProps = {
-  /** Editor preview override (e.g. `blogs.news`) — wins over the blog's assignment. */
+  /** Editor preview override (e.g. `blogs.news`) — wins over theme JSON assignments. */
   activeTemplateId?: string;
   fallbackSectionIds?: string[];
 };
 
 /**
- * Blog listing route: loads the blog, then renders the assigned theme template
- * (`default` → `blogs`, or `blogs.{slug}` when present in theme config).
+ * Blog listing route. Template selection is a local lookup in the loaded
+ * theme JSON; blog data continues loading through the normal API.
  */
 export function BlogTemplateRoute({
   activeTemplateId,
@@ -35,11 +29,8 @@ export function BlogTemplateRoute({
       return activeTemplateId;
     }
 
-    const requested = resolveBlogJsonTemplateId(activeBlog?.themeTemplate);
-    const templates = (themeConfig?.templates ?? {}) as Record<string, unknown>;
-    if (requested !== 'blogs' && templates[requested]) return requested;
-    return 'blogs';
-  }, [activeTemplateId, activeBlog, themeConfig]);
+    return resolveBlogsTemplateIdFromThemeConfig(themeConfig, blogHandle);
+  }, [activeTemplateId, blogHandle, themeConfig]);
 
   const waitingForBlog =
     Boolean(blogHandle) && blogHandle !== 'preview' && !activeBlog && loading;

@@ -1,26 +1,20 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
+import { resolveBlogPostTemplateIdFromThemeConfig } from '@codiic/create-theme/utils/blog-templates.util';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontBlogs } from '@/contexts/storefront-blogs.context';
 import { StorefrontBlogPostByUrlHandleLoader } from './StorefrontBlogPostByUrlHandleLoader';
 
-function resolveBlogPostJsonTemplateId(themeTemplate?: string | null): string {
-  const normalized = (themeTemplate ?? 'default').trim().toLowerCase();
-  if (!normalized || normalized === 'default' || normalized === 'blog-posts') return 'blog-posts';
-  if (normalized.startsWith('blog-posts.')) return normalized;
-  return 'blog-posts';
-}
-
 type BlogPostTemplateRouteProps = {
-  /** Editor preview override (e.g. `blog-posts.feature`) — wins over the post's assignment. */
+  /** Editor preview override (e.g. `blog-posts.feature`) — wins over JSON assignments. */
   activeTemplateId?: string;
   fallbackSectionIds?: string[];
 };
 
 /**
- * Blog post route: loads the article, then renders the assigned theme template
- * (`default` → `blog-posts`, or `blog-posts.{slug}` when present in theme config).
+ * Blog post route. Template selection is a local lookup in the loaded theme JSON
+ * using `blogHandle/articleHandle`; article data still loads through its normal API.
  */
 export function BlogPostTemplateRoute({
   activeTemplateId,
@@ -41,11 +35,12 @@ export function BlogPostTemplateRoute({
       return activeTemplateId;
     }
 
-    const requested = resolveBlogPostJsonTemplateId(activePost?.themeTemplate);
-    const templates = (themeConfig?.templates ?? {}) as Record<string, unknown>;
-    if (requested !== 'blog-posts' && templates[requested]) return requested;
-    return 'blog-posts';
-  }, [activeTemplateId, activePost, themeConfig]);
+    return resolveBlogPostTemplateIdFromThemeConfig(
+      themeConfig,
+      blogHandle,
+      articleHandle
+    );
+  }, [activeTemplateId, blogHandle, articleHandle, themeConfig]);
 
   const waitingForPost =
     Boolean(blogHandle) &&

@@ -35,12 +35,14 @@ import {
   createCollectionTemplateInConfig,
   listCollectionTemplates,
   collectionTemplatePreviewPage,
+  writeCollectionTemplateAssignments,
   type CollectionTemplateEntry,
 } from '../utils/collection-templates.util';
 import {
   createProductTemplateInConfig,
   listProductTemplates,
   productTemplatePreviewPage,
+  writeProductTemplateAssignments,
   type ProductTemplateEntry,
 } from '../utils/product-templates.util';
 import {
@@ -50,6 +52,8 @@ import {
   listBlogsTemplates,
   blogPostsTemplatePreviewPage,
   blogsTemplatePreviewPage,
+  writeBlogPostsTemplateAssignments,
+  writeBlogsTemplateAssignments,
   type BlogPostTemplateEntry,
   type BlogTemplateEntry,
 } from '../utils/blog-templates.util';
@@ -573,6 +577,66 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
     [themeConfig, onThemeConfigChange]
   );
 
+  const applyProductHandleAssignmentsToThemeConfig = useCallback(
+    (assignments: Record<string, string>) => {
+      if (!themeConfig || !onThemeConfigChange) return;
+      const next = JSON.parse(JSON.stringify(themeConfig)) as Record<string, unknown>;
+      writeProductTemplateAssignments(next, assignments);
+      setLiveProductAssignmentCounts(
+        Object.fromEntries(
+          listProductTemplates(next).map((t) => [t.id, t.assignedProductCount] as const)
+        )
+      );
+      onThemeConfigChange(next);
+    },
+    [themeConfig, onThemeConfigChange]
+  );
+
+  const applyCollectionHandleAssignmentsToThemeConfig = useCallback(
+    (assignments: Record<string, string>) => {
+      if (!themeConfig || !onThemeConfigChange) return;
+      const next = JSON.parse(JSON.stringify(themeConfig)) as Record<string, unknown>;
+      writeCollectionTemplateAssignments(next, assignments);
+      setLiveCollectionAssignmentCounts(
+        Object.fromEntries(
+          listCollectionTemplates(next).map((t) => [t.id, t.assignedCollectionCount] as const)
+        )
+      );
+      onThemeConfigChange(next);
+    },
+    [themeConfig, onThemeConfigChange]
+  );
+
+  const applyBlogHandleAssignmentsToThemeConfig = useCallback(
+    (assignments: Record<string, string>) => {
+      if (!themeConfig || !onThemeConfigChange) return;
+      const next = JSON.parse(JSON.stringify(themeConfig)) as Record<string, unknown>;
+      writeBlogsTemplateAssignments(next, assignments);
+      setLiveBlogsAssignmentCounts(
+        Object.fromEntries(
+          listBlogsTemplates(next).map((t) => [t.id, t.assignedBlogCount] as const)
+        )
+      );
+      onThemeConfigChange(next);
+    },
+    [themeConfig, onThemeConfigChange]
+  );
+
+  const applyBlogPostHandleAssignmentsToThemeConfig = useCallback(
+    (assignments: Record<string, string>) => {
+      if (!themeConfig || !onThemeConfigChange) return;
+      const next = JSON.parse(JSON.stringify(themeConfig)) as Record<string, unknown>;
+      writeBlogPostsTemplateAssignments(next, assignments);
+      setLiveBlogPostsAssignmentCounts(
+        Object.fromEntries(
+          listBlogPostsTemplates(next).map((t) => [t.id, t.assignedBlogPostCount] as const)
+        )
+      );
+      onThemeConfigChange(next);
+    },
+    [themeConfig, onThemeConfigChange]
+  );
+
   const renderTemplateDrillDown = (
     title: string,
     templates: Array<{ id: string; name: string; isDefault: boolean; assignedCount: number }>,
@@ -943,6 +1007,10 @@ const CreateThemePagePickerInner: React.FC<CreateThemePagePickerProps> = ({
             applyAssignmentCountsToThemeConfig(manageSheetKind, counts)
           }
           onPageHandleAssignmentsSaved={applyPageHandleAssignmentsToThemeConfig}
+          onProductHandleAssignmentsSaved={applyProductHandleAssignmentsToThemeConfig}
+          onCollectionHandleAssignmentsSaved={applyCollectionHandleAssignmentsToThemeConfig}
+          onBlogHandleAssignmentsSaved={applyBlogHandleAssignmentsToThemeConfig}
+          onBlogPostHandleAssignmentsSaved={applyBlogPostHandleAssignmentsToThemeConfig}
         />
       ) : null}
     </>

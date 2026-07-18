@@ -7,7 +7,6 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { DeleteBlogModal } from '../components/DeleteBlogModal';
-import { BlogThemeTemplateSection } from '../components/blogs/BlogThemeTemplateSection';
 import { useBlogs, type Blog, type BlogCommentsMode } from '../contexts/blog.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
@@ -29,7 +28,6 @@ type BlogFormSnapshot = {
   metaDescription: string;
   urlHandle: string;
   comments: BlogComments;
-  themeTemplate: string;
 };
 
 function BlogSettingsCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -50,7 +48,6 @@ function snapshotFromBlog(blog: Blog): BlogFormSnapshot {
     metaDescription: blog.metaDescription,
     urlHandle: blog.urlHandle,
     comments: blog.comments,
-    themeTemplate: blog.themeTemplate?.trim() || 'default',
   };
 }
 
@@ -68,7 +65,6 @@ export const ContentBlogEditPage = () => {
   const [metaDescription, setMetaDescription] = useState('');
   const [urlHandle, setUrlHandle] = useState('');
   const [comments, setComments] = useState<BlogComments>('disabled');
-  const [themeTemplate, setThemeTemplate] = useState('default');
   const [initial, setInitial] = useState<BlogFormSnapshot | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -96,7 +92,6 @@ export const ContentBlogEditPage = () => {
         setMetaDescription(snapshot.metaDescription);
         setUrlHandle(snapshot.urlHandle);
         setComments(snapshot.comments);
-        setThemeTemplate(snapshot.themeTemplate);
         setInitial(snapshot);
         setLoaded(true);
       })
@@ -129,9 +124,8 @@ export const ContentBlogEditPage = () => {
       metaDescription,
       urlHandle,
       comments,
-      themeTemplate,
     }),
-    [blogTitle, pageTitle, metaDescription, urlHandle, comments, themeTemplate]
+    [blogTitle, pageTitle, metaDescription, urlHandle, comments]
   );
 
   const isDirty = useMemo(() => {
@@ -141,8 +135,7 @@ export const ContentBlogEditPage = () => {
       currentSnapshot.pageTitle !== initial.pageTitle ||
       currentSnapshot.metaDescription !== initial.metaDescription ||
       currentSnapshot.urlHandle !== initial.urlHandle ||
-      currentSnapshot.comments !== initial.comments ||
-      currentSnapshot.themeTemplate !== initial.themeTemplate
+      currentSnapshot.comments !== initial.comments
     );
   }, [currentSnapshot, initial]);
 
@@ -172,7 +165,6 @@ export const ContentBlogEditPage = () => {
         metaDescription: metaDescription.trim(),
         urlHandle: urlHandle.trim() || undefined,
         comments,
-        themeTemplate,
       });
       const snapshot = snapshotFromBlog(blog);
       setInitial(snapshot);
@@ -181,7 +173,6 @@ export const ContentBlogEditPage = () => {
       setMetaDescription(snapshot.metaDescription);
       setUrlHandle(snapshot.urlHandle);
       setComments(snapshot.comments);
-      setThemeTemplate(snapshot.themeTemplate);
       toast.success('Blog saved');
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Failed to save blog';
@@ -373,11 +364,6 @@ export const ContentBlogEditPage = () => {
                   </div>
                 </BlogSettingsCard>
 
-                <BlogThemeTemplateSection
-                  storeId={activeStoreId}
-                  value={themeTemplate}
-                  onChange={setThemeTemplate}
-                />
               </div>
             </div>
 

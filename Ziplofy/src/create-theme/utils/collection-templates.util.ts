@@ -1,6 +1,8 @@
 /** Alternate collection templates stored under `config.templates` (Shopify-style `collection.{slug}` keys). */
 
 export const COLLECTION_TEMPLATE_ORDER_KEY = 'collection_template_order';
+/** urlHandle → stored themeTemplate (`default` | `collection.{slug}`). */
+export const COLLECTION_TEMPLATE_ASSIGNMENTS_KEY = 'collection_template_assignments';
 export const DEFAULT_COLLECTION_TEMPLATE_ID = 'collection';
 
 export type CollectionTemplateEntry = {
@@ -44,6 +46,75 @@ export function collectionTemplateIdFromPreviewPage(page: string): string | null
 
 export function isCollectionTemplatePreviewPage(page: string): boolean {
   return collectionTemplateIdFromPreviewPage(page) !== null;
+}
+
+/** Map stored themeTemplate (`default` / `collection.foo`) to a config template key. */
+export function collectionThemeTemplateToConfigId(themeTemplate?: string | null): string {
+  const normalized = (themeTemplate ?? 'default').trim().toLowerCase();
+  if (!normalized || normalized === 'default' || normalized === DEFAULT_COLLECTION_TEMPLATE_ID) {
+    return DEFAULT_COLLECTION_TEMPLATE_ID;
+  }
+  if (normalized.startsWith(`${DEFAULT_COLLECTION_TEMPLATE_ID}.`)) return normalized;
+  return DEFAULT_COLLECTION_TEMPLATE_ID;
+}
+
+/** Read collection urlHandle → themeTemplate assignments from theme JSON. */
+export function readCollectionTemplateAssignments(
+  config: Record<string, unknown> | null | undefined
+): Record<string, string> {
+  if (!config) return {};
+  const raw = config[COLLECTION_TEMPLATE_ASSIGNMENTS_KEY];
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+
+  const out: Record<string, string> = {};
+  for (const [handle, value] of Object.entries(raw as Record<string, unknown>)) {
+    const key = handle.trim().toLowerCase();
+    if (!key || typeof value !== 'string') continue;
+    const normalized = value.trim().toLowerCase();
+    if (normalized) out[key] = normalized;
+  }
+  return out;
+}
+
+/** Replace collection assignments in theme JSON and refresh assignment counts. */
+export function writeCollectionTemplateAssignments(
+  config: Record<string, unknown>,
+  assignments: Record<string, string>
+): void {
+  ensureCollectionTemplateRegistry(config);
+  const cleaned: Record<string, string> = {};
+  for (const [handle, value] of Object.entries(assignments)) {
+    const key = handle.trim().toLowerCase();
+    if (!key) continue;
+    const normalized = (value ?? 'default').trim().toLowerCase() || 'default';
+    cleaned[key] = normalized === DEFAULT_COLLECTION_TEMPLATE_ID ? 'default' : normalized;
+  }
+  config[COLLECTION_TEMPLATE_ASSIGNMENTS_KEY] = cleaned;
+
+  const counts: Record<string, number> = {};
+  for (const value of Object.values(cleaned)) {
+    const id = collectionThemeTemplateToConfigId(value);
+    counts[id] = (counts[id] ?? 0) + 1;
+  }
+  const templates = templatesRecord(config);
+  for (const id of listCollectionTemplateOrder(config)) {
+    if (templates[id]) templates[id].assignedCollectionCount = counts[id] ?? 0;
+  }
+}
+
+/** Resolve a collection template locally from the already-loaded theme JSON. */
+export function resolveCollectionTemplateIdFromThemeConfig(
+  config: Record<string, unknown> | null | undefined,
+  urlHandle?: string | null
+): string {
+  const handle = (urlHandle ?? '').trim().toLowerCase();
+  if (!handle || handle === 'preview') return DEFAULT_COLLECTION_TEMPLATE_ID;
+
+  const assignments = readCollectionTemplateAssignments(config);
+  const requested = collectionThemeTemplateToConfigId(assignments[handle]);
+  const templates = templatesRecord(config ?? {});
+  if (requested !== DEFAULT_COLLECTION_TEMPLATE_ID && templates[requested]) return requested;
+  return DEFAULT_COLLECTION_TEMPLATE_ID;
 }
 
 function readTemplateName(tpl: Record<string, unknown> | undefined, fallback: string): string {
@@ -136,6 +207,14 @@ export function ensureCollectionTemplateRegistry(config: Record<string, unknown>
     }
   }
   config[COLLECTION_TEMPLATE_ORDER_KEY] = order;
+
+  if (
+    !config[COLLECTION_TEMPLATE_ASSIGNMENTS_KEY] ||
+    typeof config[COLLECTION_TEMPLATE_ASSIGNMENTS_KEY] !== 'object' ||
+    Array.isArray(config[COLLECTION_TEMPLATE_ASSIGNMENTS_KEY])
+  ) {
+    config[COLLECTION_TEMPLATE_ASSIGNMENTS_KEY] = {};
+  }
 }
 
 export type CreateCollectionTemplateResult =

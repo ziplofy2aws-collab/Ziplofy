@@ -1,27 +1,21 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
+import { resolveCollectionTemplateIdFromThemeConfig } from '@codiic/create-theme/utils/collection-templates.util';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontCollections } from '@/contexts/storefront-collections.context';
 import { StorefrontCollectionByUrlHandleLoader } from './StorefrontCollectionByUrlHandleLoader';
 
-function resolveCollectionJsonTemplateId(themeTemplate?: string | null): string {
-  const normalized = (themeTemplate ?? 'default').trim().toLowerCase();
-  if (!normalized || normalized === 'default' || normalized === 'collection') return 'collection';
-  if (normalized.startsWith('collection.')) return normalized;
-  return 'collection';
-}
-
 type CollectionTemplateRouteProps = {
-  /** Editor preview override (e.g. `collection.sale`) — wins over the collection's assignment. */
+  /** Editor preview override (e.g. `collection.sale`) — wins over theme JSON assignments. */
   activeTemplateId?: string;
   fallbackSectionIds?: string[];
   urlHandleOverride?: string;
 };
 
 /**
- * Collection details route: loads the collection, then renders the assigned theme template
- * (`default` → `collection`, or `collection.{slug}` when present in theme config).
+ * Collection details route. Template selection is a local lookup in the loaded
+ * theme JSON; collection data continues loading through the normal API.
  */
 export function CollectionTemplateRoute({
   activeTemplateId,
@@ -31,7 +25,7 @@ export function CollectionTemplateRoute({
   const { urlHandle: paramHandle } = useParams<{ urlHandle?: string }>();
   const routeHandle = urlHandleOverride ?? paramHandle;
   const { themeConfig } = useStorefront();
-  const { activeCollection, collections, loading } = useStorefrontCollections();
+  const { activeCollection, loading } = useStorefrontCollections();
 
   const assignedTemplateId = useMemo(() => {
     if (
@@ -41,15 +35,8 @@ export function CollectionTemplateRoute({
       return activeTemplateId;
     }
 
-    const collection =
-      activeCollection ??
-      (routeHandle && routeHandle !== 'preview' ? null : collections[0] ?? null);
-
-    const requested = resolveCollectionJsonTemplateId(collection?.themeTemplate);
-    const templates = (themeConfig?.templates ?? {}) as Record<string, unknown>;
-    if (requested !== 'collection' && templates[requested]) return requested;
-    return 'collection';
-  }, [activeTemplateId, activeCollection, collections, routeHandle, themeConfig]);
+    return resolveCollectionTemplateIdFromThemeConfig(themeConfig, routeHandle);
+  }, [activeTemplateId, routeHandle, themeConfig]);
 
   const waitingForCollection =
     Boolean(routeHandle) &&

@@ -1,26 +1,20 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
+import { resolveProductTemplateIdFromThemeConfig } from '@codiic/create-theme/utils/product-templates.util';
 import { useStorefront } from '@/contexts/store.context';
 import { useStorefrontProducts } from '@/contexts/product.context';
 import { StorefrontProductPreviewLoader } from './StorefrontProductPreviewLoader';
 
-function resolveProductJsonTemplateId(themeTemplate?: string | null): string {
-  const normalized = (themeTemplate ?? 'default').trim().toLowerCase();
-  if (!normalized || normalized === 'default' || normalized === 'product') return 'product';
-  if (normalized.startsWith('product.')) return normalized;
-  return 'product';
-}
-
 type ProductTemplateRouteProps = {
-  /** Editor preview override (e.g. `product.sale`) — wins over the product's assignment. */
+  /** Editor preview override (e.g. `product.sale`) — wins over theme JSON assignments. */
   activeTemplateId?: string;
   fallbackSectionIds?: string[];
 };
 
 /**
- * Product details route: loads the product, then renders the assigned theme template
- * (`default` → `product`, or `product.{slug}` when present in theme config).
+ * Product details route. Template selection is a local lookup in the already-loaded
+ * theme JSON; product data continues loading through the normal product API.
  */
 export function ProductTemplateRoute({
   activeTemplateId,
@@ -29,26 +23,15 @@ export function ProductTemplateRoute({
   const params = useParams<{ id?: string; urlHandle?: string }>();
   const routeParam = params.urlHandle ?? params.id;
   const { themeConfig } = useStorefront();
-  const { productDetail, products, productDetailLoading } = useStorefrontProducts();
+  const { productDetail, productDetailLoading } = useStorefrontProducts();
 
   const assignedTemplateId = useMemo(() => {
     if (activeTemplateId && (activeTemplateId === 'product' || activeTemplateId.startsWith('product.'))) {
       return activeTemplateId;
     }
 
-    const product =
-      productDetail ??
-      (routeParam && routeParam !== 'preview'
-        ? null
-        : products[0] ?? null);
-
-    const requested = resolveProductJsonTemplateId(
-      (product as { themeTemplate?: string } | null)?.themeTemplate
-    );
-    const templates = (themeConfig?.templates ?? {}) as Record<string, unknown>;
-    if (requested !== 'product' && templates[requested]) return requested;
-    return 'product';
-  }, [activeTemplateId, productDetail, products, routeParam, themeConfig]);
+    return resolveProductTemplateIdFromThemeConfig(themeConfig, routeParam);
+  }, [activeTemplateId, routeParam, themeConfig]);
 
   const waitingForProduct =
     Boolean(routeParam) &&

@@ -50,7 +50,6 @@ function productToFormData(product: Product): NewProductFormData {
     metaDescription: product.metaDescription || '',
     urlHandle: product.urlHandle || '',
     images: [],
-    themeTemplate: product.themeTemplate || 'default',
   };
 }
 
@@ -180,7 +179,6 @@ export function useProductEditForm(product: Product) {
         productType: formData.productType,
         vendor: formData.vendor,
         tagIds: formData.tags,
-        themeTemplate: formData.themeTemplate || 'default',
       });
 
       const nextUrls = updated.imageUrls || mediaUrls;

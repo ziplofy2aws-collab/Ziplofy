@@ -14,7 +14,6 @@ import CollectionFormHeader from '../components/collections/CollectionFormHeader
 import CollectionImageSidebarSection from '../components/collections/CollectionImageSidebarSection';
 import CollectionPublishingSection from '../components/collections/CollectionPublishingSection';
 import CollectionSeoSection from '../components/collections/CollectionSeoSection';
-import CollectionThemeTemplateSection from '../components/collections/CollectionThemeTemplateSection';
 import {
   collectionInputClass,
   collectionMutedAddButtonClass,
@@ -79,7 +78,6 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     metaDescription: '',
     urlHandle: '',
     status: 'published' as 'draft' | 'published',
-    themeTemplate: 'default',
   });
   const [isSeoExpanded, setIsSeoExpanded] = useState(false);
   const [isProductsModalOpen, setIsProductsModalOpen] = useState(false);
@@ -141,7 +139,6 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
         productSort,
         productIds: selectedProducts.map((product) => product._id),
         status: form.status,
-        themeTemplate: form.themeTemplate || 'default',
       });
       if (isSheet && onSuccess) {
         onSuccess(created);
@@ -568,13 +565,6 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             <CollectionPublishingSection
               status={form.status}
               onStatusChange={(status) => handleChange('status', status)}
-            />
-
-            <CollectionThemeTemplateSection
-              storeId={storeId}
-              value={form.themeTemplate || 'default'}
-              onChange={(themeTemplate) => handleChange('themeTemplate', themeTemplate)}
-              appearance={FORM_APPEARANCE}
             />
 
             <CollectionImageSidebarSection

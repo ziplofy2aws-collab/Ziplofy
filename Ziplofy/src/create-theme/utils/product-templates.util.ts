@@ -1,6 +1,8 @@
 /** Alternate product templates stored under `config.templates` (Shopify-style `product.{slug}` keys). */
 
 export const PRODUCT_TEMPLATE_ORDER_KEY = 'product_template_order';
+/** urlHandle → stored themeTemplate (`default` | `product.{slug}`). */
+export const PRODUCT_TEMPLATE_ASSIGNMENTS_KEY = 'product_template_assignments';
 export const DEFAULT_PRODUCT_TEMPLATE_ID = 'product';
 
 export type ProductTemplateEntry = {
@@ -61,6 +63,75 @@ export function productTemplateIdFromPreviewPage(page: string): string | null {
 
 export function isProductTemplatePreviewPage(page: string): boolean {
   return productTemplateIdFromPreviewPage(page) !== null;
+}
+
+/** Map stored themeTemplate (`default` / `product.foo`) to a config template key. */
+export function productThemeTemplateToConfigId(themeTemplate?: string | null): string {
+  const normalized = (themeTemplate ?? 'default').trim().toLowerCase();
+  if (!normalized || normalized === 'default' || normalized === DEFAULT_PRODUCT_TEMPLATE_ID) {
+    return DEFAULT_PRODUCT_TEMPLATE_ID;
+  }
+  if (normalized.startsWith(`${DEFAULT_PRODUCT_TEMPLATE_ID}.`)) return normalized;
+  return DEFAULT_PRODUCT_TEMPLATE_ID;
+}
+
+/** Read product urlHandle → themeTemplate assignments from theme JSON. */
+export function readProductTemplateAssignments(
+  config: Record<string, unknown> | null | undefined
+): Record<string, string> {
+  if (!config) return {};
+  const raw = config[PRODUCT_TEMPLATE_ASSIGNMENTS_KEY];
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+
+  const out: Record<string, string> = {};
+  for (const [handle, value] of Object.entries(raw as Record<string, unknown>)) {
+    const key = handle.trim().toLowerCase();
+    if (!key || typeof value !== 'string') continue;
+    const normalized = value.trim().toLowerCase();
+    if (normalized) out[key] = normalized;
+  }
+  return out;
+}
+
+/** Replace product assignments in theme JSON and refresh template assignment counts. */
+export function writeProductTemplateAssignments(
+  config: Record<string, unknown>,
+  assignments: Record<string, string>
+): void {
+  ensureProductTemplateRegistry(config);
+  const cleaned: Record<string, string> = {};
+  for (const [handle, value] of Object.entries(assignments)) {
+    const key = handle.trim().toLowerCase();
+    if (!key) continue;
+    const normalized = (value ?? 'default').trim().toLowerCase() || 'default';
+    cleaned[key] = normalized === DEFAULT_PRODUCT_TEMPLATE_ID ? 'default' : normalized;
+  }
+  config[PRODUCT_TEMPLATE_ASSIGNMENTS_KEY] = cleaned;
+
+  const counts: Record<string, number> = {};
+  for (const value of Object.values(cleaned)) {
+    const id = productThemeTemplateToConfigId(value);
+    counts[id] = (counts[id] ?? 0) + 1;
+  }
+  const templates = templatesRecord(config);
+  for (const id of listProductTemplateOrder(config)) {
+    if (templates[id]) templates[id].assignedProductCount = counts[id] ?? 0;
+  }
+}
+
+/** Resolve a product template locally from the already-loaded theme JSON. */
+export function resolveProductTemplateIdFromThemeConfig(
+  config: Record<string, unknown> | null | undefined,
+  urlHandle?: string | null
+): string {
+  const handle = (urlHandle ?? '').trim().toLowerCase();
+  if (!handle || handle === 'preview') return DEFAULT_PRODUCT_TEMPLATE_ID;
+
+  const assignments = readProductTemplateAssignments(config);
+  const requested = productThemeTemplateToConfigId(assignments[handle]);
+  const templates = templatesRecord(config ?? {});
+  if (requested !== DEFAULT_PRODUCT_TEMPLATE_ID && templates[requested]) return requested;
+  return DEFAULT_PRODUCT_TEMPLATE_ID;
 }
 
 function readTemplateName(tpl: Record<string, unknown> | undefined, fallback: string): string {
@@ -151,6 +222,14 @@ export function ensureProductTemplateRegistry(config: Record<string, unknown>): 
     }
   }
   config[PRODUCT_TEMPLATE_ORDER_KEY] = order;
+
+  if (
+    !config[PRODUCT_TEMPLATE_ASSIGNMENTS_KEY] ||
+    typeof config[PRODUCT_TEMPLATE_ASSIGNMENTS_KEY] !== 'object' ||
+    Array.isArray(config[PRODUCT_TEMPLATE_ASSIGNMENTS_KEY])
+  ) {
+    config[PRODUCT_TEMPLATE_ASSIGNMENTS_KEY] = {};
+  }
 }
 
 export type CreateProductTemplateResult =
