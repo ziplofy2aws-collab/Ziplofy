@@ -178,6 +178,7 @@ const MarketSettingsPage = lazy(() => import("./pages/MarketSettingsPage").then(
 const MetafeildsAndMetaObjectsSettingsPage = lazy(() => import("./pages/MetafeildsAndMetaObjectsSettingsPage").then(m => ({ default: m.MetafeildsAndMetaObjectsSettingsPage })));
 const OnlineStorePage = lazy(() => import("./pages/OnlineStorePage"));
 const OnlineStorePagesPage = lazy(() => import("./pages/OnlineStorePagesPage"));
+const OnlineStorePageCreatePage = lazy(() => import("./pages/OnlineStorePageCreatePage"));
 const OnlineStorePreferencePage = lazy(() => import("./pages/OnlineStorePreferencePage"));
 const MarketDetailsPage = lazy(() => import("./pages/markets/MarketDetailsPage"));
 const MarketsCatalogDetailsPage = lazy(() => import("./pages/markets/MarketsCatalogDetailsPage"));
@@ -213,6 +214,7 @@ import { CollectionEntriesProvider } from "./contexts/collection-entries.context
 import { CollectionProvider } from "./contexts/collection.context";
 import { CompanyProvider } from "./contexts/company.context";
 import { BlogProvider } from "./contexts/blog.context";
+import { StorePageProvider } from "./contexts/store-page.context";
 import { BlogCommentsProvider } from "./contexts/blog-comment.context";
 import { ContactFormSubmissionProvider } from "./contexts/contact-form-submission.context";
 import { NewsletterSubscriptionProvider } from "./contexts/newsletter-subscription.context";
@@ -437,6 +439,8 @@ const AdminApp: React.FC = () => {
             <Route path="/online-store" element={<OnlineStorePage />} />
             <Route path="/online-store/themes" element={<AllThemes />} />
             <Route path="/online-store/pages" element={<OnlineStorePagesPage />} />
+            <Route path="/online-store/pages/new" element={<OnlineStorePageCreatePage />} />
+            <Route path="/online-store/pages/:pageId" element={<OnlineStorePageCreatePage />} />
             <Route path="/online-store/preference" element={<OnlineStorePreferencePage />} />
             <Route path="/markets" element={<MarketsPage />} />
             <Route path="/markets/new" element={<MarketsNewPage />} />
@@ -583,6 +587,7 @@ const App: React.FC = () => {
         <CollectionProvider>
         <StoreMenuProvider>
         <BlogProvider>
+        <StorePageProvider>
         <CompanyProvider>
         <BlogPostProvider>
         <BlogCommentsProvider>
@@ -775,6 +780,7 @@ const App: React.FC = () => {
         </BlogCommentsProvider>
         </BlogPostProvider>
         </CompanyProvider>
+        </StorePageProvider>
         </BlogProvider>
         </StoreMenuProvider>
         </CollectionProvider>

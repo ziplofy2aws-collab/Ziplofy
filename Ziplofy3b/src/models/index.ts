@@ -3,6 +3,7 @@ export { User } from './user.model';
 export { Role } from './role.model';
 export { Client } from './client.model';
 export { Store } from './store/store.model';
+export { StorePage } from './store-page/store-page.model';
 export { Theme } from './theme.model';
 export { InstalledThemes } from './installed-themes.model';
 export { SupportDeveloper } from './supportdeveloper.model';
