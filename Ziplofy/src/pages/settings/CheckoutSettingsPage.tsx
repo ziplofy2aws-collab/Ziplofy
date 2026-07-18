@@ -11,7 +11,6 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Modal from '../../components/Modal';
 import Tabs from '../../components/Tabs';
@@ -44,7 +43,6 @@ const panelWarningClass =
   'rounded-xl border border-amber-200/80 bg-amber-50/90 p-4 text-amber-950 shadow-sm';
 
 const CheckoutSettingsPage: React.FC = () => {
-  const navigate = useNavigate();
   const { countries, total, loading: countriesLoading, getCountries } = useCountries();
   const { activeStoreId, stores } = useStore();
   const { settings, fetchByStoreId, loading: checkoutLoading, update } = useCheckoutSettings();
@@ -567,8 +565,12 @@ const CheckoutSettingsPage: React.FC = () => {
 
   const handleEditCheckoutConfiguration = useCallback(() => {
     if (!checkoutConfiguration?._id) return;
-    navigate(`/themes/editor/checkout/${checkoutConfiguration._id}`);
-  }, [navigate, checkoutConfiguration?._id]);
+    const url = new URL(
+      `/themes/editor/checkout/${checkoutConfiguration._id}`,
+      window.location.origin
+    );
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
+  }, [checkoutConfiguration?._id]);
 
   return (
     <div className="w-full">
