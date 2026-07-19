@@ -1,9 +1,5 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
-import {
-  layoutBlueprintKey,
-  remapTemplateSchemaPath,
-  templateBlueprintKey,
-} from '../../utils/theme-editor-insert-section';
+import { layoutBlueprintKey, remapTemplateSchemaPath, templateBlueprintKey, findSectionSchemaByBlueprint } from '../../utils/theme-editor-insert-section';
 import {
   TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
   TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS,
@@ -152,10 +148,10 @@ export function collectionLinkBlueprintSettingsFields(
   ];
 
   if (placement === 'template' && tplId) {
-    const template = editorSchema.templates?.find((t) => t.id === tplId);
     for (const blueprint of tryBlueprints) {
-      const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
-      const block = sec?.blocks?.find((b) => (b.id ?? '') === 'collection_link');
+      const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, tplId);
+      const blocks = (sec?.blocks ?? []) as Array<{ id?: string; settingsFields?: EditorFieldDef[] }>;
+      const block = blocks.find((b) => (b.id ?? '') === 'collection_link');
       if (block?.settingsFields?.length) return block.settingsFields;
     }
     return [];

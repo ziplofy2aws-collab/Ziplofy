@@ -1,4 +1,5 @@
 import {
+  findSectionSchemaByBlueprint,
   layoutBlueprintKey,
   remapTemplateHeroSchemaPath,
   remapTemplateSchemaPath,
@@ -267,11 +268,11 @@ function headingBlockFromSectionSchema(
     return heading?.settingsFields ?? [];
   }
   const blueprint = templateBlueprintKey(parsed.sectionInstanceId);
-  const tpl = editorSchema.templates?.find((t) => t.id === parsed.templateId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
+  const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, parsed.templateId);
+  const blocks = (sec?.blocks ?? []) as Array<{ id?: string; settingsFields?: EditorFieldDef[] }>;
   const heading =
-    sec?.blocks?.find((b) => (b.id ?? '') === 'heading') ??
-    sec?.blocks?.find((b) => (b.id ?? '').startsWith('heading'));
+    blocks.find((b) => (b.id ?? '') === 'heading') ??
+    blocks.find((b) => (b.id ?? '').startsWith('heading'));
   return heading?.settingsFields ?? [];
 }
 
@@ -372,14 +373,11 @@ function remapFieldsForNode(
   }
 
   const tplId = parsed.templateId ?? 'index';
-  const secBlueprint = templateBlueprintKey(parsed.sectionInstanceId);
-  if (secBlueprint !== parsed.sectionInstanceId) {
-    remapped = remapped.map((f) => ({
-      ...f,
-      path: remapTemplateSchemaPath(f.path, tplId, parsed.sectionInstanceId),
-    }));
-  }
-  return remapped;
+  // Always remap — schema fields may come from index while the section lives on pages/product.*.
+  return remapped.map((f) => ({
+    ...f,
+    path: remapTemplateSchemaPath(f.path, tplId, parsed.sectionInstanceId),
+  }));
 }
 
 function syncHeadingTextPathsInValues(

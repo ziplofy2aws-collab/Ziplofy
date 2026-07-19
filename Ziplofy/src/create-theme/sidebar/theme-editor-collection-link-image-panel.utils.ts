@@ -1,9 +1,5 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
-import {
-  layoutBlueprintKey,
-  remapTemplateSchemaPath,
-  templateBlueprintKey,
-} from '../../utils/theme-editor-insert-section';
+import { layoutBlueprintKey, remapTemplateSchemaPath, templateBlueprintKey, findSectionSchemaByBlueprint } from '../../utils/theme-editor-insert-section';
 import { collectionLinkBlueprintSettingsFields } from './theme-editor-collection-link-title-panel.utils';
 
 export const COLLECTION_LINK_IMAGE_KEYS = [

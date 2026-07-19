@@ -2,6 +2,7 @@ import type { EditorFieldDef, EditorSchemaDoc } from '../components/themes/theme
 import { fieldTypeFromSchema } from '../components/themes/theme-editor-sidebar/theme-editor-field.utils';
 import { schemaTemplateIdForConfigKey } from '../create-theme/utils/product-templates.util';
 import {
+  findSectionSchemaByBlueprint,
   layoutBlueprintKey,
   remapLayoutSchemaPath,
   remapTemplateSchemaPath,
@@ -258,15 +259,26 @@ export function collectEditableFieldPaths(
     | Record<string, { sections?: Record<string, unknown> }>
     | undefined;
   for (const [tplId, tpl] of Object.entries(templates ?? {})) {
-    const template = findSchemaTemplate(schema, tplId);
-    if (!template?.sections?.length) continue;
     for (const instanceId of Object.keys(tpl.sections ?? {})) {
       const blueprint = templateBlueprintKey(instanceId);
-      if (blueprint === instanceId) continue;
-      const sec = template.sections.find((s) => (s.id ?? '') === blueprint);
+      const sec = findSectionSchemaByBlueprint(schema, blueprint, tplId);
       if (!sec) continue;
-      pushRemappedTemplateFields(sec.settingsFields, tplId, instanceId, out, seen);
-      pushRemappedTemplateBlockFields(sec.blocks, tplId, instanceId, out, seen);
+      // Always remap onto the config template key (e.g. product.foo / pages), even when
+      // instance id equals the blueprint — otherwise alternate pages keep homepage paths.
+      pushRemappedTemplateFields(
+        sec.settingsFields as EditorFieldDef[] | undefined,
+        tplId,
+        instanceId,
+        out,
+        seen
+      );
+      pushRemappedTemplateBlockFields(
+        sec.blocks as BlockLike[] | undefined,
+        tplId,
+        instanceId,
+        out,
+        seen
+      );
     }
   }
 
@@ -278,17 +290,15 @@ export function collectEditableFieldPaths(
   }
 
   for (const [tplId, tpl] of Object.entries(templates ?? {})) {
-    const template = findSchemaTemplate(schema, tplId);
-    if (!template?.sections?.length) continue;
     for (const [instanceId, sectionData] of Object.entries(tpl.sections ?? {})) {
       const blueprint = templateBlueprintKey(instanceId);
-      const sec = template.sections.find((s) => (s.id ?? '') === blueprint);
+      const sec = findSectionSchemaByBlueprint(schema, blueprint, tplId);
       if (!sec || !sectionData || typeof sectionData !== 'object') continue;
       pushTemplateBlockInstanceFields(
         tplId,
         instanceId,
         sectionData as Record<string, unknown>,
-        sec,
+        sec as BlockLike,
         out,
         seen
       );
@@ -692,12 +702,10 @@ function pushSharedHeadingBlockEditablePaths(
     | Record<string, { sections?: Record<string, unknown> }>
     | undefined;
   for (const [tplId, tpl] of Object.entries(templates ?? {})) {
-    const template = findSchemaTemplate(schema, tplId);
     for (const instanceId of Object.keys(tpl.sections ?? {})) {
       const blueprint = templateBlueprintKey(instanceId);
-      if (blueprint === instanceId) continue;
-      const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
-      if (!sec || !sectionSchemaHasHeadingBlock(sec.blocks)) continue;
+      const sec = findSectionSchemaByBlueprint(schema, blueprint, tplId);
+      if (!sec || !sectionSchemaHasHeadingBlock(sec.blocks as BlockLike[] | undefined)) continue;
       const settingsPrefix = `templates.${tplId}.sections.${instanceId}.settings`;
       const blocksPrefix = `templates.${tplId}.sections.${instanceId}.blocks`;
       for (const field of canon) pushSectionHeadingPaths(settingsPrefix, blocksPrefix, field);

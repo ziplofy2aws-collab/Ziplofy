@@ -2,6 +2,7 @@ import {
   layoutBlueprintKey,
   remapTemplateHeroSchemaPath,
   remapTemplateSchemaPath,
+  findSectionSchemaByBlueprint,
   templateBlueprintKey,
 } from '../../utils/theme-editor-insert-section';
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
@@ -349,21 +350,14 @@ export function heroSectionFieldDefsFromSchema(
   if (tpl) {
     const [, tplId, instanceId] = tpl;
     const blueprint = templateBlueprintKey(instanceId);
-    const sec = editorSchema.templates?.find((t) => t.id === tplId)?.sections?.find((s) => (s.id ?? '') === blueprint);
-    const raw = sec?.settingsFields?.length ? sec.settingsFields : canon;
-    if (blueprint === instanceId) {
-      return raw.map((f) => ({
-        ...f,
-        path: remapTemplateSchemaPath(f.path, tplId, instanceId),
-      }));
-    }
+    const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, tplId);
+    const raw =
+      (sec?.settingsFields as EditorFieldDef[] | undefined)?.length
+        ? (sec!.settingsFields as EditorFieldDef[])
+        : canon;
     return raw.map((f) => ({
       ...f,
-      path: remapTemplateSchemaPath(
-        f.path.replace(/\.sections\.[^.]+\./, `.sections.${instanceId}.`),
-        tplId,
-        instanceId
-      ),
+      path: remapTemplateSchemaPath(f.path, tplId, instanceId),
     }));
   }
 

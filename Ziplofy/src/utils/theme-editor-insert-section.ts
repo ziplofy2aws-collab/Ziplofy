@@ -455,18 +455,87 @@ export function templateBlueprintKey(sectionId: string): string {
 
 export function remapTemplateSchemaPath(path: string, tplId: string, instanceId: string): string {
   const blueprint = templateBlueprintKey(instanceId);
-  const schemaTplId = schemaTemplateIdForConfigKey(tplId);
-  let next = path;
-  if (schemaTplId !== tplId) {
-    next = next.split(`templates.${schemaTplId}.`).join(`templates.${tplId}.`);
+  if (!path.startsWith('templates.')) return path;
+
+  const sectionsMarker = '.sections.';
+  const sectionsIdx = path.indexOf(sectionsMarker);
+  if (sectionsIdx === -1) {
+    // Still rewrite template key when path is templates.{schemaTpl}.* without sections
+    const schemaTplId = schemaTemplateIdForConfigKey(tplId);
+    if (schemaTplId !== tplId) {
+      return path.split(`templates.${schemaTplId}`).join(`templates.${tplId}`);
+    }
+    return path;
   }
-  if (blueprint !== instanceId) {
-    next = next.replace(
-      `templates.${tplId}.sections.${blueprint}.`,
-      `templates.${tplId}.sections.${instanceId}.`
-    );
+
+  const afterSections = path.slice(sectionsIdx + sectionsMarker.length);
+  const sectionIdEnd = afterSections.indexOf('.');
+  const sectionIdInPath =
+    sectionIdEnd === -1 ? afterSections : afterSections.slice(0, sectionIdEnd);
+  const rest = sectionIdEnd === -1 ? '' : afterSections.slice(sectionIdEnd);
+
+  // Only remap when the path section matches this instance or its blueprint.
+  if (sectionIdInPath !== blueprint && sectionIdInPath !== instanceId) {
+    const schemaTplId = schemaTemplateIdForConfigKey(tplId);
+    if (schemaTplId !== tplId) {
+      return path.split(`templates.${schemaTplId}.`).join(`templates.${tplId}.`);
+    }
+    return path;
   }
-  return next;
+
+  // Always pin to the active config template + instance so element settings stay
+  // element-scoped regardless of which page/template schema the field came from.
+  return `templates.${tplId}.sections.${instanceId}${rest}`;
+}
+
+/**
+ * Resolve a section schema by blueprint id.
+ * Prefer the active template's schema, then `index` (shared catalog), then any template.
+ * Elements are the source of truth — not the page they're currently on.
+ */
+export function findSectionSchemaByBlueprint(
+  schema: {
+    templates?: Array<{
+      id: string;
+      sections?: Array<{
+        id?: string;
+        type?: string;
+        label?: string;
+        hasBlocks?: boolean;
+        settingsFields?: unknown[];
+        blocks?: unknown[];
+        [key: string]: unknown;
+      }>;
+    }>;
+  },
+  blueprintId: string,
+  preferredTemplateId?: string
+): {
+  id?: string;
+  type?: string;
+  label?: string;
+  hasBlocks?: boolean;
+  settingsFields?: unknown[];
+  blocks?: unknown[];
+  [key: string]: unknown;
+} | null {
+  const preferred = preferredTemplateId
+    ? schemaTemplateIdForConfigKey(preferredTemplateId)
+    : undefined;
+  const templates = schema.templates ?? [];
+  const ordered = [
+    preferred ? templates.find((t) => t.id === preferred) : undefined,
+    templates.find((t) => t.id === 'index'),
+    ...templates,
+  ];
+  const seen = new Set<string>();
+  for (const tpl of ordered) {
+    if (!tpl || seen.has(tpl.id)) continue;
+    seen.add(tpl.id);
+    const sec = tpl.sections?.find((s) => (s.id ?? '') === blueprintId);
+    if (sec) return sec;
+  }
+  return null;
 }
 
 export function layoutBlueprintKey(sectionId: string): string {

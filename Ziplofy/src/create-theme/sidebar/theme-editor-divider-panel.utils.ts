@@ -1,7 +1,7 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import { isSectionSettingsFieldPath } from './create-theme-field.utils';
 import { resolveEditingPanelForNode } from '../../theme-editor/section-editing-support.util';
-import { layoutBlueprintKey } from '../../utils/theme-editor-insert-section';
+import { layoutBlueprintKey, findSectionSchemaByBlueprint, remapTemplateSchemaPath } from '../../utils/theme-editor-insert-section';
 
 export const DIVIDER_PANEL_GROUP_ORDER = ['General', 'Padding', 'Custom CSS'] as const;
 
@@ -244,16 +244,13 @@ export function resolveDividerSectionPanelFields(
   if (editorSchema) {
     const blueprint = layoutBlueprintKey(instanceId);
     if (templateId) {
-      const template = editorSchema.templates?.find((t) => t.id === templateId);
-      const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
-      if (sec?.settingsFields?.length) {
+      const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, templateId);
+      const settingsFields = (sec?.settingsFields ?? []) as EditorFieldDef[];
+      if (settingsFields.length) {
         panel = filterDividerPanelFields(
-          sec.settingsFields.map((field) => ({
+          settingsFields.map((field) => ({
             ...field,
-            path: field.path.replace(
-              new RegExp(`sections\\.${blueprint}\\.settings`),
-              `templates.${templateId}.sections.${instanceId}.settings`
-            ),
+            path: remapTemplateSchemaPath(field.path, templateId, instanceId),
           }))
         );
         if (panel.length) return panel;

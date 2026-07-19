@@ -1,5 +1,5 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
-import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
+import { remapTemplateSchemaPath, templateBlueprintKey, findSectionSchemaByBlueprint } from '../../utils/theme-editor-insert-section';
 
 export const FEATURED_PRODUCT_REVIEW_STARS_PANEL_GROUP_ORDER = ['General', 'Typography'] as const;
 
@@ -146,8 +146,7 @@ export function featuredProductReviewStarsFieldDefsFromSchema(
   if (!m) return [];
   const [, tplId, secId] = m;
   const blueprint = templateBlueprintKey(secId);
-  const tpl = editorSchema.templates?.find((t) => t.id === tplId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
+  const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, tplId);
   const details = sec?.blocks?.find((b) => b.id === 'details');
   const reviewStars = details?.blocks?.find((b) => b.id === 'review_stars');
   const blocksBase = blocksBaseFromNodeId(nodeId);

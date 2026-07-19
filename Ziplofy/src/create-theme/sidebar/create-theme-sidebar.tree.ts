@@ -16,6 +16,7 @@ import {
   remapLayoutSchemaPath,
   remapTemplateHeroSchemaPath,
   remapTemplateSchemaPath,
+  findSectionSchemaByBlueprint,
   templateBlueprintKey,
 } from '../../utils/theme-editor-insert-section';
 import {
@@ -2228,8 +2229,8 @@ function remapTemplateFields(
   instanceId: string
 ): EditorFieldDef[] {
   if (!fields?.length) return [];
-  const blueprint = templateBlueprintKey(instanceId);
-  if (blueprint === instanceId) return fields;
+  // Always remap — schema may come from index/product while config lives under
+  // pages / product.foo / etc. Elements must keep the same settings paths shape.
   return fields.map((field) => ({
     ...field,
     path: remapTemplateSchemaPath(field.path, tplId, instanceId),
@@ -2254,10 +2255,9 @@ export function sectionSettingsFieldsFromSchema(
   if (tpl) {
     const [, tplId, instanceId] = tpl;
     const blueprint = templateBlueprintKey(instanceId);
-    const template = editorSchema.templates?.find((t) => t.id === tplId);
-    const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
+    const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, tplId);
     if (!sec?.settingsFields?.length) return [];
-    return remapTemplateFields(sec.settingsFields, tplId, instanceId);
+    return remapTemplateFields(sec.settingsFields as EditorFieldDef[], tplId, instanceId);
   }
 
   return [];
@@ -4341,7 +4341,9 @@ export function buildShopifySidebarTree(
   for (const instanceId of templateSectionOrder) {
     if (!tplSections[instanceId]) continue;
     const blueprintId = templateBlueprintKey(instanceId);
-    const fromSchema = schemaSections.find((s) => (s.id ?? '') === blueprintId);
+    const fromSchema =
+      schemaSections.find((s) => (s.id ?? '') === blueprintId) ??
+      findSectionSchemaByBlueprint(schema, blueprintId, templateId);
     const cfgSec = tplSections[instanceId];
     const sec =
       fromSchema ??
@@ -4361,7 +4363,15 @@ export function buildShopifySidebarTree(
         blocks: [],
       } as NonNullable<NonNullable<EditorSchemaDoc['templates']>[0]['sections']>[0]);
     templateSectionNodes.push(
-      sectionToNode(sec, templateId, values, itemOrder, instanceId, config, schema)
+      sectionToNode(
+        sec as NonNullable<NonNullable<EditorSchemaDoc['templates']>[0]['sections']>[0],
+        templateId,
+        values,
+        itemOrder,
+        instanceId,
+        config,
+        schema
+      )
     );
   }
   // Always show Template + Add section (empty page/product canvases must stay editable).

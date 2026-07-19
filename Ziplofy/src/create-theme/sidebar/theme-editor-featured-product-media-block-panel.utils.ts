@@ -1,5 +1,5 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
-import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
+import { remapTemplateSchemaPath, templateBlueprintKey, findSectionSchemaByBlueprint } from '../../utils/theme-editor-insert-section';
 import { FEATURED_PRODUCT_MEDIA_FIT_OPTIONS } from '../product-highlight/runtime/productHighlightStyles';
 
 export const FEATURED_PRODUCT_MEDIA_PANEL_GROUP_ORDER = ['General', 'Carousel', 'Padding'] as const;
@@ -212,8 +212,7 @@ export function featuredProductMediaFieldDefsFromSchema(
   if (!m) return [];
   const [, tplId, secId] = m;
   const blueprint = templateBlueprintKey(secId);
-  const tpl = editorSchema.templates?.find((t) => t.id === tplId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
+  const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, tplId);
   const block = sec?.blocks?.find((b) => b.id === 'product_media');
   const schemaFields = block?.settingsFields ?? [];
   if (schemaFields.length) {

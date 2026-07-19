@@ -1,5 +1,5 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
-import { remapTemplateSchemaPath, templateBlueprintKey } from '../../utils/theme-editor-insert-section';
+import { remapTemplateSchemaPath, templateBlueprintKey, findSectionSchemaByBlueprint } from '../../utils/theme-editor-insert-section';
 
 export const FEATURED_PRODUCT_QUANTITY_PANEL_GROUP_ORDER = ['Input'] as const;
 
@@ -52,8 +52,7 @@ export function featuredProductQuantityFieldDefsFromSchema(
   if (!m) return [];
   const [, tplId, secId] = m;
   const blueprint = templateBlueprintKey(secId);
-  const tpl = editorSchema.templates?.find((t) => t.id === tplId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
+  const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, tplId);
   const details = sec?.blocks?.find((b) => b.id === 'details');
   const buyButtons = details?.blocks?.find((b) => b.id === 'buy_buttons');
   const quantity = buyButtons?.blocks?.find((b) => b.id === 'quantity');

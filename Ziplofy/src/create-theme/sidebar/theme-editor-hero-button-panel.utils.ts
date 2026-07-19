@@ -1,4 +1,5 @@
 import {
+  findSectionSchemaByBlueprint,
   layoutBlueprintKey,
   remapTemplateHeroSchemaPath,
   remapTemplateSchemaPath,
@@ -201,12 +202,12 @@ function buttonBlockFromSectionSchema(
     return block?.settingsFields ?? [];
   }
   const blueprint = templateBlueprintKey(parsed.sectionInstanceId);
-  const tpl = editorSchema.templates?.find((t) => t.id === parsed.templateId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
+  const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, parsed.templateId);
+  const blocks = (sec?.blocks ?? []) as Array<{ id?: string; settingsFields?: EditorFieldDef[] }>;
   const block =
-    sec?.blocks?.find((b) => (b.id ?? '') === parsed.blockInstanceId) ??
-    sec?.blocks?.find((b) => (b.id ?? '') === 'primary_button') ??
-    sec?.blocks?.find((b) => HERO_BUTTON_BLOCK_ID_RE.test(b.id ?? ''));
+    blocks.find((b) => (b.id ?? '') === parsed.blockInstanceId) ??
+    blocks.find((b) => (b.id ?? '') === 'primary_button') ??
+    blocks.find((b) => HERO_BUTTON_BLOCK_ID_RE.test(b.id ?? ''));
   return block?.settingsFields ?? [];
 }
 
@@ -242,14 +243,11 @@ function remapFieldsForNode(
   }
 
   const tplId = parsed.templateId ?? 'index';
-  const secBlueprint = templateBlueprintKey(parsed.sectionInstanceId);
-  if (secBlueprint !== parsed.sectionInstanceId) {
-    remapped = remapped.map((f) => ({
-      ...f,
-      path: remapTemplateSchemaPath(f.path, tplId, parsed.sectionInstanceId),
-    }));
-  }
-  return remapped;
+  // Always remap — schema fields may come from index while the section lives on pages/product.*.
+  return remapped.map((f) => ({
+    ...f,
+    path: remapTemplateSchemaPath(f.path, tplId, parsed.sectionInstanceId),
+  }));
 }
 
 export function heroButtonFieldDefsFromSchema(
