@@ -143,6 +143,8 @@ const CreateThemeLivePreviewInner = forwardRef<
   inspectorEnabledRef.current = inspectorEnabled;
   const deviceRef = useRef(device);
   deviceRef.current = device;
+  const pageRef = useRef(page);
+  pageRef.current = page;
   const previewRouteRef = useRef(previewRoute);
   previewRouteRef.current = previewRoute;
   /** Stable key so we only re-sync when config content changes, not object identity. */
@@ -214,7 +216,7 @@ const CreateThemeLivePreviewInner = forwardRef<
     [postPatch, postProvisionalConfig, clearProvisionalConfig]
   );
 
-  /** INIT only when runtime identity changes — never on every config keystroke. */
+  /** INIT only when runtime identity changes — never on page/route switches (SET_PAGE handles those). */
   const postInit = useCallback(() => {
     const frame = iframeRef.current?.contentWindow;
     if (!frame || !storeId) return;
@@ -228,7 +230,7 @@ const CreateThemeLivePreviewInner = forwardRef<
           jsUrl: jsUrl ?? null,
           cssUrl: cssUrl ?? null,
           config: configRef.current,
-          page,
+          page: pageRef.current,
           previewRoute: previewRouteRef.current,
           selectionHints: selectionHintsRef.current,
           inspectorEnabled: inspectorEnabledRef.current,
@@ -238,7 +240,7 @@ const CreateThemeLivePreviewInner = forwardRef<
       '*'
     );
     initSentRef.current = true;
-  }, [storeId, storeName, jsUrl, cssUrl, page, previewRoute]);
+  }, [storeId, storeName, jsUrl, cssUrl]);
 
   const postPreviewDevice = useCallback((nextDevice: 'desktop' | 'mobile') => {
     const frame = iframeRef.current?.contentWindow;
@@ -478,7 +480,7 @@ const CreateThemeLivePreviewInner = forwardRef<
     if (ready && storeId) {
       postInit();
     }
-  }, [ready, storeId, page, cssUrl, storeName, jsUrl, postInit]);
+  }, [ready, storeId, cssUrl, storeName, jsUrl, postInit]);
 
   if (!storeId?.trim()) {
     return (

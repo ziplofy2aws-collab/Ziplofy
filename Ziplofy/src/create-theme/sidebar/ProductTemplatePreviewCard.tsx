@@ -9,12 +9,15 @@ import { useProducts, type Product } from '../../contexts/product.context';
 import { useStore } from '../../contexts/store.context';
 import { productPath } from '../../utils/storefront-paths';
 import { normalizeStorefrontOrigin } from '../../utils/storefront-url.util';
-import { pickDefaultPreviewProduct } from '../utils/product-page-preview.util';
+import {
+  isProductPreviewable,
+  pickDefaultPreviewProduct,
+} from '../utils/product-page-preview.util';
 import { ThemeEditorCreateProductSheet } from './ThemeEditorCreateProductSheet';
 
 type Props = {
   previewProductHandle: string | null;
-  onPreviewProductHandleChange: (handle: string) => void;
+  onPreviewProductHandleChange: (handle: string | null) => void;
   storefrontOrigin?: string | null;
 };
 
@@ -27,27 +30,45 @@ export function ProductTemplatePreviewCard({
   const { products, fetchProductsByStoreId, loading } = useProducts();
   const rootRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const onChangeRef = useRef(onPreviewProductHandleChange);
+  onChangeRef.current = onPreviewProductHandleChange;
+  const fetchedStoreIdRef = useRef<string | null>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
 
+  /** Only active/published products — drafts 404 on the storefront preview API. */
   const availableProducts = useMemo(
-    () => products.filter((product) => !product.isDeleted && product.urlHandle?.trim()),
+    () => products.filter((product) => isProductPreviewable(product)),
     [products]
   );
 
   useEffect(() => {
     if (!activeStoreId) return;
+    if (fetchedStoreIdRef.current === activeStoreId) return;
+    fetchedStoreIdRef.current = activeStoreId;
     void fetchProductsByStoreId(activeStoreId);
   }, [activeStoreId, fetchProductsByStoreId]);
 
   useEffect(() => {
-    if (previewProductHandle || !availableProducts.length) return;
-    const fallback = pickDefaultPreviewProduct(availableProducts);
-    if (fallback?.urlHandle) {
-      onPreviewProductHandleChange(fallback.urlHandle);
+    const stillValid =
+      Boolean(previewProductHandle) &&
+      availableProducts.some((product) => product.urlHandle === previewProductHandle);
+
+    if (stillValid) return;
+
+    if (!availableProducts.length) {
+      // Drop draft/stale handles — storefront preview APIs only serve active products.
+      if (previewProductHandle) onChangeRef.current(null);
+      return;
     }
-  }, [availableProducts, previewProductHandle, onPreviewProductHandleChange]);
+
+    const fallback = pickDefaultPreviewProduct(availableProducts);
+    const handle = fallback?.urlHandle?.trim() ?? null;
+    if (handle !== previewProductHandle) {
+      onChangeRef.current(handle);
+    }
+  }, [availableProducts, previewProductHandle]);
 
   useEffect(() => {
     if (!open) return;
@@ -91,25 +112,44 @@ export function ProductTemplatePreviewCard({
 
   const selectProduct = useCallback(
     (product: Product) => {
+      if (!isProductPreviewable(product)) return;
       const handle = product.urlHandle?.trim();
-      if (!handle) return;
-      onPreviewProductHandleChange(handle);
+      if (!handle || handle === previewProductHandle) {
+        setOpen(false);
+        setQuery('');
+        return;
+      }
+      onChangeRef.current(handle);
       setOpen(false);
       setQuery('');
     },
-    [onPreviewProductHandleChange]
+    [previewProductHandle]
   );
 
   const handleCreated = useCallback(
     (product: Product) => {
       if (activeStoreId) {
+        fetchedStoreIdRef.current = null;
         void fetchProductsByStoreId(activeStoreId);
       }
-      const handle = product.urlHandle?.trim();
-      if (handle) onPreviewProductHandleChange(handle);
+      // Only switch preview if the new product is storefront-visible.
+      if (isProductPreviewable(product)) {
+        const handle = product.urlHandle?.trim();
+        if (handle) onChangeRef.current(handle);
+      }
     },
-    [activeStoreId, fetchProductsByStoreId, onPreviewProductHandleChange]
+    [activeStoreId, fetchProductsByStoreId]
   );
+
+  const hasDraftsOnly =
+    !availableProducts.length &&
+    products.some((product) => !product.isDeleted && product.status === 'draft');
+
+  const emptyHint = loading
+    ? 'Loading…'
+    : hasDraftsOnly
+      ? 'No active products — publish a product to preview'
+      : 'Select a product';
 
   return (
     <div
@@ -137,7 +177,7 @@ export function ProductTemplatePreviewCard({
         )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-[13px] font-medium text-gray-900">
-            {loading && !active ? 'Loading…' : active?.title ?? 'Select a product'}
+            {active?.title ?? emptyHint}
           </p>
           {active?.urlHandle ? (
             <p className="truncate text-[12px] text-gray-500">
@@ -145,7 +185,9 @@ export function ProductTemplatePreviewCard({
             </p>
           ) : (
             <p className="truncate text-[12px] text-gray-500">
-              Choose which product to preview
+              {hasDraftsOnly
+                ? 'Draft products can’t be previewed on the storefront'
+                : 'Choose which product to preview'}
             </p>
           )}
         </div>
@@ -192,8 +234,8 @@ export function ProductTemplatePreviewCard({
                 {loading
                   ? 'Loading products…'
                   : query.trim()
-                    ? 'No products match'
-                    : 'No products yet'}
+                    ? 'No active products match'
+                    : 'No active products — set a product to Active to preview it'}
               </li>
             ) : (
               filtered.map((product) => {

@@ -131,16 +131,16 @@ export function ProductMain({
   const paddingBottom = cfgNumber(config, `${base}.settings.paddingBottom`, 56);
 
   const storeId = storeFrontMeta?.storeId;
+  const fallbackProductId = products[0]?._id;
 
   useEffect(() => {
     if (!storeId) return;
     if (!routeParam || routeParam === 'preview') {
-      const fallbackId = products[0]?._id;
-      if (fallbackId) void fetchProductById(fallbackId);
+      if (fallbackProductId) void fetchProductById(fallbackProductId);
       return;
     }
     void fetchProductForRoute(storeId, routeParam);
-  }, [storeId, routeParam, products, fetchProductById, fetchProductForRoute]);
+  }, [storeId, routeParam, fallbackProductId, fetchProductById, fetchProductForRoute]);
 
   const resolvedProductId = productDetail?._id ?? products[0]?._id ?? null;
 

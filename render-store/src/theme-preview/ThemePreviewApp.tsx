@@ -66,6 +66,10 @@ export function ThemePreviewApp() {
   const configDebounceRef = useRef<number | undefined>(undefined);
   const configRef = useRef<Record<string, unknown> | null>(null);
   const lastConfigJsonRef = useRef<string>('');
+  const pageRef = useRef(page);
+  const previewRouteRef = useRef(previewRoute);
+  pageRef.current = page;
+  previewRouteRef.current = previewRoute;
 
   const applyConfigSoft = useCallback((next: Record<string, unknown>) => {
     const json = JSON.stringify(next);
@@ -210,12 +214,18 @@ export function ThemePreviewApp() {
       }
 
       if (msg.type === 'codiic_PREVIEW_SET_PAGE') {
-        setPage(msg.payload.page);
-        setPreviewRoute(msg.payload.previewRoute);
-        setPageRevision((n) => n + 1);
-        window.setTimeout(() => {
-          postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_LOADED' });
-        }, 0);
+        const nextPage = msg.payload.page;
+        const nextRoute = msg.payload.previewRoute;
+        const pageChanged = pageRef.current !== nextPage;
+        const routeChanged = previewRouteRef.current !== nextRoute;
+        if (pageChanged) setPage(nextPage);
+        if (routeChanged) setPreviewRoute(nextRoute);
+        if (pageChanged || routeChanged) {
+          setPageRevision((n) => n + 1);
+          window.setTimeout(() => {
+            postToParent({ source: 'codiic-theme-preview', type: 'codiic_PREVIEW_LOADED' });
+          }, 0);
+        }
       }
 
       if (msg.type === 'codiic_PREVIEW_INSERT_HIGHLIGHT') {

@@ -45,7 +45,7 @@ export function StorefrontProductPreviewLoader() {
         void fetchProductById(fallbackId);
       }
     }
-  }, [storeId, paramId, products, fetchProductById]);
+  }, [storeId, paramId, products[0]?._id, fetchProductById]);
 
   const variantProductId = productDetail?._id ?? products[0]?._id ?? null;
 
