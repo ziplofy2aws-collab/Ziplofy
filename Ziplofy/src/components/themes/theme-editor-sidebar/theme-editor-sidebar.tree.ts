@@ -10,6 +10,7 @@ import {
   ensureLayoutOrder,
   existingLayoutSectionIds,
   existingTemplateSectionIds,
+  findSectionSchemaByBlueprint,
   getLayoutOrder,
   layoutBlueprintKey,
   layoutHeroInstanceFromNodeId,
@@ -946,8 +947,7 @@ function remapTemplateFields(
   instanceId: string
 ): EditorFieldDef[] {
   if (!fields?.length) return [];
-  const blueprint = templateBlueprintKey(instanceId);
-  if (blueprint === instanceId) return fields;
+  // Always remap — schema may come from index while config lives under another template.
   return fields.map((field) => ({
     ...field,
     path: remapTemplateSchemaPath(field.path, tplId, instanceId),
@@ -972,10 +972,9 @@ export function sectionSettingsFieldsFromSchema(
   if (tpl) {
     const [, tplId, instanceId] = tpl;
     const blueprint = templateBlueprintKey(instanceId);
-    const template = editorSchema.templates?.find((t) => t.id === tplId);
-    const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
+    const sec = findSectionSchemaByBlueprint(editorSchema, blueprint, tplId);
     if (!sec?.settingsFields?.length) return [];
-    return remapTemplateFields(sec.settingsFields, tplId, instanceId);
+    return remapTemplateFields(sec.settingsFields as EditorFieldDef[], tplId, instanceId);
   }
 
   return [];

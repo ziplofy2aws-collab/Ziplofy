@@ -538,6 +538,30 @@ export function findSectionSchemaByBlueprint(
   return null;
 }
 
+/** Deep-clone a section blueprint from the theme pack (never from live homepage config). */
+function findPackTemplateSectionBlueprint(
+  packDefault: Record<string, unknown>,
+  templateId: string,
+  blueprintId: string
+): Record<string, unknown> | null {
+  const templates = packDefault.templates as
+    | Record<string, { sections?: Record<string, Record<string, unknown>> }>
+    | undefined;
+  if (!templates) return null;
+  const packTplId = schemaTemplateIdForConfigKey(templateId);
+  const candidates = [templateId, packTplId, 'index', ...Object.keys(templates)];
+  const seen = new Set<string>();
+  for (const id of candidates) {
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    const sec = templates[id]?.sections?.[blueprintId];
+    if (sec && typeof sec === 'object') {
+      return JSON.parse(JSON.stringify(sec)) as Record<string, unknown>;
+    }
+  }
+  return null;
+}
+
 export function layoutBlueprintKey(sectionId: string): string {
   if (sectionId === 'announcement_bar' || sectionId.startsWith('announcement_bar_')) {
     return 'announcement_bar';
@@ -1913,15 +1937,94 @@ function cloneTemplateSection(
   tplId: string,
   blueprintId: string,
   instanceId: string,
-  meta: { type: string }
+  meta: { type: string },
+  packDefault?: Record<string, unknown> | null
 ): void {
   const tpl = getNested(config, ['templates', tplId]) as Record<string, unknown> | undefined;
   if (!tpl) return;
   const sections = (tpl.sections ?? {}) as Record<string, unknown>;
   const src = sections[blueprintId];
-  if (src && typeof src === 'object') {
+  if (src && typeof src === 'object' && instanceId !== blueprintId) {
+    // Only clone an existing instance on THIS template (e.g. featured_collection → featured_collection_2).
+    // Never pull from templates.index live config — that shared homepage settings across pages.
     sections[instanceId] = JSON.parse(JSON.stringify(src));
+    (sections[instanceId] as Record<string, unknown>).id = instanceId;
     (sections[instanceId] as Record<string, unknown>).type = meta.type;
+  } else if (packDefault) {
+    const packSec = findPackTemplateSectionBlueprint(packDefault, tplId, blueprintId);
+    if (packSec) {
+      packSec.id = instanceId;
+      packSec.type = meta.type;
+      packSec.enabled = packSec.enabled !== false;
+      sections[instanceId] = packSec;
+    } else if (meta.type === 'divider') {
+      sections[instanceId] = defaultDividerTemplateSection(instanceId);
+    } else if (meta.type === 'contact-form') {
+      sections[instanceId] = defaultContactFormTemplateSection(instanceId);
+    } else if (meta.type === 'email-signup') {
+      sections[instanceId] = defaultEmailSignupTemplateSection(instanceId);
+    } else if (meta.type === 'custom-section') {
+      sections[instanceId] = defaultCustomSectionTemplateSection(instanceId);
+    } else if (meta.type === 'product-highlight') {
+      sections[instanceId] = defaultProductHighlightTemplateSection(instanceId);
+    } else if (meta.type === 'editorial') {
+      sections[instanceId] = defaultEditorialTemplateSection(instanceId);
+    } else if (meta.type === 'editorial-jumbo') {
+      sections[instanceId] = defaultEditorialJumboTemplateSection(instanceId);
+    } else if (meta.type === 'image-compare') {
+      sections[instanceId] = defaultImageCompareTemplateSection(instanceId);
+    } else if (meta.type === 'image-with-text') {
+      sections[instanceId] = defaultImageWithTextTemplateSection(instanceId);
+    } else if (meta.type === 'storytelling-logo') {
+      sections[instanceId] = defaultStorytellingLogoTemplateSection(instanceId);
+    } else if (meta.type === 'storytelling-video') {
+      sections[instanceId] = defaultStorytellingVideoTemplateSection(instanceId);
+    } else if (meta.type === 'faq') {
+      sections[instanceId] = defaultFaqTemplateSection(instanceId);
+    } else if (meta.type === 'icons-with-text') {
+      sections[instanceId] = defaultIconsWithTextTemplateSection(instanceId);
+    } else if (meta.type === 'multicolumn') {
+      sections[instanceId] = defaultMulticolumnTemplateSection(instanceId);
+    } else if (meta.type === 'pull-quote') {
+      sections[instanceId] = defaultPullQuoteTemplateSection(instanceId);
+    } else if (meta.type === 'rich-text') {
+      sections[instanceId] = defaultRichTextTemplateSection(instanceId);
+    } else if (meta.type === 'text-marquee') {
+      sections[instanceId] = defaultTextMarqueeTemplateSection(instanceId);
+    } else if (meta.type === 'blog-posts-carousel') {
+      sections[instanceId] = defaultBlogPostsCarouselTemplateSection(instanceId);
+    } else if (meta.type === 'blog-posts-editorial') {
+      sections[instanceId] = defaultBlogPostsEditorialTemplateSection(instanceId);
+    } else if (meta.type === 'blog-posts-grid') {
+      sections[instanceId] = defaultBlogPostsGridTemplateSection(instanceId);
+    } else if (meta.type === 'storytelling-carousel') {
+      sections[instanceId] = defaultStorytellingCarouselTemplateSection(instanceId);
+    } else if (meta.type === 'product-hotspots') {
+      sections[instanceId] = defaultProductHotspotsTemplateSection(instanceId);
+    } else if (meta.type === 'recommended-products') {
+      sections[instanceId] = defaultRecommendedProductsTemplateSection(instanceId);
+    } else if (meta.type === 'collection-links-spotlight') {
+      sections[instanceId] =
+        blueprintId === 'collection_links_text'
+          ? defaultCollectionLinksTextTemplateSection(instanceId)
+          : defaultCollectionLinksSpotlightTemplateSection(instanceId);
+    } else if (meta.type === 'collection-list-bento') {
+      sections[instanceId] = defaultCollectionListBentoTemplateSection(instanceId);
+    } else if (meta.type === 'collection-list-carousel') {
+      sections[instanceId] = defaultCollectionListCarouselTemplateSection(instanceId);
+    } else if (meta.type === 'collection-list-editorial') {
+      sections[instanceId] = defaultCollectionListEditorialTemplateSection(instanceId);
+    } else if (meta.type === 'collection-list-grid') {
+      sections[instanceId] = defaultCollectionListGridTemplateSection(instanceId);
+    } else if (meta.type === 'layered-slideshow') {
+      sections[instanceId] = defaultLayeredSlideshowTemplateSection(instanceId);
+    } else if (meta.type === 'slideshow-full-frame') {
+      sections[instanceId] = defaultSlideshowFullFrameTemplateSection(instanceId);
+    } else if (meta.type === 'slideshow-inset') {
+      sections[instanceId] = defaultSlideshowInsetTemplateSection(instanceId);
+    } else {
+      sections[instanceId] = { id: instanceId, type: meta.type, enabled: true, settings: {}, blocks: {}, block_order: [] };
+    }
   } else if (meta.type === 'divider') {
     sections[instanceId] = defaultDividerTemplateSection(instanceId);
   } else if (meta.type === 'contact-form') {
@@ -1988,7 +2091,7 @@ function cloneTemplateSection(
   } else if (meta.type === 'slideshow-inset') {
     sections[instanceId] = defaultSlideshowInsetTemplateSection(instanceId);
   } else {
-    sections[instanceId] = { type: meta.type, enabled: true, settings: {}, blocks: {}, block_order: [] };
+    sections[instanceId] = { id: instanceId, type: meta.type, enabled: true, settings: {}, blocks: {}, block_order: [] };
   }
   tpl.sections = sections;
 }
@@ -2045,17 +2148,19 @@ export function extendValuesForTemplateInstance(
   config: Record<string, unknown>
 ): Record<string, string | boolean> {
   const blueprint = templateBlueprintKey(blueprintId);
-  const schemaTplId = schemaTemplateIdForConfigKey(tplId);
-  const template = schema.templates?.find((t) => t.id === schemaTplId);
-  const sec = template?.sections?.find((s) => (s.id ?? '') === blueprint);
+  // Resolve schema from preferred template → index → any (elements are shared; paths are not).
+  const sec = findSectionSchemaByBlueprint(schema, blueprint, tplId);
   if (!sec) return values;
 
   const next = { ...values };
-  const prefix = `templates.${schemaTplId}.sections.${blueprint}.`;
+  const instancePrefix = `templates.${tplId}.sections.${instanceId}.`;
   const walkFields = (fields: { path: string; type: string }[] | undefined) => {
     for (const field of fields ?? []) {
-      if (!field.path?.startsWith(prefix)) continue;
+      if (!field.path?.startsWith('templates.')) continue;
+      // Always pin onto the active template instance — never leave paths on templates.index
+      // when the section was added to collections-list / pages / product / etc.
       const newPath = remapTemplateSchemaPath(field.path, tplId, instanceId);
+      if (!newPath.startsWith(instancePrefix)) continue;
       const raw = getNestedDotPath(config, newPath);
       if (raw === undefined) continue;
       next[newPath] =
@@ -2063,11 +2168,12 @@ export function extendValuesForTemplateInstance(
     }
   };
 
-  walkFields(sec.settingsFields);
+  walkFields(sec.settingsFields as { path: string; type: string }[] | undefined);
   const walkBlocks = (blocks: typeof sec.blocks) => {
     for (const block of blocks ?? []) {
-      walkFields(block.settingsFields);
-      walkBlocks(block.blocks);
+      const b = block as { settingsFields?: { path: string; type: string }[]; blocks?: unknown[] };
+      walkFields(b.settingsFields);
+      walkBlocks(b.blocks as typeof sec.blocks);
     }
   };
   walkBlocks(sec.blocks);
@@ -2272,7 +2378,7 @@ export function insertSectionFromCatalog(
 
     const sections = (tpl.sections ?? {}) as Record<string, unknown>;
     const instanceId = newTemplateInstanceId(sections, meta.blueprintId);
-    cloneTemplateSection(next, tplId, meta.blueprintId, instanceId, meta);
+    cloneTemplateSection(next, tplId, meta.blueprintId, instanceId, meta, packDefaultConfig);
     const inserted = (tpl.sections as Record<string, Record<string, unknown>>)[instanceId];
     if (inserted) applyTemplateCatalogPreset(inserted, item.id, tplId, instanceId);
 
@@ -3624,8 +3730,11 @@ export function extendValuesForTemplateBlock(
   }
 
   const blueprint = templateBlueprintKey(sectionInstanceId);
-  const tpl = schema.templates?.find((t) => t.id === tplId);
-  const sec = tpl?.sections?.find((s) => (s.id ?? '') === blueprint);
+  const sec = findSectionSchemaByBlueprint(schema, blueprint, tplId);
+  const blocks = (sec?.blocks ?? []) as Array<{
+    id?: string;
+    settingsFields?: { path: string; type: string }[];
+  }>;
   const altIds = [
     blockTypeId,
     normalizeCatalogBlockId(blockTypeId),
@@ -3633,17 +3742,20 @@ export function extendValuesForTemplateBlock(
     blockInstanceId,
   ];
   const blockDef =
-    sec?.blocks?.find((b) => altIds.includes(b.id ?? '')) ??
-    sec?.blocks?.find((b) => (b.id ?? '') === blockInstanceId);
+    blocks.find((b) => altIds.includes(b.id ?? '')) ??
+    blocks.find((b) => (b.id ?? '') === blockInstanceId);
   if (!blockDef?.settingsFields?.length) return values;
 
   const next = { ...values };
+  const instancePrefix = `templates.${tplId}.sections.${sectionInstanceId}.`;
   for (const field of blockDef.settingsFields) {
     if (!field.path?.includes('.blocks.')) continue;
     const remapped = remapTemplateSchemaPath(field.path, tplId, sectionInstanceId).replace(
       /\.blocks\.[^.]+\./,
       `.blocks.${blockInstanceId}.`
     );
+    // Only seed paths for this template instance — never bind to homepage/index paths.
+    if (!remapped.startsWith(instancePrefix)) continue;
     const raw = getNested(config, remapped.split('.').filter(Boolean));
     if (raw === undefined) continue;
     next[remapped] = field.type === 'boolean' ? Boolean(raw) : raw == null ? '' : String(raw);
@@ -3723,6 +3835,13 @@ export function extendValuesForHeroBlock(
         new RegExp(`\\.blocks\\.${schemaBlockId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.`),
         `.blocks.${blockInstanceId}.`
       );
+    }
+    if (
+      scope === 'template' &&
+      tplId &&
+      !newPath.startsWith(`templates.${tplId}.sections.${sectionInstanceId}.`)
+    ) {
+      continue;
     }
     const raw = getNested(config, newPath.split('.').filter(Boolean));
     if (raw === undefined) continue;

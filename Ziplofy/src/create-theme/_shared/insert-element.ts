@@ -62,6 +62,30 @@ function cloneLayoutFromPack(
   };
 }
 
+function findPackSectionBlueprint(
+  packDefault: Record<string, unknown>,
+  templateId: string,
+  blueprintId: string
+): Record<string, unknown> | null {
+  const templates = packDefault.templates as
+    | Record<string, { sections?: Record<string, Record<string, unknown>> }>
+    | undefined;
+  if (!templates) return null;
+  const packTplId = schemaTemplateIdForConfigKey(templateId);
+  const candidates = [templateId, packTplId, 'index', ...Object.keys(templates)];
+  const seen = new Set<string>();
+  for (const id of candidates) {
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    const sec = templates[id]?.sections?.[blueprintId];
+    if (sec && typeof sec === 'object') {
+      // Deep clone from pack only — never from the live homepage config.
+      return JSON.parse(JSON.stringify(sec)) as Record<string, unknown>;
+    }
+  }
+  return null;
+}
+
 function cloneTemplateFromPack(
   packDefault: Record<string, unknown>,
   templateId: string,
@@ -69,20 +93,12 @@ function cloneTemplateFromPack(
   instanceId: string,
   sectionType: string
 ): Record<string, unknown> {
-  const packTplId = schemaTemplateIdForConfigKey(templateId);
-  const defTpl =
-    (
-      packDefault.templates as Record<string, { sections?: Record<string, Record<string, unknown>> }> | undefined
-    )?.[templateId]?.sections?.[blueprintId] ??
-    (
-      packDefault.templates as Record<string, { sections?: Record<string, Record<string, unknown>> }> | undefined
-    )?.[packTplId]?.sections?.[blueprintId];
-  if (defTpl && typeof defTpl === 'object') {
-    const clone = JSON.parse(JSON.stringify(defTpl)) as Record<string, unknown>;
-    clone.id = instanceId;
-    clone.type = sectionType;
-    clone.enabled = clone.enabled !== false;
-    return clone;
+  const fromPack = findPackSectionBlueprint(packDefault, templateId, blueprintId);
+  if (fromPack) {
+    fromPack.id = instanceId;
+    fromPack.type = sectionType;
+    fromPack.enabled = fromPack.enabled !== false;
+    return fromPack;
   }
   return {
     id: instanceId,
