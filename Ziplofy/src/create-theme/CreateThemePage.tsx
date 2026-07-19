@@ -649,6 +649,7 @@ import type { ThemeBlockCatalogApi } from '../components/themes/theme-editor-sid
 import { getCreateThemeElement } from './registry';
 import { CreateThemeAddSectionModal } from './shell/CreateThemeAddSectionModal';
 import { CreateThemeSaveModal } from './shell/CreateThemeSaveModal';
+import { CreateThemeSetupModal } from './shell/CreateThemeSetupModal';
 import type { CreateThemeCatalogGroup } from './types';
 
 type FieldType = ThemeEditorFieldType;
@@ -671,7 +672,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
   const exitPath = isCheckoutProfile ? '/settings/checkout' : '/online-store/themes';
 
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const editThemeId = searchParams.get('id');
   const { activeStoreId, stores, setStores, applyStoreCustomTheme } = useStore();
   const [applyingTheme, setApplyingTheme] = useState(false);
@@ -2558,6 +2559,8 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         setThemeName(opts.themeName);
         setThemeDesc(opts.themeDesc ?? '');
         setShowSaveThemeModal(false);
+        // Switch to edit URL so refresh / share opens this theme.
+        setSearchParams({ id: created._id }, { replace: true });
         toast.success('Theme created');
         return;
       }
@@ -2580,6 +2583,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       savedThemeId,
       createStoreCustomTheme,
       updateStoreCustomTheme,
+      setSearchParams,
     ]
   );
 
@@ -2670,6 +2674,9 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     },
     [persistTheme]
   );
+
+  /** First visit to /themes/create (no ?id) — must name & create before editing. */
+  const needsThemeSetup = !isCheckoutProfile && !editThemeId && !savedThemeId;
 
   const handleCheckoutSave = useCallback(async () => {
     if (!checkoutConfiguration?._id) {
@@ -4298,8 +4305,15 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         onSelectBlock={handleInsertBlock}
       />
 
+      <CreateThemeSetupModal
+        open={needsThemeSetup}
+        saving={savingTheme}
+        canCreate={Boolean(defaultConfig && editorSchema && !loading)}
+        onCreate={handleSaveThemeModalConfirm}
+      />
+
       <CreateThemeSaveModal
-        open={showSaveThemeModal}
+        open={showSaveThemeModal && !needsThemeSetup}
         saving={savingTheme}
         initialName={themeName.trim() === 'Creator Basic' ? '' : themeName}
         initialDesc=""

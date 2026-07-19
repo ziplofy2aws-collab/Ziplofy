@@ -24,6 +24,7 @@ import {
 } from "../../contexts/store-custom-themes.context";
 import ThemePreviewModal from "../../components/ThemePreviewModal";
 import ThemeEditChoiceModal from "../../components/ThemeEditChoiceModal";
+import { DeleteThemeConfirmModal } from "../../components/DeleteThemeConfirmModal";
 import { axiosi } from "../../config/axios.config";
 import {
   isThemeEditorStaticMode,
@@ -87,6 +88,11 @@ const AllThemes: React.FC = () => {
     return String(store.appliedCustomThemeId);
   }, [stores, activeStoreId]);
   const [applyingStoreCustomThemeId, setApplyingStoreCustomThemeId] = useState<string | null>(null);
+  const [deleteThemeModal, setDeleteThemeModal] = useState<{
+    isOpen: boolean;
+    theme: StoreCustomTheme | null;
+  }>({ isOpen: false, theme: null });
+  const [deletingTheme, setDeletingTheme] = useState(false);
   const { customThemes, loading: customThemesLoading, fetchAll: fetchCustomThemes, deleteTheme: deleteCustomTheme, installTheme: installCustomTheme, uninstallTheme: uninstallCustomTheme, updateTheme } = useCustomThemes();
   const {
     themes: storeCustomThemes,
@@ -491,21 +497,31 @@ const AllThemes: React.FC = () => {
     }
   };
 
-  const handleDeleteStoreCustomTheme = async (theme: StoreCustomTheme) => {
-    if (
-      !window.confirm(
-        `Delete "${theme.themeName}"? This removes the saved theme design and cannot be undone.`
-      )
-    ) {
-      return;
-    }
+  const handleDeleteStoreCustomTheme = (theme: StoreCustomTheme) => {
+    setOpenMenuId(null);
+    setDeleteThemeModal({ isOpen: true, theme });
+  };
+
+  const handleConfirmDeleteStoreCustomTheme = async () => {
+    const theme = deleteThemeModal.theme;
+    if (!theme) return;
+
+    setDeletingTheme(true);
     try {
       await deleteStoreCustomTheme(theme._id);
       if (activeStoreId) {
         await fetchStoreCustomThemes(activeStoreId);
       }
-    } catch {
-      /* toast from context / axios */
+      toast.success(`Deleted “${theme.themeName}”`);
+      setDeleteThemeModal({ isOpen: false, theme: null });
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (err as Error)?.message ||
+        'Failed to delete theme';
+      toast.error(msg);
+    } finally {
+      setDeletingTheme(false);
     }
   };
 
@@ -976,6 +992,15 @@ const AllThemes: React.FC = () => {
         }
         themeId={editChoice.themeId}
         isCustomTheme={editChoice.isCustomTheme}
+      />
+      <DeleteThemeConfirmModal
+        isOpen={deleteThemeModal.isOpen}
+        themeName={deleteThemeModal.theme?.themeName}
+        deleting={deletingTheme}
+        onClose={() => {
+          if (!deletingTheme) setDeleteThemeModal({ isOpen: false, theme: null });
+        }}
+        onConfirm={() => void handleConfirmDeleteStoreCustomTheme()}
       />
 
       {thumbnailUpdateModal.isOpen && (
