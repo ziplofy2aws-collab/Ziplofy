@@ -49,6 +49,15 @@ export interface AdminOrderAddressRef {
   phoneNumber?: string;
 }
 
+export interface AdminOrderPaymentConfirmation {
+  _id: string;
+  utr: string;
+  referenceId: string;
+  verificationStatus: 'submitted' | 'verified';
+  verifiedAt?: string | null;
+  createdAt: string;
+}
+
 export interface AdminOrder {
   _id: string;
   storeId: AdminOrderStoreRef; // populated with name
@@ -57,7 +66,7 @@ export interface AdminOrder {
   billingAddressId?: AdminOrderAddressRef;
   orderDate?: string;
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod?: 'credit_card' | 'paypal' | 'cod' | 'other';
+  paymentMethod?: 'credit_card' | 'paypal' | 'cod' | 'bank_transfer' | 'upi_id' | 'other';
   paymentStatus: 'unpaid' | 'paid' | 'refunded';
   subtotal: number;
   tax: number;
@@ -67,6 +76,7 @@ export interface AdminOrder {
   createdAt: string;
   updatedAt: string;
   items: AdminOrderItem[];
+  paymentConfirmation?: AdminOrderPaymentConfirmation | null;
 }
 
 interface GetOrdersByStoreIdResponse {
@@ -86,6 +96,7 @@ interface AdminOrderContextValue {
   error: string | null;
   getOrdersByStoreId: (storeId: string) => Promise<AdminOrder[]>;
   getOrderById: (orderId: string) => Promise<AdminOrder | null>;
+  verifyOrderPayment: (orderId: string) => Promise<AdminOrder>;
   clear: () => void;
 }
 
@@ -130,9 +141,27 @@ export const AdminOrderProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, []);
 
+  const verifyOrderPayment = useCallback(async (orderId: string): Promise<AdminOrder> => {
+    try {
+      setError(null);
+      const res = await axiosi.patch<GetOrderByIdResponse>(`/orders/${orderId}/verify-payment`);
+      if (!res.data.success) throw new Error('Failed to verify payment');
+      const updatedOrder = res.data.data;
+      setOrders((current) =>
+        current.map((order) => (order._id === updatedOrder._id ? updatedOrder : order))
+      );
+      return updatedOrder;
+    } catch (err: any) {
+      const msg =
+        err?.response?.data?.message || err?.response?.data?.error || err?.message || 'Failed to verify payment';
+      setError(msg);
+      throw new Error(msg);
+    }
+  }, []);
+
   const value = useMemo<AdminOrderContextValue>(
-    () => ({ orders, loading, error, getOrdersByStoreId, getOrderById, clear }),
-    [orders, loading, error, getOrdersByStoreId, getOrderById, clear]
+    () => ({ orders, loading, error, getOrdersByStoreId, getOrderById, verifyOrderPayment, clear }),
+    [orders, loading, error, getOrdersByStoreId, getOrderById, verifyOrderPayment, clear]
   );
 
   return (

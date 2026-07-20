@@ -3,6 +3,30 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 export type CheckoutContactMethod = 'phone_or_email' | 'email';
 export type CheckoutEmailRegionMode = 'codiic_recommended' | 'custom';
 
+export function normalizeCheckoutEmailRegionMode(
+  mode?: string | null
+): CheckoutEmailRegionMode {
+  if (mode === 'custom') return 'custom';
+  return 'codiic_recommended';
+}
+export type CheckoutFullNameOption = 'last_name' | 'first_last';
+export type CheckoutFieldRequirementOption = 'dont_include' | 'optional' | 'required';
+export const RECOMMENDED_ADD_TO_CART_LIMIT = 50;
+
+export interface ICheckoutCustomerInformation {
+  fullNameOption: CheckoutFullNameOption;
+  companyNameOption: CheckoutFieldRequirementOption;
+  addressLine2Option: CheckoutFieldRequirementOption;
+  shippingPhoneOption: CheckoutFieldRequirementOption;
+}
+
+export const DEFAULT_CHECKOUT_CUSTOMER_INFORMATION: ICheckoutCustomerInformation = {
+  fullNameOption: 'last_name',
+  companyNameOption: 'dont_include',
+  addressLine2Option: 'optional',
+  shippingPhoneOption: 'dont_include',
+};
+
 export interface ICheckoutSettings extends Document {
   storeId: mongoose.Types.ObjectId;
   contactMethod: CheckoutContactMethod;
@@ -33,6 +57,7 @@ export interface ICheckoutSettings extends Document {
     limit: number | null;
     useRecommended: boolean;
   };
+  customerInformation: ICheckoutCustomerInformation;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -54,7 +79,7 @@ const checkoutSettingsSchema = new Schema<ICheckoutSettings>(
         enabled: { type: Boolean, default: true },
         regionMode: {
           type: String,
-          enum: ['codiic_recommended', 'custom'],
+          enum: ['codiic_recommended', 'custom', 'ziplofy_recommended'],
           default: 'codiic_recommended',
         },
       },
@@ -86,6 +111,28 @@ const checkoutSettingsSchema = new Schema<ICheckoutSettings>(
         default: null,
       },
       useRecommended: { type: Boolean, default: true },
+    },
+    customerInformation: {
+      fullNameOption: {
+        type: String,
+        enum: ['last_name', 'first_last'],
+        default: DEFAULT_CHECKOUT_CUSTOMER_INFORMATION.fullNameOption,
+      },
+      companyNameOption: {
+        type: String,
+        enum: ['dont_include', 'optional', 'required'],
+        default: DEFAULT_CHECKOUT_CUSTOMER_INFORMATION.companyNameOption,
+      },
+      addressLine2Option: {
+        type: String,
+        enum: ['dont_include', 'optional', 'required'],
+        default: DEFAULT_CHECKOUT_CUSTOMER_INFORMATION.addressLine2Option,
+      },
+      shippingPhoneOption: {
+        type: String,
+        enum: ['dont_include', 'optional', 'required'],
+        default: DEFAULT_CHECKOUT_CUSTOMER_INFORMATION.shippingPhoneOption,
+      },
     },
   },
   {

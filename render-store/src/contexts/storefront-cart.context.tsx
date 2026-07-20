@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { axiosi } from '../config/axios.config';
 import type { StorefrontProductVariant } from './product-variant.context';
@@ -63,8 +63,47 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user, registerLogoutCallback, registerLoginCallback } = useStorefrontAuth();
+  const cartLimitRequestsRef = useRef<Map<string, Promise<number | null>>>(new Map());
 
   const isGuest = !user;
+
+  const getCartLimit = useCallback(async (storeId: string): Promise<number | null> => {
+    const existingRequest = cartLimitRequestsRef.current.get(storeId);
+    if (existingRequest) return existingRequest;
+
+    const request = axiosi
+      .get<{
+        success: boolean;
+        data: { enabled: boolean; limit: number | null; useRecommended: boolean };
+      }>(`/storefront/${storeId}/add-to-cart-limit`)
+      .then((response) =>
+        response.data?.success && response.data.data?.enabled
+          ? response.data.data.limit
+          : null
+      )
+      .catch(() => null);
+
+    cartLimitRequestsRef.current.set(storeId, request);
+    void request.finally(() => {
+      if (cartLimitRequestsRef.current.get(storeId) === request) {
+        cartLimitRequestsRef.current.delete(storeId);
+      }
+    });
+    return request;
+  }, []);
+
+  const enforceCartLimit = useCallback(
+    async (storeId: string, quantity: number) => {
+      const limit = await getCartLimit(storeId);
+      if (typeof limit === 'number' && quantity > limit) {
+        const message = `You can add a maximum of ${limit} of this item to the cart`;
+        toast.dismiss();
+        toast.error(message);
+        throw new Error(message);
+      }
+    },
+    [getCartLimit]
+  );
 
   // Load guest cart from localStorage on mount
   useEffect(() => {
@@ -158,10 +197,12 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
       );
 
       if (existingIdx >= 0) {
+        const nextQuantity = guestItems[existingIdx].quantity + (payload.quantity || 1);
+        await enforceCartLimit(payload.storeId, nextQuantity);
         // Update quantity
         const updated: GuestCartItem = {
           ...guestItems[existingIdx],
-          quantity: guestItems[existingIdx].quantity + (payload.quantity || 1),
+          quantity: nextQuantity,
         };
         setGuestItems(prev => {
           const next = [...prev];
@@ -174,6 +215,7 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
       }
 
       // Add new item
+      await enforceCartLimit(payload.storeId, payload.quantity || 1);
       const newItem: GuestCartItem = {
         _id: generateId(),
         storeId: payload.storeId,
@@ -189,6 +231,7 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
 
     // User is logged in, use server API
     try {
+      await enforceCartLimit(payload.storeId, payload.quantity || 1);
       setLoading(true);
       setError(null);
       const res = await axiosi.post<{ success: boolean; data: StorefrontCartItem }>(`/storefront/cart`, payload);
@@ -209,11 +252,13 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Create cart entry failed';
       setError(msg);
+      toast.dismiss();
+      toast.error(msg);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [user, guestItems]);
+  }, [user, guestItems, enforceCartLimit]);
 
   const getCartByCustomerId = useCallback(async (customerId: string): Promise<StorefrontCartItem[]> => {
     try {
@@ -237,6 +282,7 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
     if (payload.id.startsWith('guest_')) {
       const idx = guestItems.findIndex(i => i._id === payload.id);
       if (idx < 0) throw new Error('Guest cart item not found');
+      await enforceCartLimit(guestItems[idx].storeId, payload.quantity);
       
       const updated: GuestCartItem = {
         ...guestItems[idx],
@@ -248,6 +294,10 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
 
     // Server cart item
     try {
+      const currentItem = items.find((item) => item._id === payload.id);
+      if (currentItem) {
+        await enforceCartLimit(currentItem.storeId, payload.quantity);
+      }
       setLoading(true);
       setError(null);
       const res = await axiosi.patch<{ success: boolean; data: StorefrontCartItem }>(`/storefront/cart/${payload.id}`, { quantity: payload.quantity });
@@ -258,11 +308,13 @@ export const StorefrontCartProvider: React.FC<{ children: React.ReactNode }> = (
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Update cart entry failed';
       setError(msg);
+      toast.dismiss();
+      toast.error(msg);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [guestItems]);
+  }, [guestItems, items, enforceCartLimit]);
 
   const deleteCartEntry = useCallback(async (id: string): Promise<StorefrontCartItem | GuestCartItem> => {
     // Check if it's a guest cart item

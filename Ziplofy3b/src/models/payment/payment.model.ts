@@ -15,6 +15,10 @@ export interface IPayment extends Document {
   merchantName: string | null;
   /** Client reference e.g. pending order label — not necessarily a persisted Order _id yet. */
   orderId: string | null;
+  verificationStatus: 'submitted' | 'verified';
+  verifiedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const paymentSchema = new Schema<IPayment>(
@@ -38,6 +42,13 @@ const paymentSchema = new Schema<IPayment>(
     amountPaise: { type: Number, default: null },
     merchantName: { type: String, default: null, trim: true },
     orderId: { type: String, default: null, trim: true },
+    verificationStatus: {
+      type: String,
+      enum: ['submitted', 'verified'],
+      default: 'submitted',
+      index: true,
+    },
+    verifiedAt: { type: Date, default: null },
   },
   { timestamps: true, versionKey: false }
 );

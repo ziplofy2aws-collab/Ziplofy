@@ -4,6 +4,29 @@ import { axiosi } from '../config/axios.config';
 export type CheckoutContactMethod = 'phone_or_email' | 'email';
 export type CheckoutEmailRegionMode = 'codiic_recommended' | 'custom';
 
+export function normalizeCheckoutEmailRegionMode(
+  mode?: string | null
+): CheckoutEmailRegionMode {
+  if (mode === 'custom') return 'custom';
+  return 'codiic_recommended';
+}
+export type CheckoutFullNameOption = 'last_name' | 'first_last';
+export type CheckoutFieldRequirementOption = 'dont_include' | 'optional' | 'required';
+
+export interface CheckoutCustomerInformation {
+  fullNameOption: CheckoutFullNameOption;
+  companyNameOption: CheckoutFieldRequirementOption;
+  addressLine2Option: CheckoutFieldRequirementOption;
+  shippingPhoneOption: CheckoutFieldRequirementOption;
+}
+
+export const DEFAULT_CHECKOUT_CUSTOMER_INFORMATION: CheckoutCustomerInformation = {
+  fullNameOption: 'last_name',
+  companyNameOption: 'dont_include',
+  addressLine2Option: 'optional',
+  shippingPhoneOption: 'dont_include',
+};
+
 export interface CheckoutSettings {
   _id: string;
   storeId: string;
@@ -35,6 +58,7 @@ export interface CheckoutSettings {
     limit: number | null;
     useRecommended: boolean;
   };
+  customerInformation: CheckoutCustomerInformation;
   emailSelectedRegionIds: string[];
   createdAt: string;
   updatedAt: string;
@@ -65,7 +89,11 @@ export const CheckoutSettingsProvider: React.FC<{ children: React.ReactNode }> =
         setSettings(fetched);
         return fetched;
       } catch (err: any) {
-        const msg = err?.response?.data?.message || err?.message || 'Failed to load checkout settings';
+        const msg =
+          err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          err?.message ||
+          'Failed to load checkout settings';
         setError(msg);
         throw new Error(msg);
       } finally {
@@ -88,7 +116,11 @@ export const CheckoutSettingsProvider: React.FC<{ children: React.ReactNode }> =
         setSettings(updated);
         return updated;
       } catch (err: any) {
-        const msg = err?.response?.data?.message || err?.message || 'Failed to update checkout settings';
+        const msg =
+          err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          err?.message ||
+          'Failed to update checkout settings';
         setError(msg);
         throw new Error(msg);
       } finally {
