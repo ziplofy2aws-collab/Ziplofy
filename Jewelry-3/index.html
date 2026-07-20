@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanak Jewellery - Exquisite Designs</title>
+  <!-- Google Fonts for clean modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <!-- FontAwesome for matching reference icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Custom theme styles -->
+  <link rel="stylesheet" href="assets/css/style.css?v=9">
+</head>
+
+<body>
+
+  <header class="site-header">
+    <!-- Top Utility & Brand Section -->
+    <div class="header-main-wrapper">
+      <div class="header-main-container">
+
+        <!-- Left: hamburger + logo (mobile matches BlueStone) -->
+        <div class="header-left">
+          <button type="button" class="menu-toggle" id="mobile-menu-toggle" aria-label="Open menu" aria-expanded="false"
+            aria-controls="main-navigation">
+            <span class="menu-toggle-bar"></span>
+            <span class="menu-toggle-bar"></span>
+            <span class="menu-toggle-bar"></span>
+          </button>
+          <a href="index.html" class="brand-logo" id="header-brand-logo">
+            <img src="assets/img/logo.png" alt="Bluestone Logo" id="logo-image">
+          </a>
+        </div>
+
+        <!-- Search Bar -->
+        <form class="search-form" action="#" method="GET" id="header-search-form">
+          <div class="search-input-wrapper">
+            <span class="search-icon" aria-hidden="true">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="search" id="header-search-input" placeholder="Search for jewellery..."
+              aria-label="Search for jewellery" autocomplete="off">
+          </div>
+        </form>
+
+        <!-- Utility Links -->
+        <div class="header-utilities" id="header-utilities-container">
+          <a href="#" class="utility-item utility-desktop-only" id="nav-recently-viewed">
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            <span>Recently viewed</span>
+          </a>
+          <a href="#" class="utility-item utility-desktop-only" id="nav-video-cart">
+            <i class="fa-solid fa-video" aria-hidden="true"></i>
+            <span>Video call cart</span>
+          </a>
+          <a href="#" class="utility-item utility-mobile-keep" id="nav-find-store">
+            <i class="fa-solid fa-location-dot utility-icon-desktop" aria-hidden="true"></i>
+            <i class="fa-solid fa-store utility-icon-mobile" aria-hidden="true"></i>
+            <span>Find a store</span>
+          </a>
+          <a href="#" class="utility-item utility-desktop-only" id="nav-wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+            <span>Wishlist</span>
+          </a>
+          <a href="#" class="utility-item utility-mobile-keep" id="nav-cart">
+            <i class="fa-solid fa-bag-shopping utility-icon-desktop" aria-hidden="true"></i>
+            <i class="fa-solid fa-cart-shopping utility-icon-mobile" aria-hidden="true"></i>
+            <span>Cart</span>
+          </a>
+          <a href="#" class="utility-item utility-desktop-only" id="nav-profile">
+            <i class="fa-solid fa-user" aria-hidden="true"></i>
+            <span>Profile</span>
+          </a>
+          <a href="#" class="utility-item utility-desktop-only" id="nav-more">
+            <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
+            <span>More</span>
+          </a>
+          <button type="button" class="utility-item utility-mobile-only" id="nav-mobile-search" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <span>Search</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Navigation Menu Bar -->
+    <nav class="navigation-bar" id="main-navigation" aria-label="Main Navigation">
+      <div class="nav-container">
+
+        <!-- Left aligned links -->
+        <ul class="nav-menu nav-menu-left" id="main-nav-left">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              10+1 Monthly Plans <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="shop.html" class="nav-link">
+              Watch Jewellery <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="shop.html?category=rings" class="nav-link">
+              Rings <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="shop.html?category=earrings" class="nav-link">
+              Earrings <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="shop.html?category=pendants" class="nav-link">
+              Pendants <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="shop.html?category=solitaires" class="nav-link">
+              Solitaires <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="shop.html" class="nav-link">
+              All Jewellery <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Right aligned links -->
+        <ul class="nav-menu nav-menu-right" id="main-nav-right">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              Gifts <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              Gold Coins <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              Offers <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </a>
+          </li>
+        </ul>
+
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <!-- Hero Section Slider -->
+    <section class="hero-section" id="hero-slider-section" aria-label="Featured Jewellery Collection">
+      <div class="hero-slider">
+        <!-- Slides -->
+        <div class="slider-container">
+          <div class="slide active">
+            <img src="assets/img/hero-1.png" alt="Kanak Jewellery - A Promise, Perfectly Crafted">
+          </div>
+          <div class="slide">
+            <img src="assets/img/hero-2.png" alt="Kanak Jewellery - Wear, Flaunt, Save! Buy 2 Get 1 Free">
+          </div>
+          <div class="slide">
+            <img src="assets/img/hero-3.png" alt="Kanak Jewellery - When your necklace becomes the highlight">
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <button class="slider-btn prev" id="prev-slide-btn" aria-label="Previous Slide">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button class="slider-btn next" id="next-slide-btn" aria-label="Next Slide">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+
+        <!-- Slider Dots -->
+        <div class="slider-dots" id="slider-dots-container">
+          <span class="dot active" data-slide-index="0" role="button" aria-label="Go to slide 1"></span>
+          <span class="dot" data-slide-index="1" role="button" aria-label="Go to slide 2"></span>
+          <span class="dot" data-slide-index="2" role="button" aria-label="Go to slide 3"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Grid Section -->
+    <section class="categories-section" id="categories-grid-section" aria-label="Shop by Category">
+      <div class="categories-container">
+
+        <!-- Card 1 -->
+        <a href="#" class="category-card" id="cat-chokers-necklaces">
+          <div class="category-img-wrapper">
+            <img src="assets/img/choker_necklace.avif" alt="Chokers & Necklaces">
+          </div>
+          <h3 class="category-label">Chokers & Necklaces</h3>
+        </a>
+
+        <!-- Card 2 -->
+        <a href="#" class="category-card" id="cat-bangles">
+          <div class="category-img-wrapper">
+            <img src="assets/img/bangle.avif" alt="Bangles">
+          </div>
+          <h3 class="category-label">Bangles</h3>
+        </a>
+
+        <!-- Card 3 -->
+        <a href="#" class="category-card" id="cat-earrings">
+          <div class="category-img-wrapper">
+            <img src="assets/img/earrings.avif" alt="Earrings">
+          </div>
+          <h3 class="category-label">Earrings</h3>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="#" class="category-card" id="cat-daily-wears">
+          <div class="category-img-wrapper">
+            <img src="assets/img/daily_wears.avif" alt="Daily Wears">
+          </div>
+          <h3 class="category-label">Daily Wears</h3>
+        </a>
+
+        <!-- Card 5 -->
+        <a href="#" class="category-card" id="cat-rings">
+          <div class="category-img-wrapper">
+            <img src="assets/img/rings.avif" alt="Rings">
+          </div>
+          <h3 class="category-label">Rings</h3>
+        </a>
+
+        <!-- Card 6 -->
+        <a href="#" class="category-card" id="cat-anklets">
+          <div class="category-img-wrapper">
+            <img src="assets/img/anklets.avif" alt="Anklets">
+          </div>
+          <h3 class="category-label">Anklets</h3>
+        </a>
+
+        <!-- Card 7 -->
+        <a href="#" class="category-card" id="cat-hip-chain">
+          <div class="category-img-wrapper">
+            <img src="assets/img/hip_chain.avif" alt="Hip Chain">
+          </div>
+          <h3 class="category-label">Hip Chain</h3>
+        </a>
+
+        <!-- Card 8 -->
+        <a href="#" class="category-card" id="cat-accessories">
+          <div class="category-img-wrapper">
+            <img src="assets/img/accessories.avif" alt="Accessories">
+          </div>
+          <h3 class="category-label">Accessories</h3>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Curated Collections Section -->
+    <section class="curated-section" id="curated-collections-section" aria-label="Curated Collections">
+      <h2 class="section-title">CURATED COLLECTIONS</h2>
+      <div class="section-title-divider"></div>
+
+      <div class="curated-grid">
+        <!-- Row 1 (Amalia 58% / Initials 42%) -->
+        <div class="curated-row row-1">
+          <!-- Card 1: Amalia -->
+          <a href="#" class="curated-card card-amalia" id="curated-amalia">
+            <!-- <div class="logo-cover cover-amalia"></div>
+            <div class="card-content">
+              <h3 class="card-title text-white">AMALIA</h3>
+            </div> -->
+          </a>
+
+          <!-- Card 2: Initials (Text baked-in) -->
+          <a href="#" class="curated-card card-initials" id="curated-initials">
+            <!-- <div class="logo-cover cover-initials"></div> -->
+          </a>
+        </div>
+
+        <!-- Row 2 (Anant 42% / Baby 58%) -->
+        <div class="curated-row row-2">
+          <!-- Card 3: Anant -->
+          <a href="#" class="curated-card card-anant" id="curated-anant">
+            <!-- <div class="logo-cover cover-anant"></div>
+            <div class="card-content">
+              <h3 class="card-title-script">Anant</h3>
+              <p class="card-subtitle-sub">Sustainable Coconut<br>Jewellery</p>
+            </div> -->
+          </a>
+
+          <!-- Card 4: Baby (Text baked-in) -->
+          <a href="#" class="curated-card card-baby" id="curated-baby">
+            <!-- <div class="logo-cover cover-baby"></div> -->
+          </a>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Best Seller Section -->
+    <section class="bestseller-section" id="bestseller-carousel-section" aria-label="Best Sellers">
+      <h2 class="section-title">Best seller</h2>
+      <div class="section-title-divider"></div>
+
+      <div class="carousel-container">
+        <!-- Track Wrapper -->
+        <div class="carousel-track-wrapper">
+          <div class="carousel-track" id="bestseller-track">
+
+            <!-- Card 1 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-1.png" alt="18K Gold Plated Double Layer Floral AD Stone Necklace">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Double Layer Floral AD Stone Necklace (Colour Options)</h3>
+                <p class="product-price">Rs. 1,650.00</p>
+                <a href="product.html" class="product-btn">CHOOSE OPTIONS</a>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-2.png" alt="18K Gold Plated Lakshmi Coin Necklace">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Lakshmi Coin Necklace (Color Options)</h3>
+                <p class="product-price">Rs. 1,780.00</p>
+                <a href="product.html" class="product-btn">CHOOSE OPTIONS</a>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-3.png" alt="18K Gold Plated Floral Clover Anklet Pair - KT1012458">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Floral Clover Anklet Pair - KT1012458</h3>
+                <p class="product-price"><span class="price-discount">Rs. 420.00</span> <span class="price-original">Rs.
+                    750.00</span></p>
+                <a href="product.html" class="product-btn">ADD TO CART</a>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-4.png" alt="18K Gold Plated Star Anklet Pair - KT1012459">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Star Anklet Pair - KT1012459</h3>
+                <p class="product-price"><span class="price-discount">Rs. 410.00</span> <span class="price-original">Rs.
+                    650.00</span></p>
+                <a href="product.html" class="product-btn">ADD TO CART</a>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-5.png" alt="18K Gold Plated Mango Palakka Bridal Bangle - ZS1012455">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Mango Palakka Bridal Bangle - ZS1012455</h3>
+                <p class="product-price">Rs. 2,550.00</p>
+                <a href="product.html" class="product-btn">CHOOSE OPTIONS</a>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-6.png" alt="18K Gold Plated Emerald Peacock Drop Earrings">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Emerald Peacock Drop Earrings (Color Options)</h3>
+                <p class="product-price"><span class="price-discount">Rs. 890.00</span> <span class="price-original">Rs.
+                    1,500.00</span></p>
+                <a href="product.html" class="product-btn">ADD TO CART</a>
+              </div>
+            </div>
+
+            <!-- Card 7 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-7.png" alt="18K Gold Plated Temple Choker Set with Pearls">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Temple Choker Set with Pearls</h3>
+                <p class="product-price">Rs. 3,200.00</p>
+                <a href="product.html" class="product-btn">CHOOSE OPTIONS</a>
+              </div>
+            </div>
+
+            <!-- Card 8 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-8.png" alt="18K Gold Plated Elegant Leaf Ring">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Elegant Leaf Ring</h3>
+                <p class="product-price"><span class="price-discount">Rs. 350.00</span> <span class="price-original">Rs.
+                    600.00</span></p>
+                <a href="product.html" class="product-btn">ADD TO CART</a>
+              </div>
+            </div>
+
+            <!-- Card 9 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-9.png" alt="18K Gold Plated Classic Bridal Jhumka Earrings">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Classic Bridal Jhumka Earrings</h3>
+                <p class="product-price">Rs. 1,450.00</p>
+                <a href="product.html" class="product-btn">CHOOSE OPTIONS</a>
+              </div>
+            </div>
+
+            <!-- Card 10 -->
+            <div class="product-card">
+              <a href="product.html" class="product-img-link">
+                <img src="assets/img/BS-10.png" alt="18K Gold Plated Royal Kundan Bangles Set of 2">
+              </a>
+              <div class="product-info">
+                <h3 class="product-name">18K Gold Plated Royal Kundan Bangles Set of 2</h3>
+                <p class="product-price"><span class="price-discount">Rs. 2,100.00</span> <span
+                    class="price-original">Rs. 3,500.00</span></p>
+                <a href="product.html" class="product-btn">ADD TO CART</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <button class="carousel-btn prev" id="prev-prod-btn" aria-label="Previous Slide">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button class="carousel-btn next" id="next-prod-btn" aria-label="Next Slide">
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="bestseller-footer">
+        <a href="shop.html" class="view-all-link">VIEW ALL</a>
+      </div>
+    </section>
+
+    <!-- Browse Latest Jewellery Collections Section -->
+    <section class="promo-section" id="promo-collections-section" aria-label="Latest Collections">
+      <h2 class="promo-section-title">Browse Latest Jewellery Collections</h2>
+
+      <div class="promo-row">
+        <!-- Card 1: Clay Whispers -->
+        <div class="promo-card promo-left" id="promo-card-clay">
+          <div class="promo-cover cover-promo-left"></div>
+          <!-- <div class="promo-content content-right">
+            <h3 class="promo-title-left">CLAY<br>WHISPERS</h3>
+          </div> -->
+        </div>
+
+        <!-- Card 2: Gemphony (Taller center card) -->
+        <div class="promo-card promo-middle" id="promo-card-gemphony">
+          <div class="promo-cover cover-promo-middle"></div>
+          <!-- <div class="promo-content content-bottom">
+            <h3 class="promo-title-middle">GEMPHONY</h3>
+            <p class="promo-subtitle-middle">EVERY COLOR IS AN EMOTION</p>
+          </div> -->
+        </div>
+
+        <!-- Card 3: Raw Reverie -->
+        <div class="promo-card promo-right" id="promo-card-raw">
+          <div class="promo-cover cover-promo-right"></div>
+          <!-- <div class="promo-content content-right">
+            <h3 class="promo-title-right">RAW<br>REVERIE</h3>
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Carousel indicators (Visible on Mobile only) -->
+      <div class="promo-dots">
+        <span class="promo-dot active" data-index="0"></span>
+        <span class="promo-dot" data-index="1"></span>
+        <span class="promo-dot" data-index="2"></span>
+      </div>
+
+      <div class="promo-btn-wrapper">
+        <a href="shop.html" class="btn-browse-all">Browse all Collections</a>
+      </div>
+    </section>
+
+    <!-- Latest Releases Section -->
+    <section class="latest-releases-section" id="latest-releases" aria-label="Latest Releases">
+      <h2 class="section-title">LATEST RELEASES</h2>
+      <div class="section-title-divider pink-divider"></div>
+
+      <div class="latest-releases-grid">
+        <!-- Card 1 -->
+        <a href="product.html" class="release-card" id="release-amour">
+          <img src="assets/img/LR-1.png" alt="Amour Collection">
+        </a>
+        <!-- Card 2 -->
+        <a href="product.html" class="release-card" id="release-bridal">
+          <img src="assets/img/LR-2.png" alt="Bridal Set Collection">
+        </a>
+        <!-- Card 3 -->
+        <a href="shop.html" class="release-card" id="release-animal">
+          <img src="assets/img/LR-3.png" alt="Animal Collection">
+        </a>
+        <!-- Card 4 -->
+        <a href="shop.html" class="release-card" id="release-religious">
+          <img src="assets/img/LR-4.png" alt="Religious Collection">
+        </a>
+      </div>
+
+      <div class="latest-releases-footer">
+        <a href="shop.html" class="btn-view-all-pink">VIEW ALL</a>
+      </div>
+    </section>
+
+    <!-- Promo Banner Section -->
+    <section class="promo-banner-section" id="gemphony-banner" aria-label="Gemphony Collection Banner">
+      <div class="banner-container">
+        <a href="shop.html" class="banner-link">
+          <img src="assets/img/banner.png" alt="Gemphony Collection - Every Color is an Emotion" class="banner-img">
+        </a>
+      </div>
+    </section>
+
+    <!-- Customer Testimonials Section -->
+    <section class="testimonial-section" id="testimonials" aria-label="Customer Testimonials">
+      <h2 class="testimonial-title">Customer Testimonials</h2>
+      <p class="testimonial-subtitle">#BlueStoneAndMe</p>
+
+      <div class="testimonial-carousel-wrapper">
+        <div class="testimonial-track" id="testimonial-track">
+
+          <!-- Card 1 -->
+          <div class="testimonial-card tilt-left" data-index="0">
+            <div class="card-clip"></div>
+            <div class="card-image-wrapper">
+              <img src="assets/img/testi-1.webp" alt="Akanksha Khanna">
+            </div>
+            <h3 class="card-name">Akanksha Khanna, 27</h3>
+            <p class="card-text">Delighted with my engagement ring from BlueStone! It's my dream ring, fits perfectly
+              and is stunning to look at. Thanks, BlueStone, for helping us find the perfect symbol of love!</p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="testimonial-card tilt-right" data-index="1">
+            <div class="card-clip"></div>
+            <div class="card-image-wrapper">
+              <img src="assets/img/testi-2.webp" alt="Diksha Singh">
+            </div>
+            <h3 class="card-name">Diksha Singh, 29</h3>
+            <p class="card-text">I was worried about finding good quality fine jewellery pieces online, but BlueStone's
+              customer service gave me full assurance and the delivery was super quick. Their jewellery is certified,
+              and there is no compromise on quality.</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="testimonial-card tilt-left-small" data-index="2">
+            <div class="card-clip"></div>
+            <div class="card-image-wrapper">
+              <img src="assets/img/testi-3.webp" alt="Nutan Mishra">
+            </div>
+            <h3 class="card-name">Nutan Mishra, 33</h3>
+            <p class="card-text">I got a Nazariya for my baby boy from BlueStone. It's so cute seeing it on my little
+              one's wrist, and it gives me a sense of security knowing it's there. Thanks, BlueStone, for making such
+              lovely pieces for our little ones!</p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="testimonial-card tilt-right-small" data-index="3">
+            <div class="card-clip"></div>
+            <div class="card-image-wrapper">
+              <img src="assets/img/testi-4.webp" alt="Divya Mishra">
+            </div>
+            <h3 class="card-name">Divya Mishra, 26</h3>
+            <p class="card-text">On Valentine's Day, my husband gifted me a necklace from BlueStone, and I haven't taken
+              it off even once. Everyone asks me where it's from, and I just LOVE how nice it looks on me.</p>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="testimonial-card tilt-left" data-index="4">
+            <div class="card-clip"></div>
+            <div class="card-image-wrapper">
+              <img src="assets/img/testi-5.webp" alt="Anuska Ananya">
+            </div>
+            <h3 class="card-name">Anuska Ananya, 24</h3>
+            <p class="card-text">BlueStone is my go-to place for modern jewellery that I can wear to office as well as
+              for evening parties and brunches. It goes well with everything and makes my outfits look super elegant.
+            </p>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="testimonial-card tilt-right" data-index="5">
+            <div class="card-clip"></div>
+            <div class="card-image-wrapper">
+              <img src="assets/img/testi-6.webp" alt="Sneha Reddy">
+            </div>
+            <h3 class="card-name">Sneha Reddy, 28</h3>
+            <p class="card-text">The collection at BlueStone is simply outstanding. The design of my earrings is very
+              unique, and they are lightweight and comfortable to wear all day. Definitely going to buy more soon!</p>
+          </div>
+
+          <!-- Card 7 -->
+          <div class="testimonial-card tilt-left-small" data-index="6">
+            <div class="card-clip"></div>
+            <div class="card-image-wrapper">
+              <img src="assets/img/testi-7.webp" alt="Pooja Patel">
+            </div>
+            <h3 class="card-name">Pooja Patel, 31</h3>
+            <p class="card-text">Exquisite craftsmanship and prompt delivery! The gold bracelet I purchased is
+              absolutely gorgeous, and the certification card gives complete peace of mind. Very happy customer!</p>
+          </div>
+
+        </div>
+
+        <!-- Custom Scroll/Progress Controls -->
+        <div class="testimonial-footer-controls">
+          <button class="testi-nav-btn prev" id="testi-prev-btn" aria-label="Scroll Left">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <div class="testimonial-progress-container">
+            <div class="testimonial-progress-bar" id="testimonial-progress-bar"></div>
+          </div>
+          <button class="testi-nav-btn next" id="testi-next-btn" aria-label="Scroll Right">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer Section -->
+  <footer class="site-footer" aria-label="Site Footer">
+    <div class="footer-container">
+
+      <!-- Footer Columns -->
+      <div class="footer-columns">
+
+        <!-- Column 1 -->
+        <div class="footer-column">
+          <h3 class="footer-col-title">ABOUT US</h3>
+          <ul class="footer-links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Frequently Asked Questions</a></li>
+            <li><span class="footer-text-link">1800-419-0066 (9 am-10 pm)</span></li>
+            <li><a href="mailto:cs@kanak.com">cs@kanak.com (9 am-10 pm)</a></li>
+          </ul>
+
+          <h3 class="footer-col-title margin-top-title">CUSTOMER DELIGHT</h3>
+          <ul class="footer-links">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><span class="footer-text-link"><i class="fa-solid fa-phone"></i> 1800-419-0066</span></li>
+            <li><span class="footer-text-link"><i class="fa-regular fa-envelope"></i> cs@kanak.com <span
+                  class="sub-time">(9 am-10 pm, 7 days a week)</span></span></li>
+          </ul>
+        </div>
+
+        <!-- Column 2 -->
+        <div class="footer-column">
+          <h3 class="footer-col-title">POLICIES</h3>
+          <ul class="footer-links">
+            <li><a href="#">Who we are?</a></li>
+            <li><a href="#">Investor Relations</a></li>
+            <li><a href="#">Design Philosophy</a></li>
+          </ul>
+
+          <h3 class="footer-col-title margin-top-title">SHOP WITH CONFIDENCE</h3>
+          <ul class="footer-links">
+            <li><a href="#">30-Day Returns</a></li>
+            <li><a href="#">Lifetime Exchange & Buy back</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Fraud Warning Disclaimer</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3 -->
+        <div class="footer-column">
+          <h3 class="footer-col-title">JEWELLERY GUIDE</h3>
+          <ul class="footer-links">
+            <li><a href="#">Why Buy From Us?</a></li>
+            <li><a href="#">Our Certifications</a></li>
+            <li><a href="#">Press Room</a></li>
+            <li><a href="#">Testimonials</a></li>
+            <li><a href="#">Corporate Gifting</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4 -->
+        <div class="footer-column">
+          <h3 class="footer-col-title">DOWNLOAD KANAK APP</h3>
+          <p class="footer-column-text">Shining new app, made just for you! It's Free, Easy & Smart.</p>
+
+          <!-- App Badges Mock -->
+          <div class="app-badges">
+            <a href="#" class="app-badge-link" aria-label="Get it on Google Play">
+              <span class="badge-mock google-play">
+                <i class="fa-brands fa-google-play badge-icon" style="color: #3bccff;"></i>
+                <span class="badge-text-wrapper">
+                  <span class="badge-sub-text">GET IT ON</span>
+                  <span class="badge-main-text">Google Play</span>
+                </span>
+              </span>
+            </a>
+            <a href="#" class="app-badge-link" aria-label="Download on the App Store">
+              <span class="badge-mock app-store">
+                <i class="fa-brands fa-apple badge-icon" style="color: #ffffff;"></i>
+                <span class="badge-text-wrapper">
+                  <span class="badge-sub-text">Download on the</span>
+                  <span class="badge-main-text">App Store</span>
+                </span>
+              </span>
+            </a>
+          </div>
+
+          <h3 class="footer-col-title margin-top-title">SUBSCRIBE TO OUR NEWSLETTER</h3>
+          <!-- Newsletter form -->
+          <form class="footer-newsletter-form" action="#" method="POST">
+            <input type="email" placeholder="Enter email for our newsletter" aria-label="Enter email for our newsletter"
+              required autocomplete="off">
+            <button type="submit">SUBSCRIBE</button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Footer Bottom Bar -->
+      <div class="footer-bottom-bar">
+
+        <!-- Social Icons -->
+        <div class="footer-social-section">
+          <span class="social-label">Follow us on</span>
+          <div class="social-icons">
+            <a href="#" class="social-icon" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-icon" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-icon" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" class="social-icon" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <!-- Payment Badges Mock -->
+        <div class="footer-payment-section">
+          <span class="payment-label">We Accept:</span>
+          <div class="payment-badges">
+            <!-- Mastercard -->
+            <div class="payment-card-badge" title="Mastercard">
+              <div class="mc-circles">
+                <span class="circle red-circle"></span>
+                <span class="circle orange-circle"></span>
+              </div>
+            </div>
+            <!-- Visa -->
+            <div class="payment-card-badge" title="Visa">
+              <span class="visa-text">VISA</span>
+            </div>
+            <!-- Amex -->
+            <div class="payment-card-badge" title="American Express">
+              <span class="amex-text">AM EX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copyright Info -->
+        <div class="footer-copyright-section">
+          <p>© 2026 Kanak. All Rights Reserved.</p>
+          <p class="cin-text">CIN: L72900KA2011PLC059678</p>
+        </div>
+
+      </div>
+
+    </div>
+  </footer>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/dynamic-product.js"></script>
+  <!-- Slider functionality script -->
+  <script src="assets/js/slider.js" defer></script>
+  <script src="assets/js/header.js" defer></script>
+
+</body>
+
+</html>

@@ -1,0 +1,413 @@
+/* ==========================================
+   Shop Page Styles
+   ========================================== */
+.shop-page-body {
+  background-color: #faf7f4 !important;
+  /* Soft warm cream background */
+}
+
+.shop-hero {
+  background-color: transparent;
+  padding: 40px 20px 20px;
+  text-align: center;
+}
+
+.shop-hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: #2b1305;
+  /* Dark brown bronze */
+  margin-bottom: 0;
+}
+
+/* Horizontal Filter Bar */
+.filter-bar-section {
+  background-color: transparent;
+  border: none;
+  padding: 10px 40px 20px;
+}
+
+.filter-bar-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-family: 'Inter', sans-serif;
+}
+
+.filter-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filter-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #8c7a6b;
+}
+
+.filter-select {
+  border: 1px solid #e5dcd3;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  background-color: #ffffff;
+  color: #2b1305;
+  cursor: pointer;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s;
+  min-width: auto;
+}
+
+.filter-select:hover {
+  border-color: #8c7a6b;
+}
+
+.product-count-label {
+  font-size: 12.5px;
+  color: #8c7a6b;
+  margin-left: 10px;
+}
+
+/* Shop Product Grid */
+.shop-grid-section {
+  padding: 20px 40px 60px;
+  background-color: transparent;
+}
+
+.shop-grid-container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.product-card {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 20px;
+  /* Highly rounded corners */
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card-image-wrapper:hover img {
+  transform: scale(1.03);
+}
+
+.card-brand-overlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.product-info {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.product-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #2b1305;
+  line-height: 1.35;
+  margin-bottom: 6px;
+  text-align: center;
+  min-height: 38px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.product-price {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2b1305;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.product-price .price-original {
+  text-decoration: line-through;
+  color: #94a3b8;
+  font-weight: 400;
+  font-size: 11.5px;
+  margin-left: 6px;
+}
+
+.product-btn {
+  width: 100%;
+  background-color: #36190b;
+  /* Dark brown chocolate */
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.2s;
+  margin-top: auto;
+}
+
+.product-btn:hover {
+  background-color: #4d2612;
+  color: #ffffff;
+}
+
+.product-btn.product-btn-soldout {
+  background-color: #9e8e85 !important;
+  color: #ffffff !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Floating WhatsApp Widget */
+.whatsapp-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px !important;
+  left: auto !important;
+  background-color: #25d366;
+  color: #ffffff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  background-color: #20ba5a;
+  color: #ffffff;
+}
+
+.whatsapp-icon {
+  margin-top: 1px;
+}
+
+/* --- Desktop Filter Wrapper & Hide Mobile Elements by Default --- */
+.desktop-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.mobile-filter-bar {
+  display: none;
+}
+
+/* --- Customize Product Card Elements --- */
+.product-price {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #2b1305 !important;
+}
+
+.product-price .price-original {
+  font-family: 'Cormorant Garamond', serif !important;
+  text-decoration: line-through;
+  color: #8c7a6b !important;
+  font-weight: 400 !important;
+  font-size: 13px !important;
+  margin-left: 6px;
+}
+
+.product-btn {
+  border-radius: 24px !important; /* Highly rounded pill shape matching reference image */
+  background-color: #2b1305 !important; /* Dark brown bronze matching reference */
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  height: 38px !important;
+}
+
+@media (max-width: 1200px) {
+  .shop-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  .filter-bar-section {
+    padding: 15px 16px !important;
+  }
+
+  .shop-grid-section {
+    padding: 20px 16px 40px !important;
+  }
+
+  /* Style mobile filter bar to match reference image */
+  .mobile-filter-bar {
+    display: flex !important;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4eedb !important; /* Cream beige background */
+    border-radius: 10px;
+    padding: 12px 18px !important;
+    margin-bottom: 5px;
+  }
+
+  .mobile-filter-btn {
+    background: none !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 18px !important;
+    font-weight: 500;
+    color: #2b1305 !important;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .mobile-filter-btn i {
+    font-size: 16px;
+    color: #2b1305;
+  }
+
+  .mobile-product-count {
+    font-family: 'Cormorant Garamond', serif !important;
+    font-size: 16px !important;
+    color: #8c7a6b !important;
+    font-weight: 500;
+  }
+
+  /* Desktop filters collapsed on mobile */
+  .desktop-filters {
+    display: none !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    background-color: #fefcfb;
+    border: 1px solid #e5dcd3;
+    border-radius: 8px;
+    padding: 16px !important;
+    gap: 12px !important;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .desktop-filters.show-mobile {
+    display: flex !important;
+  }
+
+  .filter-group {
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .filter-select {
+    flex-grow: 1;
+    min-width: 110px;
+  }
+
+  /* Product name font size on mobile */
+  .product-name {
+    font-size: 13.5px !important;
+    min-height: 36px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .product-price {
+    font-size: 15px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .product-btn {
+    height: 36px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* Force 2 columns */
+    gap: 12px !important;
+  }
+  
+  .card-image-wrapper {
+    border-radius: 16px !important; /* Slightly smaller border radius on small screen */
+    margin-bottom: 8px !important;
+  }
+
+  .shop-grid-section {
+    padding: 15px 10px 30px !important;
+  }
+}
+
