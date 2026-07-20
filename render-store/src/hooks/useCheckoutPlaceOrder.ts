@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import type { CheckoutMainViewHandle } from '@codiic/create-theme/checkout/checkout-form.types';
+import type { CheckoutMainViewHandle, CheckoutPaymentMethodOption } from '@codiic/create-theme/checkout/checkout-form.types';
+import { checkoutPaymentMethodRequiresUtr } from '@codiic/create-theme/checkout/checkout-form.types';
 import { useCustomerAddresses } from '@/contexts/customer-address-storefront.context';
 import { useStorefrontAuth } from '@/contexts/storefront-auth.context';
 import { useStorefrontCart } from '@/contexts/storefront-cart.context';
@@ -10,21 +11,29 @@ import {
   buildCompletedCheckoutOrderSummary,
   saveCompletedCheckoutOrder,
 } from '@/utils/completedCheckoutOrder';
+import { savePendingCheckoutPayment } from '@/utils/pendingCheckoutPayment';
 import {
   computeCheckoutTotals,
   mapCartLinesToOrderItems,
+  normalizeCheckoutAddressForApi,
+  checkoutPaymentMethodLabel,
 } from '@codiic/create-theme/checkout/utils/checkout-order.utils';
+import { useStorefrontCheckoutCustomerInformation } from '@/contexts/storefront-checkout-customer-information.context';
 
-export function useCheckoutPlaceOrder(storeId: string | null) {
+export function useCheckoutPlaceOrder(storeId: string | null, storeName?: string | null) {
   const navigate = useNavigate();
   const { user } = useStorefrontAuth();
   const { createOrder } = useStorefrontOrder();
   const { addCustomerAddress } = useCustomerAddresses();
+  const { customerInformation } = useStorefrontCheckoutCustomerInformation();
   const { getCartByCustomerId, deleteCartEntry } = useStorefrontCart();
   const [submitting, setSubmitting] = useState(false);
 
   const placeOrder = useCallback(
-    async (formRef: CheckoutMainViewHandle | null) => {
+    async (
+      formRef: CheckoutMainViewHandle | null,
+      selectedPaymentMethod?: CheckoutPaymentMethodOption
+    ) => {
       if (!storeId || !user) {
         toast.error('Please sign in to complete your order');
         navigate('/auth/login', { state: { from: '/checkout' } });
@@ -55,33 +64,30 @@ export function useCheckoutPlaceOrder(storeId: string | null) {
 
         const { subtotal, shipping, tax, total } = computeCheckoutTotals(cartItems);
 
+        const shippingAddressPayload = normalizeCheckoutAddressForApi(
+          form.shipping,
+          customerInformation,
+          { applyShippingPhoneSetting: true, fallbackPhone: user.phoneNumber }
+        );
+
         const shippingAddress = await addCustomerAddress({
           customerId: user._id,
           country: form.shipping.country,
-          firstName: form.shipping.firstName.trim(),
-          lastName: form.shipping.lastName.trim(),
-          address: form.shipping.address.trim(),
-          apartment: form.shipping.apartment.trim() || undefined,
-          city: form.shipping.city.trim(),
-          state: form.shipping.state.trim(),
-          pinCode: form.shipping.pinCode.trim(),
-          phoneNumber: form.shipping.phone.trim(),
+          ...shippingAddressPayload,
           addressType: 'shipping',
         });
 
         let billingAddressId: string | undefined;
         if (!form.billingSameAsShipping) {
+          const billingAddressPayload = normalizeCheckoutAddressForApi(
+            form.billing,
+            customerInformation,
+            { fallbackPhone: user.phoneNumber }
+          );
           const billingAddress = await addCustomerAddress({
             customerId: user._id,
             country: form.billing.country,
-            firstName: form.billing.firstName.trim(),
-            lastName: form.billing.lastName.trim(),
-            address: form.billing.address.trim(),
-            apartment: form.billing.apartment.trim() || undefined,
-            city: form.billing.city.trim(),
-            state: form.billing.state.trim(),
-            pinCode: form.billing.pinCode.trim(),
-            phoneNumber: form.billing.phone.trim(),
+            ...billingAddressPayload,
             addressType: 'billing',
           });
           billingAddressId = billingAddress._id;
@@ -107,14 +113,34 @@ export function useCheckoutPlaceOrder(storeId: string | null) {
           }
         }
 
-        saveCompletedCheckoutOrder(
-          buildCompletedCheckoutOrderSummary({
-            orderId: order._id,
-            form,
-            cartItems,
-          })
-        );
+        const completedOrder = buildCompletedCheckoutOrderSummary({
+          orderId: order._id,
+          form,
+          cartItems,
+        });
 
+        const customerName = [form.shipping.firstName, form.shipping.lastName]
+          .filter(Boolean)
+          .join(' ')
+          .trim();
+
+        if (checkoutPaymentMethodRequiresUtr(form.paymentMethod)) {
+          savePendingCheckoutPayment({
+            completedOrder,
+            paymentMethod: form.paymentMethod as 'bank_transfer' | 'upi_id',
+            paymentMethodLabel: selectedPaymentMethod?.label ?? checkoutPaymentMethodLabel(form.paymentMethod),
+            paymentInstructions: selectedPaymentMethod?.instructions,
+            storeId,
+            storeName: storeName ?? 'My Store',
+            customerId: user._id,
+            customerName: customerName || 'Customer',
+            email: form.email.trim(),
+          });
+          navigate('/checkout/payment-confirmation', { replace: true });
+          return;
+        }
+
+        saveCompletedCheckoutOrder(completedOrder);
         navigate('/checkout/thank-you', { replace: true });
       } catch {
         /* errors surfaced via context toasts / thrown messages */
@@ -130,6 +156,8 @@ export function useCheckoutPlaceOrder(storeId: string | null) {
       addCustomerAddress,
       createOrder,
       deleteCartEntry,
+      customerInformation,
+      storeName,
     ]
   );
 

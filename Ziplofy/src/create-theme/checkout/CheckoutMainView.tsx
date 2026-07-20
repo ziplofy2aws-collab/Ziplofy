@@ -2,8 +2,17 @@ import { ChevronDownIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/out
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStorefrontAuth } from '@render-store/sdk';
-import type { CheckoutAddressFields, CheckoutFormValues, CheckoutMainViewHandle } from './checkout-form.types';
-import { createEmptyCheckoutFormValues } from './checkout-form.types';
+import type {
+  CheckoutAddressFields,
+  CheckoutCustomerInformation,
+  CheckoutFormValues,
+  CheckoutMainViewHandle,
+  CheckoutPaymentMethodOption,
+} from './checkout-form.types';
+import {
+  createEmptyCheckoutFormValues,
+  DEFAULT_CHECKOUT_CUSTOMER_INFORMATION as DEFAULT_CUSTOMER_INFO,
+} from './checkout-form.types';
 import { isColorDark } from './settings/checkout-color.utils';
 import { buildCheckoutFieldChrome, type CheckoutMainViewTypography } from './checkout-form-styles';
 import {
@@ -32,7 +41,14 @@ type Props = {
   device?: 'desktop' | 'mobile';
   onCompleteOrder?: () => void;
   submitting?: boolean;
+  availablePaymentMethods?: CheckoutPaymentMethodOption[];
+  customerInformation?: CheckoutCustomerInformation;
 };
+
+function fieldLabelWithRequirement(label: string, option: 'dont_include' | 'optional' | 'required') {
+  if (option === 'optional') return `${label} (optional)`;
+  return label;
+}
 
 function FieldLabel({
   htmlFor,
@@ -90,6 +106,8 @@ function AddressFieldsSection({
   isMobile,
   addressAutocompletion,
   errors,
+  customerInformation = DEFAULT_CUSTOMER_INFO,
+  applyShippingPhoneSetting = false,
 }: {
   idPrefix: string;
   address: CheckoutAddressFields;
@@ -98,8 +116,17 @@ function AddressFieldsSection({
   isMobile: boolean;
   addressAutocompletion?: boolean;
   errors: Record<string, string>;
+  customerInformation?: CheckoutCustomerInformation;
+  applyShippingPhoneSetting?: boolean;
 }) {
   const set = (patch: Partial<CheckoutAddressFields>) => onChange({ ...address, ...patch });
+  const showFirstName = customerInformation.fullNameOption === 'first_last';
+  const showCompany = customerInformation.companyNameOption !== 'dont_include';
+  const showApartment = customerInformation.addressLine2Option !== 'dont_include';
+  const phoneOption = applyShippingPhoneSetting
+    ? customerInformation.shippingPhoneOption
+    : 'optional';
+  const showPhone = phoneOption !== 'dont_include';
 
   return (
     <div className="space-y-3">
@@ -122,19 +149,34 @@ function AddressFieldsSection({
         <FieldError message={errors[`${idPrefix}.country`]} />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <FieldLabel htmlFor={`${idPrefix}-first-name`} label="First name" chrome={chrome} />
-          <input
-            id={`${idPrefix}-first-name`}
-            type="text"
-            autoComplete="given-name"
-            value={address.firstName}
-            onChange={(e) => set({ firstName: e.target.value })}
-            className={chrome.inputClass}
-          />
-          <FieldError message={errors[`${idPrefix}.firstName`]} />
+      {showFirstName ? (
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <FieldLabel htmlFor={`${idPrefix}-first-name`} label="First name" chrome={chrome} />
+            <input
+              id={`${idPrefix}-first-name`}
+              type="text"
+              autoComplete="given-name"
+              value={address.firstName}
+              onChange={(e) => set({ firstName: e.target.value })}
+              className={chrome.inputClass}
+            />
+            <FieldError message={errors[`${idPrefix}.firstName`]} />
+          </div>
+          <div>
+            <FieldLabel htmlFor={`${idPrefix}-last-name`} label="Last name" chrome={chrome} />
+            <input
+              id={`${idPrefix}-last-name`}
+              type="text"
+              autoComplete="family-name"
+              value={address.lastName}
+              onChange={(e) => set({ lastName: e.target.value })}
+              className={chrome.inputClass}
+            />
+            <FieldError message={errors[`${idPrefix}.lastName`]} />
+          </div>
         </div>
+      ) : (
         <div>
           <FieldLabel htmlFor={`${idPrefix}-last-name`} label="Last name" chrome={chrome} />
           <input
@@ -147,7 +189,26 @@ function AddressFieldsSection({
           />
           <FieldError message={errors[`${idPrefix}.lastName`]} />
         </div>
-      </div>
+      )}
+
+      {showCompany ? (
+        <div>
+          <FieldLabel
+            htmlFor={`${idPrefix}-company`}
+            label={fieldLabelWithRequirement('Company', customerInformation.companyNameOption)}
+            chrome={chrome}
+          />
+          <input
+            id={`${idPrefix}-company`}
+            type="text"
+            autoComplete="organization"
+            value={address.company}
+            onChange={(e) => set({ company: e.target.value })}
+            className={chrome.inputClass}
+          />
+          <FieldError message={errors[`${idPrefix}.company`]} />
+        </div>
+      ) : null}
 
       <div>
         <FieldLabel htmlFor={`${idPrefix}-address`} label="Address" chrome={chrome} />
@@ -163,17 +224,27 @@ function AddressFieldsSection({
         <FieldError message={errors[`${idPrefix}.address`]} />
       </div>
 
-      <div>
-        <FieldLabel htmlFor={`${idPrefix}-apartment`} label="Apartment, suite, etc. (optional)" chrome={chrome} />
-        <input
-          id={`${idPrefix}-apartment`}
-          type="text"
-          autoComplete="address-line2"
-          value={address.apartment}
-          onChange={(e) => set({ apartment: e.target.value })}
-          className={chrome.inputClass}
-        />
-      </div>
+      {showApartment ? (
+        <div>
+          <FieldLabel
+            htmlFor={`${idPrefix}-apartment`}
+            label={fieldLabelWithRequirement(
+              'Apartment, suite, etc.',
+              customerInformation.addressLine2Option
+            )}
+            chrome={chrome}
+          />
+          <input
+            id={`${idPrefix}-apartment`}
+            type="text"
+            autoComplete="address-line2"
+            value={address.apartment}
+            onChange={(e) => set({ apartment: e.target.value })}
+            className={chrome.inputClass}
+          />
+          <FieldError message={errors[`${idPrefix}.apartment`]} />
+        </div>
+      ) : null}
 
       <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-3'}`}>
         <div>
@@ -225,26 +296,32 @@ function AddressFieldsSection({
         </div>
       </div>
 
-      <div>
-        <FieldLabel htmlFor={`${idPrefix}-phone`} label="Phone" chrome={chrome} />
-        <div className="relative">
-          <input
-            id={`${idPrefix}-phone`}
-            type="tel"
-            autoComplete="tel"
-            value={address.phone}
-            onChange={(e) => set({ phone: e.target.value })}
-            className={chrome.inputClass}
+      {showPhone ? (
+        <div>
+          <FieldLabel
+            htmlFor={`${idPrefix}-phone`}
+            label={fieldLabelWithRequirement('Phone', phoneOption)}
+            chrome={chrome}
           />
-          <QuestionMarkCircleIcon
-            className={`pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
-              chrome.iconClass
-            }`}
-            aria-hidden
-          />
+          <div className="relative">
+            <input
+              id={`${idPrefix}-phone`}
+              type="tel"
+              autoComplete="tel"
+              value={address.phone}
+              onChange={(e) => set({ phone: e.target.value })}
+              className={chrome.inputClass}
+            />
+            <QuestionMarkCircleIcon
+              className={`pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                chrome.iconClass
+              }`}
+              aria-hidden
+            />
+          </div>
+          <FieldError message={errors[`${idPrefix}.phone`]} />
         </div>
-        <FieldError message={errors[`${idPrefix}.phone`]} />
-      </div>
+      ) : null}
     </div>
   );
 }
@@ -259,6 +336,8 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
     device = 'desktop',
     onCompleteOrder,
     submitting = false,
+    availablePaymentMethods,
+    customerInformation = DEFAULT_CUSTOMER_INFO,
   },
   ref
 ) {
@@ -271,8 +350,16 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
   };
   const { user } = useStorefrontAuth();
 
+  const paymentMethods =
+    availablePaymentMethods && availablePaymentMethods.length > 0
+      ? availablePaymentMethods
+      : [{ key: 'cod' as const, label: 'Cash on Delivery (COD)' }];
+
   const [form, setForm] = useState<CheckoutFormValues>(createEmptyCheckoutFormValues);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const selectedPaymentMethod =
+    paymentMethods.find((method) => method.key === form.paymentMethod) ?? paymentMethods[0];
 
   useEffect(() => {
     if (!user) return;
@@ -281,24 +368,38 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
       email: user.email || prev.email,
       shipping: {
         ...prev.shipping,
-        firstName: user.firstName || prev.shipping.firstName,
+        firstName:
+          customerInformation.fullNameOption === 'first_last'
+            ? user.firstName || prev.shipping.firstName
+            : prev.shipping.firstName,
         lastName: user.lastName || prev.shipping.lastName,
-        phone: user.phoneNumber || prev.shipping.phone,
+        phone:
+          customerInformation.shippingPhoneOption !== 'dont_include'
+            ? user.phoneNumber || prev.shipping.phone
+            : prev.shipping.phone,
       },
     }));
-  }, [user]);
+  }, [user, customerInformation]);
+
+  useEffect(() => {
+    setForm((prev) => {
+      const hasCurrent = paymentMethods.some((method) => method.key === prev.paymentMethod);
+      if (hasCurrent) return prev;
+      return { ...prev, paymentMethod: paymentMethods[0]?.key ?? 'cod' };
+    });
+  }, [paymentMethods]);
 
   useImperativeHandle(ref, () => ({
     getValues: () => form,
     validate: () => {
-      const errors = validateCheckoutForm(form);
+      const errors = validateCheckoutForm(form, customerInformation);
       setFieldErrors(errors);
       return Object.keys(errors).length === 0;
     },
   }));
 
   const handleCompleteOrder = () => {
-    const errors = validateCheckoutForm(form);
+    const errors = validateCheckoutForm(form, customerInformation);
     setFieldErrors(errors);
     if (Object.keys(errors).length > 0) return;
     onCompleteOrder?.();
@@ -370,6 +471,8 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
             isMobile={isMobile}
             addressAutocompletion={addressAutocompletion}
             errors={fieldErrors}
+            customerInformation={customerInformation}
+            applyShippingPhoneSetting
           />
 
           <div className="mt-3">
@@ -414,23 +517,57 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
             All transactions are secure and encrypted.
           </p>
 
-          <label
-            className={`mt-4 flex cursor-pointer items-center justify-between rounded-[5px] border px-4 py-3.5 ${
-              inputFieldsTransparent ? 'bg-transparent' : ''
-            }`}
-            style={form.paymentMethod === 'cod' ? selectionStyle : undefined}
-          >
-            <span className={`text-[14px] ${chrome.valueClass}`}>Cash on Delivery (COD)</span>
-            <input
-              type="radio"
-              name="checkout-payment"
-              value="cod"
-              checked={form.paymentMethod === 'cod'}
-              onChange={() => setForm((prev) => ({ ...prev, paymentMethod: 'cod' }))}
-              className="h-4 w-4 shrink-0"
-              style={{ accentColor }}
-            />
-          </label>
+          <div className="mt-4 space-y-3">
+            {paymentMethods.map((method) => (
+              <label
+                key={method.key}
+                className={`flex cursor-pointer items-center justify-between rounded-[5px] border px-4 py-3.5 ${
+                  inputFieldsTransparent ? 'bg-transparent' : ''
+                }`}
+                style={form.paymentMethod === method.key ? selectionStyle : undefined}
+              >
+                <span className={`text-[14px] ${chrome.valueClass}`}>{method.label}</span>
+                <input
+                  type="radio"
+                  name="checkout-payment"
+                  value={method.key}
+                  checked={form.paymentMethod === method.key}
+                  onChange={() => setForm((prev) => ({ ...prev, paymentMethod: method.key }))}
+                  className="h-4 w-4 shrink-0"
+                  style={{ accentColor }}
+                />
+              </label>
+            ))}
+          </div>
+
+          {selectedPaymentMethod?.instructions ? (
+            <div
+              className={`mt-4 rounded-[5px] border px-4 py-3.5 text-[13px] leading-relaxed ${
+                inputFieldsTransparent ? 'bg-transparent' : 'bg-[#fafafa]'
+              }`}
+            >
+              {selectedPaymentMethod.key === 'bank_transfer' ? (
+                <div className={`space-y-1 ${chrome.valueClass}`}>
+                  <p className="font-medium">Transfer payment to:</p>
+                  {selectedPaymentMethod.instructions.bankName ? (
+                    <p>Bank: {selectedPaymentMethod.instructions.bankName}</p>
+                  ) : null}
+                  {selectedPaymentMethod.instructions.accountNumber ? (
+                    <p>Account: {selectedPaymentMethod.instructions.accountNumber}</p>
+                  ) : null}
+                  {selectedPaymentMethod.instructions.ifscCode ? (
+                    <p>IFSC: {selectedPaymentMethod.instructions.ifscCode}</p>
+                  ) : null}
+                </div>
+              ) : null}
+              {selectedPaymentMethod.key === 'upi_id' && selectedPaymentMethod.instructions.upiId ? (
+                <div className={chrome.valueClass}>
+                  <p className="font-medium">Pay to UPI ID:</p>
+                  <p>{selectedPaymentMethod.instructions.upiId}</p>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
 
           <div className="mt-6">
             <h3
@@ -485,6 +622,7 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
                   chrome={chrome}
                   isMobile={isMobile}
                   errors={fieldErrors}
+                  customerInformation={customerInformation}
                 />
               </div>
             ) : null}

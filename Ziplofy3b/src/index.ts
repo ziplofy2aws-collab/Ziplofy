@@ -124,6 +124,7 @@ import { storeNotificationEmailRouter } from './routes/store-notification-email.
 import storePrivacyPolicyRouter from './routes/store-privacy-policy.route';
 import storeReturnRefundPolicyRouter from './routes/store-return-refund-policy.route';
 import storeRoleRouter from './routes/store-role.route';
+import storeInviteRouter from './routes/store-invite.route';
 import storeSecuritySettingsRouter from './routes/store-security-settings.route';
 import storeShippingPolicyRouter from './routes/store-shipping-policy.route';
 import { storeSubdomainRouter } from './routes/store-subdomian.route';
@@ -295,6 +296,7 @@ app.use("/api/notification-overrides", notificationOverrideRouter);
 app.use("/api/permissions", permissionRouter);
 app.use("/api/membership-plans", membershipPlanRouter);
 app.use("/api/store-roles", storeRoleRouter);
+app.use("/api/store-invites", storeInviteRouter);
 app.use("/api/store-security-settings", storeSecuritySettingsRouter);
 app.use("/api/markets", marketRouter);
 app.use("/api/store-privacy-policy", storePrivacyPolicyRouter);

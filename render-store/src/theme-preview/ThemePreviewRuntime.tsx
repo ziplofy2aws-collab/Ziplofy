@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
 import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
+import { CheckoutPaymentConfirmationPage } from '@/pages/checkout/CheckoutPaymentConfirmationPage';
 import { CheckoutOrderStatusPage } from '@/pages/checkout-profile/CheckoutOrderStatusPage';
 import type { ThemeContract } from '@/themes/contract';
 import { loadRemoteTheme } from '@/themes/loadRemoteTheme';
@@ -171,6 +172,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
+        <Route path="/checkout/payment-confirmation" element={<CheckoutPaymentConfirmationPage />} />
         <Route path="/search" element={<CustomThemeTemplatePage templateId="search" fallbackSectionIds={['search', 'search_results']} />} />
         <Route
           path="/password"

@@ -10,6 +10,7 @@ import { CheckoutOrderStatusPage } from '@/pages/checkout-profile/CheckoutOrderS
 import { CheckoutProfilePage } from '@/pages/checkout-profile/CheckoutProfilePage';
 import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
+import { CheckoutPaymentConfirmationPage } from '@/pages/checkout/CheckoutPaymentConfirmationPage';
 import { listThemePageRouteSpecs } from '@codiic/create-theme/utils/theme-page-registry';
 import { StorefrontBlogByUrlHandleLoader } from '../components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from '../components/StorefrontBlogPostByUrlHandleLoader.tsx';
@@ -94,6 +95,11 @@ export function renderCheckoutPageRoutes(): ReactElement[] {
       key="/checkout/thank-you"
       path="/checkout/thank-you"
       element={<CheckoutThankYouPage />}
+    />,
+    <Route
+      key="/checkout/payment-confirmation"
+      path="/checkout/payment-confirmation"
+      element={<CheckoutPaymentConfirmationPage />}
     />,
   ];
 }

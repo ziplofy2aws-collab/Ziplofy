@@ -22,9 +22,11 @@ export function CheckoutPage() {
     orderSummaryConfig,
     inputFieldsTransparent,
     addressAutocompletion,
+    paymentMethods,
+    customerInformation,
     loading,
   } = useCheckoutPageAppearance();
-  const { placeOrder, submitting } = useCheckoutPlaceOrder(storeId);
+  const { placeOrder, submitting } = useCheckoutPlaceOrder(storeId, storeName);
   const { user, checkAuth } = useStorefrontAuth();
   const { getAllItems, getCartByCustomerId } = useStorefrontCart();
 
@@ -97,9 +99,17 @@ export function CheckoutPage() {
         typography={typography}
         inputFieldsTransparent={inputFieldsTransparent}
         addressAutocompletion={addressAutocompletion}
+        availablePaymentMethods={paymentMethods}
+        customerInformation={customerInformation}
         mainFormRef={formRef}
         submitting={submitting}
-        onCompleteOrder={() => void placeOrder(formRef.current)}
+        onCompleteOrder={() => {
+          const form = formRef.current?.getValues();
+          const selectedPaymentMethod = paymentMethods.find(
+            (method) => method.key === form?.paymentMethod
+          );
+          void placeOrder(formRef.current, selectedPaymentMethod);
+        }}
       />
     </div>
   );

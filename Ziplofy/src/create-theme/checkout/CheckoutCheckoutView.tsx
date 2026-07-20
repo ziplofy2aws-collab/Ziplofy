@@ -1,5 +1,5 @@
 import { Suspense, lazy, type Ref } from 'react';
-import type { CheckoutMainViewHandle } from './checkout-form.types';
+import type { CheckoutMainViewHandle, CheckoutPaymentMethodOption, CheckoutCustomerInformation } from './checkout-form.types';
 import type {
   CheckoutFooterConfig,
   CheckoutHeaderPosition,
@@ -39,6 +39,8 @@ type BaseProps = {
   typography?: CheckoutTypographyTheme;
   inputFieldsTransparent?: boolean;
   addressAutocompletion?: boolean;
+  availablePaymentMethods?: CheckoutPaymentMethodOption[];
+  customerInformation?: CheckoutCustomerInformation;
 };
 
 type PreviewProps = BaseProps & {
@@ -143,6 +145,8 @@ export function CheckoutCheckoutView(props: CheckoutCheckoutViewProps) {
     typography,
     inputFieldsTransparent = false,
     addressAutocompletion = false,
+    availablePaymentMethods,
+    customerInformation,
     mode,
   } = props;
 
@@ -171,6 +175,8 @@ export function CheckoutCheckoutView(props: CheckoutCheckoutViewProps) {
           device={device}
           onCompleteOrder={props.onCompleteOrder}
           submitting={props.submitting}
+          availablePaymentMethods={availablePaymentMethods}
+          customerInformation={customerInformation}
         />
       </Suspense>
     ) : (

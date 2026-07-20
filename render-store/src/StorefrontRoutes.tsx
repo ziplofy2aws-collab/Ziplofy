@@ -6,6 +6,7 @@ import { CheckoutOrderStatusPage } from './pages/checkout-profile/CheckoutOrderS
 import { CheckoutProfilePage } from './pages/checkout-profile/CheckoutProfilePage';
 import { CheckoutPage } from './pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from './pages/checkout/CheckoutThankYouPage';
+import { CheckoutPaymentConfirmationPage } from './pages/checkout/CheckoutPaymentConfirmationPage';
 import { StorefrontBlogContentShell } from './components/StorefrontBlogContentShell.tsx';
 import { StorefrontBlogByUrlHandleLoader } from './components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from './components/StorefrontBlogPostByUrlHandleLoader.tsx';
@@ -175,6 +176,7 @@ export const StorefrontRoutes = () => (
       <Route path="/preferences" element={<StorefrontPreferencesRoute />} />
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
+      <Route path="/checkout/payment-confirmation" element={<CheckoutPaymentConfirmationPage />} />
       <Route path="/search" element={<StorefrontHomeRoute />} />
       <Route
         path="/blogs/:blogHandle/:articleHandle"
