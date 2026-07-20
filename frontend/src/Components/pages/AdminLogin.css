@@ -1,0 +1,112 @@
+.admin-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--z-surface);
+  font-family: var(--z-font);
+}
+
+.admin-login-card {
+  width: 360px;
+  background: var(--z-bg);
+  color: var(--z-text);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  padding: 28px;
+  box-shadow: var(--z-shadow-card);
+}
+
+.admin-login-logo {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 20px;
+  display: block;
+}
+
+.admin-login-card h2 {
+  margin: 0 0 12px 0;
+  font-family: var(--z-font);
+  font-weight: 600;
+  color: var(--z-text);
+}
+
+.admin-login-card label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 12px 0 6px;
+  color: var(--z-text);
+}
+
+.admin-login-card input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--z-radius-sm);
+  border: 1px solid var(--z-border);
+  background: var(--z-bg);
+  color: var(--z-text);
+  font-size: 14px;
+  font-family: var(--z-font);
+}
+
+.admin-login-card input:focus {
+  outline: none;
+  border-color: var(--z-primary);
+  box-shadow: 0 0 0 2px rgba(38, 101, 247, 0.15);
+}
+
+.password-field .toggle {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  background: var(--z-surface);
+  border: 1px solid var(--z-border);
+  color: var(--z-text-muted);
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.submit {
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--z-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--z-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: var(--z-font);
+  transition: all 0.2s;
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--z-primary-hover);
+  transform: translateY(-1px);
+}
+
+.submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  background: var(--z-error-light);
+  color: var(--z-error);
+  padding: 10px 12px;
+  border-radius: var(--z-radius-sm);
+  margin-bottom: 8px;
+  border: 1px solid #fecaca;
+  font-size: 14px;
+}
+
+.hint {
+  margin-top: 10px;
+  color: var(--z-text-muted);
+  font-size: 12px;
+}

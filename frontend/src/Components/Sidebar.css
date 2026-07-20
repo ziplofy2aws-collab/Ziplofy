@@ -1,0 +1,275 @@
+/* Sidebar - Theme-compliant design */
+
+.sidebar-toggle-tab {
+  position: fixed;
+  top: 72px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-sm);
+  color: var(--z-primary);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 60;
+  box-shadow: var(--z-shadow);
+  pointer-events: auto;
+}
+
+.sidebar-toggle-tab:hover {
+  background: var(--z-primary-surface);
+  color: var(--z-primary);
+  border-color: var(--z-primary);
+}
+
+.sidebar {
+  position: fixed;
+  top: 72px;
+  left: 10px;
+  width: 260px;
+  height: calc(100% - 82px);
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  padding: 16px 0;
+  transform: translateX(calc(-100% - 20px));
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease;
+  z-index: 40;
+  font-family: var(--z-font);
+  font-size: 14px;
+  font-weight: 500;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: var(--z-shadow-card);
+}
+
+.sidebar.open {
+  transform: translateX(0);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--z-border);
+  border-radius: 10px;
+}
+
+.sidebar-loading {
+  padding: 24px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--z-text-muted);
+}
+
+/* Sidebar header - role badge */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  margin: 0 12px 16px;
+  background: var(--z-primary-surface);
+  border-radius: var(--z-radius-sm);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--z-primary);
+  border: 1px solid var(--z-primary-light);
+}
+
+.sidebar-header .sidebar-role-label {
+  font-weight: 600;
+  color: var(--z-primary);
+  text-transform: capitalize;
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-toggle-in-header {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius-sm);
+  color: var(--z-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.sidebar-toggle-in-header:hover {
+  background: var(--z-primary);
+  color: #ffffff;
+  border-color: var(--z-primary);
+}
+
+.sidebar-icon {
+  margin-right: 0; /* gap on parent provides 10px spacing */
+  color: var(--z-primary);
+  font-size: 1em;
+  flex-shrink: 0;
+}
+
+/* Section titles */
+.sidebar-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--z-text-muted);
+  margin: 16px 20px 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.sidebar-section-title:first-of-type {
+  margin-top: 0;
+}
+
+/* Menu list */
+.sidebar-menu {
+  list-style: none;
+  padding: 0 8px;
+  margin: 0;
+}
+
+.sidebar-menu > li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 2px;
+  cursor: pointer;
+  color: var(--z-text);
+  border-radius: var(--z-radius-sm);
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+}
+
+.sidebar-menu > li:hover {
+  background: var(--z-primary-surface);
+  color: var(--z-primary);
+}
+
+.sidebar-menu > li:hover .menu-icon {
+  color: var(--z-primary);
+}
+
+/* Active menu item - blue accent bar */
+.sidebar-menu > li.active {
+  background: var(--z-primary-surface);
+  color: var(--z-primary);
+  font-weight: 600;
+}
+
+.sidebar-menu > li.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  background: var(--z-primary);
+  border-radius: 0 2px 2px 0;
+}
+
+.sidebar-menu > li.active .menu-icon {
+  color: var(--z-primary);
+}
+
+/* Submenu trigger */
+.has-sub .menu-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--z-radius-sm);
+}
+
+.has-sub .chev {
+  margin-left: auto;
+  color: var(--z-text-muted);
+  font-size: 0.7em;
+  transition: transform 0.25s ease;
+}
+
+.has-sub.open .chev {
+  transform: rotate(180deg);
+  color: var(--z-primary);
+}
+
+.has-sub:hover .menu-row,
+.has-sub.open .menu-row {
+  background: var(--z-primary-surface);
+  color: var(--z-primary);
+}
+
+.has-sub.open .menu-row .menu-icon {
+  color: var(--z-primary);
+}
+
+/* Submenu */
+.submenu {
+  list-style: none;
+  padding: 0 0 0 12px;
+  margin: 0 0 8px 0;
+  border-left: 2px solid var(--z-primary-light);
+  margin-left: 28px;
+}
+
+.submenu li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--z-text-muted);
+  cursor: pointer;
+  border-radius: var(--z-radius-sm);
+  margin: 2px 0;
+  transition: all 0.2s ease;
+}
+
+.submenu li:hover {
+  background: var(--z-primary-surface);
+  color: var(--z-primary);
+}
+
+.submenu li.active {
+  background: var(--z-primary-light);
+  color: var(--z-primary);
+  font-weight: 600;
+}
+
+.submenu li.active .dot {
+  color: var(--z-primary);
+}
+
+.submenu .dot {
+  margin-right: 0; /* gap on parent handles spacing */
+  color: var(--z-text-muted);
+  font-size: 0.6em;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 240px;
+  }
+}

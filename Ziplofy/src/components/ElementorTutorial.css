@@ -1,0 +1,533 @@
+.elementor-tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 99999;
+  animation: fadeIn 0.3s ease-in-out;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.elementor-tutorial-card.contextual {
+  pointer-events: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.95);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px) scale(0.95);
+  }
+}
+
+.elementor-tutorial-card {
+  background: #fafafa;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e5e5;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+}
+
+.elementor-tutorial-card.contextual {
+  position: fixed;
+  z-index: 100000 !important;
+  max-width: 380px;
+  animation: slideInContextual 0.2s ease-out;
+  overflow: visible !important;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Card transition animations */
+.elementor-tutorial-card.slide-in {
+  animation: slideIn 0.2s ease-out forwards;
+}
+
+.elementor-tutorial-card.slide-in-from-right {
+  animation: slideInFromRight 0.2s ease-out forwards;
+}
+
+.elementor-tutorial-card.slide-in-from-left {
+  animation: slideInFromLeft 0.2s ease-out forwards;
+}
+
+.elementor-tutorial-card.slide-out-left {
+  animation: slideOutLeft 0.2s ease-in forwards;
+}
+
+.elementor-tutorial-card.slide-out-right {
+  animation: slideOutRight 0.2s ease-in forwards;
+}
+
+@keyframes slideInContextual {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.tutorial-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+  background: #ffffff;
+}
+
+.tutorial-icon {
+  font-size: 20px;
+  margin-right: 10px;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.tutorial-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0;
+  flex: 1;
+  letter-spacing: -0.2px;
+}
+
+.tutorial-close-btn {
+  background: transparent;
+  border: none;
+  color: #666666;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tutorial-close-btn:hover {
+  background: #f0f0f0;
+  color: #1a1a1a;
+}
+
+.tutorial-content {
+  padding: 16px;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.tutorial-description {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666666;
+  margin: 0 0 14px;
+  font-weight: 400;
+}
+
+.tutorial-steps {
+  margin-top: 14px;
+}
+
+.steps-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  border-radius: 4px;
+  border-left: 2px solid #d0d0d0;
+  transition: all 0.2s;
+}
+
+.step-item:hover {
+  background: #f5f5f5;
+  border-left-color: #1a1a1a;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #1a1a1a;
+  color: #ffffff;
+  border-radius: 50%;
+  font-weight: 500;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.step-text {
+  flex: 1;
+  color: #4a4a4a;
+  font-size: 12px;
+  line-height: 1.5;
+  padding-top: 1px;
+}
+
+.tutorial-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #e5e5e5;
+  background: #ffffff;
+}
+
+.tutorial-progress {
+  margin-bottom: 12px;
+}
+
+.progress-text {
+  display: block;
+  font-size: 11px;
+  color: #999999;
+  margin-bottom: 6px;
+  text-align: center;
+  font-weight: 400;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 2px;
+  background: #e5e5e5;
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #1a1a1a;
+  border-radius: 1px;
+  transition: width 0.3s ease;
+}
+
+.tutorial-navigation {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.tutorial-nav-btn {
+  flex: 1;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+  color: #4a4a4a;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tutorial-nav-btn:hover:not(:disabled) {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.tutorial-nav-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.tutorial-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #fafafa;
+  border-color: #e5e5e5;
+  color: #999999;
+}
+
+.tutorial-nav-btn.next {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.tutorial-nav-btn.next:hover:not(:disabled) {
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
+}
+
+.tutorial-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border-top: 1px solid #e5e5e5;
+  background: #ffffff;
+}
+
+.tutorial-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+
+.tutorial-dot:hover {
+  background: #999999;
+  transform: scale(1.2);
+}
+
+.tutorial-dot.active {
+  background: #1a1a1a;
+  width: 20px;
+  border-radius: 3px;
+}
+
+/* Scrollbar styling for tutorial card */
+.elementor-tutorial-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.elementor-tutorial-card::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.elementor-tutorial-card::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 3px;
+}
+
+.elementor-tutorial-card::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .elementor-tutorial-card {
+    max-width: 100%;
+    margin: 10px;
+    max-height: 95vh;
+  }
+
+  .tutorial-header {
+    padding: 20px 16px 16px;
+  }
+
+  .tutorial-title {
+    font-size: 20px;
+  }
+
+  .tutorial-content {
+    padding: 20px 16px;
+  }
+
+  .tutorial-footer {
+    padding: 16px;
+  }
+
+  .tutorial-nav-btn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+/* Arrow styles */
+.tutorial-arrow {
+  position: absolute;
+  z-index: 100002 !important;
+  pointer-events: none;
+  animation: arrowPulse 2s ease-in-out infinite;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+@keyframes arrowPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Arrow positioning for contextual cards - now handled by inline styles */
+.elementor-tutorial-card.contextual .tutorial-arrow {
+  position: absolute;
+  z-index: 100002 !important;
+}
+
+.elementor-tutorial-card.contextual .tutorial-arrow.arrow-left {
+  /* Position will be set dynamically via inline styles */
+  margin-left: -20px;
+}
+
+.elementor-tutorial-card.contextual .tutorial-arrow.arrow-right {
+  /* Position will be set dynamically via inline styles */
+  margin-right: -20px;
+}
+
+.elementor-tutorial-card.contextual .tutorial-arrow.arrow-top {
+  /* Position will be set dynamically via inline styles */
+  margin-top: -20px;
+}
+
+.elementor-tutorial-card.contextual .tutorial-arrow.arrow-bottom {
+  /* Position will be set dynamically via inline styles */
+  margin-bottom: -20px;
+}
+
+/* Legacy positioning for non-contextual cards */
+.elementor-tutorial-card.arrow-left:not(.contextual) {
+  margin-left: 60px;
+}
+
+.elementor-tutorial-card.arrow-right:not(.contextual) {
+  margin-right: 60px;
+}
+
+.elementor-tutorial-card.arrow-top:not(.contextual) {
+  margin-top: 60px;
+}
+
+.elementor-tutorial-card.arrow-bottom:not(.contextual) {
+  margin-bottom: 60px;
+}
+
+.tutorial-arrow.arrow-left:not(.contextual) {
+  left: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tutorial-arrow.arrow-right:not(.contextual) {
+  right: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tutorial-arrow.arrow-top:not(.contextual) {
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tutorial-arrow.arrow-bottom:not(.contextual) {
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tutorial-arrow svg {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 3px rgba(0, 0, 0, 0.4));
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.tutorial-arrow {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+}
+

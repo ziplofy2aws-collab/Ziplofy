@@ -1,0 +1,22 @@
+.codiic-theme-input,
+input.codiic-theme-input,
+textarea.codiic-theme-input,
+select.codiic-theme-input {
+  background: var(--codiic-input-bg, #ffffff);
+  color: var(--codiic-input-text, #111827);
+  border: var(--codiic-input-border-width, 1px) solid var(--codiic-input-border, #d1d5db);
+  border-radius: var(--codiic-input-radius, 4px);
+  font-family: var(--codiic-input-font-family, inherit);
+  font-size: var(--codiic-input-font-size, 14px);
+  font-weight: var(--codiic-input-font-weight, 400);
+  line-height: var(--codiic-input-line-height, 1.35);
+  letter-spacing: var(--codiic-input-letter-spacing, normal);
+  text-transform: var(--codiic-input-text-transform, none);
+}
+
+.codiic-theme-input:focus,
+input.codiic-theme-input:focus,
+textarea.codiic-theme-input:focus,
+select.codiic-theme-input:focus {
+  outline: none;
+}

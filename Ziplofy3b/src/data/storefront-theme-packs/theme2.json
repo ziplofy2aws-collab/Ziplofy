@@ -1,0 +1,11 @@
+{
+  "id": "theme2",
+  "name": "Theme 2",
+  "version": "1.0.0",
+  "description": "Brutalist yellow and black UI.",
+  "homeEntry": "theme2",
+  "productEntry": "theme2",
+  "profileEntry": "theme2",
+  "ordersEntry": "theme2",
+  "preferencesEntry": "theme2"
+}

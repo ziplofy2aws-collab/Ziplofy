@@ -1,0 +1,99 @@
+import { describe, expect, it } from 'vitest';
+import { resolveStorefrontSeo } from './resolve-storefront-seo';
+
+const store = { name: 'ABC Gaming Store', description: 'Premium gaming gear.' };
+
+describe('resolveStorefrontSeo', () => {
+  it('uses store name on homepage', () => {
+    const seo = resolveStorefrontSeo({
+      pathname: '/',
+      origin: 'https://abc.codiic.com',
+      store,
+    });
+
+    expect(seo.title).toBe('ABC Gaming Store');
+    expect(seo.canonicalUrl).toBe('https://abc.codiic.com/');
+    expect(seo.jsonLd).toBeTruthy();
+  });
+
+  it('uses product SEO fields on /product/:handle', () => {
+    const seo = resolveStorefrontSeo({
+      pathname: '/product/gaming-mouse',
+      origin: 'https://abc.codiic.com',
+      store,
+      product: {
+        _id: '64abc',
+        title: 'Gaming Mouse',
+        pageTitle: 'Pro Gaming Mouse',
+        metaDescription: 'Buy the pro gaming mouse today.',
+        imageUrls: ['https://abc.codiic.com/uploads/mouse.jpg'],
+        price: 1499,
+      },
+    });
+
+    expect(seo.title).toBe('Pro Gaming Mouse - ABC Gaming Store');
+    expect(seo.description).toBe('Buy the pro gaming mouse today.');
+    expect(seo.ogType).toBe('product');
+    expect(seo.ogImage).toBe('https://abc.codiic.com/uploads/mouse.jpg');
+    expect(Array.isArray(seo.jsonLd)).toBe(true);
+  });
+
+  it('uses collection SEO fields on /collection/:handle', () => {
+    const seo = resolveStorefrontSeo({
+      pathname: '/collection/gaming-accessories',
+      origin: 'https://abc.codiic.com',
+      store,
+      collection: {
+        title: 'Gaming Accessories',
+        pageTitle: 'Gaming Accessories Collection',
+        metaDescription: 'Shop gaming accessories.',
+        imageUrl: 'https://abc.codiic.com/uploads/collection.jpg',
+      },
+    });
+
+    expect(seo.title).toBe('Gaming Accessories Collection - ABC Gaming Store');
+    expect(seo.description).toBe('Shop gaming accessories.');
+    expect(seo.ogType).toBe('collection');
+  });
+
+  it('uses blog SEO fields when available', () => {
+    const seo = resolveStorefrontSeo({
+      pathname: '/blogs/news',
+      origin: 'https://abc.codiic.com',
+      store,
+      blog: {
+        title: 'News',
+        pageTitle: 'Store News',
+        metaDescription: 'Latest updates from our store.',
+        urlHandle: 'news',
+      },
+    });
+
+    expect(seo.title).toBe('Store News - ABC Gaming Store');
+    expect(seo.description).toBe('Latest updates from our store.');
+    expect(seo.canonicalUrl).toBe('https://abc.codiic.com/blogs/news');
+  });
+
+  it('uses blog post SEO fields when available', () => {
+    const seo = resolveStorefrontSeo({
+      pathname: '/blogs/news/summer-sale',
+      origin: 'https://abc.codiic.com',
+      store,
+      blog: {
+        title: 'News',
+        urlHandle: 'news',
+      },
+      blogPost: {
+        title: 'Summer Sale',
+        pageTitle: 'Summer Sale Announcement',
+        metaDescription: 'Our biggest summer sale starts today.',
+        urlHandle: 'summer-sale',
+        excerpt: 'Sale details inside.',
+      },
+    });
+
+    expect(seo.title).toBe('Summer Sale Announcement - ABC Gaming Store');
+    expect(seo.description).toBe('Our biggest summer sale starts today.');
+    expect(seo.canonicalUrl).toBe('https://abc.codiic.com/blogs/news/summer-sale');
+  });
+});

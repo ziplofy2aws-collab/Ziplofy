@@ -1,0 +1,25 @@
+---
+description: Storefront catalog URL conventions for products and collections
+globs: Ziplofy/src/create-theme/**/*.{ts,tsx},Ziplofy/src/components/theme-editor/**/*.{ts,tsx},Ziplofy/src/utils/**/*.{ts,tsx},Ziplofy/src/theme-packs/**/*.json,render-store/src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Storefront catalog URLs
+
+Use these storefront paths (not admin `/products` CRUD routes):
+
+| Page | Path |
+|------|------|
+| All products | `/collections/all` |
+| Product detail | `/product/{urlHandle}` |
+| Collections index | `/collections` |
+| Collection details | `/collection/{urlHandle}` |
+
+## Rules
+
+- Never use `/products` or `/products/{handle}` for storefront links.
+- Never use `/collections/{handle}` for a single collection — use `/collection/{urlHandle}`.
+- Never use `/collection` (no trailing handle) for the collections index — use `/collections`.
+- Prefer helpers from `Ziplofy/src/utils/storefront-paths.ts` or `render-store/src/utils/storefront-paths.ts` (`productPath`, `collectionPath`, `STOREFRONT_PATHS`).
+- Link pickers, menus, presets, theme defaults, and runtime CTAs must follow these paths.
+- Admin app routes (`/products`, `/products/:id`, `/products/collections/:id` for merchant dashboard) are separate and must not be changed for storefront links.

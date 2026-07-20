@@ -1,0 +1,11 @@
+{
+  "id": "theme1",
+  "name": "Theme 1",
+  "version": "1.0.0",
+  "description": "Editorial teal look and feel.",
+  "homeEntry": "theme1",
+  "productEntry": "theme1",
+  "profileEntry": "theme1",
+  "ordersEntry": "theme1",
+  "preferencesEntry": "theme1"
+}

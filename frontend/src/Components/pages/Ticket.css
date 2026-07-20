@@ -1,0 +1,449 @@
+.tickets-container {
+  background-color: var(--z-surface);
+  padding: 24px 28px;
+  font-family: var(--z-font);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--z-text);
+  border-radius: 12px;
+  max-width: 100%;
+  min-height: calc(100vh - 80px);
+  text-align: left;
+}
+
+/* Main card - Discounts style */
+.tickets-card {
+  background: var(--z-bg);
+  border: 1px solid var(--z-border);
+  border-radius: var(--z-radius);
+  box-shadow: var(--z-shadow-card);
+  overflow: hidden;
+}
+
+.tickets-card-header {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--z-border);
+}
+
+.tickets-title-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.tickets-title-accent {
+  width: 4px;
+  min-height: 36px;
+  background: var(--z-primary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.tickets-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--z-text);
+}
+
+.tickets-subtitle {
+  font-size: 14px;
+  color: var(--z-text-muted);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Controls */
+.tickets-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.tickets-controls .controls-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tickets-controls .sort-dropdown {
+  position: relative;
+}
+
+.tickets-controls .sort-select {
+  padding: 10px 32px 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  min-width: 100px;
+  appearance: none;
+}
+
+.tickets-controls .sort-chevron {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.tickets-controls .date-picker-wrapper {
+  position: relative;
+}
+
+.tickets-controls .date-range-btn {
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  min-width: 220px;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.tickets-controls .date-range-btn:hover {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.tickets-controls .date-range-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.tickets-controls .control-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tickets-controls .control-btn.export-btn {
+  background: #f9fafb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.tickets-controls .control-btn.export-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.tickets-controls .control-btn.reset-btn {
+  background: #fdf2f8;
+  color: #be185d;
+  border-color: #fbcfe8;
+}
+
+.tickets-controls .control-btn.reset-btn:hover {
+  background: #fce7f3;
+  border-color: #f9a8d4;
+}
+
+.tickets-controls .control-btn.reload-btn {
+  background: #fef9c3;
+  color: #854d0e;
+  border-color: #fde68a;
+}
+
+.tickets-controls .control-btn.reload-btn:hover {
+  background: #fef08a;
+  border-color: #facc15;
+}
+
+/* Search */
+.tickets-controls .search-box {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tickets-controls .search-box input {
+  width: 100%;
+  min-width: 200px;
+  padding: 10px 14px 10px 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #ffffff;
+}
+
+.tickets-controls .search-box input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.tickets-controls .search-box .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* Table */
+.tickets-table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+  background: #ffffff;
+}
+
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tickets-table thead {
+  background-color: #f9fafb;
+}
+
+.tickets-table th {
+  padding: 14px 20px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tickets-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+  vertical-align: middle;
+}
+
+.tickets-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.tickets-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Ticket ID - Purple button style */
+.ticket-id-btn {
+  padding: 6px 12px;
+  background: #ede9fe;
+  color: #6d28d9;
+  border: 1px solid #c4b5fd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ticket-id-btn:hover {
+  background: #ddd6fe;
+  border-color: #a78bfa;
+  color: #5b21b6;
+}
+
+/* Checkbox */
+.checkbox-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #2563eb;
+}
+
+/* Selected row */
+.tickets-table .selected-row {
+  background-color: #eff6ff !important;
+}
+
+.tickets-table .selected-row:hover {
+  background-color: #dbeafe !important;
+}
+
+/* Status badges */
+.tickets-table .status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.tickets-table .status-on-hold {
+  background-color: #fdf2f8;
+  color: #be185d;
+  border: 1px solid #fbcfe8;
+}
+
+.tickets-table .status-process {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.tickets-table .status-resolved {
+  background-color: #22c55e;
+  color: white;
+}
+
+/* Action buttons */
+.tickets-table .action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.tickets-table .edit-btn,
+.tickets-table .delete-btn {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tickets-table .edit-btn {
+  background-color: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fde68a;
+}
+
+.tickets-table .edit-btn:hover {
+  background-color: #fef08a;
+  border-color: #facc15;
+}
+
+.tickets-table .delete-btn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.tickets-table .delete-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Pagination */
+.tickets-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tickets-pagination .pagination-info {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.tickets-pagination .pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tickets-pagination .pagination-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tickets-pagination .pagination-btn:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.tickets-pagination .pagination-btn.active {
+  background: #7c3aed;
+  color: #fff;
+  border-color: #7c3aed;
+}
+
+.tickets-pagination .pagination-btn.active:hover {
+  background: #6d28d9;
+  border-color: #6d28d9;
+}
+
+.tickets-pagination .pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tickets-container {
+    padding: 16px 20px;
+  }
+
+  .tickets-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tickets-controls .controls-left {
+    flex-direction: column;
+  }
+
+  .tickets-controls .sort-select,
+  .tickets-controls .date-range-btn {
+    min-width: 100%;
+  }
+
+  .tickets-controls .search-box input {
+    min-width: 100%;
+  }
+
+  .tickets-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tickets-table th,
+  .tickets-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}

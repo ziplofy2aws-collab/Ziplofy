@@ -1,0 +1,18 @@
+export {
+  FEATURED_PRODUCT_HEADER_DEFAULTS,
+  FEATURED_PRODUCT_HEADER_PANEL_GROUP_ORDER,
+  extendFeaturedProductHeaderBlockValues,
+  featuredProductHeaderCustomSizeFieldDefs,
+  featuredProductHeaderDefaultSettings,
+  featuredProductHeaderFieldDefs,
+  featuredProductHeaderFieldDefsFromNodeId,
+  featuredProductHeaderFieldDefsFromSchema,
+  groupFeaturedProductHeaderPanelFields,
+  isFeaturedProductHeaderBlockNodeId,
+  isFeaturedProductHeaderPanelField,
+  isFeaturedProductHeaderPanelFields,
+  pickFeaturedProductHeaderField,
+  prepareFeaturedProductHeaderSettingsNode,
+  resolveFeaturedProductHeaderCustomHeightField,
+  resolveFeaturedProductHeaderCustomWidthField,
+} from '../../../create-theme/sidebar/theme-editor-featured-product-header-block-panel.utils';

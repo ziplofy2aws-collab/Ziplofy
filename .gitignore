@@ -1,0 +1,32 @@
+.env.development
+.env.production
+!server/.env.development
+!server/.env.production
+!client/.env.development
+!client/.env.production
+!Ziplofy/.env.development
+!Ziplofy/.env.production
+codiic-zip.zip
+node_modules
+
+# Build outputs (generated locally or in CI)
+dist/
+build/
+
+# Vite dependency pre-bundle cache
+.vite/
+
+# IDE / local debug logs
+.cursor/debug-*.log
+
+# Scratch / temp files
+*.tmp
+
+# Built theme bundles (theme sources remain tracked)
+**/theme-packs/**/preview/dist/
+
+# Remote theme packages (built/served locally; not versioned in this repo)
+remote-themes/
+
+# Personal notes / scratch work
+my-work/
