@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Eyewear & Contacts | Warby Parker Inspired</title>
+  <!-- Google Fonts for clean, modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+  <!-- Custom theme styles -->
+  <link rel="stylesheet" href="assets/css/style.css?v=5">
+</head>
+
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+
+    <!-- Desktop: Top Announcement Bar (Dark Blue) -->
+    <div class="announcement-bar header-desktop-only">
+      <div class="announcement-container">
+
+        <!-- Left: Premium Eyewear Info -->
+        <div class="announcement-item left-promo">
+          <svg class="announcement-icon glasses-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="12" r="3" />
+            <path d="M9 12h6" />
+            <path d="M3 12h1" />
+            <path d="M20 12h1" />
+            <path d="M6 9a6 6 0 0 1 12 0" />
+          </svg>
+          <span class="promo-text">Premium eyewear, starting at $95</span>
+        </div>
+
+        <!-- Center: Brand Logo -->
+        <div class="announcement-item brand-logo">
+          <a href="index.html" aria-label="Homepage">
+            <img src="assets/img/logo.png?v=2" alt="Brand Logo" class="header-logo">
+          </a>
+        </div>
+
+        <!-- Right: Contacts Offer -->
+        <div class="announcement-item right-promo">
+          <svg class="announcement-icon contacts-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="14" height="6" rx="3" transform="rotate(-30 9 10)" />
+            <rect x="10" y="11" width="14" height="6" rx="3" transform="rotate(-30 17 14)" opacity="0.85" />
+          </svg>
+          <span class="promo-text">20% off your first contacts order</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile: Top Utility Bar -->
+    <div class="mobile-top-bar header-mobile-only">
+      <div class="mobile-top-left">
+        <button type="button" class="mobile-menu-toggle" aria-label="Toggle menu" id="menuToggleBtn">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <svg class="mobile-top-glasses-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="12" r="3" />
+          <path d="M9 12h6" />
+          <path d="M3 12h1" />
+          <path d="M20 12h1" />
+          <path d="M6 9a6 6 0 0 1 12 0" />
+        </svg>
+      </div>
+      <a href="index.html" class="mobile-top-logo" aria-label="Homepage">
+        <img src="assets/img/logo.png?v=2" alt="Brand Logo" class="header-logo">
+      </a>
+      <div class="mobile-top-actions">
+        <a href="#" class="mobile-action-btn" aria-label="Sign in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </a>
+        <button type="button" class="mobile-action-btn" aria-label="Shopping Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop: Main Navigation Bar (White) -->
+    <nav class="navigation-bar header-desktop-only">
+      <div class="navigation-container">
+
+        <!-- Left: Navigation Links -->
+        <div class="nav-links-wrapper">
+          <ul class="nav-menu">
+            <li class="nav-item"><a href="shop.html" class="nav-link">Eyeglasses</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Sunglasses</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Contacts</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Eye exams</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Insurance</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Accessories</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Style quiz</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Intelligent Eyewear</a></li>
+          </ul>
+        </div>
+
+        <!-- Right: Actions (Sign in, Search, Wishlist, Cart) -->
+        <div class="header-actions">
+
+          <!-- Sign in Button (Pill layout) -->
+          <a href="#" class="action-btn sign-in-btn">
+            <svg class="action-icon user-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span class="sign-in-text">Sign in</span>
+          </a>
+
+          <!-- Search Icon -->
+          <button type="button" class="action-icon-btn" aria-label="Search">
+            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+
+          <!-- Wishlist Icon -->
+          <button type="button" class="action-icon-btn" aria-label="Wishlist">
+            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+
+          <!-- Cart Icon -->
+          <button type="button" class="action-icon-btn" aria-label="Shopping Cart">
+            <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+          </button>
+
+        </div>
+
+      </div>
+    </nav>
+
+    <!-- Mobile: Slide-out Drawer Menu -->
+    <ul class="nav-menu nav-menu--drawer header-mobile-only" id="navMenu">
+      <li class="nav-item"><a href="shop.html" class="nav-link">Eyeglasses</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">Sunglasses</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">Contacts</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">Eye exams</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">Insurance</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">Accessories</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">Style quiz</a></li>
+      <li class="nav-item"><a href="#" class="nav-link">Intelligent Eyewear</a></li>
+    </ul>
+
+    <!-- Mobile: Sub Navigation -->
+    <nav class="mobile-sub-nav header-mobile-only" aria-label="Quick navigation">
+      <ul class="mobile-sub-nav-list">
+        <li><a href="shop.html">Eyeglasses</a></li>
+        <li><a href="#">Sunglasses</a></li>
+        <li><a href="#">Contacts</a></li>
+        <li><a href="#">Style quiz</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Slider Section -->
+  <main class="main-content">
+
+    <section class="hero-slider-section">
+      <div class="slider-wrapper">
+
+        <!-- Slide 1 -->
+        <div class="slide active">
+          <img src="assets/img/hero-banner-1.png" alt="Slide 1" class="slide-bg">
+          <div class="slide-content">
+            <h2 class="slide-title">OWNDAYS</h2>
+            <p class="slide-subtitle">FROM TOKYO, JAPAN</p>
+            <a href="#" class="slide-btn">Shop Now</a>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+          <img src="assets/img/hero-banner-2.png" alt="Slide 2" class="slide-bg">
+          <div class="slide-content">
+            <h2 class="slide-title">OWNDAYS</h2>
+            <p class="slide-subtitle">PREMIUM HANDCRAFTED EYEWEAR</p>
+            <a href="#" class="slide-btn">Shop Now</a>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+          <img src="assets/img/hero-banner-3.png" alt="Slide 3" class="slide-bg">
+          <div class="slide-content">
+            <h2 class="slide-title">OWNDAYS</h2>
+            <p class="slide-subtitle">ECO-FRIENDLY BIO-ACETATES</p>
+            <a href="#" class="slide-btn">Shop Now</a>
+          </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide">
+          <img src="assets/img/hero-banner-4.png" alt="Slide 4" class="slide-bg">
+          <div class="slide-content">
+            <h2 class="slide-title">OWNDAYS</h2>
+            <p class="slide-subtitle">ADVANCED BLUE LIGHT LENSES</p>
+            <a href="#" class="slide-btn">Shop Now</a>
+          </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <button class="slider-arrow prev-arrow" id="prevSlide" aria-label="Previous Slide">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <button class="slider-arrow next-arrow" id="nextSlide" aria-label="Next Slide">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <!-- Dots Navigation -->
+        <div class="slider-dots" id="sliderDots">
+          <span class="dot active" data-index="0"></span>
+          <span class="dot" data-index="1"></span>
+          <span class="dot" data-index="2"></span>
+          <span class="dot" data-index="3"></span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+      <div class="categories-container">
+        <h2 class="categories-heading">Top Categories</h2>
+
+        <div class="categories-slider-wrap">
+          <div class="categories-grid" id="categoriesGrid">
+
+            <!-- Card 1: Eyeglasses -->
+            <a href="shop.html" class="category-card">
+              <img src="assets/img/cat-1.webp" alt="Eyeglasses" class="category-img">
+            </a>
+
+            <!-- Card 2: Sunglasses -->
+            <a href="shop.html" class="category-card">
+              <img src="assets/img/sunglasses.webp" alt="Sunglasses" class="category-img">
+            </a>
+
+            <!-- Card 3: Special Power -->
+            <a href="shop.html" class="category-card">
+              <img src="assets/img/special-power.webp" alt="Special Power" class="category-img">
+            </a>
+
+            <!-- Card 4: Contact Lenses -->
+            <a href="shop.html" class="category-card">
+              <img src="assets/img/contact-lens.webp" alt="Contact Lenses" class="category-img">
+            </a>
+
+            <!-- Card 5: Kids Glasses -->
+            <a href="shop.html" class="category-card">
+              <img src="assets/img/kids-glass.webp" alt="Kids Glasses" class="category-img">
+            </a>
+
+            <!-- Card 6: Sale -->
+            <a href="shop.html" class="category-card">
+              <img src="assets/img/sale.webp" alt="Sale" class="category-img">
+            </a>
+
+          </div>
+
+          <div class="categories-dots" id="categoriesDots" aria-label="Category slides"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Promo Banner Section -->
+    <section class="promo-banner-section">
+      <div class="promo-banner-container">
+        <div class="banner-box">
+          <div class="banner-content">
+            <h2 class="banner-heading">Turn any pair into a progressives pair</h2>
+            <div class="banner-btn-row">
+              <a href="#" class="banner-btn primary-blue-btn">Shop eyeglasses</a>
+              <a href="#" class="banner-btn primary-navy-btn">See all lens options</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sunglasses Shapes Section -->
+    <section class="shapes-section">
+      <div class="shapes-container">
+        <h2 class="shapes-heading">Get the perfect shape – Sunglasses</h2>
+
+        <div class="shapes-slider-wrap">
+          <div class="shapes-grid" id="shapesGrid">
+
+            <!-- Shape 1: Aviator -->
+            <a href="shop.html" class="shape-card">
+              <img src="assets/img/sunglass-1.webp" alt="Aviator" class="shape-img">
+            </a>
+
+            <!-- Shape 2: Round -->
+            <a href="shop.html" class="shape-card">
+              <img src="assets/img/sunglass-2.webp" alt="Round" class="shape-img">
+            </a>
+
+            <!-- Shape 3: Rectangle -->
+            <a href="shop.html" class="shape-card">
+              <img src="assets/img/sunglass-3.webp" alt="Rectangle" class="shape-img">
+            </a>
+
+            <!-- Shape 4: Cat Eye -->
+            <a href="shop.html" class="shape-card">
+              <img src="assets/img/sunglass-4.webp" alt="Cat Eye" class="shape-img">
+            </a>
+
+            <!-- Shape 5: Geometric -->
+            <a href="shop.html" class="shape-card">
+              <img src="assets/img/sunglass-5.webp" alt="Geometric" class="shape-img">
+            </a>
+
+            <!-- Shape 6: Clubmaster -->
+            <a href="shop.html" class="shape-card">
+              <img src="assets/img/sunglass-6.webp" alt="Clubmaster" class="shape-img">
+            </a>
+
+            <!-- Shape 7: Square -->
+            <a href="shop.html" class="shape-card">
+              <img src="assets/img/sunglass-7.webp" alt="Square" class="shape-img">
+            </a>
+
+          </div>
+
+          <div class="shapes-dots" id="shapesDots" aria-label="Shape slides"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progressives Rx Product Slider Section -->
+    <section class="products-section">
+      <div class="products-container">
+        
+        <!-- Header Row -->
+        <div class="products-header">
+          <h2 class="products-heading">Good for a progressives Rx</h2>
+          <a href="#" class="shop-all-btn">Shop all</a>
+        </div>
+        
+        <!-- Carousel Outer Wrapper -->
+        <div class="carousel-outer-wrapper">
+          <div class="carousel-container">
+            <div class="product-carousel-track" id="productTrack">
+              
+              <!-- Card 1: Esme -->
+              <a href="product.html?id=esme" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/ESME.avif" alt="Esme" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Esme</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-color: #8c6239; border-color: #8c6239;" data-color="brown"></span>
+                    <span class="swatch-dot" style="background-color: #e5b0ad;" data-color="pink"></span>
+                    <span class="swatch-dot" style="background-image: linear-gradient(135deg, #000 50%, #d4af37 50%);" data-color="tortoise"></span>
+                    <span class="swatch-dot" style="background-color: #bca0dc;" data-color="purple"></span>
+                    <span class="swatch-dot" style="background-color: #111111;" data-color="black"></span>
+                    <span class="swatch-dot" style="background-color: #3b5a4a;" data-color="green"></span>
+                    <span class="swatch-dot" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;" data-color="clear"></span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card 2: Brady -->
+              <a href="product.html?id=brady" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/BRADY.avif" alt="Brady" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Brady</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-color: #111111;" data-color="black"></span>
+                    <span class="swatch-dot" style="background-image: linear-gradient(135deg, #1c3b57 50%, #c49a6c 50%);" data-color="tort-blue"></span>
+                    <span class="swatch-dot" style="background-color: #4a7a8c;" data-color="teal"></span>
+                    <span class="swatch-dot" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;" data-color="clear"></span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card 3: Blakeley -->
+              <a href="product.html?id=blakeley" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/Blackeley.avif" alt="Blakeley" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Blakeley</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-image: linear-gradient(135deg, #a67c52 50%, #2f4f4f 50%);" data-color="tort-teal"></span>
+                    <span class="swatch-dot" style="background-color: #3b9c9c;" data-color="cyan"></span>
+                    <span class="swatch-dot" style="background-color: #d9a0a0;" data-color="pink"></span>
+                    <span class="swatch-dot" style="background-color: #333333;" data-color="dark"></span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card 4: Durand -->
+              <a href="product.html?id=durand" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/Durand.avif" alt="Durand" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Durand</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-color: #f7d2cc;" data-color="pink-crystal"></span>
+                    <span class="swatch-dot" style="background-color: #4b3621;" data-color="dark-brown"></span>
+                    <span class="swatch-dot" style="background-color: #3b5998;" data-color="blue"></span>
+                    <span class="swatch-dot" style="background-color: #fdfdfd; border: 1.5px solid #dcdcdc;" data-color="clear"></span>
+                    <span class="swatch-dot" style="background-color: #d5a6bd;" data-color="amber"></span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card 5: Carlton -->
+              <a href="product.html?id=carlton" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/Carlton.avif" alt="Carlton" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Carlton</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-color: #111111;" data-color="black"></span>
+                    <span class="swatch-dot" style="background-color: #8b5a2b;" data-color="brown"></span>
+                    <span class="swatch-dot" style="background-color: #708090;" data-color="grey"></span>
+                    <span class="swatch-dot" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;" data-color="clear"></span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card 6: Chamberlain -->
+              <a href="product.html?id=chamberlain" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/Chamberlain.avif" alt="Chamberlain" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Chamberlain</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-color: #8c6239;" data-color="brown"></span>
+                    <span class="swatch-dot" style="background-color: #111111;" data-color="black"></span>
+                    <span class="swatch-dot" style="background-color: #e5b0ad;" data-color="pink"></span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card 7: Bodie -->
+              <a href="product.html?id=bodie" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/Bodie.avif" alt="Bodie" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Bodie</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;" data-color="clear"></span>
+                    <span class="swatch-dot" style="background-color: #111111;" data-color="black"></span>
+                    <span class="swatch-dot" style="background-color: #3b5a4a;" data-color="green"></span>
+                    <span class="swatch-dot" style="background-color: #a0522d;" data-color="tortoise"></span>
+                  </div>
+                </div>
+              </a>
+
+              <!-- Card 8: Whalen -->
+              <a href="product.html?id=whalen" class="product-card">
+                <div class="card-header">
+                  <button class="wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button class="try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="product-image-container">
+                  <img src="assets/img/Whalen.avif" alt="Whalen" class="product-img">
+                </div>
+                <div class="card-footer">
+                  <div class="product-info-row">
+                    <span class="product-name">Whalen</span>
+                    <span class="product-price">$95</span>
+                  </div>
+                  <div class="swatch-list">
+                    <span class="swatch-dot active" style="background-color: #111111;" data-color="black"></span>
+                    <span class="swatch-dot" style="background-color: #8b5a2b;" data-color="brown"></span>
+                    <span class="swatch-dot" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;" data-color="clear"></span>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          
+          <!-- Slide Arrows -->
+          <button class="carousel-nav-btn prev-nav-btn" id="prodPrevBtn" aria-label="Previous Products" style="display: none;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button class="carousel-nav-btn next-nav-btn" id="prodNextBtn" aria-label="Next Products">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+     <!-- Free Lens Replacement Banner Section -->
+     <section class="lens-promo-section" aria-label="Free Lens Replacement">
+      <div class="lens-promo-container">
+        <a href="#" class="lens-promo-banner">
+          <img src="assets/img/banner-2.png" alt="Free Lens Replacement - Any Frame, Any Power, Any Reason" width="1942" height="809" loading="lazy" decoding="async">
+        </a>
+      </div>
+    </section>
+
+    <!-- Nearby Stores & Services Section -->
+    <section class="services-section" aria-label="Nearby Stores & Services">
+      <div class="services-container">
+        <h2 class="services-heading">Nearby Stores &amp; Services</h2>
+
+        <div class="services-slider-wrap">
+          <div class="services-grid" id="servicesGrid">
+            <a href="#" class="service-card">
+              <img src="assets/img/service-1.png" alt="Visit Your Nearest Store" class="service-img" width="1086" height="1448" loading="lazy" decoding="async">
+            </a>
+            <a href="#" class="service-card">
+              <img src="assets/img/service-2.png" alt="Experience Our Home Try-On" class="service-img" width="1086" height="1448" loading="lazy" decoding="async">
+            </a>
+            <a href="#" class="service-card">
+              <img src="assets/img/service-3.png" alt="Order Now on WhatsApp" class="service-img" width="1086" height="1448" loading="lazy" decoding="async">
+            </a>
+            <a href="#" class="service-card">
+              <img src="assets/img/service-4.png" alt="Connect with your Experts" class="service-img" width="1122" height="1402" loading="lazy" decoding="async">
+            </a>
+          </div>
+
+          <div class="services-dots" id="servicesDots" aria-label="Service slides"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Arrivals Product Slider Section -->
+    <section class="new-arrivals-section" aria-label="Shop by new arrivals">
+      <div class="new-arrivals-container">
+
+        <div class="new-arrivals-header">
+          <h2 class="new-arrivals-heading">Shop by <span class="heading-accent">new arrivals</span></h2>
+          <div class="new-arrivals-nav">
+            <button type="button" class="na-nav-btn na-prev-btn" id="naPrevBtn" aria-label="Previous products">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button type="button" class="na-nav-btn na-next-btn" id="naNextBtn" aria-label="Next products">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="na-carousel-outer">
+          <div class="na-carousel-container">
+            <div class="na-carousel-track" id="naProductTrack">
+
+              <a href="product.html?id=franny" class="na-product-card">
+                <div class="na-card-header">
+                  <button type="button" class="na-wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button type="button" class="na-try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="na-product-image-wrap">
+                  <img src="assets/img/NA-1.avif" alt="Franny" class="na-product-img" width="828" height="253" loading="lazy" decoding="async">
+                </div>
+                <div class="na-card-footer">
+                  <div class="na-product-info-row">
+                    <span class="na-product-name">Franny</span>
+                    <span class="na-product-price">$95</span>
+                  </div>
+                  <div class="na-swatch-list">
+                    <span class="na-swatch-dot active" style="background-image: linear-gradient(135deg, #a0522d 50%, #2f4f4f 50%);"></span>
+                    <span class="na-swatch-dot" style="background-color: #708090;"></span>
+                    <span class="na-swatch-dot" style="background-color: #111111;"></span>
+                  </div>
+                  <a href="#" class="na-buy-btn">Select lenses and buy</a>
+                </div>
+              </a>
+
+              <a href="product.html?id=franny" class="na-product-card">
+                <div class="na-card-header">
+                  <button type="button" class="na-wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button type="button" class="na-try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="na-product-image-wrap">
+                  <img src="assets/img/NA-2.avif" alt="Franny" class="na-product-img" width="828" height="250" loading="lazy" decoding="async">
+                </div>
+                <div class="na-card-footer">
+                  <div class="na-product-info-row">
+                    <span class="na-product-name">Franny</span>
+                    <span class="na-product-price">$95</span>
+                  </div>
+                  <div class="na-swatch-list">
+                    <span class="na-swatch-dot active" style="background-image: linear-gradient(135deg, #a0522d 50%, #2f4f4f 50%);"></span>
+                  </div>
+                  <a href="#" class="na-buy-btn">Select lenses and buy</a>
+                </div>
+              </a>
+
+              <a href="product.html?id=carlton" class="na-product-card">
+                <div class="na-card-header">
+                  <button type="button" class="na-wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button type="button" class="na-try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="na-product-image-wrap">
+                  <img src="assets/img/NA-3.avif" alt="Carlton" class="na-product-img" width="828" height="292" loading="lazy" decoding="async">
+                </div>
+                <div class="na-card-footer">
+                  <div class="na-product-info-row">
+                    <span class="na-product-name">Carlton</span>
+                    <span class="na-product-price">$95</span>
+                  </div>
+                  <div class="na-swatch-list">
+                    <span class="na-swatch-dot active" style="background-image: linear-gradient(135deg, #8b4513 50%, #1a1a1a 50%);"></span>
+                    <span class="na-swatch-dot" style="background-color: #111111;"></span>
+                    <span class="na-swatch-dot" style="background-color: #8b5a2b;"></span>
+                    <span class="na-swatch-dot" style="background-color: #708090;"></span>
+                    <span class="na-swatch-dot" style="background-color: #3b5998;"></span>
+                    <span class="na-swatch-dot" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;"></span>
+                  </div>
+                  <a href="#" class="na-buy-btn">Select lenses and buy</a>
+                </div>
+              </a>
+
+              <a href="product.html?id=esme" class="na-product-card">
+                <div class="na-card-header">
+                  <button type="button" class="na-wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button type="button" class="na-try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="na-product-image-wrap">
+                  <img src="assets/img/NA-4.avif" alt="Esme" class="na-product-img" width="828" height="267" loading="lazy" decoding="async">
+                </div>
+                <div class="na-card-footer">
+                  <div class="na-product-info-row">
+                    <span class="na-product-name">Esme</span>
+                    <span class="na-product-price">$95</span>
+                  </div>
+                  <div class="na-swatch-list">
+                    <span class="na-swatch-dot active" style="background-color: #8c6239;"></span>
+                    <span class="na-swatch-dot" style="background-color: #e5b0ad;"></span>
+                    <span class="na-swatch-dot" style="background-color: #111111;"></span>
+                    <span class="na-swatch-dot" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;"></span>
+                  </div>
+                  <a href="#" class="na-buy-btn">Select lenses and buy</a>
+                </div>
+              </a>
+
+              <a href="product.html?id=brady" class="na-product-card">
+                <div class="na-card-header">
+                  <button type="button" class="na-wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button type="button" class="na-try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="na-product-image-wrap">
+                  <img src="assets/img/NA-5.avif" alt="Brady" class="na-product-img" width="828" height="290" loading="lazy" decoding="async">
+                </div>
+                <div class="na-card-footer">
+                  <div class="na-product-info-row">
+                    <span class="na-product-name">Brady</span>
+                    <span class="na-product-price">$95</span>
+                  </div>
+                  <div class="na-swatch-list">
+                    <span class="na-swatch-dot active" style="background-color: #111111;"></span>
+                    <span class="na-swatch-dot" style="background-color: #4a7a8c;"></span>
+                    <span class="na-swatch-dot" style="background-color: #f3f3f3; border: 1.5px solid #dcdcdc;"></span>
+                  </div>
+                  <a href="#" class="na-buy-btn">Select lenses and buy</a>
+                </div>
+              </a>
+
+              <a href="product.html?id=blakeley" class="na-product-card">
+                <div class="na-card-header">
+                  <button type="button" class="na-wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button type="button" class="na-try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="na-product-image-wrap">
+                  <img src="assets/img/NA-6.avif" alt="Blakeley" class="na-product-img" width="828" height="294" loading="lazy" decoding="async">
+                </div>
+                <div class="na-card-footer">
+                  <div class="na-product-info-row">
+                    <span class="na-product-name">Blakeley</span>
+                    <span class="na-product-price">$95</span>
+                  </div>
+                  <div class="na-swatch-list">
+                    <span class="na-swatch-dot active" style="background-image: linear-gradient(135deg, #a67c52 50%, #2f4f4f 50%);"></span>
+                    <span class="na-swatch-dot" style="background-color: #3b9c9c;"></span>
+                    <span class="na-swatch-dot" style="background-color: #333333;"></span>
+                  </div>
+                  <a href="#" class="na-buy-btn">Select lenses and buy</a>
+                </div>
+              </a>
+
+              <a href="product.html?id=durand" class="na-product-card">
+                <div class="na-card-header">
+                  <button type="button" class="na-wishlist-btn" aria-label="Add to Wishlist">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  </button>
+                  <button type="button" class="na-try-on-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <span>Try on</span>
+                  </button>
+                </div>
+                <div class="na-product-image-wrap">
+                  <img src="assets/img/NA-7.avif" alt="Durand" class="na-product-img" width="828" height="279" loading="lazy" decoding="async">
+                </div>
+                <div class="na-card-footer">
+                  <div class="na-product-info-row">
+                    <span class="na-product-name">Durand</span>
+                    <span class="na-product-price">$95</span>
+                  </div>
+                  <div class="na-swatch-list">
+                    <span class="na-swatch-dot active" style="background-color: #f7d2cc;"></span>
+                    <span class="na-swatch-dot" style="background-color: #4b3621;"></span>
+                    <span class="na-swatch-dot" style="background-color: #3b5998;"></span>
+                    <span class="na-swatch-dot" style="background-color: #fdfdfd; border: 1.5px solid #dcdcdc;"></span>
+                  </div>
+                  <a href="#" class="na-buy-btn">Select lenses and buy</a>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Vision Benefits Promo Section -->
+    <section class="vision-promo-section" aria-label="Four ways to use your vision benefits">
+      <div class="vision-promo-container">
+        <h2 class="vision-promo-heading">Four ways to use your vision benefits</h2>
+
+        <div class="vision-promo-slider-wrap">
+          <div class="vision-promo-grid" id="visionPromoGrid">
+            <a href="#" class="vision-promo-card">
+              <img src="assets/img/promo-1.png" alt="Prescription eyeglasses" class="vision-promo-img" width="1122" height="1402" loading="lazy" decoding="async">
+              <span class="vision-promo-btn">Prescription eyeglasses</span>
+            </a>
+            <a href="#" class="vision-promo-card">
+              <img src="assets/img/promo-2.png" alt="Prescription sunglasses" class="vision-promo-img" width="1122" height="1402" loading="lazy" decoding="async">
+              <span class="vision-promo-btn">Prescription sunglasses</span>
+            </a>
+            <a href="#" class="vision-promo-card">
+              <img src="assets/img/promo-3.png" alt="Contacts" class="vision-promo-img" width="1122" height="1402" loading="lazy" decoding="async">
+              <span class="vision-promo-btn">Contacts</span>
+            </a>
+            <a href="#" class="vision-promo-card">
+              <img src="assets/img/promo-4.png" alt="Eye exams" class="vision-promo-img" width="1122" height="1402" loading="lazy" decoding="async">
+              <span class="vision-promo-btn">Eye exams</span>
+            </a>
+          </div>
+
+          <div class="vision-promo-dots" id="visionPromoDots" aria-label="Promo slides"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gold Max Membership Banner Section -->
+    <section class="gold-banner-section" aria-label="Gold Max Membership">
+      <div class="gold-banner-container">
+        <a href="#" class="gold-banner-link">
+          <img src="assets/img/banner-3.png" alt="Buy One Now Get Second Later - Gold Max Membership" width="1942" height="809" loading="lazy" decoding="async">
+        </a>
+      </div>
+    </section>
+    
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer-container">
+
+      <!-- Newsletter Bar -->
+      <div class="footer-newsletter">
+        <p class="footer-newsletter-text">Get the inside scoop on new frames, events, and more</p>
+        <form class="footer-newsletter-form" action="#" method="post">
+          <input type="email" class="footer-email-input" placeholder="Email address" aria-label="Email address" required>
+        </form>
+      </div>
+
+      <!-- Main Footer Grid -->
+      <div class="footer-main">
+
+        <div class="footer-links-grid">
+
+          <!-- Column 1: Products -->
+          <div class="footer-col">
+            <h3 class="footer-col-title">Products</h3>
+            <ul class="footer-links">
+              <li><a href="#">Eyeglasses</a></li>
+              <li><a href="#">Sunglasses</a></li>
+              <li><a href="#">Contacts</a></li>
+              <li><a href="#">New collections</a></li>
+              <li><a href="#">Accessories</a></li>
+              <li><a href="#">Gift cards</a></li>
+              <li><a href="#">Intelligent Eyewear</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Shop Online / Prescription / Store -->
+          <div class="footer-col">
+            <h3 class="footer-col-title">Shop Online</h3>
+            <ul class="footer-links">
+              <li><a href="#">Advisor</a></li>
+              <li><a href="#">Virtual Try-On</a></li>
+              <li><a href="#">Download our app</a></li>
+            </ul>
+            <h3 class="footer-col-title footer-col-title--spaced">Get a prescription</h3>
+            <ul class="footer-links">
+              <li><a href="#">Book an eye exam</a></li>
+              <li><a href="#">Renew a prescription</a></li>
+              <li><a href="#">Measure your PD</a></li>
+            </ul>
+            <h3 class="footer-col-title footer-col-title--spaced">Visit a store</h3>
+            <ul class="footer-links">
+              <li><a href="#">Find a location</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Ways to save / Education -->
+          <div class="footer-col">
+            <h3 class="footer-col-title">Ways to save</h3>
+            <ul class="footer-links">
+              <li><a href="#">Insurance</a></li>
+              <li><a href="#">Flexible spending</a></li>
+              <li><a href="#">20% off contacts</a></li>
+              <li><a href="#">Add a pair and save</a></li>
+            </ul>
+            <h3 class="footer-col-title footer-col-title--spaced">Education</h3>
+            <ul class="footer-links">
+              <li><a href="#">Eyeglasses lens guide</a></li>
+              <li><a href="#">Sunglasses lens guide</a></li>
+              <li><a href="#">Eyewear A to Z</a></li>
+              <li><a href="#">How our glasses are made</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: About us -->
+          <div class="footer-col">
+            <h3 class="footer-col-title">About us</h3>
+            <ul class="footer-links">
+              <li><a href="#">Our story</a></li>
+              <li><a href="#">Buy a Pair, Give a Pair</a></li>
+              <li><a href="#">Customer reviews</a></li>
+              <li><a href="#">Jobs</a></li>
+              <li><a href="#">Impact</a></li>
+              <li><a href="#">Impact Foundation</a></li>
+              <li><a href="#">Investors</a></li>
+              <li><a href="#">Sitemap</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Help & Social Column -->
+        <div class="footer-help-col">
+          <h3 class="footer-help-title">Need a hand?</h3>
+          <p class="footer-help-text">We're here to help. See frequently asked questions and get in touch with us <a href="#" class="footer-help-link">here</a>.</p>
+
+          <div class="footer-support-icons">
+            <a href="#" class="footer-support-item">
+              <span class="footer-support-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                  <line x1="12" y1="2" x2="12" y2="4"></line>
+                </svg>
+              </span>
+              <span class="footer-support-label">FAQ</span>
+            </a>
+            <a href="#" class="footer-support-item">
+              <span class="footer-support-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </span>
+              <span class="footer-support-label">Chat</span>
+            </a>
+          </div>
+
+          <div class="footer-app-badges">
+            <a href="#" class="footer-app-badge" aria-label="Download on the App Store">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              <span class="footer-app-text">
+                <small>Download on the</small>
+                App Store
+              </span>
+            </a>
+            <a href="#" class="footer-app-badge" aria-label="Get it on Google Play">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M3 20.5v-17c0-.83.67-1.5 1.5-1.5.28 0 .53.08.76.22l13.12 7.63c.65.38.65 1.32 0 1.7L5.26 20.28c-.23.14-.48.22-.76.22-.83 0-1.5-.67-1.5-1.5z"/>
+              </svg>
+              <span class="footer-app-text">
+                <small>GET IT ON</small>
+                Google Play
+              </span>
+            </a>
+          </div>
+
+          <div class="footer-social">
+            <a href="#" class="footer-social-link" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer-social-link" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer-social-link" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer-social-link" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+            <a href="#" class="footer-social-link" aria-label="X (Twitter)">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>
