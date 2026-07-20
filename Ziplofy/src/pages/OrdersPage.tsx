@@ -12,6 +12,7 @@ import OrdersTable from '../components/orders/OrdersTable';
 import type { OrderTableRowData } from '../components/orders/orders-table.types';
 import { useAdminOrders } from '../contexts/admin-order.context';
 import { useStore } from '../contexts/store.context';
+import { formatPaymentMethodLabel } from '../utils/order-details.util';
 
 const OrdersPage: React.FC = () => {
   const navigate = useNavigate();
@@ -78,6 +79,7 @@ const OrdersPage: React.FC = () => {
         channel: 'Online Store',
         total: o.total ?? 0,
         paymentStatus,
+        paymentMethod: formatPaymentMethodLabel(o.paymentMethod),
         fulfillmentStatus,
         items: o.items?.length ?? 0,
         lineItems: mapAdminOrderLineItems(o.items),

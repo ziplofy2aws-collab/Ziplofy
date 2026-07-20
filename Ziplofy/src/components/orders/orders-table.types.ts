@@ -27,6 +27,7 @@ export type OrderTableRowData = {
   channel: string;
   total: number;
   paymentStatus: OrderPaymentStatus;
+  paymentMethod: string;
   fulfillmentStatus: OrderFulfillmentStatus;
   items: number;
   lineItems: OrderLineItemSummary[];

@@ -80,7 +80,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[1200px] text-left">
+      <table className="w-full min-w-[1320px] text-left">
         <thead>
           <tr className="border-b border-gray-100 bg-gray-50/50">
             <th className="w-10 px-3 py-2.5 text-center">
@@ -112,6 +112,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Channel</th>
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Total</th>
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Payment status</th>
+            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Payment method</th>
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Fulfillment status</th>
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Items</th>
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Delivery status</th>
@@ -136,7 +137,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
             ))
           ) : (
             <tr>
-              <td colSpan={13} className="px-3 py-12 text-center text-[13px] text-gray-500">
+              <td colSpan={14} className="px-3 py-12 text-center text-[13px] text-gray-500">
                 No orders found
               </td>
             </tr>

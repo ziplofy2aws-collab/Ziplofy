@@ -29,6 +29,8 @@ export function formatPaymentMethodLabel(method?: string): string {
     credit_card: 'Credit Card',
     paypal: 'PayPal',
     cod: 'Cash on Delivery (COD)',
+    bank_transfer: 'Bank transfer',
+    upi_id: 'UPI ID',
     other: 'Other',
   };
   return map[method] || method;

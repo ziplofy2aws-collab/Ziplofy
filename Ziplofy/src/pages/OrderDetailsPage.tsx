@@ -15,7 +15,7 @@ const OrderDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { activeStoreId } = useStore();
-  const { orders, getOrderById, getOrdersByStoreId } = useAdminOrders();
+  const { orders, getOrderById, getOrdersByStoreId, verifyOrderPayment } = useAdminOrders();
   const { loggedInUser } = useUserContext();
   const {
     timelineEntries,
@@ -173,6 +173,12 @@ const OrderDetailsPage: React.FC = () => {
     if (next?._id) navigate(`/orders/${next._id}`);
   }, [currentOrderIndex, navigate, sortedStoreOrders]);
 
+  const handleVerifyPayment = useCallback(async () => {
+    if (!id) return;
+    const updatedOrder = await verifyOrderPayment(id);
+    setOrder(updatedOrder);
+  }, [id, verifyOrderPayment]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-page-background-color">
@@ -216,7 +222,7 @@ const OrderDetailsPage: React.FC = () => {
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
           <div className="min-w-0 space-y-4">
             <OrderFulfillmentCard order={order} getProductIdFromItem={getProductIdFromItem} />
-            <OrderPaymentCard order={order} />
+            <OrderPaymentCard order={order} onVerifyPayment={handleVerifyPayment} />
             <OrderTimelineSection
               comment={comment}
               userInitials={userInitials}
