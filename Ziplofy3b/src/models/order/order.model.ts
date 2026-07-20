@@ -7,7 +7,7 @@ export interface IOrder {
   billingAddressId?: mongoose.Types.ObjectId;
   orderDate: Date;
   status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
-  paymentMethod?: "credit_card" | "paypal" | "cod" | "other";
+  paymentMethod?: "credit_card" | "paypal" | "cod" | "bank_transfer" | "upi_id" | "other";
   paymentStatus: "unpaid" | "paid" | "refunded";
   subtotal: number;
   tax: number;
@@ -55,7 +55,7 @@ const OrderSchema = new Schema<IOrderDocument>(
     },
     paymentMethod: {
       type: String,
-      enum: ["credit_card", "paypal", "cod", "other"],
+      enum: ["credit_card", "paypal", "cod", "bank_transfer", "upi_id", "other"],
     },
     paymentStatus: {
       type: String,

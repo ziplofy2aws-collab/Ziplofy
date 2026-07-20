@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.disconnectStorePaymentProvider = exports.connectStorePaymentProvider = exports.getStorePaymentProviders = exports.getPaymentProviderByKey = exports.getPaymentProviders = void 0;
+exports.disconnectStorePaymentProvider = exports.getStorefrontPaymentMethods = exports.connectStorePaymentProvider = exports.getStorePaymentProviders = exports.getPaymentProviderByKey = exports.getPaymentProviders = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const payment_provider_model_1 = require("../models/payment-provider/payment-provider.model");
 const store_payment_provider_model_1 = require("../models/payment-provider/store-payment-provider.model");
@@ -142,6 +142,61 @@ exports.connectStorePaymentProvider = (0, error_utils_1.asyncErrorHandler)(async
         success: true,
         data: connection,
         message: 'Payment provider connected successfully',
+    });
+});
+/** Public storefront: active manual payment methods configured for a store. */
+exports.getStorefrontPaymentMethods = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {
+    const { storeId } = req.params;
+    if (!storeId || !mongoose_1.default.isValidObjectId(storeId)) {
+        throw new error_utils_1.CustomError('Valid storeId is required', 400);
+    }
+    const connections = await store_payment_provider_model_1.StorePaymentProvider.find({
+        storeId: new mongoose_1.default.Types.ObjectId(storeId),
+        status: 'active',
+    })
+        .sort({ createdAt: 1 })
+        .lean();
+    const providerKeys = connections.map((c) => c.providerKey);
+    const providers = providerKeys.length
+        ? await payment_provider_model_1.PaymentProvider.find({ key: { $in: providerKeys }, isActive: true }).lean()
+        : [];
+    const providerMap = new Map(providers.map((p) => [p.key, p]));
+    const data = connections
+        .map((connection) => {
+        const provider = providerMap.get(connection.providerKey);
+        if (!provider)
+            return null;
+        const instructions = {};
+        if (connection.providerKey === 'bank_transfer' && connection.bankDetails) {
+            if (connection.bankDetails.bankName) {
+                instructions.bankName = connection.bankDetails.bankName;
+            }
+            if (connection.bankDetails.accountNumber) {
+                instructions.accountNumber = connection.bankDetails.accountNumber;
+            }
+            if (connection.bankDetails.ifscCode) {
+                instructions.ifscCode = connection.bankDetails.ifscCode;
+            }
+        }
+        if (connection.providerKey === 'upi_id' && connection.upiDetails?.upiId) {
+            instructions.upiId = connection.upiDetails.upiId;
+        }
+        return {
+            key: connection.providerKey,
+            label: provider.name,
+            description: provider.description ?? undefined,
+            instructions: Object.keys(instructions).length > 0 ? instructions : undefined,
+            sortOrder: provider.sortOrder ?? 999,
+        };
+    })
+        .filter((row) => row !== null)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map(({ sortOrder: _sortOrder, ...row }) => row);
+    return res.status(200).json({
+        success: true,
+        data,
+        count: data.length,
+        message: 'Storefront payment methods fetched successfully',
     });
 });
 exports.disconnectStorePaymentProvider = (0, error_utils_1.asyncErrorHandler)(async (req, res) => {

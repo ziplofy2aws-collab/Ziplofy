@@ -17,6 +17,10 @@ import { BuyXGetYDiscount } from '../../models/discount/buy-x-get-y-discount-mod
 import { BuyXGetYDiscountUsage } from '../../models/discount/buy-x-get-y-discount-model/buy-x-get-y-discount-usage.model';
 import { LocationModel } from '../../models/location/location.model';
 import { InventoryLevelModel } from '../../models/inventory-level/inventory-level.model';
+import {
+  CheckoutSettings,
+  RECOMMENDED_ADD_TO_CART_LIMIT,
+} from '../../models/checkout-settings/checkout-settings.model';
 import { asyncErrorHandler, CustomError } from '../../utils/error.utils';
 import { getOrderConfirmationEmailBody, getOrderConfirmationEmailSubject, sendEmail } from '../../utils/email.utils';
 
@@ -49,7 +53,7 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
       price: number;
       total: number;
     }>;
-    paymentMethod?: 'credit_card' | 'paypal' | 'cod' | 'other';
+    paymentMethod?: 'credit_card' | 'paypal' | 'cod' | 'bank_transfer' | 'upi_id' | 'other';
     subtotal: number;
     tax?: number;
     shippingCost?: number;
@@ -109,6 +113,15 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
     }
   }
 
+  const checkoutSettings = await CheckoutSettings.findOne({ storeId })
+    .select('addToCartLimit')
+    .lean();
+  const maximumItemQuantity = checkoutSettings?.addToCartLimit?.enabled
+    ? checkoutSettings.addToCartLimit.useRecommended
+      ? RECOMMENDED_ADD_TO_CART_LIMIT
+      : checkoutSettings.addToCartLimit.limit ?? RECOMMENDED_ADD_TO_CART_LIMIT
+    : null;
+
   // Validate items
   for (const item of items) {
     if (!item.productVariantId || !mongoose.Types.ObjectId.isValid(item.productVariantId)) {
@@ -116,6 +129,12 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
     }
     if (typeof item.quantity !== 'number' || item.quantity < 1) {
       throw new CustomError('Valid quantity (>= 1) is required for all items', 400);
+    }
+    if (typeof maximumItemQuantity === 'number' && item.quantity > maximumItemQuantity) {
+      throw new CustomError(
+        `You can purchase a maximum of ${maximumItemQuantity} of each item per order`,
+        400
+      );
     }
     if (typeof item.price !== 'number' || item.price < 0) {
       throw new CustomError('Valid price is required for all items', 400);

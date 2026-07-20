@@ -3,6 +3,11 @@ import {
   getStorefrontAccess,
   verifyStorefrontPassword,
 } from '../controllers/storefront-access.controller';
+import { getStorefrontPaymentMethods } from '../controllers/payment-provider.controller';
+import {
+  getStorefrontAddToCartLimit,
+  getStorefrontCheckoutCustomerInformation,
+} from '../controllers/checkout-settings.controller';
 import { getStoreData, getStorefrontThemeRuntime, renderStorefront, serveThemeAsset } from '../controllers/storefront.controller';
 import { renderStorefrontLiquidPage } from '../controllers/storefront-render.controller';
 import { getStorefrontReactThemePack } from '../controllers/storefront-theme-pack.controller';
@@ -16,6 +21,11 @@ storefrontRouter.post('/:storeId/verify-password', verifyStorefrontPassword);
 storefrontRouter.use(requireStorefrontAccessIfEnabled);
 
 // Storefront routes
+storefrontRouter.route('/:storeId/payment-methods').get(getStorefrontPaymentMethods);
+storefrontRouter
+  .route('/:storeId/checkout-customer-information')
+  .get(getStorefrontCheckoutCustomerInformation);
+storefrontRouter.route('/:storeId/add-to-cart-limit').get(getStorefrontAddToCartLimit);
 storefrontRouter.route('/:storeId/render/page').get(renderStorefrontLiquidPage);
 storefrontRouter.route('/:storeId/theme-runtime').get(getStorefrontThemeRuntime);
 storefrontRouter.route('/:storeId/react-theme-pack').get(getStorefrontReactThemePack);

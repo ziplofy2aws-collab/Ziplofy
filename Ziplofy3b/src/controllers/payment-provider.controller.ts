@@ -179,6 +179,68 @@ export const connectStorePaymentProvider = asyncErrorHandler(async (req: Request
   });
 });
 
+/** Public storefront: active manual payment methods configured for a store. */
+export const getStorefrontPaymentMethods = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { storeId } = req.params as { storeId?: string };
+  if (!storeId || !mongoose.isValidObjectId(storeId)) {
+    throw new CustomError('Valid storeId is required', 400);
+  }
+
+  const connections = await StorePaymentProvider.find({
+    storeId: new mongoose.Types.ObjectId(storeId),
+    status: 'active',
+  })
+    .sort({ createdAt: 1 })
+    .lean();
+
+  const providerKeys = connections.map((c) => c.providerKey);
+  const providers = providerKeys.length
+    ? await PaymentProvider.find({ key: { $in: providerKeys }, isActive: true }).lean()
+    : [];
+
+  const providerMap = new Map(providers.map((p) => [p.key, p]));
+
+  const data = connections
+    .map((connection) => {
+      const provider = providerMap.get(connection.providerKey);
+      if (!provider) return null;
+
+      const instructions: Record<string, string> = {};
+      if (connection.providerKey === 'bank_transfer' && connection.bankDetails) {
+        if (connection.bankDetails.bankName) {
+          instructions.bankName = connection.bankDetails.bankName;
+        }
+        if (connection.bankDetails.accountNumber) {
+          instructions.accountNumber = connection.bankDetails.accountNumber;
+        }
+        if (connection.bankDetails.ifscCode) {
+          instructions.ifscCode = connection.bankDetails.ifscCode;
+        }
+      }
+      if (connection.providerKey === 'upi_id' && connection.upiDetails?.upiId) {
+        instructions.upiId = connection.upiDetails.upiId;
+      }
+
+      return {
+        key: connection.providerKey,
+        label: provider.name,
+        description: provider.description ?? undefined,
+        instructions: Object.keys(instructions).length > 0 ? instructions : undefined,
+        sortOrder: provider.sortOrder ?? 999,
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(({ sortOrder: _sortOrder, ...row }) => row);
+
+  return res.status(200).json({
+    success: true,
+    data,
+    count: data.length,
+    message: 'Storefront payment methods fetched successfully',
+  });
+});
+
 export const disconnectStorePaymentProvider = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!mongoose.isValidObjectId(id)) {

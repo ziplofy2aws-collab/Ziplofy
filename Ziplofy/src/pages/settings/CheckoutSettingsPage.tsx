@@ -21,7 +21,7 @@ import {
   SettingsPanel,
 } from '../../components/settings/SettingsPageScaffold';
 import CheckoutConfigurationsBlock from '../../components/settings/CheckoutConfigurationsBlock';
-import { useCheckoutSettings } from '../../contexts/checkout-settings.context';
+import { useCheckoutSettings, DEFAULT_CHECKOUT_CUSTOMER_INFORMATION, normalizeCheckoutEmailRegionMode } from '../../contexts/checkout-settings.context';
 import { useStoreCheckoutConfigurations } from '../../contexts/store-checkout-configurations.context';
 import { useCountries } from '../../contexts/country.context';
 import { useStore } from '../../contexts/store.context';
@@ -184,7 +184,7 @@ const CheckoutSettingsPage: React.FC = () => {
     const orderTrackingEnabled = settings.orderTracking?.enabled ?? true;
     const requireSignInValue = settings.requireSignIn ?? false;
     const emailEnabled = settings.marketing?.email?.enabled ?? true;
-    const emailMode = settings.marketing?.email?.regionMode ?? 'codiic_recommended';
+    const emailMode = normalizeCheckoutEmailRegionMode(settings.marketing?.email?.regionMode);
     const smsEnabled = settings.marketing?.sms?.enabled ?? false;
     const tippingEnabled = settings.tipping?.enabled ?? false;
     const tippingPresets = settings.tipping?.presets ?? [];
@@ -197,6 +197,10 @@ const CheckoutSettingsPage: React.FC = () => {
     const addToCartUseRecommended = settings.addToCartLimit?.useRecommended ?? true;
     const useShippingAsBillingValue = settings.addressCollection?.useShippingAsBilling ?? true;
     const regionIds = settings.emailSelectedRegionIds ?? [];
+    const customerInfo = {
+      ...DEFAULT_CHECKOUT_CUSTOMER_INFORMATION,
+      ...(settings.customerInformation ?? {}),
+    };
 
     setContactMethod(contactMethodValue);
     setShowOrderTracking(orderTrackingEnabled);
@@ -221,6 +225,10 @@ const CheckoutSettingsPage: React.FC = () => {
         : addToCartLimitValue
     );
     setUseRecommendedLimit(addToCartUseRecommended);
+    setFullNameOption(customerInfo.fullNameOption);
+    setCompanyNameOption(customerInfo.companyNameOption);
+    setAddressLine2Option(customerInfo.addressLine2Option);
+    setShippingPhoneOption(customerInfo.shippingPhoneOption);
 
     const initialSnapshot = buildSnapshot({
       contactMethod: contactMethodValue,
@@ -237,10 +245,10 @@ const CheckoutSettingsPage: React.FC = () => {
       addToCartLimit: addToCartEnabled,
       cartLimit: addToCartLimitValue,
       useRecommendedLimit: addToCartUseRecommended,
-      fullNameOption,
-      companyNameOption,
-      addressLine2Option,
-      shippingPhoneOption,
+      fullNameOption: customerInfo.fullNameOption,
+      companyNameOption: customerInfo.companyNameOption,
+      addressLine2Option: customerInfo.addressLine2Option,
+      shippingPhoneOption: customerInfo.shippingPhoneOption,
     });
 
     stateSnapshotRef.current = initialSnapshot;
@@ -256,10 +264,6 @@ const CheckoutSettingsPage: React.FC = () => {
   }, [
     settings,
     buildSnapshot,
-    fullNameOption,
-    companyNameOption,
-    addressLine2Option,
-    shippingPhoneOption,
   ]);
 
   const handleSave = useCallback(async () => {
@@ -302,6 +306,12 @@ const CheckoutSettingsPage: React.FC = () => {
         enabled: addToCartLimit,
         limit: limitValue,
         useRecommended: useRecommendedLimit,
+      },
+      customerInformation: {
+        fullNameOption,
+        companyNameOption,
+        addressLine2Option,
+        shippingPhoneOption,
       },
       emailSelectedRegionIds: selectedRegions,
     } as const;
@@ -429,27 +439,132 @@ const CheckoutSettingsPage: React.FC = () => {
     }
   }, []);
 
-  const handleFullNameOptionChange = useCallback((value: 'last_name' | 'first_last') => {
-    setFullNameOption(value);
-  }, []);
+  const persistCustomerInformation = useCallback(
+    async (next: {
+      fullNameOption: 'last_name' | 'first_last';
+      companyNameOption: 'dont_include' | 'optional' | 'required';
+      addressLine2Option: 'dont_include' | 'optional' | 'required';
+      shippingPhoneOption: 'dont_include' | 'optional' | 'required';
+    }) => {
+      if (!settings?._id || isInitializing || checkoutLoading) return;
 
-  const handleCompanyNameOptionChange = useCallback((value: 'dont_include' | 'optional' | 'required') => {
-    setCompanyNameOption(value);
-    if (value === 'required') {
-      setShowCompanyNameWarning(true);
-    }
-  }, []);
+      if (!/^[a-f\d]{24}$/i.test(settings._id)) {
+        toast.error('Checkout settings are still loading. Please try again.');
+        return;
+      }
 
-  const handleAddressLine2OptionChange = useCallback((value: 'dont_include' | 'optional' | 'required') => {
-    setAddressLine2Option(value);
-    if (value === 'required') {
-      setShowAddressLine2Warning(true);
-    }
-  }, []);
+      try {
+        await update(settings._id, { customerInformation: next });
+        stateSnapshotRef.current = buildSnapshot({
+          contactMethod,
+          showOrderTracking,
+          requireSignIn,
+          emailMarketing,
+          emailRegionOption,
+          smsMarketing,
+          selectedRegions,
+          showTipping,
+          presets: [preset1, preset2, preset3],
+          hideTippingUntilChosen,
+          useShippingAsBilling,
+          addToCartLimit,
+          cartLimit,
+          useRecommendedLimit,
+          ...next,
+        });
+        setIsDirty(false);
+      } catch (err: any) {
+        const message =
+          err?.response?.data?.error ||
+          err?.response?.data?.message ||
+          err?.message ||
+          'Failed to save customer information';
+        toast.dismiss();
+        toast.error(message);
+      }
+    },
+    [
+      settings?._id,
+      isInitializing,
+      checkoutLoading,
+      update,
+      buildSnapshot,
+      contactMethod,
+      showOrderTracking,
+      requireSignIn,
+      emailMarketing,
+      emailRegionOption,
+      smsMarketing,
+      selectedRegions,
+      showTipping,
+      preset1,
+      preset2,
+      preset3,
+      hideTippingUntilChosen,
+      useShippingAsBilling,
+      addToCartLimit,
+      cartLimit,
+      useRecommendedLimit,
+    ]
+  );
 
-  const handleShippingPhoneOptionChange = useCallback((value: 'dont_include' | 'optional' | 'required') => {
-    setShippingPhoneOption(value);
-  }, []);
+  const handleFullNameOptionChange = useCallback(
+    (value: 'last_name' | 'first_last') => {
+      setFullNameOption(value);
+      void persistCustomerInformation({
+        fullNameOption: value,
+        companyNameOption,
+        addressLine2Option,
+        shippingPhoneOption,
+      });
+    },
+    [companyNameOption, addressLine2Option, shippingPhoneOption, persistCustomerInformation]
+  );
+
+  const handleCompanyNameOptionChange = useCallback(
+    (value: 'dont_include' | 'optional' | 'required') => {
+      setCompanyNameOption(value);
+      if (value === 'required') {
+        setShowCompanyNameWarning(true);
+      }
+      void persistCustomerInformation({
+        fullNameOption,
+        companyNameOption: value,
+        addressLine2Option,
+        shippingPhoneOption,
+      });
+    },
+    [fullNameOption, addressLine2Option, shippingPhoneOption, persistCustomerInformation]
+  );
+
+  const handleAddressLine2OptionChange = useCallback(
+    (value: 'dont_include' | 'optional' | 'required') => {
+      setAddressLine2Option(value);
+      if (value === 'required') {
+        setShowAddressLine2Warning(true);
+      }
+      void persistCustomerInformation({
+        fullNameOption,
+        companyNameOption,
+        addressLine2Option: value,
+        shippingPhoneOption,
+      });
+    },
+    [fullNameOption, companyNameOption, shippingPhoneOption, persistCustomerInformation]
+  );
+
+  const handleShippingPhoneOptionChange = useCallback(
+    (value: 'dont_include' | 'optional' | 'required') => {
+      setShippingPhoneOption(value);
+      void persistCustomerInformation({
+        fullNameOption,
+        companyNameOption,
+        addressLine2Option,
+        shippingPhoneOption: value,
+      });
+    },
+    [fullNameOption, companyNameOption, addressLine2Option, persistCustomerInformation]
+  );
 
   const handleEmailMarketingChange = useCallback((checked: boolean) => {
     setEmailMarketing(checked);
@@ -471,9 +586,30 @@ const CheckoutSettingsPage: React.FC = () => {
     setHideTippingUntilChosen(checked);
   }, []);
 
-  const handleAddToCartLimitChange = useCallback((checked: boolean) => {
-    setAddToCartLimit(checked);
-  }, []);
+  const handleAddToCartLimitChange = useCallback(
+    async (checked: boolean) => {
+      const previous = addToCartLimit;
+      setAddToCartLimit(checked);
+      if (!settings?._id) return;
+
+      try {
+        await update(settings._id, {
+          addToCartLimit: {
+            enabled: checked,
+            limit: settings.addToCartLimit?.limit ?? null,
+            useRecommended: settings.addToCartLimit?.useRecommended ?? true,
+          },
+        });
+        toast.success(checked ? 'Add-to-cart limit enabled' : 'Add-to-cart limit disabled');
+      } catch (err: any) {
+        setAddToCartLimit(previous);
+        toast.error(
+          err?.response?.data?.message || err?.message || 'Failed to update add-to-cart limit'
+        );
+      }
+    },
+    [addToCartLimit, settings, update]
+  );
 
   const handleUseShippingAsBillingChange = useCallback((checked: boolean) => {
     setUseShippingAsBilling(checked);
@@ -482,6 +618,41 @@ const CheckoutSettingsPage: React.FC = () => {
   const handleUseRecommendedLimitChange = useCallback((checked: boolean) => {
     setUseRecommendedLimit(checked);
   }, []);
+
+  const handleSaveAddToCartLimit = useCallback(async () => {
+    if (!settings?._id) return;
+
+    const parsedLimit = Number(cartLimit);
+    if (
+      !useRecommendedLimit &&
+      (!Number.isInteger(parsedLimit) || parsedLimit < 1)
+    ) {
+      toast.error('Enter a whole-number cart limit of at least 1');
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      await update(settings._id, {
+        addToCartLimit: {
+          enabled: addToCartLimit,
+          limit: useRecommendedLimit ? 50 : parsedLimit,
+          useRecommended: useRecommendedLimit,
+        },
+      });
+      toast.success('Add-to-cart limit saved and synced to your store');
+      setAddToCartLimitModalOpen(false);
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        err?.message ||
+        'Failed to save add-to-cart limit';
+      toast.error(message);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [settings, cartLimit, useRecommendedLimit, update, addToCartLimit]);
 
   const handleRegionTabChange = useCallback((tabId: string) => {
     setRegionTab(tabId as 'all' | 'recommended');
@@ -1287,10 +1458,16 @@ const CheckoutSettingsPage: React.FC = () => {
               Cancel
             </button>
             <button
-              disabled
-              className="px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+              type="button"
+              onClick={() => void handleSaveAddToCartLimit()}
+              disabled={
+                isSaving ||
+                (!useRecommendedLimit &&
+                  (!Number.isInteger(Number(cartLimit)) || Number(cartLimit) < 1))
+              }
+              className="rounded-lg bg-gray-900 px-4 py-2 text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
             >
-              Done
+              {isSaving ? 'Saving…' : 'Done'}
             </button>
           </>
         }
@@ -1319,10 +1496,14 @@ const CheckoutSettingsPage: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500 mb-2 font-medium">Limit</p>
             <input
-              type="text"
+              type="number"
+              min={1}
+              step={1}
               value={cartLimit}
               onChange={(e) => setCartLimit(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              disabled={useRecommendedLimit}
+              placeholder={useRecommendedLimit ? '50' : 'Enter a limit'}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
             />
           </div>
 
