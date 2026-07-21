@@ -7,7 +7,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const backends = [
   { dir: 'server', entry: 'build/index.js' },
-  { dir: 'Ziplofy3b', entry: 'build/index.js' },
+  { dir: 'codiic-server', entry: 'build/index.js' },
 ];
 
 for (const { dir, entry } of backends) {

@@ -8,8 +8,8 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const PACKS = path.join(ROOT, 'Ziplofy', 'src', 'theme-packs');
-const B3 = path.join(ROOT, 'Ziplofy3b', 'src', 'theme-packs');
+const PACKS = path.join(ROOT, 'codiic', 'src', 'theme-packs');
+const B3 = path.join(ROOT, 'codiic-server', 'src', 'theme-packs');
 
 function readJson(p) {
   return JSON.parse(fs.readFileSync(p, 'utf8'));

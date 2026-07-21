@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const root = path.resolve('Ziplofy/src/theme-packs/horizon');
+const root = path.resolve('codiic/src/theme-packs/horizon');
 
 const collectionTemplateSchema = {
   id: 'collection',
@@ -271,4 +271,4 @@ for (const rel of ['theme.schema.json', 'preview/theme.schema.json']) {
 for (const rel of ['theme.default-config.json', 'preview/theme.default-config.json']) {
   patchDefaultConfig(path.join(root, rel));
 }
-patchSectionEditingSupport(path.resolve('Ziplofy/src/theme-editor/section-editing-support.json'));
+patchSectionEditingSupport(path.resolve('codiic/src/theme-editor/section-editing-support.json'));

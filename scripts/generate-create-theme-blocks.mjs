@@ -8,9 +8,9 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const BLOCKS_ROOT = path.join(ROOT, 'Ziplofy', 'src', 'create-theme', 'blocks');
-const MANIFEST_PATH = path.join(ROOT, 'Ziplofy', 'src', 'theme-editor', 'section-add-catalog.manifest.json');
-const EDITING_PATH = path.join(ROOT, 'Ziplofy', 'src', 'theme-editor', 'section-editing-support.json');
+const BLOCKS_ROOT = path.join(ROOT, 'codiic', 'src', 'create-theme', 'blocks');
+const MANIFEST_PATH = path.join(ROOT, 'codiic', 'src', 'theme-editor', 'section-add-catalog.manifest.json');
+const EDITING_PATH = path.join(ROOT, 'codiic', 'src', 'theme-editor', 'section-editing-support.json');
 
 function mapFieldType(t) {
   if (t === 'textarea') return 'textarea';

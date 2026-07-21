@@ -1,24 +1,24 @@
 # Required GitHub Secrets:
-#   RENDER_STORE_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 3.6.64.3 (preview.codiic.com)
+#   FRONTEND_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+# EC2 host (hardcoded): 3.111.196.66 (admin.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/Ziplofy
-# API proxy target (hardcoded): https://backend.codiic.com
 
-name: Deploy Render Store to EC2
+name: Deploy Admin to EC2
 
 on:
   push:
     branches: [main]
     paths:
-      - 'render-store/**'
-      # Bundled via @codiic/create-theme alias — rebuild storefront when runtimes change
-      - 'codiic/src/create-theme/**'
+      - 'admin/**'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin
 
     steps:
       - name: Checkout repository
@@ -30,41 +30,34 @@ jobs:
           # Pin to match EC2 runtime and avoid Node engine mismatch warnings
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: |
-            render-store/package-lock.json
-            codiic/package-lock.json
+          cache-dependency-path: admin/package-lock.json
 
-      - name: Install codiic dependencies (create-theme peer types)
-        working-directory: codiic
+      - name: Install dependencies
         run: npm ci
 
-      - name: Install render-store dependencies
-        working-directory: render-store
-        run: npm ci
-
-      - name: Build render-store
-        working-directory: render-store
+      - name: Build admin
         env:
-          VITE_PROXY_TARGET: https://backend.codiic.com
+          VITE_BACKEND_URL: https://backend.codiic.com/api
+          VITE_SOCKET_URL: https://backend.codiic.com
         run: npm run build
 
       - name: Deploy to EC2
         uses: easingthemes/ssh-deploy@v4
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.RENDER_STORE_EC2_SSH_KEY }}
-          REMOTE_HOST: 3.6.64.3
+          SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
+          REMOTE_HOST: 3.111.196.66
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/Ziplofy
         with:
-          source: 'render-store/'
+          source: 'admin/'
           exclude: 'node_modules'
 
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 3.6.64.3
+          host: 3.111.196.66
           username: ubuntu
-          key: ${{ secrets.RENDER_STORE_EC2_SSH_KEY }}
+          key: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
           # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
           script: |
             set -e
@@ -79,7 +72,5 @@ jobs:
             echo "Using node: $(command -v node) ($(node -v))"
             cd /home/ubuntu/Ziplofy
             npm ci
-            export VITE_PROXY_TARGET="https://backend.codiic.com"
-            export codiic3B_API_UPSTREAM="https://backend.codiic.com"
             pm2 delete all || true
             pm2 start npm -- run preview

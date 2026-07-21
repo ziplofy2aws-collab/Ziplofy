@@ -12,10 +12,10 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
-const SOURCE_PACK = path.join(ROOT, 'Ziplofy', 'src', 'theme-packs', 'horizon');
+const SOURCE_PACK = path.join(ROOT, 'codiic', 'src', 'theme-packs', 'horizon');
 const TARGETS = [
   SOURCE_PACK,
-  path.join(ROOT, 'Ziplofy3b', 'src', 'theme-packs', 'horizon'),
+  path.join(ROOT, 'codiic-server', 'src', 'theme-packs', 'horizon'),
 ];
 
 function readJson(p) {

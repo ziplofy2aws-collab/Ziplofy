@@ -9,9 +9,9 @@ import { resolveCreateThemePreviewVariant } from './section-preview-variant-reso
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const CREATE_THEME = path.join(ROOT, 'Ziplofy', 'src', 'create-theme');
-const MANIFEST_PATH = path.join(ROOT, 'Ziplofy', 'src', 'theme-editor', 'section-add-catalog.manifest.json');
-const EDITING_PATH = path.join(ROOT, 'Ziplofy', 'src', 'theme-editor', 'section-editing-support.json');
+const CREATE_THEME = path.join(ROOT, 'codiic', 'src', 'create-theme');
+const MANIFEST_PATH = path.join(ROOT, 'codiic', 'src', 'theme-editor', 'section-add-catalog.manifest.json');
+const EDITING_PATH = path.join(ROOT, 'codiic', 'src', 'theme-editor', 'section-editing-support.json');
 
 /** Keep hand-tuned previews/presets in these folders (not overwritten). */
 const HANDCRAFTED = new Set(['footer', 'announcement-bar', 'header', 'divider', 'policies-links']);

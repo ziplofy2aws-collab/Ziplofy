@@ -7,7 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const src = path.join(root, 'Ziplofy', 'src', 'create-theme');
+const src = path.join(root, 'codiic', 'src', 'create-theme');
 const dst = path.join(root, 'render-store', 'src', 'create-theme');
 
 const SKIP_DIRS = new Set(['chrome', 'sidebar', 'shell', 'utils']);

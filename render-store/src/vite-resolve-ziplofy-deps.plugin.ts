@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { Plugin } from 'vite';
 
-const ziplofyRoot = path.resolve(__dirname, '../../Ziplofy');
+const ziplofyRoot = path.resolve(__dirname, '../../codiic');
 const renderStoreRoot = path.resolve(__dirname, '..');
 const ziplofyRequire = createRequire(path.join(ziplofyRoot, 'package.json'));
 
@@ -20,8 +20,8 @@ function renderStoreHasPackage(specifier: string): boolean {
 }
 
 /**
- * When bundling @codiic/create-theme sources from ../Ziplofy, resolve bare imports
- * against Ziplofy's node_modules (heroicons, MUI, etc.). Packages already installed
+ * When bundling @codiic/create-theme sources from ../codiic, resolve bare imports
+ * against codiic's node_modules (heroicons, MUI, etc.). Packages already installed
  * in render-store (react, axios, …) are left to Vite's default browser resolution.
  */
 export function resolveZiplofyNodeModules(): Plugin {
@@ -31,7 +31,7 @@ export function resolveZiplofyNodeModules(): Plugin {
     resolveId(source, importer) {
       if (!importer) return null;
       const normalizedImporter = importer.replace(/\\/g, '/');
-      if (!normalizedImporter.includes('/Ziplofy/')) return null;
+      if (!normalizedImporter.includes('/codiic/')) return null;
       if (
         source.startsWith('.') ||
         source.startsWith('\0') ||

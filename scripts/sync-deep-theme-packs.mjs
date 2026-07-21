@@ -10,7 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const PACKS = path.join(ROOT, 'Ziplofy', 'src', 'theme-packs');
+const PACKS = path.join(ROOT, 'codiic', 'src', 'theme-packs');
 
 function readJson(p) {
   return JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -231,7 +231,7 @@ for (const [pack, indexSection, indexLabel] of [
 }
 
 // codiic3b mirror
-const b3 = path.join(ROOT, 'Ziplofy3b', 'src', 'theme-packs');
+const b3 = path.join(ROOT, 'codiic-server', 'src', 'theme-packs');
 for (const pack of ['bloom', 'horizon', 'studio']) {
   for (const file of ['theme.schema.json', 'theme.default-config.json']) {
     fs.copyFileSync(path.join(PACKS, pack, file), path.join(b3, pack, file));

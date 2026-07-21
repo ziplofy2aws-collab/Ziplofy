@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
 import { ThemeConfigProvider, useThemeConfig } from '@/contexts/theme-config.context';
-import { ensureNotFoundPageTemplateBlocks } from '../../../Ziplofy/src/utils/not-found-page-preset.util';
+import { ensureNotFoundPageTemplateBlocks } from '../../../codiic/src/utils/not-found-page-preset.util';
 
 const NOT_FOUND_FALLBACK_SECTIONS = ['not_found_main', 'featured_collection'] as const;
 

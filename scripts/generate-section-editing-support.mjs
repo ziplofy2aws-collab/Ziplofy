@@ -8,8 +8,8 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const SCHEMA_PATH = path.join(ROOT, 'Ziplofy', 'src', 'theme-packs', 'horizon', 'theme.schema.json');
-const OUT_PATH = path.join(ROOT, 'Ziplofy', 'src', 'theme-editor', 'section-editing-support.json');
+const SCHEMA_PATH = path.join(ROOT, 'codiic', 'src', 'theme-packs', 'horizon', 'theme.schema.json');
+const OUT_PATH = path.join(ROOT, 'codiic', 'src', 'theme-editor', 'section-editing-support.json');
 
 /** Panel rules keyed by sectionType → blockId? → nestedId? → panelId */
 const PANEL_RULES = {
@@ -413,7 +413,7 @@ function main() {
 
   const catalog = {
     version: 1,
-    generatedFrom: 'Ziplofy/src/theme-packs/horizon/theme.schema.json',
+    generatedFrom: 'codiic/src/theme-packs/horizon/theme.schema.json',
     generatedAt: new Date().toISOString(),
     description:
       'Global editor support catalog: field definitions and panel rules per section type. Use when building theme sections and when resolving theme editor settings panels.',

@@ -14,10 +14,10 @@
     "paths": {
       "@/*": ["src/*"],
       "@render-store/sdk": ["src/sdk/index.ts"],
-      "@codiic/create-theme": ["../Ziplofy/src/create-theme"],
-      "@codiic/create-theme/*": ["../Ziplofy/src/create-theme/*"],
-      "@codiic/create-theme/runtime": ["../Ziplofy/src/create-theme/runtime/index.ts"],
-      "@codiic/create-theme/runtime/*": ["../Ziplofy/src/create-theme/runtime/*"]
+      "@codiic/create-theme": ["../codiic/src/create-theme"],
+      "@codiic/create-theme/*": ["../codiic/src/create-theme/*"],
+      "@codiic/create-theme/runtime": ["../codiic/src/create-theme/runtime/index.ts"],
+      "@codiic/create-theme/runtime/*": ["../codiic/src/create-theme/runtime/*"]
     },
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,

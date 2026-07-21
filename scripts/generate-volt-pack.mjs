@@ -928,8 +928,8 @@ const manifest = {
 };
 
 for (const dir of [
-  path.join(ROOT, 'Ziplofy', 'src', 'theme-packs', 'volt'),
-  path.join(ROOT, 'Ziplofy3b', 'src', 'theme-packs', 'volt'),
+  path.join(ROOT, 'codiic', 'src', 'theme-packs', 'volt'),
+  path.join(ROOT, 'codiic-server', 'src', 'theme-packs', 'volt'),
 ]) {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'theme.schema.json'), JSON.stringify(schema, null, 2) + '\n');

@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 /* Scan shared checkout/theme UI from codiic so Tailwind generates all utility classes. */
-@source "../../Ziplofy/src/create-theme";
+@source "../../codiic/src/create-theme";
 @source "./";
 
-@import "../../Ziplofy/src/create-theme/checkout/checkout-storefront.css";
+@import "../../codiic/src/create-theme/checkout/checkout-storefront.css";
 
 :root {
   --ivory-white: #f7f6f4;

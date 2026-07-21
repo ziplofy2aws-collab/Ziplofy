@@ -113,8 +113,8 @@ const defaultSettingsPatch = {
 
 const packs = ['bloom', 'horizon', 'studio'];
 const roots = [
-  path.join(root, 'Ziplofy', 'src', 'theme-packs'),
-  path.join(root, 'Ziplofy3b', 'src', 'theme-packs'),
+  path.join(root, 'codiic', 'src', 'theme-packs'),
+  path.join(root, 'codiic-server', 'src', 'theme-packs'),
 ];
 
 for (const packsRoot of roots) {

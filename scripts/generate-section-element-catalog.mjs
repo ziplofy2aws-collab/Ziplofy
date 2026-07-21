@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const THEME_EDITOR = path.join(ROOT, 'Ziplofy', 'src', 'theme-editor');
+const THEME_EDITOR = path.join(ROOT, 'codiic', 'src', 'theme-editor');
 const EDITING_PATH = path.join(THEME_EDITOR, 'section-editing-support.json');
 const MANIFEST_PATH = path.join(THEME_EDITOR, 'section-add-catalog.manifest.json');
 const OUT_PATH = path.join(THEME_EDITOR, 'section-element-catalog.json');

@@ -100,7 +100,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@render-store/sdk': path.resolve(__dirname, 'src/sdk/index.ts'),
-      '@codiic/create-theme': path.resolve(__dirname, '../Ziplofy/src/create-theme'),
+      '@codiic/create-theme': path.resolve(__dirname, '../codiic/src/create-theme'),
     },
   },
   optimizeDeps: {

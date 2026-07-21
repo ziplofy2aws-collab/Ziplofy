@@ -1,18 +1,16 @@
 # Required GitHub Secrets:
-#   codiic_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 15.206.139.103 (dashboard.codiic.com)
+#   codiic3B_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+# EC2 host (hardcoded): 15.207.160.239 (backend.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/Ziplofy
-#   VITE_GOOGLE_CLIENT_ID  - Optional; only if dashboard uses Google OAuth directly
 
-name: Deploy codiic to EC2
+name: Deploy codiic3b to EC2
 
 on:
   push:
     branches: [main]
     paths:
-      - 'codiic/**'
-      - 'render-store/**'
+      - 'codiic-server/**'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
@@ -20,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: codiic
+        working-directory: codiic-server
 
     steps:
       - name: Checkout repository
@@ -31,45 +29,31 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: |
-            codiic/package-lock.json
-            render-store/package-lock.json
+          cache-dependency-path: codiic-server/package-lock.json
 
-      - name: Install codiic dependencies
-        working-directory: codiic
+      - name: Install dependencies
         run: npm ci
 
-      - name: Install render-store dependencies
-        working-directory: render-store
-        run: npm ci
-
-      - name: Build codiic
-        working-directory: codiic
-        env:
-          VITE_APP_ENV: production
-          VITE_API_URL: https://backend.codiic.com/api
-          VITE_SOCKET_URL: https://backend.codiic.com
-          VITE_AUTH_MICROSERVICE_FRONTEND_URL: https://auth.codiic.com
-          VITE_RENDER_STORE_ORIGIN: https://preview.codiic.com
+      - name: Build codiic3b
         run: npm run build
 
       - name: Deploy to EC2
         uses: easingthemes/ssh-deploy@v4
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.codiic_EC2_SSH_KEY }}
-          REMOTE_HOST: 15.206.139.103
+          SSH_PRIVATE_KEY: ${{ secrets.codiic3B_EC2_SSH_KEY }}
+          REMOTE_HOST: 15.207.160.239
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/Ziplofy
         with:
-          source: 'codiic/'
+          source: 'codiic-server/'
           exclude: 'node_modules'
 
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 15.206.139.103
+          host: 15.207.160.239
           username: ubuntu
-          key: ${{ secrets.codiic_EC2_SSH_KEY }}
+          key: ${{ secrets.codiic3B_EC2_SSH_KEY }}
           script: |
             set -e
             if [ -f "$HOME/.nvm/nvm.sh" ]; then
@@ -84,4 +68,4 @@ jobs:
             cd /home/ubuntu/Ziplofy
             npm ci
             pm2 delete all || true
-            pm2 start npm -- run preview
+            pm2 start npm -- run start

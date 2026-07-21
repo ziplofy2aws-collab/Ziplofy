@@ -4,7 +4,7 @@ import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
 import { ThemeConfigProvider, useThemeConfig } from '@/contexts/theme-config.context';
 import { shouldUseComposerRuntime } from '../utils/themeComposer';
 import { useStorefront } from '../contexts/store.context';
-import { ensurePasswordPageTemplateBlocks } from '../../../Ziplofy/src/utils/password-page-preset.util';
+import { ensurePasswordPageTemplateBlocks } from '../../../codiic/src/utils/password-page-preset.util';
 import { StorePasswordGate } from './StorePasswordGate';
 
 function ComposerPasswordPage() {

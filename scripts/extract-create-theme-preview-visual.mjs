@@ -9,14 +9,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const addModal = path.join(
   ROOT,
-  'Ziplofy/src/components/themes/theme-editor-sidebar/AddSectionModal.tsx'
+  'codiic/src/components/themes/theme-editor-sidebar/AddSectionModal.tsx'
 );
 const blockCatalog = path.join(
   ROOT,
-  'Ziplofy/src/components/themes/theme-editor-sidebar/add-block-catalog.ts'
+  'codiic/src/components/themes/theme-editor-sidebar/add-block-catalog.ts'
 );
-const outVisual = path.join(ROOT, 'Ziplofy/src/create-theme/_shared/SectionPreviewVisual.tsx');
-const outSlides = path.join(ROOT, 'Ziplofy/src/create-theme/_shared/section-preview-slides.ts');
+const outVisual = path.join(ROOT, 'codiic/src/create-theme/_shared/SectionPreviewVisual.tsx');
+const outSlides = path.join(ROOT, 'codiic/src/create-theme/_shared/section-preview-slides.ts');
 
 const modalLines = fs.readFileSync(addModal, 'utf8').split('\n');
 const helpers = modalLines.slice(220, 557).join('\n');
