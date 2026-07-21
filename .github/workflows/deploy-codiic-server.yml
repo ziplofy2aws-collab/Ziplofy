@@ -1,5 +1,5 @@
 # Required GitHub Secrets:
-#   codiic3B_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+#   CODIIC_SERVER_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
 # EC2 host (hardcoded): 15.207.160.239 (backend.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/Ziplofy
@@ -40,7 +40,7 @@ jobs:
       - name: Deploy to EC2
         uses: easingthemes/ssh-deploy@v4
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.codiic3B_EC2_SSH_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY }}
           REMOTE_HOST: 15.207.160.239
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/Ziplofy
@@ -53,7 +53,7 @@ jobs:
         with:
           host: 15.207.160.239
           username: ubuntu
-          key: ${{ secrets.codiic3B_EC2_SSH_KEY }}
+          key: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY }}
           script: |
             set -e
             if [ -f "$HOME/.nvm/nvm.sh" ]; then

@@ -1,5 +1,5 @@
 # Required GitHub Secrets:
-#   FRONTEND_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+#   ADMIN_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
 # EC2 host (hardcoded): 3.111.196.66 (admin.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/Ziplofy
@@ -44,7 +44,7 @@ jobs:
       - name: Deploy to EC2
         uses: easingthemes/ssh-deploy@v4
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.ADMIN_EC2_SSH_KEY }}
           REMOTE_HOST: 3.111.196.66
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/Ziplofy
@@ -57,7 +57,7 @@ jobs:
         with:
           host: 3.111.196.66
           username: ubuntu
-          key: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
+          key: ${{ secrets.ADMIN_EC2_SSH_KEY }}
           # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
           script: |
             set -e
