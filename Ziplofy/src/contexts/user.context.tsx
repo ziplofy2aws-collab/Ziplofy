@@ -53,8 +53,10 @@ export const UserProvider = ({ children }:{children: React.ReactNode}) => {
 
   const fetchLoggedInUser = useCallback(async () => {
     try {
-     const {data} = await axiosi.get<SecureUserInfo>('/auth/me');
-      setLoggedInUser(data);
+      // The backend may return the user either raw or wrapped as { success, data }.
+      const { data } = await axiosi.get<SecureUserInfo | { success: boolean; data: SecureUserInfo }>('/auth/me');
+      const user = data && typeof data === 'object' && 'data' in data ? data.data : (data as SecureUserInfo);
+      setLoggedInUser(user);
     } catch (err: any) {
       console.error('Error fetching user:', err);
       

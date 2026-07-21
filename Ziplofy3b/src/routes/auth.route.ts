@@ -11,8 +11,14 @@ import {
   verifyAdminLoginOtp,
 } from "../controllers/auth.controller";
 import { protect } from "../middlewares/auth.middleware";
+import { googleAuth, login, register } from "../controllers/codiic-auth.controller";
 
 export const authRouter = Router();
+
+// Client (store-owner) auth — merged in from the former standalone `server` service.
+authRouter.post("/register", register);
+authRouter.post("/login", login);
+authRouter.post("/google", googleAuth);
 
 authRouter.get("/me", protect, getMe);
 authRouter.post("/logout", protect, adminLogout);
