@@ -337,7 +337,7 @@ app.use("/api/storefront", storefrontRouter);
 // Routes
 app.get('/', (req: Request, res: Response) => {
   res.status(200).json({ 
-    message: 'codiic3b Server is running!',
+    message: 'codiic3b Server is running! ci cd updated!!!!!',
     status: 'ok',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
