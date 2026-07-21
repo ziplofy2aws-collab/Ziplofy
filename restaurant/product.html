@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savoria — Truffle Pasta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=3">
+  <link rel="stylesheet" href="assets/css/product.css?v=1">
+</head>
+
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-container">
+
+      <!-- Logo -->
+      <a href="index.html" class="brand" aria-label="Savoria — Fine Dining home">
+        <img src="assets/img/logo.png" alt="Savoria Fine Dining" class="brand-logo">
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="main-nav" aria-label="Primary">
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">About Us</a></li>
+          <li class="nav-item"><a href="menu.html" class="nav-link active">Menu</a></li>
+          <li class="nav-item"><a href="reservation.html" class="nav-link">Reservation</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Gallery</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Blog</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="header-actions">
+
+        <button type="button" class="icon-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+
+        <button type="button" class="icon-btn notification-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="notification-badge">2</span>
+        </button>
+
+        <a href="#" class="book-btn">Book A Table</a>
+
+        <!-- Mobile menu toggle -->
+        <button type="button" class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" id="menuToggle">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+      <ul class="mobile-nav-menu">
+        <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+        <li><a href="#" class="mobile-nav-link">About Us</a></li>
+        <li><a href="menu.html" class="mobile-nav-link active">Menu</a></li>
+        <li><a href="reservation.html" class="mobile-nav-link">Reservation</a></li>
+        <li><a href="#" class="mobile-nav-link">Gallery</a></li>
+        <li><a href="#" class="mobile-nav-link">Blog</a></li>
+        <li><a href="#" class="mobile-nav-link">Contact</a></li>
+      </ul>
+      <a href="#" class="book-btn book-btn-mobile">Book A Table</a>
+    </nav>
+  </header>
+
+  <!-- Breadcrumb -->
+  <nav class="pd-breadcrumb" aria-label="Breadcrumb">
+    <div class="pd-breadcrumb-inner">
+      <a href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9.5 12 3l9 6.5" />
+          <path d="M5 10v10h14V10" />
+          <path d="M9 20v-6h6v6" />
+        </svg>
+        Home
+      </a>
+      <svg class="pd-crumb-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+      <a href="menu.html">Menu</a>
+      <svg class="pd-crumb-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+      <a href="menu.html">Main Course</a>
+      <svg class="pd-crumb-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+      <span class="current">Grilled Salmon</span>
+    </div>
+  </nav>
+
+  <!-- Product Details -->
+  <section class="pd-main">
+    <div class="pd-container">
+
+      <!-- Gallery -->
+      <div class="pd-gallery">
+        <div class="pd-main-img">
+          <span class="pd-badge">Best Seller</span>
+          <img src="assets/img/menu-1.png" alt="Grilled Salmon" id="productMainImg">
+          <button type="button" class="pd-wish" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="pd-thumbs-wrap">
+          <button type="button" class="pd-thumb-nav" id="pdThumbPrev" aria-label="Previous images">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div class="pd-thumbs" id="productThumbs">
+            <button type="button" class="pd-thumb active" data-img="assets/img/menu-1.png" aria-label="View image 1">
+              <img src="assets/img/menu-1.png" alt="Grilled Salmon view 1">
+            </button>
+            <button type="button" class="pd-thumb" data-img="assets/img/menu-3.png" aria-label="View image 2">
+              <img src="assets/img/menu-3.png" alt="Grilled Salmon view 2">
+            </button>
+            <button type="button" class="pd-thumb" data-img="assets/img/menu-6.png" aria-label="View image 3">
+              <img src="assets/img/menu-6.png" alt="Grilled Salmon view 3">
+            </button>
+            <button type="button" class="pd-thumb" data-img="assets/img/menu-4.png" aria-label="View image 4">
+              <img src="assets/img/menu-4.png" alt="Grilled Salmon view 4">
+            </button>
+          </div>
+          <button type="button" class="pd-thumb-nav" id="pdThumbNext" aria-label="More images">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="pd-info">
+
+        <div class="pd-info-head">
+          <h1 class="pd-title">Grilled Salmon</h1>
+          <div class="pd-top-actions">
+            <button type="button" class="pd-icon-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+              Share
+            </button>
+            <button type="button" class="pd-icon-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+              Add to Wishlist
+            </button>
+          </div>
+        </div>
+
+        <div class="pd-meta-row">
+          <div class="pd-rating">
+            <span class="pd-stars" aria-label="Rated 4.8 out of 5">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M22 9.27l-6.91-1.01L12 2v15.77l6.18 3.25L17 14.14 22 9.27z" />
+              </svg>
+            </span>
+            <strong class="pd-rate-num">4.8</strong>
+            <span class="pd-rate-count">(124 Reviews)</span>
+          </div>
+          <div class="pd-orders">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M13.5 1s1.5 2 1.5 4c0 1.5-1 2.5-2 3.5S11 12 11 13.5c0 1.4 1.1 2.5 2.5 2.5.8 0 1.5-.4 2-1 .3 3-1.8 5-4.5 5-2.8 0-5-2.2-5-5 0-3 2-4.5 3.5-6.5S13.5 4 13.5 1z" />
+            </svg>
+            <span>250+ orders this week</span>
+          </div>
+        </div>
+
+        <p class="pd-desc">
+          Fresh salmon grilled to perfection with aromatic herbs, lemon butter
+          sauce, and a side of seasonal vegetables.
+        </p>
+
+        <div class="pd-price">$24.99</div>
+
+        <div class="pd-features">
+          <div class="pd-feature">
+            <span class="pd-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="13" r="8" />
+                <path d="M12 9v4l2 2" />
+                <path d="M5 3 2 6" />
+                <path d="m22 6-3-3" />
+              </svg>
+            </span>
+            <div class="pd-feature-text">
+              <strong>20-25 Min</strong>
+              <span>Preparation</span>
+            </div>
+          </div>
+          <div class="pd-feature">
+            <span class="pd-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M8.5 8.5c0-3 2-5.5 3.5-6.5 0 2 1 3 2 4s2 2 2 4a3.5 3.5 0 0 1-7 0" />
+                <path d="M12 22a7 7 0 0 1-7-7c0-2 1-3.5 2-4.5" />
+                <path d="M12 22a7 7 0 0 0 7-7c0-1-.3-2-.8-2.8" />
+              </svg>
+            </span>
+            <div class="pd-feature-text">
+              <strong>520 Cal</strong>
+              <span>Calories</span>
+            </div>
+          </div>
+          <div class="pd-feature">
+            <span class="pd-feature-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+              </svg>
+            </span>
+            <div class="pd-feature-text">
+              <strong>Medium</strong>
+              <span>Spicy Level</span>
+            </div>
+          </div>
+          <div class="pd-feature">
+            <span class="pd-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M20 8c-1.5-2-4-3-6.5-2.5C11 6 9.5 8 9 10c-2 .5-4 2-4.5 4.5C4 17 5 19.5 7 21c1-1.5 2.5-2.5 4.5-3 2-.5 4-2 5-4s2-4 3.5-6z" />
+              </svg>
+            </span>
+            <div class="pd-feature-text">
+              <strong>High</strong>
+              <span>Protein</span>
+            </div>
+          </div>
+        </div>
+
+        <span class="pd-qty-label">Choose Quantity</span>
+        <div class="pd-buy-row">
+          <div class="qty-selector">
+            <button type="button" class="qty-btn" id="qtyMinus" aria-label="Decrease quantity">−</button>
+            <input type="number" class="qty-value" id="qtyValue" value="1" min="1" aria-label="Quantity">
+            <button type="button" class="qty-btn" id="qtyPlus" aria-label="Increase quantity">+</button>
+          </div>
+          <button type="button" class="pd-cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            Add to Cart
+          </button>
+          <button type="button" class="pd-buynow">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M13 2 3 14h7l-1 8 10-12h-7z" />
+            </svg>
+            Buy Now
+          </button>
+        </div>
+
+        <div class="pd-spicier">
+          <div class="pd-spicier-text">
+            <h4>Want it Spicier?</h4>
+            <p>We can make it spicier according to your taste.</p>
+          </div>
+          <button type="button" class="pd-spicier-btn">Add Special Instruction</button>
+          <span class="pd-spicier-chili" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+            </svg>
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Description Tabs -->
+  <section class="pd-tabs-section">
+    <div class="pd-tabs-card">
+      <span class="pd-leaf" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="currentColor">
+          <path
+            d="M58 6C40 6 24 12 16 26c-4 7-5 15-3 22 6-12 16-20 30-24-11 6-19 15-24 27 8 4 18 3 26-2C56 40 60 22 58 6z" />
+          <path d="M6 40c0-2 .5-4 1.2-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </span>
+
+      <div class="pd-tabnav" role="tablist">
+        <button type="button" class="pd-tab active" data-tab="description" role="tab">Description</button>
+        <button type="button" class="pd-tab" data-tab="ingredients" role="tab">Ingredients</button>
+        <button type="button" class="pd-tab" data-tab="nutrition" role="tab">Nutrition Info</button>
+        <button type="button" class="pd-tab" data-tab="reviews" role="tab">Reviews (124)</button>
+      </div>
+
+      <!-- Description panel -->
+      <div class="pd-tabpanel active" data-panel="description">
+        <div class="pd-desc-grid">
+
+          <div class="pd-desc-col">
+            <p class="pd-desc-text">
+              Our grilled salmon is a perfect blend of freshness and flavor. The
+              salmon is marinated in a special blend of herbs and spices, then
+              grilled to perfection and served with lemon butter sauce and
+              seasonal vegetables.
+            </p>
+            <ul class="pd-checklist">
+              <li><span class="pd-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></span>Fresh, sustainably sourced salmon</li>
+              <li><span class="pd-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></span>Marinated with herbs and spices for maximum flavor</li>
+              <li><span class="pd-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></span>Grilled to perfection</li>
+              <li><span class="pd-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></span>Served with seasonal vegetables</li>
+              <li><span class="pd-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg></span>Gluten-free option available</li>
+            </ul>
+          </div>
+
+          <div class="pd-side-card">
+            <h4 class="pd-side-title">Ingredients</h4>
+            <ul class="pd-ing-list">
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M6.5 12c3-5 8-6 13-6-1 4-3 9-9 11-2 .7-4 .3-5.5-1" />
+                    <path d="M6.5 12c-1.5-1-2.5-1-4-1 .5 2 .5 3 1 4.5" />
+                    <circle cx="16" cy="9" r="1" />
+                  </svg></span>Fresh Salmon</li>
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2s6 7 6 12a6 6 0 0 1-12 0c0-5 6-12 6-12z" />
+                  </svg></span>Lemon Butter Sauce</li>
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3c-1 2-1 4 0 5" />
+                    <path d="M12 8c-3 0-5 3-5 7a5 5 0 0 0 10 0c0-4-2-7-5-7z" />
+                  </svg></span>Garlic</li>
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M11 20A7 7 0 0 1 4 13h14a7 7 0 0 1-7 7z" />
+                    <path d="M12 13V4" />
+                    <path d="M12 8c2 0 4-1 5-3" />
+                  </svg></span>Fresh Herbs</li>
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="14" r="7" />
+                    <path d="M12 7c0-2 1-4 4-4" />
+                  </svg></span>Cherry Tomatoes</li>
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M6 21c0-6 3-11 8-15" />
+                    <path d="M9 21c0-5 2-9 6-13" />
+                    <path d="M14 6c2-2 4-3 6-3-.3 2-1 4-2 5" />
+                  </svg></span>Asparagus</li>
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2s5 6 5 11a5 5 0 0 1-10 0c0-5 5-11 5-11z" />
+                  </svg></span>Olive Oil</li>
+              <li><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M9 8V5a3 3 0 0 1 6 0v3" />
+                    <path d="M7 8h10l-1 13H8z" />
+                  </svg></span>Sea Salt &amp; Black Pepper</li>
+            </ul>
+          </div>
+
+          <div class="pd-side-card">
+            <ul class="pd-features-list">
+              <li>
+                <span class="pd-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3l2 4 4 .5-3 3 .8 4.2L12 16l-3.8 1.7L9 13l-3-3 4-.5z" />
+                  </svg></span>
+                <div class="pd-feat-text"><strong>100% Fresh Ingredients</strong><span>Sourced daily from local
+                    farms</span></div>
+              </li>
+              <li>
+                <span class="pd-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="9" r="6" />
+                    <path d="M9 14l-1 7 4-2 4 2-1-7" />
+                  </svg></span>
+                <div class="pd-feat-text"><strong>Expertly Crafted</strong><span>By our award-winning chefs</span></div>
+              </li>
+              <li>
+                <span class="pd-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z" />
+                    <polyline points="9 12 11 14 15 10" />
+                  </svg></span>
+                <div class="pd-feat-text"><strong>Hygienic &amp; Safe</strong><span>Prepared in clean environment</span>
+                </div>
+              </li>
+              <li>
+                <span class="pd-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="1" y="6" width="13" height="10" rx="1" />
+                    <path d="M14 9h4l3 3v4h-7z" />
+                    <circle cx="6" cy="18" r="1.6" />
+                    <circle cx="18" cy="18" r="1.6" />
+                  </svg></span>
+                <div class="pd-feat-text"><strong>Fast Delivery</strong><span>On-time delivery to your door</span></div>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ingredients panel -->
+      <div class="pd-tabpanel" data-panel="ingredients" hidden>
+        <p class="pd-desc-text">Every plate is prepared with hand-picked, premium ingredients for a truly memorable
+          meal.</p>
+        <div class="pd-ing-grid">
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6.5 12c3-5 8-6 13-6-1 4-3 9-9 11-2 .7-4 .3-5.5-1" />
+                <path d="M6.5 12c-1.5-1-2.5-1-4-1 .5 2 .5 3 1 4.5" />
+                <circle cx="16" cy="9" r="1" />
+              </svg></span>Fresh Salmon</div>
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2s6 7 6 12a6 6 0 0 1-12 0c0-5 6-12 6-12z" />
+              </svg></span>Lemon Butter Sauce</div>
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3c-1 2-1 4 0 5" />
+                <path d="M12 8c-3 0-5 3-5 7a5 5 0 0 0 10 0c0-4-2-7-5-7z" />
+              </svg></span>Garlic</div>
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 20A7 7 0 0 1 4 13h14a7 7 0 0 1-7 7z" />
+                <path d="M12 13V4" />
+                <path d="M12 8c2 0 4-1 5-3" />
+              </svg></span>Fresh Herbs</div>
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="14" r="7" />
+                <path d="M12 7c0-2 1-4 4-4" />
+              </svg></span>Cherry Tomatoes</div>
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 21c0-6 3-11 8-15" />
+                <path d="M9 21c0-5 2-9 6-13" />
+                <path d="M14 6c2-2 4-3 6-3-.3 2-1 4-2 5" />
+              </svg></span>Asparagus</div>
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2s5 6 5 11a5 5 0 0 1-10 0c0-5 5-11 5-11z" />
+              </svg></span>Olive Oil</div>
+          <div class="pd-ing-chip"><span class="pd-ing-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 8V5a3 3 0 0 1 6 0v3" />
+                <path d="M7 8h10l-1 13H8z" />
+              </svg></span>Sea Salt &amp; Black Pepper</div>
+        </div>
+      </div>
+
+      <!-- Nutrition panel -->
+      <div class="pd-tabpanel" data-panel="nutrition" hidden>
+        <p class="pd-desc-text">Nutritional values per serving. A wholesome, protein-rich dish balanced for a healthy
+          lifestyle.</p>
+        <div class="pd-nutri-grid">
+          <div class="pd-nutri-item"><strong>520</strong><span>Calories (kcal)</span></div>
+          <div class="pd-nutri-item"><strong>42 g</strong><span>Protein</span></div>
+          <div class="pd-nutri-item"><strong>12 g</strong><span>Carbs</span></div>
+          <div class="pd-nutri-item"><strong>28 g</strong><span>Total Fat</span></div>
+          <div class="pd-nutri-item"><strong>6 g</strong><span>Saturated Fat</span></div>
+          <div class="pd-nutri-item"><strong>3 g</strong><span>Fiber</span></div>
+          <div class="pd-nutri-item"><strong>1 g</strong><span>Sugar</span></div>
+          <div class="pd-nutri-item"><strong>480 mg</strong><span>Sodium</span></div>
+        </div>
+      </div>
+
+      <!-- Reviews panel -->
+      <div class="pd-tabpanel" data-panel="reviews" hidden>
+        <div class="pd-reviews">
+          <div class="pd-reviews-summary">
+            <div class="pd-reviews-score">
+              <strong>4.8</strong>
+              <span class="pd-stars">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M22 9.27l-6.91-1.01L12 2v15.77l6.18 3.25L17 14.14 22 9.27z" />
+                </svg>
+              </span>
+              <small>Based on 124 reviews</small>
+            </div>
+          </div>
+          <div class="pd-review-list">
+            <div class="pd-review">
+              <div class="pd-review-head">
+                <span class="pd-review-avatar">EM</span>
+                <div>
+                  <strong>Emily Morgan</strong>
+                  <span class="pd-review-stars">★★★★★</span>
+                </div>
+                <span class="pd-review-date">2 days ago</span>
+              </div>
+              <p>Absolutely delicious! The salmon was cooked perfectly and the lemon butter sauce was divine.</p>
+            </div>
+            <div class="pd-review">
+              <div class="pd-review-head">
+                <span class="pd-review-avatar">JD</span>
+                <div>
+                  <strong>James Dawson</strong>
+                  <span class="pd-review-stars">★★★★<span class="off">★</span></span>
+                </div>
+                <span class="pd-review-date">1 week ago</span>
+              </div>
+              <p>Great flavor and fresh ingredients. Generous portion and quick delivery. Will order again.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Reviews & Related -->
+  <section class="pd-community">
+    <div class="pd-community-grid">
+
+      <!-- Customer Reviews -->
+      <div class="cr-card">
+        <div class="cr-head">
+          <h2 class="cr-title">Customer Reviews</h2>
+          <button type="button" class="cr-write">Write a Review</button>
+        </div>
+
+        <div class="cr-overview">
+          <div class="cr-score">
+            <strong class="cr-score-num">4.8</strong>
+            <span class="cr-score-stars" aria-label="Rated 4.8 out of 5">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M22 9.27l-6.91-1.01L12 2v15.77l6.18 3.25L17 14.14 22 9.27z" />
+              </svg>
+            </span>
+            <small>Based on 124 reviews</small>
+          </div>
+
+          <div class="cr-bars">
+            <div class="cr-bar"><span class="cr-bar-label">5 Star</span><span class="cr-bar-track"><span
+                  style="width:86%"></span></span><span class="cr-bar-pct">86%</span></div>
+            <div class="cr-bar"><span class="cr-bar-label">4 Star</span><span class="cr-bar-track"><span
+                  style="width:10%"></span></span><span class="cr-bar-pct">10%</span></div>
+            <div class="cr-bar"><span class="cr-bar-label">3 Star</span><span class="cr-bar-track"><span
+                  style="width:3%"></span></span><span class="cr-bar-pct">3%</span></div>
+            <div class="cr-bar"><span class="cr-bar-label">2 Star</span><span class="cr-bar-track"><span
+                  style="width:1%"></span></span><span class="cr-bar-pct">1%</span></div>
+            <div class="cr-bar"><span class="cr-bar-label">1 Star</span><span class="cr-bar-track"><span
+                  style="width:0%"></span></span><span class="cr-bar-pct">0%</span></div>
+          </div>
+        </div>
+
+        <div class="cr-list">
+          <div class="cr-review">
+            <div class="cr-review-head">
+              <img src="assets/img/insta-1.png" alt="Emily R." class="cr-avatar">
+              <div class="cr-review-meta">
+                <strong>Emily R.</strong>
+                <span class="cr-review-stars">★★★★★</span>
+              </div>
+              <span class="cr-review-date">2 days ago</span>
+            </div>
+            <p>Absolutely amazing! The salmon was cooked perfectly and the vegetables were outstanding.</p>
+            <button type="button" class="cr-like">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z" />
+                <path d="M7 11l4-8a2 2 0 0 1 2.7 1.8V8h5a2 2 0 0 1 2 2.3l-1.2 7A2 2 0 0 1 19.5 20H7" />
+              </svg>
+              12
+            </button>
+          </div>
+
+          <div class="cr-review">
+            <div class="cr-review-head">
+              <img src="assets/img/insta-2.png" alt="Michael T." class="cr-avatar">
+              <div class="cr-review-meta">
+                <strong>Michael T.</strong>
+                <span class="cr-review-stars">★★★★★</span>
+              </div>
+              <span class="cr-review-date">1 week ago</span>
+            </div>
+            <p>One of the best salmon dishes I've ever had. The vegetables were fresh and well-seasoned.</p>
+            <button type="button" class="cr-like">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z" />
+                <path d="M7 11l4-8a2 2 0 0 1 2.7 1.8V8h5a2 2 0 0 1 2 2.3l-1.2 7A2 2 0 0 1 19.5 20H7" />
+              </svg>
+              8
+            </button>
+          </div>
+
+          <div class="cr-review">
+            <div class="cr-review-head">
+              <img src="assets/img/insta-3.png" alt="Sophia L." class="cr-avatar">
+              <div class="cr-review-meta">
+                <strong>Sophia L.</strong>
+                <span class="cr-review-stars">★★★★★</span>
+              </div>
+              <span class="cr-review-date">2 weeks ago</span>
+            </div>
+            <p>Great portion size and incredible flavor. Highly recommend!</p>
+            <button type="button" class="cr-like">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z" />
+                <path d="M7 11l4-8a2 2 0 0 1 2.7 1.8V8h5a2 2 0 0 1 2 2.3l-1.2 7A2 2 0 0 1 19.5 20H7" />
+              </svg>
+              6
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- You Might Also Like -->
+      <div class="yml-card">
+        <div class="yml-head">
+          <h2 class="yml-title">You Might Also Like</h2>
+          <div class="yml-nav">
+            <button type="button" class="yml-arrow" id="ymlPrev" aria-label="Previous">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button type="button" class="yml-arrow" id="ymlNext" aria-label="Next">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="yml-track" id="ymlTrack">
+
+          <article class="mp-card">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-2.png" alt="Truffle Pasta"></a>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Truffle Pasta</a></h3>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.7</span>
+                <span class="mp-rate-count">(98)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$18.50</span>
+                <button type="button" class="mp-add" aria-label="Add Truffle Pasta">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-4.png" alt="Lobster Thermidor"></a>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Lobster Thermidor</a></h3>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.8</span>
+                <span class="mp-rate-count">(92)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$39.99</span>
+                <button type="button" class="mp-add" aria-label="Add Lobster Thermidor">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/SD-5.png" alt="Chicken Supreme"></a>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Chicken Supreme</a></h3>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.6</span>
+                <span class="mp-rate-count">(76)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$19.99</span>
+                <button type="button" class="mp-add" aria-label="Add Chicken Supreme">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-top">
+
+      <div class="footer-col footer-brand">
+        <a href="index.html" class="footer-logo">
+          <img src="assets/img/logo.png" alt="Savoria Fine Dining">
+        </a>
+        <p class="footer-about">
+          Savoria is a fine dining restaurant that offers an unforgettable
+          culinary journey with a perfect blend of taste, ambiance, and
+          hospitality.
+        </p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M14 9h3V5h-3c-2.2 0-4 1.8-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9c0-.6.4-1 1-1z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.3 11.3 0 0 1 3.8 4.5a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.8-.5v.1a4 4 0 0 0 3.2 3.9c-.6.2-1.2.2-1.8.1a4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.4-6.1 11.4-11.4v-.5c.8-.6 1.5-1.3 2-2z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Pinterest">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 2a10 10 0 0 0-3.6 19.3c-.1-.8-.2-2 0-2.9l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.4 1.8-2.4.9 0 1.3.6 1.3 1.4 0 .9-.5 2.2-.8 3.4-.2 1 .5 1.8 1.5 1.8 1.8 0 3.1-2.3 3.1-5 0-2.1-1.4-3.6-3.9-3.6a4.5 4.5 0 0 0-4.7 4.5c0 .9.3 1.5.8 2 .1.1.1.2.1.4l-.3 1.1c0 .2-.2.3-.4.2-1.2-.5-1.7-1.9-1.7-3.4 0-2.5 2.1-5.5 6.3-5.5 3.4 0 5.6 2.4 5.6 5.1 0 3.4-1.9 6-4.8 6-1 0-1.9-.5-2.2-1.1l-.6 2.4c-.2.8-.7 1.7-1.1 2.3A10 10 0 1 0 12 2z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="#">Reservation</a></li>
+          <li><a href="#">Gallery</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Our Menu</h3>
+        <ul class="footer-links">
+          <li><a href="menu.html">Main Course</a></li>
+          <li><a href="menu.html">Appetizers</a></li>
+          <li><a href="menu.html">Beverages</a></li>
+          <li><a href="menu.html">Desserts</a></li>
+          <li><a href="menu.html">Seafood</a></li>
+          <li><a href="menu.html">Salads</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Contact Info</h3>
+        <ul class="footer-contact">
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </span>
+            <span>123 Flavor Street,<br>New York, NY 10001</span>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            </span>
+            <a href="tel:+12345678900">+1 234 567 8900</a>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="m22 7-10 5L2 7" />
+              </svg>
+            </span>
+            <a href="mailto:info@savoria.com">info@savoria.com</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Opening Hours</h3>
+        <ul class="footer-hours">
+          <li>
+            <span class="hours-days">Monday - Friday</span>
+            <span class="hours-time">8:00 AM - 11:00 PM</span>
+          </li>
+          <li>
+            <span class="hours-days">Saturday - Sunday</span>
+            <span class="hours-time">9:00 AM - 12:00 AM</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <span class="legal-sep">|</span>
+        <a href="#">Terms &amp; Conditions</a>
+      </div>
+      <div class="footer-payments">
+        <span class="pay-badge pay-visa">VISA</span>
+        <span class="pay-badge pay-mc" aria-label="Mastercard">
+          <span class="mc-circle mc-red"></span>
+          <span class="mc-circle mc-yellow"></span>
+        </span>
+        <span class="pay-badge pay-paypal">PayPal</span>
+        <span class="pay-badge pay-apple">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.3-.1 0-2.1-.8-2.2-3.1zM14.4 6.3c.5-.7.9-1.6.8-2.6-.8 0-1.8.6-2.4 1.2-.5.6-1 1.5-.8 2.4.9.1 1.8-.4 2.4-1z" />
+          </svg>
+          <span>Pay</span>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="scroll-top" id="scrollTop" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+      stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15" />
+    </svg>
+  </button>
+
+  <script src="assets/js/script.js"></script>
+
+</body>
+
+</html>

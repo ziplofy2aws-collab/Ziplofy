@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savoria — Reserve A Table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=3">
+  <link rel="stylesheet" href="assets/css/reservation.css?v=1">
+</head>
+
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-container">
+
+      <!-- Logo -->
+      <a href="index.html" class="brand" aria-label="Savoria — Fine Dining home">
+        <img src="assets/img/logo.png" alt="Savoria Fine Dining" class="brand-logo">
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="main-nav" aria-label="Primary">
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">About Us</a></li>
+          <li class="nav-item"><a href="menu.html" class="nav-link">Menu</a></li>
+          <li class="nav-item"><a href="reservation.html" class="nav-link active">Reservation</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Gallery</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Blog</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="header-actions">
+
+        <button type="button" class="icon-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+
+        <button type="button" class="icon-btn notification-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="notification-badge">2</span>
+        </button>
+
+        <a href="reservation.html" class="book-btn">Book A Table</a>
+
+        <!-- Mobile menu toggle -->
+        <button type="button" class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" id="menuToggle">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+      <ul class="mobile-nav-menu">
+        <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+        <li><a href="#" class="mobile-nav-link">About Us</a></li>
+        <li><a href="menu.html" class="mobile-nav-link">Menu</a></li>
+        <li><a href="reservation.html" class="mobile-nav-link active">Reservation</a></li>
+        <li><a href="#" class="mobile-nav-link">Gallery</a></li>
+        <li><a href="#" class="mobile-nav-link">Blog</a></li>
+        <li><a href="#" class="mobile-nav-link">Contact</a></li>
+      </ul>
+      <a href="reservation.html" class="book-btn book-btn-mobile">Book A Table</a>
+    </nav>
+  </header>
+
+  <!-- Reservation Hero -->
+  <section class="res-hero">
+    <div class="res-hero-inner">
+      <div class="res-hero-left">
+        <span class="res-eyebrow">Book Your Experience</span>
+        <h1 class="res-hero-title">Reserve Your Table<br><span class="accent">Create</span> Beautiful Moments</h1>
+        <p class="res-hero-text">
+          Whether it's a romantic dinner, family gathering, or a special
+          celebration, we're here to make it unforgettable.
+        </p>
+        <ul class="res-features">
+          <li class="res-feature">
+            <span class="rf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 18h18" />
+                <path d="M4 18a8 8 0 0 1 16 0" />
+                <path d="M12 6V4" />
+                <path d="M10 4h4" />
+              </svg>
+            </span>
+            Best Ambience
+          </li>
+          <li class="res-feature">
+            <span class="rf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 3v6a2 2 0 0 0 4 0V3" />
+                <line x1="7" y1="11" x2="7" y2="21" />
+                <path d="M17 3c-1.7 0-3 2-3 4.5S15.3 12 17 12" />
+                <line x1="17" y1="12" x2="17" y2="21" />
+              </svg>
+            </span>
+            Delicious Food
+          </li>
+          <li class="res-feature">
+            <span class="rf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+              </svg>
+            </span>
+            Unforgettable Moments
+          </li>
+        </ul>
+      </div>
+      <div class="res-hero-media">
+        <img src="assets/img/banner-2.png" alt="Beautifully plated gourmet dish">
+      </div>
+    </div>
+  </section>
+
+  <!-- Reservation Form -->
+  <section class="res-booking">
+    <div class="res-booking-card">
+
+      <!-- Form -->
+      <form class="res-form" id="reservationForm" novalidate>
+        <div class="rf-field">
+          <label for="resDate">Date</label>
+          <div class="rf-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <input type="text" id="resDate" name="date" placeholder="Select Date" onfocus="(this.type='date')"
+              onblur="if(!this.value)this.type='text'" required>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label for="resTime">Time</label>
+          <div class="rf-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <polyline points="12 7 12 12 15 14" />
+            </svg>
+            <input type="text" id="resTime" name="time" placeholder="Select Time" onfocus="(this.type='time')"
+              onblur="if(!this.value)this.type='text'" required>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label for="resGuests">Guests</label>
+          <div class="rf-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <select id="resGuests" name="guests">
+              <option>1 Guest</option>
+              <option selected>2 Guests</option>
+              <option>3 Guests</option>
+              <option>4 Guests</option>
+              <option>5 Guests</option>
+              <option>6 Guests</option>
+              <option>7 Guests</option>
+              <option>8+ Guests</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label for="resOccasion">Occasion</label>
+          <div class="rf-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 12 20 22 4 22 4 12" />
+              <rect x="2" y="7" width="20" height="5" />
+              <line x1="12" y1="22" x2="12" y2="7" />
+              <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+              <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+            </svg>
+            <select id="resOccasion" name="occasion">
+              <option value="" disabled selected>Select Occasion</option>
+              <option>Birthday</option>
+              <option>Anniversary</option>
+              <option>Business Meal</option>
+              <option>Casual Dining</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field full">
+          <label for="resNotes">Special Requests</label>
+          <div class="rf-input rf-input-area">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <textarea id="resNotes" name="notes" placeholder="Any special requests?"></textarea>
+          </div>
+        </div>
+
+        <div class="res-success" id="resSuccess">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <span>Thank you! Your reservation request has been received. We'll confirm shortly.</span>
+        </div>
+
+        <button type="submit" class="res-submit">
+          Book Your Table
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </form>
+
+      <!-- Showcase -->
+      <div class="res-showcase">
+        <img src="assets/img/hero-banner-2.png" alt="Elegant restaurant interior">
+        <div class="res-stats">
+          <div class="res-stat">
+            <span class="num">15+</span>
+            <span class="lbl">Years of<br>Excellence</span>
+          </div>
+          <div class="res-stat">
+            <span class="num">500+</span>
+            <span class="lbl">Happy<br>Customers</span>
+          </div>
+          <div class="res-stat">
+            <span class="num">4.8
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" />
+              </svg>
+            </span>
+            <span class="lbl">Average<br>Rating</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Info Cards -->
+  <section class="res-info-cards">
+    <div class="ric-grid">
+
+      <!-- Why Book With Us -->
+      <div class="ric-card">
+        <h3 class="ric-title">Why Book With Us</h3>
+        <ul class="ric-list">
+          <li>
+            <span class="ric-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </span>
+            Prime Location
+          </li>
+          <li>
+            <span class="ric-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 3v6a2 2 0 0 0 4 0V3" />
+                <line x1="7" y1="11" x2="7" y2="21" />
+                <path d="M17 3c-1.7 0-3 2-3 4.5S15.3 12 17 12" />
+                <line x1="17" y1="12" x2="17" y2="21" />
+              </svg>
+            </span>
+            Exquisite Cuisine
+          </li>
+          <li>
+            <span class="ric-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="8" r="6" />
+                <path d="M8.21 13.89 7 22l5-3 5 3-1.21-8.11" />
+              </svg>
+            </span>
+            Exceptional Service
+          </li>
+          <li>
+            <span class="ric-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
+              </svg>
+            </span>
+            Memorable Experience
+          </li>
+        </ul>
+      </div>
+
+      <!-- Opening Hours -->
+      <div class="ric-card">
+        <h3 class="ric-title">Opening Hours</h3>
+        <ul class="ric-hours">
+          <li>
+            <span class="ric-day">Monday &ndash; Thursday</span>
+            <span class="ric-time">12:00 PM &ndash; 11:00 PM</span>
+          </li>
+          <li>
+            <span class="ric-day">Friday &ndash; Saturday</span>
+            <span class="ric-time">12:00 PM &ndash; 12:00 AM</span>
+          </li>
+          <li>
+            <span class="ric-day">Sunday</span>
+            <span class="ric-time">12:00 PM &ndash; 10:00 PM</span>
+          </li>
+        </ul>
+        <p class="ric-special">Special Hours on <span>Holidays</span></p>
+      </div>
+
+      <!-- Our Location -->
+      <div class="ric-card">
+        <h3 class="ric-title">Our Location</h3>
+        <p class="ric-address">123 Flavor Street, New York, NY 10001</p>
+        <div class="ric-map">
+          <iframe src="https://www.google.com/maps?q=New+York,+NY+10001&output=embed" title="Savoria location map"
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <a class="ric-directions"
+            href="https://www.google.com/maps/dir/?api=1&destination=123+Flavor+Street,+New+York,+NY+10001"
+            target="_blank" rel="noopener">Get Directions</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Occasions CTA -->
+  <section class="res-cta">
+    <div class="res-cta-band" style="background-image: url('assets/img/CTA.png');">
+      <div class="res-cta-overlay"></div>
+      <div class="res-cta-content">
+        <span class="res-cta-eyebrow">Perfect For Every Occasion</span>
+        <h2 class="res-cta-title">Dine. Celebrate. Make Memories.</h2>
+        <ul class="res-cta-feats">
+          <li class="cf-item">
+            <span class="cf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            </span>
+            <span class="cf-label">Romantic Dinner</span>
+          </li>
+          <li class="cf-item">
+            <span class="cf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <span class="cf-label">Family Gathering</span>
+          </li>
+          <li class="cf-item">
+            <span class="cf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </span>
+            <span class="cf-label">Business Meeting</span>
+          </li>
+          <li class="cf-item">
+            <span class="cf-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16"/><path d="M4 19 3 8l4.5 3.5L12 5l4.5 6.5L21 8l-1 11z"/></svg>
+            </span>
+            <span class="cf-label">Special Occasions</span>
+          </li>
+        </ul>
+        <a href="#reservationForm" class="res-cta-btn">
+          Book Your Table
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Bar -->
+  <section class="res-trust">
+    <div class="res-trust-bar">
+      <div class="rt-item">
+        <span class="rt-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 4 13C4 7 12 4 20 3c0 8-3 16-9 17z"/><path d="M4 20c3-4 6-6.5 10-8.5"/></svg>
+        </span>
+        <div class="rt-text">
+          <strong>Best Ingredients</strong>
+          <span>Sourced Daily</span>
+        </div>
+      </div>
+
+      <div class="rt-item">
+        <span class="rt-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 21h10"/><path d="M6 14v5a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-5"/><path d="M17.5 14a3.5 3.5 0 0 0 1-6.86A4 4 0 0 0 12 5.5 4 4 0 0 0 5.5 7.14 3.5 3.5 0 0 0 6.5 14z"/></svg>
+        </span>
+        <div class="rt-text">
+          <strong>Expert Chefs</strong>
+          <span>15+ Years Experience</span>
+        </div>
+      </div>
+
+      <div class="rt-item">
+        <span class="rt-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </span>
+        <div class="rt-text">
+          <strong>Fast Service</strong>
+          <span>On-Time Always</span>
+        </div>
+      </div>
+
+      <div class="rt-item">
+        <span class="rt-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </span>
+        <div class="rt-text">
+          <strong>Secure Booking</strong>
+          <span>100% Safe &amp; Secure</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-top">
+
+      <div class="footer-col footer-brand">
+        <a href="index.html" class="footer-logo">
+          <img src="assets/img/logo.png" alt="Savoria Fine Dining">
+        </a>
+        <p class="footer-about">
+          Savoria is a fine dining restaurant that offers an unforgettable
+          culinary journey with a perfect blend of taste, ambiance, and
+          hospitality.
+        </p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M14 9h3V5h-3c-2.2 0-4 1.8-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9c0-.6.4-1 1-1z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.3 11.3 0 0 1 3.8 4.5a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.8-.5v.1a4 4 0 0 0 3.2 3.9c-.6.2-1.2.2-1.8.1a4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.4-6.1 11.4-11.4v-.5c.8-.6 1.5-1.3 2-2z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Pinterest">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 2a10 10 0 0 0-3.6 19.3c-.1-.8-.2-2 0-2.9l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.4 1.8-2.4.9 0 1.3.6 1.3 1.4 0 .9-.5 2.2-.8 3.4-.2 1 .5 1.8 1.5 1.8 1.8 0 3.1-2.3 3.1-5 0-2.1-1.4-3.6-3.9-3.6a4.5 4.5 0 0 0-4.7 4.5c0 .9.3 1.5.8 2 .1.1.1.2.1.4l-.3 1.1c0 .2-.2.3-.4.2-1.2-.5-1.7-1.9-1.7-3.4 0-2.5 2.1-5.5 6.3-5.5 3.4 0 5.6 2.4 5.6 5.1 0 3.4-1.9 6-4.8 6-1 0-1.9-.5-2.2-1.1l-.6 2.4c-.2.8-.7 1.7-1.1 2.3A10 10 0 1 0 12 2z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="reservation.html">Reservation</a></li>
+          <li><a href="#">Gallery</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Our Menu</h3>
+        <ul class="footer-links">
+          <li><a href="menu.html">Main Course</a></li>
+          <li><a href="menu.html">Appetizers</a></li>
+          <li><a href="menu.html">Beverages</a></li>
+          <li><a href="menu.html">Desserts</a></li>
+          <li><a href="menu.html">Seafood</a></li>
+          <li><a href="menu.html">Salads</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Contact Info</h3>
+        <ul class="footer-contact">
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </span>
+            <span>123 Flavor Street,<br>New York, NY 10001</span>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            </span>
+            <a href="tel:+12345678900">+1 234 567 8900</a>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="m22 7-10 5L2 7" />
+              </svg>
+            </span>
+            <a href="mailto:info@savoria.com">info@savoria.com</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Opening Hours</h3>
+        <ul class="footer-hours">
+          <li>
+            <span class="hours-days">Monday - Friday</span>
+            <span class="hours-time">8:00 AM - 11:00 PM</span>
+          </li>
+          <li>
+            <span class="hours-days">Saturday - Sunday</span>
+            <span class="hours-time">9:00 AM - 12:00 AM</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <span class="legal-sep">|</span>
+        <a href="#">Terms &amp; Conditions</a>
+      </div>
+      <div class="footer-payments">
+        <span class="pay-badge pay-visa">VISA</span>
+        <span class="pay-badge pay-mc" aria-label="Mastercard">
+          <span class="mc-circle mc-red"></span>
+          <span class="mc-circle mc-yellow"></span>
+        </span>
+        <span class="pay-badge pay-paypal">PayPal</span>
+        <span class="pay-badge pay-apple">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.3-.1 0-2.1-.8-2.2-3.1zM14.4 6.3c.5-.7.9-1.6.8-2.6-.8 0-1.8.6-2.4 1.2-.5.6-1 1.5-.8 2.4.9.1 1.8-.4 2.4-1z" />
+          </svg>
+          <span>Pay</span>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="scroll-top" id="scrollTop" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+      stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15" />
+    </svg>
+  </button>
+
+  <script src="assets/js/script.js"></script>
+
+</body>
+
+</html>

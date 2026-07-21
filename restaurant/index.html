@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savoria — Fine Dining</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=3">
+</head>
+
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-container">
+
+      <!-- Logo -->
+      <a href="index.html" class="brand" aria-label="Savoria — Fine Dining home">
+        <img src="assets/img/logo.png" alt="Savoria Fine Dining" class="brand-logo">
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="main-nav" aria-label="Primary">
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">About Us</a></li>
+          <li class="nav-item"><a href="menu.html" class="nav-link">Menu</a></li>
+          <li class="nav-item"><a href="reservation.html" class="nav-link">Reservation</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Gallery</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Blog</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="header-actions">
+
+        <button type="button" class="icon-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+
+        <button type="button" class="icon-btn notification-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="notification-badge">2</span>
+        </button>
+
+        <a href="#" class="book-btn">Book A Table</a>
+
+        <!-- Mobile menu toggle -->
+        <button type="button" class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" id="menuToggle">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+      <ul class="mobile-nav-menu">
+        <li><a href="index.html" class="mobile-nav-link active">Home</a></li>
+        <li><a href="#" class="mobile-nav-link">About Us</a></li>
+        <li><a href="menu.html" class="mobile-nav-link">Menu</a></li>
+        <li><a href="reservation.html" class="mobile-nav-link">Reservation</a></li>
+        <li><a href="gallery.html" class="mobile-nav-link">Gallery</a></li>
+        <li><a href="blog.html" class="mobile-nav-link">Blog</a></li>
+        <li><a href="contact.html" class="mobile-nav-link">Contact</a></li>
+      </ul>
+      <a href="#" class="book-btn book-btn-mobile">Book A Table</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+
+    <!-- Background image slider -->
+    <div class="hero-slider" id="heroSlider">
+      <div class="hero-slide is-active" style="background-image: url('assets/img/hero-banner-1.png');"></div>
+      <div class="hero-slide" style="background-image: url('assets/img/hero-banner-2.png');"></div>
+      <div class="hero-slide" style="background-image: url('assets/img/hero-banner-3.png');"></div>
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-container">
+
+      <!-- Left content -->
+      <div class="hero-content">
+        <span class="hero-eyebrow">Welcome To Savoria</span>
+        <h1 class="hero-title">
+          Experience
+          <span class="highlight">Flavors Like</span>
+          Never Before
+        </h1>
+        <p class="hero-text">
+          Discover an exceptional journey of taste with our
+          chef's special dishes made from the finest ingredients.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary">Book A Table</a>
+          <a href="#" class="btn btn-outline">
+            Explore Menu
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 2v7c0 1.1.9 2 2 2h0a2 2 0 0 0 2-2V2" />
+              <path d="M5 2v20" />
+              <path d="M19 2v20" />
+              <path d="M19 2c-2 0-3 2.5-3 5s1 4 3 4" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Social proof -->
+        <div class="hero-social-proof">
+          <div class="avatar-stack">
+            <img src="assets/img/insta-1.png" alt="Customer">
+            <img src="assets/img/insta-2.png" alt="Customer">
+            <img src="assets/img/insta-3.png" alt="Customer">
+            <img src="assets/img/insta-4.png" alt="Customer">
+          </div>
+          <div class="social-proof-text">
+            <span class="rating"><strong>4.8</strong>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </span>
+            <span class="customers">2k+ Happy Customers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Years badge -->
+      <div class="hero-badge">
+        <span class="badge-number">15+</span>
+        <span class="badge-label">Years of<br>Excellence</span>
+      </div>
+
+    </div>
+
+    <!-- Info bar -->
+    <div class="hero-info-bar">
+      <div class="info-item">
+        <span class="info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </span>
+        <div class="info-text">
+          <span class="info-title">Opening Hours</span>
+          <span class="info-value">Mon - Sun (10:00 AM - 11:00 PM)</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <span class="info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        </span>
+        <div class="info-text">
+          <span class="info-title">Our Location</span>
+          <span class="info-value">123 Flavor Street, New York, NY</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <span class="info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+        </span>
+        <div class="info-text">
+          <span class="info-title">Call Us</span>
+          <span class="info-value">+1 234 567 8900</span>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <span class="info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 7-10 5L2 7" />
+          </svg>
+        </span>
+        <div class="info-text">
+          <span class="info-title">Email Us</span>
+          <span class="info-value">info@savoria.com</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Popular Categories -->
+  <section class="categories">
+    <div class="section-head">
+      <span class="section-eyebrow">Explore Our</span>
+      <h2 class="section-title">Popular Categories</h2>
+      <span class="section-divider" aria-hidden="true"></span>
+    </div>
+
+    <div class="categories-slider">
+      <button type="button" class="cat-nav cat-nav-prev" id="catPrev" aria-label="Previous categories">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+
+      <div class="categories-track" id="catTrack">
+
+        <article class="category-card">
+          <a href="#" class="category-link">
+            <div class="cat-image">
+              <img src="assets/img/cat-1.png" alt="Main Course">
+            </div>
+            <span class="cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 13a9 9 0 0 1 18 0z" />
+                <line x1="2" y1="17" x2="22" y2="17" />
+                <line x1="12" y1="9" x2="12" y2="4" />
+              </svg>
+            </span>
+            <div class="cat-info">
+              <h3 class="cat-name">Main Course</h3>
+              <span class="cat-count">20+ Dishes</span>
+            </div>
+          </a>
+        </article>
+
+        <article class="category-card">
+          <a href="#" class="category-link">
+            <div class="cat-image">
+              <img src="assets/img/cat-2.png" alt="Appetizers">
+            </div>
+            <span class="cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3c-3 0-5 2-5 5 0 2 1 3 2 4l-3 9h12l-3-9c1-1 2-2 2-4 0-3-2-5-5-5z" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+              </svg>
+            </span>
+            <div class="cat-info">
+              <h3 class="cat-name">Appetizers</h3>
+              <span class="cat-count">15+ Dishes</span>
+            </div>
+          </a>
+        </article>
+
+        <article class="category-card">
+          <a href="#" class="category-link">
+            <div class="cat-image">
+              <img src="assets/img/cat-3.png" alt="Beverages">
+            </div>
+            <span class="cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 8h12l-1.2 11a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 8z" />
+                <path d="M6 8l-.6-3h13.2L18 8" />
+                <line x1="12" y1="12" x2="12" y2="17" />
+              </svg>
+            </span>
+            <div class="cat-info">
+              <h3 class="cat-name">Beverages</h3>
+              <span class="cat-count">12+ Drinks</span>
+            </div>
+          </a>
+        </article>
+
+        <article class="category-card">
+          <a href="#" class="category-link">
+            <div class="cat-image">
+              <img src="assets/img/cat-4.png" alt="Desserts">
+            </div>
+            <span class="cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 11h14l-1.5 9h-11z" />
+                <path d="M7 11a5 5 0 0 1 10 0" />
+                <line x1="12" y1="3" x2="12" y2="6" />
+              </svg>
+            </span>
+            <div class="cat-info">
+              <h3 class="cat-name">Desserts</h3>
+              <span class="cat-count">10+ Sweets</span>
+            </div>
+          </a>
+        </article>
+
+        <article class="category-card">
+          <a href="#" class="category-link">
+            <div class="cat-image">
+              <img src="assets/img/cat-5.png" alt="Seafood">
+            </div>
+            <span class="cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12c3-4 8-5 12-5 3 0 5 2 6 5-1 3-3 5-6 5-4 0-9-1-12-5z" />
+                <path d="M15 7l4-3v16l-4-3" />
+                <circle cx="8" cy="12" r="0.6" fill="currentColor" />
+              </svg>
+            </span>
+            <div class="cat-info">
+              <h3 class="cat-name">Seafood</h3>
+              <span class="cat-count">18+ Dishes</span>
+            </div>
+          </a>
+        </article>
+
+        <article class="category-card">
+          <a href="#" class="category-link">
+            <div class="cat-image">
+              <img src="assets/img/cat-6.png" alt="Salads">
+            </div>
+            <span class="cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11h18a9 9 0 0 1-18 0z" />
+                <path d="M12 11c-1-4 1-7 4-8-1 3 0 6-4 8z" />
+                <path d="M12 11c-2-2-5-2-7-1 2 2 4 2 7 1z" />
+              </svg>
+            </span>
+            <div class="cat-info">
+              <h3 class="cat-name">Salads</h3>
+              <span class="cat-count">14+ Dishes</span>
+            </div>
+          </a>
+        </article>
+
+        <article class="category-card">
+          <a href="#" class="category-link">
+            <div class="cat-image">
+              <img src="assets/img/cat-7.png" alt="Pizza">
+            </div>
+            <span class="cat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3L3 8l9 13 9-13-9-5z" />
+                <circle cx="10" cy="9" r="0.7" fill="currentColor" />
+                <circle cx="13" cy="12" r="0.7" fill="currentColor" />
+              </svg>
+            </span>
+            <div class="cat-info">
+              <h3 class="cat-name">Pizza</h3>
+              <span class="cat-count">9+ Dishes</span>
+            </div>
+          </a>
+        </article>
+
+      </div>
+
+      <button type="button" class="cat-nav cat-nav-next" id="catNext" aria-label="Next categories">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Chef's Special Banner -->
+  <section class="special">
+    <div class="special-banner" style="background-image: url('assets/img/banner-1.png');">
+      <div class="special-overlay"></div>
+
+      <div class="special-content">
+        <span class="special-eyebrow">Chef's Special</span>
+        <h2 class="special-title">Taste the Art of<br>Culinary Excellence</h2>
+        <p class="special-text">
+          Our chef's special dishes are crafted with passion
+          and the finest ingredients to bring you an
+          unforgettable dining experience.
+        </p>
+
+        <div class="special-actions">
+          <a href="#" class="btn btn-primary">
+            View Full Menu
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+          <div class="special-signature">
+            <span class="sign-name">James Carter</span>
+            <span class="sign-role">Executive Chef</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="special-badge">
+        <span class="badge-top">Only<br>This Week</span>
+        <span class="badge-percent">30%</span>
+        <span class="badge-off">Off</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signature Dishes -->
+  <section class="dishes">
+    <div class="section-head">
+      <span class="section-eyebrow">Our Signature</span>
+      <h2 class="section-title">Signature Dishes</h2>
+      <span class="section-divider" aria-hidden="true"></span>
+    </div>
+
+    <div class="dishes-grid">
+
+      <article class="dish-card">
+        <div class="dish-image">
+          <img src="assets/img/SD-1.png" alt="Grilled Salmon">
+          <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+        <div class="dish-body">
+          <h3 class="dish-name">Grilled Salmon</h3>
+          <p class="dish-desc">Fresh salmon grilled to perfection with herbs.</p>
+          <div class="dish-footer">
+            <span class="dish-price">$24.99</span>
+            <button type="button" class="add-btn" aria-label="Add Grilled Salmon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="dish-card">
+        <div class="dish-image">
+          <img src="assets/img/SD-2.png" alt="Truffle Pasta">
+          <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+        <div class="dish-body">
+          <h3 class="dish-name">Truffle Pasta</h3>
+          <p class="dish-desc">Creamy pasta with truffle oil and parmesan.</p>
+          <div class="dish-footer">
+            <span class="dish-price">$18.50</span>
+            <button type="button" class="add-btn" aria-label="Add Truffle Pasta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="dish-card">
+        <div class="dish-image">
+          <img src="assets/img/SD-3.png" alt="Beef Tenderloin">
+          <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+        <div class="dish-body">
+          <h3 class="dish-name">Beef Tenderloin</h3>
+          <p class="dish-desc">Juicy tenderloin cooked medium rare.</p>
+          <div class="dish-footer">
+            <span class="dish-price">$27.99</span>
+            <button type="button" class="add-btn" aria-label="Add Beef Tenderloin">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="dish-card">
+        <div class="dish-image">
+          <img src="assets/img/SD-4.png" alt="Lobster Thermidor">
+          <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+        <div class="dish-body">
+          <h3 class="dish-name">Lobster Thermidor</h3>
+          <p class="dish-desc">Classic lobster baked with a creamy sauce.</p>
+          <div class="dish-footer">
+            <span class="dish-price">$39.99</span>
+            <button type="button" class="add-btn" aria-label="Add Lobster Thermidor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="dish-card">
+        <div class="dish-image">
+          <img src="assets/img/SD-5.png" alt="Chicken Supreme">
+          <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+        <div class="dish-body">
+          <h3 class="dish-name">Chicken Supreme</h3>
+          <p class="dish-desc">Pan-seared chicken with mushroom sauce.</p>
+          <div class="dish-footer">
+            <span class="dish-price">$19.99</span>
+            <button type="button" class="add-btn" aria-label="Add Chicken Supreme">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="dish-card">
+        <div class="dish-image">
+          <img src="assets/img/SD-6.png" alt="Chocolate Lava Cake">
+          <button type="button" class="wishlist-btn" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+        <div class="dish-body">
+          <h3 class="dish-name">Chocolate Lava Cake</h3>
+          <p class="dish-desc">Warm chocolate cake with a molten center.</p>
+          <div class="dish-footer">
+            <span class="dish-price">$9.99</span>
+            <button type="button" class="add-btn" aria-label="Add Chocolate Lava Cake">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- About Us -->
+  <section class="about">
+    <div class="about-container">
+
+      <!-- Image with arch -->
+      <div class="about-figure">
+        <img src="assets/img/about.png" alt="Our chef plating a dish at Savoria">
+      </div>
+
+      <!-- Content -->
+      <div class="about-content">
+        <span class="section-eyebrow">About Us</span>
+        <h2 class="about-title">A Place Where Passion<br>Meets Flavor</h2>
+        <p class="about-text">
+          At Savoria, we believe that dining is more than just food—it's
+          an experience. Our chefs create dishes that combine traditional
+          techniques with modern flavors to delight your senses.
+        </p>
+
+        <div class="about-features">
+          <div class="feature-item">
+            <span class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M11 20A7 7 0 0 1 4 13c0-4 3-8 8-9 0 2 1 3 3 3 0 5-2 12-4 13z" />
+                <path d="M11 20c0-4 2-8 6-10" />
+              </svg>
+            </span>
+            <span class="feature-label">Fresh Ingredients</span>
+          </div>
+
+          <div class="feature-item">
+            <span class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 13a4 4 0 0 1-1-7.5A4 4 0 0 1 12 4a4 4 0 0 1 7 1.5A4 4 0 0 1 18 13z" />
+                <path d="M7 13v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-6" />
+              </svg>
+            </span>
+            <span class="feature-label">Expert Chefs</span>
+          </div>
+
+          <div class="feature-item">
+            <span class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 8h1a3 3 0 0 1 0 6h-1" />
+                <path d="M4 8h14v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8z" />
+                <line x1="7" y1="2" x2="7" y2="5" />
+                <line x1="11" y1="2" x2="11" y2="5" />
+              </svg>
+            </span>
+            <span class="feature-label">Cozy Atmosphere</span>
+          </div>
+
+          <div class="feature-item">
+            <span class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 17h16" />
+                <path d="M6 17a6 6 0 0 1 12 0" />
+                <line x1="12" y1="5" x2="12" y2="8" />
+                <path d="M10 20h4" />
+              </svg>
+            </span>
+            <span class="feature-label">Excellent Service</span>
+          </div>
+        </div>
+
+        <a href="#" class="btn btn-outline about-btn">Discover Our Story</a>
+      </div>
+
+      <!-- Stats card -->
+      <div class="about-stats">
+        <div class="stat-item">
+          <span class="stat-number">10+</span>
+          <span class="stat-label">Years of<br>Experience</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">500+</span>
+          <span class="stat-label">Menu<br>Items</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">50K+</span>
+          <span class="stat-label">Happy<br>Customers</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Reservation Banner -->
+  <section class="special special-reverse">
+    <div class="special-banner" style="background-image: url('assets/img/banner-2.png');">
+      <div class="special-overlay"></div>
+
+      <div class="special-content">
+        <span class="special-eyebrow">Reservation</span>
+        <h2 class="special-title">Reserve Your Table<br>For a Memorable Night</h2>
+        <p class="special-text">
+          Enjoy an exceptional dining experience with breathtaking
+          views and exquisite flavors. Book your table now and let
+          us take care of the rest.
+        </p>
+
+        <div class="special-actions">
+          <a href="#" class="btn btn-primary">
+            Book A Table
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </a>
+          <a href="tel:+12345678900" class="special-call">
+            <span class="call-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            </span>
+            <span class="call-text">
+              <span class="call-label">Call Us</span>
+              <span class="call-number">+1 234 567 8900</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="section-head">
+      <span class="section-eyebrow">What Our Guests Say</span>
+      <h2 class="section-title">Customer Testimonials</h2>
+      <span class="section-divider" aria-hidden="true"></span>
+    </div>
+
+    <div class="testi-slider">
+      <button type="button" class="cat-nav cat-nav-prev" id="testiPrev" aria-label="Previous testimonials">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+
+      <div class="testi-track" id="testiTrack">
+
+        <article class="testi-card">
+          <div class="testi-head">
+            <span class="testi-avatar">ER</span>
+            <span class="testi-stars" aria-label="5 out of 5 stars">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </span>
+          </div>
+          <p class="testi-quote">"The best dining experience I've ever had. The food, service, and ambience were
+            absolutely perfect!"</p>
+          <span class="testi-name">Emily R.</span>
+        </article>
+
+        <article class="testi-card">
+          <div class="testi-head">
+            <span class="testi-avatar">MT</span>
+            <span class="testi-stars" aria-label="5 out of 5 stars">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </span>
+          </div>
+          <p class="testi-quote">"Every dish was a masterpiece. I highly recommend Savoria to anyone who loves good
+            food."</p>
+          <span class="testi-name">Michael T.</span>
+        </article>
+
+        <article class="testi-card">
+          <div class="testi-head">
+            <span class="testi-avatar">SL</span>
+            <span class="testi-stars" aria-label="5 out of 5 stars">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </span>
+          </div>
+          <p class="testi-quote">"From the moment we walked in, we felt welcomed. Truly an unforgettable experience!"
+          </p>
+          <span class="testi-name">Sophia L.</span>
+        </article>
+
+        <article class="testi-card">
+          <div class="testi-head">
+            <span class="testi-avatar">DK</span>
+            <span class="testi-stars" aria-label="5 out of 5 stars">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </span>
+          </div>
+          <p class="testi-quote">"Exceptional flavors and impeccable presentation. Savoria truly never disappoints."</p>
+          <span class="testi-name">David K.</span>
+        </article>
+
+        <article class="testi-card">
+          <div class="testi-head">
+            <span class="testi-avatar">OM</span>
+            <span class="testi-stars" aria-label="5 out of 5 stars">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </span>
+          </div>
+          <p class="testi-quote">"A perfect spot for special occasions. The staff went above and beyond for us."</p>
+          <span class="testi-name">Olivia M.</span>
+        </article>
+
+        <article class="testi-card">
+          <div class="testi-head">
+            <span class="testi-avatar">JW</span>
+            <span class="testi-stars" aria-label="5 out of 5 stars">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </span>
+          </div>
+          <p class="testi-quote">"Cozy atmosphere, delicious food, and warm hospitality. We'll definitely be back!"</p>
+          <span class="testi-name">James W.</span>
+        </article>
+
+      </div>
+
+      <button type="button" class="cat-nav cat-nav-next" id="testiNext" aria-label="Next testimonials">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- CTA Strip -->
+  <section class="cta" style="background-image: url('assets/img/CTA.png');">
+    <div class="cta-overlay"></div>
+    <div class="cta-container">
+      <div class="cta-text">
+        <h2 class="cta-title">Ready to Dine With Us?</h2>
+        <p class="cta-subtext">Book your table now and enjoy an unforgettable culinary experience.</p>
+      </div>
+      <a href="#" class="btn btn-primary cta-btn">
+        Book Your Table
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Instagram Gallery -->
+  <section class="insta">
+    <div class="insta-head">
+      <h2 class="insta-title">Follow Us On Instagram</h2>
+      <span class="insta-handle">@savoria.restaurant</span>
+    </div>
+
+    <div class="insta-grid">
+      <a href="#" class="insta-item" aria-label="Instagram post 1">
+        <img src="assets/img/insta-1.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 2">
+        <img src="assets/img/insta-2.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 3">
+        <img src="assets/img/insta-3.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 4">
+        <img src="assets/img/insta-4.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 5">
+        <img src="assets/img/insta-5.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 6">
+        <img src="assets/img/insta-6.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 7">
+        <img src="assets/img/insta-7.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 8">
+        <img src="assets/img/insta-8.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+      <a href="#" class="insta-item" aria-label="Instagram post 9">
+        <img src="assets/img/insta-9.png" alt="Instagram post">
+        <span class="insta-overlay">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 21s-7.5-4.9-10-9.4C.7 9 1.6 5.5 4.6 4.6 6.7 4 8.8 4.9 10 6.6c1.2-1.7 3.3-2.6 5.4-2 3 .9 3.9 4.4 2.6 7C19.5 16.1 12 21 12 21z" />
+          </svg>
+        </span>
+      </a>
+
+      <a href="#" class="insta-view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" />
+          <circle cx="12" cy="12" r="4" />
+          <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+        </svg>
+        <span>View All</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-top">
+
+      <div class="footer-col footer-brand">
+        <a href="index.html" class="footer-logo">
+          <img src="assets/img/logo.png" alt="Savoria Fine Dining">
+        </a>
+        <p class="footer-about">
+          Savoria is a fine dining restaurant that offers an unforgettable
+          culinary journey with a perfect blend of taste, ambiance, and
+          hospitality.
+        </p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M14 9h3V5h-3c-2.2 0-4 1.8-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9c0-.6.4-1 1-1z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.3 11.3 0 0 1 3.8 4.5a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.8-.5v.1a4 4 0 0 0 3.2 3.9c-.6.2-1.2.2-1.8.1a4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.4-6.1 11.4-11.4v-.5c.8-.6 1.5-1.3 2-2z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Pinterest">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 2a10 10 0 0 0-3.6 19.3c-.1-.8-.2-2 0-2.9l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.4 1.8-2.4.9 0 1.3.6 1.3 1.4 0 .9-.5 2.2-.8 3.4-.2 1 .5 1.8 1.5 1.8 1.8 0 3.1-2.3 3.1-5 0-2.1-1.4-3.6-3.9-3.6a4.5 4.5 0 0 0-4.7 4.5c0 .9.3 1.5.8 2 .1.1.1.2.1.4l-.3 1.1c0 .2-.2.3-.4.2-1.2-.5-1.7-1.9-1.7-3.4 0-2.5 2.1-5.5 6.3-5.5 3.4 0 5.6 2.4 5.6 5.1 0 3.4-1.9 6-4.8 6-1 0-1.9-.5-2.2-1.1l-.6 2.4c-.2.8-.7 1.7-1.1 2.3A10 10 0 1 0 12 2z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Menu</a></li>
+          <li><a href="#">Reservation</a></li>
+          <li><a href="#">Gallery</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Our Menu</h3>
+        <ul class="footer-links">
+          <li><a href="#">Main Course</a></li>
+          <li><a href="#">Appetizers</a></li>
+          <li><a href="#">Beverages</a></li>
+          <li><a href="#">Desserts</a></li>
+          <li><a href="#">Seafood</a></li>
+          <li><a href="#">Salads</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Contact Info</h3>
+        <ul class="footer-contact">
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </span>
+            <span>123 Flavor Street,<br>New York, NY 10001</span>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            </span>
+            <a href="tel:+12345678900">+1 234 567 8900</a>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="m22 7-10 5L2 7" />
+              </svg>
+            </span>
+            <a href="mailto:info@savoria.com">info@savoria.com</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Opening Hours</h3>
+        <ul class="footer-hours">
+          <li>
+            <span class="hours-days">Monday - Friday</span>
+            <span class="hours-time">8:00 AM - 11:00 PM</span>
+          </li>
+          <li>
+            <span class="hours-days">Saturday - Sunday</span>
+            <span class="hours-time">9:00 AM - 12:00 AM</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <span class="legal-sep">|</span>
+        <a href="#">Terms &amp; Conditions</a>
+      </div>
+      <div class="footer-payments">
+        <span class="pay-badge pay-visa">VISA</span>
+        <span class="pay-badge pay-mc" aria-label="Mastercard">
+          <span class="mc-circle mc-red"></span>
+          <span class="mc-circle mc-yellow"></span>
+        </span>
+        <span class="pay-badge pay-paypal">PayPal</span>
+        <span class="pay-badge pay-apple">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.3-.1 0-2.1-.8-2.2-3.1zM14.4 6.3c.5-.7.9-1.6.8-2.6-.8 0-1.8.6-2.4 1.2-.5.6-1 1.5-.8 2.4.9.1 1.8-.4 2.4-1z" />
+          </svg>
+          <span>Pay</span>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="scroll-top" id="scrollTop" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+      stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15" />
+    </svg>
+  </button>
+
+  <script src="assets/js/script.js"></script>
+
+</body>
+
+</html>

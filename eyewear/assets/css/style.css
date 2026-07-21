@@ -979,6 +979,7 @@ img {
   background-color: #ffffff;
   border: 1.5px solid #111111;
   border-radius: 50px;
+  cursor: pointer;
   transition: all 0.25s ease;
 }
 

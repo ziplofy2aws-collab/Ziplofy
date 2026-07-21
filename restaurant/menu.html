@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savoria — Our Menu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=3">
+  <link rel="stylesheet" href="assets/css/menu.css?v=1">
+</head>
+
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-container">
+
+      <!-- Logo -->
+      <a href="index.html" class="brand" aria-label="Savoria — Fine Dining home">
+        <img src="assets/img/logo.png" alt="Savoria Fine Dining" class="brand-logo">
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="main-nav" aria-label="Primary">
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">About Us</a></li>
+          <li class="nav-item"><a href="menu.html" class="nav-link active">Menu</a></li>
+          <li class="nav-item"><a href="reservation.html" class="nav-link">Reservation</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Gallery</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Blog</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Right Actions -->
+      <div class="header-actions">
+
+        <button type="button" class="icon-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+
+        <button type="button" class="icon-btn notification-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="notification-badge">2</span>
+        </button>
+
+        <a href="#" class="book-btn">Book A Table</a>
+
+        <!-- Mobile menu toggle -->
+        <button type="button" class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" id="menuToggle">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+      <ul class="mobile-nav-menu">
+        <li><a href="index.html" class="mobile-nav-link">Home</a></li>
+        <li><a href="#" class="mobile-nav-link">About Us</a></li>
+        <li><a href="menu.html" class="mobile-nav-link active">Menu</a></li>
+        <li><a href="#" class="mobile-nav-link">Reservation</a></li>
+        <li><a href="#" class="mobile-nav-link">Gallery</a></li>
+        <li><a href="#" class="mobile-nav-link">Blog</a></li>
+        <li><a href="#" class="mobile-nav-link">Contact</a></li>
+      </ul>
+      <a href="#" class="book-btn book-btn-mobile">Book A Table</a>
+    </nav>
+  </header>
+
+  <!-- Menu Hero -->
+  <section class="menu-hero" style="background-image: url('assets/img/shop-banner.png');">
+    <div class="menu-hero-container">
+      <div class="menu-hero-content">
+        <span class="menu-hero-eyebrow">Delicious &amp; Fresh</span>
+        <h1 class="menu-hero-title">Our Menu</h1>
+        <p class="menu-hero-text">
+          Explore a curated selection of chef-crafted dishes made from the
+          finest seasonal ingredients — from sizzling mains to sweet indulgences.
+        </p>
+        <nav class="breadcrumb menu-hero-crumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="sep">/</span>
+          <span class="current">Menu</span>
+        </nav>
+        <div class="menu-hero-buttons">
+          <a href="#menuGrid" class="btn btn-primary">Browse Dishes</a>
+          <a href="#" class="btn btn-outline">Book A Table</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section class="menu-page">
+    <div class="menu-layout">
+
+      <!-- Sidebar -->
+      <aside class="menu-sidebar" id="menuSidebar">
+
+        <span class="sheet-handle" aria-hidden="true"></span>
+        <div class="sidebar-sheet-head">
+          <h3>Filters</h3>
+          <button type="button" class="sheet-close" id="filterClose" aria-label="Close filters">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Categories -->
+        <div class="sidebar-card">
+          <div class="mp-cats" id="menuFilters">
+            <button type="button" class="mp-cat-head active" data-filter="all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+              <span>All Categories</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="main">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 11a9 9 0 0 1 18 0" />
+                  <path d="M2 11h20" />
+                  <path d="M4 15h16" />
+                  <path d="M7 19h10" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Main Course</span>
+              <span class="mp-cat-count">28</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="appetizers">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3v9" />
+                  <path d="M8 3v4a4 4 0 0 0 8 0V3" />
+                  <path d="M12 12v9" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Appetizers</span>
+              <span class="mp-cat-count">16</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="salads">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 20A7 7 0 0 1 4 13H21a7 7 0 0 1-7 7z" />
+                  <path d="M12 13a5 5 0 0 1 5-5" />
+                  <path d="M12 13a5 5 0 0 0-5-5" />
+                  <path d="M12 4v9" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Salads</span>
+              <span class="mp-cat-count">14</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="seafood">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6.5 12c3-5 8-6 13-6-1 4-3 9-9 11-2 .7-4 .3-5.5-1" />
+                  <path d="M6.5 12c-1.5-1-2.5-1-4-1 .5 2 .5 3 1 4.5" />
+                  <circle cx="16" cy="9" r="1" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Seafood</span>
+              <span class="mp-cat-count">18</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="desserts">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 20h16" />
+                  <path d="M5 20v-6a7 7 0 0 1 14 0v6" />
+                  <path d="M12 7V4" />
+                  <circle cx="12" cy="3" r="1" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Desserts</span>
+              <span class="mp-cat-count">10</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="beverages">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6 3h12l-1 5H7z" />
+                  <path d="M7 8l1.5 11h7L17 8" />
+                  <path d="M12 8v11" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Beverages</span>
+              <span class="mp-cat-count">12</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="pizza">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3c5 0 9 3 9 3L12 21 3 6s4-3 9-3z" />
+                  <circle cx="10" cy="9" r="1" />
+                  <circle cx="14" cy="11" r="1" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Pizzas</span>
+              <span class="mp-cat-count">20</span>
+            </button>
+
+            <button type="button" class="mp-cat" data-filter="breakfast">
+              <span class="mp-cat-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="9" cy="12" r="5" />
+                  <circle cx="9" cy="12" r="2" />
+                  <path d="M16 8h3a2 2 0 0 1 0 8h-3" />
+                </svg>
+              </span>
+              <span class="mp-cat-name">Breakfast</span>
+              <span class="mp-cat-count">15</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter By -->
+        <div class="sidebar-card">
+          <h3 class="filter-title">Filter By</h3>
+
+          <div class="filter-group">
+            <div class="filter-group-head">
+              <span>Price Range</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <input type="range" class="price-range" min="5" max="50" value="50" aria-label="Price range">
+            <div class="price-range-labels">
+              <span>$5</span>
+              <span>$50+</span>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h4 class="filter-subtitle">Dietary Preference</h4>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span>Vegetarian</label>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span>Vegan</label>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span>Gluten Free</label>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span>Keto Friendly</label>
+          </div>
+
+          <div class="filter-group">
+            <h4 class="filter-subtitle">Spicy Level</h4>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span><span class="spicy"><svg
+                  viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg></span>Mild</label>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span><span class="spicy"><svg
+                  viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg></span>Medium</label>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span><span class="spicy"><svg
+                  viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg></span>Hot</label>
+            <label class="check-row"><input type="checkbox"><span class="check-box"></span><span class="spicy"><svg
+                  viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M15 3c0 1.5-.7 2.5-1.7 3.2C16 6.8 18 9.4 18 13c0 4-3.2 8-8 8-3 0-5-1.6-5-4 0-1 .8-1.6 1.6-1.2.7.4.5 1.4 1.4 1.7 1.4.5 3-.6 3-2.2 0-1-.6-1.7-1.6-2.2C6.7 11.9 5 9.7 5 7c2 .8 3.2.5 4.2-.2C10.3 6 11 4.7 11 3z" />
+                </svg></span>Very Hot</label>
+          </div>
+
+          <div class="filter-group">
+            <h4 class="filter-subtitle">Rating</h4>
+            <label class="check-row rating-row"><input type="checkbox"><span class="check-box"></span><span
+                class="stars-mini"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg></span>&amp; up</label>
+            <label class="check-row rating-row"><input type="checkbox"><span class="check-box"></span><span
+                class="stars-mini"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg></span>&amp; up</label>
+            <label class="check-row rating-row"><input type="checkbox"><span class="check-box"></span><span
+                class="stars-mini"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg></span>&amp; up</label>
+            <label class="check-row rating-row"><input type="checkbox"><span class="check-box"></span><span
+                class="stars-mini"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg></span>&amp; up</label>
+            <label class="check-row rating-row"><input type="checkbox"><span class="check-box"></span><span
+                class="stars-mini"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg><svg class="off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg></span>&amp; up</label>
+          </div>
+
+          <button type="button" class="reset-filters">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10" />
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+            </svg>
+            Reset Filters
+          </button>
+        </div>
+
+        <button type="button" class="filter-apply" id="filterApply">Show Results</button>
+      </aside>
+
+      <div class="filter-backdrop" id="filterBackdrop"></div>
+
+      <!-- Main content -->
+      <div class="menu-main">
+
+        <!-- Toolbar -->
+        <div class="menu-toolbar">
+          <button type="button" class="filter-toggle" id="filterToggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="7" y1="12" x2="17" y2="12" />
+              <line x1="10" y1="18" x2="14" y2="18" />
+            </svg>
+            Filters
+          </button>
+          <div class="menu-search">
+            <input type="text" placeholder="Search for dishes...">
+            <button type="button" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+          </div>
+          <div class="menu-sort">
+            <label for="sortBy">Sort By:</label>
+            <div class="select-wrap">
+              <select id="sortBy">
+                <option>Popularity</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+                <option>Rating</option>
+                <option>Newest</option>
+              </select>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heading -->
+        <div class="menu-main-head">
+          <h2 class="menu-main-title">Popular Dishes</h2>
+          <span class="section-divider divider-left" aria-hidden="true"></span>
+        </div>
+
+        <!-- Grid -->
+        <div class="mp-grid" id="menuGrid">
+
+          <article class="mp-card" data-category="seafood">
+            <div class="mp-card-img">
+              <span class="mp-badge">Best Seller</span>
+              <a href="product.html"><img src="assets/img/menu-1.png" alt="Grilled Salmon"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Grilled Salmon</a></h3>
+              <p class="mp-desc">Fresh salmon grilled to perfection with herbs and lemon butter.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.8</span>
+                <span class="mp-rate-count">(124)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$24.99</span>
+                <button type="button" class="mp-add" aria-label="Add Grilled Salmon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card" data-category="main">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-2.png" alt="Truffle Pasta"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Truffle Pasta</a></h3>
+              <p class="mp-desc">Creamy pasta with truffle oil and parmesan.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.7</span>
+                <span class="mp-rate-count">(98)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$18.50</span>
+                <button type="button" class="mp-add" aria-label="Add Truffle Pasta">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card" data-category="main">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-3.png" alt="Beef Tenderloin"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Beef Tenderloin</a></h3>
+              <p class="mp-desc">Juicy tenderloin cooked medium rare.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.9</span>
+                <span class="mp-rate-count">(156)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$27.99</span>
+                <button type="button" class="mp-add" aria-label="Add Beef Tenderloin">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card" data-category="seafood">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-4.png" alt="Lobster Thermidor"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Lobster Thermidor</a></h3>
+              <p class="mp-desc">Classic lobster baked with a creamy sauce.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.8</span>
+                <span class="mp-rate-count">(92)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$39.99</span>
+                <button type="button" class="mp-add" aria-label="Add Lobster Thermidor">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card" data-category="pizza">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-5.png" alt="Margherita Pizza"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Margherita Pizza</a></h3>
+              <p class="mp-desc">Fresh tomatoes, mozzarella, basil and olive oil.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.6</span>
+                <span class="mp-rate-count">(76)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$15.99</span>
+                <button type="button" class="mp-add" aria-label="Add Margherita Pizza">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card" data-category="salads">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-6.png" alt="Caesar Salad"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Caesar Salad</a></h3>
+              <p class="mp-desc">Crisp romaine lettuce with caesar dressing.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.5</span>
+                <span class="mp-rate-count">(62)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$9.99</span>
+                <button type="button" class="mp-add" aria-label="Add Caesar Salad">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card" data-category="desserts">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-7.png" alt="Chocolate Lava Cake"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Chocolate Lava Cake</a></h3>
+              <p class="mp-desc">Warm chocolate cake with a molten center.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.9</span>
+                <span class="mp-rate-count">(112)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$9.99</span>
+                <button type="button" class="mp-add" aria-label="Add Chocolate Lava Cake">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="mp-card" data-category="beverages">
+            <div class="mp-card-img">
+              <a href="product.html"><img src="assets/img/menu-8.png" alt="Virgin Mojito"></a>
+              <button type="button" class="mp-wish" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" aria-hidden="true">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            </div>
+            <div class="mp-card-body">
+              <h3 class="mp-name"><a href="product.html">Virgin Mojito</a></h3>
+              <p class="mp-desc">Fresh lime, mint, and soda water.</p>
+              <div class="mp-rating">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span class="mp-rate-num">4.6</span>
+                <span class="mp-rate-count">(48)</span>
+              </div>
+              <div class="mp-card-foot">
+                <span class="mp-price">$5.99</span>
+                <button type="button" class="mp-add" aria-label="Add Virgin Mojito">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Offer banner -->
+        <div class="menu-offer" style="background-image: url('assets/img/shop-banner.png');">
+          <div class="menu-offer-content">
+            <span class="menu-offer-sub">Weekend Special Offer</span>
+            <h3 class="menu-offer-title">Get <span>20% Off</span></h3>
+            <p class="menu-offer-text">On all orders above $50</p>
+            <a href="#" class="menu-offer-btn">Order Now
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav class="menu-pagination" aria-label="Pagination">
+          <button type="button" class="page-btn page-nav">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Prev
+          </button>
+          <button type="button" class="page-btn active">1</button>
+          <button type="button" class="page-btn">2</button>
+          <button type="button" class="page-btn">3</button>
+          <button type="button" class="page-btn">4</button>
+          <span class="page-dots">…</span>
+          <button type="button" class="page-btn">8</button>
+          <button type="button" class="page-btn page-nav">Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </nav>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-top">
+
+      <div class="footer-col footer-brand">
+        <a href="index.html" class="footer-logo">
+          <img src="assets/img/logo.png" alt="Savoria Fine Dining">
+        </a>
+        <p class="footer-about">
+          Savoria is a fine dining restaurant that offers an unforgettable
+          culinary journey with a perfect blend of taste, ambiance, and
+          hospitality.
+        </p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M14 9h3V5h-3c-2.2 0-4 1.8-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9c0-.6.4-1 1-1z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M22 5.9c-.7.3-1.5.5-2.3.6.8-.5 1.5-1.3 1.8-2.3-.8.5-1.7.8-2.6 1a4 4 0 0 0-6.9 3.7A11.3 11.3 0 0 1 3.8 4.5a4 4 0 0 0 1.2 5.4c-.6 0-1.2-.2-1.8-.5v.1a4 4 0 0 0 3.2 3.9c-.6.2-1.2.2-1.8.1a4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.4-6.1 11.4-11.4v-.5c.8-.6 1.5-1.3 2-2z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Pinterest">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 2a10 10 0 0 0-3.6 19.3c-.1-.8-.2-2 0-2.9l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.4 1.8-2.4.9 0 1.3.6 1.3 1.4 0 .9-.5 2.2-.8 3.4-.2 1 .5 1.8 1.5 1.8 1.8 0 3.1-2.3 3.1-5 0-2.1-1.4-3.6-3.9-3.6a4.5 4.5 0 0 0-4.7 4.5c0 .9.3 1.5.8 2 .1.1.1.2.1.4l-.3 1.1c0 .2-.2.3-.4.2-1.2-.5-1.7-1.9-1.7-3.4 0-2.5 2.1-5.5 6.3-5.5 3.4 0 5.6 2.4 5.6 5.1 0 3.4-1.9 6-4.8 6-1 0-1.9-.5-2.2-1.1l-.6 2.4c-.2.8-.7 1.7-1.1 2.3A10 10 0 1 0 12 2z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="#">Reservation</a></li>
+          <li><a href="#">Gallery</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Our Menu</h3>
+        <ul class="footer-links">
+          <li><a href="menu.html">Main Course</a></li>
+          <li><a href="menu.html">Appetizers</a></li>
+          <li><a href="menu.html">Beverages</a></li>
+          <li><a href="menu.html">Desserts</a></li>
+          <li><a href="menu.html">Seafood</a></li>
+          <li><a href="menu.html">Salads</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Contact Info</h3>
+        <ul class="footer-contact">
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </span>
+            <span>123 Flavor Street,<br>New York, NY 10001</span>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            </span>
+            <a href="tel:+12345678900">+1 234 567 8900</a>
+          </li>
+          <li>
+            <span class="footer-ci-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="m22 7-10 5L2 7" />
+              </svg>
+            </span>
+            <a href="mailto:info@savoria.com">info@savoria.com</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">Opening Hours</h3>
+        <ul class="footer-hours">
+          <li>
+            <span class="hours-days">Monday - Friday</span>
+            <span class="hours-time">8:00 AM - 11:00 PM</span>
+          </li>
+          <li>
+            <span class="hours-days">Saturday - Sunday</span>
+            <span class="hours-time">9:00 AM - 12:00 AM</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <span class="legal-sep">|</span>
+        <a href="#">Terms &amp; Conditions</a>
+      </div>
+      <div class="footer-payments">
+        <span class="pay-badge pay-visa">VISA</span>
+        <span class="pay-badge pay-mc" aria-label="Mastercard">
+          <span class="mc-circle mc-red"></span>
+          <span class="mc-circle mc-yellow"></span>
+        </span>
+        <span class="pay-badge pay-paypal">PayPal</span>
+        <span class="pay-badge pay-apple">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M16.3 12.6c0-2 1.6-2.9 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.3-.1 0-2.1-.8-2.2-3.1zM14.4 6.3c.5-.7.9-1.6.8-2.6-.8 0-1.8.6-2.4 1.2-.5.6-1 1.5-.8 2.4.9.1 1.8-.4 2.4-1z" />
+          </svg>
+          <span>Pay</span>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <button type="button" class="scroll-top" id="scrollTop" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+      stroke-linejoin="round" aria-hidden="true">
+      <polyline points="18 15 12 9 6 15" />
+    </svg>
+  </button>
+
+  <script src="assets/js/script.js"></script>
+
+</body>
+
+</html>
