@@ -4,6 +4,7 @@ type FrontendEnv = {
   apiUrl: string;
   socketUrl: string;
   authMicroserviceFrontendUrl: string;
+  googleClientId: string;
   appEnv: 'development' | 'staging' | 'production';
 };
 
@@ -51,6 +52,7 @@ export const frontendEnv: FrontendEnv = {
     'http://localhost:3000',
     runtime?.authMicroserviceFrontendUrl,
   ),
+  googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
   appEnv:
   (import.meta.env.VITE_APP_ENV as FrontendEnv['appEnv'] | undefined) ||
     runtime?.appEnv ||

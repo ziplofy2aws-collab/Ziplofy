@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { axiosi } from '../config/axios.config';
-import { frontendEnv } from '../config/env';
+
+const AUTH_ROUTES = ['/login', '/register'];
 
 interface UserContextType {
   loggedInUser: SecureUserInfo | null;
@@ -28,9 +29,10 @@ export const UserProvider = ({ children }:{children: React.ReactNode}) => {
   const [loggedInUser, setLoggedInUser] = useState<SecureUserInfo | null>(null);
 
   const redirectToAuth = useCallback(() => {
-    const baseAuthUrl = frontendEnv.authMicroserviceFrontendUrl.replace(/\/+$/, '');
-    const targetUrl = `${baseAuthUrl}?logout=true`;
-    window.location.href = targetUrl;
+    // Auth now lives inside this app at /login. Avoid redirect loops when
+    // we are already on an auth route.
+    if (AUTH_ROUTES.includes(window.location.pathname)) return;
+    window.location.href = '/login';
   }, []);
 
   // Extract token from URL parameters on app load

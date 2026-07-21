@@ -82,7 +82,7 @@ const SlantedImageCarouselWrapper: React.FC<SlantedImageCarouselWrapperProps> = 
 
         {/* Dark overlay tint */}
         <div className="absolute inset-0 bg-black/40" />
-        
+
         {/* Subtle blur on images */}
         <div className="absolute inset-0 backdrop-blur-[1px]" />
 

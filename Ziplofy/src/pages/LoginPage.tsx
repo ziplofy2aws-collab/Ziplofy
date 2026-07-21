@@ -5,15 +5,14 @@ import codiicLogo from '../assets/codiic-logo.png';
 import SlantedImageCarouselWrapper from '../components/SlantedImageCarouselWrapper';
 import { useAuth } from '../contexts/auth.context';
 
-// Define types
 interface LoginFormData {
   email: string;
   password: string;
 }
 
-export default function Login() {
+export default function LoginPage() {
   const { login, googleLogin } = useAuth();
-  
+
   const [form, setForm] = useState<LoginFormData>({ email: '', password: '' });
   const [loading, setLoading] = useState<boolean>(false);
   const [err, setErr] = useState<string>('');
@@ -22,7 +21,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setErr('');
-    
+
     try {
       await login(form.email, form.password);
     } catch (error: any) {
@@ -36,11 +35,10 @@ export default function Login() {
     async (cred: CredentialResponse): Promise<void> => {
       try {
         const googleJwtToken = cred.credential;
-        if(!googleJwtToken) {
+        if (!googleJwtToken) {
           throw new Error('Google JWT token is required');
         }
         await googleLogin(googleJwtToken);
-        // Navigation will be handled by the auth context useEffect
       } catch (error: any) {
         setErr(error?.response?.data?.error || error?.response?.data?.message || error?.message || 'Google sign-in failed');
       }
@@ -148,12 +146,12 @@ export default function Login() {
                   useOneTap
                 />
               </div>
-              
+
               {/* Sign up link */}
               <p className="text-center text-sm text-gray-600">
                 Don't have an account?{' '}
-                <Link 
-                  to="/register" 
+                <Link
+                  to="/register"
                   className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Sign up

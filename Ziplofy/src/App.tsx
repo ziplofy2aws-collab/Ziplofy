@@ -1,11 +1,16 @@
 // src/App.tsx
 import React, { lazy, Suspense } from "react";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "react-hot-toast";
 import { Route, BrowserRouter as Router, Routes, useLocation, Navigate, useParams } from "react-router-dom";
 
 // Import axios config early to ensure interceptors are set up before any requests
 import "./config/axios.config";
 
+import { frontendEnv } from "./config/env";
+import AuthProvider from "./contexts/auth.context";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import AdminStandardLayout from "./components/layout/AdminStandardLayout";
 import Sidebar from "./components/Sidebar";
 import { AmountOffProductsDiscountProvider } from "./contexts/amount-off-products-discount.context";
@@ -315,6 +320,7 @@ function LegacyBlogPostRedirect() {
 // This component is rendered INSIDE <Router>, so hooks like useLocation are safe here
 const AdminApp: React.FC = () => {
   const location = useLocation();
+  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
   const isCodeFullScreen = location.pathname.startsWith('/themes/code-fullscreen/');
   const isBuilderFullScreen = location.pathname.startsWith('/themes/builder');
   const isBasicElementor = location.pathname.startsWith('/themes/basic-elementor');
@@ -326,6 +332,7 @@ const AdminApp: React.FC = () => {
     location.pathname === '/themes/dev-editor' ||
     /^\/themes\/[^/]+\/editor$/.test(location.pathname);
   const isFullScreen =
+    isAuthRoute ||
     isCodeFullScreen ||
     isBuilderFullScreen ||
     isBasicElementor ||
@@ -359,6 +366,9 @@ const AdminApp: React.FC = () => {
         >
           <Suspense fallback={<PageLoader />}>
           <Routes>
+            {/* Authentication (merged in from the former standalone client app) */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route element={<AdminStandardLayout />}>
             {/* Top-level */}
             <Route path="/" element={<HomePage />} />
@@ -569,7 +579,9 @@ const AdminApp: React.FC = () => {
 
 const App: React.FC = () => {
   return (
+    <GoogleOAuthProvider clientId={frontendEnv.googleClientId}>
     <UserProvider>
+      <AuthProvider>
       <InstalledThemesProvider>
       <AmountOffProductsDiscountProvider>
       <CategoryProvider>
@@ -799,7 +811,9 @@ const App: React.FC = () => {
       </CategoryProvider>
       </AmountOffProductsDiscountProvider>
       </InstalledThemesProvider>
+      </AuthProvider>
     </UserProvider>
+    </GoogleOAuthProvider>
   );
 };
 

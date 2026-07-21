@@ -46,10 +46,13 @@ axiosi.interceptors.response.use(
       if (typeof localStorage !== 'undefined') {
         localStorage.removeItem('token');
       }
-      
-      const baseAuthUrl = frontendEnv.authMicroserviceFrontendUrl.replace(/\/+$/, '');
-      const targetUrl = `${baseAuthUrl}?logout=true`;
-      window.location.href = targetUrl;
+
+      // Auth now lives inside this app at /login. Avoid redirect loops when
+      // we are already on an auth route.
+      const authRoutes = ['/login', '/register'];
+      if (typeof window !== 'undefined' && !authRoutes.includes(window.location.pathname)) {
+        window.location.href = '/login';
+      }
     }
     
     return Promise.reject(error);

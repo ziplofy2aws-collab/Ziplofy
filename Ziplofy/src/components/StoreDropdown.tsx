@@ -8,7 +8,6 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from '../contexts/store.context';
 import toast from 'react-hot-toast';
-import { frontendEnv } from '../config/env';
 
 interface StoreDropdownProps {
   onStoreChange?: (storeId: string) => void;
@@ -94,7 +93,14 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
   }, []);
 
   const handleConfirmLogout = useCallback(() => {
-    window.location.href = `${frontendEnv.authMicroserviceFrontendUrl}?logout=true`
+    // Auth now lives inside this app; clear the session and go to the login page.
+    try {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('token');
+    } catch {
+      // ignore storage access errors
+    }
+    window.location.href = '/login';
   }, []);
 
   // Close dropdown when clicking outside

@@ -6,7 +6,6 @@ import codiicLogo from '../assets/codiic-logo.png';
 import SlantedImageCarouselWrapper from '../components/SlantedImageCarouselWrapper';
 import { useAuth } from '../contexts/auth.context';
 
-// Define types
 interface RegisterForm {
   name: string;
   email: string;
@@ -14,13 +13,13 @@ interface RegisterForm {
   confirmPassword: string;
 }
 
-function Register() {
+export default function RegisterPage() {
   const { register, googleLogin } = useAuth();
-  const [form, setForm] = useState<RegisterForm>({ 
+  const [form, setForm] = useState<RegisterForm>({
     name: '',
-    email: '', 
-    password: '', 
-    confirmPassword: '' 
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [err, setErr] = useState<string>('');
@@ -29,13 +28,13 @@ function Register() {
     e.preventDefault();
     setLoading(true);
     setErr('');
-    
+
     if (form.password !== form.confirmPassword) {
       setErr('Passwords do not match');
       setLoading(false);
       return;
     }
-    
+
     try {
       await register(form.name, form.email, form.password);
     } catch (error: any) {
@@ -48,7 +47,7 @@ function Register() {
   const handleGoogleSuccess = useCallback(async (cred: CredentialResponse): Promise<void> => {
     try {
       const googleJwtToken = cred.credential;
-      if(!googleJwtToken){
+      if (!googleJwtToken) {
         toast.error('Google JWT token is required');
         return;
       }
@@ -188,12 +187,12 @@ function Register() {
                   useOneTap
                 />
               </div>
-              
+
               {/* Sign in link */}
               <p className="text-center text-sm text-gray-600">
                 Already have an account?{' '}
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="font-medium text-blue-600 hover:text-blue-700 transition-colors"
                 >
                   Sign in
@@ -206,5 +205,3 @@ function Register() {
     </SlantedImageCarouselWrapper>
   );
 }
-
-export default Register;

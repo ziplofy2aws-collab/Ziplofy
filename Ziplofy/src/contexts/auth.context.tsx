@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import toast from 'react-hot-toast';
-import { clientEnv } from '../config/env';
 import { axiosi } from '../config/axios.config';
 import { safeLocalStorage } from '../types/local-storage';
 
@@ -15,7 +14,7 @@ export type IUser = {
   accessToken: string;
   assignedSupportDeveloperId: string;
   storeId?: string;
-}
+};
 
 interface AuthContextType {
   user: IUser | null;
@@ -28,57 +27,14 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// After a successful authentication we do a full navigation to the dashboard root.
+// The UserProvider bootstraps the session from the stored accessToken on load.
+function goToDashboard(): void {
+  window.location.assign('/');
+}
+
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  
   const [user, setUser] = useState<IUser | null>(null);
-  const [logoutHandled, setLogoutHandled] = useState<boolean>(false);
-  const [initialized, setInitialized] = useState<boolean>(false);
- 
-  const checkAuth = async () => {
-    try {
-      const accessToken = safeLocalStorage.getItem("accessToken")
-      if (accessToken) {
-        const {data} = await axiosi.get<IUser>('/auth/me');
-        setUser(data);
-      }
-    } catch (error) {
-      safeLocalStorage.removeItem("accessToken")
-    }
-    finally {
-      setInitialized(true);
-    }
-  };
-  
-  // Top-priority: handle ?logout=true
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    const shouldLogout = url.searchParams.get('logout') === 'true';
-    if (shouldLogout) {
-      safeLocalStorage.removeItem('accessToken');
-      setUser(null);
-      url.searchParams.delete('logout');
-      window.history.replaceState({}, '', url.toString());
-    }
-    setLogoutHandled(true);
-  }, []);
-
-  useEffect(() => {
-    if (!logoutHandled) return;
-    checkAuth();
-  }, [logoutHandled]);
-
-  // redirection handler
-  useEffect(() => {
-    if (!initialized) return;
-    if (user) {
-      const token = safeLocalStorage.getItem("accessToken")
-      if (token) {
-        const url = new URL(clientEnv.redirectionUrl);
-        url.searchParams.set("accessToken", token);
-        window.location.href = url.toString();
-      }
-    }
-  }, [user, initialized]);
 
   const getErrorMessage = (error: any, fallback: string): string => {
     return error?.response?.data?.error || error?.response?.data?.message || error?.message || fallback;
@@ -86,10 +42,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<void> => {
     try {
-      const {data} = await axiosi.post<IUser>('/auth/login', { email, password });
-      safeLocalStorage.setItem("accessToken", data.accessToken)
+      const { data } = await axiosi.post<IUser>('/auth/login', { email, password });
+      safeLocalStorage.setItem('accessToken', data.accessToken);
       setUser(data);
       toast.success('Successfully logged in!');
+      goToDashboard();
     } catch (error: any) {
       const message = getErrorMessage(error, 'Login failed');
       console.error('Login error:', error);
@@ -101,9 +58,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, email: string, password: string): Promise<void> => {
     try {
       const { data } = await axiosi.post<IUser>('/auth/register', { name, email, password });
-      safeLocalStorage.setItem("accessToken", data.accessToken);
+      safeLocalStorage.setItem('accessToken', data.accessToken);
       setUser(data);
       toast.success('Account created successfully!');
+      goToDashboard();
     } catch (error: any) {
       const message = getErrorMessage(error, 'Registration failed');
       console.error('Register error:', error);
@@ -117,10 +75,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error('Google credential is missing');
     }
     try {
-      const {data} = await axiosi.post<IUser>('/auth/google', { credential: googleJwtToken });
-      safeLocalStorage.setItem("accessToken", data.accessToken)
+      const { data } = await axiosi.post<IUser>('/auth/google', { credential: googleJwtToken });
+      safeLocalStorage.setItem('accessToken', data.accessToken);
       setUser(data);
       toast.success('Successfully signed in with Google!');
+      goToDashboard();
     } catch (error: any) {
       const message = getErrorMessage(error, 'Google login failed');
       console.error('Google login error:', error);
@@ -130,13 +89,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async (): Promise<void> => {
-    try {
-      safeLocalStorage.removeItem("accessToken")
-      setUser(null);
-      window.location.reload(); // TODO: check if this is needed
-    } finally {
-      // nothing to do here
-    }
+    safeLocalStorage.removeItem('accessToken');
+    setUser(null);
+    window.location.assign('/login');
   };
 
   const value: AuthContextType = {
@@ -145,14 +100,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     register,
     googleLogin,
     logout,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextType {
