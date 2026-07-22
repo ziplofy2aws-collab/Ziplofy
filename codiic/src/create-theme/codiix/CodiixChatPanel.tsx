@@ -26,12 +26,14 @@ import {
   type CodiixEditPlan,
 } from './codiix-edit-announcement';
 import type { ThemeEditorFieldType } from '../sidebar/create-theme-field.utils';
+import { CODIX_ADMIN_SUGGESTIONS } from './codiix-admin-knowledge';
 import { CODIX_SUGGESTIONS } from './codiix-knowledge';
 import {
   answerForIntentId,
   categoryIdForIntent,
   matchCodiixIntent,
   type CodiixMatch,
+  type CodiixSurface,
 } from './match-codiix-intent';
 import {
   getCodiixSessionAgenticMode,
@@ -43,6 +45,7 @@ import {
   setCodiixSessionHasIntroduced,
   setCodiixSessionMessages,
   type CodiixMessage,
+  type CodiixSessionScope,
 } from './codiix-session';
 
 export type { CodiixMessage };
@@ -55,6 +58,8 @@ type Props = {
   onClose: () => void;
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
+  /** theme-editor (default) or store admin. */
+  surface?: CodiixSurface;
   /** When set, Agentic mode can insert real sections into the theme. */
   onAgenticInsert?: (elementId: string) => boolean | void;
   /** Works in any mode — same path as the header Save button / save API. */
@@ -67,6 +72,8 @@ type Props = {
   pages?: CodiixPageOption[];
   currentPageId?: string;
   onNavigatePage?: (pageId: string) => CodiixNavigateResult | void;
+  /** Store-admin sidebar navigation (Codiix “take me to products”). */
+  onNavigateAdmin?: (path: string) => void;
   /** Current page section tree (header / template / footer). */
   structure?: CodiixStructureSection[];
   /** Reorder sections — same path as sidebar drag. */
@@ -81,6 +88,10 @@ type Props = {
     selectNodeId?: string,
   ) => boolean | void;
 };
+
+function sessionScopeForSurface(surface: CodiixSurface): CodiixSessionScope {
+  return surface === 'admin' ? 'admin' : 'theme';
+}
 
 function greetingForNow(): string {
   const h = new Date().getHours();
@@ -205,6 +216,7 @@ export function CodiixChatPanel({
   onClose,
   expanded = true,
   onExpandedChange,
+  surface = 'theme-editor',
   onAgenticInsert,
   onSave,
   saveDisabled = false,
@@ -213,16 +225,23 @@ export function CodiixChatPanel({
   pages = [],
   currentPageId,
   onNavigatePage,
+  onNavigateAdmin,
   structure = [],
   onReorderSections,
   announcement = null,
   onEditField,
 }: Props) {
-  const [draft, setDraftState] = useState(() => getCodiixSessionDraft());
-  const [messages, setMessagesState] = useState<CodiixMessage[]>(() => getCodiixSessionMessages());
+  const sessionScope = sessionScopeForSurface(surface);
+  const isAdmin = surface === 'admin';
+  const [draft, setDraftState] = useState(() => getCodiixSessionDraft(sessionScope));
+  const [messages, setMessagesState] = useState<CodiixMessage[]>(() =>
+    getCodiixSessionMessages(sessionScope),
+  );
   const [thinking, setThinking] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
-  const [agenticMode, setAgenticModeState] = useState(() => getCodiixSessionAgenticMode());
+  const [agenticMode, setAgenticModeState] = useState(() =>
+    getCodiixSessionAgenticMode(sessionScope),
+  );
   const [busyActionId, setBusyActionId] = useState<string | null>(null);
   const previousPageId = useRef<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -232,36 +251,42 @@ export function CodiixChatPanel({
   const introTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const generationSeq = useRef(0);
   const wasOpen = useRef(false);
-  const hasIntroduced = useRef(getCodiixSessionHasIntroduced());
+  const hasIntroduced = useRef(getCodiixSessionHasIntroduced(sessionScope));
   const [introducing, setIntroducing] = useState(false);
   const isGenerating = thinking || Boolean(streamingMessageId);
 
-  const setDraft = useCallback((value: string | ((prev: string) => string)) => {
-    setDraftState((prev) => {
-      const next = typeof value === 'function' ? value(prev) : value;
-      setCodiixSessionDraft(next);
-      return next;
-    });
-  }, []);
+  const setDraft = useCallback(
+    (value: string | ((prev: string) => string)) => {
+      setDraftState((prev) => {
+        const next = typeof value === 'function' ? value(prev) : value;
+        setCodiixSessionDraft(next, sessionScope);
+        return next;
+      });
+    },
+    [sessionScope],
+  );
 
   const setMessages = useCallback(
     (value: CodiixMessage[] | ((prev: CodiixMessage[]) => CodiixMessage[])) => {
       setMessagesState((prev) => {
         const next = typeof value === 'function' ? value(prev) : value;
-        setCodiixSessionMessages(next);
+        setCodiixSessionMessages(next, sessionScope);
         return next;
       });
     },
-    [],
+    [sessionScope],
   );
 
-  const setAgenticMode = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
-    setAgenticModeState((prev) => {
-      const next = typeof value === 'function' ? value(prev) : value;
-      setCodiixSessionAgenticMode(next);
-      return next;
-    });
-  }, []);
+  const setAgenticMode = useCallback(
+    (value: boolean | ((prev: boolean) => boolean)) => {
+      setAgenticModeState((prev) => {
+        const next = typeof value === 'function' ? value(prev) : value;
+        setCodiixSessionAgenticMode(next, sessionScope);
+        return next;
+      });
+    },
+    [sessionScope],
+  );
 
   const empty = messages.length === 0;
   const greeting = useMemo(() => greetingForNow(), [open]);
@@ -280,13 +305,13 @@ export function CodiixChatPanel({
       wasOpen.current = true;
       if (!hasIntroduced.current) {
         hasIntroduced.current = true;
-        setCodiixSessionHasIntroduced(true);
+        setCodiixSessionHasIntroduced(true, sessionScope);
         setIntroducing(true);
         if (introTimer.current) clearTimeout(introTimer.current);
         introTimer.current = setTimeout(() => setIntroducing(false), 1850);
       }
     }
-  }, [open]);
+  }, [open, sessionScope]);
 
   useEffect(() => {
     if (!open || showIntro) return;
@@ -338,6 +363,7 @@ export function CodiixChatPanel({
       editorActions?: CodiixMessage['editorActions'];
       structureHints?: CodiixMessage['structureHints'];
       editHelpHints?: CodiixMessage['editHelpHints'];
+      adminNavActions?: CodiixMessage['adminNavActions'];
     },
     seq?: number,
   ) => {
@@ -379,6 +405,7 @@ export function CodiixChatPanel({
                 editorActions: complete ? extras?.editorActions : undefined,
                 structureHints: complete ? extras?.structureHints : undefined,
                 editHelpHints: complete ? extras?.editHelpHints : undefined,
+                adminNavActions: complete ? extras?.adminNavActions : undefined,
               }
             : message,
         ),
@@ -540,6 +567,20 @@ export function CodiixChatPanel({
     [onEditField],
   );
 
+  const runAdminNavigate = useCallback(
+    (path: string): string => {
+      if (!onNavigateAdmin) {
+        return (
+          'I can’t open admin pages from here right now.\n\n' +
+          'Use the left sidebar to jump where you need.'
+        );
+      }
+      onNavigateAdmin(path);
+      return 'Opening that page for you.';
+    },
+    [onNavigateAdmin],
+  );
+
   const runEditorAction = useCallback(
     (action: NonNullable<CodiixMessage['editorActions']>[number]) => {
       if (busyActionId || thinking || streamingMessageId) return;
@@ -640,16 +681,20 @@ export function CodiixChatPanel({
 
         const match = matchCodiixIntent(trimmed, {
           agentic: agenticMode,
+          surface,
           pages,
           currentPageId,
           previousPageId: previousPageId.current,
           structure,
           announcement,
         });
+        const defaultSuggestions = isAdmin
+          ? CODIX_ADMIN_SUGGESTIONS.slice(0, 3)
+          : CODIX_SUGGESTIONS.slice(0, 3).map((s) => ({ id: s.id, label: s.label }));
         const followUps =
           match.relatedSuggestions.length > 0
             ? match.relatedSuggestions
-            : CODIX_SUGGESTIONS.slice(0, 3).map((s) => ({ id: s.id, label: s.label }));
+            : defaultSuggestions;
 
         let answer = match.answer;
         let editorActions = match.editorActions;
@@ -666,6 +711,10 @@ export function CodiixChatPanel({
           answer = runReorderCommand(match.reorderPlan);
         } else if (match.systemAction === 'edit' && match.editPlan) {
           answer = runEditCommand(match.editPlan);
+        } else if (match.systemAction === 'admin-navigate' && match.adminPath) {
+          answer = runAdminNavigate(match.adminPath);
+          // Prefer the match’s richer “Opening **Label**…” if navigate succeeded.
+          if (onNavigateAdmin) answer = match.answer;
         }
 
         streamAssistant(answer, followUps, match.actions, {
@@ -676,6 +725,7 @@ export function CodiixChatPanel({
           editorActions,
           structureHints: match.structureHints,
           editHelpHints: match.editHelpHints,
+          adminNavActions: match.adminNavActions,
         }, seq);
       }, delay);
     },
@@ -684,6 +734,8 @@ export function CodiixChatPanel({
       streamingMessageId,
       streamAssistant,
       agenticMode,
+      surface,
+      isAdmin,
       setMessages,
       setDraft,
       focusComposer,
@@ -692,6 +744,8 @@ export function CodiixChatPanel({
       runNavigateCommand,
       runReorderCommand,
       runEditCommand,
+      runAdminNavigate,
+      onNavigateAdmin,
       pages,
       currentPageId,
       structure,
@@ -709,10 +763,12 @@ export function CodiixChatPanel({
       thinkTimer.current = setTimeout(() => {
         if (seq !== generationSeq.current) return;
 
-        const canned = answerForIntentId(id);
-        const categoryId = categoryIdForIntent(id);
+        const canned = answerForIntentId(id, surface);
+        const categoryId = categoryIdForIntent(id, surface);
         const categoryActions =
-          agenticMode && categoryId ? agenticSuggestionsForCategory(categoryId) : undefined;
+          !isAdmin && agenticMode && categoryId
+            ? agenticSuggestionsForCategory(categoryId)
+            : undefined;
         let match: CodiixMatch;
         if (canned) {
           match = {
@@ -736,10 +792,18 @@ export function CodiixChatPanel({
                     }))
                 : undefined,
             systemAction: id === 'pages-templates' ? 'list-pages' : undefined,
+            adminNavActions: isAdmin
+              ? [
+                  { id: 'products', label: 'Go to Products', path: '/products' },
+                  { id: 'orders', label: 'Go to Orders', path: '/orders' },
+                  { id: 'themes', label: 'Go to Themes', path: '/online-store/themes' },
+                ]
+              : undefined,
           };
         } else {
           match = matchCodiixIntent(label, {
             agentic: agenticMode,
+            surface,
             pages,
             currentPageId,
             previousPageId: previousPageId.current,
@@ -747,15 +811,19 @@ export function CodiixChatPanel({
             announcement,
           });
         }
+        const defaultSuggestions = isAdmin
+          ? CODIX_ADMIN_SUGGESTIONS.filter((s) => s.id !== id).slice(0, 3)
+          : CODIX_SUGGESTIONS.filter((s) => s.id !== id)
+              .slice(0, 3)
+              .map((s) => ({ id: s.id, label: s.label }));
         const followUps =
           match.relatedSuggestions.length > 0
             ? match.relatedSuggestions
-            : CODIX_SUGGESTIONS.filter((s) => s.id !== id)
-                .slice(0, 3)
-                .map((s) => ({ id: s.id, label: s.label }));
+            : defaultSuggestions;
         const actions = match.actions?.length ? match.actions : undefined;
         let answer = match.answer;
         if (
+          !isAdmin &&
           agenticMode &&
           (actions?.length || match.relatedActions?.length) &&
           !answer.includes('Agentic mode is on') &&
@@ -788,6 +856,10 @@ export function CodiixChatPanel({
         if (match.systemAction === 'edit' && match.editPlan) {
           answer = runEditCommand(match.editPlan);
         }
+        if (match.systemAction === 'admin-navigate' && match.adminPath) {
+          runAdminNavigate(match.adminPath);
+          if (onNavigateAdmin) answer = match.answer;
+        }
         streamAssistant(answer, followUps, actions, {
           relatedActions: match.relatedActions,
           relatedCategoryLabel: match.relatedCategoryLabel,
@@ -796,6 +868,7 @@ export function CodiixChatPanel({
           editorActions: match.editorActions,
           structureHints: match.structureHints,
           editHelpHints: match.editHelpHints,
+          adminNavActions: match.adminNavActions,
         }, seq);
       }, 380);
     },
@@ -804,6 +877,8 @@ export function CodiixChatPanel({
       streamingMessageId,
       streamAssistant,
       agenticMode,
+      surface,
+      isAdmin,
       setMessages,
       pages,
       currentPageId,
@@ -813,6 +888,8 @@ export function CodiixChatPanel({
       runApplyCommand,
       runReorderCommand,
       runEditCommand,
+      runAdminNavigate,
+      onNavigateAdmin,
     ],
   );
 
@@ -845,7 +922,9 @@ export function CodiixChatPanel({
           <p className="codiix-intro__hello">
             Hi, I&apos;m Codiix <span className="codiix-intro__wave" aria-hidden="true">👋</span>
           </p>
-          <p className="codiix-intro__byline">Your theme helper by Codiic</p>
+          <p className="codiix-intro__byline">
+            {isAdmin ? 'Your store helper by Codiic' : 'Your theme helper by Codiic'}
+          </p>
         </div>
         <span className="codiix-intro__progress" aria-hidden="true" />
       </div>
@@ -856,7 +935,7 @@ export function CodiixChatPanel({
     <div
       className={`codiix-panel ${expanded ? 'codiix-panel--expanded' : ''}`}
       role="dialog"
-      aria-label="Codiix theme helper"
+      aria-label={isAdmin ? 'Codiix store helper' : 'Codiix theme helper'}
       aria-modal="false"
     >
       <div className="codiix-panel__chrome">
@@ -906,7 +985,11 @@ export function CodiixChatPanel({
             <CodiixFaceIcon className="codiix-empty__face" title="Codiix" />
             <p className="codiix-empty__greet">{greeting}</p>
             <h2 className="codiix-empty__ask">How can I help?</h2>
-            {agenticMode ? (
+            {isAdmin ? (
+              <p className="codiix-empty__agentic">
+                Try “take me to products”, “where are orders?”, or “how do I edit my theme?”
+              </p>
+            ) : agenticMode ? (
               <p className="codiix-empty__agentic">
                 Agentic on — try “hero”, “add faq”, or “take me to cart”
               </p>
@@ -916,7 +999,15 @@ export function CodiixChatPanel({
               </p>
             )}
             <div className="codiix-chips">
-              {(agenticMode
+              {(isAdmin
+                ? [
+                    { id: 'admin-products', label: 'How do I add a product?' },
+                    { id: 'go-orders', label: 'Take me to orders' },
+                    { id: 'admin-themes', label: 'How do I edit my theme?' },
+                    { id: 'admin-overview', label: 'What can I do here?' },
+                    { id: 'go-customers', label: 'Take me to customers' },
+                  ]
+                : agenticMode
                 ? [
                     { id: 'add-header', label: 'Add Header' },
                     { id: 'go-home', label: 'Take me to home' },
@@ -1096,6 +1187,24 @@ export function CodiixChatPanel({
                       </div>
                     </div>
                   ) : null}
+                  {m.adminNavActions && m.adminNavActions.length > 0 ? (
+                    <div className="codiix-related">
+                      <p className="codiix-related__label">Jump to</p>
+                      <div className="codiix-chips codiix-chips--inline">
+                        {m.adminNavActions.map((nav) => (
+                          <button
+                            key={nav.id}
+                            type="button"
+                            className="codiix-chip"
+                            onClick={() => respond(`take me to ${nav.label.replace(/^Go to\s+/i, '')}`)}
+                            title={nav.label}
+                          >
+                            {nav.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                   {m.suggestions && m.suggestions.length > 0 ? (
                     <div className="codiix-chips codiix-chips--inline">
                       {m.suggestions.map((s) => (
@@ -1143,9 +1252,11 @@ export function CodiixChatPanel({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={
-            agenticMode
-              ? 'Try “hero”, “move FAQ above Hero”, “apply theme”…'
-              : 'Try “move Contact form above Email signup”…'
+            isAdmin
+              ? 'Try “take me to products” or “how do I add a product?”…'
+              : agenticMode
+                ? 'Try “hero”, “move FAQ above Hero”, “apply theme”…'
+                : 'Try “move Contact form above Email signup”…'
           }
           className="codiix-composer__input"
           aria-busy={isGenerating}

@@ -1,7 +1,12 @@
 import {
+  CODIX_ADMIN_FALLBACK,
+  CODIX_ADMIN_INTENTS,
+  CODIX_ADMIN_SUGGESTIONS,
+} from './codiix-admin-knowledge';
+import { matchAdminNavCommand } from './codiix-admin-nav';
+import {
   CODIX_FALLBACK,
   CODIX_INTENTS,
-  type CodiixIntent,
 } from './codiix-knowledge';
 import {
   agenticSuggestionsForCategory,
@@ -21,7 +26,6 @@ import {
 } from './codiix-reorder';
 import {
   matchAnnouncementEditCommand,
-  resolveAnnouncementContext,
   type CodiixAnnouncementContext,
   type CodiixEditPlan,
 } from './codiix-edit-announcement';
@@ -59,14 +63,17 @@ function scoreIntent(query: string, intent: CodiixIntent): number {
   return score;
 }
 
-/** Global editor commands — work in any mode (not Agentic-only). */
+/** Global editor / admin commands — work in any mode (not Agentic-only). */
 export type CodiixSystemAction =
   | 'save'
   | 'apply'
   | 'navigate'
   | 'list-pages'
   | 'reorder'
-  | 'edit';
+  | 'edit'
+  | 'admin-navigate';
+
+export type CodiixSurface = 'theme-editor' | 'admin';
 
 export type CodiixMatch = {
   intentId: string | null;
@@ -76,9 +83,11 @@ export type CodiixMatch = {
   relatedActions?: CodiixAgenticAction[];
   relatedCategoryLabel?: string;
   previewElementId?: string;
-  /** Editor command to run after answering (any mode). */
+  /** Editor / admin command to run after answering (any mode). */
   systemAction?: CodiixSystemAction;
   pageTargetId?: string;
+  /** Admin sidebar path to open. */
+  adminPath?: string;
   pageActions?: CodiixPageAction[];
   /** One-tap editor actions (e.g. Apply theme after save). */
   editorActions?: { id: string; label: string; action: 'apply' }[];
@@ -86,10 +95,13 @@ export type CodiixMatch = {
   structureHints?: { id: string; label: string }[];
   editPlan?: CodiixEditPlan;
   editHelpHints?: { id: string; label: string }[];
+  adminNavActions?: { id: string; label: string; path: string }[];
 };
 
 export type CodiixMatchOptions = {
   agentic?: boolean;
+  /** theme-editor (default) or store admin. */
+  surface?: CodiixSurface;
   pages?: CodiixPageOption[];
   currentPageId?: string;
   previousPageId?: string | null;
@@ -187,6 +199,61 @@ export function matchApplyCommand(raw: string): boolean {
   );
 }
 
+function matchAdminSurfaceIntent(raw: string, query: string): CodiixMatch {
+  const navHit = matchAdminNavCommand(raw);
+  if (navHit) {
+    return {
+      intentId: `admin-nav-${navHit.target.id}`,
+      answer: navHit.answer,
+      relatedSuggestions: CODIX_ADMIN_SUGGESTIONS.slice(0, 3),
+      systemAction: 'admin-navigate',
+      adminPath: navHit.target.path,
+      adminNavActions: CODIX_ADMIN_NAV_QUICK.filter((t) => t.path !== navHit.target.path).slice(
+        0,
+        4,
+      ),
+    };
+  }
+
+  const ranked = CODIX_ADMIN_INTENTS.map((intent) => ({
+    intent,
+    score: scoreIntent(query, intent),
+  })).sort((a, b) => b.score - a.score);
+
+  const best = ranked[0];
+  if (!best || best.score < 2) {
+    return {
+      intentId: null,
+      answer: `${CODIX_ADMIN_FALLBACK}\n\nTip: say **“take me to products”** or **“open orders”**.`,
+      relatedSuggestions: CODIX_ADMIN_SUGGESTIONS.slice(0, 4),
+    };
+  }
+
+  const related = ranked
+    .slice(1)
+    .filter((r) => r.score >= 2 && r.intent.suggestion)
+    .slice(0, 3)
+    .map((r) => ({ id: r.intent.id, label: r.intent.suggestion! }));
+
+  return {
+    intentId: best.intent.id,
+    answer: best.intent.answer,
+    relatedSuggestions: related.length
+      ? related
+      : CODIX_ADMIN_SUGGESTIONS.filter((s) => s.id !== best.intent.id).slice(0, 3),
+    adminNavActions: CODIX_ADMIN_NAV_QUICK.slice(0, 4),
+  };
+}
+
+const CODIX_ADMIN_NAV_QUICK = [
+  { id: 'products', label: 'Go to Products', path: '/products' },
+  { id: 'orders', label: 'Go to Orders', path: '/orders' },
+  { id: 'customers', label: 'Go to Customers', path: '/customers' },
+  { id: 'themes', label: 'Go to Themes', path: '/online-store/themes' },
+  { id: 'discounts', label: 'Go to Discounts', path: '/discounts' },
+  { id: 'settings', label: 'Go to Settings', path: '/settings' },
+];
+
 export function matchCodiixIntent(
   raw: string,
   options?: CodiixMatchOptions,
@@ -194,6 +261,18 @@ export function matchCodiixIntent(
   const query = normalize(raw);
   const agentic = Boolean(options?.agentic);
   const pages = options?.pages ?? [];
+  const surface = options?.surface ?? 'theme-editor';
+
+  if (surface === 'admin') {
+    if (!query) {
+      return {
+        intentId: null,
+        answer: CODIX_ADMIN_FALLBACK,
+        relatedSuggestions: CODIX_ADMIN_SUGGESTIONS.slice(0, 4),
+      };
+    }
+    return matchAdminSurfaceIntent(raw, query);
+  }
 
   if (!query) {
     return {
@@ -408,10 +487,18 @@ export function matchCodiixIntent(
   };
 }
 
-export function answerForIntentId(id: string): string | null {
-  return CODIX_INTENTS.find((i) => i.id === id)?.answer ?? null;
+export function answerForIntentId(
+  id: string,
+  surface: CodiixSurface = 'theme-editor',
+): string | null {
+  const intents = surface === 'admin' ? CODIX_ADMIN_INTENTS : CODIX_INTENTS;
+  return intents.find((i) => i.id === id)?.answer ?? null;
 }
 
-export function categoryIdForIntent(id: string): string | undefined {
-  return CODIX_INTENTS.find((i) => i.id === id)?.categoryId;
+export function categoryIdForIntent(
+  id: string,
+  surface: CodiixSurface = 'theme-editor',
+): string | undefined {
+  const intents = surface === 'admin' ? CODIX_ADMIN_INTENTS : CODIX_INTENTS;
+  return intents.find((i) => i.id === id)?.categoryId;
 }

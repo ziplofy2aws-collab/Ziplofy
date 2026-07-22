@@ -1,10 +1,10 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './create-theme-sidebar.types';
 import { layoutBlueprintKey, remapTemplateSchemaPath, templateBlueprintKey, findSectionSchemaByBlueprint } from '../../utils/theme-editor-insert-section';
+import { resolveTextBlockTypographyField } from './theme-editor-text-block-panel.utils';
 import {
   TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
   TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS,
-  resolveTextBlockTypographyField,
-} from './theme-editor-text-block-panel.utils';
+} from './theme-editor-text-typography-keys';
 import {
   HEADING_FONT_OPTIONS,
   HEADING_FONT_SIZE_OPTIONS,
@@ -12,7 +12,7 @@ import {
   HEADING_LINE_HEIGHT_OPTIONS,
   HEADING_TEXT_CASE_OPTIONS,
   HEADING_WRAP_OPTIONS,
-} from './theme-editor-heading-block-panel.utils';
+} from './theme-editor-heading-typography-options';
 
 /** Typography keys for Collection link Title (preset + custom when Custom is selected). */
 export const COLLECTION_LINK_TITLE_TYPOGRAPHY_KEYS = [

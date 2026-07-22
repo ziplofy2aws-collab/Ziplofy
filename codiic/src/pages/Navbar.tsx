@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import codiicLogo from '../assets/codiic-logo.png';
 import AdminNavbarSearch from '../components/AdminNavbarSearch';
 import StoreDropdown from '../components/StoreDropdown';
@@ -11,8 +11,10 @@ import { useProductType } from '../contexts/product-type.context';
 import { useStore } from '../contexts/store.context';
 import { useTransferTags } from '../contexts/transfer-tags.context';
 import { useVendors } from '../contexts/vendor.context';
+import { CodiixChatPanel, CodiixFaceIcon } from '../create-theme/codiix';
 
 const codiicNavbar: React.FC = () => {
+  const navigate = useNavigate();
   const { setActiveStoreId, activeStoreId } = useStore();
   const { fetchCustomersByStoreId } = useCustomers();
   const { fetchCustomerTags } = useCustomerTags();
@@ -21,6 +23,8 @@ const codiicNavbar: React.FC = () => {
   const { fetchPackagingsByStoreId } = usePackaging();
   const { fetchVendorsByStoreId } = useVendors();
   const { fetchByStore: fetchTransferTags } = useTransferTags();
+  const [codiixOpen, setCodiixOpen] = useState(false);
+  const [codiixExpanded, setCodiixExpanded] = useState(true);
 
   useEffect(() => {
     if (activeStoreId) {
@@ -47,6 +51,15 @@ const codiicNavbar: React.FC = () => {
     setActiveStoreId(storeId);
   }, [setActiveStoreId]);
 
+  const toggleCodiix = useCallback(() => setCodiixOpen((v) => !v), []);
+  const closeCodiix = useCallback(() => setCodiixOpen(false), []);
+  const navigateAdmin = useCallback(
+    (path: string) => {
+      navigate(path);
+    },
+    [navigate],
+  );
+
   return (
     <header className="fixed top-0 left-0 right-0 z-[1201] h-12 border-b-2 border-gray-200 bg-white">
       <div className="flex h-full items-center justify-between px-3">
@@ -64,10 +77,34 @@ const codiicNavbar: React.FC = () => {
           <AdminNavbarSearch />
         </div>
 
-        <div className="relative rounded border border-gray-200 bg-gray-50">
-          <StoreDropdown onStoreChange={handleStoreChange} />
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={toggleCodiix}
+            className={`codiix-header-btn ${codiixOpen ? 'codiix-header-btn--active' : ''}`}
+            title="Ask Codiix"
+            aria-label="Ask Codiix"
+            aria-pressed={codiixOpen}
+            aria-haspopup="dialog"
+          >
+            <CodiixFaceIcon className="h-7 w-7" title="Codiix" />
+          </button>
+          <div className="relative rounded border border-gray-200 bg-gray-50">
+            <StoreDropdown onStoreChange={handleStoreChange} />
+          </div>
         </div>
       </div>
+
+      {codiixOpen ? (
+        <CodiixChatPanel
+          open={codiixOpen}
+          onClose={closeCodiix}
+          expanded={codiixExpanded}
+          onExpandedChange={setCodiixExpanded}
+          surface="admin"
+          onNavigateAdmin={navigateAdmin}
+        />
+      ) : null}
     </header>
   );
 };

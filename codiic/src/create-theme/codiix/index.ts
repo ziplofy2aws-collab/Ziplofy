@@ -13,6 +13,12 @@ export {
 export type { CodiixSaveResult, CodiixNavigateResult, CodiixApplyResult } from './CodiixChatPanel';
 export { CODIX_INTENTS, CODIX_SUGGESTIONS, CODIX_FALLBACK } from './codiix-knowledge';
 export {
+  CODIX_ADMIN_INTENTS,
+  CODIX_ADMIN_SUGGESTIONS,
+  CODIX_ADMIN_FALLBACK,
+} from './codiix-admin-knowledge';
+export type { CodiixSurface } from './match-codiix-intent';
+export {
   CODIX_ELEMENT_CATEGORIES,
   CODIX_AGENTIC_COMMANDS,
   matchAgenticCommand,

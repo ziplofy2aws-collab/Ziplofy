@@ -6,16 +6,18 @@ import {
   HEADING_LINE_HEIGHT_OPTIONS,
   HEADING_TEXT_CASE_OPTIONS,
   HEADING_WRAP_OPTIONS,
-} from './theme-editor-heading-block-panel.utils';
+} from './theme-editor-heading-typography-options';
+import {
+  TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
+  TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS,
+  type TextBlockCustomTypographyKey,
+} from './theme-editor-text-typography-keys';
 
-export const TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS = [
-  'font',
-  'fontSize',
-  'lineHeight',
-  'letterSpacing',
-  'textCase',
-  'wrap',
-] as const;
+export {
+  TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS,
+  TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS,
+  type TextBlockCustomTypographyKey,
+} from './theme-editor-text-typography-keys';
 
 const TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEY_SET = new Set<string>(TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS);
 
@@ -24,7 +26,7 @@ const TEXT_BLOCK_FONT_SIZE_OPTIONS = [
   ...HEADING_FONT_SIZE_OPTIONS,
 ];
 
-type TextBlockTypographyFieldKey = (typeof TEXT_BLOCK_CUSTOM_TYPOGRAPHY_KEYS)[number];
+type TextBlockTypographyFieldKey = TextBlockCustomTypographyKey;
 
 const TEXT_BLOCK_TYPO_FIELD_FALLBACKS: Record<
   TextBlockTypographyFieldKey,
@@ -169,19 +171,6 @@ const ALIGNMENT_OPTIONS = [
   { value: 'left', label: 'Left' },
   { value: 'center', label: 'Center' },
   { value: 'right', label: 'Right' },
-] as const;
-
-export const TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS = [
-  { value: 'default', label: 'Default' },
-  { value: 'paragraph', label: 'Paragraph' },
-  { value: 'body', label: 'Body' },
-  { value: 'heading-1', label: 'Heading 1' },
-  { value: 'heading-2', label: 'Heading 2' },
-  { value: 'heading-3', label: 'Heading 3' },
-  { value: 'heading-4', label: 'Heading 4' },
-  { value: 'heading-5', label: 'Heading 5' },
-  { value: 'heading-6', label: 'Heading 6' },
-  { value: 'custom', label: 'Custom' },
 ] as const;
 
 export function textBlockDefaultSettings(

@@ -21,11 +21,16 @@ export type CodiixMessage = {
   structureHints?: { id: string; label: string }[];
   /** Example announcement-edit chips (tap to draft a command). */
   editHelpHints?: { id: string; label: string }[];
+  /** Admin sidebar jump chips. */
+  adminNavActions?: { id: string; label: string; path: string }[];
 };
+
+export type CodiixSessionScope = 'theme' | 'admin';
 
 /**
  * In-memory Codiix session — survives panel open/close (and remounts)
  * for the lifetime of the page. Cleared automatically on full reload.
+ * Theme editor and store admin keep separate conversations.
  */
 type CodiixSession = {
   messages: CodiixMessage[];
@@ -34,41 +39,62 @@ type CodiixSession = {
   hasIntroduced: boolean;
 };
 
-const session: CodiixSession = {
-  messages: [],
-  agenticMode: false,
-  draft: '',
-  hasIntroduced: false,
+const sessions: Record<CodiixSessionScope, CodiixSession> = {
+  theme: {
+    messages: [],
+    agenticMode: false,
+    draft: '',
+    hasIntroduced: false,
+  },
+  admin: {
+    messages: [],
+    agenticMode: false,
+    draft: '',
+    hasIntroduced: false,
+  },
 };
 
-export function getCodiixSessionMessages(): CodiixMessage[] {
-  return session.messages;
+function bag(scope: CodiixSessionScope = 'theme'): CodiixSession {
+  return sessions[scope];
 }
 
-export function setCodiixSessionMessages(messages: CodiixMessage[]): void {
-  session.messages = messages;
+export function getCodiixSessionMessages(scope: CodiixSessionScope = 'theme'): CodiixMessage[] {
+  return bag(scope).messages;
 }
 
-export function getCodiixSessionAgenticMode(): boolean {
-  return session.agenticMode;
+export function setCodiixSessionMessages(
+  messages: CodiixMessage[],
+  scope: CodiixSessionScope = 'theme',
+): void {
+  bag(scope).messages = messages;
 }
 
-export function setCodiixSessionAgenticMode(value: boolean): void {
-  session.agenticMode = value;
+export function getCodiixSessionAgenticMode(scope: CodiixSessionScope = 'theme'): boolean {
+  return bag(scope).agenticMode;
 }
 
-export function getCodiixSessionDraft(): string {
-  return session.draft;
+export function setCodiixSessionAgenticMode(
+  value: boolean,
+  scope: CodiixSessionScope = 'theme',
+): void {
+  bag(scope).agenticMode = value;
 }
 
-export function setCodiixSessionDraft(value: string): void {
-  session.draft = value;
+export function getCodiixSessionDraft(scope: CodiixSessionScope = 'theme'): string {
+  return bag(scope).draft;
 }
 
-export function getCodiixSessionHasIntroduced(): boolean {
-  return session.hasIntroduced;
+export function setCodiixSessionDraft(value: string, scope: CodiixSessionScope = 'theme'): void {
+  bag(scope).draft = value;
 }
 
-export function setCodiixSessionHasIntroduced(value: boolean): void {
-  session.hasIntroduced = value;
+export function getCodiixSessionHasIntroduced(scope: CodiixSessionScope = 'theme'): boolean {
+  return bag(scope).hasIntroduced;
+}
+
+export function setCodiixSessionHasIntroduced(
+  value: boolean,
+  scope: CodiixSessionScope = 'theme',
+): void {
+  bag(scope).hasIntroduced = value;
 }
