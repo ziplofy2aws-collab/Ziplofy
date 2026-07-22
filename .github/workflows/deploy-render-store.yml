@@ -1,6 +1,6 @@
 # Required GitHub Secrets:
 #   RENDER_STORE_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 3.6.64.3 (preview.codiic.com)
+# EC2 host (hardcoded): 13.232.222.78 (preview.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/Ziplofy
 # API proxy target (hardcoded): https://backend.codiic.com
@@ -52,7 +52,7 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.RENDER_STORE_EC2_SSH_KEY }}
-          REMOTE_HOST: 3.6.64.3
+          REMOTE_HOST: 13.232.222.78
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/Ziplofy
         with:
@@ -62,7 +62,7 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 3.6.64.3
+          host: 13.232.222.78
           username: ubuntu
           key: ${{ secrets.RENDER_STORE_EC2_SSH_KEY }}
           # Non-interactive SSH does not load .bashrc; source nvm/fnm so npm uses Node 24.
