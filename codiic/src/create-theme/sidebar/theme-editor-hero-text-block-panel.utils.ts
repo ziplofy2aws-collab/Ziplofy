@@ -173,56 +173,220 @@ export function isHeroBottomGroupNodeId(nodeId: string): boolean {
   return heroBottomGroupSettingsBaseFromNodeId(nodeId) != null;
 }
 
-const HERO_GROUP_BLOCK_BOOLEAN_KEYS = new Set([
-  'verticalOnMobile',
-  'alignTextBaseline',
-  'backgroundOverlay',
-  'linkOpenInNewTab',
-]);
-
-const HERO_GROUP_BLOCK_NUMBER_KEYS = new Set([
-  'layoutGap',
-  'customWidth',
-  'mobileCustomWidth',
-  'customHeight',
-  'cornerRadius',
-  'paddingTop',
-  'paddingBottom',
-  'paddingLeft',
-  'paddingRight',
-]);
-
-const HERO_GROUP_BLOCK_KEYS = [
-  'direction',
-  'verticalOnMobile',
-  'layoutAlignment',
-  'position',
-  'alignTextBaseline',
-  'layoutGap',
-  'width',
-  'customWidth',
-  'mobileWidth',
-  'mobileCustomWidth',
-  'height',
-  'customHeight',
-  'backgroundMedia',
-  'backgroundImageUrl',
-  'backgroundColor',
-  'backgroundOverlay',
-  'borderStyle',
-  'cornerRadius',
-  'link',
-  'linkOpenInNewTab',
-  'paddingTop',
-  'paddingBottom',
-  'paddingLeft',
-  'paddingRight',
-];
-
-function heroBottomGroupSeedFieldType(key: string): EditorFieldDef['type'] {
-  if (HERO_GROUP_BLOCK_BOOLEAN_KEYS.has(key)) return 'boolean';
-  if (HERO_GROUP_BLOCK_NUMBER_KEYS.has(key)) return 'number';
-  return 'text';
+/** Full Shopify-style Group panel fields (Layout → Size → Appearance → Borders → Block link → Padding). */
+export function heroBottomGroupPanelFieldDefs(settingsBase: string): EditorFieldDef[] {
+  const s = (key: string) => `${settingsBase}.${key}`;
+  const fitFillCustom = [
+    { value: 'fit', label: 'Fit' },
+    { value: 'fill', label: 'Fill' },
+    { value: 'custom', label: 'Custom' },
+  ];
+  const pctSlider = (key: string, label: string): EditorFieldDef => ({
+    path: s(key),
+    type: 'number',
+    label,
+    group: 'Size',
+    widget: 'slider',
+    min: 1,
+    max: 100,
+    step: 1,
+    unit: '%',
+    sidebar: true,
+  });
+  const padSlider = (key: string, label: string): EditorFieldDef => ({
+    path: s(key),
+    type: 'number',
+    label,
+    group: 'Padding',
+    widget: 'slider',
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: 'px',
+    sidebar: true,
+  });
+  return [
+    {
+      path: s('direction'),
+      type: 'select',
+      label: 'Direction',
+      group: 'Layout',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'vertical', label: 'Vertical' },
+        { value: 'horizontal', label: 'Horizontal' },
+      ],
+    },
+    {
+      path: s('verticalOnMobile'),
+      type: 'boolean',
+      label: 'Vertical on mobile',
+      group: 'Layout',
+      widget: 'toggle',
+      sidebar: true,
+    },
+    {
+      path: s('layoutAlignment'),
+      type: 'select',
+      label: 'Alignment',
+      group: 'Layout',
+      widget: 'select-inline',
+      sidebar: true,
+      options: [
+        { value: 'left', label: 'Left' },
+        { value: 'center', label: 'Center' },
+        { value: 'right', label: 'Right' },
+      ],
+    },
+    {
+      path: s('position'),
+      type: 'select',
+      label: 'Position',
+      group: 'Layout',
+      widget: 'select-inline',
+      sidebar: true,
+      options: [
+        { value: 'top', label: 'Top' },
+        { value: 'center', label: 'Center' },
+        { value: 'bottom', label: 'Bottom' },
+        { value: 'space-between', label: 'Space between' },
+        { value: 'space-around', label: 'Space around' },
+      ],
+    },
+    {
+      path: s('alignTextBaseline'),
+      type: 'boolean',
+      label: 'Align text baseline',
+      group: 'Layout',
+      widget: 'toggle',
+      sidebar: true,
+    },
+    {
+      path: s('layoutGap'),
+      type: 'number',
+      label: 'Gap',
+      group: 'Layout',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s('width'),
+      type: 'select',
+      label: 'Width',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: true,
+      options: fitFillCustom,
+    },
+    pctSlider('customWidth', 'Custom width'),
+    {
+      path: s('mobileWidth'),
+      type: 'select',
+      label: 'Mobile width',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: true,
+      options: fitFillCustom,
+    },
+    pctSlider('mobileCustomWidth', 'Custom width'),
+    {
+      path: s('height'),
+      type: 'select',
+      label: 'Height',
+      group: 'Size',
+      widget: 'segmented',
+      sidebar: true,
+      options: fitFillCustom,
+    },
+    pctSlider('customHeight', 'Custom height'),
+    {
+      path: s('backgroundMedia'),
+      type: 'select',
+      label: 'Background media',
+      group: 'Appearance',
+      widget: 'select-inline',
+      sidebar: true,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'image', label: 'Image' },
+      ],
+    },
+    {
+      path: s('backgroundImageUrl'),
+      type: 'text',
+      label: 'Background image',
+      group: 'Appearance',
+      widget: 'image',
+      sidebar: true,
+      placeholder: 'Paste image URL or upload',
+    },
+    {
+      path: s('backgroundColor'),
+      type: 'color',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    },
+    {
+      path: s('backgroundOverlay'),
+      type: 'boolean',
+      label: 'Background overlay',
+      group: 'Appearance',
+      widget: 'toggle',
+      sidebar: true,
+    },
+    {
+      path: s('borderStyle'),
+      type: 'select',
+      label: 'Style',
+      group: 'Borders',
+      widget: 'segmented',
+      sidebar: true,
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'solid', label: 'Solid' },
+      ],
+    },
+    {
+      path: s('cornerRadius'),
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 40,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    },
+    {
+      path: s('link'),
+      type: 'text',
+      label: 'Link',
+      group: 'Block link',
+      widget: 'link',
+      sidebar: true,
+      placeholder: 'Paste a link or search',
+    },
+    {
+      path: s('linkOpenInNewTab'),
+      type: 'boolean',
+      label: 'Open link in new tab',
+      group: 'Block link',
+      widget: 'toggle',
+      sidebar: true,
+    },
+    padSlider('paddingTop', 'Top'),
+    padSlider('paddingBottom', 'Bottom'),
+    padSlider('paddingLeft', 'Left'),
+    padSlider('paddingRight', 'Right'),
+  ];
 }
 
 /** Settings base for a Hero: Bottom aligned nested Text/Heading block node. */
@@ -257,15 +421,11 @@ export function heroBottomTextFieldDefsFromNodeId(nodeId: string): EditorFieldDe
   return base ? textBlockFieldDefs(base) : [];
 }
 
-/** Regenerate Group panel seed fields from a bottom-aligned group node id. */
+/** Regenerate Group panel fields from a bottom-aligned group node id. */
 export function heroBottomGroupFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
   const settingsBase = heroBottomGroupSettingsBaseFromNodeId(nodeId);
   if (!settingsBase) return [];
-  return HERO_GROUP_BLOCK_KEYS.map((key) => ({
-    path: `${settingsBase}.${key}`,
-    type: heroBottomGroupSeedFieldType(key),
-    label: key,
-  }));
+  return heroBottomGroupPanelFieldDefs(settingsBase);
 }
 
 /** Seed sidebar `values` for a Hero: Bottom aligned nested Text/Heading block panel from config. */

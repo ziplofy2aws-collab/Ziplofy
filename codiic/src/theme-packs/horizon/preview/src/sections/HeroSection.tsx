@@ -8,6 +8,7 @@ import {
   readHeroHeadingStyle,
   readHeroHeadingText,
 } from '../../../../../create-theme/hero/runtime/heroHeadingStyles';
+import { Hero as CreateThemeHero } from '../../../../../create-theme/hero/runtime/Hero';
 import { LargeLogo } from '../../../../../create-theme/large-logo/runtime/LargeLogo';
 import { ThemeEditorRichTextContent } from '../../../../../create-theme/runtime/shared/ThemeEditorRichTextContent';
 import { richTextHasBlockMarkup } from '../../../../../utils/theme-editor-rich-text.util';
@@ -289,6 +290,17 @@ export function HeroSection({
       : hero.overlayColor;
 
   const hasMedia = Boolean(hero.media1Url || hero.media2Url);
+
+  /** Live preview pack uses this section; delegate so Layout settings match create-theme. */
+  if (isBottomAligned) {
+    return (
+      <CreateThemeHero
+        sectionId={sectionId}
+        placement={placement}
+        templateId={templateId}
+      />
+    );
+  }
 
   const buttonNodes: Record<string, ReactNode> = {
     primary_button: (

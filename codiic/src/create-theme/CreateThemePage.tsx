@@ -4259,13 +4259,13 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
           >
             <CreateThemeLivePreview
               ref={livePreviewRef}
-              key={themeRuntime.jsUrl ?? 'composer'}
+              key="composer"
               className="h-full min-h-0 w-full flex-1"
               device={device}
               storeId={previewStoreId}
               storeName={activeStoreName}
               storefrontOrigin={storeSubdomain?.url ?? null}
-              jsUrl={themeRuntime.jsUrl}
+              jsUrl={null}
               cssUrl={themeRuntime.cssUrl}
               config={livePreviewConfig}
               structureSyncKey={structureSyncKey}

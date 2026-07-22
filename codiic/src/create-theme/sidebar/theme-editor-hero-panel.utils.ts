@@ -401,14 +401,63 @@ export function fallbackHeroSectionFieldDefs(nodeId: string): EditorFieldDef[] {
     mk('sectionLinkNewTab', 'Open link in new tab', 'Section link', 'boolean', { widget: 'toggle' }),
     mk('direction', 'Direction', 'Layout', 'select', {
       options: [
-        { value: 'column', label: 'Vertical' },
-        { value: 'row', label: 'Horizontal' },
+        { value: 'vertical', label: 'Vertical' },
+        { value: 'horizontal', label: 'Horizontal' },
       ],
       widget: 'segmented',
     }),
-    mk('layoutAlignment', 'Alignment', 'Layout', 'select', { widget: 'segmented' }),
-    mk('position', 'Position', 'Layout', 'select', { widget: 'select-inline' }),
-    mk('height', 'Height', 'Layout', 'select', { widget: 'select-inline' }),
+    mk('layoutAlignment', 'Alignment', 'Layout', 'select', {
+      widget: 'segmented',
+      options: [
+        { value: 'left', label: 'Left' },
+        { value: 'center', label: 'Center' },
+        { value: 'right', label: 'Right' },
+        { value: 'space-between', label: 'Space between' },
+      ],
+    }),
+    mk('position', 'Position', 'Layout', 'select', {
+      widget: 'select-inline',
+      options: [
+        { value: 'top', label: 'Top' },
+        { value: 'center', label: 'Center' },
+        { value: 'bottom', label: 'Bottom' },
+        { value: 'space-between', label: 'Space between' },
+      ],
+    }),
+    mk('layoutGap', 'Gap', 'Layout', 'number', {
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: 'px',
+    }),
+    mk('sectionWidth', 'Width', 'Layout', 'select', {
+      widget: 'segmented',
+      options: [
+        { value: 'page', label: 'Page' },
+        { value: 'full', label: 'Full' },
+      ],
+    }),
+    mk('height', 'Height', 'Layout', 'select', {
+      widget: 'select-inline',
+      options: [
+        { value: 'auto', label: 'Auto' },
+        { value: 'small', label: 'Small' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'large', label: 'Large' },
+        { value: 'full', label: 'Full screen' },
+        { value: 'custom', label: 'Custom' },
+      ],
+    }),
+    mk('customHeight', 'Custom height', 'Layout', 'number', {
+      widget: 'slider',
+      min: 200,
+      max: 1200,
+      step: 10,
+      unit: 'px',
+    }),
+    mk('verticalOnMobile', 'Vertical on mobile', 'Layout', 'boolean', { widget: 'toggle' }),
+    mk('alignTextBaseline', 'Align text baseline', 'Layout', 'boolean', { widget: 'toggle' }),
     mk('colorScheme', 'Background color', 'Appearance', 'color', { widget: 'color' }),
     mk('mediaOverlay', 'Media overlay', 'Appearance', 'boolean', { widget: 'toggle' }),
     mk('paddingTop', 'Top', 'Padding', 'number', { widget: 'slider', min: 0, max: 100, step: 1 }),

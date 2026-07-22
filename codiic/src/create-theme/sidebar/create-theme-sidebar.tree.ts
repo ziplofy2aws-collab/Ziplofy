@@ -673,6 +673,7 @@ import {
   isHeroBottomGroupNodeId,
   isHeroBottomTextBlockNodeId,
   heroBottomTextFieldDefsFromNodeId,
+  heroBottomGroupFieldDefsFromNodeId,
 } from './theme-editor-hero-text-block-panel.utils';
 import {
   isNotFoundMainMessageBlockNodeId,
@@ -5113,13 +5114,14 @@ export function settingsNodeForSelection(
     return { ...blockNode, kind: 'block', fields: node.fields ?? [] };
   }
 
-  /** Hero: Bottom aligned Group → Group → Text / Heading — keep / regenerate tree fields. */
+  /** Hero: Bottom aligned Group → Group → Text / Heading — always use full Group panel fields. */
   if (isHeroBottomGroupNodeId(node.id)) {
     const blockNode = findSidebarNode(tree, node.id) ?? node;
-    if (blockNode.fields?.length) {
-      return { ...blockNode, kind: 'block' };
-    }
-    return { ...blockNode, kind: 'block', fields: node.fields ?? [] };
+    const regenerated = heroBottomGroupFieldDefsFromNodeId(node.id);
+    const fields = regenerated.length
+      ? regenerated
+      : (blockNode.fields ?? node.fields ?? []);
+    return { ...blockNode, kind: 'block', fields };
   }
 
   if (isHeroBottomTextBlockNodeId(node.id)) {

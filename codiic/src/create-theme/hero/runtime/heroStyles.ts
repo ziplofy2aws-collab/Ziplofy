@@ -144,22 +144,25 @@ export function readHeroStyle(
       ? 'top'
       : positionRaw === 'bottom'
         ? 'bottom'
-        : positionRaw === 'space-between'
+        : positionRaw === 'space-between' || positionRaw === 'space-around'
           ? 'space-between'
           : 'center';
 
   const sectionJustify =
-    position === 'top'
+    positionRaw === 'top'
       ? 'flex-start'
-      : position === 'bottom'
+      : positionRaw === 'bottom'
         ? 'flex-end'
-        : position === 'space-between'
+        : positionRaw === 'space-between'
           ? 'space-between'
-          : 'center';
+          : positionRaw === 'space-around'
+            ? 'space-around'
+            : 'center';
 
   const directionRaw = cfgString(config, `${settingsBase}.direction`, 'vertical');
+  /** Schema uses vertical/horizontal; older fallbacks used column/row. */
   const contentDirection: HeroStyle['contentDirection'] =
-    directionRaw === 'horizontal' ? 'row' : 'column';
+    directionRaw === 'horizontal' || directionRaw === 'row' ? 'row' : 'column';
 
   const contentJustify =
     contentDirection === 'row'

@@ -1331,7 +1331,8 @@ function HeroLayoutSettingsGroup({
   const direction = directionField
     ? fieldValueAsString(values, directionField) || 'vertical'
     : 'vertical';
-  const isVertical = direction !== 'horizontal';
+  /** Schema: vertical/horizontal; legacy fallbacks: column/row. */
+  const isVertical = direction !== 'horizontal' && direction !== 'row';
 
   const layoutAlignmentField = heroLayoutField(fields, 'layoutAlignment');
   const positionField = heroLayoutField(fields, 'position');

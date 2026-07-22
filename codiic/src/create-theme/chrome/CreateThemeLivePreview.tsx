@@ -227,7 +227,9 @@ const CreateThemeLivePreviewInner = forwardRef<
         payload: {
           storeId,
           storeName,
-          jsUrl: jsUrl ?? null,
+          // Always use create-theme composer in the editor so Layout/settings HMR apply.
+          // Remote theme.js is for published storefronts and can lag behind local runtimes.
+          jsUrl: null,
           cssUrl: cssUrl ?? null,
           config: configRef.current,
           page: pageRef.current,
@@ -240,7 +242,7 @@ const CreateThemeLivePreviewInner = forwardRef<
       '*'
     );
     initSentRef.current = true;
-  }, [storeId, storeName, jsUrl, cssUrl]);
+  }, [storeId, storeName, cssUrl]);
 
   const postPreviewDevice = useCallback((nextDevice: 'desktop' | 'mobile') => {
     const frame = iframeRef.current?.contentWindow;

@@ -94,8 +94,8 @@ function groupBlockDefaults(
   return {
     direction: 'horizontal',
     verticalOnMobile: true,
-    layoutAlignment: 'left',
-    position: 'bottom',
+    layoutAlignment: 'center',
+    position: 'center',
     alignTextBaseline: true,
     layoutGap: 18,
     width: 'fill',
@@ -236,14 +236,16 @@ export function applyBottomAlignedHeroSection(section: Record<string, unknown>, 
     typeof settings.media1ImageUrl === 'string' ? settings.media1ImageUrl : '';
   settings.media2Type = 'image';
   settings.media2ImageUrl = settings.media2ImageUrl ?? '';
-  settings.direction = 'vertical';
+  settings.direction = 'horizontal';
   settings.position = 'bottom';
   settings.layoutAlignment = 'center';
-  settings.layoutGap = 16;
+  settings.layoutGap = 18;
   settings.sectionWidth = 'page';
   settings.height = 'large';
   settings.paddingTop = 40;
   settings.paddingBottom = 40;
+  settings.verticalOnMobile = true;
+  settings.alignTextBaseline = true;
   settings.mediaOverlay = true;
   settings.overlayStyle = 'gradient';
   settings.overlayGradientDirection = 'up';

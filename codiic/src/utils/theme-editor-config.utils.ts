@@ -1876,6 +1876,36 @@ function syncHeroHeadingTextPaths(
   }
 }
 
+/** Section Layout fields for Hero: Bottom aligned also drive the content_group row. */
+const HERO_BOTTOM_LAYOUT_SYNC_KEYS = new Set([
+  'direction',
+  'layoutGap',
+  'layoutAlignment',
+  'verticalOnMobile',
+  'alignTextBaseline',
+]);
+
+function syncHeroBottomAlignedSectionLayoutToContentGroup(
+  config: Record<string, unknown>,
+  path: string,
+  value: string | boolean | number
+): void {
+  const m = path.match(
+    /^(templates\.[^.]+\.sections\.[^.]+|sections\.[^.]+)\.settings\.(direction|layoutGap|layoutAlignment|verticalOnMobile|alignTextBaseline)$/
+  );
+  if (!m) return;
+  const sectionPrefix = m[1]!;
+  const key = m[2]!;
+  if (!HERO_BOTTOM_LAYOUT_SYNC_KEYS.has(key)) return;
+
+  const catalog = getConfigAtPath(config, `${sectionPrefix}.settings.catalogVariant`);
+  const contentGroup = getConfigAtPath(config, `${sectionPrefix}.blocks.content_group`);
+  if (catalog != null && catalog !== 'hero-bottom-aligned') return;
+  if (!contentGroup || typeof contentGroup !== 'object') return;
+
+  setConfigAtPath(config, `${sectionPrefix}.blocks.content_group.settings.${key}`, value);
+}
+
 /** Write a value at a dot path; numeric segments use real arrays when the parent is a list.
  * Template keys may contain dots (`pages.about`) — resolve against existing `config.templates` keys.
  */
@@ -2195,6 +2225,7 @@ export function applyValuesToThemeConfig(
     if (typeof coerced === 'string') {
       syncHeroHeadingTextPaths(config, path, coerced);
     }
+    syncHeroBottomAlignedSectionLayoutToContentGroup(config, path, coerced);
   }
 
   return config;
