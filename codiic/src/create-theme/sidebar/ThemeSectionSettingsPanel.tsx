@@ -18678,6 +18678,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isContactFormSubmitButtonPanel &&
     !isHeroSectionSettingsNode(node) &&
     !isHeroSettingsPanelFields(fields) &&
+    !isHeroBottomGroupPanel &&
+    !isHeroBottomTextBlockPanel &&
     !isPullQuoteSectionNodeId(node.id) &&
     !isPullQuoteSettingsPanelFields(fields) &&
     node.label !== 'Pull quote' &&
@@ -19332,6 +19334,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !faqHeadingBlockPanel &&
     !isIconsWithTextNestedHeadingNodeId(node.id) &&
     !isIconsWithTextNestedTextNodeId(node.id) &&
+    !isHeroBottomTextBlockPanel &&
+    !isHeroBottomGroupPanel &&
     node.kind === 'block' &&
     (node.label === 'Heading' ||
       isHeadingBlockNodeId(node.id) ||

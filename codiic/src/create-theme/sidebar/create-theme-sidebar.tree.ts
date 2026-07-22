@@ -670,6 +670,9 @@ import {
   heroTextBlockFieldDefsFromNode,
   isHeroTextBlockNodeId,
   prepareHeroTextBlockSettingsNode,
+  isHeroBottomGroupNodeId,
+  isHeroBottomTextBlockNodeId,
+  heroBottomTextFieldDefsFromNodeId,
 } from './theme-editor-hero-text-block-panel.utils';
 import {
   isNotFoundMainMessageBlockNodeId,
@@ -3491,11 +3494,18 @@ function layoutHeroSectionNode(
       itemOrder,
       childrenListKey
     );
+    const sectionFields = prepareHeroBottomAlignedSettingsNode({
+      id: prefix,
+      label: 'Hero: Bottom aligned',
+      kind: 'section',
+      fields: fallbackHeroSectionFieldDefs(prefix),
+    }).fields;
     return {
       id: prefix,
       label: 'Hero: Bottom aligned',
       kind: 'section',
       icon: 'section',
+      fields: sectionFields,
       children: children.length ? children : undefined,
       childrenListKey,
       showVisibilityToggle: true,
@@ -3632,11 +3642,18 @@ function sectionToNode(
       itemOrder,
       childrenListKey
     );
+    const sectionFields = prepareHeroBottomAlignedSettingsNode({
+      id: prefix,
+      label: 'Hero: Bottom aligned',
+      kind: 'section',
+      fields: fallbackHeroSectionFieldDefs(prefix),
+    }).fields;
     return {
       id: prefix,
       label: 'Hero: Bottom aligned',
       kind: 'section',
       icon: 'section',
+      fields: sectionFields,
       children: children.length ? children : undefined,
       childrenListKey,
       showVisibilityToggle: true,
@@ -5096,6 +5113,26 @@ export function settingsNodeForSelection(
     return { ...blockNode, kind: 'block', fields: node.fields ?? [] };
   }
 
+  /** Hero: Bottom aligned Group → Group → Text / Heading — keep / regenerate tree fields. */
+  if (isHeroBottomGroupNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    if (blockNode.fields?.length) {
+      return { ...blockNode, kind: 'block' };
+    }
+    return { ...blockNode, kind: 'block', fields: node.fields ?? [] };
+  }
+
+  if (isHeroBottomTextBlockNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    const regenerated = heroBottomTextFieldDefsFromNodeId(node.id);
+    const fields = regenerated.length
+      ? regenerated
+      : (blockNode.fields ?? node.fields ?? []);
+    if (fields.length) {
+      return { ...blockNode, kind: 'block', fields };
+    }
+  }
+
   if (isHeroTextBlockNodeId(node.id)) {
     const blockNode = findSidebarNode(tree, node.id) ?? node;
     const heroTextMatch = node.id.match(
@@ -5307,7 +5344,10 @@ export function settingsNodeForSelection(
 
   if (
     (node.label === 'FAQ' || isFaqSectionNodeId(node.id) || (node.fields?.length && isFaqSettingsPanelFields(node.fields))) &&
-    !isPullQuoteSectionNodeId(node.id)
+    !isPullQuoteSectionNodeId(node.id) &&
+    !isHeroBottomGroupNodeId(node.id) &&
+    !isHeroBottomTextBlockNodeId(node.id) &&
+    !isHeroSectionSettingsNode(node)
   ) {
     return prepareFaqSettingsNode(node);
   }

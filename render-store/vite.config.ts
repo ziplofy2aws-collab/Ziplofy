@@ -50,8 +50,9 @@ export default defineConfig({
       '/robots.txt': createDevProxy(),
     },
     headers: {
-      'Content-Security-Policy':
-        "frame-ancestors 'self' http://localhost:3000 http://127.0.0.1:3000 http://admin.localhost:3000 http://localhost:5173 http://127.0.0.1:5173 http://admin.localhost:5173 https://admin.codiic.com https://dashboard.codiic.com https://*.codiic.com",
+      // Production/static hosts should set this via nginx (see deploy/snippets/).
+      // Vite preview uses the same permissive policy so local embed tests work.
+      'Content-Security-Policy': "frame-ancestors *",
     },
   },
   build: {

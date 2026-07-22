@@ -261,7 +261,7 @@ export function Hero({
       ? resolveThemePaletteColorSetting(config, bottomSectionBgRaw, 0, '#2d6478')
       : '#2d6478';
 
-    /** "Group" block settings → box styling (Appearance/Borders/Padding) applied to the group container. */
+    /** "Group" block settings → box styling (Appearance/Borders/Padding/Size) applied to the group container. */
     const groupBoxStyle = (base: string): CSSProperties => {
       const bgMedia = cfgString(config, `${base}.backgroundMedia`, 'none');
       const bgImage = cfgString(config, `${base}.backgroundImageUrl`, '');
@@ -277,6 +277,10 @@ export function Hero({
           ? resolveThemePaletteColorSetting(config, bgColorRaw, 0, 'transparent')
           : undefined;
       const useImage = bgMedia === 'image' && bgImage.trim();
+      const widthMode = cfgString(config, `${base}.width`, 'fill');
+      const heightMode = cfgString(config, `${base}.height`, 'fit');
+      const customWidth = cfgNumber(config, `${base}.customWidth`, 100);
+      const customHeight = cfgNumber(config, `${base}.customHeight`, 100);
       const style: CSSProperties = {
         paddingTop: cfgNumber(config, `${base}.paddingTop`, 0),
         paddingBottom: cfgNumber(config, `${base}.paddingBottom`, 0),
@@ -285,7 +289,24 @@ export function Hero({
         textAlign,
         borderRadius: cornerRadius || undefined,
         border: borderStyle === 'solid' ? '1px solid rgba(255,255,255,0.35)' : undefined,
+        boxSizing: 'border-box',
       };
+      if (widthMode === 'fill') {
+        style.width = '100%';
+        style.flex = '1 1 auto';
+      } else if (widthMode === 'custom') {
+        style.width = `${Math.max(1, Math.min(100, customWidth))}%`;
+        style.flex = '0 0 auto';
+      } else {
+        style.width = 'fit-content';
+        style.flex = '0 1 auto';
+      }
+      if (heightMode === 'fill') {
+        style.minHeight = '100%';
+        style.alignSelf = 'stretch';
+      } else if (heightMode === 'custom') {
+        style.minHeight = `${Math.max(1, Math.min(100, customHeight))}vh`;
+      }
       if (useImage) {
         style.backgroundImage = overlayOn
           ? `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url(${bgImage.trim()})`
@@ -305,8 +326,31 @@ export function Hero({
     const textBodyBase = `${blocksBase}.content_group.blocks.text_body`;
     const contentGroupGap = cfgNumber(config, `${contentGroupBase}.layoutGap`, Math.max(hero.gap, 32));
     const contentGroupDirection = cfgString(config, `${contentGroupBase}.direction`, 'horizontal');
+    const headingGroupDirection = cfgString(config, `${headingGroupBase}.direction`, 'vertical');
+    const headingGroupGap = cfgNumber(config, `${headingGroupBase}.layoutGap`, 8);
+    const contentGroupPosition = cfgString(config, `${contentGroupBase}.position`, 'bottom');
+    const contentAlignItems =
+      contentGroupPosition === 'top'
+        ? 'flex-start'
+        : contentGroupPosition === 'center'
+          ? 'center'
+          : 'flex-end';
+    const contentJustifyContent =
+      contentGroupPosition === 'space-between' || contentGroupPosition === 'space-around'
+        ? contentGroupPosition
+        : 'space-between';
     const contentGroupBox = groupBoxStyle(contentGroupBase);
     const headingGroupBox = groupBoxStyle(headingGroupBase);
+
+    const bottomHasMedia = Boolean(media1Url || media2Url);
+    /** Landscape illustration backdrop reads on light copy; photo backdrops keep white copy + overlay. */
+    const bottomOverlay = bottomHasMedia && hero.mediaOverlay ? overlayBackground : undefined;
+    const textColor = bottomHasMedia ? '#ffffff' : '#1f2937';
+    const sectionMinHeight = hero.minHeight;
+    const sidePad = Math.max(hero.paddingX, 40);
+    const bottomPad = Math.max(hero.paddingBottom, 48);
+    const topPad = hero.paddingTop > 0 ? hero.paddingTop : 0;
+    const rowMaxWidth = typeof hero.maxWidth === 'number' ? hero.maxWidth : 1400;
 
     /** Nested Text/Heading block settings → typography, color, background and padding. */
     const textBlockStyle = (blockBase: string, fallback: CSSProperties): CSSProperties => {
@@ -372,24 +416,14 @@ export function Hero({
       color: textColor,
     });
 
-    const bottomHasMedia = Boolean(media1Url || media2Url);
-    const sectionMinHeight = hero.minHeight;
-    const sidePad = Math.max(hero.paddingX, 40);
-    const bottomPad = Math.max(hero.paddingBottom, 48);
-    const topPad = hero.paddingTop > 0 ? hero.paddingTop : 0;
-    /** Landscape illustration backdrop reads on light copy; photo backdrops keep white copy + overlay. */
-    const bottomOverlay = bottomHasMedia && hero.mediaOverlay ? overlayBackground : undefined;
-    const textColor = bottomHasMedia ? '#ffffff' : '#1f2937';
-    const rowMaxWidth = typeof hero.maxWidth === 'number' ? hero.maxWidth : 1400;
-
     const bottomRow = (
       <div
         className="hero-bottom-aligned-row"
         style={{
           display: 'flex',
           flexDirection: contentGroupDirection === 'vertical' ? 'column' : 'row',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
+          alignItems: contentAlignItems,
+          justifyContent: contentJustifyContent,
           gap: contentGroupGap,
           width: '100%',
           maxWidth: rowMaxWidth,
@@ -398,7 +432,20 @@ export function Hero({
           ...contentGroupBox,
         }}
       >
-        <div style={{ flex: '1 1 50%', minWidth: 0, ...headingGroupBox }}>
+        <div
+          style={{
+            minWidth: 0,
+            display: 'flex',
+            flexDirection: headingGroupDirection === 'horizontal' ? 'row' : 'column',
+            gap: headingGroupGap,
+            alignItems:
+              cfgBool(config, `${headingGroupBase}.alignTextBaseline`, true) &&
+              headingGroupDirection === 'horizontal'
+                ? 'baseline'
+                : undefined,
+            ...headingGroupBox,
+          }}
+        >
           {bottomIntro.trim() ? (
             <EditorBlock nodeId={bottomBlockNode('text_intro')} label="Text">
               <EditorField
@@ -431,7 +478,12 @@ export function Hero({
               maxWidth: 460,
               minWidth: 200,
               textAlign: 'left',
-              alignSelf: 'flex-end',
+              alignSelf:
+                contentGroupPosition === 'top'
+                  ? 'flex-start'
+                  : contentGroupPosition === 'center'
+                    ? 'center'
+                    : 'flex-end',
             }}
           >
             <EditorBlock nodeId={bottomBlockNode('text_body')} label="Text">

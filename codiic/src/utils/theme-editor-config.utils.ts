@@ -539,7 +539,44 @@ const HERO_TEXT_BLOCK_SETTING_TYPES: Record<string, string> = {
   maxWidth: 'select',
   alignment: 'select',
   typographyPreset: 'select',
+  font: 'select',
+  fontSize: 'select',
+  lineHeight: 'select',
+  letterSpacing: 'select',
+  textCase: 'select',
+  wrap: 'select',
+  textColor: 'text',
   backgroundEnabled: 'boolean',
+  backgroundColor: 'text',
+  cornerRadius: 'number',
+  paddingTop: 'number',
+  paddingBottom: 'number',
+  paddingLeft: 'number',
+  paddingRight: 'number',
+};
+
+/** Hero: Bottom aligned Group block settings (content_group / heading_group). */
+const HERO_BOTTOM_GROUP_SETTING_TYPES: Record<string, string> = {
+  direction: 'select',
+  verticalOnMobile: 'boolean',
+  layoutAlignment: 'select',
+  position: 'select',
+  alignTextBaseline: 'boolean',
+  layoutGap: 'number',
+  width: 'select',
+  customWidth: 'number',
+  mobileWidth: 'select',
+  mobileCustomWidth: 'number',
+  height: 'select',
+  customHeight: 'number',
+  backgroundMedia: 'select',
+  backgroundImageUrl: 'text',
+  backgroundColor: 'text',
+  backgroundOverlay: 'boolean',
+  borderStyle: 'select',
+  cornerRadius: 'number',
+  link: 'text',
+  linkOpenInNewTab: 'boolean',
   paddingTop: 'number',
   paddingBottom: 'number',
   paddingLeft: 'number',
@@ -556,6 +593,36 @@ function resolveHeroTextBlockFieldType(path: string): string | undefined {
   const layout = path.match(/^sections\.[^.]+\.blocks\.text(?:_\d+)?\.settings\.([^.]+)$/);
   if (layout) {
     return HERO_TEXT_BLOCK_SETTING_TYPES[layout[1]!];
+  }
+
+  // Hero: Bottom aligned nested Text / Heading blocks.
+  const bottomTpl = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.blocks\.content_group(?:\.blocks\.heading_group)?\.blocks\.(?:text_intro|heading_main|text_body)\.settings\.([^.]+)$/
+  );
+  if (bottomTpl) {
+    return HERO_TEXT_BLOCK_SETTING_TYPES[bottomTpl[1]!];
+  }
+  const bottomLayout = path.match(
+    /^sections\.[^.]+\.blocks\.content_group(?:\.blocks\.heading_group)?\.blocks\.(?:text_intro|heading_main|text_body)\.settings\.([^.]+)$/
+  );
+  if (bottomLayout) {
+    return HERO_TEXT_BLOCK_SETTING_TYPES[bottomLayout[1]!];
+  }
+  return undefined;
+}
+
+function resolveHeroBottomGroupFieldType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.blocks\.content_group(?:\.blocks\.heading_group)?\.settings\.([^.]+)$/
+  );
+  if (tpl) {
+    return HERO_BOTTOM_GROUP_SETTING_TYPES[tpl[1]!];
+  }
+  const layout = path.match(
+    /^sections\.[^.]+\.blocks\.content_group(?:\.blocks\.heading_group)?\.settings\.([^.]+)$/
+  );
+  if (layout) {
+    return HERO_BOTTOM_GROUP_SETTING_TYPES[layout[1]!];
   }
   return undefined;
 }
@@ -1757,6 +1824,9 @@ function resolveFieldTypeForPath(
   const heroTextBlock = resolveHeroTextBlockFieldType(path);
   if (heroTextBlock) return heroTextBlock;
 
+  const heroBottomGroup = resolveHeroBottomGroupFieldType(path);
+  if (heroBottomGroup) return heroBottomGroup;
+
   const heroLogoBlock = resolveHeroLogoBlockFieldType(path);
   if (heroLogoBlock) return heroLogoBlock;
 
@@ -2016,7 +2086,11 @@ export function applyValuesToThemeConfig(
         key === 'captionBackgroundEnabled' ||
         key === 'videoAutoplay' ||
         key === 'videoLoop' ||
-        key === 'linkOpenInNewTab'
+        key === 'linkOpenInNewTab' ||
+        key === 'alignTextBaseline' ||
+        key === 'verticalOnMobile' ||
+        key === 'backgroundOverlay' ||
+        key === 'mediaOverlay'
       ) {
         type = 'boolean';
       } else if (
@@ -2045,6 +2119,11 @@ export function applyValuesToThemeConfig(
         key === 'videoBorderOpacity' ||
         key === 'buttonDesktopCustomWidth' ||
         key === 'buttonMobileCustomWidth' ||
+        key === 'customWidth' ||
+        key === 'mobileCustomWidth' ||
+        key === 'customHeight' ||
+        key === 'layoutGap' ||
+        key === 'columns' ||
         key === 'paddingTop' ||
         key === 'paddingBottom' ||
         key === 'paddingLeft' ||
@@ -2081,18 +2160,8 @@ export function applyValuesToThemeConfig(
         key === 'menuName' ||
         key === 'buttonStyle' ||
         key === 'buttonDesktopWidth' ||
-        key === 'buttonMobileWidth'
-      ) {
-        type = 'text';
-      } else if (
-        key === 'verticalOnMobile' ||
-        key === 'backgroundOverlay' ||
-        key === 'mediaOverlay'
-      ) {
-        type = 'boolean';
-      } else if (
-        key === 'layoutGap' ||
-        key === 'columns' ||
+        key === 'buttonMobileWidth' ||
+        key === 'text' ||
         key === 'productId' ||
         key === 'productTitle' ||
         key === 'productImageUrl' ||
@@ -2110,9 +2179,10 @@ export function applyValuesToThemeConfig(
         key === 'width' ||
         key === 'maxWidth' ||
         key === 'alignment' ||
-        key === 'mobileAlignment'
+        key === 'mobileAlignment' ||
+        key === 'mobileWidth'
       ) {
-        type = key === 'layoutGap' || key === 'columns' ? 'number' : 'text';
+        type = 'text';
       } else if (key === 'positionX' || key === 'positionY' || key === 'popoverGap') {
         type = 'number';
       } else {

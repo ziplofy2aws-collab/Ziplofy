@@ -467,6 +467,7 @@ const CreateThemeLivePreviewInner = forwardRef<
   useEffect(() => {
     initSentRef.current = false;
     setReady(false);
+    setLoadError(null);
     lastPostedConfigRef.current = '';
     lastPostedHintsKeyRef.current = '';
     return () => {
@@ -475,6 +476,18 @@ const CreateThemeLivePreviewInner = forwardRef<
       if (hintsPostTimerRef.current !== undefined) window.clearTimeout(hintsPostTimerRef.current);
     };
   }, [storeId, previewSrc]);
+
+  /** Surface a clear error if the iframe never handshakes (blocked by CSP / wrong host). */
+  useEffect(() => {
+    if (ready) return;
+    const timer = window.setTimeout(() => {
+      setLoadError((prev) =>
+        prev ??
+        `Preview did not load from ${previewDisplayUrl}. Ensure preview.codiic.com serves /theme-preview with frame-ancestors allowing this dashboard.`
+      );
+    }, 12000);
+    return () => window.clearTimeout(timer);
+  }, [ready, previewDisplayUrl, previewSrc, storeId]);
 
   useEffect(() => {
     if (ready && storeId) {

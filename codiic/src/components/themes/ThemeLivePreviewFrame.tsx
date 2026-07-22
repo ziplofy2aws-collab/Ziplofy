@@ -61,6 +61,7 @@ export type ThemeLivePreviewFrameProps = {
 };
 
 const DEFAULT_RENDER_STORE_PORT = '5180';
+const DEFAULT_PRODUCTION_PREVIEW_HOST = 'preview.codiic.com';
 
 function readEnvOrigin(...keys: string[]): string | null {
   for (const key of keys) {
@@ -72,33 +73,58 @@ function readEnvOrigin(...keys: string[]): string | null {
   return null;
 }
 
+function isLocalHostname(hostname: string): boolean {
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname.endsWith('.localhost')
+  );
+}
+
 /**
- * Origin for the preview iframe (`{storeUrl}/theme-preview` on render-store).
- * Prefers the merchant store URL (e.g. mystore.localhost:5180) so preview APIs resolve the correct store.
+ * Origin for the preview iframe (`{origin}/theme-preview` on render-store).
+ *
+ * Online: always use the dedicated embeddable host (`preview.codiic.com` or
+ * `VITE_RENDER_STORE_ORIGIN`). Merchant storefronts typically send
+ * `X-Frame-Options: SAMEORIGIN`, which leaves the theme editor stuck on
+ * "Loading live preview".
+ *
+ * Local: prefer the merchant storefront origin so APIs resolve the correct store.
  */
 export function resolveThemePreviewOrigin(storefrontOrigin?: string | null): string {
   const explicit = readEnvOrigin('VITE_RENDER_STORE_ORIGIN', 'VITE_THEME_PREVIEW_ORIGIN');
   if (explicit) return explicit;
 
-  const storefront = storefrontOrigin?.trim().replace(/\/$/, '');
-  if (storefront) return storefront;
-
   if (typeof window !== 'undefined') {
     const { protocol, hostname } = window.location;
 
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.localhost')) {
+    if (!isLocalHostname(hostname)) {
+      // Production / staging dashboard — never embed the merchant store host.
+      if (
+        hostname === 'admin.codiic.com' ||
+        hostname === 'dashboard.codiic.com' ||
+        hostname.endsWith('.codiic.com')
+      ) {
+        return `${protocol}//${DEFAULT_PRODUCTION_PREVIEW_HOST}`;
+      }
+      // Other deployed dashboards: derive preview.<apex> when possible.
+      const parts = hostname.split('.');
+      if (parts.length >= 2) {
+        const apex = parts.slice(-2).join('.');
+        return `${protocol}//preview.${apex}`;
+      }
+    }
+
+    const storefront = storefrontOrigin?.trim().replace(/\/$/, '');
+    if (storefront) return storefront;
+
+    if (isLocalHostname(hostname)) {
       return `${protocol}//localhost:${DEFAULT_RENDER_STORE_PORT}`;
     }
-
-    // Production admin on codiic.com → dedicated preview host (same render-store app, embeddable headers).
-    if (hostname === 'admin.codiic.com' || hostname === 'dashboard.codiic.com') {
-      return `${protocol}//preview.codiic.com`;
-    }
-
-    if (hostname.endsWith('.codiic.com')) {
-      return `${protocol}//preview.codiic.com`;
-    }
   }
+
+  const storefront = storefrontOrigin?.trim().replace(/\/$/, '');
+  if (storefront) return storefront;
 
   return `http://localhost:${DEFAULT_RENDER_STORE_PORT}`;
 }
@@ -418,6 +444,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   useEffect(() => {
     initSentRef.current = false;
     setReady(false);
+    setLoadError(null);
     setSyncPulse(false);
     lastPostedConfigRef.current = '';
     lastPostedHintsKeyRef.current = '';
@@ -427,6 +454,17 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
       if (hintsPostTimerRef.current !== undefined) window.clearTimeout(hintsPostTimerRef.current);
     };
   }, [jsUrl, storeId, previewSrc]);
+
+  useEffect(() => {
+    if (ready) return;
+    const timer = window.setTimeout(() => {
+      setLoadError((prev) =>
+        prev ??
+        `Preview did not load from ${previewDisplayUrl}. Ensure the preview host allows framing from this dashboard (CSP frame-ancestors).`
+      );
+    }, 12000);
+    return () => window.clearTimeout(timer);
+  }, [ready, previewDisplayUrl, previewSrc, storeId, jsUrl]);
 
   useEffect(() => {
     if (ready && jsUrl && storeId) {

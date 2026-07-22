@@ -14,6 +14,9 @@ interface ImportMetaEnv {
     readonly VITE_THEME_EDITOR_STATIC_THEME_NAME?: string;
     readonly VITE_THEME_EDITOR_STATIC_THEME_ID?: string;
     readonly VITE_THEME_EDITOR_STATIC_STORE_ID?: string;
+    /** Dedicated render-store origin for theme editor iframe (e.g. https://preview.codiic.com). */
+    readonly VITE_RENDER_STORE_ORIGIN?: string;
+    readonly VITE_THEME_PREVIEW_ORIGIN?: string;
 }
 
 interface ImportMeta {

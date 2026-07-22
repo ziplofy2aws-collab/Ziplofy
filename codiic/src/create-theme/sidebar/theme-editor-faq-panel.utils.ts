@@ -500,7 +500,8 @@ export function isFaqSettingsPanelFields(fields: EditorFieldDef[]): boolean {
     path.includes('image_with_text') ||
     path.includes('image_compare') ||
     path.includes('custom_section') ||
-    path.includes('not_found')
+    path.includes('not_found') ||
+    path.includes('content_group')
   ) {
     return false;
   }

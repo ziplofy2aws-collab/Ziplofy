@@ -169,11 +169,27 @@ function heroBottomGroupSettingsBaseFromNodeId(nodeId: string): string | null {
     : `${blocksBase}.content_group.settings`;
 }
 
+export function isHeroBottomGroupNodeId(nodeId: string): boolean {
+  return heroBottomGroupSettingsBaseFromNodeId(nodeId) != null;
+}
+
 const HERO_GROUP_BLOCK_BOOLEAN_KEYS = new Set([
   'verticalOnMobile',
   'alignTextBaseline',
   'backgroundOverlay',
   'linkOpenInNewTab',
+]);
+
+const HERO_GROUP_BLOCK_NUMBER_KEYS = new Set([
+  'layoutGap',
+  'customWidth',
+  'mobileCustomWidth',
+  'customHeight',
+  'cornerRadius',
+  'paddingTop',
+  'paddingBottom',
+  'paddingLeft',
+  'paddingRight',
 ]);
 
 const HERO_GROUP_BLOCK_KEYS = [
@@ -203,6 +219,12 @@ const HERO_GROUP_BLOCK_KEYS = [
   'paddingRight',
 ];
 
+function heroBottomGroupSeedFieldType(key: string): EditorFieldDef['type'] {
+  if (HERO_GROUP_BLOCK_BOOLEAN_KEYS.has(key)) return 'boolean';
+  if (HERO_GROUP_BLOCK_NUMBER_KEYS.has(key)) return 'number';
+  return 'text';
+}
+
 /** Settings base for a Hero: Bottom aligned nested Text/Heading block node. */
 function heroBottomTextBlockBaseFromNodeId(nodeId: string): string | null {
   const m = nodeId.match(
@@ -225,15 +247,36 @@ function heroBottomTextBlockBaseFromNodeId(nodeId: string): string | null {
     : `${blocksBase}.content_group.blocks.${blockId}`;
 }
 
+export function isHeroBottomTextBlockNodeId(nodeId: string): boolean {
+  return heroBottomTextBlockBaseFromNodeId(nodeId) != null;
+}
+
+/** Regenerate Text/Heading panel fields from a bottom-aligned nested node id. */
+export function heroBottomTextFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
+  const base = heroBottomTextBlockBaseFromNodeId(nodeId);
+  return base ? textBlockFieldDefs(base) : [];
+}
+
+/** Regenerate Group panel seed fields from a bottom-aligned group node id. */
+export function heroBottomGroupFieldDefsFromNodeId(nodeId: string): EditorFieldDef[] {
+  const settingsBase = heroBottomGroupSettingsBaseFromNodeId(nodeId);
+  if (!settingsBase) return [];
+  return HERO_GROUP_BLOCK_KEYS.map((key) => ({
+    path: `${settingsBase}.${key}`,
+    type: heroBottomGroupSeedFieldType(key),
+    label: key,
+  }));
+}
+
 /** Seed sidebar `values` for a Hero: Bottom aligned nested Text/Heading block panel from config. */
 export function extendValuesForHeroBottomText(
   values: Record<string, string | boolean>,
   nodeId: string,
   config: Record<string, unknown>
 ): Record<string, string | boolean> {
-  const base = heroBottomTextBlockBaseFromNodeId(nodeId);
-  if (!base) return values;
-  return seedTextBlockValues(values, textBlockFieldDefs(base), config);
+  const defs = heroBottomTextFieldDefsFromNodeId(nodeId);
+  if (!defs.length) return values;
+  return seedTextBlockValues(values, defs, config);
 }
 
 /** Seed sidebar `values` for a Hero: Bottom aligned "Group" block panel from merged config. */
@@ -242,13 +285,8 @@ export function extendValuesForHeroBottomGroup(
   nodeId: string,
   config: Record<string, unknown>
 ): Record<string, string | boolean> {
-  const settingsBase = heroBottomGroupSettingsBaseFromNodeId(nodeId);
-  if (!settingsBase) return values;
-  const defs: EditorFieldDef[] = HERO_GROUP_BLOCK_KEYS.map((key) => ({
-    path: `${settingsBase}.${key}`,
-    type: HERO_GROUP_BLOCK_BOOLEAN_KEYS.has(key) ? 'boolean' : 'text',
-    label: key,
-  }));
+  const defs = heroBottomGroupFieldDefsFromNodeId(nodeId);
+  if (!defs.length) return values;
   return seedTextBlockValues(values, defs, config);
 }
 

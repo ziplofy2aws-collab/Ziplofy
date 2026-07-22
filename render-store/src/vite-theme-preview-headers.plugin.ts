@@ -1,24 +1,19 @@
 import type { Plugin } from 'vite';
 
-const FRAME_ANCESTORS = [
-  "'self'",
-  // codiic merchant dashboard (vite --port 3000)
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'http://admin.localhost:3000',
-  // legacy admin / alternate local ports
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  'http://admin.localhost:5173',
-  'https://admin.codiic.com',
-  'https://dashboard.codiic.com',
-  'https://*.codiic.com',
-].join(' ');
+/**
+ * Theme editor embeds `/theme-preview` cross-origin (dashboard → preview host).
+ * Permissive frame-ancestors so production/staging/local dashboards can all embed.
+ * CSP frame-ancestors overrides X-Frame-Options in modern browsers.
+ */
+const FRAME_ANCESTORS = '*';
 
 /** Allow theme editor iframes to embed /theme-preview (overrides restrictive defaults). */
-function applyPreviewFrameHeaders(res: { setHeader: (k: string, v: string) => void; removeHeader?: (k: string) => void }) {
+function applyPreviewFrameHeaders(res: {
+  setHeader: (k: string, v: string) => void;
+  removeHeader?: (k: string) => void;
+}) {
   res.setHeader('Content-Security-Policy', `frame-ancestors ${FRAME_ANCESTORS}`);
-  // Invalid value "ALLOWALL" is ignored by browsers; omit X-Frame-Options so CSP governs embedding.
+  // Omit X-Frame-Options so CSP governs embedding.
   try {
     res.removeHeader?.('X-Frame-Options');
   } catch {
