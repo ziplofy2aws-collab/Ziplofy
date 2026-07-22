@@ -583,6 +583,21 @@ const HERO_BOTTOM_GROUP_SETTING_TYPES: Record<string, string> = {
   paddingRight: 'number',
 };
 
+/** Hero: Marquee folder / Spacer section settings (settings.marquee*). */
+const HERO_MARQUEE_SETTING_TYPES: Record<string, string> = {
+  marqueeMotionDirection: 'select',
+  marqueeTransparentBg: 'boolean',
+  marqueeBackgroundColor: 'text',
+  marqueePaddingTop: 'number',
+  marqueePaddingBottom: 'number',
+  marqueeGap: 'number',
+  marqueeSpacerUnit: 'select',
+  marqueeSpacerHeight: 'number',
+  marqueeSpacerCustomMobile: 'boolean',
+  marqueeSpacerMobileHeight: 'number',
+  marqueeText: 'textarea',
+};
+
 function resolveHeroTextBlockFieldType(path: string): string | undefined {
   const tpl = path.match(
     /^templates\.[^.]+\.sections\.[^.]+\.blocks\.text(?:_\d+)?\.settings\.([^.]+)$/
@@ -608,6 +623,20 @@ function resolveHeroTextBlockFieldType(path: string): string | undefined {
   if (bottomLayout) {
     return HERO_TEXT_BLOCK_SETTING_TYPES[bottomLayout[1]!];
   }
+
+  // Hero: Marquee nested Text block (settings.marqueeTextBlock.settings.*).
+  const marqueeTpl = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.settings\.marqueeTextBlock\.settings\.([^.]+)$/
+  );
+  if (marqueeTpl) {
+    return HERO_TEXT_BLOCK_SETTING_TYPES[marqueeTpl[1]!];
+  }
+  const marqueeLayout = path.match(
+    /^sections\.[^.]+\.settings\.marqueeTextBlock\.settings\.([^.]+)$/
+  );
+  if (marqueeLayout) {
+    return HERO_TEXT_BLOCK_SETTING_TYPES[marqueeLayout[1]!];
+  }
   return undefined;
 }
 
@@ -623,6 +652,18 @@ function resolveHeroBottomGroupFieldType(path: string): string | undefined {
   );
   if (layout) {
     return HERO_BOTTOM_GROUP_SETTING_TYPES[layout[1]!];
+  }
+  return undefined;
+}
+
+function resolveHeroMarqueeFieldType(path: string): string | undefined {
+  const tpl = path.match(/^templates\.[^.]+\.sections\.[^.]+\.settings\.(marquee[^.]+)$/);
+  if (tpl) {
+    return HERO_MARQUEE_SETTING_TYPES[tpl[1]!];
+  }
+  const layout = path.match(/^sections\.[^.]+\.settings\.(marquee[^.]+)$/);
+  if (layout) {
+    return HERO_MARQUEE_SETTING_TYPES[layout[1]!];
   }
   return undefined;
 }
@@ -1827,6 +1868,9 @@ function resolveFieldTypeForPath(
   const heroBottomGroup = resolveHeroBottomGroupFieldType(path);
   if (heroBottomGroup) return heroBottomGroup;
 
+  const heroMarquee = resolveHeroMarqueeFieldType(path);
+  if (heroMarquee) return heroMarquee;
+
   const heroLogoBlock = resolveHeroLogoBlockFieldType(path);
   if (heroLogoBlock) return heroLogoBlock;
 
@@ -1874,6 +1918,23 @@ function syncHeroHeadingTextPaths(
   if (title) {
     syncHeroHeadingTextPathsForSection(config, title[1]!, value);
   }
+}
+
+/** Keep Hero: Marquee copy in sync across marqueeTextBlock / marqueeText / subtitle. */
+function syncHeroMarqueeTextPaths(
+  config: Record<string, unknown>,
+  path: string,
+  value: string | boolean | number
+): void {
+  if (typeof value !== 'string') return;
+  const m = path.match(
+    /^(templates\.[^.]+\.sections\.[^.]+|sections\.[^.]+)\.settings\.(?:marqueeTextBlock\.settings\.text|marqueeText|subtitle)$/
+  );
+  if (!m) return;
+  const sectionPrefix = m[1]!;
+  setConfigAtPath(config, `${sectionPrefix}.settings.marqueeTextBlock.settings.text`, value);
+  setConfigAtPath(config, `${sectionPrefix}.settings.marqueeText`, value);
+  setConfigAtPath(config, `${sectionPrefix}.settings.subtitle`, value);
 }
 
 /** Section Layout fields for Hero: Bottom aligned also drive the content_group row. */
@@ -2210,10 +2271,24 @@ export function applyValuesToThemeConfig(
         key === 'maxWidth' ||
         key === 'alignment' ||
         key === 'mobileAlignment' ||
-        key === 'mobileWidth'
+        key === 'mobileWidth' ||
+        key === 'marqueeMotionDirection' ||
+        key === 'marqueeSpacerUnit' ||
+        key === 'marqueeText'
       ) {
         type = 'text';
-      } else if (key === 'positionX' || key === 'positionY' || key === 'popoverGap') {
+      } else if (key === 'marqueeTransparentBg' || key === 'marqueeSpacerCustomMobile') {
+        type = 'boolean';
+      } else if (
+        key === 'marqueePaddingTop' ||
+        key === 'marqueePaddingBottom' ||
+        key === 'marqueeGap' ||
+        key === 'marqueeSpacerHeight' ||
+        key === 'marqueeSpacerMobileHeight' ||
+        key === 'positionX' ||
+        key === 'positionY' ||
+        key === 'popoverGap'
+      ) {
         type = 'number';
       } else {
         continue;
@@ -2224,6 +2299,7 @@ export function applyValuesToThemeConfig(
     setConfigAtPath(config, path, coerced);
     if (typeof coerced === 'string') {
       syncHeroHeadingTextPaths(config, path, coerced);
+      syncHeroMarqueeTextPaths(config, path, coerced);
     }
     syncHeroBottomAlignedSectionLayoutToContentGroup(config, path, coerced);
   }

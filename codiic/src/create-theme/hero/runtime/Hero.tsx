@@ -9,10 +9,7 @@ import { layoutBlockOrder, templateBlockOrder } from '../../runtime/shared/struc
 import { layout, useThemeColors } from '../../runtime/shared/tokens';
 import { LargeLogo } from '../../large-logo/runtime/LargeLogo';
 import { SplitShowcase } from '../../split-showcase/runtime/SplitShowcase';
-import { HERO_MARQUEE_TEXT } from '../../../utils/hero-banner-variants.util';
-import {
-  HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE,
-} from '../../../utils/hero-bottom-aligned.util';
+import { HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE } from '../../../utils/hero-bottom-aligned.util';
 import { readHeroButtonStyle } from './heroButtonStyles';
 import {
   heroHeadingTypographyCss,
@@ -31,6 +28,7 @@ import { HeroLandscapeBackdrop } from './HeroLandscapeBackdrop';
 import { HeroMediaBackground } from './HeroMediaBackground';
 import { HeroBlurredReflection } from './HeroBlurredReflection';
 import { HeroBottomAligned } from './HeroBottomAligned';
+import { HeroMarquee } from './HeroMarquee';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { richTextHasBlockMarkup } from '../../../utils/theme-editor-rich-text.util';
 
@@ -249,235 +247,30 @@ export function Hero({
   }
 
   if (isMarquee) {
-    const marqueeTextPath = `${settingsBase}.marqueeTextBlock.settings.text`;
-    const marqueeText = cfgString(
-      config,
-      marqueeTextPath,
-      cfgString(
-        config,
-        `${settingsBase}.marqueeText`,
-        cfgString(config, `${settingsBase}.subtitle`, HERO_MARQUEE_TEXT)
-      )
-    );
     const marqueeHasMedia = Boolean(media1Url || media2Url);
-    const sectionMinHeight = hero.minHeight;
-    const bottomPad = Math.max(hero.paddingBottom, 48);
-    /** Photo backdrops keep the dark overlay; the landscape illustration shows none. */
-    const marqueeOverlay = marqueeHasMedia && hero.mediaOverlay ? overlayBackground : undefined;
-    const marqueeTextColor = marqueeHasMedia ? '#ffffff' : '#1f2937';
-    const marqueeTextShadow = marqueeHasMedia ? '0 2px 24px rgba(0,0,0,0.25)' : 'none';
-    const marqueeAnimId = `codiic-hero-marquee-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
-
-    // "Text" block (inside the Marquee folder) drives typography, color and padding.
-    const marqueeTextBase = `${settingsBase}.marqueeTextBlock.settings`;
-    const marqueeTypo = resolveTextBlockTypographyStyle(
-      config,
-      marqueeTextBase,
-      cfgString(config, `${marqueeTextBase}.typographyPreset`, 'heading-1'),
-      themeFonts
-    );
-    const marqueeTextColorRaw = cfgString(config, `${marqueeTextBase}.textColor`, 'default');
-    const marqueeResolvedColor =
-      marqueeTextColorRaw && marqueeTextColorRaw !== 'default'
-        ? resolveThemePaletteColorSetting(config, marqueeTextColorRaw, 1, marqueeTextColor)
-        : marqueeTextColor;
-    const marqueeBgOn = cfgBool(config, `${marqueeTextBase}.backgroundEnabled`, false);
-    const marqueeTextStyle: CSSProperties = {
-      fontFamily: marqueeTypo.fontFamily,
-      fontSize: marqueeTypo.fontSize,
-      fontWeight: marqueeTypo.fontWeight,
-      fontStyle: marqueeTypo.fontStyle,
-      lineHeight: marqueeTypo.lineHeight,
-      letterSpacing: marqueeTypo.letterSpacing,
-      textTransform: marqueeTypo.textTransform,
-      color: marqueeResolvedColor,
-      textShadow: marqueeTextShadow,
-      paddingTop: cfgNumber(config, `${marqueeTextBase}.paddingTop`, 0),
-      paddingBottom: cfgNumber(config, `${marqueeTextBase}.paddingBottom`, 0),
-      paddingLeft: cfgNumber(config, `${marqueeTextBase}.paddingLeft`, 0),
-      paddingRight: cfgNumber(config, `${marqueeTextBase}.paddingRight`, 0),
-      background: marqueeBgOn
-        ? resolveThemePaletteColorSetting(
-            config,
-            cfgString(config, `${marqueeTextBase}.backgroundColor`, '#00000026'),
-            0,
-            '#00000026'
-          )
-        : undefined,
-      borderRadius: marqueeBgOn
-        ? cfgNumber(config, `${marqueeTextBase}.cornerRadius`, 0)
-        : undefined,
-    };
-
-    // "Marquee" folder settings (motion direction, background, padding, gap).
-    const marqueeMotion = cfgString(config, `${settingsBase}.marqueeMotionDirection`, 'forward');
-    const marqueeTransparent = cfgBool(config, `${settingsBase}.marqueeTransparentBg`, true);
-    const marqueeBandBgRaw = cfgString(config, `${settingsBase}.marqueeBackgroundColor`, '');
-    const marqueeBandBackground =
-      !marqueeTransparent && marqueeBandBgRaw
-        ? resolveThemePaletteColorSetting(config, marqueeBandBgRaw, 0, 'transparent')
-        : 'transparent';
-    const marqueeBandPadTop = cfgNumber(config, `${settingsBase}.marqueePaddingTop`, 24);
-    const marqueeBandPadBottom = cfgNumber(config, `${settingsBase}.marqueePaddingBottom`, 24);
-    const marqueeGap = cfgNumber(config, `${settingsBase}.marqueeGap`, 24);
-
-    // Section-level "Spacer" block → vertical space above the marquee content.
-    const spacerUnit = cfgString(config, `${settingsBase}.marqueeSpacerUnit`, 'pixel');
-    const spacerSize = cfgNumber(config, `${settingsBase}.marqueeSpacerHeight`, 24);
-    const spacerHeightCss = spacerUnit === 'percent' ? `${spacerSize}%` : `${spacerSize}px`;
-
-    // Section-level Appearance → "Background color" (palette); "Default" keeps the base tone.
-    const marqueeSectionBgRaw = cfgString(config, `${settingsBase}.backgroundColor`, '');
-    const marqueeSectionBackground = marqueeSectionBgRaw
-      ? resolveThemePaletteColorSetting(config, marqueeSectionBgRaw, 0, '#2d6478')
-      : '#2d6478';
-
-    const primaryButton = (
-      <HeroButton
-        blockId="primary_button"
-        fallbackVariant="primary"
-        blocksBase={blocksBase}
-        sectionNodePrefix={sectionNodePrefix}
-        colors={buttonColors}
-        marqueeFilled={marqueeHasMedia}
-        marqueeOnLight={!marqueeHasMedia}
-      />
-    );
-
-    const marqueeBody = (
-      <div
-        style={{
-          position: 'relative',
-          minHeight: sectionMinHeight,
-          width: '100%',
-          boxSizing: 'border-box',
-        }}
-      >
-        <div
-          aria-hidden
-          style={{
-            position: 'absolute',
-            inset: 0,
-            zIndex: 3,
-            display: 'flex',
-            alignItems: 'center',
-            overflow: 'hidden',
-            pointerEvents: 'none',
-            background: marqueeBandBackground,
-            paddingTop: marqueeBandPadTop,
-            paddingBottom: marqueeBandPadBottom,
-            boxSizing: 'border-box',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              width: 'max-content',
-              whiteSpace: 'nowrap',
-              animation: `${marqueeAnimId} 22s linear infinite`,
-              animationDirection: marqueeMotion === 'reverse' ? 'reverse' : 'normal',
-              ...marqueeTextStyle,
-            }}
-          >
-            <EditorField
-              fieldPath={marqueeTextPath}
-              label="Marquee"
-              as="span"
-              style={{ padding: `0 ${marqueeGap / 2}px`, display: 'inline' }}
-            >
-              {marqueeText}&nbsp;
-            </EditorField>
-            <span style={{ padding: `0 ${marqueeGap / 2}px` }} aria-hidden>
-              {marqueeText}&nbsp;
-            </span>
-          </div>
-        </div>
-        <div
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: bottomPad,
-            zIndex: 4,
-            display: 'flex',
-            justifyContent: 'center',
-            pointerEvents: 'auto',
-          }}
-        >
-          {primaryButton ? <span style={{ display: 'inline-flex' }}>{primaryButton}</span> : null}
-        </div>
-        <style>{`
-          @keyframes ${marqueeAnimId} {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-          }
-        `}</style>
-      </div>
-    );
-
-    const marqueeLinkedBody = hero.sectionLink ? (
-      <Link
-        to={hero.sectionLink}
-        target={hero.sectionLinkNewTab ? '_blank' : undefined}
-        rel={hero.sectionLinkNewTab ? 'noopener noreferrer' : undefined}
-        style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: '100%' }}
-      >
-        {marqueeBody}
-      </Link>
-    ) : (
-      marqueeBody
-    );
-
     return (
-      <>
-        {scopedCss ? <style>{scopedCss}</style> : null}
-        {dualMediaCss ? <style>{dualMediaCss}</style> : null}
-        <EditorSection
-          sectionId={sectionId}
-          editorNodeId={sectionNodePrefix}
-          label="Hero: Marquee"
-          style={{
-            position: 'relative',
-            overflow: 'hidden',
-            width: '100%',
-            minHeight: sectionMinHeight,
-            padding: 0,
-            background: marqueeSectionBackground,
-            fontFamily: fontBody,
-            color: '#ffffff',
-            boxSizing: 'border-box',
-          }}
-        >
-          {marqueeHasMedia ? (
-            <HeroMediaBackground
-              media1Url={media1Url}
-              media2Url={media2Url}
-              fallbackUrl={HERO_BOTTOM_ALIGNED_DEFAULT_IMAGE}
-            />
-          ) : (
-            <HeroLandscapeBackdrop />
-          )}
-          {marqueeOverlay ? (
-            <div
-              aria-hidden
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background: marqueeOverlay,
-                zIndex: 1,
-                pointerEvents: 'none',
-              }}
-            />
-          ) : null}
-          {spacerSize > 0 ? (
-            <div
-              aria-hidden
-              style={{ position: 'relative', zIndex: 2, width: '100%', height: spacerHeightCss }}
-            />
-          ) : null}
-          {marqueeLinkedBody}
-        </EditorSection>
-      </>
+      <HeroMarquee
+        sectionId={sectionId}
+        sectionNodePrefix={sectionNodePrefix}
+        settingsBase={settingsBase}
+        hero={hero}
+        fontBody={fontBody}
+        themeFonts={themeFonts}
+        scopedCss={scopedCss}
+        dualMediaCss={dualMediaCss}
+        responsiveCss={responsiveCss}
+        primaryButton={
+          <HeroButton
+            blockId="primary_button"
+            fallbackVariant="primary"
+            blocksBase={blocksBase}
+            sectionNodePrefix={sectionNodePrefix}
+            colors={buttonColors}
+            marqueeFilled={marqueeHasMedia}
+            marqueeOnLight={!marqueeHasMedia}
+          />
+        }
+      />
     );
   }
 
