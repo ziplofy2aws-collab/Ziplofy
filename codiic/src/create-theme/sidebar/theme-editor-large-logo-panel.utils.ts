@@ -1,5 +1,6 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { enrichHeroPanelField, isHeroSettingsPath } from './theme-editor-hero-panel.utils';
+import { ensureMulticolumnBorderFieldDefs } from './theme-editor-multicolumn-panel.utils';
 
 export const LARGE_LOGO_PANEL_GROUP_ORDER = [
   'Layout',
@@ -7,8 +8,6 @@ export const LARGE_LOGO_PANEL_GROUP_ORDER = [
   'Appearance',
   'Borders',
   'Padding',
-  'Theme Settings',
-  'Custom CSS',
 ] as const;
 
 const LARGE_LOGO_PANEL_KEYS = new Set([
@@ -18,21 +17,25 @@ const LARGE_LOGO_PANEL_KEYS = new Set([
   'layoutGap',
   'sectionWidth',
   'height',
-  'colorScheme',
+  'customHeight',
   'backgroundMedia',
   'backgroundColor',
   'backgroundImageUrl',
   'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
   'cornerRadius',
   'mediaOverlay',
+  'overlayColor',
+  'overlayStyle',
+  'overlayGradientDirection',
   'paddingTop',
   'paddingBottom',
-  'defaultLogoUrl',
-  'customCss',
 ]);
 
 const LAYOUT_KEYS = new Set(['direction', 'layoutAlignment', 'position', 'layoutGap']);
-const SIZE_KEYS = new Set(['sectionWidth', 'height']);
+const SIZE_KEYS = new Set(['sectionWidth', 'height', 'customHeight']);
 
 function fieldSortKey(path: string): number {
   const key = path.split('.').pop() ?? '';
@@ -43,17 +46,21 @@ function fieldSortKey(path: string): number {
     layoutGap: 3,
     sectionWidth: 10,
     height: 11,
+    customHeight: 12,
     backgroundMedia: 21,
     backgroundColor: 22,
     backgroundImageUrl: 23,
-    mediaOverlay: 25,
-    borderStyle: 26,
-    cornerRadius: 27,
-    paddingTop: 30,
-    paddingBottom: 31,
-    colorScheme: 35,
-    defaultLogoUrl: 36,
-    customCss: 50,
+    mediaOverlay: 24,
+    overlayStyle: 25,
+    overlayGradientDirection: 26,
+    overlayColor: 27,
+    borderStyle: 28,
+    borderThickness: 29,
+    borderOpacity: 30,
+    borderColor: 31,
+    cornerRadius: 32,
+    paddingTop: 40,
+    paddingBottom: 41,
   };
   return rank[key] ?? 50;
 }
@@ -74,6 +81,14 @@ function remapLargeLogoGroup(field: EditorFieldDef): EditorFieldDef {
     next = { ...next, group: 'Size' };
   } else if (key === 'mediaOverlay') {
     next = { ...next, label: 'Background overlay', group: 'Appearance', widget: 'toggle' };
+  } else if (key === 'overlayColor') {
+    next = { ...next, label: 'Overlay color', group: 'Appearance', widget: 'color' };
+  } else if (key === 'overlayStyle') {
+    next = { ...next, label: 'Overlay style', group: 'Appearance', widget: 'segmented' };
+  } else if (key === 'overlayGradientDirection') {
+    next = { ...next, label: 'Gradient direction', group: 'Appearance', widget: 'segmented' };
+  } else if (key === 'customHeight') {
+    next = { ...next, label: 'Custom height', group: 'Size', widget: 'slider' };
   } else if (key === 'backgroundMedia') {
     next = { ...next, group: 'Appearance', widget: 'select-inline' };
   } else if (key === 'backgroundColor') {
@@ -81,15 +96,45 @@ function remapLargeLogoGroup(field: EditorFieldDef): EditorFieldDef {
   } else if (key === 'backgroundImageUrl') {
     next = { ...next, group: 'Appearance', widget: 'image' };
   } else if (key === 'borderStyle') {
-    next = { ...next, group: 'Borders', widget: 'segmented' };
+    next = {
+      ...next,
+      group: 'Borders',
+      widget: 'segmented',
+      label: 'Style',
+      options:
+        next.options && next.options.length
+          ? next.options
+          : [
+              { value: 'none', label: 'None' },
+              { value: 'solid', label: 'Solid' },
+            ],
+    };
+  } else if (key === 'borderThickness') {
+    next = {
+      ...next,
+      group: 'Borders',
+      widget: 'slider',
+      label: 'Thickness',
+      min: next.min ?? 0,
+      max: next.max ?? 10,
+      step: next.step ?? 1,
+      unit: next.unit ?? 'px',
+    };
+  } else if (key === 'borderOpacity') {
+    next = {
+      ...next,
+      group: 'Borders',
+      widget: 'slider',
+      label: 'Opacity',
+      min: next.min ?? 0,
+      max: next.max ?? 100,
+      step: next.step ?? 1,
+      unit: next.unit ?? '%',
+    };
+  } else if (key === 'borderColor') {
+    next = { ...next, group: 'Borders', widget: 'color', label: 'Color' };
   } else if (key === 'cornerRadius') {
-    next = { ...next, group: 'Borders', widget: 'slider' };
-  } else if (key === 'colorScheme') {
-    next = { ...next, label: 'Color scheme', group: 'Theme Settings', widget: 'color-scheme' };
-  } else if (key === 'defaultLogoUrl') {
-    next = { ...next, group: 'Theme Settings', widget: 'image', label: 'Default logo' };
-  } else if (key === 'customCss') {
-    next = { ...next, group: 'Custom CSS', widget: 'accordion' };
+    next = { ...next, group: 'Borders', widget: 'slider', label: 'Corner radius' };
   }
   return next;
 }
@@ -101,8 +146,6 @@ export function sortLargeLogoPanelFields(fields: EditorFieldDef[]): EditorFieldD
     Appearance: 2,
     Borders: 3,
     Padding: 4,
-    'Theme Settings': 5,
-    'Custom CSS': 6,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -113,8 +156,83 @@ export function sortLargeLogoPanelFields(fields: EditorFieldDef[]): EditorFieldD
 }
 
 export function prepareLargeLogoSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortLargeLogoPanelFields(
+  let fields = sortLargeLogoPanelFields(
     (node.fields ?? []).filter(isLargeLogoPanelField).map(remapLargeLogoGroup)
+  );
+  const settingsBase = (() => {
+    const sample = fields[0]?.path ?? '';
+    const m = sample.match(/^(.*)\.settings\.[^.]+$/);
+    return m?.[1] ? `${m[1]}.settings` : null;
+  })();
+  if (settingsBase && !fields.some((f) => f.path.endsWith('.customHeight'))) {
+    fields = sortLargeLogoPanelFields([
+      ...fields,
+      remapLargeLogoGroup({
+        path: `${settingsBase}.customHeight`,
+        type: 'number',
+        label: 'Custom height',
+        group: 'Size',
+        widget: 'slider',
+        min: 200,
+        max: 1200,
+        step: 10,
+        unit: 'px',
+        sidebar: true,
+      }),
+    ]);
+  }
+  const overlayKeys = ['overlayColor', 'overlayStyle', 'overlayGradientDirection'] as const;
+  if (settingsBase) {
+    const extras: EditorFieldDef[] = [];
+    for (const key of overlayKeys) {
+      if (fields.some((f) => f.path.endsWith(`.${key}`))) continue;
+      if (key === 'overlayColor') {
+        extras.push(
+          remapLargeLogoGroup({
+            path: `${settingsBase}.overlayColor`,
+            type: 'color',
+            label: 'Overlay color',
+            group: 'Appearance',
+            widget: 'color',
+            sidebar: true,
+          })
+        );
+      } else if (key === 'overlayStyle') {
+        extras.push(
+          remapLargeLogoGroup({
+            path: `${settingsBase}.overlayStyle`,
+            type: 'select',
+            label: 'Overlay style',
+            group: 'Appearance',
+            widget: 'segmented',
+            sidebar: true,
+            options: [
+              { value: 'solid', label: 'Solid' },
+              { value: 'gradient', label: 'Gradient' },
+            ],
+          })
+        );
+      } else {
+        extras.push(
+          remapLargeLogoGroup({
+            path: `${settingsBase}.overlayGradientDirection`,
+            type: 'select',
+            label: 'Gradient direction',
+            group: 'Appearance',
+            widget: 'segmented',
+            sidebar: true,
+            options: [
+              { value: 'up', label: 'Up' },
+              { value: 'down', label: 'Down' },
+            ],
+          })
+        );
+      }
+    }
+    if (extras.length) fields = sortLargeLogoPanelFields([...fields, ...extras]);
+  }
+  fields = sortLargeLogoPanelFields(
+    ensureMulticolumnBorderFieldDefs(fields).map(remapLargeLogoGroup)
   );
   return { ...node, label: 'Large logo', kind: 'section', fields };
 }

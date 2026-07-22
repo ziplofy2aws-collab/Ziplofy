@@ -2982,6 +2982,9 @@ function LargeLogoSizeSettingsGroup({
 }) {
   const width = fields.find((f) => f.path.split('.').pop() === 'sectionWidth');
   const height = fields.find((f) => f.path.split('.').pop() === 'height');
+  const customHeight = fields.find((f) => f.path.split('.').pop() === 'customHeight');
+  const heightMode = height ? fieldValueAsString(values, height) || 'medium' : 'medium';
+  const showCustomHeight = heightMode === 'custom';
 
   return (
     <div className="px-1 py-3">
@@ -2992,6 +2995,9 @@ function LargeLogoSizeSettingsGroup({
         ) : null}
         {height ? (
           <InlineSelectFieldRow field={height} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {showCustomHeight && customHeight ? (
+          <SliderFieldRow field={customHeight} values={values} onFieldChange={onFieldChange} />
         ) : null}
       </div>
     </div>
@@ -11239,14 +11245,34 @@ function LargeLogoBlockGroupedSettingsPanel({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const grouped = useMemo(() => groupLargeLogoBlockPanelFields(fields), [fields]);
+  const logoFields = grouped.get('Logo') ?? [];
+  const imageField = logoFields.find((f) => f.path.endsWith('imageUrl'));
+  const textField = logoFields.find((f) => f.path.endsWith('.text') || f.path.endsWith('text'));
   const typographyFields = grouped.get('Typography') ?? [];
   const fontField = typographyFields.find((f) => f.path.endsWith('logoFont'));
   const colorField = typographyFields.find((f) => f.path.endsWith('logoColor'));
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
+      {imageField || textField ? (
+        <div className="space-y-1 px-1 py-3">
+          <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Logo</h3>
+          {imageField ? (
+            <ImagePickerFieldRow field={imageField} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {textField ? (
+            <SettingsFieldRow field={textField} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          <p className="pt-1 text-[12px] text-gray-500">
+            Leave image empty to show the store name as text. Section Theme Settings also has a
+            default logo fallback.
+          </p>
+        </div>
+      ) : null}
+
       {fontField || colorField ? (
         <div className="space-y-2 px-1 py-3">
+          <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Typography</h3>
           {fontField ? (
             <SelectFieldRow field={fontField} values={values} onFieldChange={onFieldChange} />
           ) : null}
@@ -11260,22 +11286,12 @@ function LargeLogoBlockGroupedSettingsPanel({
               onFieldChange={onFieldChange}
             />
           ) : null}
-          <p className="text-[12px] text-gray-500">
-            Edit logo in{' '}
-            <button
-              type="button"
-              className="text-[#005bd3] underline underline-offset-2 hover:text-[#004299]"
-              onClick={() => window.open('/settings/theme', '_blank', 'noopener,noreferrer')}
-            >
-              theme settings
-            </button>
-          </p>
         </div>
       ) : null}
 
       {LARGE_LOGO_BLOCK_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length || label === 'Typography') return null;
+        if (!groupFields?.length || label === 'Typography' || label === 'Logo') return null;
 
         if (label === 'Size') {
           return (
@@ -17910,17 +17926,15 @@ function LargeLogoGroupedSettingsPanel({
           );
         }
         if (label === 'Borders') {
-          const borderStyle = groupFields.find((f) => f.path.endsWith('borderStyle'));
-          const cornerRadius = groupFields.find((f) => f.path.endsWith('cornerRadius'));
           return (
-            <ShopifySettingsSection key={label} title="Borders">
-              {borderStyle ? (
-                <SegmentedFieldRow field={borderStyle} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-              {cornerRadius ? (
-                <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-            </ShopifySettingsSection>
+            <MulticolumnBordersSettingsGroup
+              key={label}
+              fields={groupFields}
+              allFields={fields}
+              values={values}
+              colorPalette={colorPalette}
+              onFieldChange={onFieldChange}
+            />
           );
         }
         if (label === 'Padding') {
@@ -17931,54 +17945,6 @@ function LargeLogoGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-        if (label === 'Theme Settings') {
-          const colorScheme = groupFields.find(
-            (f) => f.path.endsWith('colorScheme') || f.widget === 'color-scheme'
-          );
-          const otherFields = groupFields.filter((f) => f !== colorScheme);
-          return (
-            <ShopifySettingsSection key={label} title="Theme Settings" collapsible>
-              {colorScheme ? (
-                <ColorSchemeFieldRow
-                  field={colorScheme}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ) : null}
-              {otherFields.map((field) =>
-                field.widget === 'image' ? (
-                  <ImagePickerFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ) : (
-                  <SettingsFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                )
-              )}
-            </ShopifySettingsSection>
-          );
-        }
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
         return null;

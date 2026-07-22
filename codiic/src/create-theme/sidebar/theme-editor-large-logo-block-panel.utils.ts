@@ -1,9 +1,11 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { remapTemplateHeroSchemaPath } from '../../utils/theme-editor-insert-section';
 
-export const LARGE_LOGO_BLOCK_PANEL_GROUP_ORDER = ['Typography', 'Size', 'Padding'] as const;
+export const LARGE_LOGO_BLOCK_PANEL_GROUP_ORDER = ['Logo', 'Typography', 'Size', 'Padding'] as const;
 
 const PANEL_KEYS = new Set([
+  'text',
+  'imageUrl',
   'logoFont',
   'logoColor',
   'sizeUnit',
@@ -36,6 +38,23 @@ export function isHeroLargeLogoBlockNodeId(nodeId: string): boolean {
 export function largeLogoBlockFieldDefs(blocksBase: string): EditorFieldDef[] {
   const s = (key: string) => `${blocksBase}.settings.${key}`;
   return [
+    {
+      path: s('imageUrl'),
+      type: 'text',
+      label: 'Image',
+      group: 'Logo',
+      widget: 'image',
+      sidebar: true,
+      placeholder: 'Paste image URL or upload',
+    },
+    {
+      path: s('text'),
+      type: 'text',
+      label: 'Store name',
+      group: 'Logo',
+      sidebar: true,
+      placeholder: 'My Store',
+    },
     {
       path: s('logoFont'),
       type: 'select',
@@ -218,30 +237,36 @@ export function isLargeLogoBlockPanelField(field: EditorFieldDef): boolean {
 export function isLargeLogoBlockPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('logoFont') && keys.has('sizeUnit');
+  return (
+    (keys.has('logoFont') && keys.has('sizeUnit')) ||
+    (keys.has('text') && keys.has('imageUrl')) ||
+    keys.has('pixelHeight')
+  );
 }
 
 function fieldSortKey(path: string): number {
   const rank: Record<string, number> = {
-    logoFont: 0,
-    logoColor: 1,
-    sizeUnit: 10,
-    pixelHeight: 11,
-    percentWidth: 12,
-    customMobileSize: 13,
-    mobileSizeUnit: 14,
-    mobilePixelHeight: 15,
-    mobilePercentWidth: 16,
-    paddingTop: 30,
-    paddingBottom: 31,
-    paddingLeft: 32,
-    paddingRight: 33,
+    imageUrl: 0,
+    text: 1,
+    logoFont: 10,
+    logoColor: 11,
+    sizeUnit: 20,
+    pixelHeight: 21,
+    percentWidth: 22,
+    customMobileSize: 23,
+    mobileSizeUnit: 24,
+    mobilePixelHeight: 25,
+    mobilePercentWidth: 26,
+    paddingTop: 40,
+    paddingBottom: 41,
+    paddingLeft: 42,
+    paddingRight: 43,
   };
   return rank[path.split('.').pop() ?? ''] ?? 50;
 }
 
 export function sortLargeLogoBlockPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const groupRank: Record<string, number> = { Typography: 0, Size: 1, Padding: 2 };
+  const groupRank: Record<string, number> = { Logo: 0, Typography: 1, Size: 2, Padding: 3 };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
     const gb = groupRank[b.group ?? ''] ?? 9;
@@ -265,8 +290,11 @@ export function groupLargeLogoBlockPanelFields(fields: EditorFieldDef[]): Map<st
 }
 
 export function prepareLargeLogoBlockSettingsNode(node: SidebarNode): SidebarNode {
+  const regenerated = largeLogoBlockFieldDefsFromNodeId(node.id);
   const fields = sortLargeLogoBlockPanelFields(
-    (node.fields ?? []).filter(isLargeLogoBlockPanelField)
+    regenerated.length
+      ? regenerated
+      : (node.fields ?? []).filter(isLargeLogoBlockPanelField)
   );
   return { ...node, label: 'Logo', kind: 'block', fields };
 }

@@ -58,6 +58,13 @@ export function largeLogoFontStyle(role: LargeLogoBlockLayout['logoFont']): CSSP
   return { fontWeight: 800 };
 }
 
+/** Text logo size from percent width (100% ≈ 160px / large clamp). */
+function percentFontSize(percentWidth: number): string {
+  const p = Math.max(10, Math.min(100, percentWidth));
+  const px = Math.round((p / 100) * 160);
+  return `${Math.max(24, px)}px`;
+}
+
 export function largeLogoMarkStyle(
   layout: LargeLogoBlockLayout,
   fonts: { fontHeading: string; fontBody: string },
@@ -83,7 +90,7 @@ export function largeLogoMarkStyle(
       ...base,
       width: `${layout.percentWidth}%`,
       maxWidth: '100%',
-      fontSize: 'clamp(4rem, 18vw, 11rem)',
+      fontSize: percentFontSize(layout.percentWidth),
       lineHeight: 0.95,
       letterSpacing: '-0.04em',
     };
@@ -123,10 +130,11 @@ export function scopedLargeLogoBlockMobileCss(
   const sel = `.${scopeClass} .codiic-large-logo-mark`;
   if (layout.mobileSizeUnit === 'pixel') {
     return mobileMedia(
-      `${sel} { font-size: ${layout.mobilePixelHeight}px !important; width: auto !important; }`
+      `${sel} { font-size: ${layout.mobilePixelHeight}px !important; width: auto !important; max-height: ${layout.mobilePixelHeight}px !important; }`
     );
   }
+  const fontPx = Math.max(20, Math.round((layout.mobilePercentWidth / 100) * 96));
   return mobileMedia(
-    `${sel} { width: ${layout.mobilePercentWidth}% !important; font-size: clamp(2.75rem, 14vw, 6rem) !important; }`
+    `${sel} { width: ${layout.mobilePercentWidth}% !important; font-size: ${fontPx}px !important; }`
   );
 }

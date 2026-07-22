@@ -19,7 +19,7 @@ import {
   readLargeLogoBlockLayout,
   scopedLargeLogoBlockMobileCss,
 } from './largeLogoBlockStyles';
-import { scopedLargeLogoMobileCss } from './largeLogoStyles';
+import { resolveLargeLogoBorderCss, scopedLargeLogoMobileCss } from './largeLogoStyles';
 
 type Props = {
   sectionId: string;
@@ -90,7 +90,7 @@ export function LargeLogo({
   const spreadVerticalBlocks = hero.contentColumnFill && !isHorizontal;
   const padTop = hero.paddingTop;
   const padBottom = hero.paddingBottom;
-  const padX = 40;
+  const padX = hero.paddingX;
   const sectionMinHeight = hero.minHeight;
   const contentMaxWidth =
     typeof hero.maxWidth === 'number' ? hero.maxWidth : hero.maxWidth === '100%' ? '100%' : maxWidth;
@@ -99,8 +99,22 @@ export function LargeLogo({
   const backgroundImageUrl = cfgString(config, `${settingsPath}.backgroundImageUrl`, '');
   const hasBgImage = backgroundMedia === 'image' && Boolean(backgroundImageUrl.trim());
   const borderStyle = cfgString(config, `${settingsPath}.borderStyle`, 'none');
+  const borderThickness = cfgNumber(config, `${settingsPath}.borderThickness`, 1);
+  const borderOpacity = cfgNumber(config, `${settingsPath}.borderOpacity`, 100);
+  const borderColorRaw = cfgString(config, `${settingsPath}.borderColor`, 'default');
   const cornerRadius = cfgNumber(config, `${settingsPath}.cornerRadius`, 0);
-  const sectionBorder = borderStyle === 'solid' ? `1px solid ${hero.scheme.muted}55` : undefined;
+  const schemeBorder = hero.scheme.muted || hero.scheme.color || '#111827';
+  const borderColorHex =
+    !borderColorRaw || borderColorRaw === 'default'
+      ? schemeBorder
+      : resolveThemePaletteColorSetting(config, borderColorRaw, 1, schemeBorder);
+  const sectionBorder = resolveLargeLogoBorderCss(
+    borderStyle,
+    borderThickness,
+    borderOpacity,
+    borderColorHex,
+    schemeBorder
+  );
 
   const largeLogoOverlay =
     hero.mediaOverlay && hasBgImage
@@ -116,9 +130,10 @@ export function LargeLogo({
     () => readLargeLogoBlockLayout(config, logoSettingsBase),
     [config, logoSettingsBase]
   );
-  const logoColor = logoBlockLayout.logoColor
-    ? resolveThemePaletteColorSetting(config, logoBlockLayout.logoColor, 1, hero.scheme.color)
-    : hero.scheme.color;
+  const logoColor =
+    logoBlockLayout.logoColor && logoBlockLayout.logoColor !== 'default'
+      ? resolveThemePaletteColorSetting(config, logoBlockLayout.logoColor, 1, hero.scheme.color)
+      : hero.scheme.color;
 
   const sectionBackgroundRaw = cfgString(config, `${settingsPath}.backgroundColor`, '');
   const sectionBackground = sectionBackgroundRaw
@@ -173,9 +188,6 @@ export function LargeLogo({
             : hero.sectionJustify,
         alignItems: isHorizontal ? hero.contentAlign : crossAxisAlign(titleAlign),
         gap: hero.gap,
-        borderRadius: cornerRadius > 0 ? cornerRadius : undefined,
-        border: sectionBorder,
-        overflow: cornerRadius > 0 ? 'hidden' : undefined,
       }}
     >
       {cornerText.trim() ? (
@@ -213,10 +225,11 @@ export function LargeLogo({
             display: 'flex',
             alignItems: 'center',
             justifyContent: stageJustify,
-            paddingTop: isHorizontal ? 0 : spreadVerticalBlocks ? 0 : 32,
-            paddingBottom: isHorizontal ? 0 : spreadVerticalBlocks ? 0 : 24,
-            minHeight: isHorizontal ? undefined : spreadVerticalBlocks ? 200 : 280,
+            paddingTop: isHorizontal ? 0 : spreadVerticalBlocks ? 0 : 16,
+            paddingBottom: isHorizontal ? 0 : spreadVerticalBlocks ? 0 : 16,
+            minHeight: isHorizontal ? undefined : spreadVerticalBlocks ? 120 : undefined,
             width: isHorizontal ? undefined : '100%',
+            boxSizing: 'border-box',
           }}
         >
           {logoImageUrl ? (
@@ -284,14 +297,19 @@ export function LargeLogo({
         label="Large logo"
         style={{
           position: 'relative',
-          overflow: 'hidden',
+          overflow: cornerRadius > 0 || sectionBorder ? 'hidden' : undefined,
+          display: 'flex',
+          flexDirection: 'column',
           width: '100%',
           minHeight: sectionMinHeight,
+          height: sectionMinHeight === 'auto' ? undefined : sectionMinHeight,
           padding: 0,
           background: sectionBackground,
           fontFamily: fontBody,
           color: hero.scheme.color,
           boxSizing: 'border-box',
+          border: sectionBorder,
+          borderRadius: cornerRadius > 0 ? cornerRadius : undefined,
         }}
       >
         {hasBgImage ? (

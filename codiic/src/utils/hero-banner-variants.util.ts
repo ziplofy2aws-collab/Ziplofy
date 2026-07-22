@@ -8,7 +8,7 @@ export const HERO_MARQUEE_TEXT =
 export const LARGE_LOGO_BODY =
   'Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.';
 
-/** Default Large logo block settings (Font, Size, Padding panel). */
+/** Default Large logo block settings (Logo, Font, Size, Padding panel). */
 export function largeLogoBlockDefaultSettings(
   text = 'My Store'
 ): Record<string, string | number | boolean> {
@@ -16,6 +16,7 @@ export function largeLogoBlockDefaultSettings(
     text,
     imageUrl: '',
     logoFont: 'heading',
+    logoColor: 'default',
     sizeUnit: 'percent',
     pixelHeight: 120,
     percentWidth: 100,
@@ -38,7 +39,16 @@ export function largeLogoTextBlockSettings(text = LARGE_LOGO_BODY): Record<strin
     maxWidth: 'narrow',
     alignment: 'left',
     typographyPreset: 'default',
+    font: 'body',
+    fontSize: 'default',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    textCase: 'default',
+    wrap: 'pretty',
+    textColor: 'default',
     backgroundEnabled: false,
+    backgroundColor: '#00000026',
+    cornerRadius: 0,
     paddingTop: 0,
     paddingBottom: 0,
     paddingLeft: 0,
@@ -190,6 +200,9 @@ export function applyLargeLogoPreset(section: Record<string, unknown>, blocksPat
   settings.backgroundColor = '';
   settings.backgroundImageUrl = '';
   settings.borderStyle = 'none';
+  settings.borderThickness = 1;
+  settings.borderOpacity = 100;
+  settings.borderColor = 'default';
   settings.cornerRadius = 0;
   settings.defaultLogoUrl = '';
   section.settings = settings;

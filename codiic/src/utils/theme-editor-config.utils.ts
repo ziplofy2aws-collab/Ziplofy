@@ -672,6 +672,7 @@ const HERO_LOGO_BLOCK_SETTING_TYPES: Record<string, string> = {
   text: 'text',
   imageUrl: 'text',
   logoFont: 'select',
+  logoColor: 'text',
   sizeUnit: 'select',
   pixelHeight: 'number',
   percentWidth: 'number',
@@ -1937,6 +1938,28 @@ function syncHeroMarqueeTextPaths(
   setConfigAtPath(config, `${sectionPrefix}.settings.subtitle`, value);
 }
 
+/** Keep Large logo store name / title in sync with logo block text. */
+function syncHeroLargeLogoTextPaths(
+  config: Record<string, unknown>,
+  path: string,
+  value: string | boolean | number
+): void {
+  if (typeof value !== 'string') return;
+  const logoText = path.match(
+    /^(templates\.[^.]+\.sections\.[^.]+|sections\.[^.]+)\.blocks\.logo\.settings\.text$/
+  );
+  if (logoText) {
+    setConfigAtPath(config, `${logoText[1]}.settings.title`, value);
+    return;
+  }
+  const title = path.match(/^(templates\.[^.]+\.sections\.[^.]+|sections\.[^.]+)\.settings\.title$/);
+  if (title) {
+    const catalog = getConfigAtPath(config, `${title[1]}.settings.catalogVariant`);
+    if (catalog != null && catalog !== 'large-logo') return;
+    setConfigAtPath(config, `${title[1]}.blocks.logo.settings.text`, value);
+  }
+}
+
 /** Section Layout fields for Hero: Bottom aligned also drive the content_group row. */
 const HERO_BOTTOM_LAYOUT_SYNC_KEYS = new Set([
   'direction',
@@ -2300,6 +2323,7 @@ export function applyValuesToThemeConfig(
     if (typeof coerced === 'string') {
       syncHeroHeadingTextPaths(config, path, coerced);
       syncHeroMarqueeTextPaths(config, path, coerced);
+      syncHeroLargeLogoTextPaths(config, path, coerced);
     }
     syncHeroBottomAlignedSectionLayoutToContentGroup(config, path, coerced);
   }

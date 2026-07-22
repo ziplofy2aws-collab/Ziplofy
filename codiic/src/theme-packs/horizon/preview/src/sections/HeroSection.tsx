@@ -292,7 +292,7 @@ export function HeroSection({
   const hasMedia = Boolean(hero.media1Url || hero.media2Url);
 
   /** Live preview pack uses this section; delegate so Layout settings match create-theme. */
-  if (isBottomAligned || isMarquee) {
+  if (isBottomAligned || isMarquee || isLargeLogo) {
     return (
       <CreateThemeHero
         sectionId={sectionId}
