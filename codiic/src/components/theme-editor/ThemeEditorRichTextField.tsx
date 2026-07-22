@@ -249,6 +249,8 @@ export function ThemeEditorRichTextField({
   const [, setTick] = useState(0);
   const bump = useCallback(() => setTick((n) => n + 1), []);
   const lastEmittedHtmlRef = useRef<string | null>(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkModalInitial, setLinkModalInitial] = useState({
     text: '',
@@ -288,7 +290,7 @@ export function ThemeEditorRichTextField({
     onUpdate: ({ editor: ed }) => {
       const html = ed.getHTML();
       lastEmittedHtmlRef.current = html;
-      onChange(html);
+      onChangeRef.current(html);
     },
   });
 

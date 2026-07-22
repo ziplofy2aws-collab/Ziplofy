@@ -48,6 +48,10 @@
       {
         "id": "logo",
         "label": "Logo"
+      },
+      {
+        "id": "slideshow-slide",
+        "label": "Slide"
       }
     ],
     "product": [
@@ -123,6 +127,15 @@
     ],
     "storytelling-carousel": [
       "carousel-slide"
+    ],
+    "layered-slideshow": [
+      "slideshow-slide"
+    ],
+    "slideshow-inset": [
+      "slideshow-slide"
+    ],
+    "slideshow-full-frame": [
+      "slideshow-slide"
     ]
   },
   "benchmark": true

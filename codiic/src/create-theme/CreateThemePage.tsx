@@ -193,6 +193,11 @@ import {
   isHeroLargeLogoBlockNodeId,
 } from './sidebar/theme-editor-large-logo-block-panel.utils';
 import {
+  extendValuesForSlideshowSlideBlock,
+  isSlideshowFamilySlideBlockNodeId,
+  isSlideshowFamilySlideNestedNodeId,
+} from './sidebar/theme-editor-slideshow-slide-block-panel.utils';
+import {
   extendValuesForHeroBottomGroup,
   extendValuesForHeroBottomText,
   extendValuesForHeroMarquee,
@@ -1401,6 +1406,28 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     setValues((prev) => {
       const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
       const next = extendValuesForLargeLogoBlock(prev, selectedNodeId, merged);
+      if (next === prev) return prev;
+      for (const key of Object.keys(next)) {
+        if (next[key] !== prev[key]) return next;
+      }
+      return prev;
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed slideshow slide (layered / inset / full-frame) panel values from config. */
+  useEffect(() => {
+    if (
+      !editorSchema ||
+      !defaultConfig ||
+      (!isSlideshowFamilySlideBlockNodeId(selectedNodeId) &&
+        !isSlideshowFamilySlideNestedNodeId(selectedNodeId))
+    ) {
+      return;
+    }
+
+    setValues((prev) => {
+      const merged = applyValuesToThemeConfig(defaultConfig, prev, editorSchema);
+      const next = extendValuesForSlideshowSlideBlock(prev, selectedNodeId, merged);
       if (next === prev) return prev;
       for (const key of Object.keys(next)) {
         if (next[key] !== prev[key]) return next;
@@ -2910,9 +2937,10 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     (path: string, type: FieldType, raw: string | boolean) => {
       const value = type === 'boolean' ? Boolean(raw) : String(raw);
       const isHotspotPosition = path.endsWith('.positionX') || path.endsWith('.positionY');
+      const isImageUrl = path.endsWith('.imageUrl') || path.endsWith('ImageUrl');
 
-      // Hotspot sliders need urgent preview updates — skip startTransition + post a field patch.
-      if (isHotspotPosition) {
+      // Hotspot sliders / image picks need urgent preview updates — skip startTransition + post a field patch.
+      if (isHotspotPosition || isImageUrl) {
         setValues((prev) => ({ ...prev, [path]: value }));
         livePreviewRef.current?.patchField(path, String(value));
         return;
@@ -2921,7 +2949,11 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
       startTransition(() => {
         setValues((prev) => {
           let next: Record<string, string | boolean> = { ...prev, [path]: value };
-          if (path.endsWith('.settings.title') || /\.blocks\.[^.]+\.settings\.heading$/.test(path)) {
+          const isBlockLevelTitle = /\.blocks\.[^.]+\.settings\.title$/.test(path);
+          if (
+            (!isBlockLevelTitle && path.endsWith('.settings.title')) ||
+            /\.blocks\.[^.]+\.settings\.heading$/.test(path)
+          ) {
             next = mirrorHeadingTextInValues(prev, path, value);
           }
           next = mirrorCollectionListHeadingTextInValues(next, path, value);

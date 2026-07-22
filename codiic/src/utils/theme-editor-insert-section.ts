@@ -3080,6 +3080,93 @@ function sectionIsProductHotspots(
   return blueprint === 'product_hotspots';
 }
 
+function sectionIsSlideshowFamily(
+  sec: Record<string, unknown>,
+  sectionInstanceId: string,
+  scope: AddBlockTarget['scope']
+): boolean {
+  const type = String(sec.type ?? '');
+  if (
+    type === 'layered-slideshow' ||
+    type === 'slideshow-inset' ||
+    type === 'slideshow-full-frame'
+  ) {
+    return true;
+  }
+  const catalogVariant = String(
+    ((sec.settings as Record<string, unknown> | undefined)?.catalogVariant as string) ?? ''
+  );
+  if (
+    catalogVariant === 'layered-slideshow' ||
+    catalogVariant === 'slideshow-inset' ||
+    catalogVariant === 'slideshow-full-frame'
+  ) {
+    return true;
+  }
+  const blueprint =
+    scope === 'layout'
+      ? layoutBlueprintKey(sectionInstanceId)
+      : templateBlueprintKey(sectionInstanceId);
+  return (
+    blueprint === 'layered_slideshow' ||
+    blueprint === 'slideshow_inset' ||
+    blueprint === 'slideshow_full_frame'
+  );
+}
+
+function nextSlideshowSlideBlockId(order: string[], blocks: Record<string, unknown>): string {
+  const existing = new Set([...order, ...Object.keys(blocks)]);
+  let n = 1;
+  while (existing.has(`slide_${n}`)) n += 1;
+  return `slide_${n}`;
+}
+
+function insertSlideshowSlideBlock(
+  sec: Record<string, unknown>,
+  catalogBlockId: string
+): { blockInstanceId: string } | null {
+  const normalized = normalizeCatalogBlockId(catalogBlockId);
+  if (normalized !== 'slideshow-slide' && normalized !== 'slide') return null;
+  const blocks = { ...((sec.blocks ?? {}) as Record<string, Record<string, unknown>>) };
+  const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [];
+  const blockId = nextSlideshowSlideBlockId(order, blocks);
+  const index = order.length;
+  const sectionType = String(sec.type ?? '');
+  const catalogVariant = String(
+    ((sec.settings as Record<string, unknown> | undefined)?.catalogVariant as string) ?? ''
+  );
+  const isLayered =
+    sectionType === 'layered-slideshow' || catalogVariant === 'layered-slideshow';
+  blocks[blockId] = {
+    type: 'slideshow-slide',
+    enabled: true,
+    settings: {
+      title: 'New slide',
+      body: isLayered
+        ? 'Add supporting copy for this slide.'
+        : 'Introducing our latest products, made especially for the season.',
+      buttonLabel: 'Shop now',
+      buttonHref: '/collections/all',
+      imageUrl: '',
+      peekVariant: index % 2 === 0 ? 'figure' : 'landscape',
+      direction: 'vertical',
+      alignment: 'left',
+      position: 'top',
+      gap: 12,
+      backgroundColor: '',
+      mediaOverlay: false,
+      paddingTop: 40,
+      paddingBottom: 40,
+      paddingLeft: 36,
+      paddingRight: 36,
+    },
+  };
+  order.push(blockId);
+  sec.blocks = blocks;
+  sec.block_order = order;
+  return { blockInstanceId: blockId };
+}
+
 function nextProductHotspotBlockId(order: string[], blocks: Record<string, unknown>): string {
   const existing = new Set([...order, ...Object.keys(blocks)]);
   let n = 1;
@@ -3437,6 +3524,19 @@ export function insertBlockFromCatalog(
         nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
       };
     }
+    if (sectionIsSlideshowFamily(sec, target.sectionInstanceId, 'layout')) {
+      const inserted = insertSlideshowSlideBlock(sec, catalogBlockId);
+      if (!inserted) return null;
+      sections[target.sectionInstanceId] = sec;
+      next.sections = sections;
+      return {
+        config: next,
+        blockInstanceId: inserted.blockInstanceId,
+        sectionInstanceId: target.sectionInstanceId,
+        scope: 'layout',
+        nodeId: `layout:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+      };
+    }
     if (sectionIsMulticolumn(sec, target.sectionInstanceId, 'layout')) {
       const inserted = insertMulticolumnBlock(sec, catalogBlockId);
       if (!inserted) return null;
@@ -3541,6 +3641,22 @@ export function insertBlockFromCatalog(
   }
   if (sectionIsProductHotspots(sec, target.sectionInstanceId, 'template')) {
     const inserted = insertProductHotspotBlock(sec, catalogBlockId);
+    if (!inserted) return null;
+    sections[target.sectionInstanceId] = sec;
+    tpl.sections = sections;
+    templates[tplId] = tpl;
+    next.templates = templates;
+    return {
+      config: next,
+      blockInstanceId: inserted.blockInstanceId,
+      sectionInstanceId: target.sectionInstanceId,
+      scope: 'template',
+      templateId: tplId,
+      nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+    };
+  }
+  if (sectionIsSlideshowFamily(sec, target.sectionInstanceId, 'template')) {
+    const inserted = insertSlideshowSlideBlock(sec, catalogBlockId);
     if (!inserted) return null;
     sections[target.sectionInstanceId] = sec;
     tpl.sections = sections;

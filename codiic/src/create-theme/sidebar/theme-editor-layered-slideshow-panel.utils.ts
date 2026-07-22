@@ -1,7 +1,7 @@
 import type { EditorFieldDef, SidebarNode } from './create-theme-sidebar.types';
 import { filterSidebarSectionPanelFields } from './create-theme-field.utils';
 
-export const LAYERED_SLIDESHOW_PANEL_GROUP_ORDER = ['General', 'Padding', 'Custom CSS'] as const;
+export const LAYERED_SLIDESHOW_PANEL_GROUP_ORDER = ['General', 'Padding'] as const;
 
 const PANEL_GROUPS = new Set<string>(LAYERED_SLIDESHOW_PANEL_GROUP_ORDER);
 
@@ -15,7 +15,6 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 6,
   paddingTop: 0,
   paddingBottom: 1,
-  customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
@@ -31,12 +30,14 @@ export function isLayeredSlideshowSectionType(
 
 export function isLayeredSlideshowPanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
 
 export function sortLayeredSlideshowPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const groupRank: Record<string, number> = { General: 0, Padding: 1, 'Custom CSS': 2 };
+  const groupRank: Record<string, number> = { General: 0, Padding: 1 };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
     const gb = groupRank[b.group ?? ''] ?? 9;

@@ -3,13 +3,18 @@
 const DEFAULT_SLIDES = [
   {
     title: 'New arrivals',
-    body: 'Introducing our latest products, made especially for the season. Shop your favorites before they\'re gone!',
+    body: "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!",
     peekVariant: 'figure',
   },
   {
     title: 'Bestsellers',
-    body: 'Our most-loved pieces, back in stock for a limited time.',
+    body: 'Discover the bestsellers that have captured the hearts of our customers with their perfect blend of functionality and style.',
     peekVariant: 'landscape',
+  },
+  {
+    title: 'Limited drops',
+    body: 'Fresh seasonal pieces, available for a short time only. Grab them while stocks last.',
+    peekVariant: 'figure',
   },
 ] as const;
 
@@ -23,6 +28,16 @@ function makeSlide(spec: (typeof DEFAULT_SLIDES)[number]) {
       buttonHref: '/collections/all',
       imageUrl: '',
       peekVariant: spec.peekVariant,
+      direction: 'vertical',
+      alignment: 'left',
+      position: 'top',
+      gap: 12,
+      backgroundColor: '',
+      mediaOverlay: false,
+      paddingTop: 40,
+      paddingBottom: 40,
+      paddingLeft: 36,
+      paddingRight: 36,
     },
   };
 }

@@ -12,6 +12,11 @@ import {
   scopedLayeredSlideshowCss,
   type LayeredSlideshowSlide,
 } from '../../layered-slideshow/runtime/layeredSlideshowStyles';
+import {
+  readSlideshowSlideButtonStyle,
+  readSlideshowSlideTextStyle,
+  slideshowSlideTextStyleToCss,
+} from '../../layered-slideshow/runtime/slideshowSlideContentStyles';
 
 type Props = {
   sectionId: string;
@@ -156,13 +161,55 @@ export function SlideshowFullFrame({
 
   const renderSlide = (slide: LayeredSlideshowSlide, i: number) => {
     const s = readSlideSettings(slide.id);
+    const slideSettingsBase = `${blocksBase}.${slide.id}.settings`;
+    const themeFonts = { fontHeading, fontBody };
+    const colors = {
+      text: scheme.muted,
+      heading: scheme.color,
+      muted: scheme.muted,
+      link: scheme.color,
+    };
+    const fallbackAlign =
+      s.align.text === 'center' || s.align.text === 'right' ? s.align.text : 'left';
+    const headingStyle = readSlideshowSlideTextStyle(
+      config,
+      slideSettingsBase,
+      'heading',
+      themeFonts,
+      colors,
+      fallbackAlign
+    );
+    const bodyStyle = readSlideshowSlideTextStyle(
+      config,
+      slideSettingsBase,
+      'body',
+      themeFonts,
+      colors,
+      fallbackAlign
+    );
+    const button = readSlideshowSlideButtonStyle(
+      config,
+      slideSettingsBase,
+      { color: scheme.color, muted: scheme.muted },
+      { label: slide.buttonLabel, href: slide.buttonHref }
+    );
     return (
     <div
       key={slide.id}
-      style={{ position: 'relative', flex: '0 0 100%', height: '100%', overflow: 'hidden' }}
+      style={{
+        position: 'relative',
+        flex: '0 0 100%',
+        height: '100%',
+        overflow: 'hidden',
+        background: s.background || undefined,
+      }}
     >
       <LayeredSlideshowSlideMedia
-        imageUrl={slide.imageUrl || undefined}
+        imageUrl={
+          cfgString(config, `${blocksBase}.${slide.id}.settings.imageUrl`, '').trim() ||
+          slide.imageUrl ||
+          undefined
+        }
         peekVariant={i % 2 === 0 ? 'figure' : 'landscape'}
         figureWidth="56%"
         figureMaxWidth={520}
@@ -184,8 +231,9 @@ export function SlideshowFullFrame({
           paddingBottom: s.paddingBottom,
           paddingLeft: s.paddingLeft,
           paddingRight: s.paddingRight,
-          background: s.background,
+          background: 'transparent',
           boxSizing: 'border-box',
+          pointerEvents: 'none',
         }}
       >
         <EditorBlock nodeId={`${editorNodeId}:block:${slide.id}`} label="Slide">
@@ -195,6 +243,7 @@ export function SlideshowFullFrame({
               flexDirection: 'column',
               alignItems: s.align.items,
               gap: s.gap,
+              pointerEvents: 'auto',
             }}
           >
             {slide.title.trim() ? (
@@ -202,15 +251,7 @@ export function SlideshowFullFrame({
                 fieldPath={`${blocksBase}.${slide.id}.settings.title`}
                 label="Heading"
                 as="h2"
-                style={{
-                  margin: 0,
-                  fontFamily: fontHeading,
-                  fontSize: 'clamp(1.875rem, 3.6vw, 2.75rem)',
-                  fontWeight: 700,
-                  lineHeight: 1.08,
-                  letterSpacing: '-0.02em',
-                  color: scheme.color,
-                }}
+                style={slideshowSlideTextStyleToCss(headingStyle)}
               >
                 <ThemeEditorRichTextContent html={slide.title} />
               </EditorField>
@@ -220,18 +261,12 @@ export function SlideshowFullFrame({
                 fieldPath={`${blocksBase}.${slide.id}.settings.body`}
                 label="Text"
                 as="p"
-                style={{
-                  margin: 0,
-                  fontSize: '0.95rem',
-                  lineHeight: 1.5,
-                  color: scheme.muted,
-                  maxWidth: 420,
-                }}
+                style={slideshowSlideTextStyleToCss(bodyStyle)}
               >
                 <ThemeEditorRichTextContent html={slide.body} />
               </EditorField>
             ) : null}
-            {slide.buttonLabel.trim() ? (
+            {button.label.trim() ? (
               <EditorField
                 fieldPath={`${blocksBase}.${slide.id}.settings.buttonLabel`}
                 label="Button label"
@@ -239,19 +274,12 @@ export function SlideshowFullFrame({
                 style={{ display: 'inline-flex' }}
               >
                 <Link
-                  to={slide.buttonHref || '#'}
-                  style={{
-                    display: 'inline-flex',
-                    padding: '12px 26px',
-                    borderRadius: 999,
-                    background: '#111827',
-                    color: '#fff',
-                    fontSize: '0.9rem',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                  }}
+                  to={button.href || '#'}
+                  target={button.openInNewTab ? '_blank' : undefined}
+                  rel={button.openInNewTab ? 'noopener noreferrer' : undefined}
+                  style={button.style}
                 >
-                  {slide.buttonLabel}
+                  {button.label}
                 </Link>
               </EditorField>
             ) : null}

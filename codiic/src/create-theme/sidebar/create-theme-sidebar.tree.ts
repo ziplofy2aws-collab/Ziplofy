@@ -2482,30 +2482,11 @@ function mapSlideshowInsetBlockNodes(
 
     const slideOwnFields: EditorFieldDef[] = [
       {
-        path: `${settingsBase}.mediaType`,
-        type: 'select',
-        label: 'Type',
-        group: 'Media',
-        widget: 'segmented',
-        sidebar: true,
-        options: [
-          { value: 'image', label: 'Image' },
-          { value: 'video', label: 'Video' },
-        ],
-      },
-      {
         path: `${settingsBase}.imageUrl`,
         type: 'text',
         label: 'Image',
         group: 'Media',
         widget: 'image',
-        sidebar: true,
-      },
-      {
-        path: `${settingsBase}.videoUrl`,
-        type: 'text',
-        label: 'Video URL',
-        group: 'Media',
         sidebar: true,
       },
       {
@@ -2813,6 +2794,19 @@ function mapSlideshowInsetBlockNodes(
         ],
       },
       {
+        path: `${settingsBase}.bodyAlignment`,
+        type: 'select',
+        label: 'Alignment',
+        group: 'Layout',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'left', label: 'Left' },
+          { value: 'center', label: 'Center' },
+          { value: 'right', label: 'Right' },
+        ],
+      },
+      {
         path: `${settingsBase}.bodyTypographyPreset`,
         type: 'select',
         label: 'Preset',
@@ -2846,6 +2840,26 @@ function mapSlideshowInsetBlockNodes(
         label: 'Background',
         group: 'Appearance',
         widget: 'toggle',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyBackgroundColor`,
+        type: 'color',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
+        sidebar: true,
+      },
+      {
+        path: `${settingsBase}.bodyCornerRadius`,
+        type: 'number',
+        label: 'Corner radius',
+        group: 'Appearance',
+        widget: 'slider',
+        min: 0,
+        max: 40,
+        step: 1,
+        unit: 'px',
         sidebar: true,
       },
       {

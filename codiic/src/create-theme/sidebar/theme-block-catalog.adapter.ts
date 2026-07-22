@@ -131,10 +131,38 @@ export function usesShopifyFullBlockPicker(sectionType: string | undefined): boo
 /** Known section → block allowlists when pack catalog omit/mismatch them. */
 const SECTION_BLOCK_ALLOWLIST_FALLBACK: Record<string, string[]> = {
   'product-hotspots': ['product-hotspot'],
+  'layered-slideshow': ['slideshow-slide'],
+  'slideshow-inset': ['slideshow-slide'],
+  'slideshow-full-frame': ['slideshow-slide'],
 };
 
 function normalizeCatalogBlockId(id: string): string {
   return id.trim().toLowerCase().replace(/_/g, '-');
+}
+
+const SLIDESHOW_SECTION_KEYS = new Set([
+  'layered-slideshow',
+  'slideshow-inset',
+  'slideshow-full-frame',
+]);
+
+function ensureSlideshowSlideCatalogItem(blocks: BlockCatalogItem[]): BlockCatalogItem[] {
+  if (blocks.some((b) => normalizeCatalogBlockId(b.id) === 'slideshow-slide')) {
+    return blocks.map((b) =>
+      normalizeCatalogBlockId(b.id) === 'slideshow-slide'
+        ? { ...b, label: 'Slide', category: 'basic' as const }
+        : b
+    );
+  }
+  return [
+    {
+      id: 'slideshow-slide',
+      label: 'Slide',
+      category: 'basic',
+      icon: 'image',
+      keywords: ['slideshow-slide', 'slide', 'slideshow'],
+    },
+  ];
 }
 
 export function filterBlocksForSection(
@@ -160,6 +188,9 @@ export function filterBlocksForSection(
         keywords: ['product-hotspot', 'hotspot'],
       },
     ];
+  }
+  if (SLIDESHOW_SECTION_KEYS.has(sectionKey)) {
+    return ensureSlideshowSlideCatalogItem(filtered);
   }
   return filtered.map((b) =>
     normalizeCatalogBlockId(b.id) === 'product-hotspot' ? { ...b, label: 'Hotspot', category: 'basic' as const } : b

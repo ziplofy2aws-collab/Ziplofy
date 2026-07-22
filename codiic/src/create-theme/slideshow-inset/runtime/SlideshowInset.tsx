@@ -12,6 +12,11 @@ import {
   scopedLayeredSlideshowCss,
   type LayeredSlideshowSlide,
 } from '../../layered-slideshow/runtime/layeredSlideshowStyles';
+import {
+  readSlideshowSlideButtonStyle,
+  readSlideshowSlideTextStyle,
+  slideshowSlideTextStyleToCss,
+} from '../../layered-slideshow/runtime/slideshowSlideContentStyles';
 
 type Props = {
   sectionId: string;
@@ -135,7 +140,11 @@ export function SlideshowInset({
         {slides.map((s, i) => (
           <div key={s.id} style={{ position: 'relative', flex: '0 0 100%', height: '100%', overflow: 'hidden' }}>
             <LayeredSlideshowSlideMedia
-              imageUrl={s.imageUrl || undefined}
+              imageUrl={
+                cfgString(config, `${blocksBase}.${s.id}.settings.imageUrl`, '').trim() ||
+                s.imageUrl ||
+                undefined
+              }
               peekVariant={i % 2 === 0 ? 'figure' : 'landscape'}
               figureWidth="52%"
               figureMaxWidth={460}
@@ -224,7 +233,43 @@ export function SlideshowInset({
   const renderContent = (
     slide: LayeredSlideshowSlide,
     slideStyle: ReturnType<typeof readSlideSettings>
-  ) => (
+  ) => {
+    const slideSettingsBase = `${blocksBase}.${slide.id}.settings`;
+    const themeFonts = { fontHeading, fontBody };
+    const colors = {
+      text: scheme.muted,
+      heading: scheme.color,
+      muted: scheme.muted,
+      link: scheme.color,
+    };
+    const fallbackAlign =
+      slideStyle.align.text === 'center' || slideStyle.align.text === 'right'
+        ? slideStyle.align.text
+        : 'left';
+    const headingStyle = readSlideshowSlideTextStyle(
+      config,
+      slideSettingsBase,
+      'heading',
+      themeFonts,
+      colors,
+      fallbackAlign
+    );
+    const bodyStyle = readSlideshowSlideTextStyle(
+      config,
+      slideSettingsBase,
+      'body',
+      themeFonts,
+      colors,
+      fallbackAlign
+    );
+    const button = readSlideshowSlideButtonStyle(
+      config,
+      slideSettingsBase,
+      { color: scheme.color, muted: scheme.muted },
+      { label: slide.buttonLabel, href: slide.buttonHref }
+    );
+
+    return (
     <EditorBlock nodeId={`${editorNodeId}:block:${slide.id}`} label="Slide">
       <div
         style={{
@@ -240,16 +285,7 @@ export function SlideshowInset({
             fieldPath={`${blocksBase}.${slide.id}.settings.title`}
             label="Heading"
             as="h2"
-            style={{
-              margin: 0,
-              fontFamily: fontHeading,
-              fontSize: 'clamp(1.75rem, 3.4vw, 2.5rem)',
-              fontWeight: 700,
-              lineHeight: 1.1,
-              letterSpacing: '-0.02em',
-              color: scheme.color,
-              textAlign: slideStyle.align.text,
-            }}
+            style={slideshowSlideTextStyleToCss(headingStyle)}
           >
             <ThemeEditorRichTextContent html={slide.title} />
           </EditorField>
@@ -259,19 +295,12 @@ export function SlideshowInset({
             fieldPath={`${blocksBase}.${slide.id}.settings.body`}
             label="Text"
             as="p"
-            style={{
-              margin: 0,
-              fontSize: '0.95rem',
-              lineHeight: 1.5,
-              color: scheme.muted,
-              maxWidth: 420,
-              textAlign: slideStyle.align.text,
-            }}
+            style={slideshowSlideTextStyleToCss(bodyStyle)}
           >
             <ThemeEditorRichTextContent html={slide.body} />
           </EditorField>
         ) : null}
-        {slide.buttonLabel.trim() ? (
+        {button.label.trim() ? (
           <EditorField
             fieldPath={`${blocksBase}.${slide.id}.settings.buttonLabel`}
             label="Button label"
@@ -279,25 +308,19 @@ export function SlideshowInset({
             style={{ display: 'inline-flex' }}
           >
             <Link
-              to={slide.buttonHref || '#'}
-              style={{
-                display: 'inline-flex',
-                padding: '12px 26px',
-                borderRadius: 999,
-                background: '#111827',
-                color: '#fff',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-              }}
+              to={button.href || '#'}
+              target={button.openInNewTab ? '_blank' : undefined}
+              rel={button.openInNewTab ? 'noopener noreferrer' : undefined}
+              style={button.style}
             >
-              {slide.buttonLabel}
+              {button.label}
             </Link>
           </EditorField>
         ) : null}
       </div>
     </EditorBlock>
-  );
+    );
+  };
 
   const innerStyle: CSSProperties = {
     maxWidth: maxWidth || layout.maxWidth,

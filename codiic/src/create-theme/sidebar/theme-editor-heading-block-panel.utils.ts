@@ -426,7 +426,13 @@ export function mirrorHeadingTextInValues(
   }
   const title = path.match(/^(.+)\.settings\.title$/);
   if (title) {
-    syncHeadingTextPathsInValues(next, title[1]!, raw);
+    const sectionPrefix = title[1]!;
+    // Block-level titles (e.g. slideshow slide `...blocks.slide_1.settings.title`)
+    // must not fan out through hero section title ↔ heading mirroring.
+    if (sectionPrefix.includes('.blocks.')) {
+      return next;
+    }
+    syncHeadingTextPathsInValues(next, sectionPrefix, raw);
   }
   return next;
 }

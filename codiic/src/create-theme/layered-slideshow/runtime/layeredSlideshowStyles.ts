@@ -23,6 +23,16 @@ export type LayeredSlideshowSlide = {
   buttonHref: string;
   imageUrl: string;
   peekVariant: 'figure' | 'landscape';
+  direction: 'vertical' | 'horizontal';
+  alignment: 'left' | 'center' | 'right';
+  position: 'top' | 'center' | 'bottom';
+  gap: number;
+  backgroundColor: string;
+  mediaOverlay: boolean;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
 };
 
 export type LayeredSlideshowLayout = {
@@ -67,6 +77,20 @@ export function slideshowMinHeight(height: LayeredSlideshowLayout['height']): nu
   return 460;
 }
 
+function readSlideSetting(
+  settings: Record<string, unknown>,
+  config: Record<string, unknown> | null,
+  settingsBase: string,
+  key: string,
+  fallback = ''
+): string {
+  const fromPath = getThemeConfigValue(config, `${settingsBase}.${key}`);
+  if (fromPath != null) return String(fromPath).trim();
+  const raw = settings[key];
+  if (raw == null) return fallback;
+  return String(raw).trim();
+}
+
 export function readLayeredSlideshowSlides(
   config: Record<string, unknown> | null,
   templateId: string,
@@ -83,25 +107,67 @@ export function readLayeredSlideshowSlides(
       ? templateBlockOrder(config, templateId, sectionId, [])
       : layoutBlockOrder(config, sectionId, []);
   const blocksMap = getThemeConfigValue(config, blocksPath) as
-    | Record<string, { settings?: Record<string, unknown> }>
+    | Record<string, { enabled?: boolean; settings?: Record<string, unknown> }>
     | null;
   if (!blocksMap || typeof blocksMap !== 'object') return [];
 
   const ids = order.length ? order : Object.keys(blocksMap);
 
   return ids
-    .filter((id) => blocksMap[id])
+    .filter((id) => {
+      const block = blocksMap[id];
+      return Boolean(block) && block?.enabled !== false;
+    })
     .map((id, idx) => {
       const settings = blocksMap[id]?.settings ?? {};
-      const peek = String(settings.peekVariant ?? (idx % 2 === 0 ? 'figure' : 'landscape'));
+      const settingsBase = `${blocksPath}.${id}.settings`;
+      const peek = readSlideSetting(
+        settings,
+        config,
+        settingsBase,
+        'peekVariant',
+        idx % 2 === 0 ? 'figure' : 'landscape'
+      );
+      const direction = readSlideSetting(settings, config, settingsBase, 'direction', 'vertical');
+      const alignment = readSlideSetting(settings, config, settingsBase, 'alignment', 'left');
+      const position = readSlideSetting(settings, config, settingsBase, 'position', 'top');
+      const imageUrl = readSlideSetting(settings, config, settingsBase, 'imageUrl', '');
       return {
         id,
-        title: String(settings.title ?? ''),
-        body: String(settings.body ?? DEFAULT_BODY),
-        buttonLabel: String(settings.buttonLabel ?? ''),
-        buttonHref: String(settings.buttonHref ?? ''),
-        imageUrl: String(settings.imageUrl ?? ''),
+        title: readSlideSetting(settings, config, settingsBase, 'title', ''),
+        body: readSlideSetting(settings, config, settingsBase, 'body', DEFAULT_BODY),
+        buttonLabel: readSlideSetting(settings, config, settingsBase, 'buttonLabel', ''),
+        buttonHref: readSlideSetting(settings, config, settingsBase, 'buttonHref', ''),
+        imageUrl,
         peekVariant: peek === 'landscape' ? 'landscape' : 'figure',
+        direction: direction === 'horizontal' ? 'horizontal' : 'vertical',
+        alignment:
+          alignment === 'center' || alignment === 'right' ? alignment : 'left',
+        position:
+          position === 'center' || position === 'bottom' ? position : 'top',
+        gap: cfgNumber(config, `${settingsBase}.gap`, Number(settings.gap ?? 12) || 12),
+        backgroundColor: readSlideSetting(settings, config, settingsBase, 'backgroundColor', ''),
+        mediaOverlay: cfgBool(
+          config,
+          `${settingsBase}.mediaOverlay`,
+          settings.mediaOverlay === true || settings.mediaOverlay === 'true'
+        ),
+        paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, Number(settings.paddingTop ?? 40) || 40),
+        paddingBottom: cfgNumber(
+          config,
+          `${settingsBase}.paddingBottom`,
+          Number(settings.paddingBottom ?? 40) || 40
+        ),
+        paddingLeft: cfgNumber(
+          config,
+          `${settingsBase}.paddingLeft`,
+          Number(settings.paddingLeft ?? 36) || 36
+        ),
+        paddingRight: cfgNumber(
+          config,
+          `${settingsBase}.paddingRight`,
+          Number(settings.paddingRight ?? 36) || 36
+        ),
       };
     });
 }

@@ -668,23 +668,75 @@ function resolveHeroMarqueeFieldType(path: string): string | undefined {
   return undefined;
 }
 
-const HERO_LOGO_BLOCK_SETTING_TYPES: Record<string, string> = {
-  text: 'text',
+const SLIDESHOW_SLIDE_SETTING_TYPES: Record<string, string> = {
+  title: 'text',
+  body: 'textarea',
+  buttonLabel: 'text',
+  buttonHref: 'text',
   imageUrl: 'text',
-  logoFont: 'select',
-  logoColor: 'text',
-  sizeUnit: 'select',
-  pixelHeight: 'number',
-  percentWidth: 'number',
-  customMobileSize: 'boolean',
-  mobileSizeUnit: 'select',
-  mobilePixelHeight: 'number',
-  mobilePercentWidth: 'number',
+  peekVariant: 'text',
+  direction: 'select',
+  alignment: 'select',
+  position: 'select',
+  gap: 'number',
+  backgroundColor: 'color',
+  mediaOverlay: 'boolean',
   paddingTop: 'number',
   paddingBottom: 'number',
   paddingLeft: 'number',
   paddingRight: 'number',
+  headingWidth: 'select',
+  headingMaxWidth: 'select',
+  headingAlignment: 'select',
+  headingTypographyPreset: 'select',
+  headingColor: 'text',
+  headingBackgroundEnabled: 'boolean',
+  headingBackgroundColor: 'color',
+  headingCornerRadius: 'number',
+  headingPaddingTop: 'number',
+  headingPaddingBottom: 'number',
+  headingPaddingLeft: 'number',
+  headingPaddingRight: 'number',
+  bodyWidth: 'select',
+  bodyMaxWidth: 'select',
+  bodyAlignment: 'select',
+  bodyTypographyPreset: 'select',
+  bodyColor: 'color',
+  bodyBackgroundEnabled: 'boolean',
+  bodyBackgroundColor: 'color',
+  bodyCornerRadius: 'number',
+  bodyPaddingTop: 'number',
+  bodyPaddingBottom: 'number',
+  bodyPaddingLeft: 'number',
+  bodyPaddingRight: 'number',
+  buttonOpenInNewTab: 'boolean',
+  buttonStyle: 'select',
+  buttonLinkTextColor: 'color',
+  buttonCustomBackground: 'color',
+  buttonCustomText: 'color',
+  buttonDesktopWidth: 'select',
+  buttonDesktopCustomWidth: 'number',
+  buttonMobileWidth: 'select',
+  buttonMobileCustomWidth: 'number',
 };
+
+function resolveSlideshowSlideFieldType(path: string): string | undefined {
+  const tpl = path.match(
+    /^templates\.[^.]+\.sections\.[^.]+\.blocks\.[^.]+\.settings\.([^.]+)$/
+  );
+  const layout = path.match(/^sections\.[^.]+\.blocks\.[^.]+\.settings\.([^.]+)$/);
+  const key = tpl?.[1] ?? layout?.[1];
+  if (!key) return undefined;
+  // Only treat as slideshow slide settings when the path mentions a slideshow section
+  // or a known slide setting key that is unique enough (imageUrl alone is shared).
+  const isSlideshowSection =
+    /\.sections\.(?:layered_slideshow|slideshow_inset|slideshow_full_frame)(?:_\d+)?\./.test(
+      path
+    ) || /\.sections\.[^.]+\.blocks\.slide_\d+\.settings\./.test(path);
+  if (!isSlideshowSection) return undefined;
+  return SLIDESHOW_SLIDE_SETTING_TYPES[key];
+}
+
 
 function resolveHeroLogoBlockFieldType(path: string): string | undefined {
   const tpl = path.match(/^templates\.[^.]+\.sections\.[^.]+\.blocks\.logo\.settings\.([^.]+)$/);
@@ -1655,6 +1707,9 @@ function resolveFieldTypeForPath(
   const imageWithTextImageBlock = resolveImageWithTextImageBlockSettingType(path);
   if (imageWithTextImageBlock) return imageWithTextImageBlock;
 
+  const slideshowSlideSetting = resolveSlideshowSlideFieldType(path);
+  if (slideshowSlideSetting) return slideshowSlideSetting;
+
   const comparisonSliderBlock = resolveComparisonSliderBlockSettingType(path);
   if (comparisonSliderBlock) return comparisonSliderBlock;
 
@@ -1917,7 +1972,11 @@ function syncHeroHeadingTextPaths(
   }
   const title = path.match(/^(.+)\.settings\.title$/);
   if (title) {
-    syncHeroHeadingTextPathsForSection(config, title[1]!, value);
+    const sectionPrefix = title[1]!;
+    // Do not treat slideshow slide (or other block) `settings.title` as a hero
+    // section title — that incorrectly mirrors copy across unrelated fields.
+    if (sectionPrefix.includes('.blocks.')) return;
+    syncHeroHeadingTextPathsForSection(config, sectionPrefix, value);
   }
 }
 
@@ -2161,6 +2220,16 @@ export function applyValuesToThemeConfig(
         key === 'headingWidth' ||
         key === 'headingMaxWidth' ||
         key === 'headingAlignment' ||
+        key === 'bodyFont' ||
+        key === 'bodyFontSize' ||
+        key === 'bodyLineHeight' ||
+        key === 'bodyLetterSpacing' ||
+        key === 'bodyTextCase' ||
+        key === 'bodyWrap' ||
+        key === 'bodyTypographyPreset' ||
+        key === 'bodyWidth' ||
+        key === 'bodyMaxWidth' ||
+        key === 'bodyAlignment' ||
         key === 'descFont' ||
         key === 'descFontSize' ||
         key === 'descLineHeight' ||
@@ -2194,6 +2263,7 @@ export function applyValuesToThemeConfig(
         type = 'text';
       } else if (
         key === 'headingBackgroundEnabled' ||
+        key === 'bodyBackgroundEnabled' ||
         key === 'descBackgroundEnabled' ||
         key === 'backgroundEnabled' ||
         key === 'showSalePriceFirst' ||
@@ -2201,6 +2271,7 @@ export function applyValuesToThemeConfig(
         key === 'videoAutoplay' ||
         key === 'videoLoop' ||
         key === 'linkOpenInNewTab' ||
+        key === 'buttonOpenInNewTab' ||
         key === 'alignTextBaseline' ||
         key === 'verticalOnMobile' ||
         key === 'backgroundOverlay' ||
@@ -2213,6 +2284,11 @@ export function applyValuesToThemeConfig(
         key === 'headingPaddingBottom' ||
         key === 'headingPaddingLeft' ||
         key === 'headingPaddingRight' ||
+        key === 'bodyCornerRadius' ||
+        key === 'bodyPaddingTop' ||
+        key === 'bodyPaddingBottom' ||
+        key === 'bodyPaddingLeft' ||
+        key === 'bodyPaddingRight' ||
         key === 'descCornerRadius' ||
         key === 'descPaddingTop' ||
         key === 'descPaddingBottom' ||
@@ -2237,6 +2313,7 @@ export function applyValuesToThemeConfig(
         key === 'mobileCustomWidth' ||
         key === 'customHeight' ||
         key === 'layoutGap' ||
+        key === 'gap' ||
         key === 'columns' ||
         key === 'paddingTop' ||
         key === 'paddingBottom' ||
@@ -2297,7 +2374,12 @@ export function applyValuesToThemeConfig(
         key === 'mobileWidth' ||
         key === 'marqueeMotionDirection' ||
         key === 'marqueeSpacerUnit' ||
-        key === 'marqueeText'
+        key === 'marqueeText' ||
+        key === 'peekVariant' ||
+        key === 'title' ||
+        key === 'body' ||
+        key === 'buttonLabel' ||
+        key === 'buttonHref'
       ) {
         type = 'text';
       } else if (key === 'marqueeTransparentBg' || key === 'marqueeSpacerCustomMobile') {

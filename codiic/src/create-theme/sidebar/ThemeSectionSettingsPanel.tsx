@@ -1205,6 +1205,7 @@ function RichTextFieldRow({
 
   return (
     <ThemeEditorRichTextField
+      key={field.path}
       id={id}
       label={hideLabel ? '' : field.label}
       value={value}
@@ -9583,7 +9584,7 @@ function CollectionListGridGroupedSettingsPanel({
   );
 }
 
-/** Layered slideshow: General → Padding → Custom CSS. */
+/** Layered slideshow: General → Padding. */
 function LayeredSlideshowGroupedSettingsPanel({
   fields,
   values,
@@ -9691,21 +9692,6 @@ function LayeredSlideshowGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 
@@ -10030,9 +10016,7 @@ function SlideshowInsetSlideBlockSettingsPanel({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const pick = (key: string) => fields.find((f) => (f.path.split('.').pop() ?? '') === key);
-  const mediaType = pick('mediaType');
   const imageUrl = pick('imageUrl');
-  const videoUrl = pick('videoUrl');
   const direction = pick('direction');
   const alignment = pick('alignment');
   const position = pick('position');
@@ -10046,21 +10030,13 @@ function SlideshowInsetSlideBlockSettingsPanel({
   const paddingFields = [paddingTop, paddingBottom, paddingLeft, paddingRight].filter(
     (f): f is EditorFieldDef => Boolean(f)
   );
-  const mediaMode = mediaType ? fieldValueAsString(values, mediaType) || 'image' : 'image';
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       <div className="space-y-1 px-1 py-3">
-        {mediaType ? (
-          <SegmentedFieldRow field={mediaType} values={values} onFieldChange={onFieldChange} />
+        {imageUrl ? (
+          <ImagePickerFieldRow field={imageUrl} values={values} onFieldChange={onFieldChange} />
         ) : null}
-        {mediaMode === 'video'
-          ? videoUrl
-            ? <SettingsFieldRow field={videoUrl} values={values} onFieldChange={onFieldChange} />
-            : null
-          : imageUrl
-            ? <ImagePickerFieldRow field={imageUrl} values={values} onFieldChange={onFieldChange} />
-            : null}
       </div>
 
       {direction || alignment || position || gap ? (
@@ -12367,24 +12343,28 @@ function RichTextTypographyBlockSettingsPanel({
   values,
   colorPalette,
   contentKey,
+  styleKeyPrefix,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   colorPalette: string[];
   contentKey: 'heading' | 'text' | 'quote' | 'body' | 'caption' | 'description' | 'subheading' | 'title';
+  /** When content text uses a different key than style fields (e.g. title + headingWidth). */
+  styleKeyPrefix?: string;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const find = (key: string) => fields.find((f) => f.path.split('.').pop() === key);
+  const stylePrefix = styleKeyPrefix ?? contentKey;
   const text = find(contentKey);
-  const width = find(`${contentKey}Width`);
-  const maxWidth = find(`${contentKey}MaxWidth`);
-  const alignment = find(`${contentKey}Alignment`);
-  const preset = find(`${contentKey}TypographyPreset`);
-  const color = find(`${contentKey}Color`);
-  const background = find(`${contentKey}BackgroundEnabled`);
+  const width = find(`${stylePrefix}Width`);
+  const maxWidth = find(`${stylePrefix}MaxWidth`);
+  const alignment = find(`${stylePrefix}Alignment`);
+  const preset = find(`${stylePrefix}TypographyPreset`);
+  const color = find(`${stylePrefix}Color`);
+  const background = find(`${stylePrefix}BackgroundEnabled`);
   const backgroundColor =
-    find(`${contentKey}BackgroundColor`) ??
+    find(`${stylePrefix}BackgroundColor`) ??
     (background
       ? {
           path: background.path.replace(/BackgroundEnabled$/, 'BackgroundColor'),
@@ -12394,10 +12374,11 @@ function RichTextTypographyBlockSettingsPanel({
           widget: 'color' as const,
         }
       : null);
-  const paddingTop = find(`${contentKey}PaddingTop`);
-  const paddingBottom = find(`${contentKey}PaddingBottom`);
-  const paddingLeft = find(`${contentKey}PaddingLeft`);
-  const paddingRight = find(`${contentKey}PaddingRight`);
+  const paddingTop = find(`${stylePrefix}PaddingTop`);
+  const paddingBottom = find(`${stylePrefix}PaddingBottom`);
+  const paddingLeft = find(`${stylePrefix}PaddingLeft`);
+  const paddingRight = find(`${stylePrefix}PaddingRight`);
+  const cornerRadius = find(`${stylePrefix}CornerRadius`);
 
   const RICH_TEXT_HEADING_PRESET_OPTIONS = [
     { value: 'default', label: 'Default' },
@@ -12410,9 +12391,9 @@ function RichTextTypographyBlockSettingsPanel({
     { value: 'custom', label: 'Custom' },
   ] as const;
 
-  /** Heading (rich text) and quote (pull quote) share Default / H1–H6 / Custom typography. */
+  /** Heading-style presets (rich text heading, quote, or slide heading via styleKeyPrefix). */
   const typoPrefix =
-    contentKey === 'heading' || contentKey === 'quote' ? contentKey : null;
+    stylePrefix === 'heading' || stylePrefix === 'quote' ? stylePrefix : null;
   const typoSettingsBase = typoPrefix
     ? (preset?.path.replace(new RegExp(`\\.${typoPrefix}TypographyPreset$`), '') ||
         find(typoPrefix)?.path.replace(/\.[^.]+$/, '') ||
@@ -19165,12 +19146,15 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isSlideshowInsetNestedBlockPanel =
     node.kind === 'block' &&
     /:block:[^:]+:nested:slide_(heading|text|button)$/.test(node.id);
+  const isSlideshowInsetNestedHeadingPanel =
+    node.kind === 'block' && /:block:[^:]+:nested:slide_heading$/.test(node.id);
   const isSlideshowInsetNestedTextPanel =
     node.kind === 'block' && /:block:[^:]+:nested:slide_text$/.test(node.id);
   const isSlideshowInsetNestedButtonPanel =
     node.kind === 'block' && /:block:[^:]+:nested:slide_button$/.test(node.id);
   const isSlideshowInsetSlideBlockPanel =
     node.kind === 'block' &&
+    !/:nested:/.test(node.id) &&
     /(slideshow_(inset|full_frame)|layered_slideshow)[^:]*:block:[^:]+$/.test(node.id);
   const isCollectionLinkTitlePanel =
     !isBlogPostsGridTitleBlockNodeId(node.id) &&
@@ -19303,6 +19287,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isIconsWithTextNestedTextNodeId(node.id) &&
     !isHeroBottomTextBlockPanel &&
     !isHeroBottomGroupPanel &&
+    !isSlideshowInsetNestedHeadingPanel &&
+    !isSlideshowInsetNestedBlockPanel &&
     node.kind === 'block' &&
     (node.label === 'Heading' ||
       isHeadingBlockNodeId(node.id) ||
@@ -20323,8 +20309,19 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
+        ) : isSlideshowInsetNestedHeadingPanel ? (
+          <RichTextTypographyBlockSettingsPanel
+            key={`${node.id}:title`}
+            fields={fields}
+            values={values}
+            colorPalette={colorPalette}
+            contentKey="title"
+            styleKeyPrefix="heading"
+            onFieldChange={onFieldChange}
+          />
         ) : isSlideshowInsetNestedTextPanel ? (
           <RichTextTypographyBlockSettingsPanel
+            key={`${node.id}:body`}
             fields={fields}
             values={values}
             colorPalette={colorPalette}
@@ -20336,6 +20333,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             fields={fields}
             values={values}
             colorPalette={colorPalette}
+            labelKey="buttonLabel"
             linkKey="buttonHref"
             onFieldChange={onFieldChange}
           />

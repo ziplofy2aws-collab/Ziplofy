@@ -20,29 +20,36 @@ export function LayeredSlideshowSlideMedia({
   figureHeight?: string | number;
   figureMaxWidth?: number;
 }) {
-  if (imageUrl) {
+  const trimmed = (imageUrl ?? '').trim();
+  if (trimmed) {
     return (
       <img
-        src={imageUrl}
+        src={trimmed}
         alt=""
         style={{
           position: 'absolute',
           inset: 0,
+          zIndex: 1,
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          objectPosition: 'center bottom',
+          objectPosition: 'center center',
+          display: 'block',
         }}
       />
     );
   }
 
   if (peekVariant === 'landscape') {
-    return <HeroLandscapeBackdrop />;
+    return (
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
+        <HeroLandscapeBackdrop />
+      </div>
+    );
   }
 
   return (
-    <>
+    <div style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
       <LayeredSlideshowBackdrop />
       <div
         style={{
@@ -58,7 +65,7 @@ export function LayeredSlideshowSlideMedia({
       >
         <LayeredSlideshowFigure />
       </div>
-    </>
+    </div>
   );
 }
 

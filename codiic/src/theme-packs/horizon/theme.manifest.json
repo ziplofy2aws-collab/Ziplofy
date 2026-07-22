@@ -54,6 +54,10 @@
       {
         "id": "product-hotspot",
         "label": "Hotspot"
+      },
+      {
+        "id": "slideshow-slide",
+        "label": "Slide"
       }
     ],
     "product": [
@@ -144,6 +148,15 @@
     ],
     "product-hotspots": [
       "product-hotspot"
+    ],
+    "layered-slideshow": [
+      "slideshow-slide"
+    ],
+    "slideshow-inset": [
+      "slideshow-slide"
+    ],
+    "slideshow-full-frame": [
+      "slideshow-slide"
     ]
   },
   "benchmark": true
