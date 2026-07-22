@@ -73,9 +73,30 @@ export const CODIX_ADMIN_INTENTS: CodiixIntent[] = [
       '1. Go to **Products** → **Add product** (or `/products/new`)\n' +
       '2. Add title, media, variants, pricing, and inventory\n' +
       '3. Save — then manage stock under **Inventory**\n' +
-      '4. Group items with **Collections**\n' +
+      '4. Group items with **Collections** — or say **“create a collection”** here in chat\n' +
       '5. Restock with **Purchase orders** or move stock with **Transfers**\n\n' +
-      'Say **“take me to products”** or **“open inventory”** to jump there.',
+      'Say **“take me to products”**, **“create a collection”**, or **“open inventory”**.',
+  },
+  {
+    id: 'admin-create-collection',
+    suggestion: 'Create a collection',
+    keywords: [
+      'create collection',
+      'add collection',
+      'new collection',
+      'make collection',
+    ],
+    phrases: [
+      'create a collection',
+      'create collection',
+      'add a collection',
+      'add collection',
+      'new collection',
+      'make a collection',
+    ],
+    answer:
+      'Sure — fill in the collection details below and I’ll create it for you.\n\n' +
+      'After it’s saved, I can take you straight to the collection details page.',
   },
   {
     id: 'admin-customers',
@@ -133,28 +154,134 @@ export const CODIX_ADMIN_INTENTS: CodiixIntent[] = [
       '• **Files** — media uploads\n' +
       '• **Menus** — navigation links\n' +
       '• **Blog posts** — articles\n' +
+      '• **Blogs** — blog containers under Content → Manage blogs\n' +
       '• **Contact submissions** — messages from your contact form\n' +
       '• **Newsletter subscriptions** — email signups\n\n' +
-      'Say **“take me to content”** or **“open contact submissions”**.',
+      'Say **“create a blog”** or **“create a blog post”** and I’ll collect the details in this chat, or **“take me to blogs”** / **“take me to blog posts”** to open those pages.',
+  },
+  {
+    id: 'admin-create-blog',
+    suggestion: 'Create a blog',
+    keywords: ['create blog', 'add blog', 'new blog', 'make blog'],
+    phrases: [
+      'create a blog',
+      'create blog',
+      'add a blog',
+      'add blog',
+      'new blog',
+      'make a blog',
+    ],
+    answer:
+      'Sure — fill in the blog details below and I’ll create it for you.\n\n' +
+      'After it’s saved, I can take you straight to the blog details page.',
+  },
+  {
+    id: 'admin-create-blog-post',
+    suggestion: 'Create a blog post',
+    keywords: [
+      'create blog post',
+      'add blog post',
+      'new blog post',
+      'create article',
+      'add article',
+      'write post',
+    ],
+    phrases: [
+      'create a blog post',
+      'create blog post',
+      'add a blog post',
+      'add blog post',
+      'new blog post',
+      'create an article',
+      'create article',
+      'add an article',
+      'write a blog post',
+    ],
+    answer:
+      'Sure — pick a blog and fill in the post details below, then I’ll create it for you.\n\n' +
+      'After it’s saved, I can take you straight to the blog post details page.',
   },
   {
     id: 'admin-themes',
-    suggestion: 'How do I edit my theme?',
-    keywords: ['theme', 'themes', 'storefront', 'online store', 'customize', 'editor'],
+    suggestion: 'How do themes work?',
+    keywords: ['theme', 'themes', 'storefront', 'online store'],
     phrases: [
-      'edit my theme',
       'how do i edit my theme',
-      'open theme editor',
+      'how do themes work',
       'where are themes',
-      'customize storefront',
+      'where is the theme editor',
     ],
     answer:
       'Themes live under **Online Store → Themes** (`/online-store/themes`).\n\n' +
-      '1. Open **Themes**\n' +
-      '2. Choose a theme and enter the **theme editor**\n' +
-      '3. In the editor, use **Codiix** (same face icon) for section help, Agentic insert, Save, and Apply\n\n' +
+      '• Ask **“edit my current theme”** — I’ll open the editor for your live theme in a **new tab**\n' +
+      '• Ask **“which theme is applied?”** — see name + custom vs catalog\n' +
+      '• Ask **“change theme”** — quick list to apply another theme\n\n' +
       'Also nearby: **Pages** and **Preference** under Online Store.\n\n' +
-      'Say **“take me to themes”** to jump there.',
+      'Say **“take me to themes”** to jump to the Themes page.',
+  },
+  {
+    id: 'admin-edit-current-theme',
+    suggestion: 'Edit my current theme',
+    keywords: [
+      'edit theme',
+      'edit current theme',
+      'edit applied theme',
+      'theme editor',
+      'customize theme',
+      'customise theme',
+    ],
+    phrases: [
+      'edit my current theme',
+      'edit current theme',
+      'edit my theme',
+      'edit applied theme',
+      'edit live theme',
+      'open theme editor',
+      'open my theme editor',
+      'customize my theme',
+      'customise my theme',
+    ],
+    answer:
+      'I can open the theme editor for your **live** theme in a new tab — custom or catalog.',
+  },
+  {
+    id: 'admin-applied-theme',
+    suggestion: 'Which theme is applied?',
+    keywords: [
+      'applied theme',
+      'current theme',
+      'live theme',
+      'active theme',
+      'which theme',
+      'what theme',
+    ],
+    phrases: [
+      'which theme is applied',
+      'what theme is applied',
+      'which theme is on my store',
+      'what theme is on my store',
+      'current theme',
+      'live theme',
+      'active theme',
+      'my applied theme',
+    ],
+    answer:
+      'I can check which theme is live on your store, and whether it’s a **custom** or **catalog** theme.\n\n' +
+      'Ask me again (or tap this chip) and I’ll look it up — then you can **Edit this theme** or **Change theme?**',
+  },
+  {
+    id: 'admin-change-theme',
+    suggestion: 'Change theme',
+    keywords: ['change theme', 'switch theme', 'swap theme', 'apply theme'],
+    phrases: [
+      'change theme',
+      'change my theme',
+      'switch theme',
+      'switch my theme',
+      'apply another theme',
+    ],
+    answer:
+      'I can show a quick list of your installed catalog themes and custom themes so you can apply one right from this chat.',
   },
   {
     id: 'admin-analytics',
@@ -183,17 +310,18 @@ export const CODIX_ADMIN_INTENTS: CodiixIntent[] = [
     phrases: ['what is codiix', 'who are you', 'what can you do'],
     answer:
       'I’m **Codiix** — an AI helper built by **Codiic**.\n\n' +
-      '• In **store admin**, I help you find pages and explain Orders, Products, Customers, Discounts, Content, Themes, and Settings.\n' +
+      '• In **store admin**, I help you find pages, create a **collection**, **blog**, or **blog post** in chat, and explain Orders, Products, Customers, and more.\n' +
       '• In the **theme editor**, I also help with sections, Agentic insert, Save, and Apply theme.\n\n' +
-      'Try “how do I add a product?” or “take me to orders”.',
+      'Try “create a collection” or “take me to orders”.',
   },
 ];
 
 export const CODIX_ADMIN_FALLBACK =
   'I’m not sure on that one yet — in store admin I can help with:\n\n' +
   '• Finding **Orders**, **Products**, **Customers**, **Discounts**, **Content**, **Themes**, **Analytics**, and **Settings**\n' +
+  '• Creating a **collection**, **blog**, or **blog post** right here in chat\n' +
   '• How to add products, manage inventory, and open the theme editor\n\n' +
-  'Try “how do I add a product?”, “where are orders?”, or “take me to themes”.';
+  'Try “edit my current theme”, “create a collection”, or “take me to themes”.';
 
 export const CODIX_ADMIN_SUGGESTIONS = CODIX_ADMIN_INTENTS.filter((i) => i.suggestion).map(
   (i) => ({
@@ -311,6 +439,20 @@ export const CODIX_ADMIN_NAV: CodiixAdminNavTarget[] = [
     phrases: ['take me to content', 'open content'],
   },
   {
+    id: 'blogs',
+    label: 'Blogs',
+    path: '/content/blogs',
+    keywords: ['blogs', 'manage blogs'],
+    phrases: ['take me to blogs', 'open blogs', 'manage blogs', 'open manage blogs'],
+  },
+  {
+    id: 'blog-posts',
+    label: 'Blog posts',
+    path: '/content/articles',
+    keywords: ['blog posts', 'articles'],
+    phrases: ['take me to blog posts', 'open blog posts', 'open articles', 'take me to articles'],
+  },
+  {
     id: 'contact-submissions',
     label: 'Contact submissions',
     path: '/content/contact-submissions',
@@ -322,7 +464,7 @@ export const CODIX_ADMIN_NAV: CodiixAdminNavTarget[] = [
     label: 'Themes',
     path: '/online-store/themes',
     keywords: ['themes', 'theme', 'storefront theme'],
-    phrases: ['take me to themes', 'open themes', 'open theme editor'],
+    phrases: ['take me to themes', 'open themes', 'go to themes'],
   },
   {
     id: 'online-store-pages',

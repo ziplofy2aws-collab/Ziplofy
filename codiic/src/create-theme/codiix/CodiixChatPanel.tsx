@@ -7,25 +7,29 @@ import {
 } from '@heroicons/react/24/outline';
 import { CodiixFaceIcon } from './CodiixFaceIcon';
 import { CodiixElementPreview } from './CodiixElementPreview';
+import { CodiixChatFormCard } from './CodiixChatFormCard';
 import {
-  agenticSuggestionsForCategory,
-  getCodiixCategoryLabel,
-  relatedActionsForElement,
-  type CodiixAgenticAction,
-} from './codiix-elements-catalog';
+  formatAppliedThemeAnswer,
+  formatEditCurrentThemeAnswer,
+  type CodiixAppliedThemeInfo,
+  type CodiixThemePickOption,
+} from './codiix-admin-themes';
 import {
-  type CodiixPageAction,
-  type CodiixPageOption,
-} from './codiix-pages';
-import {
-  type CodiixReorderPlan,
-  type CodiixStructureSection,
-} from './codiix-reorder';
-import {
-  type CodiixAnnouncementContext,
-  type CodiixEditPlan,
-} from './codiix-edit-announcement';
-import type { ThemeEditorFieldType } from '../sidebar/create-theme-field.utils';
+  buildCreateBlogForm,
+  buildCreateBlogPostForm,
+  buildCreateCollectionForm,
+  parseCreateBlogFormValues,
+  parseCreateBlogPostFormValues,
+  parseCreateCollectionFormValues,
+  type CodiixBlogOption,
+  type CodiixCreateBlogInput,
+  type CodiixCreateBlogPostInput,
+  type CodiixCreateBlogPostResult,
+  type CodiixCreateBlogResult,
+  type CodiixCreateCollectionInput,
+  type CodiixCreateCollectionResult,
+  type CodiixChatFormKind,
+} from './codiix-chat-form';
 import { CODIX_ADMIN_SUGGESTIONS } from './codiix-admin-knowledge';
 import { CODIX_SUGGESTIONS } from './codiix-knowledge';
 import {
@@ -47,6 +51,25 @@ import {
   type CodiixMessage,
   type CodiixSessionScope,
 } from './codiix-session';
+import {
+  agenticSuggestionsForCategory,
+  getCodiixCategoryLabel,
+  relatedActionsForElement,
+  type CodiixAgenticAction,
+} from './codiix-elements-catalog';
+import {
+  type CodiixPageAction,
+  type CodiixPageOption,
+} from './codiix-pages';
+import {
+  type CodiixReorderPlan,
+  type CodiixStructureSection,
+} from './codiix-reorder';
+import {
+  type CodiixAnnouncementContext,
+  type CodiixEditPlan,
+} from './codiix-edit-announcement';
+import type { ThemeEditorFieldType } from '../sidebar/create-theme-field.utils';
 
 export type { CodiixMessage };
 export type CodiixSaveResult = 'saving' | 'modal' | 'loading' | 'needs-name';
@@ -74,6 +97,26 @@ type Props = {
   onNavigatePage?: (pageId: string) => CodiixNavigateResult | void;
   /** Store-admin sidebar navigation (Codiix “take me to products”). */
   onNavigateAdmin?: (path: string) => void;
+  /** Create a blog from an in-chat form (admin). */
+  onCreateBlog?: (input: CodiixCreateBlogInput) => Promise<CodiixCreateBlogResult>;
+  /** List blogs for the create-blog-post form (admin). */
+  onListBlogs?: () => Promise<CodiixBlogOption[]>;
+  /** Create a blog post from an in-chat form (admin). */
+  onCreateBlogPost?: (
+    input: CodiixCreateBlogPostInput,
+  ) => Promise<CodiixCreateBlogPostResult>;
+  /** Create a collection from an in-chat form (admin). */
+  onCreateCollection?: (
+    input: CodiixCreateCollectionInput,
+  ) => Promise<CodiixCreateCollectionResult>;
+  /** Resolve the store’s currently applied theme. */
+  onGetAppliedTheme?: () => Promise<CodiixAppliedThemeInfo | null>;
+  /** List installed + custom themes for quick switch. */
+  onListThemePicks?: () => Promise<CodiixThemePickOption[]>;
+  /** Apply a theme from the quick list. */
+  onApplyThemePick?: (pick: CodiixThemePickOption) => Promise<CodiixAppliedThemeInfo>;
+  /** Open the live theme’s editor in a new tab. */
+  onOpenAppliedThemeEditor?: () => Promise<CodiixAppliedThemeInfo>;
   /** Current page section tree (header / template / footer). */
   structure?: CodiixStructureSection[];
   /** Reorder sections — same path as sidebar drag. */
@@ -226,6 +269,14 @@ export function CodiixChatPanel({
   currentPageId,
   onNavigatePage,
   onNavigateAdmin,
+  onCreateBlog,
+  onListBlogs,
+  onCreateBlogPost,
+  onCreateCollection,
+  onGetAppliedTheme,
+  onListThemePicks,
+  onApplyThemePick,
+  onOpenAppliedThemeEditor,
   structure = [],
   onReorderSections,
   announcement = null,
@@ -290,28 +341,54 @@ export function CodiixChatPanel({
 
   const empty = messages.length === 0;
   const greeting = useMemo(() => greetingForNow(), [open]);
-  const justOpened = open && !wasOpen.current;
-  const showIntro = introducing || (justOpened && !hasIntroduced.current);
+  // Intro is a non-blocking toast — never replace the chat panel (that caused a stuck
+  // first-open state when the dismiss timer was cleared on remount / Strict Mode).
+  const showIntro = introducing;
 
   useEffect(() => {
     if (!open) {
       wasOpen.current = false;
       setIntroducing(false);
-      if (introTimer.current) clearTimeout(introTimer.current);
+      if (introTimer.current) {
+        clearTimeout(introTimer.current);
+        introTimer.current = null;
+      }
       return;
     }
 
-    if (!wasOpen.current) {
-      wasOpen.current = true;
-      if (!hasIntroduced.current) {
-        hasIntroduced.current = true;
-        setCodiixSessionHasIntroduced(true, sessionScope);
-        setIntroducing(true);
-        if (introTimer.current) clearTimeout(introTimer.current);
-        introTimer.current = setTimeout(() => setIntroducing(false), 1850);
+    if (wasOpen.current) return;
+    wasOpen.current = true;
+
+    if (hasIntroduced.current) return;
+
+    let cancelled = false;
+    hasIntroduced.current = true;
+    setCodiixSessionHasIntroduced(true, sessionScope);
+    setIntroducing(true);
+
+    if (introTimer.current) clearTimeout(introTimer.current);
+    introTimer.current = setTimeout(() => {
+      introTimer.current = null;
+      if (!cancelled) setIntroducing(false);
+    }, 1850);
+
+    return () => {
+      cancelled = true;
+      if (introTimer.current) {
+        clearTimeout(introTimer.current);
+        introTimer.current = null;
       }
-    }
+      setIntroducing(false);
+    };
   }, [open, sessionScope]);
+
+  const dismissIntro = useCallback(() => {
+    if (introTimer.current) {
+      clearTimeout(introTimer.current);
+      introTimer.current = null;
+    }
+    setIntroducing(false);
+  }, []);
 
   useEffect(() => {
     if (!open || showIntro) return;
@@ -328,7 +405,8 @@ export function CodiixChatPanel({
     return () => {
       if (thinkTimer.current) clearTimeout(thinkTimer.current);
       if (streamTimer.current) clearInterval(streamTimer.current);
-      if (introTimer.current) clearTimeout(introTimer.current);
+      // Intro timer is owned by the open-effect cleanup — don't clear it here or
+      // Strict Mode remounts can cancel dismiss and leave a stuck intro with no panel.
     };
   }, []);
 
@@ -364,6 +442,9 @@ export function CodiixChatPanel({
       structureHints?: CodiixMessage['structureHints'];
       editHelpHints?: CodiixMessage['editHelpHints'];
       adminNavActions?: CodiixMessage['adminNavActions'];
+      form?: CodiixMessage['form'];
+      panelActions?: CodiixMessage['panelActions'];
+      themePickActions?: CodiixMessage['themePickActions'];
     },
     seq?: number,
   ) => {
@@ -406,6 +487,9 @@ export function CodiixChatPanel({
                 structureHints: complete ? extras?.structureHints : undefined,
                 editHelpHints: complete ? extras?.editHelpHints : undefined,
                 adminNavActions: complete ? extras?.adminNavActions : undefined,
+                form: complete ? extras?.form : undefined,
+                panelActions: complete ? extras?.panelActions : undefined,
+                themePickActions: complete ? extras?.themePickActions : undefined,
               }
             : message,
         ),
@@ -581,6 +665,583 @@ export function CodiixChatPanel({
     [onNavigateAdmin],
   );
 
+  const resolveAppliedThemeResponse = useCallback(async (): Promise<{
+    answer: string;
+    panelActions?: CodiixMessage['panelActions'];
+    adminNavActions?: CodiixMessage['adminNavActions'];
+  }> => {
+    if (!onGetAppliedTheme) {
+      return {
+        answer:
+          'I can’t check the live theme right now.\n\n' +
+          'Open **Online Store → Themes**, or say **“take me to themes”**.',
+        adminNavActions: [
+          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+        ],
+      };
+    }
+    try {
+      const info = await onGetAppliedTheme();
+      return {
+        answer: formatAppliedThemeAnswer(info),
+        panelActions: info
+          ? [
+              {
+                id: 'edit-current-theme',
+                label: 'Edit this theme',
+                action: 'edit-current-theme',
+                primary: true,
+              },
+              { id: 'change-theme', label: 'Change theme?', action: 'show-theme-picker' },
+            ]
+          : [
+              { id: 'change-theme', label: 'Change theme?', action: 'show-theme-picker', primary: true },
+            ],
+        adminNavActions: [
+          { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+        ],
+      };
+    } catch (err: unknown) {
+      const msg =
+        (err as { message?: string })?.message || 'I couldn’t load your live theme just now.';
+      return {
+        answer: `${msg}\n\nTry again, or say **“take me to themes”**.`,
+        adminNavActions: [
+          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+        ],
+      };
+    }
+  }, [onGetAppliedTheme]);
+
+  const resolveThemePickerResponse = useCallback(async (): Promise<{
+    answer: string;
+    themePickActions?: CodiixMessage['themePickActions'];
+    adminNavActions?: CodiixMessage['adminNavActions'];
+  }> => {
+    if (!onListThemePicks) {
+      return {
+        answer:
+          'Theme switching isn’t available right now.\n\n' +
+          'Say **“take me to themes”** to manage themes on the Themes page.',
+        adminNavActions: [
+          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+        ],
+      };
+    }
+    try {
+      const picks = await onListThemePicks();
+      if (!picks.length) {
+        return {
+          answer:
+            'You don’t have any installed or custom themes yet.\n\n' +
+            'Open **Themes** to install a catalog theme or create a custom one.',
+          adminNavActions: [
+            { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+          ],
+        };
+      }
+      return {
+        answer:
+          'Here’s a quick list of themes on your store. Tap one to apply it live:',
+        themePickActions: picks,
+        adminNavActions: [
+          { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+        ],
+      };
+    } catch (err: unknown) {
+      const msg =
+        (err as { message?: string })?.message || 'I couldn’t load your themes just now.';
+      return {
+        answer: `${msg}\n\nTry again, or say **“take me to themes”**.`,
+        adminNavActions: [
+          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+        ],
+      };
+    }
+  }, [onListThemePicks]);
+
+  const resolveEditCurrentThemeResponse = useCallback(async (): Promise<{
+    answer: string;
+    panelActions?: CodiixMessage['panelActions'];
+    adminNavActions?: CodiixMessage['adminNavActions'];
+  }> => {
+    if (!onOpenAppliedThemeEditor) {
+      return {
+        answer:
+          'I can’t open the theme editor right now.\n\n' +
+          'Say **“take me to themes”** and open your live theme from there.',
+        adminNavActions: [
+          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+        ],
+      };
+    }
+    try {
+      const info = await onOpenAppliedThemeEditor();
+      return {
+        answer: formatEditCurrentThemeAnswer(info),
+        panelActions: [
+          { id: 'change-theme', label: 'Change theme?', action: 'show-theme-picker' },
+        ],
+        adminNavActions: [
+          { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+        ],
+      };
+    } catch (err: unknown) {
+      const msg =
+        (err as { message?: string })?.message ||
+        'I couldn’t open the editor for your live theme.';
+      return {
+        answer: `${msg}\n\nTry **“which theme is applied?”** or say **“take me to themes”**.`,
+        panelActions: [
+          { id: 'change-theme', label: 'Change theme?', action: 'show-theme-picker' },
+        ],
+        adminNavActions: [
+          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+        ],
+      };
+    }
+  }, [onOpenAppliedThemeEditor]);
+
+  const showThemePicker = useCallback(() => {
+    if (thinking || streamingMessageId) return;
+    const seq = ++generationSeq.current;
+    setMessages((prev) => [...prev, { id: uid(), role: 'user', text: 'Change theme?' }]);
+    setThinking(true);
+    if (thinkTimer.current) clearTimeout(thinkTimer.current);
+    thinkTimer.current = setTimeout(() => {
+      void (async () => {
+        if (seq !== generationSeq.current) return;
+        const resolved = await resolveThemePickerResponse();
+        if (seq !== generationSeq.current) return;
+        streamAssistant(
+          resolved.answer,
+          [
+            { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+            { id: 'admin-edit-current-theme', label: 'Edit my current theme' },
+          ],
+          undefined,
+          {
+            themePickActions: resolved.themePickActions,
+            adminNavActions: resolved.adminNavActions,
+          },
+          seq,
+        );
+      })();
+    }, 280);
+  }, [
+    thinking,
+    streamingMessageId,
+    setMessages,
+    resolveThemePickerResponse,
+    streamAssistant,
+  ]);
+
+  const openEditCurrentTheme = useCallback(() => {
+    if (thinking || streamingMessageId) return;
+    const seq = ++generationSeq.current;
+    setMessages((prev) => [...prev, { id: uid(), role: 'user', text: 'Edit my current theme' }]);
+    setThinking(true);
+    if (thinkTimer.current) clearTimeout(thinkTimer.current);
+    thinkTimer.current = setTimeout(() => {
+      void (async () => {
+        if (seq !== generationSeq.current) return;
+        const resolved = await resolveEditCurrentThemeResponse();
+        if (seq !== generationSeq.current) return;
+        streamAssistant(
+          resolved.answer,
+          [
+            { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+            { id: 'admin-change-theme', label: 'Change theme' },
+          ],
+          undefined,
+          {
+            panelActions: resolved.panelActions,
+            adminNavActions: resolved.adminNavActions,
+          },
+          seq,
+        );
+      })();
+    }, 280);
+  }, [
+    thinking,
+    streamingMessageId,
+    setMessages,
+    resolveEditCurrentThemeResponse,
+    streamAssistant,
+  ]);
+
+  const applyThemePick = useCallback(
+    async (messageId: string, pick: CodiixThemePickOption) => {
+      if (!onApplyThemePick || busyActionId || thinking || streamingMessageId) return;
+      if (pick.live) {
+        streamAssistant(
+          `**${pick.label}** is already live on your store.`,
+          [
+            { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+            { id: 'admin-change-theme', label: 'Change theme' },
+          ],
+          undefined,
+          {
+            adminNavActions: [
+              { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+            ],
+          },
+        );
+        return;
+      }
+
+      setBusyActionId(pick.id);
+      try {
+        const applied = await onApplyThemePick(pick);
+        const picks = (await onListThemePicks?.()) ?? [];
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId && m.themePickActions
+              ? {
+                  ...m,
+                  themePickActions: picks.length
+                    ? picks
+                    : m.themePickActions.map((p) => ({
+                        ...p,
+                        live: p.themeId === applied.themeId && p.kind === applied.kind,
+                      })),
+                }
+              : m,
+          ),
+        );
+        streamAssistant(
+          `Done — **${applied.name}** is now live on your store.\n\n` +
+            `• Type: **${applied.kindLabel}**`,
+          [
+            { id: 'admin-edit-current-theme', label: 'Edit my current theme' },
+            { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+            { id: 'admin-change-theme', label: 'Change theme again' },
+          ],
+          undefined,
+          {
+            adminNavActions: [
+              { id: 'themes', label: 'Open Themes page', path: '/online-store/themes', primary: true },
+            ],
+          },
+        );
+      } catch (err: unknown) {
+        const msg =
+          (err as { response?: { data?: { message?: string } }; message?: string })?.response
+            ?.data?.message ||
+          (err as { message?: string })?.message ||
+          'Failed to apply theme';
+        streamAssistant(
+          `I couldn’t apply **${pick.label}**.\n\n${msg}`,
+          [
+            { id: 'admin-change-theme', label: 'Try again' },
+            { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+          ],
+        );
+      } finally {
+        setBusyActionId(null);
+      }
+    },
+    [
+      onApplyThemePick,
+      onListThemePicks,
+      busyActionId,
+      thinking,
+      streamingMessageId,
+      setMessages,
+      streamAssistant,
+    ],
+  );
+
+  const submitChatForm = useCallback(
+    async (messageId: string, values: Record<string, string>, kind: CodiixChatFormKind) => {
+      if (kind === 'create-collection') {
+        const parsed = parseCreateCollectionFormValues(values);
+        if ('error' in parsed) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId && m.form
+                ? {
+                    ...m,
+                    form: { ...m.form, status: 'error', errorMessage: parsed.error },
+                  }
+                : m,
+            ),
+          );
+          return;
+        }
+
+        if (!onCreateCollection) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId && m.form
+                ? {
+                    ...m,
+                    form: {
+                      ...m.form,
+                      status: 'error',
+                      errorMessage: 'Collection creation isn’t available right now.',
+                    },
+                  }
+                : m,
+            ),
+          );
+          return;
+        }
+
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId && m.form
+              ? { ...m, form: { ...m.form, status: 'submitting', errorMessage: undefined } }
+              : m,
+          ),
+        );
+
+        try {
+          const created = await onCreateCollection(parsed);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId
+                ? {
+                    ...m,
+                    text:
+                      `Done — I created **${created.title}**.\n\n` +
+                      'Want to open it? Use the button below to go to the collection details page.',
+                    form: m.form
+                      ? { ...m.form, status: 'done', errorMessage: undefined }
+                      : undefined,
+                    suggestions: [
+                      { id: 'admin-create-collection', label: 'Create another collection' },
+                      { id: 'admin-products', label: 'How do I add a product?' },
+                    ],
+                    adminNavActions: [
+                      {
+                        id: `open-collection-${created.id}`,
+                        label: 'Open collection details',
+                        path: created.path,
+                        primary: true,
+                      },
+                      {
+                        id: 'collections-list',
+                        label: 'Collections',
+                        path: '/products/collections',
+                      },
+                    ],
+                  }
+                : m,
+            ),
+          );
+        } catch (err: unknown) {
+          const msg =
+            (err as { response?: { data?: { message?: string } }; message?: string })?.response
+              ?.data?.message ||
+            (err as { message?: string })?.message ||
+            'Failed to create collection';
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId && m.form
+                ? {
+                    ...m,
+                    form: { ...m.form, status: 'error', errorMessage: msg },
+                  }
+                : m,
+            ),
+          );
+        }
+        return;
+      }
+
+      if (kind === 'create-blog-post') {
+        const parsed = parseCreateBlogPostFormValues(values);
+        if ('error' in parsed) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId && m.form
+                ? {
+                    ...m,
+                    form: { ...m.form, status: 'error', errorMessage: parsed.error },
+                  }
+                : m,
+            ),
+          );
+          return;
+        }
+
+        if (!onCreateBlogPost) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId && m.form
+                ? {
+                    ...m,
+                    form: {
+                      ...m.form,
+                      status: 'error',
+                      errorMessage: 'Blog post creation isn’t available right now.',
+                    },
+                  }
+                : m,
+            ),
+          );
+          return;
+        }
+
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId && m.form
+              ? { ...m, form: { ...m.form, status: 'submitting', errorMessage: undefined } }
+              : m,
+          ),
+        );
+
+        try {
+          const created = await onCreateBlogPost(parsed);
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId
+                ? {
+                    ...m,
+                    text:
+                      `Done — I created **${created.title}**.\n\n` +
+                      'Want to open it? Use the button below to go to the blog post details page.',
+                    form: m.form
+                      ? { ...m.form, status: 'done', errorMessage: undefined }
+                      : undefined,
+                    suggestions: [
+                      { id: 'admin-create-blog-post', label: 'Create another blog post' },
+                      { id: 'admin-create-blog', label: 'Create a blog' },
+                    ],
+                    adminNavActions: [
+                      {
+                        id: `open-blog-post-${created.id}`,
+                        label: 'Open blog post details',
+                        path: created.path,
+                        primary: true,
+                      },
+                      {
+                        id: 'blog-posts-list',
+                        label: 'Blog posts',
+                        path: '/content/articles',
+                      },
+                    ],
+                  }
+                : m,
+            ),
+          );
+        } catch (err: unknown) {
+          const msg =
+            (err as { response?: { data?: { message?: string } }; message?: string })?.response
+              ?.data?.message ||
+            (err as { message?: string })?.message ||
+            'Failed to create blog post';
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId && m.form
+                ? {
+                    ...m,
+                    form: { ...m.form, status: 'error', errorMessage: msg },
+                  }
+                : m,
+            ),
+          );
+        }
+        return;
+      }
+
+      const parsed = parseCreateBlogFormValues(values);
+      if ('error' in parsed) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId && m.form
+              ? {
+                  ...m,
+                  form: { ...m.form, status: 'error', errorMessage: parsed.error },
+                }
+              : m,
+          ),
+        );
+        return;
+      }
+
+      if (!onCreateBlog) {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId && m.form
+              ? {
+                  ...m,
+                  form: {
+                    ...m.form,
+                    status: 'error',
+                    errorMessage: 'Blog creation isn’t available right now.',
+                  },
+                }
+              : m,
+          ),
+        );
+        return;
+      }
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === messageId && m.form
+            ? { ...m, form: { ...m.form, status: 'submitting', errorMessage: undefined } }
+            : m,
+        ),
+      );
+
+      try {
+        const created = await onCreateBlog(parsed);
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId
+              ? {
+                  ...m,
+                  text:
+                    `Done — I created **${created.title}**.\n\n` +
+                    'Want to open it? Use the button below to go to the blog details page.',
+                  form: m.form
+                    ? { ...m.form, status: 'done', errorMessage: undefined }
+                    : undefined,
+                  suggestions: [
+                    { id: 'admin-create-blog', label: 'Create another blog' },
+                    { id: 'admin-create-blog-post', label: 'Create a blog post' },
+                  ],
+                  adminNavActions: [
+                    {
+                      id: `open-blog-${created.id}`,
+                      label: 'Open blog details',
+                      path: created.path,
+                      primary: true,
+                    },
+                    {
+                      id: 'blogs-list',
+                      label: 'Manage blogs',
+                      path: '/content/blogs',
+                    },
+                  ],
+                }
+              : m,
+          ),
+        );
+      } catch (err: unknown) {
+        const msg =
+          (err as { response?: { data?: { message?: string } }; message?: string })?.response
+            ?.data?.message ||
+          (err as { message?: string })?.message ||
+          'Failed to create blog';
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === messageId && m.form
+              ? {
+                  ...m,
+                  form: { ...m.form, status: 'error', errorMessage: msg },
+                }
+              : m,
+          ),
+        );
+      }
+    },
+    [onCreateBlog, onCreateBlogPost, onCreateCollection, setMessages],
+  );
+
   const runEditorAction = useCallback(
     (action: NonNullable<CodiixMessage['editorActions']>[number]) => {
       if (busyActionId || thinking || streamingMessageId) return;
@@ -677,56 +1338,98 @@ export function CodiixChatPanel({
       const delay = 420 + Math.min(900, trimmed.length * 18);
       if (thinkTimer.current) clearTimeout(thinkTimer.current);
       thinkTimer.current = setTimeout(() => {
-        if (seq !== generationSeq.current) return;
+        void (async () => {
+          if (seq !== generationSeq.current) return;
 
-        const match = matchCodiixIntent(trimmed, {
-          agentic: agenticMode,
-          surface,
-          pages,
-          currentPageId,
-          previousPageId: previousPageId.current,
-          structure,
-          announcement,
-        });
-        const defaultSuggestions = isAdmin
-          ? CODIX_ADMIN_SUGGESTIONS.slice(0, 3)
-          : CODIX_SUGGESTIONS.slice(0, 3).map((s) => ({ id: s.id, label: s.label }));
-        const followUps =
-          match.relatedSuggestions.length > 0
-            ? match.relatedSuggestions
-            : defaultSuggestions;
+          const match = matchCodiixIntent(trimmed, {
+            agentic: agenticMode,
+            surface,
+            pages,
+            currentPageId,
+            previousPageId: previousPageId.current,
+            structure,
+            announcement,
+          });
+          const defaultSuggestions = isAdmin
+            ? CODIX_ADMIN_SUGGESTIONS.slice(0, 3)
+            : CODIX_SUGGESTIONS.slice(0, 3).map((s) => ({ id: s.id, label: s.label }));
+          const followUps =
+            match.relatedSuggestions.length > 0
+              ? match.relatedSuggestions
+              : defaultSuggestions;
 
-        let answer = match.answer;
-        let editorActions = match.editorActions;
-        if (match.systemAction === 'save') {
-          const saved = runSaveCommand();
-          answer = saved.answer;
-          editorActions = saved.editorActions ?? editorActions;
-        } else if (match.systemAction === 'apply') {
-          answer = runApplyCommand();
-          editorActions = undefined;
-        } else if (match.systemAction === 'navigate' && match.pageTargetId) {
-          answer = runNavigateCommand(match.pageTargetId);
-        } else if (match.systemAction === 'reorder' && match.reorderPlan) {
-          answer = runReorderCommand(match.reorderPlan);
-        } else if (match.systemAction === 'edit' && match.editPlan) {
-          answer = runEditCommand(match.editPlan);
-        } else if (match.systemAction === 'admin-navigate' && match.adminPath) {
-          answer = runAdminNavigate(match.adminPath);
-          // Prefer the match’s richer “Opening **Label**…” if navigate succeeded.
-          if (onNavigateAdmin) answer = match.answer;
-        }
+          let answer = match.answer;
+          let editorActions = match.editorActions;
+          let form = match.form;
+          if (match.systemAction === 'save') {
+            const saved = runSaveCommand();
+            answer = saved.answer;
+            editorActions = saved.editorActions ?? editorActions;
+          } else if (match.systemAction === 'apply') {
+            answer = runApplyCommand();
+            editorActions = undefined;
+          } else if (match.systemAction === 'navigate' && match.pageTargetId) {
+            answer = runNavigateCommand(match.pageTargetId);
+          } else if (match.systemAction === 'reorder' && match.reorderPlan) {
+            answer = runReorderCommand(match.reorderPlan);
+          } else if (match.systemAction === 'edit' && match.editPlan) {
+            answer = runEditCommand(match.editPlan);
+          } else if (match.systemAction === 'admin-navigate' && match.adminPath) {
+            answer = runAdminNavigate(match.adminPath);
+            // Prefer the match’s richer “Opening **Label**…” if navigate succeeded.
+            if (onNavigateAdmin) answer = match.answer;
+          } else if (
+            match.systemAction === 'admin-form' &&
+            match.form?.kind === 'create-blog-post'
+          ) {
+            const blogs = (await onListBlogs?.()) ?? [];
+            if (!blogs.length) {
+              answer =
+                'You don’t have a blog yet — create one first, then I can add a post.\n\n' +
+                'Say **“create a blog”** and I’ll open the form.';
+              form = undefined;
+            } else {
+              form = buildCreateBlogPostForm(blogs);
+            }
+          }
 
-        streamAssistant(answer, followUps, match.actions, {
-          relatedActions: match.relatedActions,
-          relatedCategoryLabel: match.relatedCategoryLabel,
-          previewElementId: match.previewElementId,
-          pageActions: match.pageActions,
-          editorActions,
-          structureHints: match.structureHints,
-          editHelpHints: match.editHelpHints,
-          adminNavActions: match.adminNavActions,
-        }, seq);
+          let panelActions = match.panelActions;
+          let themePickActions = match.themePickActions;
+          let adminNavActions = match.adminNavActions;
+
+          if (match.systemAction === 'admin-applied-theme') {
+            const resolved = await resolveAppliedThemeResponse();
+            answer = resolved.answer;
+            panelActions = resolved.panelActions;
+            adminNavActions = resolved.adminNavActions;
+          } else if (match.systemAction === 'admin-change-theme') {
+            const resolved = await resolveThemePickerResponse();
+            answer = resolved.answer;
+            themePickActions = resolved.themePickActions;
+            adminNavActions = resolved.adminNavActions;
+          } else if (match.systemAction === 'admin-edit-current-theme') {
+            const resolved = await resolveEditCurrentThemeResponse();
+            answer = resolved.answer;
+            panelActions = resolved.panelActions;
+            adminNavActions = resolved.adminNavActions;
+          }
+
+          if (seq !== generationSeq.current) return;
+
+          streamAssistant(answer, followUps, match.actions, {
+            relatedActions: match.relatedActions,
+            relatedCategoryLabel: match.relatedCategoryLabel,
+            previewElementId: match.previewElementId,
+            pageActions: match.pageActions,
+            editorActions,
+            structureHints: match.structureHints,
+            editHelpHints: match.editHelpHints,
+            adminNavActions,
+            form,
+            panelActions,
+            themePickActions,
+          }, seq);
+        })();
       }, delay);
     },
     [
@@ -746,6 +1449,10 @@ export function CodiixChatPanel({
       runEditCommand,
       runAdminNavigate,
       onNavigateAdmin,
+      onListBlogs,
+      resolveAppliedThemeResponse,
+      resolveThemePickerResponse,
+      resolveEditCurrentThemeResponse,
       pages,
       currentPageId,
       structure,
@@ -761,115 +1468,190 @@ export function CodiixChatPanel({
       setThinking(true);
       if (thinkTimer.current) clearTimeout(thinkTimer.current);
       thinkTimer.current = setTimeout(() => {
-        if (seq !== generationSeq.current) return;
+        void (async () => {
+          if (seq !== generationSeq.current) return;
 
-        const canned = answerForIntentId(id, surface);
-        const categoryId = categoryIdForIntent(id, surface);
-        const categoryActions =
-          !isAdmin && agenticMode && categoryId
-            ? agenticSuggestionsForCategory(categoryId)
-            : undefined;
-        let match: CodiixMatch;
-        if (canned) {
-          match = {
-            intentId: id,
-            answer: canned,
-            relatedSuggestions: [],
-            actions: categoryActions?.slice(0, 1),
-            relatedActions: categoryActions?.slice(1),
-            relatedCategoryLabel: categoryId ? getCodiixCategoryLabel(categoryId) : undefined,
-            previewElementId: categoryActions?.[0]?.elementId,
-            pageActions:
-              id === 'pages-templates'
-                ? pages
-                    .filter((p) => p.id !== currentPageId)
-                    .slice(0, 6)
-                    .map((p) => ({
-                      id: `page-${p.id}`,
-                      label: `Go to ${p.label}`,
-                      pageId: p.id,
-                      kind: p.kind,
-                    }))
-                : undefined,
-            systemAction: id === 'pages-templates' ? 'list-pages' : undefined,
-            adminNavActions: isAdmin
-              ? [
-                  { id: 'products', label: 'Go to Products', path: '/products' },
-                  { id: 'orders', label: 'Go to Orders', path: '/orders' },
-                  { id: 'themes', label: 'Go to Themes', path: '/online-store/themes' },
-                ]
-              : undefined,
-          };
-        } else {
-          match = matchCodiixIntent(label, {
-            agentic: agenticMode,
-            surface,
-            pages,
-            currentPageId,
-            previousPageId: previousPageId.current,
-            structure,
-            announcement,
-          });
-        }
-        const defaultSuggestions = isAdmin
-          ? CODIX_ADMIN_SUGGESTIONS.filter((s) => s.id !== id).slice(0, 3)
-          : CODIX_SUGGESTIONS.filter((s) => s.id !== id)
-              .slice(0, 3)
-              .map((s) => ({ id: s.id, label: s.label }));
-        const followUps =
-          match.relatedSuggestions.length > 0
-            ? match.relatedSuggestions
-            : defaultSuggestions;
-        const actions = match.actions?.length ? match.actions : undefined;
-        let answer = match.answer;
-        if (
-          !isAdmin &&
-          agenticMode &&
-          (actions?.length || match.relatedActions?.length) &&
-          !answer.includes('Agentic mode is on') &&
-          !answer.includes('catalog preview')
-        ) {
-          answer +=
-            '\n\n**Agentic mode is on** — tap a button below and I’ll add that section for you.';
-        }
-        if (id === 'pages-templates' && match.pageActions?.length) {
-          answer +=
-            '\n\nOr just tell me — e.g. **“take me to cart”**, **“switch to product page”**, or **“go back”**.';
-        }
-        if (id === 'reorder' && structure.length) {
-          answer +=
-            '\n\nOr say it here — e.g. **“move Contact form above Email signup”**.';
-          match.structureHints = structure.slice(0, 8).map((s) => ({
-            id: s.nodeId,
-            label: s.label,
-          }));
-        }
-        if (match.systemAction === 'navigate' && match.pageTargetId) {
-          answer = runNavigateCommand(match.pageTargetId);
-        }
-        if (match.systemAction === 'apply') {
-          answer = runApplyCommand();
-        }
-        if (match.systemAction === 'reorder' && match.reorderPlan) {
-          answer = runReorderCommand(match.reorderPlan);
-        }
-        if (match.systemAction === 'edit' && match.editPlan) {
-          answer = runEditCommand(match.editPlan);
-        }
-        if (match.systemAction === 'admin-navigate' && match.adminPath) {
-          runAdminNavigate(match.adminPath);
-          if (onNavigateAdmin) answer = match.answer;
-        }
-        streamAssistant(answer, followUps, actions, {
-          relatedActions: match.relatedActions,
-          relatedCategoryLabel: match.relatedCategoryLabel,
-          previewElementId: match.previewElementId,
-          pageActions: match.pageActions,
-          editorActions: match.editorActions,
-          structureHints: match.structureHints,
-          editHelpHints: match.editHelpHints,
-          adminNavActions: match.adminNavActions,
-        }, seq);
+          const canned = answerForIntentId(id, surface);
+          const categoryId = categoryIdForIntent(id, surface);
+          const categoryActions =
+            !isAdmin && agenticMode && categoryId
+              ? agenticSuggestionsForCategory(categoryId)
+              : undefined;
+          let match: CodiixMatch;
+          if (canned) {
+            const isCreateBlog = id === 'admin-create-blog';
+            const isCreateBlogPost = id === 'admin-create-blog-post';
+            const isCreateCollection = id === 'admin-create-collection';
+            const isAppliedTheme = id === 'admin-applied-theme';
+            const isChangeTheme = id === 'admin-change-theme';
+            const isEditCurrentTheme = id === 'admin-edit-current-theme';
+            match = {
+              intentId: id,
+              answer: canned,
+              relatedSuggestions: [],
+              actions: categoryActions?.slice(0, 1),
+              relatedActions: categoryActions?.slice(1),
+              relatedCategoryLabel: categoryId ? getCodiixCategoryLabel(categoryId) : undefined,
+              previewElementId: categoryActions?.[0]?.elementId,
+              pageActions:
+                id === 'pages-templates'
+                  ? pages
+                      .filter((p) => p.id !== currentPageId)
+                      .slice(0, 6)
+                      .map((p) => ({
+                        id: `page-${p.id}`,
+                        label: `Go to ${p.label}`,
+                        pageId: p.id,
+                        kind: p.kind,
+                      }))
+                  : undefined,
+              systemAction:
+                id === 'pages-templates'
+                  ? 'list-pages'
+                  : isCreateBlog || isCreateBlogPost || isCreateCollection
+                    ? 'admin-form'
+                    : isAppliedTheme
+                      ? 'admin-applied-theme'
+                      : isChangeTheme
+                        ? 'admin-change-theme'
+                        : isEditCurrentTheme
+                          ? 'admin-edit-current-theme'
+                          : undefined,
+              form: isCreateBlog
+                ? buildCreateBlogForm()
+                : isCreateBlogPost
+                  ? buildCreateBlogPostForm([])
+                  : isCreateCollection
+                    ? buildCreateCollectionForm()
+                    : undefined,
+              adminNavActions:
+                isAdmin &&
+                !isCreateBlog &&
+                !isCreateBlogPost &&
+                !isCreateCollection &&
+                !isAppliedTheme &&
+                !isChangeTheme &&
+                !isEditCurrentTheme
+                  ? [
+                      { id: 'products', label: 'Go to Products', path: '/products' },
+                      { id: 'orders', label: 'Go to Orders', path: '/orders' },
+                      { id: 'themes', label: 'Go to Themes', path: '/online-store/themes' },
+                    ]
+                  : undefined,
+            };
+          } else {
+            match = matchCodiixIntent(label, {
+              agentic: agenticMode,
+              surface,
+              pages,
+              currentPageId,
+              previousPageId: previousPageId.current,
+              structure,
+              announcement,
+            });
+          }
+          const defaultSuggestions = isAdmin
+            ? CODIX_ADMIN_SUGGESTIONS.filter((s) => s.id !== id).slice(0, 3)
+            : CODIX_SUGGESTIONS.filter((s) => s.id !== id)
+                .slice(0, 3)
+                .map((s) => ({ id: s.id, label: s.label }));
+          const followUps =
+            match.relatedSuggestions.length > 0
+              ? match.relatedSuggestions
+              : defaultSuggestions;
+          const actions = match.actions?.length ? match.actions : undefined;
+          let answer = match.answer;
+          let form = match.form;
+          if (
+            !isAdmin &&
+            agenticMode &&
+            (actions?.length || match.relatedActions?.length) &&
+            !answer.includes('Agentic mode is on') &&
+            !answer.includes('catalog preview')
+          ) {
+            answer +=
+              '\n\n**Agentic mode is on** — tap a button below and I’ll add that section for you.';
+          }
+          if (id === 'pages-templates' && match.pageActions?.length) {
+            answer +=
+              '\n\nOr just tell me — e.g. **“take me to cart”**, **“switch to product page”**, or **“go back”**.';
+          }
+          if (id === 'reorder' && structure.length) {
+            answer +=
+              '\n\nOr say it here — e.g. **“move Contact form above Email signup”**.';
+            match.structureHints = structure.slice(0, 8).map((s) => ({
+              id: s.nodeId,
+              label: s.label,
+            }));
+          }
+          if (match.systemAction === 'navigate' && match.pageTargetId) {
+            answer = runNavigateCommand(match.pageTargetId);
+          }
+          if (match.systemAction === 'apply') {
+            answer = runApplyCommand();
+          }
+          if (match.systemAction === 'reorder' && match.reorderPlan) {
+            answer = runReorderCommand(match.reorderPlan);
+          }
+          if (match.systemAction === 'edit' && match.editPlan) {
+            answer = runEditCommand(match.editPlan);
+          }
+          if (match.systemAction === 'admin-navigate' && match.adminPath) {
+            runAdminNavigate(match.adminPath);
+            if (onNavigateAdmin) answer = match.answer;
+          }
+          if (
+            match.systemAction === 'admin-form' &&
+            match.form?.kind === 'create-blog-post'
+          ) {
+            const blogs = (await onListBlogs?.()) ?? [];
+            if (!blogs.length) {
+              answer =
+                'You don’t have a blog yet — create one first, then I can add a post.\n\n' +
+                'Say **“create a blog”** and I’ll open the form.';
+              form = undefined;
+            } else {
+              form = buildCreateBlogPostForm(blogs);
+            }
+          }
+
+          let panelActions = match.panelActions;
+          let themePickActions = match.themePickActions;
+          let adminNavActions = match.adminNavActions;
+
+          if (match.systemAction === 'admin-applied-theme') {
+            const resolved = await resolveAppliedThemeResponse();
+            answer = resolved.answer;
+            panelActions = resolved.panelActions;
+            adminNavActions = resolved.adminNavActions;
+          } else if (match.systemAction === 'admin-change-theme') {
+            const resolved = await resolveThemePickerResponse();
+            answer = resolved.answer;
+            themePickActions = resolved.themePickActions;
+            adminNavActions = resolved.adminNavActions;
+          } else if (match.systemAction === 'admin-edit-current-theme') {
+            const resolved = await resolveEditCurrentThemeResponse();
+            answer = resolved.answer;
+            panelActions = resolved.panelActions;
+            adminNavActions = resolved.adminNavActions;
+          }
+
+          if (seq !== generationSeq.current) return;
+
+          streamAssistant(answer, followUps, actions, {
+            relatedActions: match.relatedActions,
+            relatedCategoryLabel: match.relatedCategoryLabel,
+            previewElementId: match.previewElementId,
+            pageActions: match.pageActions,
+            editorActions: match.editorActions,
+            structureHints: match.structureHints,
+            editHelpHints: match.editHelpHints,
+            adminNavActions,
+            form,
+            panelActions,
+            themePickActions,
+          }, seq);
+        })();
       }, 380);
     },
     [
@@ -890,6 +1672,10 @@ export function CodiixChatPanel({
       runEditCommand,
       runAdminNavigate,
       onNavigateAdmin,
+      onListBlogs,
+      resolveAppliedThemeResponse,
+      resolveThemePickerResponse,
+      resolveEditCurrentThemeResponse,
     ],
   );
 
@@ -913,31 +1699,38 @@ export function CodiixChatPanel({
 
   if (!open) return null;
 
-  if (showIntro) {
-    return (
-      <div className="codiix-intro" role="status" aria-live="polite">
-        <div className="codiix-intro__glow" aria-hidden="true" />
-        <CodiixFaceIcon className="codiix-intro__face" title="Codiix" />
-        <div className="codiix-intro__copy">
-          <p className="codiix-intro__hello">
-            Hi, I&apos;m Codiix <span className="codiix-intro__wave" aria-hidden="true">👋</span>
-          </p>
-          <p className="codiix-intro__byline">
-            {isAdmin ? 'Your store helper by Codiic' : 'Your theme helper by Codiic'}
-          </p>
-        </div>
-        <span className="codiix-intro__progress" aria-hidden="true" />
-      </div>
-    );
-  }
-
   return (
-    <div
-      className={`codiix-panel ${expanded ? 'codiix-panel--expanded' : ''}`}
-      role="dialog"
-      aria-label={isAdmin ? 'Codiix store helper' : 'Codiix theme helper'}
-      aria-modal="false"
-    >
+    <>
+      {showIntro ? (
+        <button
+          type="button"
+          className="codiix-intro"
+          role="status"
+          aria-live="polite"
+          aria-label="Codiix is ready"
+          onClick={dismissIntro}
+          title="Tap to continue"
+        >
+          <div className="codiix-intro__glow" aria-hidden="true" />
+          <CodiixFaceIcon className="codiix-intro__face" title="Codiix" />
+          <div className="codiix-intro__copy">
+            <p className="codiix-intro__hello">
+              Hi, I&apos;m Codiix <span className="codiix-intro__wave" aria-hidden="true">👋</span>
+            </p>
+            <p className="codiix-intro__byline">
+              {isAdmin ? 'Your store helper by Codiic' : 'Your theme helper by Codiic'}
+            </p>
+          </div>
+          <span className="codiix-intro__progress" aria-hidden="true" />
+        </button>
+      ) : null}
+
+      <div
+        className={`codiix-panel ${expanded ? 'codiix-panel--expanded' : ''}`}
+        role="dialog"
+        aria-label={isAdmin ? 'Codiix store helper' : 'Codiix theme helper'}
+        aria-modal="false"
+      >
       <div className="codiix-panel__chrome">
         <div className="codiix-panel__title">
           <CodiixFaceIcon className="h-6 w-6 shrink-0" />
@@ -987,7 +1780,7 @@ export function CodiixChatPanel({
             <h2 className="codiix-empty__ask">How can I help?</h2>
             {isAdmin ? (
               <p className="codiix-empty__agentic">
-                Try “take me to products”, “where are orders?”, or “how do I edit my theme?”
+                Try “edit my current theme”, “which theme is applied?”, or “change theme”
               </p>
             ) : agenticMode ? (
               <p className="codiix-empty__agentic">
@@ -1001,11 +1794,11 @@ export function CodiixChatPanel({
             <div className="codiix-chips">
               {(isAdmin
                 ? [
-                    { id: 'admin-products', label: 'How do I add a product?' },
-                    { id: 'go-orders', label: 'Take me to orders' },
-                    { id: 'admin-themes', label: 'How do I edit my theme?' },
-                    { id: 'admin-overview', label: 'What can I do here?' },
-                    { id: 'go-customers', label: 'Take me to customers' },
+                    { id: 'admin-edit-current-theme', label: 'Edit my current theme' },
+                    { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+                    { id: 'admin-change-theme', label: 'Change theme' },
+                    { id: 'admin-create-collection', label: 'Create a collection' },
+                    { id: 'admin-create-blog-post', label: 'Create a blog post' },
                   ]
                 : agenticMode
                 ? [
@@ -1187,16 +1980,73 @@ export function CodiixChatPanel({
                       </div>
                     </div>
                   ) : null}
+                  {m.form ? (
+                    <CodiixChatFormCard
+                      form={m.form}
+                      onSubmit={(values) => submitChatForm(m.id, values, m.form!.kind)}
+                    />
+                  ) : null}
+                  {m.panelActions && m.panelActions.length > 0 ? (
+                    <div className="codiix-related">
+                      <div className="codiix-chips codiix-chips--inline">
+                        {m.panelActions.map((action) => (
+                          <button
+                            key={action.id}
+                            type="button"
+                            className={action.primary ? 'codiix-nav-cta' : 'codiix-chip'}
+                            disabled={Boolean(busyActionId) || isGenerating}
+                            onClick={() => {
+                              if (action.action === 'show-theme-picker') showThemePicker();
+                              if (action.action === 'edit-current-theme') openEditCurrentTheme();
+                            }}
+                          >
+                            {action.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {m.themePickActions && m.themePickActions.length > 0 ? (
+                    <div className="codiix-theme-picks" role="list">
+                      {m.themePickActions.map((pick) => (
+                        <button
+                          key={pick.id}
+                          type="button"
+                          role="listitem"
+                          className={`codiix-theme-pick ${pick.live ? 'codiix-theme-pick--live' : ''}`}
+                          disabled={Boolean(busyActionId) || isGenerating || pick.live}
+                          onClick={() => void applyThemePick(m.id, pick)}
+                          title={
+                            pick.live
+                              ? `${pick.label} is live`
+                              : `Apply ${pick.label}`
+                          }
+                        >
+                          <span className="codiix-theme-pick__name">{pick.label}</span>
+                          <span className="codiix-theme-pick__meta">
+                            <span className="codiix-theme-pick__kind">{pick.kindLabel}</span>
+                            {pick.live ? (
+                              <span className="codiix-theme-pick__badge">Live</span>
+                            ) : (
+                              <span className="codiix-theme-pick__apply">Apply</span>
+                            )}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
                   {m.adminNavActions && m.adminNavActions.length > 0 ? (
                     <div className="codiix-related">
-                      <p className="codiix-related__label">Jump to</p>
+                      {m.adminNavActions.some((nav) => nav.primary) ? null : (
+                        <p className="codiix-related__label">Jump to</p>
+                      )}
                       <div className="codiix-chips codiix-chips--inline">
                         {m.adminNavActions.map((nav) => (
                           <button
                             key={nav.id}
                             type="button"
-                            className="codiix-chip"
-                            onClick={() => respond(`take me to ${nav.label.replace(/^Go to\s+/i, '')}`)}
+                            className={nav.primary ? 'codiix-nav-cta' : 'codiix-chip'}
+                            onClick={() => onNavigateAdmin?.(nav.path)}
                             title={nav.label}
                           >
                             {nav.label}
@@ -1253,7 +2103,7 @@ export function CodiixChatPanel({
           onKeyDown={onKeyDown}
           placeholder={
             isAdmin
-              ? 'Try “take me to products” or “how do I add a product?”…'
+              ? 'Try “edit my current theme” or “which theme is applied?”…'
               : agenticMode
                 ? 'Try “hero”, “move FAQ above Hero”, “apply theme”…'
                 : 'Try “move Contact form above Email signup”…'
@@ -1287,5 +2137,6 @@ export function CodiixChatPanel({
         )}
       </form>
     </div>
+    </>
   );
 }

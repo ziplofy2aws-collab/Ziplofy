@@ -2,7 +2,7 @@
   position: fixed;
   top: 4rem;
   right: 0.75rem;
-  z-index: 1400;
+  z-index: 1401;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -20,6 +20,10 @@
   backdrop-filter: blur(12px);
   transform-origin: top right;
   animation: codiix-intro-arrive 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
 }
 
 .codiix-intro__glow {
@@ -166,6 +170,215 @@
 .codiix-panel--expanded {
   width: min(520px, calc(100vw - 1.5rem));
   height: min(720px, calc(100vh - 4.5rem));
+}
+
+.codiix-form {
+  margin-top: 0.7rem;
+  padding: 0.75rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.codiix-form__title {
+  margin: 0 0 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #111827;
+}
+
+.codiix-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.codiix-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  min-width: 0;
+}
+
+.codiix-form__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #525252;
+}
+
+.codiix-form__req {
+  margin-left: 0.15rem;
+  color: #b91c1c;
+}
+
+.codiix-form__control {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.78rem;
+  color: #111827;
+  outline: none;
+}
+
+.codiix-form__control:focus {
+  border-color: #c4c4c4;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+}
+
+.codiix-form__control:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.codiix-form__control--area {
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.codiix-form__help {
+  font-size: 0.62rem;
+  color: #737373;
+}
+
+.codiix-form__error {
+  margin: 0.55rem 0 0;
+  font-size: 0.7rem;
+  color: #b91c1c;
+}
+
+.codiix-form__submit {
+  margin-top: 0.7rem;
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.codiix-form__submit:hover:not(:disabled) {
+  background: #262626;
+}
+
+.codiix-form__submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.codiix-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+  border: 0;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.codiix-nav-cta:hover {
+  background: #262626;
+}
+
+.codiix-theme-picks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.codiix-theme-pick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  width: 100%;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  background: #fafafa;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.codiix-theme-pick:hover:not(:disabled) {
+  background: #fff;
+  border-color: #d4d4d4;
+  transform: translateY(-1px);
+}
+
+.codiix-theme-pick:disabled {
+  cursor: default;
+  opacity: 0.95;
+}
+
+.codiix-theme-pick--live {
+  border-color: #111827;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.08);
+}
+
+.codiix-theme-pick__name {
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.codiix-theme-pick__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.codiix-theme-pick__kind {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #737373;
+}
+
+.codiix-theme-pick__badge,
+.codiix-theme-pick__apply {
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.codiix-theme-pick__badge {
+  background: #111827;
+  color: #fff;
+}
+
+.codiix-theme-pick__apply {
+  background: #ededed;
+  color: #262626;
+}
+
+.codiix-theme-pick:hover:not(:disabled) .codiix-theme-pick__apply {
+  background: #111827;
+  color: #fff;
 }
 
 @keyframes codiix-in {

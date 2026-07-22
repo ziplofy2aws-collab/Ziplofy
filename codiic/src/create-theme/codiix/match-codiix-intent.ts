@@ -4,6 +4,15 @@ import {
   CODIX_ADMIN_SUGGESTIONS,
 } from './codiix-admin-knowledge';
 import { matchAdminNavCommand } from './codiix-admin-nav';
+import { buildCreateBlogForm, buildCreateBlogPostForm, buildCreateCollectionForm, matchCreateBlogCommand, matchCreateBlogPostCommand, matchCreateCollectionCommand } from './codiix-chat-form';
+import type { CodiixChatForm } from './codiix-chat-form';
+import {
+  matchAppliedThemeCommand,
+  matchChangeThemeCommand,
+  matchEditCurrentThemeCommand,
+  type CodiixPanelAction,
+  type CodiixThemePickOption,
+} from './codiix-admin-themes';
 import {
   CODIX_FALLBACK,
   CODIX_INTENTS,
@@ -71,7 +80,11 @@ export type CodiixSystemAction =
   | 'list-pages'
   | 'reorder'
   | 'edit'
-  | 'admin-navigate';
+  | 'admin-navigate'
+  | 'admin-form'
+  | 'admin-applied-theme'
+  | 'admin-change-theme'
+  | 'admin-edit-current-theme';
 
 export type CodiixSurface = 'theme-editor' | 'admin';
 
@@ -95,7 +108,11 @@ export type CodiixMatch = {
   structureHints?: { id: string; label: string }[];
   editPlan?: CodiixEditPlan;
   editHelpHints?: { id: string; label: string }[];
-  adminNavActions?: { id: string; label: string; path: string }[];
+  adminNavActions?: { id: string; label: string; path: string; primary?: boolean }[];
+  /** In-chat form to collect inputs (admin create flows). */
+  form?: CodiixChatForm;
+  panelActions?: CodiixPanelAction[];
+  themePickActions?: CodiixThemePickOption[];
 };
 
 export type CodiixMatchOptions = {
@@ -200,6 +217,86 @@ export function matchApplyCommand(raw: string): boolean {
 }
 
 function matchAdminSurfaceIntent(raw: string, query: string): CodiixMatch {
+  if (matchEditCurrentThemeCommand(raw)) {
+    return {
+      intentId: 'admin-edit-current-theme',
+      answer: 'Opening your live theme editor…',
+      relatedSuggestions: [
+        { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+        { id: 'admin-change-theme', label: 'Change theme' },
+      ],
+      systemAction: 'admin-edit-current-theme',
+    };
+  }
+
+  if (matchChangeThemeCommand(raw)) {
+    return {
+      intentId: 'admin-change-theme',
+      answer: 'Loading your themes…',
+      relatedSuggestions: [
+        { id: 'admin-applied-theme', label: 'Which theme is applied?' },
+        { id: 'admin-edit-current-theme', label: 'Edit my current theme' },
+      ],
+      systemAction: 'admin-change-theme',
+    };
+  }
+
+  if (matchAppliedThemeCommand(raw)) {
+    return {
+      intentId: 'admin-applied-theme',
+      answer: 'Checking your live theme…',
+      relatedSuggestions: [
+        { id: 'admin-edit-current-theme', label: 'Edit my current theme' },
+        { id: 'admin-change-theme', label: 'Change theme' },
+      ],
+      systemAction: 'admin-applied-theme',
+    };
+  }
+
+  // Blog post before blog — “create a blog post” must not open the blog form.
+  if (matchCreateBlogPostCommand(raw)) {
+    return {
+      intentId: 'admin-create-blog-post',
+      answer:
+        'Sure — pick a blog and fill in the post details below, then I’ll create it for you.',
+      relatedSuggestions: [
+        { id: 'admin-create-blog', label: 'Create a blog' },
+        { id: 'admin-create-collection', label: 'Create a collection' },
+      ],
+      systemAction: 'admin-form',
+      // Panel fills blog options before showing the form.
+      form: buildCreateBlogPostForm([]),
+    };
+  }
+
+  if (matchCreateBlogCommand(raw)) {
+    return {
+      intentId: 'admin-create-blog',
+      answer:
+        'Sure — fill in the blog details below and I’ll create it for you.',
+      relatedSuggestions: [
+        { id: 'admin-create-blog-post', label: 'Create a blog post' },
+        { id: 'admin-create-collection', label: 'Create a collection' },
+      ],
+      systemAction: 'admin-form',
+      form: buildCreateBlogForm(),
+    };
+  }
+
+  if (matchCreateCollectionCommand(raw)) {
+    return {
+      intentId: 'admin-create-collection',
+      answer:
+        'Sure — fill in the collection details below and I’ll create it for you.',
+      relatedSuggestions: [
+        { id: 'admin-products', label: 'How do I add a product?' },
+        { id: 'admin-create-blog', label: 'Create a blog' },
+      ],
+      systemAction: 'admin-form',
+      form: buildCreateCollectionForm(),
+    };
+  }
+
   const navHit = matchAdminNavCommand(raw);
   if (navHit) {
     return {
@@ -224,7 +321,7 @@ function matchAdminSurfaceIntent(raw: string, query: string): CodiixMatch {
   if (!best || best.score < 2) {
     return {
       intentId: null,
-      answer: `${CODIX_ADMIN_FALLBACK}\n\nTip: say **“take me to products”** or **“open orders”**.`,
+      answer: `${CODIX_ADMIN_FALLBACK}\n\nTip: say **“create a collection”**, **“create a blog post”**, or **“take me to products”**.`,
       relatedSuggestions: CODIX_ADMIN_SUGGESTIONS.slice(0, 4),
     };
   }
@@ -234,6 +331,66 @@ function matchAdminSurfaceIntent(raw: string, query: string): CodiixMatch {
     .filter((r) => r.score >= 2 && r.intent.suggestion)
     .slice(0, 3)
     .map((r) => ({ id: r.intent.id, label: r.intent.suggestion! }));
+
+  if (best.intent.id === 'admin-create-blog-post') {
+    return {
+      intentId: 'admin-create-blog-post',
+      answer:
+        'Sure — pick a blog and fill in the post details below, then I’ll create it for you.',
+      relatedSuggestions: related,
+      systemAction: 'admin-form',
+      form: buildCreateBlogPostForm([]),
+    };
+  }
+
+  if (best.intent.id === 'admin-create-blog') {
+    return {
+      intentId: 'admin-create-blog',
+      answer:
+        'Sure — fill in the blog details below and I’ll create it for you.',
+      relatedSuggestions: related,
+      systemAction: 'admin-form',
+      form: buildCreateBlogForm(),
+    };
+  }
+
+  if (best.intent.id === 'admin-create-collection') {
+    return {
+      intentId: 'admin-create-collection',
+      answer:
+        'Sure — fill in the collection details below and I’ll create it for you.',
+      relatedSuggestions: related,
+      systemAction: 'admin-form',
+      form: buildCreateCollectionForm(),
+    };
+  }
+
+  if (best.intent.id === 'admin-applied-theme') {
+    return {
+      intentId: 'admin-applied-theme',
+      answer: 'Checking your live theme…',
+      relatedSuggestions: related,
+      systemAction: 'admin-applied-theme',
+    };
+  }
+
+  if (best.intent.id === 'admin-change-theme') {
+    return {
+      intentId: 'admin-change-theme',
+      answer: 'Loading your themes…',
+      relatedSuggestions: related,
+      systemAction: 'admin-change-theme',
+    };
+  }
+
+  if (best.intent.id === 'admin-edit-current-theme') {
+    return {
+      intentId: 'admin-edit-current-theme',
+      answer: 'Opening your live theme editor…',
+      relatedSuggestions: related,
+      systemAction: 'admin-edit-current-theme',
+    };
+  }
 
   return {
     intentId: best.intent.id,

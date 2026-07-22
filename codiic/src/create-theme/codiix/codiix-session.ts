@@ -1,5 +1,7 @@
 import type { CodiixAgenticAction } from './codiix-elements-catalog';
 import type { CodiixPageAction } from './codiix-pages';
+import type { CodiixChatForm } from './codiix-chat-form';
+import type { CodiixPanelAction, CodiixThemePickOption } from './codiix-admin-themes';
 
 export type CodiixEditorAction = {
   id: string;
@@ -21,8 +23,14 @@ export type CodiixMessage = {
   structureHints?: { id: string; label: string }[];
   /** Example announcement-edit chips (tap to draft a command). */
   editHelpHints?: { id: string; label: string }[];
-  /** Admin sidebar jump chips. */
-  adminNavActions?: { id: string; label: string; path: string }[];
+  /** Admin sidebar jump chips / CTAs. */
+  adminNavActions?: { id: string; label: string; path: string; primary?: boolean }[];
+  /** In-chat form (e.g. create blog). */
+  form?: CodiixChatForm;
+  /** Panel CTAs (e.g. Change theme?). */
+  panelActions?: CodiixPanelAction[];
+  /** Quick theme switch list. */
+  themePickActions?: CodiixThemePickOption[];
 };
 
 export type CodiixSessionScope = 'theme' | 'admin';

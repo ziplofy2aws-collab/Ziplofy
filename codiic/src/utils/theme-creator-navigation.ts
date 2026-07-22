@@ -26,3 +26,9 @@ export function openThemeCreatorForActiveStore(
   const url = new URL(path, window.location.origin);
   window.open(url.toString(), '_blank', 'noopener,noreferrer');
 }
+
+/** Open an absolute-or-relative theme editor path in a new tab. */
+export function openThemeEditorPathInNewTab(path: string): Window | null {
+  const url = new URL(path, window.location.origin);
+  return window.open(url.toString(), '_blank', 'noopener,noreferrer');
+}
