@@ -1,6 +1,6 @@
 # Required GitHub Secrets:
 #   CODIIC_SERVER_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 15.207.160.239 (backend.codiic.com)
+# EC2 host (hardcoded): 13.200.227.95 (backend.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /home/ubuntu/Ziplofy
 
@@ -41,7 +41,7 @@ jobs:
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY }}
-          REMOTE_HOST: 15.207.160.239
+          REMOTE_HOST: 13.200.227.95
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/Ziplofy
         with:
@@ -51,7 +51,7 @@ jobs:
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 15.207.160.239
+          host: 13.200.227.95
           username: ubuntu
           key: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY }}
           script: |
