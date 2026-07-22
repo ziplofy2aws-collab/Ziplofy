@@ -1023,23 +1023,14 @@ function HeroMediaSettingsGroup({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const typeField = fields.find((f) => f.path.endsWith('Type'));
   const imageField = fields.find((f) => f.path.endsWith('ImageUrl'));
-  const mediaType = typeField ? fieldValueAsString(values, typeField) || 'image' : 'image';
 
   return (
     <div className="px-1 py-3">
       <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{groupLabel}</h3>
       <div className="space-y-2">
-        {typeField ? <SegmentedFieldRow field={typeField} values={values} onFieldChange={onFieldChange} /> : null}
-        {mediaType === 'image' && imageField ? (
+        {imageField ? (
           <ImagePickerFieldRow field={imageField} values={values} onFieldChange={onFieldChange} />
-        ) : imageField ? (
-          <DefaultFieldRow
-            field={{ ...imageField, label: 'Video URL', placeholder: 'Paste video URL' }}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
         ) : null}
       </div>
     </div>
@@ -2805,7 +2796,7 @@ function FaqHeadingCollectionTitleSettingsPanel({
   );
 }
 
-/** Shopify-order hero section settings (Media 1 → Custom CSS). */
+/** Shopify-order hero section settings (Media 1 → Padding). */
 function HeroGroupedSettingsPanel({
   fields,
   values,
@@ -2817,10 +2808,21 @@ function HeroGroupedSettingsPanel({
   colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  if (fields.length > 0) {
-    // Hard fallback: always expose editable controls for Hero fields.
-    // This avoids blank panels when specialized Hero grouping fails for
-    // a specific schema/instance variant.
+  const grouped = useMemo(() => groupHeroPanelFields(fields), [fields]);
+  const hasGroupedHeroFields = useMemo(
+    () => HERO_PANEL_GROUP_ORDER.some((label) => (grouped.get(label)?.length ?? 0) > 0),
+    [grouped]
+  );
+
+  if (!fields.length) {
+    return (
+      <div className="px-4 py-6 text-[13px] text-gray-500">
+        No Hero editing options available for this section.
+      </div>
+    );
+  }
+
+  if (!hasGroupedHeroFields) {
     return (
       <div className="divide-y divide-[#e1e1e1]">
         <CollapsibleSettingsGroup
@@ -2834,46 +2836,10 @@ function HeroGroupedSettingsPanel({
     );
   }
 
-  const grouped = useMemo(() => groupHeroPanelFields(fields), [fields]);
-  const hasGroupedHeroFields = useMemo(
-    () =>
-      HERO_PANEL_GROUP_ORDER.some(
-        (label) => label !== 'Theme Settings' && (grouped.get(label)?.length ?? 0) > 0
-      ),
-    [grouped]
-  );
-
-  if (!hasGroupedHeroFields) {
-    // Fallback: if schema groups are missing/mismatched, still expose all
-    // section fields so Hero never appears as a blank settings panel.
-    return (
-      <div className="divide-y divide-[#e1e1e1]">
-        <CollapsibleSettingsGroup
-          label="Settings"
-          fields={fields}
-          values={values}
-          onFieldChange={onFieldChange}
-          colorPalette={colorPalette}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {HERO_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (label === 'Theme Settings') {
-          return (
-            <CollapsibleSettingsGroup
-              key={label}
-              label="Theme Settings"
-              fields={[]}
-              values={values}
-              onFieldChange={onFieldChange}
-            />
-          );
-        }
         if (!groupFields?.length) return null;
 
         if (label === 'Media 1' || label === 'Media 2') {
@@ -2937,20 +2903,6 @@ function HeroGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
         return null;
@@ -18724,6 +18676,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isContactFormTextBlockPanel &&
     !isContactFormFormGroupPanel &&
     !isContactFormSubmitButtonPanel &&
+    !isHeroSectionSettingsNode(node) &&
+    !isHeroSettingsPanelFields(fields) &&
     !isPullQuoteSectionNodeId(node.id) &&
     !isPullQuoteSettingsPanelFields(fields) &&
     node.label !== 'Pull quote' &&
@@ -20095,10 +20049,10 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
-        ) : isFaqPanel ? (
-          <FaqGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isHeroPanel ? (
           <HeroGroupedSettingsPanel fields={fields} values={values} colorPalette={colorPalette} onFieldChange={onFieldChange} />
+        ) : isFaqPanel ? (
+          <FaqGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : isLargeLogoPanel ? (
           <LargeLogoGroupedSettingsPanel
             fields={fields}

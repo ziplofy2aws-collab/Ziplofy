@@ -5,7 +5,7 @@ import { cfgNumber, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { LARGE_LOGO_BODY } from '../../../utils/hero-banner-variants.util';
-import { readHeroStyle, scopedHeroCss } from '../../hero/runtime/heroStyles';
+import { heroMediaOverlayBackground, readHeroStyle, scopedHeroCss } from '../../hero/runtime/heroStyles';
 import {
   readTextBlockLayoutStyle,
   readTextBlockStyle,
@@ -104,11 +104,11 @@ export function LargeLogo({
 
   const largeLogoOverlay =
     hero.mediaOverlay && hasBgImage
-      ? hero.overlayStyle === 'gradient'
-        ? hero.overlayGradientDirection === 'down'
-          ? `linear-gradient(180deg, transparent 0%, ${hero.overlayColor} 100%)`
-          : `linear-gradient(180deg, ${hero.overlayColor} 0%, transparent 100%)`
-        : hero.overlayColor
+      ? heroMediaOverlayBackground(
+          hero.overlayColor,
+          hero.overlayStyle,
+          hero.overlayGradientDirection
+        )
       : undefined;
 
   const logoSettingsBase = `${blocksPath}.logo.settings`;

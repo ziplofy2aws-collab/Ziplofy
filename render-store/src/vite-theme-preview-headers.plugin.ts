@@ -2,6 +2,11 @@ import type { Plugin } from 'vite';
 
 const FRAME_ANCESTORS = [
   "'self'",
+  // codiic merchant dashboard (vite --port 3000)
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://admin.localhost:3000',
+  // legacy admin / alternate local ports
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://admin.localhost:5173',

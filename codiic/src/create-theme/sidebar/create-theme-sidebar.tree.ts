@@ -659,6 +659,7 @@ import {
   isHeroMarqueeSidebarSection,
   isHeroLargeLogoSidebarSection,
   isHeroSplitShowcaseSidebarSection,
+  fallbackHeroSectionFieldDefs,
 } from './theme-editor-hero-panel.utils';
 import {
   largeLogoBlockFieldDefs,
@@ -4770,70 +4771,6 @@ function prepareSectionPanelNode(
   return prepareByLabel(node);
 }
 
-function heroSettingsBaseFromNodeId(nodeId: string): string | null {
-  const templateMatch = nodeId.match(/^template:([^:]+):([^:]+)/);
-  if (templateMatch) {
-    return `templates.${templateMatch[1]}.sections.${templateMatch[2]}.settings`;
-  }
-  const layoutMatch = nodeId.match(/^layout:([^:]+)/);
-  if (layoutMatch) {
-    return `sections.${layoutMatch[1]}.settings`;
-  }
-  return null;
-}
-
-function fallbackHeroSectionFieldDefs(nodeId: string): EditorFieldDef[] {
-  const base = heroSettingsBaseFromNodeId(nodeId);
-  if (!base) return [];
-  const mk = (
-    key: string,
-    label: string,
-    group: string,
-    type: EditorFieldDef['type'],
-    extra: Partial<EditorFieldDef> = {}
-  ): EditorFieldDef => ({
-    path: `${base}.${key}`,
-    label,
-    group,
-    type,
-    ...extra,
-  });
-  return [
-    mk('media1Type', 'Type', 'Media 1', 'select', {
-      options: [
-        { value: 'image', label: 'Image' },
-        { value: 'video', label: 'Video' },
-      ],
-      widget: 'segmented',
-    }),
-    mk('media1ImageUrl', 'Image', 'Media 1', 'text', { widget: 'image' }),
-    mk('media2Type', 'Type', 'Media 2', 'select', {
-      options: [
-        { value: 'image', label: 'Image' },
-        { value: 'video', label: 'Video' },
-      ],
-      widget: 'segmented',
-    }),
-    mk('media2ImageUrl', 'Image', 'Media 2', 'text', { widget: 'image' }),
-    mk('mobileMedia1Type', 'Type', 'Mobile media', 'select', {
-      options: [
-        { value: 'image', label: 'Image' },
-        { value: 'video', label: 'Video' },
-      ],
-      widget: 'segmented',
-    }),
-    mk('mobileMedia1ImageUrl', 'Image', 'Mobile media', 'text', { widget: 'image' }),
-    mk('sectionLink', 'Section link', 'Section link', 'text'),
-    mk('sectionLinkNewTab', 'Open in new tab', 'Section link', 'boolean', { widget: 'toggle' }),
-    mk('layoutAlignment', 'Alignment', 'Layout', 'select', { widget: 'segmented' }),
-    mk('height', 'Height', 'Layout', 'select', { widget: 'select-inline' }),
-    mk('colorScheme', 'Background color', 'Appearance', 'color', { widget: 'color' }),
-    mk('paddingTop', 'Top', 'Padding', 'range'),
-    mk('paddingBottom', 'Bottom', 'Padding', 'range'),
-    mk('customCss', 'Custom CSS', 'Custom CSS', 'text', { widget: 'accordion' }),
-  ];
-}
-
 export function settingsNodeForSelection(
   selectedNode: SidebarNode | null,
   tree: SidebarNode[] = [],
@@ -5188,15 +5125,22 @@ export function settingsNodeForSelection(
   }
 
   const heroSectionForPanel =
-    node.kind === 'section' && isHeroSectionNodeId(node.id)
+    node.kind === 'section' && (isHeroSectionNodeId(node.id) || isHeroSectionSettingsNode(node))
       ? node
       : node.kind === 'section'
         ? findHeroSectionInTree(node.id, tree)
         : null;
   if (node.kind === 'section' && heroSectionForPanel && editorSchema) {
     const heroFields = heroSectionFieldDefsFromSchema(editorSchema, heroSectionForPanel.id);
-    if (heroFields.length) {
-      return prepareHeroSectionSettingsForNode(heroSectionForPanel, heroFields);
+    const candidates =
+      heroFields.length > 0
+        ? heroFields
+        : (heroSectionForPanel.fields?.length
+            ? heroSectionForPanel.fields
+            : node.fields) ?? fallbackHeroSectionFieldDefs(heroSectionForPanel.id);
+    const prepared = prepareHeroSectionSettingsForNode(heroSectionForPanel, candidates);
+    if (prepared.fields?.length) {
+      return prepared;
     }
   }
 
@@ -6025,7 +5969,7 @@ export function settingsNodeForSelection(
   }
 
   const heroSection =
-    node.kind === 'section' && isHeroSectionNodeId(node.id)
+    node.kind === 'section' && (isHeroSectionNodeId(node.id) || isHeroSectionSettingsNode(node))
       ? node
       : findHeroSectionInTree(node.id, tree);
 
@@ -6036,10 +5980,8 @@ export function settingsNodeForSelection(
       heroFieldsFromSchema.length > 0
         ? heroFieldsFromSchema
         : (heroSection.fields?.length ? heroSection.fields : node.fields) ?? [];
-    const fallbackFields = heroFields.length ? heroFields : fallbackHeroSectionFieldDefs(heroSection.id);
-    if (fallbackFields.length) {
-      return prepareHeroSectionSettingsForNode({ ...heroSection, fields: fallbackFields }, fallbackFields);
-    }
+    const candidates = heroFields.length ? heroFields : fallbackHeroSectionFieldDefs(heroSection.id);
+    return prepareHeroSectionSettingsForNode({ ...heroSection, fields: candidates }, candidates);
   }
 
   if (node.kind === 'section' && node.fields?.length) {

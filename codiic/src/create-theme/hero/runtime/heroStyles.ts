@@ -254,6 +254,78 @@ export function scopedHeroCss(sectionId: string, css: string): string {
     .join('\n');
 }
 
+/** Default overlay strength when merchants pick an opaque color (~#RRGGBB66). */
+const DEFAULT_HERO_OVERLAY_ALPHA = 0x66 / 255;
+
+function parseHeroOverlayColor(input: string): { r: number; g: number; b: number; a: number } | null {
+  const raw = input.trim();
+  if (!raw) return null;
+
+  const rgbaMatch = raw.match(
+    /^rgba?\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)(?:\s*,\s*([0-9.]+%?))?\s*\)$/i
+  );
+  if (rgbaMatch) {
+    const r = Number(rgbaMatch[1]);
+    const g = Number(rgbaMatch[2]);
+    const b = Number(rgbaMatch[3]);
+    let a = 1;
+    if (rgbaMatch[4] != null) {
+      a = rgbaMatch[4].endsWith('%')
+        ? Number(rgbaMatch[4].slice(0, -1)) / 100
+        : Number(rgbaMatch[4]);
+    }
+    if (![r, g, b, a].every((n) => Number.isFinite(n))) return null;
+    return {
+      r: Math.max(0, Math.min(255, Math.round(r))),
+      g: Math.max(0, Math.min(255, Math.round(g))),
+      b: Math.max(0, Math.min(255, Math.round(b))),
+      a: Math.max(0, Math.min(1, a)),
+    };
+  }
+
+  const hex = raw.startsWith('#') ? raw.slice(1) : raw;
+  if (!/^[0-9a-fA-F]{3}$|^[0-9a-fA-F]{6}$|^[0-9a-fA-F]{8}$/.test(hex)) return null;
+
+  if (hex.length === 3) {
+    return {
+      r: parseInt(hex[0] + hex[0], 16),
+      g: parseInt(hex[1] + hex[1], 16),
+      b: parseInt(hex[2] + hex[2], 16),
+      a: 1,
+    };
+  }
+
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  const a = hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1;
+  if (![r, g, b, a].every((n) => Number.isFinite(n))) return null;
+  return { r, g, b, a };
+}
+
+/**
+ * Media overlays must stay translucent. Color pickers often store opaque #RRGGBB —
+ * when alpha is missing/full, apply the default overlay strength so the media still shows.
+ */
+export function heroMediaOverlayFill(overlayColor: string): string {
+  const parsed = parseHeroOverlayColor(overlayColor);
+  if (!parsed) return `rgba(18, 18, 18, ${DEFAULT_HERO_OVERLAY_ALPHA})`;
+  const alpha = parsed.a < 0.999 ? parsed.a : DEFAULT_HERO_OVERLAY_ALPHA;
+  return `rgba(${parsed.r}, ${parsed.g}, ${parsed.b}, ${alpha})`;
+}
+
+export function heroMediaOverlayBackground(
+  overlayColor: string,
+  overlayStyle: 'solid' | 'gradient',
+  overlayGradientDirection: 'up' | 'down'
+): string {
+  const fill = heroMediaOverlayFill(overlayColor);
+  if (overlayStyle !== 'gradient') return fill;
+  return overlayGradientDirection === 'down'
+    ? `linear-gradient(180deg, transparent 0%, ${fill} 100%)`
+    : `linear-gradient(180deg, ${fill} 0%, transparent 100%)`;
+}
+
 export function heroResponsiveCss(
   sectionId: string,
   stackMedia: boolean,

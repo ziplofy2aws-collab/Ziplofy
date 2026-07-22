@@ -13,6 +13,8 @@ if (NODE_ENV === 'development') {
         allowedOrigins: [
             "http://localhost:5173",
             "http://localhost:5174",
+            "http://localhost:3000",
+            
             // Allow any subdomain of localhost:5173 (e.g., foo.localhost:5173)
             /^http:\/\/([a-z0-9-]+\.)*localhost:5173$/i,
             // If you also run https locally via proxy/certs

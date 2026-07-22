@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArrowPathIcon,
   ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   ChevronUpIcon,
   DocumentArrowUpIcon,
   DocumentIcon,
@@ -68,6 +70,68 @@ export const ContentFilesPage = () => {
   const [isProcessingQueue, setIsProcessingQueue] = useState(false);
   const [uploadQueueCollapsed, setUploadQueueCollapsed] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+
+  const viewerUpload = viewerIndex != null ? uploads[viewerIndex] ?? null : null;
+  const viewerPreviewUrl = viewerUpload ? resolveUploadPreviewUrl(viewerUpload) : null;
+  const viewerName = viewerUpload ? fileNameFromStorageKey(viewerUpload.key) : '';
+
+  const closeViewer = useCallback(() => setViewerIndex(null), []);
+
+  const openViewer = useCallback((index: number) => {
+    setViewerIndex(index);
+  }, []);
+
+  const showPrev = useCallback(() => {
+    setViewerIndex((current) => {
+      if (current == null || uploads.length === 0) return current;
+      return (current - 1 + uploads.length) % uploads.length;
+    });
+  }, [uploads.length]);
+
+  const showNext = useCallback(() => {
+    setViewerIndex((current) => {
+      if (current == null || uploads.length === 0) return current;
+      return (current + 1) % uploads.length;
+    });
+  }, [uploads.length]);
+
+  useEffect(() => {
+    if (viewerIndex == null) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeViewer();
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        showPrev();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        showNext();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [viewerIndex, closeViewer, showPrev, showNext]);
+
+  useEffect(() => {
+    if (viewerIndex == null) return;
+    if (uploads.length === 0) {
+      setViewerIndex(null);
+      return;
+    }
+    if (viewerIndex >= uploads.length) {
+      setViewerIndex(uploads.length - 1);
+    }
+  }, [uploads.length, viewerIndex]);
 
   const setQueue = useCallback((next: UploadQueueItem[]) => {
     uploadQueueRef.current = next;
@@ -313,7 +377,7 @@ export const ContentFilesPage = () => {
         {uploads.length} file{uploads.length === 1 ? '' : 's'} in your library
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {uploads.map((upload) => {
+        {uploads.map((upload, index) => {
           const previewUrl = resolveUploadPreviewUrl(upload);
           const name = fileNameFromStorageKey(upload.key);
           const isDeleting = deletingId === upload._id;
@@ -323,7 +387,12 @@ export const ContentFilesPage = () => {
               key={upload._id}
               className="group relative flex flex-col rounded-lg border border-gray-200 overflow-hidden bg-gray-50"
             >
-              <div className="aspect-square flex items-center justify-center bg-gray-100 relative">
+              <button
+                type="button"
+                onClick={() => openViewer(index)}
+                className="aspect-square flex items-center justify-center bg-gray-100 relative text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
+                aria-label={`View ${name}`}
+              >
                 {previewUrl ? (
                   <img
                     src={previewUrl}
@@ -341,16 +410,19 @@ export const ContentFilesPage = () => {
                     <span className="text-[10px] text-center line-clamp-2">{name}</span>
                   </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => handleDelete(upload)}
-                  disabled={isDeleting || isProcessingQueue || deleteLoading}
-                  className="absolute top-2 right-2 rounded-md bg-white/90 p-1.5 text-gray-600 shadow-sm opacity-0 group-hover:opacity-100 hover:text-red-600 hover:bg-white disabled:opacity-50 transition-opacity"
-                  aria-label={`Delete ${name}`}
-                >
-                  <TrashIcon className="w-4 h-4" />
-                </button>
-              </div>
+              </button>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void handleDelete(upload);
+                }}
+                disabled={isDeleting || isProcessingQueue || deleteLoading}
+                className="absolute top-2 right-2 z-10 rounded-md bg-white/90 p-1.5 text-gray-600 shadow-sm opacity-0 group-hover:opacity-100 focus:opacity-100 hover:text-red-600 hover:bg-white disabled:opacity-50 transition-opacity"
+                aria-label={`Delete ${name}`}
+              >
+                <TrashIcon className="w-4 h-4" />
+              </button>
               <div className="p-2 border-t border-gray-200 bg-white">
                 <p className="text-xs font-medium text-gray-900 truncate" title={name}>
                   {name}
@@ -363,6 +435,80 @@ export const ContentFilesPage = () => {
       </div>
     </div>
   );
+
+  const renderFullscreenViewer = () => {
+    if (viewerIndex == null || !viewerUpload) return null;
+
+    return (
+      <div
+        className="fixed inset-0 z-100 flex flex-col bg-black/95"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Viewing ${viewerName}`}
+      >
+        <div className="flex items-center justify-between gap-3 px-4 py-3 text-white shrink-0">
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium" title={viewerName}>
+              {viewerName}
+            </p>
+            <p className="text-xs text-white/60 mt-0.5">
+              {viewerIndex + 1} of {uploads.length}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={closeViewer}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            aria-label="Close full screen view"
+          >
+            <XMarkIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="relative flex-1 min-h-0 flex items-center justify-center px-4 pb-4">
+          {uploads.length > 1 ? (
+            <>
+              <button
+                type="button"
+                onClick={showPrev}
+                className="absolute left-3 sm:left-6 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                aria-label="Previous file"
+              >
+                <ChevronLeftIcon className="w-6 h-6" />
+              </button>
+              <button
+                type="button"
+                onClick={showNext}
+                className="absolute right-3 sm:right-6 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                aria-label="Next file"
+              >
+                <ChevronRightIcon className="w-6 h-6" />
+              </button>
+            </>
+          ) : null}
+
+          {viewerPreviewUrl ? (
+            <img
+              src={viewerPreviewUrl}
+              alt={viewerName}
+              className="max-h-full max-w-full object-contain select-none"
+              draggable={false}
+            />
+          ) : (
+            <div className="flex flex-col items-center gap-3 text-white/70 px-6 text-center">
+              {isImageStorageKey(viewerUpload.key) ? (
+                <PhotoIcon className="w-16 h-16" />
+              ) : (
+                <DocumentIcon className="w-16 h-16" />
+              )}
+              <p className="text-sm font-medium text-white">{viewerName}</p>
+              <p className="text-xs text-white/50">Preview is not available for this file.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   const renderMainContent = () => {
     if (!activeStoreId) {
@@ -431,6 +577,7 @@ export const ContentFilesPage = () => {
       </div>
 
       {renderUploadQueuePanel()}
+      {renderFullscreenViewer()}
     </>
   );
 };

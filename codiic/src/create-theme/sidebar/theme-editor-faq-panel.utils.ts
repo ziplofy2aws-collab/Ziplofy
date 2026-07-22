@@ -520,6 +520,17 @@ export function isFaqSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   }
   // Require FAQ-specific layout toggle so Pull quote / Rich text section settings
   // (direction + gap + width only) are not mislabeled as FAQ.
+  // Hero / Large logo / Split showcase share the same layout keys — exclude by media fields.
+  if (
+    keys.has('media1Type') ||
+    keys.has('media1ImageUrl') ||
+    keys.has('media2Type') ||
+    keys.has('media2ImageUrl') ||
+    keys.has('mobileStackMedia') ||
+    keys.has('blurredReflection')
+  ) {
+    return false;
+  }
   return (
     keys.has('direction') &&
     keys.has('layoutGap') &&

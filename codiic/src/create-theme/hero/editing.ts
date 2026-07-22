@@ -4,18 +4,8 @@ export const editing: CreateThemeEditing = {
   "sectionLabel": "Hero",
   "sectionSettingsOrder": [
     {
-      "key": "media1Type",
-      "label": "Type",
-      "type": "text"
-    },
-    {
       "key": "media1ImageUrl",
       "label": "Image",
-      "type": "text"
-    },
-    {
-      "key": "media2Type",
-      "label": "Type",
       "type": "text"
     },
     {
@@ -34,18 +24,8 @@ export const editing: CreateThemeEditing = {
       "type": "boolean"
     },
     {
-      "key": "mobileMedia1Type",
-      "label": "Type",
-      "type": "text"
-    },
-    {
       "key": "mobileMedia1ImageUrl",
       "label": "Image",
-      "type": "text"
-    },
-    {
-      "key": "mobileMedia2Type",
-      "label": "Type",
       "type": "text"
     },
     {
@@ -157,11 +137,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     },
     {
       "key": "eyebrow",

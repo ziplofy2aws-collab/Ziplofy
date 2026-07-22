@@ -24,6 +24,7 @@ import {
 import {
   heroContentVerticalOnMobileCss,
   heroDualMediaResponsiveCss,
+  heroMediaOverlayBackground,
   heroResponsiveCss,
   readHeroStyle,
   scopedHeroCss,
@@ -206,12 +207,11 @@ export function Hero({
       ? layoutBlockOrder(config, sectionId, defaultBlockOrder)
       : templateBlockOrder(config, templateId, sectionId, defaultBlockOrder);
 
-  const overlayBackground =
-    hero.overlayStyle === 'gradient'
-      ? hero.overlayGradientDirection === 'down'
-        ? `linear-gradient(180deg, transparent 0%, ${hero.overlayColor} 100%)`
-        : `linear-gradient(180deg, ${hero.overlayColor} 0%, transparent 100%)`
-      : hero.overlayColor;
+  const overlayBackground = heroMediaOverlayBackground(
+    hero.overlayColor,
+    hero.overlayStyle,
+    hero.overlayGradientDirection
+  );
 
   const media1Url = hero.media1Url.trim();
   const media2Url = hero.media2Url.trim();

@@ -19,20 +19,15 @@ const PANEL_GROUPS = new Set([
   'Layout',
   'Appearance',
   'Padding',
-  'Custom CSS',
 ]);
 
 const HERO_PANEL_KEYS = new Set([
-  'media1Type',
   'media1ImageUrl',
-  'media2Type',
   'media2ImageUrl',
   'mobileStackMedia',
   'mobileDifferentMedia',
   'mobileImageUrl',
-  'mobileMedia1Type',
   'mobileMedia1ImageUrl',
-  'mobileMedia2Type',
   'mobileMedia2ImageUrl',
   'sectionLink',
   'sectionLinkNewTab',
@@ -55,19 +50,16 @@ const HERO_PANEL_KEYS = new Set([
   'reflectionOpacity',
   'paddingTop',
   'paddingBottom',
-  'customCss',
 ]);
 
 function heroPanelGroupForKey(key: string): string | undefined {
-  if (key === 'media1Type' || key === 'media1ImageUrl') return 'Media 1';
-  if (key === 'media2Type' || key === 'media2ImageUrl') return 'Media 2';
+  if (key === 'media1ImageUrl') return 'Media 1';
+  if (key === 'media2ImageUrl') return 'Media 2';
   if (
     key === 'mobileStackMedia' ||
     key === 'mobileDifferentMedia' ||
     key === 'mobileImageUrl' ||
-    key === 'mobileMedia1Type' ||
     key === 'mobileMedia1ImageUrl' ||
-    key === 'mobileMedia2Type' ||
     key === 'mobileMedia2ImageUrl'
   ) {
     return 'Mobile media';
@@ -99,7 +91,6 @@ function heroPanelGroupForKey(key: string): string | undefined {
     return 'Appearance';
   }
   if (key === 'paddingTop' || key === 'paddingBottom') return 'Padding';
-  if (key === 'customCss') return 'Custom CSS';
   return undefined;
 }
 
@@ -111,8 +102,6 @@ export const HERO_PANEL_GROUP_ORDER = [
   'Layout',
   'Appearance',
   'Padding',
-  'Theme Settings',
-  'Custom CSS',
 ] as const;
 
 const HEADING_SETTING_KEYS = new Set([
@@ -148,16 +137,12 @@ export function isHeroSectionSettingsNode(
 function fieldSortKey(path: string): number {
   const key = path.split('.').pop() ?? '';
   const rank: Record<string, number> = {
-    media1Type: 0,
     media1ImageUrl: 1,
-    media2Type: 10,
     media2ImageUrl: 11,
     mobileStackMedia: 20,
     mobileDifferentMedia: 21,
     mobileImageUrl: 22,
-    mobileMedia1Type: 23,
     mobileMedia1ImageUrl: 24,
-    mobileMedia2Type: 25,
     mobileMedia2ImageUrl: 26,
     sectionLink: 30,
     sectionLinkNewTab: 31,
@@ -180,7 +165,6 @@ function fieldSortKey(path: string): number {
     reflectionOpacity: 56,
     paddingTop: 60,
     paddingBottom: 61,
-    customCss: 70,
   };
   return rank[key] ?? 50;
 }
@@ -233,20 +217,11 @@ export function enrichHeroPanelField(field: EditorFieldDef): EditorFieldDef {
   if (key === 'colorScheme') {
     return { ...normalizedField, label: 'Background color', widget: 'color' };
   }
-  if (
-    key === 'media1Type' ||
-    key === 'media2Type' ||
-    key === 'mobileMedia1Type' ||
-    key === 'mobileMedia2Type' ||
-    key === 'overlayGradientDirection'
-  ) {
+  if (key === 'overlayGradientDirection') {
     return { ...normalizedField, widget: 'segmented' };
   }
   if (key === 'overlayStyle' && !field.widget) {
     return { ...normalizedField, widget: 'segmented' };
-  }
-  if (key === 'customCss') {
-    return { ...normalizedField, widget: 'accordion' };
   }
   if ((key === 'direction' || key === 'sectionWidth') && !field.widget) {
     return { ...normalizedField, widget: 'segmented' };
@@ -267,31 +242,14 @@ export function enrichHeroPanelFields(fields: EditorFieldDef[]): EditorFieldDef[
   return fields.map(enrichHeroPanelField);
 }
 
-const MOBILE_MEDIA_TYPE_OPTIONS = [
-  { value: 'image', label: 'Image' },
-  { value: 'video', label: 'Video' },
-] as const;
-
 /** Fields for Mobile media 1 or 2 (Shopify-style), with legacy `mobileImageUrl` on slot 1. */
 export function pickHeroMobileMediaSlotFields(
   allFields: EditorFieldDef[],
   settingsBase: string,
   slot: 1 | 2
 ): EditorFieldDef[] {
-  const typeKey = slot === 1 ? 'mobileMedia1Type' : 'mobileMedia2Type';
   const imageKey = slot === 1 ? 'mobileMedia1ImageUrl' : 'mobileMedia2ImageUrl';
   const legacyImageKey = 'mobileImageUrl';
-
-  const typeField =
-    allFields.find((f) => f.path.endsWith(`.${typeKey}`)) ??
-    ({
-      path: `${settingsBase}.${typeKey}`,
-      label: 'Type',
-      type: 'select',
-      group: slot === 1 ? 'Mobile media 1' : 'Mobile media 2',
-      options: [...MOBILE_MEDIA_TYPE_OPTIONS],
-      widget: 'segmented',
-    } satisfies EditorFieldDef);
 
   const imageFromSchema =
     allFields.find((f) => f.path.endsWith(`.${imageKey}`)) ??
@@ -308,7 +266,7 @@ export function pickHeroMobileMediaSlotFields(
       widget: 'image',
     } satisfies EditorFieldDef);
 
-  return [enrichHeroPanelField(typeField), enrichHeroPanelField(imageField)];
+  return [enrichHeroPanelField(imageField)];
 }
 
 const CANON_HERO_TEMPLATE_ID = 'index';
@@ -394,7 +352,6 @@ export function sortHeroPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] 
     Layout: 4,
     Appearance: 5,
     Padding: 6,
-    'Custom CSS': 7,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;
@@ -404,18 +361,101 @@ export function sortHeroPanelFields(fields: EditorFieldDef[]): EditorFieldDef[] 
   });
 }
 
-export function prepareHeroSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = enrichHeroPanelFields(
-    sortHeroPanelFields((node.fields ?? []).filter(isHeroPanelField))
+function heroSettingsBaseFromNodeId(nodeId: string): string | null {
+  const templateMatch = nodeId.match(/^template:([^:]+):([^:]+)/);
+  if (templateMatch) {
+    return `templates.${templateMatch[1]}.sections.${templateMatch[2]}.settings`;
+  }
+  const layoutMatch = nodeId.match(/^layout:([^:]+)/);
+  if (layoutMatch) {
+    return `sections.${layoutMatch[1]}.settings`;
+  }
+  return null;
+}
+
+/** Guaranteed field defs when schema/catalog filtering leaves the Hero panel empty. */
+export function fallbackHeroSectionFieldDefs(nodeId: string): EditorFieldDef[] {
+  const base = heroSettingsBaseFromNodeId(nodeId);
+  if (!base) return [];
+  const mk = (
+    key: string,
+    label: string,
+    group: string,
+    type: EditorFieldDef['type'],
+    extra: Partial<EditorFieldDef> = {}
+  ): EditorFieldDef => ({
+    path: `${base}.${key}`,
+    label,
+    group,
+    type,
+    ...extra,
+  });
+  return [
+    mk('media1ImageUrl', 'Image', 'Media 1', 'text', { widget: 'image' }),
+    mk('media2ImageUrl', 'Image', 'Media 2', 'text', { widget: 'image' }),
+    mk('mobileStackMedia', 'Stack media', 'Mobile media', 'boolean', { widget: 'toggle' }),
+    mk('mobileDifferentMedia', 'Show different media on mobile', 'Mobile media', 'boolean', {
+      widget: 'toggle',
+    }),
+    mk('sectionLink', 'Link', 'Section link', 'text'),
+    mk('sectionLinkNewTab', 'Open link in new tab', 'Section link', 'boolean', { widget: 'toggle' }),
+    mk('direction', 'Direction', 'Layout', 'select', {
+      options: [
+        { value: 'column', label: 'Vertical' },
+        { value: 'row', label: 'Horizontal' },
+      ],
+      widget: 'segmented',
+    }),
+    mk('layoutAlignment', 'Alignment', 'Layout', 'select', { widget: 'segmented' }),
+    mk('position', 'Position', 'Layout', 'select', { widget: 'select-inline' }),
+    mk('height', 'Height', 'Layout', 'select', { widget: 'select-inline' }),
+    mk('colorScheme', 'Background color', 'Appearance', 'color', { widget: 'color' }),
+    mk('mediaOverlay', 'Media overlay', 'Appearance', 'boolean', { widget: 'toggle' }),
+    mk('paddingTop', 'Top', 'Padding', 'number', { widget: 'slider', min: 0, max: 100, step: 1 }),
+    mk('paddingBottom', 'Bottom', 'Padding', 'number', {
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+    }),
+  ];
+}
+
+/**
+ * Prefer schema fields that match the Hero panel contract; never return an empty list
+ * when we can synthesize fallback defs for this node id.
+ */
+export function resolveHeroPanelFields(
+  nodeId: string,
+  candidateFields: EditorFieldDef[] | undefined
+): EditorFieldDef[] {
+  const fromCandidates = enrichHeroPanelFields(
+    sortHeroPanelFields((candidateFields ?? []).filter(isHeroPanelField))
   );
+  if (fromCandidates.length) return fromCandidates;
+
+  // Looser pass: keep known Hero keys even when group metadata is missing/mismatched.
+  const loose = enrichHeroPanelFields(
+    sortHeroPanelFields(
+      (candidateFields ?? []).filter((field) => {
+        const key = field.path.split('.').pop() ?? '';
+        return HERO_PANEL_KEYS.has(key) && isHeroSettingsPath(field.path);
+      })
+    )
+  );
+  if (loose.length) return loose;
+
+  return enrichHeroPanelFields(sortHeroPanelFields(fallbackHeroSectionFieldDefs(nodeId)));
+}
+
+export function prepareHeroSettingsNode(node: SidebarNode): SidebarNode {
+  const fields = resolveHeroPanelFields(node.id, node.fields);
   return { ...node, label: node.label || 'Hero', kind: 'section', fields };
 }
 
-/** Shopify-style section panel for Hero: Bottom aligned (Media 1 → Custom CSS). */
+/** Shopify-style section panel for Hero: Bottom aligned. */
 export function prepareHeroBottomAlignedSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = enrichHeroPanelFields(
-    sortHeroPanelFields((node.fields ?? []).filter(isHeroPanelField))
-  );
+  const fields = resolveHeroPanelFields(node.id, node.fields);
   return { ...node, label: 'Hero: Bottom aligned', kind: 'section', fields };
 }
 
@@ -437,11 +477,9 @@ export function isHeroSplitShowcaseSidebarSection(node: SidebarNode | null): boo
 
 export { prepareSplitShowcaseSettingsNode as prepareHeroSplitShowcaseSettingsNode } from './theme-editor-split-showcase-panel.utils';
 
-/** Shopify-style section panel for Hero: Marquee (Media 1 → Custom CSS). */
+/** Shopify-style section panel for Hero: Marquee. */
 export function prepareHeroMarqueeSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = enrichHeroPanelFields(
-    sortHeroPanelFields((node.fields ?? []).filter(isHeroPanelField))
-  );
+  const fields = resolveHeroPanelFields(node.id, node.fields);
   return { ...node, label: 'Hero: Marquee', kind: 'section', fields };
 }
 
@@ -450,10 +488,15 @@ export { prepareLargeLogoSettingsNode as prepareHeroLargeLogoSettingsNode } from
 export function isHeroSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
-  return keys.has('media1Type') || keys.has('media1ImageUrl') || keys.has('media2Type');
+  return (
+    keys.has('media1ImageUrl') ||
+    keys.has('media2ImageUrl') ||
+    keys.has('media1Type') ||
+    keys.has('media2Type')
+  );
 }
 
-/** Group hero panel fields in Shopify editor order (Media 1 → Custom CSS). */
+/** Group hero panel fields in Shopify editor order (Media 1 → Padding). */
 export function groupHeroPanelFields(
   fields: EditorFieldDef[]
 ): Map<string, EditorFieldDef[]> {

@@ -3,8 +3,19 @@ header ✅
 divider ✅
 
 
+banner elements
+- hero
+- hero bottom aligned
+- hero marquee
+- large logo
+- layered slideshow
+- slideshow full frame
+- slideshow inset
+- split showcase
+
+
 text elements
-- faq 
+- faq
 - icons with text
 - marquee
 - multicolumns
@@ -12,8 +23,78 @@ text elements
 - rich text
 
 
-- Products 
-- Featured collection carousel ✅
-- Featured collection editorial ✅
+products
+- featured collection carousel ✅
+- featured collection editorial ✅
 - featured collection grid ✅
-- 
+- featured product
+- product highlight
+- product hotspots
+- recommended products
+
+
+collections
+- collection links spotlight
+- collection links text
+- collection list bento
+- collection list carousel
+- collection list editorial
+- collection list grid
+
+
+storytelling
+- blog posts carousel
+- blog posts editorial
+- blog posts grid
+- storytelling carousel
+- editorial
+- editorial jumbo
+- image compare
+- image with text
+- logo
+- video
+
+
+forms
+- contact form ✅
+- email signup ✅
+
+
+layout
+- custom section
+- custom liquid
+
+
+footer
+- footer
+- policies and links
+
+
+pages
+- home page
+- cart page
+- checkout page
+- 404 page ✅
+- password page
+- search page ✅
+
+
+template pages
+- product details page ✅
+- collection details page
+- all products page
+- all collections page
+- blog page
+- article details page
+- default page
+
+
+Behaviour check
+- every other page should be having header and footer elements of homepage, so header and footer elements should be like a layout for every other page to sit in by defaut, later if the user wants they can change but by default this layout should be followed ✅
+- password page should NOT show header/footer chrome (store password gate only)
+
+
+Template Creation
+- product
+- collection
+- blog
