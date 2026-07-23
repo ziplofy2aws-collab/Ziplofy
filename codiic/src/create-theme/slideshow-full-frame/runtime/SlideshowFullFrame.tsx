@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgString, cfgNumber } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
-import { useThemeColors } from '../../runtime/shared/tokens';
+import { layout, useThemeColors, useThemeLayout } from '../../runtime/shared/tokens';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 import { LayeredSlideshowSlideMedia } from '../../layered-slideshow/runtime/LayeredSlideshowArt';
@@ -24,46 +24,117 @@ type Props = {
   templateId?: string;
 };
 
+type NavIcon = 'large-arrows' | 'arrows' | 'chevron' | 'none';
+type NavBackground = 'none' | 'circle' | 'square';
+type Pagination = 'dots' | 'counter' | 'none';
+
 const SCHEMES: Record<string, { background: string; color: string; muted: string }> = {
-  'scheme-1': { background: '#f3efe6', color: '#111827', muted: '#374151' },
-  'scheme-2': { background: '#f6f6f7', color: '#111827', muted: '#4b5563' },
-  'scheme-3': { background: '#eef6fb', color: '#0f172a', muted: '#475569' },
-  'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#4b5563' },
+  'scheme-1': { background: '#ddd6c8', color: '#ffffff', muted: 'rgba(255,255,255,0.92)' },
+  'scheme-2': { background: '#1e3a5f', color: '#ffffff', muted: 'rgba(255,255,255,0.9)' },
+  'scheme-3': { background: '#eef6fb', color: '#0f172a', muted: '#64748b' },
+  'scheme-4': { background: '#f5f3ff', color: '#1e1b4b', muted: '#6b7280' },
 };
 
 function frameHeight(mediaHeight: string): number | string {
-  if (mediaHeight === 'small') return 460;
-  if (mediaHeight === 'large') return 680;
+  if (mediaHeight === 'small') return 420;
+  if (mediaHeight === 'large') return 640;
   if (mediaHeight === 'full') return '100vh';
-  return 560;
+  return 520;
 }
 
-const ALIGN_MAP: Record<
-  string,
-  { items: CSSProperties['alignItems']; text: CSSProperties['textAlign'] }
-> = {
-  left: { items: 'flex-start', text: 'left' },
-  center: { items: 'center', text: 'center' },
-  right: { items: 'flex-end', text: 'right' },
-};
+function readNavIcon(raw: string): NavIcon {
+  if (raw === 'arrows' || raw === 'chevron' || raw === 'none' || raw === 'large-arrows') return raw;
+  return 'large-arrows';
+}
 
-const POSITION_MAP: Record<string, CSSProperties['justifyContent']> = {
-  top: 'flex-start',
-  center: 'center',
-  bottom: 'flex-end',
-};
+function readNavBackground(raw: string): NavBackground {
+  if (raw === 'circle' || raw === 'square') return raw;
+  return 'none';
+}
 
-function Chevron({ dir }: { dir: 'left' | 'right' }) {
+function readPagination(raw: string): Pagination {
+  if (raw === 'counter' || raw === 'none') return raw;
+  return 'dots';
+}
+
+function NavGlyph({
+  dir,
+  shape,
+  large,
+}: {
+  dir: 'left' | 'right';
+  shape: 'arrows' | 'chevron';
+  large: boolean;
+}) {
+  if (shape === 'chevron') {
+    return (
+      <span style={{ fontSize: large ? 28 : 22, lineHeight: 1, fontWeight: 500 }} aria-hidden>
+        {dir === 'left' ? '‹' : '›'}
+      </span>
+    );
+  }
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg width={large ? 26 : 22} height={large ? 26 : 22} viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
-        d={dir === 'left' ? 'M15 5 L8 12 L15 19' : 'M9 5 L16 12 L9 19'}
+        d={dir === 'left' ? 'M19 12 H6 M11 6 L5 12 L11 18' : 'M5 12 H18 M13 6 L19 12 L13 18'}
         stroke="currentColor"
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+function NavButton({
+  label,
+  onClick,
+  background,
+  icon,
+  side,
+  color,
+}: {
+  label: string;
+  onClick: () => void;
+  background: NavBackground;
+  icon: Exclude<NavIcon, 'none'>;
+  side: 'left' | 'right';
+  color: string;
+}) {
+  const large = icon === 'large-arrows';
+  const shape: 'arrows' | 'chevron' = icon === 'chevron' ? 'chevron' : 'arrows';
+  const dim = background === 'none' ? (large ? 48 : 36) : large ? 52 : 40;
+
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      style={{
+        position: 'absolute',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        [side]: 16,
+        zIndex: 5,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: dim,
+        height: dim,
+        border: 'none',
+        cursor: 'pointer',
+        color,
+        borderRadius: background === 'circle' ? '50%' : background === 'square' ? 8 : 0,
+        background:
+          background === 'circle' || background === 'square'
+            ? 'rgba(255,255,255,0.95)'
+            : 'transparent',
+        boxShadow: background !== 'none' ? '0 2px 8px rgba(0,0,0,0.15)' : undefined,
+        textShadow: background === 'none' ? '0 1px 3px rgba(0,0,0,0.35)' : undefined,
+      }}
+    >
+      <NavGlyph dir={side} shape={shape} large={large} />
+    </button>
   );
 }
 
@@ -74,6 +145,7 @@ export function SlideshowFullFrame({
 }: Props) {
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
+  const { maxWidth } = useThemeLayout();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const settingsBase =
@@ -97,87 +169,108 @@ export function SlideshowFullFrame({
     ? resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background)
     : scheme.background;
   const mediaHeight = cfgString(config, `${settingsBase}.mediaHeight`, 'medium');
-  const pagination = cfgString(config, `${settingsBase}.pagination`, 'dots');
-  const navBackground = cfgString(config, `${settingsBase}.navigationIconBackground`, 'none');
+  const sectionWidth = cfgString(config, `${settingsBase}.sectionWidth`, 'full');
+  const contentPosition = cfgString(config, `${settingsBase}.contentPosition`, 'on-media');
+  const navigationIcon = readNavIcon(cfgString(config, `${settingsBase}.navigationIcon`, 'large-arrows'));
+  const navigationIconBackground = readNavBackground(
+    cfgString(config, `${settingsBase}.navigationIconBackground`, 'none')
+  );
+  const navigationIconColorRaw = cfgString(config, `${settingsBase}.navigationIconColor`, '');
+  const pagination = readPagination(cfgString(config, `${settingsBase}.pagination`, 'dots'));
   const autoRotate = cfgBool(config, `${settingsBase}.autoRotate`, false);
   const paddingTop = cfgNumber(config, `${settingsBase}.paddingTop`, 0);
   const paddingBottom = cfgNumber(config, `${settingsBase}.paddingBottom`, 0);
-  const customCss = scopedLayeredSlideshowCss(sectionId, cfgString(config, `${settingsBase}.customCss`, ''));
+  const customCss = scopedLayeredSlideshowCss(
+    sectionId,
+    cfgString(config, `${settingsBase}.customCss`, '')
+  );
 
-  const scopeClass = `codiic-layered-slideshow-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const scopeClass = `codiic-slideshow-full-frame-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
   const minHeight = frameHeight(mediaHeight);
+  const onMedia = contentPosition !== 'below-media';
+  const isPageWidth = sectionWidth === 'page';
 
   const slideCount = slides.length;
   const index = slideCount ? ((activeIndex % slideCount) + slideCount) % slideCount : 0;
 
   const goTo = useCallback((i: number) => setActiveIndex(i), []);
+  const goPrev = useCallback(
+    () => setActiveIndex((p) => (slideCount ? (p - 1 + slideCount) % slideCount : 0)),
+    [slideCount]
+  );
+  const goNext = useCallback(
+    () => setActiveIndex((p) => (slideCount ? (p + 1) % slideCount : 0)),
+    [slideCount]
+  );
 
-  const readSlideSettings = (id: string) => {
-    const base = `${blocksBase}.${id}.settings`;
-    const alignment = cfgString(config, `${base}.alignment`, 'center');
-    const align = ALIGN_MAP[alignment] ?? ALIGN_MAP.center;
-    const position = cfgString(config, `${base}.position`, 'center');
-    const bgRaw = cfgString(config, `${base}.backgroundColor`, '');
-    return {
-      align,
-      justify: POSITION_MAP[position] ?? 'center',
-      gap: cfgNumber(config, `${base}.gap`, 12),
-      paddingTop: cfgNumber(config, `${base}.paddingTop`, 48),
-      paddingBottom: cfgNumber(config, `${base}.paddingBottom`, 48),
-      paddingLeft: cfgNumber(config, `${base}.paddingLeft`, 48),
-      paddingRight: cfgNumber(config, `${base}.paddingRight`, 48),
-      background: bgRaw ? resolveThemePaletteColorSetting(config, bgRaw, 0, '') : undefined,
-      mediaOverlay: cfgBool(config, `${base}.mediaOverlay`, false),
-    };
-  };
-
-  const autoRef = useRef(autoRotate && slideCount > 1);
-  autoRef.current = autoRotate && slideCount > 1;
   useEffect(() => {
-    if (!autoRef.current) return;
+    if (!autoRotate || slideCount < 2) return;
     const id = window.setInterval(() => setActiveIndex((p) => p + 1), 5000);
     return () => window.clearInterval(id);
-  }, [slideCount]);
+  }, [autoRotate, slideCount]);
 
   if (!slideCount) return null;
 
-  const navButtonStyle: CSSProperties = {
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    zIndex: 5,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 44,
-    height: 44,
-    border: 'none',
-    cursor: 'pointer',
-    color: scheme.color,
-    borderRadius: '50%',
-    background: navBackground === 'none' ? 'transparent' : 'rgba(255,255,255,0.85)',
-    boxShadow: navBackground !== 'none' ? '0 2px 8px rgba(0,0,0,0.12)' : undefined,
+  const textOnMedia = onMedia;
+  const headingFallback = textOnMedia ? '#ffffff' : scheme.color;
+  const bodyFallback = textOnMedia ? 'rgba(255,255,255,0.92)' : scheme.muted;
+  const navColor = navigationIconColorRaw.trim()
+    ? resolveThemePaletteColorSetting(
+        config,
+        navigationIconColorRaw,
+        0,
+        navigationIconBackground !== 'none' ? '#111827' : textOnMedia ? '#ffffff' : scheme.color
+      )
+    : navigationIconBackground !== 'none'
+      ? '#111827'
+      : textOnMedia
+        ? '#ffffff'
+        : scheme.color;
+
+  const outerStyle: CSSProperties = {
+    paddingTop,
+    paddingBottom,
+    background: onMedia ? sectionBackground : '#fff',
+    boxSizing: 'border-box',
   };
 
-  const renderSlide = (slide: LayeredSlideshowSlide, i: number) => {
-    const s = readSlideSettings(slide.id);
+  const innerStyle: CSSProperties = isPageWidth
+    ? {
+        maxWidth: maxWidth || layout.maxWidth,
+        margin: '0 auto',
+        paddingLeft: 24,
+        paddingRight: 24,
+      }
+    : { maxWidth: '100%' };
+
+  const frameStyle: CSSProperties = {
+    position: 'relative',
+    width: '100%',
+    height: onMedia ? minHeight : undefined,
+    minHeight: onMedia ? minHeight : undefined,
+    overflow: 'hidden',
+    borderRadius: isPageWidth ? 12 : 0,
+    background: sectionBackground,
+    color: scheme.color,
+    fontFamily: fontBody,
+  };
+
+  const renderSlideContent = (slide: LayeredSlideshowSlide): ReactNode => {
     const slideSettingsBase = `${blocksBase}.${slide.id}.settings`;
     const themeFonts = { fontHeading, fontBody };
     const colors = {
-      text: scheme.muted,
-      heading: scheme.color,
-      muted: scheme.muted,
-      link: scheme.color,
+      text: bodyFallback,
+      heading: headingFallback,
+      muted: bodyFallback,
+      link: headingFallback,
     };
-    const fallbackAlign =
-      s.align.text === 'center' || s.align.text === 'right' ? s.align.text : 'left';
     const headingStyle = readSlideshowSlideTextStyle(
       config,
       slideSettingsBase,
       'heading',
       themeFonts,
       colors,
-      fallbackAlign
+      slide.alignment
     );
     const bodyStyle = readSlideshowSlideTextStyle(
       config,
@@ -185,195 +278,298 @@ export function SlideshowFullFrame({
       'body',
       themeFonts,
       colors,
-      fallbackAlign
+      slide.alignment
     );
     const button = readSlideshowSlideButtonStyle(
       config,
       slideSettingsBase,
-      { color: scheme.color, muted: scheme.muted },
+      { color: headingFallback, muted: bodyFallback },
       { label: slide.buttonLabel, href: slide.buttonHref }
     );
-    return (
-    <div
-      key={slide.id}
-      style={{
-        position: 'relative',
-        flex: '0 0 100%',
-        height: '100%',
-        overflow: 'hidden',
-        background: s.background || undefined,
-      }}
-    >
+    const alignItems =
+      slide.alignment === 'center'
+        ? 'center'
+        : slide.alignment === 'right'
+          ? 'flex-end'
+          : 'flex-start';
+    const justifyContent =
+      slide.position === 'center'
+        ? 'center'
+        : slide.position === 'bottom'
+          ? 'flex-end'
+          : 'flex-start';
+    const isHorizontal = slide.direction === 'horizontal';
+    const liveImageUrl =
+      cfgString(config, `${slideSettingsBase}.imageUrl`, '').trim() ||
+      (slide.imageUrl || '').trim();
+
+    const media = (
       <LayeredSlideshowSlideMedia
-        imageUrl={
-          cfgString(config, `${blocksBase}.${slide.id}.settings.imageUrl`, '').trim() ||
-          slide.imageUrl ||
-          undefined
-        }
-        peekVariant={i % 2 === 0 ? 'figure' : 'landscape'}
+        imageUrl={liveImageUrl || undefined}
+        peekVariant={slide.peekVariant}
         figureWidth="56%"
         figureMaxWidth={520}
       />
-      {s.mediaOverlay ? (
-        <div style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'rgba(0,0,0,0.35)' }} />
-      ) : null}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 3,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: s.align.items,
-          justifyContent: s.justify,
-          textAlign: s.align.text,
-          paddingTop: s.paddingTop,
-          paddingBottom: s.paddingBottom,
-          paddingLeft: s.paddingLeft,
-          paddingRight: s.paddingRight,
-          background: 'transparent',
-          boxSizing: 'border-box',
-          pointerEvents: 'none',
-        }}
-      >
-        <EditorBlock nodeId={`${editorNodeId}:block:${slide.id}`} label="Slide">
+    );
+
+    const content = (
+      <EditorBlock nodeId={`${editorNodeId}:block:${slide.id}`} label="Slide">
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: isHorizontal ? 'row' : 'column',
+            alignItems,
+            gap: slide.gap,
+            maxWidth: onMedia ? (isHorizontal ? '100%' : 'min(720px, 92%)') : '100%',
+            width: isHorizontal ? '100%' : undefined,
+            boxSizing: 'border-box',
+            pointerEvents: 'auto',
+            textAlign: slide.alignment,
+          }}
+        >
+          {slide.title.trim() ? (
+            <EditorField
+              fieldPath={`${slideSettingsBase}.title`}
+              label="Heading"
+              as="h2"
+              style={slideshowSlideTextStyleToCss(headingStyle)}
+            >
+              <ThemeEditorRichTextContent html={slide.title} />
+            </EditorField>
+          ) : null}
+          {slide.body.trim() ? (
+            <EditorField
+              fieldPath={`${slideSettingsBase}.body`}
+              label="Text"
+              as="p"
+              style={slideshowSlideTextStyleToCss(bodyStyle)}
+            >
+              <ThemeEditorRichTextContent html={slide.body} />
+            </EditorField>
+          ) : null}
+          {button.label.trim() ? (
+            <EditorField
+              fieldPath={`${slideSettingsBase}.buttonLabel`}
+              label="Button label"
+              as="span"
+              style={{ display: 'inline-flex' }}
+            >
+              <Link
+                to={button.href || '#'}
+                target={button.openInNewTab ? '_blank' : undefined}
+                rel={button.openInNewTab ? 'noopener noreferrer' : undefined}
+                style={button.style}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {button.label}
+              </Link>
+            </EditorField>
+          ) : null}
+        </div>
+      </EditorBlock>
+    );
+
+    if (onMedia) {
+      const slideBg = slide.backgroundColor
+        ? resolveThemePaletteColorSetting(config, slide.backgroundColor, 0, '')
+        : undefined;
+      return (
+        <div
+          key={slide.id}
+          style={{
+            position: 'relative',
+            flex: '0 0 100%',
+            height: '100%',
+            overflow: 'hidden',
+            background: slideBg || undefined,
+          }}
+        >
+          {media}
+          {slide.mediaOverlay ? (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 2,
+                background: 'rgba(0,0,0,0.35)',
+                pointerEvents: 'none',
+              }}
+            />
+          ) : null}
           <div
             style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 3,
               display: 'flex',
-              flexDirection: 'column',
-              alignItems: s.align.items,
-              gap: s.gap,
-              pointerEvents: 'auto',
+              flexDirection: isHorizontal ? 'row' : 'column',
+              alignItems,
+              justifyContent,
+              paddingTop: slide.paddingTop,
+              paddingBottom: slide.paddingBottom,
+              paddingLeft: slide.paddingLeft,
+              paddingRight: slide.paddingRight,
+              boxSizing: 'border-box',
+              pointerEvents: 'none',
             }}
           >
-            {slide.title.trim() ? (
-              <EditorField
-                fieldPath={`${blocksBase}.${slide.id}.settings.title`}
-                label="Heading"
-                as="h2"
-                style={slideshowSlideTextStyleToCss(headingStyle)}
-              >
-                <ThemeEditorRichTextContent html={slide.title} />
-              </EditorField>
-            ) : null}
-            {slide.body.trim() ? (
-              <EditorField
-                fieldPath={`${blocksBase}.${slide.id}.settings.body`}
-                label="Text"
-                as="p"
-                style={slideshowSlideTextStyleToCss(bodyStyle)}
-              >
-                <ThemeEditorRichTextContent html={slide.body} />
-              </EditorField>
-            ) : null}
-            {button.label.trim() ? (
-              <EditorField
-                fieldPath={`${blocksBase}.${slide.id}.settings.buttonLabel`}
-                label="Button label"
-                as="span"
-                style={{ display: 'inline-flex' }}
-              >
-                <Link
-                  to={button.href || '#'}
-                  target={button.openInNewTab ? '_blank' : undefined}
-                  rel={button.openInNewTab ? 'noopener noreferrer' : undefined}
-                  style={button.style}
-                >
-                  {button.label}
-                </Link>
-              </EditorField>
-            ) : null}
+            {content}
           </div>
-        </EditorBlock>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={slide.id}
+        style={{
+          position: 'relative',
+          flex: '0 0 100%',
+          display: 'flex',
+          flexDirection: 'column',
+          background: sectionBackground,
+        }}
+      >
+        <div style={{ position: 'relative', width: '100%', height: minHeight, minHeight, overflow: 'hidden' }}>
+          {media}
+          {slide.mediaOverlay ? (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 2,
+                background: 'rgba(0,0,0,0.28)',
+                pointerEvents: 'none',
+              }}
+            />
+          ) : null}
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: isHorizontal ? 'row' : 'column',
+            alignItems,
+            justifyContent,
+            gap: slide.gap,
+            paddingTop: slide.paddingTop,
+            paddingBottom: slide.paddingBottom,
+            paddingLeft: slide.paddingLeft,
+            paddingRight: slide.paddingRight,
+            boxSizing: 'border-box',
+            background: slide.backgroundColor
+              ? resolveThemePaletteColorSetting(config, slide.backgroundColor, 0, '#fff')
+              : '#fff',
+            color: scheme.color,
+          }}
+        >
+          {content}
+        </div>
       </div>
-    </div>
     );
   };
+
+  const showNav = navigationIcon !== 'none' && slideCount > 1;
 
   return (
     <>
       {customCss ? <style>{customCss}</style> : null}
       <EditorSection sectionId={sectionId} editorNodeId={editorNodeId} label="Slideshow: Full frame">
-        <div
-          className={scopeClass}
-          style={{ paddingTop, paddingBottom, background: sectionBackground, boxSizing: 'border-box' }}
-        >
-          <div
-            style={{
-              position: 'relative',
-              width: '100%',
-              height: minHeight,
-              minHeight,
-              overflow: 'hidden',
-              background: sectionBackground,
-              color: scheme.color,
-              fontFamily: fontBody,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                height: '100%',
-                width: '100%',
-                transform: `translateX(-${index * 100}%)`,
-                transition: 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-            >
-              {slides.map(renderSlide)}
-            </div>
-
-            {slideCount > 1 ? (
-              <>
-                <button
-                  type="button"
-                  aria-label="Previous slide"
-                  onClick={() => goTo((index - 1 + slideCount) % slideCount)}
-                  style={{ ...navButtonStyle, left: 20 }}
-                >
-                  <Chevron dir="left" />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Next slide"
-                  onClick={() => goTo((index + 1) % slideCount)}
-                  style={{ ...navButtonStyle, right: 20 }}
-                >
-                  <Chevron dir="right" />
-                </button>
-              </>
-            ) : null}
-
-            {pagination === 'dots' && slideCount > 1 ? (
+        <div className={scopeClass} style={outerStyle}>
+          <div style={innerStyle}>
+            <div style={frameStyle} role="region" aria-roledescription="carousel" aria-label="Slideshow">
               <div
                 style={{
-                  position: 'absolute',
-                  bottom: 20,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
                   display: 'flex',
-                  gap: 8,
-                  zIndex: 5,
+                  height: onMedia ? '100%' : undefined,
+                  width: '100%',
+                  transform: `translateX(-${index * 100}%)`,
+                  transition: 'transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
-                {slides.map((s, i) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    aria-label={`Go to slide ${i + 1}`}
-                    onClick={() => goTo(i)}
-                    style={{
-                      width: 8,
-                      height: 8,
-                      padding: 0,
-                      border: 'none',
-                      borderRadius: '50%',
-                      cursor: 'pointer',
-                      background: i === index ? '#111827' : 'rgba(17,24,39,0.35)',
-                    }}
-                  />
-                ))}
+                {slides.map(renderSlideContent)}
               </div>
-            ) : null}
+
+              {showNav ? (
+                <>
+                  <NavButton
+                    label="Previous slide"
+                    onClick={goPrev}
+                    background={navigationIconBackground}
+                    icon={navigationIcon}
+                    side="left"
+                    color={navColor}
+                  />
+                  <NavButton
+                    label="Next slide"
+                    onClick={goNext}
+                    background={navigationIconBackground}
+                    icon={navigationIcon}
+                    side="right"
+                    color={navColor}
+                  />
+                </>
+              ) : null}
+
+              {pagination === 'dots' && slideCount > 1 ? (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 20,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    display: 'flex',
+                    gap: 8,
+                    zIndex: 5,
+                  }}
+                >
+                  {slides.map((s, i) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      aria-label={`Go to slide ${i + 1}`}
+                      onClick={() => goTo(i)}
+                      style={{
+                        width: 8,
+                        height: 8,
+                        padding: 0,
+                        border: 'none',
+                        borderRadius: '50%',
+                        cursor: 'pointer',
+                        background:
+                          i === index
+                            ? textOnMedia
+                              ? '#fff'
+                              : '#111827'
+                            : textOnMedia
+                              ? 'rgba(255,255,255,0.45)'
+                              : 'rgba(17,24,39,0.35)',
+                      }}
+                    />
+                  ))}
+                </div>
+              ) : null}
+
+              {pagination === 'counter' && slideCount > 1 ? (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 20,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 5,
+                    padding: '6px 12px',
+                    borderRadius: 999,
+                    background: textOnMedia ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.9)',
+                    color: textOnMedia ? '#fff' : '#111827',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {index + 1} / {slideCount}
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
       </EditorSection>

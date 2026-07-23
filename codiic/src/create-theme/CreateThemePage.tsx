@@ -3977,6 +3977,58 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     }
   }, []);
 
+  useEffect(() => {
+    const isTypingTarget = (target: EventTarget | null) => {
+      const el = target as HTMLElement | null;
+      const tag = el?.tagName?.toLowerCase();
+      return (
+        tag === 'input' ||
+        tag === 'textarea' ||
+        tag === 'select' ||
+        Boolean(el?.isContentEditable)
+      );
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      const mod = event.ctrlKey || event.metaKey;
+
+      if (mod && key === 's') {
+        event.preventDefault();
+        if (isCheckoutProfile) {
+          if (!checkoutConfiguration || savingCheckoutConfiguration) return;
+          void handleCheckoutSave();
+          return;
+        }
+        if (!defaultConfig || !editorSchema || loading || savingTheme) return;
+        handleSave();
+        return;
+      }
+
+      if (!event.shiftKey || mod || event.altKey) return;
+      if (key !== 'i') return;
+      if (isTypingTarget(event.target)) return;
+
+      event.preventDefault();
+      handleInspectorEnabledChange(!inspectorEnabled);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [
+    handleInspectorEnabledChange,
+    inspectorEnabled,
+    isCheckoutProfile,
+    checkoutConfiguration,
+    savingCheckoutConfiguration,
+    handleCheckoutSave,
+    defaultConfig,
+    editorSchema,
+    loading,
+    savingTheme,
+    handleSave,
+  ]);
+
   const handleCheckoutPreviewSelect = useCallback(
     (nodeId: string) => {
       setSidebarTab('sections');

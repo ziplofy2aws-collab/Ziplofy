@@ -4335,7 +4335,7 @@ function SlideshowInsetGroupedSettingsPanel({
   );
 }
 
-/** Slideshow full frame: General → Navigation → Padding → Custom CSS. */
+/** Slideshow full frame: General → Navigation → Padding. */
 function SlideshowFullFrameGroupedSettingsPanel({
   fields,
   values,
@@ -4423,21 +4423,6 @@ function SlideshowFullFrameGroupedSettingsPanel({
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
 

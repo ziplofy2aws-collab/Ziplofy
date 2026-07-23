@@ -1,2 +1,6 @@
-/** Defaults applied after pack blueprint clone (extend in place as needed). */
-export function applyPreset(_section: Record<string, unknown>): void {}
+import { applySlideshowFullFramePreset } from '../../utils/slideshow-full-frame-preset.util';
+
+/** Defaults applied after pack blueprint clone. */
+export function applyPreset(section: Record<string, unknown>): void {
+  applySlideshowFullFramePreset(section);
+}

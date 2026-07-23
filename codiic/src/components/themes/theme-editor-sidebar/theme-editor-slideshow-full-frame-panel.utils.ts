@@ -5,7 +5,6 @@ export const SLIDESHOW_FULL_FRAME_PANEL_GROUP_ORDER = [
   'General',
   'Navigation',
   'Padding',
-  'Custom CSS',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(SLIDESHOW_FULL_FRAME_PANEL_GROUP_ORDER);
@@ -18,11 +17,11 @@ const FIELD_SORT: Record<string, number> = {
   colorScheme: 4,
   navigationIcon: 0,
   navigationIconBackground: 1,
-  pagination: 2,
-  autoRotate: 3,
+  navigationIconColor: 2,
+  pagination: 3,
+  autoRotate: 4,
   paddingTop: 0,
   paddingBottom: 1,
-  customCss: 0,
 };
 
 function fieldSortKey(path: string): number {
@@ -38,6 +37,8 @@ export function isSlideshowFullFrameSectionType(
 
 export function isSlideshowFullFramePanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
+  const key = field.path.split('.').pop() ?? '';
+  if (key === 'customCss') return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
@@ -47,7 +48,6 @@ export function sortSlideshowFullFramePanelFields(fields: EditorFieldDef[]): Edi
     General: 0,
     Navigation: 1,
     Padding: 2,
-    'Custom CSS': 3,
   };
   return [...fields].sort((a, b) => {
     const ga = groupRank[a.group ?? ''] ?? 9;

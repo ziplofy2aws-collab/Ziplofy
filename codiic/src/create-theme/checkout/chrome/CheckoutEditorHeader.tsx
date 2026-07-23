@@ -83,9 +83,17 @@ export function CheckoutEditorHeader({
                 ? 'border-[#b4cce8] bg-[#e8f0fe] text-[#005bd3]'
                 : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
             }`}
-            title={inspectorEnabled ? 'Turn off inspector' : 'Turn on inspector'}
+            title={
+              inspectorEnabled
+                ? 'Deactivate inspector Shift + I'
+                : 'Activate inspector Shift + I'
+            }
             aria-pressed={inspectorEnabled}
-            aria-label="Inspector"
+            aria-label={
+              inspectorEnabled
+                ? 'Deactivate inspector (Shift + I)'
+                : 'Activate inspector (Shift + I)'
+            }
           >
             <InspectorToggleIcon className="h-5 w-5" />
           </button>
@@ -150,6 +158,8 @@ export function CheckoutEditorHeader({
           type="button"
           onClick={onSave}
           disabled={saveDisabled || saving}
+          title="Save Ctrl + S"
+          aria-keyshortcuts="Control+S Meta+S"
           className={`rounded-lg px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed ${
             saveDisabled || saving
               ? 'bg-gray-300 hover:bg-gray-400 disabled:opacity-100'

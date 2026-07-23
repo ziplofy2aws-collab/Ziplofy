@@ -2490,6 +2490,18 @@ function mapSlideshowInsetBlockNodes(
         sidebar: true,
       },
       {
+        path: `${settingsBase}.peekVariant`,
+        type: 'select',
+        label: 'Media style',
+        group: 'Media',
+        widget: 'segmented',
+        sidebar: true,
+        options: [
+          { value: 'figure', label: 'Figure' },
+          { value: 'landscape', label: 'Landscape' },
+        ],
+      },
+      {
         path: `${settingsBase}.direction`,
         type: 'select',
         label: 'Direction',
@@ -2605,11 +2617,6 @@ function mapSlideshowInsetBlockNodes(
       },
     ];
 
-    const innerAddBlock: SidebarNode = {
-      id: `${slideNodeId}:inner-add-block`,
-      label: 'Add block',
-      kind: 'add-block',
-    };
     const headingFields: EditorFieldDef[] = [
       {
         path: `${settingsBase}.title`,
@@ -3020,7 +3027,7 @@ function mapSlideshowInsetBlockNodes(
       fields: buttonFields,
     };
     const children = reorderSidebarChildren(
-      [innerAddBlock, headingNode, textNode, buttonNode],
+      [headingNode, textNode, buttonNode],
       childrenListKey,
       itemOrder
     );
@@ -3091,6 +3098,9 @@ function layoutSectionNode(
   const isCollectionListCarouselLayout = isCollectionListCarouselSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListEditorialLayout = isCollectionListEditorialSectionType(sec.type, layoutCatalogVariant);
   const isCollectionListGridLayout = isCollectionListGridSectionType(sec.type, layoutCatalogVariant);
+  const isLayeredSlideshowLayout = isLayeredSlideshowSectionType(sec.type, layoutCatalogVariant);
+  const isSlideshowFullFrameLayout = isSlideshowFullFrameSectionType(sec.type, layoutCatalogVariant);
+  const isSlideshowInsetLayout = isSlideshowInsetSectionType(sec.type, layoutCatalogVariant);
   const isFooter = layoutBlueprintKey(instanceId) === 'footer';
   const isFooterUtilities = layoutBlueprintKey(instanceId) === 'footer_utilities';
   const utilitiesVariant = isFooterUtilities ? layoutCatalogVariantFromValues(values, instanceId) : '';
@@ -3134,6 +3144,9 @@ function layoutSectionNode(
     isCollectionListCarouselLayout ||
     isCollectionListEditorialLayout ||
     isCollectionListGridLayout ||
+    isLayeredSlideshowLayout ||
+    isSlideshowFullFrameLayout ||
+    isSlideshowInsetLayout ||
     isFooter ||
     isFooterUtilities
       ? []
@@ -3317,6 +3330,17 @@ function layoutSectionNode(
       itemOrder,
       layoutChildrenKey
     );
+  } else if (isLayeredSlideshowLayout || isSlideshowFullFrameLayout || isSlideshowInsetLayout) {
+    blockNodes = mapSlideshowInsetBlockNodes(
+      id,
+      `sections.${instanceId}.blocks`,
+      values,
+      itemOrder,
+      layoutChildrenKey,
+      config,
+      ['sections', instanceId, 'block_order'],
+      isLayeredSlideshowLayout ? 'Content layout' : 'Layout'
+    );
   }
   if (isAnnouncement && remappedBlocks?.length) {
     blockNodes = mapAnnouncementBlockNodes(
@@ -3390,7 +3414,10 @@ function layoutSectionNode(
       isCollectionListBentoLayout ||
       isCollectionListCarouselLayout ||
       isCollectionListEditorialLayout ||
-      isCollectionListGridLayout
+      isCollectionListGridLayout ||
+      isLayeredSlideshowLayout ||
+      isSlideshowFullFrameLayout ||
+      isSlideshowInsetLayout
       ? blockNodes
       : [...sectionFields, ...blockNodes],
     layoutChildrenKey,
@@ -3465,6 +3492,12 @@ function layoutSectionNode(
                                       ? 'Collection list: Editorial'
                                     : isCollectionListGridLayout
                                       ? 'Collection list: Grid'
+                                    : isLayeredSlideshowLayout
+                                      ? 'Layered slideshow'
+                                    : isSlideshowFullFrameLayout
+                                      ? 'Slideshow: Full frame'
+                                    : isSlideshowInsetLayout
+                                      ? 'Slideshow: Inset'
                                       : sec.label ?? instanceId,
     kind: 'section',
     icon: 'section',

@@ -91,7 +91,9 @@ export function filterTextBlockPanelFieldsForTypographyPreset(
   fields: EditorFieldDef[],
   values: Record<string, string | boolean>
 ): EditorFieldDef[] {
-  const presetField = fields.find((f) => f.path.endsWith('typographyPreset'));
+  const presetField =
+    fields.find((f) => (f.path.split('.').pop() ?? '') === 'typographyPreset') ??
+    fields.find((f) => f.path.endsWith('.typographyPreset'));
   if (!presetField || isTextBlockTypographyCustomPreset(values, presetField.path)) {
     return fields;
   }
@@ -107,7 +109,7 @@ export function resolveTextBlockTypographyField(
   fields: EditorFieldDef[]
 ): EditorFieldDef {
   const fallback = TEXT_BLOCK_TYPO_FIELD_FALLBACKS[key];
-  const fromSchema = fields.find((f) => f.path.endsWith(key));
+  const fromSchema = fields.find((f) => (f.path.split('.').pop() ?? '') === key);
   if (fromSchema) {
     return {
       ...fromSchema,

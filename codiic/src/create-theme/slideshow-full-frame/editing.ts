@@ -44,6 +44,11 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
+      "key": "navigationIconColor",
+      "label": "Icon color",
+      "type": "color"
+    },
+    {
       "key": "pagination",
       "label": "Pagination",
       "type": "text"
@@ -62,11 +67,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     }
   ],
   "blocks": [
@@ -266,8 +266,58 @@ export const editing: CreateThemeEditing = {
         },
         {
           "key": "peekVariant",
-          "label": "Peek style",
+          "label": "Media style",
           "type": "text"
+        },
+        {
+          "key": "direction",
+          "label": "Direction",
+          "type": "select"
+        },
+        {
+          "key": "alignment",
+          "label": "Alignment",
+          "type": "select"
+        },
+        {
+          "key": "position",
+          "label": "Position",
+          "type": "select"
+        },
+        {
+          "key": "gap",
+          "label": "Gap",
+          "type": "number"
+        },
+        {
+          "key": "backgroundColor",
+          "label": "Background color",
+          "type": "color"
+        },
+        {
+          "key": "mediaOverlay",
+          "label": "Media overlay",
+          "type": "boolean"
+        },
+        {
+          "key": "paddingTop",
+          "label": "Padding top",
+          "type": "number"
+        },
+        {
+          "key": "paddingBottom",
+          "label": "Padding bottom",
+          "type": "number"
+        },
+        {
+          "key": "paddingLeft",
+          "label": "Padding left",
+          "type": "number"
+        },
+        {
+          "key": "paddingRight",
+          "label": "Padding right",
+          "type": "number"
         }
       ]
     }

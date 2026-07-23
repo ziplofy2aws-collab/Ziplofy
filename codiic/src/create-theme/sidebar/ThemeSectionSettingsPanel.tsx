@@ -736,6 +736,7 @@ import {
   isSlideshowInsetSettingsPanelFields,
 } from './theme-editor-slideshow-inset-panel.utils';
 import {
+  isSlideshowFamilySlideBlockNodeId,
   isSlideshowSlideBlockFieldsOnly,
   prepareSlideshowSlideBlockSettingsNode,
 } from './theme-editor-slideshow-slide-block-panel.utils';
@@ -9838,7 +9839,7 @@ function SlideshowInsetGroupedSettingsPanel({
   );
 }
 
-/** Slideshow full frame: General → Navigation → Padding → Custom CSS. */
+/** Slideshow full frame: General → Navigation → Padding. */
 function SlideshowFullFrameGroupedSettingsPanel({
   fields,
   values,
@@ -9944,21 +9945,6 @@ function SlideshowFullFrameGroupedSettingsPanel({
           );
         }
 
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
-          );
-        }
-
         return null;
       })}
     </div>
@@ -10017,6 +10003,7 @@ function SlideshowInsetSlideBlockSettingsPanel({
 }) {
   const pick = (key: string) => fields.find((f) => (f.path.split('.').pop() ?? '') === key);
   const imageUrl = pick('imageUrl');
+  const peekVariant = pick('peekVariant');
   const direction = pick('direction');
   const alignment = pick('alignment');
   const position = pick('position');
@@ -10036,6 +10023,9 @@ function SlideshowInsetSlideBlockSettingsPanel({
       <div className="space-y-1 px-1 py-3">
         {imageUrl ? (
           <ImagePickerFieldRow field={imageUrl} values={values} onFieldChange={onFieldChange} />
+        ) : null}
+        {peekVariant ? (
+          <SegmentedFieldRow field={peekVariant} values={values} onFieldChange={onFieldChange} />
         ) : null}
       </div>
 
@@ -12391,65 +12381,58 @@ function RichTextTypographyBlockSettingsPanel({
     { value: 'custom', label: 'Custom' },
   ] as const;
 
-  /** Heading-style presets (rich text heading, quote, or slide heading via styleKeyPrefix). */
-  const typoPrefix =
-    stylePrefix === 'heading' || stylePrefix === 'quote' ? stylePrefix : null;
-  const typoSettingsBase = typoPrefix
-    ? (preset?.path.replace(new RegExp(`\\.${typoPrefix}TypographyPreset$`), '') ||
-        find(typoPrefix)?.path.replace(/\.[^.]+$/, '') ||
-        find(`${typoPrefix}Width`)?.path.replace(/\.[^.]+$/, '') ||
-        '')
-    : '';
+  /** Any typography prefix (heading, quote, text, body, description, …) supports Custom. */
+  const typoPrefix = stylePrefix;
+  const isHeadingStylePrefix = typoPrefix === 'heading' || typoPrefix === 'quote';
+  const typoPresetOptions = isHeadingStylePrefix
+    ? [...RICH_TEXT_HEADING_PRESET_OPTIONS]
+    : [...TEXT_BLOCK_TYPOGRAPHY_PRESET_OPTIONS];
+  const typoSettingsBase =
+    preset?.path.replace(new RegExp(`\\.${typoPrefix}TypographyPreset$`), '') ||
+    find(typoPrefix)?.path.replace(/\.[^.]+$/, '') ||
+    find(`${typoPrefix}Width`)?.path.replace(/\.[^.]+$/, '') ||
+    '';
   const typoPresetPath =
-    (typoPrefix && preset?.path) ||
-    (typoPrefix && typoSettingsBase ? `${typoSettingsBase}.${typoPrefix}TypographyPreset` : '');
-  const typoPresetField =
-    typoPrefix && typoPresetPath
-      ? {
-          path: typoPresetPath,
-          type: 'select' as const,
-          label: 'Preset',
-          group: 'Typography',
-          widget: 'select-inline' as const,
-          options: [...RICH_TEXT_HEADING_PRESET_OPTIONS],
-          description: preset?.description ?? 'Edit presets in theme settings',
-        }
-      : typoPrefix
-        ? null
-        : preset;
+    preset?.path ||
+    (typoSettingsBase ? `${typoSettingsBase}.${typoPrefix}TypographyPreset` : '');
+  const typoPresetField = typoPresetPath
+    ? {
+        path: typoPresetPath,
+        type: 'select' as const,
+        label: 'Preset',
+        group: 'Typography',
+        widget: 'select-inline' as const,
+        options: typoPresetOptions,
+        description: preset?.description ?? 'Edit presets in theme settings',
+      }
+    : null;
 
-  const typoPresetCandidates = typoPrefix
-    ? Array.from(
-        new Set(
-          [
-            typoPresetPath,
-            preset?.path,
-            typoSettingsBase ? `${typoSettingsBase}.${typoPrefix}TypographyPreset` : '',
-          ].filter((p): p is string => Boolean(p))
-        )
-      )
-    : [];
-  const typoCustom =
-    Boolean(typoPrefix) &&
-    typoPresetCandidates.some(
-      (path) => String(values[path] ?? '').trim().toLowerCase() === 'custom'
-    );
+  const typoPresetCandidates = Array.from(
+    new Set(
+      [
+        typoPresetPath,
+        preset?.path,
+        typoSettingsBase ? `${typoSettingsBase}.${typoPrefix}TypographyPreset` : '',
+      ].filter((p): p is string => Boolean(p))
+    )
+  );
+  const typoCustom = typoPresetCandidates.some(
+    (path) => String(values[path] ?? '').trim().toLowerCase() === 'custom'
+  );
   const resolvedTypoSettingsBase =
     typoSettingsBase ||
-    (typoPresetPath && typoPrefix
+    (typoPresetPath
       ? typoPresetPath.replace(new RegExp(`\\.${typoPrefix}TypographyPreset$`), '')
       : '');
 
-  const typoCustomDefaults: Record<string, string> = typoPrefix
-    ? {
-        [`${typoPrefix}Font`]: 'heading',
-        [`${typoPrefix}FontSize`]: '32px',
-        [`${typoPrefix}LineHeight`]: 'normal',
-        [`${typoPrefix}LetterSpacing`]: 'normal',
-        [`${typoPrefix}TextCase`]: 'default',
-        [`${typoPrefix}Wrap`]: 'pretty',
-      }
-    : {};
+  const typoCustomDefaults: Record<string, string> = {
+    [`${typoPrefix}Font`]: isHeadingStylePrefix ? 'heading' : 'body',
+    [`${typoPrefix}FontSize`]: isHeadingStylePrefix ? '32px' : '16px',
+    [`${typoPrefix}LineHeight`]: 'normal',
+    [`${typoPrefix}LetterSpacing`]: 'normal',
+    [`${typoPrefix}TextCase`]: 'default',
+    [`${typoPrefix}Wrap`]: 'pretty',
+  };
   const typoValues =
     typoCustom && resolvedTypoSettingsBase
       ? {
@@ -12511,7 +12494,7 @@ function RichTextTypographyBlockSettingsPanel({
               values={values}
               onFieldChange={(path, type, value) => {
                 onFieldChange(path, type, value);
-                if (typoPrefix && String(value).trim().toLowerCase() === 'custom') {
+                if (String(value).trim().toLowerCase() === 'custom') {
                   for (const alt of typoPresetCandidates) {
                     if (alt !== path) onFieldChange(alt, 'text', 'custom');
                   }
@@ -12526,7 +12509,7 @@ function RichTextTypographyBlockSettingsPanel({
                 }
               }}
             />
-            {typoPrefix && typoPresetField.description && !typoCustom ? (
+            {typoPresetField.description && !typoCustom ? (
               <p className="mt-1 text-right text-[12px] text-gray-500">
                 Edit presets in{' '}
                 <button
@@ -12538,7 +12521,7 @@ function RichTextTypographyBlockSettingsPanel({
                 </button>
               </p>
             ) : null}
-            {typoCustom && typoPrefix && resolvedTypoSettingsBase
+            {typoCustom && resolvedTypoSettingsBase
               ? HEADING_CUSTOM_TYPOGRAPHY_KEYS.map((headingKey) => {
                   const field = resolvePrefixedTypographyCustomField(
                     typoPrefix,
@@ -16568,7 +16551,9 @@ function TextBlockTypographySettingsGroup({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const preset = fields.find((f) => f.path.endsWith('.typographyPreset'));
+  const preset =
+    fields.find((f) => (f.path.split('.').pop() ?? '') === 'typographyPreset') ??
+    fields.find((f) => f.path.endsWith('.typographyPreset'));
   const presetField = preset
     ? {
         ...preset,
@@ -16580,6 +16565,14 @@ function TextBlockTypographySettingsGroup({
     ? isTextBlockTypographyCustomPreset(values, presetField.path)
     : false;
   const settingsBase = presetField?.path.replace(/\.typographyPreset$/, '') ?? '';
+  const textCustomDefaults: Record<string, string> = {
+    font: 'body',
+    fontSize: 'default',
+    lineHeight: 'normal',
+    letterSpacing: 'normal',
+    textCase: 'default',
+    wrap: 'pretty',
+  };
 
   return (
     <div className="px-1 py-3">
@@ -16587,13 +16580,29 @@ function TextBlockTypographySettingsGroup({
       <div className="space-y-1">
         {presetField ? (
           <div>
-            <InlineSelectFieldRow field={presetField} values={values} onFieldChange={onFieldChange} />
-            <p className="pb-1 text-[12px] text-gray-500">
-              Edit presets in{' '}
-              <a href="/settings/theme" className="text-[#005bd3] hover:underline">
-                theme settings
-              </a>
-            </p>
+            <InlineSelectFieldRow
+              field={presetField}
+              values={values}
+              onFieldChange={(path, type, value) => {
+                onFieldChange(path, type, value);
+                if (String(value).trim().toLowerCase() === 'custom' && settingsBase) {
+                  for (const [key, fallback] of Object.entries(textCustomDefaults)) {
+                    const fieldPath = `${settingsBase}.${key}`;
+                    if (values[fieldPath] === undefined || values[fieldPath] === '') {
+                      onFieldChange(fieldPath, 'text', fallback);
+                    }
+                  }
+                }
+              }}
+            />
+            {!isCustom ? (
+              <p className="pb-1 text-[12px] text-gray-500">
+                Edit presets in{' '}
+                <a href="/settings/theme" className="text-[#005bd3] hover:underline">
+                  theme settings
+                </a>
+              </p>
+            ) : null}
           </div>
         ) : null}
         {isCustom && settingsBase
@@ -19155,7 +19164,8 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isSlideshowInsetSlideBlockPanel =
     node.kind === 'block' &&
     !/:nested:/.test(node.id) &&
-    /(slideshow_(inset|full_frame)|layered_slideshow)[^:]*:block:[^:]+$/.test(node.id);
+    (isSlideshowFamilySlideBlockNodeId(node.id) ||
+      /(slideshow_(inset|full_frame)|layered_slideshow)[^:]*:block:[^:]+$/.test(node.id));
   const isCollectionLinkTitlePanel =
     !isBlogPostsGridTitleBlockNodeId(node.id) &&
     !isBlogPostsGridCardTitleBlockNodeId(node.id) &&

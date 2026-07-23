@@ -252,9 +252,13 @@ export function RichText({
   const TEXT_PRESETS: Record<string, { fontSize: string; fontWeight: number; lineHeight: number }> = {
     default: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.55 },
     body: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.55 },
+    paragraph: { fontSize: '1rem', fontWeight: 400, lineHeight: 1.55 },
     'heading-6': { fontSize: '1.125rem', fontWeight: 600, lineHeight: 1.4 },
     'heading-5': { fontSize: '1.375rem', fontWeight: 600, lineHeight: 1.3 },
     'heading-4': { fontSize: '1.75rem', fontWeight: 700, lineHeight: 1.25 },
+    'heading-3': { fontSize: '2rem', fontWeight: 700, lineHeight: 1.2 },
+    'heading-2': { fontSize: '2.5rem', fontWeight: 700, lineHeight: 1.15 },
+    'heading-1': { fontSize: '3.25rem', fontWeight: 700, lineHeight: 1.1 },
   };
   const textPresetStyle = TEXT_PRESETS[textPreset] ?? TEXT_PRESETS.default;
   const textMaxWidthPx =
@@ -264,12 +268,41 @@ export function RichText({
       ? scheme.muted
       : resolveThemePaletteColorSetting(config, textColorRaw, 1, scheme.muted);
 
+  const textIsCustom = textPreset === 'custom';
+  const customTextFont = cfgString(config, `${settingsBase}.textFont`, 'body');
+  const customTextSizeRaw = cfgString(config, `${settingsBase}.textFontSize`, '16px');
+  const customTextSizePx = (() => {
+    const n = parseFloat(customTextSizeRaw);
+    return Number.isFinite(n) && n > 0 ? n : 16;
+  })();
+  const customTextWeightStyle = resolveThemeFontWeightAndStyle(customTextFont);
+  const customTextWrap = cfgString(config, `${settingsBase}.textWrap`, 'pretty');
+  const customTextCase = cfgString(config, `${settingsBase}.textTextCase`, 'default');
+
   const bodyStyle: CSSProperties = {
     margin: 0,
-    fontFamily: fontBody,
-    fontSize: textPresetStyle.fontSize,
-    fontWeight: textPresetStyle.fontWeight,
-    lineHeight: textPresetStyle.lineHeight,
+    fontFamily: textIsCustom
+      ? resolveThemeFontFamily(customTextFont, themeFonts)
+      : fontBody,
+    fontSize: textIsCustom ? customTextSizePx : textPresetStyle.fontSize,
+    fontWeight: textIsCustom
+      ? (customTextWeightStyle.fontWeight ?? 400)
+      : textPresetStyle.fontWeight,
+    fontStyle: textIsCustom ? customTextWeightStyle.fontStyle : undefined,
+    lineHeight: textIsCustom
+      ? lineHeightMultiplier(cfgString(config, `${settingsBase}.textLineHeight`, 'normal'))
+      : textPresetStyle.lineHeight,
+    letterSpacing: textIsCustom
+      ? letterSpacingCss(cfgString(config, `${settingsBase}.textLetterSpacing`, 'normal'))
+      : undefined,
+    textTransform: textIsCustom && customTextCase === 'uppercase' ? 'uppercase' : undefined,
+    textWrap: textIsCustom
+      ? ((customTextWrap === 'nowrap'
+          ? 'nowrap'
+          : customTextWrap === 'balance'
+            ? 'balance'
+            : 'pretty') as CSSProperties['textWrap'])
+      : undefined,
     width: textWidthMode === 'fill' ? '100%' : 'fit-content',
     maxWidth: textMaxWidthPx,
     color: bodyColor,

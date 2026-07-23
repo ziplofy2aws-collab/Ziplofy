@@ -200,9 +200,17 @@ export function CreateThemeHeader({
             className={`${iconBtn} ${
               inspectorEnabled ? 'bg-gray-100 text-gray-900' : ''
             }`}
-            title={inspectorEnabled ? 'Turn off inspector' : 'Turn on inspector'}
+            title={
+              inspectorEnabled
+                ? 'Deactivate inspector Shift + I'
+                : 'Activate inspector Shift + I'
+            }
             aria-pressed={inspectorEnabled}
-            aria-label="Inspector"
+            aria-label={
+              inspectorEnabled
+                ? 'Deactivate inspector (Shift + I)'
+                : 'Activate inspector (Shift + I)'
+            }
           >
             <InspectorToggleIcon className="h-5 w-5" />
           </button>
@@ -257,6 +265,8 @@ export function CreateThemeHeader({
           onClick={onSave}
           disabled={saveDisabled || saving}
           className="h-10 rounded-lg bg-gray-900 px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
+          title="Save Ctrl + S"
+          aria-keyshortcuts="Control+S Meta+S"
         >
           {saving ? 'Saving…' : 'Save'}
         </button>

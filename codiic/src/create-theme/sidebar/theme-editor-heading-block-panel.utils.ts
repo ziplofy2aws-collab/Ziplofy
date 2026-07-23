@@ -872,17 +872,16 @@ export function resolveHeadingTypographyField(
 }
 
 /**
- * Resolve custom typography controls for a prefixed block (heading / quote).
+ * Resolve custom typography controls for a prefixed block (heading / quote / text / body / …).
  * Reuses heading field fallbacks with the given prefix substituted into the path/key.
  */
 export function resolvePrefixedTypographyCustomField(
-  prefix: 'heading' | 'quote',
+  prefix: string,
   headingKey: (typeof HEADING_CUSTOM_TYPOGRAPHY_KEYS)[number],
   settingsBase: string,
   fields: EditorFieldDef[]
 ): EditorFieldDef {
-  const key =
-    prefix === 'heading' ? headingKey : (headingKey.replace(/^heading/, 'quote') as string);
+  const key = headingKey.replace(/^heading/, prefix);
   const fallback = HEADING_TYPO_FIELD_FALLBACKS[headingKey];
   const fromSchema = fields.find((f) => f.path.split('.').pop() === key);
   if (fromSchema) {

@@ -14195,6 +14195,14 @@
           ]
         },
         {
+          "path": "sections.slideshow_full_frame.settings.navigationIconColor",
+          "type": "color",
+          "label": "Icon color",
+          "group": "Navigation",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
           "path": "sections.slideshow_full_frame.settings.pagination",
           "type": "select",
           "label": "Pagination",
@@ -14254,7 +14262,7 @@
           "label": "Custom CSS",
           "group": "Custom CSS",
           "widget": "accordion",
-          "sidebar": true
+          "sidebar": false
         }
       ],
       "blocks": [
@@ -31288,6 +31296,14 @@
               ]
             },
             {
+              "path": "templates.index.sections.slideshow_full_frame.settings.navigationIconColor",
+              "type": "color",
+              "label": "Icon color",
+              "group": "Navigation",
+              "widget": "color",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.slideshow_full_frame.settings.pagination",
               "type": "select",
               "label": "Pagination",
@@ -31347,7 +31363,7 @@
               "label": "Custom CSS",
               "group": "Custom CSS",
               "widget": "accordion",
-              "sidebar": true
+              "sidebar": false
             }
           ],
           "blocks": [
