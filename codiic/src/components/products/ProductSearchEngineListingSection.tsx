@@ -12,6 +12,7 @@ interface ProductSearchEngineListingSectionProps {
   onMetaDescriptionChange: (value: string) => void;
   onUrlHandleChange: (value: string) => void;
   appearance?: ProductFormAppearance;
+  embedded?: boolean;
 }
 
 const ProductSearchEngineListingSection: React.FC<
@@ -26,6 +27,7 @@ const ProductSearchEngineListingSection: React.FC<
   onMetaDescriptionChange,
   onUrlHandleChange,
   appearance = 'default',
+  embedded = false,
 }) => {
   return (
     <SearchEngineListingEditor
@@ -40,7 +42,14 @@ const ProductSearchEngineListingSection: React.FC<
       onMetaDescriptionChange={onMetaDescriptionChange}
       onUrlHandleChange={onUrlHandleChange}
       compact={appearance === 'minimal'}
-      className={appearance === 'minimal' ? 'border-gray-200/50 shadow-none' : ''}
+      embedded={embedded}
+      className={
+        embedded
+          ? ''
+          : appearance === 'minimal'
+            ? 'border-gray-200/50 shadow-none'
+            : ''
+      }
     />
   );
 };

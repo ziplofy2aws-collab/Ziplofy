@@ -686,10 +686,10 @@ const App: React.FC = () => {
         <TaxAndDutiesGlobalSettingsProvider>
           <Router>
           <Toaster
-            position="bottom-right"
+            position="top-center"
             gutter={12}
             toastOptions={{
-              duration: 4000,
+              duration: 7000,
               style: {
                 background: "#fff",
                 color: "#374151",

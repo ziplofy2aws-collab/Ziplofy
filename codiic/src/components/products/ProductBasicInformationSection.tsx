@@ -19,6 +19,7 @@ interface ProductBasicInformationSectionProps {
   onRemoveImage: (index: number) => void;
   mediaDisabled?: boolean;
   appearance?: ProductFormAppearance;
+  hideTitle?: boolean;
 }
 
 const ProductBasicInformationSection: React.FC<
@@ -33,12 +34,15 @@ const ProductBasicInformationSection: React.FC<
   onRemoveImage,
   mediaDisabled = false,
   appearance = 'default',
+  hideTitle = false,
 }) => {
   return (
     <div className={productFormCardClass(appearance)}>
-      <h2 className={productFormSectionTitleClass(appearance)}>
-        Basic Information
-      </h2>
+      {!hideTitle ? (
+        <h2 className={productFormSectionTitleClass(appearance)}>
+          Basic Information
+        </h2>
+      ) : null}
 
       <div className={appearance === 'minimal' ? 'space-y-3' : 'space-y-4'}>
         <ProductTitleInput
@@ -46,11 +50,6 @@ const ProductBasicInformationSection: React.FC<
           onChange={onTitleChange}
           required
           appearance={appearance}
-        />
-
-        <ProductDescriptionInput
-          value={description}
-          onChange={onDescriptionChange}
         />
       </div>
 
@@ -62,6 +61,13 @@ const ProductBasicInformationSection: React.FC<
           onRemoveImage={onRemoveImage}
           disabled={mediaDisabled}
           appearance={appearance}
+        />
+      </div>
+
+      <div className={productFormDividerClass(appearance)}>
+        <ProductDescriptionInput
+          value={description}
+          onChange={onDescriptionChange}
         />
       </div>
     </div>

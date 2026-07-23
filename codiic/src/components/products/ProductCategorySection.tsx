@@ -13,6 +13,7 @@ interface ProductCategorySectionProps {
   activeStoreId: string | null;
   onCategoryChange: (categoryId: string) => void;
   appearance?: ProductFormAppearance;
+  hideTitle?: boolean;
 }
 
 const ProductCategorySection: React.FC<ProductCategorySectionProps> = ({
@@ -21,21 +22,25 @@ const ProductCategorySection: React.FC<ProductCategorySectionProps> = ({
   activeStoreId,
   onCategoryChange,
   appearance = 'default',
+  hideTitle = false,
 }) => {
   return (
     <div className={productFormCardClass(appearance)}>
-      <h2 className={productFormSectionTitleClass(appearance)}>Category</h2>
+      {!hideTitle ? (
+        <h2 className={productFormSectionTitleClass(appearance)}>Category</h2>
+      ) : null}
       <HierarchicalCategoryDropdown
         selectedCategory={category}
         selectedCategoryName={categoryName}
         onCategorySelect={(categoryId) => {
           onCategoryChange(categoryId);
         }}
-        storeId={activeStoreId || ""}
-        appearance={appearance}
+        storeId={activeStoreId || ''}
+        inline
+        defaultOpen
       />
       <p className={productFormHelperTextClass(appearance)}>
-        Determines tax rates and adds metafields to improve search, filters, and cross-channel sales
+        Used for taxes, filters, and helping customers find this product
       </p>
     </div>
   );

@@ -9,7 +9,7 @@ import { useStore } from '../contexts/store.context';
 
 const ProductsInventoryPage: React.FC = () => {
   const { activeStoreId } = useStore();
-  const { locations, fetchLocationsByStoreId } = useLocations();
+  const { locations, fetchLocationsByStoreId, loading: locationsLoading } = useLocations();
   const { inventoryLevels, fetchByLocation, updateById, loading: invLoading } = useInventoryLevels();
   const [selectedLocationId, setSelectedLocationId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -168,6 +168,27 @@ const ProductsInventoryPage: React.FC = () => {
     }
   }, [editingOnHandId, editOnHandValue, inventoryLevels, updateById]);
 
+  const showLocationsSkeleton = Boolean(activeStoreId) && !selectedLocationId && locationsLoading;
+  const showInventorySkeleton = Boolean(selectedLocationId) && invLoading;
+
+  const tableEditProps = {
+    editingAvailableId,
+    editAvailableValue,
+    savingAvailable,
+    onStartEditAvailable: startEditAvailable,
+    onCancelEditAvailable: cancelEditAvailable,
+    onSaveAvailable: saveAvailable,
+    onEditAvailableChange: setEditAvailableValue,
+    editingOnHandId,
+    editOnHandValue,
+    savingOnHand,
+    onStartEditOnHand: startEditOnHand,
+    onCancelEditOnHand: cancelEditOnHand,
+    onSaveOnHand: saveOnHand,
+    onEditOnHandChange: setEditOnHandValue,
+    onOpenUnavailable: openUnavailableMenu,
+  };
+
   return (
     <div className="min-h-screen bg-page-background-color">
       <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
@@ -182,36 +203,17 @@ const ProductsInventoryPage: React.FC = () => {
             onSearchChange={setSearchQuery}
           />
 
-          {!selectedLocationId ? (
+          {showLocationsSkeleton || showInventorySkeleton ? (
+            <InventoryTable levels={[]} loading {...tableEditProps} />
+          ) : !selectedLocationId ? (
             <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
               <p className="text-[15px] font-semibold text-gray-900">Add a location to view inventory</p>
               <p className="mt-1.5 text-[13px] font-normal text-gray-500">
                 Create a location in settings to start tracking inventory levels
               </p>
             </div>
-          ) : invLoading ? (
-            <div className="flex min-h-[280px] items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-            </div>
           ) : (
-            <InventoryTable
-              levels={filteredLevels}
-              editingAvailableId={editingAvailableId}
-              editAvailableValue={editAvailableValue}
-              savingAvailable={savingAvailable}
-              onStartEditAvailable={startEditAvailable}
-              onCancelEditAvailable={cancelEditAvailable}
-              onSaveAvailable={saveAvailable}
-              onEditAvailableChange={setEditAvailableValue}
-              editingOnHandId={editingOnHandId}
-              editOnHandValue={editOnHandValue}
-              savingOnHand={savingOnHand}
-              onStartEditOnHand={startEditOnHand}
-              onCancelEditOnHand={cancelEditOnHand}
-              onSaveOnHand={saveOnHand}
-              onEditOnHandChange={setEditOnHandValue}
-              onOpenUnavailable={openUnavailableMenu}
-            />
+            <InventoryTable levels={filteredLevels} {...tableEditProps} />
           )}
         </div>
 

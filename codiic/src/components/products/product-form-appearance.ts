@@ -49,14 +49,14 @@ export function productFormPageClass(
 export function productFormMainStackClass(
   appearance: ProductFormAppearance = 'default'
 ): string {
-  return appearance === 'minimal' ? 'space-y-5' : 'space-y-6';
+  return appearance === 'minimal' ? 'space-y-8' : 'space-y-6';
 }
 
 export function productFormGridClass(
   appearance: ProductFormAppearance = 'default'
 ): string {
   return appearance === 'minimal'
-    ? 'grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_360px]'
+    ? 'grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8'
     : 'grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_380px]';
 }
 
@@ -74,4 +74,20 @@ export function productFormHelperTextClass(
   return appearance === 'minimal'
     ? 'mt-2.5 text-[13px] leading-relaxed text-gray-400'
     : 'mt-3 text-sm text-gray-500';
+}
+
+export function productFormFlowMaxWidthClass(
+  appearance: ProductFormAppearance = 'default'
+): string {
+  return appearance === 'minimal'
+    ? 'mx-auto max-w-[1120px] px-3 py-4 sm:px-4'
+    : 'mx-auto max-w-[1500px] px-3 py-4 sm:px-4';
+}
+
+export function productFormStickyBarInnerClass(
+  appearance: ProductFormAppearance = 'default'
+): string {
+  return appearance === 'minimal'
+    ? 'mx-auto flex max-w-[1120px] items-center justify-between gap-3 px-3 py-3 sm:px-4'
+    : 'mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-3 py-3 sm:px-4';
 }

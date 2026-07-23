@@ -16,6 +16,7 @@ interface ProductInventorySectionProps {
   onSkuChange: (value: string) => void;
   onBarcodeChange: (value: string) => void;
   appearance?: ProductFormAppearance;
+  hideTitle?: boolean;
 }
 
 const ProductInventorySection: React.FC<ProductInventorySectionProps> = ({
@@ -28,6 +29,7 @@ const ProductInventorySection: React.FC<ProductInventorySectionProps> = ({
   onSkuChange,
   onBarcodeChange,
   appearance = 'default',
+  hideTitle = false,
 }) => {
   const handleInventoryTrackingChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onInventoryTrackingEnabledChange(e.target.checked);
@@ -43,10 +45,16 @@ const ProductInventorySection: React.FC<ProductInventorySectionProps> = ({
 
   return (
     <div className={productFormCardClass(appearance)}>
-      <div className={`flex items-center justify-between ${appearance === 'minimal' ? 'mb-3' : 'mb-4'}`}>
-        <h2 className={appearance === 'minimal' ? 'text-sm font-medium text-gray-600' : 'text-base font-semibold text-gray-900'}>
-          Inventory
-        </h2>
+      <div className={`flex items-center justify-between gap-3 ${appearance === 'minimal' ? 'mb-3' : 'mb-4'}`}>
+        {!hideTitle ? (
+          <h2 className={appearance === 'minimal' ? 'text-sm font-medium text-gray-600' : 'text-base font-semibold text-gray-900'}>
+            Inventory
+          </h2>
+        ) : (
+          <p className={appearance === 'minimal' ? 'text-[13px] text-gray-500' : 'text-sm text-gray-600'}>
+            SKU, barcode, and stock
+          </p>
+        )}
         <label className="flex cursor-pointer items-center gap-2">
           <input
             type="checkbox"
@@ -55,7 +63,7 @@ const ProductInventorySection: React.FC<ProductInventorySectionProps> = ({
             className="h-3.5 w-3.5 rounded border-gray-300 text-gray-800 focus:ring-gray-300"
           />
           <span className={appearance === 'minimal' ? 'text-[13px] text-gray-500' : 'text-sm text-gray-700'}>
-            Inventory tracking enabled
+            Track quantity
           </span>
         </label>
       </div>

@@ -1,14 +1,20 @@
 import React from 'react';
 import type { Customer } from '../../contexts/customer.context';
 import CustomersTableItem from './CustomersTableItem';
+import { CustomersTableSkeletonRows } from './CustomersTableSkeleton';
 import { customerTableHeadClass } from './customer-ui.util';
 
 interface CustomersTableProps {
   customers: Customer[];
+  loading?: boolean;
   onCustomerClick: (customerId: string) => void;
 }
 
-const CustomersTable: React.FC<CustomersTableProps> = ({ customers, onCustomerClick }) => {
+const CustomersTable: React.FC<CustomersTableProps> = ({
+  customers,
+  loading = false,
+  onCustomerClick,
+}) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[720px] text-left">
@@ -22,7 +28,9 @@ const CustomersTable: React.FC<CustomersTableProps> = ({ customers, onCustomerCl
           </tr>
         </thead>
         <tbody className="bg-white">
-          {customers.length === 0 ? (
+          {loading ? (
+            <CustomersTableSkeletonRows />
+          ) : customers.length === 0 ? (
             <tr>
               <td colSpan={5} className="px-3 py-16 text-center">
                 <p className="text-[15px] font-semibold text-gray-900">No customers found</p>

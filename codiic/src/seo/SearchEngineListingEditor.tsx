@@ -26,6 +26,8 @@ export type SearchEngineListingEditorProps = {
   onUrlHandleChange: (value: string) => void;
   className?: string;
   compact?: boolean;
+  /** Nest inside another chrome (e.g. collapsible) — no outer card / title. */
+  embedded?: boolean;
 };
 
 export function SearchEngineListingEditor({
@@ -44,8 +46,9 @@ export function SearchEngineListingEditor({
   onUrlHandleChange,
   className = '',
   compact = false,
+  embedded = false,
 }: SearchEngineListingEditorProps) {
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(embedded);
 
   const plainDescription = useMemo(
     () => plainTextFromHtml(entityDescription),
@@ -106,11 +109,14 @@ export function SearchEngineListingEditor({
   return (
     <div
       className={
-        compact
-          ? `rounded-lg border border-gray-200/80 bg-white shadow-sm ${className}`.trim()
-          : `rounded-xl border border-gray-200/80 bg-white p-6 shadow-sm ${className}`.trim()
+        embedded
+          ? className.trim()
+          : compact
+            ? `rounded-lg border border-gray-200/80 bg-white shadow-sm ${className}`.trim()
+            : `rounded-xl border border-gray-200/80 bg-white p-6 shadow-sm ${className}`.trim()
       }
     >
+      {embedded ? null : (
       <div
         className={
           compact
@@ -141,6 +147,7 @@ export function SearchEngineListingEditor({
           <PencilIcon className={compact ? 'h-4 w-4' : 'h-5 w-5'} aria-hidden />
         </button>
       </div>
+      )}
 
       {!editing ? (
         <div className={compact ? 'p-4' : 'mt-4'}>

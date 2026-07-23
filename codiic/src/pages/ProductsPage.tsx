@@ -10,7 +10,7 @@ import { useStore } from "../contexts/store.context";
 type FilterTab = "All" | "Active" | "Draft";
 
 const ProductsPage: React.FC = () => {
-  const { products, fetchProductsByStoreId, updateProduct } = useProducts();
+  const { products, fetchProductsByStoreId, updateProduct, loading } = useProducts();
   const { activeStoreId } = useStore();
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
   const [search, setSearch] = useState("");
@@ -47,6 +47,7 @@ const ProductsPage: React.FC = () => {
   }, [products, activeTab, search]);
 
   const hasProducts = (products || []).length > 0;
+  const showInitialSkeleton = loading && !hasProducts;
 
   const handleOpenUndeleteModal = (product: Product) => {
     setRestoreCandidate(product);
@@ -87,7 +88,9 @@ const ProductsPage: React.FC = () => {
             onSearchChange={setSearch}
           />
 
-          {!hasProducts ? (
+          {showInitialSkeleton ? (
+            <ProductsTable products={[]} loading />
+          ) : !hasProducts ? (
             <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
               <p className="text-[15px] font-semibold text-gray-900">Add your products</p>
               <p className="mt-1.5 text-[13px] font-normal text-gray-500">

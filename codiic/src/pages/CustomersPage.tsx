@@ -38,6 +38,7 @@ const CustomersPage: React.FC = () => {
   );
 
   const hasCustomers = (customers ?? []).length > 0;
+  const showInitialSkeleton = loading && !hasCustomers;
 
   return (
     <div className="min-h-screen bg-page-background-color">
@@ -51,15 +52,16 @@ const CustomersPage: React.FC = () => {
         ) : null}
 
         <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-          {hasCustomers ? (
+          {showInitialSkeleton || hasCustomers ? (
             <CustomersPageFilters search={search} onSearchChange={setSearch} />
           ) : null}
 
-          {loading ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-              <p className="mt-4 text-[13px] text-gray-500">Loading customers...</p>
-            </div>
+          {showInitialSkeleton ? (
+            <CustomersTable
+              customers={[]}
+              loading
+              onCustomerClick={handleCustomerClick}
+            />
           ) : !hasCustomers ? (
             <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">

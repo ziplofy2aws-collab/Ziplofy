@@ -39,7 +39,14 @@ const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
 
   return (
     <div className={productFormCardClass(appearance)}>
-      <h2 className={productFormSectionTitleClass(appearance)}>Product Organization</h2>
+      <h2 className={productFormSectionTitleClass(appearance)}>
+        {appearance === 'minimal' ? 'Organization' : 'Product Organization'}
+      </h2>
+      {appearance === 'minimal' ? (
+        <p className="-mt-1 mb-3 text-[12px] leading-snug text-gray-400">
+          Type, vendor, and tags help you find this later
+        </p>
+      ) : null}
 
       <div className={appearance === 'minimal' ? 'space-y-4' : 'space-y-5'}>
         <ProductTypeInput

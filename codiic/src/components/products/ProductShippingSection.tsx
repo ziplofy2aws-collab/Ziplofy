@@ -29,6 +29,7 @@ interface ProductShippingSectionProps {
   onHsCodeChange: (value: string) => void;
   activeStoreId: string | null;
   appearance?: ProductFormAppearance;
+  hideTitle?: boolean;
 }
 
 const weightUnits = ["lb", "oz", "kg", "grams"];
@@ -78,6 +79,7 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
   onHsCodeChange,
   activeStoreId,
   appearance = 'default',
+  hideTitle = false,
 }) => {
   const { packagings, fetchPackagingsByStoreId, createPackaging } = usePackaging();
   const [isAddPackageModalOpen, setIsAddPackageModalOpen] = useState(false);
@@ -232,10 +234,18 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
   return (
     <div className={productFormCardClass(appearance)}>
       <div className="flex items-center justify-between gap-4">
-        <h2 className={appearance === 'minimal' ? 'text-sm font-medium text-gray-600' : 'text-base font-semibold text-gray-900'}>Shipping</h2>
+        {!hideTitle ? (
+          <h2 className={appearance === 'minimal' ? 'text-sm font-medium text-gray-600' : 'text-base font-semibold text-gray-900'}>
+            Shipping
+          </h2>
+        ) : (
+          <h2 className={appearance === 'minimal' ? 'text-sm font-medium text-gray-600' : 'text-base font-semibold text-gray-900'}>
+            Delivery
+          </h2>
+        )}
         <div className="flex shrink-0 items-center gap-2">
           <span className={appearance === 'minimal' ? 'text-[13px] text-gray-500' : 'text-sm text-gray-600'}>
-            {physicalProduct ? "Physical product" : "Not a physical product"}
+            {physicalProduct ? "Physical product" : "Digital / service"}
           </span>
           <span
             className="text-gray-400"

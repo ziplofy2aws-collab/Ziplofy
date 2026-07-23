@@ -2,13 +2,19 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../contexts/product.context";
 import ProductTableRow from "./ProductTableRow";
+import { ProductsTableSkeletonRows } from "./ProductsTableSkeleton";
 
 interface ProductsTableProps {
   products: Product[];
+  loading?: boolean;
   onUndeleteProduct?: (product: Product) => void;
 }
 
-const ProductsTable: React.FC<ProductsTableProps> = ({ products, onUndeleteProduct }) => {
+const ProductsTable: React.FC<ProductsTableProps> = ({
+  products,
+  loading = false,
+  onUndeleteProduct,
+}) => {
   const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const selectAllRef = useRef<HTMLInputElement | null>(null);
@@ -62,8 +68,9 @@ const ProductsTable: React.FC<ProductsTableProps> = ({ products, onUndeleteProdu
                 type="checkbox"
                 checked={allVisibleSelected}
                 onChange={(e) => handleSelectAllVisible(e.target.checked)}
+                disabled={loading}
                 aria-label="Select all products"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </th>
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Product</th>
@@ -76,7 +83,9 @@ const ProductsTable: React.FC<ProductsTableProps> = ({ products, onUndeleteProdu
           </tr>
         </thead>
         <tbody className="bg-white">
-          {products.length === 0 ? (
+          {loading ? (
+            <ProductsTableSkeletonRows />
+          ) : products.length === 0 ? (
             <tr>
               <td colSpan={8} className="px-3 py-16 text-center">
                 <p className="text-[15px] font-semibold text-gray-900">No products found</p>

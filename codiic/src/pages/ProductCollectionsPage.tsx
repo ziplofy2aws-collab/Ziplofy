@@ -54,6 +54,7 @@ const ProductCollectionsPage: React.FC = () => {
   }, [collections, activeTab, search]);
 
   const hasCollections = (collections || []).length > 0;
+  const showInitialSkeleton = loading && !hasCollections;
 
   return (
     <div className="min-h-screen bg-page-background-color">
@@ -68,10 +69,12 @@ const ProductCollectionsPage: React.FC = () => {
             onSearchChange={setSearch}
           />
 
-          {loading ? (
-            <div className="flex min-h-[280px] items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-            </div>
+          {showInitialSkeleton ? (
+            <CollectionsTable
+              collections={[]}
+              loading
+              onCollectionClick={handleCollectionClick}
+            />
           ) : !hasCollections ? (
             <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
               <p className="text-[15px] font-semibold text-gray-900">Add your collections</p>

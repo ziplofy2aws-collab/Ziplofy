@@ -5,6 +5,7 @@ import {
   inventoryColumnHeaderWithHintClass,
 } from './inventory-ui.util';
 import InventoryTableRow from './InventoryTableRow';
+import { InventoryTableSkeletonRows } from './InventoryTableSkeleton';
 
 const COLUMN_HINTS = {
   unavailable: 'Inventory that is not available to sell, such as damaged or safety stock.',
@@ -16,6 +17,7 @@ const COLUMN_HINTS = {
 
 type InventoryTableProps = {
   levels: InventoryLevel[];
+  loading?: boolean;
   editingAvailableId: string | null;
   editAvailableValue: number;
   savingAvailable: boolean;
@@ -35,6 +37,7 @@ type InventoryTableProps = {
 
 const InventoryTable: React.FC<InventoryTableProps> = ({
   levels,
+  loading = false,
   editingAvailableId,
   editAvailableValue,
   savingAvailable,
@@ -99,8 +102,9 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
                 type="checkbox"
                 checked={allVisibleSelected}
                 onChange={(e) => handleSelectAllVisible(e.target.checked)}
+                disabled={loading}
                 aria-label="Select all inventory items"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </th>
             <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Product</th>
@@ -123,7 +127,9 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
           </tr>
         </thead>
         <tbody className="bg-white">
-          {levels.length === 0 ? (
+          {loading ? (
+            <InventoryTableSkeletonRows />
+          ) : levels.length === 0 ? (
             <tr>
               <td colSpan={8} className="px-3 py-16 text-center">
                 <p className="text-[15px] font-semibold text-gray-900">No inventory found</p>
