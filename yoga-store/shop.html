@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — YogaHaus</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/shop.css">
+</head>
+
+<body>
+
+  <header class="site-header" role="banner">
+    <div class="top-bar">
+      <div class="top-bar__inner">
+        <a href="tel:18002087711" class="top-bar__phone">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+          <span>1800 208 7711</span>
+        </a>
+        <a href="#" class="top-bar__link">Explore Grip Sports Products</a>
+        <a href="#" class="top-bar__cta top-bar__cta--outline">GET FIT WITH GRIP - JOIN THE CLASS NOW</a>
+        <a href="#" class="top-bar__link">Visit Grip Exclusive Store</a>
+        <a href="#" class="top-bar__cta top-bar__cta--solid">BUY ONLINE AT GRIPKART.COM</a>
+      </div>
+    </div>
+
+    <nav class="main-nav" aria-label="Primary">
+      <div class="main-nav__inner">
+        <a href="index.html" class="main-nav__logo">
+          <img src="assets/img/logo.png" alt="YogaHaus" width="180" height="54" decoding="async">
+        </a>
+        <ul class="main-nav__list">
+          <li><a href="shop.html">Yoga Mats</a></li>
+          <li><a href="shop.html">Yoga Accessories</a></li>
+          <li><a href="shop.html">Meditation</a></li>
+          <li><a href="shop.html">Acupressure</a></li>
+          <li><a href="shop.html">Massage &amp; Therapy</a></li>
+          <li><a href="shop.html">Decor</a></li>
+          <li><a href="shop.html">Clothing</a></li>
+          <li><a href="shop.html">Props For Yoga</a></li>
+        </ul>
+        <button type="button" class="main-nav__search" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="main-nav__menu-btn" id="navMenuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNavPanel">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <button type="button" class="mobile-nav__overlay" id="navMenuOverlay" aria-label="Close menu" tabindex="-1"></button>
+    <aside class="mobile-nav__panel" id="mobileNavPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+      <div class="mobile-nav__head">
+        <a href="index.html" class="mobile-nav__logo">
+          <img src="assets/img/logo.png" alt="YogaHaus" width="140" height="42" decoding="async">
+        </a>
+        <button type="button" class="mobile-nav__close" id="navMenuClose" aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="mobile-nav__links" aria-label="Mobile">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Yoga Mats</a>
+        <a href="shop.html">Yoga Accessories</a>
+        <a href="shop.html">Meditation</a>
+        <a href="shop.html">Acupressure</a>
+        <a href="shop.html">Massage &amp; Therapy</a>
+        <a href="shop.html">Decor</a>
+        <a href="shop.html">Clothing</a>
+        <a href="shop.html">Props For Yoga</a>
+        <a href="shop.html">Shop All</a>
+      </nav>
+      <div class="mobile-nav__footer">
+        <a href="tel:18002087711" class="mobile-nav__phone">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i> 1800 208 7711
+        </a>
+        <div class="mobile-nav__social">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          <a href="https://wa.me/919324879162" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <main class="shop-page">
+    <section class="shop-hero" aria-labelledby="shop-heading">
+      <div class="shop-hero__inner">
+        <nav class="shop-breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Shop</span>
+        </nav>
+        <h1 id="shop-heading" class="shop-hero__title">Clothing</h1>
+        <p class="shop-hero__count">16 products</p>
+      </div>
+    </section>
+
+    <div class="shop-layout">
+      <aside class="shop-filters" id="shopFilters" aria-label="Filters">
+        <div class="shop-filters__sheet-head">
+          <h2 class="shop-filters__title">Filters</h2>
+          <button type="button" class="shop-filters__close" id="shopFilterClose" aria-label="Close filters">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="shop-filters__body">
+          <div class="shop-filter">
+            <h3 class="shop-filter__label">Category</h3>
+            <label class="shop-check"><input type="checkbox" checked> Tops</label>
+            <label class="shop-check"><input type="checkbox" checked> Bottoms</label>
+            <label class="shop-check"><input type="checkbox"> Outerwear</label>
+            <label class="shop-check"><input type="checkbox"> Accessories</label>
+          </div>
+
+          <div class="shop-filter">
+            <h3 class="shop-filter__label">Size</h3>
+            <div class="shop-sizes">
+              <button type="button" class="shop-size">XS</button>
+              <button type="button" class="shop-size is-active">S</button>
+              <button type="button" class="shop-size">M</button>
+              <button type="button" class="shop-size">L</button>
+              <button type="button" class="shop-size">XL</button>
+            </div>
+          </div>
+
+          <div class="shop-filter">
+            <h3 class="shop-filter__label">Color</h3>
+            <div class="shop-colors">
+              <button type="button" class="shop-color is-active" style="background:#1a1a1a" aria-label="Black"></button>
+              <button type="button" class="shop-color" style="background:#5a6b3a" aria-label="Olive"></button>
+              <button type="button" class="shop-color" style="background:#6b2d3c" aria-label="Wine"></button>
+              <button type="button" class="shop-color" style="background:#a89078" aria-label="Taupe"></button>
+              <button type="button" class="shop-color" style="background:#e8dcc8" aria-label="Cream"></button>
+              <button type="button" class="shop-color" style="background:#f5f5f5;border-color:#ccc" aria-label="White"></button>
+            </div>
+          </div>
+
+          <div class="shop-filter">
+            <h3 class="shop-filter__label">Price</h3>
+            <label class="shop-check"><input type="checkbox"> Under ₹1,500</label>
+            <label class="shop-check"><input type="checkbox"> ₹1,500 – ₹2,500</label>
+            <label class="shop-check"><input type="checkbox"> ₹2,500 – ₹3,500</label>
+            <label class="shop-check"><input type="checkbox"> Above ₹3,500</label>
+          </div>
+        </div>
+
+        <div class="shop-filters__sheet-foot">
+          <button type="button" class="shop-filters__clear" id="shopFilterClear">Clear all</button>
+          <button type="button" class="shop-filters__apply" id="shopFilterApply">Show results</button>
+        </div>
+      </aside>
+
+      <button type="button" class="shop-filters-overlay" id="shopFilterOverlay" aria-label="Close filters" tabindex="-1" hidden></button>
+
+      <div class="shop-main">
+        <div class="shop-toolbar">
+          <button type="button" class="shop-filter-btn" id="shopFilterOpen" aria-expanded="false" aria-controls="shopFilters">
+            <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+            Filter
+          </button>
+          <p class="shop-toolbar__results">Showing 16 products</p>
+          <label class="shop-toolbar__sort">
+            <span>Sort by</span>
+            <select>
+              <option>Featured</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="shop-grid">
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/NA-1.webp" alt="aeroyama Plunge Racerback Bra" width="400" height="500"
+                  loading="lazy" decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#8b3a2f"></span>
+                <span class="shop-card__swatch" style="background:#4a4a4a"></span>
+                <span class="shop-card__swatch" style="background:#1e2a44"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Plunge Racerback Bra</h2>
+              <p class="shop-card__price">₹ 1,999.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/NA-2.webp" alt="aeroyama Henley Long Sleeve Tee" width="400" height="500"
+                  loading="lazy" decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#5c5c5c"></span>
+                <span class="shop-card__swatch" style="background:#6b2d2d"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Henley Long Sleeve Tee</h2>
+              <p class="shop-card__price">₹ 2,499.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/NA-3.webp" alt="aeroyama Foldover Capri" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#556b2f"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+                <span class="shop-card__swatch" style="background:#5c1a2a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Foldover Capri</h2>
+              <p class="shop-card__price">₹ 2,499.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/NA-4.webp" alt="flointense Strappy Tank" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#1e3d2f"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">flointense™ Strappy Tank</h2>
+              <p class="shop-card__price">₹ 2,199.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/BS-1.webp" alt="aeroyama Flared Yoga Pants" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#6b2d3c"></span>
+                <span class="shop-card__swatch" style="background:#5a6b3a"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Flared Yoga Pants</h2>
+              <p class="shop-card__price">₹ 2,999.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/BS-2.webp" alt="aeroyama Muscle Tank" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#a89078"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Muscle Tank</h2>
+              <p class="shop-card__price">₹ 1,399.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/BS-3.webp" alt="aeroyama Tank Top" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#3a3a3a"></span>
+                <span class="shop-card__swatch" style="background:#c4b09a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Tank Top</h2>
+              <p class="shop-card__price">₹ 1,499.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/BS-4.webp" alt="aeroyama Slim Fit Short Sleeve Tee" width="400" height="500"
+                  loading="lazy" decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#3d3d3d"></span>
+                <span class="shop-card__swatch" style="background:#7a2020"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Slim Fit Short Sleeve Tee</h2>
+              <p class="shop-card__price">₹ 1,799.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/NA-5.webp" alt="aeroyama Overlay Zip Tank" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#5a6b4a"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ Overlay Zip Tank</h2>
+              <p class="shop-card__price">₹ 2,299.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/NA-6.webp" alt="flointense Quarter Zip Tank" width="400" height="500"
+                  loading="lazy" decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#a08060"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">flointense™ Quarter Zip Tank</h2>
+              <p class="shop-card__price">₹ 2,399.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/BS-5.webp" alt="aeroyama High Rise Legging" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+                <span class="shop-card__swatch" style="background:#5a6b3a"></span>
+              </div>
+              <h2 class="shop-card__name">aeroyama™ High Rise Legging</h2>
+              <p class="shop-card__price">₹ 2,499.00</p>
+            </a>
+          </article>
+
+          <article class="shop-card">
+            <a href="product.html" class="shop-card__link">
+              <div class="shop-card__media">
+                <img src="assets/img/BS-6.webp" alt="flointense Soft Rib Bra" width="400" height="500" loading="lazy"
+                  decoding="async">
+              </div>
+              <div class="shop-card__swatches" aria-hidden="true">
+                <span class="shop-card__swatch" style="background:#8b5a4a"></span>
+                <span class="shop-card__swatch" style="background:#1a1a1a"></span>
+              </div>
+              <h2 class="shop-card__name">flointense™ Soft Rib Bra</h2>
+              <p class="shop-card__price">₹ 1,899.00</p>
+            </a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-values">
+      <div class="footer-values__inner">
+        <div class="footer-value">
+          <i class="fa-regular fa-circle-check footer-value__icon" aria-hidden="true"></i>
+          <span class="footer-value__label">Recommended By Teachers</span>
+        </div>
+        <div class="footer-value">
+          <i class="fa-solid fa-leaf footer-value__icon" aria-hidden="true"></i>
+          <span class="footer-value__label">Consciously Crafted</span>
+        </div>
+        <div class="footer-value">
+          <i class="fa-regular fa-star footer-value__icon" aria-hidden="true"></i>
+          <span class="footer-value__label">Made To Last</span>
+        </div>
+        <div class="footer-value">
+          <i class="fa-regular fa-heart footer-value__icon" aria-hidden="true"></i>
+          <span class="footer-value__label">Made With Love</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-main__inner">
+        <div class="footer-col footer-col--about">
+          <h2 class="footer-col__heading">Good For The Planet, And Its People.</h2>
+          <p class="footer-col__text">Consciously crafted yoga &amp; meditation accessories by yoga teachers, for
+            everyone.</p>
+          <a href="index.html" class="footer-col__logo">
+            <img src="assets/img/logo.png" alt="YogaHaus" width="160" height="48" loading="lazy" decoding="async">
+          </a>
+          <div class="footer-social">
+            <a href="#" class="footer-social__link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"
+                aria-hidden="true"></i></a>
+            <a href="#" class="footer-social__link" aria-label="YouTube"><i class="fa-brands fa-youtube"
+                aria-hidden="true"></i></a>
+            <a href="#" class="footer-social__link" aria-label="Instagram"><i class="fa-brands fa-instagram"
+                aria-hidden="true"></i></a>
+            <a href="#" class="footer-social__link" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"
+                aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col footer-col--links">
+          <h3 class="footer-col__heading">Quick links</h3>
+          <ul class="footer-links">
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Returns &amp; Exchanges</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Wholesale Orders</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col footer-col--contact">
+          <h3 class="footer-col__heading">Contact Us</h3>
+          <ul class="footer-contact">
+            <li>
+              <strong>WhatsApp:</strong>
+              <a href="https://wa.me/919324879162">+ 91 93248 79162</a>
+            </li>
+            <li>
+              <strong>Email:</strong>
+              <a href="mailto:info@koshayoga.co">info@koshayoga.co.</a>
+            </li>
+            <li>
+              <strong>Studio Address:</strong>
+              <span>Jay Apts, Linking road, Santacruz West, Mumbai 400054, Maharashtra India</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer-col footer-col--newsletter">
+          <h3 class="footer-col__heading">Yoga Tutorials, Exclusive Discounts &amp; More!</h3>
+          <p class="footer-col__text">Sign up for 10% off your first purchase. First access to sales, product launches
+            &amp; exclusive offers.</p>
+          <p class="footer-col__emphasis">No spam, ever.</p>
+          <form class="footer-newsletter" action="#" method="post">
+            <label class="visually-hidden" for="footer-email">Your email</label>
+            <input type="email" id="footer-email" name="email" class="footer-newsletter__input" placeholder="Your email"
+              required>
+            <button type="submit" class="footer-newsletter__btn">SUBSCRIBE</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom__inner">
+        <p class="footer-bottom__copy">© 2026 Kosha Yoga Co.. Better for the Planet, and its People.</p>
+        <div class="footer-bottom__pay" aria-label="Payment methods">
+          <i class="fa-brands fa-paypal" aria-hidden="true"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/919324879162" class="whatsapp-float" aria-label="Chat on WhatsApp" target="_blank"
+    rel="noopener noreferrer">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>
