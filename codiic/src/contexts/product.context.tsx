@@ -188,6 +188,8 @@ export interface CreateProductPayload {
   productWeightUnit?: string;
   countryOfOrigin?: string;
   harmonizedSystemCode?: string;
+  /** Starting stock per location — applied to every variant as onHand + available */
+  locationQuantities?: Array<{ locationId: string; quantity: number }>;
   variants: Array<{
     optionName: string;
     values: string[];

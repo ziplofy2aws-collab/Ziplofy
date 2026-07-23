@@ -6,6 +6,7 @@ import ProductCategorySection from './ProductCategorySection';
 import { ProductFormStage } from './ProductFormStage';
 import ProductFormHeader from './ProductFormHeader';
 import ProductInventorySection from './ProductInventorySection';
+import ProductLocationQuantitiesSection from './ProductLocationQuantitiesSection';
 import ProductOrganizationSection from './ProductOrganizationSection';
 import ProductPriceSection from './ProductPriceSection';
 import ProductSearchEngineListingSection from './ProductSearchEngineListingSection';
@@ -52,6 +53,7 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
     removeVariant,
     updateVariantOptionName,
     setVariantValues,
+    setLocationQuantity,
   } = useNewProductForm({
     onSuccess,
     navigateOnSuccess: variant === 'page',
@@ -185,7 +187,7 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
             <ProductFormStage
               step={5}
               title="Inventory & shipping"
-              description="How you track stock and whether this needs to be shipped."
+              description="Set starting stock at each location, then shipping details."
             >
               <ProductInventorySection
                 sku={formData.sku}
@@ -194,6 +196,12 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
                 onBarcodeChange={(value) => handleInputChange('barcode', value)}
                 appearance={FORM_APPEARANCE}
                 hideTitle
+              />
+              <ProductLocationQuantitiesSection
+                activeStoreId={activeStoreId}
+                quantities={formData.locationQuantities}
+                onChange={setLocationQuantity}
+                appearance={FORM_APPEARANCE}
               />
               <ProductShippingSection
                 physicalProduct={formData.physicalProduct}

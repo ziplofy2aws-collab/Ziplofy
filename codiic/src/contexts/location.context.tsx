@@ -18,6 +18,7 @@ export interface Location {
   canPickup: boolean;
   isFulfillmentAllowed: boolean;
   isActive: boolean;
+  isDefault?: boolean;
   createdAt: string;
   updatedAt: string;
 }

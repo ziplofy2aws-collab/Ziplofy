@@ -39,6 +39,8 @@ export type NewProductFormData = {
   weightUnit: string;
   countryOfOrigin: string;
   hsCode: string;
+  /** Initial on-hand / available stock per location id */
+  locationQuantities: Record<string, string>;
   variants: Array<{ optionName: string; values: string[] }>;
   pageTitle: string;
   metaDescription: string;
@@ -73,6 +75,7 @@ export const INITIAL_NEW_PRODUCT_FORM_DATA: NewProductFormData = {
   weightUnit: 'kg',
   countryOfOrigin: '',
   hsCode: '',
+  locationQuantities: {},
   variants: [],
   pageTitle: '',
   metaDescription: '',
@@ -228,6 +231,14 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
         slugify((effectiveFormData.title || '').trim()) ||
         `product-${Date.now()}`;
 
+      const locationQuantities = Object.entries(effectiveFormData.locationQuantities || {}).map(
+        ([locationId, raw]) => ({
+          locationId,
+          quantity: Math.max(0, parseInt(String(raw).trim() || '0', 10) || 0),
+        })
+      );
+      const hasLocationStock = locationQuantities.some((entry) => entry.quantity > 0);
+
       const requestBody = {
         title: effectiveFormData.title,
         description: descriptionWithUploadedImages,
@@ -247,7 +258,8 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
           ? parseFloat(effectiveFormData.unitPriceBaseMeasure)
           : undefined,
         unitPriceBaseMeasureMetric: effectiveFormData.selectedBaseMeasureUnit || undefined,
-        inventoryTrackingEnabled: effectiveFormData.inventoryTrackingEnabled,
+        inventoryTrackingEnabled:
+          effectiveFormData.inventoryTrackingEnabled || hasLocationStock,
         continueSellingWhenOutOfStock: effectiveFormData.continueSellingWhenOutOfStock,
         sku: effectiveFormData.sku,
         barcode: effectiveFormData.barcode,
@@ -274,6 +286,7 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
         productType: effectiveFormData.productType,
         vendor: effectiveFormData.vendor,
         tagIds: effectiveFormData.tags || [],
+        locationQuantities,
       };
 
       const created = await createProduct(requestBody);
@@ -305,6 +318,16 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     transformBeforeSubmit,
     uploadDescriptionImages,
   ]);
+
+  const setLocationQuantity = useCallback((locationId: string, quantity: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      locationQuantities: {
+        ...prev.locationQuantities,
+        [locationId]: quantity,
+      },
+    }));
+  }, []);
 
   const addVariant = useCallback(() => {
     setFormData((prev) => ({
@@ -386,5 +409,6 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     removeVariantValue,
     updateVariantValue,
     setVariantValues,
+    setLocationQuantity,
   };
 }

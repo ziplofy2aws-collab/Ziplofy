@@ -269,16 +269,31 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
     if (locations.length === 0) {
       throw new CustomError("No inventory locations are configured for this store. Add a location and retry.", 404);
     }
+
+    const quantityByLocationId = new Map<string, number>();
+    if (Array.isArray(body.locationQuantities)) {
+      for (const entry of body.locationQuantities) {
+        const locationId = String(entry?.locationId || '').trim();
+        if (!locationId) continue;
+        const quantity = Math.max(0, Math.floor(Number(entry?.quantity) || 0));
+        quantityByLocationId.set(locationId, quantity);
+      }
+    }
+
     const inventoryLevelDocs = createdVariants.flatMap(variant => (
-      locations.map(loc => ({
-        variantId: variant._id,
-        locationId: loc._id,
-        onHand: 0,
-        committed: 0,
-        unavailable: { damaged: 0, qualityControl: 0, safetyStock: 0, other: 0 },
-        available: 0,
-        incoming: 0,
-      }))
+      locations.map(loc => {
+        const locId = loc._id?.toString?.() ?? String(loc._id);
+        const qty = quantityByLocationId.get(locId) ?? 0;
+        return {
+          variantId: variant._id,
+          locationId: loc._id,
+          onHand: qty,
+          committed: 0,
+          unavailable: { damaged: 0, qualityControl: 0, safetyStock: 0, other: 0 },
+          available: qty,
+          incoming: 0,
+        };
+      })
     ));
     try {
       await InventoryLevelModel.insertMany(inventoryLevelDocs);
