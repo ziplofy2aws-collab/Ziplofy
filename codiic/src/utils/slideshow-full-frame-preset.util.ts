@@ -62,7 +62,7 @@ export function applySlideshowFullFramePreset(section: Record<string, unknown>):
   settings.backgroundColor = settings.backgroundColor ?? '';
   settings.navigationIcon = settings.navigationIcon ?? 'large-arrows';
   settings.navigationIconBackground = settings.navigationIconBackground ?? 'none';
-  settings.navigationIconColor = settings.navigationIconColor ?? '';
+  settings.navigationIconColor = settings.navigationIconColor || '#ffffff';
   settings.pagination = settings.pagination ?? 'dots';
   settings.autoRotate = settings.autoRotate ?? false;
   settings.paddingTop = settings.paddingTop ?? 0;

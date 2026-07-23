@@ -23,6 +23,21 @@ function makeSlide(spec: (typeof DEFAULT_SLIDES)[number]) {
       buttonHref: '/collections/all',
       imageUrl: '',
       peekVariant: spec.peekVariant,
+      direction: 'vertical',
+      alignment: 'center',
+      position: 'center',
+      gap: 12,
+      backgroundColor: '',
+      mediaOverlay: false,
+      paddingTop: 48,
+      paddingBottom: 48,
+      paddingLeft: 48,
+      paddingRight: 48,
+      headingTypographyPreset: 'heading-2',
+      bodyTypographyPreset: 'paragraph',
+      buttonStyle: 'primary',
+      buttonDesktopWidth: 'fit',
+      buttonMobileWidth: 'fit',
     },
   };
 }
@@ -41,6 +56,7 @@ export function applySlideshowInsetPreset(section: Record<string, unknown>): voi
   settings.colorScheme = settings.colorScheme ?? 'scheme-1';
   settings.navigationIcon = settings.navigationIcon ?? 'large-arrows';
   settings.navigationIconBackground = settings.navigationIconBackground ?? 'none';
+  settings.navigationIconColor = settings.navigationIconColor ?? '';
   settings.pagination = settings.pagination ?? 'none';
   settings.paddingTop = settings.paddingTop ?? 0;
   settings.paddingBottom = settings.paddingBottom ?? 0;

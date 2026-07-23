@@ -14378,7 +14378,7 @@
           "label": "Color scheme",
           "group": "General",
           "widget": "color-scheme",
-          "sidebar": false,
+          "sidebar": true,
           "options": [
             {
               "value": "scheme-1",
@@ -14445,6 +14445,14 @@
               "label": "Square"
             }
           ]
+        },
+        {
+          "path": "sections.slideshow_inset.settings.navigationIconColor",
+          "type": "color",
+          "label": "Icon color",
+          "group": "Navigation",
+          "widget": "color",
+          "sidebar": true
         },
         {
           "path": "sections.slideshow_inset.settings.pagination",
@@ -31295,7 +31303,7 @@
               "label": "Color scheme",
               "group": "General",
               "widget": "color-scheme",
-              "sidebar": false,
+              "sidebar": true,
               "options": [
                 {
                   "value": "scheme-1",
@@ -31362,6 +31370,14 @@
                   "label": "Square"
                 }
               ]
+            },
+            {
+              "path": "templates.0.sections.33.settings.navigationIconColor",
+              "type": "color",
+              "label": "Icon color",
+              "group": "Navigation",
+              "widget": "color",
+              "sidebar": true
             },
             {
               "path": "templates.index.sections.slideshow_inset.settings.pagination",

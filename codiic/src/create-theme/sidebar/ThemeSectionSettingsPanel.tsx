@@ -9867,6 +9867,7 @@ function SlideshowFullFrameGroupedSettingsPanel({
               ) : null}
               <div className="space-y-1">
                 {groupFields.map((field) => {
+                  const key = field.path.split('.').pop() ?? '';
                   if (field.widget === 'segmented') {
                     return (
                       <SegmentedFieldRow
@@ -9887,6 +9888,23 @@ function SlideshowFullFrameGroupedSettingsPanel({
                       />
                     );
                   }
+                  if (field.widget === 'slider' || field.type === 'number') {
+                    return (
+                      <SliderFieldRow
+                        key={field.path}
+                        field={{
+                          ...field,
+                          widget: 'slider',
+                          min: field.min ?? 0,
+                          max: field.max ?? 100,
+                          step: field.step ?? 1,
+                          unit: field.unit ?? 'px',
+                        }}
+                        values={values}
+                        onFieldChange={onFieldChange}
+                      />
+                    );
+                  }
                   if (field.widget === 'toggle') {
                     return (
                       <ToggleSwitchFieldRow
@@ -9897,7 +9915,23 @@ function SlideshowFullFrameGroupedSettingsPanel({
                       />
                     );
                   }
-                  if (field.widget === 'color') {
+                  if (
+                    key === 'navigationIconColor' ||
+                    field.widget === 'color' ||
+                    field.type === 'color'
+                  ) {
+                    if (key === 'navigationIconColor') {
+                      return (
+                        <ThemeHexColorField
+                          key={field.path}
+                          label={field.label || 'Icon color'}
+                          path={field.path}
+                          values={values}
+                          defaultColor="#ffffff"
+                          onFieldChange={onFieldChange}
+                        />
+                      );
+                    }
                     return (
                       <ThemeDefaultColorField
                         key={field.path}
@@ -9966,7 +10000,14 @@ function SlideshowSlideBlockSettingsPanel({
   return (
     <div className="space-y-2 px-1 py-3">
       {(prepared.fields ?? []).map((field) => {
-        if (field.widget === 'image') {
+        const key = field.path.split('.').pop() ?? '';
+        const asSlider =
+          field.widget === 'slider' ||
+          key === 'gap' ||
+          key === 'cornerRadius' ||
+          key.endsWith('CornerRadius') ||
+          key.startsWith('padding');
+        if (field.widget === 'image' || key === 'imageUrl') {
           return (
             <ImagePickerFieldRow
               key={field.path}
@@ -9976,8 +10017,25 @@ function SlideshowSlideBlockSettingsPanel({
             />
           );
         }
+        if (asSlider || field.type === 'number') {
+          return (
+            <SliderFieldRow
+              key={field.path}
+              field={{
+                ...field,
+                widget: 'slider',
+                min: field.min ?? 0,
+                max: field.max ?? (key === 'gap' || key.includes('adding') ? 100 : 40),
+                step: field.step ?? 1,
+                unit: field.unit ?? 'px',
+              }}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
         return (
-          <DefaultFieldRow
+          <SettingsFieldRow
             key={field.path}
             field={field}
             values={values}
@@ -10010,6 +10068,7 @@ function SlideshowInsetSlideBlockSettingsPanel({
   const gap = pick('gap');
   const backgroundColor = pick('backgroundColor');
   const mediaOverlay = pick('mediaOverlay');
+  const cornerRadius = pick('cornerRadius');
   const paddingTop = pick('paddingTop');
   const paddingBottom = pick('paddingBottom');
   const paddingLeft = pick('paddingLeft');
@@ -10045,13 +10104,24 @@ function SlideshowInsetSlideBlockSettingsPanel({
               <InlineSelectFieldRow field={position} values={values} onFieldChange={onFieldChange} />
             ) : null}
             {gap ? (
-              <SliderFieldRow field={gap} values={values} onFieldChange={onFieldChange} />
+              <SliderFieldRow
+                field={{
+                  ...gap,
+                  widget: 'slider',
+                  min: gap.min ?? 0,
+                  max: gap.max ?? 100,
+                  step: gap.step ?? 1,
+                  unit: gap.unit ?? 'px',
+                }}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
             ) : null}
           </div>
         </div>
       ) : null}
 
-      {backgroundColor || mediaOverlay ? (
+      {backgroundColor || mediaOverlay || cornerRadius ? (
         <div className="px-1 py-3">
           <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Appearance</h3>
           <div className="space-y-1">
@@ -10067,6 +10137,20 @@ function SlideshowInsetSlideBlockSettingsPanel({
             ) : null}
             {mediaOverlay ? (
               <ToggleSwitchFieldRow field={mediaOverlay} values={values} onFieldChange={onFieldChange} />
+            ) : null}
+            {cornerRadius ? (
+              <SliderFieldRow
+                field={{
+                  ...cornerRadius,
+                  widget: 'slider',
+                  min: cornerRadius.min ?? 0,
+                  max: cornerRadius.max ?? 40,
+                  step: cornerRadius.step ?? 1,
+                  unit: cornerRadius.unit ?? 'px',
+                }}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
             ) : null}
           </div>
         </div>
@@ -12607,6 +12691,20 @@ function RichTextTypographyBlockSettingsPanel({
                 path={backgroundColor.path}
                 values={values}
                 defaultColor="#f3f4f6"
+                onFieldChange={onFieldChange}
+              />
+            ) : null}
+            {backgroundOn && cornerRadius ? (
+              <SliderFieldRow
+                field={{
+                  ...cornerRadius,
+                  widget: 'slider',
+                  min: cornerRadius.min ?? 0,
+                  max: cornerRadius.max ?? 40,
+                  step: cornerRadius.step ?? 1,
+                  unit: cornerRadius.unit ?? 'px',
+                }}
+                values={values}
                 onFieldChange={onFieldChange}
               />
             ) : null}
@@ -19165,7 +19263,10 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' &&
     !/:nested:/.test(node.id) &&
     (isSlideshowFamilySlideBlockNodeId(node.id) ||
-      /(slideshow_(inset|full_frame)|layered_slideshow)[^:]*:block:[^:]+$/.test(node.id));
+      /(slideshow_(inset|full_frame)|layered_slideshow)[^:]*:block:[^:]+$/.test(node.id) ||
+      (node.label === 'Slide' &&
+        fields.some((f) => (f.path.split('.').pop() ?? '') === 'gap') &&
+        fields.some((f) => (f.path.split('.').pop() ?? '') === 'imageUrl')));
   const isCollectionLinkTitlePanel =
     !isBlogPostsGridTitleBlockNodeId(node.id) &&
     !isBlogPostsGridCardTitleBlockNodeId(node.id) &&

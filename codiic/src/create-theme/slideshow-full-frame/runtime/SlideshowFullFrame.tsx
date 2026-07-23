@@ -61,23 +61,32 @@ function NavGlyph({
   dir,
   shape,
   large,
+  color,
 }: {
   dir: 'left' | 'right';
   shape: 'arrows' | 'chevron';
   large: boolean;
+  color: string;
 }) {
   if (shape === 'chevron') {
     return (
-      <span style={{ fontSize: large ? 28 : 22, lineHeight: 1, fontWeight: 500 }} aria-hidden>
+      <span style={{ fontSize: large ? 28 : 22, lineHeight: 1, fontWeight: 500, color }} aria-hidden>
         {dir === 'left' ? '‹' : '›'}
       </span>
     );
   }
   return (
-    <svg width={large ? 26 : 22} height={large ? 26 : 22} viewBox="0 0 24 24" fill="none" aria-hidden>
+    <svg
+      width={large ? 26 : 22}
+      height={large ? 26 : 22}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+      style={{ color }}
+    >
       <path
         d={dir === 'left' ? 'M19 12 H6 M11 6 L5 12 L11 18' : 'M5 12 H18 M13 6 L19 12 L13 18'}
-        stroke="currentColor"
+        stroke={color}
         strokeWidth="2.2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -133,7 +142,7 @@ function NavButton({
         textShadow: background === 'none' ? '0 1px 3px rgba(0,0,0,0.35)' : undefined,
       }}
     >
-      <NavGlyph dir={side} shape={shape} large={large} />
+      <NavGlyph dir={side} shape={shape} large={large} color={color} />
     </button>
   );
 }
@@ -214,18 +223,15 @@ export function SlideshowFullFrame({
   const textOnMedia = onMedia;
   const headingFallback = textOnMedia ? '#ffffff' : scheme.color;
   const bodyFallback = textOnMedia ? 'rgba(255,255,255,0.92)' : scheme.muted;
-  const navColor = navigationIconColorRaw.trim()
-    ? resolveThemePaletteColorSetting(
-        config,
-        navigationIconColorRaw,
-        0,
-        navigationIconBackground !== 'none' ? '#111827' : textOnMedia ? '#ffffff' : scheme.color
-      )
-    : navigationIconBackground !== 'none'
-      ? '#111827'
-      : textOnMedia
-        ? '#ffffff'
-        : scheme.color;
+  const navColorFallback =
+    navigationIconBackground !== 'none' ? '#111827' : textOnMedia ? '#ffffff' : scheme.color;
+  const navColorRaw = navigationIconColorRaw.trim();
+  const navColor =
+    !navColorRaw || navColorRaw === 'default'
+      ? navColorFallback
+      : navColorRaw.startsWith('#')
+        ? navColorRaw
+        : resolveThemePaletteColorSetting(config, navColorRaw, 0, navColorFallback);
 
   const outerStyle: CSSProperties = {
     paddingTop,

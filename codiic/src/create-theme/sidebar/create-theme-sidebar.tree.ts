@@ -2568,6 +2568,18 @@ function mapSlideshowInsetBlockNodes(
         sidebar: true,
       },
       {
+        path: `${settingsBase}.cornerRadius`,
+        type: 'number',
+        label: 'Corner radius',
+        group: 'Appearance',
+        widget: 'slider',
+        min: 0,
+        max: 40,
+        step: 1,
+        unit: 'px',
+        sidebar: true,
+      },
+      {
         path: `${settingsBase}.paddingTop`,
         type: 'number',
         label: 'Top',

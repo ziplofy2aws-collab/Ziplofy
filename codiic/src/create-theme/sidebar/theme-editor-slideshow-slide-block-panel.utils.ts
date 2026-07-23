@@ -8,6 +8,7 @@ const SLIDE_LAYOUT_KEYS = [
   'gap',
   'backgroundColor',
   'mediaOverlay',
+  'cornerRadius',
   'paddingTop',
   'paddingBottom',
   'paddingLeft',
@@ -88,6 +89,7 @@ const SLIDE_DEFAULTS: Record<string, string | boolean | number> = {
   gap: 12,
   backgroundColor: '',
   mediaOverlay: false,
+  cornerRadius: 0,
   paddingTop: 40,
   paddingBottom: 40,
   paddingLeft: 36,
@@ -155,7 +157,7 @@ function getNested(obj: Record<string, unknown> | null | undefined, path: string
 
 export function isSlideshowSlideBlockField(field: EditorFieldDef): boolean {
   return (
-    /\.blocks\.[^.]+\.settings\.(title|body|buttonLabel|buttonHref|imageUrl|peekVariant|direction|alignment|position|gap|backgroundColor|mediaOverlay|paddingTop|paddingBottom|paddingLeft|paddingRight)$/.test(
+    /\.blocks\.[^.]+\.settings\.(title|body|buttonLabel|buttonHref|imageUrl|peekVariant|direction|alignment|position|gap|backgroundColor|mediaOverlay|cornerRadius|paddingTop|paddingBottom|paddingLeft|paddingRight)$/.test(
       field.path
     ) && field.sidebar !== false
   );
@@ -197,29 +199,51 @@ export function isSlideshowFamilySlideNestedNodeId(
 }
 
 export function prepareSlideshowSlideBlockSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = [...(node.fields ?? [])].sort((a, b) => {
-    const order: Record<string, number> = {
-      title: 0,
-      body: 1,
-      buttonLabel: 2,
-      buttonHref: 3,
-      imageUrl: 4,
-      peekVariant: 5,
-      direction: 10,
-      alignment: 11,
-      position: 12,
-      gap: 13,
-      backgroundColor: 20,
-      mediaOverlay: 21,
-      paddingTop: 30,
-      paddingBottom: 31,
-      paddingLeft: 32,
-      paddingRight: 33,
-    };
-    const ka = order[a.path.split('.').pop() ?? ''] ?? 9;
-    const kb = order[b.path.split('.').pop() ?? ''] ?? 9;
-    return ka - kb;
-  });
+  const fields = [...(node.fields ?? [])]
+    .map((field) => {
+      const key = field.path.split('.').pop() ?? '';
+      if (
+        key === 'gap' ||
+        key === 'cornerRadius' ||
+        key.endsWith('CornerRadius') ||
+        key.startsWith('padding')
+      ) {
+        return {
+          ...field,
+          type: 'number' as const,
+          widget: 'slider' as const,
+          min: field.min ?? 0,
+          max: field.max ?? (key === 'gap' || key.startsWith('padding') ? 100 : 40),
+          step: field.step ?? 1,
+          unit: field.unit ?? 'px',
+        };
+      }
+      return field;
+    })
+    .sort((a, b) => {
+      const order: Record<string, number> = {
+        title: 0,
+        body: 1,
+        buttonLabel: 2,
+        buttonHref: 3,
+        imageUrl: 4,
+        peekVariant: 5,
+        direction: 10,
+        alignment: 11,
+        position: 12,
+        gap: 13,
+        backgroundColor: 20,
+        mediaOverlay: 21,
+        cornerRadius: 22,
+        paddingTop: 30,
+        paddingBottom: 31,
+        paddingLeft: 32,
+        paddingRight: 33,
+      };
+      const ka = order[a.path.split('.').pop() ?? ''] ?? 9;
+      const kb = order[b.path.split('.').pop() ?? ''] ?? 9;
+      return ka - kb;
+    });
   return { ...node, label: 'Slide', kind: 'block', fields };
 }
 

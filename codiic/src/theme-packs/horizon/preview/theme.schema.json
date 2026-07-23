@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "themeId": "horizon",
-  "description": "Horizon benchmark theme schema \u2014 full editor tree for theme-packs/horizon. Use as reference when generating new theme packs.",
+  "description": "Horizon benchmark theme schema — full editor tree for theme-packs/horizon. Use as reference when generating new theme packs.",
   "globalSettings": {
     "label": "Theme settings",
     "groups": [
@@ -508,7 +508,7 @@
           "label": "Search placeholder",
           "group": "Search",
           "sidebar": false,
-          "placeholder": "Search products\u2026"
+          "placeholder": "Search products…"
         },
         {
           "path": "sections.header.settings.countryRegionEnabled",
@@ -982,7 +982,7 @@
           ]
         }
       ],
-      "description": "Store header \u2014 logo, navigation, search, localization, and appearance. Select Header in the sidebar for layout settings; open Logo or Menu blocks for content."
+      "description": "Store header — logo, navigation, search, localization, and appearance. Select Header in the sidebar for layout settings; open Logo or Menu blocks for content."
     },
     "footer": {
       "label": "Footer",
@@ -1050,7 +1050,7 @@
           ]
         }
       ],
-      "description": "Site footer \u2014 layout, spacing, and color scheme. Open Email signup or other blocks for content.",
+      "description": "Site footer — layout, spacing, and color scheme. Open Email signup or other blocks for content.",
       "settingsFields": [
         {
           "path": "sections.footer.settings.sectionWidth",
@@ -1414,7 +1414,7 @@
           ]
         }
       ],
-      "description": "Footer utilities bar \u2014 copyright, policy links, and social icons. Section settings control layout and appearance.",
+      "description": "Footer utilities bar — copyright, policy links, and social icons. Section settings control layout and appearance.",
       "settingsFields": [
         {
           "path": "sections.footer_utilities.settings.sectionWidth",
@@ -14428,7 +14428,7 @@
           "label": "Color scheme",
           "group": "General",
           "widget": "color-scheme",
-          "sidebar": false,
+          "sidebar": true,
           "options": [
             {
               "value": "scheme-1",
@@ -14495,6 +14495,14 @@
               "label": "Square"
             }
           ]
+        },
+        {
+          "path": "sections.slideshow_inset.settings.navigationIconColor",
+          "type": "color",
+          "label": "Icon color",
+          "group": "Navigation",
+          "widget": "color",
+          "sidebar": true
         },
         {
           "path": "sections.slideshow_inset.settings.pagination",
@@ -16952,7 +16960,7 @@
                   "group": "Appearance",
                   "widget": "image",
                   "sidebar": false,
-                  "placeholder": "https://\u2026"
+                  "placeholder": "https://…"
                 },
                 {
                   "path": "templates.index.sections.featured_collection.blocks.collection_header.settings.backgroundImagePosition",
@@ -20708,7 +20716,7 @@
                   "group": "Appearance",
                   "widget": "image",
                   "sidebar": false,
-                  "placeholder": "https://\u2026"
+                  "placeholder": "https://…"
                 },
                 {
                   "path": "templates.index.sections.product_highlight.blocks.details.settings.backgroundImagePosition",
@@ -21357,7 +21365,7 @@
                       "group": "Appearance",
                       "widget": "image",
                       "sidebar": false,
-                      "placeholder": "https://\u2026"
+                      "placeholder": "https://…"
                     },
                     {
                       "path": "templates.index.sections.product_highlight.blocks.details.blocks.header.settings.backgroundImagePosition",
@@ -31529,7 +31537,7 @@
               "label": "Color scheme",
               "group": "General",
               "widget": "color-scheme",
-              "sidebar": false,
+              "sidebar": true,
               "options": [
                 {
                   "value": "scheme-1",
@@ -31596,6 +31604,14 @@
                   "label": "Square"
                 }
               ]
+            },
+            {
+              "path": "templates.0.sections.33.settings.navigationIconColor",
+              "type": "color",
+              "label": "Icon color",
+              "group": "Navigation",
+              "widget": "color",
+              "sidebar": true
             },
             {
               "path": "templates.index.sections.slideshow_inset.settings.pagination",

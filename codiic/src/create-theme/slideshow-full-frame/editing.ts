@@ -29,11 +29,6 @@ export const editing: CreateThemeEditing = {
       "type": "color"
     },
     {
-      "key": "colorScheme",
-      "label": "Color scheme",
-      "type": "text"
-    },
-    {
       "key": "navigationIcon",
       "label": "Icons",
       "type": "text"

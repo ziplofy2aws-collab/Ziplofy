@@ -54,6 +54,11 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
+      "key": "navigationIconColor",
+      "label": "Icon color",
+      "type": "color"
+    },
+    {
       "key": "pagination",
       "label": "Pagination",
       "type": "text"

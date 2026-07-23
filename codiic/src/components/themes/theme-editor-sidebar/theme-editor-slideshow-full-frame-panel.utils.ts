@@ -14,7 +14,7 @@ const FIELD_SORT: Record<string, number> = {
   sectionWidth: 1,
   mediaHeight: 2,
   contentPosition: 3,
-  colorScheme: 4,
+  backgroundColor: 4,
   navigationIcon: 0,
   navigationIconBackground: 1,
   navigationIconColor: 2,
@@ -38,7 +38,7 @@ export function isSlideshowFullFrameSectionType(
 export function isSlideshowFullFramePanelField(field: EditorFieldDef): boolean {
   if (field.sidebar === false) return false;
   const key = field.path.split('.').pop() ?? '';
-  if (key === 'customCss') return false;
+  if (key === 'customCss' || key === 'colorScheme') return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return /\.sections\.[^.]+\.settings\./.test(field.path);
 }
