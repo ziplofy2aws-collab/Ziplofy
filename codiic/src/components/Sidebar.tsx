@@ -65,7 +65,6 @@ const NAV: NavItem[] = [
       { text: 'Inventory', path: '/products/inventory' },
       { text: 'Purchase orders', path: '/products/purchase-orders' },
       { text: 'Transfers', path: '/products/transfers' },
-      { text: 'Gift cards', path: '/products/gift-cards', comingSoon: true },
     ],
   },
   {
