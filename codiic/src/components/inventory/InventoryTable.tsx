@@ -92,11 +92,11 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[920px] text-left">
+    <div className="min-h-0 flex-1 overflow-auto rounded-b-lg">
+      <table className="w-full min-w-[920px] border-separate border-spacing-0 text-left">
         <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className="w-10 px-3 py-2.5 text-center">
+          <tr className="bg-gray-50">
+            <th className="sticky left-0 top-0 z-30 w-10 border-b border-gray-100 bg-gray-50 px-3 py-2.5 text-center">
               <input
                 ref={selectAllRef}
                 type="checkbox"
@@ -107,21 +107,40 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
                 className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Product</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">SKU</th>
-            <th className={inventoryColumnHeaderWithHintClass} title={COLUMN_HINTS.unavailable}>
+            <th className="sticky left-10 top-0 z-30 border-b border-gray-100 bg-gray-50 px-3 py-2.5 text-[12px] font-medium text-gray-500 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.08)]">
+              Product
+            </th>
+            <th className="sticky top-0 z-20 border-b border-gray-100 bg-gray-50 px-3 py-2.5 text-[12px] font-medium text-gray-500">
+              SKU
+            </th>
+            <th
+              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              title={COLUMN_HINTS.unavailable}
+            >
               Unavailable
             </th>
-            <th className={inventoryColumnHeaderWithHintClass} title={COLUMN_HINTS.committed}>
+            <th
+              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              title={COLUMN_HINTS.committed}
+            >
               Committed
             </th>
-            <th className={inventoryColumnHeaderWithHintClass} title={COLUMN_HINTS.available}>
+            <th
+              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              title={COLUMN_HINTS.available}
+            >
               Available
             </th>
-            <th className={inventoryColumnHeaderWithHintClass} title={COLUMN_HINTS.onHand}>
+            <th
+              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              title={COLUMN_HINTS.onHand}
+            >
               On hand
             </th>
-            <th className={inventoryColumnHeaderClass} title={COLUMN_HINTS.incoming}>
+            <th
+              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderClass}`}
+              title={COLUMN_HINTS.incoming}
+            >
               Incoming
             </th>
           </tr>

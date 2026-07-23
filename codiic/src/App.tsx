@@ -342,6 +342,7 @@ const AdminApp: React.FC = () => {
   const isSettings = location.pathname.startsWith('/settings');
   const showNavbar = !isFullScreen;
   const showSidebar = !isFullScreen && !isSettings && !isThemeCreator && !isCheckoutProfileEditor;
+  const lockMainScroll = location.pathname === '/products/inventory';
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -352,7 +353,8 @@ const AdminApp: React.FC = () => {
 
         <main
           className={[
-            "flex-1 overflow-y-auto overflow-x-hidden antialiased text-gray-900 transition-[margin-left] duration-300 ease-out",
+            "flex-1 overflow-x-hidden antialiased text-gray-900 transition-[margin-left] duration-300 ease-out",
+            lockMainScroll ? "flex flex-col overflow-hidden" : "overflow-y-auto",
             isFullScreen ? "bg-transparent p-0" : "bg-page-background-color p-4 sm:p-6 lg:p-8",
           ]
             .filter(Boolean)
@@ -364,6 +366,11 @@ const AdminApp: React.FC = () => {
             height: showNavbar ? `calc(100vh - ${NAVBAR_HEIGHT}px)` : "100vh",
           }}
         >
+          <div
+            className={
+              lockMainScroll ? 'flex min-h-0 flex-1 flex-col overflow-hidden' : undefined
+            }
+          >
           <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Authentication (merged in from the former standalone client app) */}
@@ -571,6 +578,7 @@ const AdminApp: React.FC = () => {
             </Route>
           </Routes>
           </Suspense>
+          </div>
         </main>
       </div>
     </div>

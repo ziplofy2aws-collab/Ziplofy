@@ -189,12 +189,13 @@ const ProductsInventoryPage: React.FC = () => {
     onOpenUnavailable: openUnavailableMenu,
   };
 
+  // Height is locked by App main + AdminStandardLayout for this route.
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1200px] flex-1 flex-col">
         <InventoryPageHeader />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className="flex min-h-0 flex-1 flex-col rounded-lg border border-gray-200/80 bg-white shadow-sm">
           <InventoryPageFilters
             locations={locations}
             selectedLocationId={selectedLocationId}
@@ -206,7 +207,7 @@ const ProductsInventoryPage: React.FC = () => {
           {showLocationsSkeleton || showInventorySkeleton ? (
             <InventoryTable levels={[]} loading {...tableEditProps} />
           ) : !selectedLocationId ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center rounded-b-lg px-6 py-16 text-center">
               <p className="text-[15px] font-semibold text-gray-900">Add a location to view inventory</p>
               <p className="mt-1.5 text-[13px] font-normal text-gray-500">
                 Create a location in settings to start tracking inventory levels
@@ -217,7 +218,7 @@ const ProductsInventoryPage: React.FC = () => {
           )}
         </div>
 
-        <div className="py-5 text-center">
+        <div className="shrink-0 py-3 text-center">
           <p className="text-xs text-gray-500">
             <a href="#" className="text-blue-600 hover:text-blue-700">
               Learn more about managing inventory

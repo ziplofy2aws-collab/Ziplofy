@@ -5,6 +5,8 @@ import {
   inventoryInputClass,
   inventoryPrimaryButtonClass,
   inventorySecondaryButtonClass,
+  inventoryStickyCheckboxCellClass,
+  inventoryStickyProductCellClass,
 } from './inventory-ui.util';
 
 type InventoryTableRowProps = {
@@ -67,8 +69,8 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
   const sku = level.variantId.sku?.trim() || 'No SKU';
 
   return (
-    <tr className="border-b border-gray-100 transition-colors hover:bg-gray-50/60">
-      <td className="w-10 px-3 py-2.5 text-center">
+    <tr className="group transition-colors hover:bg-gray-50">
+      <td className={`${inventoryStickyCheckboxCellClass} border-b border-gray-100`}>
         <input
           type="checkbox"
           checked={isSelected}
@@ -77,7 +79,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
         />
       </td>
-      <td className="px-3 py-2.5">
+      <td className={`${inventoryStickyProductCellClass} border-b border-gray-100`}>
         <div className="flex min-w-[220px] items-center gap-3">
           <div className="h-9 w-9 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
             {imageUrl ? (
@@ -94,10 +96,10 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           </div>
         </div>
       </td>
-      <td className="px-3 py-2.5">
+      <td className="border-b border-gray-100 px-3 py-2.5">
         <span className="text-[13px] text-gray-700">{sku}</span>
       </td>
-      <td className="px-3 py-2.5 text-right">
+      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
         <button
           type="button"
           onClick={(e) => onOpenUnavailable(e, level._id)}
@@ -106,10 +108,10 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           {unavailableTotal}
         </button>
       </td>
-      <td className="px-3 py-2.5 text-right">
+      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
         <span className="text-[13px] text-gray-700">{level.committed}</span>
       </td>
-      <td className="px-3 py-2.5 text-right">
+      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
         {editingAvailableId === level._id ? (
           <div className="inline-flex items-center justify-end gap-1.5">
             <input
@@ -136,7 +138,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           </button>
         )}
       </td>
-      <td className="px-3 py-2.5 text-right">
+      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
         {editingOnHandId === level._id ? (
           <div className="inline-flex items-center justify-end gap-1.5">
             <input
@@ -163,7 +165,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           </button>
         )}
       </td>
-      <td className="px-3 py-2.5 text-right">
+      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
         <span className="text-[13px] text-gray-700">{level.incoming ?? 0}</span>
       </td>
     </tr>

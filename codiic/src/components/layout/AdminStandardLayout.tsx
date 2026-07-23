@@ -18,11 +18,24 @@ function isImmersiveOrFullWidthPath(pathname: string): boolean {
   return false;
 }
 
+/** Pages that fill the main pane and own their own scroll (no page-level scroll). */
+function isViewportLockedPath(pathname: string): boolean {
+  return pathname === '/products/inventory';
+}
+
 const AdminStandardLayout: React.FC = () => {
   const { pathname } = useLocation();
 
   if (isImmersiveOrFullWidthPath(pathname)) {
     return <Outlet />;
+  }
+
+  if (isViewportLockedPath(pathname)) {
+    return (
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-[1440px] flex-1 flex-col overflow-hidden">
+        <Outlet />
+      </div>
+    );
   }
 
   return (

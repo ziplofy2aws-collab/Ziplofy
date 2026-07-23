@@ -43,7 +43,7 @@ const InventoryPageFilters: React.FC<InventoryPageFiltersProps> = ({
   }, [locationOpen]);
 
   return (
-    <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2">
+    <div className="relative z-40 flex shrink-0 items-center gap-2 border-b border-gray-100 bg-white px-3 py-2">
       <div className="relative shrink-0" ref={locationRef}>
         <button
           type="button"
@@ -54,7 +54,7 @@ const InventoryPageFilters: React.FC<InventoryPageFiltersProps> = ({
           <ArrowsUpDownIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden />
         </button>
         {locationOpen ? (
-          <div className="absolute left-0 top-full z-20 mt-1 min-w-[180px] max-h-64 overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-md">
+          <div className="absolute left-0 top-full z-50 mt-1 min-w-[180px] max-h-64 overflow-y-auto rounded-md border border-gray-200 bg-white py-1 shadow-md">
             {locations.length === 0 ? (
               <p className="px-3 py-2 text-[13px] text-gray-500">No locations</p>
             ) : (

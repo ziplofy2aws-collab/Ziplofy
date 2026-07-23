@@ -11,4 +11,10 @@ export const inventoryColumnHeaderClass =
   'px-3 py-2.5 text-right text-[12px] font-medium text-gray-500';
 
 export const inventoryColumnHeaderWithHintClass =
-  'cursor-help border-b border-dotted border-gray-400 px-3 py-2.5 text-right text-[12px] font-medium text-gray-500';
+  'cursor-help px-3 py-2.5 text-right text-[12px] font-medium text-gray-500 underline decoration-dotted decoration-gray-400 underline-offset-4';
+
+export const inventoryStickyCheckboxCellClass =
+  'sticky left-0 z-10 w-10 bg-white px-3 py-2.5 text-center group-hover:bg-gray-50';
+
+export const inventoryStickyProductCellClass =
+  'sticky left-10 z-10 bg-white px-3 py-2.5 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.08)] group-hover:bg-gray-50';
