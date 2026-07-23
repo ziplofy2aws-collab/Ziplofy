@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { CodiicLoggedInToastHost } from './components/auth/CodiicLoggedInToastHost';
 import { AmountOffOrderProvider } from './contexts/amount-off-order.context';
 import { AmountOffProductProvider } from './contexts/amount-off-product.context';
 import { CustomerAddressProvider } from './contexts/customer-address-storefront.context';
@@ -33,6 +34,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
     <StorefrontAccessProvider>
       <Toaster position="bottom-right" />
       <StorefrontAuthProvider>
+        <CodiicLoggedInToastHost />
       <PaymentProvider>
         <StorefrontProductVariantProvider>
           <StorefrontCartProvider>

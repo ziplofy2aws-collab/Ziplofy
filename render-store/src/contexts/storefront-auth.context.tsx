@@ -2,6 +2,10 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { axiosi } from "../config/axios.config";
 import { safeLocalStorage } from "../types/local-storage";
 import toast from "react-hot-toast";
+import {
+  clearCodiicLoggedInToastSession,
+  showCodiicLoggedInToast,
+} from "../components/auth/showCodiicLoggedInToast";
 
 export interface StorefrontUser {
   _id: string;
@@ -184,7 +188,7 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
       if (!res.data.success) throw new Error("Signup failed");
       setUser(res.data.data);
       safeLocalStorage.setItem("accessToken", res.data.token);
-      toast.success(`Welcome, ${res.data.data.firstName}! Account created successfully.`);
+      showCodiicLoggedInToast(res.data.data);
       // Call all registered login callbacks to sync guest data
       loginCallbacksRef.current.forEach(callback => callback(res.data.data));
       return res.data.data;
@@ -211,7 +215,7 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
       if (!res.data.success) throw new Error("Login failed");
       setUser(res.data.data);
       safeLocalStorage.setItem("accessToken", res.data.token);
-      toast.success(`Welcome back, ${res.data.data.firstName}!`);
+      showCodiicLoggedInToast(res.data.data);
       // Call all registered login callbacks to sync guest data
       loginCallbacksRef.current.forEach(callback => callback(res.data.data));
       return res.data.data;
@@ -232,6 +236,7 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
   }, []);
 
   const logout = useCallback(async () => {
+    clearCodiicLoggedInToastSession();
     safeLocalStorage.removeItem("accessToken");
     setUser(null);
     // Call all registered logout callbacks to clear other contexts

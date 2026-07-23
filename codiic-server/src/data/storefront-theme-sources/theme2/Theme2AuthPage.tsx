@@ -8,7 +8,7 @@ import { Theme2Footer } from './Theme2Footer';
 export function Theme2AuthPage() {
   const navigate = useNavigate();
   const { storeFrontMeta } = useStorefront();
-  const { login, signup, user, logout } = useStorefrontAuth();
+  const { login, signup, user } = useStorefrontAuth();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -41,10 +41,6 @@ export function Theme2AuthPage() {
       <Theme2Header
         userName={user ? `${user.firstName} ${user.lastName}`.trim() : undefined}
         onCartOpen={() => {}}
-        onLogout={() => {
-          logout().catch(() => {});
-          navigate('/');
-        }}
       />
       <main className="mx-auto max-w-4xl px-3 py-8">
         <div className="mx-auto max-w-xl border-4 border-black bg-white p-5">

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CheckoutProfileView } from '@codiic/create-theme/checkout/profile/CheckoutProfileView';
 import {
   CheckoutProfileAddressModal,
@@ -13,8 +12,7 @@ import { useCheckoutProfilePageAppearance } from '@/hooks/useCheckoutProfilePage
 import { mapStorefrontUserToCheckoutProfile } from './mapStorefrontUserToCheckoutProfile';
 
 export function CheckoutProfilePage() {
-  const navigate = useNavigate();
-  const { user, logout, updateUser, loading: authLoading, initializing } = useStorefrontAuth();
+  const { user, updateUser, loading: authLoading, initializing } = useStorefrontAuth();
   const {
     addresses,
     fetchCustomerAddressesByCustomerId,
@@ -37,7 +35,6 @@ export function CheckoutProfilePage() {
 
   const [marketingUpdating, setMarketingUpdating] = useState(false);
   const [smsMarketingUpdating, setSmsMarketingUpdating] = useState(false);
-  const [signingOut, setSigningOut] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
   const [addressModal, setAddressModal] = useState<{
@@ -84,16 +81,6 @@ export function CheckoutProfilePage() {
     },
     [updateUser, user]
   );
-
-  const handleSignOut = useCallback(async () => {
-    setSigningOut(true);
-    try {
-      await logout();
-      navigate('/');
-    } finally {
-      setSigningOut(false);
-    }
-  }, [logout, navigate]);
 
   const handleSaveProfile = useCallback(
     async (payload: { firstName: string; lastName: string; phoneNumber: string }) => {
@@ -217,7 +204,6 @@ export function CheckoutProfilePage() {
         addressesLoading={addressesLoading}
         marketingUpdating={marketingUpdating}
         smsMarketingUpdating={smsMarketingUpdating}
-        signingOut={signingOut || authLoading}
         onEditProfile={() => setEditOpen(true)}
         onAddAddress={() => setAddressModal({ mode: 'add' })}
         onAddressClick={(addressId) => {
@@ -227,8 +213,6 @@ export function CheckoutProfilePage() {
         }}
         onMarketingToggle={(enabled) => void handleMarketingToggle(enabled)}
         onSmsMarketingToggle={(enabled) => void handleSmsMarketingToggle(enabled)}
-        onSignOut={() => void handleSignOut()}
-        onSignOutAllDevices={() => void handleSignOut()}
       />
 
       <CheckoutProfileEditModal

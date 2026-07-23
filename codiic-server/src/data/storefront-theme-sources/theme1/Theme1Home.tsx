@@ -18,7 +18,7 @@ import { Theme1Footer } from './Theme1Footer';
  */
 export function Theme1Home() {
   const { storeFrontMeta } = useStorefront();
-  const { user, logout } = useStorefrontAuth();
+  const { user } = useStorefrontAuth();
   const { products, loading: productsLoading } = useStorefrontProducts();
   const { collections, loading: collectionsLoading } = useStorefrontCollections();
   const [cartOpen, setCartOpen] = useState(false);
@@ -33,9 +33,6 @@ export function Theme1Home() {
         storeName={name}
         userName={user ? `${user.firstName} ${user.lastName}`.trim() : undefined}
         onCartOpen={() => setCartOpen(true)}
-        onLogout={() => {
-          logout().catch(() => {});
-        }}
       />
 
       <main className="mx-auto max-w-6xl px-4 py-8">

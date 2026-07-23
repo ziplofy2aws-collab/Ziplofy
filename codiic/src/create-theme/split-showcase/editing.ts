@@ -1,7 +1,7 @@
 import type { CreateThemeEditing } from '../types';
 
 export const editing: CreateThemeEditing = {
-  "sectionLabel": "Hero",
+  "sectionLabel": "Split showcase",
   "sectionSettingsOrder": [
     {
       "key": "media1Type",
@@ -84,14 +84,44 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
+      "key": "customHeight",
+      "label": "Custom height",
+      "type": "number"
+    },
+    {
       "key": "colorScheme",
       "label": "Color scheme",
       "type": "text"
     },
     {
       "key": "mediaOverlay",
-      "label": "Media overlay",
+      "label": "Background overlay",
       "type": "boolean"
+    },
+    {
+      "key": "borderStyle",
+      "label": "Style",
+      "type": "text"
+    },
+    {
+      "key": "borderThickness",
+      "label": "Thickness",
+      "type": "number"
+    },
+    {
+      "key": "borderOpacity",
+      "label": "Opacity",
+      "type": "number"
+    },
+    {
+      "key": "borderColor",
+      "label": "Color",
+      "type": "text"
+    },
+    {
+      "key": "cornerRadius",
+      "label": "Corner radius",
+      "type": "number"
     },
     {
       "key": "overlayColor",
@@ -117,11 +147,6 @@ export const editing: CreateThemeEditing = {
       "key": "paddingBottom",
       "label": "Bottom",
       "type": "number"
-    },
-    {
-      "key": "customCss",
-      "label": "Custom CSS",
-      "type": "textarea"
     },
     {
       "key": "eyebrow",

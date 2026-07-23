@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useStorefrontAuth } from '../../contexts/storefront-auth.context';
 import { Theme2Header } from './Theme2Header';
 import { Theme2Footer } from './Theme2Footer';
 
 export function Theme2ProfilePage() {
-  const navigate = useNavigate();
-  const { user, checkAuth, updateUser, logout } = useStorefrontAuth();
+  const { user, checkAuth, updateUser } = useStorefrontAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -35,10 +33,6 @@ export function Theme2ProfilePage() {
       <Theme2Header
         userName={`${user.firstName} ${user.lastName}`.trim()}
         onCartOpen={() => {}}
-        onLogout={() => {
-          logout().catch(() => {});
-          navigate('/');
-        }}
       />
       <main className="mx-auto max-w-4xl px-3 py-8">
         <div className="mx-auto max-w-xl border-4 border-black bg-white p-5">

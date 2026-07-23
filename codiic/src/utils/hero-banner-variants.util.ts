@@ -235,7 +235,7 @@ export function applySplitShowcasePreset(section: Record<string, unknown>, block
   settings.media2ImageUrl = '';
   settings.direction = 'horizontal';
   settings.verticalOnMobile = true;
-  settings.layoutAlignment = 'left';
+  settings.layoutAlignment = 'center';
   settings.position = 'center';
   settings.layoutGap = 0;
   settings.sectionWidth = 'full';
@@ -245,9 +245,61 @@ export function applySplitShowcasePreset(section: Record<string, unknown>, block
   settings.mediaOverlay = false;
   settings.backgroundMedia = 'none';
   settings.backgroundImageUrl = '';
+  settings.backgroundColor = 'default';
+  settings.customHeight = 680;
   settings.borderStyle = 'none';
   settings.cornerRadius = 0;
   settings.colorScheme = settings.colorScheme ?? 'scheme-1';
+  settings.group1Text = {
+    settings: {
+      text: 'New arrivals',
+      width: 'fit',
+      maxWidth: 'none',
+      typographyPreset: 'heading-3',
+      textColor: 'default',
+      backgroundEnabled: false,
+    },
+  };
+  settings.group2Text = {
+    settings: {
+      text: 'Bestsellers',
+      width: 'fit',
+      maxWidth: 'none',
+      typographyPreset: 'heading-3',
+      textColor: 'default',
+      backgroundEnabled: false,
+    },
+  };
+  settings.group1Group = {
+    direction: 'vertical',
+    layoutAlignment: 'center',
+    position: 'center',
+    layoutGap: 16,
+    width: 'fill',
+    height: 'fill',
+    backgroundMedia: 'none',
+    borderStyle: 'none',
+    cornerRadius: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 24,
+    paddingRight: 24,
+  };
+  settings.group2Group = {
+    direction: 'vertical',
+    layoutAlignment: 'center',
+    position: 'center',
+    layoutGap: 16,
+    width: 'fill',
+    height: 'fill',
+    backgroundMedia: 'none',
+    borderStyle: 'none',
+    cornerRadius: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingLeft: 24,
+    paddingRight: 24,
+  };
   section.settings = settings;
 
   const blocks = (section.blocks ?? {}) as Record<string, Record<string, unknown>>;

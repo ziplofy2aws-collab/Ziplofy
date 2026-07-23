@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useStorefront } from '../../contexts/store.context';
 import { useStorefrontAuth } from '../../contexts/storefront-auth.context';
 import { useStorefrontOrder } from '../../contexts/storefront-order.context';
@@ -8,9 +7,8 @@ import { Theme1Header } from './Theme1Header';
 import { Theme1Footer } from './Theme1Footer';
 
 export function Theme1OrdersPage() {
-  const navigate = useNavigate();
   const { storeFrontMeta } = useStorefront();
-  const { user, checkAuth, logout } = useStorefrontAuth();
+  const { user, checkAuth } = useStorefrontAuth();
   const { orders, loading, getOrdersByCustomerId } = useStorefrontOrder();
 
   useEffect(() => {
@@ -30,10 +28,6 @@ export function Theme1OrdersPage() {
         storeName={storeFrontMeta?.name ?? 'Store'}
         userName={`${user.firstName} ${user.lastName}`.trim()}
         onCartOpen={() => {}}
-        onLogout={() => {
-          logout().catch(() => {});
-          navigate('/');
-        }}
       />
       <main className="mx-auto max-w-6xl px-4 py-10">
         <h1 className="mb-4 text-xl font-semibold">My Orders</h1>

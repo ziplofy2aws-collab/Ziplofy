@@ -555,6 +555,7 @@ import {
   prepareMulticolumnSettingsNode,
   isMulticolumnSectionNodeId,
   multicolumnSectionSettingsBaseFromFields,
+  borderSettingsBaseFromFields,
 } from './theme-editor-multicolumn-panel.utils';
 import {
   groupMarqueeTextPanelFields,
@@ -3174,19 +3175,37 @@ function SplitShowcaseGroupedSettingsPanel({
 }) {
   const grouped = useMemo(() => groupSplitShowcasePanelFields(fields), [fields]);
 
+  const handleLayoutFieldChange = (
+    path: string,
+    type: ThemeEditorFieldType,
+    value: string | boolean
+  ) => {
+    onFieldChange(path, type, value);
+    const key = path.split('.').pop() ?? '';
+    if (key !== 'layoutAlignment' && key !== 'position') return;
+    const settingsBase = path.replace(/\.(layoutAlignment|position)$/, '');
+    /** Alignment cascades to both groups; Position stays per-group so Group → Position works. */
+    if (key === 'layoutAlignment') {
+      onFieldChange(`${settingsBase}.group1Group.${key}`, type, value);
+      onFieldChange(`${settingsBase}.group2Group.${key}`, type, value);
+      onFieldChange(`${settingsBase}.group1Text.settings.alignment`, type, value);
+      onFieldChange(`${settingsBase}.group2Text.settings.alignment`, type, value);
+    }
+  };
+
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {SPLIT_SHOWCASE_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        if (!groupFields?.length && label !== 'Borders') return null;
 
         if (label === 'Layout') {
           return (
             <SplitShowcaseLayoutSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
-              onFieldChange={onFieldChange}
+              onFieldChange={handleLayoutFieldChange}
             />
           );
         }
@@ -3194,7 +3213,7 @@ function SplitShowcaseGroupedSettingsPanel({
           return (
             <LargeLogoSizeSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -3204,7 +3223,7 @@ function SplitShowcaseGroupedSettingsPanel({
           return (
             <ContactFormAppearanceSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               colorPalette={colorPalette}
               onFieldChange={onFieldChange}
@@ -3212,41 +3231,25 @@ function SplitShowcaseGroupedSettingsPanel({
           );
         }
         if (label === 'Borders') {
-          const borderStyle = groupFields.find((f) => f.path.endsWith('borderStyle'));
-          const cornerRadius = groupFields.find((f) => f.path.endsWith('cornerRadius'));
           return (
-            <ShopifySettingsSection key={label} title="Borders">
-              {borderStyle ? (
-                <SegmentedFieldRow field={borderStyle} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-              {cornerRadius ? (
-                <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-            </ShopifySettingsSection>
+            <MulticolumnBordersSettingsGroup
+              key={label}
+              fields={groupFields ?? []}
+              allFields={fields}
+              values={values}
+              colorPalette={colorPalette}
+              onFieldChange={onFieldChange}
+            />
           );
         }
         if (label === 'Padding') {
           return (
             <HeroPaddingSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields!}
               values={values}
               onFieldChange={onFieldChange}
             />
-          );
-        }
-        if (label === 'Custom CSS') {
-          return (
-            <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
-                <AccordionFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
-            </div>
           );
         }
         return null;
@@ -12945,7 +12948,7 @@ function MulticolumnBordersSettingsGroup({
     [fields, allFields]
   );
   const settingsBase = useMemo(
-    () => multicolumnSectionSettingsBaseFromFields(panelFields),
+    () => borderSettingsBaseFromFields(panelFields),
     [panelFields]
   );
 

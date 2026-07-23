@@ -15,7 +15,6 @@ type Props = {
   anchorRef: RefObject<HTMLElement | null>;
   onClose: () => void;
   user: StorefrontUser | null;
-  onSignOut?: () => void;
 };
 
 function HeaderIconOrders() {
@@ -84,7 +83,7 @@ const fieldStyle: CSSProperties = {
   outline: 'none',
 };
 
-export function HeaderAccountPanel({ open, anchorRef, onClose, user, onSignOut }: Props) {
+export function HeaderAccountPanel({ open, anchorRef, onClose, user }: Props) {
   const config = useThemeConfig();
   const themePopoverStyle = useMemo(() => resolveThemePopoverModalInlineStyle(config), [config]);
   const { storeFrontMeta } = useStorefront();
@@ -239,27 +238,6 @@ export function HeaderAccountPanel({ open, anchorRef, onClose, user, onSignOut }
                 {user.email || [user.firstName, user.lastName].filter(Boolean).join(' ') || 'your account'}
               </span>
             </p>
-            {onSignOut ? (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  void onSignOut();
-                }}
-                style={{
-                  marginTop: 8,
-                  border: 'none',
-                  background: 'transparent',
-                  padding: 0,
-                  color: ACCENT,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                }}
-              >
-                Sign out
-              </button>
-            ) : null}
             {footerLinks}
           </>
         ) : (

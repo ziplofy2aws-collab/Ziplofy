@@ -8,7 +8,7 @@ import { Theme1Footer } from './Theme1Footer';
 export function Theme1AuthPage() {
   const navigate = useNavigate();
   const { storeFrontMeta } = useStorefront();
-  const { login, signup, user, logout } = useStorefrontAuth();
+  const { login, signup, user } = useStorefrontAuth();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -41,10 +41,6 @@ export function Theme1AuthPage() {
         storeName={name}
         userName={user ? `${user.firstName} ${user.lastName}`.trim() : undefined}
         onCartOpen={() => {}}
-        onLogout={() => {
-          logout().catch(() => {});
-          navigate('/');
-        }}
       />
 
       <main className="mx-auto max-w-6xl px-4 py-10">

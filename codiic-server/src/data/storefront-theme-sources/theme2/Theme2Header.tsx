@@ -4,11 +4,9 @@ import { useState } from 'react';
 export function Theme2Header({
   userName,
   onCartOpen,
-  onLogout,
 }: {
   userName?: string;
   onCartOpen: () => void;
-  onLogout: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const userLoggedIn = Boolean(userName);
@@ -54,16 +52,6 @@ export function Theme2Header({
               <Link to="/preferences" className="block border-b-2 border-black px-3 py-2 text-xs font-black uppercase hover:bg-black hover:text-[#FFEB00]" onClick={() => setMenuOpen(false)}>
                 Preferences
               </Link>
-              <button
-                type="button"
-                className="block w-full px-3 py-2 text-left text-xs font-black uppercase hover:bg-black hover:text-[#FFEB00]"
-                onClick={() => {
-                  setMenuOpen(false);
-                  onLogout();
-                }}
-              >
-                Logout
-              </button>
             </div>
           ) : null}
         </div>

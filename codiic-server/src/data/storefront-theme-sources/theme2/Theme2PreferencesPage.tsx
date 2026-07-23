@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useStorefront } from '../../contexts/store.context';
 import { useStorefrontAuth } from '../../contexts/storefront-auth.context';
 import { Theme2Header } from './Theme2Header';
 import { Theme2Footer } from './Theme2Footer';
 
 export function Theme2PreferencesPage() {
-  const navigate = useNavigate();
   const { storeFrontMeta } = useStorefront();
-  const { user, checkAuth, updateUser, logout } = useStorefrontAuth();
+  const { user, checkAuth, updateUser } = useStorefrontAuth();
   const [language, setLanguage] = useState('en');
   const [collectTax, setCollectTax] = useState<'collect' | 'dont_collect' | 'collect_unless_exempt'>('collect');
   const [agreedToMarketingEmails, setAgreedToMarketingEmails] = useState(false);
@@ -46,10 +44,6 @@ export function Theme2PreferencesPage() {
       <Theme2Header
         userName={`${user.firstName} ${user.lastName}`.trim()}
         onCartOpen={() => {}}
-        onLogout={() => {
-          logout().catch(() => {});
-          navigate('/');
-        }}
       />
       <main className="mx-auto max-w-5xl px-3 py-8">
         <div className="mx-auto max-w-xl border-4 border-black bg-white p-5">

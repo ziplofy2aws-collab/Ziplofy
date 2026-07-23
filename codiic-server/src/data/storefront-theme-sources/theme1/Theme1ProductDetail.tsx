@@ -48,9 +48,6 @@ export function Theme1ProductDetail({ detail: d }: { detail: ReactProductDetailV
         storeName={name}
         userName={d.user ? `${d.user.firstName} ${d.user.lastName}`.trim() : undefined}
         onCartOpen={() => window.dispatchEvent(new Event('open-cart-drawer'))}
-        onLogout={() => {
-          d.logout().catch(() => {});
-        }}
       />
 
       <main className="mx-auto max-w-6xl px-4 py-8">

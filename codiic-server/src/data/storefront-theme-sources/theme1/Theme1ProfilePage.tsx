@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useStorefront } from '../../contexts/store.context';
 import { useStorefrontAuth } from '../../contexts/storefront-auth.context';
 import { Theme1Header } from './Theme1Header';
 import { Theme1Footer } from './Theme1Footer';
 
 export function Theme1ProfilePage() {
-  const navigate = useNavigate();
   const { storeFrontMeta } = useStorefront();
-  const { user, checkAuth, updateUser, logout } = useStorefrontAuth();
+  const { user, checkAuth, updateUser } = useStorefrontAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -39,10 +37,6 @@ export function Theme1ProfilePage() {
         storeName={storeFrontMeta?.name ?? 'Store'}
         userName={`${user.firstName} ${user.lastName}`.trim()}
         onCartOpen={() => {}}
-        onLogout={() => {
-          logout().catch(() => {});
-          navigate('/');
-        }}
       />
       <main className="mx-auto max-w-6xl px-4 py-10">
         <div className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

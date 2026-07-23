@@ -43,11 +43,8 @@ type LiveProps = BaseProps & {
   onAddressClick?: (addressId: string) => void;
   onMarketingToggle?: (enabled: boolean) => void;
   onSmsMarketingToggle?: (enabled: boolean) => void;
-  onSignOut?: () => void;
-  onSignOutAllDevices?: () => void;
   marketingUpdating?: boolean;
   smsMarketingUpdating?: boolean;
-  signingOut?: boolean;
 };
 
 export type CheckoutProfileViewProps = PreviewProps | LiveProps;
@@ -412,25 +409,6 @@ export function CheckoutProfileView(props: CheckoutProfileViewProps) {
             />
           </div>
         </ProfileSection>
-
-        <section className="space-y-3 py-6">
-          <button
-            type="button"
-            className="w-full rounded-md border border-[#dedede] bg-white px-4 py-3 text-[14px] font-medium text-[#121212] disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={Boolean(live?.signingOut)}
-            onClick={live?.onSignOut}
-          >
-            Sign out
-          </button>
-          <button
-            type="button"
-            className="text-[14px] hover:underline"
-            style={{ color: accentColor }}
-            onClick={live?.onSignOutAllDevices}
-          >
-            Sign out of all devices
-          </button>
-        </section>
 
         {(footerConfig?.location ?? 'checkout_form') !== 'full_width' ? (
           <CheckoutFooterRuntimePreview

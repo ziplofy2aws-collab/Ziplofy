@@ -466,9 +466,28 @@ export function multicolumnSectionSettingsBaseFromFields(
   return null;
 }
 
+/** Settings object that owns border keys (section, group, or block `.settings`). */
+export function borderSettingsBaseFromFields(fields: EditorFieldDef[]): string | null {
+  const borderKeys = new Set([
+    'borderStyle',
+    'borderThickness',
+    'borderOpacity',
+    'borderColor',
+    'cornerRadius',
+  ]);
+  for (const field of fields) {
+    const path = field.path ?? '';
+    const key = path.split('.').pop() ?? '';
+    if (!borderKeys.has(key)) continue;
+    const base = path.replace(/\.[^.]+$/, '');
+    if (base) return base;
+  }
+  return multicolumnSectionSettingsBaseFromFields(fields);
+}
+
 /** Ensure Borders has Style / Thickness / Opacity / Color / Corner radius defs. */
 export function ensureMulticolumnBorderFieldDefs(fields: EditorFieldDef[]): EditorFieldDef[] {
-  const settingsBase = multicolumnSectionSettingsBaseFromFields(fields);
+  const settingsBase = borderSettingsBaseFromFields(fields);
   if (!settingsBase) return fields;
 
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));

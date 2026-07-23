@@ -6,12 +6,10 @@ export function Theme1Header({
   storeName,
   userName,
   onCartOpen,
-  onLogout,
 }: {
   storeName: string;
   userName?: string;
   onCartOpen: () => void;
-  onLogout: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const userLoggedIn = Boolean(userName);
@@ -54,16 +52,6 @@ export function Theme1Header({
                   <Link to="/preferences" className="block px-3 py-2 text-xs font-medium text-slate-700 hover:bg-teal-50" onClick={() => setMenuOpen(false)}>
                     Preferences
                   </Link>
-                  <button
-                    type="button"
-                    className="block w-full px-3 py-2 text-left text-xs font-medium text-rose-700 hover:bg-rose-50"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      onLogout();
-                    }}
-                  >
-                    Logout
-                  </button>
                 </div>
               ) : null}
             </div>

@@ -42,9 +42,6 @@ export function Theme2ProductDetail({ detail: d }: { detail: ReactProductDetailV
       <Theme2Header
         userName={d.user ? `${d.user.firstName} ${d.user.lastName}`.trim() : undefined}
         onCartOpen={() => window.dispatchEvent(new Event('open-cart-drawer'))}
-        onLogout={() => {
-          d.logout().catch(() => {});
-        }}
       />
 
       <main className="mx-auto max-w-6xl px-2 py-6 sm:px-4">

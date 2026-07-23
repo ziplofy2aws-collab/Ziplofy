@@ -78,7 +78,7 @@ export function Header({ sectionId = 'header' }: Props) {
   const { pathname } = useLocation();
   const themeColors = useThemeColors();
   const { fontHeading, fontBody, fontSubheading, primary, background: themeBg } = themeColors;
-  const { user, logout } = useStorefrontAuth();
+  const { user } = useStorefrontAuth();
   const { getAllItems } = useStorefrontCart();
   const isEditorPreview = useThemeEditorPreview();
   const liveCartCount = getAllItems().reduce((s, i) => s + i.quantity, 0);
@@ -720,7 +720,6 @@ export function Header({ sectionId = 'header' }: Props) {
         anchorRef={accountButtonRef}
         onClose={() => setAccountPanelOpen(false)}
         user={user}
-        onSignOut={logout}
       />
       <EditorSection
         sectionId={sectionId}

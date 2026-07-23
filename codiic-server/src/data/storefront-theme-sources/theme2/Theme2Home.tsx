@@ -18,7 +18,7 @@ import { Theme2Footer } from './Theme2Footer';
  */
 export function Theme2Home() {
   const { storeFrontMeta } = useStorefront();
-  const { user, logout } = useStorefrontAuth();
+  const { user } = useStorefrontAuth();
   const { products, loading: productsLoading } = useStorefrontProducts();
   const { collections, loading: collectionsLoading } = useStorefrontCollections();
   const [cartOpen, setCartOpen] = useState(false);
@@ -41,9 +41,6 @@ export function Theme2Home() {
           <Theme2Header
             userName={user ? `${user.firstName} ${user.lastName}`.trim() : undefined}
             onCartOpen={() => setCartOpen(true)}
-            onLogout={() => {
-              logout().catch(() => {});
-            }}
           />
           <Theme2TrendingNowSection products={products} loading={productsLoading} />
           <Theme2NewArrivalsSection products={products.slice(0, 8)} />
