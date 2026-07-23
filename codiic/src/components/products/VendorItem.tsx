@@ -20,7 +20,7 @@ const VendorItem: React.FC<VendorItemProps> = ({
 
   return (
     <div
-      className="px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors"
+      className="cursor-pointer px-3 py-2 text-[13px] text-gray-700 transition-colors hover:bg-gray-50"
       onClick={handleClick}
     >
       {vendor.name}

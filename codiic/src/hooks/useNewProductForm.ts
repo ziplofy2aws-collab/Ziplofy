@@ -182,6 +182,11 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
       return;
     }
 
+    if (formData.price.trim() === '' || Number.isNaN(parseFloat(formData.price))) {
+      toast.error('Price is required');
+      return;
+    }
+
     if (!mediaUrls.length) {
       toast.error('Add at least one product image');
       return;
@@ -250,8 +255,14 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
         package: effectiveFormData.physicalProduct ? effectiveFormData.selectedPackage : undefined,
         productWeight: effectiveFormData.physicalProduct ? parseFloat(effectiveFormData.productWeight) : undefined,
         productWeightUnit: effectiveFormData.physicalProduct ? effectiveFormData.weightUnit : undefined,
-        countryOfOrigin: effectiveFormData.physicalProduct ? effectiveFormData.countryOfOrigin : undefined,
-        harmonizedSystemCode: effectiveFormData.physicalProduct ? effectiveFormData.hsCode : undefined,
+        countryOfOrigin:
+          effectiveFormData.physicalProduct && effectiveFormData.countryOfOrigin.trim()
+            ? effectiveFormData.countryOfOrigin.trim()
+            : undefined,
+        harmonizedSystemCode:
+          effectiveFormData.physicalProduct && effectiveFormData.hsCode.trim()
+            ? effectiveFormData.hsCode.trim()
+            : undefined,
         variants: effectiveFormData.variants,
         pageTitle: safePageTitle,
         metaDescription: safeMetaDescription,
@@ -347,6 +358,17 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     }));
   }, []);
 
+  const setVariantValues = useCallback((variantIndex: number, values: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      variants: prev.variants.map((variant, i) =>
+        i === variantIndex
+          ? { ...variant, values: values.length > 0 ? values : [''] }
+          : variant
+      ),
+    }));
+  }, []);
+
   return {
     activeStoreId,
     formData,
@@ -363,5 +385,6 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     addVariantValue,
     removeVariantValue,
     updateVariantValue,
+    setVariantValues,
   };
 }

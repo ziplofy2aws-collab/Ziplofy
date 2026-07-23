@@ -1,11 +1,7 @@
 import React, { useCallback, useState } from "react";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-hot-toast";
 import { useStore } from "../../contexts/store.context";
-import {
-  defaultContentFilesFolder,
-  useStoreCloudStorage,
-} from "../../contexts/store-cloud-storage.context";
-import { uploadImagesToCloudStorage } from "../../hooks/useProductMediaUrls";
 import {
   SelectImageModal,
   type SelectedImageAsset,
@@ -22,7 +18,7 @@ interface ProductImagesSectionProps {
   onAddImageUrl: (url: string) => void;
   onRemoveImage: (index: number) => void;
   disabled?: boolean;
-  /** Omit outer card + border when nested inside another section (e.g. Basic Information). */
+  /** Omit outer card + title when nested inside another section (e.g. Basic Information). */
   embedded?: boolean;
   appearance?: ProductFormAppearance;
 }
@@ -33,91 +29,28 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
   onRemoveImage,
   disabled = false,
   embedded = false,
-  appearance = 'default',
+  appearance = "default",
 }) => {
   const { activeStoreId } = useStore();
-  const { uploadFilesForStore } = useStoreCloudStorage();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
-
-  const uploadFilesToCloud = useCallback(
-    async (files: File[]) => {
-      if (disabled || uploading) return;
-      if (!activeStoreId) {
-        toast.error('Select a store before uploading files');
-        return;
-      }
-      setUploading(true);
-      try {
-        const urls = await uploadImagesToCloudStorage(
-          activeStoreId,
-          files,
-          (storeId, imageFiles, options) =>
-            uploadFilesForStore(storeId, imageFiles, {
-              folder: options?.folder ?? defaultContentFilesFolder(storeId),
-            })
-        );
-        urls.forEach((url) => onAddImageUrl(url));
-      } catch {
-        // toast shown in helper
-      } finally {
-        setUploading(false);
-      }
-    },
-    [activeStoreId, disabled, onAddImageUrl, uploadFilesForStore, uploading]
-  );
-
-  const handlePickImages = useCallback(() => {
-    if (disabled || uploading) return;
-    fileInputRef.current?.click();
-  }, [disabled, uploading]);
 
   const handleOpenPicker = useCallback(() => {
-    if (disabled || uploading) return;
+    if (disabled) return;
     if (!activeStoreId) {
-      toast.error('Select a store before choosing files');
+      toast.error("Select a store before choosing files");
       return;
     }
     setPickerOpen(true);
-  }, [activeStoreId, disabled, uploading]);
+  }, [activeStoreId, disabled]);
 
-  const handleFileSelection = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = e.target.files ? Array.from(e.target.files) : [];
-      e.target.value = "";
-      if (!files.length) return;
-      void uploadFilesToCloud(files);
+  const handleZoneKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handleOpenPicker();
+      }
     },
-    [uploadFilesToCloud]
-  );
-
-  const handleDragOver = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (!disabled && !uploading) setIsDragOver(true);
-    },
-    [disabled, uploading]
-  );
-
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragOver(false);
-  }, []);
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragOver(false);
-      if (disabled || uploading) return;
-      const files = Array.from(e.dataTransfer.files);
-      if (files.length) void uploadFilesToCloud(files);
-    },
-    [disabled, uploadFilesToCloud, uploading]
+    [handleOpenPicker]
   );
 
   const handleCloudImageSelected = useCallback(
@@ -129,23 +62,15 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
   );
 
   const mediaTitleClass = productFormSectionTitleClass(appearance);
-  const dropZoneClass =
-    appearance === 'minimal'
-      ? disabled || uploading
-        ? "cursor-not-allowed border-gray-200/60 bg-gray-50/40 opacity-60"
-        : isDragOver
-          ? "border-gray-300 bg-gray-50"
-          : "border-gray-200/70 bg-white"
-      : disabled || uploading
-        ? "cursor-not-allowed border-gray-200 bg-gray-50/50 opacity-60"
-        : isDragOver
-          ? "border-blue-400 bg-blue-50/40"
-          : "border-gray-200 bg-white";
+  const isMinimal = appearance === "minimal";
 
-  const actionButtonClass =
-    appearance === 'minimal'
-      ? 'rounded-md border border-gray-200/70 bg-white px-3.5 py-1.5 text-sm font-normal text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50'
-      : 'rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50';
+  const dropZoneClass = disabled
+    ? isMinimal
+      ? "cursor-not-allowed border-gray-200/60 bg-gray-50/40 opacity-60"
+      : "cursor-not-allowed border-gray-200 bg-gray-50/50 opacity-60"
+    : isMinimal
+      ? "cursor-pointer border-gray-300 bg-gray-50/50"
+      : "cursor-pointer border-gray-300 bg-gray-50/40";
 
   const body = (
     <>
@@ -155,50 +80,46 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
         <h3 className={mediaTitleClass}>Media</h3>
       )}
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        multiple
-        className="hidden"
-        onChange={handleFileSelection}
-      />
-
       <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={`flex min-h-[200px] flex-col rounded-md border border-dashed px-4 py-4 transition-colors ${dropZoneClass}`}
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled}
+        aria-label={images.length > 0 ? "Add more product images" : "Select product images"}
+        onClick={handleOpenPicker}
+        onKeyDown={handleZoneKeyDown}
+        className={`flex min-h-[200px] w-full flex-col rounded-md border border-dashed px-4 py-4 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 ${dropZoneClass}`}
       >
         {images.length > 0 ? (
-          <div className="mb-4 max-h-[300px] w-full overflow-y-auto pr-1">
+          <div
+            className="mb-2 max-h-[300px] w-full overflow-y-auto pr-1"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
             <ProductImageList images={images} onRemoveImage={onRemoveImage} />
           </div>
-        ) : (
-          <div className="flex flex-1 items-center justify-center" />
-        )}
+        ) : null}
 
-        <div className="mt-auto flex w-full flex-col items-center justify-center gap-2 pb-2 pt-1">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <button
-              type="button"
-              onClick={handlePickImages}
-              disabled={disabled || uploading}
-              className={actionButtonClass}
-            >
-              {uploading ? 'Uploading…' : 'Upload new'}
-            </button>
-            <button
-              type="button"
-              onClick={handleOpenPicker}
-              disabled={disabled || uploading}
-              className={actionButtonClass}
-            >
-              Select existing
-            </button>
-          </div>
-          <p className={`max-w-md text-center ${appearance === 'minimal' ? 'text-[13px] text-gray-400' : 'text-sm text-gray-500'}`}>
-            Images are chosen from your store files. Removing media here does not delete the file.
+        <div className="flex flex-1 flex-col items-center justify-center gap-2 py-6 pointer-events-none">
+          <span
+            className={`flex h-10 w-10 items-center justify-center rounded-full ${
+              isMinimal ? "bg-gray-100 text-gray-400" : "bg-gray-100 text-gray-500"
+            }`}
+          >
+            <PhotoIcon className="h-5 w-5" aria-hidden />
+          </span>
+          <p
+            className={`text-center font-medium ${
+              isMinimal ? "text-[13px] text-gray-700" : "text-sm text-gray-800"
+            }`}
+          >
+            {images.length > 0 ? "Add more images" : "Select images"}
+          </p>
+          <p
+            className={`max-w-sm text-center ${
+              isMinimal ? "text-[12px] text-gray-400" : "text-sm text-gray-500"
+            }`}
+          >
+            Click anywhere to choose from your store files
           </p>
         </div>
       </div>
@@ -215,11 +136,7 @@ const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
     return <div>{body}</div>;
   }
 
-  return (
-    <div className={productFormCardClass(appearance)}>
-      {body}
-    </div>
-  );
+  return <div className={productFormCardClass(appearance)}>{body}</div>;
 };
 
 export default ProductImagesSection;

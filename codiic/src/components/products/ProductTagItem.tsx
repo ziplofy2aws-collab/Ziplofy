@@ -22,14 +22,14 @@ const ProductTagItem: React.FC<ProductTagItemProps> = ({
 
   return (
     <div
-      className="px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors flex items-center gap-2"
+      className="flex cursor-pointer items-center gap-2 px-3 py-2 text-[13px] text-gray-700 transition-colors hover:bg-gray-50"
       onClick={handleClick}
     >
       <input
         type="checkbox"
         checked={selected}
         readOnly
-        className="w-4 h-4 text-gray-900 focus:ring-gray-900"
+        className="h-3.5 w-3.5 rounded border-gray-300 text-gray-800 focus:ring-gray-300"
       />
       {tag.name}
     </div>

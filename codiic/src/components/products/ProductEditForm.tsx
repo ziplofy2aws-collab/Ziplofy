@@ -148,16 +148,8 @@ export const ProductEditForm: React.FC<ProductEditFormProps> = ({
             />
 
             <ProductInventorySection
-              inventoryTrackingEnabled={formData.inventoryTrackingEnabled}
-              continueSellingWhenOutOfStock={formData.continueSellingWhenOutOfStock}
               sku={formData.sku}
               barcode={formData.barcode}
-              onInventoryTrackingEnabledChange={(checked) =>
-                handleInputChange('inventoryTrackingEnabled', checked)
-              }
-              onContinueSellingChange={(checked) =>
-                handleInputChange('continueSellingWhenOutOfStock', checked)
-              }
               onSkuChange={(value) => handleInputChange('sku', value)}
               onBarcodeChange={(value) => handleInputChange('barcode', value)}
               appearance={FORM_APPEARANCE}

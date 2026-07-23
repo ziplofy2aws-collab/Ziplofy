@@ -43,7 +43,7 @@ const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
         {appearance === 'minimal' ? 'Organization' : 'Product Organization'}
       </h2>
       {appearance === 'minimal' ? (
-        <p className="-mt-1 mb-3 text-[12px] leading-snug text-gray-400">
+        <p className="-mt-1.5 mb-4 text-[12px] leading-snug text-gray-400">
           Type, vendor, and tags help you find this later
         </p>
       ) : null}
@@ -53,19 +53,22 @@ const ProductOrganizationSection: React.FC<ProductOrganizationSectionProps> = ({
           selectedProductTypeId={productType}
           activeStoreId={activeStoreId}
           onProductTypeChange={onProductTypeChange}
+          appearance={appearance}
         />
         <VendorInput
           selectedVendorId={vendor}
           activeStoreId={activeStoreId}
           onVendorChange={onVendorChange}
+          appearance={appearance}
         />
       </div>
 
-      <div className={appearance === 'minimal' ? 'mt-5' : 'mt-6'}>
+      <div className={appearance === 'minimal' ? 'mt-4' : 'mt-6'}>
         <ProductTagsInput
           selectedTags={tags}
           activeStoreId={activeStoreId}
           onTagsChange={onTagsChange}
+          appearance={appearance}
         />
         <SelectedTagsList
           tagIds={tags}

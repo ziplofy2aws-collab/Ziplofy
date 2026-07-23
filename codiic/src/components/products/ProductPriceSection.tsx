@@ -56,7 +56,12 @@ const ProductPriceSection: React.FC<ProductPriceSectionProps> = ({
   return (
     <div className={productFormCardClass(appearance)}>
       <div className="max-w-xs">
-        <label className={productFormLabelClass(appearance)}>Price</label>
+        <label className={productFormLabelClass(appearance)}>
+          Price
+          <span className="ml-0.5 text-red-500" aria-hidden>
+            *
+          </span>
+        </label>
         <div className="relative">
           <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${appearance === 'minimal' ? 'text-sm text-gray-400' : 'text-base text-gray-500'}`}>
             ₹
@@ -66,9 +71,16 @@ const ProductPriceSection: React.FC<ProductPriceSectionProps> = ({
             value={price}
             onChange={handlePriceChange}
             placeholder="0.00"
+            required
+            min="0"
+            step="any"
+            aria-required
             className={`${productFormInputClass(appearance)} pl-8`}
           />
         </div>
+        {appearance === 'minimal' ? (
+          <p className="mt-1.5 text-[12px] text-gray-400">Required — what customers pay</p>
+        ) : null}
       </div>
 
       <ProductAdditionalDisplayPrices
@@ -87,6 +99,7 @@ const ProductPriceSection: React.FC<ProductPriceSectionProps> = ({
         onSelectedBaseMeasureUnitChange={onSelectedBaseMeasureUnitChange}
         onChargeTaxOnProductChange={onChargeTaxOnProductChange}
         onCostChange={onCostChange}
+        appearance={appearance}
       />
     </div>
   );

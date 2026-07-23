@@ -12,7 +12,8 @@ const ProductImageItem: React.FC<ProductImageItemProps> = ({
   index,
   onRemoveImage,
 }) => {
-  const handleRemoveClick = useCallback(() => {
+  const handleRemoveClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     onRemoveImage(index);
   }, [index, onRemoveImage]);
 

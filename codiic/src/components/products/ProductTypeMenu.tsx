@@ -32,11 +32,11 @@ const ProductTypeMenu: React.FC<ProductTypeMenuProps> = ({
       />
       {debouncedQuery && !queryExists && (
         <div
-          className="flex items-center justify-between gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors"
+          className="flex cursor-pointer items-center justify-between gap-3 px-3 py-2 text-[13px] transition-colors hover:bg-gray-50"
           onClick={onCreateProductType}
         >
           <span className="font-medium text-gray-800">{`+ ${debouncedQuery}`}</span>
-          <span className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+          <span className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
             Tap to create
           </span>
         </div>

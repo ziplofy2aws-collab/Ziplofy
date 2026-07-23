@@ -19,6 +19,8 @@ type ProductFormHeaderProps = {
   duplicateDisabled?: boolean;
   duplicateLabel?: string;
   appearance?: ProductFormAppearance;
+  /** Hide the header primary action when a sticky/footer submit is used instead. */
+  hideSubmit?: boolean;
 };
 
 const ProductFormHeader: React.FC<ProductFormHeaderProps> = ({
@@ -38,6 +40,7 @@ const ProductFormHeader: React.FC<ProductFormHeaderProps> = ({
   duplicateDisabled = false,
   duplicateLabel = 'Duplicate',
   appearance = 'default',
+  hideSubmit = false,
 }) => {
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement | null>(null);
@@ -181,14 +184,16 @@ const ProductFormHeader: React.FC<ProductFormHeaderProps> = ({
             </div>
           ) : null}
 
-          <button
-            type="button"
-            onClick={onSubmit}
-            disabled={submitDisabled}
-            className={submitButtonClass}
-          >
-            {submitLabel}
-          </button>
+          {hideSubmit ? null : (
+            <button
+              type="button"
+              onClick={onSubmit}
+              disabled={submitDisabled}
+              className={submitButtonClass}
+            >
+              {submitLabel}
+            </button>
+          )}
         </div>
       </div>
     </div>

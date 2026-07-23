@@ -240,12 +240,12 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
           </h2>
         ) : (
           <h2 className={appearance === 'minimal' ? 'text-sm font-medium text-gray-600' : 'text-base font-semibold text-gray-900'}>
-            Delivery
+            Physical product
           </h2>
         )}
         <div className="flex shrink-0 items-center gap-2">
           <span className={appearance === 'minimal' ? 'text-[13px] text-gray-500' : 'text-sm text-gray-600'}>
-            {physicalProduct ? "Physical product" : "Digital / service"}
+            {physicalProduct ? "Yes" : "No"}
           </span>
           <span
             className="text-gray-400"
@@ -365,9 +365,19 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
                 onClick={() => setCustomsExpanded(true)}
                 className="flex w-full items-center justify-between gap-3 py-4 text-left transition-colors hover:bg-gray-50/50"
               >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className={pillClass}>Country of origin</span>
-                  <span className={pillClass}>HS Code</span>
+                <div className="min-w-0">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <span className="text-sm font-medium text-gray-700">
+                      Customs information
+                    </span>
+                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
+                      Optional
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className={pillClass}>Country of origin</span>
+                    <span className={pillClass}>HS Code</span>
+                  </div>
                 </div>
                 <ChevronDownIcon
                   className="h-5 w-5 shrink-0 text-gray-500"
@@ -381,8 +391,11 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
                   onClick={() => setCustomsExpanded(false)}
                   className="flex w-full items-center justify-between gap-3 border-b border-gray-100 py-4 text-left transition-colors hover:bg-gray-50/50"
                 >
-                  <span className="text-sm font-semibold text-gray-900">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-gray-900">
                     Customs information
+                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
+                      Optional
+                    </span>
                   </span>
                   <ChevronUpIcon
                     className="h-5 w-5 shrink-0 text-gray-500"
@@ -391,10 +404,14 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
                 </button>
 
                 <div className="space-y-5 pt-4">
+                  <p className="text-[13px] text-gray-500">
+                    Only needed for international shipping. Safe to skip for domestic-only products.
+                  </p>
                   <div>
                     <div className="mb-2 flex items-center gap-1">
                       <label className="text-sm font-medium text-gray-700">
-                        Country/Region of origin
+                        Country/Region of origin{" "}
+                        <span className="font-normal text-gray-400">(optional)</span>
                       </label>
                       <span
                         className="text-gray-400"
@@ -423,7 +440,8 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
                   <div>
                     <div className="mb-2 flex items-center gap-1">
                       <label className="text-sm font-medium text-gray-700">
-                        Harmonized System (HS) code
+                        Harmonized System (HS) code{" "}
+                        <span className="font-normal text-gray-400">(optional)</span>
                       </label>
                       <span
                         className="text-gray-400"

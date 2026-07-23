@@ -12,7 +12,7 @@ export function productFormSectionTitleClass(
   appearance: ProductFormAppearance = 'default'
 ): string {
   return appearance === 'minimal'
-    ? 'mb-3 text-sm font-medium text-gray-600'
+    ? 'mb-1 text-[13px] font-semibold tracking-tight text-gray-800'
     : 'mb-4 text-base font-semibold text-gray-900';
 }
 
@@ -28,7 +28,7 @@ export function productFormLabelClass(
   appearance: ProductFormAppearance = 'default'
 ): string {
   return appearance === 'minimal'
-    ? 'mb-1.5 block text-sm font-normal text-gray-500'
+    ? 'mb-1.5 block text-[13px] font-medium text-gray-600'
     : 'mb-2 block text-sm font-medium text-gray-700';
 }
 
@@ -36,7 +36,7 @@ export function productFormInputClass(
   appearance: ProductFormAppearance = 'default'
 ): string {
   return appearance === 'minimal'
-    ? 'w-full rounded-md border border-gray-200/70 bg-white px-3 py-2 text-sm text-gray-800 transition-colors placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200'
+    ? 'w-full rounded-md border border-gray-200/70 bg-white px-3 py-2 text-[13px] text-gray-800 transition-colors placeholder:text-[13px] placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200'
     : 'w-full rounded-lg border border-gray-200 px-3 py-2 text-base transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400';
 }
 
