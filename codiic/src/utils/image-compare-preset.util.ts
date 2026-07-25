@@ -53,6 +53,9 @@ export function applyImageComparePreset(section: Record<string, unknown>): void 
   settings.sliderColor = 'default';
   settings.sliderInnerColor = 'default';
   settings.sliderBorderStyle = 'none';
+  settings.sliderBorderThickness = 1;
+  settings.sliderBorderOpacity = 100;
+  settings.sliderBorderColor = 'default';
   settings.sliderCornerRadius = 0;
   settings.sliderPaddingTop = 0;
   settings.sliderPaddingBottom = 0;
@@ -74,6 +77,9 @@ export function applyImageComparePreset(section: Record<string, unknown>): void 
     backgroundColor: 'default',
     backgroundOverlay: false,
     borderStyle: 'none',
+    borderThickness: 1,
+    borderOpacity: 100,
+    borderColor: 'default',
     cornerRadius: 0,
     linkUrl: '',
     openLinkInNewTab: false,
@@ -99,6 +105,9 @@ export function applyImageComparePreset(section: Record<string, unknown>): void 
     backgroundColor: 'default',
     backgroundOverlay: false,
     borderStyle: 'none',
+    borderThickness: 1,
+    borderOpacity: 100,
+    borderColor: 'default',
     cornerRadius: 0,
     linkUrl: '',
     openLinkInNewTab: false,
@@ -123,6 +132,9 @@ export function applyImageComparePreset(section: Record<string, unknown>): void 
     backgroundColor: 'default',
     backgroundOverlay: false,
     borderStyle: 'none',
+    borderThickness: 1,
+    borderOpacity: 100,
+    borderColor: 'default',
     cornerRadius: 0,
     linkUrl: '',
     openLinkInNewTab: false,
@@ -136,6 +148,7 @@ export function applyImageComparePreset(section: Record<string, unknown>): void 
   settings.layoutAlignment = 'space-between';
   settings.position = 'center';
   settings.layoutGap = 46;
+  settings.mediaPosition = 'right';
   settings.sectionWidth = 'page';
   settings.height = 'small';
   settings.colorScheme = 'scheme-1';
@@ -143,6 +156,9 @@ export function applyImageComparePreset(section: Record<string, unknown>): void 
   settings.backgroundImageUrl = '';
   settings.backgroundColor = 'default';
   settings.borderStyle = 'none';
+  settings.borderThickness = 1;
+  settings.borderOpacity = 100;
+  settings.borderColor = 'default';
   settings.cornerRadius = 0;
   settings.backgroundOverlay = false;
   settings.paddingTop = 40;

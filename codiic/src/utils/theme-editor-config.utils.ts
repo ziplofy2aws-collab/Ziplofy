@@ -1602,6 +1602,9 @@ const COMPARISON_SLIDER_SETTING_TYPES: Record<string, string> = {
   sliderColor: 'text',
   sliderInnerColor: 'text',
   sliderBorderStyle: 'select',
+  sliderBorderThickness: 'number',
+  sliderBorderOpacity: 'number',
+  sliderBorderColor: 'text',
   sliderCornerRadius: 'number',
   sliderPaddingTop: 'number',
   sliderPaddingBottom: 'number',
@@ -1623,6 +1626,9 @@ const IMAGE_COMPARE_BUTTON_SETTING_TYPES: Record<string, string> = {
   button1Url: 'text',
   button1OpenInNewTab: 'boolean',
   button1Style: 'select',
+  button1CustomBackground: 'text',
+  button1CustomText: 'text',
+  button1LinkTextColor: 'text',
   button1DesktopWidth: 'select',
   button1DesktopCustomWidth: 'number',
   button1MobileWidth: 'select',
@@ -1631,6 +1637,9 @@ const IMAGE_COMPARE_BUTTON_SETTING_TYPES: Record<string, string> = {
   button2Url: 'text',
   button2OpenInNewTab: 'boolean',
   button2Style: 'select',
+  button2CustomBackground: 'text',
+  button2CustomText: 'text',
+  button2LinkTextColor: 'text',
   button2DesktopWidth: 'select',
   button2DesktopCustomWidth: 'number',
   button2MobileWidth: 'select',
@@ -1644,10 +1653,17 @@ const IMAGE_COMPARE_HEADING_SETTING_TYPES: Record<string, string> = {
   headingTypographyPreset: 'select',
   headingColor: 'text',
   headingBackgroundEnabled: 'boolean',
+  headingBackgroundColor: 'text',
   headingPaddingTop: 'number',
   headingPaddingBottom: 'number',
   headingPaddingLeft: 'number',
   headingPaddingRight: 'number',
+  headingFont: 'text',
+  headingFontSize: 'text',
+  headingLineHeight: 'text',
+  headingLetterSpacing: 'text',
+  headingTextCase: 'text',
+  headingWrap: 'text',
 };
 
 const IMAGE_COMPARE_SUBHEADING_SETTING_TYPES: Record<string, string> = {
@@ -1657,10 +1673,17 @@ const IMAGE_COMPARE_SUBHEADING_SETTING_TYPES: Record<string, string> = {
   subheadingTypographyPreset: 'select',
   subheadingColor: 'text',
   subheadingBackgroundEnabled: 'boolean',
+  subheadingBackgroundColor: 'text',
   subheadingPaddingTop: 'number',
   subheadingPaddingBottom: 'number',
   subheadingPaddingLeft: 'number',
   subheadingPaddingRight: 'number',
+  subheadingFont: 'text',
+  subheadingFontSize: 'text',
+  subheadingLineHeight: 'text',
+  subheadingLetterSpacing: 'text',
+  subheadingTextCase: 'text',
+  subheadingWrap: 'text',
 };
 
 function resolveImageCompareButtonBlockSettingType(path: string): string | undefined {
@@ -2116,6 +2139,37 @@ function syncHeroBottomAlignedSectionLayoutToContentGroup(
   setConfigAtPath(config, `${sectionPrefix}.blocks.content_group.settings.${key}`, value);
 }
 
+/** Keep Image compare nested content/text/buttons groups aligned with section Layout settings. */
+const IMAGE_COMPARE_LAYOUT_SYNC_KEYS = new Set(['layoutAlignment', 'position']);
+
+function syncImageCompareSectionLayoutToNestedGroups(
+  config: Record<string, unknown>,
+  path: string,
+  value: string | boolean | number
+): void {
+  const m = path.match(
+    /^(templates\.[^.]+\.sections\.[^.]+|sections\.[^.]+)\.settings\.(layoutAlignment|position)$/
+  );
+  if (!m) return;
+  const sectionPrefix = m[1]!;
+  const key = m[2]!;
+  if (!IMAGE_COMPARE_LAYOUT_SYNC_KEYS.has(key)) return;
+
+  const catalog = getConfigAtPath(config, `${sectionPrefix}.settings.catalogVariant`);
+  const sectionType = getConfigAtPath(config, `${sectionPrefix}.type`);
+  const isImageCompare =
+    catalog === 'image-compare' ||
+    sectionType === 'image-compare' ||
+    /image_compare/.test(sectionPrefix);
+  if (!isImageCompare) return;
+
+  for (const groupKey of ['contentGroup', 'textGroup', 'buttonsGroup'] as const) {
+    const group = getConfigAtPath(config, `${sectionPrefix}.settings.${groupKey}`);
+    if (!group || typeof group !== 'object') continue;
+    setConfigAtPath(config, `${sectionPrefix}.settings.${groupKey}.${key}`, value);
+  }
+}
+
 /** Write a value at a dot path; numeric segments use real arrays when the parent is a list.
  * Template keys may contain dots (`pages.about`) — resolve against existing `config.templates` keys.
  */
@@ -2287,6 +2341,16 @@ export function applyValuesToThemeConfig(
         key === 'headingWidth' ||
         key === 'headingMaxWidth' ||
         key === 'headingAlignment' ||
+        key === 'subheadingFont' ||
+        key === 'subheadingFontSize' ||
+        key === 'subheadingLineHeight' ||
+        key === 'subheadingLetterSpacing' ||
+        key === 'subheadingTextCase' ||
+        key === 'subheadingWrap' ||
+        key === 'subheadingTypographyPreset' ||
+        key === 'subheadingWidth' ||
+        key === 'subheadingMaxWidth' ||
+        key === 'subheadingAlignment' ||
         key === 'descriptionTypographyPreset' ||
         key === 'descriptionWidth' ||
         key === 'descriptionMaxWidth' ||
@@ -2490,6 +2554,7 @@ export function applyValuesToThemeConfig(
       syncHeroLargeLogoTextPaths(config, path, coerced);
     }
     syncHeroBottomAlignedSectionLayoutToContentGroup(config, path, coerced);
+    syncImageCompareSectionLayoutToNestedGroups(config, path, coerced);
   }
 
   return config;

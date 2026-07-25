@@ -1,7 +1,11 @@
 import type { CSSProperties } from 'react';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { atMobileBreakpoint } from '../../runtime/shared/responsive';
-import type { ImageCompareScheme } from './imageCompareStyles';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
+import {
+  resolveImageCompareBorderCss,
+  type ImageCompareScheme,
+} from './imageCompareStyles';
 
 function clampPercent(value: number, fallback = 100): number {
   if (!Number.isFinite(value)) return fallback;
@@ -78,6 +82,10 @@ export type ImageCompareContentStyle = {
   openInNewTab: boolean;
   bgImage: string | null;
   showOverlay: boolean;
+  textAlign: 'left' | 'center' | 'right';
+  alignItems: 'flex-start' | 'center' | 'flex-end';
+  /** Main-axis placement for text + buttons stack (Position / Space between). */
+  stackJustify: 'flex-start' | 'center' | 'flex-end' | 'space-between';
 };
 
 export function readImageCompareContentStyle(
@@ -85,18 +93,40 @@ export function readImageCompareContentStyle(
   settingsBase: string,
   sectionScheme: ImageCompareScheme,
   sectionId: string,
-  panelMinHeight: number,
-  isSectionHorizontal: boolean
+  panelMinHeight: number | undefined,
+  isSectionHorizontal: boolean,
+  sectionPosition: string,
+  sectionAlignment: string
 ): ImageCompareContentStyle {
   const direction = readGroupString(config, settingsBase, 'direction', 'contentDirection', 'vertical');
-  const alignment = readGroupString(
+  const groupAlignment = readGroupString(
     config,
     settingsBase,
     'layoutAlignment',
     'contentAlignment',
     'center'
   );
-  const position = readGroupString(config, settingsBase, 'position', 'contentPosition', 'center');
+  /**
+   * Section Layout → Alignment drives the content column.
+   * Nested contentGroup.layoutAlignment is only a fallback (defaults often shadow the section otherwise).
+   */
+  const sectionIsAlignment =
+    sectionAlignment === 'center' ||
+    sectionAlignment === 'right' ||
+    sectionAlignment === 'left' ||
+    sectionAlignment === 'space-between';
+  const isSpaceBetween = sectionIsAlignment
+    ? sectionAlignment === 'space-between'
+    : groupAlignment === 'space-between';
+  const alignment =
+    sectionAlignment === 'center' || sectionAlignment === 'right' || sectionAlignment === 'left'
+      ? sectionAlignment
+      : isSpaceBetween
+        ? 'left'
+        : groupAlignment === 'center' || groupAlignment === 'right' || groupAlignment === 'left'
+          ? groupAlignment
+          : 'left';
+  const groupPosition = readGroupString(config, settingsBase, 'position', 'contentPosition', 'center');
   const gap = readGroupNumber(config, settingsBase, 'layoutGap', 'contentGap', 30);
 
   const widthMode = readGroupString(config, settingsBase, 'width', 'contentWidth', 'fit');
@@ -126,7 +156,35 @@ export function readImageCompareContentStyle(
     'contentBackgroundImageUrl',
     ''
   );
+  const backgroundColorRaw = readGroupString(
+    config,
+    settingsBase,
+    'backgroundColor',
+    'contentBackgroundColor',
+    'default'
+  );
   const borderStyle = readGroupString(config, settingsBase, 'borderStyle', 'contentBorderStyle', 'none');
+  const borderThickness = readGroupNumber(
+    config,
+    settingsBase,
+    'borderThickness',
+    'contentBorderThickness',
+    1
+  );
+  const borderOpacity = readGroupNumber(
+    config,
+    settingsBase,
+    'borderOpacity',
+    'contentBorderOpacity',
+    100
+  );
+  const borderColor = readGroupString(
+    config,
+    settingsBase,
+    'borderColor',
+    'contentBorderColor',
+    'default'
+  );
   const cornerRadius = readGroupNumber(config, settingsBase, 'cornerRadius', 'contentCornerRadius', 0);
   const backgroundOverlay = readGroupBool(
     config,
@@ -150,15 +208,40 @@ export function readImageCompareContentStyle(
 
   const alignItems =
     alignment === 'center' ? 'center' : alignment === 'right' ? 'flex-end' : 'flex-start';
-  const justifyContent =
-    position === 'bottom' ? 'flex-end' : position === 'center' ? 'center' : 'flex-start';
-  const textAlign =
-    alignment === 'center' ? 'center' : alignment === 'right' ? 'right' : 'left';
+  /** Section Position drives vertical placement; fall back to group position. */
+  const effectivePosition =
+    sectionPosition && sectionPosition !== 'center'
+      ? sectionPosition
+      : panelMinHeight
+        ? sectionPosition || groupPosition
+        : groupPosition !== 'center'
+          ? groupPosition
+          : sectionPosition || 'center';
+  const positionJustify =
+    effectivePosition === 'bottom'
+      ? 'flex-end'
+      : effectivePosition === 'center'
+        ? 'center'
+        : 'flex-start';
+  const stackJustify: ImageCompareContentStyle['stackJustify'] = isSpaceBetween
+    ? 'space-between'
+    : positionJustify;
+  const textAlign = (alignment === 'center' ? 'center' : alignment === 'right' ? 'right' : 'left') as
+    | 'left'
+    | 'center'
+    | 'right';
 
   const desktopWidth = sizeCss(widthMode, customWidth);
   const mobileWidthCss = sizeCss(mobileWidthMode, mobileCustomWidth);
+  const fixedSection = Boolean(panelMinHeight);
+  const needsFillHeight =
+    fixedSection ||
+    isSectionHorizontal ||
+    isSpaceBetween ||
+    effectivePosition === 'top' ||
+    effectivePosition === 'bottom';
   const height =
-    heightMode === 'fill'
+    heightMode === 'fill' || (needsFillHeight && (heightMode === 'fit' || !heightMode))
       ? '100%'
       : heightMode === 'custom'
         ? `${clampPercent(customHeight)}%`
@@ -167,26 +250,40 @@ export function readImageCompareContentStyle(
   const showBgImage = bgMedia === 'image' && Boolean(bgImageUrl.trim());
   const safeId = sectionId.replace(/[^a-z0-9_-]/gi, '-');
   const mobileClass = `codiic-ic-content-${safeId}`;
+  const contentBackground = showBgImage
+    ? 'transparent'
+    : !backgroundColorRaw || backgroundColorRaw === 'default'
+      ? 'transparent'
+      : resolveThemePaletteColorSetting(
+          config,
+          backgroundColorRaw,
+          0,
+          sectionScheme.contentPanel
+        );
 
   const shell: CSSProperties = {
     position: 'relative',
     display: 'flex',
     flexDirection: direction === 'horizontal' ? 'row' : 'column',
-    alignItems: direction === 'horizontal' ? justifyContent : alignItems,
-    justifyContent: direction === 'horizontal' ? alignItems : justifyContent,
+    alignItems: direction === 'horizontal' ? positionJustify : alignItems,
+    justifyContent: direction === 'horizontal' ? alignItems : stackJustify,
     gap,
-    width: desktopWidth,
+    width: (fixedSection || isSpaceBetween) && isSectionHorizontal ? '100%' : desktopWidth,
     height,
     boxSizing: 'border-box',
     paddingTop,
     paddingBottom,
     paddingLeft,
     paddingRight,
-    background: sectionScheme.contentPanel,
+    background: contentBackground,
     color: sectionScheme.color,
     textAlign,
-    minHeight: isSectionHorizontal ? panelMinHeight : undefined,
-    border: borderStyle === 'solid' ? `1px solid ${sectionScheme.muted}33` : undefined,
+    minHeight: fixedSection || needsFillHeight ? 0 : undefined,
+    border: resolveImageCompareBorderCss(
+      config,
+      { borderStyle, borderThickness, borderOpacity, borderColor },
+      sectionScheme.muted
+    ),
     borderRadius: cornerRadius > 0 ? cornerRadius : undefined,
     overflow: 'hidden',
   };
@@ -199,6 +296,9 @@ export function readImageCompareContentStyle(
     openInNewTab,
     bgImage: showBgImage ? bgImageUrl : null,
     showOverlay: backgroundOverlay && showBgImage,
+    textAlign,
+    alignItems,
+    stackJustify,
   };
 }
 

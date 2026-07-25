@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgString } from '../../runtime/shared/config';
 import { EditorField, EditorSection, EditorBlock } from '../../runtime/shared/editorAttrs';
+import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import type { SectionRuntimeProps } from '../../runtime/types';
 import { layout, useThemeLayout, useThemeColors } from '../../runtime/shared/tokens';
 import { ImageCompareSlider } from './ImageCompareSlider';
@@ -11,10 +12,16 @@ import {
   readImageCompareContentStyle,
 } from './imageCompareContentStyles';
 import {
+  imageCompareNestedGroupMobileCss,
+  readImageCompareButtonStyle,
+  readImageCompareHeadingStyle,
+  readImageCompareNestedGroupStyle,
+  readImageCompareSubheadingStyle,
+} from './imageCompareBlockStyles';
+import {
   alignItemsForPosition,
-  imageCompareMinHeight,
-  justifyContentForAlignment,
   readImageCompareLayout,
+  resolveImageCompareBorderCss,
   scopedImageCompareCss,
 } from './imageCompareStyles';
 import {
@@ -22,22 +29,6 @@ import {
   readImageCompareSliderStyle,
 } from './imageCompareSliderStyles';
 import { atMobileBreakpoint } from '../../runtime/shared/responsive';
-
-const buttonBase: CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '10px 22px',
-  borderRadius: 999,
-  border: '1px solid currentColor',
-  fontSize: 14,
-  fontWeight: 500,
-  textDecoration: 'none',
-  background: 'transparent',
-  color: 'inherit',
-  cursor: 'pointer',
-  whiteSpace: 'nowrap',
-};
 
 export function ImageCompare({
   sectionId = 'image_compare',
@@ -67,12 +58,83 @@ export function ImageCompare({
   );
 
   const scheme = style.scheme;
-  const panelMinHeight = imageCompareMinHeight(style.height);
+  const sectionHeightPx = style.heightPx;
+  const fixedHeight = Boolean(sectionHeightPx);
   const isHorizontal = style.direction === 'horizontal';
 
   const contentStyle = useMemo(
-    () => readImageCompareContentStyle(config, settingsBase, scheme, sectionId, panelMinHeight, isHorizontal),
-    [config, settingsBase, scheme, sectionId, panelMinHeight, isHorizontal]
+    () =>
+      readImageCompareContentStyle(
+        config,
+        settingsBase,
+        scheme,
+        sectionId,
+        sectionHeightPx,
+        isHorizontal,
+        style.position,
+        style.layoutAlignment
+      ),
+    [
+      config,
+      settingsBase,
+      scheme,
+      sectionId,
+      sectionHeightPx,
+      isHorizontal,
+      style.position,
+      style.layoutAlignment,
+    ]
+  );
+
+  const textGroupStyle = useMemo(
+    () =>
+      readImageCompareNestedGroupStyle(config, settingsBase, 'textGroup', scheme, sectionId, {
+        direction: 'vertical',
+        layoutAlignment: 'center',
+        layoutGap: 12,
+      }),
+    [config, settingsBase, scheme, sectionId]
+  );
+
+  const buttonsGroupStyle = useMemo(
+    () =>
+      readImageCompareNestedGroupStyle(config, settingsBase, 'buttonsGroup', scheme, sectionId, {
+        direction: 'horizontal',
+        layoutAlignment: 'center',
+        layoutGap: 12,
+      }),
+    [config, settingsBase, scheme, sectionId]
+  );
+
+  const headingStyle = useMemo(
+    () => ({
+      ...readImageCompareHeadingStyle(config, settingsBase, scheme, fontHeading),
+      textAlign: contentStyle.textAlign,
+      // Section Alignment moves the whole text+buttons cluster; don't pin blocks to the left.
+      alignSelf: 'stretch' as const,
+    }),
+    [config, settingsBase, scheme, fontHeading, contentStyle.textAlign]
+  );
+
+  const subheadingStyle = useMemo(
+    () => ({
+      ...readImageCompareSubheadingStyle(config, settingsBase, scheme, fontBody),
+      textAlign: contentStyle.textAlign,
+      alignSelf: 'stretch' as const,
+    }),
+    [config, settingsBase, scheme, fontBody, contentStyle.textAlign]
+  );
+
+  const button1Style = useMemo(
+    () =>
+      readImageCompareButtonStyle(config, settingsBase, scheme, sectionId, 'button1', fontBody),
+    [config, settingsBase, scheme, sectionId, fontBody]
+  );
+
+  const button2Style = useMemo(
+    () =>
+      readImageCompareButtonStyle(config, settingsBase, scheme, sectionId, 'button2', fontBody),
+    [config, settingsBase, scheme, sectionId, fontBody]
   );
 
   const heading = cfgString(config, `${settingsBase}.heading`, 'Find your perfect fit');
@@ -91,7 +153,7 @@ export function ImageCompare({
 
   const shell: CSSProperties = {
     position: 'relative',
-    background: scheme.background,
+    background: style.backgroundColor,
     color: scheme.color,
     fontFamily: fontBody,
     paddingTop: style.paddingTop,
@@ -99,7 +161,16 @@ export function ImageCompare({
     paddingLeft: horizontalPad,
     paddingRight: horizontalPad,
     boxSizing: 'border-box',
-    border: style.borderStyle === 'solid' ? `1px solid ${scheme.muted}33` : undefined,
+    border: resolveImageCompareBorderCss(
+      config,
+      {
+        borderStyle: style.borderStyle,
+        borderThickness: style.borderThickness,
+        borderOpacity: style.borderOpacity,
+        borderColor: style.borderColor,
+      },
+      scheme.muted
+    ),
     borderRadius: style.cornerRadius > 0 ? style.cornerRadius : undefined,
     overflow: 'hidden',
   };
@@ -109,12 +180,17 @@ export function ImageCompare({
     margin: '0 auto',
     display: 'grid',
     gridTemplateColumns: isHorizontal ? '1fr 1fr' : '1fr',
-    gridTemplateRows: isHorizontal ? undefined : 'auto auto',
+    gridTemplateRows: isHorizontal
+      ? fixedHeight
+        ? '1fr'
+        : undefined
+      : 'auto auto',
     gap: style.layoutGap,
-    minHeight: panelMinHeight,
+    height: fixedHeight && isHorizontal ? sectionHeightPx : undefined,
+    minHeight: fixedHeight ? sectionHeightPx : undefined,
     width: '100%',
-    alignItems: alignItemsForPosition(style.position),
-    justifyContent: justifyContentForAlignment(style.layoutAlignment),
+    // Stretch so Position / Alignment can place content inside the taller media column.
+    alignItems: isHorizontal ? 'stretch' : alignItemsForPosition(style.position),
   };
 
   const mobileStackClass =
@@ -122,37 +198,219 @@ export function ImageCompare({
       ? `codiic-image-compare-stack-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`
       : '';
 
-  const mutedColor = contentStyle.shell.color === scheme.color ? scheme.muted : '#4b5563';
+  const wrapGroupBg = (
+    group: typeof textGroupStyle,
+    children: ReactNode
+  ): ReactNode => (
+    <>
+      {group.bgImage ? (
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(${group.bgImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            pointerEvents: 'none',
+          }}
+        />
+      ) : null}
+      {group.showOverlay ? (
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0,0,0,0.12)',
+            pointerEvents: 'none',
+          }}
+        />
+      ) : null}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'inherit',
+          flexWrap: 'inherit',
+          alignItems: 'inherit',
+          justifyContent: 'inherit',
+          gap: 'inherit',
+        }}
+      >
+        {children}
+      </div>
+    </>
+  );
 
-  const headingStyle: CSSProperties = {
-    margin: 0,
-    fontFamily: fontHeading,
-    fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
-    fontWeight: 700,
-    lineHeight: 1.15,
-    color: 'inherit',
-  };
+  const textGroupInner = wrapGroupBg(
+    textGroupStyle,
+    <>
+      <EditorBlock
+        nodeId={`${editorNodeId}:block:content:nested:text:nested:heading`}
+        label="Heading"
+        style={{ width: '100%', maxWidth: '100%' }}
+      >
+        <EditorField
+          fieldPath={`${settingsBase}.heading`}
+          label="Heading"
+          as="div"
+          style={headingStyle}
+        >
+          <ThemeEditorRichTextContent html={heading} style={headingStyle} inheritTypography />
+        </EditorField>
+      </EditorBlock>
+      <EditorBlock
+        nodeId={`${editorNodeId}:block:content:nested:text:nested:subheading`}
+        label="Subheading"
+        style={{ width: '100%', maxWidth: '100%' }}
+      >
+        <EditorField
+          fieldPath={`${settingsBase}.subheading`}
+          label="Subheading"
+          as="div"
+          style={subheadingStyle}
+        >
+          <ThemeEditorRichTextContent
+            html={subheading}
+            style={subheadingStyle}
+            inheritTypography
+          />
+        </EditorField>
+      </EditorBlock>
+    </>
+  );
 
-  const subheadingStyle: CSSProperties = {
-    margin: '14px 0 0',
-    fontSize: 16,
-    lineHeight: 1.5,
-    color: mutedColor,
-    maxWidth: 400,
-  };
+  const textGroupShell = (
+    <EditorBlock
+      nodeId={`${editorNodeId}:block:content:nested:text`}
+      label="Text"
+      className={textGroupStyle.mobileClass || undefined}
+      style={{
+        ...textGroupStyle.shell,
+        // Shrink-wrap with the buttons so section Alignment shifts the whole stack.
+        width: 'fit-content',
+        maxWidth: '100%',
+        alignItems: 'stretch',
+        textAlign: contentStyle.textAlign,
+      }}
+    >
+      {textGroupInner}
+    </EditorBlock>
+  );
 
-  const buttonsRow: CSSProperties = {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginTop: 28,
-    justifyContent:
-      contentStyle.shell.textAlign === 'center'
-        ? 'center'
-        : contentStyle.shell.textAlign === 'right'
-          ? 'flex-end'
-          : 'flex-start',
-  };
+  const textGroupColumn: ReactNode = textGroupStyle.linkUrl ? (
+    <Link
+      to={textGroupStyle.linkUrl}
+      target={textGroupStyle.openInNewTab ? '_blank' : undefined}
+      rel={textGroupStyle.openInNewTab ? 'noopener noreferrer' : undefined}
+      style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: 'fit-content', maxWidth: '100%' }}
+    >
+      {textGroupShell}
+    </Link>
+  ) : (
+    textGroupShell
+  );
+
+  const buttonsGroupInner = wrapGroupBg(
+    buttonsGroupStyle,
+    <>
+      <EditorBlock
+        nodeId={`${editorNodeId}:block:content:nested:buttons:nested:button_1`}
+        label="Button"
+      >
+        <EditorField fieldPath={`${settingsBase}.button1Label`} label="Button" as="span">
+          {button1Url ? (
+            <Link
+              to={button1Url}
+              target={button1Style.openInNewTab ? '_blank' : undefined}
+              rel={button1Style.openInNewTab ? 'noopener noreferrer' : undefined}
+              className={button1Style.mobileClass}
+              style={button1Style.style}
+            >
+              {button1Label}
+            </Link>
+          ) : (
+            <span className={button1Style.mobileClass} style={button1Style.style}>
+              {button1Label}
+            </span>
+          )}
+        </EditorField>
+      </EditorBlock>
+      <EditorBlock
+        nodeId={`${editorNodeId}:block:content:nested:buttons:nested:button_2`}
+        label="Button"
+      >
+        <EditorField fieldPath={`${settingsBase}.button2Label`} label="Button" as="span">
+          {button2Url ? (
+            <Link
+              to={button2Url}
+              target={button2Style.openInNewTab ? '_blank' : undefined}
+              rel={button2Style.openInNewTab ? 'noopener noreferrer' : undefined}
+              className={button2Style.mobileClass}
+              style={button2Style.style}
+            >
+              {button2Label}
+            </Link>
+          ) : (
+            <span className={button2Style.mobileClass} style={button2Style.style}>
+              {button2Label}
+            </span>
+          )}
+        </EditorField>
+      </EditorBlock>
+    </>
+  );
+
+  const buttonsGroupShell = (
+    <EditorBlock
+      nodeId={`${editorNodeId}:block:content:nested:buttons`}
+      label="Buttons"
+      className={buttonsGroupStyle.mobileClass || undefined}
+      style={{
+        ...buttonsGroupStyle.shell,
+        // Keep buttons grouped; section Alignment moves the whole content cluster.
+        width: 'fit-content',
+        maxWidth: '100%',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+      }}
+    >
+      {buttonsGroupInner}
+    </EditorBlock>
+  );
+
+  const buttonsGroupColumn: ReactNode = buttonsGroupStyle.linkUrl ? (
+    <Link
+      to={buttonsGroupStyle.linkUrl}
+      target={buttonsGroupStyle.openInNewTab ? '_blank' : undefined}
+      rel={buttonsGroupStyle.openInNewTab ? 'noopener noreferrer' : undefined}
+      style={{ textDecoration: 'none', color: 'inherit', display: 'block', width: 'fit-content', maxWidth: '100%' }}
+    >
+      {buttonsGroupShell}
+    </Link>
+  ) : (
+    buttonsGroupShell
+  );
+
+  const contentCluster: ReactNode = (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        width: 'fit-content',
+        maxWidth: '100%',
+        // Keep heading / subheading / buttons sharing one edge; parent Alignment moves this block.
+        alignItems: 'flex-start',
+      }}
+    >
+      {textGroupColumn}
+      {buttonsGroupColumn}
+    </div>
+  );
 
   const contentInner: ReactNode = (
     <>
@@ -180,53 +438,43 @@ export function ImageCompare({
           }}
         />
       ) : null}
-      <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
-        <EditorBlock
-          nodeId={`${editorNodeId}:block:content:nested:text:nested:heading`}
-          label="Heading"
-        >
-          <EditorField fieldPath={`${settingsBase}.heading`} label="Heading" as="h2" style={headingStyle}>
-            {heading}
-          </EditorField>
-        </EditorBlock>
-        <EditorBlock
-          nodeId={`${editorNodeId}:block:content:nested:text:nested:subheading`}
-          label="Subheading"
-        >
-          <EditorField fieldPath={`${settingsBase}.subheading`} label="Subheading" as="p" style={subheadingStyle}>
-            {subheading}
-          </EditorField>
-        </EditorBlock>
-        <div style={buttonsRow}>
-          <EditorBlock
-            nodeId={`${editorNodeId}:block:content:nested:buttons:nested:button_1`}
-            label="Button"
-          >
-            <EditorField fieldPath={`${settingsBase}.button1Label`} label="Button" as="span">
-              {button1Url ? (
-                <Link to={button1Url} style={buttonBase}>
-                  {button1Label}
-                </Link>
-              ) : (
-                <span style={buttonBase}>{button1Label}</span>
-              )}
-            </EditorField>
-          </EditorBlock>
-          <EditorBlock
-            nodeId={`${editorNodeId}:block:content:nested:buttons:nested:button_2`}
-            label="Button"
-          >
-            <EditorField fieldPath={`${settingsBase}.button2Label`} label="Button" as="span">
-              {button2Url ? (
-                <Link to={button2Url} style={buttonBase}>
-                  {button2Label}
-                </Link>
-              ) : (
-                <span style={buttonBase}>{button2Label}</span>
-              )}
-            </EditorField>
-          </EditorBlock>
-        </div>
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          width: '100%',
+          height: '100%',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: contentStyle.alignItems,
+          justifyContent: contentStyle.stackJustify,
+        }}
+      >
+        {contentStyle.stackJustify === 'space-between' ? (
+          <>
+            <div
+              style={{
+                width: 'fit-content',
+                maxWidth: '100%',
+                alignSelf: contentStyle.alignItems,
+              }}
+            >
+              {textGroupColumn}
+            </div>
+            <div
+              style={{
+                width: 'fit-content',
+                maxWidth: '100%',
+                alignSelf: contentStyle.alignItems,
+              }}
+            >
+              {buttonsGroupColumn}
+            </div>
+          </>
+        ) : (
+          contentCluster
+        )}
       </div>
     </>
   );
@@ -236,25 +484,33 @@ export function ImageCompare({
       nodeId={`${editorNodeId}:block:content`}
       label="Content"
       className={contentStyle.mobileClass || undefined}
-      style={contentStyle.shell}
+      style={{
+        ...contentStyle.shell,
+        ...(isHorizontal ? { height: '100%', minHeight: 0 } : null),
+      }}
     >
       {contentInner}
     </EditorBlock>
   );
 
-  const contentColumn: ReactNode =
-    contentStyle.linkUrl ? (
-      <Link
-        to={contentStyle.linkUrl}
-        target={contentStyle.openInNewTab ? '_blank' : undefined}
-        rel={contentStyle.openInNewTab ? 'noopener noreferrer' : undefined}
-        style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
-      >
-        {contentShell}
-      </Link>
-    ) : (
-      contentShell
-    );
+  const columnWrapStyle: CSSProperties = isHorizontal
+    ? { height: '100%', minHeight: 0, display: 'block' }
+    : {};
+
+  const contentColumn: ReactNode = contentStyle.linkUrl ? (
+    <Link
+      to={contentStyle.linkUrl}
+      target={contentStyle.openInNewTab ? '_blank' : undefined}
+      rel={contentStyle.openInNewTab ? 'noopener noreferrer' : undefined}
+      style={{ textDecoration: 'none', color: 'inherit', display: 'block', ...columnWrapStyle }}
+    >
+      {contentShell}
+    </Link>
+  ) : columnWrapStyle.height ? (
+    <div style={columnWrapStyle}>{contentShell}</div>
+  ) : (
+    contentShell
+  );
 
   const comparePanel: CSSProperties = {
     background: 'transparent',
@@ -262,28 +518,63 @@ export function ImageCompare({
     alignItems: 'center',
     justifyContent: 'center',
     padding: `${sliderStyle.paddingTop}px ${sliderStyle.paddingRight}px ${sliderStyle.paddingBottom}px ${sliderStyle.paddingLeft}px`,
-    minHeight: isHorizontal ? panelMinHeight : 280,
+    height: isHorizontal ? '100%' : undefined,
+    minHeight: fixedHeight
+      ? isHorizontal
+        ? 0
+        : sectionHeightPx
+      : isHorizontal
+        ? undefined
+        : 280,
     boxSizing: 'border-box',
   };
 
   const compareColumn: ReactNode = (
-    <EditorBlock nodeId={`${editorNodeId}:block:comparison_slider`} label="Comparison slider" style={comparePanel}>
-      <ImageCompareSlider
-        beforeUrl={sliderStyle.beforeUrl || undefined}
-        afterUrl={sliderStyle.afterUrl || undefined}
-        direction={sliderStyle.direction}
-        textOnImages={sliderStyle.textOnImages}
-        sliderColor={sliderStyle.sliderColor}
-        sliderInnerColor={sliderStyle.sliderInnerColor}
-        wrapStyle={sliderStyle.wrap}
-        mobileClass={sliderStyle.mobileClass}
-        paddingTop={0}
-        paddingBottom={0}
-        paddingLeft={0}
-        paddingRight={0}
-        minHeight={panelMinHeight - 64}
-      />
-    </EditorBlock>
+    <div style={columnWrapStyle.height ? columnWrapStyle : undefined}>
+      <EditorBlock
+        nodeId={`${editorNodeId}:block:comparison_slider`}
+        label="Comparison slider"
+        style={comparePanel}
+      >
+        <ImageCompareSlider
+          beforeUrl={sliderStyle.beforeUrl || undefined}
+          afterUrl={sliderStyle.afterUrl || undefined}
+          direction={sliderStyle.direction}
+          textOnImages={sliderStyle.textOnImages}
+          sliderColor={sliderStyle.sliderColor}
+          sliderInnerColor={sliderStyle.sliderInnerColor}
+          wrapStyle={{
+            ...sliderStyle.wrap,
+            maxWidth: '100%',
+            // Explicit height kills CSS aspect-ratio — only fill the column in Adapt mode.
+            ...(fixedHeight && !sliderStyle.aspectRatio
+              ? {
+                  height: isHorizontal ? '100%' : sectionHeightPx,
+                  minHeight: Math.max(0, (sectionHeightPx ?? 0) - 64),
+                }
+              : sliderStyle.aspectRatio
+                ? {
+                    height: 'auto',
+                    minHeight: undefined,
+                    maxHeight: fixedHeight && isHorizontal ? '100%' : undefined,
+                  }
+                : null),
+          }}
+          mobileClass={sliderStyle.mobileClass}
+          paddingTop={0}
+          paddingBottom={0}
+          paddingLeft={0}
+          paddingRight={0}
+          minHeight={
+            sliderStyle.aspectRatio
+              ? undefined
+              : fixedHeight
+                ? Math.max(160, (sectionHeightPx ?? 280) - 64)
+                : 280
+          }
+        />
+      </EditorBlock>
+    </div>
   );
 
   const bgImage =
@@ -291,10 +582,26 @@ export function ImageCompare({
   const scopedCss = scopedImageCompareCss(sectionId, style.customCss);
   const mobileCss = [
     mobileStackClass
-      ? atMobileBreakpoint(`.${mobileStackClass} { grid-template-columns: 1fr !important; grid-template-rows: auto auto !important; }`)
+      ? atMobileBreakpoint(
+          [
+            `.${mobileStackClass} { grid-template-columns: 1fr !important; grid-template-rows: auto auto !important; height: auto !important; }`,
+            fixedHeight && sectionHeightPx
+              ? `.${mobileStackClass} > * { height: auto !important; min-height: ${sectionHeightPx}px !important; }`
+              : '',
+          ]
+            .filter(Boolean)
+            .join(' ')
+        )
       : '',
     imageCompareSliderMobileCss(sliderStyle.mobileClass, sliderStyle.mobileWidthCss),
     imageCompareContentMobileCss(contentStyle.mobileClass, contentStyle.mobileWidthCss),
+    imageCompareNestedGroupMobileCss(textGroupStyle.mobileClass, textGroupStyle.mobileWidthCss),
+    imageCompareNestedGroupMobileCss(
+      buttonsGroupStyle.mobileClass,
+      buttonsGroupStyle.mobileWidthCss
+    ),
+    button1Style.mobileCss,
+    button2Style.mobileCss,
   ]
     .filter(Boolean)
     .join('\n');
@@ -315,7 +622,7 @@ export function ImageCompare({
             backgroundImage: `url(${bgImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            opacity: 0.35,
+            opacity: style.backgroundColor === 'transparent' ? 1 : 0.35,
             pointerEvents: 'none',
           }}
         />
@@ -333,7 +640,10 @@ export function ImageCompare({
       ) : null}
       {scopedCss ? <style>{scopedCss}</style> : null}
       {mobileCss ? <style>{mobileCss}</style> : null}
-      <div className={mobileStackClass || undefined} style={{ ...innerGrid, position: 'relative', zIndex: 1 }}>
+      <div
+        className={mobileStackClass || undefined}
+        style={{ ...innerGrid, position: 'relative', zIndex: 1 }}
+      >
         {style.compareFirst ? (
           <>
             {compareColumn}

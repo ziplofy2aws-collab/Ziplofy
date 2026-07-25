@@ -44,11 +44,13 @@ export function ImageCompareSlider({
   paddingBottom = 0,
   paddingLeft = 0,
   paddingRight = 0,
-  minHeight = 280,
+  minHeight,
 }: Props) {
   const [position, setPosition] = useState(50);
   const trackRef = useRef<HTMLDivElement>(null);
   const isVertical = direction === 'vertical';
+  const aspectRatio = wrapStyle?.aspectRatio;
+  const hasAspect = Boolean(aspectRatio);
 
   const updateFromPointer = useCallback(
     (clientX: number, clientY: number) => {
@@ -80,18 +82,29 @@ export function ImageCompareSlider({
     e.currentTarget.releasePointerCapture(e.pointerId);
   };
 
+  // Width drives height via aspect-ratio. Absolute layers fill the frame so
+  // intrinsic image/SVG size cannot override Landscape / Portrait / Square.
   const wrap: CSSProperties = {
     position: 'relative',
     width: '100%',
     maxWidth: 520,
     margin: '0 auto',
-    minHeight: wrapStyle?.aspectRatio ? undefined : minHeight,
     borderRadius: 4,
     overflow: 'hidden',
     background: '#f4f4f4',
     touchAction: 'none',
     userSelect: 'none',
+    boxSizing: 'border-box',
     ...wrapStyle,
+    ...(hasAspect
+      ? {
+          aspectRatio,
+          height: 'auto',
+          minHeight: undefined,
+        }
+      : {
+          minHeight: wrapStyle?.minHeight ?? minHeight,
+        }),
   };
 
   const layer: CSSProperties = {
@@ -100,16 +113,34 @@ export function ImageCompareSlider({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: `${24 + paddingTop}px ${32 + paddingRight}px ${24 + paddingBottom}px ${32 + paddingLeft}px`,
+    padding: hasAspect
+      ? 0
+      : `${24 + paddingTop}px ${32 + paddingRight}px ${24 + paddingBottom}px ${32 + paddingLeft}px`,
     boxSizing: 'border-box',
   };
 
-  const imageBox: CSSProperties = {
-    position: 'relative',
+  const imageBox: CSSProperties = hasAspect
+    ? {
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+      }
+    : {
+        position: 'relative',
+        width: '100%',
+        maxWidth: 280,
+        height: '100%',
+        maxHeight:
+          typeof minHeight === 'number' ? Math.max(120, minHeight - 48) : undefined,
+      };
+
+  const mediaStyle: CSSProperties = {
     width: '100%',
-    maxWidth: 280,
     height: '100%',
-    maxHeight: wrapStyle?.aspectRatio ? '100%' : minHeight - 48,
+    objectFit: hasAspect ? 'cover' : 'contain',
+    objectPosition: 'center',
+    display: 'block',
   };
 
   const handleStyle: CSSProperties = isVertical
@@ -184,6 +215,17 @@ export function ImageCompareSlider({
     ? `inset(0 0 ${100 - position}% 0)`
     : `inset(0 ${100 - position}% 0 0)`;
 
+  const artWrap: CSSProperties = hasAspect
+    ? {
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }
+    : { width: '100%', height: '100%' };
+
   return (
     <div
       ref={trackRef}
@@ -203,9 +245,11 @@ export function ImageCompareSlider({
       <div style={layer}>
         <div style={imageBox}>
           {afterUrl ? (
-            <img src={afterUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src={afterUrl} alt="" style={mediaStyle} />
           ) : (
-            <ImageCompareAfterShirt />
+            <div style={artWrap}>
+              <ImageCompareAfterShirt />
+            </div>
           )}
           {textOnImages ? <span style={{ ...labelStyle, right: 12, left: 'auto' }}>After</span> : null}
         </div>
@@ -214,9 +258,11 @@ export function ImageCompareSlider({
       <div style={{ ...layer, clipPath: beforeClip, zIndex: 2 }}>
         <div style={imageBox}>
           {beforeUrl ? (
-            <img src={beforeUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src={beforeUrl} alt="" style={mediaStyle} />
           ) : (
-            <ImageCompareBeforeShirt />
+            <div style={artWrap}>
+              <ImageCompareBeforeShirt />
+            </div>
           )}
           {textOnImages ? <span style={{ ...labelStyle, left: 12 }}>Before</span> : null}
         </div>

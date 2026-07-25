@@ -3507,6 +3507,9 @@ function ComparisonSliderBlockSettingsPanel({
   const sliderColor = pickComparisonSliderField(panelFields, 'sliderColor');
   const sliderInnerColor = pickComparisonSliderField(panelFields, 'sliderInnerColor');
   const border = pickComparisonSliderField(panelFields, 'sliderBorderStyle');
+  const borderThickness = pickComparisonSliderField(panelFields, 'sliderBorderThickness');
+  const borderOpacity = pickComparisonSliderField(panelFields, 'sliderBorderOpacity');
+  const borderColor = pickComparisonSliderField(panelFields, 'sliderBorderColor');
   const cornerRadius = pickComparisonSliderField(panelFields, 'sliderCornerRadius');
   const paddingTop = pickComparisonSliderField(panelFields, 'sliderPaddingTop');
   const paddingBottom = pickComparisonSliderField(panelFields, 'sliderPaddingBottom');
@@ -3515,6 +3518,9 @@ function ComparisonSliderBlockSettingsPanel({
 
   const desktopMode = desktopWidth ? fieldValueAsString(values, desktopWidth) || 'fit' : 'fit';
   const mobileMode = mobileWidth ? fieldValueAsString(values, mobileWidth) || 'fit' : 'fit';
+  const borderStyle = border ? fieldValueAsString(values, border).trim().toLowerCase() || 'none' : 'none';
+  const solidBorders = borderStyle === 'solid';
+  const borderSettingsBase = border ? border.path.replace(/\.sliderBorderStyle$/, '') : '';
 
   const renderCustomWidth = (field: EditorFieldDef) => {
     const min = field.min ?? 20;
@@ -3609,7 +3615,45 @@ function ComparisonSliderBlockSettingsPanel({
               onFieldChange={onFieldChange}
             />
           ) : null}
-          {border ? <SegmentedFieldRow field={border} values={values} onFieldChange={onFieldChange} /> : null}
+          {border ? (
+            <SegmentedFieldRow
+              field={border}
+              values={values}
+              onFieldChange={(path, type, value) => {
+                onFieldChange(path, type, value);
+                if (String(value).trim().toLowerCase() !== 'solid' || !borderSettingsBase) return;
+                if (values[`${borderSettingsBase}.sliderBorderThickness`] === undefined) {
+                  onFieldChange(`${borderSettingsBase}.sliderBorderThickness`, 'number', '1');
+                }
+                if (values[`${borderSettingsBase}.sliderBorderOpacity`] === undefined) {
+                  onFieldChange(`${borderSettingsBase}.sliderBorderOpacity`, 'number', '100');
+                }
+                if (
+                  values[`${borderSettingsBase}.sliderBorderColor`] === undefined ||
+                  values[`${borderSettingsBase}.sliderBorderColor`] === ''
+                ) {
+                  onFieldChange(`${borderSettingsBase}.sliderBorderColor`, 'text', 'default');
+                }
+              }}
+            />
+          ) : null}
+          {solidBorders && borderThickness ? (
+            <SliderFieldRow field={borderThickness} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {solidBorders && borderOpacity ? (
+            <SliderFieldRow field={borderOpacity} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {solidBorders && borderColor ? (
+            <ThemeDefaultColorField
+              label={borderColor.label || 'Border color'}
+              path={borderColor.path}
+              values={values}
+              colorPalette={colorPalette}
+              defaultPaletteIndex={1}
+              fallbackColor="#111827"
+              onFieldChange={onFieldChange}
+            />
+          ) : null}
           {cornerRadius ? (
             <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
           ) : null}
@@ -17400,7 +17444,7 @@ function ImageCompareGroupedSettingsPanel({
     <div className="divide-y divide-[#e1e1e1]">
       {IMAGE_COMPARE_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length && label !== 'Theme Settings') return null;
+        if (!groupFields?.length && label !== 'Theme Settings' && label !== 'Borders') return null;
 
         if (label === 'Layout') {
           return (
@@ -17437,18 +17481,15 @@ function ImageCompareGroupedSettingsPanel({
         }
 
         if (label === 'Borders') {
-          const borderStyle = groupFields?.find((f) => f.path.endsWith('borderStyle'));
-          const cornerRadius = groupFields?.find((f) => f.path.endsWith('cornerRadius'));
-          if (!borderStyle && !cornerRadius) return null;
           return (
-            <ShopifySettingsSection key={label} title="Borders">
-              {borderStyle ? (
-                <SegmentedFieldRow field={borderStyle} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-              {cornerRadius ? (
-                <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
-              ) : null}
-            </ShopifySettingsSection>
+            <MulticolumnBordersSettingsGroup
+              key={label}
+              fields={groupFields ?? []}
+              allFields={fields}
+              values={values}
+              colorPalette={colorPalette}
+              onFieldChange={onFieldChange}
+            />
           );
         }
 
@@ -18163,13 +18204,15 @@ function InlineSelectFieldRow({
 }) {
   const current = fieldValueAsString(values, field) || field.options?.[0]?.value || '';
 
+  const changeType = fieldTypeFromSchema(field.type);
+
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
       <span className="text-[13px] text-gray-800">{field.label}</span>
       <div className="relative min-w-[140px]">
         <select
           value={current}
-          onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
+          onChange={(e) => onFieldChange(field.path, changeType, e.target.value)}
           className="w-full appearance-none rounded-lg border border-[#c9cccf] bg-white py-2 pl-3 pr-8 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
         >
           {(field.options ?? []).map((opt) => (
@@ -18194,6 +18237,7 @@ function SelectFieldRow({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const current = fieldValueAsString(values, field) || field.options?.[0]?.value || '';
+  const changeType = fieldTypeFromSchema(field.type);
 
   return (
     <div className="space-y-1">
@@ -18201,7 +18245,7 @@ function SelectFieldRow({
       <div className="relative">
         <select
           value={current}
-          onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
+          onChange={(e) => onFieldChange(field.path, changeType, e.target.value)}
           className="w-full appearance-none rounded-lg border border-[#c9cccf] bg-white py-2 pl-3 pr-8 text-[13px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
         >
           {(field.options ?? []).map((opt) => (

@@ -94,8 +94,33 @@ export const editing: CreateThemeEditing = {
       "type": "text"
     },
     {
+      "key": "backgroundColor",
+      "label": "Background color",
+      "type": "text"
+    },
+    {
+      "key": "mediaPosition",
+      "label": "Media position",
+      "type": "text"
+    },
+    {
       "key": "borderStyle",
       "label": "Borders",
+      "type": "text"
+    },
+    {
+      "key": "borderThickness",
+      "label": "Border thickness",
+      "type": "number"
+    },
+    {
+      "key": "borderOpacity",
+      "label": "Border opacity",
+      "type": "number"
+    },
+    {
+      "key": "borderColor",
+      "label": "Border color",
       "type": "text"
     },
     {

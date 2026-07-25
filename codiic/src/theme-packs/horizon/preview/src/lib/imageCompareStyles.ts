@@ -40,10 +40,10 @@ const SCHEMES: Record<string, ImageCompareScheme> = {
 };
 
 const HEIGHT_PX: Record<string, number> = {
-  auto: 280,
-  small: 260,
-  medium: 320,
-  large: 400,
+  auto: 0,
+  small: 280,
+  medium: 420,
+  large: 560,
 };
 
 export type ImageCompareLayout = {
@@ -117,8 +117,9 @@ export function readImageCompareLayout(
   };
 }
 
-export function imageCompareMinHeight(height: string): number {
-  return HEIGHT_PX[height] ?? HEIGHT_PX.small;
+export function imageCompareMinHeight(height: string): number | undefined {
+  const px = HEIGHT_PX[height];
+  return px && px > 0 ? px : undefined;
 }
 
 export function alignItemsForPosition(position: string): 'flex-start' | 'center' | 'flex-end' {

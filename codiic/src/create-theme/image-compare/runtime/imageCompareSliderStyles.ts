@@ -1,7 +1,10 @@
 import type { CSSProperties } from 'react';
 import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
 import { atMobileBreakpoint } from '../../runtime/shared/responsive';
-import type { ImageCompareScheme } from './imageCompareStyles';
+import {
+  resolveImageCompareBorderCss,
+  type ImageCompareScheme,
+} from './imageCompareStyles';
 
 function clampPercent(value: number, fallback = 100): number {
   if (!Number.isFinite(value)) return fallback;
@@ -61,7 +64,19 @@ export function readImageCompareSliderStyle(
     directionRaw === 'vertical' ? 'vertical' : 'horizontal';
   const textOnImages = cfgBool(config, `${settingsBase}.sliderTextOnImages`, false);
 
-  const aspectKey = cfgString(config, `${settingsBase}.sliderAspectRatio`, 'landscape');
+  const aspectKeyRaw = cfgString(config, `${settingsBase}.sliderAspectRatio`, 'landscape')
+    .trim()
+    .toLowerCase();
+  const aspectKey =
+    aspectKeyRaw === 'portrait' ||
+    aspectKeyRaw === 'square' ||
+    aspectKeyRaw === 'adapt' ||
+    aspectKeyRaw === 'auto' ||
+    aspectKeyRaw === 'landscape'
+      ? aspectKeyRaw === 'auto'
+        ? 'adapt'
+        : aspectKeyRaw
+      : 'landscape';
   const aspectRatio = ASPECT_RATIOS[aspectKey];
 
   const desktopWidthMode = cfgString(config, `${settingsBase}.sliderDesktopWidth`, 'custom');
@@ -75,6 +90,9 @@ export function readImageCompareSliderStyle(
   const sliderColor = resolveColorSetting(sliderColorRaw, '#ffffff');
   const sliderInnerColor = resolveColorSetting(sliderInnerColorRaw, '#ffffff');
   const borderStyle = cfgString(config, `${settingsBase}.sliderBorderStyle`, 'none');
+  const borderThickness = cfgNumber(config, `${settingsBase}.sliderBorderThickness`, 1);
+  const borderOpacity = cfgNumber(config, `${settingsBase}.sliderBorderOpacity`, 100);
+  const borderColor = cfgString(config, `${settingsBase}.sliderBorderColor`, 'default');
   const cornerRadius = cfgNumber(config, `${settingsBase}.sliderCornerRadius`, 0);
   const paddingTop = cfgNumber(config, `${settingsBase}.sliderPaddingTop`, 0);
   const paddingBottom = cfgNumber(config, `${settingsBase}.sliderPaddingBottom`, 0);
@@ -89,15 +107,27 @@ export function readImageCompareSliderStyle(
 
   const wrap: CSSProperties = {
     position: 'relative',
-    width: desktopWidth,
-    maxWidth: desktopWidthMode === 'fit' ? 520 : desktopWidthMode === 'custom' ? '100%' : '100%',
+    // Percentage / fill widths are required so aspect-ratio can resolve a height.
+    width: desktopWidthMode === 'fit' ? '100%' : desktopWidth,
+    maxWidth: desktopWidthMode === 'fit' ? 520 : '100%',
     margin: desktopWidthMode === 'fit' ? '0 auto' : undefined,
+    // Width drives height; never set height here or Landscape/Portrait/Square won't apply.
     aspectRatio,
+    height: aspectRatio ? 'auto' : undefined,
     minHeight: aspectRatio ? undefined : 280,
     borderRadius: cornerRadius > 0 ? cornerRadius : 4,
     overflow: 'hidden',
     background: panelBackground,
-    border: borderStyle === 'solid' ? `1px solid ${sectionScheme.muted}33` : undefined,
+    border: resolveImageCompareBorderCss(
+      config,
+      {
+        borderStyle,
+        borderThickness,
+        borderOpacity,
+        borderColor,
+      },
+      sectionScheme.muted
+    ),
     boxSizing: 'border-box',
     touchAction: 'none',
     userSelect: 'none',
@@ -115,7 +145,8 @@ export function readImageCompareSliderStyle(
     sliderInnerColor,
     panelBackground,
     borderStyle,
-    borderColor: `${sectionScheme.muted}33`,
+    borderColor:
+      !borderColor || borderColor === 'default' ? sectionScheme.muted : borderColor,
     cornerRadius,
     paddingTop,
     paddingBottom,

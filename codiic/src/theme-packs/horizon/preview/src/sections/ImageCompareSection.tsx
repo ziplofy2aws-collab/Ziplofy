@@ -63,7 +63,8 @@ export function ImageCompareSection({
   const imageAfterUrl = cfgString(config, `${settingsBase}.imageAfterUrl`, '');
 
   const scheme = style.scheme;
-  const panelMinHeight = imageCompareMinHeight(style.height);
+  const sectionHeightPx = imageCompareMinHeight(style.height);
+  const fixedHeight = Boolean(sectionHeightPx);
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;
   const isHorizontal = style.direction === 'horizontal';
@@ -89,11 +90,16 @@ export function ImageCompareSection({
     margin: '0 auto',
     display: 'grid',
     gridTemplateColumns: isHorizontal ? '1fr 1fr' : '1fr',
-    gridTemplateRows: isHorizontal ? undefined : 'auto auto',
+    gridTemplateRows: isHorizontal
+      ? fixedHeight
+        ? '1fr'
+        : undefined
+      : 'auto auto',
     gap: style.layoutGap,
-    minHeight: panelMinHeight,
+    height: fixedHeight && isHorizontal ? sectionHeightPx : undefined,
+    minHeight: fixedHeight ? sectionHeightPx : undefined,
     width: '100%',
-    alignItems: alignItemsForPosition(style.position),
+    alignItems: fixedHeight ? 'stretch' : alignItemsForPosition(style.position),
     justifyContent: justifyContentForAlignment(style.layoutAlignment),
   };
 
@@ -110,7 +116,8 @@ export function ImageCompareSection({
     alignItems: 'flex-start',
     textAlign: 'left',
     padding: '48px 56px',
-    minHeight: isHorizontal ? panelMinHeight : undefined,
+    height: fixedHeight && isHorizontal ? '100%' : undefined,
+    minHeight: fixedHeight ? (isHorizontal ? 0 : sectionHeightPx) : undefined,
     boxSizing: 'border-box',
   };
 
@@ -120,7 +127,14 @@ export function ImageCompareSection({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '32px 24px',
-    minHeight: isHorizontal ? panelMinHeight : 280,
+    height: fixedHeight && isHorizontal ? '100%' : undefined,
+    minHeight: fixedHeight
+      ? isHorizontal
+        ? 0
+        : sectionHeightPx
+      : isHorizontal
+        ? undefined
+        : 280,
     boxSizing: 'border-box',
   };
 
@@ -185,7 +199,9 @@ export function ImageCompareSection({
         <ImageCompareSlider
           beforeUrl={imageBeforeUrl || undefined}
           afterUrl={imageAfterUrl || undefined}
-          minHeight={panelMinHeight - 64}
+          minHeight={
+            fixedHeight ? Math.max(160, (sectionHeightPx ?? 280) - 64) : 280
+          }
         />
       </div>
     </div>

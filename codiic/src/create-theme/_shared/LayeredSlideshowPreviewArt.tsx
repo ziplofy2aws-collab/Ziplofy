@@ -5,7 +5,7 @@ type Size = 'modal' | 'compact';
 /** Flat figure (blue shirt) for layered slideshow preview. */
 function LayeredSlideshowFigure({ className }: { className?: string }) {
   return (
-    <div className={`relative ${className ?? ''}`} aria-hidden>
+   <div className={`relative ${className ?? ''}`} aria-hidden>
       <div className="absolute left-1/2 top-[4%] h-[20%] w-[36%] -translate-x-1/2 rounded-full bg-[#e8c4a8]" />
       <div className="absolute left-1/2 top-[17%] h-[22%] w-[50%] -translate-x-1/2 rounded-t-md bg-white" />
       <div className="absolute left-1/2 top-[23%] h-[77%] w-[94%] -translate-x-1/2 overflow-hidden rounded-t-[28%] bg-[#4a7fc4]">

@@ -1,4 +1,5 @@
-import { cfgNumber, cfgString } from '../../runtime/shared/config';
+import { cfgBool, cfgNumber, cfgString } from '../../runtime/shared/config';
+import { resolveThemePaletteColorSetting } from '../../settings/theme-color-palette.settings';
 
 export type ImageCompareScheme = {
   background: string;
@@ -39,11 +40,12 @@ const SCHEMES: Record<string, ImageCompareScheme> = {
   },
 };
 
+/** Pixel heights so Small / Medium / Large are visibly different; Auto has no fixed height. */
 const HEIGHT_PX: Record<string, number> = {
-  auto: 280,
-  small: 260,
-  medium: 320,
-  large: 400,
+  auto: 0,
+  small: 280,
+  medium: 420,
+  large: 560,
 };
 
 export type ImageCompareLayout = {
@@ -55,9 +57,15 @@ export type ImageCompareLayout = {
   layoutGap: number;
   sectionWidth: 'page' | 'full';
   height: string;
+  /** Resolved pixel height when not auto; undefined for auto. */
+  heightPx: number | undefined;
   backgroundMedia: string;
   backgroundImageUrl: string;
+  backgroundColor: string;
   borderStyle: string;
+  borderThickness: number;
+  borderOpacity: number;
+  borderColor: string;
   cornerRadius: number;
   backgroundOverlay: boolean;
   paddingTop: number;
@@ -78,22 +86,31 @@ export function readImageCompareLayout(
   settingsBase: string
 ): ImageCompareLayout {
   const schemeKey = cfgString(config, `${settingsBase}.colorScheme`, 'scheme-1');
-  const directionRaw = cfgString(config, `${settingsBase}.direction`, '');
+  const scheme = SCHEMES[schemeKey] ?? SCHEMES['scheme-1'];
+  const directionRaw = cfgString(config, `${settingsBase}.direction`, 'horizontal');
   const direction: 'vertical' | 'horizontal' =
     directionRaw === 'vertical' ? 'vertical' : 'horizontal';
 
-  let compareFirst = false;
-  if (!directionRaw) {
-    compareFirst = cfgString(config, `${settingsBase}.mediaPosition`, 'right') === 'left';
-  }
+  const mediaPosition = cfgString(config, `${settingsBase}.mediaPosition`, 'right');
+  const compareFirst = mediaPosition === 'left';
 
-  const verticalOnMobile = cfgString(config, `${settingsBase}.verticalOnMobile`, 'false') === 'true';
+  const verticalOnMobile = cfgBool(config, `${settingsBase}.verticalOnMobile`, false);
   const layoutAlignment = cfgString(config, `${settingsBase}.layoutAlignment`, 'space-between');
   const position = cfgString(config, `${settingsBase}.position`, 'center');
   const layoutGap = cfgNumber(config, `${settingsBase}.layoutGap`, 46);
+  const backgroundMedia = cfgString(config, `${settingsBase}.backgroundMedia`, 'none');
+  const backgroundImageUrl = cfgString(config, `${settingsBase}.backgroundImageUrl`, '');
+  const backgroundColorRaw = cfgString(config, `${settingsBase}.backgroundColor`, 'default');
+  const showBgImage = backgroundMedia === 'image' && Boolean(backgroundImageUrl.trim());
+  const backgroundColor = showBgImage
+    ? 'transparent'
+    : !backgroundColorRaw || backgroundColorRaw === 'default'
+      ? scheme.background
+      : resolveThemePaletteColorSetting(config, backgroundColorRaw, 0, scheme.background);
 
+  const height = readHeight(config, settingsBase);
   return {
-    scheme: SCHEMES[schemeKey] ?? SCHEMES['scheme-1'],
+    scheme,
     direction,
     verticalOnMobile,
     layoutAlignment,
@@ -101,12 +118,17 @@ export function readImageCompareLayout(
     layoutGap,
     sectionWidth:
       cfgString(config, `${settingsBase}.sectionWidth`, 'page') === 'full' ? 'full' : 'page',
-    height: readHeight(config, settingsBase),
-    backgroundMedia: cfgString(config, `${settingsBase}.backgroundMedia`, 'none'),
-    backgroundImageUrl: cfgString(config, `${settingsBase}.backgroundImageUrl`, ''),
+    height,
+    heightPx: imageCompareMinHeight(height),
+    backgroundMedia,
+    backgroundImageUrl,
+    backgroundColor,
     borderStyle: cfgString(config, `${settingsBase}.borderStyle`, 'none'),
+    borderThickness: cfgNumber(config, `${settingsBase}.borderThickness`, 1),
+    borderOpacity: cfgNumber(config, `${settingsBase}.borderOpacity`, 100),
+    borderColor: cfgString(config, `${settingsBase}.borderColor`, 'default'),
     cornerRadius: cfgNumber(config, `${settingsBase}.cornerRadius`, 0),
-    backgroundOverlay: cfgString(config, `${settingsBase}.backgroundOverlay`, 'false') === 'true',
+    backgroundOverlay: cfgBool(config, `${settingsBase}.backgroundOverlay`, false),
     paddingTop: cfgNumber(config, `${settingsBase}.paddingTop`, 40),
     paddingBottom: cfgNumber(config, `${settingsBase}.paddingBottom`, 40),
     customCss: cfgString(config, `${settingsBase}.customCss`, ''),
@@ -114,8 +136,49 @@ export function readImageCompareLayout(
   };
 }
 
-export function imageCompareMinHeight(height: string): number {
-  return HEIGHT_PX[height] ?? HEIGHT_PX.small;
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const normalized = hex.replace('#', '').trim();
+  if (normalized.length === 3) {
+    const r = parseInt(normalized[0]! + normalized[0]!, 16);
+    const g = parseInt(normalized[1]! + normalized[1]!, 16);
+    const b = parseInt(normalized[2]! + normalized[2]!, 16);
+    if (![r, g, b].every(Number.isFinite)) return null;
+    return { r, g, b };
+  }
+  if (normalized.length !== 6) return null;
+  return {
+    r: parseInt(normalized.slice(0, 2), 16),
+    g: parseInt(normalized.slice(2, 4), 16),
+    b: parseInt(normalized.slice(4, 6), 16),
+  };
+}
+
+/** Build CSS border from Style / Thickness / Opacity / Color. */
+export function resolveImageCompareBorderCss(
+  config: Record<string, unknown> | null,
+  layout: {
+    borderStyle: string;
+    borderThickness: number;
+    borderOpacity: number;
+    borderColor: string;
+  },
+  schemeBorder: string
+): string | undefined {
+  if (layout.borderStyle !== 'solid' || layout.borderThickness <= 0) return undefined;
+  const borderColorHex =
+    !layout.borderColor || layout.borderColor === 'default'
+      ? schemeBorder
+      : resolveThemePaletteColorSetting(config, layout.borderColor, 1, schemeBorder);
+  const base = borderColorHex?.startsWith('#') ? borderColorHex : schemeBorder;
+  const rgb = hexToRgb(base);
+  const alpha = Math.min(100, Math.max(0, layout.borderOpacity)) / 100;
+  if (!rgb) return `${layout.borderThickness}px solid ${schemeBorder}`;
+  return `${layout.borderThickness}px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+}
+
+export function imageCompareMinHeight(height: string): number | undefined {
+  const px = HEIGHT_PX[height];
+  return px && px > 0 ? px : undefined;
 }
 
 export function alignItemsForPosition(position: string): 'flex-start' | 'center' | 'flex-end' {

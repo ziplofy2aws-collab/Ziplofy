@@ -44,6 +44,9 @@ export const IMAGE_COMPARE_BUTTONS_GROUP_FIELD_KEYS = new Set([
   'backgroundColor',
   'backgroundOverlay',
   'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
   'cornerRadius',
   'linkUrl',
   'openLinkInNewTab',
@@ -75,6 +78,9 @@ export function imageCompareButtonsGroupDefaultSettings(): Record<string, string
     backgroundColor: 'default',
     backgroundOverlay: false,
     borderStyle: 'none',
+    borderThickness: 1,
+    borderOpacity: 100,
+    borderColor: 'default',
     cornerRadius: 0,
     linkUrl: '',
     openLinkInNewTab: false,
@@ -214,6 +220,38 @@ export function imageCompareButtonsGroupFieldDefs(settingsBase: string): EditorF
         { value: 'none', label: 'None' },
         { value: 'solid', label: 'Solid' },
       ],
+    },
+    {
+      path: s('borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: false,
+    },
+    {
+      path: s('borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: false,
     },
     {
       path: s('cornerRadius'),
@@ -398,7 +436,10 @@ function fieldSortKey(path: string): number {
     backgroundColor: 22,
     backgroundOverlay: 23,
     borderStyle: 30,
-    cornerRadius: 31,
+    borderThickness: 31,
+    borderOpacity: 32,
+    borderColor: 33,
+    cornerRadius: 34,
     linkUrl: 40,
     openLinkInNewTab: 41,
     paddingTop: 50,
@@ -412,6 +453,7 @@ function fieldSortKey(path: string): number {
 export function isImageCompareButtonsGroupPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
   if (!IMAGE_COMPARE_BUTTONS_GROUP_FIELD_KEYS.has(key)) return false;
+  if (!/image_compare/.test(field.path)) return false;
   if (!/\.settings\.buttonsGroup\./.test(field.path)) return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;

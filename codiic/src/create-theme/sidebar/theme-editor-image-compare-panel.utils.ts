@@ -18,6 +18,7 @@ export const IMAGE_COMPARE_LAYOUT_FIELD_ORDER = [
   'layoutAlignment',
   'position',
   'layoutGap',
+  'mediaPosition',
 ] as const;
 
 const PANEL_GROUPS = new Set<string>(IMAGE_COMPARE_PANEL_GROUP_ORDER);
@@ -28,6 +29,7 @@ const FIELD_SORT: Record<string, number> = {
   layoutAlignment: 2,
   position: 3,
   layoutGap: 4,
+  mediaPosition: 5,
   sectionWidth: 10,
   height: 11,
   backgroundMedia: 21,
@@ -35,9 +37,12 @@ const FIELD_SORT: Record<string, number> = {
   backgroundColor: 23,
   backgroundOverlay: 24,
   borderStyle: 26,
-  cornerRadius: 27,
-  paddingTop: 30,
-  paddingBottom: 31,
+  borderThickness: 27,
+  borderOpacity: 28,
+  borderColor: 29,
+  cornerRadius: 30,
+  paddingTop: 31,
+  paddingBottom: 32,
   colorScheme: 35,
   customCss: 40,
 };
@@ -61,25 +66,102 @@ function remapImageCompareField(field: EditorFieldDef): EditorFieldDef {
   let next = { ...field };
 
   if (key === 'verticalOnMobile') {
-    next = { ...next, label: 'Vertical on mobile', widget: 'toggle', group: 'Layout' };
+    next = { ...next, label: 'Vertical on mobile', widget: 'toggle', group: 'Layout', type: 'boolean' };
   }
   if (key === 'direction') {
-    next = { ...next, widget: 'segmented', group: 'Layout' };
+    next = {
+      ...next,
+      widget: 'segmented',
+      group: 'Layout',
+      type: 'select',
+      options:
+        next.options && next.options.length
+          ? next.options
+          : [
+              { value: 'vertical', label: 'Vertical' },
+              { value: 'horizontal', label: 'Horizontal' },
+            ],
+    };
   }
   if (key === 'layoutAlignment') {
-    next = { ...next, widget: 'select-inline', group: 'Layout' };
+    next = {
+      ...next,
+      label: 'Alignment',
+      widget: 'select-inline',
+      group: 'Layout',
+      type: 'select',
+      options:
+        next.options && next.options.length
+          ? next.options
+          : [
+              { value: 'left', label: 'Left' },
+              { value: 'center', label: 'Center' },
+              { value: 'right', label: 'Right' },
+              { value: 'space-between', label: 'Space between' },
+            ],
+    };
   }
   if (key === 'position') {
-    next = { ...next, widget: 'select-inline', group: 'Layout' };
+    next = {
+      ...next,
+      widget: 'select-inline',
+      group: 'Layout',
+      type: 'select',
+      options:
+        next.options && next.options.length
+          ? next.options
+          : [
+              { value: 'top', label: 'Top' },
+              { value: 'center', label: 'Center' },
+              { value: 'bottom', label: 'Bottom' },
+            ],
+    };
   }
   if (key === 'layoutGap') {
-    next = { ...next, widget: 'slider', group: 'Layout' };
+    next = {
+      ...next,
+      label: 'Gap',
+      widget: 'slider',
+      group: 'Layout',
+      type: 'number',
+      min: next.min ?? 0,
+      max: next.max ?? 100,
+      step: next.step ?? 1,
+      unit: next.unit ?? 'px',
+    };
+  }
+  if (key === 'mediaPosition') {
+    next = {
+      ...next,
+      label: 'Media position',
+      widget: 'segmented',
+      group: 'Layout',
+      type: 'select',
+      options: [
+        { value: 'left', label: 'Left' },
+        { value: 'right', label: 'Right' },
+      ],
+    };
   }
   if (key === 'sectionWidth') {
     next = { ...next, widget: 'segmented', group: 'Size' };
   }
   if (key === 'height') {
-    next = { ...next, widget: 'select-inline', group: 'Size' };
+    next = {
+      ...next,
+      widget: 'select-inline',
+      group: 'Size',
+      type: 'select',
+      options:
+        next.options && next.options.length
+          ? next.options
+          : [
+              { value: 'auto', label: 'Auto' },
+              { value: 'small', label: 'Small' },
+              { value: 'medium', label: 'Medium' },
+              { value: 'large', label: 'Large' },
+            ],
+    };
   }
   if (key === 'colorScheme') {
     next = { ...next, widget: 'color-scheme', group: 'Theme Settings' };
@@ -150,8 +232,157 @@ export function isImageCompareSettingsPanelFields(fields: EditorFieldDef[]): boo
 }
 
 export function prepareImageCompareSettingsNode(node: SidebarNode): SidebarNode {
-  const fields = sortImageComparePanelFields(
-    filterSidebarSectionPanelFields(node.fields ?? [], isImageComparePanelField).map(remapImageCompareField)
+  const settingsBase = (() => {
+    const path = (node.fields ?? [])[0]?.path ?? '';
+    const m = path.match(/^(templates\.[^.]+\.sections\.[^.]+\.settings|sections\.[^.]+\.settings)/);
+    if (m) return m[1]!;
+    const layout = node.id.match(/^layout:([^:]+)$/);
+    if (layout) return `sections.${layout[1]}.settings`;
+    const tpl = node.id.match(/^template:([^:]+):([^:]+)$/);
+    if (tpl) return `templates.${tpl[1]}.sections.${tpl[2]}.settings`;
+    return '';
+  })();
+
+  let fields = filterSidebarSectionPanelFields(node.fields ?? [], isImageComparePanelField).map(
+    remapImageCompareField
   );
+  fields = ensureImageCompareSectionFieldDefs(fields, settingsBase);
+  fields = sortImageComparePanelFields(fields);
   return { ...node, label: 'Image compare', kind: 'section', fields };
+}
+
+/** Ensure Appearance background color + Layout media position exist even if schema is stale. */
+export function ensureImageCompareSectionFieldDefs(
+  fields: EditorFieldDef[],
+  settingsBase: string
+): EditorFieldDef[] {
+  if (!settingsBase) return fields;
+  const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  const next = [...fields];
+  if (!keys.has('backgroundColor')) {
+    next.push({
+      path: `${settingsBase}.backgroundColor`,
+      type: 'color',
+      label: 'Background color',
+      group: 'Appearance',
+      widget: 'color',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('mediaPosition')) {
+    next.push({
+      path: `${settingsBase}.mediaPosition`,
+      type: 'select',
+      label: 'Media position',
+      group: 'Layout',
+      widget: 'segmented',
+      options: [
+        { value: 'left', label: 'Left' },
+        { value: 'right', label: 'Right' },
+      ],
+      sidebar: true,
+    });
+  }
+  if (!keys.has('height')) {
+    next.push({
+      path: `${settingsBase}.height`,
+      type: 'select',
+      label: 'Height',
+      group: 'Size',
+      widget: 'select-inline',
+      options: [
+        { value: 'auto', label: 'Auto' },
+        { value: 'small', label: 'Small' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'large', label: 'Large' },
+      ],
+      sidebar: true,
+    });
+  } else {
+    const idx = next.findIndex((f) => f.path.split('.').pop() === 'height');
+    if (idx >= 0) {
+      const field = next[idx]!;
+      if (!field.options?.length) {
+        next[idx] = {
+          ...field,
+          type: 'select',
+          widget: 'select-inline',
+          group: 'Size',
+          options: [
+            { value: 'auto', label: 'Auto' },
+            { value: 'small', label: 'Small' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'large', label: 'Large' },
+          ],
+        };
+      }
+    }
+  }
+  if (!keys.has('borderStyle')) {
+    next.push({
+      path: `${settingsBase}.borderStyle`,
+      type: 'select',
+      label: 'Style',
+      group: 'Borders',
+      widget: 'segmented',
+      options: [
+        { value: 'none', label: 'None' },
+        { value: 'solid', label: 'Solid' },
+      ],
+      sidebar: true,
+    });
+  }
+  if (!keys.has('borderThickness')) {
+    next.push({
+      path: `${settingsBase}.borderThickness`,
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('borderOpacity')) {
+    next.push({
+      path: `${settingsBase}.borderOpacity`,
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('borderColor')) {
+    next.push({
+      path: `${settingsBase}.borderColor`,
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: true,
+    });
+  }
+  if (!keys.has('cornerRadius')) {
+    next.push({
+      path: `${settingsBase}.cornerRadius`,
+      type: 'number',
+      label: 'Corner radius',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 40,
+      step: 1,
+      unit: 'px',
+      sidebar: true,
+    });
+  }
+  return next;
 }
